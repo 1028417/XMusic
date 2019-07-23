@@ -1,0 +1,9 @@
+*.log
+
+*.aps
+
+*.exp
+
+*.user
+
+*.obj

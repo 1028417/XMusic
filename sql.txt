@@ -1,0 +1,20 @@
+select * from tbl_singer A left join tbl_playitem B ON B.path like '%' || A.name || '%'
+and B.path not like A.path || '\%'
+
+select distinct A.path from tbl_playitem A join tbl_playitem B ON A.path = B.path and A.id <> B.id
+
+select distinct A.path from tbl_albumitem A join tbl_albumitem B ON A.path = B.path and A.id <> B.id
+
+
+attach "D:\dev\c++\Player3.1\bin\bak\data.db.2018.11.26" as old
+
+SELECT A.path, B.path ,* FROM tbl_playitem A join old.tbl_playitem B on A.id == B.id
+where A.path <> B.path
+
+SELECT A.path, B.path ,* FROM tbl_albumitem A join old.tbl_albumitem B on A.id == B.id and A.path <> B.path
+
+SELECT * FROM old.tbl_playitem A where not exists(select id from tbl_playitem B where A.id == B.id)
+and not exists(select id from tbl_playitem B where A.path == B.path)
+
+SELECT * FROM old.tbl_albumitem A where not exists(select id from tbl_albumitem B where A.id == B.id)
+and not exists(select id from tbl_albumitem B where A.path == B.path)

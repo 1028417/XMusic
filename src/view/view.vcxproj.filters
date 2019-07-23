@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{3f2ca88f-8496-4cc6-ac93-f1497b2aefb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\page">
+      <UniqueIdentifier>{51d035f0-6064-4f73-833d-bcc43d1fbc5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\page\PlaylistPage">
+      <UniqueIdentifier>{daf338a4-2215-4bec-a1cf-544a05837d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\page\SingerPage">
+      <UniqueIdentifier>{1981ddd2-9e46-4ba9-9d17-a63caf46355a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\dlg">
+      <UniqueIdentifier>{223a5526-f0ef-49c4-a75a-5d94c576aef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\dlg\option">
+      <UniqueIdentifier>{262aaee1-bb97-4077-957c-c70c020530f9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="src\globalSize.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImgMgr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelObserver.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayCtrl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayerMainWnd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayerView.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlaySpirit.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\MediaResPanel.cpp">
+      <Filter>src\page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\DropTarget.cpp">
+      <Filter>src\page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\BasePage.cpp">
+      <Filter>src\page</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\SingerPage\AlbumPage.cpp">
+      <Filter>src\page\SingerPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\SingerPage\SingerPage.cpp">
+      <Filter>src\page\SingerPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\PlaylistPage\PlayingPage.cpp">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\PlaylistPage\PlayItemPage.cpp">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\PlaylistPage\PlaylistPage.cpp">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\ChooseDirDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\FindDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\MediaSetDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\VerifyResultDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\option\AlarmClockWnd.cpp">
+      <Filter>src\dlg\option</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\option\OptionDlg.cpp">
+      <Filter>src\dlg\option</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\option\TimingWnd.cpp">
+      <Filter>src\dlg\option</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\PlaylistPage\PlayingList.cpp">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\PlayRecordDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\BackupDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\DuplicateMediaDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\NewSongDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\SimilarFileDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\WholeTrackDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FloatPanel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\TrackDetailDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SysToolBar.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\ExportMediaSetDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QuickFindDlg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\option\ExportOptionDlg.cpp">
+      <Filter>src\dlg\option</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dlg\BackupCompareDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\page\SingerPage\SingerMediaResPanel.cpp">
+      <Filter>src\page\SingerPage</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="src\globalSize.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImgMgr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayCtrl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayerMainWnd.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlaySpirit.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\MediaResPanel.h">
+      <Filter>src\page</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\DropTarget.h">
+      <Filter>src\page</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\BasePage.h">
+      <Filter>src\page</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\SingerPage\AlbumPage.h">
+      <Filter>src\page\SingerPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\SingerPage\SingerMediaResPanel.h">
+      <Filter>src\page\SingerPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\SingerPage\SingerPage.h">
+      <Filter>src\page\SingerPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\PlaylistPage\PlayingPage.h">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\PlaylistPage\PlayItemPage.h">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\PlaylistPage\PlaylistPage.h">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\ChooseDirDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\FindDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\MediaSetDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\VerifyResultDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\option\AlarmClockWnd.h">
+      <Filter>src\dlg\option</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\option\OptionDlg.h">
+      <Filter>src\dlg\option</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\option\TimingWnd.h">
+      <Filter>src\dlg\option</Filter>
+    </ClInclude>
+    <ClInclude Include="src\page\PlaylistPage\PlayingList.h">
+      <Filter>src\page\PlaylistPage</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayerView.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\PlayRecordDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ModelObserver.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\BackupDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\DuplicateMediaDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\NewSongDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\WholeTrackDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FloatPanel.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\TrackDetailDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SysToolBar.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\ExportMediaSetDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\QuickFindDlg.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\option\ExportOptionDlg.h">
+      <Filter>src\dlg\option</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\BackupCompareDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dlg\SimilarFileDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ViewDef.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="view.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MainWnd.ico" />
+    <Image Include="find.ico" />
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+</Project>

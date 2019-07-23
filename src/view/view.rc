@@ -1,0 +1,993 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#include ""res\\Player.rc2""  // 非 Microsoft Visual C++ 编辑的资源\r\n"
+    "#include ""afxres.rc""     // 标准组件\r\n"
+    "#endif\r\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINDLG MENU
+BEGIN
+    POPUP "XMusic"
+    BEGIN
+        MENUITEM "设定根目录",                       ID_MODIFY_ROOT
+        MENUITEM "挂载目录",                        ID_AttachDir
+        MENUITEM SEPARATOR
+        MENUITEM "播放记录 Ctrl+R",                 ID_PlayRecord
+        MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
+        MENUITEM "设置",                          ID_Setting
+    END
+    POPUP "媒体库"
+    BEGIN
+        MENUITEM "导出目录",                        ID_ExportDir
+        MENUITEM "生成快照",                        ID_Snapshot
+        MENUITEM SEPARATOR
+        MENUITEM "检查相似文件",                      ID_CheckSimilar
+        MENUITEM "查找整轨",                        ID_WholeTrack
+        MENUITEM "刷新 F5",                       ID_REFRESH_ROOT
+    END
+    POPUP "曲目"
+    BEGIN
+        MENUITEM "查找 Ctrl+F",                   ID_FIND
+        MENUITEM "查看新曲目",                       ID_ViewNewSong
+        MENUITEM SEPARATOR
+        MENUITEM "检测 Ctrl+D",                   ID_VERIFY
+        POPUP "检查重复曲目"
+        BEGIN
+            MENUITEM "相同路径",                        ID_CheckDuplicate
+            MENUITEM "相同文件名",                       ID_CheckDuplicateName
+            MENUITEM "相同标题",                        ID_CheckDuplicateTitle
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "导出 Ctrl+E",                   ID_ExportMedia
+        MENUITEM "导入",                          ID_AddIn
+    END
+    POPUP "点播"
+    BEGIN
+        MENUITEM "歌手 Ctrl+F1",                  ID_DemandSinger
+        MENUITEM "专辑 Ctrl+F2",                  ID_DemandAlbum
+        MENUITEM "专辑曲目 Ctrl+F3",                ID_DemandAlbumItem
+        MENUITEM SEPARATOR
+        MENUITEM "列表曲目 Ctrl+F4",                ID_DemandPlayItem
+        MENUITEM "列表 Ctrl+F5",                  ID_DemandPlaylist
+        MENUITEM SEPARATOR
+        POPUP "按语种"
+        BEGIN
+            POPUP "国语"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_CN
+                MENUITEM "专辑",                          ID_DemandAlbum_CN
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_CN
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_CN
+                MENUITEM "列表",                          ID_DemandPlaylist_CN
+            END
+            POPUP "粤语"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_HK
+                MENUITEM "专辑",                          ID_DemandAlbum_HK
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_HK
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_HK
+                MENUITEM "列表",                          ID_DemandPlaylist_HK
+            END
+            POPUP "韩语"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_KR
+                MENUITEM "专辑",                          ID_DemandAlbum_KR
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_KR
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_KR
+                MENUITEM "列表",                          ID_DemandPlaylist_KR
+            END
+            POPUP "日语"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_JP
+                MENUITEM "专辑",                          ID_DemandAlbum_JP
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_JP
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_JP
+                MENUITEM "列表",                          ID_DemandPlaylist_JP
+            END
+            POPUP "泰语"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_TAI
+                MENUITEM "专辑",                          ID_DemandAlbum_TAI
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_TAI
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_TAI
+                MENUITEM "列表",                          ID_DemandPlaylist_TAI
+            END
+            POPUP "英文"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_EN
+                MENUITEM "专辑",                          ID_DemandAlbum_EN
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EN
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_EN
+                MENUITEM "列表",                          ID_DemandPlaylist_EN
+            END
+            POPUP "小语种"
+            BEGIN
+                MENUITEM "歌手",                          ID_DemandSinger_EUR
+                MENUITEM "专辑",                          ID_DemandAlbum_EUR
+                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
+                MENUITEM "列表曲目",                        ID_DemandPlayItem_EUR
+                MENUITEM "列表",                          ID_DemandPlaylist_EUR
+            END
+        END
+    END
+END
+
+IDR_PLAYSPIRIT MENU
+BEGIN
+    POPUP ""
+    BEGIN
+        MENUITEM "主界面",                         ID_SHOW
+        POPUP "点播"
+        BEGIN
+            MENUITEM "歌手",                          ID_DEMAND_SINGER
+            MENUITEM "专辑",                          ID_DEMAND_ALBUM
+            MENUITEM "专辑曲目",                        ID_DEMAND_ALBUMITEM
+            MENUITEM SEPARATOR
+            MENUITEM "列表曲目",                        ID_DEMAND_PLAYITEM
+            MENUITEM "列表",                          ID_DEMAND_PLAYLIST
+        END
+        MENUITEM "退出",                          ID_QUIT
+    END
+END
+
+IDR_MENU_Dir MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "打开",                          ID_OPEN
+        MENUITEM "查找",                          ID_FIND
+        MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "快照",                          ID_Snapshot
+        MENUITEM "检查相似文件",                      ID_CheckSimilar
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "删除",                          ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "刷新",                          ID_REFRESH
+        MENUITEM "返回",                          ID_Upward
+    END
+END
+
+IDR_MENU_SINGEROBJECT MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY
+        MENUITEM "检测",                          ID_VERIFY
+        MENUITEM "查找",                          ID_FIND
+        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM SEPARATOR
+        MENUITEM "添加头像",                        ID_ADD_IMAGE
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "移除",                          ID_REMOVE
+        MENUITEM SEPARATOR
+        MENUITEM "新建组",                         ID_ADD_GROUP
+        MENUITEM "新建歌手",                        ID_ADD_SINGER
+        MENUITEM SEPARATOR
+        POPUP "属性"
+        BEGIN
+            POPUP "语种"
+            BEGIN
+                MENUITEM "国语",                          ID_CNLanguage
+                MENUITEM "粤语",                          ID_HKLanguage
+                MENUITEM "韩语",                          ID_KRLanguage
+                MENUITEM "日语",                          ID_JPLanguage
+                MENUITEM "泰语",                          ID_TAILanguage
+                MENUITEM "英文",                          ID_ENLanguage
+                MENUITEM "小语种",                         ID_EURLanguage
+            END
+            MENUITEM "点播屏蔽",                        ID_DisableDemand
+            MENUITEM "导出屏蔽",                        ID_DisableExport
+        END
+    END
+END
+
+IDR_MENU_ALBUMITEM MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY_ALBUMITEM
+        MENUITEM "查找",                          ID_FIND_ALBUMITEM
+        MENUITEM "定位",                          ID_HITTEST_ALBUMITEM
+        MENUITEM "浏览",                          ID_EXPLORE_ALBUMITEM
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "重命名",                         ID_RENAME_ALBUMITEM
+        MENUITEM "移除",                          ID_REMOVE_ALBUMITEM
+        MENUITEM "添加",                          ID_ADD_ALBUMITEM
+    END
+END
+
+IDR_MENU_ALBUM MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY_ALBUM
+        MENUITEM "检测",                          ID_VERIFY_ALBUM
+        MENUITEM "导出",                          ID_EXPORT_ALBUM
+        MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
+        MENUITEM SEPARATOR
+        MENUITEM "新建专辑",                        ID_ADD_ALBUM
+        MENUITEM "重命名",                         ID_RENAME_ALBUM
+        MENUITEM "移除",                          ID_REMOVE_ALBUM
+        MENUITEM SEPARATOR
+        POPUP "属性"
+        BEGIN
+            POPUP "语种"
+            BEGIN
+                MENUITEM "国语",                          ID_CNLanguage
+                MENUITEM "粤语",                          ID_HKLanguage
+                MENUITEM "韩语",                          ID_KRLanguage
+                MENUITEM "日语",                          ID_JPLanguage
+                MENUITEM "泰语",                          ID_TAILanguage
+                MENUITEM "英文",                          ID_ENLanguage
+                MENUITEM "小语种",                         ID_EURLanguage
+            END
+            MENUITEM "点播屏蔽",                        ID_DisableDemand
+            MENUITEM "导出屏蔽",                        ID_DisableExport
+        END
+    END
+END
+
+IDR_MENU_PLAYLIST MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY
+        MENUITEM "检测",                          ID_VERIFY
+        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
+        MENUITEM SEPARATOR
+        MENUITEM "新建列表",                        ID_ADD_PLAYLIST
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "移除",                          ID_REMOVE
+        MENUITEM SEPARATOR
+        POPUP "属性"
+        BEGIN
+            POPUP "语种"
+            BEGIN
+                MENUITEM "国语",                          ID_CNLanguage
+                MENUITEM "粤语",                          ID_HKLanguage
+                MENUITEM "韩语",                          ID_KRLanguage
+                MENUITEM "日语",                          ID_JPLanguage
+                MENUITEM "泰语",                          ID_TAILanguage
+                MENUITEM "英文",                          ID_ENLanguage
+                MENUITEM "小语种",                         ID_EURLanguage
+            END
+            MENUITEM "点播屏蔽",                        ID_DisableDemand
+            MENUITEM "导出屏蔽",                        ID_DisableExport
+        END
+    END
+END
+
+IDR_MENU_PLAYITEM MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY
+        MENUITEM "查找",                          ID_FIND
+        MENUITEM "定位",                          ID_HITTEST
+        MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "移除",                          ID_REMOVE
+        MENUITEM "添加",                          ID_ADD_PLAYITEM
+    END
+END
+
+IDR_MENU_PLAYINGITEM MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_PLAY
+        MENUITEM "查找",                          ID_FIND
+        MENUITEM "定位",                          ID_HITTEST
+        MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "移除",                          ID_REMOVE
+        MENUITEM "清空",                          ID_CLEAR
+    END
+END
+
+IDR_MENU_File MENU
+BEGIN
+    POPUP " "
+    BEGIN
+        MENUITEM "播放",                          ID_OPEN
+        MENUITEM "查找",                          ID_FIND
+        MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM "查看分轨",                        ID_ViewTrack
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "删除",                          ID_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "刷新",                          ID_REFRESH
+        MENUITEM "返回",                          ID_Upward
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLG_MEDIASET DIALOGEX 0, 0, 226, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,120,279,50,14
+    PUSHBUTTON      "取消",IDCANCEL,173,279,50,14
+    CONTROL         "",IDC_TREE,"SysTreeView32",TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,3,3,220,273
+END
+
+IDD_DLG_Option DIALOGEX 0, 0, 216, 230
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "设置"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "关闭",IDCANCEL,153,205,50,14
+    LTEXT           "皮肤:",IDC_STATIC,13,37,20,8
+    COMBOBOX        IDC_COMBO_SKIN,36,36,73,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "隐藏菜单栏",IDC_HideMenuBar,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,14,52,10
+END
+
+IDD_DLG_ExportOption DIALOGEX 0, 0, 182, 131
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "导出设置"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "取消",IDCANCEL,120,105,50,14
+    CONTROL         "按实际路径导出",IDC_ActualMode,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,14,66,10
+    PUSHBUTTON      "确定",IDOK,58,105,50,14
+    CONTROL         "不覆盖大小相同的文件",IDC_CompareFileSize,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,39,79,10
+    CONTROL         "删除多余文件",IDC_DeleteOther,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,64,59,10
+    CONTROL         "比较修改时间",IDC_CompareFileTime,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,118,39,50,10
+END
+
+IDD_DLG_FIND DIALOGEX 0, 0, 554, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "查找"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,554,268
+    PUSHBUTTON      "播放",IDC_BTN_PLAY,322,275,50,14,WS_DISABLED
+    PUSHBUTTON      "导出",IDC_BTN_EXPORT,497,275,50,14,WS_DISABLED
+    PUSHBUTTON      "浏览",IDC_BTN_EXPLORE,381,275,50,14,WS_DISABLED
+    EDITTEXT        IDC_EDIT1,29,276,108,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "检测",IDC_BTN_VERIFY,439,275,50,14,WS_DISABLED
+    LTEXT           "查找：",IDC_STATIC,7,278,21,8
+END
+
+IDD_DLG_TIMING DIALOGEX 0, 0, 166, 47
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    LTEXT           "定时:",IDC_STATIC,7,8,19,8
+    COMBOBOX        IDC_COMBO_OPERATE,28,7,74,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_HOUR,28,27,30,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    LTEXT           "时",IDC_STATIC,73,28,9,8
+    EDITTEXT        IDC_EDIT_MINUTE,88,27,30,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    LTEXT           "分",IDC_STATIC,134,29,9,8
+    CONTROL         "",IDC_SPIN_HOUR,"msctls_updown32",UDS_ARROWKEYS,58,26,12,14
+    CONTROL         "",IDC_SPIN_MINUTE,"msctls_updown32",UDS_ARROWKEYS,118,26,12,14
+END
+
+IDD_DLG_ALARMCLOCK DIALOGEX 0, 0, 207, 47
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_HOUR,28,27,30,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    LTEXT           "时",-1,73,29,9,8
+    EDITTEXT        IDC_EDIT_MINUTE,88,27,30,12,ES_AUTOHSCROLL | ES_READONLY | ES_NUMBER
+    LTEXT           "分",-1,133,29,9,8
+    CONTROL         "",IDC_SPIN_HOUR,"msctls_updown32",UDS_ARROWKEYS,58,26,12,14
+    CONTROL         "",IDC_SPIN_MINUTE,"msctls_updown32",UDS_ARROWKEYS,118,26,12,14
+    LTEXT           "闹铃:",-1,7,8,20,8
+    COMBOBOX        IDC_COMBO_MEDIA,28,7,87,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "移除",IDC_BTN_REMOVE,124,7,32,12
+    PUSHBUTTON      "清空",IDC_BTN_CLEAR,163,7,32,12
+END
+
+IDD_DLG_PlayRecord DIALOGEX 0, 0, 387, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "播放记录"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,387,268
+    PUSHBUTTON      "播放",IDC_BTN_PLAY,272,275,50,14,WS_DISABLED
+    PUSHBUTTON      "清空",IDC_BTN_CLEAR,330,275,50,14
+    CONTROL         "",IDC_DATETIMEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,30,275,54,14
+    LTEXT           "日期：",IDC_STATIC,7,278,21,8
+END
+
+IDD_DLG_VerifyResult DIALOGEX 0, 0, 482, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "检测结果"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,482,268
+    PUSHBUTTON      "重新检测",IDC_BTN_VERIFY,367,275,50,14
+    PUSHBUTTON      "手动链接",IDC_BTN_LINK,65,275,50,14
+    PUSHBUTTON      "删除",IDC_BTN_REMOVE,425,275,50,14
+    PUSHBUTTON      "自动匹配",IDC_BTN_AutoMatch,7,275,50,14
+END
+
+IDD_DLG_NewSong DIALOGEX 0, 0, 554, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "点播",ID_BTN_DEMAND,438,275,50,14,WS_DISABLED
+    CONTROL         "",IDC_DATETIMEPICKER,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,29,275,54,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,554,267
+    COMBOBOX        IDC_COMBO1,116,276,47,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "播放",ID_BTN_PLAY,497,275,50,14,WS_DISABLED
+    LTEXT           "日期：",IDC_STATIC,7,278,21,8
+    LTEXT           "排序：",IDC_STATIC,94,278,21,8
+END
+
+IDD_DLG_QuickFind DIALOGEX 0, 0, 145, 43
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "",IDC_BUTTON1,107,16,27,14,BS_ICON | NOT WS_TABSTOP
+    EDITTEXT        IDC_EDIT1,11,18,80,12,ES_AUTOHSCROLL | ES_NOHIDESEL | NOT WS_BORDER
+END
+
+IDD_DLG_ChooseDir DIALOGEX 0, 0, 250, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TREE,"SysTreeView32",TVS_SHOWSELALWAYS | WS_BORDER | WS_HSCROLL | WS_TABSTOP,3,3,244,273
+    PUSHBUTTON      "确定",IDOK,144,279,50,14
+    PUSHBUTTON      "取消",IDCANCEL,197,279,50,14
+END
+
+IDD_PAGE_MediaResPanel DIALOGEX 0, 0, 308, 240
+STYLE DS_SETFONT | DS_NOIDLEMSG | WS_CHILD
+EXSTYLE WS_EX_NOACTIVATE
+FONT 8, "微软雅黑", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,105,84,171,145
+    LTEXT           " 目录不存在",IDC_STATIC1,47,57,36,9,NOT WS_VISIBLE,WS_EX_TRANSPARENT
+END
+
+IDD_PAGE_SINGER DIALOGEX 0, 0, 199, 167
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TREE,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_NOHSCROLL | WS_TABSTOP,5,0,117,102
+END
+
+IDD_PAGE_ALBUM DIALOGEX 0, 0, 493, 197
+STYLE DS_SETFONT | WS_CHILD
+EXSTYLE WS_EX_NOACTIVATE
+FONT 8, "MS Shell Dlg", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_LIST_BROWSE,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,307,5,185,191
+    CONTROL         "",IDC_LIST_EXPLORE,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,20,0,187,159
+END
+
+IDD_PAGE_PLAYLIST DIALOGEX 0, 0, 188, 191
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,7,7,115,113
+END
+
+IDD_PAGE_PLAYING DIALOGEX 0, 0, 188, 191
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_ALIGNLEFT | WS_TABSTOP,15,50,115,113
+END
+
+IDD_DLG_BACKUP DIALOGEX 0, 0, 384, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "备份"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "备份",IDC_BTN_BACKUP,66,275,50,14
+    PUSHBUTTON      "删除",IDC_BTN_REMOVE,125,275,50,14,WS_DISABLED
+    PUSHBUTTON      "比对",IDC_BTN_COMPARE,7,275,50,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,384,267
+    PUSHBUTTON      "恢复",IDC_BTN_RESTORE,268,275,50,14
+    PUSHBUTTON      "初始化",IDC_BTN_ClearMedialib,327,275,50,14
+END
+
+IDD_PAGE_COMPARE_RESULT DIALOGEX 0, 0, 188, 167
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_TABSTOP,19,16,169,151
+END
+
+IDD_DLG_BackupCompare DIALOGEX 0, 0, 554, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "比对"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "关闭",IDCANCEL,497,275,50,14
+    LTEXT           "目标",IDC_STATIC,7,277,18,8
+    COMBOBOX        IDC_COMBO_DST,26,276,103,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "源",IDC_STATIC,150,277,11,8
+    COMBOBOX        IDC_COMBO_SRC,162,276,103,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_DLG_DuplicateMedia DIALOGEX 0, 0, 554, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,554,267
+    PUSHBUTTON      "关闭",IDCANCEL,497,275,50,14
+    PUSHBUTTON      "删除",IDC_BTN_REMOVE,65,275,50,14,WS_DISABLED
+    PUSHBUTTON      "播放",IDC_BTN_PLAY,7,275,50,14,WS_DISABLED
+END
+
+IDD_DLG_SimilarFile DIALOGEX 0, 0, 554, 296
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,554,267
+    PUSHBUTTON      "删除",IDC_BTN_REMOVE,497,275,50,14
+    PUSHBUTTON      "播放",IDC_BTN_PLAY,381,275,50,14,WS_DISABLED
+    LTEXT           "相似度",IDC_STATIC,7,278,22,8
+    CONTROL         "",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,31,274,100,15
+    PUSHBUTTON      "浏览",IDC_BTN_EXPLORE,439,275,50,14,WS_DISABLED
+END
+
+IDD_PAGE_PLAYITEM DIALOGEX 0, 0, 225, 177
+STYLE DS_SETFONT | DS_NOIDLEMSG | WS_CHILD
+EXSTYLE WS_EX_NOACTIVATE
+FONT 8, "MS Shell Dlg", 400, 0, 0x86
+BEGIN
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_ALIGNLEFT | WS_TABSTOP,7,7,115,113
+END
+
+IDD_DLG_WholeTrack DIALOGEX 0, 0, 555, 296
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "整轨"
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "关闭",IDCANCEL,498,275,50,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,0,555,268
+    PUSHBUTTON      "播放",IDC_BTN_PLAY,7,275,50,14,WS_DISABLED
+    PUSHBUTTON      "浏览",IDC_BTN_EXPLORE,121,275,50,14,WS_DISABLED
+    PUSHBUTTON      "查看",IDC_BTN_DETAIL,64,275,50,14,WS_DISABLED
+END
+
+IDD_DLG_TrackDetail DIALOGEX 0, 0, 280, 300
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "整轨 - "
+FONT 8, "微软雅黑", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "关闭",IDCANCEL,223,279,50,14
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,0,1,280,270
+    PUSHBUTTON      "播放",ID_BTN_PLAY,7,279,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DLG_MEDIASET, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 294
+    END
+
+    IDD_DLG_Option, DIALOG
+    BEGIN
+        LEFTMARGIN, 13
+        RIGHTMARGIN, 201
+        TOPMARGIN, 14
+        BOTTOMMARGIN, 109
+    END
+
+    IDD_DLG_ExportOption, DIALOG
+    BEGIN
+        LEFTMARGIN, 13
+        RIGHTMARGIN, 170
+        TOPMARGIN, 14
+        HORZGUIDE, 119
+    END
+
+    IDD_DLG_FIND, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 547
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_TIMING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 158
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    IDD_DLG_ALARMCLOCK, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    IDD_DLG_PlayRecord, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 380
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_VerifyResult, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 475
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_NewSong, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 547
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_QuickFind, DIALOG
+    BEGIN
+        RIGHTMARGIN, 144
+        BOTTOMMARGIN, 39
+    END
+
+    IDD_DLG_ChooseDir, DIALOG
+    BEGIN
+        RIGHTMARGIN, 239
+        BOTTOMMARGIN, 261
+    END
+
+    IDD_PAGE_MediaResPanel, DIALOG
+    BEGIN
+        RIGHTMARGIN, 225
+        BOTTOMMARGIN, 177
+    END
+
+    IDD_PAGE_SINGER, DIALOG
+    BEGIN
+    END
+
+    IDD_PAGE_ALBUM, DIALOG
+    BEGIN
+    END
+
+    IDD_PAGE_PLAYLIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 181
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 184
+    END
+
+    IDD_PAGE_PLAYING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 181
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 184
+    END
+
+    IDD_DLG_BACKUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 377
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_PAGE_COMPARE_RESULT, DIALOG
+    BEGIN
+    END
+
+    IDD_DLG_BackupCompare, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 547
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_DuplicateMedia, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 547
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_SimilarFile, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 547
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_PAGE_PLAYITEM, DIALOG
+    BEGIN
+    END
+
+    IDD_DLG_WholeTrack, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 548
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_DLG_TrackDetail, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 273
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 293
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_DLG_Option AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_TIMING AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_ALARMCLOCK AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_FIND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_QuickFind AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_MediaResPanel AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_ChooseDir AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_SINGER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_ALBUM AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_PLAYLIST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_PLAYING AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_VerifyResult AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_PlayRecord AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_NewSong AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_MEDIASET AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_BACKUP AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_COMPARE_RESULT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_BackupCompare AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_DuplicateMedia AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_SimilarFile AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_PLAYITEM AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_WholeTrack AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_TrackDetail AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DLG_ExportOption AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAINWND             ICON                    "MainWnd.ico"
+
+IDI_Find                ICON                    "find.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_TOOLBAR1 TOOLBAR 64, 24
+BEGIN
+    BUTTON      ID_Menu
+    BUTTON      ID_RandomPlay
+    BUTTON      ID_Force48000
+    SEPARATOR
+    BUTTON      ID_MIN
+    BUTTON      ID_FullScreen
+    BUTTON      ID_CLOSE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_TOOLBAR1            BITMAP                  "toolbar.bmp"
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE 4, 2
+#pragma code_page(936)
+#include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
+#include "afxres.rc"     // 标准组件
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

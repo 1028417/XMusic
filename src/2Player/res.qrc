@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/btnPlayNext.png</file>
+        <file>img/btnPause.png</file>
+        <file>img/btnPlay.png</file>
+        <file>img/btnPlayPrev.png</file>
+        <file>img/singerdefault.png</file>
+        <file>img/album.png</file>
+        <file>img/playitem.png</file>
+        <file>img/albumitem.png</file>
+        <file>img/playlist.png</file>
+        <file>img/bkg.jpg</file>
+        <file>img/btnRandom.png</file>
+        <file>img/btnOrder.png</file>
+        <file>img/btnSetting.png</file>
+        <file>img/defaultSingerImg.jpg</file>
+        <file>img/logo.gif</file>
+        <file>img/btnExit.png</file>
+    </qresource>
+</RCC>

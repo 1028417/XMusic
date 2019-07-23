@@ -1,0 +1,6 @@
+VBGROUP 5.0
+StartupProject=PlaySpirit.vbp
+Project=QPlayerOcxPrj\QPlayerOcxPrj.vbp
+Project=MsgHook Class\MsgHookPrj.vbp
+Project=Qocx\QocxPrj.vbp
+Project=Shadow Class\ShadowPrj.vbp

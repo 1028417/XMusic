@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5C955C8D-B8FB-431C-856E-F83AA7359BA1}</ProjectGuid>
+    <RootNamespace>MainModule</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../bin/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../build\$(ProjectName)d/</IntDir>
+    <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">*.obj%3b*.ilk%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.pgc%3b*.pgd%3b$(TargetPath)</ExtensionsToDeleteOnClean>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../bin/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../build\$(ProjectName)/</IntDir>
+    <ExtensionsToDeleteOnClean Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">*.obj%3b*.ilk%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.pgc%3b*.pgd%3b$(TargetPath)</ExtensionsToDeleteOnClean>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./src;../../inc;../../inc/util;../../inc/Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__ViewPrj;_DEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0804</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>util.lib;Common.lib;model.lib;MediaLib.lib;PlaySDK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>../../lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>NotSet</SubSystem>
+      <ImportLibrary>$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <BuildLog>
+      <Path />
+    </BuildLog>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>./src;../../inc;../../inc/util;../../inc/Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__ViewPrj;NDEBUG;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0804</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <RegisterOutput>false</RegisterOutput>
+      <AdditionalDependencies>Common.lib;util.lib;model.lib;MediaLib.lib;PlaySDK.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>../../lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <SubSystem>NotSet</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <BuildLog>
+      <Path />
+    </BuildLog>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\dlg\BackupDlg.cpp" />
+    <ClCompile Include="src\dlg\BackupCompareDlg.cpp" />
+    <ClCompile Include="src\dlg\ExportMediaSetDlg.cpp" />
+    <ClCompile Include="src\dlg\option\ExportOptionDlg.cpp" />
+    <ClCompile Include="src\page\SingerPage\SingerMediaResPanel.cpp" />
+    <ClCompile Include="src\QuickFindDlg.cpp" />
+    <ClCompile Include="src\dlg\SimilarFileDlg.cpp" />
+    <ClCompile Include="src\dlg\DuplicateMediaDlg.cpp" />
+    <ClCompile Include="src\dlg\option\AlarmClockWnd.cpp" />
+    <ClCompile Include="src\dlg\TrackDetailDlg.cpp" />
+    <ClCompile Include="src\dlg\WholeTrackDlg.cpp" />
+    <ClCompile Include="src\page\BasePage.cpp" />
+    <ClCompile Include="src\dlg\ChooseDirDlg.cpp" />
+    <ClCompile Include="src\dlg\NewSongDlg.cpp" />
+    <ClCompile Include="src\page\DropTarget.cpp" />
+    <ClCompile Include="src\dlg\FindDlg.cpp" />
+    <ClCompile Include="src\globalSize.cpp" />
+    <ClCompile Include="src\dlg\PlayRecordDlg.cpp" />
+    <ClCompile Include="src\ImgMgr.cpp" />
+    <ClCompile Include="src\page\MediaResPanel.cpp" />
+    <ClCompile Include="src\dlg\MediaSetDlg.cpp" />
+    <ClCompile Include="src\ModelObserver.cpp" />
+    <ClCompile Include="src\dlg\option\OptionDlg.cpp" />
+    <ClCompile Include="src\page\PlaylistPage\PlayingList.cpp" />
+    <ClCompile Include="src\PlayCtrl.cpp" />
+    <ClCompile Include="src\PlayerMainWnd.cpp" />
+    <ClCompile Include="src\PlayerView.cpp" />
+    <ClCompile Include="src\page\PlaylistPage\PlayingPage.cpp" />
+    <ClCompile Include="src\page\PlaylistPage\PlayItemPage.cpp" />
+    <ClCompile Include="src\page\PlaylistPage\PlaylistPage.cpp" />
+    <ClCompile Include="src\PlaySpirit.cpp" />
+    <ClCompile Include="src\page\SingerPage\AlbumPage.cpp" />
+    <ClCompile Include="src\page\SingerPage\SingerPage.cpp" />
+    <ClCompile Include="src\FloatPanel.cpp" />
+    <ClCompile Include="src\SysToolBar.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\dlg\option\TimingWnd.cpp" />
+    <ClCompile Include="src\dlg\VerifyResultDlg.cpp" />
+    <ClCompile Include="src\view.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\ViewDef.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\dlg\BackupDlg.h" />
+    <ClInclude Include="src\dlg\BackupCompareDlg.h" />
+    <ClInclude Include="src\dlg\ExportMediaSetDlg.h" />
+    <ClInclude Include="src\dlg\option\ExportOptionDlg.h" />
+    <ClInclude Include="src\dlg\SimilarFileDlg.h" />
+    <ClInclude Include="src\QuickFindDlg.h" />
+    <ClInclude Include="src\dlg\DuplicateMediaDlg.h" />
+    <ClInclude Include="src\dlg\TrackDetailDlg.h" />
+    <ClInclude Include="src\dlg\WholeTrackDlg.h" />
+    <ClInclude Include="src\ModelObserver.h" />
+    <ClInclude Include="src\PlayerView.h" />
+    <ClInclude Include="src\dlg\option\AlarmClockWnd.h" />
+    <ClInclude Include="src\page\BasePage.h" />
+    <ClInclude Include="src\dlg\ChooseDirDlg.h" />
+    <ClInclude Include="src\dlg\NewSongDlg.h" />
+    <ClInclude Include="src\page\DropTarget.h" />
+    <ClInclude Include="src\dlg\FindDlg.h" />
+    <ClInclude Include="src\globalSize.h" />
+    <ClInclude Include="src\dlg\PlayRecordDlg.h" />
+    <ClInclude Include="src\ImgMgr.h" />
+    <ClInclude Include="src\page\MediaResPanel.h" />
+    <ClInclude Include="src\dlg\MediaSetDlg.h" />
+    <ClInclude Include="src\dlg\option\OptionDlg.h" />
+    <ClInclude Include="src\page\PlaylistPage\PlayingList.h" />
+    <ClInclude Include="src\PlayCtrl.h" />
+    <ClInclude Include="src\PlayerMainWnd.h" />
+    <ClInclude Include="src\page\PlaylistPage\PlayingPage.h" />
+    <ClInclude Include="src\page\PlaylistPage\PlayItemPage.h" />
+    <ClInclude Include="src\page\PlaylistPage\PlaylistPage.h" />
+    <ClInclude Include="src\PlaySpirit.h" />
+    <ClInclude Include="src\page\SingerPage\AlbumPage.h" />
+    <ClInclude Include="src\page\SingerPage\SingerMediaResPanel.h" />
+    <ClInclude Include="src\page\SingerPage\SingerPage.h" />
+    <ClInclude Include="src\FloatPanel.h" />
+    <ClInclude Include="src\SysToolBar.h" />
+    <ClInclude Include="src\view.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="src\dlg\option\TimingWnd.h" />
+    <ClInclude Include="src\dlg\VerifyResultDlg.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="view.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="find.ico" />
+    <Image Include="MainWnd.ico" />
+    <Image Include="toolbar.bmp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Player.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
