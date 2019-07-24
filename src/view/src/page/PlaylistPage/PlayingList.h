@@ -1,21 +1,92 @@
 #pragma once
 
-struct tagLink
-{
-	CRect rcPos;
-	bool bHittest = false;
-};
-
-struct tagSingerAlbumLink : tagLink
-{
-	CRect rcSingerImg;
-};
-
 class CPlayingList : public CObjectList
 {
+private:
+	enum class E_ItemLinkType
+	{
+		ILT_None = 0,
+		ILT_SingerImg,
+		ILT_SingerAlbum,
+		ILT_TrackCount,
+		ILT_PrevTrack,
+		ILT_NextTrack
+	};
+
+	struct tagItemLink
+	{
+		tagItemLink(E_ItemLinkType t_eLinkType)
+			: eLinkType(t_eLinkType)
+		{
+		}
+
+		operator E_ItemLinkType() const
+		{
+			return eLinkType;
+		}
+
+		E_ItemLinkType eLinkType;
+
+		CRect rcPos;
+		bool bHittest = false;
+
+		bool hittest(const CPoint& ptPos, bool *pbChanged = NULL)
+		{
+			if (bHittest != (TRUE == rcPos.PtInRect(ptPos)))
+			{
+				bHittest = !bHittest;
+
+				if (NULL != pbChanged)
+				{
+					*pbChanged = true;
+				}
+			}
+
+			return bHittest;
+		}
+	};
+
+	struct tagItemLinks
+	{
+		tagItemLinks()
+			: lnkSingerImg(E_ItemLinkType::ILT_SingerImg)
+			, lnkSingerAlbum(E_ItemLinkType::ILT_SingerAlbum)
+			, lnkTrackCount(E_ItemLinkType::ILT_TrackCount)
+		{
+		}
+
+		tagItemLink lnkSingerImg;
+
+		tagItemLink lnkSingerAlbum;
+
+		tagItemLink lnkTrackCount;
+
+		E_ItemLinkType hittest(const CPoint& ptPos, bool *pbChanged = NULL)
+		{
+			if (lnkSingerImg.hittest(ptPos, pbChanged))
+			{
+				return lnkSingerImg;
+			}
+
+			if (lnkSingerAlbum.hittest(ptPos, pbChanged))
+			{
+				return lnkSingerAlbum;
+			}
+
+			if (lnkTrackCount.hittest(ptPos, pbChanged))
+			{
+				return lnkTrackCount;
+			}
+
+			return E_ItemLinkType::ILT_None;
+		}
+	};
+
 public:
 	CPlayingList(__view& view)
 		: m_view(view)
+		, m_lnkPrevTrack(E_ItemLinkType::ILT_PrevTrack)
+		, m_lnkNextTrack(E_ItemLinkType::ILT_NextTrack)
 	{
 	}
 
@@ -34,16 +105,11 @@ private:
 	int m_nRenameItem = -1;
 
 	bool m_bMouseDown = false;
+	
+	tagItemLink m_lnkPrevTrack;
+	tagItemLink m_lnkNextTrack;
 
-	bool m_bHighlightTracks = false;
-	bool m_bHighlightPrevLink = false;
-	bool m_bHighlightNextLink = false;
-
-	tagLink m_TracksLink;
-	tagLink m_PrevLink;
-	tagLink m_NextLink;
-
-	vector<tagSingerAlbumLink> m_vecSingerAlbumLink;
+	vector<tagItemLinks> m_vecItemLinks;
 	
 public:
 	BOOL InitCtrl(UINT uItemHeight);
@@ -59,8 +125,6 @@ public:
 	void GetSelItems(TD_PlayItemList& arrSelPlayItem);
 
 private:
-	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) override;
-
 	virtual void OnTrackMouseEvent(E_TrackMouseEvent eMouseEvent, const CPoint& point) override;
 	
 	void OnCustomDraw(tagLvCustomDraw& lvcd) override;
@@ -72,12 +136,6 @@ private:
 	void OnListItemRename(UINT uItem, const CString& cstrNewText) override;
 
 	BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
-
-	bool HittestTrackLink(UINT uItem, const CPoint& ptPos);
-
-	bool HittestSingerAlbumLink(tagLink& SingerAlbumLink, const CPoint& ptPos);
 	
-	void OnTrackLinkClick();
-
-	bool handleItemLButtonDown(UINT uItem, CPlayItem& PlayItem, const CPoint& ptPos);
+	void handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks& ItemLinks, E_ItemLinkType eLinkType);
 };

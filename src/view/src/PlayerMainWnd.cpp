@@ -40,7 +40,7 @@ bool CPlayerMainWnd::Create()
 
 	tagMainWndInfo MainWndInfo;
 	MainWndInfo.hIcon = m_view.m_ResModule.loadIcon(IDI_MAINWND);
-	MainWndInfo.strText = L"XMusic";
+	MainWndInfo.strText = L"XMusicHost";
 	MainWndInfo.hMenu = m_view.m_ResModule.loadMenu(IDR_MAINDLG);
 	
 	__EnsureReturn(__super::Create(MainWndInfo), false);

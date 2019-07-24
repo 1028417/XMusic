@@ -198,15 +198,18 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 		}
 	}
 	
-	auto& SingerAlbumLink = m_vecSingerAlbumLink[iItem];
-	memset(&SingerAlbumLink, 0, sizeof SingerAlbumLink);
-	auto& rcSingerAlbum = SingerAlbumLink.rcPos;
+	tagItemLinks& ItemLinks = m_vecItemLinks[iItem];
+
+	auto& lnkSingerAlbum = ItemLinks.lnkSingerAlbum;
+	auto& rcSingerAlbum = lnkSingerAlbum.rcPos;
+	memset(&rcSingerAlbum, 0, sizeof rcSingerAlbum);
 	
+	CRect& rcSingerImg = ItemLinks.lnkSingerImg.rcPos;
+
 	int iLeft = rcItem.left;
 	if (iImage >= 0)
 	{
 #define __Margin 8
-		CRect& rcSingerImg = SingerAlbumLink.rcSingerImg;
 		rcSingerImg = CRect(CPoint(rcItem.left + __Margin, rcItem.top + __Margin)
 			, CSize(iItemHeight - __Margin * 2, iItemHeight - __Margin * 2));
 
@@ -217,6 +220,8 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 	}
 	else
 	{
+		memset(&rcSingerImg, 0, sizeof rcSingerImg);
+
 		iLeft += 8;
 	}
 
@@ -231,12 +236,12 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 		dc.DrawText(strDuration.c_str(), &rcPos, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	}
 
-	auto& rcTracksLink = m_TracksLink.rcPos;
-	auto& rcNextLink = m_NextLink.rcPos;
-	auto& rcPrevLink = m_PrevLink.rcPos;
+	auto& rcTrackCountLink = ItemLinks.lnkTrackCount.rcPos;
+	auto& rcNextTrackLink = m_lnkNextTrack.rcPos;
+	auto& rcPrevTrackLink = m_lnkPrevTrack.rcPos;
 	if (bPlayingItem)
 	{
-		rcTracksLink = rcPrevLink = rcNextLink = { 0, 0, 0, 0 };
+		rcTrackCountLink = rcPrevTrackLink = rcNextTrackLink = { 0, 0, 0, 0 };
 	}
 
 	bool bFlag = false;
@@ -244,7 +249,7 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 	{
 		bFlag = true;
 
-		if (!m_bMouseDown && m_bHighlightTracks)
+		if (!m_bMouseDown && ItemLinks.lnkTrackCount.bHittest)
 		{
 			(void)dc.SelectObject(m_fontUnderline);
 		}
@@ -258,13 +263,13 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 
 		int iTop = iYMiddlePos + (iItemHeight / 2 - szLink.cy) / 2 - 2;
 		int iBottom = iTop + szLink.cy;
-		rcTracksLink = { iLeft, iTop, iLeft + szLink.cx, iBottom };
+		rcTrackCountLink = { iLeft, iTop, iLeft + szLink.cx, iBottom };
 
-		dc.DrawText(strTracks.c_str(), &rcTracksLink, 0);
+		dc.DrawText(strTracks.c_str(), &rcTrackCountLink, 0);
 
 		if (bPlayingItem)
 		{
-			if (!m_bMouseDown && m_bHighlightPrevLink)
+			if (!m_bMouseDown && m_lnkPrevTrack.bHittest)
 			{
 				(void)dc.SelectObject(m_fontUnderline);
 			}
@@ -275,10 +280,10 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 
 			szLink = dc.GetTextExtent(__PrevTrack);
 			int iXMiddlePos = (iLeft + szLink.cx * 2 / 3 + iXPosDuration) / 2;
-			rcPrevLink = { iXMiddlePos - 5 - szLink.cx, iTop, iXMiddlePos - 5, iBottom };
-			dc.DrawText(__PrevTrack, &rcPrevLink, 0);
+			rcPrevTrackLink = { iXMiddlePos - 5 - szLink.cx, iTop, iXMiddlePos - 5, iBottom };
+			dc.DrawText(__PrevTrack, &rcPrevTrackLink, 0);
 
-			if (!m_bMouseDown && m_bHighlightNextLink)
+			if (!m_bMouseDown && m_lnkNextTrack.bHittest)
 			{
 				(void)dc.SelectObject(m_fontUnderline);
 			}
@@ -287,15 +292,15 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 				(void)dc.SelectObject(m_fontSmall);
 			}
 
-			rcNextLink = { iXMiddlePos + 5, iTop, iXMiddlePos + 5 + szLink.cx, iBottom };
-			dc.DrawText(__NextTrack, &rcNextLink, 0);
+			rcNextTrackLink = { iXMiddlePos + 5, iTop, iXMiddlePos + 5 + szLink.cx, iBottom };
+			dc.DrawText(__NextTrack, &rcNextTrackLink, 0);
 		}
 	}
 	else if (!strSingerAlbum.empty())
 	{
 		bFlag = true;
 
-		if (SingerAlbumLink.bHittest)
+		if (lnkSingerAlbum.bHittest)
 		{
 			(void)dc.SelectObject(m_fontUnderline);
 		}
@@ -346,7 +351,7 @@ void CPlayingList::refresh(int nPlayingItem)
 	}
 
 	auto uItemCount = m_view.getPlayMgr().getPlayingItems().size();
-	m_vecSingerAlbumLink.resize(uItemCount);
+	m_vecItemLinks.resize(uItemCount);
 
 	vector<vector<wstring>> vecTexts(uItemCount, { L"" });
 	this->SetTexts(vecTexts);
@@ -414,124 +419,107 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 	}
 }
 
-bool CPlayingList::HittestTrackLink(UINT uItem, const CPoint& ptPos)
-{
-	bool bHighlightTracks = false;
-	bool bHighlightPrevLink = false;
-	bool bHighlightNextLink = false;
-	if (uItem == m_nPlayingItem)
+BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{	
+	if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
 	{
-		if (m_TracksLink.rcPos.PtInRect(ptPos))
+		m_bMouseDown = (WM_LBUTTONDOWN == message);
+
+		CPoint ptPos(lParam);
+		int nItem = this->HitTest(ptPos);
+		if (nItem >= 0)
 		{
-			bHighlightTracks = true;
-		}
-		else if (m_PrevLink.rcPos.PtInRect(ptPos))
-		{
-			bHighlightPrevLink = true;
-		}
-		else if (m_NextLink.rcPos.PtInRect(ptPos))
-		{
-			bHighlightNextLink = true;
-		}
-	}
+			UINT uItem = (UINT)nItem;
 
-	if (m_bHighlightTracks != bHighlightTracks || m_bHighlightPrevLink != bHighlightPrevLink || m_bHighlightNextLink != bHighlightNextLink)
-	{
-		m_bHighlightTracks = bHighlightTracks;
-		m_bHighlightPrevLink = bHighlightPrevLink;
-		m_bHighlightNextLink = bHighlightNextLink;
-		return true;
-	}
+			POINT ptItem{ 0,0 };
+			this->GetItemPosition(uItem, &ptItem);
+			ptPos.x -= ptItem.x;
+			ptPos.y -= ptItem.y;
 
-	return false;
-}
-
-bool CPlayingList::HittestSingerAlbumLink(tagLink& SingerAlbumLink, const CPoint& ptPos)
-{
-	bool bHighlightSingerAlbumLink = false;
-	if (SingerAlbumLink.rcPos.PtInRect(ptPos))
-	{
-		bHighlightSingerAlbumLink = true;
-	}
-	if (SingerAlbumLink.bHittest != bHighlightSingerAlbumLink)
-	{
-		SingerAlbumLink.bHittest = bHighlightSingerAlbumLink;
-		return true;
-	}
-
-	return false;
-}
-
-void CPlayingList::OnTrackLinkClick()
-{
-	auto& PlayMgr = m_view.getPlayMgr();
-
-	PlayMgr.getPlayingItems().get(m_nPlayingItem, [&](CPlayItem& PlayItem) {
-		CRCueFile cueFile = PlayItem.getCueFile();
-		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.getPlayer().getClock()/1000));
-		
-		UINT uTrackIndex = trackInfo.uIndex;
-		if (m_bHighlightNextLink)
-		{
-			uTrackIndex++;
-			if (uTrackIndex >= cueFile.m_alTrackInfo.size())
+			switch (message)
 			{
-				uTrackIndex = 0;
-			}
-		}
-		else
-		{
-			if (0 == uTrackIndex)
-			{
-				uTrackIndex = cueFile.m_alTrackInfo.size() - 1;
-			}
-			else
-			{
-				uTrackIndex--;
-			}
-		}
-		
-		cueFile.m_alTrackInfo.get(uTrackIndex, [&](auto& trackInfo) {
-			m_view.m_PlayCtrl.seek(trackInfo.uMsBegin /1000);
-			m_view.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
-		});
-	});
-}
+			case WM_LBUTTONDBLCLK:
+				m_view.getPlayMgr().play(uItem);
 
-BOOL CPlayingList::handleNMNotify(NMHDR& NMHDR, LRESULT* pResult)
-{
-	BOOL bRet = __super::handleNMNotify(NMHDR, pResult);
-	
-	switch (NMHDR.code)
-	{
-	case NM_DBLCLK:
-	{
-		NMLISTVIEW& NMList = (NMLISTVIEW&)NMHDR;
-		if (NMList.iItem >= 0)
-		{
-			m_view.getPlayMgr().play((UINT)NMList.iItem);
+				break;
+			case WM_LBUTTONUP:
+				if (nItem == m_nPlayingItem)
+				{
+					if (m_lnkPrevTrack.hittest(ptPos) || m_lnkNextTrack.hittest(ptPos))
+					{
+						this->Update(uItem);
+					}
+				}
+
+				break;
+			case WM_LBUTTONDOWN:
+			{
+				bool bRet = false;
+				tagItemLinks& ItemLinks = m_vecItemLinks[uItem];
+				E_ItemLinkType eLinkType = ItemLinks.hittest(ptPos);
+				if (E_ItemLinkType::ILT_None == eLinkType)
+				{
+					if (nItem == m_nPlayingItem)
+					{
+						if (m_lnkPrevTrack.hittest(ptPos))
+						{
+							eLinkType = m_lnkPrevTrack;
+						}
+						else if (m_lnkNextTrack.hittest(ptPos))
+						{
+							eLinkType = m_lnkNextTrack;
+						}
+					}
+				}
+
+				if (E_ItemLinkType::ILT_None != eLinkType)
+				{
+					m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
+						handleLinkClick(uItem, PlayItem, ItemLinks, eLinkType);
+					});
+					return TRUE;
+				}
+			}
+
+			break;
+			case WM_MOUSEMOVE:
+			{
+				tagItemLinks& ItemLinks = m_vecItemLinks[uItem];
+
+				bool bChanged = false;
+				(void)ItemLinks.hittest(ptPos, &bChanged);
+				if (!bChanged)
+				{
+					(void)m_lnkPrevTrack.hittest(ptPos, &bChanged);
+					if (!bChanged)
+					{
+						(void)m_lnkNextTrack.hittest(ptPos, &bChanged);
+					}
+				}
+
+				if (bChanged)
+				{
+					this->Update(uItem);
+				}
+			}
+
+			break;
+			};
 		}
 	}
 
-	break;
-	}
-
-	return bRet;
+	return __super::OnWndMsg(message, wParam, lParam, pResult);
 }
 
-bool CPlayingList::handleItemLButtonDown(UINT uItem, CPlayItem& PlayItem, const CPoint& ptPos)
+void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks& ItemLinks, E_ItemLinkType eLinkType)
 {
-	auto& SingerAlbumLink = m_vecSingerAlbumLink[uItem];
-	if (SingerAlbumLink.rcSingerImg.PtInRect(ptPos))
+	switch (eLinkType)
 	{
+	case E_ItemLinkType::ILT_SingerImg:
 		(void)m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Singer);
-		return true;
-	}
-
-	HittestSingerAlbumLink(SingerAlbumLink, ptPos);
-	if (SingerAlbumLink.bHittest)
-	{
-		SingerAlbumLink.bHittest = false;
+		break;
+	case E_ItemLinkType::ILT_SingerAlbum:
+		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);
 
 		PlayItem.AsyncTask();
@@ -542,93 +530,57 @@ bool CPlayingList::handleItemLButtonDown(UINT uItem, CPlayItem& PlayItem, const 
 			(void)m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Singer);
 		}
 
-		return true;
-	}
-
-	(void)HittestTrackLink(uItem, ptPos);
-	if (m_bHighlightTracks)
+		break;
+	case E_ItemLinkType::ILT_TrackCount:
 	{
-		m_bMouseDown = true;
-		this->Update(m_nPlayingItem);
+		this->Update(uItem);
 
 		CMediaRes *pMediaRes = PlayItem.GetMediaRes();
 		if (NULL != pMediaRes)
 		{
 			(void)CTrackDetailDlg(m_view, pMediaRes->getCueFile(), pMediaRes).DoModal();
 		}
-
-		return true;
-	}
-	else if (m_bHighlightPrevLink || m_bHighlightNextLink)
-	{
-		m_bMouseDown = true;
-		this->Update(m_nPlayingItem);
-
-		OnTrackLinkClick();
-
-		return true;
 	}
 
-	return false;
-}
-
-BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
-{
-	if (WM_LBUTTONDOWN == message)
+	break;
+	case E_ItemLinkType::ILT_PrevTrack:
+	case E_ItemLinkType::ILT_NextTrack:
 	{
-		CPoint ptPos(lParam);
-		int iItem = this->HitTest(ptPos);
-		if (iItem >= 0)
+		this->Update(uItem);
+
+		auto& PlayMgr = m_view.getPlayMgr();
+		CRCueFile cueFile = PlayItem.getCueFile();
+		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.getPlayer().getClock() / 1000));
+
+		UINT uTrackIndex = trackInfo.uIndex;
+		if (E_ItemLinkType::ILT_PrevTrack == eLinkType)
 		{
-			POINT ptItem{ 0,0 };
-			this->GetItemPosition(iItem, &ptItem);
-			ptPos.x -= ptItem.x;
-			ptPos.y -= ptItem.y;
-
-			UINT uItem = (UINT)iItem;
-
-			bool bRet = false;
-			m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
-				bRet = handleItemLButtonDown(uItem, PlayItem, ptPos);
-			});
-			if (bRet)
+			if (0 == uTrackIndex)
 			{
-				return TRUE;
-			}
-		}
-	}
-	else if (WM_MOUSEMOVE == message || WM_LBUTTONUP == message)
-	{
-		m_bMouseDown = false;
-
-		CPoint ptPos(lParam);
-		int iItem = this->HitTest(ptPos);
-		if (iItem >= 0)
-		{
-			POINT ptItem{ 0,0 };
-			this->GetItemPosition(iItem, &ptItem);
-			ptPos.x -= ptItem.x;
-			ptPos.y -= ptItem.y;
-
-			tagLink& SingerAlbumLink = m_vecSingerAlbumLink[(UINT)iItem];
-			if (HittestSingerAlbumLink(SingerAlbumLink, ptPos))
-			{
-				this->Update((UINT)iItem);
+				uTrackIndex = cueFile.m_alTrackInfo.size() - 1;
 			}
 			else
 			{
-				if (HittestTrackLink((UINT)iItem, ptPos))
-				{
-					this->Update(m_nPlayingItem);
-				}
-
-				if (WM_LBUTTONUP == message)
-				{
-					this->Update((UINT)iItem);
-				}
+				uTrackIndex--;
 			}
 		}
+		else
+		{
+			uTrackIndex++;
+			if (uTrackIndex >= cueFile.m_alTrackInfo.size())
+			{
+				uTrackIndex = 0;
+			}
+		}
+
+		cueFile.m_alTrackInfo.get(uTrackIndex, [&](auto& trackInfo) {
+			m_view.m_PlayCtrl.seek(trackInfo.uMsBegin / 1000);
+			m_view.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
+		});
 	}
 
-	return __super::OnWndMsg(message, wParam, lParam, pResult);
+	break;
+	default:
+		break;
+	};
 }

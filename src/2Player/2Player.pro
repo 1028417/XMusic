@@ -51,7 +51,7 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel 
 DESTDIR = $$PWD/../../build
 
     rc.files += ../../bin/data.db
-    rc.files += ../../2player/msyhl.ttc
+    rc.files += ../../bin/msyhl.ttc
     rc.path = /assets
     INSTALLS += rc
 } else {
