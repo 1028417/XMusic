@@ -118,7 +118,16 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 	{
 		CWaitCursor WaitCursor;
 
-		tagFindMediaPara FindPara(eFindMediaMode, strFindText);
+		wstring t_strFindText(strFindText);
+		if (E_FindMediaMode::FMM_MatchText == eFindMediaMode)
+		{
+			if (CRootMediaRes::GetMediaFileType(fsutil::GetFileExtName(t_strFindText)) != E_MediaFileType::MFT_Null)
+			{
+				t_strFindText = fsutil::getFileTitle(t_strFindText);
+			}
+		}
+
+		tagFindMediaPara FindPara(eFindMediaMode, t_strFindText);
 		FindPara.strFindSingerName = wsutil::lowerCase_r(strFindSingerName);
 
 		if (E_FindMediaMode::FMM_MatchDir == eFindMediaMode)

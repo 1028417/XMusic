@@ -65,11 +65,11 @@ bool CPlayerController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo('D', E_HotkeyFlag::HKF_Control, ID_VERIFY));
 	CMainApp::RegHotkey(tagHotkeyInfo('E', E_HotkeyFlag::HKF_Control, ID_ExportMedia));
 
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F1, E_HotkeyFlag::HKF_Control, ID_DEMAND_SINGER, true));
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F2, E_HotkeyFlag::HKF_Control, ID_DEMAND_ALBUM, true));
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F3, E_HotkeyFlag::HKF_Control, ID_DEMAND_ALBUMITEM, true));
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F4, E_HotkeyFlag::HKF_Control, ID_DEMAND_PLAYITEM, true));
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F5, E_HotkeyFlag::HKF_Control, ID_DEMAND_PLAYLIST, true));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F1, E_HotkeyFlag::HKF_Control, ID_DemandSinger, true));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F2, E_HotkeyFlag::HKF_Control, ID_DemandAlbum, true));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F3, E_HotkeyFlag::HKF_Control, ID_DemandAlbumItem, true));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F4, E_HotkeyFlag::HKF_Control, ID_DemandPlayItem, true));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F5, E_HotkeyFlag::HKF_Control, ID_DemandPlaylist, true));
 
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_F12, E_HotkeyFlag::HKF_Control, ID_SHOW, true));
 

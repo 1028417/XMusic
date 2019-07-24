@@ -59,36 +59,37 @@ void CSysToolBar::move()
 	{
 		this->MoveWindow(X_TopToolBar + __BottomOffset, -1, 1000, 1000, FALSE);
 
-		int nHeight = (int)m_view.m_globalSize.m_uHeadHeight + 10;
-		SetHeight(nHeight);
+		int cy = (int)m_view.m_globalSize.m_uHeadHeight + 10;
+		SetHeight(cy);
 
 		GetParent()->SetWindowPos(NULL, rcMainWnd.right - (CX_TopToolBar + __BottomOffset)
-			, rcMainWnd.bottom - nHeight, CX_TopToolBar + __BottomOffset, nHeight
+			, rcMainWnd.bottom - cy, CX_TopToolBar + __BottomOffset, cy
 			, SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE);
 	}
 	else
 	{
-		int nHeight = (int)m_view.m_globalSize.m_uMenuBarHeight+2;
-		SetHeight(nHeight);
 		this->MoveWindow(X_TopToolBar, -1, 1000, 1000, FALSE);
-		
+
+		int cy = (int)m_view.m_globalSize.m_uMenuBarHeight + 3;
+		SetHeight(cy);
+
 		CRect rcButton;
 		this->GetItemRect(0, &rcButton);
 		int cyButton = rcButton.Height();
 
-		int y = (nHeight - cyButton) / 2;
-		int cy = nHeight - y;
-		if (y > 0)
+		int dy = (cy - cyButton) / 2;
+		cy -= dy;
+		if (dy >= 0)
 		{
-			cy -= y;
+			cy -= dy;
 		}
 		else
 		{
-			y--;
+			dy--;
 		}
 
-		GetParent()->SetWindowPos(NULL, rcMainWnd.right - CX_TopToolBar, rcMainWnd.top + y + 2, CX_TopToolBar, cy
-			, SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE);
+		GetParent()->SetWindowPos(NULL, rcMainWnd.right - CX_TopToolBar, rcMainWnd.top + dy
+			, CX_TopToolBar, cy, SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE);
 	}
 }
 

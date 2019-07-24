@@ -173,12 +173,12 @@ BEGIN
         MENUITEM "主界面",                         ID_SHOW
         POPUP "点播"
         BEGIN
-            MENUITEM "歌手",                          ID_DEMAND_SINGER
-            MENUITEM "专辑",                          ID_DEMAND_ALBUM
-            MENUITEM "专辑曲目",                        ID_DEMAND_ALBUMITEM
+            MENUITEM "歌手", ID_DemandSinger
+            MENUITEM "专辑", ID_DemandAlbum
+            MENUITEM "专辑曲目", ID_DemandAlbumItem
             MENUITEM SEPARATOR
-            MENUITEM "列表曲目",                        ID_DEMAND_PLAYITEM
-            MENUITEM "列表",                          ID_DEMAND_PLAYLIST
+            MENUITEM "列表曲目", ID_DemandPlayItem
+            MENUITEM "列表", ID_DemandPlaylist
         END
         MENUITEM "退出",                          ID_QUIT
     END
