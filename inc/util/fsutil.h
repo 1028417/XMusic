@@ -71,8 +71,8 @@ public:
 	static bool loadBinary(const wstring& strFile, vector<char>& vecData, UINT uReadSize = 0);
 
 	static bool loadTxt(const wstring& strFile, string& strText);
-	static bool loadTxt(const wstring& strFile, const function<bool(const string&)>& cb, char cdelimiter = '\n');
-	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText, char cdelimiter = '\n');
+	static bool loadTxt(const wstring& strFile, const function<bool(const string&)>& cb);
+	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
 	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile, bool bSyncModifyTime = false);
 

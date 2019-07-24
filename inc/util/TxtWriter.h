@@ -241,12 +241,6 @@ public:
     bool close();
 };
 
-#ifdef __ANDROID__
-#define __DefUnicodeHeadOpt E_UnicodeHeadOpt::UHO_BigEndian
-#else
-#define __DefUnicodeHeadOpt E_UnicodeHeadOpt::UHO_LittleEndian
-#endif
-
 enum class E_UnicodeHeadOpt
 {
 	UHO_LittleEndian = 0,
@@ -256,19 +250,19 @@ enum class E_UnicodeHeadOpt
 class __UtilExt CUnicodeWriter : public CTxtWriter
 {
 public:
-	CUnicodeWriter(E_UnicodeHeadOpt eHeadType = __DefUnicodeHeadOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUnicodeWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
 			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
 	{
 	}
 
-	CUnicodeWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = __DefUnicodeHeadOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUnicodeWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
 			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
 	{
 	}
 
-    CUnicodeWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = __DefUnicodeHeadOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+    CUnicodeWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
 			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
 	{
