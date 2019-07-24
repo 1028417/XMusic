@@ -10,12 +10,31 @@
 #include <QTime>
 #endif
 
+#include <sys/utime.h>
+#include <sys/stat.h>
+
 #ifdef __ANDROID__
-#include <unistd.h>
-#define __fseek(f, offset, whence) lseek64((int)f, offset, whence)
+using tagFileStat = struct stat;
+using tagFileStat32 = struct stat;
+using tagFileStat32_64 = struct stat;
+using tagFileStat64_32 = struct stat;
+using tagFileStat64 = struct stat;
+
+#define _fileno fileno
 #else
-#define __fseek _fseeki64
+using tagFileStat = struct _stat;
+using tagFileStat32 = struct _stat32;
+using tagFileStat32_64 = struct _stat32i64;
+using tagFileStat64_32 = struct _stat64i32;
+using tagFileStat64 = struct _stat64;
 #endif
+
+enum class E_SeekFileFlag
+{
+	SFF_Set = SEEK_SET,
+	SFF_Cur = SEEK_CUR,
+	SFF_End = SEEK_END
+};
 
 struct tagFileInfo
 {
@@ -57,8 +76,28 @@ public:
 
 	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile, bool bSyncModifyTime = false);
 
+	static bool fileStat(FILE *lpFile, tagFileStat& stat);
+	static bool fileStat(const wstring& strFile, tagFileStat& stat);
+
+	static bool fileStat32(FILE *lpFile, tagFileStat32& stat);
+	static bool fileStat32(const wstring& strFile, tagFileStat32& stat);
+	static bool fileStat32_64(FILE *lpFile, tagFileStat32_64& stat);
+	static bool fileStat32_64(const wstring& strFile, tagFileStat32_64& stat);
+
+	static bool fileStat64(FILE *lpFile, tagFileStat64& stat);
+	static bool fileStat64(const wstring& strFile, tagFileStat64& stat);
+	static bool fileStat64_32(FILE *lpFile, tagFileStat64_32& stat);
+	static bool fileStat64_32(const wstring& strFile, tagFileStat64_32& stat);
+
+	static int GetFileSize(FILE *lpFile);
 	static int GetFileSize(const wstring& strFile);
-	static time64_t GetFileModifyTime(const wstring& strFile);
+	static int64_t GetFileSize64(FILE *lpFile);
+	static int64_t GetFileSize64(const wstring& strFile);
+
+	static time32_t GetFileModifyTime(FILE *lpFile);
+	static time32_t GetFileModifyTime(const wstring& strFile);
+	static time64_t GetFileModifyTime64(FILE *lpFile);
+	static time64_t GetFileModifyTime64(const wstring& strFile);
 
 	static void SplitPath(const wstring& strPath, wstring *pstrDir, wstring *pstrFile);
 
@@ -82,6 +121,8 @@ public:
     static bool removeFile(const wstring& strFile);
 
 	static bool moveFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+    static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag);
 
 #ifndef __ANDROID__
 	static wstring getModuleDir(wchar_t *pszModuleName = NULL);

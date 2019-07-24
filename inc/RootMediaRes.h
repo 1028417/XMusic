@@ -15,7 +15,7 @@ public:
 class __MediaLibExt CRootMediaRes : public CMediaRes
 {
 public:
-	static E_MediaFileType GetMediaFileType(const wstring& strFile);
+	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
 
 	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
 
