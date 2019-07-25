@@ -94,7 +94,7 @@ BOOL CAlbumPage::OnInitDialog()
 		.addDynamic(_T("目录"), 0.38)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
-	ListPara = CObjectList::tagListPara(ColumnGuard, { __Column_Playlist, __Column_Path });
+	ListPara = CObjectList::tagListPara(ColumnGuard);
 
 	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
 	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
@@ -108,13 +108,20 @@ BOOL CAlbumPage::OnInitDialog()
 
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
 
-	m_wndAlbumItemList.SetIconSpacing(width / 5-1, m_view.m_globalSize.m_uBigIconSize + m_view.m_globalSize.m_uIconSpace);
+	m_wndAlbumItemList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+		if (__Column_Playlist == lvcd.nSubItem || __Column_Path == lvcd.nSubItem)
+		{
+			lvcd.bSetUnderline = true;
+		}
+	});
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {
 		m_wndAlbumItemList.UpdateItems();
 
 		_asyncTask();
 	});
+
+	m_wndAlbumItemList.SetIconSpacing(width / 5-1, m_view.m_globalSize.m_uBigIconSize + m_view.m_globalSize.m_uIconSpace);
 
 
 	__AssertReturn(m_wndMediaResPanel.Create(*this), FALSE);
@@ -1139,12 +1146,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 	
-	CMainApp::async([=]() {
-		if (m_wndAlbumItemList.m_bDblClick)
-		{
-			return;
-		}
-
+	m_wndAlbumItemList.AsyncLButtondown([=]() {
 		CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
 		__Ensure(pAlbumItem);
 
@@ -1162,7 +1164,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 				this->OnMenuCommand_AlbumItem(ID_HITTEST_ALBUMITEM);
 			}
 		}
-	}, 300);
+	});
 }
 
 void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)

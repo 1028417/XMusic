@@ -202,13 +202,8 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	int iSubItem = lpNMList->iSubItem;
 
 	HWND hWndList = m_wndList.m_hWnd;
-	CMainApp::async([=]() {
+	m_wndList.AsyncLButtondown([=]() {
 		if (!::IsWindow(hWndList))
-		{
-			return;
-		}
-
-		if (m_wndList.m_bDblClick)
 		{
 			return;
 		}
@@ -245,7 +240,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 				m_view.hittestMedia(*pPlayItem);
 			}
 		}, iItem);
-	}, 300);
+	});
 }
 
 void CFindDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)

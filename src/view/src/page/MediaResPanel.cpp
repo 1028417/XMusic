@@ -107,7 +107,6 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	CObjectList::tagListPara ListPara;
 	ListPara.lstColumns = lstColumns;
-	ListPara.setUnderlineColumns = { m_Column_Playlist, m_Column_SingerAlbum };
 	
 	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
 	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
@@ -118,7 +117,14 @@ BOOL CMediaResPanel::OnInitDialog()
 	ListPara.eViewType = m_bShowRelatedSinger ? E_ListViewType::LVT_Icon : E_ListViewType::LVT_Report;
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
-	
+
+	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+		if (m_Column_Playlist == lvcd.nSubItem || m_Column_SingerAlbum == lvcd.nSubItem)
+		{
+			lvcd.bSetUnderline = true;
+		}
+	});
+
 	m_wndList.SetViewAutoChange([&](E_ListViewType eViewType) {
 		m_wndList.UpdateItems();
 
@@ -803,12 +809,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 	
-	CMainApp::async([=]() {
-		if (m_wndList.m_bDblClick)
-		{
-			return;
-		}
-
+	m_wndList.AsyncLButtondown([=]() {
 		CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
 		__Ensure(pMediaRes);
 
@@ -835,7 +836,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 				}
 			}
 		}
-	}, 300);
+	});
 }
 
 void CMediaResPanel::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)

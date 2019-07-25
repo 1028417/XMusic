@@ -125,10 +125,8 @@ public:
 	void GetSelItems(TD_PlayItemList& arrSelPlayItem);
 
 private:
-	virtual void OnTrackMouseEvent(E_TrackMouseEvent eMouseEvent, const CPoint& point) override;
+	void OnCustomDraw(tagLvCustomDraw& lvcd);
 	
-	void OnCustomDraw(tagLvCustomDraw& lvcd) override;
-
 	void DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayItem);
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;

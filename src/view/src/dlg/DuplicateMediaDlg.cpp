@@ -36,14 +36,14 @@ BOOL CDuplicateMediaDlg::OnInitDialog()
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	
-	ListPara.cbCustomDraw = [&](tagLvCustomDraw& lvcd) {
+	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
+
+	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
 		if (m_vecRowFlag[lvcd.uItem])
 		{
 			lvcd.clrTextBk = __Color_Flag;
 		}
-	};
-
-	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
+	});
 
 	UINT uItem = 0;
 	bool bRowFlag = false;

@@ -56,7 +56,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		.addDynamic(_T("目录"), 0.4)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
-	CObjectList::tagListPara ListPara(ColumnGuard, { __Column_SingerAlbum, __Column_Path });
+	CObjectList::tagListPara ListPara(ColumnGuard);
 
 	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
 	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
@@ -65,6 +65,13 @@ BOOL CPlayItemPage::OnInitDialog()
 	ListPara.crText = __Color_Text;
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
+
+	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+		if (__Column_SingerAlbum == lvcd.nSubItem || __Column_Path == lvcd.nSubItem)
+		{
+			lvcd.bSetUnderline = true;
+		}
+	});
 
 	(void)__super::RegDragDropCtrl(m_wndList, [&](tagDragData& DragData) {
 		TD_ListObjectList lstObjects;
@@ -389,12 +396,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 
-	CMainApp::async([=]() {
-		if (m_wndList.m_bDblClick)
-		{
-			return;
-		}
-
+	m_wndList.AsyncLButtondown([=]() {
 		CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
 		__Ensure(pPlayItem);
 		
@@ -415,7 +417,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 				this->OnMenuCommand(ID_HITTEST);
 			}
 		}
-	}, 300);
+	});
 }
 
 void CPlayItemPage::OnNMDblclkList(NMHDR *pNMHDR, LRESULT *pResult)

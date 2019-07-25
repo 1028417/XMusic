@@ -173,12 +173,12 @@ BEGIN
         MENUITEM "主界面",                         ID_SHOW
         POPUP "点播"
         BEGIN
-            MENUITEM "歌手", ID_DemandSinger
-            MENUITEM "专辑", ID_DemandAlbum
-            MENUITEM "专辑曲目", ID_DemandAlbumItem
+            MENUITEM "歌手",                          ID_DemandSinger
+            MENUITEM "专辑",                          ID_DemandAlbum
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem
             MENUITEM SEPARATOR
-            MENUITEM "列表曲目", ID_DemandPlayItem
-            MENUITEM "列表", ID_DemandPlaylist
+            MENUITEM "列表曲目",                        ID_DemandPlayItem
+            MENUITEM "列表",                          ID_DemandPlaylist
         END
         MENUITEM "退出",                          ID_QUIT
     END
@@ -399,7 +399,7 @@ FONT 8, "微软雅黑", 400, 0, 0x1
 BEGIN
     PUSHBUTTON      "取消",IDCANCEL,120,105,50,14
     CONTROL         "按实际路径导出",IDC_ActualMode,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,14,66,10
-    PUSHBUTTON      "确定",IDOK,58,105,50,14
+    DEFPUSHBUTTON   "确定",IDOK,58,105,50,14
     CONTROL         "不覆盖大小相同的文件",IDC_CompareFileSize,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,39,79,10
     CONTROL         "删除多余文件",IDC_DeleteOther,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,64,59,10
     CONTROL         "比较修改时间",IDC_CompareFileTime,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,118,39,50,10

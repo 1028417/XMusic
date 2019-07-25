@@ -20,10 +20,22 @@ BOOL CPlayingList::InitCtrl(UINT uItemHeight)
 	tagListPara ListPara({ { _T(""), 0 } });
 	ListPara.uItemHeight = uItemHeight;
 	__super::InitCtrl(ListPara);
-		
-	__super::SetCusomDrawNotify();
 
-	__super::SetTrackMouse();
+	__super::SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+		OnCustomDraw(lvcd);
+	});
+
+	__super::SetTrackMouse([&](E_TrackMouseEvent eMouseEvent, const CPoint& point) {
+		if (E_TrackMouseEvent::LME_MouseLeave == eMouseEvent)
+		{
+			if (-1 != m_nMouseMoveItem)
+			{
+				int iPreItem = m_nMouseMoveItem;
+				m_nMouseMoveItem = -1;
+				this->Update(iPreItem);
+			}
+		}
+	});
 
 	auto fBigFontSize = m_view.m_globalSize.m_fBigFontSize * .95f;
 	__AssertReturn(m_font.create(*this, fBigFontSize), FALSE);
@@ -50,39 +62,6 @@ void CPlayingList::fixColumnWidth(int width)
 	}
 
 	(void)SetColumnWidth(0, width);
-}
-
-void CPlayingList::OnTrackMouseEvent(E_TrackMouseEvent eMouseEvent, const CPoint& point)
-{
-	__super::OnTrackMouseEvent(eMouseEvent, point);
-
-	if (E_TrackMouseEvent::LME_MouseMove == eMouseEvent)
-	{
-		int iPreItem = m_nMouseMoveItem;
-		
-		m_nMouseMoveItem = this->HitTest(point);
-		if (m_nMouseMoveItem != iPreItem)
-		{
-			if (0 <= m_nMouseMoveItem)
-			{
-				this->Update(m_nMouseMoveItem);
-			}
-
-			if (0 <= iPreItem)
-			{
-				this->Update(iPreItem);
-			}
-		}
-	}
-	else if (E_TrackMouseEvent::LME_MouseLeave == eMouseEvent)
-	{
-		int iPreItem = m_nMouseMoveItem;
-		if (-1 != iPreItem)
-		{
-			m_nMouseMoveItem = -1;
-			this->Update(iPreItem);
-		}
-	}
 }
 
 void CPlayingList::OnCustomDraw(tagLvCustomDraw& lvcd)
@@ -420,13 +399,13 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 }
 
 BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
-{	
+{
 	if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
 	{
 		m_bMouseDown = (WM_LBUTTONDOWN == message);
-
+		
 		CPoint ptPos(lParam);
-		int nItem = this->HitTest(ptPos);
+		int nItem = HitTest(ptPos);
 		if (nItem >= 0)
 		{
 			UINT uItem = (UINT)nItem;
@@ -443,7 +422,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 
 				break;
 			case WM_LBUTTONUP:
-				if (nItem == m_nPlayingItem)
+				if (uItem == m_nPlayingItem)
 				{
 					if (m_lnkPrevTrack.hittest(ptPos) || m_lnkNextTrack.hittest(ptPos))
 					{
@@ -459,7 +438,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 				E_ItemLinkType eLinkType = ItemLinks.hittest(ptPos);
 				if (E_ItemLinkType::ILT_None == eLinkType)
 				{
-					if (nItem == m_nPlayingItem)
+					if (uItem == m_nPlayingItem)
 					{
 						if (m_lnkPrevTrack.hittest(ptPos))
 						{
@@ -474,9 +453,12 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 
 				if (E_ItemLinkType::ILT_None != eLinkType)
 				{
-					m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
-						handleLinkClick(uItem, PlayItem, ItemLinks, eLinkType);
+					__super::AsyncLButtondown([=]() {
+						m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
+							handleLinkClick(uItem, PlayItem, m_vecItemLinks[uItem], eLinkType);
+						});
 					});
+
 					return TRUE;
 				}
 			}
@@ -484,6 +466,20 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 			break;
 			case WM_MOUSEMOVE:
 			{
+				bool bNeedUpdate = false;
+
+				if (m_nMouseMoveItem != uItem)
+				{
+					int iPreItem = m_nMouseMoveItem;
+					m_nMouseMoveItem = uItem;
+					bNeedUpdate = true;
+
+					if (0 <= iPreItem)
+					{
+						this->Update(iPreItem);
+					}
+				}
+
 				tagItemLinks& ItemLinks = m_vecItemLinks[uItem];
 
 				bool bChanged = false;
@@ -497,7 +493,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 					}
 				}
 
-				if (bChanged)
+				if (bChanged || bNeedUpdate)
 				{
 					this->Update(uItem);
 				}
@@ -580,7 +576,5 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 	}
 
 	break;
-	default:
-		break;
 	};
 }
