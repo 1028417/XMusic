@@ -15,7 +15,7 @@ public:
 private:
 	UINT m_uHeight = 0;
 
-	CCompatableFont m_CompatableFont;
+	CCompatableFont m_font;
 
 private:
 	LRESULT OnLayout(WPARAM wParam, LPARAM lParam);
@@ -156,6 +156,8 @@ struct tagLvCustomDraw
 	COLORREF& clrText;
 	COLORREF& clrTextBk;
 
+	bool bSetUnderline = false;
+
 	bool bSkipDefault = false;
 };
 
@@ -173,17 +175,15 @@ public:
 		{
 		}
 
-		tagListPara(const TD_ListColumn& t_lstColumns, const set<UINT>& t_setUnderlineColumns = {})
+		tagListPara(const TD_ListColumn& t_lstColumns)
 			: eViewType(E_ListViewType::LVT_Report)
 			, lstColumns(t_lstColumns)
-			, setUnderlineColumns(t_setUnderlineColumns)
 		{
 		}
 
 		E_ListViewType eViewType = (E_ListViewType)-1;
 
 		TD_ListColumn lstColumns;
-		set<UINT> setUnderlineColumns;
 
 		COLORREF crText = 0;
 		float fFontSize = 0;
@@ -195,10 +195,6 @@ public:
 
 		UINT uTileWidth = 0;
 		UINT uTileHeight = 0;
-
-		CB_LVCustomDraw cbCustomDraw;
-		CB_ListViewChanged cbViewChanged;
-		CB_TrackMouseEvent cbMouseEvent;
 	};
 
 	CObjectList(){}
@@ -209,27 +205,26 @@ public:
 		(void)m_ImglstSmall.DeleteImageList();		
 	}
 
-	bool m_bDblClick = false;
-
 private:
 	tagListPara m_para;
+
+	CB_LVCustomDraw m_cbCustomDraw;
+	CB_ListViewChanged m_cbViewChanged;
+	CB_TrackMouseEvent m_cbTrackMouseEvent;
+
+	fn_voidvoid	m_cbLButtondown;
 
 	CImglst m_Imglst;
 	CImglst m_ImglstSmall;
 
-	CCompatableFont m_CompatableFont;
+	CCompatableFont m_font;
+	CCompatableFont m_fontUnderline;
 
 	CListHeader m_wndHeader;
 
 	UINT m_uColumnCount = 1;
-
-	CCompatableFont m_fontUnderline;
 	
-	bool m_bCusomDrawNotify = false;
-
-	bool m_bAutoChange = false;
-	
-	int m_nTrackMouseFlag = -1;
+	bool m_bTrackingMouse = false;
 	
 	CString m_cstrRenameText;
 
@@ -237,7 +232,7 @@ private:
 	CWinTimer m_AsyncTaskTimer;
 
 protected:
-	void InitColumn(const TD_ListColumn& lstColumns, const set<UINT>& setUnderlineColumns = {});
+	void InitColumn(const TD_ListColumn& lstColumns);
 
 	BOOL InitHeader(UINT uHeaderHeight, float fHeaderFontSize = 0);
 
@@ -259,19 +254,20 @@ public:
 
 	void SetTileSize(ULONG cx, ULONG cy);
 
-	void SetCusomDrawNotify(const CB_LVCustomDraw& cbCustomDraw = NULL)
+	void SetCustomDraw(const CB_LVCustomDraw& cb)
 	{
-		m_bCusomDrawNotify = true;
-		m_para.cbCustomDraw = cbCustomDraw;
+		m_cbCustomDraw = cb;
 	}
 
-	void SetViewAutoChange(const CB_ListViewChanged& cb = NULL)
+	void SetViewAutoChange(const CB_ListViewChanged& cb)
 	{
-		m_bAutoChange = true;
-		m_para.cbViewChanged = cb;
+		m_cbViewChanged = cb;
 	}
 
-	void SetTrackMouse(const CB_TrackMouseEvent& cbMouseEvent=NULL);
+	void SetTrackMouse(const CB_TrackMouseEvent& cb)
+	{
+		m_cbTrackMouseEvent = cb;
+	}
 
 public:
 	int InsertItemEx(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
@@ -326,8 +322,12 @@ public:
 
 	UINT GetHeaderHeight();
 
+	const LVHITTESTINFO& hittest(const POINT& ptPos) const;
+
 	using CB_AsyncTask = function<void(UINT uItem)>;
 	void AsyncTask(UINT uElapse, const CB_AsyncTask& cb=NULL);
+
+	void CObjectList::AsyncLButtondown(const fn_voidvoid& cb);
 
 protected:
 	virtual void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage);
@@ -336,15 +336,11 @@ protected:
 
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 
-	virtual void OnTrackMouseEvent(E_TrackMouseEvent eMouseEvent, const CPoint& point);
-
 	virtual BOOL OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 
 	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult);
 
 	void ChangeListCtrlView(short zDelta);
-
-	virtual void OnCustomDraw(tagLvCustomDraw& lvcd);
 
 private:
 	void _SetItemObject(UINT uItem, CListObject& Object, const wstring& strPrefix=L"");

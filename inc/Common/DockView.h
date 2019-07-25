@@ -42,7 +42,7 @@ private:
 	const SolidBrush m_brushSel;
 	const SolidBrush m_brushUnsel;
 
-	CCompatableFont m_CompatableFont;
+	CCompatableFont m_font;
 
 	E_TabStyle m_eTabStyle = E_TabStyle::TS_HideTab;
 

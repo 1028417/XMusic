@@ -62,8 +62,6 @@ public:
 			m_varValue.pdispVal = *(LPDISPATCH*)pValue;
 
 			break;
-		default:
-			break;
 		}
 	}
 
@@ -117,8 +115,6 @@ public:
 		case OLEVT_Object:
 			*(LPDISPATCH*)pValue = m_varValue.pdispVal;
 
-			break;
-		default:
 			break;
 		}
 

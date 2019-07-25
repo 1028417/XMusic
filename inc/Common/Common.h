@@ -54,8 +54,7 @@
 
 enum class E_TrackMouseEvent
 {
-	LME_MouseMove
-	, LME_MouseHover
+	LME_MouseHover
 	, LME_MouseLeave
 };
 
