@@ -36,6 +36,8 @@ private:
 
 	wstring m_strPlayingFile;
 	
+	CFileOpaque m_FileOpaque;
+
 private:
 	int _playFile(const wstring& strFile, uint64_t uStartPos = 0);
 

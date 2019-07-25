@@ -48,6 +48,14 @@ struct tagTimerOperateOpt
 
 struct tagOption
 {
+#ifdef __ANDROID__
+	tagOption()
+		: strRootDir(L"/XMusic")
+		, vecAttachDir{ L"/XMusic" }
+	{
+	}
+#endif
+
 	wstring strRootDir;
 	vector<wstring> vecAttachDir;
 

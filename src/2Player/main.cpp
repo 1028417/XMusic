@@ -100,7 +100,7 @@ private:
         m_logWriter.open(L"XMusic.log", true);
 
 #ifdef __ANDROID__
-        m_logWriter<< "jniVer: " >> g_jniVer;
+        m_logWriter << "jniVer: " >> g_jniVer;
 
         cauto& strDBFile(L"data.db");
         if (!fsutil::existFile(strDBFile))

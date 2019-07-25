@@ -74,7 +74,8 @@ public:
 	static bool loadTxt(const wstring& strFile, const function<bool(const string&)>& cb);
 	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
-	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile, bool bSyncModifyTime = false);
+	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile
+		, bool bSyncModifyTime = false, const char *lpFileHead = NULL, size_t uHeadSize = 0);
 
 	static bool fileStat(FILE *lpFile, tagFileStat& stat);
 	static bool fileStat(const wstring& strFile, tagFileStat& stat);
@@ -122,7 +123,7 @@ public:
 
 	static bool moveFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-    static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag);
+    static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
 
 #ifndef __ANDROID__
 	static wstring getModuleDir(wchar_t *pszModuleName = NULL);
