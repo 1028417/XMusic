@@ -14,6 +14,17 @@ enum class E_DemandMode
     DM_DemandPlaylist
 };
 
+class CFileOpaqueEx : public CFileOpaque
+{
+public:
+    CFileOpaqueEx(){}
+
+    CFileOpaqueEx(const wstring& strFile)
+        : CFileOpaque(strFile)
+    {
+    }
+};
+
 class __ModelExt CPlayMgr
 {
 public:
@@ -36,7 +47,7 @@ private:
 
 	wstring m_strPlayingFile;
 	
-	CFileOpaque m_FileOpaque;
+    CFileOpaqueEx m_FileOpaque;
 
 private:
 	int _playFile(const wstring& strFile, uint64_t uStartPos = 0);

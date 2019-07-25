@@ -19,9 +19,9 @@ public:
 
 	virtual int64_t open() = 0;
 
-	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) const = 0;
+	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
 
-	virtual size_t read(uint8_t *buf, int buf_size) const = 0;
+	virtual size_t read(uint8_t *buf, int buf_size) = 0;
 
 	virtual void close() = 0;
 };
@@ -32,10 +32,6 @@ public:
 	CFileOpaque() {}
 
 	CFileOpaque(const wstring& strFile) : m_strFile(strFile)
-	{
-	}
-
-	CFileOpaque(FILE *pf) : m_pf(pf)
 	{
 	}
 
@@ -51,6 +47,8 @@ protected:
 
 	int64_t m_size = -1;
 
+	uint64_t m_uPos = 0;
+
 public:
 	virtual int64_t size() const override
 	{
@@ -63,74 +61,56 @@ public:
 		{
 			return m_size;
 		}
+        m_size = -1;
 
 #ifdef __ANDROID__
         m_pf = fopen(wsutil::toStr(m_strFile).c_str(), "rb");
 #else
-		if (_wfopen_s(&m_pf, m_strFile.c_str(), L"rb"))
-		{
-			return -1;
-		}
+        (void)_wfopen_s(&m_pf, m_strFile.c_str(), L"rb");
 #endif
-		if (NULL == m_pf)
-		{
-			return -1;
-		}
+        if (NULL != m_pf)
+        {
+            tagFileStat32_64 stat;
+            memset(&stat, 0, sizeof stat);
+            if (fsutil::fileStat32_64(m_pf, stat))
+            {
+                m_size = stat.st_size;
+            }
+        }
 
-		tagFileStat32_64 stat;
-		memset(&stat, 0, sizeof stat);
-		if (!fsutil::fileStat32_64(m_pf, stat))
-		{
-			return -1;
-		}
+		m_uPos = 0;
 
-		m_size = stat.st_size;
 		return m_size;
 	}
 
-	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) const override
+	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override
 	{
-		return fsutil::seekFile(m_pf, offset, eFlag);
+		auto nRet = fsutil::seekFile(m_pf, offset, eFlag);
+		if (nRet >= 0)
+		{
+			m_uPos = nRet;
+		}
+		return m_uPos;
 	}
 
-	virtual size_t read(uint8_t *buf, int buf_size) const override
+	virtual size_t read(uint8_t *buf, int buf_size) override
 	{
-		return fread(buf, 1, buf_size, m_pf);
+		size_t uRet = fread(buf, 1, buf_size, m_pf);
+		m_uPos += uRet;
+		return uRet;
 	}
 
 	virtual void close() override
-	{
+    {
 		if (NULL != m_pf)
 		{
-			(void)fclose(m_pf);
+            (void)fclose(m_pf);
+            m_pf = NULL;
 		}
 
-		detach();
+        m_size = -1;
+		m_uPos = 0;
 	}
-
-	void detach()
-	{
-		m_strFile.clear();
-
-		m_pf = NULL;
-
-		m_size = -1;
-	}
-
-	void attach(const wstring& strFile)
-	{
-		detach();
-
-		m_strFile = strFile;
-	}
-
-	void attach(FILE *pf)
-	{
-		detach();
-
-		m_pf = pf;
-	}
-
 };
 
 using CB_PlayFinish = fn_voidvoid;
