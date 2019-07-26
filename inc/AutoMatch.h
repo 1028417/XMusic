@@ -105,15 +105,15 @@ using CB_AutoMatchProgress = function<bool(const wstring& strDir)>;
 class __ModelExt CAutoMatch
 {
 public:
-	CAutoMatch(CRootMediaRes& RootMediaRes, const CB_AutoMatchProgress& cbProgress, const CB_AutoMatchConfirm& cbConfirm)
-		: m_RootMediaRes(RootMediaRes)
+	CAutoMatch(CModel& model, const CB_AutoMatchProgress& cbProgress, const CB_AutoMatchConfirm& cbConfirm)
+		: m_model(model)
 		, m_cbProgress(cbProgress)
 		, m_cbConfirm(cbConfirm)
 	{
 	}
 
 private:
-	CRootMediaRes& m_RootMediaRes;
+	CModel& m_model;
 
 	CB_AutoMatchProgress m_cbProgress;
 	CB_AutoMatchConfirm m_cbConfirm;
@@ -121,7 +121,7 @@ private:
 	map<wstring, TD_SearchMediaInfoMap> m_mapSearchMedia;
 	
 public:
-	void autoMatchMedia(CSingerMgr& SingerMgr, CMediaRes& SrcPath, const TD_MediaList& lstMedias);
+	void autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias);
 
 private:
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths

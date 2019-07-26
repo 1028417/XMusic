@@ -14,7 +14,7 @@ enum class E_DemandMode
     DM_DemandPlaylist
 };
 
-class CFileOpaqueEx : public CFileOpaque
+class __ModelExt CFileOpaqueEx : public CFileOpaque
 {
 public:
     CFileOpaqueEx(){}
@@ -23,6 +23,22 @@ public:
         : CFileOpaque(strFile)
     {
     }
+
+	UINT checkDuration(bool bLock = true)
+	{
+		return CFileOpaque::checkDuration(bLock);
+	}
+
+	static UINT checkDuration(const wstring& strFile, bool bLock = true)
+	{
+		CFileOpaqueEx FileOpaque(strFile);
+		return FileOpaque.checkDuration(bLock);
+	}
+
+	static UINT checkDuration(IMedia& media, bool bLock = true)
+	{
+		return checkDuration(media.GetAbsPath(), bLock);
+	}
 };
 
 class __ModelExt CPlayMgr
@@ -50,7 +66,7 @@ private:
     CFileOpaqueEx m_FileOpaque;
 
 private:
-	int _playFile(const wstring& strFile, uint64_t uStartPos = 0);
+	bool _playFile(const wstring& strFile, uint64_t uStartPos = 0);
 
 	bool _playNext(bool bNext, bool bManual);
 
@@ -108,9 +124,9 @@ public:
 
 	bool checkPlayedID(UINT uID);
 
-	int playAlarm(const wstring& strFile);
+	bool playAlarm(const wstring& strFile);
 
-	int play(UINT uItem, bool bManual=true);
+	bool play(UINT uItem, bool bManual=true);
 
 	bool playNext(bool bManual=true);
 	void playPrev();

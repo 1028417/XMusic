@@ -41,7 +41,7 @@ protected:
 
 	int m_nFileSize = 0;
 
-	int m_nDuration = 0;
+	UINT m_uDuration = 0;
 
 public:
 	wstring GetBaseDir() const;
@@ -78,21 +78,19 @@ public:
 		return m_nFileSize;
 	}
 
-	int CheckDuration();
-
-	virtual void SetDuration(int nDuration)
+	void SetDuration(UINT uDuration)
 	{
-		m_nDuration = nDuration;
+		m_uDuration = uDuration;
 	}
 
-	virtual int GetDuration() const
+	UINT GetDuration() const
 	{
-		return m_nDuration;
+		return m_uDuration;
 	}
 
 	wstring GetDurationString() const;
 
-	static wstring GetDurationString(int nDuration);
+	static wstring GetDurationString(UINT uDuration);
 
 	//void UpdateFileInfo(int iFileSize, int nDuration);
 

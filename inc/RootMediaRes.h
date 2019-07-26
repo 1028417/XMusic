@@ -7,7 +7,7 @@ public:
 
 	virtual class CMedia *findRelatedMedia(IMedia& media, E_MediaSetType eMediaSetType) = 0;
 
-	virtual int checkDuration(IMedia& media) = 0;
+	virtual UINT checkDuration(IMedia& media) = 0;
 
 	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
 };
