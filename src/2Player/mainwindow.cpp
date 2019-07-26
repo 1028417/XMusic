@@ -477,6 +477,14 @@ void MainWindow::_relayout()
         else
         {
             y_SingerImg = y_AlbumName - 500;
+            if (cy > 1080)
+            {
+                y_SingerImg -= 200;
+            }
+            else if (1080 == cy)
+            {
+                y_SingerImg -= 100;
+            }
 
             y_PlayingListMax = y_SingerImg;
         }
