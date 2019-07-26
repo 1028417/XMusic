@@ -259,7 +259,7 @@ void MainWindow::show()
 
 void MainWindow::timerEvent(QTimerEvent* ev)
 {
-    if (ev->timerId() != m_timer)
+    //if (ev->timerId() == m_timer)
     {
         auto ePlayStatus = m_view.getPlayMgr().GetPlayStatus();
         if (E_PlayStatus::PS_Stop != ePlayStatus)
@@ -268,10 +268,11 @@ void MainWindow::timerEvent(QTimerEvent* ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_view.getPlayMgr().getPlayer().getClock();
-                if (uClock > 0)
+                //uint64_t uClock = m_view.getPlayMgr().getPlayer().getClock();
+                //if (uClock > 0)
                 {
-                    int nProgress = uClock / __1e6;
+                    //int nProgress = uClock / __1e6;
+                    int nProgress = ui.progressBar->value() + 1;
                     if (nProgress <= ui.progressBar->maximum())
                     {
                         ui.progressBar->setValue(nProgress);
