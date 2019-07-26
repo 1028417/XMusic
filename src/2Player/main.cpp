@@ -179,7 +179,7 @@ public:
             m_logWriter >> "stop controller";
             m_ctrl.stop();
 
-            m_logWriter >> "close medel";
+            m_logWriter >> "close model";
             m_model.close();
 
             CPlayer::QuitSDK();
