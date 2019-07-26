@@ -74,7 +74,8 @@ public:
 	static bool loadTxt(const wstring& strFile, const function<bool(const string&)>& cb);
 	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
-	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile
+    static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile
 		, bool bSyncModifyTime = false, const char *lpFileHead = NULL, size_t uHeadSize = 0);
 
 	static bool fileStat(FILE *lpFile, tagFileStat& stat);
