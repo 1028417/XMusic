@@ -187,7 +187,15 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const functi
 
 			ProgressDlg.SetStatusText(task.first.c_str(), 1);
 
-			int nDuration = CPlayer::CheckDuration(task.first, false);
+			CFileOpaqueEx FileOpaque(task.first);
+			int nDuration = FileOpaque.checkDuration(false);
+			if (0 == nDuration)
+			{
+				if (!FileOpaque.exists())
+				{
+					nDuration = -1;
+				}
+			}
 			if (nDuration <= 0)
 			{
 				lock.lock();

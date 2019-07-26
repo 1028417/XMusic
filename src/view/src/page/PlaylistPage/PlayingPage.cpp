@@ -63,7 +63,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		int nSelItem = m_wndList.GetSelItem();
 		if (nSelItem >= 0)
 		{
-			PlayMgr.play(nSelItem);
+			(void)PlayMgr.play(nSelItem);
 		}
 		else
 		{

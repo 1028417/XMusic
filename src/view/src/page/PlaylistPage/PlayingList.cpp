@@ -418,7 +418,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 			switch (message)
 			{
 			case WM_LBUTTONDBLCLK:
-				m_view.getPlayMgr().play(uItem);
+				(void)m_view.getPlayMgr().play(uItem);
 
 				break;
 			case WM_LBUTTONUP:

@@ -127,7 +127,15 @@ int CVerifyResultDlg::VerifyMediaItem(int nItem)
 	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
 	__AssertReturn(pMedia, -1);
 	
-	int nDuration = pMedia->CheckDuration();
+	CFileOpaqueEx FileOpaque(pMedia->GetAbsPath());
+	int nDuration = FileOpaque.checkDuration();
+	if (0 == nDuration)
+	{
+		if (!FileOpaque.exists())
+		{
+			nDuration = -1;
+		}
+	}
 	m_VerifyResult.vctVerifyResult[nItem].second = nDuration;
 
 	wstring strVerifyResult;

@@ -100,8 +100,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
 	UINT iFlag = ++g_iFlag;
 
-	int nDuration = PlayItem.GetDuration();
-	if (nDuration <= 0)
+	if (PlayItem.GetDuration() == 0)
 	{
 		m_PlaySpirit->clear();
 
@@ -123,7 +122,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
 
 	m_PlaySpirit->SetPlayState(_bstr_t(PlayItem.GetTitle().c_str())
-		, nDuration + 1, long(player().getClock()/__1e6));
+		, PlayItem.GetDuration() + 1, long(player().getClock()/__1e6));
 }
 
 void CPlayCtrl::onPlayFinish()

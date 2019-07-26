@@ -130,7 +130,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 
 				m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
 					arrSimilarFile.get(index, [&](auto& pr) {
-						auto& strDuration = CMedia::GetDurationString(CPlayer::CheckDuration(pr.first->GetAbsPath()));
+						auto& strDuration = CMedia::GetDurationString(CFileOpaqueEx::checkDuration(*pr.first));
 						m_wndList.SetItemText(uItem, 3, (L" " + strDuration).c_str());
 					});
 				});

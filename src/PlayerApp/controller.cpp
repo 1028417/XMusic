@@ -22,7 +22,7 @@ bool CController::start()
 		{
 			strAlarmmedia = m_model.getRootMediaRes().toAbsPath(strAlarmmedia);
 
-			if (0 < m_model.getPlayMgr().playAlarm(strAlarmmedia))
+			if (m_model.getPlayMgr().playAlarm(strAlarmmedia))
 			{
 				(void)m_view.showMsgBox(L"点击确定停止闹铃！");
 				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
@@ -110,7 +110,7 @@ bool CController::start()
 
             if (m_model.getRootMediaRes().GetSubPath())
             {
-                if (PlayMgr.getPlayer().GetDuration() <= 0)
+                if (PlayMgr.getPlayer().GetDuration() == 0)
                 {
                     (void)PlayMgr.playNext(false);
                 }
@@ -436,7 +436,7 @@ bool CController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedi
 	
 	map<wstring, tagMediaResInfo*> mapMatchInfo;
 
-	CAutoMatch AutoMatch(m_model.getRootMediaRes(), cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo) {
+	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo) {
 		auto itr = mapMatchInfo.find(SearchMediaInfo.m_strAbsPath);
 		if (itr != mapMatchInfo.end())
 		{
@@ -459,7 +459,7 @@ bool CController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedi
 
 		return E_MatchResult::MR_Yes;
 	});
-	AutoMatch.autoMatchMedia(m_model.getSingerMgr(), SrcPath, lstMedias);
+	AutoMatch.autoMatchMedia(SrcPath, lstMedias);
 
 	if (!mapUpdatedMedias.empty())
 	{

@@ -59,25 +59,25 @@ BOOL CTrackDetailDlg::OnInitDialog()
 		m_cueFile.m_alTrackInfo([&](CRTrackInfo trackInfo, UINT uIdx) {
 			SVector<wstring> vecText{ trackInfo.strTitle, trackInfo.strPerformer };
 
-			int iTrackDuration = 0;
+			UINT uTrackDuration = 0;
 			if (!m_cueFile.m_alTrackInfo.get(uIdx + 1, [&](CRTrackInfo trackInfoNext) {
-				iTrackDuration = (trackInfoNext.uMsBegin - trackInfo.uMsBegin) / 1000;
+				uTrackDuration = (trackInfoNext.uMsBegin - trackInfo.uMsBegin) / 1000;
 			}))
 			{
 				if (NULL != m_pMediaRes)
 				{
-					int nDuration = CPlayer::CheckDuration(m_pMediaRes->GetAbsPath());
-					if (nDuration > 0)
+					UINT uDuration = CFileOpaqueEx::checkDuration(*m_pMediaRes);
+					if (uDuration > 0)
 					{
-						iTrackDuration = nDuration - trackInfo.uMsBegin / 1000;
+						uTrackDuration = uDuration - trackInfo.uMsBegin / 1000;
 					}
 				}
 			}
 
-			if (iTrackDuration > 0)
+			if (0 != uTrackDuration)
 			{
 				wchar_t pszDuration[8] {0};
-				swprintf(pszDuration, sizeof(pszDuration), L"%02u:%02u", iTrackDuration / 60, iTrackDuration % 60);
+				swprintf(pszDuration, sizeof(pszDuration), L"%02u:%02u", uTrackDuration / 60, uTrackDuration % 60);
 				vecText.add(pszDuration);
 			}
 

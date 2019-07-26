@@ -72,7 +72,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 				}
 				else
 				{
-					if (pMediaRes->GetFileSize() > 100e6 && CPlayer::CheckDuration(pMediaRes->GetAbsPath()) > 600)
+					if (pMediaRes->GetFileSize() > 100e6 && CFileOpaqueEx::checkDuration(*pMediaRes) > 600)
 					{
 						plUnmatchFile.add(pMediaRes, subDir.GetPath());
 					}
