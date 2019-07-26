@@ -409,9 +409,16 @@ void MainWindow::_relayout()
     }
 
     int y_frameDemand = 20;
-    if (cy < 1000 && !m_bUsingCustomBkg)
+    if (cy > 1080)
     {
-        y_frameDemand = 12;
+        y_frameDemand = 30;
+    }
+    else if (cy < 1000)
+    {
+        if (!m_bUsingCustomBkg)
+        {
+            y_frameDemand = 12;
+        }
     }
 
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
@@ -530,9 +537,9 @@ void MainWindow::_relayout()
     {
         UINT uMargin = 45;
         int x_PlayingList = ui.progressBar->geometry().right();
-        x_PlayingList += 100 * fCXRate;
+        x_PlayingList += 90 * fCXRate;
 
-        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin, cy-uMargin*2);
+        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin*fCXRate, cy-uMargin*2);
 
         if (cy > 1080)
         {
