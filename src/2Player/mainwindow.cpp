@@ -488,9 +488,9 @@ void MainWindow::_relayout()
     {
         if (bFlag)
         {
-            int x_Playingfile = ui.frameSingerImg->x() + 30;
-            int y_Playingfile = ui.frameSingerImg->geometry().bottom()- ui.labelSingerName->height() - 30;
-            ui.labelSingerName->move(x_Playingfile, y_Playingfile);
+            int x_Playingfile = ui.wdgSingerImg->x() + 30;
+            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 30;
+            ui.labelPlayingfile->move(x_Playingfile, y_Playingfile);
 
             ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
         }
