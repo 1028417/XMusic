@@ -409,9 +409,13 @@ void MainWindow::_relayout()
     }
 
     int y_frameDemand = 20;
-    if (cy > 1080)
+    if (cy > 1920)
     {
-        y_frameDemand = 30;
+        y_frameDemand = 35;
+    }
+    if (1920 == cy)
+    {
+        y_frameDemand = 28;
     }
     else if (cy < 1000)
     {
