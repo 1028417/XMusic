@@ -96,7 +96,7 @@ void MainWindow::_init()
 
 void MainWindow::showLogo()
 {
-    m_view.setFont(ui.labelLogoTip, -0.5, true, true);
+    m_view.setFont(ui.labelLogoTip, -1, true, true);
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
@@ -133,7 +133,7 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                m_view.setTimer(200, [&](){
+                m_view.setTimer(330, [&](){
                     if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
@@ -147,7 +147,7 @@ void MainWindow::showLogo()
                     }
                     else
                     {
-                        crCompany.setAlpha(128);
+                        crCompany.setAlpha(160);
                     }
                     peCompany.setColor(QPalette::WindowText, crCompany);
                     ui.labelLogoCompany->setPalette(peCompany);
@@ -178,8 +178,35 @@ void MainWindow::showLogo()
 
 void MainWindow::show()
 {
-    m_strHBkgDir = L"hbkg/";
-    m_strVBkgDir = L"vbkg/";
+    m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
+    m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
+
+    if (!fsutil::existDir(m_strHBkgDir))
+    {
+        if (fsutil::createDir(m_strHBkgDir))
+        {
+            fsutil::copyFile(L"assets:/hbkg/win10.jpg", m_strHBkgDir + L"win10");
+        }
+    }
+
+    fsutil::findFile(m_strHBkgDir, [&](const tagFileInfo& fileInfo) {
+        m_lstHBkg.push_back(fileInfo.m_strName);
+        return true;
+    });
+
+    if (!fsutil::existDir(m_strVBkgDir))
+    {
+        if (fsutil::createDir(m_strVBkgDir))
+        {
+            fsutil::copyFile(L"assets:/vbkg/win10.jpg", m_strVBkgDir + L"win10");
+        }
+    }
+
+    fsutil::findFile(m_strVBkgDir, [&](const tagFileInfo& fileInfo) {
+        m_lstVBkg.push_back(fileInfo.m_strName);
+        return true;
+    });
+
     auto& strHBkg = m_view.getDataMgr().getOption().strHBkg;
     if (!strHBkg.empty())
     {
@@ -198,6 +225,7 @@ void MainWindow::show()
     }
 
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
+    ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
     m_view.setFont(ui.labelSingerName, 0.2);
     m_view.setFont(ui.labelDuration, -2);
@@ -271,12 +299,23 @@ void MainWindow::_relayout()
 {
     int cx = this->width();
     int cy = this->height();
+    bool bHScreen = cx > cy; // 橫屏
 
     int x_Logo = (cx - ui.labelLogo->width())/2-1;
-    ui.labelLogo->move(x_Logo, (cy - ui.labelLogo->height())/2-60);
+
+    int y_Logo = (cy - ui.labelLogo->height())/2;
+    if (bHScreen)
+    {
+        y_Logo -= 60;
+    }
+    else
+    {
+        y_Logo -= 100;
+    }
+    ui.labelLogo->move(x_Logo, y_Logo);
 
     int x_LogoTip = (cx - ui.labelLogoTip->width())/2;
-    int y_LogoTip = ui.labelLogo->geometry().bottom() + 13;
+    int y_LogoTip = ui.labelLogo->geometry().bottom() + 10;
     ui.labelLogoTip->move(x_LogoTip, y_LogoTip);
 
     int x_LogoCompany = cx - 50 - ui.labelLogoCompany->width();
@@ -285,7 +324,6 @@ void MainWindow::_relayout()
 
     static const QPixmap bkgPixmapPrev = *ui.labelBkg->pixmap();
     float fCXRate = 0;
-    bool bHScreen = cx > cy; // 橫屏
     if (bHScreen)
     {
         fCXRate = (float)cx/bkgPixmapPrev.width();
@@ -408,6 +446,9 @@ void MainWindow::_relayout()
 
     int y_PlayingListMax = 0;
 
+
+    bool bFlag = bHScreen && fCXRate>1 && cy <= 1080;
+
     if (m_bUsingCustomBkg)
     {
         int x = ui.progressBar->x();
@@ -445,7 +486,18 @@ void MainWindow::_relayout()
     }
     else
     {
-        ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignBottom);
+        if (bFlag)
+        {
+            int x_Playingfile = ui.frameSingerImg->x() + 30;
+            int y_Playingfile = ui.frameSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 30;
+            ui.labelPlayingfile->move(x_Playingfile, y_Playingfile);
+
+            ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
+        }
+        else
+        {
+            ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignBottom);
+        }
 
         y_PlayingListMax = ui.labelPlayingfile->y();
 
@@ -461,11 +513,13 @@ void MainWindow::_relayout()
         }
     }
 
-    UINT uMinRowHeight = 100;
+    UINT uMinRowHeight = 95;
     if (bHScreen)
     {
         UINT uMargin = 45;
-        int x_PlayingList = ui.progressBar->geometry().right()+80;
+        int x_PlayingList = ui.progressBar->geometry().right();
+        x_PlayingList += 100 * fCXRate;
+
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin, cy-uMargin*2);
 
         if (cy > 1080)
@@ -475,21 +529,22 @@ void MainWindow::_relayout()
      }
     else
     {
-        UINT y_Margin = 35;
-        if (!m_bUsingCustomBkg)
+        UINT y_Margin = 30;
+
+        int nRows = (y_PlayingListMax - y_frameDemandBottom)/uMinRowHeight;
+        if (nRows > 10)
         {
-            if (1920 == cy)
-            {
-                y_Margin = 25;
-            }
-            else if (cy < 1920)
-            {
-                y_Margin = 15;
-            }
+            uMinRowHeight += 10;
+            y_Margin += 10;
+        }
+        else if (nRows < 7)
+        {
+            uMinRowHeight -= 10;
+            y_Margin -= 10;
         }
 
         UINT x_Margin = ui.frameDemand->x();
-        int y_PlayingList = y_frameDemandBottom + y_Margin + 10;
+        int y_PlayingList = y_frameDemandBottom + y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
 
@@ -806,28 +861,28 @@ void MainWindow::slot_buttonClicked(CButton* button)
     else if (button == ui.btnSetting)
     {
         bool bHScreen = this->width() > this->height(); // 橫屏
-        cauto& strBkgDir = bHScreen? m_strHBkgDir : m_strVBkgDir;
-        auto& strBkg = bHScreen? m_view.getDataMgr().getOption().strHBkg : m_view.getDataMgr().getOption().strVBkg;
+        cauto& strBkgDir = bHScreen?m_strHBkgDir:m_strVBkgDir;
+        const list<wstring>& lstBkg = bHScreen?m_lstHBkg:m_lstVBkg;
+        auto& strCurrBkg = bHScreen? m_view.getDataMgr().getOption().strHBkg : m_view.getDataMgr().getOption().strVBkg;
         QPixmap& bkgPixmap = bHScreen? m_HBkgPixmap:m_VBkgPixmap;
 
-        fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo){
-            if (strBkg.empty())
+        for (cauto& strBkg : lstBkg)
+        {
+            if (strCurrBkg.empty())
             {
-                strBkg = fileInfo.m_strName;
+                strCurrBkg = strBkg;
 
-                (void)bkgPixmap.load(strBkgDir + strBkg);
+                (void)bkgPixmap.load(strBkgDir + strCurrBkg);
 
-                return false;
+                break;
             }
 
-            if (fileInfo.m_strName == strBkg)
+            if (strBkg == strCurrBkg)
             {
-                strBkg.clear();
+                strCurrBkg.clear();
                 bkgPixmap = QPixmap();
             }
-
-            return true;
-        });
+        }
 
         _relayout();
     }

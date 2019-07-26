@@ -52,6 +52,8 @@ DESTDIR = $$PWD/../../build
 
     rc.files += ../../bin/data.db
     rc.files += ../../bin/msyhl.ttc
+    rc.files += ../../bin/hbkg
+    rc.files += ../../bin/vbkg
     rc.path = /assets
     INSTALLS += rc
 } else {

@@ -25,6 +25,8 @@ public:
         CWidget(parent, {Qt::TapAndHoldGesture})
         , m_view(view)
     {
+        setAttribute(Qt::WA_TranslucentBackground);
+
         this->startTimer(1000);
     }
 

@@ -215,7 +215,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>54</x>
-      <y>2070</y>
+      <y>1570</y>
       <width>600</width>
       <height>70</height>
      </rect>
@@ -395,7 +395,7 @@ border-image-repeat: stretched</string>
       <x>0</x>
       <y>0</y>
       <width>800</width>
-      <height>160</height>
+      <height>170</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -585,7 +585,7 @@ border-image-repeat: stretched</string>
        <x>0</x>
        <y>120</y>
        <width>990</width>
-       <height>50</height>
+       <height>60</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -600,14 +600,14 @@ border-image-repeat: stretched</string>
         <x>0</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  国语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -619,14 +619,14 @@ border-image-repeat: stretched</string>
         <x>110</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  粤语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -638,14 +638,14 @@ border-image-repeat: stretched</string>
         <x>220</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  韩语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -657,14 +657,14 @@ border-image-repeat: stretched</string>
         <x>330</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  日语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -676,14 +676,14 @@ border-image-repeat: stretched</string>
         <x>440</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  泰语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -695,14 +695,14 @@ border-image-repeat: stretched</string>
         <x>550</x>
         <y>0</y>
         <width>110</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  英文</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -714,14 +714,14 @@ border-image-repeat: stretched</string>
         <x>660</x>
         <y>0</y>
         <width>140</width>
-        <height>50</height>
+        <height>60</height>
        </rect>
       </property>
       <property name="text">
        <string>  小语种</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignHCenter|Qt::AlignTop</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -840,7 +840,6 @@ border-image-repeat: stretched</string>
    <zorder>btnOrder</zorder>
    <zorder>btnRandom</zorder>
    <zorder>labelPlayProgress</zorder>
-   <zorder>labelPlayingfile</zorder>
    <zorder>btnSetting</zorder>
    <zorder>wdgSingerImg</zorder>
    <zorder>labelSingerName</zorder>
@@ -849,6 +848,7 @@ border-image-repeat: stretched</string>
    <zorder>labelLogoCompany</zorder>
    <zorder>labelLogoTip</zorder>
    <zorder>btnExit</zorder>
+   <zorder>labelPlayingfile</zorder>
   </widget>
   <action name="action">
    <property name="text">

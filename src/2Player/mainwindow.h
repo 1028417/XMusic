@@ -34,6 +34,9 @@ private:
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
+    list<wstring> m_lstHBkg;
+    list<wstring> m_lstVBkg;
+
     QPixmap m_HBkgPixmap;
     QPixmap m_VBkgPixmap;
 
