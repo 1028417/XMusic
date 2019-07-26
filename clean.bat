@@ -15,4 +15,11 @@ del *.cpp
 del *.o
 del *.a
 
+
+cd /d %~dp0src/2player
+
+del qrc_res.cpp
+del *.obj
+del makefile*
+
 pause
