@@ -96,7 +96,11 @@ void MainWindow::_init()
 
 void MainWindow::showLogo()
 {
-    m_view.setFont(ui.labelLogoTip, -1, true, true);
+    double dbTipFontSize = -0.5;
+#ifdef __ANDROID__
+    dbTipFontSize -= 1;
+#endif
+    m_view.setFont(ui.labelLogoTip, dbTipFontSize, true, true);
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
@@ -624,19 +628,19 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     float fFontSizeOffset = 0;
     if (uLen > 60)
     {
-        fFontSizeOffset = -4;
+        fFontSizeOffset = -2.5;
     }
     else if (uLen > 55)
     {
-        fFontSizeOffset = -3;
+        fFontSizeOffset = -2;
     }
     else if (uLen > 50)
     {
-        fFontSizeOffset = -2;
+        fFontSizeOffset = -1;
     }
     else if (uLen > 45)
     {
-        fFontSizeOffset = -1;
+        fFontSizeOffset = -0.5;
     }
     else if (uLen > 40)
     {
@@ -644,13 +648,13 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     }
     else
     {
-        if (m_bUsingCustomBkg)
+        if (!m_bUsingCustomBkg)
         {
             fFontSizeOffset -= 0.5;
         }
         else
         {
-            fFontSizeOffset = 1;
+            fFontSizeOffset = 0.5;
         }
     }
     m_view.setFont(ui.labelPlayingfile, fFontSizeOffset);
@@ -727,11 +731,15 @@ void MainWindow::_showAlbumName(tagPlayingItem& PlayingItem)
         float fFontSizeOffset = 0;
         if (uLen > 20)
         {
-            fFontSizeOffset = -2;
+            fFontSizeOffset = -1.5;
         }
-        else if (uLen > 16)
+        else if (uLen > 15)
         {
             fFontSizeOffset = -1;
+        }
+        else if (uLen > 10)
+        {
+            fFontSizeOffset = -0.5;
         }
         m_view.setFont(&labelAlbumName, fFontSizeOffset);
 

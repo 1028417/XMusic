@@ -336,8 +336,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>41</x>
       <y>1563</y>
-      <width>628</width>
-      <height>577</height>
+      <width>627</width>
+      <height>576</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -394,7 +394,7 @@ border-image-repeat: stretched</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>800</width>
+      <width>840</width>
       <height>170</height>
      </rect>
     </property>
@@ -407,7 +407,7 @@ border-image-repeat: stretched</string>
     <widget class="CButton" name="btnDemandAlbum">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>190</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -442,7 +442,7 @@ border-image-repeat: stretched</string>
     <widget class="CButton" name="btnDemandAlbumItem">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>370</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -477,7 +477,7 @@ border-image-repeat: stretched</string>
     <widget class="CButton" name="btnDemandPlaylist">
      <property name="geometry">
       <rect>
-       <x>690</x>
+       <x>730</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -547,7 +547,7 @@ border-image-repeat: stretched</string>
     <widget class="CButton" name="btnDemandPlayItem">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>550</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -582,7 +582,7 @@ border-image-repeat: stretched</string>
     <widget class="QFrame" name="frameDemandLanguage">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>20</x>
        <y>120</y>
        <width>990</width>
        <height>60</height>
