@@ -19,24 +19,32 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
-    m_mapWidgetPos = {
-        {ui.btnSetting, ui.btnSetting->geometry()}
-        , {ui.btnPlay, ui.btnPlay->geometry()}
-        , {ui.btnPause, ui.btnPause->geometry()}
-        , {ui.btnPlayPrev, ui.btnPlayPrev->geometry()}
-        , {ui.btnPlayNext, ui.btnPlayNext->geometry()}
-        , {ui.btnOrder, ui.btnOrder->geometry()}
-        , {ui.btnRandom, ui.btnRandom->geometry()}
+    QWidget* lpTopWidget[] = {
+        ui.btnExit, ui.frameDemand, ui.frameDemandLanguage
 
-        , {ui.labelDuration, ui.labelDuration->geometry()}
-        , {ui.progressBar, ui.progressBar->geometry()}
-        , {ui.labelPlayProgress, ui.labelPlayProgress->geometry()}
+        , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
 
-        , {ui.labelPlayingfile, ui.labelPlayingfile->geometry()}
-        , {ui.wdgSingerImg, ui.wdgSingerImg->geometry()}
-        , {ui.labelSingerName, ui.labelSingerName->geometry()}
-        , {ui.labelAlbumName, ui.labelAlbumName->geometry()}
+        , ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+        , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR
     };
+    for (auto pWidget : lpTopWidget)
+    {
+        m_mapTopWidgetPos[pWidget] = pWidget->geometry();
+    }
+
+    QWidget* lpWidget[] = {
+        ui.labelPlayingfile, ui.wdgSingerImg, ui.labelSingerName, ui.labelAlbumName
+
+        , ui.labelDuration, ui.progressBar, ui.labelPlayProgress
+
+        , ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+
+        , ui.btnSetting, ui.btnOrder, ui.btnRandom
+    };
+    for (auto pWidget : lpWidget)
+    {
+        m_mapWidgetPos[pWidget] = pWidget->geometry();
+    }
 
     _init();
 }
@@ -268,11 +276,10 @@ void MainWindow::timerEvent(QTimerEvent* ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                //uint64_t uClock = m_view.getPlayMgr().getPlayer().getClock();
-                //if (uClock > 0)
+                uint64_t uClock = m_view.getPlayMgr().getPlayer().getClock();
+                if (uClock > 0)
                 {
-                    //int nProgress = uClock / __1e6;
-                    int nProgress = ui.progressBar->value() + 1;
+                    int nProgress = uClock / __1e6;
                     if (nProgress <= ui.progressBar->maximum())
                     {
                         ui.progressBar->setValue(nProgress);
@@ -390,16 +397,26 @@ void MainWindow::_relayout()
         ui.labelBkg->move(0, dy_bkg);
     }
 
+    for (cauto& widgetPos : m_mapTopWidgetPos)
+    {
+        QRect pos = widgetPos.second;
+        if (fCXRate < 1)
+        {
+            pos.setRect(fCXRate*pos.left(), fCXRate*pos.top()
+                        , fCXRate*pos.width(), fCXRate*pos.height());
+        }
+        widgetPos.first->setGeometry(pos);
+    }
+
     for (cauto& widgetPos : m_mapWidgetPos)
     {
         cauto& pos = widgetPos.second;
         auto& newPos = m_mapWidgetNewPos[widgetPos.first];
 
-        QPushButton *btn = dynamic_cast<QPushButton*>(widgetPos.first);
-        if (NULL != btn)
+        if (fCXRate >= 1 && NULL != dynamic_cast<QPushButton*>(widgetPos.first))
         {
             newPos.setRect(fCXRate*pos.center().x()-pos.width()/2
-                         , fCXRate*pos.center().y()-pos.height()/2+dy_bkg, pos.width(), pos.height());
+                           , fCXRate*pos.center().y()-pos.height()/2+dy_bkg, pos.width(), pos.height());
         }
         else
         {
@@ -434,7 +451,6 @@ void MainWindow::_relayout()
     {
         x_frameDemand = (ui.progressBar->geometry().right()
             + ui.progressBar->x() - ui.frameDemand->width())/2;
-
     }
     else
     {
@@ -463,7 +479,21 @@ void MainWindow::_relayout()
     int y_PlayingListMax = 0;
 
 
-    bool bFlag = bHScreen && fCXRate>1 && cy <= 1080;
+    bool bFlag = false;
+    if (bHScreen)
+    {
+        if (cy < 1080)
+        {
+            bFlag = true;
+        }
+        else
+        {
+            if (fCXRate>1)
+            {
+                bFlag = true;
+            }
+        }
+    }
 
     if (m_bUsingCustomBkg)
     {
@@ -488,7 +518,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            y_SingerImg = y_AlbumName - 500;
+            y_SingerImg = cy/2;/*y_AlbumName - 500;
             if (cy > 1080)
             {
                 y_SingerImg -= 200;
@@ -496,7 +526,7 @@ void MainWindow::_relayout()
             else if (1080 == cy)
             {
                 y_SingerImg -= 100;
-            }
+            }*/
 
             y_PlayingListMax = y_SingerImg;
         }
@@ -504,7 +534,6 @@ void MainWindow::_relayout()
         cauto& rcSingerImg = m_mapWidgetPos[ui.wdgSingerImg];
         int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
         ui.wdgSingerImg->setGeometry(x + (cx_progressBar-cx_SingerImg)/2, y_SingerImg, cx_SingerImg, cy_SingerImg);
-
 
         m_PlayingList.setFont(m_view.genFont(-1), QColor(255, 255, 255, 255));
     }
@@ -537,7 +566,7 @@ void MainWindow::_relayout()
         }
     }
 
-    UINT uMinRowHeight = 95;
+    UINT uMinRowHeight = 0;
     if (bHScreen)
     {
         UINT uMargin = 45;
@@ -546,15 +575,13 @@ void MainWindow::_relayout()
 
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin*fCXRate, cy-uMargin*2);
 
-        if (cy > 1080)
-        {
-            uMinRowHeight = 105;
-        }
+        uMinRowHeight = (cy-uMargin*2)/10;
      }
     else
     {
         UINT y_Margin = 30;
 
+        uMinRowHeight = 95;
         int nRows = (y_PlayingListMax - y_frameDemandBottom)/uMinRowHeight;
         if (nRows > 10)
         {
@@ -686,6 +713,10 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
         ui.frameSingerImg->setVisible(false);
+
+        //QGraphicsOpacityEffect ge;
+        //ge.setOpacity(0.4);
+        //ui.wdgSingerImg->setGraphicsEffect(&ge);
 
         if (m_strSingerName.empty())
         {
@@ -841,6 +872,10 @@ void MainWindow::_showSingerImg(const QPixmap& pixmap)
     ui.labelSingerImg->setPixmap(pixmap);
 
     ui.frameSingerImg->setVisible(true);
+
+    //QGraphicsOpacityEffect ge;
+    //ge.setOpacity(1);
+    //ui.wdgSingerImg->setGraphicsEffect(&ge);
 
     UINT uMargin = 0;
     if (m_bUsingCustomBkg)

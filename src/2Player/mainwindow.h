@@ -23,6 +23,8 @@ private:
 
     class CPlayingList m_PlayingList;
 
+    map<QWidget*, QRect> m_mapTopWidgetPos;
+
     map<QWidget*, QRect> m_mapWidgetPos;
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
