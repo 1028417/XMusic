@@ -3,6 +3,24 @@
 
 #include <QTouchEvent>
 
+static QPaintEvent *g_pe = NULL;
+
+template <class TParent>
+void CWidget<TParent>::_onPaint(QPainter&, const QRect&)
+{
+    TParent::paintEvent(g_pe);
+}
+
+template <class TParent>
+void CWidget<TParent>::paintEvent(QPaintEvent *pe)
+{
+    g_pe = pe;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    _onPaint(painter, pe->rect());
+}
+
 template <class TParent>
 bool CWidget<TParent>::event(QEvent *ev)
 {
@@ -10,15 +28,6 @@ bool CWidget<TParent>::event(QEvent *ev)
 
     switch (ev->type())
     {
-    case QEvent::Paint:
-    {
-        QPaintEvent *pe = (QPaintEvent*)ev;
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::HighQualityAntialiasing);
-        _onPaint(painter, pe->rect());
-    }
-
-    break;
 #ifndef __ANDROID__
     case QEvent::Enter:
         _onMouseEnter();

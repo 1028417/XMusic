@@ -10,8 +10,7 @@ template <class TParent=QWidget>
 class CWidget : public TParent
 {
 public:
-    CWidget(QWidget *parent, const list<Qt::GestureType>& lstGestureType={
-            Qt::TapAndHoldGesture, Qt::PanGesture, Qt::PinchGesture, Qt::SwipeGesture}) :
+    CWidget(QWidget *parent, const list<Qt::GestureType>& lstGestureType={}) :
         TParent(parent),
         m_lstGestureType(lstGestureType)
     {
@@ -33,7 +32,10 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 private:
-    virtual void _onPaint(QPainter&, const QRect&) {}
+    void paintEvent(QPaintEvent *pe);
+
+private:
+    virtual void _onPaint(QPainter&, const QRect&);
 
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}

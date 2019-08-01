@@ -36,7 +36,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QProgressBar" name="progressBar">
+   <widget class="CProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -271,7 +271,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelPlayProgress">
+   <widget class="CLabel" name="labelPlayProgress" native="true">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -280,13 +280,10 @@ gridline-color: rgb(255, 255, 255);</string>
       <height>30</height>
      </rect>
     </property>
-    <property name="text">
+    <property name="text" stdset="0">
      <string/>
     </property>
-    <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-    </property>
-    <property name="wordWrap">
+    <property name="wordWrap" stdset="0">
      <bool>true</bool>
     </property>
    </widget>
@@ -863,6 +860,13 @@ border-image-repeat: stretched</string>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
   </customwidget>
+    
+  <customwidget>
+   <class>CProgressBar</class>
+   <extends>QProgressBar</extends>
+   <header location="global">ProgressBar.h</header>
+  </customwidget>
+  
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>

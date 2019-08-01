@@ -41,7 +41,7 @@ void CPlayingList::_onTouchMove(int dy)
 
 void CPlayingList::_onGesture(QGesture&)
 {
-    _updateActive(-1);
+//    _updateActive(-1);
 }
 
 void CPlayingList::mouseDoubleClickEvent(QMouseEvent *ev)

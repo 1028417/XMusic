@@ -1,17 +1,19 @@
 
 #pragma once
 
-#include <QLabel>
-
 #include <QMouseEvent>
 
-class CLabel : public QLabel
+#include <QLabel>
+
+#include "widget.h"
+
+class CLabel : public CWidget<QLabel>
 {
     Q_OBJECT
 
 public:
     CLabel(QWidget *parent) :
-        QLabel(parent)
+        CWidget<QLabel>(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
@@ -24,14 +26,14 @@ signals:
 private:
     void mousePressEvent(QMouseEvent *ev) override
     {
-        QLabel::mousePressEvent(ev);
+        CWidget<QLabel>::mousePressEvent(ev);
 
         emit signal_mousePressEvent(this, ev->pos());
     }
 
     void mouseReleaseEvent(QMouseEvent *ev) override
     {
-        QLabel::mouseReleaseEvent(ev);
+        CWidget<QLabel>::mouseReleaseEvent(ev);
 
         emit signal_clicked(this);
     }

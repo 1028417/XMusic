@@ -35,7 +35,8 @@ HEADERS  += mainwindow.h \
     label.h \
     PlayingList.h \
     widget.h \
-    button.h
+    button.h \
+    ProgressBar.h
 
 RESOURCES += res.qrc
 
