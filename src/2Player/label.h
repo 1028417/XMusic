@@ -42,6 +42,6 @@ private:
 
     void _onPaint(QPainter& painter, const QRect& pos) override
     {
-        QLabel::_onPaint(painter, pos);
+        CWidget<QLabel>::_onPaint(painter, pos);
     }
 };
