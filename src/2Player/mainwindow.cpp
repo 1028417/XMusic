@@ -81,7 +81,7 @@ void MainWindow::_init()
     QPalette pe;
     pe.setColor(QPalette::WindowText, Qt::GlobalColor::white);
 
-    SList<QLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
         , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
@@ -91,8 +91,10 @@ void MainWindow::_init()
     for (auto label : lstLabels)
     {
         label->setPalette(pe);
-        label->setAttribute(Qt::WA_TranslucentBackground);
     }
+
+    ui.labelPlayingfile->setShadow(2, QColor(128,128,128));
+    ui.labelSingerName->setShadow(4, QColor(128,128,128));
 
     connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
         , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));

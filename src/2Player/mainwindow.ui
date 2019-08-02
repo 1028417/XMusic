@@ -173,7 +173,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="labelAlbumName">
+   <widget class="CLabel" name="labelAlbumName">
     <property name="geometry">
      <rect>
       <x>670</x>
@@ -195,7 +195,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="labelDuration">
+   <widget class="CLabel" name="labelDuration">
     <property name="geometry">
      <rect>
       <x>930</x>
@@ -211,7 +211,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
     </property>
    </widget>
-   <widget class="QLabel" name="labelSingerName">
+   <widget class="CLabel" name="labelSingerName">
     <property name="geometry">
      <rect>
       <x>54</x>
@@ -287,7 +287,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="labelPlayingfile">
+   <widget class="CLabel" name="labelPlayingfile">
     <property name="geometry">
      <rect>
       <x>40</x>
