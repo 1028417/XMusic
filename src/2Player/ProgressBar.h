@@ -17,7 +17,7 @@ public:
     {
         painter.fillRect(pos, QBrush(QColor(255,255,255)));
 
-        if (this->maximum() > 0)
+        if (this->maximum() > 0 && this->value() > 0)
         {
             QRect rcProgress(pos);
             rcProgress.setRight(pos.width()*this->value()/this->maximum());

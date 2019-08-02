@@ -57,7 +57,7 @@ private slots:
 
     void slot_buttonClicked(CButton*);
 
-    void slot_labelClicked(CLabel*);
+    void slot_labelMousePress(CLabel*);
 
     void slot_progressMousePress(CLabel*, const QPoint& pos);
 

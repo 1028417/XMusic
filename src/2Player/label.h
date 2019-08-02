@@ -18,23 +18,30 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
+private:
+    QColor m_crShadow;
+
 signals:
+    void signal_mousePressEvent(CLabel*);
     void signal_mousePressEvent(CLabel*, const QPoint& pos);
 
-    void signal_clicked(CLabel*);
+public:
+    void setShadowColor(const QColor& crShadow)
+    {
+        m_crShadow = crShadow;
+    }
 
 private:
     void mousePressEvent(QMouseEvent *ev) override
     {
-        CWidget<QLabel>::mousePressEvent(ev);
+        QLabel::mousePressEvent(ev);
 
+        emit signal_mousePressEvent(this);
         emit signal_mousePressEvent(this, ev->pos());
     }
 
-    void mouseReleaseEvent(QMouseEvent *ev) override
+    void _onPaint(QPainter& painter, const QRect& pos) override
     {
-        CWidget<QLabel>::mouseReleaseEvent(ev);
-
-        emit signal_clicked(this);
+        QLabel::_onPaint(painter, pos);
     }
 };

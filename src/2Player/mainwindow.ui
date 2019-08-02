@@ -36,13 +36,13 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="CProgressBar" name="progressBar">
+   <widget class="CProgressBar" name="progressBar" native="true">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>2170</y>
+      <y>2171</y>
       <width>990</width>
-      <height>6</height>
+      <height>5</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -51,13 +51,13 @@ background-color: rgb(255, 255, 255);
 border-color: rgb(255, 255, 255);
 gridline-color: rgb(255, 255, 255);</string>
     </property>
-    <property name="value">
+    <property name="value" stdset="0">
      <number>0</number>
     </property>
-    <property name="textVisible">
+    <property name="textVisible" stdset="0">
      <bool>false</bool>
     </property>
-    <property name="format">
+    <property name="format" stdset="0">
      <string/>
     </property>
    </widget>
@@ -271,19 +271,19 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelPlayProgress" native="true">
+   <widget class="CLabel" name="labelPlayProgress">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>2158</y>
+      <y>2150</y>
       <width>990</width>
-      <height>30</height>
+      <height>49</height>
      </rect>
     </property>
-    <property name="text" stdset="0">
+    <property name="text">
      <string/>
     </property>
-    <property name="wordWrap" stdset="0">
+    <property name="wordWrap">
      <bool>true</bool>
     </property>
    </widget>
@@ -827,7 +827,6 @@ border-image-repeat: stretched</string>
     </property>
    </widget>
    <zorder>labelBkg</zorder>
-   <zorder>progressBar</zorder>
    <zorder>btnPlay</zorder>
    <zorder>btnPause</zorder>
    <zorder>btnPlayPrev</zorder>
@@ -836,7 +835,6 @@ border-image-repeat: stretched</string>
    <zorder>labelDuration</zorder>
    <zorder>btnOrder</zorder>
    <zorder>btnRandom</zorder>
-   <zorder>labelPlayProgress</zorder>
    <zorder>btnSetting</zorder>
    <zorder>wdgSingerImg</zorder>
    <zorder>labelSingerName</zorder>
@@ -846,6 +844,8 @@ border-image-repeat: stretched</string>
    <zorder>labelLogoTip</zorder>
    <zorder>btnExit</zorder>
    <zorder>labelPlayingfile</zorder>
+   <zorder>progressBar</zorder>
+   <zorder>labelPlayProgress</zorder>
   </widget>
   <action name="action">
    <property name="text">
@@ -860,17 +860,15 @@ border-image-repeat: stretched</string>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
   </customwidget>
-    
-  <customwidget>
-   <class>CProgressBar</class>
-   <extends>QProgressBar</extends>
-   <header location="global">ProgressBar.h</header>
-  </customwidget>
-  
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CProgressBar</class>
+   <extends>QWidget</extends>
+   <header location="global">progressbar.h</header>
   </customwidget>
  </customwidgets>
  <resources>

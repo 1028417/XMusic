@@ -31,12 +31,12 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
+    virtual void _onPaint(QPainter&, const QRect&);
+
 private:
     void paintEvent(QPaintEvent *pe);
 
 private:
-    virtual void _onPaint(QPainter&, const QRect&);
-
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
 

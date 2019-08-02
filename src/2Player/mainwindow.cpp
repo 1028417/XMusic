@@ -85,7 +85,7 @@ void MainWindow::_init()
         , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        connect(label, SIGNAL(signal_clicked(CLabel*)), this, SLOT(slot_labelClicked(CLabel*)));
+        connect(label, SIGNAL(signal_mousePressEvent(CLabel*)), this, SLOT(slot_labelMousePress(CLabel*)));
     }
     lstLabels.add({ui.labelPlayingfile, ui.labelSingerName, ui.labelAlbumName, ui.labelDuration});
     for (auto label : lstLabels)
@@ -957,7 +957,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 static const QString __qsCheck = wsutil::toQStr(L"√");
 
-void MainWindow::slot_labelClicked(CLabel* label)
+void MainWindow::slot_labelMousePress(CLabel* label)
 {
     m_eDemandLanguage = E_LanguageType::LT_None;
 
