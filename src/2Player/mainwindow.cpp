@@ -7,9 +7,11 @@
 
 #include <QMovie>
 
+#include "dialog.h"
+
 extern const ITxtWriter& g_logWriter;
 
-static CMtxLock<tagPlayingItem> g_mtxPlayingItem;
+static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 
 static Ui::MainWindow ui;
 
@@ -155,13 +157,13 @@ void MainWindow::showLogo()
 
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
-                    if (crCompany.alpha() < 255)
+                    if (crCompany.alpha() != 200)
                     {
-                        crCompany.setAlpha(255);
+                        crCompany.setAlpha(200);
                     }
                     else
                     {
-                        crCompany.setAlpha(160);
+                        crCompany.setAlpha(255);
                     }
                     peCompany.setColor(QPalette::WindowText, crCompany);
                     ui.labelLogoCompany->setPalette(peCompany);
@@ -501,14 +503,14 @@ void MainWindow::_relayout()
         ui.labelSingerName->setGeometry(x, y_AlbumName-ui.labelSingerName->height()
                                          , cx_progressBar, ui.labelSingerName->height());
 
-        int y_SingerImg = ui.frameDemandLanguage->geometry().bottom();
+        int y_SingerImg = 0;
         if (bHScreen)
         {
-            y_SingerImg += 60;
+            y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 60;
         }
         else
         {
-            y_SingerImg += 1080;
+            y_SingerImg = cy/2+20;
             y_PlayingListMax = y_SingerImg;
         }
         int cy_SingerImg = y_AlbumName-y_SingerImg;
@@ -591,7 +593,7 @@ void MainWindow::_relayout()
     }
     m_PlayingList.setMinRowHeight(uMinRowHeight);
 
-    _showAlbumName(m_PlayingItem);
+    _showAlbumName();
 }
 
 void MainWindow::_updatePlayPauseButton(bool bPlaying)
@@ -604,27 +606,22 @@ void MainWindow::refreshPlayingList(int nPlayingItem, bool bSetActive)
 {
     (void)bSetActive;
 
-    cauto& PlayingItems = m_view.getPlayMgr().getPlayingItems();
-    PairList<UINT, QString> plTitle;
-    PlayingItems([&](const CPlayItem& PlayItem){
-        plTitle.add(PlayItem.m_uID, wsutil::toQStr(PlayItem.GetTitle()));
-    });
-    m_PlayingList.updateList(plTitle, nPlayingItem);
+    m_PlayingList.updateList(nPlayingItem);
 }
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     PlayItem.AsyncTask();
 
-    g_mtxPlayingItem.lock([&](tagPlayingItem& PlayingItem){
-        PlayingItem.strTitle = PlayItem.GetTitle();
+    g_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo){
+        PlayingInfo.strTitle = PlayItem.GetTitle();
 
-        PlayingItem.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
-        PlayingItem.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
+        PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+        PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
 
-        PlayingItem.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
+        PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
 
-        PlayingItem.nDuration = PlayItem.GetDuration();
+        PlayingInfo.nDuration = PlayItem.GetDuration();
     });
 
     emit signal_showPlaying(uPlayingItem, bManual);
@@ -648,11 +645,11 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    g_mtxPlayingItem.get(m_PlayingItem);
-    _showAlbumName(m_PlayingItem);
+    g_mtxPlayingInfo.get(m_PlayingInfo);
+    _showAlbumName();
 
-    ui.labelPlayingfile->setText(wsutil::toQStr(m_PlayingItem.strTitle));
-    UINT uLen = wsutil::toStr(m_PlayingItem.strTitle).size();
+    ui.labelPlayingfile->setText(wsutil::toQStr(m_PlayingInfo.strTitle));
+    UINT uLen = wsutil::toStr(m_PlayingInfo.strTitle).size();
     float fFontSizeOffset = 0;
     if (uLen > 60)
     {
@@ -687,9 +684,9 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     }
     m_view.setFont(ui.labelPlayingfile, fFontSizeOffset);
 
-    if (m_PlayingItem.strSinger != m_strSingerName)
+    if (m_PlayingInfo.strSinger != m_strSingerName)
     {
-        m_strSingerName = m_PlayingItem.strSinger;
+        m_strSingerName = m_PlayingInfo.strSinger;
 
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
@@ -713,10 +710,10 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
     ui.progressBar->setValue(0);
 
-    if (m_PlayingItem.nDuration > 0)
+    if (m_PlayingInfo.nDuration > 0)
     {
-        ui.progressBar->setMaximum(m_PlayingItem.nDuration);
-        QString qsDuration = wsutil::toQStr(CMedia::GetDurationString(m_PlayingItem.nDuration));
+        ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
+        QString qsDuration = wsutil::toQStr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
 
         ui.labelDuration->setText(qsDuration);
 
@@ -730,28 +727,28 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     }
 }
 
-void MainWindow::_showAlbumName(tagPlayingItem& PlayingItem)
+void MainWindow::_showAlbumName()
 {
     WString strMediaSet;
     if (E_DemandMode::DM_DemandPlaylist == m_eDemandMode || E_DemandMode::DM_DemandPlayItem == m_eDemandMode
-            || PlayingItem.strAlbum.empty())
+            || m_PlayingInfo.strAlbum.empty())
     {
-        if (!PlayingItem.strPlaylist.empty())
+        if (!m_PlayingInfo.strPlaylist.empty())
         {
             if (m_bUsingCustomBkg)
             {
                 strMediaSet << L"列表：";
             }
-            strMediaSet << PlayingItem.strPlaylist;
+            strMediaSet << m_PlayingInfo.strPlaylist;
         }
     }
-    else if (!PlayingItem.strAlbum.empty())
+    else if (!m_PlayingInfo.strAlbum.empty())
     {
         if (m_bUsingCustomBkg)
         {
             strMediaSet << L"专辑：";
         }
-        strMediaSet << PlayingItem.strAlbum;
+        strMediaSet << m_PlayingInfo.strAlbum;
     }
 
     QLabel& labelAlbumName = *ui.labelAlbumName;
@@ -779,7 +776,8 @@ void MainWindow::_showAlbumName(tagPlayingItem& PlayingItem)
         labelAlbumName.adjustSize();
         if (labelAlbumName.width() < rcAlbumNamePrev.width())
         {
-            labelAlbumName.move(rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2, labelAlbumName.y());
+            int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
+            labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
         }
         else
         {
@@ -929,6 +927,9 @@ void MainWindow::slot_buttonClicked(CButton* button)
         }
 
         _relayout();
+
+        static CDialog dlg;
+        dlg.show();
     }
     else
     {

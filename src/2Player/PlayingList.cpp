@@ -97,9 +97,7 @@ void CPlayingList::_onPaint(QPainter& painter, const QRect& rcPos)
     {
         QRect rcItem(0, y, rcPos.width(), m_uRowHeight);
 
-        m_plPlayingItems.get(uItem, [&](pair<UINT, QString>& pr){
-        _onPaintItem(painter, uItem, pr.first, pr.second, rcItem);
-        });
+        _onPaintItem(painter, uItem, rcItem);
 
         y += m_uRowHeight;
         if (y >= rcPos.bottom())
@@ -109,8 +107,7 @@ void CPlayingList::_onPaint(QPainter& painter, const QRect& rcPos)
     }
 }
 
-void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, UINT uID
-                                , const QString& qsTitle, QRect& rcItem)
+void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 {
     bool bPlayingItem = uItem == m_uPlayingItem;
     QFont font(m_font);
@@ -120,10 +117,6 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, UINT uID
         crText.setAlpha(crText.alpha()*0.5);
     }
 
-    if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(uID))
-    {
-        font.setItalic(true);
-    }
     if (bPlayingItem)
     {
         font.setBold(true);
@@ -141,22 +134,39 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, UINT uID
         crText.setAlpha(nAlpha);
     }
 
-    painter.setFont(font);
-    painter.setPen(crText);
+    m_alPlayingItems.get(uItem, [&](tagPlayingItem& playingItem){
+        if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
+        {
+            font.setItalic(true);
+        }
 
-    if (bPlayingItem)
-    {
-        painter.drawText(rcItem.left(), rcItem.top() + 6, rcItem.width()
-            , rcItem.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
-    }
-    rcItem.setLeft(rcItem.left() + 30);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
+        painter.setFont(font);
+        painter.setPen(crText);
+
+        if (bPlayingItem)
+        {
+            painter.drawText(rcItem.left(), rcItem.top() + 6, rcItem.width()
+                , rcItem.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
+        }
+        rcItem.setLeft(rcItem.left() + 30);
+
+
+        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
+    });
 }
 
-void CPlayingList::updateList(PairList<UINT, QString>& plPlayingItems, UINT uPlayingItem)
+void CPlayingList::updateList(UINT uPlayingItem)
 {
-    m_plPlayingItems.swap(plPlayingItems);
-    m_uItemCount = m_plPlayingItems.size();
+    m_alPlayingItems.clear();
+
+    tagPlayingItem playingItem;
+    m_view.getPlayMgr().getPlayingItems()([&](const CPlayItem& PlayItem){
+        playingItem.uID = PlayItem.m_uID;
+        playingItem.qsTitle = wsutil::toQStr(PlayItem.GetTitle());
+        m_alPlayingItems.add(playingItem);
+    });
+
+    m_uItemCount = m_alPlayingItems.size();
 
     m_fScrollPos = 0;
 

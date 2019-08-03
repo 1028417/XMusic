@@ -1,23 +1,18 @@
 
 #pragma once
 
+#include <QWidget>
+
 #include "widget.cpp"
 
 #include "view.h"
 
 struct tagPlayingItem
 {
-    wstring strTitle;
-
-    int nDuration = -1;
-
-    wstring strSinger;
-    wstring strAlbum;
-
-    wstring strPlaylist;
+    UINT uID = 0;
+    QString qsTitle;
 };
 
-#include <QWidget>
 class CPlayingList : public CWidget<QWidget>
 {
 public:
@@ -33,7 +28,7 @@ public:
 private:
     class CPlayerView& m_view;
 
-    PairList<UINT, QString> m_plPlayingItems;
+    ArrList<tagPlayingItem> m_alPlayingItems;
     UINT m_uItemCount = 0;
 
     UINT m_uPlayingItem = 0;
@@ -63,7 +58,7 @@ public:
         m_crText = crText;
     }
 
-    void updateList(PairList<UINT, QString>& m_plPlayingItems, UINT uPlayingItem);
+    void updateList(UINT uPlayingItem);
 
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
@@ -80,8 +75,7 @@ private:
     void mouseDoubleClickEvent(QMouseEvent *ev) override;
 
     void _onPaint(QPainter& painter, const QRect& rcPos) override;
-    void _onPaintItem(QPainter& painter, UINT uItem, UINT uID
-                      , const QString& qsTitle, QRect& rcItem);
+    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem);
 
     void _updateActive(int nActiveTime=6);
 

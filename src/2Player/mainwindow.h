@@ -11,6 +11,18 @@
 
 //namespace Ui { class MainWindow; }
 
+struct tagPlayingInfo
+{
+    wstring strTitle;
+
+    int nDuration = -1;
+
+    wstring strSinger;
+    wstring strAlbum;
+
+    wstring strPlaylist;
+};
+
 class MainWindow : public QMainWindow, public IModelObserver
 {
     Q_OBJECT
@@ -30,7 +42,7 @@ private:
 
     int m_timer = 0;
 
-    tagPlayingItem m_PlayingItem;
+    tagPlayingInfo m_PlayingInfo;
     wstring m_strSingerName;
 
     WString m_strHBkgDir;
@@ -85,7 +97,7 @@ private:
 
     void _relayout();
 
-    void _showAlbumName(tagPlayingItem& PlayingItem);
+    void _showAlbumName();
 
     void _updatePlayPauseButton(bool bPlaying);
 
