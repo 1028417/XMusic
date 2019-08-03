@@ -21,6 +21,9 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowState(Qt::WindowFullScreen);
+
     QWidget* lpTopWidget[] = {
         ui.btnExit, ui.frameDemand, ui.frameDemandLanguage
 
@@ -131,9 +134,7 @@ void MainWindow::showLogo()
     pe.setColor(QPalette::Background, QColor(180, 220, 255));
     this->setPalette(pe);
 
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
-    QMainWindow::show();
+    show();
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -149,7 +150,7 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                m_view.setTimer(330, [&](){
+                m_view.setTimer(500, [&](){
                     if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
@@ -157,9 +158,9 @@ void MainWindow::showLogo()
 
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
-                    if (crCompany.alpha() != 200)
+                    if (crCompany.alpha() != 0)
                     {
-                        crCompany.setAlpha(200);
+                        crCompany.setAlpha(0);
                     }
                     else
                     {
@@ -269,7 +270,7 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
 }
 
-void MainWindow::timerEvent(QTimerEvent* ev)
+void MainWindow::timerEvent(QTimerEvent*)
 {
     //if (ev->timerId() == m_timer)
     {

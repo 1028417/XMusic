@@ -1,62 +1,6 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onMouseEnter()
-{
-    _updateActive(-1);
-}
-
-void CPlayingList::_onMouseLeave()
-{
-    if (0 != m_nActiveTime)
-    {
-        _updateActive(0);
-    }
-}
-
-void CPlayingList::_onTouchBegin(const QPointF&)
-{
-    _updateActive(-1);
-}
-
-void CPlayingList::_onTouchEnd()
-{
-    _updateActive();
-}
-
-void CPlayingList::_onTouchMove(int dy)
-{
-    m_fScrollPos -= (float)dy / m_uRowHeight;
-    if (dy < 0)
-    {
-        m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
-    }
-    else
-    {
-        m_fScrollPos = MAX(0, m_fScrollPos);
-    }
-
-    this->update();
-}
-
-void CPlayingList::_onGesture(QGesture&)
-{
-//    _updateActive(-1);
-}
-
-void CPlayingList::mouseDoubleClickEvent(QMouseEvent *ev)
-{
-    QWidget::mouseDoubleClickEvent(ev);
-
-    float fRowIdx = (float)ev->pos().y()/m_uRowHeight + m_fScrollPos;
-    if (fRowIdx < m_uItemCount)
-    {
-        m_view.getPlayMgr().play((UINT)fRowIdx, true);
-    }
-
-    _updateActive();
-}
-
 void CPlayingList::_onPaint(QPainter& painter, const QRect& rcPos)
 {
     painter.setPen(m_crText);
@@ -189,6 +133,69 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
+void CPlayingList::mouseDoubleClickEvent(QMouseEvent *ev)
+{
+    QWidget::mouseDoubleClickEvent(ev);
+
+    float fRowIdx = (float)ev->pos().y()/m_uRowHeight + m_fScrollPos;
+    if (fRowIdx < m_uItemCount)
+    {
+        UINT uRowIdx = (UINT)fRowIdx;
+
+        _handleMouseDoubleClick(uRowIdx);
+    }
+
+    _updateActive();
+}
+
+void CPlayingList::_handleMouseDoubleClick(UINT uRowIdx)
+{
+    m_view.getPlayMgr().play(uRowIdx, true);
+}
+
+void CPlayingList::_onMouseEnter()
+{
+    _updateActive(-1);
+}
+
+void CPlayingList::_onMouseLeave()
+{
+    if (0 != m_nActiveTime)
+    {
+        _updateActive(0);
+    }
+}
+
+void CPlayingList::_onTouchBegin(const QPointF&)
+{
+    _updateActive(-1);
+}
+
+void CPlayingList::_onTouchEnd()
+{
+    _updateActive();
+}
+
+void CPlayingList::_onTouchMove(int dy)
+{
+    m_fScrollPos -= (float)dy / m_uRowHeight;
+    if (dy < 0)
+    {
+        m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
+    }
+    else
+    {
+        m_fScrollPos = MAX(0, m_fScrollPos);
+    }
+
+    this->update();
+}
+
+void CPlayingList::_onGesture(QGesture&)
+{
+//    _updateActive(-1);
+}
+
 void CPlayingList::_updateActive(int nActiveTime)
 {
     m_nActiveTime = nActiveTime;
@@ -206,3 +213,4 @@ void CPlayingList::timerEvent(QTimerEvent *)
        }
    }
 }
+

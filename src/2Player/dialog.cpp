@@ -6,6 +6,9 @@ CDialog::CDialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
+
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowState(Qt::WindowFullScreen);
 }
 
 CDialog::~CDialog()

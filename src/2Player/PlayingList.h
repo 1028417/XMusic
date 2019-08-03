@@ -63,6 +63,12 @@ public:
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
 private:
+    void _onPaint(QPainter& painter, const QRect& rcPos) override;
+    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem);
+
+    void mouseDoubleClickEvent(QMouseEvent *ev) override;
+    void _handleMouseDoubleClick(UINT uRowIdx);
+
     void _onMouseEnter() override;
     void _onMouseLeave() override;
 
@@ -71,11 +77,6 @@ private:
     void _onTouchMove(int dy) override;
 
     void _onGesture(QGesture&) override;
-
-    void mouseDoubleClickEvent(QMouseEvent *ev) override;
-
-    void _onPaint(QPainter& painter, const QRect& rcPos) override;
-    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem);
 
     void _updateActive(int nActiveTime=6);
 
