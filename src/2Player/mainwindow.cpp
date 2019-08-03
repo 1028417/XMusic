@@ -134,7 +134,7 @@ void MainWindow::showLogo()
     pe.setColor(QPalette::Background, QColor(180, 220, 255));
     this->setPalette(pe);
 
-    show();
+    QMainWindow::show();
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
