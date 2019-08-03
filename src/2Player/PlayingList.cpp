@@ -49,7 +49,7 @@ void CPlayingList::mouseDoubleClickEvent(QMouseEvent *ev)
     QWidget::mouseDoubleClickEvent(ev);
 
     float fRowIdx = (float)ev->pos().y()/m_uRowHeight + m_fScrollPos;
-    if (fRowIdx < m_plPlayingItems.size())
+    if (fRowIdx < m_uItemCount)
     {
         m_view.getPlayMgr().play((UINT)fRowIdx, true);
     }
@@ -67,10 +67,9 @@ void CPlayingList::_onPaint(QPainter& painter, const QRect& rcPos)
     }
     m_uRowHeight = rcPos.height()/uRowCount;
 
-    UINT uItemCount = m_plPlayingItems.size();
-    if (uItemCount > uRowCount)
+    if (m_uItemCount > uRowCount)
     {
-        m_uMaxScrollPos = uItemCount - uRowCount;
+        m_uMaxScrollPos = m_uItemCount - uRowCount;
     }
     else
     {
@@ -94,7 +93,7 @@ void CPlayingList::_onPaint(QPainter& painter, const QRect& rcPos)
 
     UINT uItem = m_fScrollPos;
     int y = rcPos.top() + (-m_fScrollPos+uItem)*m_uRowHeight;
-    for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
+    for (UINT uRowIdx = 0; uItem < m_uItemCount; uItem++, uRowIdx++)
     {
         QRect rcItem(0, y, rcPos.width(), m_uRowHeight);
 
@@ -154,37 +153,10 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, UINT uID
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
 }
 
-/*void CPlayingList::_initFontPenEx(QFont& font, QColor& crText, QRect& rcItem)
-{
-    int y_mid = this->rect().center().y();
-    int dy = rcItem.center().y() - y_mid;
-
-    if (dy < 0)
-    {
-        if (0 == m_fScrollPos)
-        {
-            return;
-        }
-    }
-    else if (dy > 0)
-    {
-        if (m_fScrollPos == m_uMaxScrollPos)
-        {
-            return;
-        }
-    }
-    else
-    {
-        return;
-    }
-
-    int nAlpha = crText.alpha() * sqrt( float(y_mid - abs(dy)) / y_mid);
-    crText.setAlpha(nAlpha);
-}*/
-
 void CPlayingList::updateList(PairList<UINT, QString>& plPlayingItems, UINT uPlayingItem)
 {
     m_plPlayingItems.swap(plPlayingItems);
+    m_uItemCount = m_plPlayingItems.size();
 
     m_fScrollPos = 0;
 

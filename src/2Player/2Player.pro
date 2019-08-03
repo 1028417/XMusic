@@ -27,7 +27,8 @@ SOURCES +=\
     main.cpp \
     view.cpp \
     PlayingList.cpp \
-    widget.cpp
+    widget.cpp \
+    dialog.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -36,11 +37,13 @@ HEADERS  += mainwindow.h \
     PlayingList.h \
     widget.h \
     button.h \
-    ProgressBar.h
+    ProgressBar.h \
+    dialog.h
 
 RESOURCES += res.qrc
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialog.ui
 
 INCLUDEPATH += \
     ../../inc \

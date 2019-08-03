@@ -34,6 +34,7 @@ private:
     class CPlayerView& m_view;
 
     PairList<UINT, QString> m_plPlayingItems;
+    UINT m_uItemCount = 0;
 
     UINT m_uPlayingItem = 0;
 
@@ -42,8 +43,6 @@ private:
 
     UINT m_uMinRowHeight = 100;
     UINT m_uRowHeight = 0;
-
-    UINT m_uItemCount = 0;
 
     UINT m_uMaxScrollPos = 0;
     float m_fScrollPos = 0;

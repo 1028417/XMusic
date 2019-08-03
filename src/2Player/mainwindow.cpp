@@ -465,21 +465,9 @@ void MainWindow::_relayout()
     x_frameDemand-=11;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-//    QAbstractButton* lpButton[] = {
-//        ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-//        , ui.btnDemandPlayItem, ui.btnDemandPlaylist};
-//    UINT uButtonCount = sizeof(lpButton)/sizeof(lpButton[0]);
-//    int nButtonSize = ui.frameDemand->height();
-//    int cx_offset = (ui.frameDemand->width() - uButtonCount*nButtonSize) / (uButtonCount-1);
-//    for (UINT uIdx = 0; uIdx < uButtonCount; uIdx++)
-//    {
-//        lpButton[uIdx]->setGeometry(uIdx * (cx_offset + nButtonSize), 0, nButtonSize, nButtonSize);
-//    }
-
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
 
     int y_PlayingListMax = 0;
-
 
     bool bFlag = false;
     if (bHScreen)
@@ -513,23 +501,14 @@ void MainWindow::_relayout()
         ui.labelSingerName->setGeometry(x, y_AlbumName-ui.labelSingerName->height()
                                          , cx_progressBar, ui.labelSingerName->height());
 
-        int y_SingerImg = 0;
+        int y_SingerImg = ui.frameDemandLanguage->geometry().bottom();
         if (bHScreen)
         {
-            y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 60;
+            y_SingerImg += 60;
         }
         else
         {
-            y_SingerImg = cy/2;/*y_AlbumName - 500;
-            if (cy > 1080)
-            {
-                y_SingerImg -= 200;
-            }
-            else if (1080 == cy)
-            {
-                y_SingerImg -= 100;
-            }*/
-
+            y_SingerImg += 1080;
             y_PlayingListMax = y_SingerImg;
         }
         int cy_SingerImg = y_AlbumName-y_SingerImg;
