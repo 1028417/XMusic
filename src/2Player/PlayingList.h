@@ -1,11 +1,9 @@
 
 #pragma once
 
-#include <QWidget>
-
-#include "widget.cpp"
-
 #include "view.h"
+
+#include "listview.h"
 
 struct tagPlayingItem
 {
@@ -13,12 +11,15 @@ struct tagPlayingItem
     QString qsTitle;
 };
 
-class CPlayingList : public CWidget<QWidget>
+class CPlayingList : public CListView
 {
+    Q_OBJECT
+
 public:
     CPlayingList(class CPlayerView& view, QWidget *parent=NULL) :
-        CWidget(parent, {Qt::TapAndHoldGesture})
+        CListView(parent, {Qt::TapAndHoldGesture})
         , m_view(view)
+        , m_crShadow(128,128,128)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 
@@ -29,33 +30,35 @@ private:
     class CPlayerView& m_view;
 
     ArrList<tagPlayingItem> m_alPlayingItems;
-    UINT m_uItemCount = 0;
 
     UINT m_uPlayingItem = 0;
 
-    QFont m_font;
-    QColor m_crText;
-
-    UINT m_uMinRowHeight = 100;
-    UINT m_uRowHeight = 0;
-
-    UINT m_uMaxScrollPos = 0;
-    float m_fScrollPos = 0;
-
-    bool m_bHittestPlayingItem = false;
-
     int m_nActiveTime = 0;
 
+    UINT m_uShadowWidth = 2;
+    QColor m_crShadow;
+
 public:
-    void setMinRowHeight(UINT uMinRowHeight)
+    void setShadow(UINT uWidth, const QColor& crShadow)
     {
-        m_uMinRowHeight = uMinRowHeight;
+        m_uShadowWidth = uWidth;
+        m_crShadow = crShadow;
+
+        CWidget::update();
     }
 
-    void setFont(const QFont& font, const QColor& crText)
+    void setShadowWidth(UINT uWidth)
     {
-        m_font = font;
-        m_crText = crText;
+        m_uShadowWidth = uWidth;
+
+        CWidget::update();
+    }
+
+    void setShadowColor(const QColor& crShadow)
+    {
+        m_crShadow = crShadow;
+
+        CWidget::update();
     }
 
     void updateList(UINT uPlayingItem);
@@ -63,18 +66,20 @@ public:
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
 private:
-    void _onPaint(QPainter& painter, const QRect& rcPos) override;
-    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem);
+    UINT getItemCount() override
+    {
+        return m_alPlayingItems.size();
+    }
 
-    void mouseDoubleClickEvent(QMouseEvent *ev) override;
-    void _handleMouseDoubleClick(UINT uRowIdx);
+    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
+
+    void _handleMouseDoubleClick(UINT uRowIdx) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;
 
     void _onTouchBegin(const QPointF&) override;
     void _onTouchEnd() override;
-    void _onTouchMove(int dy) override;
 
     void _onGesture(QGesture&) override;
 

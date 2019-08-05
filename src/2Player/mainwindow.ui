@@ -341,7 +341,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/img/defaultSingerImg.jpg);
+     <string notr="true">border-image: url(:/img/defaultSingerImg.png);
 border-image-repeat: stretched</string>
     </property>
     <widget class="QFrame" name="frameSingerImg">
@@ -365,7 +365,7 @@ border-image-repeat: stretched</string>
      <property name="lineWidth">
       <number>0</number>
      </property>
-     <widget class="QLabel" name="labelSingerImg">
+     <widget class="CLabel" name="labelSingerImg">
       <property name="geometry">
        <rect>
         <x>140</x>
@@ -745,7 +745,7 @@ border-image-repeat: stretched</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/btnExit.png);</string>
+      <string notr="true">border-image: url(:/img/btnMore.png);</string>
      </property>
      <property name="text">
       <string/>

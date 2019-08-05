@@ -89,7 +89,7 @@ void MainWindow::_init()
     pe.setColor(QPalette::WindowText, Qt::GlobalColor::white);
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
-        , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
+        , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR, ui.labelSingerImg};
     for (auto label : lstLabels)
     {
         connect(label, SIGNAL(signal_mousePressEvent(CLabel*)), this, SLOT(slot_labelMousePress(CLabel*)));
@@ -100,8 +100,7 @@ void MainWindow::_init()
         label->setPalette(pe);
     }
 
-    ui.labelPlayingfile->setShadow(2, QColor(128,128,128));
-    ui.labelSingerName->setShadow(4, QColor(128,128,128));
+    ui.labelSingerName->setShadowWidth(4);
 
     connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
         , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));
@@ -315,12 +314,12 @@ void MainWindow::_relayout()
 {
     int cx = this->width();
     int cy = this->height();
-    bool bHScreen = cx > cy; // 橫屏
+    m_bHScreen = cx > cy; // 橫屏
 
     int x_Logo = (cx - ui.labelLogo->width())/2-1;
 
     int y_Logo = (cy - ui.labelLogo->height())/2;
-    if (bHScreen)
+    if (m_bHScreen)
     {
         y_Logo -= 60;
     }
@@ -334,13 +333,22 @@ void MainWindow::_relayout()
     int y_LogoTip = ui.labelLogo->geometry().bottom() + 10;
     ui.labelLogoTip->move(x_LogoTip, y_LogoTip);
 
-    int x_LogoCompany = cx - 50 - ui.labelLogoCompany->width();
+    ui.labelLogoCompany->adjustSize();
     int y_LogoCompany = cy - 50 - ui.labelLogoCompany->height();
+    int x_LogoCompany = 0;
+    if (m_bHScreen)
+    {
+        x_LogoCompany = cx - 50 - ui.labelLogoCompany->width();
+    }
+    else
+    {
+        x_LogoCompany = (cx-ui.labelLogoCompany->width())/2;
+    }
     ui.labelLogoCompany->move(x_LogoCompany, y_LogoCompany);
 
     static const QPixmap bkgPixmapPrev = *ui.labelBkg->pixmap();
     float fCXRate = 0;
-    if (bHScreen)
+    if (m_bHScreen)
     {
         fCXRate = (float)cx/bkgPixmapPrev.width();
     }
@@ -352,7 +360,7 @@ void MainWindow::_relayout()
     int dy_bkg = cy - cy_bkg;
 
     QPixmap *pBkgPixmap = NULL;
-    if (bHScreen)
+    if (m_bHScreen)
     {
         if (!m_HBkgPixmap.isNull())
         {
@@ -390,7 +398,7 @@ void MainWindow::_relayout()
 
         ui.labelBkg->setPixmap(bkgPixmapPrev);
 
-        if (bHScreen)
+        if (m_bHScreen)
         {
             ui.labelBkg->resize(cx, cy_bkg);
         }
@@ -451,7 +459,7 @@ void MainWindow::_relayout()
     ui.btnExit->move(x_btnExit, y_frameDemand + 10);
 
     int x_frameDemand = 0;
-    if (bHScreen)
+    if (m_bHScreen)
     {
         x_frameDemand = (ui.progressBar->geometry().right()
             + ui.progressBar->x() - ui.frameDemand->width())/2;
@@ -468,7 +476,7 @@ void MainWindow::_relayout()
     int y_PlayingListMax = 0;
 
     bool bFlag = false;
-    if (bHScreen)
+    if (m_bHScreen)
     {
         if (cy < 1080)
         {
@@ -500,15 +508,23 @@ void MainWindow::_relayout()
                                          , cx_progressBar, ui.labelSingerName->height());
 
         int y_SingerImg = 0;
-        if (bHScreen)
+        if (m_bZoomoutSingerImg)
         {
-            y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 60;
+            y_SingerImg = y_AlbumName-300;
         }
         else
         {
-            y_SingerImg = cy/2+10;
-            y_PlayingListMax = y_SingerImg;
+            if (m_bHScreen)
+            {
+                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 60;
+            }
+            else
+            {
+                y_SingerImg = cy/2+10;
+            }
         }
+        y_PlayingListMax = y_SingerImg;
+
         int cy_SingerImg = y_AlbumName-y_SingerImg;
         cauto& rcSingerImg = m_mapWidgetPos[ui.wdgSingerImg];
         int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
@@ -536,40 +552,49 @@ void MainWindow::_relayout()
         m_PlayingList.setFont(m_view.genFont(-1.5), QColor(255, 255, 255, 160));
     }
 
-    if (ui.frameSingerImg->isVisible())
+    UINT uMargin = 0;
+    if (m_bUsingCustomBkg)
     {
-        auto pPixmap = ui.labelSingerImg->pixmap();
-        if (NULL != pPixmap && !pPixmap->isNull())
-        {
-            _showSingerImg(*pPixmap);
-        }
+        uMargin = 2;
+    }
+    ui.frameSingerImg->setGeometry(uMargin, uMargin
+        , ui.wdgSingerImg->width() - uMargin*2
+        , ui.wdgSingerImg->height() - uMargin*2);
+    ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
+
+    auto pPixmap = ui.labelSingerImg->pixmap();
+    if (NULL != pPixmap && !pPixmap->isNull())
+    {
+        _showSingerImg(*pPixmap);
     }
 
-    UINT uMinRowHeight = 0;
-    if (bHScreen)
+    UINT uRowCount = 10;
+    if (m_bHScreen)
     {
         UINT uMargin = 45;
         int x_PlayingList = ui.progressBar->geometry().right();
         x_PlayingList += 90 * fCXRate;
 
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin*fCXRate, cy-uMargin*2);
-
-        uMinRowHeight = (cy-uMargin*2)/10;
-     }
+    }
     else
     {
         UINT y_Margin = 30;
 
-        uMinRowHeight = 95;
-        int nRows = (y_PlayingListMax - y_frameDemandBottom)/uMinRowHeight;
-        if (nRows > 10)
+        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/100;
+        if (uRowCount > 10)
         {
-            uMinRowHeight += 10;
+            uRowCount = 10;
             y_Margin += 10;
+
+            if (m_bZoomoutSingerImg)
+            {
+                y_Margin+=10;
+            }
         }
-        else if (nRows < 7)
+        else if (uRowCount < 7)
         {
-            uMinRowHeight -= 10;
+            uRowCount -= 7;
             y_Margin -= 10;
         }
 
@@ -577,17 +602,8 @@ void MainWindow::_relayout()
         int y_PlayingList = y_frameDemandBottom + y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
-
-        if (cy_PlayingList < 900)
-        {
-            uMinRowHeight = 85;
-        }
-        else if (cy_PlayingList < 1080)
-        {
-            uMinRowHeight = 90;
-        }
     }
-    m_PlayingList.setMinRowHeight(uMinRowHeight);
+    m_PlayingList.setRowCount(uRowCount);
 
     _showAlbumName();
 }
@@ -686,11 +702,10 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
-        ui.frameSingerImg->setVisible(false);
+        //ui.frameSingerImg->setVisible(false);
 
-        //QGraphicsOpacityEffect ge;
-        //ge.setOpacity(0.4);
-        //ui.wdgSingerImg->setGraphicsEffect(&ge);
+        ui.labelSingerImg->setPixmap(QPixmap());
+        ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
         if (m_strSingerName.empty())
         {
@@ -777,7 +792,7 @@ void MainWindow::_showAlbumName()
         }
         else
         {
-            //labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
+            labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
         }
     }
 }
@@ -846,20 +861,7 @@ void MainWindow::_showSingerImg(const QPixmap& pixmap)
     }
     ui.labelSingerImg->setPixmap(pixmap);
 
-    ui.frameSingerImg->setVisible(true);
-
-    //QGraphicsOpacityEffect ge;
-    //ge.setOpacity(1);
-    //ui.wdgSingerImg->setGraphicsEffect(&ge);
-
-    UINT uMargin = 0;
-    if (m_bUsingCustomBkg)
-    {
-        uMargin = 2;
-    }
-    ui.frameSingerImg->setGeometry(uMargin, uMargin
-        , ui.wdgSingerImg->width() - uMargin*2
-        , ui.wdgSingerImg->height() - uMargin*2);
+    //ui.frameSingerImg->setVisible(true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)
@@ -898,11 +900,11 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnSetting)
     {
-        bool bHScreen = this->width() > this->height(); // 橫屏
-        cauto& strBkgDir = bHScreen?m_strHBkgDir:m_strVBkgDir;
-        const list<wstring>& lstBkg = bHScreen?m_lstHBkg:m_lstVBkg;
-        auto& strCurrBkg = bHScreen? m_view.getDataMgr().getOption().strHBkg : m_view.getDataMgr().getOption().strVBkg;
-        QPixmap& bkgPixmap = bHScreen? m_HBkgPixmap:m_VBkgPixmap;
+        cauto& strBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+        const list<wstring>& lstBkg = m_bHScreen?m_lstHBkg:m_lstVBkg;
+        auto& strCurrBkg = m_bHScreen? m_view.getDataMgr().getOption().strHBkg
+                                     : m_view.getDataMgr().getOption().strVBkg;
+        QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
 
         for (cauto& strBkg : lstBkg)
         {
@@ -923,9 +925,6 @@ void MainWindow::slot_buttonClicked(CButton* button)
         }
 
         _relayout();
-
-        static CBkgDlg dlg;
-        dlg.show();
     }
     else if (button == ui.btnMore)
     {
@@ -941,6 +940,16 @@ static const QString __qsCheck = wsutil::toQStr(L"√");
 
 void MainWindow::slot_labelMousePress(CLabel* label)
 {
+    if (label == ui.labelSingerImg)
+    {
+        if (m_bUsingCustomBkg)
+        {
+            m_bZoomoutSingerImg = !m_bZoomoutSingerImg;
+            this->_relayout();
+        }
+        return;
+    }
+
     m_eDemandLanguage = E_LanguageType::LT_None;
 
     PairList<E_LanguageType, QLabel*> plLabels {{E_LanguageType::LT_CN, ui.labelDemandCN}

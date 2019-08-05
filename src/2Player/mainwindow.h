@@ -56,6 +56,10 @@ private:
 
     bool m_bUsingCustomBkg = false;
 
+    bool m_bZoomoutSingerImg = false;
+
+    bool m_bHScreen = false;
+
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 

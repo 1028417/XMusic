@@ -28,7 +28,8 @@ SOURCES +=\
     view.cpp \
     PlayingList.cpp \
     widget.cpp \
-    bkgdlg.cpp
+    bkgdlg.cpp \
+    listview.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     widget.h \
     button.h \
     ProgressBar.h \
-    bkgdlg.h
+    bkgdlg.h \
+    listview.h
 
 RESOURCES += res.qrc
 

@@ -16,12 +16,13 @@ class CLabel : public CWidget<QLabel>
 public:
     CLabel(QWidget *parent) :
         CWidget<QLabel>(parent)
+        , m_crShadow(128,128,128)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
-    UINT m_uShadowWidth = 0;
+    UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
 signals:
@@ -32,6 +33,20 @@ public:
     void setShadow(UINT uWidth, const QColor& crShadow)
     {
         m_uShadowWidth = uWidth;
+        m_crShadow = crShadow;
+
+        CWidget::update();
+    }
+
+    void setShadowWidth(UINT uWidth)
+    {
+        m_uShadowWidth = uWidth;
+
+        CWidget::update();
+    }
+
+    void setShadowColor(const QColor& crShadow)
+    {
         m_crShadow = crShadow;
 
         CWidget::update();
@@ -50,32 +65,30 @@ private:
     {
         if (0 != m_uShadowWidth)
         {
-            QPen pen = painter.pen();
-
-            QTextOption to;
-            to.setAlignment(this->alignment());
-
-            QRect rcText(pos);
-
-            QColor crShadow(m_crShadow);
-
-            for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
+            const QString& text = this->text();
+            if (!text.isEmpty())
             {
-                rcText.setLeft(rcText.left()+1);
-                rcText.setTop(rcText.top()+1);
+                QPen pen = painter.pen();
 
-                crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-uIdx)/m_uShadowWidth);
-                painter.setPen(crShadow);
+                QTextOption to;
+                to.setAlignment(this->alignment());
 
-                painter.drawText(rcText, this->text(), to);
+                for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
+                {
+                    m_crShadow.setAlpha(255*(m_uShadowWidth-uIdx)/m_uShadowWidth);
+                    painter.setPen(m_crShadow);
+
+                    painter.drawText(QRectF(pos.left()+uIdx, pos.top()+uIdx, pos.width(), pos.height())
+                                     , this->text(), to);
+                }
+
+                painter.setPen(pen);
+                painter.drawText(pos, this->text(), to);
+
+                return;
             }
+        }
 
-            painter.setPen(pen);
-            painter.drawText(pos, this->text(), to);
-        }
-        else
-        {
-            CWidget<QLabel>::_onPaint(painter, pos);
-        }
+        CWidget<QLabel>::_onPaint(painter, pos);
     }
 };
