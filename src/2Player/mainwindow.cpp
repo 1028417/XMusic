@@ -7,7 +7,7 @@
 
 #include <QMovie>
 
-#include "dialog.h"
+#include "bkgdlg.h"
 
 extern const ITxtWriter& g_logWriter;
 
@@ -21,16 +21,16 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
-
     QWidget* lpTopWidget[] = {
-        ui.btnExit, ui.frameDemand, ui.frameDemandLanguage
+        ui.frameDemand, ui.btnMore
 
-        , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
+        , ui.btnDemandSinger, ui.btnDemandAlbum
+        , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
 
-        , ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+        , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
         , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR
+
+        , ui.btnExit
     };
     for (auto pWidget : lpTopWidget)
     {
@@ -52,6 +52,9 @@ MainWindow::MainWindow(CPlayerView& view) :
     }
 
     _init();
+
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowState(Qt::WindowFullScreen);
 }
 
 void MainWindow::_init()
@@ -74,12 +77,11 @@ void MainWindow::_init()
 #endif
 
     SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-                , ui.btnDemandPlayItem, ui.btnDemandPlaylist
+                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
                 , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
                 , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom};
     for (auto button : lstButtons)
     {
-        button->setFocusPolicy(Qt::FocusPolicy::NoFocus);
         connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
     }
 
@@ -158,13 +160,13 @@ void MainWindow::showLogo()
 
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
-                    if (crCompany.alpha() != 0)
+                    if (crCompany.alpha() < 255)
                     {
-                        crCompany.setAlpha(0);
+                        crCompany.setAlpha(255);
                     }
                     else
                     {
-                        crCompany.setAlpha(255);
+                        crCompany.setAlpha(170);
                     }
                     peCompany.setColor(QPalette::WindowText, crCompany);
                     ui.labelLogoCompany->setPalette(peCompany);
@@ -270,9 +272,17 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
 }
 
-void MainWindow::timerEvent(QTimerEvent*)
+bool MainWindow::event(QEvent *ev)
 {
-    //if (ev->timerId() == m_timer)
+    switch (ev->type())
+    {
+    case QEvent::Move:
+    case QEvent::Resize:
+    case QEvent::Show:
+        _relayout();
+
+        break;
+    case QEvent::Timer:
     {
         auto ePlayStatus = m_view.getPlayMgr().GetPlayStatus();
         if (E_PlayStatus::PS_Stop != ePlayStatus)
@@ -293,18 +303,7 @@ void MainWindow::timerEvent(QTimerEvent*)
             }
         }
     }
-}
-
-bool MainWindow::event(QEvent *ev)
-{
-    switch (ev->type())
-    {
-    case QEvent::Move:
-    case QEvent::Resize:
-    case QEvent::Show:
-        _relayout();
-
-        break;
+    break;
     default:
         break;
     }
@@ -459,13 +458,9 @@ void MainWindow::_relayout()
     }
     else
     {
-#ifdef __ANDROID__
         x_frameDemand = (cx - ui.frameDemand->width())/2;
-#else
-        x_frameDemand = (x_btnExit - ui.frameDemand->width())/2;
-#endif
     }
-    x_frameDemand-=11;
+    x_frameDemand += 30;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
@@ -511,7 +506,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            y_SingerImg = cy/2+20;
+            y_SingerImg = cy/2+10;
             y_PlayingListMax = y_SingerImg;
         }
         int cy_SingerImg = y_AlbumName-y_SingerImg;
@@ -782,7 +777,7 @@ void MainWindow::_showAlbumName()
         }
         else
         {
-            labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
+            //labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
         }
     }
 }
@@ -929,8 +924,12 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
         _relayout();
 
-        static CDialog dlg;
+        static CBkgDlg dlg;
         dlg.show();
+    }
+    else if (button == ui.btnMore)
+    {
+
     }
     else
     {

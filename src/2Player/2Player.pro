@@ -28,7 +28,7 @@ SOURCES +=\
     view.cpp \
     PlayingList.cpp \
     widget.cpp \
-    dialog.cpp
+    bkgdlg.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -38,12 +38,12 @@ HEADERS  += mainwindow.h \
     widget.h \
     button.h \
     ProgressBar.h \
-    dialog.h
+    bkgdlg.h
 
 RESOURCES += res.qrc
 
 FORMS    += mainwindow.ui \
-    dialog.ui
+    bkgdlg.ui
 
 INCLUDEPATH += \
     ../../inc \

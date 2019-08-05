@@ -391,7 +391,7 @@ border-image-repeat: stretched</string>
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>840</width>
+      <width>950</width>
       <height>170</height>
      </rect>
     </property>
@@ -581,7 +581,7 @@ border-image-repeat: stretched</string>
       <rect>
        <x>20</x>
        <y>120</y>
-       <width>990</width>
+       <width>920</width>
        <height>60</height>
       </rect>
      </property>
@@ -724,6 +724,41 @@ border-image-repeat: stretched</string>
        <bool>true</bool>
       </property>
      </widget>
+     <zorder>labelDemandHK</zorder>
+     <zorder>labelDemandKR</zorder>
+     <zorder>labelDemandJP</zorder>
+     <zorder>labelDemandTAI</zorder>
+     <zorder>labelDemandEN</zorder>
+     <zorder>labelDemandEUR</zorder>
+     <zorder>labelDemandCN</zorder>
+    </widget>
+    <widget class="CButton" name="btnMore">
+     <property name="geometry">
+      <rect>
+       <x>860</x>
+       <y>10</y>
+       <width>90</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-image: url(:/img/btnExit.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QLabel" name="labelLogo">
@@ -801,7 +836,7 @@ border-image-repeat: stretched</string>
    <widget class="CButton" name="btnExit">
     <property name="geometry">
      <rect>
-      <x>860</x>
+      <x>1030</x>
       <y>10</y>
       <width>90</width>
       <height>90</height>

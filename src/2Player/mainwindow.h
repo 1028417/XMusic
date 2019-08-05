@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+
+#pragma once
 
 #include <QMainWindow>
 
@@ -73,17 +73,14 @@ private slots:
 
     void slot_progressMousePress(CLabel*, const QPoint& pos);
 
-private slots:
-    void timerEvent(QTimerEvent *) override;
-
-    bool event(QEvent *) override;
-
 public:
     void showLogo();
 
     void show();
 
 private:
+    bool event(QEvent *) override;
+
     inline bool isAndroid() const
     {
 #ifdef __ANDROID__
@@ -113,5 +110,3 @@ private:
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
     void onPlayFinish() override;
 };
-
-#endif // MAINWINDOW_H

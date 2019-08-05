@@ -15,12 +15,13 @@ public:
     CButton(QWidget *parent) :
         CWidget(parent, {Qt::TapAndHoldGesture})
     {
+        setFocusPolicy(Qt::FocusPolicy::NoFocus);
+
         connect(this, SIGNAL(clicked()), this, SLOT(slot_clicked()));
     }
 
 signals:
     void signal_clicked(CButton*);
-    void signal_doubleClicked(CButton*);
 
     void signal_contextMenu(CButton*);
 
@@ -31,7 +32,6 @@ private slots:
     }
 
 private:
-    //void _onDragBegin() override
     void mousePressEvent(QMouseEvent *ev) override
     {
         QGraphicsOpacityEffect ge;
@@ -40,18 +40,6 @@ private:
 
         QPushButton::mousePressEvent(ev);
     }
-
-    void mouseDoubleClickEvent(QMouseEvent *ev) override
-    {
-        QPushButton::mouseDoubleClickEvent(ev);
-
-        emit signal_doubleClicked(this);
-    }
-
-//    void contextMenuEvent(QContextMenuEvent *) override
-//    {
-//        emit signal_contextMenu(this);
-//    }
 
     void _onGesture(QGesture&) override
     {

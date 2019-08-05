@@ -21,7 +21,7 @@ public:
         {
             QRect rcProgress(pos);
             rcProgress.setRight(pos.width()*this->value()/this->maximum());
-            painter.fillRect(rcProgress, QBrush(QColor(0,255,0)));
+            painter.fillRect(rcProgress, QBrush(QColor(0,200,255)));
         }
     }
 };
