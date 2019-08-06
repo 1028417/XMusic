@@ -16,7 +16,7 @@ private:
 
 	wstring& m_strRetDir;
 
-	CDirTree m_wndBrowseTree;
+	CDirTree m_wndTree;
 
 private:
 	BOOL OnInitDialog();

@@ -68,6 +68,13 @@ private:
             const QString& text = this->text();
             if (!text.isEmpty())
             {
+                while (painter.fontMetrics().width(text) > pos.width())
+                {
+                    QFont font = painter.font();
+                    font.setPointSizeF(font.pointSizeF()-0.5f);
+                    painter.setFont(font);
+                }
+
                 QPen pen = painter.pen();
 
                 QTextOption to;

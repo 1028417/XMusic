@@ -5,9 +5,6 @@
 
 #include "../../dlg/TrackDetailDlg.h"
 
-#define BkgColor_Select RGB(204, 232, 255)
-#define BkgColor_Hit RGB(229, 243, 255)
-
 #define __PrevTrack L"上一曲"
 #define __NextTrack L"下一曲"
 
@@ -66,7 +63,7 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::OnCustomDraw(tagLVCustomDraw& lvcd)
 {
-	CRect rcItem(lvcd.rcPos);
+	CRect rcItem(lvcd.rc);
 	if (0 == rcItem.right || 0 == rcItem.bottom)
 	{
 		return;
@@ -75,14 +72,13 @@ void CPlayingList::OnCustomDraw(tagLVCustomDraw& lvcd)
 	rcItem.left = 0;
 
 	m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
-		HDC hDC = lvcd.hDC;
 		CCompDC CompDC;
-		(void)CompDC.create(rcItem.Width(), rcItem.Height(), hDC);
+		(void)CompDC.create(rcItem.Width(), rcItem.Height(), lvcd.hdc);
 		CDC& MemDC = CompDC.getDC();
 
 		DrawItem(MemDC, CRect(0,0, rcItem.Width(), rcItem.Height()), lvcd.uItem, PlayItem);
 
-		(void)::BitBlt(hDC, rcItem.left, rcItem.top, rcItem.Width(), rcItem.Height(), MemDC, 0, 0, SRCCOPY);
+		(void)::BitBlt(lvcd.hdc, rcItem.left, rcItem.top, rcItem.Width(), rcItem.Height(), MemDC, 0, 0, SRCCOPY);
 
 		lvcd.bSkipDefault = true;
 	});

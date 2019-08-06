@@ -14,7 +14,7 @@ public:
 private:
 	CAlbumPage& m_AlbumPage;
 
-	CObjectTree m_wndBrowseTree;
+	CObjectTree m_wndTree;
 	
 	CMediaSet *m_pDropHilightSingerObject = NULL;
 

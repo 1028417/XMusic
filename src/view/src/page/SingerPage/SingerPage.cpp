@@ -25,7 +25,7 @@ END_MESSAGE_MAP()
 
 void CSingerPage::DoDataExchange(CDataExchange* pDX)
 {
-	DDX_Control(pDX, IDC_TREE, m_wndBrowseTree);
+	DDX_Control(pDX, IDC_TREE, m_wndTree);
 
 	CPage::DoDataExchange(pDX);
 }
@@ -34,20 +34,20 @@ BOOL CSingerPage::OnInitDialog()
 {
 	(void)CPage::OnInitDialog();
 
-	(void)m_wndBrowseTree.ModifyStyle(0 | TVS_LINESATROOT | TVS_HASBUTTONS
+	(void)m_wndTree.ModifyStyle(0 | TVS_LINESATROOT | TVS_HASBUTTONS
 		, TVS_EDITLABELS | TVS_HASLINES);
-	m_wndBrowseTree.ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
+	m_wndTree.ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 
-	m_wndBrowseTree.SetTextColor(__Color_Text);
-	m_wndBrowseTree.SetLineColor(RGB(200, 200, 255));
+	m_wndTree.SetTextColor(__Color_Text);
+	m_wndTree.SetLineColor(RGB(200, 200, 255));
 
-	m_wndBrowseTree.SetFontSize(m_view.m_globalSize.m_fBigFontSize);
+	m_wndTree.SetFontSize(m_view.m_globalSize.m_fBigFontSize);
 
-	m_wndBrowseTree.SetImageList(m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
+	m_wndTree.SetImageList(m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
 
-	m_wndBrowseTree.SetIndent(m_wndBrowseTree.GetIndent() - 10);
+	m_wndTree.SetIndent(m_wndTree.GetIndent() - 10);
 
-	m_wndBrowseTree.SetCustomDraw([&](tagTVCustomDraw& tvcd) {
+	m_wndTree.SetCustomDraw([&](tagTVCustomDraw& tvcd) {
 		CMediaSet *pSingerObject = (CMediaSet *)tvcd.pObject;
 		if (NULL != pSingerObject)
 		{
@@ -59,11 +59,16 @@ BOOL CSingerPage::OnInitDialog()
 			{
 				tvcd.uTextAlpha = 128;
 			}
+
+			if (m_wndTree.GetSelectedObject() == pSingerObject)
+			{
+				tvcd.crBkg = BkgColor_Select;
+			}
 		}
 	});
 
-	(void)__super::RegDragDropCtrl(m_wndBrowseTree, [&](tagDragData& DragData) {
-		CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetSelectedObject();
+	(void)__super::RegDragDropCtrl(m_wndTree, [&](tagDragData& DragData) {
+		CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetSelectedObject();
 		__AssertReturn(pSingerObject, false);
 
 		__EnsureReturn(E_MediaSetType::MST_Singer == pSingerObject->m_eType, false);
@@ -75,9 +80,9 @@ BOOL CSingerPage::OnInitDialog()
 		return true;
 	});
 
-	__super::RegMenuHotkey(m_wndBrowseTree, VK_RETURN, ID_PLAY);
-	__super::RegMenuHotkey(m_wndBrowseTree, VK_F2, ID_RENAME);
-	__super::RegMenuHotkey(m_wndBrowseTree, VK_DELETE, ID_REMOVE);
+	__super::RegMenuHotkey(m_wndTree, VK_RETURN, ID_PLAY);
+	__super::RegMenuHotkey(m_wndTree, VK_F2, ID_RENAME);
+	__super::RegMenuHotkey(m_wndTree, VK_DELETE, ID_REMOVE);
 
 	(void)this->RefreshTree();
 
@@ -91,32 +96,32 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 	CWaitCursor WaitCursor;
 	m_AlbumPage.ShowSinger(NULL);
 
-	CRedrawLockGuard RedrawLockGuard(m_wndBrowseTree);
+	CRedrawLockGuard RedrawLockGuard(m_wndTree);
 	
 	m_bRefreshing = true;
-	(void)m_wndBrowseTree.DeleteAllItems();
+	(void)m_wndTree.DeleteAllItems();
 	m_bRefreshing = false;
 
-	//(void)m_wndBrowseTree.SetFocus();
+	//(void)m_wndTree.SetFocus();
 
 	auto& SingerMgr = m_view.getSingerMgr();
 
 	TD_MediaSetList lstSubSets;
 	SingerMgr.GetSubSets(lstSubSets);
 	lstSubSets([&](CMediaSet& SubSet) {		
-		m_wndBrowseTree.InsertObject(SubSet);
+		m_wndTree.InsertObject(SubSet);
 
 		if (E_MediaSetType::MST_SingerGroup == SubSet.m_eType)
 		{
 			CSingerGroup& group = (CSingerGroup&)SubSet;
 			for (CSinger& singer : group.singers())
 			{
-				m_wndBrowseTree.InsertObject(singer, &group);
+				m_wndTree.InsertObject(singer, &group);
 			}
 
 			if (m_setExpandedGroupIDs.find(group.m_uID) != m_setExpandedGroupIDs.end())
 			{
-				(void)m_wndBrowseTree.ExpandObject(group);
+				(void)m_wndTree.ExpandObject(group);
 			}
 		}
 	});
@@ -128,10 +133,10 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 			auto pSinger = SingerMgr.GetMediaSet(m_uSingerID, E_MediaSetType::MST_Singer);
 			if (NULL != pSinger)
 			{
-				(void)m_wndBrowseTree.SelectObject(*pSinger);
+				(void)m_wndTree.SelectObject(*pSinger);
 				if (NULL == pSingerObject)
 				{
-					(void)m_wndBrowseTree.EnsureVisible(*pSinger);
+					(void)m_wndTree.EnsureVisible(*pSinger);
 				}
 			}
 			else
@@ -142,8 +147,8 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 	}
 	if (NULL != pSingerObject)
 	{
-		(void)m_wndBrowseTree.SelectObject(*pSingerObject);
-		(void)m_wndBrowseTree.EnsureVisible(*pSingerObject);
+		(void)m_wndTree.SelectObject(*pSingerObject);
+		(void)m_wndTree.EnsureVisible(*pSingerObject);
 	}
 	
 	RedrawLockGuard.Unlock();
@@ -155,8 +160,8 @@ void CSingerPage::Active(CSinger& Singer)
 {
 	__super::Active();
 
-	(void)m_wndBrowseTree.SelectObject(Singer);
-	(void)m_wndBrowseTree.EnsureVisible(Singer);
+	(void)m_wndTree.SelectObject(Singer);
+	(void)m_wndTree.EnsureVisible(Singer);
 }
 
 void CSingerPage::OnActive(BOOL bActive)
@@ -169,9 +174,9 @@ void CSingerPage::OnActive(BOOL bActive)
 
 void CSingerPage::OnSize(UINT nType, int cx, int cy)
 {
-	if (m_wndBrowseTree)
+	if (m_wndTree)
 	{
-		m_wndBrowseTree.MoveWindow(0,0,cx,cy);
+		m_wndTree.MoveWindow(0,0,cx,cy);
 	}
 }
 
@@ -186,7 +191,7 @@ void CSingerPage::_addSinger(CMediaRes *pSrcPath, CSingerGroup *pGroup)
 
 	__Ensure(this->RefreshTree(pSinger));
 
-	CEdit *pEdit = m_wndBrowseTree.EditObject(*pSinger);
+	CEdit *pEdit = m_wndTree.EditObject(*pSinger);
 	__Assert(pEdit);
 	(void)pEdit->SetWindowText(pSrcPath->GetName().c_str());
 	pEdit->SetSel(0, -1);
@@ -194,7 +199,7 @@ void CSingerPage::_addSinger(CMediaRes *pSrcPath, CSingerGroup *pGroup)
 
 void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 {
-	CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetSelectedObject();
+	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetSelectedObject();
 
 	switch (uID)
 	{
@@ -215,7 +220,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 			__EnsureBreak(this->RefreshTree(pGroup));
 
-			(void)m_wndBrowseTree.EditObject(*pGroup);
+			(void)m_wndTree.EditObject(*pGroup);
 		}
 
 		break;
@@ -232,7 +237,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			{
 				if (E_MediaSetType::MST_Singer == pSingerObject->m_eType)
 				{					
-					pGroup = (CSingerGroup*)(CMediaSet*)m_wndBrowseTree.GetParentObject(*(CTreeObject*)pSingerObject);
+					pGroup = (CSingerGroup*)(CMediaSet*)m_wndTree.GetParentObject(*(CTreeObject*)pSingerObject);
 				}
 				else
 				{
@@ -252,7 +257,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_RENAME:
 		__EnsureBreak(pSingerObject);
-		(void)m_wndBrowseTree.EditObject(*pSingerObject);
+		(void)m_wndTree.EditObject(*pSingerObject);
 
 		break;
 	case ID_REMOVE:
@@ -289,7 +294,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 				CMainApp::sync([=]() {
 					m_view.addSingerImage(*(CSinger*)pSingerObject, lstFiles);
 
-					m_wndBrowseTree.UpdateImage(*pSingerObject);
+					m_wndTree.UpdateImage(*pSingerObject);
 
 					m_AlbumPage.UpdateSingerImage();
 				});
@@ -322,10 +327,12 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			bool bDisableDemand = !property.isDisableDemand();
 			property.setDisableDemand(bDisableDemand);
 			property.setDisableExport(bDisableDemand);
+			m_wndTree.RedrawObject(*pSingerObject);
 		}
 		else if (ID_DisableExport == uID)
 		{
 			property.setDisableExport(!property.isDisableExport());
+			m_wndTree.RedrawObject(*pSingerObject);
 		}
 		else
 		{
@@ -380,7 +387,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 	wstring strNewName = pTVDispInfo->item.pszText;
 
-	CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetItemObject(pTVDispInfo->item.hItem);
+	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(pTVDispInfo->item.hItem);
 	__Assert(pSingerObject);
 	wstring strOldName = pSingerObject->m_strName;
 
@@ -402,7 +409,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 	m_view.getModel().getSingerImgMgr().renameSinger(strOldName, strNewName);
 
-	(void)m_wndBrowseTree.SetItemText(pTVDispInfo->item.hItem, strNewName.c_str());
+	(void)m_wndTree.SetItemText(pTVDispInfo->item.hItem, strNewName.c_str());
 
 	if (m_AlbumPage)
 	{
@@ -412,14 +419,14 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__AssertReturn(pwndCtrl == &m_wndBrowseTree && pMediaSet, DROPEFFECT_NONE);
+	__AssertReturn(pwndCtrl == &m_wndTree && pMediaSet, DROPEFFECT_NONE);
 
 	__EnsureReturn(E_MediaSetType::MST_Singer == pMediaSet->m_eType, DROPEFFECT_NONE);
 	
 	CMediaSet *pDstSingerObject = NULL;
 
 	UINT uFlag = TVHT_NOWHERE;
-	HTREEITEM hItem = m_wndBrowseTree.HitTest(CPoint(DragContext.x, DragContext.y), &uFlag);
+	HTREEITEM hItem = m_wndTree.HitTest(CPoint(DragContext.x, DragContext.y), &uFlag);
 	__EnsureReturn(NULL != hItem, DROPEFFECT_NONE);
 	//if (!hItem)
 	//{
@@ -449,7 +456,7 @@ DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet,
 	//	}
 
 	//	CRect rcItem;
-	//	(void)m_wndBrowseTree.GetItemRect(pDstSingerObject->m_hTreeItem, &rcItem, FALSE);
+	//	(void)m_wndTree.GetItemRect(pDstSingerObject->m_hTreeItem, &rcItem, FALSE);
 
 	//	DragContext.y = rcItem.bottom;
 
@@ -458,37 +465,37 @@ DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet,
 	//	return DROPEFFECT_MOVE;
 	//}
 
-	pDstSingerObject = (CMediaSet*)m_wndBrowseTree.GetItemObject(hItem);
+	pDstSingerObject = (CMediaSet*)m_wndTree.GetItemObject(hItem);
 	__AssertReturn(pDstSingerObject, DROPEFFECT_NONE);
 
 	DragContext.pTargetObj = pDstSingerObject;
 
 	if (DragContext.y < 30)
 	{
-		if (m_wndBrowseTree.GetScrollPos(SB_VERT) > 0)
+		if (m_wndTree.GetScrollPos(SB_VERT) > 0)
 		{
-			(void)m_wndBrowseTree.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEUP, 0));
+			(void)m_wndTree.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEUP, 0));
 		}
 	}
 	else
 	{
 		CRect rcClient;
-		m_wndBrowseTree.GetClientRect(rcClient);
+		m_wndTree.GetClientRect(rcClient);
 		if (DragContext.y > rcClient.bottom-30)
 		{
 			int iMinPos = 0;
 			int iMaxPos = 0;
-			m_wndBrowseTree.GetScrollRange(SB_VERT, &iMinPos, &iMaxPos);
+			m_wndTree.GetScrollRange(SB_VERT, &iMinPos, &iMaxPos);
 
-			if (m_wndBrowseTree.GetScrollPos(SB_VERT) < iMaxPos)
+			if (m_wndTree.GetScrollPos(SB_VERT) < iMaxPos)
 			{
-				(void)m_wndBrowseTree.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0));
+				(void)m_wndTree.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0));
 			}
 		}
 	}
 
 	CRect rcItem;
-	(void)m_wndBrowseTree.GetItemRect(m_wndBrowseTree.getTreeItem(pDstSingerObject), &rcItem, FALSE);
+	(void)m_wndTree.GetItemRect(m_wndTree.getTreeItem(pDstSingerObject), &rcItem, FALSE);
 
 	if (E_MediaSetType::MST_Singer == pDstSingerObject->m_eType)
 	{
@@ -517,7 +524,7 @@ DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet,
 
 BOOL CSingerPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__AssertReturn(pwndCtrl == &m_wndBrowseTree, FALSE);
+	__AssertReturn(pwndCtrl == &m_wndTree, FALSE);
 
 	CMediaSet *pTarget = (CMediaSet*)DragContext.pTargetObj;
 	__AssertReturn(pTarget, FALSE);
@@ -544,7 +551,7 @@ void CSingerPage::OnTvnSelchangedTree(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 	__Ensure(pNMTreeView->itemNew.hItem);
 	
-	CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetItemObject(pNMTreeView->itemNew.hItem);
+	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(pNMTreeView->itemNew.hItem);
 	__Assert(pSingerObject);
 	__Ensure(E_MediaSetType::MST_Singer == pSingerObject->m_eType);
 
@@ -560,15 +567,15 @@ CMediaSet* CSingerPage::_trySelectObject()
 {
 	CPoint ptPos;
 	GetCursorPos(&ptPos);
-	m_wndBrowseTree.ScreenToClient(&ptPos);
+	m_wndTree.ScreenToClient(&ptPos);
 
 	UINT uFlags = TVHT_NOWHERE;
-	auto hItem = m_wndBrowseTree.HitTest(ptPos, &uFlags);
+	auto hItem = m_wndTree.HitTest(ptPos, &uFlags);
 	__EnsureReturn(NULL != hItem, NULL);
 
-	m_wndBrowseTree.SelectItem(hItem);
+	m_wndTree.SelectItem(hItem);
 
-	CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetItemObject(hItem);
+	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(hItem);
 	if (NULL != pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType)
 	{
 		if (!::IsWindowVisible(m_AlbumPage))
@@ -641,7 +648,7 @@ void CSingerPage::OnTvnItemexpandedTree(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 
-	CSingerGroup *pSingerGroup = (CSingerGroup*)m_wndBrowseTree.GetItemObject(pNMTreeView->itemNew.hItem);
+	CSingerGroup *pSingerGroup = (CSingerGroup*)m_wndTree.GetItemObject(pNMTreeView->itemNew.hItem);
 
 	if (TVIS_EXPANDED & pNMTreeView->itemNew.state)
 	{

@@ -14,13 +14,14 @@ public:
     explicit CDialog(QWidget *parent = 0)
         : T(parent)
     {
-        QPalette pe;
-        pe.setColor(QPalette::Background, QColor(180, 220, 255));
-        this->setPalette(pe);
     }
 
     void show()
     {
+        QPalette pe;
+        pe.setColor(QPalette::Background, QColor(180, 220, 255));
+        this->setPalette(pe);
+
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowState(Qt::WindowFullScreen);
 

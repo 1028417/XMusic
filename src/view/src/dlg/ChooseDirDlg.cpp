@@ -13,7 +13,7 @@ CChooseDirDlg::CChooseDirDlg(const wstring& strTitle, const wstring& strRootDir,
 
 void CChooseDirDlg::DoDataExchange(CDataExchange* pDX)
 {
-	DDX_Control(pDX, IDC_TREE, m_wndBrowseTree);
+	DDX_Control(pDX, IDC_TREE, m_wndTree);
 
 	__super::DoDataExchange(pDX);
 }
@@ -25,16 +25,16 @@ BOOL CChooseDirDlg::OnInitDialog()
 	this->SetWindowText(m_strTitle.c_str());
 
 	TD_IconVec lstIcon{ winfsutil::getFolderIcon() };
-	__AssertReturn(m_wndBrowseTree.InitImglst(CSize(30, 30), lstIcon), TRUE);
+	__AssertReturn(m_wndTree.InitImglst(CSize(30, 30), lstIcon), TRUE);
 	
-	m_wndBrowseTree.SetRootDir(&m_mediaLibDir, m_bShowRoot);
+	m_wndTree.SetRootDir(&m_mediaLibDir, m_bShowRoot);
 
 	return TRUE;
 }
 
 void CChooseDirDlg::OnOK()
 {
-	CDirObject *pDirObject = (CDirObject*)m_wndBrowseTree.GetSelectedObject();
+	CDirObject *pDirObject = (CDirObject*)m_wndTree.GetSelectedObject();
 	if (NULL != pDirObject)
 	{
 		m_strRetDir = pDirObject->GetPath();

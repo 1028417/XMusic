@@ -233,10 +233,12 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			bool bDisableDemand = !property.isDisableDemand();
 			property.setDisableDemand(bDisableDemand);
 			property.setDisableExport(bDisableDemand);
+			m_wndList.UpdateItem(nItem);
 		}
 		else if (ID_DisableExport == uID)
 		{
 			property.setDisableExport(!property.isDisableExport());
+			m_wndList.UpdateItem(nItem);
 		}
 		else
 		{

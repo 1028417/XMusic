@@ -559,10 +559,12 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			bool bDisableDemand = !property.isDisableDemand();
 			property.setDisableDemand(bDisableDemand);
 			property.setDisableExport(bDisableDemand);
+			m_wndBrowseList.UpdateItem(nItem);
 		}
 		else if (ID_DisableExport == uID)
 		{
 			property.setDisableExport(!property.isDisableExport());
+			m_wndBrowseList.UpdateItem(nItem);
 		}
 		else
 		{
