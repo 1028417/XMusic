@@ -1,17 +1,11 @@
 
 #pragma once
 
-#include <QDialog>
+#include "dialog.h"
 
-class CBkgDlg : public QDialog
+class CBkgDlg : public CDialog
 {
     Q_OBJECT
-
 public:
     explicit CBkgDlg(QWidget *parent = 0);
-
-private:
-    bool event(QEvent *) override;
-
-    void _relayout();
 };

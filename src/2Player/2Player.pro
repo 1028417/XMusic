@@ -40,7 +40,8 @@ HEADERS  += mainwindow.h \
     button.h \
     ProgressBar.h \
     bkgdlg.h \
-    listview.h
+    listview.h \
+    dialog.h
 
 RESOURCES += res.qrc
 

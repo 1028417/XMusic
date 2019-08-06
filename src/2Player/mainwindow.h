@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include "dialog.h"
 
 #include "PlayingList.h"
 
@@ -23,7 +23,7 @@ struct tagPlayingInfo
     wstring strPlaylist;
 };
 
-class MainWindow : public QMainWindow, public IModelObserver
+class MainWindow : public CDialog, public IModelObserver
 {
     Q_OBJECT
 
@@ -96,7 +96,7 @@ private:
 
     void _init();
 
-    void _relayout();
+    void _relayout() override;
 
     void _showAlbumName();
 

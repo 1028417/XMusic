@@ -5,10 +5,14 @@
 
 #include "PlayingPage.h"
 
-#define __Column_Size 2
-#define __Column_Duration 3
-#define __Column_SingerAlbum 4
-#define __Column_Path 5
+enum E_PlayItemColumn
+{
+	__Column_Type = 1
+	, __Column_Size
+	, __Column_Duration
+	, __Column_SingerAlbum
+	, __Column_Path
+};
 
 #define __ColumnText_Name CString(_T("ÁÐ±íÇúÄ¿"))
 

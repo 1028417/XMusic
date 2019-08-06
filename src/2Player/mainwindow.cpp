@@ -52,9 +52,6 @@ MainWindow::MainWindow(CPlayerView& view) :
     }
 
     _init();
-
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
 }
 
 void MainWindow::_init()
@@ -131,11 +128,7 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    QPalette pe;
-    pe.setColor(QPalette::Background, QColor(180, 220, 255));
-    this->setPalette(pe);
-
-    QMainWindow::show();
+    showFullScreen();
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -275,12 +268,6 @@ bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
-    case QEvent::Move:
-    case QEvent::Resize:
-    case QEvent::Show:
-        _relayout();
-
-        break;
     case QEvent::Timer:
     {
         auto ePlayStatus = m_view.getPlayMgr().GetPlayStatus();
@@ -307,7 +294,7 @@ bool MainWindow::event(QEvent *ev)
         break;
     }
 
-    return QMainWindow::event(ev);
+    return CDialog::event(ev);
 }
 
 void MainWindow::_relayout()
@@ -702,8 +689,6 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
-        //ui.frameSingerImg->setVisible(false);
-
         ui.labelSingerImg->setPixmap(QPixmap());
         ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
@@ -860,8 +845,6 @@ void MainWindow::_showSingerImg(const QPixmap& pixmap)
         ui.labelSingerImg->setGeometry(0, (cy_target-height)/2, cx_target, height);
     }
     ui.labelSingerImg->setPixmap(pixmap);
-
-    //ui.frameSingerImg->setVisible(true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)
@@ -928,7 +911,8 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnMore)
     {
-
+        static CBkgDlg dlg;
+        dlg.showFullScreen();
     }
     else
     {

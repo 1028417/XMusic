@@ -66,7 +66,7 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::OnCustomDraw(tagLvCustomDraw& lvcd)
 {
-	CRect rcItem(lvcd.rcItem);
+	CRect rcItem(lvcd.rcPos);
 	if (0 == rcItem.right || 0 == rcItem.bottom)
 	{
 		return;
