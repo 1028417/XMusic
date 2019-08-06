@@ -53,11 +53,11 @@ BOOL CSingerPage::OnInitDialog()
 		{
 			if (pSingerObject->property().isDisableDemand())
 			{
-				tvcd.uTextAlpha += 100;
+				tvcd.uTextAlpha = pSingerObject->property().isDisableExport() ? 200 : 128;
 			}
-			if (pSingerObject->property().isDisableExport())
+			else if (pSingerObject->property().isDisableExport())
 			{
-				tvcd.uTextAlpha += 100;
+				tvcd.uTextAlpha = 128;
 			}
 		}
 	});

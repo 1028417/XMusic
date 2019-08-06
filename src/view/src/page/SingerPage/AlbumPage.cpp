@@ -89,11 +89,11 @@ BOOL CAlbumPage::OnInitDialog()
 		{
 			if (pAlbum->property().isDisableDemand())
 			{
-				lvcd.uTextAlpha += 100;
+				lvcd.uTextAlpha = pAlbum->property().isDisableExport() ? 200 : 128;
 			}
-			if (pAlbum->property().isDisableExport())
+			else if (pAlbum->property().isDisableExport())
 			{
-				lvcd.uTextAlpha += 100;
+				lvcd.uTextAlpha = 128;
 			}
 		}
 	});
