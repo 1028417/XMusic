@@ -7,25 +7,24 @@
 
 #include <QEvent>
 
-class CDialog : public QDialog
+template <class T=QDialog>
+class CDialog : public T
 {
-    Q_OBJECT
 public:
     explicit CDialog(QWidget *parent = 0)
-        : QDialog(parent)
-    {
-    }
-
-    void show()
+        : T(parent)
     {
         QPalette pe;
         pe.setColor(QPalette::Background, QColor(180, 220, 255));
         this->setPalette(pe);
+    }
 
+    void show()
+    {
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowState(Qt::WindowFullScreen);
 
-        QDialog::show();
+        T::show();
     }
 
 protected:
@@ -43,7 +42,7 @@ protected:
             break;
         }
 
-        return QDialog::event(ev);
+        return T::event(ev);
     }
 
 private:

@@ -3,7 +3,7 @@
 
 #include "dialog.h"
 
-class CBkgDlg : public CDialog
+class CBkgDlg : public CDialog<>
 {
     Q_OBJECT
 public:

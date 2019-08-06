@@ -46,7 +46,7 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
 		if (m_vecRowFlag[lvcd.uItem])
 		{
-			lvcd.clrTextBk = __Color_Flag;
+			lvcd.crBkg = __Color_Flag;
 		}
 	});
 

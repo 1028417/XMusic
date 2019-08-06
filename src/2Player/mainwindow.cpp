@@ -128,7 +128,7 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    QDialog::show();
+    CDialog::show();
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -455,7 +455,7 @@ void MainWindow::_relayout()
     {
         x_frameDemand = (cx - ui.frameDemand->width())/2;
     }
-    x_frameDemand += 20;
+    x_frameDemand += 40;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();

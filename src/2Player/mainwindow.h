@@ -2,6 +2,7 @@
 #pragma once
 
 #include "dialog.h"
+#include <QMainWindow>
 
 #include "PlayingList.h"
 
@@ -23,7 +24,7 @@ struct tagPlayingInfo
     wstring strPlaylist;
 };
 
-class MainWindow : public CDialog, public IModelObserver
+class MainWindow : public CDialog<QMainWindow>, public IModelObserver
 {
     Q_OBJECT
 

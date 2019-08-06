@@ -7,7 +7,8 @@
 
 enum E_AlbumItemColumn
 {
-	__Column_Type = 1
+	__Column_Name = 0
+	, __Column_Type
 	, __Column_Size
 	, __Column_Duration
 	, __Column_Playlist
@@ -116,6 +117,12 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
+		if (NULL != pAlbumItem && pAlbumItem->GetFileSize() < 0)
+		{
+			lvcd.uTextAlpha = 128;
+		}
+
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Playlist:
@@ -123,10 +130,10 @@ BOOL CAlbumPage::OnInitDialog()
 			lvcd.bSetUnderline = true;
 
 			break;
-		case __Column_Type:
-		case __Column_Size:
-		case __Column_Duration:
-		case __Column_AddTime:
+		case __Column_Name:
+
+			break;
+		default:
 			lvcd.fFontSizeOffset = -.25f;
 			
 			break;
