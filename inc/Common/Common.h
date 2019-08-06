@@ -97,11 +97,11 @@ public:
 
 		if (0 == uWidth)
 		{
-			uWidth = CMainApp::getWorkArea(true).Width() * 0.35;
+			uWidth = UINT(CMainApp::getWorkArea(true).Width() * 0.35);
 		}
 		if (0 == uHeight)
 		{
-			uHeight = CMainApp::getWorkArea(true).Height() * 0.85;
+			uHeight = UINT(CMainApp::getWorkArea(true).Height() * 0.85);
 		}
 
 		wstring strRet;
