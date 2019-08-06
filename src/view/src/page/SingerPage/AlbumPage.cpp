@@ -83,6 +83,21 @@ BOOL CAlbumPage::OnInitDialog()
 
 	__AssertReturn(m_wndBrowseList.InitCtrl(ListPara), FALSE);
 
+	m_wndBrowseList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+		CAlbum *pAlbum = (CAlbum *)lvcd.pObject;
+		if (NULL != pAlbum)
+		{
+			if (pAlbum->property().isDisableDemand())
+			{
+				lvcd.uTextAlpha += 100;
+			}
+			if (pAlbum->property().isDisableExport())
+			{
+				lvcd.uTextAlpha += 100;
+			}
+		}
+	});
+
 	(void)m_wndAlbumItemList.ModifyStyle(WS_VISIBLE | LVS_ALIGNLEFT
 		, LVS_AUTOARRANGE | LVS_EDITLABELS);
 
@@ -116,7 +131,7 @@ BOOL CAlbumPage::OnInitDialog()
 
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
 
-	m_wndAlbumItemList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+	m_wndAlbumItemList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
 		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
 		if (NULL != pAlbumItem && pAlbumItem->GetFileSize() < 0)
 		{

@@ -47,6 +47,21 @@ BOOL CSingerPage::OnInitDialog()
 
 	m_wndBrowseTree.SetIndent(m_wndBrowseTree.GetIndent() - 10);
 
+	m_wndBrowseTree.SetCustomDraw([&](tagTVCustomDraw& tvcd) {
+		CMediaSet *pSingerObject = (CMediaSet *)tvcd.pObject;
+		if (NULL != pSingerObject)
+		{
+			if (pSingerObject->property().isDisableDemand())
+			{
+				tvcd.uTextAlpha += 100;
+			}
+			if (pSingerObject->property().isDisableExport())
+			{
+				tvcd.uTextAlpha += 100;
+			}
+		}
+	});
+
 	(void)__super::RegDragDropCtrl(m_wndBrowseTree, [&](tagDragData& DragData) {
 		CMediaSet *pSingerObject = (CMediaSet*)m_wndBrowseTree.GetSelectedObject();
 		__AssertReturn(pSingerObject, false);

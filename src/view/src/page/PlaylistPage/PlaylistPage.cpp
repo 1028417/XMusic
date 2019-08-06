@@ -56,6 +56,21 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
+	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+		CPlaylist *pPlaylist = (CPlaylist *)lvcd.pObject;
+		if (NULL != pPlaylist)
+		{
+			if (pPlaylist->property().isDisableDemand())
+			{
+				lvcd.uTextAlpha += 100;
+			}
+			if (pPlaylist->property().isDisableExport())
+			{
+				lvcd.uTextAlpha += 100;
+			}
+		}
+	});
+
 	(void)__super::RegDragDropCtrl(m_wndList, [&](tagDragData& DragData) {
 		CPlaylist *pPlaylist = (CPlaylist*)m_wndList.GetSelObject();
 		__EnsureReturn(pPlaylist, false);

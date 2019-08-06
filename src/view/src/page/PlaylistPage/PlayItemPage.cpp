@@ -72,7 +72,7 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
+	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
 		if (NULL != pPlayItem && pPlayItem->GetFileSize() < 0)
 		{
