@@ -137,9 +137,9 @@ public:
 	}
 };
 
-struct tagLvCustomDraw
+struct tagLVCustomDraw
 {
-	tagLvCustomDraw(NMLVCUSTOMDRAW& lvcd, COLORREF t_crText, COLORREF t_crBkg=RGB(255, 255, 255))
+	tagLVCustomDraw(NMLVCUSTOMDRAW& lvcd, COLORREF t_crText, COLORREF t_crBkg=RGB(255, 255, 255))
 		: rcPos(lvcd.nmcd.rc)
 		, hDC(lvcd.nmcd.hdc)
 		, pObject((CListObject*)lvcd.nmcd.lItemlParam)
@@ -154,9 +154,9 @@ struct tagLvCustomDraw
 
 	const RECT& rcPos;
 
-	const HDC hDC;
+	const HDC& hDC;
 	
-	CListObject *pObject = NULL;
+	const CListObject *pObject;
 
 	const UINT uItem;
 	const int nSubItem;
@@ -175,7 +175,7 @@ struct tagLvCustomDraw
 class __CommonExt CObjectList : public CTouchWnd<CListCtrl>
 {
 public:
-	using CB_LVCustomDraw = function<void(tagLvCustomDraw& lvcd)>;
+	using CB_LVCustomDraw = function<void(tagLVCustomDraw& lvcd)>;
 	using CB_ListViewChanged = function<void(E_ListViewType)>;
 
 	using CB_LButtonHover = function<void(const CPoint&)>;

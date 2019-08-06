@@ -45,21 +45,60 @@ protected:
 
 	virtual BOOL OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;
 
-	virtual BOOL handleNMNotify(NMHDR& NMHDR) { return FALSE; }
+	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) { return FALSE; }
 };
 
+
+struct tagTVCustomDraw
+{
+	tagTVCustomDraw(NMTVCUSTOMDRAW& tvcd, COLORREF t_crText, COLORREF t_crBkg = RGB(255, 255, 255))
+		: rcPos(tvcd.nmcd.rc)
+		, hDC(tvcd.nmcd.hdc)
+		, pObject((CTreeObject*)tvcd.nmcd.lItemlParam)
+		, uItem(tvcd.nmcd.dwItemSpec)
+		, crBkg(tvcd.clrTextBk)
+		, crText(tvcd.clrText)
+	{
+		crBkg = t_crBkg;
+		crText = t_crText;
+	}
+
+	const RECT& rcPos;
+
+	const HDC& hDC;
+
+	const CTreeObject *pObject;
+
+	const UINT uItem;
+
+	COLORREF& crBkg;
+	COLORREF& crText;
+	BYTE uTextAlpha = 0;
+
+	bool bSkipDefault = false;
+};
 
 //CObjectTree
 
 class __CommonExt CObjectTree : public CBaseTree
 {
 public:
+	using CB_TVCustomDraw = function<void(tagTVCustomDraw& tvcd)>;
+
+public:
 	CObjectTree() {}
 
 private:
 	map<const CTreeObject*, HTREEITEM> m_mapTreeObject;
-	
+
+	CB_TVCustomDraw m_cbCustomDraw;
+
 public:
+	void SetCustomDraw(const CB_TVCustomDraw& cb)
+	{
+		m_cbCustomDraw = cb;
+	}
+
 	CTreeObject *GetItemObject(HTREEITEM hItem);
 	
 	inline HTREEITEM getTreeItem(const CTreeObject& Object)
@@ -115,8 +154,8 @@ public:
 		return __super::EditLabel(getTreeItem(Object));
 	}
 	
-private:
-	virtual BOOL handleNMNotify(NMHDR& NMHDR) override;
+protected:
+	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) override;
 };
 
 

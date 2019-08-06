@@ -57,7 +57,7 @@ public:
 		});
 	}
 	
-	virtual BOOL handleNMNotify(NMHDR& NMHDR) override
+	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) override
 	{
 		if (TVN_ITEMEXPANDING == NMHDR.code)
 		{
@@ -75,7 +75,7 @@ public:
 			}
 		}
 
-		return FALSE;
+		return __super::handleNMNotify(NMHDR, pResult);
 	}
 
 private:
