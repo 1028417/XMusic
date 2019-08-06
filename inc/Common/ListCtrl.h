@@ -137,26 +137,34 @@ public:
 	}
 };
 
-struct tagLVCustomDraw
+struct tagLVNMCustomDraw
+{
+	tagLVNMCustomDraw(const tagNMCUSTOMDRAWINFO& nmcd) :
+		hdc(nmcd.hdc)
+		, rc(nmcd.rc)
+		, uItem(nmcd.dwItemSpec)
+		, uItemState(nmcd.uItemState)
+		, pObject((CListObject*)nmcd.lItemlParam)
+	{
+	}
+
+	HDC hdc;
+	RECT rc;
+	UINT uItem;
+	UINT uItemState;
+	CListObject *pObject;
+};
+
+struct tagLVCustomDraw : tagLVNMCustomDraw
 {
 	tagLVCustomDraw(NMLVCUSTOMDRAW& lvcd)
-		: rcPos(lvcd.nmcd.rc)
-		, hDC(lvcd.nmcd.hdc)
-		, pObject((CListObject*)lvcd.nmcd.lItemlParam)
-		, uItem(lvcd.nmcd.dwItemSpec)
+		: tagLVNMCustomDraw(lvcd.nmcd)
 		, nSubItem(lvcd.iSubItem)
 		, crBkg(lvcd.clrTextBk)
 		, crText(lvcd.clrText)
 	{
 	}
-
-	const RECT& rcPos;
-
-	const HDC& hDC;
 	
-	const CListObject *pObject;
-
-	const UINT uItem;
 	const int nSubItem;
 	
 	COLORREF& crBkg;

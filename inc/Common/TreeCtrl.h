@@ -31,9 +31,11 @@ public:
 	}
 
 	void SetFontSize(float fFontSizeOffset);
-	
+
+	void RedrawItem(HTREEITEM hItem);
+
 	void GetAllItems(list<HTREEITEM>& lstItems);
-	
+		
 protected:
 	virtual HTREEITEM InsertItem(HTREEITEM hParentItem, LPCTSTR lpszItem, DWORD_PTR dwData, int nImage=0);
 
@@ -48,27 +50,33 @@ protected:
 	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) { return FALSE; }
 };
 
+struct tagTVNMCustomDraw
+{
+	tagTVNMCustomDraw(const tagNMCUSTOMDRAWINFO& nmcd) :
+		hdc(nmcd.hdc)
+		, rc(nmcd.rc)
+		, hItem((HTREEITEM)nmcd.dwItemSpec)
+		, uItemState(nmcd.uItemState)
+		, pObject((CTreeObject*)nmcd.lItemlParam)
+	{
+	}
 
-struct tagTVCustomDraw
+	HDC hdc;
+	RECT rc;
+	HTREEITEM hItem;
+	UINT uItemState;
+	CTreeObject *pObject;
+};
+
+struct tagTVCustomDraw : tagTVNMCustomDraw
 {
 	tagTVCustomDraw(NMTVCUSTOMDRAW& tvcd)
-		: rcPos(tvcd.nmcd.rc)
-		, hDC(tvcd.nmcd.hdc)
-		, pObject((CTreeObject*)tvcd.nmcd.lItemlParam)
-		, uItem(tvcd.nmcd.dwItemSpec)
+		: tagTVNMCustomDraw(tvcd.nmcd)
 		, crBkg(tvcd.clrTextBk)
 		, crText(tvcd.clrText)
 	{
 	}
-
-	const RECT& rcPos;
-
-	const HDC& hDC;
-
-	const CTreeObject *pObject;
-
-	const UINT uItem;
-
+	
 	COLORREF& crBkg;
 	COLORREF& crText;
 	BYTE uTextAlpha = 0;
@@ -151,7 +159,12 @@ public:
 	{
 		return __super::EditLabel(getTreeItem(Object));
 	}
-	
+
+	void RedrawObject(const CTreeObject& Object)
+	{
+		__super::RedrawItem(getTreeItem(Object));
+	}
+
 protected:
 	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) override;
 };
