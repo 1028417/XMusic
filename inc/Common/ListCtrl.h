@@ -159,7 +159,7 @@ struct tagLvCustomDraw
 	COLORREF& clrText;
 	BYTE uTextAlpha = 0;
 
-	float m_fFontSizeOffset = 0;
+	float fFontSizeOffset = 0;
 
 	bool bSetUnderline = false;
 
@@ -224,6 +224,7 @@ private:
 
 	CCompatableFont m_font;
 	CCompatableFont m_fontUnderline;
+	CCompatableFont m_fontCustom;
 
 	CListHeader m_wndHeader;
 
