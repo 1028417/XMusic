@@ -49,9 +49,6 @@ private:
 	CMediaRes *m_pCurrPath = NULL;
 	wstring m_strCurrPath;
 	
-	UINT m_Column_Playlist = 0;
-	UINT m_Column_SingerAlbum = 0;
-
 	UINT m_Column_ID3 = 0;
 	
 	int m_cx = 0;

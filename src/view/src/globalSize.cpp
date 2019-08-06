@@ -76,7 +76,7 @@ CGlobalSize::CGlobalSize()
 	m_ColWidth_MediaTag_Album = 120;
 
 	m_ColWidth_Type = 48;
-	m_ColWidth_FileSize = 60;
+	m_ColWidth_FileSize = 58;
 	m_ColWidth_Duration = 52;
 	m_ColWidth_RelatedPlaylist = 105;
 	m_ColWidth_RelatedSingerAlbum = 165;

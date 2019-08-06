@@ -5,16 +5,16 @@
 
 #include "../dlg/TrackDetailDlg.h"
 
-list<CMediaResPanel*> CMediaResPanel::g_lstMediaResPanels;
-
-/*void CMediaResPanel::UpdateMediaRes(const TD_MediaResList& lstDeletedMediaRes)
+enum E_AlbumItemColumn
 {
-	SSet<CListObject*> setDeletedMediaRes(lstDeletedMediaRes);
-	for (auto pMediaResPanel : g_lstMediaResPanels)
-	{
-		pMediaResPanel->m_wndList.DeleteObjects(setDeletedMediaRes);
-	}
-}*/
+	__Column_Type = 1
+	, __Column_Size
+	, __Column_Playlist
+	, __Column_SingerAlbum
+	, __Column_ModifyTime
+};
+
+list<CMediaResPanel*> CMediaResPanel::g_lstMediaResPanels;
 
 void CMediaResPanel::RefreshMediaResPanel()
 {
@@ -80,9 +80,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		,{ _T("大小"), globalSize.m_ColWidth_FileSize, true }
 		,{ _T("关联列表"), globalSize.m_ColWidth_RelatedPlaylist, true }
 	};
-
-	m_Column_Playlist = lstColumns.size()-1;
-
+	
 	if (m_bShowRelatedSinger)
 	{
 		lstColumns.push_back({L"歌手" __CNDot L"专辑", globalSize.m_ColWidth_RelatedSingerAlbum, true });
@@ -91,7 +89,6 @@ BOOL CMediaResPanel::OnInitDialog()
 	{
 		lstColumns.push_back({L"关联专辑", globalSize.m_ColWidth_RelatedPlaylist, true });
 	}
-	m_Column_SingerAlbum = lstColumns.size()-1;
 
 	lstColumns.insert(lstColumns.end(), {
 		{ _T("修改时间"), globalSize.m_ColWidth_Time, true }
@@ -119,10 +116,20 @@ BOOL CMediaResPanel::OnInitDialog()
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
-		if (m_Column_Playlist == lvcd.nSubItem || m_Column_SingerAlbum == lvcd.nSubItem)
+		switch (lvcd.nSubItem)
 		{
+		case __Column_Playlist:
+		case __Column_SingerAlbum:
 			lvcd.bSetUnderline = true;
-		}
+
+			break;
+		case __Column_Type:
+		case __Column_Size:
+		case __Column_ModifyTime:
+			lvcd.fFontSizeOffset = -.25f;
+
+			break;
+		};
 	});
 
 	m_wndList.SetViewAutoChange([&](E_ListViewType eViewType) {
@@ -813,7 +820,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
 		__Ensure(pMediaRes);
 
-		if (m_Column_Playlist == iSubItem || m_Column_SingerAlbum == iSubItem)
+		if (__Column_Playlist == iSubItem || __Column_SingerAlbum == iSubItem)
 		{
 			if (!pMediaRes->IsDir())
 			{
@@ -821,7 +828,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 				m_wndList.UpdateItem(iItem);
 			}
 
-			if (m_Column_Playlist == iSubItem)
+			if (__Column_Playlist == iSubItem)
 			{
 				m_view.hittestRelatedMediaSet(*pMediaRes, E_MediaSetType::MST_Playlist);
 			}
@@ -965,7 +972,7 @@ void CMediaResPanel::_asyncTask()
 			{
 				pMediaRes->AsyncTask();
 
-				m_wndList.UpdateItem(uItem, pMediaRes); //, { m_Column_ID3, m_Column_ID3 + 1, m_Column_ID3 + 2, m_Column_Playlist, m_Column_SingerAlbum });
+				m_wndList.UpdateItem(uItem, pMediaRes); //, { m_Column_ID3, m_Column_ID3 + 1, m_Column_ID3 + 2, __Column_Playlist, __Column_SingerAlbum });
 			}
 		});
 	}
