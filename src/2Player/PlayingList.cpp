@@ -6,9 +6,10 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     bool bPlayingItem = uItem == m_uPlayingItem;
     QFont font(m_font);
     QColor crText(m_crText);
+    float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        crText.setAlpha(crText.alpha()*0.5);
+        fAlpha = 0.5;
     }
 
     if (bPlayingItem)
@@ -19,14 +20,13 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 
     if (rcItem.top() < 0)
     {
-        int nAlpha = crText.alpha() * pow((double)rcItem.bottom()/rcItem.height(),3.3);
-        crText.setAlpha(nAlpha);
+        fAlpha *= pow((double)rcItem.bottom()/rcItem.height(),3.3);
     }
     else if (rcItem.bottom() > this->height())
     {
-        int nAlpha = crText.alpha() * pow(double(this->height()-rcItem.top())/rcItem.height(),3.3);
-        crText.setAlpha(nAlpha);
+        fAlpha *= pow(double(this->height()-rcItem.top())/rcItem.height(),3.3);
     }
+    crText.setAlpha(crText.alpha()*fAlpha);
 
     m_alPlayingItems.get(uItem, [&](tagPlayingItem& playingItem){
         if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
@@ -48,7 +48,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
-                m_crShadow.setAlpha(255*(m_uShadowWidth-uIdx)/m_uShadowWidth);
+                m_crShadow.setAlpha(255*fAlpha*(m_uShadowWidth-uIdx)/m_uShadowWidth);
                 painter.setPen(m_crShadow);
 
                 painter.drawText(QRectF(rcItem.left()+uIdx, rcItem.top()+uIdx, rcItem.width(), rcItem.height())

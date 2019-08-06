@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    UINT m_uShadowWidth = 2;
+    UINT m_uShadowWidth = 0;
     QColor m_crShadow;
 
 signals:
@@ -78,12 +78,12 @@ private:
                     m_crShadow.setAlpha(255*(m_uShadowWidth-uIdx)/m_uShadowWidth);
                     painter.setPen(m_crShadow);
 
-                    painter.drawText(QRectF(pos.left()+uIdx, pos.top()+uIdx, pos.width(), pos.height())
-                                     , this->text(), to);
+                    QRectF rcShadow(pos.left()+uIdx, pos.top()+uIdx, pos.width(), pos.height());
+                    painter.drawText(rcShadow, text, to);
                 }
 
                 painter.setPen(pen);
-                painter.drawText(pos, this->text(), to);
+                painter.drawText(pos, text, to);
 
                 return;
             }
