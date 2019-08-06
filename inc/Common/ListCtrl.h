@@ -139,7 +139,7 @@ public:
 
 struct tagLVCustomDraw
 {
-	tagLVCustomDraw(NMLVCUSTOMDRAW& lvcd, COLORREF t_crText, COLORREF t_crBkg=RGB(255, 255, 255))
+	tagLVCustomDraw(NMLVCUSTOMDRAW& lvcd)
 		: rcPos(lvcd.nmcd.rc)
 		, hDC(lvcd.nmcd.hdc)
 		, pObject((CListObject*)lvcd.nmcd.lItemlParam)
@@ -148,8 +148,6 @@ struct tagLVCustomDraw
 		, crBkg(lvcd.clrTextBk)
 		, crText(lvcd.clrText)
 	{
-		crBkg = t_crBkg;
-		crText = t_crText;
 	}
 
 	const RECT& rcPos;

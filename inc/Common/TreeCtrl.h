@@ -51,7 +51,7 @@ protected:
 
 struct tagTVCustomDraw
 {
-	tagTVCustomDraw(NMTVCUSTOMDRAW& tvcd, COLORREF t_crText, COLORREF t_crBkg = RGB(255, 255, 255))
+	tagTVCustomDraw(NMTVCUSTOMDRAW& tvcd)
 		: rcPos(tvcd.nmcd.rc)
 		, hDC(tvcd.nmcd.hdc)
 		, pObject((CTreeObject*)tvcd.nmcd.lItemlParam)
@@ -59,8 +59,6 @@ struct tagTVCustomDraw
 		, crBkg(tvcd.clrTextBk)
 		, crText(tvcd.clrText)
 	{
-		crBkg = t_crBkg;
-		crText = t_crText;
 	}
 
 	const RECT& rcPos;
