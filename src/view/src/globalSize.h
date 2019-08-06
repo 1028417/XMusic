@@ -26,9 +26,9 @@ public:
 	UINT m_uSmallIconSize = 0;
 	UINT m_uBigIconSize = 0;
 
-	UINT m_uHeadHeight = 0;
-	UINT m_uTabHeight = 0;
 	UINT m_uMenuItemHeight = 0;
+	UINT m_uTabHeight = 0;
+	UINT m_uHeadHeight = 0;
 
 	UINT m_uPlayingItemHeight = 0;
 

@@ -5,8 +5,15 @@
 
 #include "SingerPage.h"
 
-#define __Column_Playlist 4
-#define __Column_Path 5
+enum E_AlbumItemColumn
+{
+	__Column_Type = 1
+	, __Column_Size
+	, __Column_Duration
+	, __Column_Playlist
+	, __Column_Path
+	, __Column_AddTime
+};
 
 #define __BrowseTop (UINT(m_view.m_globalSize.m_uAlbumDockWidth * 3 / 4))
 
@@ -109,10 +116,21 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
-		if (__Column_Playlist == lvcd.nSubItem || __Column_Path == lvcd.nSubItem)
+		switch (lvcd.nSubItem)
 		{
+		case __Column_Playlist:
+		case __Column_Path:
 			lvcd.bSetUnderline = true;
-		}
+
+			break;
+		case __Column_Type:
+		case __Column_Size:
+		case __Column_Duration:
+		case __Column_AddTime:
+			lvcd.fFontSizeOffset = -.25f;
+			
+			break;
+		};
 	});
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {

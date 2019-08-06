@@ -12,6 +12,7 @@ enum E_PlayItemColumn
 	, __Column_Duration
 	, __Column_SingerAlbum
 	, __Column_Path
+	, __Column_AddTime
 };
 
 #define __ColumnText_Name CString(_T("ÁÐ±íÇúÄ¿"))
@@ -71,9 +72,18 @@ BOOL CPlayItemPage::OnInitDialog()
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
-		if (__Column_SingerAlbum == lvcd.nSubItem || __Column_Path == lvcd.nSubItem)
+		switch (lvcd.nSubItem)
 		{
+		case __Column_SingerAlbum:
+		case __Column_Path:
 			lvcd.bSetUnderline = true;
+			break;
+		case __Column_Type:
+		case __Column_Size:
+		case __Column_Duration:
+		case __Column_AddTime:
+			lvcd.fFontSizeOffset = -.25f;
+			break;
 		}
 	});
 

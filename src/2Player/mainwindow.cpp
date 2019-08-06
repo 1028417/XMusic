@@ -128,7 +128,7 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    showFullScreen();
+    QDialog::show();
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -912,7 +912,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     else if (button == ui.btnMore)
     {
         static CBkgDlg dlg;
-        dlg.showFullScreen();
+        dlg.show();
     }
     else
     {
