@@ -7,7 +7,8 @@
 
 enum E_AlbumItemColumn
 {
-	__Column_Type = 1
+	__Column_Name = 0
+	, __Column_Type
 	, __Column_Size
 	, __Column_Playlist
 	, __Column_SingerAlbum
@@ -118,14 +119,15 @@ BOOL CMediaResPanel::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLvCustomDraw& lvcd) {
 		switch (lvcd.nSubItem)
 		{
+		case __Column_Name:
+
+			break;
 		case __Column_Playlist:
 		case __Column_SingerAlbum:
 			lvcd.bSetUnderline = true;
 
 			break;
-		case __Column_Type:
-		case __Column_Size:
-		case __Column_ModifyTime:
+		default:
 			lvcd.fFontSizeOffset = -.25f;
 
 			break;
