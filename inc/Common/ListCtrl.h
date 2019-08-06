@@ -139,24 +139,30 @@ public:
 
 struct tagLvCustomDraw
 {
-	tagLvCustomDraw(NMLVCUSTOMDRAW& lvcd)
+	tagLvCustomDraw(NMLVCUSTOMDRAW& lvcd, COLORREF t_crText, COLORREF t_crBkg=RGB(255, 255, 255))
 		: rcPos(lvcd.nmcd.rc)
 		, hDC(lvcd.nmcd.hdc)
+		, pObject((CListObject*)lvcd.nmcd.lItemlParam)
 		, uItem(lvcd.nmcd.dwItemSpec)
 		, nSubItem(lvcd.iSubItem)
-		, clrTextBk(lvcd.clrTextBk)
-		, clrText(lvcd.clrText)
+		, crBkg(lvcd.clrTextBk)
+		, crText(lvcd.clrText)
 	{
+		crBkg = t_crBkg;
+		crText = t_crText;
 	}
 
 	const RECT& rcPos;
 
 	const HDC hDC;
+	
+	CListObject *pObject = NULL;
+
 	const UINT uItem;
 	const int nSubItem;
 	
-	COLORREF& clrTextBk;
-	COLORREF& clrText;
+	COLORREF& crBkg;
+	COLORREF& crText;
 	BYTE uTextAlpha = 0;
 
 	float fFontSizeOffset = 0;
