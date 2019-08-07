@@ -13,16 +13,12 @@ struct tagPlayingItem
 
 class CPlayingList : public CListView
 {
-    Q_OBJECT
-
 public:
     CPlayingList(class CPlayerView& view, QWidget *parent=NULL) :
         CListView(parent, {Qt::TapAndHoldGesture})
         , m_view(view)
         , m_crShadow(128,128,128)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
-
         this->startTimer(1000);
     }
 

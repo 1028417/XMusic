@@ -29,8 +29,6 @@ private:
     float m_fScrollPos = 0;
 
 public:
-    virtual UINT getItemCount() = 0;
-
     void setRowCount(UINT uRowCount)
     {
         m_uRowCount = uRowCount;
@@ -55,6 +53,8 @@ public:
     }
 
 private:
+    virtual UINT getItemCount() = 0;
+
     void _onPaint(QPainter& painter, const QRect& rcPos) override;
     virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) = 0;
 
