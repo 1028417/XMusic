@@ -13,6 +13,9 @@ public:
     }
 
 private:
+    class CPlayerView& m_view;
+
+private:
     UINT getItemCount() override
     {
         return 0;
