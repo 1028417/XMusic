@@ -75,7 +75,7 @@ BOOL CBasePage::GetCtrlDragData(HWND hwndCtrl, const CPoint& point, LPVOID& pDra
 void CBasePage::handleDragOver(CObjectList& wndList, CDragContext& DragContext
 	, const function<bool(int& uDragOverPos)>& cb)
 {
-	__Ensure(E_ListViewType::LVT_Report == wndList.GetView());
+	__Ensure(wndList.isReportView());
 
 	if (m_bDragScrolling)
 	{

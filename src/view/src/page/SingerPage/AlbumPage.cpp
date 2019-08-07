@@ -1182,18 +1182,17 @@ void CAlbumPage::OnNMDblclkListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
-
 	LPNMITEMACTIVATE lpNMList = (LPNMITEMACTIVATE)pNMHDR;
-
-	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
-	
-	m_wndAlbumItemList.AsyncLButtondown([=]() {
-		CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
-		__Ensure(pAlbumItem);
 
-		if (__Column_Playlist == iSubItem || __Column_Path == iSubItem)
-		{
+	if (__Column_Playlist == iSubItem || __Column_Path == iSubItem)
+	{
+		int iItem = lpNMList->iItem;
+
+		m_wndAlbumItemList.AsyncLButtondown([=]() {
+			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
+			__Ensure(pAlbumItem);
+
 			pAlbumItem->AsyncTask();
 			m_wndAlbumItemList.UpdateItem(iItem);
 
@@ -1205,8 +1204,8 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				this->OnMenuCommand_AlbumItem(ID_HITTEST_ALBUMITEM);
 			}
-		}
-	});
+		});
+	}
 }
 
 void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
@@ -1232,7 +1231,7 @@ void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 
 void CAlbumPage::_asyncTask()
 {
-	if (E_ListViewType::LVT_Report == m_wndAlbumItemList.GetView())
+	if (m_wndAlbumItemList.isReportView())
 	{
 		m_wndAlbumItemList.AsyncTask(100, [&](UINT uItem) {
 			__Ensure(m_pAlbum);

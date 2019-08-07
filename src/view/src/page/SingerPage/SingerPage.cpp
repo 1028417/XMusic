@@ -59,11 +59,6 @@ BOOL CSingerPage::OnInitDialog()
 			{
 				tvcd.uTextAlpha = 128;
 			}
-
-			if (m_wndTree.GetSelectedObject() == pSingerObject)
-			{
-				tvcd.crBkg = BkgColor_Select;
-			}
 		}
 	});
 

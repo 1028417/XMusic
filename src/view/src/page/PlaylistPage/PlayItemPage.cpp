@@ -413,18 +413,16 @@ BOOL CPlayItemPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
-
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	
-	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 
-	m_wndList.AsyncLButtondown([=]() {
-		CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
-		__Ensure(pPlayItem);
-		
-		if (__Column_SingerAlbum == iSubItem || __Column_Path == iSubItem)
-		{
+	if (__Column_SingerAlbum == iSubItem || __Column_Path == iSubItem)
+	{
+		int iItem = lpNMList->iItem;
+
+		m_wndList.AsyncLButtondown([=]() {
+			CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
+			__Ensure(pPlayItem);
 			pPlayItem->AsyncTask();
 			m_wndList.UpdateItem(iItem);
 
@@ -439,8 +437,8 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				this->OnMenuCommand(ID_HITTEST);
 			}
-		}
-	});
+		});
+	}
 }
 
 void CPlayItemPage::OnNMDblclkList(NMHDR *pNMHDR, LRESULT *pResult)

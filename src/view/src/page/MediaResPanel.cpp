@@ -410,7 +410,7 @@ BOOL CMediaResPanel::HittestMediaRes(IMedia& media)
 	CMediaRes *pMediaRes = media.GetMediaRes();
 	if (NULL == pMediaRes)
 	{
-		CMainApp::showMsg(L"未定位到曲目：\n" + media.GetPath(), *this);
+		CMainApp::showMsg(L"未定位到曲目：\n\n\t" + media.GetPath(), *this);
 		return FALSE;
 	}
 
@@ -807,23 +807,17 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
-
-	if (E_ListViewType::LVT_Report != m_wndList.GetView())
-	{
-		return;
-	}
-
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-
-	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
-	
-	m_wndList.AsyncLButtondown([=]() {
-		CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
-		__Ensure(pMediaRes);
 
-		if (__Column_Playlist == iSubItem || __Column_SingerAlbum == iSubItem)
-		{
+	if (__Column_Playlist == iSubItem || __Column_SingerAlbum == iSubItem)
+	{
+		int iItem = lpNMList->iItem;
+
+		m_wndList.AsyncLButtondown([=]() {
+			CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
+			__Ensure(pMediaRes);
+
 			if (!pMediaRes->IsDir())
 			{
 				pMediaRes->AsyncTask();
@@ -844,8 +838,8 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 					}
 				}
 			}
-		}
-	});
+		});
+	}
 }
 
 void CMediaResPanel::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)
@@ -966,7 +960,7 @@ int CMediaResPanel::GetTabImage()
 
 void CMediaResPanel::_asyncTask()
 {
-	if (E_ListViewType::LVT_Report == m_wndList.GetView())
+	if (m_wndList.isReportView())
 	{
 		m_wndList.AsyncTask(200, [&](UINT uItem) {
 			CMediaRes *pMediaRes = (CMediaRes*)m_wndList.GetItemObject(uItem);

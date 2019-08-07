@@ -306,7 +306,7 @@ void CVerifyResultDlg::OnBnClickedLink()
 		{
 			if (!fsutil::CheckSubPath(strBaseDir, strNewOppPath))
 			{
-				CMainApp::showMsg(L"请选择以下目录中的文件：" + strBaseDir, __Title, this);
+				CMainApp::showMsg(L"请选择以下目录中的文件：\n\n\t" + strBaseDir, __Title, this);
 				continue;
 			}
 		}
