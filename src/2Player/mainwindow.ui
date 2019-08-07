@@ -389,9 +389,9 @@ border-image-repeat: stretched</string>
    <widget class="QFrame" name="frameDemand">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>110</x>
       <y>0</y>
-      <width>950</width>
+      <width>840</width>
       <height>170</height>
      </rect>
     </property>
@@ -581,7 +581,7 @@ border-image-repeat: stretched</string>
       <rect>
        <x>20</x>
        <y>120</y>
-       <width>920</width>
+       <width>820</width>
        <height>60</height>
       </rect>
      </property>
@@ -732,34 +732,6 @@ border-image-repeat: stretched</string>
      <zorder>labelDemandEUR</zorder>
      <zorder>labelDemandCN</zorder>
     </widget>
-    <widget class="CButton" name="btnMore">
-     <property name="geometry">
-      <rect>
-       <x>860</x>
-       <y>10</y>
-       <width>90</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/btnMore.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>100</width>
-       <height>100</height>
-      </size>
-     </property>
-     <property name="flat">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
    <widget class="QLabel" name="labelLogo">
     <property name="geometry">
@@ -861,6 +833,34 @@ border-image-repeat: stretched</string>
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="CButton" name="btnMore">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-image: url(:/img/btnMore.png);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>100</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>labelBkg</zorder>
    <zorder>btnPlay</zorder>
    <zorder>btnPause</zorder>
@@ -881,6 +881,7 @@ border-image-repeat: stretched</string>
    <zorder>labelPlayingfile</zorder>
    <zorder>progressBar</zorder>
    <zorder>labelPlayProgress</zorder>
+   <zorder>btnMore</zorder>
   </widget>
   <action name="action">
    <property name="text">

@@ -101,6 +101,7 @@ void MainWindow::_init()
     }
 
     ui.labelSingerName->setShadowWidth(3);
+    ui.labelPlayingfile->setShadowWidth(2);
 
     connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
         , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));
@@ -469,28 +470,12 @@ void MainWindow::_relayout()
     {
         x_frameDemand = (cx - ui.frameDemand->width())/2;
     }
-    x_frameDemand += 40;
+    x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
 
     int y_PlayingListMax = 0;
-
-    bool bFlag = false;
-    if (m_bHScreen)
-    {
-        if (cy < 1080)
-        {
-            bFlag = true;
-        }
-        else
-        {
-            if (fCXRate>1)
-            {
-                bFlag = true;
-            }
-        }
-    }
 
     if (m_bUsingCustomBkg)
     {
@@ -535,6 +520,16 @@ void MainWindow::_relayout()
     }
     else
     {
+        bool bFlag = false;
+        if (m_bHScreen)
+        {
+            bFlag = (cy < 1080 || fCXRate > 1);
+        }
+        else
+        {
+            bFlag = cy < 1920;
+        }
+
         if (bFlag)
         {
             int x_Playingfile = ui.wdgSingerImg->x() + 30;
@@ -542,13 +537,15 @@ void MainWindow::_relayout()
             ui.labelPlayingfile->move(x_Playingfile, y_Playingfile);
 
             ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
+
+            y_PlayingListMax = ui.wdgSingerImg->y();
         }
         else
         {
             ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignBottom);
-        }
 
-        y_PlayingListMax = ui.labelPlayingfile->y();
+            y_PlayingListMax = ui.labelPlayingfile->y();
+        }
 
         m_PlayingList.setFont(m_view.genFont(-1.5), QColor(255, 255, 255, 160));
     }
@@ -595,7 +592,7 @@ void MainWindow::_relayout()
         }
         else if (uRowCount < 7)
         {
-            uRowCount -= 7;
+            uRowCount = 7;
             y_Margin -= 10;
         }
 
