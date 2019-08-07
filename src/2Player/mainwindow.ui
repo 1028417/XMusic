@@ -836,8 +836,8 @@ border-image-repeat: stretched</string>
    <widget class="CButton" name="btnMore">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
+      <x>20</x>
+      <y>30</y>
       <width>90</width>
       <height>90</height>
      </rect>

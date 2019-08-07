@@ -71,7 +71,7 @@ private:
                 while (painter.fontMetrics().width(text) > pos.width())
                 {
                     QFont font = painter.font();
-                    font.setPointSizeF(font.pointSizeF()-0.5f);
+                    font.setPointSizeF(font.pointSizeF()-0.2f);
                     painter.setFont(font);
                 }
 

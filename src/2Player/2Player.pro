@@ -29,7 +29,8 @@ SOURCES +=\
     PlayingList.cpp \
     widget.cpp \
     bkgdlg.cpp \
-    listview.cpp
+    listview.cpp \
+    medialibdlg.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -41,12 +42,14 @@ HEADERS  += mainwindow.h \
     ProgressBar.h \
     bkgdlg.h \
     listview.h \
-    dialog.h
+    dialog.h \
+    medialibdlg.h
 
 RESOURCES += res.qrc
 
 FORMS    += mainwindow.ui \
-    bkgdlg.ui
+    bkgdlg.ui \
+    medialibdlg.ui
 
 INCLUDEPATH += \
     ../../inc \

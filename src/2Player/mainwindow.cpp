@@ -7,6 +7,7 @@
 
 #include <QMovie>
 
+#include "medialibdlg.h"
 #include "bkgdlg.h"
 
 extern const ITxtWriter& g_logWriter;
@@ -75,6 +76,8 @@ void MainWindow::_init()
 #else
     ui.btnExit->raise();
 #endif
+
+    ui.btnMore->raise();
 
     SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
@@ -926,7 +929,8 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnMore)
     {
-
+        static CMedialibDlg dlg;
+        dlg.show();
     }
     else
     {
