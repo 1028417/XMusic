@@ -214,12 +214,12 @@ public:
 		UINT uTileHeight = 0;
 	};
 
-	CObjectList(){}
+	CObjectList() {}
 
 	virtual ~CObjectList()
 	{
 		(void)m_Imglst.DeleteImageList();
-		(void)m_ImglstSmall.DeleteImageList();		
+		(void)m_ImglstSmall.DeleteImageList();
 	}
 
 private:
@@ -241,9 +241,9 @@ private:
 	CListHeader m_wndHeader;
 
 	UINT m_uColumnCount = 1;
-	
+
 	bool m_bTrackingMouse = false;
-	
+
 	CString m_cstrRenameText;
 
 	vector<BOOL> m_vecAsyncTaskFlag;
@@ -264,11 +264,16 @@ public:
 	BOOL InitCtrl(const tagListPara& para);
 
 	BOOL InitImglst(const CSize& size, const CSize *pszSmall = NULL, const TD_IconVec& vecIcons = {});
-	BOOL InitImglst(CBitmap& Bitmap, CBitmap *pBitmapSmall=NULL);
+	BOOL InitImglst(CBitmap& Bitmap, CBitmap *pBitmapSmall = NULL);
 	void SetImageList(CImglst *pImglst, CImglst *pImglstSmall = NULL);
 
 	void SetView(E_ListViewType eViewType, bool bArrange = false);
 	E_ListViewType GetView();
+
+	bool isReportView()
+	{
+		return GetView() == E_ListViewType::LVT_Report;
+	}
 
 	void SetTileSize(ULONG cx, ULONG cy);
 
