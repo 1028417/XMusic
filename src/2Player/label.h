@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    UINT m_uShadowWidth = 0;
+    UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
 signals:
@@ -66,8 +66,10 @@ private:
         const QString& text = this->text();
         if (!text.isEmpty())
         {
-            auto rect = this->rect();
-            while (painter.fontMetrics().width(text) >= rect.right())
+            int cx = this->rect().right();
+            int cy = this->rect().bottom ();
+
+            while (painter.fontMetrics().width(text) >= cx)
             {
                 QFont font = painter.font();
                 font.setPointSizeF(font.pointSizeF()-0.5f);
@@ -80,18 +82,21 @@ private:
             if (0 != m_uShadowWidth)
             {
                 QPen pen = painter.pen();
-                for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
-                {
-                    m_crShadow.setAlpha(255*(m_uShadowWidth-uIdx)/m_uShadowWidth);
-                    painter.setPen(m_crShadow);
 
-                    QRectF rcShadow(uIdx, uIdx, rect.right(), rect.bottom());
-                    painter.drawText(rcShadow, text, to);
+                QColor crShadow = m_crShadow;
+                for (int nIdx=1; nIdx<=(int)m_uShadowWidth; nIdx++)
+                {
+                    crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
+                    painter.setPen(crShadow);
+
+                    painter.drawText(QRectF(nIdx, nIdx, cx, cy), text, to);
+                    painter.drawText(QRectF(-nIdx, -nIdx, cx, cy), text, to);
                }
+
                painter.setPen(pen);
             }
 
-            painter.drawText(rect, text, to);
+            painter.drawText(this->rect(), text, to);
 
             return;
         }

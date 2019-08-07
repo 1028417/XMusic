@@ -31,7 +31,7 @@ private:
 
     int m_nActiveTime = 0;
 
-    UINT m_uShadowWidth = 0;
+    UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
 public:

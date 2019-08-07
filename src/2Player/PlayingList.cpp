@@ -46,14 +46,17 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         }
         rcItem.setLeft(rcItem.left() + 30);
 
-        if (m_uShadowWidth != 0)
+        if (m_nActiveTime !=0 && m_uShadowWidth != 0)
         {
-            for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
+            QColor crShadow = m_crShadow;
+            for (int nIdx=1; nIdx<=(int)m_uShadowWidth; nIdx++)
             {
-                m_crShadow.setAlpha(255*fAlpha*(m_uShadowWidth-uIdx)/m_uShadowWidth);
-                painter.setPen(m_crShadow);
+                crShadow.setAlpha(m_crShadow.alpha()*fAlpha*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
+                painter.setPen(crShadow);
 
-                painter.drawText(QRectF(rcItem.left()+uIdx, rcItem.top()+uIdx, rcItem.width(), rcItem.height())
+                painter.drawText(QRectF(rcItem.left()+nIdx, rcItem.top()+nIdx, rcItem.width(), rcItem.height())
+                                 , Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
+                painter.drawText(QRectF(rcItem.left()-nIdx, rcItem.top()-nIdx, rcItem.width(), rcItem.height())
                                  , Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
             }
 

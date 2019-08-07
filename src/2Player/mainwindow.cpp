@@ -103,9 +103,6 @@ void MainWindow::_init()
         label->setPalette(pe);
     }
 
-    ui.labelSingerName->setShadowWidth(3);
-    ui.labelPlayingfile->setShadowWidth(3);
-
     connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
         , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));
 
