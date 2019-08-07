@@ -73,12 +73,12 @@ void CPlayingList::OnCustomDraw(tagLVCustomDraw& lvcd)
 
 	m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
 		CCompDC CompDC;
-		(void)CompDC.create(rcItem.Width(), rcItem.Height(), lvcd.hdc);
+		(void)CompDC.create(rcItem.Width(), rcItem.Height(), lvcd.dc);
 		CDC& MemDC = CompDC.getDC();
 
 		DrawItem(MemDC, CRect(0,0, rcItem.Width(), rcItem.Height()), lvcd.uItem, PlayItem);
 
-		(void)::BitBlt(lvcd.hdc, rcItem.left, rcItem.top, rcItem.Width(), rcItem.Height(), MemDC, 0, 0, SRCCOPY);
+		(void)lvcd.dc.BitBlt(rcItem.left, rcItem.top, rcItem.Width(), rcItem.Height(), &MemDC, 0, 0, SRCCOPY);
 
 		lvcd.bSkipDefault = true;
 	});

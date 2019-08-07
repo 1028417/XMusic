@@ -660,8 +660,7 @@ void CMediaResPanel::OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	if (pNMLV->iItem >= 0)
 	{
-		m_wndList.DeselectAll();
-		
+		m_wndList.DeselectAll();		
 		m_wndList.SelectItem(pNMLV->iItem);
 		
 		CMediaRes *pMediaRes = (CMediaRes*)m_wndList.GetItemObject(pNMLV->iItem);
