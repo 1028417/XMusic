@@ -17,7 +17,6 @@ public:
     }
 
 protected:
-    QFont m_font;
     QColor m_crText;
 
     UINT m_uRowCount = 0;
@@ -34,10 +33,11 @@ public:
         m_uRowCount = uRowCount;
     }
 
-    void setFont(const QFont& font, const QColor& crText)
+    void setTextColor(const QColor& crText)
     {
-        m_font = font;
         m_crText = crText;
+
+        //CWidget<QWidget>::update();
     }
 
     void scroll(UINT uRow)

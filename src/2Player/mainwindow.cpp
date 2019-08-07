@@ -516,7 +516,9 @@ void MainWindow::_relayout()
         int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
         ui.wdgSingerImg->setGeometry(x + (cx_progressBar-cx_SingerImg)/2, y_SingerImg, cx_SingerImg, cy_SingerImg);
 
-        m_PlayingList.setFont(m_view.genFont(-1), QColor(255, 255, 255, 255));
+        m_view.setFont(&m_PlayingList, -1);
+        m_PlayingList.setTextColor(QColor(255, 255, 255));
+        m_PlayingList.setShadowWidth(2);
     }
     else
     {
@@ -547,7 +549,9 @@ void MainWindow::_relayout()
             y_PlayingListMax = ui.labelPlayingfile->y();
         }
 
-        m_PlayingList.setFont(m_view.genFont(-1.5), QColor(255, 255, 255, 160));
+        m_view.setFont(&m_PlayingList, -1.5);
+        m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
+        m_PlayingList.setShadowWidth(0);
     }
 
     UINT uMargin = 0;

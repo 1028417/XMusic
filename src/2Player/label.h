@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    UINT m_uShadowWidth = 2;
+    UINT m_uShadowWidth = 1;
     QColor m_crShadow;
 
 signals:
@@ -84,13 +84,16 @@ private:
                 QPen pen = painter.pen();
 
                 QColor crShadow = m_crShadow;
-                for (int nIdx=1; nIdx<=(int)m_uShadowWidth; nIdx++)
+                painter.setPen(crShadow);
+                for (int nIdx=0; nIdx<=(int)m_uShadowWidth; nIdx++)
                 {
-                    crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
-                    painter.setPen(crShadow);
+                    if (nIdx > 1)
+                    {
+                        crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
+                        painter.setPen(crShadow);
+                    }
 
                     painter.drawText(QRectF(nIdx, nIdx, cx, cy), text, to);
-                    painter.drawText(QRectF(-nIdx, -nIdx, cx, cy), text, to);
                }
 
                painter.setPen(pen);

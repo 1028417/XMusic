@@ -48,12 +48,13 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
 
     m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
 
-    painter.setPen(m_crText);
-
     UINT uItem = m_fScrollPos;
     int y = (-m_fScrollPos+uItem)*m_uRowHeight;
     for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
     {
+        painter.setFont(this->font());
+        painter.setPen(m_crText);
+
         QRect rcItem(0, y, cx, m_uRowHeight);
         _onPaintItem(painter, uItem, rcItem);
 

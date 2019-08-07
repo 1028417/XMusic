@@ -31,7 +31,7 @@ private:
 
     int m_nActiveTime = 0;
 
-    UINT m_uShadowWidth = 2;
+    UINT m_uShadowWidth = 1;
     QColor m_crShadow;
 
 public:
@@ -40,21 +40,21 @@ public:
         m_uShadowWidth = uWidth;
         m_crShadow = crShadow;
 
-        CWidget::update();
+        //CWidget::update();
     }
 
     void setShadowWidth(UINT uWidth)
     {
         m_uShadowWidth = uWidth;
 
-        CWidget::update();
+        //CWidget::update();
     }
 
     void setShadowColor(const QColor& crShadow)
     {
         m_crShadow = crShadow;
 
-        CWidget::update();
+        //CWidget::update();
     }
 
     void updateList(UINT uPlayingItem);

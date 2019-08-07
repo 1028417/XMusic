@@ -6,28 +6,32 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     int cy = this->rect().bottom();
 
     bool bPlayingItem = uItem == m_uPlayingItem;
-    QFont font(m_font);
-    QColor crText(m_crText);
-    float fAlpha = 1;
-    if (0 == m_nActiveTime)
-    {
-        fAlpha = 0.5;
-    }
 
+    QFont font = painter.font();
     if (bPlayingItem)
     {
         font.setBold(true);
         font.setPointSizeF(font.pointSizeF()+0.5);
     }
 
+    float fAlpha = 1;
+    if (0 == m_nActiveTime)
+    {
+        fAlpha = 0.5;
+    }
+
+    bool bOutside = false;
     if (rcItem.top() < 0)
     {
         fAlpha *= pow((double)rcItem.bottom()/rcItem.height(),3.3);
+        bOutside = true;
     }
     else if (rcItem.bottom() > cy)
     {
         fAlpha *= pow(double(cy - rcItem.top())/rcItem.height(),3.3);
+        bOutside = true;
     }
+    QColor crText(m_crText);
     crText.setAlpha(crText.alpha()*fAlpha);
 
     m_alPlayingItems.get(uItem, [&](tagPlayingItem& playingItem){
@@ -46,17 +50,15 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         }
         rcItem.setLeft(rcItem.left() + 30);
 
-        if (m_nActiveTime !=0 && m_uShadowWidth != 0)
+        if (m_nActiveTime !=0 && m_uShadowWidth != 0 && !bOutside)
         {
             QColor crShadow = m_crShadow;
-            for (int nIdx=1; nIdx<=(int)m_uShadowWidth; nIdx++)
+            for (int nIdx=0; nIdx<=(int)m_uShadowWidth; nIdx++)
             {
-                crShadow.setAlpha(m_crShadow.alpha()*fAlpha*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
+                crShadow.setAlpha(m_crShadow.alpha()*fAlpha*(m_uShadowWidth-nIdx)/m_uShadowWidth);
                 painter.setPen(crShadow);
 
                 painter.drawText(QRectF(rcItem.left()+nIdx, rcItem.top()+nIdx, rcItem.width(), rcItem.height())
-                                 , Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
-                painter.drawText(QRectF(rcItem.left()-nIdx, rcItem.top()-nIdx, rcItem.width(), rcItem.height())
                                  , Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
             }
 
