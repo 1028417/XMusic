@@ -139,20 +139,24 @@ public:
 
 struct tagLVNMCustomDraw
 {
-	tagLVNMCustomDraw(const tagNMCUSTOMDRAWINFO& nmcd) :
-		hdc(nmcd.hdc)
-		, rc(nmcd.rc)
+	tagLVNMCustomDraw(tagNMCUSTOMDRAWINFO& nmcd) :
+		rc(nmcd.rc)
 		, uItem(nmcd.dwItemSpec)
-		, uItemState(nmcd.uItemState)
 		, pObject((CListObject*)nmcd.lItemlParam)
 	{
+		dc.Attach(nmcd.hdc);
 	}
 
-	HDC hdc;
-	RECT rc;
-	UINT uItem;
-	UINT uItemState;
-	CListObject *pObject;
+	~tagLVNMCustomDraw()
+	{
+		dc.Detach();
+	}
+
+	CDC dc;
+
+	const CRect rc;
+	const UINT uItem;
+	CListObject * const pObject;
 };
 
 struct tagLVCustomDraw : tagLVNMCustomDraw
@@ -374,4 +378,6 @@ private:
 	virtual void OnListItemRename(UINT uItem, const CString& cstrNewText) {}
 
 	virtual void onAsyncTask(UINT uItem) {}
+
+	void handleCustomDraw(NMLVCUSTOMDRAW& lvnmcd, LRESULT* pResult);
 };

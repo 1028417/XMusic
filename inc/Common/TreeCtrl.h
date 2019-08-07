@@ -53,19 +53,23 @@ protected:
 struct tagTVNMCustomDraw
 {
 	tagTVNMCustomDraw(const tagNMCUSTOMDRAWINFO& nmcd) :
-		hdc(nmcd.hdc)
-		, rc(nmcd.rc)
+		rc(nmcd.rc)
 		, hItem((HTREEITEM)nmcd.dwItemSpec)
-		, uItemState(nmcd.uItemState)
 		, pObject((CTreeObject*)nmcd.lItemlParam)
 	{
+		(void)dc.Attach(nmcd.hdc);
 	}
 
-	HDC hdc;
-	RECT rc;
-	HTREEITEM hItem;
-	UINT uItemState;
-	CTreeObject *pObject;
+	~tagTVNMCustomDraw()
+	{
+		dc.Detach();
+	}
+
+	CDC dc;
+
+	const CRect rc;
+	const HTREEITEM hItem;
+	CTreeObject * const pObject;
 };
 
 struct tagTVCustomDraw : tagTVNMCustomDraw
@@ -164,6 +168,9 @@ public:
 	{
 		__super::RedrawItem(getTreeItem(Object));
 	}
+
+private:
+	void handleCustomDraw(NMTVCUSTOMDRAW& tvnmcd, LRESULT* pResult);
 
 protected:
 	virtual BOOL handleNMNotify(NMHDR& NMHDR, LRESULT* pResult) override;
