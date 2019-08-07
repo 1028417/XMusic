@@ -31,7 +31,7 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    virtual void _onPaint(QPainter&, const QRect&);
+    virtual void _onPaint(QPainter&, const QRect& rc);
 
 private:
     void paintEvent(QPaintEvent *pe);

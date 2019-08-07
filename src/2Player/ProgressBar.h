@@ -13,15 +13,15 @@ public:
     {
     }
 
-    void _onPaint(QPainter& painter, const QRect& pos) override
+    void _onPaint(QPainter& painter, const QRect&) override
     {
-        painter.fillRect(pos, QBrush(QColor(255,255,255)));
+        QRect rect = this->rect();
+        painter.fillRect(rect, QBrush(QColor(255,255,255)));
 
         if (this->maximum() > 0 && this->value() > 0)
         {
-            QRect rcProgress(pos);
-            rcProgress.setRight(pos.width()*this->value()/this->maximum());
-            painter.fillRect(rcProgress, QBrush(QColor(128,200,255)));
+            rect.setRight(rect.right()*this->value()/this->maximum());
+            painter.fillRect(rect, QBrush(QColor(128,200,255)));
         }
     }
 };

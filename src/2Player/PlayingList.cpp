@@ -3,6 +3,8 @@
 
 void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 {
+    int cy = this->rect().bottom();
+
     bool bPlayingItem = uItem == m_uPlayingItem;
     QFont font(m_font);
     QColor crText(m_crText);
@@ -22,9 +24,9 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     {
         fAlpha *= pow((double)rcItem.bottom()/rcItem.height(),3.3);
     }
-    else if (rcItem.bottom() > this->height())
+    else if (rcItem.bottom() > cy)
     {
-        fAlpha *= pow(double(this->height()-rcItem.top())/rcItem.height(),3.3);
+        fAlpha *= pow(double(cy - rcItem.top())/rcItem.height(),3.3);
     }
     crText.setAlpha(crText.alpha()*fAlpha);
 

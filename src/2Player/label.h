@@ -61,41 +61,41 @@ private:
         emit signal_mousePressEvent(this, ev->pos());
     }
 
-    void _onPaint(QPainter& painter, const QRect& pos) override
+    void _onPaint(QPainter& painter, const QRect& rc) override
     {
-        if (0 != m_uShadowWidth)
+        const QString& text = this->text();
+        if (!text.isEmpty())
         {
-            const QString& text = this->text();
-            if (!text.isEmpty())
+            auto rect = this->rect();
+            while (painter.fontMetrics().width(text) >= rect.right())
             {
-                while (painter.fontMetrics().width(text) > pos.width())
-                {
-                    QFont font = painter.font();
-                    font.setPointSizeF(font.pointSizeF()-0.2f);
-                    painter.setFont(font);
-                }
+                QFont font = painter.font();
+                font.setPointSizeF(font.pointSizeF()-0.5f);
+                painter.setFont(font);
+            }
 
+            QTextOption to;
+            to.setAlignment(this->alignment());
+
+            if (0 != m_uShadowWidth)
+            {
                 QPen pen = painter.pen();
-
-                QTextOption to;
-                to.setAlignment(this->alignment());
-
                 for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
                 {
                     m_crShadow.setAlpha(255*(m_uShadowWidth-uIdx)/m_uShadowWidth);
                     painter.setPen(m_crShadow);
 
-                    QRectF rcShadow(pos.left()+uIdx, pos.top()+uIdx, pos.width(), pos.height());
+                    QRectF rcShadow(uIdx, uIdx, rect.right(), rect.bottom());
                     painter.drawText(rcShadow, text, to);
-                }
-
-                painter.setPen(pen);
-                painter.drawText(pos, text, to);
-
-                return;
+               }
+               painter.setPen(pen);
             }
+
+            painter.drawText(rect, text, to);
+
+            return;
         }
 
-        CWidget<QLabel>::_onPaint(painter, pos);
+        CWidget<QLabel>::_onPaint(painter, rc);
     }
 };

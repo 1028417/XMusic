@@ -104,7 +104,7 @@ void MainWindow::_init()
     }
 
     ui.labelSingerName->setShadowWidth(3);
-    ui.labelPlayingfile->setShadowWidth(2);
+    ui.labelPlayingfile->setShadowWidth(3);
 
     connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
         , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));
@@ -473,7 +473,7 @@ void MainWindow::_relayout()
     {
         x_frameDemand = (cx - ui.frameDemand->width())/2;
     }
-    x_frameDemand -= 10;
+    x_frameDemand -= 5;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();

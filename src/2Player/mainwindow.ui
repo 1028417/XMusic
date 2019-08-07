@@ -837,7 +837,7 @@ border-image-repeat: stretched</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>35</y>
       <width>90</width>
       <height>90</height>
      </rect>

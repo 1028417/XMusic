@@ -24,13 +24,17 @@ void CListView::_onTouchMove(int dy)
     this->update();
 }
 
-void CListView::_onPaint(QPainter& painter, const QRect& rcPos)
+void CListView::_onPaint(QPainter& painter, const QRect&)
 {
     if (0 == m_uRowCount)
     {
         return;
     }
-    m_uRowHeight = rcPos.height()/m_uRowCount;
+
+    int cx = rect().right();
+    int cy = rect().bottom();
+
+    m_uRowHeight = cy/m_uRowCount;
 
     UINT uItemCount = getItemCount();
     if (uItemCount > m_uRowCount)
@@ -47,15 +51,14 @@ void CListView::_onPaint(QPainter& painter, const QRect& rcPos)
     painter.setPen(m_crText);
 
     UINT uItem = m_fScrollPos;
-    int y = rcPos.top() + (-m_fScrollPos+uItem)*m_uRowHeight;
+    int y = (-m_fScrollPos+uItem)*m_uRowHeight;
     for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
     {
-        QRect rcItem(0, y, rcPos.width(), m_uRowHeight);
-
+        QRect rcItem(0, y, cx, m_uRowHeight);
         _onPaintItem(painter, uItem, rcItem);
 
         y += m_uRowHeight;
-        if (y >= rcPos.bottom())
+        if (y >= cy)
         {
             break;
         }

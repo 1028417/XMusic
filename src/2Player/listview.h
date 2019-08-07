@@ -55,7 +55,7 @@ public:
 private:
     virtual UINT getItemCount() = 0;
 
-    void _onPaint(QPainter& painter, const QRect& rcPos) override;
+    void _onPaint(QPainter& painter, const QRect& rc) override;
     virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) = 0;
 
     void mouseDoubleClickEvent(QMouseEvent *ev) override;
