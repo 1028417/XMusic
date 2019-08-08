@@ -457,7 +457,7 @@ void MainWindow::_relayout()
         }
     }
 
-    ui.btnMore->move(ui.btnMore->x(), y_frameDemand+5);
+    ui.btnMore->move(ui.btnMore->x(), y_frameDemand+10);
 
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
     ui.btnExit->move(x_btnExit, y_frameDemand + 10);
@@ -472,7 +472,7 @@ void MainWindow::_relayout()
     {
         x_frameDemand = (cx - ui.frameDemand->width())/2;
     }
-    x_frameDemand -= 5;
+    x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
@@ -528,8 +528,8 @@ void MainWindow::_relayout()
 
         ui.wdgSingerImg->setGeometry(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
 
-        ui.labelSingerName->setGeometry(x_SingerImg+10, y_AlbumName-ui.labelSingerName->height()
-                                     , cx_SingerImg-20, ui.labelSingerName->height());
+        ui.labelSingerName->setGeometry(x_SingerImg+15, y_AlbumName-ui.labelSingerName->height()
+                                     , cx_SingerImg-15, ui.labelSingerName->height());
 
         y_PlayingListMax = y_SingerImg;
 
