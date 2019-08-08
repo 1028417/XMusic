@@ -3,6 +3,8 @@
 
 #include "dialog.h"
 
+#include "listview.h"
+
 #include "model.h"
 
 class CMediaSetEx : public CMediaSet
@@ -39,6 +41,38 @@ private:
     }
 };
 
+class CMedialibView : public CListView
+{
+public:
+    CMedialibView(class CPlayerView& view, QWidget *parent=NULL) :
+        CListView(parent)
+        , m_view(view)
+        , m_MediaLib(view.getModel())
+    {
+    }
+
+private:
+    class CPlayerView& m_view;
+
+    CMediaLib m_MediaLib;
+
+    CMediaSet *m_pMediaset = NULL;
+    TD_MediaSetList m_lstSubSets;
+
+    CMediaRes *m_pMediaRes = NULL;
+
+private:
+    UINT getItemCount() override
+    {
+        return 0;
+    }
+
+    virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override
+    {
+
+    }
+};
+
 class CMedialibDlg : public CDialog<>
 {
     Q_OBJECT
@@ -48,5 +82,5 @@ public:
 private:
     class CPlayerView& m_view;
 
-    CMediaLib m_MediaLib;
+    CMedialibView m_MedialibView;
 };
