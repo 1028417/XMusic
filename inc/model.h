@@ -91,7 +91,7 @@ class IModel
 {
 public:
 	virtual CRootMediaRes& getRootMediaRes() = 0;
-	virtual CMediaSet& getMediaLib() = 0;
+	virtual CMediaSet& getRootMediaSet() = 0;
 	
 	virtual CPlaylistMgr& getPlaylistMgr() = 0;
 	virtual CPlayMgr& getPlayMgr() = 0;
@@ -136,29 +136,30 @@ public:
 	virtual bool restoreDB(const wstring& strFile) = 0;
 };
 
-class CMediaLib : public CMediaSet
-{
-public:
-	CMediaLib(CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)
-		: CMediaSet(L"曲库")
-		, m_PlaylistMgr(PlaylistMgr)
-		, m_SingerMgr(SingerMgr)
-	{
-	}
-
-private:
-	CPlaylistMgr& m_PlaylistMgr;
-	CSingerMgr& m_SingerMgr;
-
-	virtual void GetSubSets(TD_MediaSetList& lstSubSets)
-	{
-		lstSubSets.add(m_PlaylistMgr);
-		lstSubSets.add(m_SingerMgr);
-	}
-};
-
 class __ModelExt CModel : public IModel
 {
+private:
+	class CRootMediaSet : public CMediaSet
+	{
+	public:
+		CRootMediaSet(CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)
+			: CMediaSet(L"曲库")
+			, m_PlaylistMgr(PlaylistMgr)
+			, m_SingerMgr(SingerMgr)
+		{
+		}
+
+	private:
+		CPlaylistMgr& m_PlaylistMgr;
+		CSingerMgr& m_SingerMgr;
+
+		virtual void GetSubSets(TD_MediaSetList& lstSubSets)
+		{
+			lstSubSets.add(m_PlaylistMgr);
+			lstSubSets.add(m_SingerMgr);
+		}
+	};
+	
 public:
 	CModel(IModelObserver& ModelObserver);
 
@@ -174,7 +175,7 @@ private:
 
 	CRootMediaRes m_RootMediaRes;
 
-	CMediaLib m_MediaLib;
+	CRootMediaSet m_RootMediaSet;
 
 	CPlaylistMgr m_PlaylistMgr;
 
@@ -191,9 +192,9 @@ public:
 		return m_RootMediaRes;
 	}
 
-	CMediaSet& getMediaLib() override
+	CMediaSet& getRootMediaSet() override
 	{
-		return m_MediaLib;
+		return m_RootMediaSet;
 	}
 
 	CPlaylistMgr& getPlaylistMgr() override
