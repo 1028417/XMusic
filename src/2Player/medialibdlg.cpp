@@ -3,11 +3,6 @@
 
 #include "listview.h"
 
-class CMediaLib : public CMediaSet
-{
-
-};
-
 class CMedialibView : public CListView
 {
 public:
@@ -39,8 +34,10 @@ private:
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(QWidget *parent) :
+CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     CDialog(parent)
+    , m_view(view)
+    , m_MediaLib(view.getModel())
 {
     ui.setupUi(this);
 }

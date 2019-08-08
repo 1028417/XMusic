@@ -951,7 +951,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnMore)
     {
-        static CMedialibDlg dlg;
+        static CMedialibDlg dlg(m_view);
         dlg.show();
     }
     else
