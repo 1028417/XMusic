@@ -5,15 +5,6 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 {
     int cy = this->rect().bottom();
 
-    bool bPlayingItem = uItem == m_uPlayingItem;
-
-    QFont font = painter.font();
-    if (bPlayingItem)
-    {
-        font.setBold(true);
-        font.setPointSizeF(font.pointSizeF()+0.5);
-    }
-
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
@@ -32,38 +23,56 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         bOutside = true;
     }
     QColor crText(m_crText);
-    crText.setAlpha(crText.alpha()*fAlpha);
+    crText.setAlpha(crText.alpha()*fAlpha);    
+    painter.setPen(crText);
+
+    QFont font = painter.font();
+
+    bool bPlayingItem = uItem == m_uPlayingItem;
+    if (bPlayingItem)
+    {
+        font.setBold(true);
+        font.setPointSizeF(font.pointSizeF()+0.5);
+
+        painter.setFont(font);
+        painter.drawText(rcItem.left(), rcItem.top() + 6, rcItem.width()
+            , rcItem.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
+    }
+
+    rcItem.setLeft(rcItem.left() + 30);
 
     m_alPlayingItems.get(uItem, [&](tagPlayingItem& playingItem){
         if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
         {
             font.setItalic(true);
+            painter.setFont(font);
         }
 
-        painter.setFont(font);
-        painter.setPen(crText);
-
-        if (bPlayingItem)
+        if (m_nActiveTime !=0 && m_uShadowWidth != 0)
         {
-            painter.drawText(rcItem.left(), rcItem.top() + 6, rcItem.width()
-                , rcItem.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
-        }
-        rcItem.setLeft(rcItem.left() + 30);
-
-        if (m_nActiveTime !=0 && m_uShadowWidth != 0 && !bOutside)
-        {
+            UINT uShadowAlpha = m_crShadow.alpha();
             QColor crShadow = m_crShadow;
+            if (bOutside)
+            {
+                uShadowAlpha *= fAlpha*fAlpha;
+                crShadow.setAlpha(uShadowAlpha);
+            }
             painter.setPen(crShadow);
-            for (UINT uIdx=0; uIdx<=(int)m_uShadowWidth; uIdx++)
+
+            for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
             {
                 if (uIdx > 1)
                 {
-                    crShadow.setAlpha(m_crShadow.alpha()*fAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                    crShadow.setAlpha(uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                     painter.setPen(crShadow);
                 }
 
-                painter.drawText(QRectF(rcItem.left()+uIdx, rcItem.top()+uIdx, rcItem.width(), rcItem.height())
-                                 , Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
+                QRectF rcShadow(rcItem);
+                rcShadow.setLeft(rcShadow.left()+uIdx);
+                rcShadow.setTop(rcShadow.top()+uIdx);
+                rcShadow.setRight(rcShadow.right()+uIdx);
+                rcShadow.setBottom(rcShadow.bottom()+uIdx);
+                painter.drawText(rcShadow, Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
             }
 
             painter.setPen(crText);

@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    UINT m_uShadowWidth = 1;
+    UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
 signals:

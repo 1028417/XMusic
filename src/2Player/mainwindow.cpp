@@ -457,6 +457,8 @@ void MainWindow::_relayout()
         }
     }
 
+    ui.btnMore->move(ui.btnMore->x(), y_frameDemand);
+
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
     ui.btnExit->move(x_btnExit, y_frameDemand + 10);
 
