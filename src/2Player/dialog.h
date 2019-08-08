@@ -36,7 +36,11 @@ protected:
         case QEvent::Move:
         case QEvent::Resize:
         case QEvent::Show:
-            _relayout();
+        {
+            int cx = this->width();
+            int cy = this->height();
+            _relayout(cx, cy);
+        }
 
             break;
         default:
@@ -47,5 +51,5 @@ protected:
     }
 
 private:
-    virtual void _relayout() {}
+    virtual void _relayout(int cx, int cy) {}
 };

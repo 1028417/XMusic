@@ -5,12 +5,22 @@ void CListView::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     QWidget::mouseDoubleClickEvent(ev);
 
+    if (0 == m_uRowHeight)
+    {
+        return;
+    }
+
     float fRowIdx = (float)ev->pos().y()/m_uRowHeight + m_fScrollPos;
     _handleMouseDoubleClick((UINT)fRowIdx);
 }
 
 void CListView::_onTouchMove(int dy)
 {
+    if (0 == m_uRowHeight)
+    {
+        return;
+    }
+
     m_fScrollPos -= (float)dy / m_uRowHeight;
     if (dy < 0)
     {
@@ -26,17 +36,22 @@ void CListView::_onTouchMove(int dy)
 
 void CListView::_onPaint(QPainter& painter, const QRect&)
 {
-    if (0 == m_uRowCount)
-    {
-        return;
-    }
-
-    int cx = rect().right();
-    int cy = rect().bottom();
-
-    m_uRowHeight = cy/m_uRowCount;
+    m_uRowHeight = 0;
 
     UINT uItemCount = getItemCount();
+    if (0 == m_uRowCount)
+    {
+        if (0 == uItemCount)
+        {
+            return;
+        }
+
+        m_uRowCount = uItemCount;
+    }
+
+    int cy = rect().bottom();
+    m_uRowHeight = cy/m_uRowCount;
+
     if (uItemCount > m_uRowCount)
     {
         m_uMaxScrollPos = uItemCount - m_uRowCount;
@@ -50,6 +65,7 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
 
     UINT uItem = m_fScrollPos;
     int y = (-m_fScrollPos+uItem)*m_uRowHeight;
+    int cx = rect().right();
     for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
     {
         painter.setFont(this->font());

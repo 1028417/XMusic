@@ -17,5 +17,6 @@
         <file>img/logo.gif</file>
         <file>img/btnExit.png</file>
         <file>img/btnMore.png</file>
+        <file>img/btnReturn.png</file>
     </qresource>
 </RCC>

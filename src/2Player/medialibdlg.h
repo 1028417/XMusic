@@ -1,45 +1,13 @@
 
 #pragma once
 
+#include "model.h"
+
 #include "dialog.h"
 
 #include "listview.h"
 
-#include "model.h"
-
-class CMediaSetEx : public CMediaSet
-{
-public:
-    CMediaSetEx(CMediaRes& MediaRes)
-        : m_MediaRes(MediaRes)
-    {
-    }
-
-    CMediaRes& m_MediaRes;
-};
-
-class CMediaLib : public CMediaSet
-{
-public:
-    CMediaLib(IModel& model)
-        : m_model(model)
-        , m_RootMediaRes(model.getRootMediaRes())
-    {
-    }
-
-private:
-    IModel& m_model;
-
-    CMediaSetEx m_RootMediaRes;
-
-    virtual void GetSubSets(TD_MediaSetList& lstSubSets)
-    {
-        lstSubSets.add(m_RootMediaRes);
-
-        lstSubSets.add(m_model.getPlaylistMgr());
-        lstSubSets.add(m_model.getSingerMgr());
-    }
-};
+#include "button.h"
 
 class CMedialibView : public CListView
 {
@@ -47,30 +15,29 @@ public:
     CMedialibView(class CPlayerView& view, QWidget *parent=NULL) :
         CListView(parent)
         , m_view(view)
-        , m_MediaLib(view.getModel())
     {
     }
 
 private:
     class CPlayerView& m_view;
 
-    CMediaLib m_MediaLib;
-
     CMediaSet *m_pMediaset = NULL;
     TD_MediaSetList m_lstSubSets;
+    TD_MediaList m_lstSubMedias;
 
     CMediaRes *m_pMediaRes = NULL;
 
 private:
-    UINT getItemCount() override
-    {
-        return 0;
-    }
+    void _showMediaSet(CMediaSet& MediaSet);
+    void _showMediaRes(CMediaRes& MediaRes);
 
-    virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override
-    {
+    UINT getItemCount() override;
 
-    }
+    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
+
+    void _onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem);
+    void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
+    void _onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem);
 };
 
 class CMedialibDlg : public CDialog<>
@@ -83,4 +50,10 @@ private:
     class CPlayerView& m_view;
 
     CMedialibView m_MedialibView;
+
+private slots:
+    void slot_buttonClicked(CButton*);
+
+public:
+   void _relayout(int cx, int cy) override;
 };
