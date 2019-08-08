@@ -3,6 +3,8 @@
 
 #include "dialog.h"
 
+#include "model.h"
+
 class CMediaSetEx : public CMediaSet
 {
 public:

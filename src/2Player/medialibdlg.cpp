@@ -1,3 +1,6 @@
+
+#include "view.h"
+
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"
 
