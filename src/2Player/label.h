@@ -85,15 +85,15 @@ private:
 
                 QColor crShadow = m_crShadow;
                 painter.setPen(crShadow);
-                for (int nIdx=0; nIdx<=(int)m_uShadowWidth; nIdx++)
+                for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
                 {
-                    if (nIdx > 1)
+                    if (uIdx > 1)
                     {
-                        crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-nIdx+1)/m_uShadowWidth);
+                        crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                         painter.setPen(crShadow);
                     }
 
-                    painter.drawText(QRectF(nIdx, nIdx, cx, cy), text, to);
+                    painter.drawText(QRectF(uIdx, uIdx, cx, cy), text, to);
                }
 
                painter.setPen(pen);
