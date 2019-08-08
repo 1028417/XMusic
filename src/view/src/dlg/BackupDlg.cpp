@@ -19,7 +19,7 @@ BEGIN_MESSAGE_MAP(CBackupDlg, CDialog)
 
 	ON_BN_CLICKED(IDC_BTN_RESTORE, &CBackupDlg::OnBnClickedRestore)
 
-	ON_BN_CLICKED(IDC_BTN_ClearMedialib, &CBackupDlg::OnBnClickedClearMedialib)
+	ON_BN_CLICKED(IDC_BTN_ClearAllMedia, &CBackupDlg::OnBnClickedClearAllMedia)
 END_MESSAGE_MAP()
 
 void CBackupDlg::DoDataExchange(CDataExchange* pDX)
@@ -264,7 +264,7 @@ void CBackupDlg::OnBnClickedBackup()
 	}
 }
 
-void CBackupDlg::OnBnClickedClearMedialib()
+void CBackupDlg::OnBnClickedClearAllMedia()
 {
 	__Ensure(CMainApp::showConfirmMsg(L"确认清空所有列表、歌手、专辑？",  this));
 

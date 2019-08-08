@@ -36,7 +36,7 @@ private:
 	void OnBnClickedCompare();
 	void OnBnClickedDel();
 	void OnBnClickedRestore();
-	void OnBnClickedClearMedialib();
+	void OnBnClickedClearAllMedia();
 
 	void OnCancel();
 };

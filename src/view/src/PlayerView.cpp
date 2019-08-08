@@ -164,7 +164,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_ExportMedia:
 		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
-		m_view.exportMediaSet(m_view.getMediaLib());
+		m_view.exportMediaSet(m_view.getRootMediaSet());
 
 		break;
 	case ID_VERIFY:
@@ -249,7 +249,7 @@ void CPlayerView::_verifyMedia()
 	m_view.m_ResModule.ActivateResource();
 
 	TD_MediaSetList lstMediaSets;
-	CMediaSetDlg MediaSetDlg(m_view, m_view.getMediaLib(), lstMediaSets, L"选择检测项");
+	CMediaSetDlg MediaSetDlg(m_view, m_view.getRootMediaSet(), lstMediaSets, L"选择检测项");
 	if (IDOK != MediaSetDlg.DoModal())
 	{
 		return;

@@ -472,7 +472,7 @@ bool CController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedi
 UINT CController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMediaProgress& cbProgress, const CB_AddInConfirm& cbAddInConfirm)
 {
 	TD_MediaList lstMedias;
-	m_model.getMediaLib().GetAllMedias(lstMedias);
+	m_model.getRootMediaSet().GetAllMedias(lstMedias);
 	__EnsureReturn(lstMedias, 0);
 
 	CSearchMediaInfoGuard SearchMediaInfoGuard(m_model.getSingerMgr());

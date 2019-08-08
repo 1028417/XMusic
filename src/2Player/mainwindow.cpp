@@ -475,7 +475,15 @@ void MainWindow::_relayout()
     x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
+    ui.labelDemandCN->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandHK->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandKR->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandJP->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandTAI->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
+
+    ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
 
     int y_PlayingListMax = 0;
 
@@ -486,6 +494,7 @@ void MainWindow::_relayout()
     if (m_bUsingCustomBkg)
     {
         int x = ui.progressBar->x();
+
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
@@ -598,6 +607,7 @@ void MainWindow::_relayout()
     {
         UINT y_Margin = 30;
 
+        int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
         uRowCount = (y_PlayingListMax - y_frameDemandBottom)/100;
         if (uRowCount > 10)
         {

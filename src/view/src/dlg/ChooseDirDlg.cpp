@@ -5,7 +5,7 @@
 
 CChooseDirDlg::CChooseDirDlg(const wstring& strTitle, const wstring& strRootDir, bool bShowRoot, wstring& strRetDir)
 	: m_strTitle(strTitle)
-	, m_mediaLibDir(strRootDir)
+	, m_RootDir(strRootDir)
 	, m_strRetDir(strRetDir)
 {
 	m_bShowRoot = bShowRoot;
@@ -27,7 +27,7 @@ BOOL CChooseDirDlg::OnInitDialog()
 	TD_IconVec lstIcon{ winfsutil::getFolderIcon() };
 	__AssertReturn(m_wndTree.InitImglst(CSize(30, 30), lstIcon), TRUE);
 	
-	m_wndTree.SetRootDir(&m_mediaLibDir, m_bShowRoot);
+	m_wndTree.SetRootDir(&m_RootDir, m_bShowRoot);
 
 	return TRUE;
 }

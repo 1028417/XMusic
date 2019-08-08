@@ -3,10 +3,15 @@
 
 #include "listview.h"
 
-class CMedialibList : public CListView
+class CMediaLib : public CMediaSet
+{
+
+};
+
+class CMedialibView : public CListView
 {
 public:
-    CMedialibList(class CPlayerView& view, QWidget *parent=NULL) :
+    CMedialibView(class CPlayerView& view, QWidget *parent=NULL) :
         CListView(parent)
         , m_view(view)
     {
@@ -14,6 +19,11 @@ public:
 
 private:
     class CPlayerView& m_view;
+
+    CMediaSet *m_pMediaset = NULL;
+    TD_MediaSetList m_lstSubSets;
+
+    CMediaRes *m_pMediaRes = NULL;
 
 private:
     UINT getItemCount() override

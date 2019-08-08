@@ -12,7 +12,7 @@ private:
 
 	bool m_bShowRoot = false;
 
-	CDirObject m_mediaLibDir;
+	CDirObject m_RootDir;
 
 	wstring& m_strRetDir;
 

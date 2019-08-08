@@ -90,9 +90,9 @@ public:
 		return m_model.getRootMediaRes();
 	}
 
-	CMediaSet& getMediaLib()
+	CMediaSet& getRootMediaSet()
 	{
-		return m_model.getMediaLib();
+		return m_model.getRootMediaSet();
 	}
 
 	CDataMgr& getDataMgr()

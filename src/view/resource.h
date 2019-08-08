@@ -98,13 +98,12 @@
 #define IDI_ICON2                       2038
 #define IDC_BTN_RESTORE2                2039
 #define IDC_ActualMode                  2041
-#define IDC_BTN_ClearMedialib           2042
+#define IDC_BTN_ClearAllMedia           2042
 #define ID_EXIT                         32773
 #define ID_REFRESH                      32773
 #define ID_Menu                         32774
 #define ID_DELETE                       32774
 #define ID_ADD_SINGER                   32774
-#define ID_MEDIALIB                     32775
 #define ID_EXPLORE                      32775
 #define ID_SETALARMCLOCK                32776
 #define ID_MODIFY_MEDIALIB              32777
