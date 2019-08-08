@@ -214,9 +214,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelSingerName">
     <property name="geometry">
      <rect>
-      <x>54</x>
-      <y>1570</y>
-      <width>600</width>
+      <x>40</x>
+      <y>1560</y>
+      <width>630</width>
       <height>70</height>
      </rect>
     </property>

@@ -457,7 +457,7 @@ void MainWindow::_relayout()
         }
     }
 
-    ui.btnMore->move(ui.btnMore->x(), y_frameDemand);
+    ui.btnMore->move(ui.btnMore->x(), y_frameDemand+5);
 
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
     ui.btnExit->move(x_btnExit, y_frameDemand + 10);
@@ -479,25 +479,29 @@ void MainWindow::_relayout()
 
     int y_PlayingListMax = 0;
 
+    ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
+    ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
+    ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
+
     if (m_bUsingCustomBkg)
     {
         int x = ui.progressBar->x();
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
-        ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
         int cy_AlbumName = 60;
         int y_AlbumName = y_Playingfile - cy_AlbumName;
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_AlbumName, cx_progressBar, cy_AlbumName);
 
-        ui.labelSingerName->setGeometry(x, y_AlbumName-ui.labelSingerName->height()
-                                         , cx_progressBar, ui.labelSingerName->height());
-
         int y_SingerImg = 0;
         if (m_bZoomoutSingerImg)
         {
+            ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+
+            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+
             y_SingerImg = y_AlbumName-300;
         }
         else
@@ -508,15 +512,26 @@ void MainWindow::_relayout()
             }
             else
             {
-                y_SingerImg = cy/2+10;
+                y_SingerImg = cy/2+15;
             }
         }
-        y_PlayingListMax = y_SingerImg;
 
         int cy_SingerImg = y_AlbumName-y_SingerImg;
         cauto& rcSingerImg = m_mapWidgetPos[ui.wdgSingerImg];
         int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
-        ui.wdgSingerImg->setGeometry(x + (cx_progressBar-cx_SingerImg)/2, y_SingerImg, cx_SingerImg, cy_SingerImg);
+
+        int x_SingerImg = x;
+        if (!m_bZoomoutSingerImg)
+        {
+            x_SingerImg += (cx_progressBar-cx_SingerImg)/2;
+        }
+
+        ui.wdgSingerImg->setGeometry(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
+
+        ui.labelSingerName->setGeometry(x_SingerImg+10, y_AlbumName-ui.labelSingerName->height()
+                                     , cx_SingerImg-20, ui.labelSingerName->height());
+
+        y_PlayingListMax = y_SingerImg;
 
         m_view.setFont(&m_PlayingList, -1);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
@@ -539,8 +554,6 @@ void MainWindow::_relayout()
             int x_Playingfile = ui.wdgSingerImg->x() + 30;
             int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 30;
             ui.labelPlayingfile->move(x_Playingfile, y_Playingfile);
-
-            ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
 
             y_PlayingListMax = ui.wdgSingerImg->y();
         }
