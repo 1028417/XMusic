@@ -487,7 +487,7 @@ void MainWindow::_relayout()
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
         ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-        int cy_AlbumName = 60;//ui.labelAlbumName->height();
+        int cy_AlbumName = 60;
         int y_AlbumName = y_Playingfile - cy_AlbumName;
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_AlbumName, cx_progressBar, cy_AlbumName);
@@ -706,8 +706,6 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
-        //ui.frameSingerImg->setVisible(false);
-
         ui.labelSingerImg->setPixmap(QPixmap());
         ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
@@ -864,8 +862,6 @@ void MainWindow::_showSingerImg(const QPixmap& pixmap)
         ui.labelSingerImg->setGeometry(0, (cy_target-height)/2, cx_target, height);
     }
     ui.labelSingerImg->setPixmap(pixmap);
-
-    //ui.frameSingerImg->setVisible(true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)
