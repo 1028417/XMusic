@@ -73,13 +73,7 @@ void MainWindow::_init()
     m_PlayingList.setParent(ui.centralWidget);
     m_PlayingList.raise();
 
-#ifdef __ANDROID__
-    ui.btnExit->setVisible(false);
-#else
-    ui.btnExit->raise();
-#endif
-
-    ui.btnMore->raise();
+    //ui.btnExit->raise();
 
     SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
@@ -411,6 +405,18 @@ void MainWindow::_relayout()
         ui.labelBkg->move(0, dy_bkg);
     }
 
+    ui.labelDemandCN->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandHK->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandKR->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandJP->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandTAI->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
+
+    m_PlayingList.setShadowWidth(m_bUsingCustomBkg?2:0);
+
+    ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
+
     for (cauto& widgetPos : m_mapTopWidgetPos)
     {
         QRect pos = widgetPos.second;
@@ -457,11 +463,6 @@ void MainWindow::_relayout()
         }
     }
 
-    ui.btnMore->move(ui.btnMore->x(), y_frameDemand+10);
-
-    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
-    ui.btnExit->move(x_btnExit, y_frameDemand + 10);
-
     int x_frameDemand = 0;
     if (m_bHScreen)
     {
@@ -469,21 +470,26 @@ void MainWindow::_relayout()
             + ui.progressBar->x() - ui.frameDemand->width())/2;
     }
     else
-    {
+    {        
         x_frameDemand = (cx - ui.frameDemand->width())/2;
     }
     x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    ui.labelDemandCN->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandHK->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandKR->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandJP->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandTAI->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
+    int x_btnMore = ui.frameDemand->geometry().right() + 20;
+#ifdef __ANDROID__
+     ui.btnExit->move(-200,-200);
 
-    ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
+#else
+    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
+    ui.btnExit->move(x_btnExit, y_frameDemand + 10);
+
+    if (!m_bHScreen)
+    {
+        x_btnMore = 20;
+    }
+#endif
+    ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
     int y_PlayingListMax = 0;
 
@@ -544,7 +550,6 @@ void MainWindow::_relayout()
 
         m_view.setFont(&m_PlayingList, -1);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
-        m_PlayingList.setShadowWidth(2);
     }
     else
     {
@@ -575,7 +580,6 @@ void MainWindow::_relayout()
 
         m_view.setFont(&m_PlayingList, -1.5);
         m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
-        m_PlayingList.setShadowWidth(0);
     }
 
     UINT uMargin = 0;

@@ -877,11 +877,11 @@ border-image-repeat: stretched</string>
    <zorder>labelLogo</zorder>
    <zorder>labelLogoCompany</zorder>
    <zorder>labelLogoTip</zorder>
-   <zorder>btnExit</zorder>
    <zorder>labelPlayingfile</zorder>
    <zorder>progressBar</zorder>
    <zorder>labelPlayProgress</zorder>
    <zorder>btnMore</zorder>
+   <zorder>btnExit</zorder>
   </widget>
   <action name="action">
    <property name="text">

@@ -3,9 +3,9 @@
 
 #include <QPushButton>
 
-#include <QGraphicsOpacityEffect>
-
 #include "widget.h"
+
+#include <QTimer>
 
 class CButton : public CWidget<QPushButton>
 {
@@ -13,37 +13,39 @@ class CButton : public CWidget<QPushButton>
 
 public:
     CButton(QWidget *parent) :
-        CWidget(parent, {Qt::TapAndHoldGesture})
+        CWidget(parent)
     {
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
-
-        connect(this, SIGNAL(clicked()), this, SLOT(slot_clicked()));
     }
 
 signals:
     void signal_clicked(CButton*);
 
-    void signal_contextMenu(CButton*);
-
-private slots:
-    void slot_clicked()
-    {
-        emit signal_clicked(this);
-    }
+    //void signal_contextMenu(CButton*);
 
 private:
     void _handleMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
     {
         if (E_MouseEventType::MET_Press == type)
         {
-            QGraphicsOpacityEffect ge;
-            ge.setOpacity(0.4);
-            this->setGraphicsEffect(&ge);
+            setOpacity(0.4);
+        }
+        else if (E_MouseEventType::MET_Release == type)
+        {
+            setOpacity(0.6);
+
+            QTimer::singleShot(333, [&](){
+                setOpacity(1);
+            });
+        }
+        else if (E_MouseEventType::MET_Click == type)
+        {
+            emit signal_clicked(this);
         }
     }
 
     void _onGesture(QGesture&) override
     {
-        emit signal_contextMenu(this);
+        //emit signal_contextMenu(this);
     }
 };

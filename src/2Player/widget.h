@@ -1,9 +1,13 @@
 
 #pragma once
 
-#include <QPainter>
-#include <QGesture>
 #include <QWidget>
+
+#include <QPainter>
+
+#include <QGesture>
+
+#include <QGraphicsOpacityEffect>
 
 #include "util.h"
 
@@ -38,10 +42,18 @@ private:
 
     bool m_bMousePressed = false;
 
+    QGraphicsOpacityEffect m_goe;
+
 protected:
     virtual bool event(QEvent *ev) override;
 
     virtual void _onPaint(QPainter&, const QRect& rc);
+
+    void setOpacity(float fValue)
+    {
+       m_goe.setOpacity(fValue);
+       this->setGraphicsEffect(&m_goe);
+    }
 
 private:
     void paintEvent(QPaintEvent *pe);
