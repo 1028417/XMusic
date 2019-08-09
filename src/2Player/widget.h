@@ -3,8 +3,18 @@
 
 #include <QPainter>
 #include <QGesture>
+#include <QWidget>
 
 #include "util.h"
+
+enum class E_MouseEventType
+{
+    MET_Move,
+    MET_Press,
+    MET_Release,
+    MET_Click,
+    MET_DblClick
+};
 
 template <class TParent=QWidget>
 class CWidget : public TParent
@@ -23,8 +33,8 @@ public:
 private:
     list<Qt::GestureType> m_lstGestureType;
 
-    bool m_bTouching = false;
     QPointF m_ptTouch;
+    bool m_bTouching = false;
 
     bool m_bMousePressed = false;
 
@@ -35,6 +45,9 @@ protected:
 
 private:
     void paintEvent(QPaintEvent *pe);
+
+    void handleMouseEvent(E_MouseEventType, QMouseEvent&);
+    virtual void _handleMouseEvent(E_MouseEventType, QMouseEvent&) {}
 
 private:
     virtual void _onMouseEnter() {}

@@ -1,17 +1,13 @@
 
 #pragma once
 
-#include <QWidget>
-
-#include "widget.cpp"
-
-#include "view.h"
+#include "widget.h"
 
 class CListView : public CWidget<QWidget>
 {
 public:
-    CListView(QWidget *parent=NULL, const list<Qt::GestureType>& lstGestureType={}) :
-        CWidget(parent, lstGestureType)
+    CListView(QWidget *parent=NULL) :
+        CWidget(parent, {Qt::TapAndHoldGesture})
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
@@ -40,17 +36,7 @@ public:
         //CWidget<QWidget>::update();
     }
 
-    void scroll(UINT uRow)
-    {
-        if (uRow < m_fScrollPos)
-        {
-            m_fScrollPos = uRow;
-        }
-        else if (uRow+1 > m_fScrollPos+m_uRowCount)
-        {
-            m_fScrollPos = uRow+1-m_uRowCount;
-        }
-    }
+    void scroll(UINT uRow);
 
 private:
     virtual UINT getRowCount()
@@ -63,8 +49,9 @@ private:
     void _onPaint(QPainter& painter, const QRect& rc) override;
     virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) = 0;
 
-    void mouseDoubleClickEvent(QMouseEvent *ev) override;
-    virtual void _handleMouseDoubleClick(UINT uRowIdx) {(void)uRowIdx;}
+    void _handleMouseEvent(E_MouseEventType, QMouseEvent&) override;
+    virtual void _handleRowClick(UINT uRowIdx) {(void)uRowIdx;}
+    virtual void _handleRowDblClick(UINT uRowIdx) {(void)uRowIdx;}
 
     void _onTouchMove(int dy) override;
 };

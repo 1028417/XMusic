@@ -15,7 +15,7 @@ class CPlayingList : public CListView
 {
 public:
     CPlayingList(class CPlayerView& view, QWidget *parent=NULL) :
-        CListView(parent, {Qt::TapAndHoldGesture})
+        CListView(parent)
         , m_view(view)
         , m_crShadow(128,128,128)
     {
@@ -69,7 +69,7 @@ private:
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
 
-    void _handleMouseDoubleClick(UINT uRowIdx) override;
+    void _handleRowDblClick(UINT uRowIdx) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;

@@ -32,13 +32,14 @@ private slots:
     }
 
 private:
-    void mousePressEvent(QMouseEvent *ev) override
+    void _handleMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
     {
-        QGraphicsOpacityEffect ge;
-        ge.setOpacity(0.4);
-        this->setGraphicsEffect(&ge);
-
-        QPushButton::mousePressEvent(ev);
+        if (E_MouseEventType::MET_Press == type)
+        {
+            QGraphicsOpacityEffect ge;
+            ge.setOpacity(0.4);
+            this->setGraphicsEffect(&ge);
+        }
     }
 
     void _onGesture(QGesture&) override

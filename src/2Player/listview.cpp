@@ -1,17 +1,36 @@
 
 #include "listview.h"
 
-void CListView::mouseDoubleClickEvent(QMouseEvent *ev)
+void CListView::scroll(UINT uRow)
 {
-    QWidget::mouseDoubleClickEvent(ev);
-
-    if (0 == m_uRowHeight)
+    if (uRow < m_fScrollPos)
     {
-        return;
+        m_fScrollPos = uRow;
     }
+    else if (uRow+1 > m_fScrollPos+m_uRowCount)
+    {
+        m_fScrollPos = uRow+1-m_uRowCount;
+    }
+}
 
-    float fRowIdx = (float)ev->pos().y()/m_uRowHeight + m_fScrollPos;
-    _handleMouseDoubleClick((UINT)fRowIdx);
+void CListView::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
+{
+    if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
+    {
+        if (0 != m_uRowHeight)
+        {
+            float fRowIdx = (float)ev.pos().y()/m_uRowHeight + m_fScrollPos;
+
+            if (E_MouseEventType::MET_Click == type)
+            {
+                _handleRowClick((UINT)fRowIdx);
+            }
+            else
+            {
+                _handleRowDblClick((UINT)fRowIdx);
+            }
+        }
+    }
 }
 
 void CListView::_onTouchMove(int dy)

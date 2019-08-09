@@ -22,9 +22,52 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
 }
 
 template <class TParent>
+void CWidget<TParent>::handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
+{
+#ifndef __ANDROID__
+    if (E_MouseEventType::MET_Press == type)
+    {
+        if (!m_bTouching)
+        {
+            m_bMousePressed = true;
+            m_ptTouch = ev.pos();
+            _onTouchBegin(m_ptTouch);
+        }
+    }
+    else if (E_MouseEventType::MET_Release == type)
+    {
+        if (m_bMousePressed)
+        {
+            m_bMousePressed = false;
+
+            _onTouchEnd();
+        }
+    }
+    else if (E_MouseEventType::MET_Move == type)
+    {
+        if (m_bMousePressed)
+        {
+            cauto& pos = ev.pos();
+            int dy = pos.y()-m_ptTouch.y();
+            if (dy != 0)
+            {
+                _onTouchMove(dy);
+                m_ptTouch = pos;
+            }
+        }
+    }
+#endif
+
+   _handleMouseEvent(type, ev);
+}
+
+template <class TParent>
 bool CWidget<TParent>::event(QEvent *ev)
 {
     bool bRet = TParent::event(ev);
+
+    static ulong ulMousePressTime = 0;
+    static QPoint ptMousePress;
 
     switch (ev->type())
     {
@@ -37,38 +80,37 @@ bool CWidget<TParent>::event(QEvent *ev)
         _onMouseLeave();
 
         break;
-    case QEvent::MouseButtonRelease:
-        if (m_bMousePressed)
-        {
-            m_bMousePressed = false;
+#endif
+    case QEvent::MouseButtonPress:
+    {
+        auto& me = *(QMouseEvent*)ev;
+        handleMouseEvent(E_MouseEventType::MET_Press, me);
 
-            _onTouchEnd();
-        }
+        ulMousePressTime = me.timestamp();
+        ptMousePress = me.pos();
+    }
 
         break;
-    case QEvent::MouseButtonPress:
-        if (!m_bTouching)
+    case QEvent::MouseButtonRelease:
+    {
+        auto& me = *(QMouseEvent*)ev;
+        handleMouseEvent(E_MouseEventType::MET_Release, me);
+
+        if (me.pos() == ptMousePress && me.timestamp() - ulMousePressTime < 300)
         {
-            m_bMousePressed = true;
-            m_ptTouch = ((QMouseEvent*)ev)->pos();
-            _onTouchBegin(m_ptTouch);
+            handleMouseEvent(E_MouseEventType::MET_Click, me);
         }
+    }
+
+        break;
+    case QEvent::MouseButtonDblClick:
+        handleMouseEvent(E_MouseEventType::MET_DblClick, *(QMouseEvent*)ev);
 
         break;
     case QEvent::MouseMove:
-        if (m_bMousePressed)
-        {
-            cauto& pos = ((QMouseEvent*)ev)->pos();
-            int dy = pos.y()-m_ptTouch.y();
-            if (dy != 0)
-            {
-                _onTouchMove(dy);
-                m_ptTouch = pos;
-            }
-        }
+        handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
 
         break;
-#endif
     case QEvent::TouchEnd:
         if (m_bTouching)
         {

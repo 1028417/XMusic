@@ -26,8 +26,7 @@ private:
     QColor m_crShadow;
 
 signals:
-    void signal_mousePressEvent(CLabel*);
-    void signal_mousePressEvent(CLabel*, const QPoint& pos);
+    void signal_click(CLabel*, const QPoint& pos);
 
 public:
     void setShadow(UINT uWidth, const QColor& crShadow)
@@ -53,12 +52,12 @@ public:
     }
 
 private:
-    void mousePressEvent(QMouseEvent *ev) override
+    void _handleMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
     {
-        QLabel::mousePressEvent(ev);
-
-        emit signal_mousePressEvent(this);
-        emit signal_mousePressEvent(this, ev->pos());
+        if (E_MouseEventType::MET_Click == type)
+        {
+            emit signal_click(this, ev.pos());
+        }
     }
 
     void _onPaint(QPainter& painter, const QRect& rc) override

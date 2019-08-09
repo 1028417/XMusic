@@ -4,7 +4,7 @@
 
 #include "../view/resource.h"
 
-class __afxInit
+static class __afxInit
 {
 public:
 	__afxInit()

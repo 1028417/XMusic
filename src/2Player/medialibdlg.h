@@ -41,11 +41,11 @@ private:
     void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
     void _onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem);
 
-    void _handleMouseDoubleClick(UINT uRowIdx) override;
+    void _handleRowClick(UINT uRowIdx) override;
 
-    void _handleMouseDoubleClick(CMediaSet& MediaSet);
-    void _handleMouseDoubleClick(IMedia& Media);
-    void _handleMouseDoubleClick(CMediaRes& MediaRes);
+    void _handleItemClick(CMediaSet& MediaSet);
+    void _handleItemClick(IMedia& Media);
+    void _handleItemClick(CMediaRes& MediaRes);
 };
 
 class CMedialibDlg : public CDialog<>

@@ -7,6 +7,8 @@
 
 #include <QMovie>
 
+#include "widget.cpp"
+
 #include "medialibdlg.h"
 #include "bkgdlg.h"
 
@@ -92,19 +94,17 @@ void MainWindow::_init()
     pe.setColor(QPalette::WindowText, Qt::GlobalColor::white);
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
-        , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR, ui.labelSingerImg};
+        , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR, ui.labelSingerImg, ui.labelPlayProgress};
     for (auto label : lstLabels)
     {
-        connect(label, SIGNAL(signal_mousePressEvent(CLabel*)), this, SLOT(slot_labelMousePress(CLabel*)));
+        connect(label, SIGNAL(signal_click(CLabel*, const QPoint&))
+                , this, SLOT(slot_labelClick(CLabel*, const QPoint&)));
     }
     lstLabels.add({ui.labelPlayingfile, ui.labelSingerName, ui.labelAlbumName, ui.labelDuration});
     for (auto label : lstLabels)
     {
         label->setPalette(pe);
     }
-
-    connect(ui.labelPlayProgress, SIGNAL(signal_mousePressEvent(CLabel*, const QPoint&))
-        , this, SLOT(slot_progressMousePress(CLabel*, const QPoint&)));
 
     connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
             , this, SLOT(slot_showPlaying(unsigned int, bool)));
@@ -962,7 +962,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 static const QString __qsCheck = wsutil::toQStr(L"√");
 
-void MainWindow::slot_labelMousePress(CLabel* label)
+void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
     {
@@ -972,6 +972,20 @@ void MainWindow::slot_labelMousePress(CLabel* label)
             this->_relayout();
         }
         return;
+    }
+    else if (label == ui.labelPlayProgress)
+    {
+        if (E_PlayStatus::PS_Play == m_view.getPlayMgr().GetPlayStatus())
+        {
+            if (ui.progressBar->maximum() > 0)
+            {
+                UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
+                m_view.getPlayMgr().getPlayer().Seek(uPos);
+
+                ui.progressBar->setValue(uPos);
+                mtutil::yield();
+            }
+        }
     }
 
     m_eDemandLanguage = E_LanguageType::LT_None;
@@ -1027,22 +1041,4 @@ void MainWindow::_demand(CButton* btnDemand)
     }
 
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(m_eDemandMode, m_eDemandLanguage));
-}
-
-void MainWindow::slot_progressMousePress(CLabel* label, const QPoint& pos)
-{
-    if (label == ui.labelPlayProgress)
-    {
-        if (E_PlayStatus::PS_Play == m_view.getPlayMgr().GetPlayStatus())
-        {
-            if (ui.progressBar->maximum() > 0)
-            {
-                UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
-                m_view.getPlayMgr().getPlayer().Seek(uPos);
-
-                ui.progressBar->setValue(uPos);
-                mtutil::yield();
-            }
-        }
-    }
 }

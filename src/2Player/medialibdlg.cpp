@@ -138,27 +138,27 @@ void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& 
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(MediaRes.GetName()));
 }
 
-void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
+void CMedialibView::_handleRowClick(UINT uRowIdx)
 {
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
             m_lstSubSets.get(uRowIdx, [&](CMediaSet& mediaSet){
-                _handleMouseDoubleClick(mediaSet);
+                _handleItemClick(mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
-                _handleMouseDoubleClick(media);
+                _handleItemClick(media);
             });
         }
     }
     else if (m_pMediaRes)
     {
         m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
-            _handleMouseDoubleClick((CMediaRes&)subPath);
+            _handleItemClick((CMediaRes&)subPath);
         });
     }
     else
@@ -166,13 +166,13 @@ void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
         switch (uRowIdx)
         {
         case 0:
-            _handleMouseDoubleClick(m_view.getModel().getRootMediaRes());
+            _handleItemClick(m_view.getModel().getRootMediaRes());
             break;
         case 1:
-            _handleMouseDoubleClick(m_view.getModel().getSingerMgr());
+            _handleItemClick(m_view.getModel().getSingerMgr());
             break;
         case 2:
-            _handleMouseDoubleClick(m_view.getModel().getPlaylistMgr());
+            _handleItemClick(m_view.getModel().getPlaylistMgr());
             break;
         default:
             break;
@@ -180,16 +180,16 @@ void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
     }
 }
 
-void CMedialibView::_handleMouseDoubleClick(CMediaSet& MediaSet)
+void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 {
     showMediaSet(&MediaSet);
 }
 
-void CMedialibView::_handleMouseDoubleClick(IMedia& Media)
+void CMedialibView::_handleItemClick(IMedia& Media)
 {
 }
 
-void CMedialibView::_handleMouseDoubleClick(CMediaRes& MediaRes)
+void CMedialibView::_handleItemClick(CMediaRes& MediaRes)
 {
     if (MediaRes.IsDir())
     {
@@ -197,6 +197,6 @@ void CMedialibView::_handleMouseDoubleClick(CMediaRes& MediaRes)
     }
     else
     {
-        _handleMouseDoubleClick((IMedia&)MediaRes);
+        _handleItemClick((IMedia&)MediaRes);
     }
 }
