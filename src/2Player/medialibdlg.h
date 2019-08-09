@@ -38,6 +38,12 @@ private:
     void _onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem);
     void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
     void _onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem);
+
+    void _handleMouseDoubleClick(UINT uRowIdx) override;
+
+    void _handleMouseDoubleClick(CMediaSet& MediaSet);
+    void _handleMouseDoubleClick(CMedia& Media);
+    void _handleMouseDoubleClick(CMediaRes& MediaRes);
 };
 
 class CMedialibDlg : public CDialog<>

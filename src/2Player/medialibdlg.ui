@@ -16,8 +16,8 @@
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
+     <x>30</x>
+     <y>30</y>
      <width>90</width>
      <height>90</height>
     </rect>

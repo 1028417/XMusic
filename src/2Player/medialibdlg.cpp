@@ -21,7 +21,7 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 void CMedialibDlg::_relayout(int cx, int cy)
 {
 #define __margin 30
-    int y_MedialibView = 100 + __margin;
+    int y_MedialibView = ui.btnReturn->geometry().bottom() + __margin;
     m_MedialibView.setGeometry(__margin,y_MedialibView,cx-__margin*2,cy-__margin-y_MedialibView);
 }
 
@@ -128,4 +128,60 @@ void CMedialibView::_onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem
 void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem)
 {
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(MediaRes.GetName()));
+}
+
+void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
+{
+    if (m_pMediaset)
+    {
+        if (m_lstSubSets)
+        {
+            m_lstSubSets.get(uRowIdx, [&](CMediaSet& mediaSet){
+                _handleMouseDoubleClick(mediaSet);
+            });
+        }
+        else if (m_lstSubMedias)
+        {
+            m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
+                _handleMouseDoubleClick(media);
+            });
+        }
+    }
+    else if (m_pMediaRes)
+    {
+        m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
+            _handleMouseDoubleClick((CMediaRes&)subPath);
+        });
+    }
+    else
+    {
+        switch (uRowIdx)
+        {
+        case 0:
+            _handleMouseDoubleClick(m_view.getModel().getRootMediaRes());
+            break;
+        case 1:
+            _handleMouseDoubleClick(m_view.getModel().getSingerMgr());
+            break;
+        case 2:
+            _handleMouseDoubleClick(m_view.getModel().getPlaylistMgr());
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void CMedialibView::_handleMouseDoubleClick(CMediaSet& MediaSet)
+{
+    _showMediaSet(MediaSet);
+}
+
+void CMedialibView::_handleMouseDoubleClick(CMedia& Media)
+{
+}
+
+void CMedialibView::_handleMouseDoubleClick(CMediaRes& MediaRes)
+{
+    _showMediaSet(MediaSet);
 }
