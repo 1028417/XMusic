@@ -3,17 +3,17 @@
 
 struct __MediaLibExt tagMediaInfo
 {
-	tagMediaInfo(CMediaSet *pParent = NULL, const wstring& strName = L"", int nID = 0)
+	tagMediaInfo() {}
+
+	tagMediaInfo(CMediaSet *pParent, const wstring& strName, int nID = 0)
 		: m_pParent(pParent)
 		, m_strName(strName)
 		, m_uID(nID)
 	{
 	}
 
-	CMediaSet *m_pParent;
-
+	CMediaSet *m_pParent = NULL;
 	wstring m_strName;
-
 	UINT m_uID = 0;
 };
 
