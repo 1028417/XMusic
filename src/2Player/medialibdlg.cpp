@@ -13,11 +13,13 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 {
     ui.setupUi(this);
 
-    QColor crText(64, 64, 255);
-    m_MedialibView.setTextColor(crText);
+    QColor crText(64, 164, 255);
 
     m_view.setTextColor(ui.labelTitle, crText);
     m_view.setFont(ui.labelTitle, 5, true);
+
+    m_MedialibView.setTextColor(crText);
+    m_view.setFont(&m_MedialibView, 1, true);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
@@ -87,7 +89,7 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes)
 
 UINT CMedialibView::getRowCount()
 {
-    return MIN(getItemCount(), 10);
+    return 10;
 }
 
 UINT CMedialibView::getItemCount()
@@ -212,6 +214,7 @@ void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 
 void CMedialibView::_handleItemClick(IMedia& Media)
 {
+    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(Media)));
 }
 
 void CMedialibView::_handleItemClick(CMediaRes& MediaRes)

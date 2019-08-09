@@ -544,7 +544,7 @@ void MainWindow::_relayout()
 
         m_view.setFont(&m_PlayingList, -1);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
-        m_PlayingList.setInactiveAlpha(0.44);
+        m_PlayingList.setInactiveAlpha(0.4);
         m_PlayingList.setShadowWidth(2);
     }
     else

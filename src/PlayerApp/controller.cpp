@@ -103,6 +103,10 @@ bool CController::start()
                 case E_PlayCtrl::PC_Demand:
                     (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
                     break;
+
+                case E_PlayCtrl::PC_PlayMedias:
+                    (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
+                    break;
                 }
 
                 continue;
