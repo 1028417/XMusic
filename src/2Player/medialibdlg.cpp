@@ -125,13 +125,13 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         switch (uItem)
         {
         case 0:
-            _onPaintItem(painter, m_view.getModel().getRootMediaRes(), rcItem);
+            _onPaintItem(painter, m_RootMediaRes, rcItem);
             break;
         case 1:
-            _onPaintItem(painter, m_view.getModel().getSingerMgr(), rcItem);
+            _onPaintItem(painter, m_SingerLib, rcItem);
             break;
         case 2:
-            _onPaintItem(painter, m_view.getModel().getPlaylistMgr(), rcItem);
+            _onPaintItem(painter, m_PlaylistLib, rcItem);
             break;
         default:
             break;
@@ -182,13 +182,13 @@ void CMedialibView::_handleRowClick(UINT uRowIdx)
         switch (uRowIdx)
         {
         case 0:
-            _handleItemClick(m_view.getModel().getRootMediaRes());
+            _handleItemClick(m_RootMediaRes);
             break;
         case 1:
-            _handleItemClick(m_view.getModel().getSingerMgr());
+            _handleItemClick(m_SingerLib);
             break;
         case 2:
-            _handleItemClick(m_view.getModel().getPlaylistMgr());
+            _handleItemClick(m_PlaylistLib);
             break;
         default:
             break;
@@ -221,7 +221,7 @@ bool CMedialibView::handleReturn()
 {
     if (m_pMediaset)
     {
-        if (m_view.getModel().getPlaylistMgr() == m_pMediaset || m_view.getModel().getSingerMgr() == m_pMediaset)
+        if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset)
         {
             showRoot();
         }

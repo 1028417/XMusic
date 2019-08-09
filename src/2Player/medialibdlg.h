@@ -15,11 +15,18 @@ public:
     CMedialibView(class CPlayerView& view, QWidget *parent=NULL) :
         CListView(parent)
         , m_view(view)
+        , m_RootMediaRes(view.getModel().getRootMediaRes())
+        , m_SingerLib(view.getModel().getSingerMgr())
+        , m_PlaylistLib(view.getModel().getPlaylistMgr())
     {
     }
 
 private:
     class CPlayerView& m_view;
+
+    CMediaRes& m_RootMediaRes;
+    CMediaSet& m_SingerLib;
+    CMediaSet& m_PlaylistLib;
 
     CMediaSet *m_pMediaset = NULL;
     TD_MediaSetList m_lstSubSets;
