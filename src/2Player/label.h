@@ -82,13 +82,21 @@ private:
             {
                 QPen pen = painter.pen();
 
+                UINT uShadowAlpha = m_crText.alpha();
+                if (uShadowAlpha < 255)
+                {
+                    uShadowAlpha /= 2;
+                }
+
                 QColor crShadow = m_crShadow;
+                crShadow.setAlpha(uShadowAlpha);
                 painter.setPen(crShadow);
+
                 for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
                 {
                     if (uIdx > 1)
                     {
-                        crShadow.setAlpha(m_crShadow.alpha()*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                        crShadow.setAlpha(uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                         painter.setPen(crShadow);
                     }
 
