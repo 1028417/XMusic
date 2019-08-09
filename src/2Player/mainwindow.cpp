@@ -477,7 +477,7 @@ void MainWindow::_relayout()
 
      if (!m_bHScreen)
      {
-         x_btnMore = ui.frameDemand->geometry().right() + 20;
+         x_btnMore = cx - 20 - ui.btnMore->width();
      }
 #else
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
@@ -544,14 +544,14 @@ void MainWindow::_relayout()
 
         m_view.setFont(&m_PlayingList, -1);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
-        m_PlayingList.setInactiveAlpha(0.4);
+        m_PlayingList.setInactiveAlpha(0.44);
         m_PlayingList.setShadowWidth(2);
     }
     else
     {
         m_view.setFont(&m_PlayingList, -1.5);
         m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
-        m_PlayingList.setInactiveAlpha(0.3);
+        m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadowWidth(0);
 
         bool bFlag = false;
