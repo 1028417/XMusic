@@ -33,20 +33,23 @@ void CMedialibDlg::slot_buttonClicked(CButton* button)
     }
 }
 
-void CMedialibView::_showMediaSet(CMediaSet& MediaSet)
+void CMedialibView::showMediaSet(CMediaSet *pMediaSet)
 {
-    m_pMediaset = &MediaSet;
+    m_pMediaset = pMediaSet;
     m_lstSubSets.clear();
-    MediaSet.GetSubSets(m_lstSubSets);
     m_lstSubMedias.clear();
-    MediaSet.GetMedias(m_lstSubMedias);
+    if (m_pMediaset)
+    {
+        m_pMediaset->GetSubSets(m_lstSubSets);
+        m_pMediaset->GetMedias(m_lstSubMedias);
+    }
 
     m_pMediaRes = NULL;
 
     this->update();
 }
 
-void CMedialibView::_showMediaRes(CMediaRes& MediaRes)
+void CMedialibView::showMediaRes(CMediaRes& MediaRes)
 {
     m_pMediaRes = &MediaRes;
 
@@ -179,7 +182,7 @@ void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
 
 void CMedialibView::_handleMouseDoubleClick(CMediaSet& MediaSet)
 {
-    _showMediaSet(MediaSet);
+    showMediaSet(&MediaSet);
 }
 
 void CMedialibView::_handleMouseDoubleClick(IMedia& Media)
@@ -190,7 +193,7 @@ void CMedialibView::_handleMouseDoubleClick(CMediaRes& MediaRes)
 {
     if (MediaRes.IsDir())
     {
-        _showMediaRes(MediaRes);
+        showMediaRes(MediaRes);
     }
     else
     {

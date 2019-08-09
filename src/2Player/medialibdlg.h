@@ -27,10 +27,11 @@ private:
 
     CMediaRes *m_pMediaRes = NULL;
 
-private:
-    void _showMediaSet(CMediaSet& MediaSet);
-    void _showMediaRes(CMediaRes& MediaRes);
+public:
+    void showMediaSet(CMediaSet *pMediaSet);
+    void showMediaRes(CMediaRes& MediaRes);
 
+private:
     UINT getRowCount() override;
     UINT getItemCount() override;
 
@@ -61,6 +62,13 @@ private:
 private slots:
     void slot_buttonClicked(CButton*);
 
-public:
+private:
    void _relayout(int cx, int cy) override;
+
+public:
+    void show()
+    {
+         CDialog<>::show();
+         m_MedialibView.showMediaSet(NULL);
+    }
 };
