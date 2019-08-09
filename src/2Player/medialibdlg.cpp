@@ -37,6 +37,15 @@ void CMedialibDlg::slot_buttonClicked(CButton* button)
     }
 }
 
+CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
+    CListView(parent)
+    , m_view(view)
+    , m_RootMediaRes(view.getModel().getRootMediaRes())
+    , m_SingerLib(view.getModel().getSingerMgr())
+    , m_PlaylistLib(view.getModel().getPlaylistMgr())
+{
+}
+
 void CMedialibView::showRoot()
 {
     m_pMediaRes = NULL;

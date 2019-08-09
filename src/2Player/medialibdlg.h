@@ -12,14 +12,7 @@
 class CMedialibView : public CListView
 {
 public:
-    CMedialibView(class CPlayerView& view, QWidget *parent=NULL) :
-        CListView(parent)
-        , m_view(view)
-        , m_RootMediaRes(view.getModel().getRootMediaRes())
-        , m_SingerLib(view.getModel().getSingerMgr())
-        , m_PlaylistLib(view.getModel().getPlaylistMgr())
-    {
-    }
+    CMedialibView(class CPlayerView& view, QWidget *parent=NULL);
 
 private:
     class CPlayerView& m_view;
