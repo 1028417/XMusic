@@ -79,7 +79,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 				}
 			}
 			
-			for (CRCueFile cueFile : subDir.getSubCueFile())
+			for (CRCueFile cueFile : subDir.SubCueList())
 			{
 				if (m_bCancel)
 				{

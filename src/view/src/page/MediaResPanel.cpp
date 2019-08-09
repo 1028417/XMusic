@@ -421,7 +421,7 @@ BOOL CMediaResPanel::HittestMediaRes(IMedia& media)
 
 void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 {
-	_showPath(m_pRootPath, MediaRes.GetParent(), &MediaRes);
+	_showPath(m_pRootPath, MediaRes.parent(), &MediaRes);
 
 	if (m_bShowRelatedSinger)
 	{
@@ -461,7 +461,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_Upward:
 		__Ensure(m_pCurrPath && m_pCurrPath != m_pRootPath);
 	
-		_showPath(m_pRootPath, m_pCurrPath->GetParent(), m_pCurrPath);
+		_showPath(m_pRootPath, m_pCurrPath->parent(), m_pCurrPath);
 		
 		break;
 	case ID_OPEN:

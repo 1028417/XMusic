@@ -17,7 +17,7 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_MedialibView.setTextColor(crText);
 
     m_view.setTextColor(ui.labelTitle, crText);
-    m_view.setFont(ui.labelTitle, 4, true);
+    m_view.setFont(ui.labelTitle, 5, true);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
@@ -241,7 +241,7 @@ bool CMedialibView::handleReturn()
     }
     else if (m_pMediaRes)
     {
-        auto parent = m_pMediaRes->GetParent();
+        auto parent = m_pMediaRes->parent();
         if (NULL != parent)
         {
             showMediaRes(*parent);
