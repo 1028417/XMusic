@@ -17,14 +17,14 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_MedialibView.setTextColor(crText);
 
     m_view.setTextColor(ui.labelTitle, crText);
-    m_view.setFont(ui.labelTitle, 3, true);
+    m_view.setFont(ui.labelTitle, 4, true);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-#define __margin 30
+#define __margin 40
     int y_MedialibView = ui.btnReturn->geometry().bottom() + __margin;
     m_MedialibView.setGeometry(__margin,y_MedialibView,cx-__margin*2,cy-__margin-y_MedialibView);
 }
@@ -37,18 +37,30 @@ void CMedialibDlg::slot_buttonClicked(CButton* button)
     }
 }
 
+void CMedialibView::showRoot()
+{
+    m_pMediaRes = NULL;
+
+    m_pMediaset = NULL;
+    m_lstSubSets.clear();
+    m_lstSubMedias.clear();
+
+    this->update();
+}
+
 void CMedialibView::showMediaSet(CMediaSet *pMediaSet)
 {
+    m_pMediaRes = NULL;
+
     m_pMediaset = pMediaSet;
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
+
     if (m_pMediaset)
     {
         m_pMediaset->GetSubSets(m_lstSubSets);
         m_pMediaset->GetMedias(m_lstSubMedias);
     }
-
-    m_pMediaRes = NULL;
 
     this->update();
 }
@@ -207,5 +219,33 @@ void CMedialibView::_handleItemClick(CMediaRes& MediaRes)
 
 bool CMedialibView::handleReturn()
 {
+    if (m_pMediaset)
+    {
+        if (m_view.getModel().getPlaylistMgr() == m_pMediaset || m_view.getModel().getSingerMgr() == m_pMediaset)
+        {
+            showRoot();
+        }
+        else
+        {
+            showMediaSet(m_pMediaset->m_pParent);
+        }
+    }
+    else if (m_pMediaRes)
+    {
+        auto parent = m_pMediaRes->GetParent();
+        if (NULL != parent)
+        {
+            showMediaRes(*parent);
+        }
+        else
+        {
+            showRoot();
+        }
+    }
+    else
+    {
+        return false;
+    }
+
     return true;
 }

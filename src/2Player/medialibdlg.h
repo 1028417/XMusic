@@ -28,6 +28,7 @@ private:
     CMediaRes *m_pMediaRes = NULL;
 
 public:
+    void showRoot();
     void showMediaSet(CMediaSet *pMediaSet);
     void showMediaRes(CMediaRes& MediaRes);
 
@@ -71,7 +72,7 @@ public:
     void show()
     {
          CDialog<>::show();
-         m_MedialibView.showMediaSet(NULL);
+         m_MedialibView.showRoot();
     }
 
     bool _handleReturn() override
