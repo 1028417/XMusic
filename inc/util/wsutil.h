@@ -34,12 +34,9 @@ public:
 	
 	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet, bool bTrim=false);
 
-	static int compareUseCNCollate(const wstring& lhs, const wstring& rhs);
-	static int compareIgnoreCase(const wstring& str1, const wstring& str2, size_t size=0);
+	static int collate(const wstring& lhs, const wstring& rhs);
 	static bool matchIgnoreCase(const wstring& str1, const wstring& str2);
 	
-	//static int findIgnoreCase(const wstring& str, const wstring& strToFind);
-
 	static void lowerCase(wstring& str);
 	static wstring lowerCase_r(const wstring& str);
 	
@@ -91,7 +88,7 @@ public:
 	{
 		bool operator()(const wstring& lhs, const wstring& rhs) const
 		{
-			return wsutil::compareUseCNCollate(lhs, rhs)<0;
+			return wsutil::collate(lhs, rhs)<0;
 		}
 	};
 };
