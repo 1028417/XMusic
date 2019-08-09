@@ -53,6 +53,11 @@ public:
     }
 
 private:
+    virtual UINT getRowCount()
+    {
+        return m_uRowCount;
+    }
+
     virtual UINT getItemCount() = 0;
 
     void _onPaint(QPainter& painter, const QRect& rc) override;

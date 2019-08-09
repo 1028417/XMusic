@@ -39,22 +39,23 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
     m_uRowHeight = 0;
 
     UINT uItemCount = getItemCount();
-    if (0 == m_uRowCount)
+    UINT uRowCount = getRowCount();
+    if (0 == uRowCount)
     {
         if (0 == uItemCount)
         {
             return;
         }
 
-        m_uRowCount = uItemCount;
+        uRowCount = uItemCount;
     }
 
     int cy = rect().bottom();
-    m_uRowHeight = cy/m_uRowCount;
+    m_uRowHeight = cy/uRowCount;
 
-    if (uItemCount > m_uRowCount)
+    if (uItemCount > uRowCount)
     {
-        m_uMaxScrollPos = uItemCount - m_uRowCount;
+        m_uMaxScrollPos = uItemCount - uRowCount;
     }
     else
     {

@@ -149,7 +149,7 @@ void CMedialibView::_handleMouseDoubleClick(UINT uRowIdx)
     }
     else if (m_pMediaRes)
     {
-        m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
+        m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
             _handleMouseDoubleClick((CMediaRes&)subPath);
         });
     }
@@ -177,11 +177,18 @@ void CMedialibView::_handleMouseDoubleClick(CMediaSet& MediaSet)
     _showMediaSet(MediaSet);
 }
 
-void CMedialibView::_handleMouseDoubleClick(CMedia& Media)
+void CMedialibView::_handleMouseDoubleClick(IMedia& Media)
 {
 }
 
 void CMedialibView::_handleMouseDoubleClick(CMediaRes& MediaRes)
 {
-    _showMediaSet(MediaSet);
+    if (MediaRes.IsDir())
+    {
+        _showMediaRes(MediaRes);
+    }
+    else
+    {
+        _handleMouseDoubleClick((IMedia&)MediaRes);
+    }
 }

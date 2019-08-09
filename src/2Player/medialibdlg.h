@@ -42,7 +42,7 @@ private:
     void _handleMouseDoubleClick(UINT uRowIdx) override;
 
     void _handleMouseDoubleClick(CMediaSet& MediaSet);
-    void _handleMouseDoubleClick(CMedia& Media);
+    void _handleMouseDoubleClick(IMedia& Media);
     void _handleMouseDoubleClick(CMediaRes& MediaRes);
 };
 
