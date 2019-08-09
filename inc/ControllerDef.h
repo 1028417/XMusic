@@ -10,7 +10,8 @@ enum class E_PlayCtrl
     PC_PlayPrev,
     PC_PlayNext,
     PC_AutoPlayNext,
-    PC_Demand
+    PC_Demand,
+    PC_PlayMedias
 };
 
 struct tagPlayCtrl
@@ -27,10 +28,18 @@ struct tagPlayCtrl
         eDemandLanguage = eLanguage;
     }
 
+    tagPlayCtrl(const TD_IMediaList& arrMedias)
+    {
+        ePlayCtrl = E_PlayCtrl::PC_PlayMedias;
+        arrPlayMedias.assign(arrMedias);
+    }
+
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
 
     E_DemandMode eDemandMode = E_DemandMode::DM_Null;
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
+
+    TD_IMediaList arrPlayMedias;
 };
 
 using CB_AddInConfirm = function<E_MatchResult(CSearchMediaInfo&, tagMediaResInfo&)>;
