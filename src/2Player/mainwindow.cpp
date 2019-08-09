@@ -84,9 +84,6 @@ void MainWindow::_init()
         connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
     }
 
-    QPalette pe;
-    pe.setColor(QPalette::WindowText, Qt::GlobalColor::white);
-
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
         , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR, ui.labelSingerImg, ui.labelPlayProgress};
     for (auto label : lstLabels)
@@ -97,7 +94,7 @@ void MainWindow::_init()
     lstLabels.add({ui.labelPlayingfile, ui.labelSingerName, ui.labelAlbumName, ui.labelDuration});
     for (auto label : lstLabels)
     {
-        label->setPalette(pe);
+        label->setTextColor(Qt::GlobalColor::white);
     }
 
     connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
@@ -476,18 +473,17 @@ void MainWindow::_relayout()
     x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    int x_btnMore = ui.frameDemand->geometry().right() + 20;
+    int x_btnMore = 20;
 #ifdef __ANDROID__
      ui.btnExit->move(-200,-200);
 
+     if (!m_bHScreen)
+     {
+         ui.frameDemand->geometry().right() + 20;
+     }
 #else
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
     ui.btnExit->move(x_btnExit, y_frameDemand + 10);
-
-    if (!m_bHScreen)
-    {
-        x_btnMore = 20;
-    }
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
@@ -549,7 +545,6 @@ void MainWindow::_relayout()
         y_PlayingListMax = y_SingerImg;
 
         m_view.setFont(&m_PlayingList, -1);
-        m_PlayingList.setTextColor(QColor(255, 255, 255));
     }
     else
     {
@@ -579,8 +574,9 @@ void MainWindow::_relayout()
         }
 
         m_view.setFont(&m_PlayingList, -1.5);
-        m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
     }
+
+    m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
 
     UINT uMargin = 0;
     if (m_bUsingCustomBkg)

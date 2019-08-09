@@ -45,14 +45,27 @@ private:
     QGraphicsOpacityEffect m_goe;
 
 protected:
+    QColor m_crText;
+
+protected:
     virtual bool event(QEvent *ev) override;
 
     virtual void _onPaint(QPainter&, const QRect& rc);
 
+public:
     void setOpacity(float fValue)
     {
        m_goe.setOpacity(fValue);
        this->setGraphicsEffect(&m_goe);
+    }
+
+    void setTextColor(const QColor& crText)
+    {
+        m_crText = crText;
+
+        QPalette pe = TParent::palette();
+        pe.setColor(QPalette::WindowText, crText);
+        TParent::setPalette(pe);
     }
 
 private:

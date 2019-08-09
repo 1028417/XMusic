@@ -86,6 +86,7 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
     UINT uItem = m_fScrollPos;
     int y = (-m_fScrollPos+uItem)*m_uRowHeight;
     int cx = rect().right();
+
     for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
     {
         painter.setFont(this->font());

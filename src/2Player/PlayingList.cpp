@@ -8,7 +8,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        fAlpha = 0.5;
+        fAlpha = 0.33;
     }
 
     bool bOutside = false;
@@ -48,10 +48,16 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
             painter.setFont(font);
         }
 
-        if (m_nActiveTime !=0 && m_uShadowWidth != 0)
+        if (m_uShadowWidth != 0)
         {
-            UINT uShadowAlpha = m_crShadow.alpha();
             QColor crShadow = m_crShadow;
+            UINT uShadowAlpha = crShadow.alpha();
+            if (0 == m_nActiveTime)
+            {
+                uShadowAlpha = MIN(uShadowAlpha, crText.alpha());
+                crShadow.setAlpha(uShadowAlpha);
+            }
+
             if (bOutside)
             {
                 uShadowAlpha *= fAlpha*fAlpha;

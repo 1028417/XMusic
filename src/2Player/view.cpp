@@ -34,6 +34,13 @@ void CPlayerView::setFont(QWidget *widget, double dbOffsetSize, bool bBold, bool
     }
 }
 
+void CPlayerView::setTextColor(QWidget *widget, const QColor& crText)
+{
+    QPalette pe = widget->palette();
+    pe.setColor(QPalette::WindowText, crText);
+    widget->setPalette(pe);
+}
+
 void CPlayerView::setTimer(UINT uMs, const function<bool()>& cb)
 {
     QTimer::singleShot(uMs, [=](){
