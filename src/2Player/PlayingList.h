@@ -30,11 +30,17 @@ private:
     UINT m_uPlayingItem = 0;
 
     int m_nActiveTime = 0;
+    float m_fInactiveAlpha = 1;
 
     UINT m_uShadowWidth = 1;
     QColor m_crShadow;
 
 public:
+    void setInactiveAlpha(float fAlpha)
+    {
+        m_fInactiveAlpha = fAlpha;
+    }
+
     void setShadow(UINT uWidth, const QColor& crShadow)
     {
         m_uShadowWidth = uWidth;

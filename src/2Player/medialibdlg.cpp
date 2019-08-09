@@ -204,3 +204,8 @@ void CMedialibView::_handleItemClick(CMediaRes& MediaRes)
         _handleItemClick((IMedia&)MediaRes);
     }
 }
+
+bool CMedialibView::handleReturn()
+{
+    return true;
+}

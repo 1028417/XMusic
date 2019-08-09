@@ -31,6 +31,8 @@ public:
     void showMediaSet(CMediaSet *pMediaSet);
     void showMediaRes(CMediaRes& MediaRes);
 
+    bool handleReturn();
+
 private:
     UINT getRowCount() override;
     UINT getItemCount() override;
@@ -70,5 +72,10 @@ public:
     {
          CDialog<>::show();
          m_MedialibView.showMediaSet(NULL);
+    }
+
+    bool _handleReturn() override
+    {
+        return m_MedialibView.handleReturn();
     }
 };

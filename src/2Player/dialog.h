@@ -43,6 +43,15 @@ protected:
         }
 
             break;
+#ifdef __ANDROID__
+        case QEvent::KeyRelease:
+            if (_handleReturn())
+            {
+                return true;
+            }
+
+            break;
+#endif
         default:
             break;
         }
@@ -52,4 +61,6 @@ protected:
 
 private:
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
+
+    virtual bool _handleReturn() {return false;}
 };

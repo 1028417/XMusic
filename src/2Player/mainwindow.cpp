@@ -410,8 +410,6 @@ void MainWindow::_relayout()
     ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
     ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
 
-    m_PlayingList.setShadowWidth(m_bUsingCustomBkg?2:0);
-
     ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
 
     for (cauto& widgetPos : m_mapTopWidgetPos)
@@ -479,7 +477,7 @@ void MainWindow::_relayout()
 
      if (!m_bHScreen)
      {
-         ui.frameDemand->geometry().right() + 20;
+         x_btnMore = ui.frameDemand->geometry().right() + 20;
      }
 #else
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
@@ -545,11 +543,17 @@ void MainWindow::_relayout()
         y_PlayingListMax = y_SingerImg;
 
         m_view.setFont(&m_PlayingList, -1);
-
         m_PlayingList.setTextColor(QColor(255, 255, 255));
+        m_PlayingList.setInactiveAlpha(0.4);
+        m_PlayingList.setShadowWidth(2);
     }
     else
     {
+        m_view.setFont(&m_PlayingList, -1.5);
+        m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
+        m_PlayingList.setInactiveAlpha(0.3);
+        m_PlayingList.setShadowWidth(0);
+
         bool bFlag = false;
         if (m_bHScreen)
         {
@@ -574,10 +578,6 @@ void MainWindow::_relayout()
 
             y_PlayingListMax = ui.labelPlayingfile->y();
         }
-
-        m_view.setFont(&m_PlayingList, -1.5);
-
-        m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
     }
 
     UINT uMargin = 0;

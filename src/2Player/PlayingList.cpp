@@ -8,19 +8,16 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        fAlpha = 0.33;
+        fAlpha = m_fInactiveAlpha;
     }
 
-    bool bOutside = false;
     if (rcItem.top() < 0)
     {
         fAlpha *= pow((double)rcItem.bottom()/rcItem.height(),3.3);
-        bOutside = true;
     }
     else if (rcItem.bottom() > cy)
     {
         fAlpha *= pow(double(cy - rcItem.top())/rcItem.height(),3.3);
-        bOutside = true;
     }
     QColor crText(m_crText);
     crText.setAlpha(crText.alpha()*fAlpha);    
