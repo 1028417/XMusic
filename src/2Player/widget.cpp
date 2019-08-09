@@ -66,8 +66,7 @@ bool CWidget<TParent>::event(QEvent *ev)
 {
     bool bRet = TParent::event(ev);
 
-    static ulong ulMousePressTime = 0;
-    static QPoint ptMousePress;
+    static bool bClicking = false;
 
     switch (ev->type())
     {
@@ -86,8 +85,7 @@ bool CWidget<TParent>::event(QEvent *ev)
         auto& me = *(QMouseEvent*)ev;
         handleMouseEvent(E_MouseEventType::MET_Press, me);
 
-        ulMousePressTime = me.timestamp();
-        ptMousePress = me.pos();
+        bClicking = true;
     }
 
         break;
@@ -96,8 +94,10 @@ bool CWidget<TParent>::event(QEvent *ev)
         auto& me = *(QMouseEvent*)ev;
         handleMouseEvent(E_MouseEventType::MET_Release, me);
 
-        if (me.pos() == ptMousePress && me.timestamp() - ulMousePressTime < 300)
+        if (bClicking)
         {
+            bClicking = false;
+
             handleMouseEvent(E_MouseEventType::MET_Click, me);
         }
     }
@@ -108,6 +108,8 @@ bool CWidget<TParent>::event(QEvent *ev)
 
         break;
     case QEvent::MouseMove:
+        bClicking = false;
+
         handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
 
         break;

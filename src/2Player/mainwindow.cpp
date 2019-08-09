@@ -73,7 +73,7 @@ void MainWindow::_init()
     m_PlayingList.setParent(ui.centralWidget);
     m_PlayingList.raise();
 
-    //ui.btnExit->raise();
+    ui.btnExit->raise();
 
     SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore

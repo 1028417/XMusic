@@ -28,13 +28,13 @@ private:
     {
         if (E_MouseEventType::MET_Press == type)
         {
-            setOpacity(0.4);
+            setOpacity(0.5);
         }
         else if (E_MouseEventType::MET_Release == type)
         {
-            setOpacity(0.6);
+            setOpacity(0.5);
 
-            QTimer::singleShot(333, [&](){
+            QTimer::singleShot(300, [&](){
                 setOpacity(1);
             });
         }
