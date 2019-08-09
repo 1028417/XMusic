@@ -31,6 +31,7 @@ private:
     void _showMediaSet(CMediaSet& MediaSet);
     void _showMediaRes(CMediaRes& MediaRes);
 
+    UINT getRowCount() override;
     UINT getItemCount() override;
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;

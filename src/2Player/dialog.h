@@ -51,5 +51,5 @@ protected:
     }
 
 private:
-    virtual void _relayout(int cx, int cy) {}
+    virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
 };

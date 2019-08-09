@@ -57,6 +57,11 @@ void CMedialibView::_showMediaRes(CMediaRes& MediaRes)
     this->update();
 }
 
+UINT CMedialibView::getRowCount()
+{
+    return MIN(getItemCount(), 10);
+}
+
 UINT CMedialibView::getItemCount()
 {
     if (m_pMediaset)
