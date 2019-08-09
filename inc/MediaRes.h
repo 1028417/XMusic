@@ -47,15 +47,18 @@ private:
 	
 	int _getImage();
 
-public:
 	CMediaRes* GetMediaRes() const override
 	{
 		return (CMediaRes*)this;
 	}
 
-	CMediaRes* GetParent() const;
+public:
+	CMediaRes* parent() const
+	{
+		return (CMediaRes*)m_pParentDir;
+	}
 
-	const ArrList<CCueFile>& getSubCueFile()
+	const ArrList<CCueFile>& SubCueList()
 	{
 		return m_alSubCueFile;
 	}
