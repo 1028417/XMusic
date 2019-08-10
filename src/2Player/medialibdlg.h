@@ -62,7 +62,8 @@ private:
 
     void _paintItem(QPainter& painter, QRect& rcItem, CMedia& Media);
 
-    void _paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap, int xOffset=0);
+    void _paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
+                    , bool bPaintRightButton, bool bPaintUnderline=true, int xOffset=0);
 
     void _handleRowClick(UINT uRowIdx) override;
 

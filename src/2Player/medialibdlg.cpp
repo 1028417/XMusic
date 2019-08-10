@@ -168,9 +168,15 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaRes& Medi
 {
     QPixmap *pPixmap = &m_pixmapFolder;
     int xOffset = 0;
+
+    bool bPaintRightButton = true;
+    bool bPaintUnderline = true;
+
     if (&MediaRes == &m_RootMediaRes)
     {
         xOffset = rcItem.width()/2-100;
+        bPaintRightButton = false;
+        bPaintUnderline = false;
     }
     else
     {
@@ -184,17 +190,23 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaRes& Medi
         else
         {
            pPixmap = &m_pixmapFile;
+
+           bPaintRightButton = false;
         }
     }
 
     cauto& qsName = wsutil::toQStr(MediaRes.GetName());
-    _paintItem(painter, rcItem, qsName, *pPixmap, xOffset);
+    _paintItem(painter, rcItem, qsName, *pPixmap, bPaintRightButton, bPaintUnderline, xOffset);
 }
 
 void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
 {
     int xOffset = 0;
     QPixmap *pPixmap = NULL;
+
+    bool bPaintRightButton = true;
+    bool bPaintUnderline = true;
+
     switch (MediaSet.m_eType)
     {
     case E_MediaSetType::MST_Playlist:
@@ -219,13 +231,16 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& Medi
             pPixmap = &m_pixmapPlaylist;
         }
 
+        bPaintRightButton = false;
+        bPaintUnderline = false;
+
         xOffset = rcItem.width()/2-100;
 
         break;
     };
 
     cauto& qsName = wsutil::toQStr(MediaSet.m_strName);
-    _paintItem(painter, rcItem, qsName, *pPixmap, xOffset);
+    _paintItem(painter, rcItem, qsName, *pPixmap, bPaintRightButton, bPaintUnderline, xOffset);
 }
 
 void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
@@ -233,15 +248,16 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
     cauto& qsName = wsutil::toQStr(Media.m_strName);
     if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
     {
-        _paintItem(painter, rcItem, qsName, m_pixmapAlbumItem);
+        _paintItem(painter, rcItem, qsName, m_pixmapAlbumItem, false);
     }
     else if (Media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
     {
-        _paintItem(painter, rcItem, qsName, m_pixmapPlayItem);
+        _paintItem(painter, rcItem, qsName, m_pixmapPlayItem, false);
     }
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap, int xOffset)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
+                               , bool bPaintRightButton, bool bPaintUnderline, int xOffset)
 {
     int sz_icon = 120;
     sz_icon = MIN(sz_icon, rcItem.height()-10);
