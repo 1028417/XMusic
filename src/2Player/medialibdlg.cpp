@@ -13,13 +13,13 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 {
     ui.setupUi(this);
 
-    QColor crText(64, 128, 255);
+    QColor crText(32, 128, 255);
 
     m_view.setTextColor(ui.labelTitle, crText);
-    m_view.setFont(ui.labelTitle, 5, true);
+    m_view.setFont(ui.labelTitle, 5, false);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 2, true);
+    m_view.setFont(&m_MedialibView, 2, false);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
@@ -175,7 +175,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaRes& Medi
 
     if (&MediaRes == &m_RootMediaRes)
     {
-        xOffset = rcItem.width()/2-100;
+        xOffset = rcItem.width()/2-120;
         bPaintRightButton = false;
         bPaintUnderline = false;
     }
@@ -235,7 +235,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& Medi
         bPaintRightButton = false;
         bPaintUnderline = false;
 
-        xOffset = rcItem.width()/2-100;
+        xOffset = rcItem.width()/2-120;
 
         break;
     };
@@ -260,6 +260,13 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
 void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
                                , bool bPaintRightButton, bool bPaintUnderline, int xOffset)
 {
+    if (rcItem.contains(m_ptClicking))
+    {
+        QColor crText = m_crText;
+        crText.setAlpha(crText.alpha()*2/3);
+        painter.setPen(crText);
+    }
+
     int sz_icon = 120;
     sz_icon = MIN(sz_icon, rcItem.height()-10);
 
@@ -269,13 +276,6 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& 
 
     rcItem.setLeft(x_icon+sz_icon + 20);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
-
-    if (rcItem.contains(m_ptClicking))
-    {
-        QColor crText = m_crText;
-        crText.setAlpha(128);
-        painter.setPen(crText);
-    }
 
     if (bPaintUnderline)
     {
@@ -307,7 +307,8 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
     {
         m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
             _handleItemClick((CMediaRes&)subPath);
-            bClickingMedia = true;
+
+            bClickingMedia = !subPath.IsDir();
         });
     }
     else

@@ -180,7 +180,7 @@ void MainWindow::showLogo()
                 labelLogoTip->setText(labelLogoTip->text() + " · 媒体库");
 
                 QTimer::singleShot(500, [=](){
-                    labelLogoTip->setText(labelLogoTip->text() + "  个性化订制");
+                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
                 });
             });
         });
