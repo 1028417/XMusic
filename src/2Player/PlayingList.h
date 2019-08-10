@@ -83,7 +83,11 @@ private:
     void _onTouchBegin(const QPointF&) override;
     void _onTouchEnd() override;
 
-    void _onGesture(QGesture&) override;
+    /*bool _onGesture(QGesture&) override
+    {
+        _updateActive(-1);
+        return true;
+    }*/
 
     void _updateActive(int nActiveTime=6);
 

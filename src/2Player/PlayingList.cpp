@@ -143,11 +143,6 @@ void CPlayingList::_onTouchEnd()
     _updateActive();
 }
 
-void CPlayingList::_onGesture(QGesture&)
-{
-//    _updateActive(-1);
-}
-
 void CPlayingList::_updateActive(int nActiveTime)
 {
     m_nActiveTime = nActiveTime;

@@ -160,7 +160,10 @@ bool CWidget<TParent>::event(QEvent *ev)
         {
             if (QGesture *gesture = ge->gesture(gestureType))
             {
-                _onGesture(*gesture);
+                if (_onGesture(*gesture))
+                {
+                    bClicking = false;
+                }
                 break;
             }
         }

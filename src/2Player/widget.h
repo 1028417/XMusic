@@ -82,5 +82,5 @@ private:
     virtual void _onTouchMove(int dy) {(void)dy;}
     virtual void _onTouchEnd() {}
 
-    virtual void _onGesture(QGesture&) {}
+    virtual bool _onGesture(QGesture&) {return false;}
 };

@@ -44,8 +44,9 @@ private:
         }
     }
 
-    void _onGesture(QGesture&) override
+    /*bool _onGesture(QGesture&) override
     {
-        //emit signal_contextMenu(this);
-    }
+        emit signal_contextMenu(this);
+        return true;
+    }*/
 };
