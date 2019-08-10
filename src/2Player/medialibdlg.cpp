@@ -151,24 +151,30 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     }
     else
     {
-        int xOffset = rcItem.width()/2-120;
-        E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
-
+        QPixmap *pPixmap = NULL;
+        wstring strText;
         switch (uItem)
         {
         case 1:
-            _paintItem(painter, rcItem, m_pixmapFolder, m_RootMediaRes.GetName(), eStyle, xOffset);
+            pPixmap = &m_pixmapFolder;
+            strText = m_RootMediaRes.GetName();
             break;
         case 3:
-            _paintItem(painter, rcItem, m_pixmapSingerGroup, L"歌手库", eStyle, xOffset);
+            pPixmap = &m_pixmapSingerGroup;
+            strText = L"歌手库";
+
             break;
         case 5:
-            _paintItem(painter, rcItem, m_pixmapPlaylist, L"列表库", eStyle, xOffset);
+            pPixmap = &m_pixmapPlaylist;
+
+            strText = L"列表库";
             break;
         default:
             return;
             break;
         }
+
+        _paintItem(painter, rcItem, *pPixmap, strText, E_ItemStyle::IS_Normal);
     }
 }
 
@@ -223,7 +229,7 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaS
 }
 
 void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
-                               , E_ItemStyle eStyle, int xOffset, UINT uIconSize)
+                               , E_ItemStyle eStyle, UINT uIconSize)
 {
     if (rcItem.contains(m_ptClicking))
     {
@@ -232,21 +238,24 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
         painter.setPen(crText);
     }
 
-    int sz_icon = rcItem.height()-20;
-
+    UINT sz_icon = rcItem.height();
     if (uIconSize > 0 && uIconSize < sz_icon)
     {
         sz_icon = uIconSize;
     }
+    else
+    {
+        sz_icon = sz_icon *2/3;
+    }
 
-    int x_icon = rcItem.left()+xOffset;
+    int x_icon = rcItem.left();
     int y_icon = rcItem.center().y()-sz_icon/2;
-    painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
 
-    rcItem.setLeft(x_icon+sz_icon + 20);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
-
-    if (eStyle != E_ItemStyle::IS_Normal)
+    if (E_ItemStyle::IS_Normal == eStyle)
+    {
+        x_icon = rcItem.width()/2-sz_icon;
+    }
+    else
     {
         painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
 
@@ -259,6 +268,11 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
             painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
         }
     }
+
+    painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
+
+    rcItem.setLeft(x_icon+sz_icon + 20);
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)

@@ -73,7 +73,7 @@ private:
     void _paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet);
 
     void _paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
-                    , E_ItemStyle eStyle=E_ItemStyle::IS_Normal, int xOffset=0, UINT uIconSize=0);
+                    , E_ItemStyle eStyle=E_ItemStyle::IS_Normal, UINT uIconSize=0);
 
     void _handleRowClick(UINT uRowIdx, QMouseEvent& ev) override;
 
