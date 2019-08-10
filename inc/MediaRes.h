@@ -53,7 +53,7 @@ private:
 	}
 
 public:
-	CMediaRes* parent() const
+    virtual CMediaRes* parent() const
 	{
 		return (CMediaRes*)m_pParentDir;
 	}
