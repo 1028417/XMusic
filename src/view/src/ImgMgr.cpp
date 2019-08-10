@@ -58,7 +58,7 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	wstring lpImgFile[] = {
 		L"folder.png"
 		, L"folderLink.png"
-		, L"mediafile.png"
+		, L"file.png"
 		, L"wholeTrack.png"
 
 		, L"playlist.png"

@@ -46,6 +46,15 @@ CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
 {
+    (void)m_pixmapFolder.load(":/img/folder.png");
+    (void)m_pixmapFolderLink.load(":/img/folderLink.png");
+    (void)m_pixmapFile.load(":/img/file.png");
+
+    (void)m_pixmapSingerGroup.load(":/img/singergroup.png");
+    (void)m_pixmapDefaultSinger.load(":/img/singerdefault.png");
+    (void)m_pixmapAlbum.load(":/img/album.png");
+
+    (void)m_pixmapPlaylist.load(":/img/playlist.png");
 }
 
 void CMedialibView::showRoot()
@@ -155,32 +164,72 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 
 void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem)
 {
-    cauto qsName = wsutil::toQStr(MediaRes.GetName());
+    QPixmap *pPixmap = &m_pixmapFolder;
+    int x_pixmap = rcItem.left();
     if (&MediaRes == &m_RootMediaRes)
     {
-        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
+        x_pixmap = rcItem.center().x()-200;
     }
     else
     {
-        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
+        if (MediaRes.IsDir())
+        {
+        }
+        else
+        {
+           pPixmap = &m_pixmapFile;
+        }
     }
+
+    painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, *pPixmap);
+    rcItem.setLeft(x_pixmap+150);
+
+    cauto qsName = wsutil::toQStr(MediaRes.GetName());
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
 }
 
 void CMedialibView::_onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem)
 {
+    int x_pixmap = rcItem.left();
+    QPixmap *pPixmap = NULL;
+    switch (MediaSet.m_eType)
+    {
+    case E_MediaSetType::MST_Playlist:
+        pPixmap = &m_pixmapPlaylist;
+        break;
+    case E_MediaSetType::MST_Album:
+        pPixmap = &m_pixmapAlbum;
+        break;
+    case E_MediaSetType::MST_Singer:
+
+        break;
+    case E_MediaSetType::MST_SingerGroup:
+        pPixmap = &m_pixmapSingerGroup;
+        break;
+    default:
+        if (&MediaSet == &m_SingerLib)
+        {
+            pPixmap = &m_pixmapSingerGroup;
+        }
+        else
+        {
+            pPixmap = &m_pixmapPlaylist;
+        }
+
+        x_pixmap = rcItem.center().x()-200;
+
+        break;
+    };
+
+    if (NULL != pPixmap)
+    {
+        painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, *pPixmap);
+
+        rcItem.setLeft(x_pixmap+150);
+    }
+
     cauto& qsName = wsutil::toQStr(MediaSet.m_strName);
-    if (&MediaSet == &m_SingerLib)
-    {
-        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
-    }
-    else if (&MediaSet == &m_PlaylistLib)
-    {
-        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
-    }
-    else
-    {
-        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
-    }
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
 }
 
 void CMedialibView::_onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem)

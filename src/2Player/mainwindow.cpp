@@ -10,6 +10,7 @@
 #include "widget.cpp"
 
 #include "medialibdlg.h"
+
 #include "bkgdlg.h"
 
 extern const ITxtWriter& g_logWriter;

@@ -27,6 +27,16 @@ private:
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
+    QPixmap m_pixmapFolder;
+    QPixmap m_pixmapFolderLink;
+    QPixmap m_pixmapFile;
+
+    QPixmap m_pixmapSingerGroup;
+    QPixmap m_pixmapDefaultSinger;
+    QPixmap m_pixmapAlbum;
+
+    QPixmap m_pixmapPlaylist;
+
 public:
     void showRoot();
 

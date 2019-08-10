@@ -19,5 +19,9 @@
         <file>img/btnMore.png</file>
         <file>img/btnReturn.png</file>
         <file>img/btnUpward.png</file>
+        <file>img/folderLink.png</file>
+        <file>img/singergroup.png</file>
+        <file>img/folder.png</file>
+        <file>img/file.png</file>
     </qresource>
 </RCC>
