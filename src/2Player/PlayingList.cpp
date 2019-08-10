@@ -47,12 +47,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 
         if (m_uShadowWidth != 0)
         {
-            UINT uShadowAlpha = crText.alpha();
-            if (uShadowAlpha < 255)
-            {
-                uShadowAlpha /= 2;
-            }
-
+            UINT uShadowAlpha = crText.alpha()*fAlpha;
             QColor crShadow = m_crShadow;
             crShadow.setAlpha(uShadowAlpha);
             painter.setPen(crShadow);

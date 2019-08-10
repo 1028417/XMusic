@@ -13,13 +13,13 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 {
     ui.setupUi(this);
 
-    QColor crText(64, 164, 255);
+    QColor crText(64, 128, 255);
 
     m_view.setTextColor(ui.labelTitle, crText);
     m_view.setFont(ui.labelTitle, 5, true);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 1, true);
+    m_view.setFont(&m_MedialibView, 1, false);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
