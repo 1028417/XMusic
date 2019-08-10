@@ -243,14 +243,17 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
 
 void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap, int xOffset)
 {
-    int x_pixmap = rcItem.left()+xOffset;
-    painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, pixmap);
+    int sz_icon = 120;
+    sz_icon = MIN(sz_icon, rcItem.height()-10);
 
-    rcItem.setLeft(x_pixmap+100);
+    int x_icon = rcItem.left()+xOffset;
+    int y_icon = rcItem.center().y()-sz_icon/2;
+    painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
+
+    rcItem.setLeft(x_icon+sz_icon + 20);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
 
-    painter.setPen(QColor(255,255,255));
-    painter.drawLine(rcItem.bottomLeft(), rcItem.bottomRight());
+    painter.fillRect(rcItem.left(), y_icon+sz_icon, rcItem.width(), 1, QColor(255,255,255));
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx)
