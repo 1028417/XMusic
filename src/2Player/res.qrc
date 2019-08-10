@@ -23,5 +23,6 @@
         <file>img/singergroup.png</file>
         <file>img/folder.png</file>
         <file>img/file.png</file>
+        <file>img/righttip.png</file>
     </qresource>
 </RCC>

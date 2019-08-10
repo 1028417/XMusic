@@ -11,6 +11,14 @@
 
 class CMedialibView : public CListView
 {
+private:
+    enum class E_ItemStyle
+    {
+        IS_Normal
+        , IS_Underline
+        , IS_RightTip
+    };
+
 public:
     CMedialibView(class CPlayerView& view, QWidget *parent=NULL);
 
@@ -41,6 +49,8 @@ private:
     QPixmap m_pixmapPlaylist;
     QPixmap m_pixmapPlayItem;
 
+    QPixmap m_pixmapRightTip;
+
     QPoint m_ptClicking;
 
 public:
@@ -58,14 +68,12 @@ private:
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
 
-    void _paintItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes);
+    void _paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes);
 
-    void _paintItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet);
+    void _paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet);
 
-    void _paintItem(QPainter& painter, QRect& rcItem, CMedia& Media);
-
-    void _paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
-                    , bool bPaintRightButton, bool bPaintUnderline=true, int xOffset=0);
+    void _paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
+                    , E_ItemStyle eStyle=E_ItemStyle::IS_Normal, int xOffset=0, UINT uIconSize=0);
 
     void _handleRowClick(UINT uRowIdx, QMouseEvent& ev) override;
 

@@ -58,6 +58,8 @@ CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
 
     (void)m_pixmapPlaylist.load(":/img/playlist.png");
     (void)m_pixmapPlayItem.load(":/img/playitem.png");
+
+    (void)m_pixmapRightTip.load(":/img/righttip.png");
 }
 
 void CMedialibView::showRoot()
@@ -128,7 +130,7 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     if (m_pMediaRes)
     {
         m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
-            _paintItem(painter, rcItem, (CMediaRes&)subPath);
+            _paintMediaResItem(painter, rcItem, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
@@ -136,77 +138,67 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         if (m_lstSubSets)
         {
             m_lstSubSets.get(uItem, [&](CMediaSet& mediaSet){
-                _paintItem(painter, rcItem, mediaSet);
+                _paintMediaSetItem(painter, rcItem, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(uItem, [&](CMedia& media){
-                _paintItem(painter, rcItem, media);
+            m_lstSubMedias.get(uItem, [&](CMedia& Media){
+                auto& pixmap = Media.GetMediaSetType() == E_MediaSetType::MST_Album? m_pixmapAlbumItem : m_pixmapPlayItem;
+                _paintItem(painter, rcItem, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
             });
         }
     }
     else
     {
+        int xOffset = rcItem.width()/2-120;
+        E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
+
         switch (uItem)
         {
         case 1:
-            _paintItem(painter, rcItem, m_RootMediaRes);
+            _paintItem(painter, rcItem, m_pixmapFolder, m_RootMediaRes.GetName(), eStyle, xOffset);
             break;
         case 3:
-            _paintItem(painter, rcItem, m_SingerLib);
+            _paintItem(painter, rcItem, m_pixmapSingerGroup, L"歌手库", eStyle, xOffset);
             break;
         case 5:
-            _paintItem(painter, rcItem, m_PlaylistLib);
+            _paintItem(painter, rcItem, m_pixmapPlaylist, L"列表库", eStyle, xOffset);
             break;
         default:
+            return;
             break;
         }
     }
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes)
 {
     QPixmap *pPixmap = &m_pixmapFolder;
-    int xOffset = 0;
 
-    bool bPaintRightButton = true;
-    bool bPaintUnderline = true;
+    E_ItemStyle eStyle = E_ItemStyle::IS_Underline;
 
-    if (&MediaRes == &m_RootMediaRes)
+    if (MediaRes.IsDir())
     {
-        xOffset = rcItem.width()/2-120;
-        bPaintRightButton = false;
-        bPaintUnderline = false;
+        eStyle = E_ItemStyle::IS_RightTip;
+
+        if (MediaRes.parent() == NULL)
+        {
+            pPixmap = &m_pixmapFolderLink;
+        }
     }
     else
     {
-        if (MediaRes.IsDir())
-        {
-            if (MediaRes.parent() == NULL)
-            {
-                pPixmap = &m_pixmapFolderLink;
-            }
-        }
-        else
-        {
-           pPixmap = &m_pixmapFile;
+       pPixmap = &m_pixmapFile;
 
-           bPaintRightButton = false;
-        }
     }
 
-    cauto& qsName = wsutil::toQStr(MediaRes.GetName());
-    _paintItem(painter, rcItem, qsName, *pPixmap, bPaintRightButton, bPaintUnderline, xOffset);
+    _paintItem(painter, rcItem, *pPixmap, MediaRes.GetName(), eStyle);
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
 {
-    int xOffset = 0;
     QPixmap *pPixmap = NULL;
-
-    bool bPaintRightButton = true;
-    bool bPaintUnderline = true;
 
     switch (MediaSet.m_eType)
     {
@@ -223,42 +215,15 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& Medi
         pPixmap = &m_pixmapSingerGroup;
         break;
     default:
-        if (&MediaSet == &m_SingerLib)
-        {
-            pPixmap = &m_pixmapSingerGroup;
-        }
-        else
-        {
-            pPixmap = &m_pixmapPlaylist;
-        }
-
-        bPaintRightButton = false;
-        bPaintUnderline = false;
-
-        xOffset = rcItem.width()/2-120;
-
+        return;
         break;
     };
 
-    cauto& qsName = wsutil::toQStr(MediaSet.m_strName);
-    _paintItem(painter, rcItem, qsName, *pPixmap, bPaintRightButton, bPaintUnderline, xOffset);
+    _paintItem(painter, rcItem, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
-{
-    cauto& qsName = wsutil::toQStr(Media.m_strName);
-    if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
-    {
-        _paintItem(painter, rcItem, qsName, m_pixmapAlbumItem, false);
-    }
-    else if (Media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
-    {
-        _paintItem(painter, rcItem, qsName, m_pixmapPlayItem, false);
-    }
-}
-
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
-                               , bool bPaintRightButton, bool bPaintUnderline, int xOffset)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
+                               , E_ItemStyle eStyle, int xOffset, UINT uIconSize)
 {
     if (rcItem.contains(m_ptClicking))
     {
@@ -267,19 +232,32 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& 
         painter.setPen(crText);
     }
 
-    int sz_icon = 120;
-    sz_icon = MIN(sz_icon, rcItem.height()-10);
+    int sz_icon = rcItem.height()-20;
+
+    if (uIconSize > 0 && uIconSize < sz_icon)
+    {
+        sz_icon = uIconSize;
+    }
 
     int x_icon = rcItem.left()+xOffset;
     int y_icon = rcItem.center().y()-sz_icon/2;
     painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
 
     rcItem.setLeft(x_icon+sz_icon + 20);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
 
-    if (bPaintUnderline)
+    if (eStyle != E_ItemStyle::IS_Normal)
     {
         painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
+
+        if (E_ItemStyle::IS_RightTip == eStyle)
+        {
+            int sz_righttip = sz_icon/2;
+            int x_righttip = rcItem.right()-sz_righttip;
+            int y_righttip = rcItem.center().y()-sz_righttip/2;
+
+            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
+        }
     }
 }
 
