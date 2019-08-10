@@ -18,7 +18,9 @@ private:
     class CPlayerView& m_view;
 
     CMediaRes& m_RootMediaRes;
+
     CMediaSet& m_SingerLib;
+
     CMediaSet& m_PlaylistLib;
 
     CMediaRes *m_pMediaRes = NULL;
@@ -34,8 +36,10 @@ private:
     QPixmap m_pixmapSingerGroup;
     QPixmap m_pixmapDefaultSinger;
     QPixmap m_pixmapAlbum;
+    QPixmap m_pixmapAlbumItem;
 
     QPixmap m_pixmapPlaylist;
+    QPixmap m_pixmapPlayItem;
 
 public:
     void showRoot();
@@ -52,11 +56,13 @@ private:
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
 
-    void _onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem);
+    void _paintItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes);
 
-    void _onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem);
+    void _paintItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet);
 
-    void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
+    void _paintItem(QPainter& painter, QRect& rcItem, CMedia& Media);
+
+    void _paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap, int xOffset=0);
 
     void _handleRowClick(UINT uRowIdx) override;
 

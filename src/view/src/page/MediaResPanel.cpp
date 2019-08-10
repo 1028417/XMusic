@@ -579,7 +579,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.IsDir())
 			{
-				if (MediaRes.GetParentDir().empty())
+				if (MediaRes.parent()==NULL)
 				{
 					m_view.getModel().detachDir(MediaRes.GetAbsPath());
 				}
@@ -737,7 +737,7 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_CopyTitle, TRUE);
 
-		if (!pSubDir->GetParentDir().empty())
+		if (pSubDir->parent() != NULL)
 		{
 			m_MenuGuard.EnableItem(ID_RENAME, TRUE);
 		}
@@ -948,7 +948,7 @@ int CMediaResPanel::GetTabImage()
 {
 	if (NULL != m_pCurrPath && m_pCurrPath != &m_view.getRootMediaRes())
 	{
-		if (m_pCurrPath->GetParentDir().empty())
+		if (m_pCurrPath->parent()==NULL)
 		{
 			return (int)E_GlobalImage::GI_FolderLink;
 		}

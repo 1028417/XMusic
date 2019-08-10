@@ -19,7 +19,7 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_view.setFont(ui.labelTitle, 5, true);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 1, false);
+    m_view.setFont(&m_MedialibView, 2, false);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
@@ -53,8 +53,10 @@ CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
     (void)m_pixmapSingerGroup.load(":/img/singergroup.png");
     (void)m_pixmapDefaultSinger.load(":/img/singerdefault.png");
     (void)m_pixmapAlbum.load(":/img/album.png");
+    (void)m_pixmapAlbumItem.load(":/img/albumitem.png");
 
     (void)m_pixmapPlaylist.load(":/img/playlist.png");
+    (void)m_pixmapPlayItem.load(":/img/playitem.png");
 }
 
 void CMedialibView::showRoot()
@@ -125,7 +127,7 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     if (m_pMediaRes)
     {
         m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
-            _onPaintItem(painter, (CMediaRes&)subPath, rcItem);
+            _paintItem(painter, rcItem, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
@@ -133,13 +135,13 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         if (m_lstSubSets)
         {
             m_lstSubSets.get(uItem, [&](CMediaSet& mediaSet){
-                _onPaintItem(painter, mediaSet, rcItem);
+                _paintItem(painter, rcItem, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(uItem, [&](CMedia& media){
-                _onPaintItem(painter, media, rcItem);
+                _paintItem(painter, rcItem, media);
             });
         }
     }
@@ -148,13 +150,13 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         switch (uItem)
         {
         case 0:
-            _onPaintItem(painter, m_RootMediaRes, rcItem);
+            _paintItem(painter, rcItem, m_RootMediaRes);
             break;
         case 1:
-            _onPaintItem(painter, m_SingerLib, rcItem);
+            _paintItem(painter, rcItem, m_SingerLib);
             break;
         case 2:
-            _onPaintItem(painter, m_PlaylistLib, rcItem);
+            _paintItem(painter, rcItem, m_PlaylistLib);
             break;
         default:
             break;
@@ -162,18 +164,22 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     }
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes)
 {
     QPixmap *pPixmap = &m_pixmapFolder;
-    int x_pixmap = rcItem.left();
+    int xOffset = 0;
     if (&MediaRes == &m_RootMediaRes)
     {
-        x_pixmap = rcItem.center().x()-200;
+        xOffset = rcItem.width()/2-100;
     }
     else
     {
         if (MediaRes.IsDir())
         {
+            if (MediaRes.parent() == NULL)
+            {
+                pPixmap = &m_pixmapFolderLink;
+            }
         }
         else
         {
@@ -181,16 +187,13 @@ void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& 
         }
     }
 
-    painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, *pPixmap);
-    rcItem.setLeft(x_pixmap+150);
-
-    cauto qsName = wsutil::toQStr(MediaRes.GetName());
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
+    cauto& qsName = wsutil::toQStr(MediaRes.GetName());
+    _paintItem(painter, rcItem, qsName, *pPixmap, xOffset);
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
 {
-    int x_pixmap = rcItem.left();
+    int xOffset = 0;
     QPixmap *pPixmap = NULL;
     switch (MediaSet.m_eType)
     {
@@ -216,25 +219,38 @@ void CMedialibView::_onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& 
             pPixmap = &m_pixmapPlaylist;
         }
 
-        x_pixmap = rcItem.center().x()-200;
+        xOffset = rcItem.width()/2-100;
 
         break;
     };
 
-    if (NULL != pPixmap)
-    {
-        painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, *pPixmap);
-
-        rcItem.setLeft(x_pixmap+150);
-    }
-
     cauto& qsName = wsutil::toQStr(MediaSet.m_strName);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
+    _paintItem(painter, rcItem, qsName, *pPixmap, xOffset);
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMedia& Media)
 {
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(Media.m_strName));
+    cauto& qsName = wsutil::toQStr(Media.m_strName);
+    if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
+    {
+        _paintItem(painter, rcItem, qsName, m_pixmapAlbumItem);
+    }
+    else if (Media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
+    {
+        _paintItem(painter, rcItem, qsName, m_pixmapPlayItem);
+    }
+}
+
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap, int xOffset)
+{
+    int x_pixmap = rcItem.left()+xOffset;
+    painter.drawPixmap(x_pixmap, rcItem.center().y()-50, 100, 100, pixmap);
+
+    rcItem.setLeft(x_pixmap+100);
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
+
+    painter.setPen(QColor(255,255,255));
+    painter.drawLine(rcItem.bottomLeft(), rcItem.bottomRight());
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx)
@@ -316,14 +332,21 @@ bool CMedialibView::handleReturn()
     }
     else if (m_pMediaRes)
     {
-        auto parent = m_pMediaRes->parent();
-        if (NULL != parent)
+        if (&m_RootMediaRes == m_pMediaRes)
         {
-            showMediaRes(*parent);
+            showRoot();
         }
         else
         {
-            showRoot();
+            auto parent = m_pMediaRes->parent();
+            if (NULL != parent)
+            {
+                showMediaRes(*parent);
+            }
+            else
+            {
+                showMediaRes(m_RootMediaRes);
+            }
         }
     }
     else
