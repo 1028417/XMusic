@@ -21,16 +21,18 @@ private:
     CMediaSet& m_SingerLib;
     CMediaSet& m_PlaylistLib;
 
+    CMediaRes *m_pMediaRes = NULL;
+
     CMediaSet *m_pMediaset = NULL;
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
-    CMediaRes *m_pMediaRes = NULL;
-
 public:
     void showRoot();
-    void showMediaSet(CMediaSet *pMediaSet);
+
     void showMediaRes(CMediaRes& MediaRes);
+
+    void showMediaSet(CMediaSet& MediaSet);
 
     bool handleReturn();
 
@@ -40,15 +42,19 @@ private:
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
 
-    void _onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem);
-    void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
     void _onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem);
+
+    void _onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem);
+
+    void _onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem);
 
     void _handleRowClick(UINT uRowIdx) override;
 
-    void _handleItemClick(CMediaSet& MediaSet);
-    void _handleItemClick(IMedia& Media);
     void _handleItemClick(CMediaRes& MediaRes);
+
+    void _handleItemClick(CMediaSet& MediaSet);
+
+    void _handleItemClick(IMedia& Media);
 };
 
 class CMedialibDlg : public CDialog<>

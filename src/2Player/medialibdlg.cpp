@@ -59,19 +59,17 @@ void CMedialibView::showRoot()
     this->update();
 }
 
-void CMedialibView::showMediaSet(CMediaSet *pMediaSet)
+void CMedialibView::showMediaSet(CMediaSet& MediaSet)
 {
     m_pMediaRes = NULL;
 
-    m_pMediaset = pMediaSet;
-    m_lstSubSets.clear();
-    m_lstSubMedias.clear();
+    m_pMediaset = &MediaSet;
 
-    if (m_pMediaset)
-    {
-        m_pMediaset->GetSubSets(m_lstSubSets);
-        m_pMediaset->GetMedias(m_lstSubMedias);
-    }
+    m_lstSubSets.clear();
+    m_pMediaset->GetSubSets(m_lstSubSets);
+
+    m_lstSubMedias.clear();
+    m_pMediaset->GetMedias(m_lstSubMedias);
 
     this->update();
 }
@@ -89,6 +87,11 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes)
 
 UINT CMedialibView::getRowCount()
 {
+    if (NULL == m_pMediaset && NULL == m_pMediaRes)
+    {
+        return 3;
+    }
+
     return 10;
 }
 
@@ -110,7 +113,13 @@ UINT CMedialibView::getItemCount()
 
 void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
 {
-    if (m_pMediaset)
+    if (m_pMediaRes)
+    {
+        m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
+            _onPaintItem(painter, (CMediaRes&)subPath, rcItem);
+        });
+    }
+    else if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
@@ -124,12 +133,6 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
                 _onPaintItem(painter, media, rcItem);
             });
         }
-    }
-    else if (m_pMediaRes)
-    {
-        m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
-            _onPaintItem(painter, (CMediaRes&)subPath, rcItem);
-        });
     }
     else
     {
@@ -150,19 +153,39 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     }
 }
 
+void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem)
+{
+    cauto qsName = wsutil::toQStr(MediaRes.GetName());
+    if (&MediaRes == &m_RootMediaRes)
+    {
+        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
+    }
+    else
+    {
+        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
+    }
+}
+
 void CMedialibView::_onPaintItem(QPainter& painter, CMediaSet& MediaSet, QRect& rcItem)
 {
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(MediaSet.m_strName));
+    cauto& qsName = wsutil::toQStr(MediaSet.m_strName);
+    if (&MediaSet == &m_SingerLib)
+    {
+        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
+    }
+    else if (&MediaSet == &m_PlaylistLib)
+    {
+        painter.drawText(rcItem, Qt::AlignHCenter|Qt::AlignVCenter, qsName);
+    }
+    else
+    {
+        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsName);
+    }
 }
 
 void CMedialibView::_onPaintItem(QPainter& painter, CMedia& Media, QRect& rcItem)
 {
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(Media.m_strName));
-}
-
-void CMedialibView::_onPaintItem(QPainter& painter, CMediaRes& MediaRes, QRect& rcItem)
-{
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(MediaRes.GetName()));
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx)
@@ -209,7 +232,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx)
 
 void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 {
-    showMediaSet(&MediaSet);
+    showMediaSet(MediaSet);
 }
 
 void CMedialibView::_handleItemClick(IMedia& Media)
@@ -233,13 +256,13 @@ bool CMedialibView::handleReturn()
 {
     if (m_pMediaset)
     {
-        if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset)
+        if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset || NULL == m_pMediaset->m_pParent)
         {
             showRoot();
         }
         else
         {
-            showMediaSet(m_pMediaset->m_pParent);
+            showMediaSet(*m_pMediaset->m_pParent);
         }
     }
     else if (m_pMediaRes)
