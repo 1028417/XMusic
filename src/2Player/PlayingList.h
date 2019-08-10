@@ -75,7 +75,7 @@ private:
 
     void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
 
-    void _handleRowDblClick(UINT uRowIdx) override;
+    void _handleRowDblClick(UINT uRowIdx, QMouseEvent& ev) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;

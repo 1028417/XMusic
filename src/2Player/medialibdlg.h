@@ -41,6 +41,8 @@ private:
     QPixmap m_pixmapPlaylist;
     QPixmap m_pixmapPlayItem;
 
+    QPoint m_ptClicking;
+
 public:
     void showRoot();
 
@@ -65,7 +67,7 @@ private:
     void _paintItem(QPainter& painter, QRect& rcItem, const QString& qsTitle, QPixmap& pixmap
                     , bool bPaintRightButton, bool bPaintUnderline=true, int xOffset=0);
 
-    void _handleRowClick(UINT uRowIdx) override;
+    void _handleRowClick(UINT uRowIdx, QMouseEvent& ev) override;
 
     void _handleItemClick(CMediaRes& MediaRes);
 

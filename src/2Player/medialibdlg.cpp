@@ -19,14 +19,14 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_view.setFont(ui.labelTitle, 5, true);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 2, false);
+    m_view.setFont(&m_MedialibView, 2, true);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-#define __margin 40
+#define __margin 35
     int y_MedialibView = ui.btnReturn->geometry().bottom() + __margin;
     m_MedialibView.setGeometry(__margin,y_MedialibView,cx-__margin*2,cy-__margin-y_MedialibView);
 }
@@ -45,6 +45,7 @@ CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
     , m_RootMediaRes(view.getModel().getRootMediaRes())
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
+    , m_ptClicking(-1,-1)
 {
     (void)m_pixmapFolder.load(":/img/folder.png");
     (void)m_pixmapFolderLink.load(":/img/folderLink.png");
@@ -100,7 +101,7 @@ UINT CMedialibView::getRowCount()
 {
     if (NULL == m_pMediaset && NULL == m_pMediaRes)
     {
-        return 3;
+        return 7;
     }
 
     return 10;
@@ -118,7 +119,7 @@ UINT CMedialibView::getItemCount()
     }
     else
     {
-        return 3;
+        return 7;
     }
 }
 
@@ -149,13 +150,13 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
     {
         switch (uItem)
         {
-        case 0:
+        case 1:
             _paintItem(painter, rcItem, m_RootMediaRes);
             break;
-        case 1:
+        case 3:
             _paintItem(painter, rcItem, m_SingerLib);
             break;
-        case 2:
+        case 5:
             _paintItem(painter, rcItem, m_PlaylistLib);
             break;
         default:
@@ -216,7 +217,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, CMediaSet& Medi
         pPixmap = &m_pixmapAlbum;
         break;
     case E_MediaSetType::MST_Singer:
-
+        pPixmap = &m_pixmapDefaultSinger;
         break;
     case E_MediaSetType::MST_SingerGroup:
         pPixmap = &m_pixmapSingerGroup;
@@ -269,11 +270,23 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, const QString& 
     rcItem.setLeft(x_icon+sz_icon + 20);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
 
-    painter.fillRect(rcItem.left(), y_icon+sz_icon, rcItem.width(), 1, QColor(255,255,255));
+    if (rcItem.contains(m_ptClicking))
+    {
+        QColor crText = m_crText;
+        crText.setAlpha(128);
+        painter.setPen(crText);
+    }
+
+    if (bPaintUnderline)
+    {
+        painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
+    }
 }
 
-void CMedialibView::_handleRowClick(UINT uRowIdx)
+void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
 {
+    bool bClickingMedia = false;
+
     if (m_pMediaset)
     {
         if (m_lstSubSets)
@@ -286,6 +299,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx)
         {
             m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
                 _handleItemClick(media);
+                bClickingMedia = true;
             });
         }
     }
@@ -293,24 +307,38 @@ void CMedialibView::_handleRowClick(UINT uRowIdx)
     {
         m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
             _handleItemClick((CMediaRes&)subPath);
+            bClickingMedia = true;
         });
     }
     else
     {
         switch (uRowIdx)
         {
-        case 0:
+        case 1:
             _handleItemClick(m_RootMediaRes);
             break;
-        case 1:
+        case 3:
             _handleItemClick(m_SingerLib);
             break;
-        case 2:
+        case 5:
             _handleItemClick(m_PlaylistLib);
             break;
         default:
             break;
         }
+    }
+
+    if (bClickingMedia)
+    {
+        m_ptClicking = ev.pos();
+        update();
+
+        QTimer::singleShot(300, [&](){
+            m_ptClicking.setX(-1);
+            m_ptClicking.setX(-1);
+
+            update();
+        });
     }
 }
 

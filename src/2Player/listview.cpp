@@ -23,11 +23,11 @@ void CListView::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 
             if (E_MouseEventType::MET_Click == type)
             {
-                _handleRowClick((UINT)fRowIdx);
+                _handleRowClick((UINT)fRowIdx, ev);
             }
             else
             {
-                _handleRowDblClick((UINT)fRowIdx);
+                _handleRowDblClick((UINT)fRowIdx, ev);
             }
         }
     }

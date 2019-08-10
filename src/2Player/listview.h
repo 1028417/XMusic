@@ -41,8 +41,8 @@ private:
     virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) = 0;
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&) override;
-    virtual void _handleRowClick(UINT uRowIdx) {(void)uRowIdx;}
-    virtual void _handleRowDblClick(UINT uRowIdx) {(void)uRowIdx;}
+    virtual void _handleRowClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
+    virtual void _handleRowDblClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
 
     void _onTouchMove(int dy) override;
 };
