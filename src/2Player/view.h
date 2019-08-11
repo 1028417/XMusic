@@ -26,6 +26,15 @@ private:
     IPlayerController& m_ctrl;
 
 public:
+    inline bool android() const
+    {
+#ifdef __ANDROID__
+        return true;
+#else
+        return false;
+#endif
+    }
+
     QApplication& getApp() const
     {
         return m_app;

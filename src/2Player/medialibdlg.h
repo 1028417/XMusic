@@ -20,10 +20,12 @@ private:
     };
 
 public:
-    CMedialibView(class CPlayerView& view, QWidget *parent=NULL);
+    CMedialibView(class CPlayerView& view, class CMedialibDlg& medialibDlg);
 
 private:
     class CPlayerView& m_view;
+
+    class CMedialibDlg& m_medialibDlg;
 
     CMediaRes& m_RootMediaRes;
 
@@ -100,15 +102,17 @@ private:
 private slots:
     void slot_buttonClicked(CButton*);
 
-private:
-   void _relayout(int cx, int cy) override;
-
 public:
     void show()
     {
          CDialog<>::show();
          m_MedialibView.showRoot();
     }
+
+    void showUpwardButton(bool bVisible) const;
+
+private:
+   void _relayout(int cx, int cy) override;
 
     bool _handleReturn() override
     {

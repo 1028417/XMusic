@@ -9,7 +9,7 @@ static Ui::MedialibDlg ui;
 CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     CDialog(parent)
     , m_view(view)
-    , m_MedialibView(view, this)
+    , m_MedialibView(view, *this)
 {
     ui.setupUi(this);
 
@@ -22,10 +22,16 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_view.setFont(&m_MedialibView, 2, false);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+
+    connect(ui.btnUpward, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
+    QRect rcUpward = ui.btnReturn->geometry();
+    rcUpward.moveTo(cx-rcUpward.right(), rcUpward.top());
+    ui.btnUpward->setGeometry(rcUpward);
+
 #define __margin 35
     int y_MedialibView = ui.btnReturn->geometry().bottom() + __margin;
     m_MedialibView.setGeometry(__margin,y_MedialibView,cx-__margin*2,cy-__margin-y_MedialibView);
@@ -37,11 +43,28 @@ void CMedialibDlg::slot_buttonClicked(CButton* button)
     {
         this->close();
     }
+    else if (button == ui.btnUpward)
+    {
+        (void)m_MedialibView.handleReturn();
+    }
 }
 
-CMedialibView::CMedialibView(class CPlayerView& view, QWidget *parent) :
-    CListView(parent)
+void CMedialibDlg::showUpwardButton(bool bVisible) const
+{
+#ifdef __ANDROID__
+    if (bVisible)
+    {
+        return;
+    }
+#endif
+
+    ui.btnUpward->setVisible(bVisible);
+}
+
+CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
+    CListView(&medialibDlg)
     , m_view(view)
+    , m_medialibDlg(medialibDlg)
     , m_RootMediaRes(view.getModel().getRootMediaRes())
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
@@ -71,6 +94,21 @@ void CMedialibView::showRoot()
     m_lstSubMedias.clear();
 
     this->update();
+
+    m_medialibDlg.showUpwardButton(false);
+}
+
+void CMedialibView::showMediaRes(CMediaRes& MediaRes)
+{
+    m_pMediaRes = &MediaRes;
+
+    m_pMediaset = NULL;
+    m_lstSubSets.clear();
+    m_lstSubMedias.clear();
+
+    this->update();
+
+    m_medialibDlg.showUpwardButton(true);
 }
 
 void CMedialibView::showMediaSet(CMediaSet& MediaSet)
@@ -86,17 +124,8 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet)
     m_pMediaset->GetMedias(m_lstSubMedias);
 
     this->update();
-}
 
-void CMedialibView::showMediaRes(CMediaRes& MediaRes)
-{
-    m_pMediaRes = &MediaRes;
-
-    m_pMediaset = NULL;
-    m_lstSubSets.clear();
-    m_lstSubMedias.clear();
-
-    this->update();
+    m_medialibDlg.showUpwardButton(true);
 }
 
 UINT CMedialibView::getRowCount()
@@ -262,7 +291,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
     if (rcItem.contains(m_ptClicking))
     {
         QColor crText = m_crText;
-        crText.setAlpha(crText.alpha()*2/3);
+        crText.setAlpha(crText.alpha()*60/100);
         painter.setPen(crText);
     }
 

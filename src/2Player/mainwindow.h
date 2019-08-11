@@ -83,15 +83,6 @@ public:
 private:
     bool event(QEvent *) override;
 
-    inline bool isAndroid() const
-    {
-#ifdef __ANDROID__
-        return true;
-#else
-        return false;
-#endif
-    }
-
     void _init();
 
     void _relayout();
