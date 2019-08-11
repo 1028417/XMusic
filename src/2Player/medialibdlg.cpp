@@ -320,6 +320,12 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
         crText.setAlpha(crText.alpha()*60/100);
         painter.setPen(crText);
     }
+    else if (item.bSelect)
+    {
+        QFont font = paiter.font();
+        font.setBold(true);
+        painter.setFont(font);
+    }
 
     UINT sz_icon = rc.height();
     if (uIconSize > 0 && uIconSize < sz_icon)
@@ -379,7 +385,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
     }
 }
 
-void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
+void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent&)
 {
     if (m_pMediaset)
     {
@@ -395,6 +401,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
                 _handleItemClick(media);
 
                 flashItem(uRowIdx);
+                selectItem(uRowIdx);
             });
         }
     }
@@ -406,6 +413,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
             if (!subPath.IsDir())
             {
                 flashItem(uRowIdx);
+                selectItem(uRowIdx);
             }
         });
     }
