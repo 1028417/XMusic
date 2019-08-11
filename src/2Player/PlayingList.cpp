@@ -1,10 +1,8 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash)
+void CPlayingList::_onPaintItem(QPainter& painter, QRect& rc, const tagListViewItem& item)
 {
-    (void)bFlash;
-
     int cy = this->rect().bottom();
 
     float fAlpha = 1;
@@ -13,13 +11,13 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bo
         fAlpha = m_fInactiveAlpha;
     }
 
-    if (rcItem.top() < 0)
+    if (rc.top() < 0)
     {
-        fAlpha *= pow((double)rcItem.bottom()/rcItem.height(),3.3);
+        fAlpha *= pow((double)rc.bottom()/rc.height(),3.3);
     }
-    else if (rcItem.bottom() > cy)
+    else if (rc.bottom() > cy)
     {
-        fAlpha *= pow(double(cy - rcItem.top())/rcItem.height(),3.3);
+        fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
     }
     QColor crText(m_crText);
     crText.setAlpha(crText.alpha()*fAlpha);    
@@ -27,20 +25,20 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bo
 
     QFont font = painter.font();
 
-    bool bPlayingItem = uItem == m_uPlayingItem;
+    bool bPlayingItem = item.uItem == m_uPlayingItem;
     if (bPlayingItem)
     {
         font.setBold(true);
         font.setPointSizeF(font.pointSizeF()+0.5);
 
         painter.setFont(font);
-        painter.drawText(rcItem.left(), rcItem.top() + 6, rcItem.width()
-            , rcItem.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
+        painter.drawText(rc.left(), rc.top() + 6, rc.width()
+            , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
     }
 
-    rcItem.setLeft(rcItem.left() + 30);
+    rc.setLeft(rc.left() + 30);
 
-    m_alPlayingItems.get(uItem, [&](tagPlayingItem& playingItem){
+    m_alPlayingItems.get(item.uItem, [&](tagPlayingItem& playingItem){
         if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
         {
             font.setItalic(true);
@@ -48,7 +46,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bo
         }
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
-                , Qt::ElideRight, rcItem.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
+                , Qt::ElideRight, rc.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
         if (m_uShadowWidth != 0)
         {
             UINT uShadowAlpha = crText.alpha()*fAlpha;
@@ -64,7 +62,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bo
                     painter.setPen(crShadow);
                 }
 
-                QRectF rcShadow(rcItem);
+                QRectF rcShadow(rc);
                 rcShadow.setLeft(rcShadow.left()+uIdx);
                 rcShadow.setTop(rcShadow.top()+uIdx);
                 rcShadow.setRight(rcShadow.right()+uIdx);
@@ -75,7 +73,7 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bo
             painter.setPen(crText);
         }
 
-        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
+        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
     });
 }
 
@@ -90,7 +88,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
         m_alPlayingItems.add(playingItem);
     });
 
-    CListView::scroll(0);
+    CListView::showItem(0);
 
     updatePlayingItem(uPlayingItem, true);
 }
@@ -101,7 +99,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
     if (bHittestPlayingItem)
     {
-        CListView::scroll(m_uPlayingItem);
+        CListView::showItem(m_uPlayingItem);
     }
 
     if (bHittestPlayingItem && m_nActiveTime != -1)

@@ -86,6 +86,8 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
 
 void CMedialibView::showRoot()
 {
+    dselectItem();
+
     m_pMediaRes = NULL;
 
     m_pMediaset = NULL;
@@ -101,6 +103,8 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
 {
     if (MediaRes.IsDir())
     {
+        dselectItem();
+
         m_pMediaRes = &MediaRes;
 
         m_pMediaset = NULL;
@@ -116,8 +120,7 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
             int nIdx = MediaRes.GetSubPath().indexOf(pHittestItem);
             if (nIdx >= 0)
             {
-                scroll((UINT)nIdx);
-                flash((UINT)nIdx);
+                selectItem((UINT)nIdx);
             }
         }
     }
@@ -125,6 +128,8 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
 
 void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 {
+    dselectItem();
+
     m_pMediaRes = NULL;
 
     m_pMediaset = &MediaSet;
@@ -144,8 +149,7 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
         int nIdx = pHittestItem->index();
         if (nIdx >= 0)
         {
-            scroll((UINT)nIdx);
-            flash((UINT)nIdx);
+            selectItem((UINT)nIdx);
         }
     }
 }
@@ -176,27 +180,27 @@ UINT CMedialibView::getItemCount()
     }
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash)
+void CMedialibView::_onPaintItem(QPainter& painter, QRect& rc, const tagListViewItem& item)
 {
     if (m_pMediaRes)
     {
-        m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
-            _paintMediaResItem(painter, rcItem, bFlash, (CMediaRes&)subPath);
+        m_pMediaRes->GetSubPath().get(item.uItem, [&](CPath& subPath) {
+            _paintMediaResItem(painter, rc, item, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(uItem, [&](CMediaSet& mediaSet){
-                _paintMediaSetItem(painter, rcItem, bFlash, mediaSet);
+            m_lstSubSets.get(item.uItem, [&](CMediaSet& mediaSet){
+                _paintMediaSetItem(painter, rc, item, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(uItem, [&](CMedia& Media){
+            m_lstSubMedias.get(item.uItem, [&](CMedia& Media){
                 auto& pixmap = Media.GetMediaSetType() == E_MediaSetType::MST_Album? m_pixmapAlbumItem : m_pixmapPlayItem;
-                _paintItem(painter, rcItem, bFlash, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
+                _paintItem(painter, rc, item, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
             });
         }
     }
@@ -204,7 +208,7 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, b
     {
         QPixmap *pPixmap = NULL;
         wstring strText;
-        switch (uItem)
+        switch (item.uItem)
         {
         case 1:
             pPixmap = &m_pixmapFolder;
@@ -225,11 +229,11 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, b
             break;
         }
 
-        _paintItem(painter, rcItem, bFlash, *pPixmap, strText, E_ItemStyle::IS_Normal);
+        _paintItem(painter, rc, item, *pPixmap, strText, E_ItemStyle::IS_Normal);
     }
 }
 
-void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rc, const tagListViewItem& item, CMediaRes& MediaRes)
 {
     QPixmap *pPixmap = &m_pixmapFolder;
 
@@ -250,7 +254,7 @@ void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, bool bF
 
     }
 
-    _paintItem(painter, rcItem, bFlash, *pPixmap, MediaRes.GetName(), eStyle);
+    _paintItem(painter, rc, item, *pPixmap, MediaRes.GetName(), eStyle);
 }
 
 static list<QPixmap> g_lstSingerPixmap;
@@ -281,7 +285,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rc, const tagListViewItem& item, CMediaSet& MediaSet)
 {
     QPixmap *pPixmap = NULL;
 
@@ -304,20 +308,20 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, bool bF
         break;
     };
 
-    _paintItem(painter, rcItem, bFlash, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
+    _paintItem(painter, rc, item, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, bool bFlash, QPixmap& pixmap
+void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewItem& item, QPixmap& pixmap
                                , const wstring& strText, E_ItemStyle eStyle, UINT uIconSize)
 {
-    if (bFlash)
+    if (item.bFlash)
     {
         QColor crText = m_crText;
         crText.setAlpha(crText.alpha()*60/100);
         painter.setPen(crText);
     }
 
-    UINT sz_icon = rcItem.height();
+    UINT sz_icon = rc.height();
     if (uIconSize > 0 && uIconSize < sz_icon)
     {
         sz_icon = uIconSize;
@@ -327,12 +331,12 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, bool bFlash, QP
         sz_icon = sz_icon *2/3;
     }
 
-    int y_icon = rcItem.center().y()-sz_icon/2;
+    int y_icon = rc.center().y()-sz_icon/2;
 
-    int x_icon = rcItem.left();
+    int x_icon = rc.left();
     if (E_ItemStyle::IS_Normal == eStyle)
     {
-        x_icon = rcItem.width()/2-sz_icon;
+        x_icon = rc.width()/2-sz_icon;
     }
 
     QRect rcSrc = pixmap.rect();
@@ -354,21 +358,21 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, bool bFlash, QP
 
     painter.drawPixmap(QRect(x_icon, y_icon, sz_icon, sz_icon), pixmap, rcSrc);
 
-    rcItem.setLeft(x_icon+sz_icon + 20);
+    rc.setLeft(x_icon+sz_icon + 20);
 
     QString qsText = painter.fontMetrics().elidedText(wsutil::toQStr(strText)
-                            , Qt::ElideRight, rcItem.width(), Qt::TextShowMnemonic);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsText);
+                            , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
+    painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 
     if (E_ItemStyle::IS_Normal != eStyle)
     {
-        painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
+        painter.fillRect(rc.left(), y_icon+sz_icon+10, rc.width(), 1, QColor(255,255,255,128));
 
         if (E_ItemStyle::IS_RightTip == eStyle)
         {
             int sz_righttip = sz_icon*30/100;
-            int x_righttip = rcItem.right()-sz_righttip;
-            int y_righttip = rcItem.center().y()-sz_righttip/2;
+            int x_righttip = rc.right()-sz_righttip;
+            int y_righttip = rc.center().y()-sz_righttip/2;
 
             painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
         }
@@ -390,7 +394,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
             m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
                 _handleItemClick(media);
 
-                flash(uRowIdx);
+                flashItem(uRowIdx);
             });
         }
     }
@@ -401,7 +405,7 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
 
             if (!subPath.IsDir())
             {
-                flash(uRowIdx);
+                flashItem(uRowIdx);
             }
         });
     }

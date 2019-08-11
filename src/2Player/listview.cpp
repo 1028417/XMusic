@@ -3,19 +3,45 @@
 
 #include <QTimer>
 
-void CListView::scroll(UINT uItem)
+void CListView::selectItem(UINT uItem)
 {
+    m_nSelectItem = uItem;
+    update();
+}
+
+void CListView::dselectItem()
+{
+    m_nSelectItem = -1;
+    update();
+}
+
+void CListView::showItem(UINT uItem, bool bToTop)
+{
+    UINT uRowCount = getRowCount();
     if (uItem < m_fScrollPos)
     {
         m_fScrollPos = uItem;
     }
-    else if (uItem+1 > m_fScrollPos+m_uRowCount)
+    else if (uItem+1 > m_fScrollPos+uRowCount)
     {
-        m_fScrollPos = uItem+1-m_uRowCount;
+        m_fScrollPos = uItem+1-uRowCount;
     }
+    else
+    {
+        if (bToTop)
+        {
+            m_fScrollPos = uItem;
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    update();
 }
 
-void CListView::flash(UINT uItem, UINT uMSDelay)
+void CListView::flashItem(UINT uItem, UINT uMSDelay)
 {
     m_nFlashItem = uItem;
     update();
@@ -105,8 +131,13 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
         painter.setFont(this->font());
         painter.setPen(m_crText);
 
-        QRect rcItem(0, y, cx, m_uRowHeight);
-        _onPaintItem(painter, uItem, rcItem, uItem==m_nFlashItem);
+        QRect rc(0, y, cx, m_uRowHeight);
+        tagListViewItem item;
+        item.uItem = uItem;
+        item.uRow = uRowIdx;
+        item.bSelect = uItem == m_nSelectItem;
+        item.bFlash = uItem==m_nFlashItem;
+        _onPaintItem(painter, rc, item);
 
         y += m_uRowHeight;
         if (y >= cy)

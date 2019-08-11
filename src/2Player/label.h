@@ -75,11 +75,11 @@ private:
 
     void _onPaint(QPainter& painter, const QRect& rc) override
     {
+        m_rcText = this->rect();
         QString text = this->text();
         if (!text.isEmpty())
         {
-            int cx = this->rect().right();
-            int cy = this->rect().bottom ();
+            int cx = m_rcText.right();
 
             if (m_bAutoFit)
             {
@@ -119,17 +119,16 @@ private:
                         painter.setPen(crShadow);
                     }
 
-                    painter.drawText(QRectF(uIdx, uIdx, cx, cy), alignment, text);
+                    painter.drawText(QRectF(uIdx, uIdx, cx, m_rcText.bottom()), alignment, text);
                }
 
                painter.setPen(pen);
             }
 
-            painter.drawText(this->rect(), alignment, text, &m_rcText);
+            painter.drawText(m_rcText, alignment, text, &m_rcText);
         }
         else
         {
-            m_rcText.setRect(-1,-1,0,0);
             CWidget<QLabel>::_onPaint(painter, rc);
         }
     }

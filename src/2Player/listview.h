@@ -3,6 +3,15 @@
 
 #include "widget.h"
 
+struct tagListViewItem
+{
+    UINT uItem = 0;
+    UINT uRow = 0;
+
+    bool bSelect = false;
+    bool bFlash = false;
+};
+
 class CListView : public CWidget<QWidget>
 {
 public:
@@ -12,15 +21,15 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
-protected:
+private:
     UINT m_uRowCount = 0;
 
-private:
     UINT m_uRowHeight = 0;
 
     UINT m_uMaxScrollPos = 0;
     float m_fScrollPos = 0;
 
+    int m_nSelectItem = -1;
     int m_nFlashItem = -1;
 
 public:
@@ -29,9 +38,13 @@ public:
         m_uRowCount = uRowCount;
     }
 
-    void scroll(UINT uItem);
+    void selectItem(UINT uItem);
 
-    void flash(UINT uItem, UINT uMSDelay=300);
+    void dselectItem();
+
+    void showItem(UINT uItem, bool bToTop=false);
+
+    void flashItem(UINT uItem, UINT uMSDelay=300);
 
 private:
     virtual UINT getRowCount()
@@ -42,7 +55,7 @@ private:
     virtual UINT getItemCount() = 0;
 
     void _onPaint(QPainter& painter, const QRect& rc) override;
-    virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash) = 0;
+    virtual void _onPaintItem(QPainter&, QRect&, const tagListViewItem&) = 0;
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&) override;
     virtual void _handleRowClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
