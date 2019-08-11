@@ -248,31 +248,32 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
         sz_icon = sz_icon *2/3;
     }
 
-    int x_icon = rcItem.left();
     int y_icon = rcItem.center().y()-sz_icon/2;
 
+    int x_icon = rcItem.left();
     if (E_ItemStyle::IS_Normal == eStyle)
     {
         x_icon = rcItem.width()/2-sz_icon;
-    }
-    else
-    {
-        painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
-
-        if (E_ItemStyle::IS_RightTip == eStyle)
-        {
-            int sz_righttip = sz_icon/2;
-            int x_righttip = rcItem.right()-sz_righttip;
-            int y_righttip = rcItem.center().y()-sz_righttip/2;
-
-            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
-        }
     }
 
     painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
 
     rcItem.setLeft(x_icon+sz_icon + 20);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
+
+    if (E_ItemStyle::IS_Normal != eStyle)
+    {
+        painter.fillRect(rcItem.left(), y_icon+sz_icon+10, rcItem.width(), 1, QColor(255,255,255,128));
+
+        if (E_ItemStyle::IS_RightTip == eStyle)
+        {
+            int sz_righttip = sz_icon/3;
+            int x_righttip = rcItem.right()-sz_righttip;
+            int y_righttip = rcItem.center().y()-sz_righttip/2;
+
+            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
+        }
+    }
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
