@@ -157,7 +157,7 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         {
         case 1:
             pPixmap = &m_pixmapFolder;
-            strText = m_RootMediaRes.GetName();
+            strText = L"媒体库";
             break;
         case 3:
             pPixmap = &m_pixmapSingerGroup;
@@ -166,8 +166,8 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
             break;
         case 5:
             pPixmap = &m_pixmapPlaylist;
-
             strText = L"列表库";
+
             break;
         default:
             return;
@@ -202,6 +202,34 @@ void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaR
     _paintItem(painter, rcItem, *pPixmap, MediaRes.GetName(), eStyle);
 }
 
+static list<QPixmap> g_lstSingerPixmap;
+static map<CSinger*, QPixmap*> g_mapSingerPixmap;
+
+QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
+{
+    auto itr = g_mapSingerPixmap.find(&Singer);
+    if (itr != g_mapSingerPixmap.end())
+    {
+        return *itr->second;
+    }
+
+    wstring strSingerImg;
+    if (m_view.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+    {
+        g_lstSingerPixmap.push_back(QPixmap());
+        QPixmap& pixmap = g_lstSingerPixmap.back();
+        pixmap.load(wsutil::toQStr(strSingerImg));
+
+        g_mapSingerPixmap[&Singer] = &pixmap;
+        return pixmap;
+    }
+    else
+    {
+        g_mapSingerPixmap[&Singer] = &m_pixmapDefaultSinger;
+        return m_pixmapDefaultSinger;
+    }
+}
+
 void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
 {
     QPixmap *pPixmap = NULL;
@@ -215,7 +243,7 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaS
         pPixmap = &m_pixmapAlbum;
         break;
     case E_MediaSetType::MST_Singer:
-        pPixmap = &m_pixmapDefaultSinger;
+        pPixmap = &_getSingerPixmap((CSinger&)MediaSet);
         break;
     case E_MediaSetType::MST_SingerGroup:
         pPixmap = &m_pixmapSingerGroup;
@@ -267,7 +295,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
 
         if (E_ItemStyle::IS_RightTip == eStyle)
         {
-            int sz_righttip = sz_icon/3;
+            int sz_righttip = sz_icon*30/100;
             int x_righttip = rcItem.right()-sz_righttip;
             int y_righttip = rcItem.center().y()-sz_righttip/2;
 

@@ -75,6 +75,8 @@ private:
     void _paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
                     , E_ItemStyle eStyle=E_ItemStyle::IS_Normal, UINT uIconSize=0);
 
+    QPixmap& _getSingerPixmap(CSinger& Singer);
+
     void _handleRowClick(UINT uRowIdx, QMouseEvent& ev) override;
 
     void _handleItemClick(CMediaRes& MediaRes);
