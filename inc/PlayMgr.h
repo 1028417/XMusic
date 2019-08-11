@@ -65,6 +65,8 @@ private:
 	
     CFileOpaqueEx m_FileOpaque;
 
+    E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
+
 private:
 	bool _playFile(const wstring& strFile, uint64_t uStartPos = 0);
 
@@ -85,6 +87,11 @@ private:
 	int _demandMediaSet(TD_MediaSetList& arrMediaSets);
 
 public:
+    E_DemandMode demandMode() const
+    {
+        return m_eDemandMode;
+    }
+
     CMediaSet& getPlayinglist()
 	{
         return m_Playinglist;
