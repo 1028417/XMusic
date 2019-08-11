@@ -68,7 +68,6 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     , m_RootMediaRes(view.getModel().getRootMediaRes())
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
-    , m_ptClicking(-1,-1)
 {
     (void)m_pixmapFolder.load(":/img/folder.png");
     (void)m_pixmapFolderLink.load(":/img/folderLink.png");
