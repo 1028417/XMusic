@@ -61,7 +61,6 @@ private:
     bool m_bHScreen = false;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
-    E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 signals:
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);

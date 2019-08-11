@@ -17,7 +17,7 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
     g_pe = pe;
 
     QPainter painter(this);
-    painter.setRenderHint(QPainter::TextAntialiasing, true);
+    painter.setRenderHint(QPainter::Antialiasing, true);
     _onPaint(painter, pe->rect());
 }
 

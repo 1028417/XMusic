@@ -768,8 +768,10 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
 void MainWindow::_showAlbumName()
 {
+    auto eDemandMode = m_view.getPlayMgr().demandMode();
+
     WString strMediaSet;
-    if (E_DemandMode::DM_DemandPlaylist == m_eDemandMode || E_DemandMode::DM_DemandPlayItem == m_eDemandMode
+    if (E_DemandMode::DM_DemandPlayItem == eDemandMode
             || m_PlayingInfo.strAlbum.empty())
     {
         if (!m_PlayingInfo.strPlaylist.empty())
@@ -1018,30 +1020,31 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 
 void MainWindow::_demand(CButton* btnDemand)
 {
+    E_DemandMode eDemandMode = E_DemandMode::DM_Null;
     if (btnDemand == ui.btnDemandSinger)
     {
-        m_eDemandMode = E_DemandMode::DM_DemandSinger;
+        eDemandMode = E_DemandMode::DM_DemandSinger;
     }
     else if (btnDemand == ui.btnDemandAlbum)
     {
-        m_eDemandMode = E_DemandMode::DM_DemandAlbum;
+        eDemandMode = E_DemandMode::DM_DemandAlbum;
     }
     else if (btnDemand == ui.btnDemandAlbumItem)
     {
-        m_eDemandMode = E_DemandMode::DM_DemandAlbumItem;
+        eDemandMode = E_DemandMode::DM_DemandAlbumItem;
     }
     else if (btnDemand == ui.btnDemandPlayItem)
     {
-        m_eDemandMode = E_DemandMode::DM_DemandPlayItem;
+        eDemandMode = E_DemandMode::DM_DemandPlayItem;
     }
     else if (btnDemand == ui.btnDemandPlaylist)
     {
-        m_eDemandMode = E_DemandMode::DM_DemandPlaylist;
+        eDemandMode = E_DemandMode::DM_DemandPlaylist;
     }
     else
     {
         return;
     }
 
-    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(m_eDemandMode, m_eDemandLanguage));
+    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
 }

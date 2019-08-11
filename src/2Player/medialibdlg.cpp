@@ -313,7 +313,24 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
         x_icon = rcItem.width()/2-sz_icon;
     }
 
-    painter.drawPixmap(x_icon, y_icon, sz_icon, sz_icon, pixmap);
+    QRect rcSrc = pixmap.rect();
+    float fHWRate = 1;
+    int cy = rcSrc.height();
+    int cx = rcSrc.width();
+    if ((float)cy/cx > fHWRate)
+    {
+        int dy = (cy - cx*fHWRate)/2;
+        rcSrc.setTop(rcSrc.top()+dy);
+        rcSrc.setBottom(rcSrc.bottom()-dy);
+    }
+    else
+    {
+        int dx = (cx - cy/fHWRate)/2;
+        rcSrc.setLeft(rcSrc.left()+dx);
+        rcSrc.setRight(rcSrc.right()-dx);
+    }
+
+    painter.drawPixmap(QRect(x_icon, y_icon, sz_icon, sz_icon), pixmap, rcSrc);
 
     rcItem.setLeft(x_icon+sz_icon + 20);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
