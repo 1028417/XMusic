@@ -121,17 +121,17 @@ struct tagMediaSetChanged
 
 struct tagRelatedMediaSet
 {
-	int iMediaSetID = -1;
+	UINT uMediaSetID = 0;
 	wstring strMediaSetName;
 
-	int iMediaID = -1;
+	UINT uMediaID = 0;
 
 	void clear()
 	{
-		iMediaSetID = -1;
+		uMediaSetID = 0;
 		strMediaSetName.clear();
 
-		iMediaID = -1;
+		uMediaID = 0;
 	}
 };
 
@@ -159,20 +159,16 @@ struct tagFindMediaPara
 		eFindMediaMode = t_eFindMediaMode;
 	}
 
-	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode, const wstring& t_strFindText
-		, E_MediaSetType t_eFindMediaSetType = E_MediaSetType::MST_Null, bool t_bFindOne = false)
+	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode, const wstring& t_strFindText, bool t_bFindOne = false)
 	{
 		eFindMediaMode = t_eFindMediaMode;
 		strFindText = wsutil::lowerCase_r(t_strFindText);
 
-		eFindMediaSetType = t_eFindMediaSetType;
 		bFindOne = t_bFindOne;
 	}
 
 	E_FindMediaMode eFindMediaMode = E_FindMediaMode::FMM_MatchText;
 	wstring strFindText;
-
-	E_MediaSetType eFindMediaSetType = E_MediaSetType::MST_Null;
 
 	bool bFindOne = false;
 

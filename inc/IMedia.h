@@ -83,14 +83,14 @@ public:
 
 	bool UpdateRelatedMediaSet(const tagMediaSetChanged& MediaSetChanged);
 
-	int GetRelatedMediaID(E_MediaSetType eMediaSetType) const
+	UINT GetRelatedMediaID(E_MediaSetType eMediaSetType) const
 	{
-		return _getRelatedMediaSet(eMediaSetType).iMediaID;
+		return _getRelatedMediaSet(eMediaSetType).uMediaID;
 	}
 
-	int GetRelatedMediaSetID(E_MediaSetType eMediaSetType) const
+	UINT GetRelatedMediaSetID(E_MediaSetType eMediaSetType) const
 	{
-		return _getRelatedMediaSet(eMediaSetType).iMediaSetID;
+		return _getRelatedMediaSet(eMediaSetType).uMediaSetID;
 	}
 
 	const wstring& GetRelatedMediaSetName(E_MediaSetType eMediaSetType)
@@ -98,7 +98,7 @@ public:
 		return _getRelatedMediaSet(eMediaSetType).strMediaSetName;
 	}
 
-	void SetRelatedMediaSet(E_MediaSetType eMediaSetType, int iMediaSetID, const wstring& strMediaSetName, int iMediaID = -1);
+	void SetRelatedMediaSet(E_MediaSetType eMediaSetType, UINT uMediaSetID, const wstring& strMediaSetName, int iMediaID = -1);
 
 	void SetRelatedMediaSet(CMediaSet& MediaSet);
 
