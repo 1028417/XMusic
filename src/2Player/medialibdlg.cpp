@@ -322,7 +322,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
     }
     else if (item.bSelect)
     {
-        QFont font = paiter.font();
+        QFont font = painter.font();
         font.setBold(true);
         painter.setFont(font);
     }
