@@ -988,7 +988,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_view.getModel().getSingerMgr().FindMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = m_view.getModel().getSingerMgr().HittestMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1000,12 +1000,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         CMedia *pMedia = NULL;
         if (m_PlayingInfo.uRelatedAlbumItemID != 0)
         {
-            pMedia = m_view.getModel().getSingerMgr().FindMedia(
+            pMedia = m_view.getModel().getSingerMgr().HittestMedia(
                                     E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
         }
         else if (m_PlayingInfo.uRelatedPlayItemID != 0)
         {
-            pMedia = m_view.getModel().getPlaylistMgr().FindMedia(
+            pMedia = m_view.getModel().getPlaylistMgr().HittestMedia(
                                     E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
         }
         if (pMedia && pMedia->m_pParent)

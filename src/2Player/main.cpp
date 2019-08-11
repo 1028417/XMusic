@@ -206,7 +206,7 @@ public:
     }
 };
 
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
     CApp app;
     return app.run();

@@ -1,8 +1,10 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
+void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash)
 {
+    (void)bFlash;
+
     int cy = this->rect().bottom();
 
     float fAlpha = 1;

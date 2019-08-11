@@ -108,11 +108,19 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
         m_lstSubSets.clear();
         m_lstSubMedias.clear();
 
-        m_pHittestItem = pHittestItem;
-
         this->update();
 
         m_medialibDlg.showUpwardButton(true);
+
+        if (pHittestItem)
+        {
+            int nIdx = MediaRes.GetSubPath().indexOf(pHittestItem);
+            if (nIdx >= 0)
+            {
+                scroll((UINT)nIdx);
+                flash((UINT)nIdx);
+            }
+        }
     }
 }
 
@@ -128,11 +136,19 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
 
-    m_pHittestItem = pHittestItem;
-
     this->update();
 
     m_medialibDlg.showUpwardButton(true);
+
+    if (pHittestItem)
+    {
+        int nIdx = pHittestItem->index();
+        if (nIdx >= 0)
+        {
+            scroll((UINT)nIdx);
+            flash((UINT)nIdx);
+        }
+    }
 }
 
 UINT CMedialibView::getRowCount()
@@ -161,12 +177,12 @@ UINT CMedialibView::getItemCount()
     }
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
+void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash)
 {
     if (m_pMediaRes)
     {
         m_pMediaRes->GetSubPath().get(uItem, [&](CPath& subPath) {
-            _paintMediaResItem(painter, rcItem, (CMediaRes&)subPath);
+            _paintMediaResItem(painter, rcItem, bFlash, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
@@ -174,14 +190,14 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
         if (m_lstSubSets)
         {
             m_lstSubSets.get(uItem, [&](CMediaSet& mediaSet){
-                _paintMediaSetItem(painter, rcItem, mediaSet);
+                _paintMediaSetItem(painter, rcItem, bFlash, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(uItem, [&](CMedia& Media){
                 auto& pixmap = Media.GetMediaSetType() == E_MediaSetType::MST_Album? m_pixmapAlbumItem : m_pixmapPlayItem;
-                _paintItem(painter, rcItem, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
+                _paintItem(painter, rcItem, bFlash, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
             });
         }
     }
@@ -210,11 +226,11 @@ void CMedialibView::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
             break;
         }
 
-        _paintItem(painter, rcItem, *pPixmap, strText, E_ItemStyle::IS_Normal);
+        _paintItem(painter, rcItem, bFlash, *pPixmap, strText, E_ItemStyle::IS_Normal);
     }
 }
 
-void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaRes& MediaRes)
 {
     QPixmap *pPixmap = &m_pixmapFolder;
 
@@ -235,7 +251,7 @@ void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaR
 
     }
 
-    _paintItem(painter, rcItem, *pPixmap, MediaRes.GetName(), eStyle);
+    _paintItem(painter, rcItem, bFlash, *pPixmap, MediaRes.GetName(), eStyle);
 }
 
 static list<QPixmap> g_lstSingerPixmap;
@@ -266,7 +282,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaSet& MediaSet)
 {
     QPixmap *pPixmap = NULL;
 
@@ -289,13 +305,13 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaS
         break;
     };
 
-    _paintItem(painter, rcItem, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
+    _paintItem(painter, rcItem, bFlash, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
-                               , E_ItemStyle eStyle, UINT uIconSize)
+void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, bool bFlash, QPixmap& pixmap
+                               , const wstring& strText, E_ItemStyle eStyle, UINT uIconSize)
 {
-    if (rcItem.contains(m_ptClicking))
+    if (bFlash)
     {
         QColor crText = m_crText;
         crText.setAlpha(crText.alpha()*60/100);
@@ -322,17 +338,17 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
 
     QRect rcSrc = pixmap.rect();
     float fHWRate = 1;
-    int cy = rcSrc.height();
-    int cx = rcSrc.width();
-    if ((float)cy/cx > fHWRate)
+    int height = rcSrc.height();
+    int width = rcSrc.width();
+    if ((float)height/width > fHWRate)
     {
-        int dy = (cy - cx*fHWRate)/2;
+        int dy = (height - width*fHWRate)/2;
         rcSrc.setTop(rcSrc.top()+dy);
         rcSrc.setBottom(rcSrc.bottom()-dy);
     }
     else
     {
-        int dx = (cx - cy/fHWRate)/2;
+        int dx = (width - height/fHWRate)/2;
         rcSrc.setLeft(rcSrc.left()+dx);
         rcSrc.setRight(rcSrc.right()-dx);
     }
@@ -341,8 +357,8 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
 
     rcItem.setLeft(x_icon+sz_icon + 20);
 
-
-    QString qsText = painter.fontMetrics().elidedText(wsutil::toQStr(strText), Qt::ElideRight, cx, Qt::TextShowMnemonic);
+    QString qsText = painter.fontMetrics().elidedText(wsutil::toQStr(strText)
+                            , Qt::ElideRight, rcItem.width(), Qt::TextShowMnemonic);
     painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 
     if (E_ItemStyle::IS_Normal != eStyle)
@@ -362,8 +378,6 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
 
 void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
 {
-    bool bClickingMedia = false;
-
     if (m_pMediaset)
     {
         if (m_lstSubSets)
@@ -376,7 +390,8 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
         {
             m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
                 _handleItemClick(media);
-                bClickingMedia = true;
+
+                flash(uRowIdx);
             });
         }
     }
@@ -385,7 +400,10 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
         m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
             _handleItemClick((CMediaRes&)subPath);
 
-            bClickingMedia = !subPath.IsDir();
+            if (!subPath.IsDir())
+            {
+                flash(uRowIdx);
+            }
         });
     }
     else
@@ -404,19 +422,6 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent& ev)
         default:
             break;
         }
-    }
-
-    if (bClickingMedia)
-    {
-        m_ptClicking = ev.pos();
-        update();
-
-        QTimer::singleShot(300, [&](){
-            m_ptClicking.setX(-1);
-            m_ptClicking.setX(-1);
-
-            update();
-        });
     }
 }
 

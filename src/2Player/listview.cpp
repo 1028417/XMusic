@@ -1,16 +1,29 @@
 
 #include "listview.h"
 
-void CListView::scroll(UINT uRow)
+#include <QTimer>
+
+void CListView::scroll(UINT uItem)
 {
-    if (uRow < m_fScrollPos)
+    if (uItem < m_fScrollPos)
     {
-        m_fScrollPos = uRow;
+        m_fScrollPos = uItem;
     }
-    else if (uRow+1 > m_fScrollPos+m_uRowCount)
+    else if (uItem+1 > m_fScrollPos+m_uRowCount)
     {
-        m_fScrollPos = uRow+1-m_uRowCount;
+        m_fScrollPos = uItem+1-m_uRowCount;
     }
+}
+
+void CListView::flash(UINT uItem, UINT uMSDelay)
+{
+    m_nFlashItem = uItem;
+    update();
+
+    QTimer::singleShot(uMSDelay, [&](){
+        m_nFlashItem = -1;
+        update();
+    });
 }
 
 void CListView::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
@@ -93,7 +106,7 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
         painter.setPen(m_crText);
 
         QRect rcItem(0, y, cx, m_uRowHeight);
-        _onPaintItem(painter, uItem, rcItem);
+        _onPaintItem(painter, uItem, rcItem, uItem==m_nFlashItem);
 
         y += m_uRowHeight;
         if (y >= cy)

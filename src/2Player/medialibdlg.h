@@ -53,10 +53,6 @@ private:
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
-    void *m_pHittestItem = NULL;
-
-    QPoint m_ptClicking;
-
 public:
     void showRoot();
 
@@ -70,13 +66,13 @@ private:
     UINT getRowCount() override;
     UINT getItemCount() override;
 
-    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) override;
+    void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash) override;
 
-    void _paintMediaResItem(QPainter& painter, QRect& rcItem, CMediaRes& MediaRes);
+    void _paintMediaResItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaRes& MediaRes);
 
-    void _paintMediaSetItem(QPainter& painter, QRect& rcItem, CMediaSet& MediaSet);
+    void _paintMediaSetItem(QPainter& painter, QRect& rcItem, bool bFlash, CMediaSet& MediaSet);
 
-    void _paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap, const wstring& strText
+    void _paintItem(QPainter& painter, QRect& rcItem, bool bFlash, QPixmap& pixmap, const wstring& strText
                     , E_ItemStyle eStyle=E_ItemStyle::IS_Normal, UINT uIconSize=0);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);

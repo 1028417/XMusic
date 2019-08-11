@@ -21,13 +21,17 @@ private:
     UINT m_uMaxScrollPos = 0;
     float m_fScrollPos = 0;
 
+    int m_nFlashItem = -1;
+
 public:
     void setRowCount(UINT uRowCount)
     {
         m_uRowCount = uRowCount;
     }
 
-    void scroll(UINT uRow);
+    void scroll(UINT uItem);
+
+    void flash(UINT uItem, UINT uMSDelay=300);
 
 private:
     virtual UINT getRowCount()
@@ -38,7 +42,7 @@ private:
     virtual UINT getItemCount() = 0;
 
     void _onPaint(QPainter& painter, const QRect& rc) override;
-    virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem) = 0;
+    virtual void _onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem, bool bFlash) = 0;
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&) override;
     virtual void _handleRowClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}

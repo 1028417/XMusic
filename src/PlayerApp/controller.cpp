@@ -394,12 +394,13 @@ int CController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist
 {
 	wstring strOppPath;
 	SArray<wstring> lstOppPaths;
-	for (auto strFile : lstFiles)
+	for (cauto& strFile : lstFiles)
 	{
 		strOppPath = m_model.getRootMediaRes().toOppPath(strFile);
 		if (strOppPath.empty())
 		{
-            m_view.showMsgBox((L"添加曲目失败，请选择以下目录中的文件：\n\n\t" + m_model.getRootMediaRes().GetAbsPath()).c_str());
+            m_view.showMsgBox((L"添加曲目失败，请选择以下目录中的文件：\n\n\t"
+				+ m_model.getRootMediaRes().GetAbsPath()).c_str());
 			return 0;
 		}
 
@@ -416,7 +417,7 @@ int CController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 	wstring strSingerOppPath = Album.GetBaseDir();
 
 	list<wstring> lstOppPaths;
-	for (auto strFile : lstFiles)
+	for (cauto& strFile : lstFiles)
 	{
 		wstring strOppPath = m_model.getRootMediaRes().toOppPath(strFile);
 		if (!fsutil::CheckSubPath(strSingerOppPath, strOppPath))
