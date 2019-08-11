@@ -57,6 +57,13 @@ public:
 	}
 
 private:
+	int indexOf(const CMedia& Media) const override
+	{
+		return m_lstAlbumItems.find([&](const CAlbumItem& PlayItem) {
+			return &PlayItem == &Media;
+		});
+	}
+
 	void GetMedias(TD_MediaList& lstMedias) override
 	{
 		lstMedias.add(m_lstAlbumItems);

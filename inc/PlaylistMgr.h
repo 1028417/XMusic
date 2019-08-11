@@ -21,6 +21,9 @@ private:
 	CPlaylist m_Playinglist;
 	list<CPlaylist> m_lstPlaylists;
 
+private:
+	int _indexOf(const CMediaSet&) const override;
+
 public:
 	CPlaylist& playinglist()
 	{

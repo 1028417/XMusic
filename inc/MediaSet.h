@@ -121,6 +121,8 @@ private:
 	CMediasetProperty m_property;
 
 private:
+	virtual int _indexOf(const CMediaSet&) const { return -1; }
+
 	void GenListItem(bool, vector<wstring>& vecText, int&) override
 	{
 		vecText.push_back(m_strName.c_str());
@@ -159,7 +161,17 @@ public:
 
 	bool checkLanguage(E_LanguageType eLanguageType) const;
 
-	UINT GetIndex() const;
+	int index() const
+	{
+		if (m_pParent)
+		{
+			return m_pParent->_indexOf(*this);
+		}
+
+		return -1;
+	}
+
+	virtual int indexOf(const CMedia&) const { return -1; }
 
 	virtual wstring GetBaseDir() const;
 

@@ -44,6 +44,8 @@ protected:
 	UINT m_uDuration = 0;
 
 public:
+	int index() const;
+	
 	wstring GetBaseDir() const;
 	
 	wstring GetDir() const

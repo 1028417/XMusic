@@ -57,14 +57,19 @@ public:
 		return m_lstPlayItems;
 	}
 
-	int GetPlayItemPos(CPlayItem& PlayItem);
-
 	bool avalible() override
 	{
 		return !m_lstPlayItems.empty();
 	}
 
 private:
+	int indexOf(const CMedia& Media) const override
+	{
+		return m_lstPlayItems.find([&](const CPlayItem& PlayItem) {
+			return &PlayItem == &Media;
+		});
+	}
+
 	void GetMedias(TD_MediaList& lstMedias) override
 	{
 		lstMedias.add(m_lstPlayItems);
