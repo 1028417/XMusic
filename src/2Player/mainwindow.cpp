@@ -13,8 +13,6 @@
 
 #include "bkgdlg.h"
 
-extern const ITxtWriter& g_logWriter;
-
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 
 static Ui::MainWindow ui;
@@ -56,13 +54,13 @@ MainWindow::MainWindow(CPlayerView& view) :
     }
 
     _init();
-
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
 }
 
 void MainWindow::_init()
 {
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowState(Qt::WindowFullScreen);
+
     ui.labelLogo->setParent(this);
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
@@ -85,14 +83,16 @@ void MainWindow::_init()
         connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
     }
 
-    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR, ui.labelDemandJP
-        , ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR, ui.labelSingerImg, ui.labelPlayProgress};
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+                , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR
+                , ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
+                , ui.labelPlayProgress};
     for (auto label : lstLabels)
     {
         connect(label, SIGNAL(signal_click(CLabel*, const QPoint&))
                 , this, SLOT(slot_labelClick(CLabel*, const QPoint&)));
     }
-    lstLabels.add({ui.labelPlayingfile, ui.labelSingerName, ui.labelAlbumName, ui.labelDuration});
+    lstLabels.add(ui.labelDuration);
     for (auto label : lstLabels)
     {
         label->setTextColor(Qt::GlobalColor::white);
@@ -655,15 +655,19 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     PlayItem.AsyncTask();
 
-    g_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo){
+    g_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.strTitle = PlayItem.GetTitle();
+
+        PlayingInfo.nDuration = PlayItem.GetDuration();
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
         PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
+        PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
 
         PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
+        PlayingInfo.uRelatedPlayItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Playlist);
 
-        PlayingInfo.nDuration = PlayItem.GetDuration();
+        PlayingInfo.strPath = PlayItem.GetPath();
     });
 
     emit signal_showPlaying(uPlayingItem, bManual);
@@ -771,8 +775,7 @@ void MainWindow::_showAlbumName()
     auto eDemandMode = m_view.getPlayMgr().demandMode();
 
     WString strMediaSet;
-    if (E_DemandMode::DM_DemandPlayItem == eDemandMode
-            || m_PlayingInfo.strAlbum.empty())
+    if (E_DemandMode::DM_DemandPlayItem == eDemandMode || m_PlayingInfo.strAlbum.empty())
     {
         if (!m_PlayingInfo.strPlaylist.empty())
         {
@@ -781,6 +784,8 @@ void MainWindow::_showAlbumName()
                 strMediaSet << L"列表：";
             }
             strMediaSet << m_PlayingInfo.strPlaylist;
+
+            m_PlayingInfo.uRelatedAlbumItemID = 0;
         }
     }
     else if (!m_PlayingInfo.strAlbum.empty())
@@ -790,6 +795,8 @@ void MainWindow::_showAlbumName()
             strMediaSet << L"专辑：";
         }
         strMediaSet << m_PlayingInfo.strAlbum;
+
+        m_PlayingInfo.uRelatedPlayItemID = 0;
     }
 
     QLabel& labelAlbumName = *ui.labelAlbumName;
@@ -797,7 +804,7 @@ void MainWindow::_showAlbumName()
 
     if (!m_bUsingCustomBkg)
     {
-        uint uLen = wsutil::toStr(*strMediaSet).size();
+        UINT uLen = wsutil::toStr(*strMediaSet).size();
         float fFontSizeOffset = 0;
         if (uLen > 20)
         {
@@ -956,8 +963,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnMore)
     {
-        static CMedialibDlg dlg(m_view);
-        dlg.show();
+        CMedialibDlg::inst(m_view).show();
     }
     else
     {
@@ -976,7 +982,43 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             m_bZoomoutSingerImg = !m_bZoomoutSingerImg;
             this->_relayout();
         }
-        return;
+    }
+    else if (label == ui.labelSingerName)
+    {
+        if (m_PlayingInfo.uSingerID != 0)
+        {
+            CMediaSet *pMediaSet = m_view.getModel().getSingerMgr().FindMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            if (pMediaSet)
+            {
+                CMedialibDlg::inst(m_view).showMediaSet(*pMediaSet);
+            }
+        }
+    }
+    else if (label == ui.labelAlbumName)
+    {
+        CMedia *pMedia = NULL;
+        if (m_PlayingInfo.uRelatedAlbumItemID != 0)
+        {
+            pMedia = m_view.getModel().getSingerMgr().FindMedia(
+                                    E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
+        }
+        else if (m_PlayingInfo.uRelatedPlayItemID != 0)
+        {
+            pMedia = m_view.getModel().getPlaylistMgr().FindMedia(
+                                    E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
+        }
+        if (pMedia && pMedia->m_pParent)
+        {
+            CMedialibDlg::inst(m_view).showMediaSet(*pMedia->m_pParent, pMedia);
+        }
+    }
+    else if (label == ui.labelPlayingfile)
+    {
+        CMediaRes *pMediaRes = m_view.getModel().getRootMediaRes().FindSubPath(m_PlayingInfo.strPath, false);
+        if (pMediaRes)
+        {
+            CMedialibDlg::inst(m_view).showMediaRes(*pMediaRes);
+        }
     }
     else if (label == ui.labelPlayProgress)
     {
@@ -992,30 +1034,33 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             }
         }
     }
+    else
+    {
+        m_eDemandLanguage = E_LanguageType::LT_None;
 
-    m_eDemandLanguage = E_LanguageType::LT_None;
-
-    PairList<E_LanguageType, QLabel*> plLabels {{E_LanguageType::LT_CN, ui.labelDemandCN}
-        , {E_LanguageType::LT_HK, ui.labelDemandHK}
-        , {E_LanguageType::LT_KR, ui.labelDemandKR}
-        , {E_LanguageType::LT_JP, ui.labelDemandJP}
-        , {E_LanguageType::LT_TAI, ui.labelDemandTAI}
-        , {E_LanguageType::LT_EN, ui.labelDemandEN}
-        , {E_LanguageType::LT_EUR, ui.labelDemandEUR}};
-    plLabels([&](E_LanguageType eLanguage, QLabel* lblLanguage){
-        if (!lblLanguage->text().startsWith(' '))
-        {
-            lblLanguage->setText("  " + lblLanguage->text().mid(1));
-        }
-        else
-        {
-            if (lblLanguage == label)
+        PairList<E_LanguageType, QLabel*> plLabels {
+            {E_LanguageType::LT_CN, ui.labelDemandCN}
+            , {E_LanguageType::LT_HK, ui.labelDemandHK}
+            , {E_LanguageType::LT_KR, ui.labelDemandKR}
+            , {E_LanguageType::LT_JP, ui.labelDemandJP}
+            , {E_LanguageType::LT_TAI, ui.labelDemandTAI}
+            , {E_LanguageType::LT_EN, ui.labelDemandEN}
+            , {E_LanguageType::LT_EUR, ui.labelDemandEUR}};
+        plLabels([&](E_LanguageType eLanguage, QLabel* lblLanguage){
+            if (!lblLanguage->text().startsWith(' '))
             {
-                lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
-                m_eDemandLanguage = eLanguage;
+                lblLanguage->setText("  " + lblLanguage->text().mid(1));
             }
-        }
-    });
+            else
+            {
+                if (lblLanguage == label)
+                {
+                    lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
+                    m_eDemandLanguage = eLanguage;
+                }
+            }
+        });
+    }
 }
 
 void MainWindow::_demand(CButton* btnDemand)

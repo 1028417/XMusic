@@ -103,16 +103,34 @@ private slots:
     void slot_buttonClicked(CButton*);
 
 public:
-    void show()
+    static CMedialibDlg& inst(class CPlayerView& view)
     {
-         CDialog<>::show();
-         m_MedialibView.showRoot();
+        static CMedialibDlg inst(view);
+        return inst;
+    }
+
+    void showRoot()
+    {
+        show();
+        m_MedialibView.showRoot();
+    }
+
+    void showMediaRes(CMediaRes& MediaRes)
+    {
+        show();
+        m_MedialibView.showMediaRes(MediaRes);
+    }
+
+    void showMediaSet(CMediaSet& MediaSet, CMedia *pMedia=NULL)
+    {
+        show();
+        m_MedialibView.showMediaSet(MediaSet);
     }
 
     void showUpwardButton(bool bVisible) const;
 
 private:
-   void _relayout(int cx, int cy) override;
+    void _relayout(int cx, int cy) override;
 
     bool _handleReturn() override
     {

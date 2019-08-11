@@ -22,6 +22,8 @@ public:
     }
 
 private:
+    void *m_pData = NULL;
+
     UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
@@ -29,6 +31,17 @@ signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 public:
+    void setText(const QString &qsText, void* pData=NULL)
+    {
+        QLabel::setText(qsText);
+        m_pData = pData;
+    }
+
+    void* data() const
+    {
+        return m_pData;
+    }
+
     void setShadow(UINT uWidth, const QColor& crShadow)
     {
         m_uShadowWidth = uWidth;

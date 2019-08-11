@@ -18,9 +18,15 @@ struct tagPlayingInfo
     int nDuration = -1;
 
     wstring strSinger;
+    UINT uSingerID = 0;
+
     wstring strAlbum;
+    UINT uRelatedAlbumItemID = 0;
 
     wstring strPlaylist;
+    UINT uRelatedPlayItemID = 0;
+
+    wstring strPath;
 };
 
 class MainWindow : public QMainWindow, public IModelObserver

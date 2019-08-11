@@ -125,7 +125,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 	{
 		if (0 != m_uSingerID)
 		{
-			auto pSinger = SingerMgr.GetMediaSet(m_uSingerID, E_MediaSetType::MST_Singer);
+			auto pSinger = SingerMgr.FindMediaSet(E_MediaSetType::MST_Singer, m_uSingerID);
 			if (NULL != pSinger)
 			{
 				(void)m_wndTree.SelectObject(*pSinger);

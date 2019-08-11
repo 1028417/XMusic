@@ -1,4 +1,12 @@
 
+#include <QApplication>
+#include <QFontDatabase>
+
+#include "MainWindow.h"
+#include <QTimer>
+
+#include "view.h"
+
 #ifdef __ANDROID__
 //#include <QAndroidJniObject>
 //#include <QAndroidJniEnvironment>
@@ -40,14 +48,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #endif
 
 #define __FontFile "msyhl.ttc"
-
-#include <QApplication>
-#include <QFontDatabase>
-
-#include "MainWindow.h"
-#include <QTimer>
-
-#include "view.h"
 
 static CUTF8Writer m_logWriter;
 const ITxtWriter& g_logWriter(m_logWriter);
