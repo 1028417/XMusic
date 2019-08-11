@@ -45,6 +45,8 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
             painter.setFont(font);
         }
 
+        QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
+                , Qt::ElideRight, rcItem.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
         if (m_uShadowWidth != 0)
         {
             UINT uShadowAlpha = crText.alpha()*fAlpha;
@@ -65,13 +67,13 @@ void CPlayingList::_onPaintItem(QPainter& painter, UINT uItem, QRect& rcItem)
                 rcShadow.setTop(rcShadow.top()+uIdx);
                 rcShadow.setRight(rcShadow.right()+uIdx);
                 rcShadow.setBottom(rcShadow.bottom()+uIdx);
-                painter.drawText(rcShadow, Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
+                painter.drawText(rcShadow, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
             }
 
             painter.setPen(crText);
         }
 
-        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, playingItem.qsTitle);
+        painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
     });
 }
 

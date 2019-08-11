@@ -98,20 +98,25 @@ void CMedialibView::showRoot()
     m_medialibDlg.showUpwardButton(false);
 }
 
-void CMedialibView::showMediaRes(CMediaRes& MediaRes)
+void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
 {
-    m_pMediaRes = &MediaRes;
+    if (MediaRes.IsDir())
+    {
+        m_pMediaRes = &MediaRes;
 
-    m_pMediaset = NULL;
-    m_lstSubSets.clear();
-    m_lstSubMedias.clear();
+        m_pMediaset = NULL;
+        m_lstSubSets.clear();
+        m_lstSubMedias.clear();
 
-    this->update();
+        m_pHittestItem = pHittestItem;
 
-    m_medialibDlg.showUpwardButton(true);
+        this->update();
+
+        m_medialibDlg.showUpwardButton(true);
+    }
 }
 
-void CMedialibView::showMediaSet(CMediaSet& MediaSet)
+void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 {
     m_pMediaRes = NULL;
 
@@ -122,6 +127,8 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet)
 
     m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
+
+    m_pHittestItem = pHittestItem;
 
     this->update();
 
@@ -333,7 +340,10 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rcItem, QPixmap& pixmap
     painter.drawPixmap(QRect(x_icon, y_icon, sz_icon, sz_icon), pixmap, rcSrc);
 
     rcItem.setLeft(x_icon+sz_icon + 20);
-    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, wsutil::toQStr(strText));
+
+
+    QString qsText = painter.fontMetrics().elidedText(wsutil::toQStr(strText), Qt::ElideRight, cx, Qt::TextShowMnemonic);
+    painter.drawText(rcItem, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 
     if (E_ItemStyle::IS_Normal != eStyle)
     {

@@ -341,8 +341,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/img/defaultSingerImg.jpg);
-border-image-repeat: stretched</string>
+     <string notr="true">border-image: url(:/img/defaultSingerImg.jpg);</string>
     </property>
     <widget class="QFrame" name="frameSingerImg">
      <property name="geometry">

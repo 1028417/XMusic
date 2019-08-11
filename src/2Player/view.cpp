@@ -12,11 +12,6 @@ IModelObserver& CPlayerView::getModelObserver()
     return m_mainWnd;
 }
 
-//QFont CPlayerView::font() const
-//{
-//    return m_app.font();
-//}
-
 QFont CPlayerView::genFont(double dbOffsetSize, bool bBold, bool bItalic) const
 {
     QFont font(m_app.font());

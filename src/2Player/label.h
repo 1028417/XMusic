@@ -22,24 +22,21 @@ public:
     }
 
 private:
-    void *m_pData = NULL;
+    bool m_bAutoFit = false;
 
     UINT m_uShadowWidth = 2;
     QColor m_crShadow;
+
+    QRect m_rcText;
 
 signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 public:
-    void setText(const QString &qsText, void* pData=NULL)
+    void setText(const QString &qsText, bool bAutoFit=false)
     {
         QLabel::setText(qsText);
-        m_pData = pData;
-    }
-
-    void* data() const
-    {
-        return m_pData;
+        m_bAutoFit = bAutoFit;
     }
 
     void setShadow(UINT uWidth, const QColor& crShadow)
@@ -69,27 +66,36 @@ private:
     {
         if (E_MouseEventType::MET_Click == type)
         {
-            emit signal_click(this, ev.pos());
+            if (m_rcText.contains(ev.pos()))
+            {
+                emit signal_click(this, ev.pos());
+            }
         }
     }
 
     void _onPaint(QPainter& painter, const QRect& rc) override
     {
-        const QString& text = this->text();
+        QString text = this->text();
         if (!text.isEmpty())
         {
             int cx = this->rect().right();
             int cy = this->rect().bottom ();
 
-            while (painter.fontMetrics().width(text) >= cx)
+            if (m_bAutoFit)
             {
-                QFont font = painter.font();
-                font.setPointSizeF(font.pointSizeF()-0.5f);
-                painter.setFont(font);
+                while (painter.fontMetrics().width(text) >= cx)
+                {
+                    QFont font = painter.font();
+                    font.setPointSizeF(font.pointSizeF()-0.5f);
+                    painter.setFont(font);
+                }
+            }
+            else
+            {
+                text = painter.fontMetrics().elidedText(text, Qt::ElideRight, cx, Qt::TextShowMnemonic);
             }
 
-            QTextOption to;
-            to.setAlignment(this->alignment());
+            auto alignment = this->alignment();
 
             if (0 != m_uShadowWidth)
             {
@@ -113,17 +119,18 @@ private:
                         painter.setPen(crShadow);
                     }
 
-                    painter.drawText(QRectF(uIdx, uIdx, cx, cy), text, to);
+                    painter.drawText(QRectF(uIdx, uIdx, cx, cy), alignment, text);
                }
 
                painter.setPen(pen);
             }
 
-            painter.drawText(this->rect(), text, to);
-
-            return;
+            painter.drawText(this->rect(), alignment, text, &m_rcText);
         }
-
-        CWidget<QLabel>::_onPaint(painter, rc);
+        else
+        {
+            m_rcText.setRect(-1,-1,0,0);
+            CWidget<QLabel>::_onPaint(painter, rc);
+        }
     }
 };

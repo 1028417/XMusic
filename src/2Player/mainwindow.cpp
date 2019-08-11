@@ -9,8 +9,6 @@
 
 #include "widget.cpp"
 
-#include "medialibdlg.h"
-
 #include "bkgdlg.h"
 
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
@@ -19,7 +17,8 @@ static Ui::MainWindow ui;
 
 MainWindow::MainWindow(CPlayerView& view) :
     m_view(view),
-    m_PlayingList(m_view)
+    m_PlayingList(view),
+    m_medialibDlg(view)
 {
     ui.setupUi(this);
 
@@ -58,9 +57,6 @@ MainWindow::MainWindow(CPlayerView& view) :
 
 void MainWindow::_init()
 {
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
-
     ui.labelLogo->setParent(this);
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
@@ -105,6 +101,9 @@ void MainWindow::_init()
 
 void MainWindow::showLogo()
 {
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowState(Qt::WindowFullScreen);
+
     double dbTipFontSize = -0.5;
 #ifdef __ANDROID__
     dbTipFontSize -= 1;
@@ -661,6 +660,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.nDuration = PlayItem.GetDuration();
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+        PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+
         PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
         PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
 
@@ -963,7 +964,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnMore)
     {
-        CMedialibDlg::inst(m_view).show();
+        m_medialibDlg.show();
     }
     else
     {
@@ -990,7 +991,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             CMediaSet *pMediaSet = m_view.getModel().getSingerMgr().FindMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
-                CMedialibDlg::inst(m_view).showMediaSet(*pMediaSet);
+                m_medialibDlg.showMediaSet(*pMediaSet);
             }
         }
     }
@@ -1009,7 +1010,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
         if (pMedia && pMedia->m_pParent)
         {
-            CMedialibDlg::inst(m_view).showMediaSet(*pMedia->m_pParent, pMedia);
+            m_medialibDlg.showMediaSet(*pMedia->m_pParent, pMedia);
         }
     }
     else if (label == ui.labelPlayingfile)
@@ -1017,7 +1018,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         CMediaRes *pMediaRes = m_view.getModel().getRootMediaRes().FindSubPath(m_PlayingInfo.strPath, false);
         if (pMediaRes)
         {
-            CMedialibDlg::inst(m_view).showMediaRes(*pMediaRes);
+            m_medialibDlg.showMediaRes(*pMediaRes);
         }
     }
     else if (label == ui.labelPlayProgress)

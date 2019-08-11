@@ -9,6 +9,8 @@
 
 #include "label.h"
 
+#include "medialibdlg.h"
+
 //namespace Ui { class MainWindow; }
 
 struct tagPlayingInfo
@@ -67,6 +69,8 @@ private:
     bool m_bHScreen = false;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
+
+    CMedialibDlg m_medialibDlg;
 
 signals:
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);

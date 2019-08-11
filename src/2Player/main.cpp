@@ -47,34 +47,23 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     #define __FontSize 15
 #endif
 
+#ifdef __ANDROID__
+#define __FontFile "assets:/msyhl.ttc";
+#else
 #define __FontFile "msyhl.ttc"
+#endif
 
 static CUTF8Writer m_logWriter;
 const ITxtWriter& g_logWriter(m_logWriter);
 
-class CApp : public QApplication
+class CApplication : public QApplication
 {
+private:
+    int argc;
+    char **argv;
+
 public:
-    CApp(int argc, char *argv[]):
-        QApplication(argc, argv),
-        m_mainWnd(m_view),
-        m_view(*this, m_mainWnd, m_model, m_ctrl),
-        m_model(m_mainWnd),
-        m_ctrl(m_view, m_model)
-    {
-    }
-
-private:
-    class MainWindow m_mainWnd;
-
-    CPlayerView m_view;
-
-    CModel m_model;
-
-    CController m_ctrl;
-
-private:
-    bool _init()
+    CApplication() : QApplication(argc=0, argv=0)
     {
 #ifdef __ANDROID__
         /*string strSdcardPath
@@ -88,10 +77,10 @@ private:
             strSdcardPath = pszSdcardPath;
         }*/
 
-        wstring strAppDataDir = L"/sdcard/Android/data/XMusic";
-        if (fsutil::createDir(strAppDataDir))
+        wstring strDataDir = L"/sdcard/Android/data/XMusic";
+        if (fsutil::createDir(strDataDir))
         {
-            fsutil::setWorkDir(strAppDataDir);
+            fsutil::setWorkDir(strDataDir);
         }
 #else
         fsutil::setWorkDir(fsutil::getModuleDir());
@@ -99,6 +88,52 @@ private:
 
         m_logWriter.open(L"XMusic.log", true);
 
+        /*QFontDatabase database;
+        for (cauto& familyName : database.families(QFontDatabase::Korean))
+        {
+            g_logWriter << "familyName: " >> familyName;
+            //this->setFont(QFont(familyName, 10));
+            break;
+        }*/
+
+        int fontId = QFontDatabase::addApplicationFont(__FontFile);
+        g_logWriter << "newFontId: " >> fontId;
+        if (-1 != fontId)
+        {
+            cauto& familyName = QFontDatabase::applicationFontFamilies(fontId).at(0);
+            g_logWriter << "newfamilyName: " >> familyName;
+            this->setFont(QFont(familyName, __FontSize));
+        }
+        else
+        {
+            this->setFont(QFont(QString::fromLocal8Bit(""), __FontSize));
+        }
+    }
+};
+
+class CApp : public CApplication
+{
+public:
+    CApp() :
+        m_model(m_mainWnd),
+        m_view(*this, m_mainWnd, m_model, m_ctrl),
+        m_ctrl(m_view, m_model),
+        m_mainWnd(m_view)
+    {
+    }
+
+private:
+    CModel m_model;
+
+    CPlayerView m_view;
+
+    CController m_ctrl;
+
+    class MainWindow m_mainWnd;
+
+private:
+    bool _init()
+    {
 #ifdef __ANDROID__
         m_logWriter << "jniVer: " >> g_jniVer;
 
@@ -113,32 +148,7 @@ private:
                 return false;
             }
         }
-
-        QString qsFontFile = "assets:/" __FontFile;
-#else
-        QString qsFontFile = __FontFile;
 #endif
-
-        /*QFontDatabase database;
-        for (cauto& familyName : database.families(QFontDatabase::Korean))
-        {
-            g_logWriter << "familyName: " >> familyName;
-            //this->setFont(QFont(familyName, 10));
-            break;
-        }*/
-
-        int fontId = QFontDatabase::addApplicationFont(qsFontFile);
-        g_logWriter << "newFontId: " >> fontId;
-        if (-1 != fontId)
-        {
-            cauto& familyName = QFontDatabase::applicationFontFamilies(fontId).at(0);
-            g_logWriter << "newfamilyName: " >> familyName;
-            this->setFont(QFont(familyName, __FontSize));
-        }
-        else
-        {
-            this->setFont(QFont(QString::fromLocal8Bit(""), __FontSize));
-        }
 
         return true;
     }
@@ -198,6 +208,6 @@ public:
 
 int main(int argc, char *argv[])
 {
-    CApp app(argc, argv);
+    CApp app;
     return app.run();
 }

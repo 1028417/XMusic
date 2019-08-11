@@ -33,12 +33,6 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    CMediaRes *m_pMediaRes = NULL;
-
-    CMediaSet *m_pMediaset = NULL;
-    TD_MediaSetList m_lstSubSets;
-    TD_MediaList m_lstSubMedias;
-
     QPixmap m_pixmapFolder;
     QPixmap m_pixmapFolderLink;
     QPixmap m_pixmapFile;
@@ -53,14 +47,22 @@ private:
 
     QPixmap m_pixmapRightTip;
 
+    CMediaRes *m_pMediaRes = NULL;
+
+    CMediaSet *m_pMediaset = NULL;
+    TD_MediaSetList m_lstSubSets;
+    TD_MediaList m_lstSubMedias;
+
+    void *m_pHittestItem = NULL;
+
     QPoint m_ptClicking;
 
 public:
     void showRoot();
 
-    void showMediaRes(CMediaRes& MediaRes);
+    void showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem=NULL);
 
-    void showMediaSet(CMediaSet& MediaSet);
+    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL);
 
     bool handleReturn();
 
@@ -103,12 +105,6 @@ private slots:
     void slot_buttonClicked(CButton*);
 
 public:
-    static CMedialibDlg& inst(class CPlayerView& view)
-    {
-        static CMedialibDlg inst(view);
-        return inst;
-    }
-
     void showRoot()
     {
         show();
@@ -117,14 +113,26 @@ public:
 
     void showMediaRes(CMediaRes& MediaRes)
     {
-        show();
-        m_MedialibView.showMediaRes(MediaRes);
+        if (MediaRes.IsDir())
+        {
+            show();
+            m_MedialibView.showMediaRes(MediaRes);
+        }
+        else
+        {
+            auto parent = MediaRes.parent();
+            if (parent)
+            {
+                show();
+                m_MedialibView.showMediaRes(*parent, &MediaRes);
+            }
+        }
     }
 
-    void showMediaSet(CMediaSet& MediaSet, CMedia *pMedia=NULL)
+    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestMedia=NULL)
     {
         show();
-        m_MedialibView.showMediaSet(MediaSet);
+        m_MedialibView.showMediaSet(MediaSet, pHittestMedia);
     }
 
     void showUpwardButton(bool bVisible) const;
