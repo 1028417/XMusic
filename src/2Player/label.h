@@ -33,7 +33,7 @@ signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 public:
-    void setText(const QString &qsText, bool bAutoFit=false)
+    void setText(const QString &qsText, bool bAutoFit=true)
     {
         QLabel::setText(qsText);
         m_bAutoFit = bAutoFit;

@@ -521,7 +521,7 @@ void MainWindow::_relayout()
             }
             else
             {
-                y_SingerImg = cy/2+15;
+                y_SingerImg = cy/2+100;
             }
         }
 
@@ -585,9 +585,8 @@ void MainWindow::_relayout()
     {
         uMargin = 2;
     }
-    ui.frameSingerImg->setGeometry(uMargin, uMargin
-        , ui.wdgSingerImg->width() - uMargin*2
-        , ui.wdgSingerImg->height() - uMargin*2);
+    ui.frameSingerImg->setGeometry(uMargin, uMargin, ui.wdgSingerImg->width() - uMargin*2
+                                                   , ui.wdgSingerImg->height() - uMargin*2);
     ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
     auto pPixmap = ui.labelSingerImg->pixmap();
@@ -595,6 +594,8 @@ void MainWindow::_relayout()
     {
         _showSingerImg(*pPixmap);
     }
+
+    _showAlbumName();
 
     UINT uRowCount = 10;
     if (m_bHScreen)
@@ -633,8 +634,6 @@ void MainWindow::_relayout()
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
     m_PlayingList.setRowCount(uRowCount);
-
-    _showAlbumName();
 }
 
 void MainWindow::_updatePlayPauseButton(bool bPlaying)

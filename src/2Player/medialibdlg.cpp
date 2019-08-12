@@ -345,7 +345,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
     int x_icon = rc.left();
     if (E_ItemStyle::IS_Normal == eStyle)
     {
-        x_icon = rc.width()/2-sz_icon;
+        x_icon += rc.width()/2-sz_icon;
     }
 
     QRect rcSrc = pixmap.rect();
@@ -373,7 +373,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
                             , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 
-    if (E_ItemStyle::IS_Normal != eStyle)
+    if (eStyle != E_ItemStyle::IS_Normal)
     {
         painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
 
