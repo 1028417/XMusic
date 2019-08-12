@@ -314,17 +314,16 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rc, const tagLi
 void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewItem& item, QPixmap& pixmap
                                , const wstring& strText, E_ItemStyle eStyle, UINT uIconSize)
 {
+    if (item.bSelect)
+    {
+        painter.fillRect(rc, QColor(255,255,255,10));
+    }
+
     if (item.bFlash)
     {
         QColor crText = m_crText;
         crText.setAlpha(crText.alpha()*60/100);
         painter.setPen(crText);
-    }
-    else if (item.bSelect)
-    {
-        QFont font = painter.font();
-        font.setBold(true);
-        painter.setFont(font);
     }
 
     UINT sz_icon = rc.height();
@@ -372,7 +371,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
 
     if (E_ItemStyle::IS_Normal != eStyle)
     {
-        painter.fillRect(rc.left(), y_icon+sz_icon+10, rc.width(), 1, QColor(255,255,255,128));
+        painter.fillRect(rc.left(), y_icon+sz_icon, rc.width(), 1, QColor(255,255,255,128));
 
         if (E_ItemStyle::IS_RightTip == eStyle)
         {

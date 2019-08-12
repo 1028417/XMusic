@@ -101,9 +101,9 @@ private slots:
     void slot_buttonClicked(CButton*);
 
 public:
-    void showRoot()
+    void show()
     {
-        show();
+        CDialog<>::show();
         m_MedialibView.showRoot();
     }
 
@@ -111,7 +111,7 @@ public:
     {
         if (MediaRes.IsDir())
         {
-            show();
+            CDialog<>::show();
             m_MedialibView.showMediaRes(MediaRes);
         }
         else
@@ -119,7 +119,7 @@ public:
             auto parent = MediaRes.parent();
             if (parent)
             {
-                show();
+                CDialog<>::show();
                 m_MedialibView.showMediaRes(*parent, &MediaRes);
             }
         }
@@ -127,7 +127,7 @@ public:
 
     void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestMedia=NULL)
     {
-        show();
+        CDialog<>::show();
         m_MedialibView.showMediaSet(MediaSet, pHittestMedia);
     }
 
