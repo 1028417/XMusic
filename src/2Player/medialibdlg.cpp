@@ -29,12 +29,12 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 void CMedialibDlg::_relayout(int cx, int cy)
 {
     cauto& rcReturn = ui.btnReturn->geometry();
+    int y_margin = rcReturn.top();
 
-    ui.btnUpward->setGeometry(cx-rcReturn.right(), rcReturn.top(), rcReturn.width(), rcReturn.height());
+    ui.btnUpward->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
 
-    int y_MedialibView = rcReturn.bottom() + rcReturn.top();
-#define __margin 35
-    m_MedialibView.setGeometry(__margin, y_MedialibView, cx-__margin*2, cy-__margin-y_MedialibView);
+    int y_MedialibView = rcReturn.bottom() + y_margin;
+    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_margin-y_MedialibView);
 }
 
 void CMedialibDlg::slot_buttonClicked(CButton* button)
@@ -317,9 +317,8 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
     if (item.bSelect)
     {
         QColor crBkg = m_medialibDlg.bkgColor();
-        crBkg.setRed(crBkg.red()-5);
+        crBkg.setRed(crBkg.red()-10);
         crBkg.setGreen(crBkg.green()-5);
-        crBkg.setBlue(crBkg.blue()-5);
         painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, crBkg);
     }
 
@@ -329,6 +328,10 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
         crText.setAlpha(crText.alpha()*60/100);
         painter.setPen(crText);
     }
+
+    int x_margin = 35;
+    rc.setLeft(rc.left()+x_margin);
+    rc.setRight(rc.right()-x_margin);
 
     UINT sz_icon = rc.height();
     if (uIconSize > 0 && uIconSize < sz_icon)
@@ -340,14 +343,17 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
         sz_icon = sz_icon *2/3;
     }
 
-    int y_icon = rc.center().y()-sz_icon/2;
-
-    int x_icon = rc.left();
+    int x_icon = 0;
     if (E_ItemStyle::IS_Normal == eStyle)
     {
-        x_icon += rc.width()/2-sz_icon;
+        x_icon = rc.center().x()-sz_icon;
+    }
+    else
+    {
+        x_icon = rc.left();
     }
 
+    int y_icon = rc.center().y()-sz_icon/2;
     QRect rcSrc = pixmap.rect();
     float fHWRate = 1;
     int height = rcSrc.height();
