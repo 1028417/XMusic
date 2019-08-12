@@ -281,6 +281,11 @@ public:
 private:
 	bool _init();
 
+	inline void _initRootMediaRes()
+	{
+		m_RootMediaRes.init(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().vecAttachDir);
+	}
+
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
 
 	void _clear();
