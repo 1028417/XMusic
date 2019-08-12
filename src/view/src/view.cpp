@@ -376,7 +376,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 
 			for (auto& pr : mapMediaList)
 			{
-				auto& strDstDir = ExportOption.strExportPath + __wcBackSlant + pr.first->GetExportName();
+				auto& strDstDir = ExportOption.strExportPath + __wcFSSlant + pr.first->GetExportName();
 				ExportOption.plMedias.add(strDstDir, pr.second);
 			}
 		}

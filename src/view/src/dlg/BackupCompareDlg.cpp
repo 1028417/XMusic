@@ -126,7 +126,7 @@ void CCompareResultPage::fillModifyedMedia(const SArray<tagModifyedMedia>& arrMo
 		wstring strOldPath = m_wndList.GetItemText(uItem, 1).TrimLeft();
 		wstring strNewFile = m_wndList.GetItemText(uItem, 2).TrimLeft();
 
-		return fsutil::GetParentDir(strOldPath) + __wcBackSlant + strNewFile;
+		return fsutil::GetParentDir(strOldPath) + __wcFSSlant + strNewFile;
 	};
 }
 

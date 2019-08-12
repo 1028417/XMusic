@@ -325,7 +325,7 @@ void CMediaResPanel::_showPath(CMediaRes *pRootMediaRes, CMediaRes *pMediaRes, C
 		size_t uMaxTabTitle = __MaxTabTitle;
 		if (!m_bShowRelatedSinger)
 		{
-			strTitle = __wcBackSlant;
+			strTitle = __wcFSSlant;
 			uMaxTabTitle -= 5;
 		}
 		

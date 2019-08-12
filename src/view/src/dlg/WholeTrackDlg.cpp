@@ -221,7 +221,7 @@ void CWholeTrackDlg::OnBnClickedBtnExplore()
 			wstring strCueFile =  m_wndList.GetItemText(iItem, 0);
 			wsutil::trim(strCueFile);
 
-			wstring strCueFilePath = m_view.getRootMediaRes().toAbsPath(strDir, true) + __wcBackSlant + strCueFile;
+			wstring strCueFilePath = m_view.getRootMediaRes().toAbsPath(strDir, true) + __wcFSSlant + strCueFile;
 			winfsutil::exploreFile(strCueFilePath);
 		}
 	});
