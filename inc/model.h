@@ -89,6 +89,8 @@ using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 class IModel
 {
 public:
+	virtual bool dbstatus() const = 0;
+
 	virtual CRootMediaRes& getRootMediaRes() = 0;
 	virtual CMediaSet& getRootMediaSet() = 0;
 	
@@ -165,10 +167,10 @@ public:
 
 private:
 	IModelObserver& m_ModelObserver;
-
+	
 	CSQLiteDB m_db;
 	CDao m_dao;
-
+	
 	COptionMgr m_OptionMgr;
 
 	CDataMgr m_DataMgr;
@@ -187,6 +189,13 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
+	bool dbstatus() const override
+	{
+		return m_db.GetStatus();
+	}
+
+	wstring db() const;
+
 	CRootMediaRes& getRootMediaRes() override
 	{
 		return m_RootMediaRes;

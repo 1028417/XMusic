@@ -85,8 +85,16 @@ public:
 	{
 		return m_Option;
 	}
+	const tagOption& getOption() const
+	{
+		return m_Option;
+	}
 
 	tagPlaySpiritOption& getPlaySpiritOption()
+	{
+		return m_Option.PlaySpiritOption;
+	}
+	const tagPlaySpiritOption& getPlaySpiritOption() const
 	{
 		return m_Option.PlaySpiritOption;
 	}
@@ -95,8 +103,16 @@ public:
 	{
 		return m_Option.AlarmOption;
 	}
+	const tagAlarmOption& getAlarmOption() const
+	{
+		return m_Option.AlarmOption;
+	}
 
 	tagTimerOperateOpt& getTimerOption()
+	{
+		return m_Option.TimerOption;
+	}
+	const tagTimerOperateOpt& getTimerOption() const
 	{
 		return m_Option.TimerOption;
 	}

@@ -5,13 +5,16 @@ using CB_BackupCompare = function<void(const tagCompareBackupResult&)>;
 class __ModelExt CBackupMgr
 {
 public:
-	CBackupMgr(CDao& dao)
+	CBackupMgr(CDao& dao, class CModel& model)
 		: m_dao(dao)
+		, m_model(model)
 	{
 	}
 
 private:
 	CDao& m_dao;
+
+	class CModel& m_model;
 	
 	wstring m_strBackupDir;
 

@@ -174,7 +174,7 @@ public:
     }
 };
 
-#ifndef __ANDROID__
+#if !__android
 class __UtilExt CWinEvent
 {
 public:
@@ -249,7 +249,7 @@ public:
 	}
 
 private:
-#ifdef _MSC_VER
+#if __winvc
 	volatile char m_lockFlag = 0;
 
 #pragma intrinsic(_InterlockedCompareExchange8, _InterlockedExchange8)

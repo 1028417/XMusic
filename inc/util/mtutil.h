@@ -2,7 +2,7 @@
 
 #include "util.h"
 
-#ifndef __ANDROID__
+#if !__android
 #include <Windows.h>
 #endif
 
@@ -12,7 +12,7 @@
 
 class __UtilExt mtutil
 {
-#ifndef __ANDROID__
+#if !__android
 public:
 	static bool apcWakeup(HANDLE hThread, const fn_voidvoid& fn = NULL)
 	{

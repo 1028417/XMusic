@@ -1,7 +1,7 @@
 
 #pragma once
 
-#ifdef __ANDROID__
+#if __android
 #define __DefEOL E_EOLFlag::eol_n
 #else
 #define __DefEOL E_EOLFlag::eol_rn
@@ -92,7 +92,7 @@ public:
             return *this;
     }
 
-#ifndef _MSC_VER
+#if !__winvc
     size_t write(const QString& qstr) const
     {
         return write(qstr.toStdWString());
@@ -269,26 +269,26 @@ public:
 	}
 };
 
-#ifdef _MSC_VER
+/*#if __winvc
 #define __DefUTF8BomOpt false
 #else
 #define __DefUTF8BomOpt false
-#endif
+#endif*/
 
 class __UtilExt CUTF8Writer : public CTxtWriter
 {
 public:
-	CUTF8Writer(bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8Writer(bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8Writer(const wstring& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8Writer(const wstring& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8Writer(const string& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8Writer(const string& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
 	{
 	}

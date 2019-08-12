@@ -63,12 +63,19 @@ public:
 private:
 	void *m_hDB = NULL;
 
+	wstring m_strFile;
+
     int m_nRetCode = 0;
 	string m_strError;
 	
 	bool m_bInTrans = false;
 
 public:
+	const wstring& file() const
+	{
+		return m_strFile;
+	}
+
     int GetErrCode() const
     {
         return m_nRetCode;

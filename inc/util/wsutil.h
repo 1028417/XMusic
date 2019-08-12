@@ -3,16 +3,12 @@
 
 #include <string>
 
-#ifdef __ANDROID__
-#define to_string(x) QString::number(x).toStdString()
-#define to_wstring(x) QString::number(x).toStdWString()
-#endif
-
-#ifndef _MSC_VER
+#if !__winvc
 #include <QString>
 
-#ifndef QT_NO_DEBUG
-#define _DEBUG
+#if __android
+#define to_string(x) QString::number(x).toStdString()
+#define to_wstring(x) QString::number(x).toStdWString()
 #endif
 #endif
 
@@ -60,7 +56,7 @@ public:
 	static string toStr(const wstring& str);
 	static string toStr(const wchar_t *pStr);
 
-#ifndef _MSC_VER
+#if !__winvc
     static QString toQStr(const wstring& str)
     {
         return QString::fromStdWString(str);
@@ -178,7 +174,7 @@ public:
         return m_str.c_str();
     }
 
-#ifndef _MSC_VER
+#if !__winvc
     operator QString() const
     {
         return wsutil::toQStr(m_str);

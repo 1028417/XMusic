@@ -1,7 +1,7 @@
 
 #pragma once
 
-#ifdef __ANDROID__
+#if __android
 #define _time32 time
 #endif
 
@@ -33,7 +33,7 @@ public:
 	static bool timeToTM(time32_t tTime, tagTM& tm);
 	static wstring formatTime(const wstring& strFormat, time32_t tTime = -1);
 
-#ifndef __ANDROID__
+#if !__android
 	static bool time64ToTM(time64_t tTime, tagTM& tm);
 	static wstring formatTime64(const wstring& strFormat, time64_t tTime = -1);
 #endif

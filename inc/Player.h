@@ -2,7 +2,7 @@
 
 #include "util.h"
 
-#ifdef _MSC_VER
+#if __winvc
 #pragma warning(disable: 4251)
 #endif
 
@@ -125,7 +125,7 @@ public:
 
 		m_bExist = false;
 
-#ifdef __ANDROID__
+#if __android
 		m_pf = fopen(wsutil::toStr(m_strFile).c_str(), "rb");
 #else
 		(void)_wfopen_s(&m_pf, m_strFile.c_str(), L"rb");

@@ -2,22 +2,41 @@
 #pragma once
 
 #ifdef _MSC_VER
+	#define __winvc true
+	#define __winqt false
+	#define __android false
+
+#else
+	#ifdef __ANDROID__
+		#define __winvc false
+		#define __winqt false
+		#define __android true
+	#else
+		#define __winvc false
+		#define __winqt true
+		#define __android false
+	#endif
+#endif
+
+#if __winvc
+#pragma warning(disable: 4251)
+#pragma warning(disable: 4275)
+
 #include <stddef.h>
 #include <stdint.h>
+
 #else
 #include <sys/types.h>
 #include <unistd.h>
+
+#ifndef QT_NO_DEBUG
+#define _DEBUG
+#endif
 #endif
 
-#ifdef _MSC_VER
-#pragma warning(disable: 4251)
-#pragma warning(disable: 4275)
-#endif
-
-#ifdef __ANDROID__
+#if __android
 	#define __dllexport
 	#define __dllimport
-
 #else
 	#define __dllexport __declspec(dllexport)
 	#define __dllimport __declspec(dllimport)
@@ -42,7 +61,6 @@ using BOOL = int;
 
 #define TRUE 1
 #define FALSE 0
-
 #endif
 
 #ifndef MIN
@@ -113,7 +131,7 @@ using namespace NS_SSTL;
 
 #include "SQLiteDB.h"
 
-#ifndef __ANDROID__
+#if !__android
 #include "winfsutil.h"
 
 #include "fsdlg.h"

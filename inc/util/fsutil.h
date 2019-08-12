@@ -3,7 +3,7 @@
 
 #define MAX_PATH 260
 
-#ifndef _MSC_VER
+#if !__winvc
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
@@ -13,7 +13,7 @@
 #include <sys/utime.h>
 #include <sys/stat.h>
 
-#ifdef __ANDROID__
+#if __android
 using tagFileStat = struct stat;
 using tagFileStat32 = struct stat;
 using tagFileStat32_64 = struct stat;
@@ -126,7 +126,7 @@ public:
 
     static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
 
-#ifndef __ANDROID__
+#if !__android
 	static wstring getModuleDir(wchar_t *pszModuleName = NULL);
 #endif
 
@@ -184,7 +184,7 @@ public:
 	void open(const wstring& strFile)
 	{
 		ifstream::open(
-#ifdef _MSC_VER
+#if __winvc
 			strFile
 #else
 			wsutil::toStr(strFile)
@@ -213,7 +213,7 @@ public:
         auto mode = bTrunc ? ios_base::trunc | ios_base::binary : ios_base::binary;
 
 		ofstream::open(
-#ifdef _MSC_VER
+#if __winvc
 			strFile
 #else
 			wsutil::toStr(strFile)
