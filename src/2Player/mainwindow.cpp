@@ -201,7 +201,6 @@ void MainWindow::show()
 
     fsutil::findFile(m_strHBkgDir, [&](const tagFileInfo& fileInfo) {
         m_lstHBkg.push_back(fileInfo.m_strName);
-        return true;
     });
 
     if (!fsutil::existDir(m_strVBkgDir))
@@ -214,7 +213,6 @@ void MainWindow::show()
 
     fsutil::findFile(m_strVBkgDir, [&](const tagFileInfo& fileInfo) {
         m_lstVBkg.push_back(fileInfo.m_strName);
-        return true;
     });
 
     auto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;

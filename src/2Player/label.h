@@ -70,7 +70,7 @@ public:
     }
 
 private:
-    void _handleMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
+    void _onMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
     {
         if (E_MouseEventType::MET_Click == type)
         {

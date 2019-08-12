@@ -28,9 +28,8 @@ void findSkb(list<wstring>& lstSkbName)
 {
 	list<WIN32_FIND_DATAW> lstFindData;
 
-	fsutil::findFile(__PlaySpiritSkinDir, [&](const tagFileInfo& FileInfo) {
+	(void)fsutil::findFile(__PlaySpiritSkinDir, [&](const tagFileInfo& FileInfo) {
 		lstSkbName.push_back(fsutil::getFileTitle(FileInfo.m_strName));
-		return true;
 	}, fsutil::E_FindFindFilter::FFP_ByExt, L"skb");
 }
 

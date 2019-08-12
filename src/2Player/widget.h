@@ -100,17 +100,23 @@ public:
     }
 
 private:
-    void paintEvent(QPaintEvent *pe);
+    void paintEvent(QPaintEvent *pe) override;
 
-    void handleMouseEvent(E_MouseEventType, QMouseEvent&);
-    virtual void _handleMouseEvent(E_MouseEventType, QMouseEvent&) {}
+    void _handleTouchMove(const QPoint& pt);
 
-private:
+    void _handleMouseEvent(E_MouseEventType, QMouseEvent&);
+    virtual void _onMouseEvent(E_MouseEventType, QMouseEvent&) {}
+
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
 
     virtual void _onTouchBegin(const QPointF&) {}
-    virtual void _onTouchMove(int dy) {(void)dy;}
+    virtual void _onTouchMove(int dx, int dy)
+    {
+        (void)dx;
+        (void)dy;
+    }
+
     virtual void _onTouchEnd() {}
 
     virtual bool _onGesture(QGesture&) {return false;}

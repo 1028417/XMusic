@@ -54,7 +54,7 @@ void CListView::flashItem(UINT uItem, UINT uMSDelay)
     });
 }
 
-void CListView::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
+void CListView::_onMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 {
     if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
     {
@@ -74,8 +74,10 @@ void CListView::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
     }
 }
 
-void CListView::_onTouchMove(int dy)
+void CListView::_onTouchMove(int dx, int dy)
 {
+    (void)dx;
+
     if (0 == m_uRowHeight)
     {
         return;
