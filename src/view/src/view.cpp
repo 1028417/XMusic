@@ -88,19 +88,20 @@ bool __view::init()
 
 void __view::initView()
 {
-	m_PlayingPage.RefreshList();
+	if (m_SingerPage)
+	{
+		m_SingerPage.RefreshTree();
+	}
 
 	if (m_PlaylistPage)
 	{
 		m_PlaylistPage.RefreshList();
 	}
 
-	if (m_SingerPage)
-	{
-		m_SingerPage.RefreshTree();
-	}
+	m_PlayingPage.RefreshList();
+	//(void)m_PlayingPage.Active();
 
-	m_MediaResPage.Active();
+	//m_MediaResPage.Active();
 }
 
 void __view::clearView()
@@ -129,7 +130,9 @@ void __view::clearView()
 	}
 
 	m_PlayingPage.RefreshList();
-	(void)m_PlayingPage.Active();
+	//(void)m_PlayingPage.Active();
+
+	//m_MediaResPage.Active();
 }
 
 void __view::quit()
