@@ -354,44 +354,6 @@ namespace NS_SSTL
 
 			return false;
 		}
-
-	private:
-		template <class T = __ContainerType>
-		class CAdaptor
-		{
-		public:
-			CAdaptor(T& data)
-				: m_data(data)
-			{
-			}
-
-		private:
-			T& m_data;
-
-		public:
-			template <typename CB, typename = checkCBBool_t<CB, __DataRef, size_t>>
-			void forEach(const CB& cb)
-			{
-				size_t idx = 0;
-				for (auto& data : m_data)
-				{
-					if (!cb(data, idx++))
-					{
-						break;
-					}
-				}
-			}
-		};
-
-		CAdaptor<> m_adaptor = CAdaptor<>(m_data);
-		inline CAdaptor<>& adaptor()
-		{
-			return m_adaptor;
-		}
-		inline CAdaptor<const __ContainerType>& adaptor() const
-		{
-			return (CAdaptor<const __ContainerType>&)m_adaptor;
-		}
 	};
 }
 

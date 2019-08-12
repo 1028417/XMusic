@@ -139,9 +139,29 @@ public:
 		, FFP_ByPrefix
 		, FFP_ByExt
 	};
+
+	template <typename CB, typename = checkCBVoid_t<CB, const tagFileInfo&>>
+	static bool findFile(const wstring& strDir, const CB& cb
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wstring& strFilter = L"")
+	{
+		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
+			cb(fileInfo);
+			return true;
+		}, eFilter, strFilter);
+	}
+
+	template <typename CB, typename = checkCBBool_t<CB, const tagFileInfo&>, typename=void>
+	static bool findFile(const wstring& strDir, const CB& cb
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wstring& strFilter = L"")
+	{
+		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
+            return cb(fileInfo);
+		}, eFilter, strFilter);
+	}
+
+private:
     using CB_FindFile = const function<bool(const tagFileInfo&)>&;
-    static bool findFile(const wstring& strDir, CB_FindFile cb
-		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wstring& strFilter = L"");
+    static bool _findFile(const wstring& strDir, CB_FindFile cb, E_FindFindFilter eFilter, const wstring& strFilter);
 };
 
 #include <fstream>

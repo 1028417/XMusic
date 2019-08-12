@@ -101,7 +101,7 @@ public:
 		return m_Option.TimerOption;
 	}
 
-	bool init();
+	void init();
 
 	wstring checkAlarm();
 
