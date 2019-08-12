@@ -67,7 +67,6 @@ bool CController::start()
 #else
     g_threadPlayCtrl = thread([&, fnTryPlay]() {
         auto& PlayMgr = m_model.getPlayMgr();
-        PlayMgr.getPlayer().SetVolume(100);
 
         fnTryPlay();
 

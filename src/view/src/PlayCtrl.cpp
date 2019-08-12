@@ -28,7 +28,7 @@ bool CPlayCtrl::init()
 	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top);
 
 	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.iPosX
-		, PlaySpiritOption.iPosY, strSkinPath, PlaySpiritOption.iVolume), false);
+		, PlaySpiritOption.iPosY, strSkinPath, PlaySpiritOption.uVolume), false);
 
 	CRect rcPlaySpirit;
 	::GetWindowRect(m_PlaySpirit.m_hWndPlaySpirit, &rcPlaySpirit);
@@ -162,7 +162,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 		break;
 	case ST_PlaySpiritButton::PSB_Volume:
 		player().SetVolume(para);
-		m_view.getOptionMgr().getPlaySpiritOption().iVolume = para;
+		m_view.getOptionMgr().getPlaySpiritOption().uVolume = (UINT)para;
 
 		break;
 	case ST_PlaySpiritButton::PSB_Mute:
@@ -172,7 +172,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 		}
 		else
 		{
-			player().SetVolume(m_view.getOptionMgr().getPlaySpiritOption().iVolume);
+			player().SetVolume(m_view.getOptionMgr().getPlaySpiritOption().uVolume);
 		}
 
 		break;
@@ -184,14 +184,17 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 
 void CPlayCtrl::setVolume(int offset)
 {
-	auto& iVolume = m_view.getOptionMgr().getPlaySpiritOption().iVolume;
-	iVolume += offset;
-	iVolume = MAX(iVolume, 0);
-	iVolume = MIN(iVolume, 100);
+	UINT& uVolume = m_view.getOptionMgr().getPlaySpiritOption().uVolume;
 
-	player().SetVolume((UINT)iVolume);
+	int nVolume = uVolume;
+	nVolume += offset;
+	nVolume = MAX(nVolume, 0);
+	nVolume = MIN(nVolume, 100);
 	
-	m_PlaySpirit->PutVolum(iVolume);
+	uVolume = (UINT)nVolume
+	player().SetVolume(uVolume);
+	
+	m_PlaySpirit->PutVolum(uVolume);
 }
 
 void CPlayCtrl::seek(UINT uPos)
@@ -206,7 +209,7 @@ void CPlayCtrl::close()
 	if (m_PlaySpirit)
 	{
 		tagPlaySpiritOption& PlaySpiritOption = m_view.getOptionMgr().getPlaySpiritOption();
-		PlaySpiritOption.iVolume = m_PlaySpirit->GetVolum();
+		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
 
 		CRect rcPos;
 		(void)::GetWindowRect(m_PlaySpirit.m_hWndPlaySpirit, rcPos);
