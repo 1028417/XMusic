@@ -57,9 +57,13 @@ struct tagFileInfo
 	time64_t m_tModifyTime = 0;
 };
 
+#if __android
+#define __wcFSSlant fsutil::wcSlant
+#else
+#define __wcFSSlant fsutil::wcBackSlant
+#endif
+
 #define __wcDot fsutil::wcDot
-#define __wcBackSlant fsutil::wcBackSlant
-#define __wcSlant fsutil::wcSlant
 
 class __UtilExt fsutil
 {
