@@ -137,8 +137,8 @@ void CListView::_onPaint(QPainter& painter, const QRect&)
         tagListViewItem item;
         item.uItem = uItem;
         item.uRow = uRowIdx;
-        item.bSelect = uItem == m_nSelectItem;
-        item.bFlash = uItem==m_nFlashItem;
+        item.bSelect = (int)uItem == m_nSelectItem;
+        item.bFlash = (int)uItem == m_nFlashItem;
         _onPaintItem(painter, rc, item);
 
         y += m_uRowHeight;
