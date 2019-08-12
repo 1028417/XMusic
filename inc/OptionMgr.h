@@ -5,17 +5,17 @@ struct tagPlaySpiritOption
 {
 	wstring strSkinName;
 
-	int iPosX = 500;
-	int iPosY = 500;
+	int iPosX = 0;
+	int iPosY = 0;
 
-    int uVolume = 100;
+    UINT uVolume = 100;
 };
 
 struct tagAlarmOption
 {
 	tagAlarmOption()
 	{
-		tmutil::getCurrentTime(nHour, nMinute);
+		//tmutil::getCurrentTime(nHour, nMinute);
 	}
 
 	int nHour = 0;
@@ -38,7 +38,7 @@ struct tagTimerOperateOpt
 	{
 		eTimerOperate = TO_Null;
 
-		tmutil::getCurrentTime(nHour, nMinute);
+		//tmutil::getCurrentTime(nHour, nMinute);
 	}
 
 	E_TimerOperate eTimerOperate;
