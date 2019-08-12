@@ -217,7 +217,7 @@ void MainWindow::show()
         return true;
     });
 
-    auto& strHBkg = m_view.getDataMgr().getOption().strHBkg;
+    auto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;
     if (!strHBkg.empty())
     {
         if (!m_HBkgPixmap.load(m_strHBkgDir + strHBkg))
@@ -225,7 +225,7 @@ void MainWindow::show()
             strHBkg.clear();
         }
     }
-    auto& strVBkg = m_view.getDataMgr().getOption().strVBkg;
+    auto& strVBkg = m_view.getOptionMgr().getOption().strVBkg;
     if (!strVBkg.empty())
     {
         if (m_VBkgPixmap.load(m_strVBkgDir + strVBkg))
@@ -241,7 +241,7 @@ void MainWindow::show()
     m_view.setFont(ui.labelPlayingfile, 1.5);
     m_view.setFont(ui.labelDuration, -2);
 
-    if (m_view.getDataMgr().getOption().bRandomPlay)
+    if (m_view.getOptionMgr().getOption().bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -907,7 +907,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = m_view.getDataMgr().getOption().bRandomPlay;
+        auto& bRandomPlay = m_view.getOptionMgr().getOption().bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);
@@ -917,8 +917,8 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         cauto& strBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
         const list<wstring>& lstBkg = m_bHScreen?m_lstHBkg:m_lstVBkg;
-        auto& strCurrBkg = m_bHScreen? m_view.getDataMgr().getOption().strHBkg
-                                     : m_view.getDataMgr().getOption().strVBkg;
+        auto& strCurrBkg = m_bHScreen? m_view.getOptionMgr().getOption().strHBkg
+                                     : m_view.getOptionMgr().getOption().strVBkg;
         QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
 
         for (cauto& strBkg : lstBkg)

@@ -57,6 +57,11 @@ public:
         return m_model;
     }
 
+    COptionMgr& getOptionMgr() const
+    {
+        return m_model.getOptionMgr();
+    }
+
     CDataMgr& getDataMgr() const
     {
         return m_model.getDataMgr();

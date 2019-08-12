@@ -17,7 +17,7 @@ bool CController::start()
 {
 #ifdef _MSC_VER
 	(void)wintimer::setTimer(60000, [&]() {
-		wstring strAlarmmedia = m_model.getDataMgr().checkAlarm();
+		wstring strAlarmmedia = m_model.getOptionMgr().checkAlarm();
 		if (!strAlarmmedia.empty())
 		{
 			strAlarmmedia = m_model.getRootMediaRes().toAbsPath(strAlarmmedia);
@@ -29,7 +29,7 @@ bool CController::start()
 			}
 		}
 
-		E_TimerOperate eTimerOperate = m_model.getDataMgr().checkTimerOperate();
+		E_TimerOperate eTimerOperate = m_model.getOptionMgr().checkTimerOperate();
 		if (TO_StopPlay == eTimerOperate)
 		{
 			m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
@@ -225,7 +225,7 @@ CMediaRes* CController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-	auto& vecAttachDir = m_model.getDataMgr().getOption().vecAttachDir;
+	auto& vecAttachDir = m_model.getOptionMgr().getOption().vecAttachDir;
 	bool bExist = false;
 	for (auto& strAttachDir : vecAttachDir)
 	{

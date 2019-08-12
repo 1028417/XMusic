@@ -94,6 +94,11 @@ public:
 	{
 		return m_model.getRootMediaSet();
 	}
+	
+	COptionMgr& getOptionMgr()
+	{
+		return m_model.getOptionMgr();
+	}
 
 	CDataMgr& getDataMgr()
 	{

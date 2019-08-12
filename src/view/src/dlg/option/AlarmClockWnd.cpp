@@ -29,7 +29,7 @@ BOOL CAlarmClockWnd::Create(CWnd* pParentWnd, int x, int y)
 	(void)m_wndMediaResCombo.InsertString(0, L"");
 
 	UINT uIndex = 0;
-	for (auto& strAlarmmedia : m_view.getDataMgr().getAlarmOption().vctAlarmmedia)
+	for (auto& strAlarmmedia : m_view.getOptionMgr().getAlarmOption().vctAlarmmedia)
 	{
 		(void)m_wndMediaResCombo.InsertString(++uIndex, strAlarmmedia.c_str());
 	}
@@ -37,8 +37,8 @@ BOOL CAlarmClockWnd::Create(CWnd* pParentWnd, int x, int y)
 	m_wndMediaResCombo.SetCurSel(0);
 	this->OnCbnSelchangeComboMedia();
 
-	this->SetDlgItemInt(IDC_EDIT_HOUR, m_view.getDataMgr().getAlarmOption().nHour);
-	this->SetDlgItemInt(IDC_EDIT_MINUTE, m_view.getDataMgr().getAlarmOption().nMinute);
+	this->SetDlgItemInt(IDC_EDIT_HOUR, m_view.getOptionMgr().getAlarmOption().nHour);
+	this->SetDlgItemInt(IDC_EDIT_MINUTE, m_view.getOptionMgr().getAlarmOption().nMinute);
 
 
 	(void)this->ShowWindow(SW_SHOW);
@@ -88,7 +88,7 @@ void CAlarmClockWnd::OnDeltaposSpinHour(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-	int& nHour = m_view.getDataMgr().getAlarmOption().nHour;
+	int& nHour = m_view.getOptionMgr().getAlarmOption().nHour;
 	nHour -= pNMUpDown->iDelta;
 
 	if (24 <= nHour)
@@ -108,7 +108,7 @@ void CAlarmClockWnd::OnDeltaposSpinMinute(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-	int& nMinute = m_view.getDataMgr().getAlarmOption().nMinute;
+	int& nMinute = m_view.getOptionMgr().getAlarmOption().nMinute;
 	nMinute -= pNMUpDown->iDelta;
 
 	if (60 <= nMinute)

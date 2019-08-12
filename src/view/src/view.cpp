@@ -72,7 +72,7 @@ bool __view::init()
 	m_MainWnd.show();
 
 	CMainApp::async([&]() {
-		if (!fsutil::existDir(m_model.getDataMgr().getOption().strRootDir))
+		if (!fsutil::existDir(m_model.getOptionMgr().getOption().strRootDir))
 		{
 			CFolderDlgEx FolderDlg;
 			wstring strRootDir = FolderDlg.Show(L"设定根目录", L"根目录不存在，请重新设定");
