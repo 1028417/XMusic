@@ -155,7 +155,7 @@ bool CWidget<TParent>::event(QEvent *ev)
         break;
     case QEvent::Gesture:
     {
-        m_bTouching = false;
+        //m_bTouching = false;
 
         QGestureEvent *ge = (QGestureEvent*)ev;
         for (auto gestureType : m_lstGestureType)

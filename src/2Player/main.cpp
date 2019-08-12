@@ -137,18 +137,6 @@ public:
     {
 #if __android
         m_logWriter << "jniVer: " >> g_jniVer;
-
-        /*cauto& strDBFile(fsutil::workDir() + L"/data.db");
-        if (!fsutil::existFile(strDBFile))
-        {
-            g_logWriter << "copydb: " >> strDBFile;
-
-            if (!fsutil::copyFile(L"assets:/data.db", strDBFile))
-            {
-                g_logWriter.writeln(L"copydb fail");
-                return false;
-            }
-        }*/
 #endif
 
         m_mainWnd.showLogo();
