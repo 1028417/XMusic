@@ -281,7 +281,7 @@ public:
 private:
 	bool _init();
 
-	inline void _initRootMediaRes()
+	inline void _refreshRootMediaRes()
 	{
 		m_RootMediaRes.init(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().vecAttachDir);
 	}
