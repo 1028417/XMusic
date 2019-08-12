@@ -24,16 +24,16 @@ bool CPlayCtrl::init()
 	}
 
 	cauto& rtWorkArea =	CMainApp::getWorkArea(false);
-	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left);
-	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top);
+	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left + 30);
+	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top + 30);
 
 	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.iPosX
 		, PlaySpiritOption.iPosY, strSkinPath, PlaySpiritOption.uVolume), false);
 
 	CRect rcPlaySpirit;
 	::GetWindowRect(m_PlaySpirit.m_hWndPlaySpirit, &rcPlaySpirit);
-	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - rcPlaySpirit.Width());
-	PlaySpiritOption.iPosY = MIN(PlaySpiritOption.iPosY, rtWorkArea.bottom - rcPlaySpirit.Height());
+	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - rcPlaySpirit.Width() - 30);
+	PlaySpiritOption.iPosY = MIN(PlaySpiritOption.iPosY, rtWorkArea.bottom - rcPlaySpirit.Height() - 30);
 	(void)::SetWindowPos(m_PlaySpirit.m_hWndPlaySpirit, NULL, PlaySpiritOption.iPosX, PlaySpiritOption.iPosY
 		, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
@@ -161,7 +161,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 		
 		break;
 	case ST_PlaySpiritButton::PSB_Volume:
-		player().SetVolume(para);
+		player().SetVolume((UINT)para);
 		m_view.getOptionMgr().getPlaySpiritOption().uVolume = (UINT)para;
 
 		break;
@@ -191,7 +191,7 @@ void CPlayCtrl::setVolume(int offset)
 	nVolume = MAX(nVolume, 0);
 	nVolume = MIN(nVolume, 100);
 	
-	uVolume = (UINT)nVolume
+	uVolume = (UINT)nVolume;
 	player().SetVolume(uVolume);
 	
 	m_PlaySpirit->PutVolum(uVolume);
