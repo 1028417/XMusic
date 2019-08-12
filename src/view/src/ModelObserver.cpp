@@ -15,7 +15,7 @@ void CModelObserver::clearView()
 
 void CModelObserver::refreshMedia()
 {
-	m_view.m_PlayingPage.RefreshList();
+	CMediaResPanel::RefreshMediaResPanel();
 
 	if (m_view.m_PlayItemPage)
 	{
@@ -27,7 +27,7 @@ void CModelObserver::refreshMedia()
 		m_view.m_AlbumPage.RefreshAlbum();
 	}
 
-	CMediaResPanel::RefreshMediaResPanel();
+	m_view.m_PlayingPage.RefreshList();
 }
 
 void CModelObserver::refreshPlayingList(int nPlayingItem, bool bSetActive)

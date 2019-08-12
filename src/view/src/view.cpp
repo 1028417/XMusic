@@ -88,6 +88,8 @@ bool __view::init()
 
 void __view::initView()
 {
+	CMediaResPanel::RefreshMediaResPanel();
+
 	if (m_SingerPage)
 	{
 		m_SingerPage.RefreshTree();
