@@ -66,13 +66,13 @@ private:
     UINT getRowCount() override;
     UINT getItemCount() override;
 
-    void _onPaintItem(QPainter&, QRect&, const tagListViewItem&) override;
+    void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
 
-    void _paintMediaResItem(QPainter& painter, QRect& rc, const tagListViewItem&, CMediaRes& MediaRes);
+    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaRes& MediaRes);
 
-    void _paintMediaSetItem(QPainter& painter, QRect& rc, const tagListViewItem&, CMediaSet& MediaSet);
+    void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaSet& MediaSet);
 
-    void _paintItem(QPainter& painter, QRect& rc, const tagListViewItem&, QPixmap& pixmap
+    void _paintItem(CPainter& painter, QRect& rc, const tagListViewItem&, QPixmap& pixmap
             , const wstring& strText, E_ItemStyle eStyle=E_ItemStyle::IS_Normal, UINT uIconSize=0);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);

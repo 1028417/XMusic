@@ -22,17 +22,25 @@ public:
     }
 
 private:
+    bool m_bCutPixmap = false;
+
     bool m_bAutoFit = false;
 
     UINT m_uShadowWidth = 2;
     QColor m_crShadow;
 
-    QRect m_rcText;
+    QRect m_rc;
 
 signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 public:
+    void setPixmap(const QPixmap &pixmap, bool bCut=true)
+    {
+        m_bCutPixmap = bCut;
+        QLabel::setPixmap(pixmap);
+    }
+
     void setText(const QString &qsText, bool bAutoFit=true)
     {
         QLabel::setText(qsText);
@@ -66,20 +74,27 @@ private:
     {
         if (E_MouseEventType::MET_Click == type)
         {
-            if (m_rcText.contains(ev.pos()))
+            if (m_rc.contains(ev.pos()))
             {
                 emit signal_click(this, ev.pos());
             }
         }
     }
 
-    void _onPaint(QPainter& painter, const QRect& rc) override
+    void _onPaint(CPainter& painter, const QRect&) override
     {
-        m_rcText = this->rect();
+        m_rc = this->rect();
+
+        const QPixmap *pPixmap = pixmap();
+        if (pPixmap && !pPixmap->isNull())
+        {
+            painter.drawPixmapEx(m_rc, *pPixmap);
+        }
+
         QString text = this->text();
         if (!text.isEmpty())
         {
-            int cx = m_rcText.right();
+            int cx = m_rc.right();
 
             if (m_bAutoFit)
             {
@@ -119,17 +134,17 @@ private:
                         painter.setPen(crShadow);
                     }
 
-                    painter.drawText(QRectF(uIdx, uIdx, cx, m_rcText.bottom()), alignment, text);
+                    painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
                }
 
                painter.setPen(pen);
             }
 
-            painter.drawText(m_rcText, alignment, text, &m_rcText);
+            painter.drawText(m_rc, alignment, text, &m_rc);
+
+            //return;
         }
-        else
-        {
-            CWidget<QLabel>::_onPaint(painter, rc);
-        }
+
+        //CWidget<QLabel>::_onPaint(painter, rc);
     }
 };

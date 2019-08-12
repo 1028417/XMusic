@@ -13,7 +13,7 @@ public:
     {
     }
 
-    void _onPaint(QPainter& painter, const QRect&) override
+    void _onPaint(CPainter& painter, const QRect&) override
     {
         QRect rect = this->rect();
         painter.fillRect(rect, QBrush(QColor(255,255,255)));

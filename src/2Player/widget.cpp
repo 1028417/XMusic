@@ -6,19 +6,19 @@
 static QPaintEvent *g_pe = NULL;
 
 template <class TParent>
-void CWidget<TParent>::_onPaint(QPainter&, const QRect&)
-{
-    TParent::paintEvent(g_pe);
-}
-
-template <class TParent>
 void CWidget<TParent>::paintEvent(QPaintEvent *pe)
 {
     g_pe = pe;
 
-    QPainter painter(this);
+    CPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     _onPaint(painter, pe->rect());
+}
+
+template <class TParent>
+void CWidget<TParent>::_onPaint(CPainter&, const QRect&)
+{
+    TParent::paintEvent(g_pe);
 }
 
 template <class TParent>

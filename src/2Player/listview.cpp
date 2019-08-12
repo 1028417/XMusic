@@ -94,7 +94,7 @@ void CListView::_onTouchMove(int dy)
     this->update();
 }
 
-void CListView::_onPaint(QPainter& painter, const QRect&)
+void CListView::_onPaint(CPainter& painter, const QRect&)
 {
     m_uRowHeight = 0;
 

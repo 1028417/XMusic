@@ -585,14 +585,13 @@ void MainWindow::_relayout()
     {
         uMargin = 2;
     }
-    ui.frameSingerImg->setGeometry(uMargin, uMargin, ui.wdgSingerImg->width() - uMargin*2
+    ui.labelSingerImg->setGeometry(uMargin, uMargin, ui.wdgSingerImg->width() - uMargin*2
                                                    , ui.wdgSingerImg->height() - uMargin*2);
-    ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
     auto pPixmap = ui.labelSingerImg->pixmap();
     if (NULL != pPixmap && !pPixmap->isNull())
     {
-        _showSingerImg(*pPixmap);
+        ui.labelSingerImg->setPixmap(*pPixmap);
     }
 
     _showAlbumName();
@@ -737,7 +736,6 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
         ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
 
         ui.labelSingerImg->setPixmap(QPixmap());
-        ui.labelSingerImg->setGeometry(ui.wdgSingerImg->rect());
 
         if (m_strSingerName.empty())
         {
@@ -867,7 +865,7 @@ void MainWindow::_playSingerImg(bool bReset)
         QPixmap pixmap;
         if (pixmap.load(wsutil::toQStr(strSingerImg)))
         {
-            _showSingerImg(pixmap);
+            ui.labelSingerImg->setPixmap(pixmap);
         }
 
         uSingerImgIdx++;
@@ -879,24 +877,6 @@ void MainWindow::_playSingerImg(bool bReset)
             _playSingerImg(true);
         }
     }
-}
-
-void MainWindow::_showSingerImg(const QPixmap& pixmap)
-{
-    int cx_target = ui.wdgSingerImg->width();
-    int cy_target = ui.wdgSingerImg->height();
-    float fWHRate = (float)pixmap.width()/pixmap.height();
-    if (fWHRate > (float)cx_target/cy_target)
-    {
-        int width = cy_target*fWHRate;
-        ui.labelSingerImg->setGeometry((cx_target-width)/2, 0, width, cy_target);
-    }
-    else
-    {
-        int height = cx_target/fWHRate;
-        ui.labelSingerImg->setGeometry(0, (cy_target-height)/2, cx_target, height);
-    }
-    ui.labelSingerImg->setPixmap(pixmap);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)

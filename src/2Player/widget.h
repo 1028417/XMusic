@@ -20,6 +20,37 @@ enum class E_MouseEventType
     MET_DblClick
 };
 
+class CPainter : public QPainter
+{
+public:
+    CPainter(QWidget* widget)
+        : QPainter(widget)
+    {
+    }
+
+    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
+    {
+        QRect rcSrc = pixmap.rect();
+        float fHWRate = 1;
+        int height = rcSrc.height();
+        int width = rcSrc.width();
+        if ((float)height/width > fHWRate)
+        {
+            int dy = (height - width*fHWRate)/2;
+            rcSrc.setTop(rcSrc.top()+dy);
+            rcSrc.setBottom(rcSrc.bottom()-dy);
+        }
+        else
+        {
+            int dx = (width - height/fHWRate)/2;
+            rcSrc.setLeft(rcSrc.left()+dx);
+            rcSrc.setRight(rcSrc.right()-dx);
+        }
+
+        this->drawPixmap(rcDst, pixmap, rcSrc);
+    }
+};
+
 template <class TParent=QWidget>
 class CWidget : public TParent
 {
@@ -50,7 +81,7 @@ protected:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    virtual void _onPaint(QPainter&, const QRect& rc);
+    virtual void _onPaint(CPainter&, const QRect& rc);
 
 public:
     void setOpacity(float fValue)

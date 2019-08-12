@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(QPainter& painter, QRect& rc, const tagListViewItem& item)
+void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& item)
 {
     int cy = this->rect().bottom();
 

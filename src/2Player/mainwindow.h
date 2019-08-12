@@ -102,8 +102,6 @@ private:
 
     void _playSingerImg(bool bReset);
 
-    void _showSingerImg(const QPixmap& pixmap);
-
     void _demand(CButton* btnDemand);
 
 private:

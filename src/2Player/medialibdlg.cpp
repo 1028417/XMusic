@@ -180,7 +180,7 @@ UINT CMedialibView::getItemCount()
     }
 }
 
-void CMedialibView::_onPaintItem(QPainter& painter, QRect& rc, const tagListViewItem& item)
+void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& item)
 {
     if (m_pMediaRes)
     {
@@ -233,7 +233,7 @@ void CMedialibView::_onPaintItem(QPainter& painter, QRect& rc, const tagListView
     }
 }
 
-void CMedialibView::_paintMediaResItem(QPainter& painter, QRect& rc, const tagListViewItem& item, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem& item, CMediaRes& MediaRes)
 {
     QPixmap *pPixmap = &m_pixmapFolder;
 
@@ -285,7 +285,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rc, const tagListViewItem& item, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem& item, CMediaSet& MediaSet)
 {
     QPixmap *pPixmap = NULL;
 
@@ -311,7 +311,7 @@ void CMedialibView::_paintMediaSetItem(QPainter& painter, QRect& rc, const tagLi
     _paintItem(painter, rc, item, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
 }
 
-void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewItem& item, QPixmap& pixmap
+void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewItem& item, QPixmap& pixmap
                                , const wstring& strText, E_ItemStyle eStyle, UINT uIconSize)
 {
     if (item.bSelect)
@@ -354,28 +354,12 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
     }
 
     int y_icon = rc.center().y()-sz_icon/2;
-    QRect rcSrc = pixmap.rect();
-    float fHWRate = 1;
-    int height = rcSrc.height();
-    int width = rcSrc.width();
-    if ((float)height/width > fHWRate)
-    {
-        int dy = (height - width*fHWRate)/2;
-        rcSrc.setTop(rcSrc.top()+dy);
-        rcSrc.setBottom(rcSrc.bottom()-dy);
-    }
-    else
-    {
-        int dx = (width - height/fHWRate)/2;
-        rcSrc.setLeft(rcSrc.left()+dx);
-        rcSrc.setRight(rcSrc.right()-dx);
-    }
-
-    painter.drawPixmap(QRect(x_icon, y_icon, sz_icon, sz_icon), pixmap, rcSrc);
+    QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
+    painter.drawPixmapEx(rcDst, pixmap);
 
     rc.setLeft(x_icon+sz_icon + 20);
 
-    QString qsText = painter.fontMetrics().elidedText(wsutil::toQStr(strText)
+    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(strText)
                             , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 

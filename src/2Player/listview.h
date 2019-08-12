@@ -54,8 +54,8 @@ private:
 
     virtual UINT getItemCount() = 0;
 
-    void _onPaint(QPainter& painter, const QRect& rc) override;
-    virtual void _onPaintItem(QPainter&, QRect&, const tagListViewItem&) = 0;
+    void _onPaint(CPainter& painter, const QRect& rc) override;
+    virtual void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) = 0;
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&) override;
     virtual void _handleRowClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
