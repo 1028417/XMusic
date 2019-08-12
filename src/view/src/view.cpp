@@ -86,6 +86,52 @@ bool __view::init()
 	return true;
 }
 
+void __view::initView()
+{
+	m_PlayingPage.RefreshList();
+
+	if (m_PlaylistPage)
+	{
+		m_PlaylistPage.RefreshList();
+	}
+
+	if (m_SingerPage)
+	{
+		m_SingerPage.RefreshTree();
+	}
+
+	m_MediaResPage.Active();
+}
+
+void __view::clearView()
+{
+	m_PlayCtrl.getPlaySpirit()->clear();
+
+	m_PlayItemPage.m_pPlaylist = NULL;
+
+	if (m_PlaylistPage)
+	{
+		m_PlaylistPage.RefreshList();
+	}
+
+	if (m_PlayItemPage)
+	{
+		m_PlayItemPage.ShowPlaylist(NULL, false);
+	}
+
+	if (m_SingerPage)
+	{
+		m_SingerPage.RefreshTree();
+	}
+	if (m_AlbumPage)
+	{
+		m_AlbumPage.ShowSinger(NULL);
+	}
+
+	m_PlayingPage.RefreshList();
+	(void)m_PlayingPage.Active();
+}
+
 void __view::quit()
 {
 	m_PlayCtrl.close();
@@ -694,56 +740,6 @@ bool __view::addSingerImage(CSinger& Singer, const list<wstring>& lstFiles)
 	updateMediaRelated(MediaSetChanged);
 
 	return true;
-}
-
-void __view::clearView()
-{
-	m_PlayCtrl.getPlaySpirit()->clear();
-
-	m_PlayItemPage.m_pPlaylist = NULL;
-
-	if (m_PlaylistPage)
-	{
-		m_PlaylistPage.RefreshList();
-	}
-
-	if (m_PlayItemPage)
-	{
-		m_PlayItemPage.ShowPlaylist(NULL, false);
-	}
-
-	if (m_SingerPage)
-	{
-		m_SingerPage.RefreshTree();
-	}
-	if (m_AlbumPage)
-	{
-		m_AlbumPage.ShowSinger(NULL);
-	}
-
-	m_PlayingPage.RefreshList();
-	(void)m_PlayingPage.Active();
-}
-
-void __view::restoreDB(const wstring& strFile)
-{
-	clearView();
-
-	__Ensure(m_model.restoreDB(strFile));
-
-	if (m_PlaylistPage)
-	{
-		m_PlaylistPage.RefreshList();
-	}
-	
-	if (m_SingerPage)
-	{
-		m_SingerPage.RefreshTree();
-	}
-
-	m_MediaResPage.Active();
-
-	m_PlayingPage.RefreshList();
 }
 
 bool __view::copyMediaTitle(IMedia& media)

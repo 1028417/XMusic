@@ -11,8 +11,11 @@ public:
 private:
 	__view& m_view;
 
-protected:
-	virtual void refreshMedia() override;
+private:
+	void initView() override;
+	void clearView() override;
+
+	void refreshMedia() override;
 
 	void refreshPlayingList(int nPlayingItem = -1, bool bSetActive = false) override;
 

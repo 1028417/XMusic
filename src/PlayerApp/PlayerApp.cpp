@@ -98,7 +98,10 @@ bool CPlayerController::handleCommand(UINT uID)
 		wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
 		if (!strRootDir.empty())
 		{
-			(void)m_model.initRootMediaRes(strRootDir);
+			if (!wsutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
+			{
+				(void)m_model.initRootMediaRes(strRootDir);
+			}
 		}
 	}
 

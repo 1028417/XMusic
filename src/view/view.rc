@@ -68,6 +68,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "播放记录 Ctrl+R",                 ID_PlayRecord
         MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
+        MENUITEM SEPARATOR
         MENUITEM "设置",                          ID_Setting
     END
     POPUP "媒体库"
@@ -987,8 +988,7 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
-
+#endif
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

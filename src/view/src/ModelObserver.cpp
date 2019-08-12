@@ -3,6 +3,16 @@
 
 #include "ModelObserver.h"
 
+void CModelObserver::initView()
+{
+	m_view.initView();
+}
+
+void CModelObserver::clearView()
+{
+	m_view.clearView();
+}
+
 void CModelObserver::refreshMedia()
 {
 	m_view.m_PlayingPage.RefreshList();

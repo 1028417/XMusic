@@ -151,6 +151,9 @@ private:
 public:
 	bool init();
 
+	void initView();
+	void clearView();
+
 	void quit();
 
 	void foregroundMainWnd();
@@ -183,8 +186,4 @@ public:
 	void updateMediaRelated(const tagMediaSetChanged& MediaSetChanged);
 
 	bool copyMediaTitle(IMedia& media);
-
-	void clearView();
-
-	void restoreDB(const wstring& strFile);
 };

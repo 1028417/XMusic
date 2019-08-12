@@ -195,7 +195,7 @@ void CBackupDlg::OnBnClickedRestore()
 
 	this->OnCancel();
 
-	m_view.restoreDB(strTag);
+	m_view.getModel().restoreDB(strTag);
 }
 
 void CBackupDlg::OnBnClickedCompare()
@@ -267,8 +267,6 @@ void CBackupDlg::OnBnClickedBackup()
 void CBackupDlg::OnBnClickedClearAllMedia()
 {
 	__Ensure(CMainApp::showConfirmMsg(L"确认清空所有列表、歌手、专辑？",  this));
-
-	m_view.clearView();
 
 	__Ensure(m_view.getModel().clearData());
 }
