@@ -39,6 +39,10 @@ using UINT = unsigned int;
 
 #ifndef BOOL
 using BOOL = int;
+
+#define TRUE 1
+#define FALSE 0
+
 #endif
 
 #ifndef MIN

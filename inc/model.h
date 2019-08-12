@@ -11,12 +11,11 @@ extern const ITxtWriter& g_logWriter;
 #define __ModelExt __dllimport
 #endif
 
-#define TRUE 1
-#define FALSE 0
-
 #include "MediaDef.h"
 
 #include "Dao.h"
+
+#include "OptionMgr.h"
 
 #include "DataMgr.h"
 
@@ -99,6 +98,7 @@ public:
 	virtual CSingerMgr& getSingerMgr() = 0;
 	virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
+	virtual COptionMgr& getOptionMgr() = 0;
 	virtual CDataMgr& getDataMgr() = 0;
 	virtual CBackupMgr& getBackupMgr() = 0;
 
@@ -169,6 +169,8 @@ private:
 	CSQLiteDB m_db;
 	CDao m_dao;
 
+	COptionMgr m_OptionMgr;
+
 	CDataMgr m_DataMgr;
 
 	CBackupMgr m_BackupMgr;
@@ -217,6 +219,11 @@ public:
 		return m_SingerImgMgr;
 	}
 	
+	COptionMgr& getOptionMgr() override
+	{
+		return m_OptionMgr;
+	}
+
 	CDataMgr& getDataMgr() override
 	{
 		return m_DataMgr;
@@ -262,6 +269,8 @@ public:
 	bool restoreDB(const wstring& strFile) override;
 
 private:
+	bool _init();
+
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
 
 	void _clear();
