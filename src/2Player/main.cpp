@@ -47,10 +47,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     #define __FontSize 15
 #endif
 
-#ifdef __ANDROID__
-#define __FontFile "assets:/msyhl.ttc";
-#else
 #define __FontFile "msyhl.ttc"
+#ifdef __ANDROID__
+#define __FontPath "assets:/" __FontFile
+#else
+#define __FontPath __FontFile
 #endif
 
 static CUTF8Writer m_logWriter;
@@ -96,7 +97,7 @@ public:
             break;
         }*/
 
-        int fontId = QFontDatabase::addApplicationFont(__FontFile);
+        int fontId = QFontDatabase::addApplicationFont(__FontPath);
         g_logWriter << "newFontId: " >> fontId;
         if (-1 != fontId)
         {
