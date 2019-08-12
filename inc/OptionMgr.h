@@ -8,7 +8,7 @@ struct tagPlaySpiritOption
 	int iPosX = 500;
 	int iPosY = 500;
 
-	int iVolume = 50;
+    int uVolume = 100;
 };
 
 struct tagAlarmOption
