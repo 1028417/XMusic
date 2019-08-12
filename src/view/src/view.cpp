@@ -78,7 +78,7 @@ bool __view::init()
 			wstring strRootDir = FolderDlg.Show(L"设定根目录", L"根目录不存在，请重新设定");
 			if (!strRootDir.empty())
 			{
-				(void)m_model.refreshRootMediaRes(strRootDir);
+				(void)m_model.initRootMediaRes(strRootDir);
 			}
 		}
 	});

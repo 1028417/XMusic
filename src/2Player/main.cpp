@@ -132,13 +132,13 @@ private:
 
     class MainWindow m_mainWnd;
 
-private:
-    bool _init()
+public:
+    int run()
     {
 #ifdef __ANDROID__
         m_logWriter << "jniVer: " >> g_jniVer;
 
-        cauto& strDBFile(fsutil::workDir() + L"/data.db");
+        /*cauto& strDBFile(fsutil::workDir() + L"/data.db");
         if (!fsutil::existFile(strDBFile))
         {
             g_logWriter << "copydb: " >> strDBFile;
@@ -148,57 +148,41 @@ private:
                 g_logWriter.writeln(L"copydb fail");
                 return false;
             }
-        }
+        }*/
 #endif
 
-        return true;
-    }
+        m_mainWnd.showLogo();
 
-public:
-    int run()
-    {
-        int nRet = -1;
-        if (_init())
-        {
-            m_logWriter >> "init success";
+        QTimer::singleShot(6000, [&](){
+            if (!m_model.init())
+            {
+                m_logWriter >> "init model fail";
+                this->quit();
+                return;
+            }
+            m_logWriter >> "init model success";
 
-            m_mainWnd.showLogo();
+            m_logWriter >> "start controller";
+            if (!m_ctrl.start())
+            {
+                m_logWriter >> "start controller fail";
+                this->quit();
+                return;
+            }
+            m_logWriter >> "start controller success, app running";
 
-            QTimer::singleShot(6000, [&](){
-                if (!m_model.init())
-                {
-                    m_logWriter >> "init model fail";
-                    this->quit();
-                    return;
-                }
-                m_logWriter >> "init model success";
+            m_mainWnd.show();
+        });
 
-                m_logWriter >> "start controller";
-                if (!m_ctrl.start())
-                {
-                    m_logWriter >> "start controller fail";
-                    this->quit();
-                    return;
-                }
-                m_logWriter >> "start controller success, app running";
+        int nRet = exec();
 
-                m_mainWnd.show();
-            });
+        m_logWriter >> "stop controller";
+        m_ctrl.stop();
 
-            nRet = exec();
+        m_logWriter >> "close model";
+        m_model.close();
 
-            m_logWriter >> "stop controller";
-            m_ctrl.stop();
-
-            m_logWriter >> "close model";
-            m_model.close();
-
-            CPlayer::QuitSDK();
-        }
-        else
-        {
-            m_logWriter >> "init fail";
-        }
+        CPlayer::QuitSDK();
 
         m_logWriter >> "quit";
         m_logWriter.close();

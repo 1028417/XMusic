@@ -60,7 +60,6 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel 
 
 DESTDIR = $$PWD/../../build
 
-    rc.files += ../../bin/data.db
     rc.files += ../../bin/msyhl.ttc
     rc.files += ../../bin/hbkg
     rc.files += ../../bin/vbkg
