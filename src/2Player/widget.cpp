@@ -24,7 +24,7 @@ void CWidget<TParent>::_onPaint(CPainter&, const QRect&)
 template <class TParent>
 void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 {
-#ifndef __ANDROID__
+#if !__android
     if (E_MouseEventType::MET_Press == type)
     {
         if (!m_bTouching)
@@ -47,7 +47,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
     {
         if (m_bMousePressed)
         {
-            _handleTouchMove(ev.pos);
+            _handleTouchMove(ev.x(), ev.y());
         }
     }
 #endif
@@ -56,14 +56,15 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchMove(const QPoint& pt)
+void CWidget<TParent>::_handleTouchMove(int x, int y)
 {
-    int dx = pos.x()-m_ptTouch.x();
-    int dy = pos.y()-m_ptTouch.y();
+    int dx = x-m_ptTouch.x();
+    int dy = y-m_ptTouch.y();
     if (dx != 0 || dy != 0)
     {
         _onTouchMove(dx, dy);
-        m_ptTouch = pos;
+        m_ptTouch.setX(x);
+        m_ptTouch.setY(y);
     }
 }
 
@@ -76,7 +77,7 @@ bool CWidget<TParent>::event(QEvent *ev)
 
     switch (ev->type())
     {
-#ifndef __ANDROID__
+#if !__android
     case QEvent::Enter:
         _onMouseEnter();
 
@@ -146,7 +147,8 @@ bool CWidget<TParent>::event(QEvent *ev)
             cauto& points = ((QTouchEvent*)ev)->touchPoints();
             if (!points.empty())
             {
-                _handleTouchMove(points.at(0).pos());
+                cauto& pos = points.at(0).pos();
+                _handleTouchMove(pos.x(), pos.y());
             }
         }
 

@@ -7,7 +7,7 @@
 
 #include "view.h"
 
-#ifdef __ANDROID__
+#if __android
 //#include <QAndroidJniObject>
 //#include <QAndroidJniEnvironment>
 //#include <QtAndroid>
@@ -48,7 +48,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #endif
 
 #define __FontFile "msyhl.ttc"
-#ifdef __ANDROID__
+#if __android
 #define __FontPath "assets:/" __FontFile
 #else
 #define __FontPath __FontFile
@@ -66,7 +66,7 @@ private:
 public:
     CApplication() : QApplication(argc=0, argv=0)
     {
-#ifdef __ANDROID__
+#if __android
         /*string strSdcardPath
         char *pszSdcardPath = getenv("SECONDARY_STORAGE");
         if (NULL == pszSdcardPath)
@@ -135,7 +135,7 @@ private:
 public:
     int run()
     {
-#ifdef __ANDROID__
+#if __android
         m_logWriter << "jniVer: " >> g_jniVer;
 
         /*cauto& strDBFile(fsutil::workDir() + L"/data.db");

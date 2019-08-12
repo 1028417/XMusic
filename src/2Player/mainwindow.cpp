@@ -105,7 +105,7 @@ void MainWindow::showLogo()
     this->setWindowState(Qt::WindowFullScreen);
 
     double dbTipFontSize = -0.5;
-#ifdef __ANDROID__
+#if __android
     dbTipFontSize -= 1;
 #endif
     m_view.setFont(ui.labelLogoTip, dbTipFontSize, true, true);
@@ -470,7 +470,7 @@ void MainWindow::_relayout()
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int x_btnMore = 20;
-#ifdef __ANDROID__
+#if __android
      ui.btnExit->move(-200,-200);
 
      if (!m_bHScreen)

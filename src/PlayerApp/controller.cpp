@@ -48,7 +48,7 @@ bool CController::start()
 #endif
 	
     auto fnTryPlay = [&]() {
-		if (m_model.getRootMediaRes().GetSubPath())
+		if (m_model.dbstatus() && m_model.getRootMediaRes().GetSubPath())
 		{
 			if (m_model.getPlayMgr().getPlayingItems())
 			{
@@ -112,7 +112,7 @@ bool CController::start()
                 continue;
             }
 
-            if (m_model.getRootMediaRes().GetSubPath())
+            if (m_model.dbstatus() && m_model.getRootMediaRes().GetSubPath())
             {
                 if (PlayMgr.getPlayer().GetDuration() == 0)
                 {

@@ -102,7 +102,7 @@ public:
 private:
     void paintEvent(QPaintEvent *pe) override;
 
-    void _handleTouchMove(const QPoint& pt);
+    void _handleTouchMove(int x, int ye);
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&);
     virtual void _onMouseEvent(E_MouseEventType, QMouseEvent&) {}

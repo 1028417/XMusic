@@ -51,7 +51,7 @@ void CMedialibDlg::slot_buttonClicked(CButton* button)
 
 void CMedialibDlg::showUpwardButton(bool bVisible) const
 {
-#ifdef __ANDROID__
+#if __android
     if (bVisible)
     {
         return;

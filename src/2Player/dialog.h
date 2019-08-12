@@ -59,7 +59,7 @@ protected:
         }
 
             break;
-#ifdef __ANDROID__
+#if __android
         case QEvent::KeyRelease:
             if (_handleReturn())
             {
