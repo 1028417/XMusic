@@ -16,16 +16,32 @@ public:
     {
     }
 
+private:
+    QColor m_crBkg;
+
+public:
     void show()
     {
-        QPalette pe;
-        pe.setColor(QPalette::Background, QColor(180, 220, 255));
-        this->setPalette(pe);
+        setBkgColor(QColor(180, 220, 255));
 
         this->setWindowFlags(Qt::FramelessWindowHint);
         this->setWindowState(Qt::WindowFullScreen);
 
         T::show();
+    }
+
+    void setBkgColor(const QColor& crBkg)
+    {
+        m_crBkg = crBkg;
+
+        QPalette pe = this->palette();
+        pe.setColor(QPalette::Background, m_crBkg);
+        this->setPalette(pe);
+    }
+
+    const QColor& bkgColor() const
+    {
+        return m_crBkg;
     }
 
 protected:
