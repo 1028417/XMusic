@@ -36,6 +36,9 @@ extern const ITxtWriter& g_logWriter;
 class IModelObserver
 {
 public:
+	virtual void initView() {}
+	virtual void clearView() {}
+
 	virtual void refreshMedia() {}
 
 	virtual void refreshPlayingList(int nPlayingItem = -1, bool bSetActive = false) = 0;
@@ -135,7 +138,7 @@ public:
 
 	virtual void close() = 0;
 
-	virtual bool restoreDB(const wstring& strFile) = 0;
+	virtual bool restoreDB(const wstring& strTag) = 0;
 };
 
 class __ModelExt CModel : public IModel
@@ -273,7 +276,7 @@ public:
 
 	void close() override;
 
-	bool restoreDB(const wstring& strFile) override;
+	bool restoreDB(const wstring& strTag) override;
 
 private:
 	bool _init();
