@@ -5,6 +5,8 @@
 
 void CListView::selectItem(UINT uItem)
 {
+    showItem(uItem);
+
     m_nSelectItem = uItem;
     update();
 }

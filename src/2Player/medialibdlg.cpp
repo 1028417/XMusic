@@ -316,7 +316,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
 {
     if (item.bSelect)
     {
-        painter.fillRect(rc, QColor(255,255,255,10));
+        painter.fillRect(rc, QColor(0,0,255,20));
     }
 
     if (item.bFlash)
@@ -371,7 +371,7 @@ void CMedialibView::_paintItem(QPainter& painter, QRect& rc, const tagListViewIt
 
     if (E_ItemStyle::IS_Normal != eStyle)
     {
-        painter.fillRect(rc.left(), y_icon+sz_icon, rc.width(), 1, QColor(255,255,255,128));
+        painter.fillRect(rc.left(), rc.bottom()-1, rc.width(), 1, QColor(255,255,255,128));
 
         if (E_ItemStyle::IS_RightTip == eStyle)
         {
