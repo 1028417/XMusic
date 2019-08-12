@@ -499,7 +499,7 @@ void MainWindow::_relayout()
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
-        int cy_AlbumName = 60;
+        int cy_AlbumName = 80;
         int y_AlbumName = y_Playingfile - cy_AlbumName;
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_AlbumName, cx_progressBar, cy_AlbumName);
@@ -517,7 +517,7 @@ void MainWindow::_relayout()
         {
             if (m_bHScreen)
             {
-                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 60;
+                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 50;
             }
             else
             {

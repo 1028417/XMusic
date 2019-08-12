@@ -28,13 +28,13 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    QRect rcUpward = ui.btnReturn->geometry();
-    rcUpward.moveTo(cx-rcUpward.right(), rcUpward.top());
-    ui.btnUpward->setGeometry(rcUpward);
+    cauto& rcReturn = ui.btnReturn->geometry();
 
+    ui.btnUpward->setGeometry(cx-rcReturn.right(), rcReturn.top(), rcReturn.width(), rcReturn.height());
+
+    int y_MedialibView = rcReturn.bottom() + rcReturn.top();
 #define __margin 35
-    int y_MedialibView = ui.btnReturn->geometry().bottom() + __margin;
-    m_MedialibView.setGeometry(__margin,y_MedialibView,cx-__margin*2,cy-__margin-y_MedialibView);
+    m_MedialibView.setGeometry(__margin, y_MedialibView, cx-__margin*2, cy-__margin-y_MedialibView);
 }
 
 void CMedialibDlg::slot_buttonClicked(CButton* button)
