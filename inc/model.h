@@ -102,7 +102,7 @@ public:
 	virtual CDataMgr& getDataMgr() = 0;
 	virtual CBackupMgr& getBackupMgr() = 0;
 
-	virtual bool refreshRootMediaRes(const wstring& strRootDir) = 0;
+	virtual bool initRootMediaRes(const wstring& strRootDir) = 0;
 	virtual void refreshRootMediaRes() = 0;
 		
 	virtual void attachDir(const wstring& strDir) = 0;
@@ -186,8 +186,6 @@ private:
 
 	CPlayMgr m_PlayMgr;
 
-	bool m_bInited = false;
-
 public:
 	CRootMediaRes& getRootMediaRes() override
 	{
@@ -236,7 +234,7 @@ public:
 
 	bool init();
 
-	bool refreshRootMediaRes(const wstring& strRootDir) override;
+	bool initRootMediaRes(const wstring& strRootDir) override;
 	void refreshRootMediaRes() override;
 
 	void attachDir(const wstring& strDir) override;
