@@ -281,4 +281,6 @@ private:
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
 
 	void _clear();
+
+	void _close();
 };
