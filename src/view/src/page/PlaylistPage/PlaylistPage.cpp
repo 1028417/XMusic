@@ -97,7 +97,10 @@ void CPlaylistPage::RefreshList()
 
 	(void)m_wndList.SetObjects(TD_ListObjectList(m_view.getPlaylistMgr().playlists()));
 	
-	(void)m_wndList.SelectFirstItem();
+	if (m_view.m_PlayItemPage)
+	{
+		(void)m_wndList.SelectFirstItem();
+	}
 }
 
 void CPlaylistPage::fixColumnWidth(int width)
