@@ -19,15 +19,13 @@ struct __MediaLibExt tagMediaInfo
 
 class __MediaLibExt CMedia : public IMedia, public tagMediaInfo, public CListObject
 {
-	//friend class __model;
-
 public:
 	CMedia(CMediaSet *pParent = NULL, int nID = 0, const wstring& strPath = L"", mediatime_t tTime = 0)
 		: IMedia(strPath)
 		, tagMediaInfo(pParent, L"", nID)
 		, m_addTime(tTime)
 	{
-		this->_UpdatePath(strPath);
+		_UpdatePath(strPath);
 	}
 
 	virtual ~CMedia()
@@ -93,8 +91,6 @@ public:
 	wstring GetDurationString() const;
 
 	static wstring GetDurationString(UINT uDuration);
-
-	//void UpdateFileInfo(int iFileSize, int nDuration);
 
 	CMediaSet *GetMediaSet() override
 	{

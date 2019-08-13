@@ -57,20 +57,39 @@ struct tagFileInfo
 	time64_t m_tModifyTime = 0;
 };
 
-#if __android
-#define __wcFSSlant fsutil::wcSlant
-#else
-#define __wcFSSlant fsutil::wcBackSlant
-#endif
 
+#define __wcFSSlant fsutil::wcFSSlant
 #define __wcDot fsutil::wcDot
 
 class __UtilExt fsutil
 {
-public:
-	static const wchar_t wcDot = L'.';
-	static const wchar_t wcBackSlant = L'\\';
+private:
 	static const wchar_t wcSlant = L'/';
+	static const wchar_t wcBackSlant = L'\\';
+
+	inline static bool _checkFSSlant(wchar_t wch)
+	{
+		return wcBackSlant == wch || wcSlant == wch;
+	}
+
+public:
+	static const wchar_t wcFSSlant =
+#if __android
+		wcSlant;
+#else
+		wcBackSlant;
+#endif
+
+	static const wchar_t wcDot = L'.';
+
+	static void transFSSlant(wstring& strPath)
+	{
+#if __android
+		wsutil::replaceChar(strPath, fsutil::wcBackSlant, fsutil::wcSlant);
+#else
+		wsutil::replaceChar(strPath, fsutil::wcSlant, fsutil::wcBackSlant);
+#endif
+	}
 
 	static bool loadBinary(const wstring& strFile, vector<char>& vecData, UINT uReadSize = 0);
 
