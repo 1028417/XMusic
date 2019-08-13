@@ -18,14 +18,14 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     m_view.setTextColor(ui.labelTitle, crText);
     m_view.setFont(ui.labelTitle, 5, false);
 
+    ui.btnUpward->setVisible(false);
+
     m_MedialibView.setTextColor(crText);
     m_view.setFont(&m_MedialibView, 2, false);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 
     connect(ui.btnUpward, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
-
-    ui.btnUpward->setVisible(false);
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)

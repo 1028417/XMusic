@@ -1,5 +1,5 @@
 ﻿
-#ifdef _MSC_VER
+#if __winvc
 #include "stdafx.h"
 #endif
 
@@ -8,14 +8,14 @@
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
-#ifndef _MSC_VER
+#if !__winvc
 thread g_threadPlayCtrl;
 TSignal<tagPlayCtrl> m_sigPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Null));
 #endif
 
 bool CController::start()
 {
-#ifdef _MSC_VER
+#if __winvc
 	(void)wintimer::setTimer(60000, [&]() {
 		wstring strAlarmmedia = m_model.getOptionMgr().checkAlarm();
 		if (!strAlarmmedia.empty())
@@ -61,7 +61,7 @@ bool CController::start()
 		}
     };
 
-#ifdef _MSC_VER
+#if __winvc
 	CMainApp::async(fnTryPlay, 300);
 
 #else
@@ -131,7 +131,7 @@ bool CController::start()
 
 void CController::stop()
 {
-#ifndef _MSC_VER
+#if !__winvc
     if (g_threadPlayCtrl.joinable())
     {
         m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Null));
@@ -142,7 +142,7 @@ void CController::stop()
 
 void CController::callPlayCtrl(const tagPlayCtrl& PlayCtrl)
 {
-#ifndef _MSC_VER
+#if !__winvc
     m_sigPlayCtrl.set(PlayCtrl);
 #endif
 }
