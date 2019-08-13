@@ -63,6 +63,9 @@ public:
     bool handleReturn();
 
 private:
+    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
+    void _getTitle(CMediaSet& MediaSet, WString& strTitle);
+
     UINT getRowCount() override;
     UINT getItemCount() override;
 
@@ -133,11 +136,13 @@ public:
 
     void showUpwardButton(bool bVisible) const;
 
+    void setTitle(const wstring& strTitle) const;
+
 private:
     void _relayout(int cx, int cy) override;
 
     bool _handleReturn() override
     {
         return m_MedialibView.handleReturn();
-    }
+    }    
 };

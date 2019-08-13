@@ -16,8 +16,8 @@
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>40</y>
+     <x>30</x>
+     <y>30</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -41,24 +41,24 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="labelTitle">
+  <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>50</y>
-     <width>251</width>
+     <x>150</x>
+     <y>40</y>
+     <width>3000</width>
      <height>60</height>
     </rect>
    </property>
    <property name="text">
-    <string>媒体库</string>
+    <string/>
    </property>
   </widget>
   <widget class="CButton" name="btnUpward">
    <property name="geometry">
     <rect>
      <x>690</x>
-     <y>40</y>
+     <y>30</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -88,6 +88,11 @@
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

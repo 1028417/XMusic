@@ -63,6 +63,11 @@ void CMedialibDlg::showUpwardButton(bool bVisible) const
     ui.btnUpward->setVisible(bVisible);
 }
 
+void CMedialibDlg::setTitle(const wstring& strTitle) const
+{
+    ui.labelTitle->setText(wsutil::toQStr(strTitle));
+}
+
 CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
     CListView(&medialibDlg)
     , m_view(view)
@@ -99,6 +104,8 @@ void CMedialibView::showRoot()
     this->update();
 
     m_medialibDlg.showUpwardButton(false);
+
+    m_medialibDlg.setTitle(L"");
 }
 
 void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
@@ -125,6 +132,10 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
                 selectItem((UINT)nIdx);
             }
         }
+
+        WString strTitle;
+        _getTitle(MediaRes, strTitle);
+        m_medialibDlg.setTitle(strTitle);
     }
 }
 
@@ -154,6 +165,43 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
             selectItem((UINT)nIdx);
         }
     }
+
+    WString strTitle;
+    _getTitle(MediaSet, strTitle);
+    m_medialibDlg.setTitle(strTitle);
+}
+
+void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
+{
+    if (&MediaRes == &m_RootMediaRes)
+    {
+        strTitle << L"媒体库";
+        return;
+    }
+
+    auto pParent = MediaRes.parent();
+    if (pParent)
+    {
+        _getTitle(*pParent, strTitle);
+    }
+
+    strTitle << __CNDot << MediaRes.GetName();
+}
+
+void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
+{
+    if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
+    {
+        strTitle << MediaSet.m_strName;
+        return;
+    }
+
+    if (MediaSet.m_pParent)
+    {
+        _getTitle(*MediaSet.m_pParent, strTitle);
+    }
+
+    strTitle << __CNDot << MediaSet.m_strName;
 }
 
 UINT CMedialibView::getRowCount()
