@@ -52,7 +52,7 @@ struct tagTimerOperateOpt
 struct tagOption
 {
 	wstring strRootDir;
-	vector<wstring> vecAttachDir;
+    PairList<wstring, E_AttachDirType> plAttachDir;
 
 	UINT uPlayingItem = 0;
 

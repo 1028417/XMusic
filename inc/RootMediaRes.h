@@ -12,6 +12,13 @@ public:
 	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
 };
 
+enum class E_AttachDirType
+{
+    ADT_Internal
+    , ADT_TF
+    , ADT_USB
+};
+
 class __MediaLibExt CRootMediaRes : public CMediaRes
 {
 public:
@@ -26,7 +33,7 @@ public:
 	IMediaObserver& m_MediaObserver;
 
 private:
-	vector<wstring> m_vecAttachDir;
+    PairList<wstring, E_AttachDirType> m_plAttachDir;
 
 	map<wstring, class CAttachDir*> m_mapAttachDir;
 
@@ -36,7 +43,7 @@ private:
     inline class CAttachDir* _getAttachDir(const wstring& strDirName);
 
 public:
-	void init(const wstring& strDir, const vector<wstring>& vecAttachDir);
+    void init(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 
 	wstring toAbsPath(const wstring& strSubPath, bool bDir=false);
 

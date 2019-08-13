@@ -283,9 +283,11 @@ public:
 private:
 	bool _init();
 
+    wstring _scanXMusicDir();
+
 	inline void _refreshRootMediaRes()
 	{
-		m_RootMediaRes.init(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().vecAttachDir);
+        m_RootMediaRes.init(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
