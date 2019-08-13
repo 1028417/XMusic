@@ -36,7 +36,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.btnUpward->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
 
     int y_MedialibView = rcReturn.bottom() + y_margin;
-    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_margin-y_MedialibView);
+    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 }
 
 void CMedialibDlg::slot_buttonClicked(CButton* button)
@@ -331,10 +331,6 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         painter.setPen(crText);
     }
 
-    int x_margin = 35;
-    rc.setLeft(rc.left()+x_margin);
-    rc.setRight(rc.right()-x_margin);
-
     UINT sz_icon = rc.height();
     if (uIconSize > 0 && uIconSize < sz_icon)
     {
@@ -342,24 +338,31 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
     }
     else
     {
-        sz_icon = sz_icon *2/3;
+        sz_icon = sz_icon *65/100;
     }
+
+    int nMargin = (rc.height()-sz_icon)/2;
 
     int x_icon = 0;
     if (E_ItemStyle::IS_Normal == eStyle)
     {
         x_icon = rc.center().x()-sz_icon;
+
+        rc.setLeft(x_icon + sz_icon + nMargin);
     }
     else
     {
-        x_icon = rc.left();
+        x_icon = rc.left() + nMargin;
+
+        rc.setRight(rc.right() - nMargin);
     }
+
+    rc.setLeft(x_icon + sz_icon + nMargin);
 
     int y_icon = rc.center().y()-sz_icon/2;
     QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
     painter.drawPixmapEx(rcDst, pixmap);
 
-    rc.setLeft(x_icon+sz_icon + 20);
 
     QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(strText)
                             , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
