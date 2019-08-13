@@ -4,7 +4,7 @@
 #include "util.h"
 
 #ifdef __MediaLibPrj
-extern const ITxtWriter& g_logWriter;
+extern ITxtWriter& g_logWriter;
 
 #define __MediaLibExt __dllexport
 #else
