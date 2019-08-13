@@ -67,17 +67,18 @@ public:
 
     void flashItem(UINT uItem, UINT uMSDelay=300);
 
+protected:
+    virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
+    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
+
 private:
     virtual UINT getItemCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
     virtual void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) = 0;
 
-    void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
     virtual void _handleRowClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
     virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
-
-    void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
     bool _scroll(int dy);
     void _scrollEx(int dy, UINT uCount);
