@@ -102,7 +102,24 @@ public:
 private:
     void paintEvent(QPaintEvent *pe) override;
 
-    void _handleTouchMove(int x, int ye);
+    class CTouchEvent
+    {
+    public:
+        CTouchEvent(){}
+
+        CTouchEvent(const QMouseEvent& ev)
+            : ulTimestamp(ev.timestamp())
+            , x(ev.pos().x())
+            , y(ev.pos().y())
+        {
+        }
+
+        ulong ulTimestamp = 0;
+        int x = 0;
+        int y = 0;
+    };
+    void _handleTouchEnd(const CTouchEvent& evTouchBegin, const CTouchEvent& evTouchEnd);
+    void _handleTouchMove(int x, int y);
 
     void _handleMouseEvent(E_MouseEventType, QMouseEvent&);
     virtual void _onMouseEvent(E_MouseEventType, QMouseEvent&) {}
@@ -111,13 +128,11 @@ private:
     virtual void _onMouseLeave() {}
 
     virtual void _onTouchBegin(const QPointF&) {}
-    virtual void _onTouchMove(int dx, int dy)
-    {
-        (void)dx;
-        (void)dy;
-    }
+    virtual void _onTouchMove(int dx, int dy) { (void)dx;   (void)dy; }
 
     virtual void _onTouchEnd() {}
+
+    virtual void _onTouchSwipe(ulong dt, int dx, int dy) { (void)dt;   (void)dx;   (void)dy; }
 
     virtual bool _onGesture(QGesture&) {return false;}
 };

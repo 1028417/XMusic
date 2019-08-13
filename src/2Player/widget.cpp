@@ -24,6 +24,8 @@ void CWidget<TParent>::_onPaint(CPainter&, const QRect&)
 template <class TParent>
 void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 {
+    static CTouchEvent evTouchBegin;
+
 #if !__android
     if (E_MouseEventType::MET_Press == type)
     {
@@ -31,7 +33,10 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
         {
             m_bMousePressed = true;
             m_ptTouch = ev.pos();
+
             _onTouchBegin(m_ptTouch);
+
+            evTouchBegin = ev;
         }
     }
     else if (E_MouseEventType::MET_Release == type)
@@ -40,7 +45,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
         {
             m_bMousePressed = false;
 
-            _onTouchEnd();
+            _handleTouchEnd(evTouchBegin, ev);
         }
     }
     else if (E_MouseEventType::MET_Move == type)
@@ -53,6 +58,23 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
 #endif
 
    _onMouseEvent(type, ev);
+}
+
+template <class TParent>
+void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& evTouchBegin, const CTouchEvent& evTouchEnd)
+{
+    _onTouchEnd();
+
+    ulong dt = evTouchEnd.ulTimestamp - evTouchBegin.ulTimestamp;
+    if (dt < 300)
+    {
+        int dx = evTouchEnd.x - evTouchBegin.x;
+        int dy = evTouchEnd.y - evTouchBegin.y;
+        if (dx != 0 || dy != 0)
+        {
+            _onTouchSwipe(dt, dx, dy);
+        }
+    }
 }
 
 template <class TParent>
@@ -155,8 +177,6 @@ bool CWidget<TParent>::event(QEvent *ev)
         break;
     case QEvent::Gesture:
     {
-        //m_bTouching = false;
-
         QGestureEvent *ge = (QGestureEvent*)ev;
         for (auto gestureType : m_lstGestureType)
         {

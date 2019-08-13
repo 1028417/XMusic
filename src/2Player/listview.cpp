@@ -78,22 +78,76 @@ void CListView::_onTouchMove(int dx, int dy)
 {
     (void)dx;
 
+    _scroll(dy);
+}
+
+bool CListView::_scroll(int dy)
+{
     if (0 == m_uRowHeight)
+    {
+        return false;
+    }
+
+    m_fScrollPos -= (float)dy / m_uRowHeight;
+
+    bool bFlag = false;
+    if (dy < 0)
+    {
+        if (m_fScrollPos > m_uMaxScrollPos)
+        {
+            m_fScrollPos = m_uMaxScrollPos;
+            bFlag = true;
+        }
+    }
+    else
+    {
+        if (m_fScrollPos  < 0)
+        {
+            m_fScrollPos = 0;
+            bFlag = true;
+        }
+    }
+
+    this->update();
+
+    return bFlag;
+}
+
+void CListView::_onTouchSwipe(ulong dt, int dx, int dy)
+{
+    if (dy < 0)
+    {
+        dy = -m_uRowHeight;
+    }
+    else if (dy > 0)
+    {
+        dy = m_uRowHeight;
+    }
+    else
     {
         return;
     }
 
-    m_fScrollPos -= (float)dy / m_uRowHeight;
-    if (dy < 0)
-    {
-        m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
-    }
-    else
-    {
-        m_fScrollPos = MAX(0, m_fScrollPos);
-    }
+    _scrollEx(dy, m_uRowCount);
+}
 
-    this->update();
+void CListView::_scrollEx(int dy, UINT uCount)
+{
+    if (uCount > 0)
+    {
+        if (_scroll(dy))
+        {
+            return;
+        }
+
+        uCount--;
+        if (uCount > 0)
+        {
+            QTimer::singleShot(100, [=](){
+                _scrollEx(dy, uCount);
+            });
+        }
+    }
 }
 
 void CListView::_onPaint(CPainter& painter, const QRect&)

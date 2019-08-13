@@ -16,7 +16,11 @@ class CListView : public CWidget<QWidget>
 {
 public:
     CListView(QWidget *parent=NULL) :
-        CWidget(parent, {Qt::TapAndHoldGesture})
+        CWidget(parent
+#if __android
+                , {Qt::TapAndHoldGesture}
+#endif
+    )
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
@@ -62,4 +66,9 @@ private:
     virtual void _handleRowDblClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
 
     void _onTouchMove(int dx, int dy) override;
+
+    void _onTouchSwipe(ulong dt, int dx, int dy) override;
+
+    bool _scroll(int dy);
+    void _scrollEx(int dy, UINT uCount);
 };
