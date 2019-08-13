@@ -33,10 +33,23 @@ void CMedialibDlg::_relayout(int cx, int cy)
     cauto& rcReturn = ui.btnReturn->geometry();
     int y_margin = rcReturn.top();
 
-    ui.btnUpward->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
+    QRect rcUpward(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
+    ui.btnUpward->setGeometry(rcUpward);
+
+    _resizeTitle();
 
     int y_MedialibView = rcReturn.bottom() + y_margin;
     m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
+}
+
+void CMedialibDlg::_resizeTitle()
+{
+    int cx_title = cx-2*ui.labelTitle->x();
+    if (!ui.btnUpward->isVisible())
+    {
+        cx_title += ui.btnUpward->width();
+    }
+    ui.labelTitle->resize(cx_title, ui.labelTitle->height());
 }
 
 void CMedialibDlg::slot_buttonClicked(CButton* button)
@@ -61,6 +74,8 @@ void CMedialibDlg::showUpwardButton(bool bVisible) const
 #endif
 
     ui.btnUpward->setVisible(bVisible);
+
+    _resizeTitle();
 }
 
 void CMedialibDlg::setTitle(const wstring& strTitle) const

@@ -141,6 +141,8 @@ public:
 private:
     void _relayout(int cx, int cy) override;
 
+    void _resizeTitle();
+
     bool _handleReturn() override
     {
         return m_MedialibView.handleReturn();
