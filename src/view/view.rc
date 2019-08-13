@@ -199,6 +199,8 @@ BEGIN
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME
         MENUITEM "删除",                          ID_DELETE
+        MENUITEM "卸载",                          ID_Detach
+        MENUITEM "挂载",                          ID_Attach
         MENUITEM SEPARATOR
         MENUITEM "刷新",                          ID_REFRESH
         MENUITEM "返回",                          ID_Upward

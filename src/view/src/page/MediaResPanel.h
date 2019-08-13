@@ -82,7 +82,9 @@ public:
 	void HittestMediaRes(CMediaRes& MediaRes);
 
 	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
-	
+
+	void attachDir();
+
 private:
 	virtual void _OnInitDialog() {}
 

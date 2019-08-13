@@ -577,21 +577,30 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		__Ensure(m_pCurrPath);
 
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
+			if (!MediaRes.IsDir())
+			{
+				__Ensure(CMainApp::showConfirmMsg(L"确认删除所选文件?", *this));
+
+				CWaitCursor WaitCursor;
+				(void)m_view.getController().removeMediaRes(lstMediaRes);
+			}
+		});
+
+		break;
+	case ID_Detach:
+		lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.IsDir())
 			{
-				if (MediaRes.parent()==NULL)
+				if (MediaRes.parent() == NULL)
 				{
 					m_view.getModel().detachDir(MediaRes.GetAbsPath());
 				}
-
-				return;
 			}
-
-			__Ensure(CMainApp::showConfirmMsg(L"确认删除所选文件?", *this));
-
-			CWaitCursor WaitCursor;
-			(void)m_view.getController().removeMediaRes(lstMediaRes);
 		});
+		
+		break;
+	case ID_Attach:
+		attachDir();
 
 		break;
 	case ID_SETALARMCLOCK:
@@ -726,7 +735,7 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 {
-	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE }, FALSE);
+	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE, ID_Detach, ID_Attach }, FALSE);
 
 	if (NULL != pSubDir)
 	{
@@ -743,8 +752,7 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 		}
 		else
 		{
-			m_MenuGuard.SetItemText(ID_DELETE, _T("卸载"));
-			m_MenuGuard.EnableItem(ID_DELETE, TRUE);
+			m_MenuGuard.EnableItem(ID_Detach, TRUE);
 		}
 	}
 	else
@@ -767,6 +775,11 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrPath && uCount);
 
 		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrPath && m_pCurrPath->DirExists());
+		
+		if (&m_view.getRootMediaRes() == m_pCurrPath)
+		{
+			m_MenuGuard.EnableItem(ID_Attach, TRUE);
+		}
 	}
 
 	m_MenuGuard.EnableItem(ID_Upward, m_pCurrPath&& m_pCurrPath != m_pRootPath);
@@ -970,5 +983,25 @@ void CMediaResPanel::_asyncTask()
 				m_wndList.UpdateItem(uItem, pMediaRes); //, { m_Column_ID3, m_Column_ID3 + 1, m_Column_ID3 + 2, __Column_Playlist, __Column_SingerAlbum });
 			}
 		});
+	}
+}
+
+void CMediaResPanel::attachDir()
+{
+	while (true)
+	{
+		static CFolderDlgEx FolderDlg;
+		wstring strDir = FolderDlg.Show(L"挂载目录", L"请选择需要挂载的目录");
+		if (strDir.empty())
+		{
+			break;
+		}
+
+		CMediaRes *pMediaRes = m_view.getController().attachDir(strDir);
+		if (NULL != pMediaRes)
+		{
+			this->HittestMediaRes(*pMediaRes);
+			break;
+		}
 	}
 }

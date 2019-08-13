@@ -223,13 +223,17 @@
 #define ID_DemandAlbumItem_EUR          32961
 #define ID_DemandPlayItem_EUR           32962
 #define ID_DemandPlaylist_EUR           32963
+#define ID__XIEZAI                      32964
+#define ID__32965                       32965
+#define ID_Attach                       32966
+#define ID_Detach                       32967
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32964
+#define _APS_NEXT_COMMAND_VALUE         32968
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

@@ -228,16 +228,9 @@ CMediaRes* CController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-	auto& vecAttachDir = m_model.getOptionMgr().getOption().vecAttachDir;
-	bool bExist = false;
-	for (auto& strAttachDir : vecAttachDir)
-	{
-		if (wsutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir))
-		{
-			bExist = true;
-			break;
-		}
-	}
+    bool bExist = m_model.getOptionMgr().getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
+        return wsutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
+    });
 	if (bExist)
 	{
 		m_view.showMsgBox(L"所选目录已被挂载，请选择其它目录");

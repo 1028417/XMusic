@@ -74,23 +74,8 @@ bool CPlayerView::handleCommand(UINT uID)
 
 		break;
 	case ID_AttachDir:
-		while (true)
-		{
-			static CFolderDlgEx FolderDlg;
-			wstring strDir = FolderDlg.Show(L"挂载目录", L"请选择需要挂载的目录");
-			if (strDir.empty())
-			{
-				break;
-			}
+		m_view.m_MediaResPage.attachDir();
 
-			CMediaRes *pMediaRes = m_view.getController().attachDir(strDir);
-			if (NULL != pMediaRes)
-			{
-				m_view.m_MediaResPage.HittestMediaRes(*pMediaRes);
-				break;
-			}
-		}
-	
 		break;
 	case ID_Setting:
 	{
