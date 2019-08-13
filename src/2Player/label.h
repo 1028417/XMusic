@@ -26,7 +26,7 @@ private:
 
     bool m_bAutoFit = false;
 
-    UINT m_uShadowWidth = 2;
+    UINT m_uShadowWidth = 0;
     QColor m_crShadow;
 
     QRect m_rc;

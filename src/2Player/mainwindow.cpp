@@ -94,6 +94,8 @@ void MainWindow::_init()
         label->setTextColor(Qt::GlobalColor::white);
     }
 
+    ui.labelSingerName->setShadowWidth(2);
+
     connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
             , this, SLOT(slot_showPlaying(unsigned int, bool)));
     connect(this, SIGNAL(signal_playFinish()), this, SLOT(slot_playFinish()));
@@ -408,6 +410,7 @@ void MainWindow::_relayout()
     ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
     ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
 
+    ui.labelAlbumName->setShadowWidth(m_bUsingCustomBkg?2:0);
     ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
 
     for (cauto& widgetPos : m_mapTopWidgetPos)
