@@ -6,7 +6,7 @@
 
 #include <QFont>
 
-extern const ITxtWriter& g_logWriter;
+extern ITxtWriter& g_logWriter;
 
 class CPlayerView : public IPlayerView
 {

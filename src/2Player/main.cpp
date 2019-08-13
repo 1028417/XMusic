@@ -55,7 +55,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #endif
 
 static CUTF8Writer m_logWriter;
-const ITxtWriter& g_logWriter(m_logWriter);
+ITxtWriter& g_logWriter(m_logWriter);
 
 class CApplication : public QApplication
 {

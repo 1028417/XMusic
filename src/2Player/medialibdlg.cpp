@@ -24,6 +24,8 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 
     connect(ui.btnUpward, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+
+    ui.btnUpward->setVisible(false);
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
