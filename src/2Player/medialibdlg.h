@@ -80,7 +80,7 @@ private:
 
     QPixmap& _getSingerPixmap(CSinger& Singer);
 
-    void _handleRowClick(UINT uRowIdx, QMouseEvent& ev) override;
+    void _handleRowClick(UINT uRowIdx, const QMouseEvent&) override;
 
     void _handleItemClick(CMediaRes& MediaRes);
 

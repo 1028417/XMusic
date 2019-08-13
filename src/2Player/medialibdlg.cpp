@@ -431,7 +431,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
     }
 }
 
-void CMedialibView::_handleRowClick(UINT uRowIdx, QMouseEvent&)
+void CMedialibView::_handleRowClick(UINT uRowIdx, const QMouseEvent&)
 {
     if (m_pMediaset)
     {

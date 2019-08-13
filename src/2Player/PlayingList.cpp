@@ -112,7 +112,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_handleRowDblClick(UINT uRowIdx, QMouseEvent&)
+void CPlayingList::_handleRowDblClick(UINT uRowIdx, const QMouseEvent&)
 {
     _updateActive();
 
@@ -135,14 +135,18 @@ void CPlayingList::_onMouseLeave()
     }
 }
 
-void CPlayingList::_onTouchBegin(const QPointF&)
+void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    _updateActive(-1);
-}
+    if (E_TouchEventType::TET_TouchBegin == type)
+    {
+        _updateActive(-1);
+    }
+    else if (E_TouchEventType::TET_TouchEnd == type)
+    {
+        _updateActive();
+    }
 
-void CPlayingList::_onTouchEnd()
-{
-    _updateActive();
+    CListView::_onTouchEvent(type, te);
 }
 
 void CPlayingList::_updateActive(int nActiveTime)

@@ -54,31 +54,43 @@ void CListView::flashItem(UINT uItem, UINT uMSDelay)
     });
 }
 
-void CListView::_onMouseEvent(E_MouseEventType type, QMouseEvent& ev)
+void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
     if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
     {
         if (0 != m_uRowHeight)
         {
-            float fRowIdx = (float)ev.pos().y()/m_uRowHeight + m_fScrollPos;
+            float fRowIdx = (float)me.pos().y()/m_uRowHeight + m_fScrollPos;
 
             if (E_MouseEventType::MET_Click == type)
             {
-                _handleRowClick((UINT)fRowIdx, ev);
+                _handleRowClick((UINT)fRowIdx, me);
             }
             else
             {
-                _handleRowDblClick((UINT)fRowIdx, ev);
+                _handleRowDblClick((UINT)fRowIdx, me);
             }
         }
     }
 }
 
-void CListView::_onTouchMove(int dx, int dy)
+void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    (void)dx;
-
-    _scroll(dy);
+    if (E_TouchEventType::TET_TouchMove == type)
+    {
+        _scroll(te.dy());
+    }
+    else if (E_TouchEventType::TET_TouchSwipe == type)
+    {
+        if (te.dy() < 0)
+        {
+            _scrollEx(-m_uRowHeight, getRowCount());
+        }
+        else if (te.dy() > 0)
+        {
+            _scrollEx(m_uRowHeight, getRowCount());
+        }
+    }
 }
 
 bool CListView::_scroll(int dy)
@@ -111,24 +123,6 @@ bool CListView::_scroll(int dy)
     this->update();
 
     return bFlag;
-}
-
-void CListView::_onTouchSwipe(ulong dt, int dx, int dy)
-{
-    if (dy < 0)
-    {
-        dy = -m_uRowHeight;
-    }
-    else if (dy > 0)
-    {
-        dy = m_uRowHeight;
-    }
-    else
-    {
-        return;
-    }
-
-    _scrollEx(dy, m_uRowCount);
 }
 
 void CListView::_scrollEx(int dy, UINT uCount)

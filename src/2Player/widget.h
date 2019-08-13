@@ -11,15 +11,6 @@
 
 #include "util.h"
 
-enum class E_MouseEventType
-{
-    MET_Move,
-    MET_Press,
-    MET_Release,
-    MET_Click,
-    MET_DblClick
-};
-
 class CPainter : public QPainter
 {
 public:
@@ -51,6 +42,106 @@ public:
     }
 };
 
+enum class E_MouseEventType
+{
+    MET_Press,
+    MET_Move,
+    MET_Release,
+    MET_Click,
+    MET_DblClick
+};
+
+enum class E_TouchEventType
+{
+    TET_TouchBegin,
+    TET_TouchMove,
+    TET_TouchEnd,
+    TET_TouchSwipe
+};
+
+class CTouchEvent
+{
+public:
+    CTouchEvent(){}
+
+    CTouchEvent(const QMouseEvent& me)
+        : m_ulTimestamp(me.timestamp())
+        , m_x(me.pos().x())
+        , m_y(me.pos().y())
+    {
+    }
+
+    CTouchEvent(const QTouchEvent& te)
+        : m_ulTimestamp(te.timestamp())
+    {
+        cauto& points = te.touchPoints();
+        if (!points.empty())
+        {
+            cauto& pos = points.at(0).pos();
+            m_x = ((int)pos.x());
+            m_y = ((int)pos.y());
+        }
+    }
+
+private:
+    ulong m_ulTimestamp = 0;
+
+    int m_x = 0;
+    int m_y = 0;
+
+    ulong m_dt = 0;
+
+    int m_dx = 0;
+    int m_dy = 0;
+
+public:
+    ulong timestamp() const
+    {
+        return m_ulTimestamp;
+    }
+
+    int x() const
+    {
+        return m_x;
+    }
+    int y() const
+    {
+        return m_y;
+    }
+    QPoint pos() const
+    {
+        return QPoint(m_x, m_y);
+    }
+
+    ulong dt() const
+    {
+        return m_dt;
+    }
+
+    int dx() const
+    {
+        return m_dx;
+    }
+    int dy() const
+    {
+        return m_dy;
+    }
+
+    void setDt(ulong dt)
+    {
+        m_dt = dt;
+    }
+
+    void setDx(int dx)
+    {
+        m_dx = dx;
+    }
+    void setDy(int dy)
+    {
+        m_dy = dy;
+    }
+};
+
 template <class TParent=QWidget>
 class CWidget : public TParent
 {
@@ -68,26 +159,31 @@ public:
 private:
     list<Qt::GestureType> m_lstGestureType;
 
+    CTouchEvent m_teBegin;
+
     QPointF m_ptTouch;
+
     bool m_bTouching = false;
 
     bool m_bMousePressed = false;
 
     QGraphicsOpacityEffect m_goe;
 
+    bool m_bClicking = false;
+
 protected:
     QColor m_crText;
-
-protected:
-    virtual bool event(QEvent *ev) override;
-
-    virtual void _onPaint(CPainter&, const QRect& rc);
 
 public:
     void setOpacity(float fValue)
     {
        m_goe.setOpacity(fValue);
        this->setGraphicsEffect(&m_goe);
+    }
+
+    const QColor& textColor() const
+    {
+        return m_crText;
     }
 
     void setTextColor(const QColor& crText)
@@ -99,40 +195,26 @@ public:
         TParent::setPalette(pe);
     }
 
+protected:
+    virtual bool event(QEvent *ev) override;
+
+    virtual void _onPaint(CPainter&, const QRect& rc);
+
 private:
     void paintEvent(QPaintEvent *pe) override;
 
-    class CTouchEvent
-    {
-    public:
-        CTouchEvent(){}
+    void _handleTouchBegin(const CTouchEvent&);
+    void _handleTouchEnd(const CTouchEvent&);
+    void _handleTouchMove(const CTouchEvent&);
 
-        CTouchEvent(const QMouseEvent& ev)
-            : ulTimestamp(ev.timestamp())
-            , x(ev.pos().x())
-            , y(ev.pos().y())
-        {
-        }
-
-        ulong ulTimestamp = 0;
-        int x = 0;
-        int y = 0;
-    };
-    void _handleTouchEnd(const CTouchEvent& evTouchBegin, const CTouchEvent& evTouchEnd);
-    void _handleTouchMove(int x, int y);
-
-    void _handleMouseEvent(E_MouseEventType, QMouseEvent&);
-    virtual void _onMouseEvent(E_MouseEventType, QMouseEvent&) {}
+    void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
+    virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) {}
 
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
 
-    virtual void _onTouchBegin(const QPointF&) {}
-    virtual void _onTouchMove(int dx, int dy) { (void)dx;   (void)dy; }
-
-    virtual void _onTouchEnd() {}
-
-    virtual void _onTouchSwipe(ulong dt, int dx, int dy) { (void)dt;   (void)dx;   (void)dy; }
+    void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
+    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) {}
 
     virtual bool _onGesture(QGesture&) {return false;}
 };

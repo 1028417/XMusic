@@ -24,7 +24,7 @@ signals:
     //void signal_contextMenu(CButton*);
 
 private:
-    void _onMouseEvent(E_MouseEventType type, QMouseEvent&) override
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent&) override
     {
         if (E_MouseEventType::MET_Press == type)
         {

@@ -12,22 +12,44 @@ struct tagListViewItem
     bool bFlash = false;
 };
 
-class CListView : public CWidget<QWidget>
+class CListRowCount
 {
 public:
-    CListView(QWidget *parent=NULL) :
-        CWidget(parent
-#if __android
-                , {Qt::TapAndHoldGesture}
-#endif
-    )
+    CListRowCount(UINT uRowCount=0)
+        : m_uRowCount(uRowCount)
+    {
+    }
+
+private:
+    UINT m_uRowCount;
+
+public:
+    void setRowCount(UINT uRowCount)
+    {
+        m_uRowCount = uRowCount;
+    }
+
+    virtual UINT getRowCount()
+    {
+        return m_uRowCount;
+    }
+};
+
+class CListView : public CWidget<QWidget>, public CListRowCount
+{
+public:
+    CListView(QWidget *parent=NULL, UINT uRowCount=0)
+        : CWidget(parent
+/*#if __android
+            , {Qt::TapAndHoldGesture}
+#endif*/
+        )
+        , CListRowCount(uRowCount)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
-    UINT m_uRowCount = 0;
-
     UINT m_uRowHeight = 0;
 
     UINT m_uMaxScrollPos = 0;
@@ -37,11 +59,6 @@ private:
     int m_nFlashItem = -1;
 
 public:
-    void setRowCount(UINT uRowCount)
-    {
-        m_uRowCount = uRowCount;
-    }
-
     void selectItem(UINT uItem);
 
     void dselectItem();
@@ -51,23 +68,16 @@ public:
     void flashItem(UINT uItem, UINT uMSDelay=300);
 
 private:
-    virtual UINT getRowCount()
-    {
-        return m_uRowCount;
-    }
-
     virtual UINT getItemCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
     virtual void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) = 0;
 
-    void _onMouseEvent(E_MouseEventType, QMouseEvent&) override;
-    virtual void _handleRowClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
-    virtual void _handleRowDblClick(UINT uRowIdx, QMouseEvent&) {(void)uRowIdx;}
+    void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
+    virtual void _handleRowClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
+    virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
 
-    void _onTouchMove(int dx, int dy) override;
-
-    void _onTouchSwipe(ulong dt, int dx, int dy) override;
+    void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
     bool _scroll(int dy);
     void _scrollEx(int dy, UINT uCount);

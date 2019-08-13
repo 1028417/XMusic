@@ -70,13 +70,13 @@ public:
     }
 
 private:
-    void _onMouseEvent(E_MouseEventType type, QMouseEvent& ev) override
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override
     {
         if (E_MouseEventType::MET_Click == type)
         {
-            if (m_rc.contains(ev.pos()))
+            if (m_rc.contains(me.pos()))
             {
-                emit signal_click(this, ev.pos());
+                emit signal_click(this, me.pos());
             }
         }
     }

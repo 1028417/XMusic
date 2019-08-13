@@ -75,13 +75,12 @@ private:
 
     void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
 
-    void _handleRowDblClick(UINT uRowIdx, QMouseEvent& ev) override;
+    void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;
 
-    void _onTouchBegin(const QPointF&) override;
-    void _onTouchEnd() override;
+    void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
     /*bool _onGesture(QGesture&) override
     {

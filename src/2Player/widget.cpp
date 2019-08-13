@@ -22,84 +22,13 @@ void CWidget<TParent>::_onPaint(CPainter&, const QRect&)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, QMouseEvent& ev)
-{
-    static CTouchEvent evTouchBegin;
-
-#if !__android
-    if (E_MouseEventType::MET_Press == type)
-    {
-        if (!m_bTouching)
-        {
-            m_bMousePressed = true;
-            m_ptTouch = ev.pos();
-
-            _onTouchBegin(m_ptTouch);
-
-            evTouchBegin = ev;
-        }
-    }
-    else if (E_MouseEventType::MET_Release == type)
-    {
-        if (m_bMousePressed)
-        {
-            m_bMousePressed = false;
-
-            _handleTouchEnd(evTouchBegin, ev);
-        }
-    }
-    else if (E_MouseEventType::MET_Move == type)
-    {
-        if (m_bMousePressed)
-        {
-            _handleTouchMove(ev.x(), ev.y());
-        }
-    }
-#endif
-
-   _onMouseEvent(type, ev);
-}
-
-template <class TParent>
-void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& evTouchBegin, const CTouchEvent& evTouchEnd)
-{
-    _onTouchEnd();
-
-    ulong dt = evTouchEnd.ulTimestamp - evTouchBegin.ulTimestamp;
-    if (dt < 300)
-    {
-        int dx = evTouchEnd.x - evTouchBegin.x;
-        int dy = evTouchEnd.y - evTouchBegin.y;
-        if (dx != 0 || dy != 0)
-        {
-            _onTouchSwipe(dt, dx, dy);
-        }
-    }
-}
-
-template <class TParent>
-void CWidget<TParent>::_handleTouchMove(int x, int y)
-{
-    int dx = x-m_ptTouch.x();
-    int dy = y-m_ptTouch.y();
-    if (dx != 0 || dy != 0)
-    {
-        _onTouchMove(dx, dy);
-        m_ptTouch.setX(x);
-        m_ptTouch.setY(y);
-    }
-}
-
-template <class TParent>
 bool CWidget<TParent>::event(QEvent *ev)
 {
     bool bRet = TParent::event(ev);
 
-    static bool bClicking = false;
-
     switch (ev->type())
     {
-#if !__android
+#if _winqt
     case QEvent::Enter:
         _onMouseEnter();
 
@@ -110,69 +39,31 @@ bool CWidget<TParent>::event(QEvent *ev)
         break;
 #endif
     case QEvent::MouseButtonPress:
-    {
-        auto& me = *(QMouseEvent*)ev;
-        _handleMouseEvent(E_MouseEventType::MET_Press, me);
+        _handleMouseEvent(E_MouseEventType::MET_Press, *(QMouseEvent*)ev);
 
-        bClicking = true;
-    }
+        break;
+    case QEvent::MouseMove:
+        _handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
 
         break;
     case QEvent::MouseButtonRelease:
-    {
-        auto& me = *(QMouseEvent*)ev;
-        _handleMouseEvent(E_MouseEventType::MET_Release, me);
-
-        if (bClicking)
-        {
-            bClicking = false;
-
-            _handleMouseEvent(E_MouseEventType::MET_Click, me);
-        }
-    }
+        _handleMouseEvent(E_MouseEventType::MET_Release, *(QMouseEvent*)ev);
 
         break;
     case QEvent::MouseButtonDblClick:
         _handleMouseEvent(E_MouseEventType::MET_DblClick, *(QMouseEvent*)ev);
 
         break;
-    case QEvent::MouseMove:
-        bClicking = false;
-
-        _handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
-
-        break;
-    case QEvent::TouchEnd:
-        if (m_bTouching)
-        {
-            m_bTouching = false;
-            _onTouchEnd();
-        }
-
-        break;
     case QEvent::TouchBegin:
-        if (!m_bMousePressed)
-        {
-            cauto& points = ((QTouchEvent*)ev)->touchPoints();
-            if (!points.empty())
-            {
-                m_bTouching = true;
-                m_ptTouch = points.at(0).pos();
-                _onTouchBegin(m_ptTouch);
-            }
-        }
+        _handleTouchEvent(E_TouchEventType::TET_TouchBegin, *(QTouchEvent*)ev);
 
         break;
     case QEvent::TouchUpdate:
-        if (m_bTouching)
-        {
-            cauto& points = ((QTouchEvent*)ev)->touchPoints();
-            if (!points.empty())
-            {
-                cauto& pos = points.at(0).pos();
-                _handleTouchMove(pos.x(), pos.y());
-            }
-        }
+        _handleTouchEvent(E_TouchEventType::TET_TouchMove, *(QTouchEvent*)ev);
+
+        break;
+    case QEvent::TouchEnd:
+        _handleTouchEvent(E_TouchEventType::TET_TouchEnd, *(QTouchEvent*)ev);
 
         break;
     case QEvent::Gesture:
@@ -184,7 +75,10 @@ bool CWidget<TParent>::event(QEvent *ev)
             {
                 if (_onGesture(*gesture))
                 {
-                    bClicking = false;
+                    if (Qt::TapAndHoldGesture == gestureType)
+                    {
+                        m_bClicking = false;
+                    }
                 }
                 break;
             }
@@ -197,4 +91,128 @@ bool CWidget<TParent>::event(QEvent *ev)
     }
 
     return bRet;
+}
+
+template <class TParent>
+void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+{
+    _onMouseEvent(type, me);
+
+//#if _winqt
+    if (E_MouseEventType::MET_Press == type)
+    {
+        if (!m_bTouching)
+        {
+            m_bMousePressed = true;
+
+            _handleTouchBegin(me);
+        }
+
+        m_bClicking = true;
+    }
+    else if (E_MouseEventType::MET_Release == type)
+    {
+        if (m_bMousePressed)
+        {
+            m_bMousePressed = false;
+
+            _handleTouchEnd(me);
+        }
+
+        if (m_bClicking)
+        {
+            m_bClicking = false;
+
+            _onMouseEvent(E_MouseEventType::MET_Click, me);
+        }
+    }
+    else if (E_MouseEventType::MET_Move == type)
+    {
+        m_bClicking = false;
+
+        if (m_bMousePressed)
+        {
+            _handleTouchMove(me);
+        }
+    }
+//#endif
+}
+
+template <class TParent>
+void CWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& te)
+{
+    if (E_TouchEventType::TET_TouchBegin == type)
+    {
+        if (!m_bMousePressed)
+        {
+            m_bTouching = true;
+
+            _handleTouchBegin(te);
+        }
+    }
+    else if (E_TouchEventType::TET_TouchEnd == type)
+    {
+        if (m_bTouching)
+        {
+            m_bTouching = false;
+
+            _handleTouchEnd(te);
+        }
+    }
+    else if (E_TouchEventType::TET_TouchMove == type)
+    {
+        if (m_bTouching)
+        {
+            _handleTouchMove(te);
+        }
+    }
+}
+
+
+template <class TParent>
+void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
+{
+    m_teBegin = te;
+    m_ptTouch = te.pos();
+
+    _onTouchEvent(E_TouchEventType::TET_TouchBegin, te);
+}
+
+template <class TParent>
+void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& tee)
+{
+    _onTouchEvent(E_TouchEventType::TET_TouchEnd, tee);
+
+    ulong dt = tee.timestamp() - m_teBegin.timestamp();
+    if (dt < 300)
+    {
+        int dx = tee.x() - m_teBegin.x();
+        int dy = tee.y() - m_teBegin.y();
+        if (dx != 0 || dy != 0)
+        {
+            CTouchEvent tse(tee);
+            tse.setDt(dt);
+            tse.setDx(dx);
+            tse.setDy(dy);
+
+            _onTouchEvent(E_TouchEventType::TET_TouchSwipe, tse);
+        }
+    }
+}
+
+template <class TParent>
+void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
+{
+    CTouchEvent tme(te);
+    int dx = tme.x()-m_ptTouch.x();
+    int dy = tme.y()-m_ptTouch.y();
+    if (dx != 0 || dy != 0)
+    {
+        tme.setDx(dx);
+        tme.setDy(dy);
+
+        _onTouchEvent(E_TouchEventType::TET_TouchMove, tme);
+
+        m_ptTouch = tme.pos();
+    }
 }
