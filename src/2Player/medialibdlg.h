@@ -141,7 +141,7 @@ public:
 private:
     void _relayout(int cx, int cy) override;
 
-    void _resizeTitle();
+    void _resizeTitle() const;
 
     bool _handleReturn() override
     {

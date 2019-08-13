@@ -42,9 +42,9 @@ void CMedialibDlg::_relayout(int cx, int cy)
     m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 }
 
-void CMedialibDlg::_resizeTitle()
+void CMedialibDlg::_resizeTitle() const
 {
-    int cx_title = cx-2*ui.labelTitle->x();
+    int cx_title = this->width()-2*ui.labelTitle->x();
     if (!ui.btnUpward->isVisible())
     {
         cx_title += ui.btnUpward->width();
