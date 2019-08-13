@@ -15,7 +15,9 @@ struct tagAlarmOption
 {
 	tagAlarmOption()
 	{
-		//tmutil::getCurrentTime(nHour, nMinute);
+#if __winvc
+		tmutil::getCurrentTime(nHour, nMinute);
+#endif
 	}
 
 	int nHour = 0;
@@ -36,12 +38,12 @@ struct tagTimerOperateOpt
 {
 	tagTimerOperateOpt()
 	{
-		eTimerOperate = TO_Null;
-
-		//tmutil::getCurrentTime(nHour, nMinute);
+#if __winvc
+		tmutil::getCurrentTime(nHour, nMinute);
+#endif
 	}
 
-	E_TimerOperate eTimerOperate;
+	E_TimerOperate eTimerOperate = TO_Null;
 
 	int nHour = 0;
 	int nMinute = 0;

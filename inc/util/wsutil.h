@@ -208,11 +208,16 @@ public:
         return *this;
     }
 
-    WString& operator<<(const wchar_t wc)
-    {
-        m_str.append(1, wc);
-        return *this;
-    }
+	WString& operator<<(wchar_t wc)
+	{
+		m_str.append(1, wc);
+		return *this;
+	}
+
+	WString& operator<<(char c)
+	{
+		return *this << (wchar_t)c;
+	}
 
     WString& operator<<(const wstring& str)
     {
