@@ -963,11 +963,11 @@ int CMediaResPanel::GetTabImage()
 	{
 		if (m_pCurrPath->parent()==NULL)
 		{
-			return (int)E_GlobalImage::GI_FolderLink;
+			return (int)E_GlobalImage::GI_DirLink;
 		}
 	}
 
-	return (int)E_GlobalImage::GI_Folder;
+	return (int)E_GlobalImage::GI_Dir;
 }
 
 void CMediaResPanel::_asyncTask()

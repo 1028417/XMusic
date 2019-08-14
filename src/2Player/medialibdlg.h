@@ -33,8 +33,8 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    QPixmap m_pixmapFolder;
-    QPixmap m_pixmapFolderLink;
+    QPixmap m_pixmapDir;
+    QPixmap m_pixmapDirLink;
     QPixmap m_pixmapFile;
 
     QPixmap m_pixmapSingerGroup;

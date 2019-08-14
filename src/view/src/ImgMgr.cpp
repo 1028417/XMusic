@@ -56,8 +56,8 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	__AssertReturn(m_imglstTiny.Init(__Size(uTinyIconSize)), false);
 	
 	wstring lpImgFile[] = {
-		L"folder.png"
-		, L"folderLink.png"
+		L"dir.png"
+		, L"dirLink.png"
 		, L"file.png"
 		, L"wholeTrack.png"
 

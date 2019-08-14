@@ -91,8 +91,8 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
 {
-    (void)m_pixmapFolder.load(":/img/folder.png");
-    (void)m_pixmapFolderLink.load(":/img/folderLink.png");
+    (void)m_pixmapDir.load(":/img/dir.png");
+    (void)m_pixmapDirLink.load(":/img/dirLink.png");
     (void)m_pixmapFile.load(":/img/file.png");
 
     (void)m_pixmapSingerGroup.load(":/img/singergroup.png");
@@ -276,7 +276,7 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
         switch (item.uItem)
         {
         case 1:
-            pPixmap = &m_pixmapFolder;
+            pPixmap = &m_pixmapDir;
             strText = L"媒体库";
             break;
         case 3:
@@ -300,7 +300,7 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
 
 void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem& item, CMediaRes& MediaRes)
 {
-    QPixmap *pPixmap = &m_pixmapFolder;
+    QPixmap *pPixmap = &m_pixmapDir;
 
     E_ItemStyle eStyle = E_ItemStyle::IS_Underline;
 
@@ -308,15 +308,37 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
     {
         eStyle = E_ItemStyle::IS_RightTip;
 
-        if (MediaRes.parent() == NULL)
+        pPixmap = &m_pixmapDir;
+
+        if (&m_RootMediaRes == m_pMediaRes)
         {
-            pPixmap = &m_pixmapFolderLink;
+            if (MediaRes.parent() == NULL)
+            {
+                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
+                if (pAttachDir)
+                {
+                    pPixmap = &m_pixmapDirLink;
+
+                    wstring strType;
+                    if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+                    {
+                        strType = L"扩展";
+                    }
+                    else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
+                    {
+                        strType = L"USB";
+                    }
+                    else
+                    {
+                        strType = L"內部";
+                    }
+                }
+            }
         }
     }
     else
     {
        pPixmap = &m_pixmapFile;
-
     }
 
     _paintItem(painter, rc, item, *pPixmap, MediaRes.GetName(), eStyle);
@@ -389,8 +411,17 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
 
     if (item.bFlash)
     {
-        QColor crText = m_crText;
-        crText.setAlpha(crText.alpha()*60/100);
+        int r = m_crText.red();
+        int g = m_crText.green();
+        int b = m_crText.blue();
+
+        cauto& crBkg = m_medialibDlg.bkgColor();
+        r += (-r + crBkg.red())*85 / 255;
+        g += (-g + crBkg.green())*85 / 255;
+        b += (-b + crBkg.blue())*85 / 255;
+
+        QColor crText(r,g,b);// = m_crText;
+        //crText.setAlpha(crText.alpha()*80/100);
         painter.setPen(crText);
     }
 
