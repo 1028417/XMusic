@@ -53,6 +53,8 @@ protected:
 protected:
 	virtual void _onFindFile();
 
+	virtual void _sortSubPath();
+
     virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const
     {
         return lhs._sortCompare(rhs);

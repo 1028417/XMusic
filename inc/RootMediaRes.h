@@ -40,6 +40,13 @@ private:
 private:
     void _onFindFile() override;
 
+#if __android
+    void _sortSubPath() override
+    {
+        CPath::_sortSubPath();
+    }
+#endif
+
     inline class CAttachDir* _getAttachDir(const wstring& strDirName);
 
 public:

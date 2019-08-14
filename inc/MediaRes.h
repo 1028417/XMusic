@@ -32,6 +32,10 @@ private:
 	wstring m_strModifyTime;
 
 private:
+#if __android
+    void _sortSubPath() override {}
+#endif
+
 	bool _loadCue(const wstring& strFileName);
 
 	CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir) override;
