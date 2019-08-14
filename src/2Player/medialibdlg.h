@@ -19,6 +19,19 @@ private:
         , IS_RightTip
     };
 
+    struct tagItemContext
+    {
+        E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
+
+        QPixmap *pixmap = NULL;
+
+        wstring strText;
+
+        wstring strRemark;
+
+        UINT uIconSize = 0;
+    };
+
 public:
     CMedialibView(class CPlayerView& view, class CMedialibDlg& medialibDlg);
 
@@ -75,8 +88,7 @@ private:
 
     void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaSet& MediaSet);
 
-    void _paintItem(CPainter& painter, QRect& rc, const tagListViewItem&, QPixmap& pixmap
-            , const wstring& strText, E_ItemStyle eStyle=E_ItemStyle::IS_Normal, UINT uIconSize=0);
+    void _paintItem(CPainter& painter, QRect& rc, const tagListViewItem&, const tagItemContext& context);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);
 

@@ -245,70 +245,81 @@ UINT CMedialibView::getItemCount()
     }
 }
 
-void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& item)
+void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem)
 {
     if (m_pMediaRes)
     {
-        m_pMediaRes->GetSubPath().get(item.uItem, [&](CPath& subPath) {
-            _paintMediaResItem(painter, rc, item, (CMediaRes&)subPath);
+        m_pMediaRes->GetSubPath().get(lvitem.uItem, [&](CPath& subPath) {
+            _paintMediaResItem(painter, rc, lvitem, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(item.uItem, [&](CMediaSet& mediaSet){
-                _paintMediaSetItem(painter, rc, item, mediaSet);
+            m_lstSubSets.get(lvitem.uItem, [&](CMediaSet& mediaSet){
+                _paintMediaSetItem(painter, rc, lvitem, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(item.uItem, [&](CMedia& Media){
-                auto& pixmap = Media.GetMediaSetType() == E_MediaSetType::MST_Album? m_pixmapAlbumItem : m_pixmapPlayItem;
-                _paintItem(painter, rc, item, pixmap, Media.m_strName, E_ItemStyle::IS_Underline);
+            m_lstSubMedias.get(lvitem.uItem, [&](CMedia& Media) {
+                tagItemContext context;
+                context.eStyle = E_ItemStyle::IS_Underline;
+                if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
+                {
+                    context.pixmap = &m_pixmapAlbumItem;
+                }
+                else
+                {
+                    context.pixmap = &m_pixmapPlayItem;
+                }
+                context.strText = Media.m_strName;
+
+                _paintItem(painter, rc, lvitem, context);
             });
         }
     }
     else
     {
-        QPixmap *pPixmap = NULL;
-        wstring strText;
-        switch (item.uItem)
+        tagItemContext context;
+        context.eStyle = E_ItemStyle::IS_Normal;
+        switch (lvitem.uItem)
         {
         case 1:
-            pPixmap = &m_pixmapDir;
-            strText = L"媒体库";
+            context.pixmap = &m_pixmapDir;
+            context.strText = L"媒体库";
             break;
         case 3:
-            pPixmap = &m_pixmapSingerGroup;
-            strText = L"歌手库";
+            context.pixmap = &m_pixmapSingerGroup;
+            context.strText = L"歌手库";
 
             break;
         case 5:
-            pPixmap = &m_pixmapPlaylist;
-            strText = L"列表库";
+            context.pixmap = &m_pixmapPlaylist;
+            context.strText = L"列表库";
 
             break;
         default:
             return;
             break;
-        }
-
-        _paintItem(painter, rc, item, *pPixmap, strText, E_ItemStyle::IS_Normal);
+        }        
+        _paintItem(painter, rc, lvitem, context);
     }
 }
 
-void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem& item, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, CMediaRes& MediaRes)
 {
-    QPixmap *pPixmap = &m_pixmapDir;
-
-    E_ItemStyle eStyle = E_ItemStyle::IS_Underline;
+    tagItemContext context;
+    context.eStyle = E_ItemStyle::IS_Underline;
+    context.pixmap = &m_pixmapDir;
+    context.strText = MediaRes.GetName();
 
     if (MediaRes.IsDir())
     {
-        eStyle = E_ItemStyle::IS_RightTip;
+        context.eStyle = E_ItemStyle::IS_RightTip;
 
-        pPixmap = &m_pixmapDir;
+        context.pixmap = &m_pixmapDir;
 
         if (&m_RootMediaRes == m_pMediaRes)
         {
@@ -317,20 +328,19 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
                 if (pAttachDir)
                 {
-                    pPixmap = &m_pixmapDirLink;
+                    context.pixmap = &m_pixmapDirLink;
 
-                    wstring strType;
                     if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                     {
-                        strType = L"扩展";
+                        context.strRemark = L"扩展";
                     }
                     else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
                     {
-                        strType = L"USB";
+                        context.strRemark = L"USB";
                     }
                     else
                     {
-                        strType = L"內部";
+                        context.strRemark = L"內部";
                     }
                 }
             }
@@ -338,10 +348,10 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
     }
     else
     {
-       pPixmap = &m_pixmapFile;
+       context.pixmap = &m_pixmapFile;
     }
 
-    _paintItem(painter, rc, item, *pPixmap, MediaRes.GetName(), eStyle);
+    _paintItem(painter, rc, lvitem, context);
 }
 
 static list<QPixmap> g_lstSingerPixmap;
@@ -372,36 +382,37 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem& item, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, CMediaSet& MediaSet)
 {
-    QPixmap *pPixmap = NULL;
+    tagItemContext context;
+    context.eStyle = E_ItemStyle::IS_RightTip;
+    context.strText = MediaSet.m_strName;
 
     switch (MediaSet.m_eType)
     {
     case E_MediaSetType::MST_Playlist:
-        pPixmap = &m_pixmapPlaylist;
+        context.pixmap = &m_pixmapPlaylist;
         break;
     case E_MediaSetType::MST_Album:
-        pPixmap = &m_pixmapAlbum;
+        context.pixmap = &m_pixmapAlbum;
         break;
     case E_MediaSetType::MST_Singer:
-        pPixmap = &_getSingerPixmap((CSinger&)MediaSet);
+        context.pixmap = &_getSingerPixmap((CSinger&)MediaSet);
         break;
     case E_MediaSetType::MST_SingerGroup:
-        pPixmap = &m_pixmapSingerGroup;
+        context.pixmap = &m_pixmapSingerGroup;
         break;
     default:
         return;
         break;
     };
 
-    _paintItem(painter, rc, item, *pPixmap, MediaSet.m_strName, E_ItemStyle::IS_RightTip);
+    _paintItem(painter, rc, lvitem, context);
 }
 
-void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewItem& item, QPixmap& pixmap
-                               , const wstring& strText, E_ItemStyle eStyle, UINT uIconSize)
+void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, const tagItemContext& context)
 {
-    if (item.bSelect)
+    if (lvitem.bSelect)
     {
         QColor crBkg = m_medialibDlg.bkgColor();
         crBkg.setRed(crBkg.red()-10);
@@ -409,7 +420,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, crBkg);
     }
 
-    if (item.bFlash)
+    if (lvitem.bFlash)
     {
         int r = m_crText.red();
         int g = m_crText.green();
@@ -426,9 +437,9 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
     }
 
     UINT sz_icon = rc.height();
-    if (uIconSize > 0 && uIconSize < sz_icon)
+    if (context.uIconSize > 0 && context.uIconSize < sz_icon)
     {
-        sz_icon = uIconSize;
+        sz_icon = context.uIconSize;
     }
     else
     {
@@ -438,7 +449,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
     int nMargin = (rc.height()-sz_icon)/2;
 
     int x_icon = 0;
-    if (E_ItemStyle::IS_Normal == eStyle)
+    if (E_ItemStyle::IS_Normal == context.eStyle)
     {
         x_icon = rc.center().x()-sz_icon;
 
@@ -453,15 +464,18 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
 
     int y_icon = rc.center().y()-sz_icon/2;
     QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
-    painter.drawPixmapEx(rcDst, pixmap);
+    if (context.pixmap && !context.pixmap->isNull())
+    {
+        painter.drawPixmapEx(rcDst, *context.pixmap);
+    }
 
     rc.setLeft(x_icon + sz_icon + nMargin);
 
-    if (eStyle != E_ItemStyle::IS_Normal)
+    if (context.eStyle != E_ItemStyle::IS_Normal)
     {
         painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
 
-        if (E_ItemStyle::IS_RightTip == eStyle)
+        if (E_ItemStyle::IS_RightTip == context.eStyle)
         {
             int sz_righttip = sz_icon*30/100;
             int x_righttip = rc.right()-sz_righttip;
@@ -473,7 +487,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         }
     }
 
-    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(strText)
+    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(context.strText)
                             , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }

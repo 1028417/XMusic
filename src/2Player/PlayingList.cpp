@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& item)
+void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem)
 {
     int cy = this->rect().bottom();
 
@@ -25,7 +25,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewI
 
     QFont font = painter.font();
 
-    bool bPlayingItem = item.uItem == m_uPlayingItem;
+    bool bPlayingItem = lvitem.uItem == m_uPlayingItem;
     if (bPlayingItem)
     {
         font.setBold(true);
