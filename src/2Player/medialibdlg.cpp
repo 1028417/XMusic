@@ -16,12 +16,12 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
     QColor crText(32, 128, 255);
 
     m_view.setTextColor(ui.labelTitle, crText);
-    m_view.setFont(ui.labelTitle, 5, false);
+    m_view.setFont(ui.labelTitle, 5);
 
     ui.btnUpward->setVisible(false);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 2, false);
+    m_view.setFont(&m_MedialibView, 2, false, E_FontWeight::FW_Light);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 
@@ -274,7 +274,7 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
                 {
                     context.pixmap = &m_pixmapPlayItem;
                 }
-                context.strText = Media.m_strName;
+                context.strText = Media.GetTitle();
 
                 _paintItem(painter, rc, lvitem, context);
             });
@@ -313,7 +313,14 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_Underline;
     context.pixmap = &m_pixmapDir;
-    context.strText = MediaRes.GetName();
+    if (MediaRes.IsDir())
+    {
+        context.strText = MediaRes.GetName();
+    }
+    else
+    {
+        context.strText = MediaRes.GetTitle();
+    }
 
     if (MediaRes.IsDir())
     {

@@ -81,5 +81,5 @@ private:
     virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
 
     bool _scroll(int dy);
-    void _scrollEx(int dy, UINT uCount);
+    void _scrollEx(int dy, ulong dt, ulong total);
 };

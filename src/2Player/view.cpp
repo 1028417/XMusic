@@ -12,20 +12,20 @@ IModelObserver& CPlayerView::getModelObserver()
     return m_mainWnd;
 }
 
-QFont CPlayerView::genFont(double dbOffsetSize, bool bBold, bool bItalic) const
+QFont CPlayerView::genFont(double dbOffsetSize, bool bItalic, E_FontWeight eWeight) const
 {
     QFont font(m_app.font());
     font.setPointSizeF(font.pointSizeF() + dbOffsetSize);
-    font.setBold(bBold);
+    font.setWeight((int)eWeight);
     font.setItalic(bItalic);
     return font;
 }
 
-void CPlayerView::setFont(QWidget *widget, double dbOffsetSize, bool bBold, bool bItalic) const
+void CPlayerView::setFont(QWidget *widget, double dbOffsetSize, bool bItalic, E_FontWeight eWeight) const
 {
     if (widget)
     {
-        widget->setFont(genFont(dbOffsetSize, bBold, bItalic));
+        widget->setFont(genFont(dbOffsetSize, bItalic, eWeight));
     }
 }
 

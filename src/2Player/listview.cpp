@@ -74,21 +74,46 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
 }
 
+ulong g_uTouchTime = 0;
+
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
         _scroll(te.dy());
     }
-    else if (E_TouchEventType::TET_TouchSwipe == type)
+    else if (E_TouchEventType::TET_TouchBegin == type)
     {
-        if (te.dy() < 0)
+        g_uTouchTime = te.timestamp();
+    }
+    else if (E_TouchEventType::TET_TouchEnd == type)
+    {
+        ulong dt = te.dt();
+        if (dt > 0)
         {
-            _scrollEx(-m_uRowHeight, getRowCount());
-        }
-        else if (te.dy() > 0)
-        {
-            _scrollEx(m_uRowHeight, getRowCount());
+            int dy = te.dy();
+            if (0 == dy)
+            {
+                return;
+            }
+
+            if (dy > 0)
+            {
+                dy = 10;
+            }
+            else if (dy < 0)
+            {
+                dy = -10;
+            }
+
+            if (dt < 100)
+            {
+                _scrollEx(dy*5, 50, 3000);
+            }
+            else if (dt < 500)
+            {
+                _scrollEx(dy, 50, 2000);
+            }
         }
     }
 }
@@ -125,23 +150,25 @@ bool CListView::_scroll(int dy)
     return bFlag;
 }
 
-void CListView::_scrollEx(int dy, UINT uCount)
+void CListView::_scrollEx(int dy, ulong dt, ulong total)
 {
-    if (uCount > 0)
-    {
+    ulong uTouchTime = g_uTouchTime;
+    QTimer::singleShot(dt, [=](){
+        if (uTouchTime != g_uTouchTime)
+        {
+            return;
+        }
+
         if (_scroll(dy))
         {
             return;
         }
 
-        uCount--;
-        if (uCount > 0)
+        if (total >= dt*2)
         {
-            QTimer::singleShot(100, [=](){
-                _scrollEx(dy, uCount);
-            });
+            _scrollEx(dy, dt, total-dt);
         }
-    }
+    });
 }
 
 void CListView::_onPaint(CPainter& painter, const QRect&)

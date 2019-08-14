@@ -110,13 +110,13 @@ void MainWindow::showLogo()
 #if __android
     dbTipFontSize -= 1;
 #endif
-    m_view.setFont(ui.labelLogoTip, dbTipFontSize, true, true);
+    m_view.setFont(ui.labelLogoTip, dbTipFontSize, true, E_FontWeight::FW_Light);
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
     ui.labelLogoTip->setPalette(peTip);
 
-    m_view.setFont(ui.labelLogoCompany, 0.5, true);
+    m_view.setFont(ui.labelLogoCompany, 0.5);
 
     QPalette peCompany;
     peCompany.setColor(QPalette::WindowText, QColor(64, 128, 255, 0));
@@ -543,14 +543,14 @@ void MainWindow::_relayout()
 
         y_PlayingListMax = y_SingerImg;
 
-        m_view.setFont(&m_PlayingList, -1);
+        m_view.setFont(&m_PlayingList, -0.5);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
         m_PlayingList.setInactiveAlpha(0.4);
         m_PlayingList.setShadowWidth(2);
     }
     else
     {
-        m_view.setFont(&m_PlayingList, -1.5);
+        m_view.setFont(&m_PlayingList, -1.5, false, E_FontWeight::FW_Light);
         m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadowWidth(0);

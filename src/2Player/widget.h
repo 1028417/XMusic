@@ -55,8 +55,7 @@ enum class E_TouchEventType
 {
     TET_TouchBegin,
     TET_TouchMove,
-    TET_TouchEnd,
-    TET_TouchSwipe
+    TET_TouchEnd
 };
 
 class CTouchEvent

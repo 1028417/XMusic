@@ -179,25 +179,14 @@ void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& tee)
+void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& te)
 {
+    CTouchEvent tee(te);
+    tee.setDt(te.timestamp() - m_teBegin.timestamp());
+    tee.setDx(te.x() - m_teBegin.x());
+    tee.setDy(te.y() - m_teBegin.y());
+
     _onTouchEvent(E_TouchEventType::TET_TouchEnd, tee);
-
-    ulong dt = tee.timestamp() - m_teBegin.timestamp();
-    if (dt < 300)
-    {
-        int dx = tee.x() - m_teBegin.x();
-        int dy = tee.y() - m_teBegin.y();
-        if (dx != 0 || dy != 0)
-        {
-            CTouchEvent tse(tee);
-            tse.setDt(dt);
-            tse.setDx(dx);
-            tse.setDy(dy);
-
-            _onTouchEvent(E_TouchEventType::TET_TouchSwipe, tse);
-        }
-    }
 }
 
 template <class TParent>

@@ -8,6 +8,13 @@
 
 extern ITxtWriter& g_logWriter;
 
+enum class E_FontWeight
+{
+    FW_Normal = QFont::Weight::Normal
+    , FW_Light = QFont::Weight::Light
+    , FW_Bold = QFont::Weight::Bold
+};
+
 class CPlayerView : public IPlayerView
 {
 public:
@@ -64,9 +71,11 @@ public:
     }
 
     //QFont font() const;
-    QFont genFont(double dbOffsetSize, bool bBold=false, bool bItalic=false) const;
+    QFont genFont(double dbOffsetSize, bool bItalic=false
+            , E_FontWeight eWeight = E_FontWeight::FW_Normal) const;
 
-    void setFont(QWidget *widget, double dbOffsetSize=0, bool bBold=false, bool bItalic=false) const;
+    void setFont(QWidget *widget, double dbOffsetSize=0
+            , bool bItalic=false, E_FontWeight eWeight = E_FontWeight::FW_Normal) const;
 
     void setTextColor(QWidget *widget, const QColor& crText);
 
