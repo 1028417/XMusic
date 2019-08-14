@@ -38,7 +38,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewI
 
     rc.setLeft(rc.left() + 30);
 
-    m_alPlayingItems.get(item.uItem, [&](tagPlayingItem& playingItem){
+    m_alPlayingItems.get(lvitem.uItem, [&](tagPlayingItem& playingItem){
         if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
         {
             font.setItalic(true);
