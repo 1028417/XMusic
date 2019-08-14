@@ -72,26 +72,6 @@ private:
 
     int _sortCompare(const CPath& lhs, const CPath& rhs) const override
     {
-        /*if (lhs.IsDir() && !rhs.IsDir())
-		{
-			return -1;
-		}
-
-        if (lhs.IsDir() == rhs.IsDir())
-		{
-			int nRet = wsutil::collate(lhs.GetName(), rhs.GetName());
-			if (0 == nRet)
-			{
-                if ((int)((CAttachDir&)lhs).m_eType < (int)((CAttachDir&)rhs).m_eType)
-				{
-					return -1;
-				}
-			}
-			return nRet;
-		}
-
-		return 1;*/
-
         int nRet = lhs._sortCompare(rhs);
         if (0 == nRet)
         {
