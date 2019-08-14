@@ -35,8 +35,8 @@ using TD_AlbumItemList = PtrArray<CAlbumItem>;
 
 enum class E_GlobalImage
 {
-	GI_Folder = 0
-	, GI_FolderLink
+	GI_Dir = 0
+	, GI_DirLink
 	, GI_MediaFile
 	, GI_WholeTrack
 

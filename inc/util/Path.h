@@ -24,9 +24,7 @@ class __UtilExt CPath : protected tagFileInfo
 	friend struct tagPathSortor;
 
 public:
-	CPath()
-	{
-	}
+	CPath() {}
 
 	CPath(const wstring& strName, bool bDir);
 
@@ -41,7 +39,7 @@ public:
 		Clear();
 	}
 
-protected:	
+protected:
 	CPath *m_pParentDir = NULL;
 
     bool m_bDirExists = false;
@@ -49,6 +47,16 @@ protected:
     TD_PathList m_lstSubPath;
 
 	bool m_bFinded = false;
+
+private:
+	void _findFile();
+
+	virtual CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir)
+	{
+		return new CPath(FileInfo, ParentDir);
+	}
+
+	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
 
 protected:
 	virtual void _onFindFile();
@@ -60,19 +68,9 @@ protected:
         return lhs._sortCompare(rhs);
     }
 
-    virtual int _sortCompare(const CPath& rhs) const;
-
-private:
-    void _findFile();
-
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir)
-	{
-		return new CPath(FileInfo, ParentDir);
-	}
-	
-	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
-
 public:
+	virtual int _sortCompare(const CPath& rhs) const;
+
     void SetDir(const wstring& strDir, bool bFindFile=false);
 
 	void SetName(const wstring& strNewName)

@@ -6,9 +6,7 @@
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
-	CMediaRes()
-	{
-	}
+	CMediaRes() {}
 
 	CMediaRes(const tagFileInfo& FileInfo, CPath& ParentDir, E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
 

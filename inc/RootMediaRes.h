@@ -19,6 +19,30 @@ enum class E_AttachDirType
     , ADT_USB
 };
 
+class __MediaLibExt CAttachDir : public CMediaRes
+{
+public:
+	CAttachDir(const wstring& strDir, E_AttachDirType eType)
+		: CMediaRes(strDir)
+		, m_eType(eType)
+	{
+	}
+
+public:
+	E_AttachDirType m_eType;
+
+public:
+	wstring GetPath() const override
+	{
+		return __wcFSSlant + GetName();
+	}
+
+	bool GetRenameText(wstring&) const
+	{
+		return false;
+    }
+};
+
 class __MediaLibExt CRootMediaRes : public CMediaRes
 {
 public:
@@ -44,6 +68,40 @@ private:
     void _sortSubPath() override
     {
         CPath::_sortSubPath();
+    }
+
+    int _sortCompare(const CPath& lhs, const CPath& rhs) const override
+    {
+        /*if (lhs.IsDir() && !rhs.IsDir())
+		{
+			return -1;
+		}
+
+        if (lhs.IsDir() == rhs.IsDir())
+		{
+			int nRet = wsutil::collate(lhs.GetName(), rhs.GetName());
+			if (0 == nRet)
+			{
+                if ((int)((CAttachDir&)lhs).m_eType < (int)((CAttachDir&)rhs).m_eType)
+				{
+					return -1;
+				}
+			}
+			return nRet;
+		}
+
+		return 1;*/
+
+        int nRet = lhs._sortCompare(rhs);
+        if (0 == nRet)
+        {
+            if ((int)((CAttachDir&)lhs).m_eType < (int)((CAttachDir&)rhs).m_eType)
+            {
+                return -1;
+            }
+        }
+
+        return nRet;
     }
 #endif
 
