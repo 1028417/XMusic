@@ -59,7 +59,7 @@ public:
 private:
     PairList<wstring, E_AttachDirType> m_plAttachDir;
 
-	map<wstring, class CAttachDir*> m_mapAttachDir;
+	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
     void _onFindFile() override;
@@ -70,23 +70,10 @@ private:
         CPath::_sortSubPath();
     }
 
-    int _sortCompare(const CPath& lhs, const CPath& rhs) const override
-    {
-        int nRet = lhs._sortCompare(rhs);
-        if (0 == nRet)
-        {
-            if ((int)((CAttachDir&)lhs).m_eType < (int)((CAttachDir&)rhs).m_eType)
-            {
-                return -1;
-            }
-        }
-
-        return nRet;
-    }
 #endif
 
-    inline class CAttachDir* _getAttachDir(const wstring& strDirName);
-
+	int _sortCompare(const CPath& lhs, const CPath& rhs) const override;
+	
 public:
     void init(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 
