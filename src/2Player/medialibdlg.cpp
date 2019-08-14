@@ -420,16 +420,11 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         rc.setRight(rc.right() - nMargin);
     }
 
-    rc.setLeft(x_icon + sz_icon + nMargin);
-
     int y_icon = rc.center().y()-sz_icon/2;
     QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
     painter.drawPixmapEx(rcDst, pixmap);
 
-
-    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(strText)
-                            , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
-    painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
+    rc.setLeft(x_icon + sz_icon + nMargin);
 
     if (eStyle != E_ItemStyle::IS_Normal)
     {
@@ -442,8 +437,14 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
             int y_righttip = rc.center().y()-sz_righttip/2;
 
             painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
+
+            rc.setRight(x_righttip - nMargin);
         }
     }
+
+    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(strText)
+                            , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
+    painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }
 
 void CMedialibView::_handleRowClick(UINT uRowIdx, const QMouseEvent&)
