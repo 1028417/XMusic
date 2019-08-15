@@ -60,8 +60,6 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
 }
 
-ulong g_uTouchTime = 0;
-
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
@@ -70,7 +68,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
     else if (E_TouchEventType::TET_TouchBegin == type)
     {
-        g_uTouchTime = te.timestamp();
+        m_uTouchSeq++;
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
@@ -140,9 +138,9 @@ bool CListView::_scroll(int dy)
 
 void CListView::_scrollEx(int dy, ulong dt, ulong total)
 {
-    ulong uTouchTime = g_uTouchTime;
+    ulong uTouchSeq = m_uTouchSeq;
     QTimer::singleShot(dt, [=](){
-        if (uTouchTime != g_uTouchTime)
+        if (uTouchSeq != m_uTouchSeq)
         {
             return;
         }

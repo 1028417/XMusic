@@ -468,8 +468,8 @@ void MainWindow::_relayout()
     else
     {        
         x_frameDemand = (cx - ui.frameDemand->width())/2;
+        x_frameDemand -= 10;
     }
-    x_frameDemand -= 10;
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int x_btnMore = 20;

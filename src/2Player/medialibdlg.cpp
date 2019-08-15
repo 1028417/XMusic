@@ -114,7 +114,7 @@ void CMedialibView::showRoot()
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
 
-    update(true);
+    update(0, true);
 
     m_medialibDlg.showUpwardButton(false);
 
@@ -220,7 +220,28 @@ UINT CMedialibView::getRowCount()
         return 7;
     }
 
-    return round(10.0f*m_medialibDlg.height()/1800);
+    UINT uRet = 10;
+    int cy = m_medialibDlg.height();
+    if (cy > 1920)
+    {
+        uRet++;
+
+        if (cy > 2160)
+        {
+           uRet++;
+
+            if (cy > 2340)
+            {
+               uRet++;
+            }
+        }
+    }
+    else if (cy < 1800)
+    {
+        uRet = round((float)uRet*m_medialibDlg.height()/1800);
+    }
+
+    return uRet;
 }
 
 UINT CMedialibView::getItemCount()

@@ -54,6 +54,8 @@ private:
     int m_nSelectItem = -1;
     int m_nFlashItem = -1;
 
+    ulong m_uTouchSeq = 0;
+
 public:
     float scrollPos() const
     {
@@ -73,6 +75,8 @@ public:
         {
             m_nSelectItem = -1;
             m_nFlashItem = -1;
+
+            m_uTouchSeq = 0;
         }
 
         CWidget<QWidget>::update();
