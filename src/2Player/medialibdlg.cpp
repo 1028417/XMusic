@@ -108,15 +108,13 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
 
 void CMedialibView::showRoot()
 {
-    dselectItem();
-
     m_pMediaRes = NULL;
 
     m_pMediaset = NULL;
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
 
-    this->update(true);
+    update(true);
 
     m_medialibDlg.showUpwardButton(false);
 
@@ -127,15 +125,13 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
 {
     if (MediaRes.IsDir())
     {
-        dselectItem();
-
         m_pMediaRes = &MediaRes;
 
         m_pMediaset = NULL;
         m_lstSubSets.clear();
         m_lstSubMedias.clear();
 
-        this->update(true);
+        update(_scrollRecord(), true);
 
         m_medialibDlg.showUpwardButton(true);
 
@@ -156,8 +152,6 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
 
 void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 {
-    dselectItem();
-
     m_pMediaRes = NULL;
 
     m_pMediaset = &MediaSet;
@@ -168,7 +162,7 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
 
-    this->update(true);
+    update(_scrollRecord(), true);
 
     m_medialibDlg.showUpwardButton(true);
 
@@ -552,6 +546,8 @@ void CMedialibView::_handleRowClick(UINT uRowIdx, const QMouseEvent&)
 
 void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 {
+    _saveScrollRecord();
+
     showMediaSet(MediaSet);
 }
 
@@ -564,6 +560,8 @@ void CMedialibView::_handleItemClick(CMediaRes& MediaRes)
 {
     if (MediaRes.IsDir())
     {
+        _saveScrollRecord();
+
         showMediaRes(MediaRes);
     }
     else
@@ -572,8 +570,38 @@ void CMedialibView::_handleItemClick(CMediaRes& MediaRes)
     }
 }
 
+float& CMedialibView::_scrollRecord()
+{
+    void *p = m_pMediaRes;
+    if (m_pMediaset)
+    {
+        p = m_pMediaset;
+    }
+
+    return m_mapScrollRecord[p];
+}
+
+void CMedialibView::_saveScrollRecord()
+{
+    _scrollRecord() = scrollPos();
+}
+
+void CMedialibView::_clearScrollRecord()
+{
+    if (m_pMediaRes)
+    {
+        m_mapScrollRecord.erase(m_pMediaRes);
+    }
+    else if (m_pMediaset)
+    {
+        m_mapScrollRecord.erase(m_pMediaset);
+    }
+}
+
 bool CMedialibView::handleReturn()
 {
+    _clearScrollRecord();
+
     if (m_pMediaset)
     {
         if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset || NULL == m_pMediaset->m_pParent)

@@ -46,6 +46,14 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
+    CMediaRes *m_pMediaRes = NULL;
+
+    CMediaSet *m_pMediaset = NULL;
+    TD_MediaSetList m_lstSubSets;
+    TD_MediaList m_lstSubMedias;
+
+    map<void*, float> m_mapScrollRecord;
+
     QPixmap m_pixmapDir;
     QPixmap m_pixmapDirLink;
     QPixmap m_pixmapFile;
@@ -60,12 +68,6 @@ private:
 
     QPixmap m_pixmapRightTip;
 
-    CMediaRes *m_pMediaRes = NULL;
-
-    CMediaSet *m_pMediaset = NULL;
-    TD_MediaSetList m_lstSubSets;
-    TD_MediaList m_lstSubMedias;
-
 public:
     void showRoot();
 
@@ -76,13 +78,20 @@ public:
     bool handleReturn();
 
 private:
-    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
-    void _getTitle(CMediaSet& MediaSet, WString& strTitle);
-
     UINT getRowCount() override;
     UINT getItemCount() override;
 
     void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
+
+    void _handleRowClick(UINT uRowIdx, const QMouseEvent&) override;
+
+private:
+    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
+    void _getTitle(CMediaSet& MediaSet, WString& strTitle);
+
+    float& _scrollRecord();
+    void _saveScrollRecord();
+    void _clearScrollRecord();
 
     void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaRes& MediaRes);
 
@@ -91,8 +100,6 @@ private:
     void _paintItem(CPainter& painter, QRect& rc, const tagListViewItem&, const tagItemContext& context);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);
-
-    void _handleRowClick(UINT uRowIdx, const QMouseEvent&) override;
 
     void _handleItemClick(CMediaRes& MediaRes);
 

@@ -39,11 +39,7 @@ class CListView : public CWidget<QWidget>, public CListRowCount
 {
 public:
     CListView(QWidget *parent=NULL, UINT uRowCount=0)
-        : CWidget(parent
-/*#if __android
-            , {Qt::TapAndHoldGesture}
-#endif*/
-        )
+        : CWidget(parent)
         , CListRowCount(uRowCount)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -59,25 +55,44 @@ private:
     int m_nFlashItem = -1;
 
 public:
-    void update(bool bReset=false)
+    float scrollPos() const
     {
-        if (bReset)
-        {
-            m_fScrollPos = 0;
-        }
+        return m_fScrollPos;
+    }
+
+    void update()
+    {
         CWidget<QWidget>::update();
     }
 
-    void update(float fScrollPos)
+    void update(float fScrollPos, bool bReset=false)
     {
         m_fScrollPos = fScrollPos;
 
+        if (bReset)
+        {
+            m_nSelectItem = -1;
+            m_nFlashItem = -1;
+        }
+
         CWidget<QWidget>::update();
     }
 
-    void selectItem(UINT uItem);
+    void selectItem(UINT uItem)
+    {
+        showItem(uItem);
 
-    void dselectItem();
+        m_nSelectItem = uItem;
+
+        CWidget<QWidget>::update();
+    }
+
+    void dselectItem()
+    {
+        m_nSelectItem = -1;
+
+        CWidget<QWidget>::update();
+    }
 
     void showItem(UINT uItem, bool bToTop=false);
 

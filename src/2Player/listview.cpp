@@ -3,20 +3,6 @@
 
 #include <QTimer>
 
-void CListView::selectItem(UINT uItem)
-{
-    showItem(uItem);
-
-    m_nSelectItem = uItem;
-    update();
-}
-
-void CListView::dselectItem()
-{
-    m_nSelectItem = -1;
-    update();
-}
-
 void CListView::showItem(UINT uItem, bool bToTop)
 {
     UINT uRowCount = getRowCount();
@@ -147,7 +133,7 @@ bool CListView::_scroll(int dy)
         }
     }
 
-    this->update();
+    update();
 
     return bFlag;
 }
