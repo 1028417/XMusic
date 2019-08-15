@@ -6,14 +6,9 @@
 
 #include <QFont>
 
-extern ITxtWriter& g_logWriter;
+#include <widget.h>
 
-enum class E_FontWeight
-{
-    FW_Light = QFont::Weight::Light,
-    //FW_Normal = QFont::Weight::Normal,
-    FW_SemiBold = QFont::Weight::DemiBold
-};
+extern ITxtWriter& g_logWriter;
 
 #define __defFontWeight E_FontWeight::FW_Light
 
@@ -72,9 +67,9 @@ public:
         return m_model.getPlayMgr();
     }
 
-    QFont genFont(double dbOffsetSize, E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
+    QFont genFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
-    void setFont(QWidget *widget, double dbOffsetSize=0
+    void setFont(QWidget *widget, float fSizeOffset = 0
             , E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
     void setTimer(UINT uMs, const function<bool()>& cb);

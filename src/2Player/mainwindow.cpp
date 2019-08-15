@@ -997,21 +997,11 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                     m_eDemandLanguage = eLanguage;
 
                     lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
-                    lblLanguage->setTextColor(180,220,255);
+
+                    lblLanguage->setTextColor(200,255,200);
                 }
             }
         });
-
-        /*plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
-            if (E_LanguageType::LT_None == m_eDemandLanguage)
-            {
-                lblLanguage->setTextAlpha(255);
-            }
-            else
-            {
-                lblLanguage->setTextAlpha(eLanguage == m_eDemandLanguage ? 255 : 200);
-            }
-        });*/
     }
 }
 

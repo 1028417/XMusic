@@ -11,6 +11,13 @@
 
 #include "util.h"
 
+enum class E_FontWeight
+{
+    FW_Light = QFont::Weight::Light,
+    //FW_Normal = QFont::Weight::Normal,
+    FW_SemiBold = QFont::Weight::DemiBold
+};
+
 class CPainter : public QPainter
 {
 public:
@@ -141,12 +148,12 @@ public:
     }
 };
 
-template <class TParent=QWidget>
-class CWidget : public TParent
+template <class TWidget = QWidget>
+class CWidget : public TWidget
 {
 public:
     CWidget(QWidget *parent, const list<Qt::GestureType>& lstGestureType={}) :
-        TParent(parent),
+        TWidget(parent),
         m_lstGestureType(lstGestureType)
     {
         for (auto gestureType : m_lstGestureType)
@@ -189,9 +196,9 @@ public:
     {
         m_crText = crText;
 
-        QPalette pe = TParent::palette();
+        QPalette pe = TWidget::palette();
         pe.setColor(QPalette::WindowText, crText);
-        TParent::setPalette(pe);
+        TWidget::setPalette(pe);
     }
 
     void setTextColor(UINT r, UINT g, UINT b, UINT a=255)
@@ -206,6 +213,36 @@ public:
             m_crText.setAlpha(uAlpha);
             setTextColor(m_crText);
         }
+    }
+
+    void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    {
+        QFont font = TWidget::font();
+        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        font.setWeight((int)eWeight);
+        font.setItalic(bItalic);
+        TWidget::setFont(font);
+    }
+
+    void adjustFontSize(float fSizeOffset)
+    {
+        QFont font = TWidget::font();
+        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        TWidget::setFont(font);
+    }
+
+    void adjustFontWeight(E_FontWeight eWeight)
+    {
+        QFont font = TWidget::font();
+        font.setWeight((int)eWeight);
+        TWidget::setFont(font);
+    }
+
+    void adjustFontItalic(bool bItalic)
+    {
+        QFont font = TWidget::font();
+        font.setItalic(bItalic);
+        TWidget::setFont(font);
     }
 
 protected:
