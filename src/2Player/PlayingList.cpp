@@ -28,8 +28,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewI
     bool bPlayingItem = lvitem.uItem == m_uPlayingItem;
     if (bPlayingItem)
     {
-        font.setBold(true);
-        font.setPointSizeF(font.pointSizeF()+0.5);
+        font.setWeight((int)E_FontWeight::FW_SemiBold);
 
         painter.setFont(font);
         painter.drawText(rc.left(), rc.top() + 6, rc.width()

@@ -52,11 +52,6 @@ MainWindow::MainWindow(CPlayerView& view) :
         m_mapWidgetPos[pWidget] = pWidget->geometry();
     }
 
-    _init();
-}
-
-void MainWindow::_init()
-{
     ui.labelLogo->setParent(this);
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
@@ -70,53 +65,21 @@ void MainWindow::_init()
 
     ui.btnExit->raise();
 
-    SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
-                , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
-                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom};
-    for (auto button : lstButtons)
-    {
-        connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
-    }
-
-    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-                , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR
-                , ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
-                , ui.labelPlayProgress};
-    for (auto label : lstLabels)
-    {
-        connect(label, SIGNAL(signal_click(CLabel*, const QPoint&))
-                , this, SLOT(slot_labelClick(CLabel*, const QPoint&)));
-    }
-    lstLabels.add(ui.labelDuration);
-    for (auto label : lstLabels)
-    {
-        label->setTextColor(Qt::GlobalColor::white);
-    }
-
-    ui.labelSingerName->setShadowWidth(2);
-
-    connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
-            , this, SLOT(slot_showPlaying(unsigned int, bool)));
-    connect(this, SIGNAL(signal_playFinish()), this, SLOT(slot_playFinish()));
+    this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 void MainWindow::showLogo()
 {
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowState(Qt::WindowFullScreen);
-
-    double dbTipFontSize = -0.5;
+    float fFontSizeOffset = -0.5;
 #if __android
-    dbTipFontSize -= 1;
+    fFontSizeOffset = -2;
 #endif
-    m_view.setFont(ui.labelLogoTip, dbTipFontSize, true, E_FontWeight::FW_Light);
+    m_view.setFont(ui.labelLogoTip, fFontSizeOffset, E_FontWeight::FW_Light, true);
+    m_view.setFont(ui.labelLogoCompany, fFontSizeOffset/2.5);
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
     ui.labelLogoTip->setPalette(peTip);
-
-    m_view.setFont(ui.labelLogoCompany, 0.5);
 
     QPalette peCompany;
     peCompany.setColor(QPalette::WindowText, QColor(64, 128, 255, 0));
@@ -129,7 +92,8 @@ void MainWindow::showLogo()
     pe.setColor(QPalette::Background, QColor(180, 220, 255));
     this->setPalette(pe);
 
-    QMainWindow::show();
+    QMainWindow::showFullScreen();
+    this->setWindowState(Qt::WindowFullScreen);
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -188,8 +152,48 @@ void MainWindow::showLogo()
     });
 }
 
+void MainWindow::_init()
+{
+    SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
+                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
+                , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
+                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom};
+    for (auto button : lstButtons)
+    {
+        connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+    }
+
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+                , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
+    for (auto label : lstLabels)
+    {
+        m_view.setFont(label, 0, E_FontWeight::FW_SemiBold);
+    }
+    lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
+                , ui.labelPlayProgress);
+    for (auto label : lstLabels)
+    {
+        connect(label, SIGNAL(signal_click(CLabel*, const QPoint&))
+                , this, SLOT(slot_labelClick(CLabel*, const QPoint&)));
+    }
+    lstLabels.add(ui.labelDuration);
+    for (auto label : lstLabels)
+    {
+        label->setTextColor(Qt::GlobalColor::white);
+    }
+
+    ui.labelSingerName->setShadowWidth(2);
+
+    connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
+            , this, SLOT(slot_showPlaying(unsigned int, bool)));
+    connect(this, SIGNAL(signal_playFinish()), this, SLOT(slot_playFinish()));
+}
+
+
 void MainWindow::show()
 {
+    _init();
+
     m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
     m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
 
@@ -237,9 +241,7 @@ void MainWindow::show()
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
-    m_view.setFont(ui.labelSingerName, 0.5);
-    m_view.setFont(ui.labelPlayingfile, 1.5);
-    m_view.setFont(ui.labelDuration, -2);
+    m_view.setFont(ui.labelDuration, -1.5);
 
     if (m_view.getOptionMgr().getOption().bRandomPlay)
     {
@@ -550,7 +552,7 @@ void MainWindow::_relayout()
     }
     else
     {
-        m_view.setFont(&m_PlayingList, -1.5, false, E_FontWeight::FW_Light);
+        m_view.setFont(&m_PlayingList, -1.5);
         m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadowWidth(0);
@@ -695,40 +697,6 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     _showAlbumName();
 
     ui.labelPlayingfile->setText(wsutil::toQStr(m_PlayingInfo.strTitle));
-    UINT uLen = wsutil::toStr(m_PlayingInfo.strTitle).size();
-    float fFontSizeOffset = 0;
-    if (uLen > 60)
-    {
-        fFontSizeOffset = -2.5;
-    }
-    else if (uLen > 55)
-    {
-        fFontSizeOffset = -2;
-    }
-    else if (uLen > 50)
-    {
-        fFontSizeOffset = -1;
-    }
-    else if (uLen > 45)
-    {
-        fFontSizeOffset = -0.5;
-    }
-    else if (uLen > 40)
-    {
-        fFontSizeOffset = 0;
-    }
-    else
-    {
-        if (!m_bUsingCustomBkg)
-        {
-            fFontSizeOffset -= 0.5;
-        }
-        else
-        {
-            fFontSizeOffset = 0.5;
-        }
-    }
-    m_view.setFont(ui.labelPlayingfile, fFontSizeOffset);
 
     if (m_PlayingInfo.strSinger != m_strSingerName)
     {
@@ -803,22 +771,6 @@ void MainWindow::_showAlbumName()
 
     if (!m_bUsingCustomBkg)
     {
-        UINT uLen = wsutil::toStr(*strMediaSet).size();
-        float fFontSizeOffset = 0;
-        if (uLen > 20)
-        {
-            fFontSizeOffset = -1.5;
-        }
-        else if (uLen > 15)
-        {
-            fFontSizeOffset = -1;
-        }
-        else if (uLen > 10)
-        {
-            fFontSizeOffset = -0.5;
-        }
-        m_view.setFont(&labelAlbumName, fFontSizeOffset);
-
         cauto& rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
         labelAlbumName.adjustSize();
         if (labelAlbumName.width() < rcAlbumNamePrev.width())

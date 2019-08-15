@@ -42,20 +42,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 
-    #define __FontSize 11
+#define __FontSize 12
 #else
-    #define __FontSize 15
-#endif
-
-#define __FontFile "msyhl.ttc"
-#if __android
-#define __FontPath "assets:/" __FontFile
-#else
-#define __FontPath __FontFile
+#define __FontSize 14
 #endif
 
 static CUTF8Writer m_logWriter;
 ITxtWriter& g_logWriter(m_logWriter);
+
+map<E_FontWeight, QFont> g_mapFont;
 
 class CApplication : public QApplication
 {
@@ -89,27 +84,40 @@ public:
 
         m_logWriter.open(L"XMusic.log", true);
 
-        /*QFontDatabase database;
-        for (cauto& familyName : database.families(QFontDatabase::Korean))
-        {
-            g_logWriter << "familyName: " >> familyName;
-            //this->setFont(QFont(familyName, 10));
-            break;
-        }*/
+        SMap<E_FontWeight, QString> mapFontFile {
+            { E_FontWeight::FW_Light, "Microsoft-YaHei-Light.ttc" }
+            //, { E_FontWeight::FW_Normal, "Microsoft-YaHei-Regular.ttc" }
+            , { E_FontWeight::FW_SemiBold, "Microsoft-YaHei-Semibold.ttc" }
+        };
+        mapFontFile([&](E_FontWeight eWeight, QString qsFontFile) {
+#if __android
+            qsFontFile = "assets:/" +  qsFontFile;
+#endif
 
-        int fontId = QFontDatabase::addApplicationFont(__FontPath);
-        g_logWriter << "newFontId: " >> fontId;
-        if (-1 != fontId)
-        {
-            cauto& familyName = QFontDatabase::applicationFontFamilies(fontId).at(0);
-            g_logWriter << "newfamilyName: " >> familyName;
-            this->setFont(QFont(familyName, __FontSize));
-        }
-        else
-        {
-            this->setFont(QFont(QString::fromLocal8Bit(""), __FontSize));
-        }
-    }
+            QString qsFontfamilyName;
+            int fontId = QFontDatabase::addApplicationFont(qsFontFile);
+            g_logWriter << "newFontId: " >> fontId;
+            if (-1 != fontId)
+            {
+                cauto& qslst = QFontDatabase::applicationFontFamilies(fontId);
+                if (!qslst.empty())
+                {
+                    qsFontfamilyName = qslst.at(0);
+                    g_logWriter << "newfamilyName: " >> qsFontfamilyName;
+                }
+            }
+
+            QFont font(qsFontfamilyName);
+            font.setPointSizeF(__FontSize);
+            font.setWeight((int)eWeight);
+            g_mapFont[eWeight] = font;
+
+            if (__defFontWeight == eWeight)
+            {
+                this->setFont(font);
+            }
+        });
+     }
 };
 
 class CApp : public CApplication

@@ -10,10 +10,12 @@ extern ITxtWriter& g_logWriter;
 
 enum class E_FontWeight
 {
-    FW_Normal = QFont::Weight::Normal
-    , FW_Light = QFont::Weight::Light
-    , FW_Bold = QFont::Weight::Bold
+    FW_Light = QFont::Weight::Light,
+    //FW_Normal = QFont::Weight::Normal,
+    FW_SemiBold = QFont::Weight::DemiBold
 };
+
+#define __defFontWeight E_FontWeight::FW_Light
 
 class CPlayerView : public IPlayerView
 {
@@ -70,12 +72,10 @@ public:
         return m_model.getPlayMgr();
     }
 
-    //QFont font() const;
-    QFont genFont(double dbOffsetSize, bool bItalic=false
-            , E_FontWeight eWeight = E_FontWeight::FW_Normal) const;
+    QFont genFont(double dbOffsetSize, E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
     void setFont(QWidget *widget, double dbOffsetSize=0
-            , bool bItalic=false, E_FontWeight eWeight = E_FontWeight::FW_Normal) const;
+            , E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
     void setTextColor(QWidget *widget, const QColor& crText);
 

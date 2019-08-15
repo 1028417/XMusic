@@ -25,9 +25,8 @@ public:
         setBkgColor(QColor(180, 220, 255));
 
         this->setWindowFlags(Qt::FramelessWindowHint);
+        T::showFullScreen();
         this->setWindowState(Qt::WindowFullScreen);
-
-        T::show();
     }
 
     void setBkgColor(const QColor& crBkg)

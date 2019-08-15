@@ -60,7 +60,9 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel 
 
 DESTDIR = $$PWD/../../build
 
-    rc.files += ../../bin/msyhl.ttc
+    rc.files += ../../bin/Microsoft-YaHei-Light.ttc
+#    rc.files += ../../bin/Microsoft-YaHei-Regular.ttc
+    rc.files += ../../bin/Microsoft-YaHei-Semibold.ttc
     rc.files += ../../bin/hbkg
     rc.files += ../../bin/vbkg
     rc.path = /assets
