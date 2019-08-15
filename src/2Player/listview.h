@@ -59,6 +59,22 @@ private:
     int m_nFlashItem = -1;
 
 public:
+    void update(bool bReset=false)
+    {
+        if (bReset)
+        {
+            m_fScrollPos = 0;
+        }
+        CWidget<QWidget>::update();
+    }
+
+    void update(float fScrollPos)
+    {
+        m_fScrollPos = fScrollPos;
+
+        CWidget<QWidget>::update();
+    }
+
     void selectItem(UINT uItem);
 
     void dselectItem();

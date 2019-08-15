@@ -543,7 +543,7 @@ void MainWindow::_relayout()
 
         y_PlayingListMax = y_SingerImg;
 
-        m_view.setFont(&m_PlayingList, -0.5);
+        m_view.setFont(&m_PlayingList, -1);
         m_PlayingList.setTextColor(QColor(255, 255, 255));
         m_PlayingList.setInactiveAlpha(0.4);
         m_PlayingList.setShadowWidth(2);

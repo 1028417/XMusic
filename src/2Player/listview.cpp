@@ -99,20 +99,22 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
             if (dy > 0)
             {
-                dy = 10;
+                dy = 1;
             }
             else if (dy < 0)
             {
-                dy = -10;
+                dy = -1;
             }
+            dy *= m_uRowHeight/20;
 
-            if (dt < 100)
+            if (dt < 500)
             {
-                _scrollEx(dy*5, 50, 3000);
-            }
-            else if (dt < 500)
-            {
-                _scrollEx(dy, 50, 2000);
+                if (dt < 100)
+                {
+                    dy *= 10;
+                }
+
+                _scrollEx(dy, 50, 3000);
             }
         }
     }

@@ -116,7 +116,7 @@ void CMedialibView::showRoot()
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
 
-    this->update();
+    this->update(true);
 
     m_medialibDlg.showUpwardButton(false);
 
@@ -135,7 +135,7 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
         m_lstSubSets.clear();
         m_lstSubMedias.clear();
 
-        this->update();
+        this->update(true);
 
         m_medialibDlg.showUpwardButton(true);
 
@@ -168,7 +168,7 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
 
-    this->update();
+    this->update(true);
 
     m_medialibDlg.showUpwardButton(true);
 
@@ -226,7 +226,7 @@ UINT CMedialibView::getRowCount()
         return 7;
     }
 
-    return 10;
+    return round(10.0f*m_medialibDlg.height()/1800);
 }
 
 UINT CMedialibView::getItemCount()

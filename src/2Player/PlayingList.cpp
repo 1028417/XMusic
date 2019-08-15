@@ -152,7 +152,7 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 void CPlayingList::_updateActive(int nActiveTime)
 {
     m_nActiveTime = nActiveTime;
-    QWidget::update();
+    update();
 }
 
 void CPlayingList::timerEvent(QTimerEvent *)
@@ -162,7 +162,7 @@ void CPlayingList::timerEvent(QTimerEvent *)
        m_nActiveTime--;
        if (0 == m_nActiveTime)
        {
-           QWidget::update();
+           update();
        }
    }
 }
