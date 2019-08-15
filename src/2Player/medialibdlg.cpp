@@ -15,12 +15,13 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 
     QColor crText(32, 128, 255);
 
-    m_view.setTextColor(ui.labelTitle, crText);
+    ui.labelTitle->setTextColor(crText);
     m_view.setFont(ui.labelTitle, 2, E_FontWeight::FW_SemiBold);
 
     ui.btnUpward->setVisible(false);
 
     m_MedialibView.setTextColor(crText);
+    m_view.setFont(&m_MedialibView, 0.5);
 
     connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
 
@@ -452,8 +453,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         g += (-g + crBkg.green())*85 / 255;
         b += (-b + crBkg.blue())*85 / 255;
 
-        QColor crText(r,g,b);// = m_crText;
-        //crText.setAlpha(crText.alpha()*80/100);
+        QColor crText(r,g,b, m_crText.alpha());
         painter.setPen(crText);
     }
 

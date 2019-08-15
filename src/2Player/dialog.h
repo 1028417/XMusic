@@ -22,16 +22,16 @@ private:
 public:
     void show()
     {
-        setBkgColor(QColor(180, 220, 255));
+        setBkgColor(180, 220, 255);
 
         this->setWindowFlags(Qt::FramelessWindowHint);
         T::showFullScreen();
         this->setWindowState(Qt::WindowFullScreen);
     }
 
-    void setBkgColor(const QColor& crBkg)
+    void setBkgColor(uint r, uint g, uint b)
     {
-        m_crBkg = crBkg;
+        m_crBkg.setRgb(r,g,b);
 
         QPalette pe = this->palette();
         pe.setColor(QPalette::Background, m_crBkg);

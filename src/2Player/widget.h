@@ -194,6 +194,20 @@ public:
         TParent::setPalette(pe);
     }
 
+    void setTextColor(UINT r, UINT g, UINT b, UINT a=255)
+    {
+        setTextColor(QColor(r,g,b,a));
+    }
+
+    void setTextAlpha(UINT uAlpha)
+    {
+        if ((int)uAlpha != m_crText.alpha())
+        {
+            m_crText.setAlpha(uAlpha);
+            setTextColor(m_crText);
+        }
+    }
+
 protected:
     virtual bool event(QEvent *ev) override;
 

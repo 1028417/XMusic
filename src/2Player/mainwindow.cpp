@@ -75,7 +75,7 @@ void MainWindow::showLogo()
     fFontSizeOffset = -2;
 #endif
     m_view.setFont(ui.labelLogoTip, fFontSizeOffset, E_FontWeight::FW_Light, true);
-    m_view.setFont(ui.labelLogoCompany, fFontSizeOffset/2.5);
+    m_view.setFont(ui.labelLogoCompany, fFontSizeOffset/3);
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
@@ -179,10 +179,10 @@ void MainWindow::_init()
     lstLabels.add(ui.labelDuration);
     for (auto label : lstLabels)
     {
-        label->setTextColor(Qt::GlobalColor::white);
+        label->setTextColor(255,255,255);
     }
 
-    ui.labelSingerName->setShadowWidth(2);
+    ui.labelSingerName->setShadow(2);
 
     connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
             , this, SLOT(slot_showPlaying(unsigned int, bool)));
@@ -241,7 +241,10 @@ void MainWindow::show()
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
-    m_view.setFont(ui.labelDuration, -1.5);
+    m_view.setFont(ui.labelSingerName, 0.5);
+    m_view.setFont(ui.labelAlbumName, 0.5);
+    m_view.setFont(ui.labelPlayingfile, 0.5);
+    m_view.setFont(ui.labelDuration, -1);
 
     if (m_view.getOptionMgr().getOption().bRandomPlay)
     {
@@ -404,16 +407,17 @@ void MainWindow::_relayout()
         ui.labelBkg->move(0, dy_bkg);
     }
 
-    ui.labelDemandCN->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandHK->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandKR->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandJP->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandTAI->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandEN->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDemandEUR->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelDemandCN->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandHK->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandKR->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandJP->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandTAI->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandEN->setShadow(m_bUsingCustomBkg?1:0);
+    ui.labelDemandEUR->setShadow(m_bUsingCustomBkg?1:0);
 
-    ui.labelAlbumName->setShadowWidth(m_bUsingCustomBkg?2:0);
-    ui.labelDuration->setShadowWidth(m_bUsingCustomBkg?2:0);
+    ui.labelAlbumName->setShadow(m_bUsingCustomBkg?2:0);
+
+    ui.labelDuration->setShadow(m_bUsingCustomBkg?2:0);
 
     for (cauto& widgetPos : m_mapTopWidgetPos)
     {
@@ -546,16 +550,16 @@ void MainWindow::_relayout()
         y_PlayingListMax = y_SingerImg;
 
         m_view.setFont(&m_PlayingList, -1);
-        m_PlayingList.setTextColor(QColor(255, 255, 255));
+        m_PlayingList.setTextColor(255, 255, 255);
         m_PlayingList.setInactiveAlpha(0.4);
-        m_PlayingList.setShadowWidth(2);
+        m_PlayingList.setShadow(2);
     }
     else
     {
         m_view.setFont(&m_PlayingList, -1.5);
-        m_PlayingList.setTextColor(QColor(255, 255, 255, 160));
+        m_PlayingList.setTextColor(255, 255, 255, 160);
         m_PlayingList.setInactiveAlpha(0.33);
-        m_PlayingList.setShadowWidth(0);
+        m_PlayingList.setShadow(0);
 
         bool bFlag = false;
         if (m_bHScreen)
@@ -971,7 +975,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         m_eDemandLanguage = E_LanguageType::LT_None;
 
-        PairList<E_LanguageType, QLabel*> plLabels {
+        PairList<E_LanguageType, CLabel*> plLabels {
             {E_LanguageType::LT_CN, ui.labelDemandCN}
             , {E_LanguageType::LT_HK, ui.labelDemandHK}
             , {E_LanguageType::LT_KR, ui.labelDemandKR}
@@ -979,20 +983,35 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {E_LanguageType::LT_TAI, ui.labelDemandTAI}
             , {E_LanguageType::LT_EN, ui.labelDemandEN}
             , {E_LanguageType::LT_EUR, ui.labelDemandEUR}};
-        plLabels([&](E_LanguageType eLanguage, QLabel* lblLanguage){
+        plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
             if (!lblLanguage->text().startsWith(' '))
             {
                 lblLanguage->setText("  " + lblLanguage->text().mid(1));
+
+                lblLanguage->setTextColor(255,255,255);
             }
             else
             {
                 if (lblLanguage == label)
                 {
-                    lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
                     m_eDemandLanguage = eLanguage;
+
+                    lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
+                    lblLanguage->setTextColor(180,220,255);
                 }
             }
         });
+
+        /*plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
+            if (E_LanguageType::LT_None == m_eDemandLanguage)
+            {
+                lblLanguage->setTextAlpha(255);
+            }
+            else
+            {
+                lblLanguage->setTextAlpha(eLanguage == m_eDemandLanguage ? 255 : 200);
+            }
+        });*/
     }
 }
 

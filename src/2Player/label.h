@@ -47,24 +47,17 @@ public:
         m_bAutoFit = bAutoFit;
     }
 
-    void setShadow(UINT uWidth, const QColor& crShadow)
+    void setShadow(UINT uWidth, UINT r, UINT g, UINT b)
     {
         m_uShadowWidth = uWidth;
-        m_crShadow = crShadow;
+        m_crShadow.setRgb(r,g,b);
 
         CWidget::update();
     }
 
-    void setShadowWidth(UINT uWidth)
+    void setShadow(UINT uWidth)
     {
         m_uShadowWidth = uWidth;
-
-        CWidget::update();
-    }
-
-    void setShadowColor(const QColor& crShadow)
-    {
-        m_crShadow = crShadow;
 
         CWidget::update();
     }

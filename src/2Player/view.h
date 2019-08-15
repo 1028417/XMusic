@@ -77,8 +77,6 @@ public:
     void setFont(QWidget *widget, double dbOffsetSize=0
             , E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
-    void setTextColor(QWidget *widget, const QColor& crText);
-
     void setTimer(UINT uMs, const function<bool()>& cb);
 
 private:

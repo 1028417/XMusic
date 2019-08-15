@@ -21,7 +21,7 @@ public:
         if (this->maximum() > 0 && this->value() > 0)
         {
             rect.setRight(rect.right()*this->value()/this->maximum());
-            painter.fillRect(rect, QBrush(QColor(128,200,255)));
+            painter.fillRect(rect, QBrush(QColor(180,220,255)));
         }
     }
 };
