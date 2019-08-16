@@ -19,12 +19,12 @@ void CMedialibDlg::init()
     QColor crText(32, 128, 255);
 
     ui.labelTitle->setTextColor(crText);
-    m_view.setFont(ui.labelTitle, 2, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
     ui.btnUpward->setVisible(false);
 
     m_MedialibView.setTextColor(crText);
-    m_view.setFont(&m_MedialibView, 0.5);
+    m_MedialibView.setFont(0.5);
     m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](){

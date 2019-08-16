@@ -1,21 +1,39 @@
 
 #pragma once
 
-#include <QWidget>
+#include "util.h"
 
-#include <QPainter>
+#include <QWidget>
 
 #include <QGesture>
 
+#include <QPainter>
+
 #include <QGraphicsOpacityEffect>
 
-#include "util.h"
+#include <QFont>
 
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
     //FW_Normal = QFont::Weight::Normal,
     FW_SemiBold = QFont::Weight::DemiBold
+};
+
+#define __defFontWeight E_FontWeight::FW_Light
+
+extern map<E_FontWeight, QFont> g_mapFont;
+
+class CFont : public QFont
+{
+public:
+    CFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
+        : QFont(g_mapFont[eWeight])
+    {
+        setPointSizeF(pointSizeF() + fSizeOffset);
+        setWeight((int)eWeight);
+        setItalic(bItalic);
+    }
 };
 
 class CPainter : public QPainter
@@ -213,6 +231,16 @@ public:
             m_crText.setAlpha(uAlpha);
             setTextColor(m_crText);
         }
+    }
+
+    void setFont(const QFont& font)
+    {
+        TWidget::setFont(font);
+    }
+
+    void setFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
+    {
+        TWidget::setFont(CFont(fSizeOffset, eWeight, bItalic));
     }
 
     void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)

@@ -23,6 +23,8 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
+    m_bkgPixmapDefault = *ui.labelBkg->pixmap();
+
     QWidget* lpTopWidget[] = {
         ui.frameDemand, ui.btnMore
 
@@ -75,8 +77,8 @@ void MainWindow::showLogo()
 #if __android
     fFontSizeOffset = -2;
 #endif
-    m_view.setFont(ui.labelLogoTip, fFontSizeOffset, E_FontWeight::FW_Light, true);
-    m_view.setFont(ui.labelLogoCompany, fFontSizeOffset/3);
+    ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
+    ui.labelLogoCompany->setFont(CFont(fFontSizeOffset/3));
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
@@ -168,7 +170,7 @@ void MainWindow::_init()
                 , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        m_view.setFont(label, 0, E_FontWeight::FW_SemiBold);
+        label->setFont(0, E_FontWeight::FW_SemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelPlayProgress);
@@ -194,10 +196,10 @@ void MainWindow::_init()
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
-    m_view.setFont(ui.labelSingerName, 0.5);
-    m_view.setFont(ui.labelAlbumName, 0.5);
-    m_view.setFont(ui.labelPlayingfile, 0.5);
-    m_view.setFont(ui.labelDuration, -1);
+    ui.labelSingerName->setFont(0.5);
+    ui.labelAlbumName->setFont(0.5);
+    ui.labelPlayingfile->setFont(0.5);
+    ui.labelDuration->setFont(-1);
 
     if (m_view.getOptionMgr().getOption().bRandomPlay)
     {
@@ -214,8 +216,6 @@ void MainWindow::_init()
 void MainWindow::show()
 {
     _init();
-
-    m_bkgPixmapDefault = *ui.labelBkg->pixmap();
 
     m_medialibDlg.init();
 
@@ -523,14 +523,14 @@ void MainWindow::_relayout()
 
         y_PlayingListMax = y_SingerImg;
 
-        m_view.setFont(&m_PlayingList, -1);
+        m_PlayingList.setFont(-1);
         m_PlayingList.setTextColor(255, 255, 255);
         m_PlayingList.setInactiveAlpha(0.4);
         m_PlayingList.setShadow(2);
     }
     else
     {
-        m_view.setFont(&m_PlayingList, -1.5);
+        m_PlayingList.setFont(-1.5);
         m_PlayingList.setTextColor(255, 255, 255, 160);
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadow(0);

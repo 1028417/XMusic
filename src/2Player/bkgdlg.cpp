@@ -37,6 +37,9 @@ void CBkgView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& 
             return;
         }
 
+#define __margin    2
+        rc.intersects(QRect(__margin,__margin,__margin,__margin));
+
         auto& strBkg = bkgs[uItem];
         QPixmap pixmap;
         if (pixmap.load(m_bkgDlg.bkgDir() + strBkg))

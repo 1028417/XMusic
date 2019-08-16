@@ -4,13 +4,7 @@
 #include "model.h"
 #include "../PlayerApp/controller.h"
 
-#include <QFont>
-
-#include <widget.h>
-
 extern ITxtWriter& g_logWriter;
-
-#define __defFontWeight E_FontWeight::FW_Light
 
 class CPlayerView : public IPlayerView
 {
@@ -66,11 +60,6 @@ public:
     {
         return m_model.getPlayMgr();
     }
-
-    QFont genFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
-
-    void setFont(QWidget *widget, float fSizeOffset = 0
-            , E_FontWeight eWeight = __defFontWeight, bool bItalic=false) const;
 
     void setTimer(UINT uMs, const function<bool()>& cb);
 
