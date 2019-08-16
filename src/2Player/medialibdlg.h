@@ -83,9 +83,9 @@ private:
     UINT getPageRowCount() override;
     UINT getRowCount() override;
 
-    void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 
-    void _handleRowClick(UINT uRowIdx, const QMouseEvent&) override;
+    void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
 
 private:
     void _getTitle(CMediaRes& MediaRes, WString& strTitle);

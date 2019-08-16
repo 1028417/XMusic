@@ -16,7 +16,9 @@ private:
 private:
     UINT getRowCount() override;
 
-    void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
+
+    void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
 };
 
 class CBkgDlg : public CDialog<>
@@ -44,15 +46,24 @@ public:
     WString hbkg() const;
     WString vbkg() const;
 
-    vector<WString>& bkgs()
+    UINT bkgCount()
     {
-        return m_bHScreen?m_vecHBkg:m_vecVBkg;
+        if (m_bHScreen)
+        {
+            return m_vecHBkg.size();
+        }
+        else
+        {
+            return m_vecVBkg.size();
+        }
     }
 
-    const WString& bkgDir() const
-    {
-        return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    }
+    WString bkg(UINT uIdx);
+
+    bool addBkg();
+
+    void setBkg(UINT uIdx);
+    void unsetBkg();
 
 private:
     void _relayout(int cx, int cy) override;

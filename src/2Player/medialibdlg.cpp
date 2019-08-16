@@ -140,7 +140,7 @@ void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
             int nIdx = MediaRes.GetSubPath().indexOf(pHittestItem);
             if (nIdx >= 0)
             {
-                selectItem((UINT)nIdx);
+                selectRow((UINT)nIdx);
             }
         }
 
@@ -171,7 +171,7 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
         int nIdx = pHittestItem->index();
         if (nIdx >= 0)
         {
-            selectItem((UINT)nIdx);
+            selectRow((UINT)nIdx);
         }
     }
 
@@ -253,7 +253,7 @@ UINT CMedialibView::getRowCount()
     }
 }
 
-void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     if (m_pMediaRes)
     {
@@ -506,41 +506,43 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewRo
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }
 
-void CMedialibView::_handleRowClick(UINT uRowIdx, const QMouseEvent&)
+void CMedialibView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
 {
+    UINT uRow = lvRow.uRow;
+
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(uRowIdx, [&](CMediaSet& mediaSet){
+            m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
                 _handleItemClick(mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(uRowIdx, [&](CMedia& media){
+            m_lstSubMedias.get(uRow, [&](CMedia& media){
                 _handleItemClick(media);
 
-                flashItem(uRowIdx);
-                selectItem(uRowIdx);
+                flashRow(uRow);
+                selectRow(uRow);
             });
         }
     }
     else if (m_pMediaRes)
     {
-        m_pMediaRes->GetSubPath().get(uRowIdx, [&](CPath& subPath) {
+        m_pMediaRes->GetSubPath().get(uRow, [&](CPath& subPath) {
             _handleItemClick((CMediaRes&)subPath);
 
             if (!subPath.IsDir())
             {
-                flashItem(uRowIdx);
-                selectItem(uRowIdx);
+                flashRow(uRow);
+                selectRow(uRow);
             }
         });
     }
     else
     {
-        switch (uRowIdx)
+        switch (uRow)
         {
         case 1:
             _handleItemClick(m_RootMediaRes);

@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     int cy = this->rect().bottom();
 
@@ -87,7 +87,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
         m_alPlayingItems.add(playingItem);
     });
 
-    CListView::showItem(0);
+    CListView::showRow(0);
 
     updatePlayingItem(uPlayingItem, true);
 }
@@ -98,7 +98,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
     if (bHittestPlayingItem)
     {
-        CListView::showItem(m_uPlayingItem);
+        CListView::showRow(m_uPlayingItem);
     }
 
     if (bHittestPlayingItem && m_nActiveTime != -1)
@@ -111,13 +111,13 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_handleRowDblClick(UINT uRowIdx, const QMouseEvent&)
+void CPlayingList::_handleRowDblClick(const tagListViewRow& lvRow, const QMouseEvent&)
 {
     _updateActive();
 
-    if (uRowIdx < m_alPlayingItems.size())
+    if (lvRow.uRow < m_alPlayingItems.size())
     {
-        m_view.getPlayMgr().play(uRowIdx, true);
+        m_view.getPlayMgr().play(lvRow.uRow, true);
     }
 }
 

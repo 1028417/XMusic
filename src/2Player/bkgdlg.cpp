@@ -3,6 +3,10 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
+#include "mainwindow.h"
+
+#define __margin    10
+
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
@@ -13,15 +17,14 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
 
 UINT CBkgView::getRowCount()
 {
-    return 1+(1+m_bkgDlg.bkgs().size())/2;
+    return 1+(1+m_bkgDlg.bkgCount())/2;
 }
 
-void CBkgView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)
     {
-        return;
     }
     else if (1 == nItem)
     {
@@ -29,23 +32,39 @@ void CBkgView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& 
     }
     else
     {
-        UINT uItem = (UINT)nItem-2;
-
-        auto& bkgs = m_bkgDlg.bkgs();
-        if (uItem >= bkgs.size())
+        UINT uBkgIdx = (UINT)nItem-2;
+        if (uBkgIdx >= m_bkgDlg.bkgCount())
         {
             return;
         }
 
-#define __margin    2
-        rc.intersects(QRect(__margin,__margin,__margin,__margin));
-
-        auto& strBkg = bkgs[uItem];
         QPixmap pixmap;
-        if (pixmap.load(m_bkgDlg.bkgDir() + strBkg))
+        if (pixmap.load(m_bkgDlg.bkg(uBkgIdx)))
         {
+            rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
             painter.drawPixmapEx(rc, pixmap);
         }
+    }
+}
+
+void CBkgView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
+{
+    int nItem = lvRow.uRow * 2 + lvRow.uCol;
+    if (0 == lvRow.uRow)
+    {
+        if (m_bkgDlg.addBkg())
+        {
+            update(getRowCount());
+        }
+    }
+    else if (1 == lvRow.uRow)
+    {
+        m_bkgDlg.unsetBkg();
+    }
+    else
+    {
+        UINT uBkgIdx = (UINT)nItem-2;
+        m_bkgDlg.setBkg(uBkgIdx);
     }
 }
 
@@ -116,18 +135,54 @@ void CBkgDlg::_relayout(int cx, int cy)
 {
     m_bHScreen = cx>cy;
 
-    int margin = ui.btnReturn->y();
-    int offset = margin*2+ui.btnReturn->height();
+    int offset = ui.btnReturn->geometry().bottom() + __margin;
     if (m_bHScreen)
     {
-        int cx_bkgView = cx-margin-offset;
+        int cx_bkgView = cx-__margin-offset;
         int cy_bkgView = cx_bkgView*cy/cx;
         m_bkgView.setGeometry(offset, (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
     }
     else
     {
-        int cy_bkgView = cy-margin-offset;
+        int cy_bkgView = cy-__margin-offset;
         int cx_bkgView = cy_bkgView*cx/cy;
         m_bkgView.setGeometry((cx-cx_bkgView)/2, offset, cx_bkgView, cy_bkgView);
     }
+}
+
+WString CBkgDlg::bkg(UINT uIdx)
+{
+    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+    if (uIdx >= vecBkg.size())
+    {
+        return L"";
+    }
+
+    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+    return stBkgDir + vecBkg[uIdx];
+}
+
+bool CBkgDlg::addBkg()
+{
+    return true;
+}
+
+void CBkgDlg::setBkg(UINT uIdx)
+{
+    auto& strBkg = m_bHScreen?m_view.getOptionMgr().getOption().strHBkg
+                            :m_view.getOptionMgr().getOption().strVBkg;
+    strBkg = bkg(uIdx);
+
+    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+
+    m_view.getMainWnd().loadBkg(stBkgDir + strBkg);
+
+    close();
+}
+
+void CBkgDlg::unsetBkg()
+{
+    m_view.getMainWnd().loadBkg(L"");
+
+    close();
 }

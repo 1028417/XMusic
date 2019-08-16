@@ -5,11 +5,19 @@
 
 struct tagListViewRow
 {
-    UINT uRow = 0;
-    UINT uCol = 0;
+    tagListViewRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+        : uRow(t_uRow)
+        , uCol(t_uCol)
+        , bSelect(t_bSelect)
+        , bFlash(t_bFlash)
+    {
+    }
 
-    bool bSelect = false;
-    bool bFlash = false;
+    UINT uRow;
+    UINT uCol;
+
+    bool bSelect;
+    bool bFlash;
 };
 
 class CListRowCount
@@ -56,6 +64,8 @@ private:
     float m_fScrollPos = 0;
 
     int m_nSelectRow = -1;
+    int m_nSelectCol = -1;
+
     int m_nFlashRow = -1;
 
     ulong m_uTouchSeq = 0;
@@ -94,25 +104,26 @@ public:
         CWidget<>::update();
     }
 
-    void selectItem(UINT uItem)
+    void selectRow(UINT uRow, int nCol = -1)
     {
-        showItem(uItem);
+        showRow(uRow);
 
-        m_nSelectRow = uItem;
+        m_nSelectRow = uRow;
+        m_nSelectCol = nCol;
 
         CWidget<>::update();
     }
 
-    void dselectItem()
+    void dselectRow()
     {
         m_nSelectRow = -1;
 
         CWidget<>::update();
     }
 
-    void showItem(UINT uItem, bool bToTop=false);
+    void showRow(UINT uRow, bool bToTop=false);
 
-    void flashItem(UINT uItem, UINT uMSDelay=300);
+    void flashRow(UINT uRow, UINT uMSDelay=300);
 
 protected:
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
@@ -125,10 +136,10 @@ private:
     virtual UINT getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
-    virtual void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) = 0;
+    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) = 0;
 
-    virtual void _handleRowClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
-    virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
+    virtual void _handleRowClick(const tagListViewRow&, const QMouseEvent&) {}
+    virtual void _handleRowDblClick(const tagListViewRow&, const QMouseEvent&) {}
 
     bool _scroll(int dy);
     void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);
