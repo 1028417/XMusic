@@ -11,28 +11,28 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
 {
 }
 
-UINT CBkgView::getItemCount()
+UINT CBkgView::getRowCount()
 {
     return m_bkgDlg.bkgs().size()+1;
 }
 
-void CBkgView::_onPaintItem(CPainter&, QRect&, const tagListViewItem& lvitem)
+void CBkgView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     auto& bkgs = m_bkgDlg.bkgs();
-    if (0 == lvitem.uItem)
+    if (0 == lvRow.uRow)
     {
 
     }
     else
     {
-        UINT uItem = lvitem.uItem-1;
+        UINT uItem = lvRow.uRow-1;
         if (uItem < bkgs.size())
         {
             auto& strBkg = bkgs[uItem];
             QPixmap pixmap;
             if (pixmap.load(strBkg))
             {
-
+                painter.drawPixmapEx(rc, pixmap);
             }
         }
     }

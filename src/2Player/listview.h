@@ -3,9 +3,8 @@
 
 #include "widget.h"
 
-struct tagListViewItem
+struct tagListViewRow
 {
-    UINT uItem = 0;
     UINT uRow = 0;
 
     bool bSelect = false;
@@ -15,44 +14,48 @@ struct tagListViewItem
 class CListRowCount
 {
 public:
-    CListRowCount(UINT uRowCount=0)
-        : m_uRowCount(uRowCount)
+    CListRowCount(UINT uPageRowCount=0)
+        : m_uPageRowCount(uPageRowCount)
     {
     }
 
 private:
-    UINT m_uRowCount;
+    UINT m_uPageRowCount = 0;
+
 
 public:
-    void setRowCount(UINT uRowCount)
+    void setPageRowCount(UINT uPageRowCount)
     {
-        m_uRowCount = uRowCount;
+        m_uPageRowCount = uPageRowCount;
     }
 
-    virtual UINT getRowCount()
+    virtual UINT getPageRowCount()
     {
-        return m_uRowCount;
+        return m_uPageRowCount;
     }
 };
 
 class CListView : public CWidget<QWidget>, public CListRowCount
 {
 public:
-    CListView(QWidget *parent=NULL, UINT uRowCount=0)
+    CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
         : CWidget(parent)
-        , CListRowCount(uRowCount)
+        , CListRowCount(uPageRowCount)
+        , m_uColumnCount(uColumnCount)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
+    UINT m_uColumnCount = 0;
+
     UINT m_uRowHeight = 0;
 
     UINT m_uMaxScrollPos = 0;
     float m_fScrollPos = 0;
 
-    int m_nSelectItem = -1;
-    int m_nFlashItem = -1;
+    int m_nSelectRow = -1;
+    int m_nFlashRow = -1;
 
     ulong m_uTouchSeq = 0;
 
@@ -81,8 +84,8 @@ public:
 
         if (bReset)
         {
-            m_nSelectItem = -1;
-            m_nFlashItem = -1;
+            m_nSelectRow = -1;
+            m_nFlashRow = -1;
 
             m_uTouchSeq = 0;
         }
@@ -94,14 +97,14 @@ public:
     {
         showItem(uItem);
 
-        m_nSelectItem = uItem;
+        m_nSelectRow = uItem;
 
         CWidget<>::update();
     }
 
     void dselectItem()
     {
-        m_nSelectItem = -1;
+        m_nSelectRow = -1;
 
         CWidget<>::update();
     }
@@ -118,10 +121,10 @@ protected:
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
 private:
-    virtual UINT getItemCount() = 0;
+    virtual UINT getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
-    virtual void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) = 0;
+    virtual void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) = 0;
 
     virtual void _handleRowClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
     virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}

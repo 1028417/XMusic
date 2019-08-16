@@ -14,9 +14,9 @@ private:
     class CBkgDlg& m_bkgDlg;
 
 private:
-    UINT getItemCount() override;
+    UINT getRowCount() override;
 
-    void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
+    void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) override;
 };
 
 class CBkgDlg : public CDialog<>

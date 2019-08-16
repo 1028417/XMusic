@@ -211,7 +211,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     strTitle << __CNDot << MediaSet.m_strName;
 }
 
-UINT CMedialibView::getRowCount()
+UINT CMedialibView::getPageRowCount()
 {
     if (NULL == m_pMediaset && NULL == m_pMediaRes)
     {
@@ -237,7 +237,7 @@ UINT CMedialibView::getRowCount()
     return uRet;
 }
 
-UINT CMedialibView::getItemCount()
+UINT CMedialibView::getRowCount()
 {
     if (m_pMediaset)
     {
@@ -253,25 +253,25 @@ UINT CMedialibView::getItemCount()
     }
 }
 
-void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem)
+void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     if (m_pMediaRes)
     {
-        m_pMediaRes->GetSubPath().get(lvitem.uItem, [&](CPath& subPath) {
-            _paintMediaResItem(painter, rc, lvitem, (CMediaRes&)subPath);
+        m_pMediaRes->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
+            _paintMediaResItem(painter, rc, lvRow, (CMediaRes&)subPath);
         });
     }
     else if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(lvitem.uItem, [&](CMediaSet& mediaSet){
-                _paintMediaSetItem(painter, rc, lvitem, mediaSet);
+            m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet){
+                _paintMediaSetItem(painter, rc, lvRow, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(lvitem.uItem, [&](CMedia& Media) {
+            m_lstSubMedias.get(lvRow.uRow, [&](CMedia& Media) {
                 tagItemContext context;
                 context.eStyle = E_ItemStyle::IS_Underline;
                 if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
@@ -284,7 +284,7 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
                 }
                 context.strText = Media.GetTitle();
 
-                _paintItem(painter, rc, lvitem, context);
+                _paintItem(painter, rc, lvRow, context);
             });
         }
     }
@@ -292,7 +292,7 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
     {
         tagItemContext context;
         context.eStyle = E_ItemStyle::IS_Normal;
-        switch (lvitem.uItem)
+        switch (lvRow.uRow)
         {
         case 1:
             context.pixmap = &m_pixmapDir;
@@ -312,11 +312,11 @@ void CMedialibView::_onPaintItem(CPainter& painter, QRect& rc, const tagListView
             return;
             break;
         }        
-        _paintItem(painter, rc, lvitem, context);
+        _paintItem(painter, rc, lvRow, context);
     }
 }
 
-void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, CMediaRes& MediaRes)
+void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaRes& MediaRes)
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_Underline;
@@ -366,7 +366,7 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
        context.pixmap = &m_pixmapFile;
     }
 
-    _paintItem(painter, rc, lvitem, context);
+    _paintItem(painter, rc, lvRow, context);
 }
 
 static list<QPixmap> g_lstSingerPixmap;
@@ -397,7 +397,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, CMediaSet& MediaSet)
+void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaSet& MediaSet)
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_RightTip;
@@ -422,12 +422,12 @@ void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagLi
         break;
     };
 
-    _paintItem(painter, rc, lvitem, context);
+    _paintItem(painter, rc, lvRow, context);
 }
 
-void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem, const tagItemContext& context)
+void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, const tagItemContext& context)
 {
-    if (lvitem.bSelect)
+    if (lvRow.bSelect)
     {
         QColor crBkg = m_medialibDlg.bkgColor();
         crBkg.setRed(crBkg.red()-10);
@@ -435,7 +435,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewIt
         painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, crBkg);
     }
 
-    if (lvitem.bFlash)
+    if (lvRow.bFlash)
     {
         int r = m_crText.red();
         int g = m_crText.green();

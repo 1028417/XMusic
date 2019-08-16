@@ -5,14 +5,14 @@
 
 void CListView::showItem(UINT uItem, bool bToTop)
 {
-    UINT uRowCount = getRowCount();
+    UINT uPageRowCount = getPageRowCount();
     if (uItem < m_fScrollPos)
     {
         m_fScrollPos = uItem;
     }
-    else if (uItem+1 > m_fScrollPos+uRowCount)
+    else if (uItem+1 > m_fScrollPos+uPageRowCount)
     {
-        m_fScrollPos = uItem+1-uRowCount;
+        m_fScrollPos = uItem+1-uPageRowCount;
     }
     else
     {
@@ -31,11 +31,11 @@ void CListView::showItem(UINT uItem, bool bToTop)
 
 void CListView::flashItem(UINT uItem, UINT uMSDelay)
 {
-    m_nFlashItem = uItem;
+    m_nFlashRow = uItem;
     update();
 
     QTimer::singleShot(uMSDelay, [&](){
-        m_nFlashItem = -1;
+        m_nFlashRow = -1;
         update();
     });
 }
@@ -174,24 +174,24 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 {
     m_uRowHeight = 0;
 
-    UINT uItemCount = getItemCount();
     UINT uRowCount = getRowCount();
-    if (0 == uRowCount)
+    UINT uPageRowCount = getPageRowCount();
+    if (0 == uPageRowCount)
     {
-        if (0 == uItemCount)
+        if (0 == uRowCount)
         {
             return;
         }
 
-        uRowCount = uItemCount;
+        uPageRowCount = uRowCount;
     }
 
     int cy = rect().bottom();
-    m_uRowHeight = cy/uRowCount;
+    m_uRowHeight = cy/uPageRowCount;
 
-    if (uItemCount > uRowCount)
+    if (uRowCount > uPageRowCount)
     {
-        m_uMaxScrollPos = uItemCount - uRowCount;
+        m_uMaxScrollPos = uRowCount - uPageRowCount;
     }
     else
     {
@@ -200,21 +200,20 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
     m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
 
-    UINT uItem = m_fScrollPos;
-    int y = (-m_fScrollPos+uItem)*m_uRowHeight;
+    UINT uRow = m_fScrollPos;
+    int y = (-m_fScrollPos+uRow)*m_uRowHeight;
     int cx = rect().right();
 
-    for (UINT uRowIdx = 0; uItem < uItemCount; uItem++, uRowIdx++)
+    for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
         painter.setFont(this->font());
         painter.setPen(m_crText);
 
         QRect rc(0, y, cx, m_uRowHeight);
-        tagListViewItem item;
-        item.uItem = uItem;
-        item.uRow = uRowIdx;
-        item.bSelect = (int)uItem == m_nSelectItem;
-        item.bFlash = (int)uItem == m_nFlashItem;
+        tagListViewRow item;
+        item.uRow = uRow;
+        item.bSelect = (int)uRow == m_nSelectRow;
+        item.bFlash = (int)uRow == m_nFlashRow;
         _onPaintItem(painter, rc, item);
 
         y += m_uRowHeight;

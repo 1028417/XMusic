@@ -80,10 +80,10 @@ public:
     bool handleReturn();
 
 private:
+    UINT getPageRowCount() override;
     UINT getRowCount() override;
-    UINT getItemCount() override;
 
-    void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
+    void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) override;
 
     void _handleRowClick(UINT uRowIdx, const QMouseEvent&) override;
 
@@ -95,11 +95,11 @@ private:
     void _saveScrollRecord();
     void _clearScrollRecord();
 
-    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaRes& MediaRes);
+    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaRes& MediaRes);
 
-    void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewItem&, CMediaSet& MediaSet);
+    void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaSet& MediaSet);
 
-    void _paintItem(CPainter& painter, QRect& rc, const tagListViewItem&, const tagItemContext& context);
+    void _paintItem(CPainter& painter, QRect& rc, const tagListViewRow&, const tagItemContext& context);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);
 

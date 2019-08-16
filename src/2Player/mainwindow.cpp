@@ -612,7 +612,7 @@ void MainWindow::_relayout()
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
-    m_PlayingList.setRowCount(uRowCount);
+    m_PlayingList.setPageRowCount(uRowCount);
 }
 
 void MainWindow::_updatePlayPauseButton(bool bPlaying)

@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewItem& lvitem)
+void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
     int cy = this->rect().bottom();
 
@@ -25,7 +25,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewI
 
     QFont font = painter.font();
 
-    bool bPlayingItem = lvitem.uItem == m_uPlayingItem;
+    bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
         font.setWeight((int)E_FontWeight::FW_SemiBold);
@@ -37,7 +37,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewI
 
     rc.setLeft(rc.left() + 30);
 
-    m_alPlayingItems.get(lvitem.uItem, [&](tagPlayingItem& playingItem){
+    m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
         if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
         {
             font.setItalic(true);

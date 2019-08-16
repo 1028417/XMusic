@@ -60,12 +60,12 @@ public:
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
 private:
-    UINT getItemCount() override
+    UINT getRowCount() override
     {
         return m_alPlayingItems.size();
     }
 
-    void _onPaintItem(CPainter&, QRect&, const tagListViewItem&) override;
+    void _onPaintItem(CPainter&, QRect&, const tagListViewRow&) override;
 
     void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) override;
 
