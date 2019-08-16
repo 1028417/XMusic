@@ -54,19 +54,19 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
-    QPixmap m_pixmapDir;
-    QPixmap m_pixmapDirLink;
-    QPixmap m_pixmapFile;
+    QPixmap m_pmDir;
+    QPixmap m_pmDirLink;
+    QPixmap m_pmFile;
 
-    QPixmap m_pixmapSingerGroup;
-    QPixmap m_pixmapDefaultSinger;
-    QPixmap m_pixmapAlbum;
-    QPixmap m_pixmapAlbumItem;
+    QPixmap m_pmSingerGroup;
+    QPixmap m_pmDefaultSinger;
+    QPixmap m_pmAlbum;
+    QPixmap m_pmAlbumItem;
 
-    QPixmap m_pixmapPlaylist;
-    QPixmap m_pixmapPlayItem;
+    QPixmap m_pmPlaylist;
+    QPixmap m_pmPlayItem;
 
-    QPixmap m_pixmapRightTip;
+    QPixmap m_pmRightTip;
 
 public:
     void init();

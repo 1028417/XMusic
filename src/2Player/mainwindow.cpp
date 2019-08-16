@@ -23,7 +23,7 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
-    m_bkgPixmapDefault = *ui.labelBkg->pixmap();
+    m_bkgDlg.init(*ui.labelBkg->pixmap());
 
     QWidget* lpTopWidget[] = {
         ui.frameDemand, ui.btnMore
@@ -219,17 +219,15 @@ void MainWindow::show()
 
     m_medialibDlg.init();
 
-    m_bkgDlg.init();
-
     cauto& strHBkg = m_bkgDlg.hbkg();
     if (!strHBkg.empty())
     {
-        (void)m_HBkgPixmap.load(strHBkg);
+        (void)m_pmHBkg.load(strHBkg);
     }
     cauto& strVBkg = m_bkgDlg.vbkg();
     if (!strVBkg.empty())
     {
-        (void)m_VBkgPixmap.load(strVBkg);
+        (void)m_pmVBkg.load(strVBkg);
     }
 
     _relayout();
@@ -319,34 +317,35 @@ void MainWindow::_relayout()
     }
     ui.labelLogoCompany->move(x_LogoCompany, y_LogoCompany);
 
+    cauto& pmDefaultBkg = m_bkgDlg.defaultBkg();
     float fCXRate = 0;
     if (m_bHScreen)
     {
-        fCXRate = (float)cx/m_bkgPixmapDefault.width();
+        fCXRate = (float)cx/pmDefaultBkg.width();
     }
     else
     {
         fCXRate = (float)cx/1080;
     }
-    int cy_bkg = fCXRate*m_bkgPixmapDefault.height();
+    int cy_bkg = fCXRate*pmDefaultBkg.height();
     int dy_bkg = cy - cy_bkg;
 
     QPixmap *pBkgPixmap = NULL;
     if (m_bHScreen)
     {
-        if (!m_HBkgPixmap.isNull())
+        if (!m_pmHBkg.isNull())
         {
-            pBkgPixmap = &m_HBkgPixmap;
+            pBkgPixmap = &m_pmHBkg;
         }
     }
     else
     {
-        if (!m_VBkgPixmap.isNull())
+        if (!m_pmVBkg.isNull())
         {
-            pBkgPixmap = &m_VBkgPixmap;
+            pBkgPixmap = &m_pmVBkg;
         }
     }
-    if (NULL != pBkgPixmap)
+    if (pBkgPixmap)
     {
         m_bUsingCustomBkg = true;
 
@@ -368,7 +367,7 @@ void MainWindow::_relayout()
     {
         m_bUsingCustomBkg = false;
 
-        ui.labelBkg->setPixmap(m_bkgPixmapDefault);
+        ui.labelBkg->setPixmap(pmDefaultBkg);
 
         if (m_bHScreen)
         {
@@ -376,7 +375,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            ui.labelBkg->resize(fCXRate*m_bkgPixmapDefault.width(), cy_bkg);
+            ui.labelBkg->resize(fCXRate*pmDefaultBkg.width(), cy_bkg);
         }
         ui.labelBkg->move(0, dy_bkg);
     }
@@ -786,10 +785,10 @@ void MainWindow::_playSingerImg(bool bReset)
     wstring strSingerImg;
     if (m_view.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
     {
-        QPixmap pixmap;
-        if (pixmap.load(wsutil::toQStr(strSingerImg)))
+        QPixmap pm;
+        if (pm.load(wsutil::toQStr(strSingerImg)))
         {
-            ui.labelSingerImg->setPixmap(pixmap);
+            ui.labelSingerImg->setPixmap(pm);
         }
 
         uSingerImgIdx++;
@@ -853,7 +852,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::loadBkg(const WString& strBkg)
 {
-    QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
+    QPixmap& bkgPixmap = m_bHScreen? m_pmHBkg:m_pmVBkg;
     if (!strBkg.empty())
     {
         (void)bkgPixmap.load(strBkg);

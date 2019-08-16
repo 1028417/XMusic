@@ -55,10 +55,8 @@ private:
     tagPlayingInfo m_PlayingInfo;
     wstring m_strSingerName;
 
-    QPixmap m_bkgPixmapDefault;
-
-    QPixmap m_HBkgPixmap;
-    QPixmap m_VBkgPixmap;
+    QPixmap m_pmHBkg;
+    QPixmap m_pmVBkg;
 
     bool m_bUsingCustomBkg = false;
 

@@ -19,9 +19,6 @@ private:
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 
     void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
-
-public:
-    void init();
 };
 
 class CBkgDlg : public CDialog<>
@@ -35,6 +32,8 @@ private:
 
     CBkgView m_bkgView;
 
+    QPixmap m_pmDefaultBkg;
+
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
@@ -44,7 +43,12 @@ private:
     bool m_bHScreen = false;
 
 public:
-    void init();
+    void init(const QPixmap& pmDefaultBkg);
+
+    const QPixmap& defaultBkg() const
+    {
+        return m_pmDefaultBkg;
+    }
 
     WString hbkg() const;
     WString vbkg() const;

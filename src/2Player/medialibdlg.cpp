@@ -91,19 +91,19 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
 
 void CMedialibView::init()
 {
-    (void)m_pixmapDir.load(":/img/dir.png");
-    (void)m_pixmapDirLink.load(":/img/dirLink.png");
-    (void)m_pixmapFile.load(":/img/file.png");
+    (void)m_pmDir.load(":/img/dir.png");
+    (void)m_pmDirLink.load(":/img/dirLink.png");
+    (void)m_pmFile.load(":/img/file.png");
 
-    (void)m_pixmapSingerGroup.load(":/img/singergroup.png");
-    (void)m_pixmapDefaultSinger.load(":/img/singerdefault.png");
-    (void)m_pixmapAlbum.load(":/img/album.png");
-    (void)m_pixmapAlbumItem.load(":/img/albumitem.png");
+    (void)m_pmSingerGroup.load(":/img/singergroup.png");
+    (void)m_pmDefaultSinger.load(":/img/singerdefault.png");
+    (void)m_pmAlbum.load(":/img/album.png");
+    (void)m_pmAlbumItem.load(":/img/albumitem.png");
 
-    (void)m_pixmapPlaylist.load(":/img/playlist.png");
-    (void)m_pixmapPlayItem.load(":/img/playitem.png");
+    (void)m_pmPlaylist.load(":/img/playlist.png");
+    (void)m_pmPlayItem.load(":/img/playitem.png");
 
-    (void)m_pixmapRightTip.load(":/img/righttip.png");
+    (void)m_pmRightTip.load(":/img/righttip.png");
 }
 
 void CMedialibView::showRoot()
@@ -276,11 +276,11 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
                 context.eStyle = E_ItemStyle::IS_Underline;
                 if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
                 {
-                    context.pixmap = &m_pixmapAlbumItem;
+                    context.pixmap = &m_pmAlbumItem;
                 }
                 else
                 {
-                    context.pixmap = &m_pixmapPlayItem;
+                    context.pixmap = &m_pmPlayItem;
                 }
                 context.strText = Media.GetTitle();
 
@@ -295,16 +295,16 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
         switch (lvRow.uRow)
         {
         case 1:
-            context.pixmap = &m_pixmapDir;
+            context.pixmap = &m_pmDir;
             context.strText = L"媒体库";
             break;
         case 3:
-            context.pixmap = &m_pixmapSingerGroup;
+            context.pixmap = &m_pmSingerGroup;
             context.strText = L"歌手库";
 
             break;
         case 5:
-            context.pixmap = &m_pixmapPlaylist;
+            context.pixmap = &m_pmPlaylist;
             context.strText = L"列表库";
 
             break;
@@ -320,7 +320,7 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_Underline;
-    context.pixmap = &m_pixmapDir;
+    context.pixmap = &m_pmDir;
     if (MediaRes.IsDir())
     {
         context.strText = MediaRes.GetName();
@@ -334,7 +334,7 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
     {
         context.eStyle = E_ItemStyle::IS_RightTip;
 
-        context.pixmap = &m_pixmapDir;
+        context.pixmap = &m_pmDir;
 
         if (&m_RootMediaRes == m_pMediaRes)
         {
@@ -343,7 +343,7 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
                 if (pAttachDir)
                 {
-                    context.pixmap = &m_pixmapDirLink;
+                    context.pixmap = &m_pmDirLink;
 
                     if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                     {
@@ -363,7 +363,7 @@ void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagLi
     }
     else
     {
-       context.pixmap = &m_pixmapFile;
+       context.pixmap = &m_pmFile;
     }
 
     _paintItem(painter, rc, lvRow, context);
@@ -392,8 +392,8 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
     else
     {
-        g_mapSingerPixmap[&Singer] = &m_pixmapDefaultSinger;
-        return m_pixmapDefaultSinger;
+        g_mapSingerPixmap[&Singer] = &m_pmDefaultSinger;
+        return m_pmDefaultSinger;
     }
 }
 
@@ -406,16 +406,16 @@ void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagLi
     switch (MediaSet.m_eType)
     {
     case E_MediaSetType::MST_Playlist:
-        context.pixmap = &m_pixmapPlaylist;
+        context.pixmap = &m_pmPlaylist;
         break;
     case E_MediaSetType::MST_Album:
-        context.pixmap = &m_pixmapAlbum;
+        context.pixmap = &m_pmAlbum;
         break;
     case E_MediaSetType::MST_Singer:
         context.pixmap = &_getSingerPixmap((CSinger&)MediaSet);
         break;
     case E_MediaSetType::MST_SingerGroup:
-        context.pixmap = &m_pixmapSingerGroup;
+        context.pixmap = &m_pmSingerGroup;
         break;
     default:
         return;
@@ -495,7 +495,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewRo
             int x_righttip = rc.right()-sz_righttip;
             int y_righttip = rc.center().y()-sz_righttip/2;
 
-            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pixmapRightTip);
+            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
 
             rc.setRight(x_righttip - nMargin);
         }

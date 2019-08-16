@@ -35,10 +35,10 @@ signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 public:
-    void setPixmap(const QPixmap &pixmap, bool bCut=true)
+    void setPixmap(const QPixmap & pm, bool bCut=true)
     {
         m_bCutPixmap = bCut;
-        QLabel::setPixmap(pixmap);
+        QLabel::setPixmap(pm);
     }
 
     void setText(const QString &qsText, bool bAutoFit=true)
@@ -78,10 +78,10 @@ private:
     {
         m_rc = this->rect();
 
-        const QPixmap *pPixmap = pixmap();
-        if (pPixmap && !pPixmap->isNull())
+        auto pm = pixmap();
+        if (pm && !pm->isNull())
         {
-            painter.drawPixmapEx(*pPixmap, m_rc);
+            painter.drawPixmapEx(*pm, m_rc);
         }
 
         QString text = this->text();

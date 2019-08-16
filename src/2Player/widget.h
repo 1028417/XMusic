@@ -46,10 +46,10 @@ public:
 
     void drawPixmapEx(const WString& strImgFile, const QRect& rcDst)
     {
-        QPixmap pixmap;
-        if (pixmap.load(strImgFile))
+        QPixmap pm;
+        if (pm.load(strImgFile))
         {
-            drawPixmapEx(pixmap, rcDst);
+            drawPixmapEx(pm, rcDst);
         }
     }
 

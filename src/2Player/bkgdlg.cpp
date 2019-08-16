@@ -22,33 +22,32 @@ UINT CBkgView::getRowCount()
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
-    WString strImg;
+    rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
 
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)
     {
-        strImg = L":/img/add.png";
-    }
-    else if (1 == nItem)
-    {
-        strImg = L":/img/add.png";
+        QPixmap pmAdd;
+        if (pmAdd.load(":/img/add.png"))
+        {
+            painter.drawPixmap(rc.center().x()-100, rc.center().y()-100, 200, 200, pmAdd);
+        }
     }
     else
     {
-        UINT uBkgIdx = (UINT)nItem-2;
-        if (uBkgIdx >= m_bkgDlg.bkgCount())
+        if (1 == nItem)
         {
-            return;
+            painter.drawPixmapEx(m_bkgDlg.defaultBkg(), rc);
+        }
+        else
+        {
+            UINT uBkgIdx = (UINT)nItem-2;
+            if (uBkgIdx <= m_bkgDlg.bkgCount())
+            {
+                painter.drawPixmapEx(m_bkgDlg.bkg(uBkgIdx), rc);
+            }
         }
 
-        strImg = m_bkgDlg.bkg(uBkgIdx);
-    }
-
-    QPixmap pixmap;
-    if (pixmap.load(strImg))
-    {
-        rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
-        painter.drawPixmapEx(pixmap, rc);
     }
 }
 
@@ -89,8 +88,10 @@ CBkgDlg::CBkgDlg(CPlayerView& view) :
     });
 }
 
-void CBkgDlg::init()
+void CBkgDlg::init(const QPixmap& pmDefaultBkg)
 {
+    m_pmDefaultBkg = pmDefaultBkg;
+
     m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
     m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
 
@@ -189,7 +190,7 @@ void CBkgDlg::setBkg(UINT uIdx)
                             :m_view.getOptionMgr().getOption().strVBkg;
     strBkg = vecBkg[uIdx];
 
-    m_view.getMainWnd().loadBkg(m_bHScreen?m_strHBkgDir:m_strVBkgDir + strBkg);
+    m_view.getMainWnd().loadBkg((m_bHScreen?m_strHBkgDir:m_strVBkgDir) + strBkg);
 
     close();
 }
