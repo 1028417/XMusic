@@ -44,16 +44,16 @@ public:
     {
     }
 
-    void drawPixmapEx(const WString& strImgFile, const QRect& rcDst)
+    void drawPixmapEx(const QRect& rcDst, const WString& strImgFile)
     {
         QPixmap pm;
         if (pm.load(strImgFile))
         {
-            drawPixmapEx(pm, rcDst);
+            drawPixmapEx(rcDst, pm);
         }
     }
 
-    void drawPixmapEx(const QPixmap& pixmap, const QRect& rcDst)
+    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
     {
         QRect rcSrc = pixmap.rect();
         int height = rcSrc.height();

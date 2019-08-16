@@ -480,7 +480,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewRo
     QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
     if (context.pixmap && !context.pixmap->isNull())
     {
-        painter.drawPixmapEx(*context.pixmap, rcDst);
+        painter.drawPixmapEx(rcDst, *context.pixmap);
     }
 
     rc.setLeft(x_icon + sz_icon + nMargin);

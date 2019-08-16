@@ -55,9 +55,6 @@ private:
     tagPlayingInfo m_PlayingInfo;
     wstring m_strSingerName;
 
-    QPixmap m_pmHBkg;
-    QPixmap m_pmVBkg;
-
     bool m_bUsingCustomBkg = false;
 
     bool m_bZoomoutSingerImg = false;
@@ -87,7 +84,7 @@ public:
 
     void show();
 
-    void loadBkg(const WString& strBkg);
+    void updateBkg();
 
 private:
     bool event(QEvent *) override;

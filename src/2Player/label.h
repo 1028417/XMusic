@@ -81,7 +81,7 @@ private:
         auto pm = pixmap();
         if (pm && !pm->isNull())
         {
-            painter.drawPixmapEx(*pm, m_rc);
+            painter.drawPixmapEx(m_rc, *pm);
         }
 
         QString text = this->text();

@@ -219,16 +219,7 @@ void MainWindow::show()
 
     m_medialibDlg.init();
 
-    cauto& strHBkg = m_bkgDlg.hbkg();
-    if (!strHBkg.empty())
-    {
-        (void)m_pmHBkg.load(strHBkg);
-    }
-    cauto& strVBkg = m_bkgDlg.vbkg();
-    if (!strVBkg.empty())
-    {
-        (void)m_pmVBkg.load(strVBkg);
-    }
+    m_bkgDlg.initCustomBkg();
 
     _relayout();
 
@@ -330,28 +321,14 @@ void MainWindow::_relayout()
     int cy_bkg = fCXRate*pmDefaultBkg.height();
     int dy_bkg = cy - cy_bkg;
 
-    QPixmap *pBkgPixmap = NULL;
-    if (m_bHScreen)
-    {
-        if (!m_pmHBkg.isNull())
-        {
-            pBkgPixmap = &m_pmHBkg;
-        }
-    }
-    else
-    {
-        if (!m_pmVBkg.isNull())
-        {
-            pBkgPixmap = &m_pmVBkg;
-        }
-    }
-    if (pBkgPixmap)
+    const QPixmap &pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+    if (!pmBkg.isNull())
     {
         m_bUsingCustomBkg = true;
 
-        ui.labelBkg->setPixmap(*pBkgPixmap);
+        ui.labelBkg->setPixmap(pmBkg);
 
-        float fHWRate = (float)pBkgPixmap->height()/pBkgPixmap->width();
+        float fHWRate = (float)pmBkg.height()/pmBkg.width();
         if (fHWRate > (float)cy/cx)
         {
             cy_bkg = fHWRate * cx;
@@ -364,7 +341,7 @@ void MainWindow::_relayout()
         }
     }
     else
-    {
+    { 
         m_bUsingCustomBkg = false;
 
         ui.labelBkg->setPixmap(pmDefaultBkg);
@@ -850,18 +827,8 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
 }
 
-void MainWindow::loadBkg(const WString& strBkg)
+void MainWindow::updateBkg()
 {
-    QPixmap& bkgPixmap = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    if (!strBkg.empty())
-    {
-        (void)bkgPixmap.load(strBkg);
-    }
-    else
-    {
-        bkgPixmap = QPixmap();
-    }
-
     _relayout();
 }
 

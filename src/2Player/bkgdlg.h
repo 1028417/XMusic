@@ -32,8 +32,6 @@ private:
 
     CBkgView m_bkgView;
 
-    QPixmap m_pmDefaultBkg;
-
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
@@ -42,16 +40,30 @@ private:
 
     bool m_bHScreen = false;
 
+    QPixmap m_pmDefaultBkg;
+
+    QPixmap m_pmHBkg;
+    QPixmap m_pmVBkg;
+
 public:
     void init(const QPixmap& pmDefaultBkg);
+
+    void initCustomBkg();
 
     const QPixmap& defaultBkg() const
     {
         return m_pmDefaultBkg;
     }
 
-    WString hbkg() const;
-    WString vbkg() const;
+    const QPixmap& hbkg() const
+    {
+        return m_pmHBkg;
+    }
+
+    const QPixmap& vbkg() const
+    {
+        return m_pmVBkg;
+    }
 
     UINT bkgCount()
     {
@@ -65,12 +77,14 @@ public:
         }
     }
 
-    WString bkg(UINT uIdx);
+    void paintDefaultBkg(QPainter& painter, const QRect& rcDst);
 
-    bool addBkg();
+    WString bkg(UINT uIdx);
 
     void setBkg(UINT uIdx);
     void unsetBkg();
+
+    bool addBkg();
 
 private:
     void _relayout(int cx, int cy) override;
