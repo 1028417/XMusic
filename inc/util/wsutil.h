@@ -89,7 +89,7 @@ public:
 	};
 };
 
-class __UtilExt WString
+class WString : public wstring
 {
 public:
     WString() {}
@@ -101,116 +101,68 @@ public:
     }
 
     WString(const WString& other)
-        : m_str(other.m_str)
+        : wstring(other)
     {
     }
 
     WString(WString&& other)
     {
-        m_str.swap(other.m_str);
+		wstring::swap(other);
     }
 
     WString(wstring&& str)
     {
-        m_str.swap(str);
+		wstring::swap(str);
     }
 
     WString& operator =(WString&& other)
     {
-        m_str.swap(other.m_str);
+		wstring::swap(other);
         return *this;
     }
 
     WString& operator =(wstring&& str)
     {
-        m_str.swap(str);
+		wstring::swap(str);
         return *this;
     }
 
     template <typename T>
     WString& operator =(const T& t)
     {
-        m_str.clear();
+		wstring::clear();
         *this << t;
         return *this;
     }
-
-private:
-    wstring m_str;
-
+	
 public:
-    wstring& operator ->()
-    {
-        return m_str;
-    }
-
-    const wstring& operator ->() const
-    {
-        return m_str;
-    }
-
-    wstring& operator *()
-    {
-        return m_str;
-    }
-
-    const wstring& operator *() const
-    {
-        return m_str;
-    }
-
-    operator wstring& ()
-    {
-        return m_str;
-    }
-
-    operator const wstring& () const
-    {
-        return m_str;
-    }
-
-    operator const wchar_t* () const
-    {
-        return m_str.c_str();
-    }
-
 #if !__winvc
     operator QString() const
     {
-        return wsutil::toQStr(m_str);
+        return wsutil::toQStr(*this);
     }
 
     QString qstr() const
     {
-        return wsutil::toQStr(m_str);
+        return wsutil::toQStr(*this);
     }
 #endif
-
-    const wstring& str() const
-    {
-        return m_str;
-    }
-
-    const wchar_t* c_str() const
-    {
-        return m_str.c_str();
-    }
-
+	
     WString& operator<<(const WString& other)
     {
-            m_str.append(other.m_str);
+		wstring::append(other);
             return *this;
     }
 
     WString& operator<<(const wchar_t *pStr)
     {
-        m_str.append(pStr);
+		wstring::append(pStr);
         return *this;
     }
 
 	WString& operator<<(wchar_t wc)
 	{
-		m_str.append(1, wc);
+		wstring::append(1, wc);
 		return *this;
 	}
 
@@ -221,14 +173,14 @@ public:
 
     WString& operator<<(const wstring& str)
     {
-        m_str.append(str);
+		wstring::append(str);
         return *this;
     }
 
     template <typename T>
     WString& operator<<(const T& t)
     {
-        m_str.append(to_wstring(t));
+		wstring::append(to_wstring(t));
         return *this;
     }
 
