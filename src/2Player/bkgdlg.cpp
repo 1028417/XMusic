@@ -195,7 +195,7 @@ void CBkgDlg::setBkg(UINT uIdx)
     strBkg = vecBkg[uIdx];
 
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    (void)pmBkg.load(strBkg);
+    (void)pmBkg.load(wsutil::toQStr(strBkg));
     m_view.getMainWnd().updateBkg();
 
     close();
