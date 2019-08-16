@@ -172,21 +172,17 @@ void CListView::_autoScroll(ulong uSeq, int dy, ulong dt, ulong total)
 
 void CListView::_onPaint(CPainter& painter, const QRect&)
 {
-    m_uRowHeight = 0;
+    int cx = width();
+    int cy = height();
 
     UINT uRowCount = getRowCount();
+
     UINT uPageRowCount = getPageRowCount();
     if (0 == uPageRowCount)
     {
-        if (0 == uRowCount)
-        {
-            return;
-        }
-
-        uPageRowCount = uRowCount;
+        uPageRowCount = MAX(1, uRowCount);
     }
 
-    int cy = rect().bottom();
     m_uRowHeight = cy/uPageRowCount;
 
     if (uRowCount > uPageRowCount)
@@ -202,19 +198,28 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
     UINT uRow = m_fScrollPos;
     int y = (-m_fScrollPos+uRow)*m_uRowHeight;
-    int cx = rect().right();
+
+    if (0 == m_uColumnCount)
+    {
+        m_uColumnCount = 1;
+    }
+    UINT cx_col = cx / m_uColumnCount;
 
     for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
         painter.setFont(this->font());
         painter.setPen(m_crText);
 
-        QRect rc(0, y, cx, m_uRowHeight);
-        tagListViewRow item;
-        item.uRow = uRow;
-        item.bSelect = (int)uRow == m_nSelectRow;
-        item.bFlash = (int)uRow == m_nFlashRow;
-        _onPaintItem(painter, rc, item);
+        tagListViewRow lvRow;
+        lvRow.uRow = uRow;
+        lvRow.bSelect = (int)uRow == m_nSelectRow;
+        lvRow.bFlash = (int)uRow == m_nFlashRow;
+
+        for (auto& uCol = lvRow.uCol; uCol < m_uColumnCount; uCol++)
+        {
+            QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);
+            _onPaintItem(painter, rc, lvRow);
+        }
 
         y += m_uRowHeight;
         if (y >= cy)

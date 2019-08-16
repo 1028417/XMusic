@@ -6,6 +6,7 @@
 struct tagListViewRow
 {
     UINT uRow = 0;
+    UINT uCol = 0;
 
     bool bSelect = false;
     bool bFlash = false;
@@ -47,7 +48,7 @@ public:
     }
 
 private:
-    UINT m_uColumnCount = 0;
+    UINT m_uColumnCount = 1;
 
     UINT m_uRowHeight = 0;
 

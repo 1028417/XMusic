@@ -215,6 +215,8 @@ void MainWindow::show()
 {
     _init();
 
+    m_bkgPixmapDefault = *ui.labelBkg->pixmap();
+
     m_medialibDlg.init();
 
     m_bkgDlg.init();
@@ -317,17 +319,16 @@ void MainWindow::_relayout()
     }
     ui.labelLogoCompany->move(x_LogoCompany, y_LogoCompany);
 
-    static const QPixmap bkgPixmapPrev = *ui.labelBkg->pixmap();
     float fCXRate = 0;
     if (m_bHScreen)
     {
-        fCXRate = (float)cx/bkgPixmapPrev.width();
+        fCXRate = (float)cx/m_bkgPixmapDefault.width();
     }
     else
     {
         fCXRate = (float)cx/1080;
     }
-    int cy_bkg = fCXRate*bkgPixmapPrev.height();
+    int cy_bkg = fCXRate*m_bkgPixmapDefault.height();
     int dy_bkg = cy - cy_bkg;
 
     QPixmap *pBkgPixmap = NULL;
@@ -367,7 +368,7 @@ void MainWindow::_relayout()
     {
         m_bUsingCustomBkg = false;
 
-        ui.labelBkg->setPixmap(bkgPixmapPrev);
+        ui.labelBkg->setPixmap(m_bkgPixmapDefault);
 
         if (m_bHScreen)
         {
@@ -375,7 +376,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            ui.labelBkg->resize(fCXRate*bkgPixmapPrev.width(), cy_bkg);
+            ui.labelBkg->resize(fCXRate*m_bkgPixmapDefault.width(), cy_bkg);
         }
         ui.labelBkg->move(0, dy_bkg);
     }

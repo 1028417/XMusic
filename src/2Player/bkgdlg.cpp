@@ -6,34 +6,42 @@
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg)
+    : CListView(&bkgDlg, 2, 2)
     , m_bkgDlg(bkgDlg)
 {
 }
 
 UINT CBkgView::getRowCount()
 {
-    return m_bkgDlg.bkgs().size()+1;
+    return 1+(1+m_bkgDlg.bkgs().size())/2;
 }
 
 void CBkgView::_onPaintItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
-    auto& bkgs = m_bkgDlg.bkgs();
-    if (0 == lvRow.uRow)
+    int nItem = lvRow.uRow * 2 + lvRow.uCol;
+    if (0 == nItem)
+    {
+        return;
+    }
+    else if (1 == nItem)
     {
 
     }
     else
     {
-        UINT uItem = lvRow.uRow-1;
-        if (uItem < bkgs.size())
+        UINT uItem = (UINT)nItem-2;
+
+        auto& bkgs = m_bkgDlg.bkgs();
+        if (uItem >= bkgs.size())
         {
-            auto& strBkg = bkgs[uItem];
-            QPixmap pixmap;
-            if (pixmap.load(strBkg))
-            {
-                painter.drawPixmapEx(rc, pixmap);
-            }
+            return;
+        }
+
+        auto& strBkg = bkgs[uItem];
+        QPixmap pixmap;
+        if (pixmap.load(m_bkgDlg.bkgDir() + strBkg))
+        {
+            painter.drawPixmapEx(rc, pixmap);
         }
     }
 }
@@ -105,9 +113,18 @@ void CBkgDlg::_relayout(int cx, int cy)
 {
     m_bHScreen = cx>cy;
 
-    cauto& rcReturn = ui.btnReturn->geometry();
-    int y_margin = rcReturn.top();
-
-    int y_bkgView = rcReturn.bottom() + y_margin;
-    m_bkgView.setGeometry(0, y_bkgView, cx, cy-y_bkgView);
+    int margin = ui.btnReturn->y();
+    int offset = margin*2+ui.btnReturn->height();
+    if (m_bHScreen)
+    {
+        int cx_bkgView = cx-margin-offset;
+        int cy_bkgView = cx_bkgView*cy/cx;
+        m_bkgView.setGeometry(offset, (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
+    }
+    else
+    {
+        int cy_bkgView = cy-margin-offset;
+        int cx_bkgView = cy_bkgView*cx/cy;
+        m_bkgView.setGeometry((cx-cx_bkgView)/2, offset, cx_bkgView, cy_bkgView);
+    }
 }

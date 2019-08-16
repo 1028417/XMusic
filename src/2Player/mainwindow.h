@@ -55,8 +55,7 @@ private:
     tagPlayingInfo m_PlayingInfo;
     wstring m_strSingerName;
 
-    WString m_strHBkgDir;
-    WString m_strVBkgDir;
+    QPixmap m_bkgPixmapDefault;
 
     QPixmap m_HBkgPixmap;
     QPixmap m_VBkgPixmap;
