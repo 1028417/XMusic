@@ -856,11 +856,11 @@ void MainWindow::loadBkg(const WString& strBkg)
     QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
     if (!strBkg.empty())
     {
-        bkgPixmap = QPixmap();
+        (void)bkgPixmap.load(strBkg);
     }
     else
     {
-        (void)bkgPixmap.load(strBkg);
+        bkgPixmap = QPixmap();
     }
 
     _relayout();

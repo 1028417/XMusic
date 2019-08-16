@@ -22,13 +22,16 @@ UINT CBkgView::getRowCount()
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
+    WString strImg;
+
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)
     {
+        strImg = L":/img/add.png";
     }
     else if (1 == nItem)
     {
-
+        strImg = L":/img/add.png";
     }
     else
     {
@@ -38,32 +41,39 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
             return;
         }
 
-        QPixmap pixmap;
-        if (pixmap.load(m_bkgDlg.bkg(uBkgIdx)))
-        {
-            rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
-            painter.drawPixmapEx(rc, pixmap);
-        }
+        strImg = m_bkgDlg.bkg(uBkgIdx);
+    }
+
+    QPixmap pixmap;
+    if (pixmap.load(strImg))
+    {
+        rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
+        painter.drawPixmapEx(pixmap, rc);
     }
 }
 
 void CBkgView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
 {
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
-    if (0 == lvRow.uRow)
+    if (0 == nItem)
     {
         if (m_bkgDlg.addBkg())
         {
             update(getRowCount());
         }
     }
-    else if (1 == lvRow.uRow)
+    else if (1 == nItem)
     {
         m_bkgDlg.unsetBkg();
     }
     else
     {
         UINT uBkgIdx = (UINT)nItem-2;
+        if (uBkgIdx >= m_bkgDlg.bkgCount())
+        {
+            return;
+        }
+
         m_bkgDlg.setBkg(uBkgIdx);
     }
 }
@@ -169,13 +179,17 @@ bool CBkgDlg::addBkg()
 
 void CBkgDlg::setBkg(UINT uIdx)
 {
+    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+    if (uIdx >= vecBkg.size())
+    {
+        return;
+    }
+
     auto& strBkg = m_bHScreen?m_view.getOptionMgr().getOption().strHBkg
                             :m_view.getOptionMgr().getOption().strVBkg;
-    strBkg = bkg(uIdx);
+    strBkg = vecBkg[uIdx];
 
-    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-
-    m_view.getMainWnd().loadBkg(stBkgDir + strBkg);
+    m_view.getMainWnd().loadBkg(m_bHScreen?m_strHBkgDir:m_strVBkgDir + strBkg);
 
     close();
 }

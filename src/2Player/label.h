@@ -81,7 +81,7 @@ private:
         const QPixmap *pPixmap = pixmap();
         if (pPixmap && !pPixmap->isNull())
         {
-            painter.drawPixmapEx(m_rc, *pPixmap);
+            painter.drawPixmapEx(*pPixmap, m_rc);
         }
 
         QString text = this->text();

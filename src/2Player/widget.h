@@ -44,12 +44,22 @@ public:
     {
     }
 
-    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
+    void drawPixmapEx(const WString& strImgFile, const QRect& rcDst)
+    {
+        QPixmap pixmap;
+        if (pixmap.load(strImgFile))
+        {
+            drawPixmapEx(pixmap, rcDst);
+        }
+    }
+
+    void drawPixmapEx(const QPixmap& pixmap, const QRect& rcDst)
     {
         QRect rcSrc = pixmap.rect();
-        float fHWRate = 1;
         int height = rcSrc.height();
         int width = rcSrc.width();
+
+        float fHWRate = (float)rcDst.height()/rcDst.width();
         if ((float)height/width > fHWRate)
         {
             int dy = (height - width*fHWRate)/2;

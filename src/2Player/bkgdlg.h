@@ -19,6 +19,9 @@ private:
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 
     void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
+
+public:
+    void init();
 };
 
 class CBkgDlg : public CDialog<>
