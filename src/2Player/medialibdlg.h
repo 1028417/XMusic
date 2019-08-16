@@ -69,6 +69,8 @@ private:
     QPixmap m_pixmapRightTip;
 
 public:
+    void init();
+
     void showRoot();
 
     void showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem=NULL);
@@ -112,17 +114,16 @@ class CMedialibDlg : public CDialog<>
 {
     Q_OBJECT
 public:
-    explicit CMedialibDlg(class CPlayerView& view, QWidget *parent = 0);
+    explicit CMedialibDlg(class CPlayerView& view);
 
 private:
     class CPlayerView& m_view;
 
     CMedialibView m_MedialibView;
 
-private slots:
-    void slot_buttonClicked(CButton*);
-
 public:
+    void init();
+
     void show()
     {
         CDialog<>::show();

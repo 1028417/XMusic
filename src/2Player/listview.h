@@ -56,6 +56,14 @@ private:
 
     ulong m_uTouchSeq = 0;
 
+    ulong m_uAutoScrollSeq = 0;
+
+protected:
+    bool isAutoScrolling() const
+    {
+        return m_uAutoScrollSeq > 0;
+    }
+
 public:
     float scrollPos() const
     {
@@ -64,7 +72,7 @@ public:
 
     void update()
     {
-        CWidget<QWidget>::update();
+        CWidget<>::update();
     }
 
     void update(float fScrollPos, bool bReset=false)
@@ -79,7 +87,7 @@ public:
             m_uTouchSeq = 0;
         }
 
-        CWidget<QWidget>::update();
+        CWidget<>::update();
     }
 
     void selectItem(UINT uItem)
@@ -88,14 +96,14 @@ public:
 
         m_nSelectItem = uItem;
 
-        CWidget<QWidget>::update();
+        CWidget<>::update();
     }
 
     void dselectItem()
     {
         m_nSelectItem = -1;
 
-        CWidget<QWidget>::update();
+        CWidget<>::update();
     }
 
     void showItem(UINT uItem, bool bToTop=false);
@@ -104,6 +112,9 @@ public:
 
 protected:
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
+
+    void _handleMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
+
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
 private:
@@ -116,5 +127,8 @@ private:
     virtual void _handleRowDblClick(UINT uRowIdx, const QMouseEvent&) {(void)uRowIdx;}
 
     bool _scroll(int dy);
-    void _scrollEx(int dy, ulong dt, ulong total);
+    void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);
+
+    virtual void _onAutoScrollBegin() {}
+    virtual void _onAutoScrollEnd() {}
 };

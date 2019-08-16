@@ -138,6 +138,6 @@ private:
             //return;
         }
 
-        //CWidget<QLabel>::_onPaint(painter, rc);
+        //CWidget<>::_onPaint(painter, rc);
     }
 };

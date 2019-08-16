@@ -11,10 +11,7 @@ template <class T=QDialog>
 class CDialog : public T
 {
 public:
-    explicit CDialog(QWidget *parent = 0)
-        : T(parent)
-    {
-    }
+    explicit CDialog() {}
 
 private:
     QColor m_crBkg;

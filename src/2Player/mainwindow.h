@@ -11,6 +11,8 @@
 
 #include "medialibdlg.h"
 
+#include "bkgdlg.h"
+
 //namespace Ui { class MainWindow; }
 
 struct tagPlayingInfo
@@ -56,9 +58,6 @@ private:
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
-    list<wstring> m_lstHBkg;
-    list<wstring> m_lstVBkg;
-
     QPixmap m_HBkgPixmap;
     QPixmap m_VBkgPixmap;
 
@@ -72,13 +71,15 @@ private:
 
     CMedialibDlg m_medialibDlg;
 
+    CBkgDlg m_bkgDlg;
+
 signals:
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);
+
     void signal_playFinish();
 
 private slots:
     void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
-    void slot_playFinish();
 
     void slot_buttonClicked(CButton*);
 
@@ -88,6 +89,8 @@ public:
     void showLogo();
 
     void show();
+
+    void loadBkg(const WString& strBkg);
 
 private:
     bool event(QEvent *) override;

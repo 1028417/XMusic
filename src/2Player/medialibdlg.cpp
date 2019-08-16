@@ -6,10 +6,13 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
-    CDialog(parent)
-    , m_view(view)
+CMedialibDlg::CMedialibDlg(class CPlayerView& view) :
+    m_view(view)
     , m_MedialibView(view, *this)
+{
+}
+
+void CMedialibDlg::init()
 {
     ui.setupUi(this);
 
@@ -22,10 +25,15 @@ CMedialibDlg::CMedialibDlg(class CPlayerView& view, QWidget *parent) :
 
     m_MedialibView.setTextColor(crText);
     m_view.setFont(&m_MedialibView, 0.5);
+    m_MedialibView.init();
 
-    connect(ui.btnReturn, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+    connect(ui.btnReturn, &CButton::signal_clicked, [&](){
+        this->close();
+    });
 
-    connect(ui.btnUpward, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+    connect(ui.btnUpward, &CButton::signal_clicked, [&](){
+        (void)m_MedialibView.handleReturn();
+    });
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
@@ -50,18 +58,6 @@ void CMedialibDlg::_resizeTitle() const
         cx_title += ui.btnUpward->width();
     }
     ui.labelTitle->resize(cx_title, ui.labelTitle->height());
-}
-
-void CMedialibDlg::slot_buttonClicked(CButton* button)
-{
-    if (button == ui.btnReturn)
-    {
-        this->close();
-    }
-    else if (button == ui.btnUpward)
-    {
-        (void)m_MedialibView.handleReturn();
-    }
 }
 
 void CMedialibDlg::showUpwardButton(bool bVisible) const
@@ -90,6 +86,10 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     , m_RootMediaRes(view.getModel().getRootMediaRes())
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
+{
+}
+
+void CMedialibView::init()
 {
     (void)m_pixmapDir.load(":/img/dir.png");
     (void)m_pixmapDirLink.load(":/img/dirLink.png");
@@ -182,19 +182,17 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 
 void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 {
-    if (&MediaRes == &m_RootMediaRes)
-    {
-        strTitle << L"媒体库";
-        return;
-    }
-
     auto pParent = MediaRes.parent();
-    if (pParent)
+    if (&m_RootMediaRes == pParent || NULL == pParent)
+    {
+        strTitle << L"媒体库" << __CNDot << MediaRes.GetName();
+    }
+    else
     {
         _getTitle(*pParent, strTitle);
-    }
 
-    strTitle << __CNDot << MediaRes.GetName();
+        strTitle << __CNDot << MediaRes.GetName();
+    }
 }
 
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
@@ -222,18 +220,13 @@ UINT CMedialibView::getRowCount()
 
     UINT uRet = 10;
     int cy = m_medialibDlg.height();
-    if (cy > 1920)
+    if (cy > 2160)
     {
-        uRet++;
+       uRet++;
 
-        if (cy > 2160)
+        if (cy > 2340)
         {
            uRet++;
-
-            if (cy > 2340)
-            {
-               uRet++;
-            }
         }
     }
     else if (cy < 1800)

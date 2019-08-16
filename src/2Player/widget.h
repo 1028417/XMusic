@@ -250,6 +250,8 @@ protected:
 
     virtual void _onPaint(CPainter&, const QRect& rc);
 
+    virtual void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
+
 private:
     void paintEvent(QPaintEvent *pe) override;
 
@@ -257,13 +259,13 @@ private:
     void _handleTouchEnd(const CTouchEvent&);
     void _handleTouchMove(const CTouchEvent&);
 
-    void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
+    void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
+
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) {}
 
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
 
-    void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) {}
 
     virtual bool _onGesture(QGesture&) {return false;}

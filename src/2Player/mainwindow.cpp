@@ -18,7 +18,8 @@ static Ui::MainWindow ui;
 MainWindow::MainWindow(CPlayerView& view) :
     m_view(view),
     m_PlayingList(view),
-    m_medialibDlg(view)
+    m_medialibDlg(view),
+    m_bkgDlg(view)
 {
     ui.setupUi(this);
 
@@ -160,7 +161,7 @@ void MainWindow::_init()
                 , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom};
     for (auto button : lstButtons)
     {
-        connect(button, SIGNAL(signal_clicked(CButton*)), this, SLOT(slot_buttonClicked(CButton*)));
+        connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
@@ -173,8 +174,7 @@ void MainWindow::_init()
                 , ui.labelPlayProgress);
     for (auto label : lstLabels)
     {
-        connect(label, SIGNAL(signal_click(CLabel*, const QPoint&))
-                , this, SLOT(slot_labelClick(CLabel*, const QPoint&)));
+        connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
     lstLabels.add(ui.labelDuration);
     for (auto label : lstLabels)
@@ -184,59 +184,12 @@ void MainWindow::_init()
 
     ui.labelSingerName->setShadow(2);
 
-    connect(this, SIGNAL(signal_showPlaying(unsigned int, bool))
-            , this, SLOT(slot_showPlaying(unsigned int, bool)));
-    connect(this, SIGNAL(signal_playFinish()), this, SLOT(slot_playFinish()));
-}
+    connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
+    connect(this, &MainWindow::signal_playFinish, [&](){
+        ui.progressBar->setValue(0);
 
-
-void MainWindow::show()
-{
-    _init();
-
-    m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
-    m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
-
-    if (!fsutil::existDir(m_strHBkgDir))
-    {
-        if (fsutil::createDir(m_strHBkgDir))
-        {
-            fsutil::copyFile(L"assets:/hbkg/win10.jpg", m_strHBkgDir + L"win10");
-        }
-    }
-
-    fsutil::findFile(m_strHBkgDir, [&](const tagFileInfo& fileInfo) {
-        m_lstHBkg.push_back(fileInfo.m_strName);
+        _updatePlayPauseButton(false);
     });
-
-    if (!fsutil::existDir(m_strVBkgDir))
-    {
-        if (fsutil::createDir(m_strVBkgDir))
-        {
-            fsutil::copyFile(L"assets:/vbkg/win10.jpg", m_strVBkgDir + L"win10");
-        }
-    }
-
-    fsutil::findFile(m_strVBkgDir, [&](const tagFileInfo& fileInfo) {
-        m_lstVBkg.push_back(fileInfo.m_strName);
-    });
-
-    auto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;
-    if (!strHBkg.empty())
-    {
-        if (!m_HBkgPixmap.load(m_strHBkgDir + strHBkg))
-        {
-            strHBkg.clear();
-        }
-    }
-    auto& strVBkg = m_view.getOptionMgr().getOption().strVBkg;
-    if (!strVBkg.empty())
-    {
-        if (m_VBkgPixmap.load(m_strVBkgDir + strVBkg))
-        {
-            strVBkg.clear();
-        }
-    }
 
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
@@ -255,6 +208,26 @@ void MainWindow::show()
     {
         ui.btnRandom->setVisible(false);
         ui.btnOrder->setVisible(true);
+    }
+}
+
+void MainWindow::show()
+{
+    _init();
+
+    m_medialibDlg.init();
+
+    m_bkgDlg.init();
+
+    cauto& strHBkg = m_bkgDlg.hbkg();
+    if (!strHBkg.empty())
+    {
+        (void)m_HBkgPixmap.load(strHBkg);
+    }
+    cauto& strVBkg = m_bkgDlg.vbkg();
+    if (!strVBkg.empty())
+    {
+        (void)m_VBkgPixmap.load(strVBkg);
     }
 
     _relayout();
@@ -686,13 +659,6 @@ void MainWindow::onPlayFinish()
     m_view.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
 }
 
-void MainWindow::slot_playFinish()
-{
-    ui.progressBar->setValue(0);
-
-    _updatePlayPauseButton(false);
-}
-
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -872,31 +838,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnSetting)
     {
-        cauto& strBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-        const list<wstring>& lstBkg = m_bHScreen?m_lstHBkg:m_lstVBkg;
-        auto& strCurrBkg = m_bHScreen? m_view.getOptionMgr().getOption().strHBkg
-                                     : m_view.getOptionMgr().getOption().strVBkg;
-        QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
-
-        for (cauto& strBkg : lstBkg)
-        {
-            if (strCurrBkg.empty())
-            {
-                strCurrBkg = strBkg;
-
-                (void)bkgPixmap.load(strBkgDir + strCurrBkg);
-
-                break;
-            }
-
-            if (strBkg == strCurrBkg)
-            {
-                strCurrBkg.clear();
-                bkgPixmap = QPixmap();
-            }
-        }
-
-        _relayout();
+        m_bkgDlg.show();
     }
     else if (button == ui.btnMore)
     {
@@ -906,6 +848,21 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         _demand(button);
     }
+}
+
+void MainWindow::loadBkg(const WString& strBkg)
+{
+    QPixmap& bkgPixmap = m_bHScreen? m_HBkgPixmap:m_VBkgPixmap;
+    if (!strBkg.empty())
+    {
+        bkgPixmap = QPixmap();
+    }
+    else
+    {
+        (void)bkgPixmap.load(strBkg);
+    }
+
+    _relayout();
 }
 
 static const QString __qsCheck = wsutil::toQStr(L"√");
@@ -998,7 +955,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 
                     lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
 
-                    lblLanguage->setTextColor(200,255,200);
+                    lblLanguage->setTextColor(210,255,220);
                 }
             }
         });

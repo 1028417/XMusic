@@ -14,16 +14,15 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CPlayerView& view, QWidget *parent=NULL) :
-        CListView(parent)
-        , m_view(view)
+    CPlayingList(class CPlayerView& view) :
+        m_view(view)
         , m_crShadow(128,128,128)
     {
         this->startTimer(1000);
     }
 
 private:
-    class CPlayerView& m_view;
+    CPlayerView& m_view;
 
     ArrList<tagPlayingItem> m_alPlayingItems;
 
@@ -82,6 +81,9 @@ private:
     }*/
 
     void _updateActive(int nActiveTime=6);
+
+    void _onAutoScrollBegin() override;
+    void _onAutoScrollEnd() override;
 
     void timerEvent(QTimerEvent *);
 };

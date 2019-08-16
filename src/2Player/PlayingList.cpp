@@ -154,15 +154,29 @@ void CPlayingList::_updateActive(int nActiveTime)
     update();
 }
 
-void CPlayingList::timerEvent(QTimerEvent *)
+void CPlayingList::_onAutoScrollBegin()
 {
-   if (m_nActiveTime > 0)
-   {
-       m_nActiveTime--;
-       if (0 == m_nActiveTime)
-       {
-           update();
-       }
-   }
+    _updateActive(-1);
 }
 
+void CPlayingList::_onAutoScrollEnd()
+{
+    _updateActive();
+}
+
+void CPlayingList::timerEvent(QTimerEvent *)
+{
+    if (isAutoScrolling())
+    {
+        return;
+    }
+
+    if (m_nActiveTime > 0)
+    {
+        m_nActiveTime--;
+        if (0 == m_nActiveTime)
+        {
+            update();
+        }
+    }
+}

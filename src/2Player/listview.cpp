@@ -60,15 +60,28 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
 }
 
+void CListView::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+{
+    if (E_MouseEventType::MET_Press == type)
+    {
+        if (m_uAutoScrollSeq > 0)
+        {
+            m_uAutoScrollSeq = 0;
+
+            _onAutoScrollEnd();
+
+            return;
+        }
+    }
+
+    CWidget<>::_handleMouseEvent(type, me);
+}
+
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
         _scroll(te.dy());
-    }
-    else if (E_TouchEventType::TET_TouchBegin == type)
-    {
-        m_uTouchSeq++;
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
@@ -88,16 +101,17 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             {
                 dy = -1;
             }
-            dy *= 5;
 
+            _onAutoScrollBegin();
+
+            m_uAutoScrollSeq = te.timestamp();
             if (dt < 200)
             {
-                dy *= 10;
-                _scrollEx(dy, 50, 3000);
+                _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 50, 30000);
             }
             else
             {
-                _scrollEx(dy, 50, 30000);
+                _autoScroll(m_uAutoScrollSeq, 10*dy, 50, 30000);
             }
         }
     }
@@ -135,24 +149,24 @@ bool CListView::_scroll(int dy)
     return bFlag;
 }
 
-void CListView::_scrollEx(int dy, ulong dt, ulong total)
+void CListView::_autoScroll(ulong uSeq, int dy, ulong dt, ulong total)
 {
-    ulong uTouchSeq = m_uTouchSeq;
-    QTimer::singleShot(dt, [=](){
-        if (uTouchSeq != m_uTouchSeq)
+    QTimer::singleShot(dt, [=]() {
+        if (uSeq != m_uAutoScrollSeq)
         {
             return;
         }
 
-        if (_scroll(dy))
+        if (_scroll(dy) || total < dt)
         {
+            m_uAutoScrollSeq = 0;
+
+            _onAutoScrollEnd();
+
             return;
         }
 
-        if (total >= dt*2)
-        {
-            _scrollEx(dy, dt, total-dt);
-        }
+        _autoScroll(uSeq, dy, dt, total-dt);
     });
 }
 
