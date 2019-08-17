@@ -42,6 +42,14 @@ struct __MediaLibExt CCueFile
 public:
 	static const CCueFile NoCue;
 
+	CCueFile() {}
+
+	CCueFile(wstring strFileName, const wstring& strDir)
+		: m_strFileName(strFileName)
+		, m_strDir(strDir)
+	{
+	}
+
 	bool operator ==(CRCueFile cueFile) const
 	{
 		return &cueFile == this;
@@ -62,19 +70,12 @@ public:
 		return this;
 	}
 
-	CCueFile()
-	{
-	}
-
-	CCueFile(wstring strFileName)
-	{
-		m_strFileName = strFileName;
-	}
-
 public:
-	SVector<string> m_vecLineData;
-
 	wstring m_strFileName;
+
+	wstring m_strDir;
+	
+	SVector<string> m_vecLineData;
 
 	wstring m_strPerformer;
 	
@@ -87,6 +88,11 @@ public:
 	ArrList<tagTrackInfo> m_alTrackInfo;
 
 public:
+	wstring filePath() const
+	{
+		return m_strDir + __wcFSSlant + m_strFileName;
+	}
+	
 	bool load(const wstring& strFile);
 
 	CRTrackInfo getTrack(UINT uMs) const;

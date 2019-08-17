@@ -62,6 +62,11 @@ private:
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
+    wstring GetPath() const override
+    {
+        return L"";
+    }
+
     void _onFindFile() override;
 
 #if __android
