@@ -23,7 +23,7 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
-    m_bkgDlg.init(*ui.labelBkg->pixmap());
+    m_bkgDlg.setDefaultBkg(*ui.labelBkg->pixmap());
 
     QWidget* lpTopWidget[] = {
         ui.frameDemand, ui.btnMore
@@ -219,7 +219,7 @@ void MainWindow::show()
 
     m_medialibDlg.init();
 
-    m_bkgDlg.initCustomBkg();
+    m_bkgDlg.init();
 
     _relayout();
 

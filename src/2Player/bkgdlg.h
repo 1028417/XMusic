@@ -45,10 +45,13 @@ private:
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
-public:
-    void init(const QPixmap& pmDefaultBkg);
+public:    
+    void init();
 
-    void initCustomBkg();
+    void setDefaultBkg(const QPixmap& pmDefaultBkg)
+    {
+        m_pmDefaultBkg = pmDefaultBkg;
+    }
 
     const QPixmap& defaultBkg() const
     {

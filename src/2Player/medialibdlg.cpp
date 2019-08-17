@@ -4,6 +4,8 @@
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"
 
+#define __XMusic L"XMusic"
+
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CPlayerView& view) :
@@ -17,7 +19,6 @@ void CMedialibDlg::init()
     ui.setupUi(this);
 
     QColor crText(32, 128, 255);
-
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
@@ -118,7 +119,7 @@ void CMedialibView::showRoot()
 
     m_medialibDlg.showUpwardButton(false);
 
-    m_medialibDlg.setTitle(L"");
+    m_medialibDlg.setTitle(L"媒体库");
 }
 
 void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
@@ -180,19 +181,25 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_medialibDlg.setTitle(strTitle);
 }
 
+#define __Dot L"·"
+
 void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 {
-    auto pParent = MediaRes.parent();
-    if (&m_RootMediaRes == pParent || NULL == pParent)
+    if (&m_RootMediaRes == &MediaRes)
     {
-        strTitle << L"媒体库" << __CNDot << MediaRes.GetName();
+        strTitle << __XMusic;
+        return;
     }
-    else
-    {
-        _getTitle(*pParent, strTitle);
 
-        strTitle << __CNDot << MediaRes.GetName();
+    auto pParent = MediaRes.parent();
+    if (NULL == pParent)
+    {
+        pParent = &m_RootMediaRes;
     }
+
+    _getTitle(*pParent, strTitle);
+
+    strTitle << __Dot << MediaRes.GetName();
 }
 
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
@@ -208,7 +215,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
         _getTitle(*MediaSet.m_pParent, strTitle);
     }
 
-    strTitle << __CNDot << MediaSet.m_strName;
+    strTitle << __Dot << MediaSet.m_strName;
 }
 
 UINT CMedialibView::getPageRowCount()
@@ -295,18 +302,18 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
         switch (lvRow.uRow)
         {
         case 1:
-            context.pixmap = &m_pmDir;
-            context.strText = L"媒体库";
-            break;
-        case 3:
             context.pixmap = &m_pmSingerGroup;
             context.strText = L"歌手库";
 
             break;
-        case 5:
+        case 3:
             context.pixmap = &m_pmPlaylist;
             context.strText = L"列表库";
 
+            break;
+        case 5:
+            context.pixmap = &m_pmDir;
+            context.strText = __XMusic;
             break;
         default:
             return;

@@ -79,35 +79,20 @@ CBkgDlg::CBkgDlg(CPlayerView& view) :
     m_view(view),
     m_bkgView(*this)
 {
+}
+
+void CBkgDlg::init()
+{
     ui.setupUi(this);
+
+    QColor crText(32, 128, 255);
+    ui.labelTitle->setTextColor(crText);
+    ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*){
         this->close();
     });
-}
 
-void CBkgDlg::_relayout(int cx, int cy)
-{
-    m_bHScreen = cx>cy;
-
-    int offset = ui.btnReturn->geometry().bottom() + __margin;
-    if (m_bHScreen)
-    {
-        int cx_bkgView = cx-__margin-offset;
-        int cy_bkgView = cx_bkgView*cy/cx;
-        m_bkgView.setGeometry(offset, (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
-    }
-    else
-    {
-        int cy_bkgView = cy-__margin-offset;
-        int cx_bkgView = cy_bkgView*cx/cy;
-        m_bkgView.setGeometry((cx-cx_bkgView)/2, offset, cx_bkgView, cy_bkgView);
-    }
-}
-
-void CBkgDlg::init(const QPixmap& pmDefaultBkg)
-{
-    m_pmDefaultBkg = pmDefaultBkg;
 
     m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
     m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
@@ -136,10 +121,6 @@ void CBkgDlg::init(const QPixmap& pmDefaultBkg)
         m_vecVBkg.push_back(fileInfo.m_strName);
     });
 
-}
-
-void CBkgDlg::initCustomBkg()
-{
     cauto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;
     if (!strHBkg.empty())
     {
@@ -150,6 +131,30 @@ void CBkgDlg::initCustomBkg()
     if (!strVBkg.empty())
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
+    }
+}
+
+void CBkgDlg::_relayout(int cx, int cy)
+{
+    m_bHScreen = cx>cy;
+
+    int offset = ui.btnReturn->geometry().bottom() + __margin;
+    if (m_bHScreen)
+    {
+        int cx_bkgView = cx-__margin-offset;
+        int cy_bkgView = cx_bkgView*cy/cx;
+        m_bkgView.setGeometry(offset, (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
+
+        ui.labelTitle->setVisible(false);
+    }
+    else
+    {
+        int cy_bkgView = cy-__margin-offset;
+        int cx_bkgView = cy_bkgView*cx/cy;
+        m_bkgView.setGeometry((cx-cx_bkgView)/2, offset, cx_bkgView, cy_bkgView);
+
+        ui.labelTitle->move((cx-ui.labelTitle->width())/2, ui.labelTitle->y());
+        ui.labelTitle->setVisible(true);
     }
 }
 

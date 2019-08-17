@@ -41,12 +41,33 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="CLabel" name="labelTitle">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>37</y>
+     <width>200</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>设置背景</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

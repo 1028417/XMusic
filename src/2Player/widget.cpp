@@ -98,7 +98,6 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 {
     _onMouseEvent(type, me);
 
-//#if _winqt
     if (E_MouseEventType::MET_Press == type)
     {
         if (!m_bTouching)
@@ -135,7 +134,6 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
             _handleTouchMove(me);
         }
     }
-//#endif
 }
 
 template <class TParent>
