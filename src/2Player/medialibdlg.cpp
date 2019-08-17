@@ -542,13 +542,13 @@ void CMedialibView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEve
         switch (uRow)
         {
         case 1:
-            _handleItemClick(m_RootMediaRes);
-            break;
-        case 3:
             _handleItemClick(m_SingerLib);
             break;
-        case 5:
+        case 3:
             _handleItemClick(m_PlaylistLib);
+            break;
+        case 5:
+            _handleItemClick(m_RootMediaRes);
             break;
         default:
             break;
