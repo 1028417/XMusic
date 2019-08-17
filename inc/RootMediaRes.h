@@ -7,7 +7,7 @@ public:
 
 	virtual class CMedia *findRelatedMedia(IMedia& media, E_MediaSetType eMediaSetType) = 0;
 
-	virtual UINT checkDuration(IMedia& media) = 0;
+	virtual UINT checkDuration(IMedia& media, int& nFileSize) = 0;
 
 	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
 };
@@ -68,14 +68,6 @@ private:
     }
 
     void _onFindFile() override;
-
-#if __android
-    void _sortSubPath() override
-    {
-        CPath::_sortSubPath();
-    }
-
-#endif
 
 	int _sortCompare(const CPath& lhs, const CPath& rhs) const override;
 	
