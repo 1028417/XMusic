@@ -4,7 +4,7 @@
 #include "util.h"
 
 #ifdef __ModelPrj
-extern ITxtWriter& g_logWriter;
+extern ITxtWriter& g_logger;
 
 #define __ModelExt __dllexport
 #else
