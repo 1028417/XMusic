@@ -585,9 +585,6 @@ void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 
 void CMedialibView::_handleItemClick(IMedia& Media)
 {
-    extern ITxtWriter& g_logger;
-    g_logger >> Media.GetAbsPath();
-
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(Media)));
 }
 

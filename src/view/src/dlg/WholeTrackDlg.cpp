@@ -208,21 +208,14 @@ void CWholeTrackDlg::OnBnClickedBtnExplore()
 	int iItem = m_wndList.GetSelItem();
 	__Ensure(iItem >= 0);
 
-	m_plCueFile.getSecond((UINT)iItem, [&](auto pMediaRes) {
-		if (NULL != pMediaRes)
+	m_plCueFile.get((UINT)iItem, [&](cauto& pr) {
+		if (NULL != pr.second)
 		{
-			pMediaRes->ShellExplore();
+			pr.second->ShellExplore();
 		}
 		else
 		{
-			wstring strDir = m_wndList.GetItemText(iItem, 4);
-			wsutil::trim(strDir);
-
-			wstring strCueFile =  m_wndList.GetItemText(iItem, 0);
-			wsutil::trim(strCueFile);
-
-			wstring strCueFilePath = m_view.getRootMediaRes().toAbsPath(strDir, true) + __wcFSSlant + strCueFile;
-			winfsutil::exploreFile(strCueFilePath);
+			winfsutil::exploreFile(pr.first->filePath());
 		}
 	});
 }
