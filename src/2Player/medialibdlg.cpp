@@ -703,16 +703,16 @@ bool CMedialibView::handleReturn()
     }
     else if (m_pMediaRes)
     {
-        if (&m_RootMediaRes == m_pMediaRes)
+        auto parent = m_pMediaRes->parent();
+        if (NULL != parent)
         {
-            showRoot();
+            showMediaRes(*parent);
         }
         else
         {
-            auto parent = m_pMediaRes->parent();
-            if (NULL != parent)
+            if (&m_RootMediaRes == m_pMediaRes || &m_sdcard == m_pMediaRes)
             {
-                showMediaRes(*parent);
+                showRoot();
             }
             else
             {

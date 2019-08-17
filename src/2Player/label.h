@@ -86,8 +86,8 @@ private:
         }
 
         QString text = this->text();
-        if (!text.isEmpty())
-        {
+        //if (!text.isEmpty())
+        //{
             int cx = m_rc.right();
 
             if (m_bAutoFit)
@@ -133,10 +133,10 @@ private:
             }
 
             painter.drawText(m_rc, alignment, text, &m_rc);
-        }
+        /*}
         else
         {
             CWidget<QLabel>::_onPaint(painter, rc);
-        }
+        }*/
     }
 };
