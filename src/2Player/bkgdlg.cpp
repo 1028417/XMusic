@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __margin    30
+#define __margin    40
 
 static Ui::BkgDlg ui;
 
@@ -24,20 +24,20 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
 {
     if (0 == lvRow.uDislpayRow)
     {
-        rc.setBottom(rc.bottom()-__margin);
+        rc.setBottom(rc.bottom()-__margin/2);
     }
     else
     {
-        rc.setTop(rc.top()+__margin);
+        rc.setTop(rc.top()+__margin/2);
     }
 
     if (0 == lvRow.uCol)
     {
-        rc.setRight(rc.right()-__margin);
+        rc.setRight(rc.right()-__margin/2);
     }
     else
     {
-        rc.setLeft(rc.left()+__margin);
+        rc.setLeft(rc.left()+__margin/2);
     }
 
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
@@ -236,5 +236,7 @@ void CBkgDlg::unsetBkg()
 
 bool CBkgDlg::addBkg()
 {
+    m_fsDlg.show();
+
     return true;
 }

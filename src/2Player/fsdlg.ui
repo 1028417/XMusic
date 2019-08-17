@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FsDlg</class>
+ <widget class="QDialog" name="MedialibDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>814</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <widget class="CButton" name="btnReturn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>80</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/img/btnReturn.png);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>100</width>
+     <height>100</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="CLabel" name="labelTitle">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>37</y>
+     <width>3000</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="CButton" name="btnUpward">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>30</y>
+     <width>80</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/img/btnUpward.png);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>100</width>
+     <height>100</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

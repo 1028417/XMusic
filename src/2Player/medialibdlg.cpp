@@ -5,6 +5,7 @@
 #include "ui_medialibdlg.h"
 
 #define __XMusic L"XMusic"
+#define __InnerStorage L"内部存储"
 
 static Ui::MedialibDlg ui;
 
@@ -186,9 +187,14 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 
 void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 {
-    if (&m_RootMediaRes == &MediaRes)
+    if (&MediaRes == &m_RootMediaRes)
     {
         strTitle << __XMusic;
+        return;
+    }
+    else if (&MediaRes == &m_sdcard)
+    {
+        strTitle << __InnerStorage;
         return;
     }
 
@@ -324,7 +330,7 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
             break;
         case 7:
             context.pixmap = &m_pmDir;
-            context.strText = L"内部存储";
+            context.strText = __InnerStorage;
             break;
         default:
             return;
