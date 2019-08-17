@@ -437,17 +437,7 @@ void CMedialibView::_paintItem(CPainter& painter, QRect& rc, const tagListViewRo
 
     if (lvRow.bFlash)
     {
-        int r = m_crText.red();
-        int g = m_crText.green();
-        int b = m_crText.blue();
-
-        cauto& crBkg = m_medialibDlg.bkgColor();
-        r += (-r + crBkg.red())*85 / 255;
-        g += (-g + crBkg.green())*85 / 255;
-        b += (-b + crBkg.blue())*85 / 255;
-
-        QColor crText(r,g,b, m_crText.alpha());
-        painter.setPen(crText);
+        painter.setPen(painter.mixColor(m_crText, m_medialibDlg.bkgColor(), 85));
     }
 
     UINT sz_icon = rc.height();

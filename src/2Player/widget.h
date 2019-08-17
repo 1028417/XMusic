@@ -27,12 +27,33 @@ extern map<E_FontWeight, QFont> g_mapFont;
 class CFont : public QFont
 {
 public:
+    CFont(const QWidget& widget)
+        : QFont(widget.font())
+    {
+    }
+
+    CFont(const QPainter& painter)
+        : QFont(painter.font())
+    {
+    }
+
     CFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
         : QFont(g_mapFont[eWeight])
     {
         setPointSizeF(pointSizeF() + fSizeOffset);
-        setWeight((int)eWeight);
+        QFont::setWeight((int)eWeight);
         setItalic(bItalic);
+    }
+
+    void setWeight(E_FontWeight eWeight)
+    {
+        setFamily(g_mapFont[eWeight].family());
+        QFont::setWeight((int)eWeight);
+    }
+
+    E_FontWeight weight() const
+    {
+        return (E_FontWeight)QFont::weight();
     }
 };
 
@@ -44,6 +65,67 @@ public:
     {
     }
 
+public:
+    QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
+    {
+        int r = crSrc.red();
+        int g = crSrc.green();
+        int b = crSrc.blue();
+        int a = crSrc.blue();
+
+        r += (-r + crDst.red())*uAlpha / 255;
+        g += (-g + crDst.green())*uAlpha / 255;
+        b += (-b + crDst.blue())*uAlpha / 255;
+        a += (-a + crDst.alpha())*uAlpha / 255;
+
+        return QColor(r,g,b,a);
+    }
+
+    void setPenColor(int r, int g, int b, int a=255)
+    {
+        setPen(QColor(r,g,b,a));
+    }
+
+    void setFont(const QFont& font)
+    {
+        QPainter::setFont(font);
+    }
+
+    void setFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
+    {
+        QPainter::setFont(CFont(fSizeOffset, eWeight, bItalic));
+    }
+
+    void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    {
+        CFont font(*this);
+        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        font.setWeight(eWeight);
+        font.setItalic(bItalic);
+        QPainter::setFont(font);
+    }
+
+    void adjustFontSize(float fSizeOffset)
+    {
+        CFont font(*this);
+        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        QPainter::setFont(font);
+    }
+
+    void adjustFontWeight(E_FontWeight eWeight)
+    {
+        CFont font(*this);
+        font.setWeight(eWeight);
+        QPainter::setFont(font);
+    }
+
+    void adjustFontItalic(bool bItalic)
+    {
+        CFont font(*this);
+        font.setItalic(bItalic);
+        QPainter::setFont(font);
+    }
+
     void drawPixmapEx(const QRect& rcDst, const WString& strImgFile)
     {
         QPixmap pm;
@@ -51,6 +133,32 @@ public:
         {
             drawPixmapEx(rcDst, pm);
         }
+    }
+
+    template <class T>
+    void _drawFrame(UINT uWidth, const QRect& rc, const T& t)
+    {
+        fillRect(rc.left(), rc.top(), rc.width(), uWidth, t);
+        fillRect(rc.left(), rc.top(), uWidth, rc.height(), t);
+        fillRect(rc.left(), rc.bottom()-uWidth, rc.width(), uWidth, t);
+        fillRect(rc.right()-uWidth, rc.top(), uWidth, rc.height(), t);
+    }
+
+    void drawFrame(UINT uWidth, const QRect& rc, const QColor& cr, Qt::BrushStyle bs=Qt::SolidPattern)
+    {
+        if (Qt::SolidPattern == bs)
+        {
+            _drawFrame(uWidth, rc, cr);
+        }
+        else
+        {
+            _drawFrame(uWidth, rc, QBrush(cr, bs));
+        }
+    }
+
+    void drawFrame(UINT uWidth, const QRect& rc, int r, int g, int b, int a=255, Qt::BrushStyle bs=Qt::SolidPattern)
+    {
+        drawFrame(uWidth, rc, QColor(r,g,b,a), bs);
     }
 
     void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
@@ -229,16 +337,16 @@ public:
         TWidget::setPalette(pe);
     }
 
-    void setTextColor(UINT r, UINT g, UINT b, UINT a=255)
+    void setTextColor(int r, int g, int b, int a=255)
     {
         setTextColor(QColor(r,g,b,a));
     }
 
-    void setTextAlpha(UINT uAlpha)
+    void setTextAlpha(int nAlpha)
     {
-        if ((int)uAlpha != m_crText.alpha())
+        if (nAlpha != m_crText.alpha())
         {
-            m_crText.setAlpha(uAlpha);
+            m_crText.setAlpha(nAlpha);
             setTextColor(m_crText);
         }
     }
@@ -255,30 +363,30 @@ public:
 
     void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
     {
-        QFont font = TWidget::font();
+        CFont font(*this);
         font.setPointSizeF(font.pointSizeF() + fSizeOffset);
-        font.setWeight((int)eWeight);
+        font.setWeight(eWeight);
         font.setItalic(bItalic);
         TWidget::setFont(font);
     }
 
     void adjustFontSize(float fSizeOffset)
     {
-        QFont font = TWidget::font();
+        CFont font(*this);
         font.setPointSizeF(font.pointSizeF() + fSizeOffset);
         TWidget::setFont(font);
     }
 
     void adjustFontWeight(E_FontWeight eWeight)
     {
-        QFont font = TWidget::font();
-        font.setWeight((int)eWeight);
+        CFont font(*this);
+        font.setWeight(eWeight);
         TWidget::setFont(font);
     }
 
     void adjustFontItalic(bool bItalic)
     {
-        QFont font = TWidget::font();
+        CFont font(*this);
         font.setItalic(bItalic);
         TWidget::setFont(font);
     }

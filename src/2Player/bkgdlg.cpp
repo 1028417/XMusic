@@ -45,6 +45,8 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
 #define __size  80
                 painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
             }
+
+            painter.drawFrame(10, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
         }
     }
 }
@@ -194,8 +196,9 @@ void CBkgDlg::setBkg(UINT uIdx)
                             :m_view.getOptionMgr().getOption().strVBkg;
     strBkg = vecBkg[uIdx];
 
+    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    (void)pmBkg.load(wsutil::toQStr(strBkg));
+    (void)pmBkg.load(stBkgDir + strBkg);
     m_view.getMainWnd().updateBkg();
 
     close();

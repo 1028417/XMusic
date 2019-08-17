@@ -20,17 +20,14 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRo
         fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
     }
     QColor crText(m_crText);
-    crText.setAlpha(crText.alpha()*fAlpha);    
+    crText.setAlpha(crText.alpha()*fAlpha);
     painter.setPen(crText);
-
-    QFont font = painter.font();
 
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-        font.setWeight((int)E_FontWeight::FW_SemiBold);
+        painter.adjustFont(1, E_FontWeight::FW_SemiBold, false);
 
-        painter.setFont(font);
         painter.drawText(rc.left(), rc.top() + 6, rc.width()
             , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
     }
@@ -38,10 +35,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRo
     rc.setLeft(rc.left() + 30);
 
     m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
-        if (bPlayingItem || m_view.getPlayMgr().checkPlayedID(playingItem.uID))
+        if (!bPlayingItem && m_view.getPlayMgr().checkPlayedID(playingItem.uID))
         {
-            font.setItalic(true);
-            painter.setFont(font);
+            painter.adjustFontItalic(true);
         }
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle

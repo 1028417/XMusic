@@ -93,9 +93,7 @@ private:
             {
                 while (painter.fontMetrics().width(text) >= cx)
                 {
-                    QFont font = painter.font();
-                    font.setPointSizeF(font.pointSizeF()-0.1f);
-                    painter.setFont(font);
+                    painter.adjustFontSize(-0.1);
                 }
             }
             else
