@@ -58,7 +58,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
         if (0 != m_uRowHeight)
         {
             UINT uRow = UINT((float)me.pos().y()/m_uRowHeight + m_fScrollPos);
-            UINT cx_col = width() / m_uColumnCount;
+            UINT cx_col = width() / getColumnCount();
             UINT uCol = UINT(me.pos().x()/cx_col);
             tagListViewRow lvRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
 
@@ -196,11 +196,12 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
     UINT uRow = m_fScrollPos;
     int y = (-m_fScrollPos+uRow)*m_uRowHeight;
 
-    if (0 == m_uColumnCount)
+    UINT uColumnCount = getColumnCount();
+    if (0 == uColumnCount)
     {
-        m_uColumnCount = 1;
+        uColumnCount = 1;
     }
-    UINT cx_col = cx / m_uColumnCount;
+    UINT cx_col = cx / uColumnCount;
 
     for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
@@ -209,7 +210,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
         tagListViewRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
         lvRow.uDislpayRow = uIdx;
-        for (auto& uCol = lvRow.uCol; uCol < m_uColumnCount; uCol++)
+        for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
             QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);
             _onPaintRow(painter, rc, lvRow);

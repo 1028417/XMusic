@@ -33,13 +33,20 @@ protected:
     };
 
     CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
-        : CListView(parent)
+        : CListView(parent, uColumnCount, uPageRowCount)
     {
     }
 };
 
 class CMedialibView : public CListViewEx
 {
+private:
+    struct tagRootItemContext : tagItemContext
+    {
+        CMediaSet *pMediaSet = NULL;
+        CMediaRes *pMediaRes = NULL;
+    };
+
 public:
     CMedialibView(class CPlayerView& view, class CMedialibDlg& medialibDlg);
 
@@ -93,7 +100,12 @@ public:
 
 private:
     UINT getPageRowCount() override;
+
+    UINT getColumnCount() override;
+
     UINT getRowCount() override;
+
+    bool _getRootItemContext(const tagListViewRow&, tagRootItemContext&);
 
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 

@@ -396,6 +396,11 @@ protected:
 
     virtual void _onPaint(CPainter&, const QRect& rc);
 
+    bool isHLayout() const
+    {
+        return TWidget::width()>TWidget::height();
+    }
+
 private:
     void paintEvent(QPaintEvent *pe) override;
 

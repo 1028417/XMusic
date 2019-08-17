@@ -22,42 +22,19 @@ struct tagListViewRow
     bool bFlash;
 };
 
-class CListRowCount
-{
-public:
-    CListRowCount(UINT uPageRowCount=0)
-        : m_uPageRowCount(uPageRowCount)
-    {
-    }
-
-private:
-    UINT m_uPageRowCount = 0;
-
-
-public:
-    void setPageRowCount(UINT uPageRowCount)
-    {
-        m_uPageRowCount = uPageRowCount;
-    }
-
-    virtual UINT getPageRowCount()
-    {
-        return m_uPageRowCount;
-    }
-};
-
-class CListView : public CWidget<QWidget>, public CListRowCount
+class CListView : public CWidget<QWidget>
 {
 public:
     CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
         : CWidget(parent)
-        , CListRowCount(uPageRowCount)
+        , m_uPageRowCount(uPageRowCount)
         , m_uColumnCount(uColumnCount)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
+    UINT m_uPageRowCount = 0;
     UINT m_uColumnCount = 1;
 
     UINT m_uRowHeight = 0;
@@ -74,13 +51,28 @@ private:
 
     ulong m_uAutoScrollSeq = 0;
 
-protected:
+protected:    
+    virtual UINT getPageRowCount()
+    {
+        return m_uPageRowCount;
+    }
+
+    virtual UINT getColumnCount()
+    {
+        return m_uColumnCount;
+    }
+
     bool isAutoScrolling() const
     {
         return m_uAutoScrollSeq > 0;
     }
 
 public:
+    void setPageRowCount(UINT uPageRowCount)
+    {
+        m_uPageRowCount = uPageRowCount;
+    }
+
     float scrollPos() const
     {
         return m_fScrollPos;

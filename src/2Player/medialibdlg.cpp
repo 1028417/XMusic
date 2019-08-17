@@ -258,9 +258,9 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 }
 
 #if __android
-#define __rootRowCount 9
+#define __rootRowCount (isHLayout()?5:9)
 #else
-#define __rootRowCount 7
+#define __rootRowCount (isHLayout()?5:7)
 #endif
 
 UINT CMedialibView::getPageRowCount()
@@ -289,6 +289,16 @@ UINT CMedialibView::getPageRowCount()
     return uRet;
 }
 
+UINT CMedialibView::getColumnCount()
+{
+    if (NULL == m_pMediaset && NULL == m_pMediaRes && isHLayout())
+    {
+        return 2;
+    }
+
+    return 1;
+}
+
 UINT CMedialibView::getRowCount()
 {
     if (m_pMediaset)
@@ -303,6 +313,45 @@ UINT CMedialibView::getRowCount()
     {
         return __rootRowCount;
     }
+}
+
+bool CMedialibView::_getRootItemContext(const tagListViewRow& lvRow, tagRootItemContext& context)
+{
+    context.eStyle = E_ItemStyle::IS_Normal;
+
+    bool bHScreen = isHLayout();
+    if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
+    {
+        context.pixmap = &m_pmSingerGroup;
+        context.strText = m_SingerLib.m_strName;
+        context.pMediaSet = &m_SingerLib;
+    }
+    else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
+    {
+        context.pixmap = &m_pmPlaylist;
+        context.strText = m_PlaylistLib.m_strName;
+        context.pMediaSet = &m_PlaylistLib;
+    }
+    else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
+    {
+        context.pixmap = &m_pmDir;
+        context.strText = __XMusic;
+        context.pMediaRes = &m_RootMediaRes;
+    }
+#if __android
+    else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
+    {
+        context.pixmap = &m_pmDir;
+        context.strText = __InnerStorage;
+        context.pMediaRes = &m_sdcard;
+    }
+#endif
+    else
+    {
+        return false;
+    }
+
+    return true;
 }
 
 void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
@@ -342,32 +391,12 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
     }
     else
     {
-        tagItemContext context;
-        context.eStyle = E_ItemStyle::IS_Normal;
-        switch (lvRow.uRow)
+        tagRootItemContext context;
+        if (!_getRootItemContext(lvRow, context))
         {
-        case 1:
-            context.pixmap = &m_pmSingerGroup;
-            context.strText = m_SingerLib.m_strName;
-
-            break;
-        case 3:
-            context.pixmap = &m_pmPlaylist;
-            context.strText = m_PlaylistLib.m_strName;
-
-            break;
-        case 5:
-            context.pixmap = &m_pmDir;
-            context.strText = __XMusic;
-            break;
-        case 7:
-            context.pixmap = &m_pmDir;
-            context.strText = __InnerStorage;
-            break;
-        default:
             return;
-            break;
-        }        
+        }
+
         _paintItem(painter, rc, lvRow, context);
     }
 }
@@ -588,22 +617,17 @@ void CMedialibView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEve
     }
     else
     {
-        switch (uRow)
+        tagRootItemContext context;
+        if (_getRootItemContext(lvRow, context))
         {
-        case 1:
-            _handleItemClick(m_SingerLib);
-            break;
-        case 3:
-            _handleItemClick(m_PlaylistLib);
-            break;
-        case 5:
-            _handleItemClick(m_RootMediaRes);
-            break;
-        case 7:
-            _handleItemClick(m_sdcard);
-            break;
-        default:
-            break;
+            if (context.pMediaSet)
+            {
+                _handleItemClick(*context.pMediaSet);
+            }
+            else if (context.pMediaRes)
+            {
+                _handleItemClick(*context.pMediaRes);
+            }
         }
     }
 }
