@@ -85,9 +85,9 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     CListView(&medialibDlg)
     , m_view(view)
     , m_medialibDlg(medialibDlg)
-    , m_RootMediaRes(view.getModel().getRootMediaRes())
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
+  , m_RootMediaRes(view.getModel().getRootMediaRes())
 {
     m_sdcard.SetDir(L"/sdcard");
 }
@@ -585,6 +585,9 @@ void CMedialibView::_handleItemClick(CMediaSet& MediaSet)
 
 void CMedialibView::_handleItemClick(IMedia& Media)
 {
+    extern ITxtWriter& g_logger;
+    g_logger >> Media.GetAbsPath();
+
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(Media)));
 }
 

@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __margin    40
+#define __margin    50
 
 static Ui::BkgDlg ui;
 

@@ -47,19 +47,19 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #define __FontSize 14
 #endif
 
-static CUTF8Writer m_logWriter;
-ITxtWriter& g_logWriter(m_logWriter);
+static CUTF8Writer m_logger;
+ITxtWriter& g_logger(m_logger);
 
 map<E_FontWeight, QFont> g_mapFont;
 
 class CApplication : public QApplication
 {
 private:
-    int argc;
-    char **argv;
+    int argc = 0;
+    char **argv = NULL;
 
 public:
-    CApplication() : QApplication(argc=0, argv=0)
+    CApplication() : QApplication(argc, argv)
     {
 #if __android
         /*string strSdcardPath
@@ -82,7 +82,7 @@ public:
         fsutil::setWorkDir(fsutil::getModuleDir());
 #endif
 
-        m_logWriter.open(L"XMusic.log", true);
+        m_logger.open(L"XMusic.log", true);
 
         SMap<E_FontWeight, QString> mapFontFile {
             { E_FontWeight::FW_Light, "Microsoft-YaHei-Light.ttc" }
@@ -96,14 +96,14 @@ public:
 
             QString qsFontfamilyName;
             int fontId = QFontDatabase::addApplicationFont(qsFontFile);
-            g_logWriter << "newFontId: " >> fontId;
+            g_logger << "newFontId: " >> fontId;
             if (-1 != fontId)
             {
                 cauto& qslst = QFontDatabase::applicationFontFamilies(fontId);
                 if (!qslst.empty())
                 {
                     qsFontfamilyName = qslst.at(0);
-                    g_logWriter << "newfamilyName: " >> qsFontfamilyName;
+                    g_logger << "newfamilyName: " >> qsFontfamilyName;
                 }
             }
 
@@ -144,7 +144,7 @@ public:
     int run()
     {
 #if __android
-        m_logWriter << "jniVer: " >> g_jniVer;
+        m_logger << "jniVer: " >> g_jniVer;
 #endif
 
         m_mainWnd.showLogo();
@@ -152,36 +152,36 @@ public:
         QTimer::singleShot(6000, [&](){
             if (!m_model.init())
             {
-                m_logWriter >> "init model fail";
+                m_logger >> "init model fail";
                 this->quit();
                 return;
             }
-            m_logWriter >> "init model success";
+            m_logger >> "init model success";
 
-            m_logWriter >> "start controller";
+            m_logger >> "start controller";
             if (!m_ctrl.start())
             {
-                m_logWriter >> "start controller fail";
+                m_logger >> "start controller fail";
                 this->quit();
                 return;
             }
-            m_logWriter >> "start controller success, app running";
+            m_logger >> "start controller success, app running";
 
             m_mainWnd.show();
         });
 
         int nRet = exec();
 
-        m_logWriter >> "stop controller";
+        m_logger >> "stop controller";
         m_ctrl.stop();
 
-        m_logWriter >> "close model";
+        m_logger >> "close model";
         m_model.close();
 
         CPlayer::QuitSDK();
 
-        m_logWriter >> "quit";
-        m_logWriter.close();
+        m_logger >> "quit";
+        m_logger.close();
 
         return nRet;
     }

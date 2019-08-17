@@ -4,7 +4,7 @@
 #include "model.h"
 #include "../PlayerApp/controller.h"
 
-extern ITxtWriter& g_logWriter;
+extern ITxtWriter& g_logger;
 
 class CPlayerView : public IPlayerView
 {

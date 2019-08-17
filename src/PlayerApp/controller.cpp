@@ -105,8 +105,8 @@ bool CController::start()
 
                 case E_PlayCtrl::PC_PlayMedias:
                 {
-                    extern ITxtWriter& g_logWriter;
-                    g_logWriter >> "callPlayCtrl";
+                    extern ITxtWriter& g_logger;
+                    g_logger >> "callPlayCtrl";
                 }
                     (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
                     break;
