@@ -46,7 +46,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
                 painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
             }
 
-            painter.drawFrame(10, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
+            painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
         }
     }
 }
