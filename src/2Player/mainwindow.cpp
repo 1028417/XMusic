@@ -197,7 +197,6 @@ void MainWindow::_init()
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
     ui.labelSingerName->setFont(0.5);
-    ui.labelAlbumName->setFont(0.5);
     ui.labelPlayingfile->setFont(0.5);
     ui.labelDuration->setFont(-1);
 
@@ -461,6 +460,8 @@ void MainWindow::_relayout()
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_AlbumName, cx_progressBar, cy_AlbumName);
 
+        ui.labelAlbumName->setFont(0.5);
+
         int y_SingerImg = 0;
         if (m_bZoomoutSingerImg)
         {
@@ -510,6 +511,8 @@ void MainWindow::_relayout()
         m_PlayingList.setTextColor(255, 255, 255, 160);
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadow(0);
+
+        ui.labelAlbumName->setFont(0);
 
         bool bFlag = false;
         if (m_bHScreen)
@@ -875,11 +878,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelPlayingfile)
     {
-        CMediaRes *pMediaRes = m_view.getModel().getRootMediaRes().FindSubPath(m_PlayingInfo.strPath, false);
-        if (pMediaRes)
-        {
-            m_medialibDlg.showMediaRes(*pMediaRes);
-        }
+        m_medialibDlg.showMediaRes(m_PlayingInfo.strPath);
     }
     else if (label == ui.labelPlayProgress)
     {

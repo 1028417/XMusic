@@ -42,7 +42,18 @@ void CListView::flashRow(UINT uRow, UINT uMSDelay)
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
-    if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
+    if (E_MouseEventType::MET_Press == type)
+    {
+        if (m_uAutoScrollSeq > 0)
+        {
+            m_uAutoScrollSeq = 0;
+
+            _onAutoScrollEnd();
+
+            m_bClicking = false;
+        }
+    }
+    else if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
     {
         if (0 != m_uRowHeight)
         {
@@ -61,23 +72,6 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             }
         }
     }
-}
-
-void CListView::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
-{
-    if (E_MouseEventType::MET_Press == type)
-    {
-        if (m_uAutoScrollSeq > 0)
-        {
-            m_uAutoScrollSeq = 0;
-
-            _onAutoScrollEnd();
-
-            return;
-        }
-    }
-
-    CWidget<>::_handleMouseEvent(type, me);
 }
 
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
@@ -110,7 +104,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             m_uAutoScrollSeq = te.timestamp();
             if (dt < 200)
             {
-                _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 50, 30000);
+                _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 100, 30000);
             }
             else
             {

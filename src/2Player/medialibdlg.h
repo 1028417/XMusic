@@ -9,9 +9,9 @@
 
 #include "button.h"
 
-class CMedialibView : public CListView
+class CListViewEx : public CListView
 {
-private:
+protected:
     enum class E_ItemStyle
     {
         IS_Normal
@@ -32,6 +32,14 @@ private:
         UINT uIconSize = 0;
     };
 
+    CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
+        : CListView(parent)
+    {
+    }
+};
+
+class CMedialibView : public CListViewEx
+{
 public:
     CMedialibView(class CPlayerView& view, class CMedialibDlg& medialibDlg);
 
@@ -56,10 +64,6 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
-    QPixmap m_pmDir;
-    QPixmap m_pmDirLink;
-    QPixmap m_pmFile;
-
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
     QPixmap m_pmAlbum;
@@ -68,6 +72,10 @@ private:
     QPixmap m_pmPlaylist;
     QPixmap m_pmPlayItem;
 
+    QPixmap m_pmDir;
+    QPixmap m_pmDirLink;
+    QPixmap m_pmFile;
+
     QPixmap m_pmRightTip;
 
 public:
@@ -75,9 +83,11 @@ public:
 
     void showRoot();
 
-    void showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem=NULL);
-
     void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL);
+
+    void showMediaRes(CMediaRes& MediaRes);
+
+    void showMediaRes(const wstring& strPath);
 
     bool handleReturn();
 
@@ -90,26 +100,26 @@ private:
     void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
 
 private:
-    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
     void _getTitle(CMediaSet& MediaSet, WString& strTitle);
+    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
 
     float& _scrollRecord();
     void _saveScrollRecord();
     void _clearScrollRecord();
 
-    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaRes& MediaRes);
-
     void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaSet& MediaSet);
+
+    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaRes& MediaRes);
 
     void _paintItem(CPainter& painter, QRect& rc, const tagListViewRow&, const tagItemContext& context);
 
     QPixmap& _getSingerPixmap(CSinger& Singer);
 
-    void _handleItemClick(CMediaRes& MediaRes);
-
     void _handleItemClick(CMediaSet& MediaSet);
 
     void _handleItemClick(IMedia& Media);
+
+    void _handleItemClick(CMediaRes& MediaRes);
 };
 
 class CMedialibDlg : public CDialog<>
@@ -132,28 +142,16 @@ public:
         m_MedialibView.showRoot();
     }
 
-    void showMediaRes(CMediaRes& MediaRes)
-    {
-        if (MediaRes.IsDir())
-        {
-            CDialog<>::show();
-            m_MedialibView.showMediaRes(MediaRes);
-        }
-        else
-        {
-            auto parent = MediaRes.parent();
-            if (parent)
-            {
-                CDialog<>::show();
-                m_MedialibView.showMediaRes(*parent, &MediaRes);
-            }
-        }
-    }
-
     void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestMedia=NULL)
     {
         CDialog<>::show();
         m_MedialibView.showMediaSet(MediaSet, pHittestMedia);
+    }
+
+    void showMediaRes(const wstring& strPath)
+    {
+        CDialog<>::show();
+        m_MedialibView.showMediaRes(strPath);
     }
 
     void showUpwardButton(bool bVisible) const;

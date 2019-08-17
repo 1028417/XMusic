@@ -82,7 +82,7 @@ void CMedialibDlg::setTitle(const wstring& strTitle) const
 }
 
 CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
-    CListView(&medialibDlg)
+    CListViewEx(&medialibDlg)
     , m_view(view)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(view.getModel().getSingerMgr())
@@ -94,10 +94,6 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
 
 void CMedialibView::init()
 {
-    (void)m_pmDir.load(":/img/dir.png");
-    (void)m_pmDirLink.load(":/img/dirLink.png");
-    (void)m_pmFile.load(":/img/file.png");
-
     (void)m_pmSingerGroup.load(":/img/singergroup.png");
     (void)m_pmDefaultSinger.load(":/img/singerdefault.png");
     (void)m_pmAlbum.load(":/img/album.png");
@@ -105,6 +101,10 @@ void CMedialibView::init()
 
     (void)m_pmPlaylist.load(":/img/playlist.png");
     (void)m_pmPlayItem.load(":/img/playitem.png");
+
+    (void)m_pmDir.load(":/img/dir.png");
+    (void)m_pmDirLink.load(":/img/dirLink.png");
+    (void)m_pmFile.load(":/img/file.png");
 
     (void)m_pmRightTip.load(":/img/righttip.png");
 }
@@ -122,35 +122,6 @@ void CMedialibView::showRoot()
     m_medialibDlg.showUpwardButton(false);
 
     m_medialibDlg.setTitle(L"媒体库");
-}
-
-void CMedialibView::showMediaRes(CMediaRes& MediaRes, CMediaRes *pHittestItem)
-{
-    if (MediaRes.IsDir())
-    {
-        m_pMediaRes = &MediaRes;
-
-        m_pMediaset = NULL;
-        m_lstSubSets.clear();
-        m_lstSubMedias.clear();
-
-        update(_scrollRecord(), true);
-
-        m_medialibDlg.showUpwardButton(true);
-
-        if (pHittestItem)
-        {
-            int nIdx = MediaRes.GetSubPath().indexOf(pHittestItem);
-            if (nIdx >= 0)
-            {
-                selectRow((UINT)nIdx);
-            }
-        }
-
-        WString strTitle;
-        _getTitle(MediaRes, strTitle);
-        m_medialibDlg.setTitle(strTitle);
-    }
 }
 
 void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
@@ -183,7 +154,84 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_medialibDlg.setTitle(strTitle);
 }
 
+void CMedialibView::showMediaRes(CMediaRes& MediaRes)
+{
+    CMediaRes *pHittestItem = NULL;
+    if (MediaRes.IsDir())
+    {
+        m_pMediaRes = &MediaRes;
+    }
+    else
+    {
+        auto pParent = MediaRes.parent();
+        if (NULL == pParent)
+        {
+            return;
+        }
+
+        m_pMediaRes = pParent;
+        pHittestItem = &MediaRes;
+    }
+
+    m_pMediaset = NULL;
+    m_lstSubSets.clear();
+    m_lstSubMedias.clear();
+
+    update(_scrollRecord(), true);
+
+    m_medialibDlg.showUpwardButton(true);
+
+    if (pHittestItem)
+    {
+        int nIdx = m_pMediaRes->GetSubPath().indexOf(pHittestItem);
+        if (nIdx >= 0)
+        {
+            selectRow((UINT)nIdx);
+        }
+    }
+
+    WString strTitle;
+    _getTitle(*m_pMediaRes, strTitle);
+    m_medialibDlg.setTitle(strTitle);
+}
+
+void CMedialibView::showMediaRes(const wstring& strPath)
+{
+    CMediaRes *pMediaRes = m_RootMediaRes.FindSubPath(strPath, false);
+    if (pMediaRes)
+    {
+        showMediaRes(*pMediaRes);
+    }
+    else
+    {
+        if (fsutil::CheckSubPath(m_sdcard.GetPath(), strPath))
+        {
+            pMediaRes = m_sdcard.FindSubPath(strPath.substr(m_sdcard.GetPath().size()), false);
+            if (pMediaRes)
+            {
+                showMediaRes(*pMediaRes);
+            }
+        }
+    }
+}
+
 #define __Dot L"·"
+
+void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
+{
+    if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
+    {
+        strTitle << MediaSet.m_strName;
+        return;
+    }
+
+    if (MediaSet.m_pParent)
+    {
+        _getTitle(*MediaSet.m_pParent, strTitle);
+    }
+
+    strTitle << __Dot << MediaSet.m_strName;
+}
 
 void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 {
@@ -207,22 +255,6 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
     _getTitle(*pParent, strTitle);
 
     strTitle << __wcFSSlant << MediaRes.GetName();
-}
-
-void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
-{
-    if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
-    {
-        strTitle << MediaSet.m_strName;
-        return;
-    }
-
-    if (MediaSet.m_pParent)
-    {
-        _getTitle(*MediaSet.m_pParent, strTitle);
-    }
-
-    strTitle << __Dot << MediaSet.m_strName;
 }
 
 #if __android
@@ -275,13 +307,7 @@ UINT CMedialibView::getRowCount()
 
 void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
-    if (m_pMediaRes)
-    {
-        m_pMediaRes->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
-            _paintMediaResItem(painter, rc, lvRow, (CMediaRes&)subPath);
-        });
-    }
-    else if (m_pMediaset)
+    if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
@@ -307,6 +333,12 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
                 _paintItem(painter, rc, lvRow, context);
             });
         }
+    }
+    else if (m_pMediaRes)
+    {
+        m_pMediaRes->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
+            _paintMediaResItem(painter, rc, lvRow, (CMediaRes&)subPath);
+        });
     }
     else
     {
@@ -338,59 +370,6 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
         }        
         _paintItem(painter, rc, lvRow, context);
     }
-}
-
-void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaRes& MediaRes)
-{
-    tagItemContext context;
-    context.eStyle = E_ItemStyle::IS_Underline;
-    context.pixmap = &m_pmDir;
-    if (MediaRes.IsDir())
-    {
-        context.strText = MediaRes.GetName();
-    }
-    else
-    {
-        context.strText = MediaRes.GetTitle();
-    }
-
-    if (MediaRes.IsDir())
-    {
-        context.eStyle = E_ItemStyle::IS_RightTip;
-
-        context.pixmap = &m_pmDir;
-
-        if (&m_RootMediaRes == m_pMediaRes)
-        {
-            if (MediaRes.parent() == NULL)
-            {
-                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
-                if (pAttachDir)
-                {
-                    context.pixmap = &m_pmDirLink;
-
-                    if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
-                    {
-                        context.strRemark = L"扩展";
-                    }
-                    else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
-                    {
-                        context.strRemark = L"USB";
-                    }
-                    else
-                    {
-                        context.strRemark = L"內部";
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-       context.pixmap = &m_pmFile;
-    }
-
-    _paintItem(painter, rc, lvRow, context);
 }
 
 static list<QPixmap> g_lstSingerPixmap;
@@ -445,6 +424,59 @@ void CMedialibView::_paintMediaSetItem(CPainter& painter, QRect& rc, const tagLi
         return;
         break;
     };
+
+    _paintItem(painter, rc, lvRow, context);
+}
+
+void CMedialibView::_paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaRes& MediaRes)
+{
+    tagItemContext context;
+    context.eStyle = E_ItemStyle::IS_Underline;
+    context.pixmap = &m_pmDir;
+    if (MediaRes.IsDir())
+    {
+        context.strText = MediaRes.GetName();
+    }
+    else
+    {
+        context.strText = MediaRes.GetTitle();
+    }
+
+    if (MediaRes.IsDir())
+    {
+        context.eStyle = E_ItemStyle::IS_RightTip;
+
+        context.pixmap = &m_pmDir;
+
+        if (&m_RootMediaRes == m_pMediaRes)
+        {
+            if (MediaRes.parent() == NULL)
+            {
+                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
+                if (pAttachDir)
+                {
+                    context.pixmap = &m_pmDirLink;
+
+                    if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+                    {
+                        context.strRemark = L"扩展";
+                    }
+                    else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
+                    {
+                        context.strRemark = L"USB";
+                    }
+                    else
+                    {
+                        context.strRemark = L"內部";
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+       context.pixmap = &m_pmFile;
+    }
 
     _paintItem(painter, rc, lvRow, context);
 }
@@ -620,13 +652,13 @@ void CMedialibView::_saveScrollRecord()
 
 void CMedialibView::_clearScrollRecord()
 {
-    if (m_pMediaRes)
-    {
-        m_mapScrollRecord.erase(m_pMediaRes);
-    }
-    else if (m_pMediaset)
+    if (m_pMediaset)
     {
         m_mapScrollRecord.erase(m_pMediaset);
+    }
+    else if (m_pMediaRes)
+    {
+        m_mapScrollRecord.erase(m_pMediaRes);
     }
 }
 

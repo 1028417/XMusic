@@ -130,8 +130,6 @@ public:
 protected:
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 
-    void _handleMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
-
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
 private:

@@ -74,7 +74,7 @@ private:
         }
     }
 
-    void _onPaint(CPainter& painter, const QRect&) override
+    void _onPaint(CPainter& painter, const QRect& rc) override
     {
         m_rc = this->rect();
 
@@ -82,6 +82,7 @@ private:
         if (pm && !pm->isNull())
         {
             painter.drawPixmapEx(m_rc, *pm);
+            return;
         }
 
         QString text = this->text();
@@ -132,10 +133,10 @@ private:
             }
 
             painter.drawText(m_rc, alignment, text, &m_rc);
-
-            //return;
         }
-
-        //CWidget<>::_onPaint(painter, rc);
+        else
+        {
+            CWidget<QLabel>::_onPaint(painter, rc);
+        }
     }
 };

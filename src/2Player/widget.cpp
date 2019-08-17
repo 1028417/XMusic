@@ -96,6 +96,11 @@ bool CWidget<TParent>::event(QEvent *ev)
 template <class TParent>
 void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
+    if (E_MouseEventType::MET_Press == type)
+    {
+        m_bClicking = true;
+    }
+
     _onMouseEvent(type, me);
 
     if (E_MouseEventType::MET_Press == type)
@@ -106,8 +111,6 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
             _handleTouchBegin(me);
         }
-
-        m_bClicking = true;
     }
     else if (E_MouseEventType::MET_Release == type)
     {

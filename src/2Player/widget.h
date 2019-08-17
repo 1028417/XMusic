@@ -311,10 +311,10 @@ private:
 
     QGraphicsOpacityEffect m_goe;
 
-    bool m_bClicking = false;
-
 protected:
     QColor m_crText;
+
+    bool m_bClicking = false;
 
 public:
     void setOpacity(float fValue)
@@ -396,8 +396,6 @@ protected:
 
     virtual void _onPaint(CPainter&, const QRect& rc);
 
-    virtual void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
-
 private:
     void paintEvent(QPaintEvent *pe) override;
 
@@ -406,6 +404,8 @@ private:
     void _handleTouchMove(const CTouchEvent&);
 
     void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
+
+    void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) {}
 
