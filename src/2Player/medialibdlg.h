@@ -40,11 +40,13 @@ private:
 
     class CMedialibDlg& m_medialibDlg;
 
-    CMediaRes& m_RootMediaRes;
-
     CMediaSet& m_SingerLib;
 
     CMediaSet& m_PlaylistLib;
+
+    CMediaRes& m_RootMediaRes;
+
+    CMediaRes m_sdcard;
 
     CMediaRes *m_pMediaRes = NULL;
 

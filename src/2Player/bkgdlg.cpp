@@ -22,7 +22,23 @@ UINT CBkgView::getRowCount()
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
 {
-    rc.setRect(rc.left()+__margin, rc.top()+__margin,rc.width()-__margin*2,rc.height()-__margin*2);
+    if (0 == lvRow.uDislpayRow)
+    {
+        rc.setBottom(rc.bottom()-__margin);
+    }
+    else
+    {
+        rc.setTop(rc.top()+__margin);
+    }
+
+    if (0 == lvRow.uCol)
+    {
+        rc.setRight(rc.right()-__margin);
+    }
+    else
+    {
+        rc.setLeft(rc.left()+__margin);
+    }
 
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)
@@ -89,7 +105,7 @@ void CBkgDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*){
+    connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
         this->close();
     });
 

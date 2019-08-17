@@ -214,6 +214,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
         painter.setPen(m_crText);
 
         tagListViewRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        lvRow.uDislpayRow = uIdx;
         for (auto& uCol = lvRow.uCol; uCol < m_uColumnCount; uCol++)
         {
             QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);

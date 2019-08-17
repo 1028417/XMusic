@@ -16,6 +16,8 @@ struct tagListViewRow
     UINT uRow;
     UINT uCol;
 
+    UINT uDislpayRow = 0;
+
     bool bSelect;
     bool bFlash;
 };

@@ -88,6 +88,7 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
 {
+    m_sdcard.SetDir(L"/sdcard");
 }
 
 void CMedialibView::init()
@@ -199,7 +200,7 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
 
     _getTitle(*pParent, strTitle);
 
-    strTitle << __Dot << MediaRes.GetName();
+    strTitle << __wcFSSlant << MediaRes.GetName();
 }
 
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
@@ -218,11 +219,17 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     strTitle << __Dot << MediaSet.m_strName;
 }
 
+#if __android
+#define __rootRowCount 9
+#else
+#define __rootRowCount 7
+#endif
+
 UINT CMedialibView::getPageRowCount()
 {
     if (NULL == m_pMediaset && NULL == m_pMediaRes)
     {
-        return 7;
+        return __rootRowCount;
     }
 
     UINT uRet = 10;
@@ -256,7 +263,7 @@ UINT CMedialibView::getRowCount()
     }
     else
     {
-        return 7;
+        return __rootRowCount;
     }
 }
 
@@ -303,17 +310,21 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
         {
         case 1:
             context.pixmap = &m_pmSingerGroup;
-            context.strText = L"歌手库";
+            context.strText = m_SingerLib.m_strName;
 
             break;
         case 3:
             context.pixmap = &m_pmPlaylist;
-            context.strText = L"列表库";
+            context.strText = m_PlaylistLib.m_strName;
 
             break;
         case 5:
             context.pixmap = &m_pmDir;
             context.strText = __XMusic;
+            break;
+        case 7:
+            context.pixmap = &m_pmDir;
+            context.strText = L"内部存储";
             break;
         default:
             return;
@@ -549,6 +560,9 @@ void CMedialibView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEve
             break;
         case 5:
             _handleItemClick(m_RootMediaRes);
+            break;
+        case 7:
+            _handleItemClick(m_sdcard);
             break;
         default:
             break;
