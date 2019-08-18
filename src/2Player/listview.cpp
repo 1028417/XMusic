@@ -11,17 +11,20 @@ void CListView::showRow(UINT uRow, bool bToCenter)
     {
         m_fScrollPos = MAX(.0f, (float)uRow - (uPageRowCount-1)/2);
     }
-    else  if (uRow < m_fScrollPos)
-    {
-        m_fScrollPos = uRow;
-    }
-    else if (uRow+1 > m_fScrollPos+uPageRowCount)
-    {
-        m_fScrollPos = uRow+1-uPageRowCount;
-    }
     else
     {
-        return;
+        if (uRow < m_fScrollPos)
+        {
+            m_fScrollPos = uRow;
+        }
+        else if (uRow+1 > m_fScrollPos+uPageRowCount)
+        {
+            m_fScrollPos = uRow+1-uPageRowCount;
+        }
+        else
+        {
+            return;
+        }
     }
 
     update();
