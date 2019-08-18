@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FsDlg</class>
- <widget class="QDialog" name="MedialibDlg">
+ <class>AddBkgDlg</class>
+ <widget class="QDialog" name="AddBkgDlg">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,12 +46,12 @@
     <rect>
      <x>140</x>
      <y>37</y>
-     <width>3000</width>
+     <width>300</width>
      <height>60</height>
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>添加背景</string>
    </property>
   </widget>
   <widget class="CButton" name="btnUpward">

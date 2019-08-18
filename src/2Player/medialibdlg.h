@@ -36,6 +36,35 @@ protected:
         : CListView(parent, uColumnCount, uPageRowCount)
     {
     }
+
+protected:
+    CMediaRes *m_pMediaRes = NULL;
+
+    CMediaSet *m_pMediaset = NULL;
+    TD_MediaSetList m_lstSubSets;
+    TD_MediaList m_lstSubMedias;
+
+    map<void*, float> m_mapScrollRecord;
+
+private:
+    UINT getRowCount() override;
+
+    virtual UINT getRootCount() = 0;
+
+public:
+    void showRoot();
+
+    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL);
+
+    void showMediaRes(CMediaRes& MediaRes);
+
+protected:
+    bool handleReturn();
+
+    float& _scrollRecord();
+    void _saveScrollRecord();
+    void _clearScrollRecord();
+
 };
 
 class CMedialibView : public CListViewEx
@@ -62,14 +91,6 @@ private:
     CMediaRes& m_RootMediaRes;
 
     CMediaRes m_sdcard;
-
-    CMediaRes *m_pMediaRes = NULL;
-
-    CMediaSet *m_pMediaset = NULL;
-    TD_MediaSetList m_lstSubSets;
-    TD_MediaList m_lstSubMedias;
-
-    map<void*, float> m_mapScrollRecord;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
@@ -103,7 +124,7 @@ private:
 
     UINT getColumnCount() override;
 
-    UINT getRowCount() override;
+    UINT getRootCount() override;
 
     bool _getRootItemContext(const tagListViewRow&, tagRootItemContext&);
 
@@ -114,10 +135,6 @@ private:
 private:
     void _getTitle(CMediaSet& MediaSet, WString& strTitle);
     void _getTitle(CMediaRes& MediaRes, WString& strTitle);
-
-    float& _scrollRecord();
-    void _saveScrollRecord();
-    void _clearScrollRecord();
 
     void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaSet& MediaSet);
 

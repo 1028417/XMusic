@@ -31,7 +31,7 @@ SOURCES +=\
     bkgdlg.cpp \
     listview.cpp \
     medialibdlg.cpp \
-    fsdlg.cpp
+    addbkgdlg.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -45,14 +45,14 @@ HEADERS  += mainwindow.h \
     listview.h \
     dialog.h \
     medialibdlg.h \
-    fsdlg.h
+    addbkgdlg.h
 
 RESOURCES += res.qrc
 
 FORMS    += mainwindow.ui \
     bkgdlg.ui \
     medialibdlg.ui \
-    fsdlg.ui
+    addbkgdlg.ui
 
 INCLUDEPATH += \
     ../../inc \

@@ -1,15 +1,19 @@
 #include "view.h"
 
-#include "fsdlg.h"
-#include "ui_fsdlg.h"
+#include "addbkgdlg.h"
+#include "ui_addbkgdlg.h"
 
-static Ui::FsDlg ui;
+static Ui::AddBkgDlg ui;
 
-CFsDlg::CFsDlg()
+CAddBkgDlg::CAddBkgDlg()
 {
     ui.setupUi(this);
 
-    /*m_fsView.setTextColor(crText);
+    QColor crText(32, 128, 255);
+    ui.labelTitle->setTextColor(crText);
+    ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
+
+    /*m_AddBkgView.setTextColor(crText);
     m_fsView.setFont(0.5);
     m_fsView.init();*/
 
@@ -24,7 +28,7 @@ CFsDlg::CFsDlg()
     });
 }
 
-void CFsDlg::_relayout(int cx, int cy)
+void CAddBkgDlg::_relayout(int cx, int cy)
 {
     cauto& rcReturn = ui.btnReturn->geometry();
     int y_margin = rcReturn.top();

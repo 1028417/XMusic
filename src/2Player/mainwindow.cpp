@@ -717,7 +717,14 @@ void MainWindow::_showAlbumName()
     }
 
     QLabel& labelAlbumName = *ui.labelAlbumName;
-    labelAlbumName.setText(wsutil::toQStr(strMediaSet));
+    if (strMediaSet.empty())
+    {
+        labelAlbumName.setVisible(false);
+        return;
+    }
+
+    labelAlbumName.setVisible(true);
+    labelAlbumName.setText(strMediaSet);
 
     if (!m_bUsingCustomBkg)
     {

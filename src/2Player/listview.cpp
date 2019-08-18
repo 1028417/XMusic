@@ -3,10 +3,15 @@
 
 #include <QTimer>
 
-void CListView::showRow(UINT uRow, bool bToTop)
+void CListView::showRow(UINT uRow, bool bToCenter)
 {
     UINT uPageRowCount = getPageRowCount();
-    if (uRow < m_fScrollPos)
+
+    if (bToCenter)
+    {
+        m_fScrollPos = MAX(.0f, (float)uRow - uPageRowCount/2);
+    }
+    else  if (uRow < m_fScrollPos)
     {
         m_fScrollPos = uRow;
     }
@@ -16,14 +21,7 @@ void CListView::showRow(UINT uRow, bool bToTop)
     }
     else
     {
-        if (bToTop)
-        {
-            m_fScrollPos = uRow;
-        }
-        else
-        {
-            return;
-        }
+        return;
     }
 
     update();

@@ -5,7 +5,7 @@
 
 #include "listview.h"
 
-#include "fsdlg.h"
+#include "addbkgdlg.h"
 
 class CBkgView : public CListView
 {
@@ -34,7 +34,7 @@ private:
 
     CBkgView m_bkgView;
 
-    CFsDlg m_fsDlg;
+    CAddBkgDlg m_fsDlg;
 
     WString m_strHBkgDir;
     WString m_strVBkgDir;

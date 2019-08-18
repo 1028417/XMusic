@@ -100,8 +100,6 @@ public:
 
     void selectRow(UINT uRow, int nCol = -1)
     {
-        showRow(uRow);
-
         m_nSelectRow = uRow;
         m_nSelectCol = nCol;
 
@@ -115,7 +113,7 @@ public:
         CWidget<>::update();
     }
 
-    void showRow(UINT uRow, bool bToTop=false);
+    void showRow(UINT uRow, bool bToCenter=false);
 
     void flashRow(UINT uRow, UINT uMSDelay=300);
 
