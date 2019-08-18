@@ -53,19 +53,13 @@ private:
     virtual UINT getRootCount() = 0;
 
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
-
     virtual void _onPaintRootRow(CPainter&, QRect&, const tagListViewRow&){}
-
     virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaSet&){}
-
     virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMedia&){}
-
     virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaRes&){}
 
     void _onRowClick(const tagListViewRow&, const QMouseEvent&) override;
-
     virtual void _onRootRowClick(const tagListViewRow&){}
-
     virtual void _onRowClick(const tagListViewRow&, IMedia&){}
 
 public:
@@ -154,11 +148,8 @@ private:
     void _getTitle(CMediaRes&, WString& strTitle);
 
     void _onPaintRootRow(CPainter&, QRect& rc, const tagListViewRow&) override;
-
     void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaSet&) override;
-
     void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMedia&) override;
-
     void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaRes&) override;
 
     void _paintRow(CPainter&, QRect&, const tagListViewRow&, const tagItemContext&);
@@ -166,7 +157,6 @@ private:
     QPixmap& _getSingerPixmap(CSinger&);
 
     void _onRootRowClick(const tagListViewRow& lvRow) override;
-
     void _onRowClick(const tagListViewRow&, IMedia&) override;
 };
 
