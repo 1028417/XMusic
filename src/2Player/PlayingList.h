@@ -67,7 +67,7 @@ private:
 
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 
-    void _handleRowDblClick(const tagListViewRow&, const QMouseEvent&) override;
+    void _onRowDblClick(const tagListViewRow&, const QMouseEvent&) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;

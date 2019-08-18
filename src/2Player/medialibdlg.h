@@ -32,39 +32,62 @@ protected:
         UINT uIconSize = 0;
     };
 
-    CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
-        : CListView(parent, uColumnCount, uPageRowCount)
-    {
-    }
+    CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
 
 protected:
     CMediaRes *m_pMediaRes = NULL;
 
     CMediaSet *m_pMediaset = NULL;
+
+private:
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
     map<void*, float> m_mapScrollRecord;
+
+    QPixmap m_pmRightTip;
 
 private:
     UINT getRowCount() override;
 
     virtual UINT getRootCount() = 0;
 
+    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
+
+    virtual void _onPaintRootRow(CPainter&, QRect&, const tagListViewRow&){}
+
+    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaSet&){}
+
+    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMedia&){}
+
+    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaRes&){}
+
+    void _onRowClick(const tagListViewRow&, const QMouseEvent&) override;
+
+    virtual void _onRootRowClick(const tagListViewRow&){}
+
+    virtual void _onRowClick(const tagListViewRow&, IMedia&){}
+
 public:
-    void showRoot();
+    virtual void showRoot();
 
-    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL);
+    virtual void showMediaSet(CMediaSet&, CMedia *pHittestItem=NULL);
 
-    void showMediaRes(CMediaRes& MediaRes);
+    virtual void showMediaRes(CMediaRes&);
+
+    bool handleReturn();
 
 protected:
-    bool handleReturn();
+    void _paintRow(CPainter&, QRect&, const tagListViewRow&, const tagItemContext&);
 
     float& _scrollRecord();
     void _saveScrollRecord();
     void _clearScrollRecord();
 
+    bool isInRoot() const
+    {
+        return NULL==m_pMediaset && NULL==m_pMediaRes;
+    }
 };
 
 class CMedialibView : public CListViewEx
@@ -104,16 +127,14 @@ private:
     QPixmap m_pmDirLink;
     QPixmap m_pmFile;
 
-    QPixmap m_pmRightTip;
-
 public:
     void init();
 
-    void showRoot();
+    void showRoot() override;
 
-    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL);
+    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL) override;
 
-    void showMediaRes(CMediaRes& MediaRes);
+    void showMediaRes(CMediaRes& MediaRes) override;
 
     void showMediaRes(const wstring& strPath);
 
@@ -128,27 +149,25 @@ private:
 
     bool _getRootItemContext(const tagListViewRow&, tagRootItemContext&);
 
-    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
-
-    void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
-
 private:
-    void _getTitle(CMediaSet& MediaSet, WString& strTitle);
-    void _getTitle(CMediaRes& MediaRes, WString& strTitle);
+    void _getTitle(CMediaSet&, WString& strTitle);
+    void _getTitle(CMediaRes&, WString& strTitle);
 
-    void _paintMediaSetItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaSet& MediaSet);
+    void _onPaintRootRow(CPainter&, QRect& rc, const tagListViewRow&) override;
 
-    void _paintMediaResItem(CPainter& painter, QRect& rc, const tagListViewRow&, CMediaRes& MediaRes);
+    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaSet&) override;
 
-    void _paintItem(CPainter& painter, QRect& rc, const tagListViewRow&, const tagItemContext& context);
+    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMedia&) override;
 
-    QPixmap& _getSingerPixmap(CSinger& Singer);
+    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaRes&) override;
 
-    void _handleItemClick(CMediaSet& MediaSet);
+    void _paintRow(CPainter&, QRect&, const tagListViewRow&, const tagItemContext&);
 
-    void _handleItemClick(IMedia& Media);
+    QPixmap& _getSingerPixmap(CSinger&);
 
-    void _handleItemClick(CMediaRes& MediaRes);
+    void _onRootRowClick(const tagListViewRow& lvRow) override;
+
+    void _onRowClick(const tagListViewRow&, IMedia&) override;
 };
 
 class CMedialibDlg : public CDialog<>
@@ -195,5 +214,5 @@ private:
     bool _handleReturn() override
     {
         return m_MedialibView.handleReturn();
-    }    
+    }
 };

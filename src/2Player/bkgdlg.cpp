@@ -67,7 +67,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
     }
 }
 
-void CBkgView::_handleRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
+void CBkgView::_onRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
 {
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)

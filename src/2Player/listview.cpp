@@ -9,7 +9,7 @@ void CListView::showRow(UINT uRow, bool bToCenter)
 
     if (bToCenter)
     {
-        m_fScrollPos = MAX(.0f, (float)uRow - uPageRowCount/2);
+        m_fScrollPos = MAX(.0f, (float)uRow - (uPageRowCount-1)/2);
     }
     else  if (uRow < m_fScrollPos)
     {
@@ -62,11 +62,11 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 
             if (E_MouseEventType::MET_Click == type)
             {
-                _handleRowClick(lvRow, me);
+                _onRowClick(lvRow, me);
             }
             else
             {
-                _handleRowDblClick(lvRow, me);
+                _onRowDblClick(lvRow, me);
             }
         }
     }

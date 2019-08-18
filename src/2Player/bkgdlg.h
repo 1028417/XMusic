@@ -20,7 +20,7 @@ private:
 
     void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
 
-    void _handleRowClick(const tagListViewRow&, const QMouseEvent&) override;
+    void _onRowClick(const tagListViewRow&, const QMouseEvent&) override;
 };
 
 class CBkgDlg : public CDialog<>
