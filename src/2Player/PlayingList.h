@@ -65,9 +65,9 @@ private:
         return m_alPlayingItems.size();
     }
 
-    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 
-    void _onRowDblClick(const tagListViewRow&, const QMouseEvent&) override;
+    void _onRowDblClick(const tagLVRow&, const QMouseEvent&) override;
 
     void _onMouseEnter() override;
     void _onMouseLeave() override;

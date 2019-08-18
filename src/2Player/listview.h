@@ -3,9 +3,9 @@
 
 #include "widget.h"
 
-struct tagListViewRow
+struct tagLVRow
 {
-    tagListViewRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+    tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
         : uRow(t_uRow)
         , uCol(t_uCol)
         , bSelect(t_bSelect)
@@ -126,10 +126,10 @@ private:
     virtual UINT getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
-    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) = 0;
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&) = 0;
 
-    virtual void _onRowClick(const tagListViewRow&, const QMouseEvent&) {}
-    virtual void _onRowDblClick(const tagListViewRow&, const QMouseEvent&) {}
+    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
+    virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}
 
     bool _scroll(int dy);
     void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);

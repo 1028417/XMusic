@@ -61,7 +61,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             UINT uRow = UINT((float)me.pos().y()/m_uRowHeight + m_fScrollPos);
             UINT cx_col = width() / getColumnCount();
             UINT uCol = UINT(me.pos().x()/cx_col);
-            tagListViewRow lvRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+            tagLVRow lvRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
 
             if (E_MouseEventType::MET_Click == type)
             {
@@ -209,7 +209,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
         painter.setFont(this->font());
         painter.setPen(m_crText);
 
-        tagListViewRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        tagLVRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
         lvRow.uDislpayRow = uIdx;
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {

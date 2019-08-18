@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     int cy = this->rect().bottom();
 
@@ -107,7 +107,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_onRowDblClick(const tagListViewRow& lvRow, const QMouseEvent&)
+void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
     _updateActive();
 

@@ -52,15 +52,15 @@ private:
 
     virtual UINT getRootCount() = 0;
 
-    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
-    virtual void _onPaintRootRow(CPainter&, QRect&, const tagListViewRow&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaSet&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMedia&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagListViewRow&, CMediaRes&){}
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
+    virtual void _onPaintRootRow(CPainter&, QRect&, const tagLVRow&){}
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMediaSet&){}
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMedia&){}
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMediaRes&){}
 
-    void _onRowClick(const tagListViewRow&, const QMouseEvent&) override;
-    virtual void _onRootRowClick(const tagListViewRow&){}
-    virtual void _onRowClick(const tagListViewRow&, IMedia&){}
+    void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
+    virtual void _onRootRowClick(const tagLVRow&){}
+    virtual void _onRowClick(const tagLVRow&, IMedia&){}
 
 public:
     virtual void showRoot();
@@ -72,7 +72,7 @@ public:
     bool handleReturn();
 
 protected:
-    void _paintRow(CPainter&, QRect&, const tagListViewRow&, const tagItemContext&);
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
 
     float& _scrollRecord();
     void _saveScrollRecord();
@@ -141,23 +141,23 @@ private:
 
     UINT getRootCount() override;
 
-    bool _getRootItemContext(const tagListViewRow&, tagRootItemContext&);
+    bool _getRootItemContext(const tagLVRow&, tagRootItemContext&);
 
 private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaRes&, WString& strTitle);
 
-    void _onPaintRootRow(CPainter&, QRect& rc, const tagListViewRow&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaSet&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMedia&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagListViewRow&, CMediaRes&) override;
+    void _onPaintRootRow(CPainter&, QRect& rc, const tagLVRow&) override;
+    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMediaSet&) override;
+    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMedia&) override;
+    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMediaRes&) override;
 
-    void _paintRow(CPainter&, QRect&, const tagListViewRow&, const tagItemContext&);
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
 
     QPixmap& _getSingerPixmap(CSinger&);
 
-    void _onRootRowClick(const tagListViewRow& lvRow) override;
-    void _onRowClick(const tagListViewRow&, IMedia&) override;
+    void _onRootRowClick(const tagLVRow& lvRow) override;
+    void _onRowClick(const tagLVRow&, IMedia&) override;
 };
 
 class CMedialibDlg : public CDialog<>

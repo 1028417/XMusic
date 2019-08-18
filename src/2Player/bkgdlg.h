@@ -18,9 +18,9 @@ private:
 private:
     UINT getRowCount() override;
 
-    void _onPaintRow(CPainter&, QRect&, const tagListViewRow&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 
-    void _onRowClick(const tagListViewRow&, const QMouseEvent&) override;
+    void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
 };
 
 class CBkgDlg : public CDialog<>

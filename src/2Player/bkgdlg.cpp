@@ -20,7 +20,7 @@ UINT CBkgView::getRowCount()
     return 1+(1+m_bkgDlg.bkgCount())/2;
 }
 
-void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     if (0 == lvRow.uDislpayRow)
     {
@@ -67,7 +67,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& l
     }
 }
 
-void CBkgView::_onRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
+void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)

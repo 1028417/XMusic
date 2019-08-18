@@ -179,7 +179,7 @@ void CListViewEx::showMediaRes(CMediaRes& MediaRes)
     }
 }
 
-void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     if (m_pMediaset)
     {
@@ -208,7 +208,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow
     }
 }
 
-void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, const tagItemContext& context)
+void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagItemContext& context)
 {
     UINT sz_icon = rc.height();
     if (context.uIconSize > 0 && context.uIconSize < sz_icon)
@@ -494,7 +494,7 @@ UINT CMedialibView::getColumnCount()
     return 1;
 }
 
-bool CMedialibView::_getRootItemContext(const tagListViewRow& lvRow, tagRootItemContext& context)
+bool CMedialibView::_getRootItemContext(const tagLVRow& lvRow, tagRootItemContext& context)
 {
     context.eStyle = E_ItemStyle::IS_Normal;
 
@@ -561,7 +561,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaSet& MediaSet)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, CMediaSet& MediaSet)
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_RightTip;
@@ -589,7 +589,7 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
     _paintRow(painter, rc, lvRow, context);
 }
 
-void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMedia& media)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, CMedia& media)
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_Underline;
@@ -606,7 +606,7 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
     _paintRow(painter, rc, lvRow, context);
 }
 
-void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, CMediaRes& MediaRes)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, CMediaRes& MediaRes)
 {
     tagItemContext context;
     context.eStyle = E_ItemStyle::IS_Underline;
@@ -656,7 +656,7 @@ void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagListViewR
     _paintRow(painter, rc, lvRow, context);
 }
 
-void CMedialibView::_onPaintRootRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow)
+void CMedialibView::_onPaintRootRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     tagRootItemContext context;
     if (_getRootItemContext(lvRow, context))
@@ -665,7 +665,7 @@ void CMedialibView::_onPaintRootRow(CPainter& painter, QRect& rc, const tagListV
     }
 }
 
-void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagListViewRow& lvRow, const tagItemContext& context)
+void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagItemContext& context)
 {
     if (lvRow.bSelect)
     {
@@ -683,7 +683,7 @@ void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagListViewRow
     CListViewEx::_paintRow(painter, rc, lvRow, context);
 }
 
-void CListViewEx::_onRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
+void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
     UINT uRow = lvRow.uRow;
 
@@ -728,7 +728,7 @@ void CListViewEx::_onRowClick(const tagListViewRow& lvRow, const QMouseEvent&)
     }
 }
 
-void CMedialibView::_onRootRowClick(const tagListViewRow& lvRow)
+void CMedialibView::_onRootRowClick(const tagLVRow& lvRow)
 {
     tagRootItemContext context;
     if (_getRootItemContext(lvRow, context))
@@ -744,7 +744,7 @@ void CMedialibView::_onRootRowClick(const tagListViewRow& lvRow)
     }
 }
 
-void CMedialibView::_onRowClick(const tagListViewRow& lvRow, IMedia& Media)
+void CMedialibView::_onRowClick(const tagLVRow& lvRow, IMedia& Media)
 {
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
