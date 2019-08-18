@@ -9,29 +9,35 @@
 
 #include "button.h"
 
+enum class E_ItemStyle
+{
+    IS_Normal
+    , IS_Underline
+    , IS_RightTip
+};
+
+struct tagItemContext
+{
+    E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
+
+    QPixmap *pixmap = NULL;
+
+    wstring strText;
+
+    wstring strRemark;
+
+    UINT uIconSize = 0;
+};
+
+struct tagRootItemContext : tagItemContext
+{
+    CMediaSet *pMediaSet = NULL;
+    CMediaRes *pMediaRes = NULL;
+};
+
 class CListViewEx : public CListView
 {
-protected:
-    enum class E_ItemStyle
-    {
-        IS_Normal
-        , IS_Underline
-        , IS_RightTip
-    };
-
-    struct tagItemContext
-    {
-        E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
-
-        QPixmap *pixmap = NULL;
-
-        wstring strText;
-
-        wstring strRemark;
-
-        UINT uIconSize = 0;
-    };
-
+public:
     CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
 
 protected:
@@ -53,26 +59,18 @@ private:
     virtual UINT getRootCount() = 0;
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
-    virtual void _onPaintRootRow(CPainter&, QRect&, const tagLVRow&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMediaSet&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMedia&){}
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, CMediaRes&){}
+
+    virtual bool _genRootRowContext(const tagLVRow&, tagRootItemContext&) = 0;
+
+    virtual bool _genRowContext(CMediaSet&, tagItemContext&) {return false;}
+    virtual bool _genRowContext(CMedia&, tagItemContext&) {return false;}
+    virtual bool _genRowContext(CMediaRes&, tagItemContext&) {return false;}
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
-    virtual void _onRootRowClick(const tagLVRow&){}
     virtual void _onRowClick(const tagLVRow&, IMedia&){}
 
-public:
-    virtual void showRoot();
-
-    virtual void showMediaSet(CMediaSet&, CMedia *pHittestItem=NULL);
-
-    virtual void showMediaRes(CMediaRes&);
-
-    bool handleReturn();
-
 protected:
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
+    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
 
     float& _scrollRecord();
     void _saveScrollRecord();
@@ -82,17 +80,19 @@ protected:
     {
         return NULL==m_pMediaset && NULL==m_pMediaRes;
     }
+
+public:
+    virtual void showRoot();
+
+    virtual void showMediaSet(CMediaSet&, CMedia *pHittestItem=NULL);
+
+    virtual void showMediaRes(CMediaRes&);
+
+    bool handleReturn();
 };
 
 class CMedialibView : public CListViewEx
 {
-private:
-    struct tagRootItemContext : tagItemContext
-    {
-        CMediaSet *pMediaSet = NULL;
-        CMediaRes *pMediaRes = NULL;
-    };
-
 public:
     CMedialibView(class CPlayerView& view, class CMedialibDlg& medialibDlg);
 
@@ -141,22 +141,19 @@ private:
 
     UINT getRootCount() override;
 
-    bool _getRootItemContext(const tagLVRow&, tagRootItemContext&);
-
-private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaRes&, WString& strTitle);
 
-    void _onPaintRootRow(CPainter&, QRect& rc, const tagLVRow&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMediaSet&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMedia&) override;
-    void _onPaintRow(CPainter&, QRect& rc, const tagLVRow&, CMediaRes&) override;
+    bool _genRootRowContext(const tagLVRow&, tagRootItemContext&) override;
 
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
+    bool _genRowContext(CMediaSet&, tagItemContext&) override;
+    bool _genRowContext(CMedia&, tagItemContext&) override;
+    bool _genRowContext(CMediaRes&, tagItemContext&) override;
+
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&) override;
 
     QPixmap& _getSingerPixmap(CSinger&);
 
-    void _onRootRowClick(const tagLVRow& lvRow) override;
     void _onRowClick(const tagLVRow&, IMedia&) override;
 };
 
