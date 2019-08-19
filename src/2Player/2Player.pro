@@ -31,7 +31,8 @@ SOURCES +=\
     bkgdlg.cpp \
     listview.cpp \
     medialibdlg.cpp \
-    addbkgdlg.cpp
+    addbkgdlg.cpp \
+    ListViewEx.cpp
 
 HEADERS  += mainwindow.h \
     ../PlayerApp/controller.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     listview.h \
     dialog.h \
     medialibdlg.h \
-    addbkgdlg.h
+    addbkgdlg.h \
+    ListViewEx.h
 
 RESOURCES += res.qrc
 
