@@ -16,8 +16,13 @@ enum class E_ItemStyle
     , IS_RightTip
 };
 
-struct tagItemContext
+struct tagMediaContext
 {
+    CMediaSet *pMediaSet = NULL;
+    CMedia *pMedia = NULL;
+
+    CMediaRes *pMediaRes = NULL;
+
     E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
 
     QPixmap *pixmap = NULL;
@@ -26,13 +31,41 @@ struct tagItemContext
 
     wstring strRemark;
 
-    UINT uIconSize = 0;
-};
+    UINT uIconSize = 0;  
 
-struct tagRootItemContext : tagItemContext
-{
-    CMediaSet *pMediaSet = NULL;
-    CMediaRes *pMediaRes = NULL;
+    tagMediaContext(){}
+
+    tagMediaContext(CMediaSet& MediaSet)
+    {
+        pMediaSet = &MediaSet;
+
+        eStyle = E_ItemStyle::IS_RightTip;
+        strText = MediaSet.m_strName;
+    }
+
+    tagMediaContext(CMedia& media)
+    {
+        pMedia = &media;
+
+        eStyle = E_ItemStyle::IS_Underline;
+        strText = media.GetTitle();
+    }
+
+    tagMediaContext(CMediaRes& MediaRes)
+    {
+        pMediaRes = &MediaRes;
+
+        if (MediaRes.IsDir())
+        {
+            eStyle = E_ItemStyle::IS_RightTip;
+            strText = MediaRes.GetName();
+        }
+        else
+        {
+            eStyle = E_ItemStyle::IS_Underline;
+            strText = MediaRes.GetTitle();
+        }
+    }
 };
 
 class CListViewEx : public CListView
@@ -60,17 +93,15 @@ private:
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 
-    virtual bool _genRootRowContext(const tagLVRow&, tagRootItemContext&) = 0;
+    virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
 
-    virtual bool _genRowContext(CMediaSet&, tagItemContext&) {return false;}
-    virtual bool _genRowContext(CMedia&, tagItemContext&) {return false;}
-    virtual bool _genRowContext(CMediaRes&, tagItemContext&) {return false;}
+    virtual void _genRowContext(tagMediaContext&) {}
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
     virtual void _onRowClick(const tagLVRow&, IMedia&){}
 
 protected:
-    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&);
+    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagMediaContext&);
 
     float& _scrollRecord();
     void _saveScrollRecord();
@@ -144,13 +175,11 @@ private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaRes&, WString& strTitle);
 
-    bool _genRootRowContext(const tagLVRow&, tagRootItemContext&) override;
+    bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
 
-    bool _genRowContext(CMediaSet&, tagItemContext&) override;
-    bool _genRowContext(CMedia&, tagItemContext&) override;
-    bool _genRowContext(CMediaRes&, tagItemContext&) override;
+    void _genRowContext(tagMediaContext&) override;
 
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagItemContext&) override;
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagMediaContext&) override;
 
     QPixmap& _getSingerPixmap(CSinger&);
 

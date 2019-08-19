@@ -181,41 +181,36 @@ void CListViewEx::showMediaRes(CMediaRes& MediaRes)
 
 void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-    tagItemContext context;
-
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
             m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet){
-                if (_genRowContext(mediaSet, context))
-                {
-                    _paintRow(painter, rc, lvRow, context);
-                }
+                tagMediaContext context(mediaSet);
+                _genRowContext(context);
+                _paintRow(painter, rc, lvRow, context);
             });
         }
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(lvRow.uRow, [&](CMedia& media) {
-                if (_genRowContext(media, context))
-                {
-                    _paintRow(painter, rc, lvRow, context);
-                }
+                tagMediaContext context(media);
+                _genRowContext(context);
+                _paintRow(painter, rc, lvRow, context);
             });
         }
     }
     else if (m_pMediaRes)
     {
         m_pMediaRes->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
-            if (_genRowContext((CMediaRes&)subPath, context))
-            {
-                _paintRow(painter, rc, lvRow, context);
-            }
+            tagMediaContext context((CMediaRes&)subPath);
+            _genRowContext(context);
+            _paintRow(painter, rc, lvRow, context);
         });
     }
     else
     {
-        tagRootItemContext context;
+        tagMediaContext context;
         if (_genRootRowContext(lvRow, context))
         {
             _paintRow(painter, rc, lvRow, context);
@@ -223,7 +218,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     }
 }
 
-void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagItemContext& context)
+void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagMediaContext& context)
 {
     UINT sz_icon = rc.height();
     if (context.uIconSize > 0 && context.uIconSize < sz_icon)
@@ -509,7 +504,7 @@ UINT CMedialibView::getColumnCount()
     return 1;
 }
 
-bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagRootItemContext& context)
+bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
 {
     context.eStyle = E_ItemStyle::IS_Normal;
 
@@ -576,71 +571,53 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-bool CMedialibView::_genRowContext(CMediaSet& MediaSet, tagItemContext& context)
+void CMedialibView::_genRowContext(tagMediaContext& context)
 {
-    context.eStyle = E_ItemStyle::IS_RightTip;
-    context.strText = MediaSet.m_strName;
-
-    switch (MediaSet.m_eType)
+    if (context.pMediaSet)
     {
-    case E_MediaSetType::MST_Playlist:
-        context.pixmap = &m_pmPlaylist;
-        break;
-    case E_MediaSetType::MST_Album:
-        context.pixmap = &m_pmAlbum;
-        break;
-    case E_MediaSetType::MST_Singer:
-        context.pixmap = &_getSingerPixmap((CSinger&)MediaSet);
-        break;
-    case E_MediaSetType::MST_SingerGroup:
-        context.pixmap = &m_pmSingerGroup;
-        break;
-    default:
-        return false;
-        break;
-    };
-
-    return true;
-}
-
-bool CMedialibView::_genRowContext(CMedia& media, tagItemContext& context)
-{
-    context.eStyle = E_ItemStyle::IS_Underline;
-    if (media.GetMediaSetType() == E_MediaSetType::MST_Album)
-    {
-        context.pixmap = &m_pmAlbumItem;
-    }
-    else
-    {
-        context.pixmap = &m_pmPlayItem;
-    }
-    context.strText = media.GetTitle();
-
-    return true;
-}
-
-bool CMedialibView::_genRowContext(CMediaRes& MediaRes, tagItemContext& context)
-{
-    context.eStyle = E_ItemStyle::IS_Underline;
-    context.pixmap = &m_pmDir;
-    if (MediaRes.IsDir())
-    {
-        context.strText = MediaRes.GetName();
-    }
-    else
-    {
-        context.strText = MediaRes.GetTitle();
-    }
-
-    if (MediaRes.IsDir())
-    {
-        context.eStyle = E_ItemStyle::IS_RightTip;
-
-        context.pixmap = &m_pmDir;
-
-        if (MediaRes.parent() == NULL)
+        switch (context.pMediaSet->m_eType)
         {
-            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
+        case E_MediaSetType::MST_Playlist:
+            context.pixmap = &m_pmPlaylist;
+            break;
+        case E_MediaSetType::MST_Album:
+            context.pixmap = &m_pmAlbum;
+            break;
+        case E_MediaSetType::MST_Singer:
+            context.pixmap = &_getSingerPixmap((CSinger&)*context.pMediaSet);
+            break;
+        case E_MediaSetType::MST_SingerGroup:
+            context.pixmap = &m_pmSingerGroup;
+            break;
+        default:
+            break;
+        };
+    }
+    else if (context.pMedia)
+    {
+        if (context.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
+        {
+            context.pixmap = &m_pmAlbumItem;
+        }
+        else
+        {
+            context.pixmap = &m_pmPlayItem;
+        }
+    }
+    else if (context.pMediaRes)
+    {
+        if (context.pMediaRes->IsDir())
+        {
+            context.pixmap = &m_pmDir;
+        }
+        else
+        {
+           context.pixmap = &m_pmFile;
+        }
+
+        if (context.pMediaRes->parent() == NULL)
+        {
+            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pMediaRes);
             if (pAttachDir)
             {
                 context.pixmap = &m_pmDirLink;
@@ -660,15 +637,9 @@ bool CMedialibView::_genRowContext(CMediaRes& MediaRes, tagItemContext& context)
             }
         }
     }
-    else
-    {
-       context.pixmap = &m_pmFile;
-    }
-
-    return true;
 }
 
-void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagItemContext& context)
+void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagMediaContext& context)
 {
     if (lvRow.bSelect)
     {
@@ -727,7 +698,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     {
         _saveScrollRecord();
 
-        tagRootItemContext context;
+        tagMediaContext context;
         if (_genRootRowContext(lvRow, context))
         {
             if (context.pMediaSet)
