@@ -148,6 +148,8 @@ void CBkgDlg::init()
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
     }
+
+    m_addbkgDlg.init();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -236,7 +238,7 @@ void CBkgDlg::unsetBkg()
 
 bool CBkgDlg::addBkg()
 {
-    m_fsDlg.show();
+    m_addbkgDlg.show();
 
     return true;
 }

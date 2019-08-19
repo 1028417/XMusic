@@ -34,7 +34,7 @@ private:
 
     CBkgView m_bkgView;
 
-    CAddBkgDlg m_fsDlg;
+    CAddBkgDlg m_addbkgDlg;
 
     WString m_strHBkgDir;
     WString m_strVBkgDir;

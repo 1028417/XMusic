@@ -87,7 +87,7 @@ CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(view.getModel().getSingerMgr())
     , m_PlaylistLib(view.getModel().getPlaylistMgr())
-  , m_RootMediaRes(view.getModel().getRootMediaRes())
+    , m_RootMediaRes(view.getModel().getRootMediaRes())
 {
 }
 

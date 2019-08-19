@@ -28,6 +28,11 @@ public:
 private:
     CAddBkgView m_addbkgView;
 
-public:
+private:
     void _relayout(int cx, int cy);
+
+    bool _handleReturn();
+
+public:
+    void init();
 };

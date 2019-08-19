@@ -6,6 +6,11 @@
 static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg()
+    : m_addbkgView(*this)
+{
+}
+
+void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
@@ -15,7 +20,7 @@ CAddBkgDlg::CAddBkgDlg()
 
     m_addbkgView.setTextColor(crText);
     m_addbkgView.setFont(0.5);
-    m_addbkgView.init();
+    //m_addbkgView.init();
 
     ui.btnUpward->setVisible(false);
 
