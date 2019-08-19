@@ -135,6 +135,7 @@ void CMedialibView::play()
         if (lstMedias)
         {
             m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+            dselectRow();
         }
     }
     else if (m_pPath)
@@ -144,6 +145,7 @@ void CMedialibView::play()
         if (lstSubFile)
         {
             m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(lstSubFile))));
+            dselectRow();
         }
     }
 }
