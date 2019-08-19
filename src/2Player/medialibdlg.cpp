@@ -81,6 +81,18 @@ void CMedialibDlg::setTitle(const wstring& strTitle) const
     ui.labelTitle->setText(wsutil::toQStr(strTitle));
 }
 
+bool CMedialibDlg::_handleReturn()
+{
+    if (m_MedialibView.isInRoot())
+    {
+        return false;
+    }
+
+    m_MedialibView.upward();
+
+    return true;
+}
+
 CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
     CListViewEx(&medialibDlg)
     , m_view(view)
