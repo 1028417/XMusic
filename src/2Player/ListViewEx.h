@@ -95,17 +95,12 @@ private:
     virtual void _onRowClick(const tagLVRow&, CMedia&){}
     virtual void _onRowClick(const tagLVRow&, CPath&){}
 
-protected:
-    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
-
     float& _scrollRecord();
     void _saveScrollRecord();
     void _clearScrollRecord();
 
-    bool isInRoot() const
-    {
-        return NULL==m_pMediaset && NULL==m_pPath;
-    }
+protected:
+    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
 
 public:
     virtual void showRoot();
@@ -114,5 +109,10 @@ public:
 
     virtual void showPath(CPath&);
 
-    bool handleReturn();
+    bool isInRoot() const
+    {
+        return NULL==m_pMediaset && NULL==m_pPath;
+    }
+
+    void upward();
 };

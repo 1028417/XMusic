@@ -34,7 +34,7 @@ void CMedialibDlg::init()
     });
 
     connect(ui.btnUpward, &CButton::signal_clicked, [&](){
-        (void)m_MedialibView.handleReturn();
+        m_MedialibView.upward();
     });
 }
 
@@ -401,61 +401,6 @@ void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     CListViewEx::_paintRow(painter, rc, lvRow, context);
 }
 
-void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
-{
-    UINT uRow = lvRow.uRow;
-
-    if (m_pMediaset)
-    {
-        if (m_lstSubSets)
-        {
-            m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
-                _saveScrollRecord();
-
-                showMediaSet(mediaSet);
-            });
-        }
-        else if (m_lstSubMedias)
-        {
-            m_lstSubMedias.get(uRow, [&](CMedia& media){
-                _onRowClick(lvRow, media);
-            });
-        }
-    }
-    else if (m_pPath)
-    {
-        m_pPath->GetSubPath().get(uRow, [&](CPath& subPath) {
-            if (subPath.IsDir())
-            {
-                _saveScrollRecord();
-
-                showPath(subPath);
-            }
-            else
-            {
-                _onRowClick(lvRow, subPath);
-            }
-        });
-    }
-    else
-    {
-        _saveScrollRecord();
-
-        tagRowContext context;
-        if (_genRootRowContext(lvRow, context))
-        {
-            if (context.pMediaSet)
-            {
-                showMediaSet(*context.pMediaSet);
-            }
-            else if (context.pPath)
-            {
-                showPath(*context.pPath);
-            }
-        }
-    }
-}
-
 void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
 {
     flashRow(lvRow.uRow);
@@ -464,12 +409,12 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
 }
 
-bool CMedialibView::handleReturn()
+void CMedialibView::upward()
 {
     if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset)
     {
         showRoot();
-        return true;
+        return;
     }
 
     // if (m_pMediaRes && m_pMediaRes->parent() == NULL)
@@ -478,15 +423,10 @@ bool CMedialibView::handleReturn()
     if (dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
         showMediaRes(m_RootMediaRes);
-        return true;
+        return;
     }
 
-    if (!CListViewEx::handleReturn())
-    {
-        return false;
-    }
+    CListViewEx::upward();
 
     m_medialibDlg.showUpwardButton(!isInRoot());
-
-    return true;
 }

@@ -13,14 +13,14 @@ CAddBkgDlg::CAddBkgDlg()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
-    /*m_AddBkgView.setTextColor(crText);
-    m_fsView.setFont(0.5);
-    m_fsView.init();*/
+    m_addbkgView.setTextColor(crText);
+    m_addbkgView.setFont(0.5);
+    m_addbkgView.init();
 
     ui.btnUpward->setVisible(false);
 
     connect(ui.btnUpward, &CButton::signal_clicked, [&](){
-        //(void)m_MedialibView.handleReturn();
+        m_addbkgView.upward();
     });
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
@@ -38,6 +38,34 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     //_resizeTitle();
 
-    //int y_FsView = rcReturn.bottom() + y_margin;
-    //m_MedialibView.setGeometry(0, y_FsView, cx, cy-y_FsView);
+    int y_addbkgView = rcReturn.bottom() + y_margin;
+    m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
+}
+
+bool CAddBkgDlg::_handleReturn()
+{
+    if (m_addbkgView.isInRoot())
+    {
+        return false;
+    }
+
+    m_addbkgView.upward();
+
+    return true;
+}
+
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
+    : CListViewEx(&addbkgDlg)
+    , m_addbkgDlg(addbkgDlg)
+{
+}
+
+UINT CAddBkgView::getRootCount()
+{
+    return 0;
+}
+
+bool CAddBkgView::_genRootRowContext(const tagLVRow&, tagRowContext&)
+{
+    return false;
 }

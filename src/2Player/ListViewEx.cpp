@@ -196,39 +196,59 @@ void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow,
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }
 
-bool CListViewEx::handleReturn()
+void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
-    _clearScrollRecord();
+    UINT uRow = lvRow.uRow;
 
     if (m_pMediaset)
     {
-        if (m_pMediaset->m_pParent)
+        if (m_lstSubSets)
         {
-            showMediaSet(*m_pMediaset->m_pParent);
+            m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
+                _saveScrollRecord();
+
+                showMediaSet(mediaSet);
+            });
         }
-        else
+        else if (m_lstSubMedias)
         {
-            showRoot();
+            m_lstSubMedias.get(uRow, [&](CMedia& media){
+                _onRowClick(lvRow, media);
+            });
         }
     }
     else if (m_pPath)
     {
-        auto pParent = m_pPath->parent();
-        if (pParent)
-        {
-            showPath(*pParent);
-        }
-        else
-        {
-            showRoot();
-        }
+        m_pPath->GetSubPath().get(uRow, [&](CPath& subPath) {
+            if (subPath.IsDir())
+            {
+                _saveScrollRecord();
+
+                showPath(subPath);
+            }
+            else
+            {
+                _onRowClick(lvRow, subPath);
+            }
+        });
     }
     else
     {
-        return false;
-    }
+        _saveScrollRecord();
 
-    return true;
+        tagRowContext context;
+        if (_genRootRowContext(lvRow, context))
+        {
+            if (context.pMediaSet)
+            {
+                showMediaSet(*context.pMediaSet);
+            }
+            else if (context.pPath)
+            {
+                showPath(*context.pPath);
+            }
+        }
+    }
 }
 
 float& CListViewEx::_scrollRecord()
@@ -256,5 +276,34 @@ void CListViewEx::_clearScrollRecord()
     else if (m_pPath)
     {
         m_mapScrollRecord.erase(m_pPath);
+    }
+}
+
+void CListViewEx::upward()
+{
+    _clearScrollRecord();
+
+    if (m_pMediaset)
+    {
+        if (m_pMediaset->m_pParent)
+        {
+            showMediaSet(*m_pMediaset->m_pParent);
+        }
+        else
+        {
+            showRoot();
+        }
+    }
+    else if (m_pPath)
+    {
+        auto pParent = m_pPath->parent();
+        if (pParent)
+        {
+            showPath(*pParent);
+        }
+        else
+        {
+            showRoot();
+        }
     }
 }

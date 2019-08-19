@@ -3,11 +3,21 @@
 
 #include "dialog.h"
 
-#include "listview.h"
+#include "ListViewEx.h"
 
-/*class CAddBkgView : public CListView
+class CAddBkgView : public CListViewEx
 {
-};*/
+public:
+    CAddBkgView(class CAddBkgDlg& addbkgDlg);
+
+private:
+    class CAddBkgDlg& m_addbkgDlg;
+
+public:
+    UINT getRootCount() override;
+
+    bool _genRootRowContext(const tagLVRow&, tagRowContext&) override;
+};
 
 class CAddBkgDlg : public CDialog<>
 {
@@ -16,7 +26,7 @@ public:
     explicit CAddBkgDlg();
 
 private:
-    //CAddBkgView m_AddBkgView;
+    CAddBkgView m_addbkgView;
 
 public:
     void _relayout(int cx, int cy);

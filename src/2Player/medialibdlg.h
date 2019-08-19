@@ -51,7 +51,7 @@ public:
 
     void showMediaRes(const wstring& strPath);
 
-    bool handleReturn();
+    void upward();
 
 private:
     void showPath(CPath& path) override;
@@ -126,8 +126,5 @@ private:
 
     void _resizeTitle() const;
 
-    bool _handleReturn() override
-    {
-        return m_MedialibView.handleReturn();
-    }
+    bool _handleReturn() override;
 };
