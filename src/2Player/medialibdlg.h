@@ -44,6 +44,8 @@ public:
 
     void upward();
 
+    void play();
+
 private:
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet& MediaSet) override;
@@ -116,9 +118,7 @@ public:
         m_MedialibView.showFile(strPath);
     }
 
-    void showUpwardButton(bool bVisible) const;
-
-    void setTitle(const wstring& strTitle) const;
+    void update(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
 
 private:
     void _relayout(int cx, int cy) override;

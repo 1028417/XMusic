@@ -109,11 +109,11 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         m_uAutoScrollSeq = te.timestamp();
         if (dt < 200)
         {
-            _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 100, 30000);
+            _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 100, 3000);
         }
         else
         {
-            _autoScroll(m_uAutoScrollSeq, 10*dy, 50, 30000);
+            _autoScroll(m_uAutoScrollSeq, 10*dy, 50, 3000);
         }
     }
 }

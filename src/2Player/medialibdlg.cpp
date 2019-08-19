@@ -23,8 +23,6 @@ void CMedialibDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
-    ui.btnUpward->setVisible(false);
-
     m_MedialibView.setTextColor(crText);
     m_MedialibView.setFont(0.5);
     m_MedialibView.init();
@@ -36,6 +34,10 @@ void CMedialibDlg::init()
     connect(ui.btnUpward, &CButton::signal_clicked, [&](){
         m_MedialibView.upward();
     });
+
+    connect(ui.btnPlay, &CButton::signal_clicked, [&](){
+        m_MedialibView.play();
+    });
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
@@ -43,8 +45,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     cauto& rcReturn = ui.btnReturn->geometry();
     int y_margin = rcReturn.top();
 
-    QRect rcUpward(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
-    ui.btnUpward->setGeometry(rcUpward);
+    ui.btnPlay->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
 
     _resizeTitle();
 
@@ -54,31 +55,36 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-    int cx_title = this->width()-2*ui.labelTitle->x();
-    if (!ui.btnUpward->isVisible())
+#define __offset 30
+
+    auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
+    int x_title = pButton->geometry().right() + __offset;
+
+    int cx_title = 0;
+    if (ui.btnPlay->isVisible())
     {
-        cx_title += ui.btnUpward->width();
+        cx_title = ui.btnPlay->x() - __offset - x_title;
     }
-    ui.labelTitle->resize(cx_title, ui.labelTitle->height());
+    else
+    {
+        cx_title = width() - __offset - x_title;
+    }
+
+    ui.labelTitle->setGeometry(x_title, ui.labelTitle->y(), cx_title, ui.labelTitle->height());
 }
 
-void CMedialibDlg::showUpwardButton(bool bVisible) const
-{
-#if __android
-    if (bVisible)
-    {
-        return;
-    }
-#endif
-
-    ui.btnUpward->setVisible(bVisible);
-
-    _resizeTitle();
-}
-
-void CMedialibDlg::setTitle(const wstring& strTitle) const
+void CMedialibDlg::update(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
 {
     ui.labelTitle->setText(wsutil::toQStr(strTitle));
+
+    ui.btnPlay->setVisible(bShowPlayButton);
+
+#if __android
+    bShowUpwardButton = false;
+#endif
+    ui.btnUpward->setVisible(bShowUpwardButton);
+
+    _resizeTitle();
 }
 
 bool CMedialibDlg::_handleReturn()
@@ -120,31 +126,56 @@ void CMedialibView::init()
     (void)m_pmFile.load(":/img/file.png");
 }
 
+void CMedialibView::play()
+{
+    if (m_pMediaset)
+    {
+        TD_MediaList lstMedias;
+        m_pMediaset->GetAllMedias(lstMedias);
+        if (lstMedias)
+        {
+            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+        }
+    }
+    else if (m_pPath)
+    {
+        TD_PathList lstSubFile;
+        m_pPath->GetSubFile(lstSubFile);
+        if (lstSubFile)
+        {
+            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(lstSubFile))));
+        }
+    }
+}
+
 void CMedialibView::_onShowRoot()
 {
-    m_medialibDlg.showUpwardButton(false);
-
-    m_medialibDlg.setTitle(L"媒体库");
+    m_medialibDlg.update(L"媒体库", false, false);
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    m_medialibDlg.showUpwardButton(true);
-
     WString strTitle;
     _getTitle(MediaSet, strTitle);
-    m_medialibDlg.setTitle(strTitle);
+
+    bool bPlayable = E_MediaSetType::MST_Singer==MediaSet.m_eType
+            || E_MediaSetType::MST_Album==MediaSet.m_eType
+            || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
+
+    m_medialibDlg.update(strTitle, bPlayable, true);
 }
 
 void CMedialibView::_onShowPath(CPath& path)
 {
     if (path.IsDir())
     {
-        m_medialibDlg.showUpwardButton(true);
-
         WString strTitle;
         _getTitle((CMediaRes&)path, strTitle);
-        m_medialibDlg.setTitle(strTitle);
+
+        bool bPlayable = path.GetSubPath().any([](CPath& subPath){
+                return !subPath.IsDir();
+        });
+        m_medialibDlg.update(strTitle, bPlayable, true);
     }
 }
 
@@ -435,6 +466,4 @@ void CMedialibView::upward()
     }
 
     CListViewEx::upward();
-
-    m_medialibDlg.showUpwardButton(!isInRoot());
 }
