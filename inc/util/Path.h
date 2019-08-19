@@ -92,6 +92,11 @@ public:
 
 	wstring GetPath() const;
 
+    CPath* parent() const
+    {
+        return m_pParentDir;
+    }
+
 	wstring GetParentDir() const;
 	
 	const TD_PathList& GetSubPath();

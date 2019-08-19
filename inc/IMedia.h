@@ -59,7 +59,7 @@ public:
 		return m_eFileType;
 	}
 
-	wstring GetFileTypeString() const;
+    const wstring& GetFileTypeString() const;
 
 	wstring GetTitle() const;
 
