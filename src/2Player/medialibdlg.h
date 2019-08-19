@@ -74,14 +74,14 @@ private:
 
     void _onMediaClick(const tagLVRow&, IMedia&);
 
-    void _onRowClick(const tagLVRow&, CMedia&) override
+    void _onRowClick(const tagLVRow& lvRow, CMedia& media) override
     {
-        _onMediaClick(media);
+        _onMediaClick(lvRow, media);
     }
 
-    void _onRowClick(const tagLVRow&, CPath&) override
+    void _onRowClick(const tagLVRow& lvRow, CPath& path) override
     {
-        _onMediaClick((CMediaRes&)path);
+        _onMediaClick(lvRow, (CMediaRes&)path);
     }
 };
 
