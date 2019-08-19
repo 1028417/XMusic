@@ -187,11 +187,7 @@ void MainWindow::_init()
     ui.labelSingerName->setShadow(2);
 
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
-    connect(this, &MainWindow::signal_playFinish, [&](){
-        ui.progressBar->setValue(0);
-
-        _updatePlayPauseButton(false);
-    });
+    connect(this, &MainWindow::signal_playFinish, this, &MainWindow::slot_playFinish);
 
     ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
     ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
@@ -639,6 +635,13 @@ void MainWindow::onPlayFinish()
     m_view.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
 }
 
+void MainWindow::slot_playFinish()
+{
+    ui.progressBar->setValue(0);
+
+    _updatePlayPauseButton(false);
+}
+
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -880,12 +883,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
         if (pMedia && pMedia->m_pParent)
         {
-            m_medialibDlg.showMediaSet(*pMedia->m_pParent, pMedia);
+            m_medialibDlg.showMedia(*pMedia);
         }
     }
     else if (label == ui.labelPlayingfile)
     {
-        m_medialibDlg.showMediaRes(m_PlayingInfo.strPath);
+        m_medialibDlg.showFile(m_PlayingInfo.strPath);
     }
     else if (label == ui.labelPlayProgress)
     {

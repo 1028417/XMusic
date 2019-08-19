@@ -83,6 +83,10 @@ private:
     QPixmap m_pmRightTip;
 
 private:
+    virtual void _onShowRoot() {}
+    virtual void _onShowMediaSet(CMediaSet&) {}
+    virtual void _onShowPath(CPath&) {}
+
     UINT getRowCount() override;
     virtual UINT getRootCount() = 0;
 
@@ -90,6 +94,8 @@ private:
     virtual void _genRowContext(tagRowContext&) {}
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&) {}
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
     virtual void _onRowClick(const tagLVRow&, CMedia&){}
@@ -99,15 +105,13 @@ private:
     void _saveScrollRecord();
     void _clearScrollRecord();
 
-protected:
-    virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
-
 public:
-    virtual void showRoot();
+    void showRoot();
 
-    virtual void showMediaSet(CMediaSet&, CMedia *pHittestItem=NULL);
+    void showMediaSet(CMediaSet& MediaSet);
+    void showMedia(CMedia& media);
 
-    virtual void showPath(CPath&);
+    void showPath(CPath& path);
 
     bool isInRoot() const
     {

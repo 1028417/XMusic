@@ -120,19 +120,15 @@ void CMedialibView::init()
     (void)m_pmFile.load(":/img/file.png");
 }
 
-void CMedialibView::showRoot()
+void CMedialibView::_onShowRoot()
 {
-    CListViewEx::showRoot();
-
     m_medialibDlg.showUpwardButton(false);
 
     m_medialibDlg.setTitle(L"媒体库");
 }
 
-void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
+void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    CListViewEx::showMediaSet(MediaSet, pHittestItem);
-
     m_medialibDlg.showUpwardButton(true);
 
     WString strTitle;
@@ -140,35 +136,37 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_medialibDlg.setTitle(strTitle);
 }
 
-void CMedialibView::showPath(CPath& path)
+void CMedialibView::_onShowPath(CPath& path)
 {
-    CListViewEx::showPath(path);
+    if (path.IsDir())
+    {
+        m_medialibDlg.showUpwardButton(true);
 
-    m_medialibDlg.showUpwardButton(true);
-
-    WString strTitle;
-    _getTitle((CMediaRes&)path, strTitle);
-    m_medialibDlg.setTitle(strTitle);
+        WString strTitle;
+        _getTitle((CMediaRes&)path, strTitle);
+        m_medialibDlg.setTitle(strTitle);
+    }
 }
 
-void CMedialibView::showMediaRes(const wstring& strPath)
+void CMedialibView::showFile(const wstring& strPath)
 {
     CMediaRes *pMediaRes = m_RootMediaRes.FindSubPath(strPath, false);
     if (pMediaRes)
     {
-        showMediaRes(*pMediaRes);
+        showPath(*pMediaRes);
+        return;
     }
-    else
+
+#if __android
+    if (fsutil::CheckSubPath(m_sdcard.GetPath(), strPath))
     {
-        if (fsutil::CheckSubPath(m_sdcard.GetPath(), strPath))
+        pMediaRes = m_sdcard.FindSubPath(strPath.substr(m_sdcard.GetPath().size()), false);
+        if (pMediaRes)
         {
-            pMediaRes = m_sdcard.FindSubPath(strPath.substr(m_sdcard.GetPath().size()), false);
-            if (pMediaRes)
-            {
-                showMediaRes(*pMediaRes);
-            }
+            showPath(*pMediaRes);
         }
     }
+#endif
 }
 
 #define __Dot L"·"
@@ -286,7 +284,7 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagRowContext& con
     {
         context.pixmap = &m_pmDir;
         context.strText = __InnerStorage;
-        context.pMediaRes = &m_sdcard;
+        context.pPath = &m_sdcard;
     }
 #endif
     else
@@ -395,7 +393,7 @@ void CMedialibView::_genRowContext(tagRowContext& context)
     }
 }
 
-void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext& context)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext&)
 {
     if (lvRow.bSelect)
     {
@@ -409,8 +407,6 @@ void CMedialibView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     {
         painter.setPen(painter.mixColor(m_crText, m_medialibDlg.bkgColor(), 85));
     }
-
-    CListViewEx::_paintRow(painter, rc, lvRow, context);
 }
 
 void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
@@ -434,7 +430,7 @@ void CMedialibView::upward()
 
     if (dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
-        showMediaRes(m_RootMediaRes);
+        showPath(m_RootMediaRes);
         return;
     }
 

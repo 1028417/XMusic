@@ -75,6 +75,8 @@ signals:
 private slots:
     void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
 
+    void slot_playFinish();
+
     void slot_buttonClicked(CButton*);
 
     void slot_labelClick(CLabel*, const QPoint&);

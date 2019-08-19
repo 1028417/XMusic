@@ -31,10 +31,12 @@ void CListViewEx::showRoot()
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
 
-    update(0, true);
+    update();
+
+    _onShowRoot();
 }
 
-void CListViewEx::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
+void CListViewEx::showMediaSet(CMediaSet& MediaSet)
 {
     m_pPath = NULL;
 
@@ -46,57 +48,55 @@ void CListViewEx::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
 
-    if (pHittestItem)
+    update();
+
+    _onShowMediaSet(MediaSet);
+}
+
+void CListViewEx::showMedia(CMedia& media)
+{
+    if (media.m_pParent)
     {
-        int nIdx = pHittestItem->index();
+        showMediaSet(*media.m_pParent);
+
+        int nIdx = media.index();
         if (nIdx >= 0)
         {
             showRow((UINT)nIdx, true);
             selectRow((UINT)nIdx);
         }
-    }
-    else
-    {
-        update(_scrollRecord(), true);
     }
 }
 
 void CListViewEx::showPath(CPath& path)
 {
-    CPath *pHittestItem = NULL;
-    if (path.IsDir())
-    {
-        m_pPath = &path;
-    }
-    else
+    if (!path.IsDir())
     {
         auto pParent = path.parent();
-        if (NULL == pParent)
+        if (pParent)
         {
-            return;
+            showPath(*pParent);
+
+            int nIdx = pParent->GetSubPath().indexOf(&path);
+            if (nIdx >= 0)
+            {
+                showRow((UINT)nIdx, true);
+                selectRow((UINT)nIdx);
+            }
         }
 
-        m_pPath = pParent;
-        pHittestItem = &path;
+        return;
     }
+
+    m_pPath = &path;
 
     m_pMediaset = NULL;
     m_lstSubSets.clear();
     m_lstSubMedias.clear();
 
-    if (pHittestItem)
-    {
-        int nIdx = m_pPath->GetSubPath().indexOf(pHittestItem);
-        if (nIdx >= 0)
-        {
-            showRow((UINT)nIdx, true);
-            selectRow((UINT)nIdx);
-        }
-    }
-    else
-    {
-        update(_scrollRecord(), true);
-    }
+    update();
+
+    _onShowPath(path);
 }
 
 void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
@@ -140,6 +140,8 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
 
 void CListViewEx::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext& context)
 {
+    _onPaintRow(painter, rc, lvRow, context);
+
     UINT sz_icon = rc.height();
     if (context.uIconSize > 0 && context.uIconSize < sz_icon)
     {
@@ -258,25 +260,26 @@ float& CListViewEx::_scrollRecord()
     {
         p = m_pPath;
     }
-
     return m_mapScrollRecord[p];
 }
 
 void CListViewEx::_saveScrollRecord()
 {
     _scrollRecord() = scrollPos();
+
+    reset();
 }
 
 void CListViewEx::_clearScrollRecord()
 {
-    if (m_pMediaset)
+    void *p = m_pMediaset;
+    if (NULL == p)
     {
-        m_mapScrollRecord.erase(m_pMediaset);
+        p = m_pPath;
     }
-    else if (m_pPath)
-    {
-        m_mapScrollRecord.erase(m_pPath);
-    }
+    m_mapScrollRecord.erase(p);
+
+    reset();
 }
 
 void CListViewEx::upward()
@@ -306,4 +309,10 @@ void CListViewEx::upward()
             showRoot();
         }
     }
+    else
+    {
+        return;
+    }
+
+    update(_scrollRecord());
 }

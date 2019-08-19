@@ -40,21 +40,14 @@ private:
 public:
     void init();
 
-    void showRoot() override;
-
-    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL) override;
-
-    void showMediaRes(CMediaRes& MediaRes)
-    {
-        showPath((CPath&)MediaRes);
-    }
-
-    void showMediaRes(const wstring& strPath);
+    void showFile(const wstring& strPath);
 
     void upward();
 
 private:
-    void showPath(CPath& path) override;
+    void _onShowRoot() override;
+    void _onShowMediaSet(CMediaSet& MediaSet) override;
+    void _onShowPath(CPath& path) override;
 
     UINT getPageRowCount() override;
 
@@ -68,7 +61,7 @@ private:
     bool _genRootRowContext(const tagLVRow&, tagRowContext&) override;
     void _genRowContext(tagRowContext&) override;
 
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&) override;
 
     QPixmap& _getSingerPixmap(CSinger&);
 
@@ -105,16 +98,22 @@ public:
         m_MedialibView.showRoot();
     }
 
-    void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestMedia=NULL)
+    void showMediaSet(CMediaSet& MediaSet)
     {
         CDialog<>::show();
-        m_MedialibView.showMediaSet(MediaSet, pHittestMedia);
+        m_MedialibView.showMediaSet(MediaSet);
     }
 
-    void showMediaRes(const wstring& strPath)
+    void showMedia(CMedia& media)
     {
         CDialog<>::show();
-        m_MedialibView.showMediaRes(strPath);
+        m_MedialibView.showMedia(media);
+    }
+
+    void showFile(const wstring& strPath)
+    {
+        CDialog<>::show();
+        m_MedialibView.showFile(strPath);
     }
 
     void showUpwardButton(bool bVisible) const;

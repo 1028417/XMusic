@@ -47,8 +47,6 @@ private:
 
     int m_nFlashRow = -1;
 
-    ulong m_uTouchSeq = 0;
-
     ulong m_uAutoScrollSeq = 0;
 
 protected:    
@@ -83,19 +81,21 @@ public:
         CWidget<>::update();
     }
 
-    void update(float fScrollPos, bool bReset=false)
+    void update(float fScrollPos)
     {
         m_fScrollPos = fScrollPos;
 
-        if (bReset)
-        {
-            m_nSelectRow = -1;
-            m_nFlashRow = -1;
-
-            m_uTouchSeq = 0;
-        }
-
         CWidget<>::update();
+    }
+
+    void reset()
+    {
+        m_fScrollPos = 0;
+
+        m_nSelectRow = -1;
+        m_nFlashRow = -1;
+
+        m_uAutoScrollSeq = 0;
     }
 
     void selectRow(UINT uRow, int nCol = -1)
