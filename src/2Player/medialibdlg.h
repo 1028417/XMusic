@@ -72,8 +72,17 @@ private:
 
     QPixmap& _getSingerPixmap(CSinger&);
 
-    void _onRowClick(const tagLVRow&, CMedia&) override;
-    void _onRowClick(const tagLVRow&, CPath&) override;
+    void _onMediaClick(const tagLVRow&, IMedia&);
+
+    void _onRowClick(const tagLVRow&, CMedia&) override
+    {
+        _onMediaClick(media);
+    }
+
+    void _onRowClick(const tagLVRow&, CPath&) override
+    {
+        _onMediaClick((CMediaRes&)path);
+    }
 };
 
 class CMedialibDlg : public CDialog<>

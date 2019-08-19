@@ -456,21 +456,12 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
 }
 
-void CMedialibView::_onRowClick(const tagLVRow& lvRow, CMedia& media)
+void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
 {
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
-}
-
-void CMedialibView::_onRowClick(const tagLVRow& lvRow, CPath& path)
-{
-    flashRow(lvRow.uRow);
-    selectRow(lvRow.uRow);
-
-    auto& MediaRes = (CMediaRes&)path;
-    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(MediaRes)));
 }
 
 bool CMedialibView::handleReturn()
