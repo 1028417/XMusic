@@ -21,7 +21,7 @@ struct tagMediaContext
     CMediaSet *pMediaSet = NULL;
     CMedia *pMedia = NULL;
 
-    CMediaRes *pMediaRes = NULL;
+    CPath *pPath = NULL;
 
     E_ItemStyle eStyle = E_ItemStyle::IS_Normal;
 
@@ -51,20 +51,19 @@ struct tagMediaContext
         strText = media.GetTitle();
     }
 
-    tagMediaContext(CMediaRes& MediaRes)
+    tagMediaContext(CPath& path)
     {
-        pMediaRes = &MediaRes;
+        pPath = &path;
 
-        if (MediaRes.IsDir())
+        if (path.IsDir())
         {
             eStyle = E_ItemStyle::IS_RightTip;
-            strText = MediaRes.GetName();
         }
         else
         {
             eStyle = E_ItemStyle::IS_Underline;
-            strText = MediaRes.GetTitle();
         }
+        strText = path.GetName();
     }
 };
 
@@ -74,7 +73,7 @@ public:
     CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
 
 protected:
-    CMediaRes *m_pMediaRes = NULL;
+    CPath *m_pPath = NULL;
 
     CMediaSet *m_pMediaset = NULL;
 
@@ -98,7 +97,8 @@ private:
     virtual void _genRowContext(tagMediaContext&) {}
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
-    virtual void _onRowClick(const tagLVRow&, IMedia&){}
+    virtual void _onRowClick(const tagLVRow&, CMedia&){}
+    virtual void _onRowClick(const tagLVRow&, CPath&){}
 
 protected:
     virtual void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagMediaContext&);
@@ -109,7 +109,7 @@ protected:
 
     bool isInRoot() const
     {
-        return NULL==m_pMediaset && NULL==m_pMediaRes;
+        return NULL==m_pMediaset && NULL==m_pPath;
     }
 
 public:
@@ -117,7 +117,7 @@ public:
 
     virtual void showMediaSet(CMediaSet&, CMedia *pHittestItem=NULL);
 
-    virtual void showMediaRes(CMediaRes&);
+    virtual void showPath(CPath&);
 
     bool handleReturn();
 };
@@ -159,13 +159,18 @@ public:
 
     void showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem=NULL) override;
 
-    void showMediaRes(CMediaRes& MediaRes) override;
+    void showMediaRes(CMediaRes& MediaRes)
+    {
+        showPath((CPath&)MediaRes);
+    }
 
-    void showMediaRes(const wstring& strPath);
+    void showPath(const wstring& strPath);
 
     bool handleReturn();
 
 private:
+    void showPath(CPath& path) override;
+
     UINT getPageRowCount() override;
 
     UINT getColumnCount() override;
@@ -183,7 +188,8 @@ private:
 
     QPixmap& _getSingerPixmap(CSinger&);
 
-    void _onRowClick(const tagLVRow&, IMedia&) override;
+    void _onRowClick(const tagLVRow&, CMedia&) override;
+    void _onRowClick(const tagLVRow&, CPath&) override;
 };
 
 class CMedialibDlg : public CDialog<>
@@ -215,7 +221,7 @@ public:
     void showMediaRes(const wstring& strPath)
     {
         CDialog<>::show();
-        m_MedialibView.showMediaRes(strPath);
+        m_MedialibView.showPath(strPath);
     }
 
     void showUpwardButton(bool bVisible) const;

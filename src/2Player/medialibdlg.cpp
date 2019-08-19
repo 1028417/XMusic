@@ -93,9 +93,9 @@ UINT CListViewEx::getRowCount()
     {
           return m_lstSubSets.size() + m_lstSubMedias.size();
     }
-    else if (m_pMediaRes)
+    else if (m_pPath)
     {
-        return m_pMediaRes->GetSubPath().size();
+        return m_pPath->GetSubPath().size();
     }
     else
     {
@@ -105,7 +105,7 @@ UINT CListViewEx::getRowCount()
 
 void CListViewEx::showRoot()
 {
-    m_pMediaRes = NULL;
+    m_pPath = NULL;
 
     m_pMediaset = NULL;
     m_lstSubSets.clear();
@@ -116,7 +116,7 @@ void CListViewEx::showRoot()
 
 void CListViewEx::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
 {
-    m_pMediaRes = NULL;
+    m_pPath = NULL;
 
     m_pMediaset = &MediaSet;
 
@@ -141,23 +141,23 @@ void CListViewEx::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     }
 }
 
-void CListViewEx::showMediaRes(CMediaRes& MediaRes)
+void CListViewEx::showPath(CPath& path)
 {
-    CMediaRes *pHittestItem = NULL;
-    if (MediaRes.IsDir())
+    CPath *pHittestItem = NULL;
+    if (path.IsDir())
     {
-        m_pMediaRes = &MediaRes;
+        m_pPath = &path;
     }
     else
     {
-        auto pParent = MediaRes.parent();
+        auto pParent = path.parent();
         if (NULL == pParent)
         {
             return;
         }
 
-        m_pMediaRes = pParent;
-        pHittestItem = &MediaRes;
+        m_pPath = pParent;
+        pHittestItem = &path;
     }
 
     m_pMediaset = NULL;
@@ -166,7 +166,7 @@ void CListViewEx::showMediaRes(CMediaRes& MediaRes)
 
     if (pHittestItem)
     {
-        int nIdx = m_pMediaRes->GetSubPath().indexOf(pHittestItem);
+        int nIdx = m_pPath->GetSubPath().indexOf(pHittestItem);
         if (nIdx >= 0)
         {
             showRow((UINT)nIdx, true);
@@ -200,10 +200,10 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
             });
         }
     }
-    else if (m_pMediaRes)
+    else if (m_pPath)
     {
-        m_pMediaRes->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
-            tagMediaContext context((CMediaRes&)subPath);
+        m_pPath->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
+            tagMediaContext context(subPath);
             _genRowContext(context);
             _paintRow(painter, rc, lvRow, context);
         });
@@ -291,12 +291,12 @@ bool CListViewEx::handleReturn()
             showRoot();
         }
     }
-    else if (m_pMediaRes)
+    else if (m_pPath)
     {
-        auto parent = m_pMediaRes->parent();
-        if (NULL != parent)
+        auto pParent = m_pPath->parent();
+        if (pParent)
         {
-            showMediaRes(*parent);
+            showPath(*pParent);
         }
         else
         {
@@ -316,7 +316,7 @@ float& CListViewEx::_scrollRecord()
     void *p = m_pMediaset;
     if (NULL == p)
     {
-        p = m_pMediaRes;
+        p = m_pPath;
     }
 
     return m_mapScrollRecord[p];
@@ -333,9 +333,9 @@ void CListViewEx::_clearScrollRecord()
     {
         m_mapScrollRecord.erase(m_pMediaset);
     }
-    else if (m_pMediaRes)
+    else if (m_pPath)
     {
-        m_mapScrollRecord.erase(m_pMediaRes);
+        m_mapScrollRecord.erase(m_pPath);
     }
 }
 
@@ -386,18 +386,18 @@ void CMedialibView::showMediaSet(CMediaSet& MediaSet, CMedia *pHittestItem)
     m_medialibDlg.setTitle(strTitle);
 }
 
-void CMedialibView::showMediaRes(CMediaRes& MediaRes)
+void CMedialibView::showPath(CPath& path)
 {
-    CListViewEx::showMediaRes(MediaRes);
+    CListViewEx::showPath(path);
 
     m_medialibDlg.showUpwardButton(true);
 
     WString strTitle;
-    _getTitle(MediaRes, strTitle);
+    _getTitle((CMediaRes&)path, strTitle);
     m_medialibDlg.setTitle(strTitle);
 }
 
-void CMedialibView::showMediaRes(const wstring& strPath)
+void CMedialibView::showPath(const wstring& strPath)
 {
     CMediaRes *pMediaRes = m_RootMediaRes.FindSubPath(strPath, false);
     if (pMediaRes)
@@ -525,7 +525,7 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     {
         context.pixmap = &m_pmDir;
         context.strText = __XMusic;
-        context.pMediaRes = &m_RootMediaRes;
+        context.pPath = &m_RootMediaRes;
     }
 #if __android
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
@@ -604,9 +604,9 @@ void CMedialibView::_genRowContext(tagMediaContext& context)
             context.pixmap = &m_pmPlayItem;
         }
     }
-    else if (context.pMediaRes)
+    else if (context.pPath)
     {
-        if (context.pMediaRes->IsDir())
+        if (context.pPath->IsDir())
         {
             context.pixmap = &m_pmDir;
         }
@@ -615,9 +615,9 @@ void CMedialibView::_genRowContext(tagMediaContext& context)
            context.pixmap = &m_pmFile;
         }
 
-        if (context.pMediaRes->parent() == NULL)
+        if (context.pPath->parent() == NULL)
         {
-            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pMediaRes);
+            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pPath);
             if (pAttachDir)
             {
                 context.pixmap = &m_pmDirLink;
@@ -678,20 +678,19 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             });
         }
     }
-    else if (m_pMediaRes)
+    else if (m_pPath)
     {
-        m_pMediaRes->GetSubPath().get(uRow, [&](CPath& subPath) {
+        m_pPath->GetSubPath().get(uRow, [&](CPath& subPath) {
             if (subPath.IsDir())
             {
                 _saveScrollRecord();
 
-                showMediaRes((CMediaRes&)subPath);
+                showPath(subPath);
             }
             else
             {
-                _onRowClick(lvRow, (CMediaRes&)subPath);
+                _onRowClick(lvRow, subPath);
             }
-
         });
     }
     else
@@ -705,20 +704,29 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             {
                 showMediaSet(*context.pMediaSet);
             }
-            else if (context.pMediaRes)
+            else if (context.pPath)
             {
-                showMediaRes(*context.pMediaRes);
+                showPath(*context.pPath);
             }
         }
     }
 }
 
-void CMedialibView::_onRowClick(const tagLVRow& lvRow, IMedia& Media)
+void CMedialibView::_onRowClick(const tagLVRow& lvRow, CMedia& media)
 {
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
-    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(Media)));
+    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
+}
+
+void CMedialibView::_onRowClick(const tagLVRow& lvRow, CPath& path)
+{
+    flashRow(lvRow.uRow);
+    selectRow(lvRow.uRow);
+
+    auto& MediaRes = (CMediaRes&)path;
+    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(MediaRes)));
 }
 
 bool CMedialibView::handleReturn()
@@ -732,7 +740,7 @@ bool CMedialibView::handleReturn()
     // if (m_pMediaRes && m_pMediaRes->parent() == NULL)
     // {    if (&m_RootMediaRes != m_pMediaRes || &m_sdcard = m_pMediaRes)
 
-    if (dynamic_cast<CAttachDir*>(m_pMediaRes) != NULL)
+    if (dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
         showMediaRes(m_RootMediaRes);
         return true;
