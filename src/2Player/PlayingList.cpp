@@ -83,7 +83,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
         m_alPlayingItems.add(playingItem);
     });
 
-    CListView::showRow(0);
+    CListView::reset();
 
     updatePlayingItem(uPlayingItem, true);
 }
