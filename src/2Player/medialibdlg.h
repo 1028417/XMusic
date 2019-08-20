@@ -7,14 +7,42 @@
 
 #include "ListViewEx.h"
 
-class CSDCardDir
+class CMediaResEx : public CPath
 {
+public:
+    CSDCardDir()
+    {
+    }
 
-};
+private:
+    list<tagFileInfo> m_lstFileInfo;
 
-class CMediaResEx
-{
+public:
+    void scan()
+    {
+        if (CPath::DirExists())
+        {
+            for (const tagFileInfo& fileInfo : m_lstFileInfo)
+            {
+            }
+        }
+    }
 
+private:
+    CPath* NewSubPath(const tagFileInfo& FileInfo) override
+    {
+        CMediaRes *pSubPath = new CMediaRes(FileInfo, *this);
+        if (FileInfo.m_bDir)
+        {
+            if (pSubPath->size() == 0)
+            {
+                delete pSubPath;
+                pSubPath = NULL;
+            }
+        }
+
+        return pSubPath;
+    }
 };
 
 class CMedialibView : public CListViewEx
