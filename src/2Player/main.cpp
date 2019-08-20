@@ -54,12 +54,8 @@ map<E_FontWeight, QFont> g_mapFont;
 
 class CApplication : public QApplication
 {
-private:
-    int argc = 0;
-    char **argv = NULL;
-
 public:
-    CApplication() : QApplication(argc, argv)
+    CApplication(int argc, char **argv) : QApplication(argc, argv)
     {
 #if __android
         /*string strSdcardPath
@@ -123,7 +119,8 @@ public:
 class CApp : public CApplication
 {
 public:
-    CApp() :
+    CApp(int argc, char **argv) :
+        CApplication(argc, argv),
         m_model(m_mainWnd),
         m_view(*this, m_mainWnd, m_model, m_ctrl),
         m_ctrl(m_view, m_model),
@@ -187,8 +184,8 @@ public:
     }
 };
 
-int main(int, char *[])
+int main(int argc, char *argv[])
 {
-    CApp app;
+    CApp app(argc, argv);
     return app.run();
 }
