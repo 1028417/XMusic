@@ -60,7 +60,7 @@ private:
 	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
 
 protected:
-	virtual void _onFindFile(TD_PathList& lstSubPath, bool bSort=true);
+	virtual void _sort(TD_PathList& lstSubPath);
 
 	virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const;
     
