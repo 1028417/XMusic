@@ -174,9 +174,7 @@ void CMedialibView::_onShowPath(CPath& path)
         WString strTitle;
         _getTitle((CMediaRes&)path, strTitle);
 
-        bool bPlayable = path.GetSubPath().any([](CPath& subPath){
-                return !subPath.IsDir();
-        });
+        bool bPlayable = path.GetSubPath().hasFile();
         m_medialibDlg.update(strTitle, bPlayable, true);
     }
 }
