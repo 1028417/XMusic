@@ -49,8 +49,6 @@ private:
     TD_PathList m_lstSubPath;
 
 private:
-	void _findFile();
-
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
 	{
 		return new CPath(FileInfo);
@@ -64,7 +62,7 @@ protected:
 	virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const;
     
 public:
-    void SetDir(const wstring& strDir, bool bFindFile=false);
+    void SetDir(const wstring& strDir);
 
 	void SetName(const wstring& strNewName)
 	{
@@ -91,7 +89,9 @@ public:
     }
 
 	wstring GetParentDir() const;
-	
+
+	void findFile(bool bScanAll = false);
+
 	size_t size() 
 	{
 		return GetSubPath().size();
@@ -102,8 +102,7 @@ public:
 
 	inline const TD_PathList& GetSubPath()
 	{
-		_findFile();
-
+		findFile();
 		return m_lstSubPath;
 	}
 
