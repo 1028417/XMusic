@@ -43,11 +43,11 @@ protected:
 	CPath *m_pParentDir = NULL;
 
 private:
-    bool m_bDirExists = false;
+	bool m_bFinded = false;
+	
+	bool m_bDirExists = false;
 
     TD_PathList m_lstSubPath;
-
-	bool m_bFinded = false;
 
 private:
 	void _findFile();
@@ -62,14 +62,9 @@ private:
 protected:
 	virtual void _onFindFile(TD_PathList& lstSubPath, bool bSort=true);
 
-    virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const
-    {
-        return lhs._sortCompare(rhs);
-    }
-
+	virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const;
+    
 public:
-	virtual int _sortCompare(const CPath& rhs) const;
-
     void SetDir(const wstring& strDir, bool bFindFile=false);
 
 	void SetName(const wstring& strNewName)
@@ -104,7 +99,6 @@ public:
 	}
 
 	bool hasSubDir();
-
 	bool hasSubFile();
 
 	inline const TD_PathList& GetSubPath()
