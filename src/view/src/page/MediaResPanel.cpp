@@ -769,10 +769,10 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_FIND, m_pCurrPath && m_pCurrPath != &m_view.getRootMediaRes());
 
-		size_t uCount = m_pCurrPath->GetSubPath().size();
-		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrPath && uCount);
-		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrPath && uCount);
-		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrPath && uCount);
+		bool bFlag = m_pCurrPath->size()>0;
+		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrPath && bFlag);
+		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrPath && bFlag);
+		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrPath && bFlag);
 
 		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrPath && m_pCurrPath->DirExists());
 		
