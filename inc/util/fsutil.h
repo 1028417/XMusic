@@ -45,14 +45,16 @@ enum class E_FindFindFilter
 
 struct tagFileInfo
 {
-	bool m_bDir = false;
+	class CPath * pParent = NULL;
 
-	wstring m_strName;
+	bool bDir = false;
 
-	unsigned long m_uFileSize = 0;
+	wstring strName;
 
-	time64_t m_tCreateTime = 0;
-	time64_t m_tModifyTime = 0;
+	unsigned long uFileSize = 0;
+
+	time64_t tCreateTime = 0;
+	time64_t tModifyTime = 0;
 };
 
 

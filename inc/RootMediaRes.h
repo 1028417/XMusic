@@ -37,6 +37,11 @@ public:
 		return __wcFSSlant + GetName();
 	}
 
+	int _getImage() override
+	{
+		return (int)E_GlobalImage::GI_DirLink;
+	}
+
 	bool GetRenameText(wstring&) const
 	{
 		return false;

@@ -19,7 +19,7 @@ using TD_PathObjectList = PtrArray<CPathObject>;
 class CDirObject;
 using TD_DirObjectList = PtrArray<CDirObject>;
 
-class __UtilExt CPath : protected tagFileInfo
+class __UtilExt CPath
 {
 	friend struct tagPathSortor;
 
@@ -28,9 +28,8 @@ public:
 
 	CPath(const wstring& strName, bool bDir);
 
-	CPath(const tagFileInfo& FileInfo, CPath& ParentDir)
-		: tagFileInfo(FileInfo)
-		, m_pParentDir(&ParentDir)
+	CPath(const tagFileInfo& FileInfo)
+		: m_FileInfo(FileInfo)
 	{
 	}
 	
@@ -40,7 +39,7 @@ public:
 	}
 
 protected:
-	CPath *m_pParentDir = NULL;
+	tagFileInfo m_FileInfo;
 
 private:
 	bool m_bFinded = false;
@@ -54,7 +53,7 @@ private:
 
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
 	{
-		return new CPath(FileInfo, *this);
+		return new CPath(FileInfo);
 	}
 
 	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
@@ -69,14 +68,14 @@ public:
 
 	void SetName(const wstring& strNewName)
 	{
-        m_strName = strNewName;
+		m_FileInfo.strName = strNewName;
 	}
 
 	wstring GetName() const;
 
 	inline bool IsDir() const
 	{
-		return m_bDir;
+		return m_FileInfo.bDir;
 	}
 
 	bool DirExists() const
@@ -88,7 +87,7 @@ public:
 
     CPath* parent() const
     {
-        return m_pParentDir;
+        return m_FileInfo.pParent;
     }
 
 	wstring GetParentDir() const;
@@ -183,8 +182,8 @@ public:
 	{
 	}
 
-	CPathObject(const tagFileInfo& FileInfo, CPath& ParentDir)
-		: CPath(FileInfo, ParentDir)
+	CPathObject(const tagFileInfo& FileInfo)
+		: CPath(FileInfo)
 	{
 	}
 
@@ -195,7 +194,7 @@ public:
 protected:
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
 	{
-		return new CPathObject(FileInfo, *this);
+		return new CPathObject(FileInfo);
 	}
 };
 
@@ -207,8 +206,8 @@ public:
 	{
 	}
 
-	CDirObject(const tagFileInfo& FileInfo, CPath& ParentDir)
-		: CPathObject(FileInfo, ParentDir)
+	CDirObject(const tagFileInfo& FileInfo)
+		: CPathObject(FileInfo)
 	{
 	}
 
@@ -219,9 +218,9 @@ public:
 protected:
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
 	{
-		if (FileInfo.m_bDir)
+		if (FileInfo.bDir)
 		{
-			return new CDirObject(FileInfo, *this);
+			return new CDirObject(FileInfo);
 		}
 
 		return NULL;

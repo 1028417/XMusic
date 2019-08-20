@@ -8,7 +8,7 @@ class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 public:
 	CMediaRes() {}
 
-	CMediaRes(const tagFileInfo& FileInfo, CPath& ParentDir, E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
+	CMediaRes(const tagFileInfo& FileInfo, E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
 
 	CMediaRes(const wstring& strDir);
 
@@ -43,7 +43,7 @@ private:
 
 	void OnListItemRename(const wstring& strNewName) override;
 	
-	int _getImage();
+	virtual int _getImage();
 
 	CMediaRes* GetMediaRes() const override
 	{
@@ -53,7 +53,7 @@ private:
 public:
     CMediaRes* parent() const
 	{
-		return (CMediaRes*)m_pParentDir;
+		return (CMediaRes*)m_FileInfo.pParent;
 	}
 
 	const ArrList<CCueFile>& SubCueList()
@@ -81,7 +81,7 @@ public:
 
 	int GetFileSize() const override
 	{
-		return (int)m_uFileSize;
+		return (int)m_FileInfo.uFileSize;
 	}
 	
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
