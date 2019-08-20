@@ -30,7 +30,7 @@ void findSkb(list<wstring>& lstSkbName)
 
 	(void)fsutil::findFile(__PlaySpiritSkinDir, [&](const tagFileInfo& FileInfo) {
 		lstSkbName.push_back(fsutil::getFileTitle(FileInfo.m_strName));
-	}, fsutil::E_FindFindFilter::FFP_ByExt, L"skb");
+	}, E_FindFindFilter::FFP_ByExt, L"skb");
 }
 
 BOOL COptionDlg::OnInitDialog()

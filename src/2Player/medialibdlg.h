@@ -7,6 +7,16 @@
 
 #include "ListViewEx.h"
 
+class CSDCardDir
+{
+
+};
+
+class CMediaResEx
+{
+
+};
+
 class CMedialibView : public CListViewEx
 {
 public:

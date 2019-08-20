@@ -6,6 +6,8 @@
 BEGIN_MESSAGE_MAP(CExportOptionDlg, CDialog)
 	ON_BN_CLICKED(IDOK, &CExportOptionDlg::OnBnClickedOK)
 
+	ON_BN_CLICKED(IDC_ActualMode, &CExportOptionDlg::OnBnClickedActualMode)
+
 	ON_BN_CLICKED(IDC_CompareFileSize, &CExportOptionDlg::OnBnClickedCompareFileSize)
 END_MESSAGE_MAP()
 
@@ -28,6 +30,18 @@ BOOL CExportOptionDlg::OnInitDialog()
 	//((CButton*)GetDlgItem(IDC_DeleteOther))->SetCheck(TRUE);
 
 	return TRUE;
+}
+
+void CExportOptionDlg::OnBnClickedActualMode()
+{
+	BOOL bFlag = ((CButton*)GetDlgItem(IDC_ActualMode))->GetCheck();
+
+	auto pwndCheck = GetDlgItem(IDC_ExportXMSC);
+	pwndCheck->EnableWindow(bFlag);
+	if (!bFlag)
+	{
+		((CButton*)pwndCheck)->SetCheck(FALSE);
+	}
 }
 
 void CExportOptionDlg::OnBnClickedCompareFileSize()
@@ -53,6 +67,8 @@ void CExportOptionDlg::OnBnClickedOK()
 	}
 
 	m_ExportOption.bDeleteOther = ((CButton*)GetDlgItem(IDC_DeleteOther))->GetCheck();
+
+	m_ExportOption.bExportXMSC = ((CButton*)GetDlgItem(IDC_ExportXMSC))->GetCheck();
 
 	CDialog::OnOK();
 }

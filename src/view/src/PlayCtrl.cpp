@@ -139,6 +139,8 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 	switch (eButton)
 	{
 	case ST_PlaySpiritButton::PSB_Play:
+		m_PlaySpirit->SetPause(false);
+
 		PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
 
 		break;

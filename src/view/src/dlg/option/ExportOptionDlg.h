@@ -17,6 +17,8 @@ private:
 
 	virtual BOOL OnInitDialog();
 	
+	void OnBnClickedActualMode();
+
 	void OnBnClickedCompareFileSize();
 
 	void OnBnClickedOK();
