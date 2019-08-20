@@ -67,7 +67,7 @@ private:
         return L"";
     }
 
-    void _onFindFile() override;
+    void _onFindFile(bool bSort) override;
 
 	int _sortCompare(const CPath& lhs, const CPath& rhs) const override;
 	

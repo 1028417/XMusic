@@ -36,17 +36,15 @@ enum class E_SeekFileFlag
 	SFF_End = SEEK_END
 };
 
+enum class E_FindFindFilter
+{
+	FFP_None
+	, FFP_ByPrefix
+	, FFP_ByExt
+};
+
 struct tagFileInfo
 {
-	tagFileInfo()
-	{
-	}
-
-	tagFileInfo(const tagFileInfo& FileInfo)
-	{
-		*this = FileInfo;
-	}
-
 	bool m_bDir = false;
 
 	wstring m_strName;
@@ -98,8 +96,9 @@ public:
 	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
     static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
-    static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile
-		, bool bSyncModifyTime = false, const char *lpFileHead = NULL, size_t uHeadSize = 0);
+
+	using CB_CopyFile = function <void(char *lpData, size_t size)>;
+    static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);
 
 	static bool fileStat(FILE *lpFile, tagFileStat& stat);
 	static bool fileStat(const wstring& strFile, tagFileStat& stat);
@@ -156,35 +155,28 @@ public:
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);
 
-	enum class E_FindFindFilter
-	{
-		FFP_None
-		, FFP_ByPrefix
-		, FFP_ByExt
-	};
-
 	template <typename CB, typename = checkCBVoid_t<CB, const tagFileInfo&>>
 	static bool findFile(const wstring& strDir, const CB& cb
-		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wstring& strFilter = L"")
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
 			cb(fileInfo);
 			return true;
-		}, eFilter, strFilter);
+		}, eFilter, pstrFilter);
 	}
 
 	template <typename CB, typename = checkCBBool_t<CB, const tagFileInfo&>, typename=void>
 	static bool findFile(const wstring& strDir, const CB& cb
-		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wstring& strFilter = L"")
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
             return cb(fileInfo);
-		}, eFilter, strFilter);
+		}, eFilter, pstrFilter);
 	}
 
 private:
     using CB_FindFile = const function<bool(const tagFileInfo&)>&;
-    static bool _findFile(const wstring& strDir, CB_FindFile cb, E_FindFindFilter eFilter, const wstring& strFilter);
+    static bool _findFile(const wstring& strDir, CB_FindFile cb, E_FindFindFilter eFilter, const wchar_t *pstrFilter);
 };
 
 #include <fstream>

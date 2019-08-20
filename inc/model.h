@@ -78,6 +78,8 @@ struct tagExportOption
 
 	bool bDeleteOther = true;
 
+	bool bExportXMSC = false;
+
 	wstring strExportPath;
 
 	PairList<wstring, TD_IMediaList> plMedias;

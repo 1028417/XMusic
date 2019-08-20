@@ -172,7 +172,6 @@ public:
 			m_pf = NULL;
 		}
 
-		m_size = -1;
 		m_uPos = 0;
 	}
 

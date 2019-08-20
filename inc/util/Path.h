@@ -51,17 +51,15 @@ protected:
 private:
 	void _findFile();
 
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir)
+	virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
 	{
-		return new CPath(FileInfo, ParentDir);
+		return new CPath(FileInfo, *this);
 	}
 
 	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
 
 protected:
-	virtual void _onFindFile();
-
-	virtual void _sortSubPath();
+	virtual void _onFindFile(bool bSort=true);
 
     virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const
     {
@@ -99,7 +97,12 @@ public:
 
 	wstring GetParentDir() const;
 	
-	const TD_PathList& GetSubPath();
+	inline const TD_PathList& GetSubPath()
+	{
+		_findFile();
+
+		return m_lstSubPath;
+	}
 
 	void GetSubPath(TD_PathList& lstSubDir, TD_PathList& lstSubFile)
 	{
@@ -188,9 +191,9 @@ public:
 	}
 
 protected:
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir) override
+	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
 	{
-		return new CPathObject(FileInfo, ParentDir);
+		return new CPathObject(FileInfo, *this);
 	}
 };
 
@@ -212,11 +215,11 @@ public:
 	}
 
 protected:
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir) override
+	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
 	{
 		if (FileInfo.m_bDir)
 		{
-			return new CDirObject(FileInfo, ParentDir);
+			return new CDirObject(FileInfo, *this);
 		}
 
 		return NULL;

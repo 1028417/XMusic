@@ -17,18 +17,6 @@ enum class E_DemandMode
 class __ModelExt CFileOpaqueEx : public CFileOpaque
 {
 public:
-    CFileOpaqueEx(){}
-
-    CFileOpaqueEx(const wstring& strFile)
-        : CFileOpaque(strFile)
-    {
-    }
-
-	UINT checkDuration(bool bLock = true)
-	{
-		return CFileOpaque::checkDuration(bLock);
-	}
-
 	static UINT checkDuration(const wstring& strFile, bool bLock = true)
 	{
 		CFileOpaqueEx FileOpaque(strFile);
@@ -39,6 +27,27 @@ public:
 	{
 		return checkDuration(media.GetAbsPath(), bLock);
 	}
+
+public:
+	CFileOpaqueEx(const wstring& strFile)
+		: CFileOpaque(strFile)
+	{
+	}
+
+	UINT checkDuration(bool bLock = true)
+	{
+		return CFileOpaque::checkDuration(bLock);
+	}
+
+private:
+	void *m_pXmsc = NULL;
+
+private:
+	int64_t open() override;
+
+	void close() override;
+
+	size_t read(uint8_t *buf, int buf_size) override;
 };
 
 class __ModelExt CPlayMgr

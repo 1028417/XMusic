@@ -5,6 +5,7 @@ enum class E_MediaFileType
 {
 	MFT_Null = 0
 	
+	, MFT_XMSC
 	, MFT_MP3
 	, MFT_FLAC
 	, MFT_APE

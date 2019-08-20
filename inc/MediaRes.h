@@ -32,7 +32,7 @@ private:
 private:
 	bool _loadCue(const wstring& strFileName);
 
-	CPath* NewSubPath(const tagFileInfo& FileInfo, CPath& ParentDir) override;
+	CPath* NewSubPath(const tagFileInfo& FileInfo) override;
 
 	void ReadMP3Tag(FILE *lpFile);
 	bool ReadFlacTag();
