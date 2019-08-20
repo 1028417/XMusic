@@ -15,7 +15,7 @@ UINT CListViewEx::getRowCount()
     }
     else if (m_pPath)
     {
-        return m_pPath->GetSubPath().size();
+        return m_pPath->size();
     }
     else
     {
