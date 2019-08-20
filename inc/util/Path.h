@@ -97,6 +97,11 @@ public:
 
 	wstring GetParentDir() const;
 	
+	size_t size() const
+	{
+		return m_lstSubPath.size();
+	}
+
 	inline const TD_PathList& GetSubPath()
 	{
 		_findFile();
@@ -118,8 +123,6 @@ public:
 	{
 		_GetSubPath(NULL, &lstSubFile);
 	}
-
-	CPath *GetSubPath(UINT uIdx) const;
 
 	CPath *FindSubPath(wstring strSubPath, bool bDir);
 
