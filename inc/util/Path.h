@@ -102,6 +102,10 @@ public:
 		return m_lstSubPath.size();
 	}
 
+	bool hasSubDir() const;
+
+	bool hasSubFile() const;
+
 	inline const TD_PathList& GetSubPath()
 	{
 		_findFile();
