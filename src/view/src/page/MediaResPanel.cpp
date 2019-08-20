@@ -367,19 +367,8 @@ void CMediaResPanel::_showPath()
 	CRedrawLockGuard RedrawLockGuard(m_wndList);
 	
 	m_wndList.SetPath(*m_pCurrPath);
-	
-	bool bHasSubDir = false;
-	m_pCurrPath->GetSubPath()([&](CPath& subPath) {
-		if (subPath.IsDir())
-		{
-			bHasSubDir = true;
-			return false;
-		}
-
-		return true;
-	});
-	
-	if (m_bShowRelatedSinger && bHasSubDir)
+		
+	if (m_bShowRelatedSinger && m_pCurrPath->hasSubDir())
 	{
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
 		m_view.getSingerMgr().GetSinger(m_pCurrPath->GetPath(), mapSingerInfo);
@@ -761,10 +750,7 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 
 		if (m_pCurrPath)
 		{
-			bool bHasFile = m_pCurrPath->GetSubPath().any([](CPath& SubPath) {
-				return !SubPath.IsDir();
-			});
-			m_MenuGuard.EnableItem(ID_OPEN, bHasFile);
+			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrPath->hasSubFile());
 		}
 
 		m_MenuGuard.EnableItem(ID_FIND, m_pCurrPath && m_pCurrPath != &m_view.getRootMediaRes());
