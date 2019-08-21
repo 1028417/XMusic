@@ -130,11 +130,11 @@ void CBkgDlg::init()
     }
 
     fsutil::findFile(m_strHBkgDir, [&](const tagFileInfo& fileInfo) {
-        m_vecHBkg.push_back(fileInfo.m_strName);
+        m_vecHBkg.push_back(fileInfo.strName);
     });
 
     fsutil::findFile(m_strVBkgDir, [&](const tagFileInfo& fileInfo) {
-        m_vecVBkg.push_back(fileInfo.m_strName);
+        m_vecVBkg.push_back(fileInfo.strName);
     });
 
     cauto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;

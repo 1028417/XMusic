@@ -222,7 +222,7 @@ void CPlayItemPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 	m_pPlaylist->playItems()([&](CPlayItem& PlayItem, size_t uIdx){
 		if (PlayItem.UpdateRelatedMediaSet(MediaSetChanged))
 		{
-			m_wndList.UpdateItem(uIdx);
+			m_wndList.UpdateItem(uIdx, &PlayItem);
 		}
 	});
 }
@@ -424,7 +424,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 			CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
 			__Ensure(pPlayItem);
 			pPlayItem->AsyncTask();
-			m_wndList.UpdateItem(iItem);
+			m_wndList.UpdateItem(iItem, pPlayItem);
 
 			if (__Column_SingerAlbum == iSubItem)
 			{

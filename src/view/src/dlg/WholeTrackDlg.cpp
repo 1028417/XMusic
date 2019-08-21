@@ -50,7 +50,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 	m_thread = thread([&]() {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
 
-		m_view.getRootMediaRes().enumSubFile([&](CPath& dir, TD_PathList& lstSubFile) {
+		m_view.getRootMediaRes().scan([&](CPath& dir, TD_PathList& paSubFile) {
 			mtutil::usleep(1);
 			if (m_bCancel)
 			{
@@ -60,7 +60,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 			CMediaRes& subDir = (CMediaRes&)dir;
 
 			map<LPCCueFile, CMediaRes*> mapCueFile;
-			for (auto pSubFile : lstSubFile)
+			for (auto pSubFile : paSubFile)
 			{
 				mtutil::yield();
 

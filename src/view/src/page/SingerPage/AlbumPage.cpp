@@ -1192,9 +1192,8 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 		m_wndAlbumItemList.AsyncLButtondown([=]() {
 			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);
-
 			pAlbumItem->AsyncTask();
-			m_wndAlbumItemList.UpdateItem(iItem);
+			m_wndAlbumItemList.UpdateItem(iItem, pAlbumItem);
 
 			if (__Column_Playlist == iSubItem)
 			{
@@ -1221,7 +1220,7 @@ void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 			{
 				if (AlbumItem.UpdateRelatedMediaSet(MediaSetChanged))
 				{
-					m_wndAlbumItemList.UpdateItem(uIdx);
+					m_wndAlbumItemList.UpdateItem(uIdx, &AlbumItem);
 				}
 				uIdx++;
 			}
@@ -1236,9 +1235,9 @@ void CAlbumPage::_asyncTask()
 		m_wndAlbumItemList.AsyncTask(100, [&](UINT uItem) {
 			__Ensure(m_pAlbum);
 
-			m_pAlbum->albumItems().get(uItem, [&](CMedia& media) {
-				media.AsyncTask();
-				m_wndAlbumItemList.UpdateItem(uItem, &media); // , { 2,3,__Column_Playlist });
+			m_pAlbum->albumItems().get(uItem, [&](CAlbumItem& AlbumItem) {
+				AlbumItem.AsyncTask();
+				m_wndAlbumItemList.UpdateItem(uItem, &AlbumItem); // , { 2,3,__Column_Playlist });
 			});
 		});
 	}

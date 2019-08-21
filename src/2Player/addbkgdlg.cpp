@@ -20,7 +20,6 @@ void CAddBkgDlg::init()
 
     m_addbkgView.setTextColor(crText);
     m_addbkgView.setFont(0.5);
-    //m_addbkgView.init();
 
     ui.btnUpward->setVisible(false);
 
@@ -31,6 +30,20 @@ void CAddBkgDlg::init()
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
         this->close();
     });
+}
+
+void CAddBkgDlg::show()
+{
+    if (m_thread.joinable())
+    {
+        m_thread.join();
+    }
+
+    m_thread = std::thread([&](){
+        m_addbkgView.scan();
+    });
+
+    CDialog<>::show();
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -60,17 +73,24 @@ bool CAddBkgDlg::_handleReturn()
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
-    : CListViewEx(&addbkgDlg)
+    : CListView(&addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
 {
 }
 
-UINT CAddBkgView::getRootCount()
+void CAddBkgView::scan()
+{
+    m_sdcard.scan([&](CPath&, TD_PathList& paSubFile) {
+        return true;
+    });
+}
+
+UINT CAddBkgView::getRowCount()
 {
     return 0;
 }
 
-bool CAddBkgView::_genRootRowContext(const tagLVRow&, tagRowContext&)
+void CAddBkgView::_onPaintRow(CPainter&, QRect&, const tagLVRow&)
 {
-    return false;
+
 }

@@ -48,7 +48,7 @@ bool CController::start()
 #endif
 	
     auto fnTryPlay = [&]() {
-		if (m_model.dbstatus() && m_model.getRootMediaRes().size())
+		if (m_model.getRootMediaRes().avalible())
 		{
 			if (m_model.getPlayMgr().getPlayingItems())
 			{
@@ -115,8 +115,8 @@ bool CController::start()
                 continue;
             }
 
-            if (m_model.dbstatus() && m_model.getRootMediaRes().size())
-            {
+			if (m_model.getRootMediaRes().avalible())
+			{
                 if (PlayMgr.getPlayer().GetDuration() == 0)
                 {
                     (void)PlayMgr.playNext(false);

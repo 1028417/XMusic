@@ -64,7 +64,6 @@ BEGIN
     POPUP "XMusic"
     BEGIN
         MENUITEM "设定根目录",                       ID_MODIFY_ROOT
-        MENUITEM "挂载目录",                        ID_AttachDir
         MENUITEM SEPARATOR
         MENUITEM "播放记录 Ctrl+R",                 ID_PlayRecord
         MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
@@ -73,11 +72,13 @@ BEGIN
     END
     POPUP "媒体库"
     BEGIN
+        MENUITEM "挂载目录",                        ID_AttachDir
         MENUITEM "导出目录",                        ID_ExportDir
         MENUITEM "生成快照",                        ID_Snapshot
         MENUITEM SEPARATOR
         MENUITEM "检查相似文件",                      ID_CheckSimilar
         MENUITEM "查找整轨",                        ID_WholeTrack
+        MENUITEM SEPARATOR
         MENUITEM "刷新 F5",                       ID_REFRESH_ROOT
     END
     POPUP "曲目"

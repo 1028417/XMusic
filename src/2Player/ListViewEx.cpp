@@ -15,7 +15,7 @@ UINT CListViewEx::getRowCount()
     }
     else if (m_pPath)
     {
-        return m_pPath->size();
+        return m_paSubPath.size();
     }
     else
     {
@@ -26,6 +26,7 @@ UINT CListViewEx::getRowCount()
 void CListViewEx::showRoot()
 {
     m_pPath = NULL;
+    m_paSubPath.clear();
 
     m_pMediaset = NULL;
     m_lstSubSets.clear();
@@ -39,6 +40,7 @@ void CListViewEx::showRoot()
 void CListViewEx::showMediaSet(CMediaSet& MediaSet)
 {
     m_pPath = NULL;
+    m_paSubPath.clear();
 
     m_pMediaset = &MediaSet;
 
@@ -77,10 +79,10 @@ void CListViewEx::showPath(CPath& path)
         {
             showPath(*pParent);
 
-            int nIdx = pParent->GetSubPath().indexOf(&path);
+            int nIdx = pParent->files().indexOf(&path);
             if (nIdx >= 0)
             {
-                showRow((UINT)nIdx, true);
+                showRow(pParent->dirs().size() + (UINT)nIdx, true);
                 selectRow((UINT)nIdx);
             }
         }
@@ -89,6 +91,8 @@ void CListViewEx::showPath(CPath& path)
     }
 
     m_pPath = &path;
+    m_paSubPath.assign(path.dirs());
+    m_paSubPath.add(path.files());
 
     m_pMediaset = NULL;
     m_lstSubSets.clear();
@@ -122,7 +126,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     }
     else if (m_pPath)
     {
-        m_pPath->GetSubPath().get(lvRow.uRow, [&](CPath& subPath) {
+        m_paSubPath.get(lvRow.uRow, [&](CPath& subPath) {
             tagRowContext context(subPath);
             _genRowContext(context);
             _paintRow(painter, rc, lvRow, context);
@@ -221,7 +225,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
     else if (m_pPath)
     {
-        m_pPath->GetSubPath().get(uRow, [&](CPath& subPath) {
+        m_paSubPath.get(uRow, [&](CPath& subPath) {
             if (subPath.IsDir())
             {
                 _saveScrollRecord();

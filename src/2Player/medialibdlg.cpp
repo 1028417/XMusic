@@ -140,11 +140,10 @@ void CMedialibView::play()
     }
     else if (m_pPath)
     {
-        TD_PathList lstSubFile;
-        m_pPath->GetSubFile(lstSubFile);
-        if (lstSubFile)
+        cauto& paSubFile = m_pPath->files();
+        if (paSubFile)
         {
-            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(lstSubFile))));
+            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
             dselectRow();
         }
     }
@@ -174,7 +173,7 @@ void CMedialibView::_onShowPath(CPath& path)
         WString strTitle;
         _getTitle((CMediaRes&)path, strTitle);
 
-        bool bPlayable = path.hasSubFile();
+        bool bPlayable = path.files();
         m_medialibDlg.update(strTitle, bPlayable, true);
     }
 }

@@ -7,6 +7,23 @@
 
 #define __Size(size) CSize(size, size)
 
+#define __SingerImgStartPos (sizeof g_lpImgFile / sizeof *g_lpImgFile)
+
+static const wstring g_lpImgFile[] = {
+	L"dir.png"
+	, L"dirLink.png"
+	, L"file.png"
+	, L"wholeTrack.png"
+
+	, L"playlist.png"
+	, L"playitem.png"
+
+	, L"singergroup.png"
+	, L"singerdefault.png"
+	, L"album.png"
+	, L"albumitem.png"
+};
+
 static const RECT g_rcMargin{ 0, 1, 0, 1 };
 
 CImglst& CImgMgr::getImglst(E_GlobalImglst eImglstType)
@@ -33,7 +50,7 @@ int CImgMgr::_getSingerImgPos(UINT uSingerID) const
 		return -1;
 	}
 
-	return m_uSingerImgOffset + int(itr - m_vctSingerID.begin());
+	return __SingerImgStartPos + int(itr - m_vctSingerID.begin());
 }
 
 UINT CImgMgr::getSingerImgPos(UINT uSingerID) const
@@ -55,26 +72,10 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	__AssertReturn(m_imglstSmall.Init(__Size(uSmallIconSize)), false);
 	__AssertReturn(m_imglstTiny.Init(__Size(uTinyIconSize)), false);
 	
-	wstring lpImgFile[] = {
-		L"dir.png"
-		, L"dirLink.png"
-		, L"file.png"
-		, L"wholeTrack.png"
-
-		, L"playlist.png"
-		, L"playitem.png"
-
-		, L"singergroup.png"
-		, L"singerdefault.png"
-		, L"album.png"
-		, L"albumitem.png"
-	};
-	for (auto& strImgFile : lpImgFile)
+	for (cauto& strImgFile : g_lpImgFile)
 	{
 		__AssertReturn(_setImg(m_strImgDir + strImgFile), false);
 	}
-
-	m_uSingerImgOffset = sizeof(lpImgFile)/sizeof(*lpImgFile);
 
 	return true;
 }
@@ -91,7 +92,20 @@ bool CImgMgr::_setImg(const wstring& strFile, bool bSinger, int iPosReplace)
 	return true;
 }
 
-bool CImgMgr::initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile)
+void CImgMgr::initSingerImg()
+{
+	TD_MediaSetList arrSingers;
+	m_model.getSingerMgr().GetAllSinger(arrSingers);
+	arrSingers([&](CMediaSet& Singer) {
+		wstring strSingerImg;
+		if (m_model.getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+		{
+			(void)_initSingerImg(Singer.m_uID, Singer.m_strName, strSingerImg);
+		}
+	});
+}
+
+bool CImgMgr::_initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile)
 {
 	__EnsureReturn(_setImg(strFile, true), false);
 	
@@ -110,7 +124,7 @@ bool CImgMgr::addSingerImg(UINT uSingerID, const wstring& strSingerName, const l
 		wstring strSingerImg;
 		__EnsureReturn(m_model.getSingerImgMgr().getSingerImg(strSingerName, 0, strSingerImg), false);
 		
-		__EnsureReturn(initSingerImg(uSingerID, strSingerName, strSingerImg), false);
+		__EnsureReturn(_initSingerImg(uSingerID, strSingerName, strSingerImg), false);
 	}
 	
 	return true;
@@ -123,7 +137,7 @@ void CImgMgr::removeSingerImg(UINT uSingerID, const wstring& strSingerName)
 	{
 		return;
 	}
-	UINT uImgPos = m_uSingerImgOffset + int(itr - m_vctSingerID.begin());
+	UINT uImgPos = __SingerImgStartPos + int(itr - m_vctSingerID.begin());
 
 	m_vctSingerID.erase(itr);
 
@@ -138,16 +152,12 @@ void CImgMgr::clearSingerImg()
 {
 	for (UINT uIdx = 0; uIdx < m_vctSingerID.size(); uIdx++)
 	{
-		UINT uImgPos = m_uSingerImgOffset + uIdx;
-
-		m_imglst.Remove(uImgPos);
-		m_imglstSmall.Remove(uImgPos);
-		m_imglstTiny.Remove(uImgPos);
+		m_imglst.Remove(__SingerImgStartPos);
+		m_imglstSmall.Remove(__SingerImgStartPos);
+		m_imglstTiny.Remove(__SingerImgStartPos);
 	}
 
 	m_vctSingerID.clear();
-
-	m_model.getSingerImgMgr().clearSingerImg();
 }
 
 //HBITMAP CImgMgr::getBitmap(UINT uImgPos, E_GlobalImglst eImglstType)

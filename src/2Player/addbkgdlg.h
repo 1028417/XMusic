@@ -5,7 +5,7 @@
 
 #include "ListViewEx.h"
 
-class CAddBkgView : public CListViewEx
+class CAddBkgView : public CListView
 {
 public:
     CAddBkgView(class CAddBkgDlg& addbkgDlg);
@@ -13,10 +13,22 @@ public:
 private:
     class CAddBkgDlg& m_addbkgDlg;
 
-public:
-    UINT getRootCount() override;
+    CPath m_sdcard;
 
-    bool _genRootRowContext(const tagLVRow&, tagRowContext&) override;
+public:
+    void scan();
+
+    bool isInRoot() const
+    {
+        return false;
+    }
+
+    void upward() {}
+
+private:
+    UINT getRowCount() override;
+
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 };
 
 class CAddBkgDlg : public CDialog<>
@@ -28,6 +40,8 @@ public:
 private:
     CAddBkgView m_addbkgView;
 
+    std::thread m_thread;
+
 private:
     void _relayout(int cx, int cy);
 
@@ -35,4 +49,6 @@ private:
 
 public:
     void init();
+
+    void show();
 };

@@ -21,19 +21,19 @@ private:
 	
 	wstring m_strImgDir;
 
-	UINT m_uSingerImgOffset = 0;
-
-	vector<UINT> m_vctSingerID;
-
 	CImglst m_imglst;
 	CImglst m_imglstSmall;
 	CImglst m_imglstTiny;
 
+	vector<UINT> m_vctSingerID;
+
 private:
+	bool _setImg(const wstring& strFile, bool bSinger = false, int iPosReplace = -1);
+
+	bool _initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile);
+	
 	int _getSingerImgPos(UINT uSingerID) const;
 
-	bool _setImg(const wstring& strFile, bool bSinger=false, int iPosReplace=-1);
-	
 public:
 	const wstring& getImgDir() const
 	{
@@ -46,7 +46,7 @@ public:
 
 	bool init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize);
 
-	bool initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile);
+	void initSingerImg();
 
 	bool addSingerImg(UINT uSingerID, const wstring& strSingerName, const list<wstring>& lstFiles);
 

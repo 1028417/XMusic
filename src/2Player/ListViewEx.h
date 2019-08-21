@@ -70,13 +70,15 @@ public:
     CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
 
 protected:
-    CPath *m_pPath = NULL;
-
     CMediaSet *m_pMediaset = NULL;
+
+    CPath *m_pPath = NULL;
 
 private:
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
+
+    TD_PathList m_paSubPath;
 
     map<void*, float> m_mapScrollRecord;
 

@@ -28,18 +28,10 @@ bool __view::init()
 
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
-	thread thread([&]() {
-		TD_MediaSetList arrSingers;
-		m_model.getSingerMgr().GetAllSinger(arrSingers);
-		arrSingers([&](CMediaSet& Singer) {
-			wstring strSingerImg;
-			if (m_model.getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
-			{
-				m_ImgMgr.initSingerImg(Singer.m_uID, Singer.m_strName, strSingerImg);
-			}
-		});
+	thread thr([&]() {
+		m_ImgMgr.initSingerImg();
 	});
-
+	
 	__EnsureReturn(m_MainWnd.Create(), false);
 
 	m_MainWnd.ModifyStyle(WS_BORDER, 0);
@@ -64,30 +56,33 @@ bool __view::init()
 	centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
 	pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
 	__AssertReturn(pDockView, false);
-
-	thread.join();
+	
+	thr.join();
 
 	m_MediaResPage.ShowPath();
 
 	m_MainWnd.show();
 
-	CMainApp::async([&]() {
-		if (!m_model.dbstatus())
-		{
+	if (!m_model.status())
+	{
+		CMainApp::async([&]() {
 			CFolderDlgEx FolderDlg;
 			wstring strRootDir = FolderDlg.Show(L"设定根目录", L"根目录不存在，请重新设定");
 			if (!strRootDir.empty())
 			{
 				(void)m_model.initRootMediaRes(strRootDir);
 			}
-		}
-	});
+		});
+	}
 
 	return true;
 }
 
 void __view::initView()
 {
+	m_ImgMgr.clearSingerImg();
+	m_ImgMgr.initSingerImg();
+
 	CMediaResPanel::RefreshMediaResPanel();
 
 	if (m_SingerPage)
@@ -422,18 +417,19 @@ void __view::exportDir(CMediaRes& dir)
 	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 
-		dir.enumSubFile([&](CPath& dir, TD_PathList& lstSubFile) {
+		dir.scan([&](CPath& dir, TD_PathList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
 
-			TD_MediaResList lstMediaRes(lstSubFile);
-			TD_IMediaList lstMedias(lstMediaRes);
+			if (paSubFile)
+			{
+				uCount += paSubFile.size();
 
-			ExportOption.plMedias.add(ExportOption.strExportPath + ((CMediaRes&)dir).GetPath(), lstMedias);
-
-			uCount += lstSubFile.size();
+				cauto& strExportPath = ExportOption.strExportPath + ((CMediaRes&)dir).GetPath();
+				ExportOption.plMedias.add(strExportPath, TD_IMediaList(TD_MediaResList(paSubFile)));
+			}
 
 			return true;
 		});
@@ -489,14 +485,12 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 			strPrfix.append(L"  ");
 
-			TD_PathList lstSubDir;
-			TD_PathList lstSubFile;
-			dir.GetSubPath(lstSubDir, lstSubFile);
+			cauto& paSubDir = dir.dirs();
 
-			ProgressDlg.SetProgress(0, lstSubDir.size() + 1);
+			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText((L"正在生成" + dir.GetPath() + L"目录快照").c_str());
 
-			lstSubFile([&](CPath& subFile) {
+			dir.files()([&](CPath& subFile) {
 				auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
 				auto& strFileInfo = strPrfix + subFile.GetName() + L'\t' + strFileSize;
 				TxtWriter.writeln(strFileInfo);
@@ -504,7 +498,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 			ProgressDlg.ForwardProgress();
 
-			lstSubDir([&](CPath& subDir) {
+			paSubDir([&](CPath& subDir) {
 				bool bRet = fnSnapshot(subDir);
 
 				ProgressDlg.ForwardProgress();
@@ -554,15 +548,18 @@ void __view::checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes1;
-		dir1.enumSubFile([&](CPath& dir, TD_PathList& lstSubFile) {
+		dir1.scan([&](CPath& dir, TD_PathList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
 
-			lstMediaRes1.add(lstSubFile);
+			if (paSubFile)
+			{
+				lstMediaRes1.add(paSubFile);
 
-			ProgressDlg.SetProgress(0, lstMediaRes1.size());
+				ProgressDlg.SetProgress(0, lstMediaRes1.size());
+			}
 
 			return true;
 		});
@@ -578,17 +575,20 @@ void __view::checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2)
 		UINT uProgress = lstMediaRes1.size();
 
 		TD_MediaResList lstMediaRes2;
-		dir2.enumSubFile([&](CPath& dir, TD_PathList& lstSubFile) {
+		dir2.scan([&](CPath& dir, TD_PathList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
 
-			lstMediaRes2.add(lstSubFile);
+			if (paSubFile)
+			{
+				lstMediaRes2.add(paSubFile);
 
-			ProgressDlg.SetProgress(0, uProgress + lstMediaRes2.size());
-				
-			return !ProgressDlg.checkCancel();
+				ProgressDlg.SetProgress(0, uProgress + lstMediaRes2.size());
+			}
+
+			return true;
 		});
 
 		if (!lstMediaRes2)
@@ -616,15 +616,18 @@ void __view::checkSimilarFile(CMediaRes& dir)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes;
-		dir.enumSubFile([&](CPath& dir, TD_PathList& lstSubFile) {
+		dir.scan([&](CPath& dir, TD_PathList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
 
-			lstMediaRes.add(lstSubFile);
+			if (paSubFile)
+			{
+				lstMediaRes.add(paSubFile);
 
-			ProgressDlg.SetProgress(0, lstMediaRes.size());
+				ProgressDlg.SetProgress(0, lstMediaRes.size());
+			}
 
 			return true;
 		});
