@@ -28,36 +28,41 @@ bool __view::init()
 
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
-	thread thr([&]() {
+	bool bRet = mtutil::thread([&]() {
+		__EnsureReturn(m_MainWnd.Create(), false);
+
+		m_MainWnd.ModifyStyle(WS_BORDER, 0);
+
+		tagViewStyle leftViewStyle(E_DockViewType::DVT_DockLeft);
+		leftViewStyle.uDockSize = m_globalSize.m_uLeftDockWidth;
+		leftViewStyle.uMaxDockSize = UINT(m_globalSize.m_uLeftDockWidth*1.5);
+		leftViewStyle.uStartPos = m_globalSize.m_uHeadHeight;
+		leftViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
+		leftViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
+		leftViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
+
+		CDockView *pDockView = m_MainWnd.CreateView(m_PlayingPage, leftViewStyle);
+		__AssertReturn(pDockView, false);
+		__AssertReturn(m_MainWnd.AddPage(m_PlaylistPage, E_DockViewType::DVT_DockLeft), false);
+		__AssertReturn(m_MainWnd.AddPage(m_SingerPage, E_DockViewType::DVT_DockLeft), false);
+
+		tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
+		centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
+		centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
+		centerViewStyle.TabStyle.pImglst = &m_ImgMgr.getImglst(E_GlobalImglst::GIL_Tiny);
+		centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
+		pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
+		__AssertReturn(pDockView, false);
+
+		return true;
+	}, [&]() {
 		m_ImgMgr.initSingerImg();
 	});
-	
-	__EnsureReturn(m_MainWnd.Create(), false);
 
-	m_MainWnd.ModifyStyle(WS_BORDER, 0);
-
-	tagViewStyle leftViewStyle(E_DockViewType::DVT_DockLeft);
-	leftViewStyle.uDockSize = m_globalSize.m_uLeftDockWidth;
-	leftViewStyle.uMaxDockSize = UINT(m_globalSize.m_uLeftDockWidth*1.5);
-	leftViewStyle.uStartPos = m_globalSize.m_uHeadHeight;
-	leftViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
-	leftViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-	leftViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
-	
-	CDockView *pDockView = m_MainWnd.CreateView(m_PlayingPage, leftViewStyle);
-	__AssertReturn(pDockView, false);
-	__AssertReturn(m_MainWnd.AddPage(m_PlaylistPage, E_DockViewType::DVT_DockLeft), false);
-	__AssertReturn(m_MainWnd.AddPage(m_SingerPage, E_DockViewType::DVT_DockLeft), false);
-
-	tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
-	centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
-	centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.getImglst(E_GlobalImglst::GIL_Tiny);
-	centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
-	pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
-	__AssertReturn(pDockView, false);
-	
-	thr.join();
+	if (!bRet)
+	{
+		return false;
+	}
 
 	m_MediaResPage.ShowPath();
 

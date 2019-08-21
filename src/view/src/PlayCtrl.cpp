@@ -26,16 +26,11 @@ bool CPlayCtrl::init()
 	cauto& rtWorkArea =	CMainApp::getWorkArea(false);
 	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left + 30);
 	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top + 30);
+	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - 400);
+	PlaySpiritOption.iPosY = MIN(PlaySpiritOption.iPosY, rtWorkArea.bottom - 100);
 
 	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.iPosX
 		, PlaySpiritOption.iPosY, strSkinPath, PlaySpiritOption.uVolume), false);
-
-	CRect rcPlaySpirit;
-	::GetWindowRect(m_PlaySpirit.m_hWndPlaySpirit, &rcPlaySpirit);
-	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - rcPlaySpirit.Width() - 30);
-	PlaySpiritOption.iPosY = MIN(PlaySpiritOption.iPosY, rtWorkArea.bottom - rcPlaySpirit.Height() - 30);
-	(void)::SetWindowPos(m_PlaySpirit.m_hWndPlaySpirit, NULL, PlaySpiritOption.iPosX, PlaySpiritOption.iPosY
-		, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 
 	return true;
 }

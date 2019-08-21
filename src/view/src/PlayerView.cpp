@@ -51,6 +51,7 @@ CMainWnd* CPlayerView::init()
 	}
 	g_bRuning = true;
 
+
 	if (!m_view.init())
 	{
 		return NULL;
