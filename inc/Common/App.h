@@ -6,7 +6,7 @@ using namespace Gdiplus;
 
 #include "ModuleApp.h"
 
-using CB_Sync = fn_voidvoid;
+using CB_Sync = fn_void;
 
 class IView
 {
@@ -128,7 +128,7 @@ public:
 		}, bBlock);
 	}
 	
-	void thread(const fn_voidvoid& cb);
+	void thread(const fn_void& cb);
 
 	E_DoEventsResult DoEvents(bool bOnce=false);
 

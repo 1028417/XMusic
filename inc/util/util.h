@@ -112,7 +112,7 @@ using namespace std;
 #include <algorithm>
 
 #include <functional>
-using fn_voidvoid = function<void()>;
+using fn_void = function<void()>;
 
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;

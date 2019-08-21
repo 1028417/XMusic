@@ -14,18 +14,18 @@ class __UtilExt mtutil
 {
 #if !__android
 public:
-	static bool apcWakeup(HANDLE hThread, const fn_voidvoid& fn = NULL)
+	static bool apcWakeup(HANDLE hThread, const fn_void& fn = NULL)
 	{
 		return 0 != QueueUserAPC(APCFunc, hThread, fn ? (ULONG_PTR)&fn : 0);
 	}
 
-	static bool apcWakeup(DWORD dwThreadID, const fn_voidvoid& fn = NULL)
+	static bool apcWakeup(DWORD dwThreadID, const fn_void& fn = NULL)
 	{
 		HANDLE hThread = OpenThread(PROCESS_ALL_ACCESS, FALSE, dwThreadID);
 		return apcWakeup(hThread, fn);
 	}
 
-	static bool poolStart(const fn_voidvoid& fn)
+	static bool poolStart(const fn_void& fn)
 	{
 		return TRUE == QueueUserWorkItem(UserWorkItemProc, fn ? (PVOID)&fn : 0, WT_EXECUTEDEFAULT);
 	}
@@ -33,7 +33,7 @@ public:
 private:
 	static VOID WINAPI APCFunc(ULONG_PTR dwParam)
 	{
-		auto  pfn = (const fn_voidvoid *)dwParam;
+		auto  pfn = (const fn_void *)dwParam;
 		if (pfn && *pfn)
 		{
 			(*pfn)();
@@ -42,7 +42,7 @@ private:
 
 	static DWORD WINAPI UserWorkItemProc(LPVOID lpPara)
 	{
-		auto  pfn = (const fn_voidvoid *)lpPara;
+		auto  pfn = (const fn_void *)lpPara;
 		if (pfn && *pfn)
 		{
 			(*pfn)();
@@ -53,11 +53,32 @@ private:
 #endif
 
 public:
-	template <typename CB>
-	static void start(const CB& cb)
-    {
-		thread(cb).detach();
-    }
+	static void thread(const fn_void& cb)
+	{
+		std::thread(cb).detach();
+	}
+
+	template <typename FN, typename RET=decltype(declval<FN>()())>
+	static RET thread(const FN& fn, const fn_void& cbThread)
+	{
+		std::thread thr(cbThread);
+		
+		RET ret = fn();
+
+		thr.join();
+
+		return ret;
+	}
+
+	template <typename FN, typename = checkCBVoid_t<FN>>
+	static void thread(const FN& fn, const fn_void& cbThread)
+	{
+		std::thread thr(cbThread);
+
+		fn();
+
+		thr.join();
+	}
 
 	inline static void usleep(UINT uMS = 0)
 	{

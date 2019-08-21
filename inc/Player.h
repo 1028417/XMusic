@@ -26,7 +26,7 @@ public:
 	virtual void close() = 0;
 };
 
-using CB_PlayFinish = fn_voidvoid;
+using CB_PlayFinish = fn_void;
 
 enum class E_PlayStatus
 {

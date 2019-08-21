@@ -233,7 +233,7 @@ private:
 	CB_ListViewChanged m_cbViewChanged;
 	CB_TrackMouseEvent m_cbTrackMouseEvent;
 
-	fn_voidvoid	m_cbLButtondown;
+	fn_void	m_cbLButtondown;
 
 	CImglst m_Imglst;
 	CImglst m_ImglstSmall;
@@ -354,7 +354,7 @@ public:
 	using CB_AsyncTask = function<void(UINT uItem)>;
 	void AsyncTask(UINT uElapse, const CB_AsyncTask& cb=NULL);
 
-	void CObjectList::AsyncLButtondown(const fn_voidvoid& cb);
+	void CObjectList::AsyncLButtondown(const fn_void& cb);
 
 protected:
 	virtual void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage);
