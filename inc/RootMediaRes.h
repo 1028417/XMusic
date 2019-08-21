@@ -72,12 +72,17 @@ private:
         return L"";
     }
 
-    void _sort(TD_PathList& lstSubPath) override;
+    void _onFindFile(TD_PathList& lstSubDir, TD_PathList& lstSubFile) override;
 
-	int _sortCompare(const CPath& lhs, const CPath& rhs) const override;
+	int _sort(const CPath& lhs, const CPath& rhs) const override;
 	
 public:
-    void init(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
+    void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
+
+	bool avalible() const
+	{
+		return CPath::count() > 0;
+	}
 
 	wstring toAbsPath(const wstring& strSubPath, bool bDir=false);
 

@@ -52,7 +52,7 @@ public:
 
 	void InsertChilds(CDirObject *pDirObject)
 	{
-		pDirObject->GetSubPath()([&](CPath& SubDir){
+		pDirObject->dirs()([&](CPath& SubDir){
 			(void)InsertObject((CDirObject&)SubDir, pDirObject);
 		});
 	}
@@ -81,7 +81,7 @@ public:
 private:
 	void InsertChildsEx(CDirObject *pDirObject)
 	{
-		pDirObject->GetSubPath()([&](CPath& SubDir){
+		pDirObject->dirs()([&](CPath& SubDir){
 			InsertChilds((CDirObject*)&SubDir);
 		});
 	}

@@ -157,27 +157,27 @@ public:
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);
 
-	template <typename CB, typename = checkCBVoid_t<CB, const tagFileInfo&>>
+	template <typename CB, typename = checkCBVoid_t<CB, tagFileInfo&>>
 	static bool findFile(const wstring& strDir, const CB& cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
-		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
+		return _findFile(strDir, [&](tagFileInfo& fileInfo) {
 			cb(fileInfo);
 			return true;
 		}, eFilter, pstrFilter);
 	}
 
-	template <typename CB, typename = checkCBBool_t<CB, const tagFileInfo&>, typename=void>
+	template <typename CB, typename = checkCBBool_t<CB, tagFileInfo&>, typename=void>
 	static bool findFile(const wstring& strDir, const CB& cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
-		return _findFile(strDir, [&](const tagFileInfo& fileInfo) {
+		return _findFile(strDir, [&](tagFileInfo& fileInfo) {
             return cb(fileInfo);
 		}, eFilter, pstrFilter);
 	}
 
 private:
-    using CB_FindFile = const function<bool(const tagFileInfo&)>&;
+    using CB_FindFile = const function<bool(tagFileInfo&)>&;
     static bool _findFile(const wstring& strDir, CB_FindFile cb, E_FindFindFilter eFilter, const wchar_t *pstrFilter);
 };
 

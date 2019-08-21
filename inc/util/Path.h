@@ -42,25 +42,51 @@ protected:
 	tagFileInfo m_FileInfo;
 
 private:
-	bool m_bFinded = false;
-	
-	bool m_bDirExists = false;
+	enum class E_FindFileStatus
+	{
+		FFS_None
+		, FFS_Exists
+		, FFS_NotExists
+	};
+	E_FindFileStatus m_eFindFileStatus = E_FindFileStatus::FFS_None;
 
-    TD_PathList m_lstSubPath;
+	TD_PathList m_paSubDir;
+	TD_PathList m_paSubFile;
 
 private:
+	template <typename CB>
+	inline bool _findFile(const CB& cb)
+	{
+		if (!fsutil::findFile(this->GetPath(), cb))
+		{
+			m_eFindFileStatus = E_FindFileStatus::FFS_NotExists;
+			return false;
+		}
+
+		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
+
+		return true;
+	}
+			
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
 	{
 		return new CPath(FileInfo);
 	}
 
-	void _GetSubPath(TD_PathList *plstSubDir, TD_PathList *plstSubFile = NULL);
+	void _sort(TD_PathList& paSubPath);
 
 protected:
-	virtual void _sort(TD_PathList& lstSubPath);
+	void _findFile();
 
-	virtual int _sortCompare(const CPath& lhs, const CPath& rhs) const;
-    
+	virtual void _onFindFile(TD_PathList& paSubDir, TD_PathList& paSubFile);
+
+	virtual int _sort(const CPath& lhs, const CPath& rhs) const;
+
+	size_t count() const
+	{
+		return m_paSubDir.size() + m_paSubFile.size();
+	}
+
 public:
     void SetDir(const wstring& strDir);
 
@@ -76,11 +102,6 @@ public:
 		return m_FileInfo.bDir;
 	}
 
-	bool DirExists() const
-	{
-		return m_bDirExists;
-	}
-
 	wstring GetPath() const;
 
     CPath* parent() const
@@ -90,44 +111,48 @@ public:
 
 	wstring GetParentDir() const;
 
-	void findFile(bool bScanAll = false);
+	using CB_PathScan = function<bool(CPath& dir, TD_PathList& paSubFile)>;
+	bool scan(const CB_PathScan& cb);
 
-	size_t size() 
+	const TD_PathList& dirs()
 	{
-		return GetSubPath().size();
+		_findFile();
+		return m_paSubDir;
 	}
 
-	bool hasSubDir();
-	bool hasSubFile();
-
-	inline const TD_PathList& GetSubPath()
+	const TD_PathList& files()
 	{
-		findFile();
-		return m_lstSubPath;
+		_findFile();
+		return m_paSubFile;
 	}
 
-	void GetSubPath(TD_PathList& lstSubDir, TD_PathList& lstSubFile)
+	void subPath(const function<void(CPath&)>& cb)
 	{
-		_GetSubPath(&lstSubDir, &lstSubFile);
+		_findFile();
+
+		m_paSubDir(cb);
+		m_paSubFile(cb);
 	}
 
-	void GetSubDir(TD_PathList& lstSubDir)
+	/*void CPath::subPath(UINT uIdx, const function<void(CPath&)>& cb)
 	{
-		_GetSubPath(&lstSubDir);
-	}
+		_findFile();
 
-	void GetSubFile(TD_PathList& lstSubFile)
-	{
-		_GetSubPath(NULL, &lstSubFile);
-	}
+		if (uIdx < m_paSubDir.size())
+		{
+			m_paSubDir.get(uIdx, cb);
+		}
+		else
+		{
+			m_paSubFile.get(uIdx - m_paSubDir.size(), cb);
+		}
+	}*/
 
 	CPath *FindSubPath(wstring strSubPath, bool bDir);
 
-	bool enumSubFile(const function<bool(CPath& dir, TD_PathList& lstSubFile)>& cb);
-
-	void RemoveSubPath(CPath *pSubPath);
-
 	void RemoveSelf();
+
+	void Remove(CPath *pSubPath);
 
 	virtual void Clear();
 };
@@ -233,6 +258,6 @@ public:
 
 	void GetTreeChilds(TD_TreeObjectList& lstChilds)
 	{
-		lstChilds.add(TD_DirObjectList(this->GetSubPath()));
+		lstChilds.add(TD_DirObjectList(this->dirs()));
 	}
 };

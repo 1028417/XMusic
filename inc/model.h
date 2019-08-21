@@ -96,7 +96,7 @@ using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 class IModel
 {
 public:
-	virtual bool dbstatus() const = 0;
+	virtual bool status() const = 0;
 
 	virtual CRootMediaRes& getRootMediaRes() = 0;
 	virtual CMediaSet& getRootMediaSet() = 0;
@@ -196,7 +196,7 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-	bool dbstatus() const override
+	bool status() const override
 	{
 		return m_db.GetStatus();
 	}
@@ -285,11 +285,13 @@ public:
 private:
 	bool _init();
 
+	bool _initDB();
+
     wstring _scanXMusicDir();
 
 	inline void _refreshRootMediaRes()
 	{
-        m_RootMediaRes.init(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
+        m_RootMediaRes.setDir(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
