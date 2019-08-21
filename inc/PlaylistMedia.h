@@ -57,7 +57,7 @@ public:
 		return m_lstPlayItems;
 	}
 
-	bool avalible() override
+	bool available() override
 	{
 		return !m_lstPlayItems.empty();
 	}

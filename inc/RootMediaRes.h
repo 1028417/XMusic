@@ -79,7 +79,7 @@ private:
 public:
     void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 
-	bool avalible() const
+	bool available() const
 	{
 		return CPath::count() > 0;
 	}

@@ -51,7 +51,7 @@ public:
 
 	void addAlbumItem(const CAlbumItem& AlbumItem);
 
-	bool avalible() override
+	bool available() override
 	{
 		return !m_lstAlbumItems.empty();
 	}

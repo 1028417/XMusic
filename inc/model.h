@@ -285,9 +285,9 @@ public:
 private:
 	bool _init();
 
-	bool _initDB();
-
     wstring _scanXMusicDir();
+
+    bool _initDB(const wstring& strDBFile);
 
 	inline void _refreshRootMediaRes()
 	{
