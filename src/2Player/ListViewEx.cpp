@@ -82,8 +82,9 @@ void CListViewEx::showPath(CPath& path)
             int nIdx = pParent->files().indexOf(&path);
             if (nIdx >= 0)
             {
-                showRow(pParent->dirs().size() + (UINT)nIdx, true);
-                selectRow((UINT)nIdx);
+                UINT uIdx = pParent->dirs().size() + (UINT)nIdx;
+                showRow(uIdx, true);
+                selectRow(uIdx);
             }
         }
 
