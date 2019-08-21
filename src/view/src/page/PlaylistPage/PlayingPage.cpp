@@ -166,7 +166,7 @@ DROPEFFECT CPlayingPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& l
 {
 	__AssertReturn(pwndCtrl == &m_wndList && lstMedias, DROPEFFECT_NONE);
 
-	if (!m_view.getPlayMgr().getPlayinglist().avalible())
+	if (!m_view.getPlayMgr().getPlayinglist().available())
 	{
 		return DROPEFFECT_COPY;
 	}
@@ -239,7 +239,7 @@ void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	if (!m_view.getPlayMgr().getPlayinglist().avalible())
+	if (!m_view.getPlayMgr().getPlayinglist().available())
 	{
 		return;
 	}

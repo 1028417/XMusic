@@ -32,7 +32,7 @@ void CModelObserver::refreshMedia()
 
 void CModelObserver::refreshPlayingList(int nPlayingItem, bool bSetActive)
 {
-	if (!m_view.getPlayMgr().getPlayinglist().avalible())
+	if (!m_view.getPlayMgr().getPlayinglist().available())
 	{
 		m_view.m_PlayCtrl.getPlaySpirit()->clear();
 	}

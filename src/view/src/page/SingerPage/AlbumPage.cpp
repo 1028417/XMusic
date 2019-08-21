@@ -453,7 +453,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
-		bAvalible = pAlbum->avalible();
+		bAvalible = pAlbum->available();
 	}
 
 	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bAvalible);
@@ -1143,7 +1143,7 @@ BOOL CAlbumPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CD
 
 void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, (m_pAlbum && m_pAlbum->avalible()));
+	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, (m_pAlbum && m_pAlbum->available()));
 
 	int nCount = m_wndAlbumItemList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nCount));

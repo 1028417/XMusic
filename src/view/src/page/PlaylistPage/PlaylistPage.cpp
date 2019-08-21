@@ -328,7 +328,7 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_MenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
-		bAvalible = pPlaylist->avalible();
+		bAvalible = pPlaylist->available();
 	}
 
 	m_MenuGuard.EnableItem(ID_PLAY, bAvalible);
