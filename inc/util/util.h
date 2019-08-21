@@ -19,19 +19,18 @@
 #endif
 
 #if __winvc
-#pragma warning(disable: 4251)
-#pragma warning(disable: 4275)
+    #pragma warning(disable: 4251)
+    #pragma warning(disable: 4275)
 
-#include <stddef.h>
-#include <stdint.h>
-
+    #include <stddef.h>
+    #include <stdint.h>
 #else
-#include <sys/types.h>
-#include <unistd.h>
+    #include <sys/types.h>
+    #include <unistd.h>
 
-#ifndef QT_NO_DEBUG
-#define _DEBUG
-#endif
+    #ifndef QT_NO_DEBUG
+        #define _DEBUG
+    #endif
 #endif
 
 #if __android
@@ -43,9 +42,9 @@
 #endif
 
 #ifdef __UtilPrj
-#define __UtilExt __dllexport
+    #define __UtilExt __dllexport
 #else
-#define __UtilExt __dllimport
+    #define __UtilExt __dllimport
 #endif
 
 #define zeroset(x) memset(&(x), 0, sizeof((x)))
