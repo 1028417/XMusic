@@ -273,8 +273,7 @@ void MainWindow::_relayout()
     int cy = this->height();
     m_bHScreen = cx > cy; // 橫屏
 
-    int x_Logo = (cx - ui.labelLogo->width())/2-1;
-
+    int x_Logo = (cx - ui.labelLogo->width())/2;
     int y_Logo = (cy - ui.labelLogo->height())/2;
     if (m_bHScreen)
     {
