@@ -59,7 +59,6 @@ MainWindow::MainWindow(CPlayerView& view) :
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
 
-    ui.wdgSingerImg->setVisible(false);
     ui.btnPause->setVisible(false);
     ui.centralWidget->setVisible(false);
 
@@ -442,6 +441,19 @@ void MainWindow::_relayout()
     ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
     ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
 
+    bool bZoomoutSingerImg = m_bZoomoutSingerImg;
+    const QPixmap *pmSingerImg = ui.labelSingerImg->pixmap();
+    if (NULL != pmSingerImg && !pmSingerImg->isNull())
+    {
+        ui.wdgSingerImg->setVisible(true);
+    }
+    else
+    {
+        ui.wdgSingerImg->setVisible(false);
+
+        bZoomoutSingerImg = false;
+    }
+
     if (m_bUsingCustomBkg)
     {
         int x = ui.progressBar->x();
@@ -450,21 +462,21 @@ void MainWindow::_relayout()
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
-        int cy_AlbumName = 80;
-        int y_AlbumName = y_Playingfile - cy_AlbumName;
+        int cy_labelAlbumName = 80;
+        int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
         int cx_progressBar = ui.progressBar->width();
-        ui.labelAlbumName->setGeometry(x, y_AlbumName, cx_progressBar, cy_AlbumName);
+        ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_progressBar, cy_labelAlbumName);
 
         ui.labelAlbumName->setFont(0.5);
 
         int y_SingerImg = 0;
-        if (m_bZoomoutSingerImg)
+        if (bZoomoutSingerImg)
         {
             ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
             ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            y_SingerImg = y_AlbumName-300;
+            y_SingerImg = y_labelAlbumName-300;
         }
         else
         {
@@ -478,22 +490,36 @@ void MainWindow::_relayout()
             }
         }
 
-        int cy_SingerImg = y_AlbumName-y_SingerImg;
+        int cy_SingerImg = y_labelAlbumName-y_SingerImg;
         cauto& rcSingerImg = m_mapWidgetPos[ui.wdgSingerImg];
         int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
 
         int x_SingerImg = x;
-        if (!m_bZoomoutSingerImg)
+        if (!bZoomoutSingerImg)
         {
             x_SingerImg += (cx_progressBar-cx_SingerImg)/2;
         }
 
         ui.wdgSingerImg->setGeometry(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
 
-        ui.labelSingerName->setGeometry(x_SingerImg+15, y_AlbumName-ui.labelSingerName->height()
-                                     , cx_SingerImg-15, ui.labelSingerName->height());
+        int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
+        ui.labelSingerName->setGeometry(x_SingerImg+15, y_labelSingerName, cx_SingerImg-15, ui.labelSingerName->height());
 
-        y_PlayingListMax = y_SingerImg;
+        if (ui.wdgSingerImg->isVisible())
+        {
+            y_PlayingListMax = y_SingerImg;
+        }
+        else
+        {
+            if (!ui.labelSingerName->text().isEmpty())
+            {
+                y_PlayingListMax = y_labelSingerName;
+            }
+            else
+            {
+                y_PlayingListMax = y_labelAlbumName;
+            }
+        }
 
         m_PlayingList.setFont(-1);
         m_PlayingList.setTextColor(255, 255, 255);
@@ -521,9 +547,8 @@ void MainWindow::_relayout()
 
         if (bFlag)
         {
-            int x_Playingfile = ui.wdgSingerImg->x() + 30;
-            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 30;
-            ui.labelPlayingfile->move(x_Playingfile, y_Playingfile);
+            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 20;
+            ui.labelPlayingfile->move(ui.wdgSingerImg->x() + 30, y_Playingfile);
 
             y_PlayingListMax = ui.wdgSingerImg->y();
         }
@@ -569,11 +594,11 @@ void MainWindow::_relayout()
         if (uRowCount > 10)
         {
             uRowCount = 10;
-            y_Margin += 10;
+            y_Margin += 30;
 
-            if (m_bZoomoutSingerImg)
+            if (bZoomoutSingerImg)
             {
-                y_Margin+=10;
+                y_Margin += 30;
             }
         }
         else if (uRowCount < 7)
@@ -658,16 +683,12 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
-        if (m_strSingerName.empty())
+        if (!m_strSingerName.empty())
         {
-            ui.wdgSingerImg->setVisible(false);
-        }
-        else
-        {
-            ui.wdgSingerImg->setVisible(true);
-
             _playSingerImg(true);
         }
+
+        _relayout();
     }
 
     ui.progressBar->setValue(0);

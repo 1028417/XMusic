@@ -5,8 +5,7 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg()
-    : m_addbkgView(*this)
+CAddBkgDlg::CAddBkgDlg() : m_addbkgView(*this)
 {
 }
 
@@ -30,6 +29,10 @@ void CAddBkgDlg::init()
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
         this->close();
     });
+
+    connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
+
+    m_sdcard.SetDir(L"c:/");
 }
 
 void CAddBkgDlg::show()
@@ -40,7 +43,15 @@ void CAddBkgDlg::show()
     }
 
     m_thread = std::thread([&](){
-        m_addbkgView.scan();
+        m_sdcard.scan([&](CPath& dir, TD_PathList& paSubFile) {
+            if (paSubFile)
+            {
+                emit signal_founddir(&dir);
+            }
+
+            return true;
+        });
+
     });
 
     CDialog<>::show();
@@ -78,19 +89,30 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
 {
 }
 
-void CAddBkgView::scan()
-{
-    m_sdcard.scan([&](CPath&, TD_PathList& paSubFile) {
-        return true;
-    });
-}
-
 UINT CAddBkgView::getRowCount()
 {
-    return 0;
+    if (m_pDir)
+    {
+        return m_pDir->files().size();
+    }
+
+    return m_paDirs.size();
+}
+
+UINT CAddBkgView::getColumnCount()
+{
+    if (m_pDir)
+    {
+
+    }
+
+    return 1;
 }
 
 void CAddBkgView::_onPaintRow(CPainter&, QRect&, const tagLVRow&)
 {
 
 }
+
+
+
