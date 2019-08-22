@@ -69,13 +69,16 @@ private:
 
 		return true;
 	}
-			
+
 	virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
 	{
 		return new CPath(FileInfo);
 	}
 
 	void _sort(TD_PathList& paSubPath);
+
+	using CB_PathScan = function<bool(CPath& dir, TD_PathList& paSubFile)>;
+	bool _scan(const CB_PathScan& cb);
 
 protected:
 	void _findFile();
@@ -110,8 +113,7 @@ public:
 
     wstring parentPath() const;
 
-	using CB_PathScan = function<bool(CPath& dir, TD_PathList& paSubFile)>;
-	bool scan(const CB_PathScan& cb);
+	void scan(const CB_PathScan& cb);
 
 	const TD_PathList& dirs()
 	{
