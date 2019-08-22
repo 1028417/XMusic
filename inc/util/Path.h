@@ -29,7 +29,7 @@ public:
 	CPath(const wstring& strName, bool bDir);
 
 	CPath(const tagFileInfo& FileInfo)
-		: m_FileInfo(FileInfo)
+        : m_fi(FileInfo)
 	{
 	}
 	
@@ -38,10 +38,9 @@ public:
 		Clear();
 	}
 
-protected:
-	tagFileInfo m_FileInfo;
-
 private:
+    tagFileInfo m_fi;
+
 	enum class E_FindFileStatus
 	{
 		FFS_None
@@ -52,6 +51,9 @@ private:
 
 	TD_PathList m_paSubDir;
 	TD_PathList m_paSubFile;
+
+protected:
+    const tagFileInfo& m_FileInfo = m_fi;
 
 private:
 	template <typename CB>
@@ -88,28 +90,25 @@ protected:
 	}
 
 public:
+	const tagFileInfo& fileInfo() const
+    {
+        return m_FileInfo;
+    }
+
     void SetDir(const wstring& strDir);
 
 	void SetName(const wstring& strNewName)
 	{
-		m_FileInfo.strName = strNewName;
+        m_fi.strName = strNewName;
 	}
 
 	wstring GetName() const;
 
-	inline bool IsDir() const
-	{
-		return m_FileInfo.bDir;
-	}
-
 	wstring GetPath() const;
 
-    CPath* parent() const
-    {
-        return m_FileInfo.pParent;
-    }
+    wstring oppPath() const;
 
-	wstring GetParentDir() const;
+    wstring parentPath() const;
 
 	using CB_PathScan = function<bool(CPath& dir, TD_PathList& paSubFile)>;
 	bool scan(const CB_PathScan& cb);

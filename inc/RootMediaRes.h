@@ -34,7 +34,7 @@ public:
 public:
 	wstring GetPath() const override
 	{
-		return __wcFSSlant + GetName();
+        return __wcFSSlant + m_FileInfo.strName;
 	}
 
 	int _getImage() override
@@ -67,11 +67,6 @@ private:
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
-    wstring GetPath() const override
-    {
-        return L"";
-    }
-
     void _onFindFile(TD_PathList& lstSubDir, TD_PathList& lstSubFile) override;
 
 	int _sort(const CPath& lhs, const CPath& rhs) const override;

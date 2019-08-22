@@ -71,7 +71,7 @@ public:
 
 	bool IsDir() const override
 	{
-		return CPath::IsDir();
+        return m_FileInfo.bDir;
 	}
 
 	wstring GetName() const override
