@@ -37,11 +37,6 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
-    if (m_thread.joinable())
-    {
-        m_thread.join();
-    }
-
     m_thread = std::thread([&](){
         m_sdcard.scan([&](CPath& dir, TD_PathList& paSubFile) {
             if (paSubFile)
@@ -54,7 +49,17 @@ void CAddBkgDlg::show()
 
     });
 
-    CDialog<>::show();
+    CDialog::show();
+}
+
+void CAddBkgDlg::close()
+{
+    if (m_thread.joinable())
+    {
+        m_thread.join();
+    }
+
+    CDialog::close();
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -75,13 +80,16 @@ bool CAddBkgDlg::_handleReturn()
 {
     if (m_addbkgView.isInRoot())
     {
-        return false;
+        this->close();
     }
-
-    m_addbkgView.upward();
+    else
+    {
+        m_addbkgView.upward();
+    }
 
     return true;
 }
+
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
     : CListView(&addbkgDlg)
@@ -109,9 +117,13 @@ UINT CAddBkgView::getColumnCount()
     return 1;
 }
 
-void CAddBkgView::_onPaintRow(CPainter&, QRect&, const tagLVRow&)
+void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-
+    m_paDirs.get(lvRow.uRow, [&](CPath& dir){
+        tagRowContext context;
+        context.strText = dir.GetName();
+        _paintRow(painter, rc, lvRow, context);
+    });
 }
 
 

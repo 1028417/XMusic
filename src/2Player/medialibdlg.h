@@ -60,10 +60,10 @@ private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaRes&, WString& strTitle);
 
-    bool _genRootRowContext(const tagLVRow&, tagRowContext&) override;
-    void _genRowContext(tagRowContext&) override;
+    bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
+    void _genRowContext(tagMediaContext&) override;
 
-    void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&) override;
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagMediaContext&) override;
 
     QPixmap& _getSingerPixmap(CSinger&);
 
@@ -80,7 +80,7 @@ private:
     }
 };
 
-class CMedialibDlg : public CDialog<>
+class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
@@ -96,25 +96,25 @@ public:
 
     void show()
     {
-        CDialog<>::show();
+        CDialog::show();
         m_MedialibView.showRoot();
     }
 
     void showMediaSet(CMediaSet& MediaSet)
     {
-        CDialog<>::show();
+        CDialog::show();
         m_MedialibView.showMediaSet(MediaSet);
     }
 
     void showMedia(CMedia& media)
     {
-        CDialog<>::show();
+        CDialog::show();
         m_MedialibView.showMedia(media);
     }
 
     void showFile(const wstring& strPath)
     {
-        CDialog<>::show();
+        CDialog::show();
         m_MedialibView.showFile(strPath);
     }
 

@@ -20,7 +20,7 @@ private:
     CPath *m_pDir = NULL;
 
 public:
-    void addRootDir(void *pDir)
+    void addDir(void *pDir)
     {
         m_paDirs.add((CPath*)pDir);
         update();
@@ -49,7 +49,7 @@ private:
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 };
 
-class CAddBkgDlg : public CDialog<>
+class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
@@ -68,13 +68,15 @@ signals:
 private slots:
     void slot_founddir(void *pDir)
     {
-        m_addbkgView.addRootDir((CPath*)pDir);
+        m_addbkgView.addDir((CPath*)pDir);
     }
 
 private:
     void _relayout(int cx, int cy);
 
     bool _handleReturn();
+
+    void close();
 
 public:
     void init();

@@ -8,33 +8,16 @@
 class CListViewEx : public CListView
 {
 protected:
-    enum class E_RowStyle
-    {
-        IS_Normal
-        , IS_Underline
-        , IS_RightTip
-    };
-
-    struct tagRowContext
+    struct tagMediaContext : public tagRowContext
     {
         CMediaSet *pMediaSet = NULL;
         CMedia *pMedia = NULL;
 
         CPath *pPath = NULL;
 
-        E_RowStyle eStyle = E_RowStyle::IS_Normal;
+        tagMediaContext(){}
 
-        QPixmap *pixmap = NULL;
-
-        wstring strText;
-
-        wstring strRemark;
-
-        UINT uIconSize = 0;
-
-        tagRowContext(){}
-
-        tagRowContext(CMediaSet& MediaSet)
+        tagMediaContext(CMediaSet& MediaSet)
         {
             pMediaSet = &MediaSet;
 
@@ -42,7 +25,7 @@ protected:
             strText = MediaSet.m_strName;
         }
 
-        tagRowContext(CMedia& media)
+        tagMediaContext(CMedia& media)
         {
             pMedia = &media;
 
@@ -50,7 +33,7 @@ protected:
             strText = media.GetTitle();
         }
 
-        tagRowContext(CPath& path)
+        tagMediaContext(CPath& path)
         {
             pPath = &path;
 
@@ -82,8 +65,6 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
-    QPixmap m_pmRightTip;
-
 private:
     virtual void _onShowRoot() {}
     virtual void _onShowMediaSet(CMediaSet&) {}
@@ -92,12 +73,14 @@ private:
     UINT getRowCount() override;
     virtual UINT getRootCount() = 0;
 
-    virtual bool _genRootRowContext(const tagLVRow&, tagRowContext&) = 0;
-    virtual void _genRowContext(tagRowContext&) {}
+    virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
+    virtual void _genRowContext(tagMediaContext&) {}
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&) {}
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
+    virtual void _onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagMediaContext& context)
+    {
+        _paintRow(painter, rc, lvRow, context);
+    }
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
     virtual void _onRowClick(const tagLVRow&, CMedia&){}

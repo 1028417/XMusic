@@ -7,8 +7,7 @@
 
 #include <QEvent>
 
-template <class T=QDialog>
-class CDialog : public T
+class CDialog : public QDialog
 {
 public:
     explicit CDialog() {}
@@ -22,7 +21,7 @@ public:
         setBkgColor(180, 220, 255);
 
         this->setWindowFlags(Qt::FramelessWindowHint);
-        T::showFullScreen();
+        QDialog::showFullScreen();
         this->setWindowState(Qt::WindowFullScreen);
     }
 
@@ -68,7 +67,7 @@ protected:
             break;
         }
 
-        return T::event(ev);
+        return QDialog::event(ev);
     }
 
 private:

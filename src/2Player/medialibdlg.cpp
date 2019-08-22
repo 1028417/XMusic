@@ -286,7 +286,7 @@ UINT CMedialibView::getColumnCount()
     return 1;
 }
 
-bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagRowContext& context)
+bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
 {
     context.eStyle = E_RowStyle::IS_Normal;
 
@@ -353,7 +353,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_genRowContext(tagRowContext& context)
+void CMedialibView::_genRowContext(tagMediaContext& context)
 {
     if (context.pMediaSet)
     {
@@ -423,7 +423,7 @@ void CMedialibView::_genRowContext(tagRowContext& context)
     }
 }
 
-void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext&)
+void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagMediaContext&)
 {
     if (lvRow.bSelect)
     {

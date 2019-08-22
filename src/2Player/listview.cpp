@@ -41,6 +41,64 @@ void CListView::flashRow(UINT uRow, UINT uMSDelay)
     });
 }
 
+void CListView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext& context)
+{
+    UINT sz_icon = rc.height();
+    if (context.uIconSize > 0 && context.uIconSize < sz_icon)
+    {
+        sz_icon = context.uIconSize;
+    }
+    else
+    {
+        sz_icon = sz_icon *65/100;
+    }
+
+    int nMargin = (rc.height()-sz_icon)/2;
+
+    int x_icon = 0;
+    if (E_RowStyle::IS_Normal == context.eStyle)
+    {
+        x_icon = rc.center().x()-sz_icon;
+
+        rc.setLeft(x_icon + sz_icon + nMargin/2);
+    }
+    else
+    {
+        x_icon = rc.left() + nMargin;
+
+        rc.setRight(rc.right() - nMargin);
+    }
+
+    int y_icon = rc.center().y()-sz_icon/2;
+    QRect rcDst(x_icon, y_icon, sz_icon, sz_icon);
+    if (context.pixmap && !context.pixmap->isNull())
+    {
+        painter.drawPixmapEx(rcDst, *context.pixmap);
+    }
+
+    rc.setLeft(x_icon + sz_icon + nMargin);
+
+    if (context.eStyle != E_RowStyle::IS_Normal)
+    {
+        painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
+
+        if (E_RowStyle::IS_RightTip == context.eStyle)
+        {
+            int sz_righttip = sz_icon*30/100;
+            int x_righttip = rc.right()-sz_righttip;
+            int y_righttip = rc.center().y()-sz_righttip/2;
+
+            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
+
+            rc.setRight(x_righttip - nMargin);
+        }
+    }
+
+    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(context.strText)
+                            , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
+    painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
+}
+
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
     if (E_MouseEventType::MET_Press == type)

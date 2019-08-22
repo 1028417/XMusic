@@ -23,7 +23,7 @@ private:
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
 };
 
-class CBkgDlg : public CDialog<>
+class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:

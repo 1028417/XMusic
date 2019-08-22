@@ -31,9 +31,13 @@ public:
         , m_uColumnCount(uColumnCount)
     {
         setAttribute(Qt::WA_TranslucentBackground);
+
+        (void)m_pmRightTip.load(":/img/righttip.png");
     }
 
 private:
+    QPixmap m_pmRightTip;
+
     UINT m_uPageRowCount = 0;
     UINT m_uColumnCount = 1;
 
@@ -64,6 +68,29 @@ protected:
     {
         return m_uAutoScrollSeq > 0;
     }
+
+    enum class E_RowStyle
+    {
+        IS_Normal
+        , IS_Underline
+        , IS_RightTip
+    };
+    struct tagRowContext
+    {
+        E_RowStyle eStyle = E_RowStyle::IS_Normal;
+
+        QPixmap *pixmap = NULL;
+        UINT uIconSize = 0;
+
+        wstring strText;
+
+        wstring strRemark;
+    };
+    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
+
+    virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
+
+    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
 public:
     void setPageRowCount(UINT uPageRowCount)
@@ -116,11 +143,6 @@ public:
     void showRow(UINT uRow, bool bToCenter=false);
 
     void flashRow(UINT uRow, UINT uMSDelay=300);
-
-protected:
-    virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
-
-    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
 private:
     virtual UINT getRowCount() = 0;
