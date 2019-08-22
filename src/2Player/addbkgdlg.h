@@ -43,6 +43,50 @@ private:
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 };
 
+
+class CPathEx : public CPath
+{
+public:
+   CPathEx() {}
+
+private:
+   bool m_bScaning = false;
+
+   std::thread m_thread;
+
+public:
+   void startScan(const function<void(CPath& dir)>& cb)
+   {
+       if (m_thread.joinable())
+       {
+           return;
+       }
+
+       m_bScaning = true;
+
+       m_thread = thread([=](){
+           CPath::scan([&](CPath& dir, TD_PathList& paSubFile){
+               if (paSubFile)
+               {
+                   cb(dir);
+               }
+
+               return m_bScaning;
+           });
+       });
+   }
+
+   void stopScan()
+   {
+       m_bScaning = false;
+
+       if (m_thread.joinable())
+       {
+           m_thread.join();
+       }
+   }
+};
+
 class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
@@ -52,11 +96,8 @@ public:
 private:
     CAddBkgView m_addbkgView;
 
-    CPath m_sdcard;
+    CPathEx m_sdcard;
     TD_PathList m_paDirs;
-
-    std::thread m_thread;
-    bool m_bCancel = false;
 
 signals:
     void signal_founddir(void* pDir);

@@ -38,36 +38,17 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
-    m_bCancel = false;
-    m_thread = std::thread([&](){
-        m_sdcard.SetDir(L"c:/xmusic");
-
-        m_sdcard.scan([&](CPath& dir, TD_PathList& paSubFile) {
-            if (paSubFile)
-            {
-                emit signal_founddir(&dir);
-            }
-
-            if (m_bCancel)
-            {
-                return false;
-            }
-
-            return true;
-        });
-
+    m_sdcard.SetDir(L"c:/xmusic");
+    m_sdcard.startScan([&](CPath& dir) {
+        emit signal_founddir(&dir);
     });
 }
 
 void CAddBkgDlg::close()
 {
-    if (m_thread.joinable())
-    {
-        m_bCancel = true;
-        m_thread.join();
-    }
-
     m_paDirs.clear();
+
+    m_sdcard.stopScan();
     m_sdcard.Clear();
 
     CDialog::close();
