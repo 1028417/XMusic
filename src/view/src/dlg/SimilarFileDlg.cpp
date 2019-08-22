@@ -90,7 +90,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 	m_vecRowFlag.clear();
 
 	auto fnInsertItem = [&](auto& mediaRes, auto group, auto idx) {
-		m_wndList.InsertItemEx(uItem++, { mediaRes.GetParentDir(), mediaRes.GetName(), mediaRes.GetFileSizeString(false) }, L" ");
+		m_wndList.InsertItemEx(uItem++, { mediaRes.parentPath(), mediaRes.GetName(), mediaRes.GetFileSizeString(false) }, L" ");
 		m_arrSimilarFileInfo.add({ group, idx });
 
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);

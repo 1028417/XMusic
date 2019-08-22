@@ -71,9 +71,9 @@ void CListViewEx::showMedia(CMedia& media)
 
 void CListViewEx::showPath(CPath& path)
 {
-    if (!path.IsDir())
+    if (!path.fileInfo().bDir)
     {
-        auto pParent = path.parent();
+        auto pParent = path.fileInfo().pParent;
         if (pParent)
         {
             showPath(*pParent);
@@ -165,7 +165,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     else if (m_pPath)
     {
         m_paSubPath.get(uRow, [&](CPath& subPath) {
-            if (subPath.IsDir())
+            if (subPath.fileInfo().bDir)
             {
                 _saveScrollRecord();
                 showPath(subPath);
@@ -241,7 +241,7 @@ void CListViewEx::upward()
     }
     else if (m_pPath)
     {
-        auto pParent = m_pPath->parent();
+        auto pParent = m_pPath->fileInfo().pParent;
         if (pParent)
         {
             showPath(*pParent);

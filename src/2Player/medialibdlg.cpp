@@ -168,7 +168,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
 void CMedialibView::_onShowPath(CPath& path)
 {
-    if (path.IsDir())
+    if (path.fileInfo().bDir)
     {
         WString strTitle;
         _getTitle((CMediaRes&)path, strTitle);
@@ -188,9 +188,9 @@ void CMedialibView::showFile(const wstring& strPath)
     }
 
 #if __android
-    if (fsutil::CheckSubPath(m_sdcard.GetPath(), strPath))
+    if (fsutil::CheckSubPath(m_sdcard.GetAbsPath(), strPath))
     {
-        pMediaRes = m_sdcard.FindSubPath(strPath.substr(m_sdcard.GetPath().size()), false);
+        pMediaRes = m_sdcard.FindSubPath(strPath.substr(m_sdcard.GetAbsPath().size()), false);
         if (pMediaRes)
         {
             showPath(*pMediaRes);
@@ -388,13 +388,14 @@ void CMedialibView::_genRowContext(tagMediaContext& context)
     }
     else if (context.pPath)
     {
-        if (context.pPath->IsDir())
+        CMediaRes& MediaRes = (CMediaRes&)*context.pPath;
+        if (MediaRes.IsDir())
         {
             context.pixmap = &m_pmDir;
 
-            if (context.pPath->parent() == NULL)
+            if (MediaRes.parent() == NULL)
             {
-                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pPath);
+                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
                 if (pAttachDir)
                 {
                     context.pixmap = &m_pmDirLink;
@@ -418,7 +419,7 @@ void CMedialibView::_genRowContext(tagMediaContext& context)
         {
            context.pixmap = &m_pmFile;
 
-           context.strText = ((CMediaRes*)context.pPath)->GetTitle();
+           context.strText = MediaRes.GetTitle();
         }
     }
 }
@@ -455,10 +456,7 @@ void CMedialibView::upward()
         return;
     }
 
-    // if (m_pMediaRes && m_pMediaRes->parent() == NULL)
-    // {    if (&m_RootMediaRes != m_pMediaRes || &m_sdcard = m_pMediaRes)
-
-    if (dynamic_cast<CAttachDir*>(m_pPath) != NULL)
+    if (m_pPath && NULL == m_pPath->fileInfo().pParent && dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
         showPath(m_RootMediaRes);
         return;

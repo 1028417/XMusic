@@ -40,7 +40,7 @@ void CAddBkgDlg::show()
 
     m_bCancel = false;
     m_thread = std::thread([&](){
-        m_sdcard.SetDir(L"c:/");
+        m_sdcard.SetDir(L"c:/xmusic");
 
         m_sdcard.scan([&](CPath& dir, TD_PathList& paSubFile) {
             if (paSubFile)
