@@ -5,7 +5,8 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg() : m_addbkgView(*this)
+CAddBkgDlg::CAddBkgDlg()
+    : m_addbkgView(*this, m_paDirs)
 {
 }
 
@@ -31,33 +32,43 @@ void CAddBkgDlg::init()
     });
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
-
-    m_sdcard.SetDir(L"c:/");
 }
 
 void CAddBkgDlg::show()
 {
+    CDialog::show();
+
+    m_bCancel = false;
     m_thread = std::thread([&](){
+        m_sdcard.SetDir(L"c:/");
+
         m_sdcard.scan([&](CPath& dir, TD_PathList& paSubFile) {
             if (paSubFile)
             {
                 emit signal_founddir(&dir);
             }
 
+            if (m_bCancel)
+            {
+                return false;
+            }
+
             return true;
         });
 
     });
-
-    CDialog::show();
 }
 
 void CAddBkgDlg::close()
 {
     if (m_thread.joinable())
     {
+        m_bCancel = true;
         m_thread.join();
     }
+
+    m_paDirs.clear();
+    m_sdcard.Clear();
 
     CDialog::close();
 }
@@ -91,17 +102,20 @@ bool CAddBkgDlg::_handleReturn()
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
-    : CListView(&addbkgDlg)
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs)
+    : CListView(&addbkgDlg, 1, 10)
     , m_addbkgDlg(addbkgDlg)
+    , m_paDirs(paDirs)
 {
 }
+
+#define __PicColCount 4
 
 UINT CAddBkgView::getRowCount()
 {
     if (m_pDir)
     {
-        return m_pDir->files().size();
+        return m_pDir->files().size()/__PicColCount;
     }
 
     return m_paDirs.size();
@@ -111,7 +125,7 @@ UINT CAddBkgView::getColumnCount()
 {
     if (m_pDir)
     {
-
+        return __PicColCount;
     }
 
     return 1;
@@ -120,8 +134,7 @@ UINT CAddBkgView::getColumnCount()
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     m_paDirs.get(lvRow.uRow, [&](CPath& dir){
-        tagRowContext context;
-        context.strText = dir.GetName();
+        tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
         _paintRow(painter, rc, lvRow, context);
     });
 }

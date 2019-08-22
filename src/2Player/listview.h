@@ -71,19 +71,26 @@ protected:
 
     enum class E_RowStyle
     {
-        IS_Normal
+        IS_None
         , IS_Underline
         , IS_RightTip
     };
     struct tagRowContext
     {
-        E_RowStyle eStyle = E_RowStyle::IS_Normal;
+        tagRowContext(){}
+
+        tagRowContext(E_RowStyle t_eStyle, const wstring& t_strText)
+            : eStyle(t_eStyle)
+            , strText(t_strText)
+        {
+        }
+
+        E_RowStyle eStyle = E_RowStyle::IS_None;
 
         QPixmap *pixmap = NULL;
         UINT uIconSize = 0;
 
         wstring strText;
-
         wstring strRemark;
     };
     void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);

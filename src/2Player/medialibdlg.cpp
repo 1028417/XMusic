@@ -288,7 +288,7 @@ UINT CMedialibView::getColumnCount()
 
 bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
 {
-    context.eStyle = E_RowStyle::IS_Normal;
+    context.eStyle = E_RowStyle::IS_None;
 
     bool bHScreen = isHLayout();
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))

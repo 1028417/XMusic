@@ -152,7 +152,6 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         {
             m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
                 _saveScrollRecord();
-
                 showMediaSet(mediaSet);
             });
         }
@@ -169,7 +168,6 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             if (subPath.IsDir())
             {
                 _saveScrollRecord();
-
                 showPath(subPath);
             }
             else
@@ -180,17 +178,17 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
     else
     {
-        _saveScrollRecord();
-
         tagMediaContext context;
         if (_genRootRowContext(lvRow, context))
         {
             if (context.pMediaSet)
             {
+                _saveScrollRecord();
                 showMediaSet(*context.pMediaSet);
             }
             else if (context.pPath)
             {
+                _saveScrollRecord();
                 showPath(*context.pPath);
             }
         }

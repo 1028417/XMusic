@@ -56,7 +56,7 @@ void CListView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, c
     int nMargin = (rc.height()-sz_icon)/2;
 
     int x_icon = 0;
-    if (E_RowStyle::IS_Normal == context.eStyle)
+    if (E_RowStyle::IS_None == context.eStyle)
     {
         x_icon = rc.center().x()-sz_icon;
 
@@ -78,7 +78,7 @@ void CListView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, c
 
     rc.setLeft(x_icon + sz_icon + nMargin);
 
-    if (context.eStyle != E_RowStyle::IS_Normal)
+    if (context.eStyle != E_RowStyle::IS_None)
     {
         painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
 

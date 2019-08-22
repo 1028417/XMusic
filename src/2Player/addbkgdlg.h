@@ -10,22 +10,16 @@ class CAddBkgView : public CListView
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
 
-    TD_PathList m_paDirs;
+    const TD_PathList& m_paDirs;
 
     CPath *m_pDir = NULL;
 
 public:
-    void addDir(void *pDir)
-    {
-        m_paDirs.add((CPath*)pDir);
-        update();
-    }
-
     bool isInRoot() const
     {
         return NULL == m_pDir;
@@ -59,8 +53,10 @@ private:
     CAddBkgView m_addbkgView;
 
     CPath m_sdcard;
+    TD_PathList m_paDirs;
 
     std::thread m_thread;
+    bool m_bCancel = false;
 
 signals:
     void signal_founddir(void* pDir);
@@ -68,7 +64,8 @@ signals:
 private slots:
     void slot_founddir(void *pDir)
     {
-        m_addbkgView.addDir((CPath*)pDir);
+        m_paDirs.add((CPath*)pDir);
+        m_addbkgView.update();
     }
 
 private:

@@ -17,35 +17,20 @@ protected:
 
         tagMediaContext(){}
 
-        tagMediaContext(CMediaSet& MediaSet)
+        tagMediaContext(CMediaSet& MediaSet) : tagRowContext(E_RowStyle::IS_RightTip, MediaSet.m_strName)
+            , pMediaSet(&MediaSet)
         {
-            pMediaSet = &MediaSet;
-
-            eStyle = E_RowStyle::IS_RightTip;
-            strText = MediaSet.m_strName;
         }
 
-        tagMediaContext(CMedia& media)
+        tagMediaContext(CMedia& media) : tagRowContext(E_RowStyle::IS_Underline, media.GetTitle())
+            , pMedia(&media)
         {
-            pMedia = &media;
-
-            eStyle = E_RowStyle::IS_Underline;
-            strText = media.GetTitle();
         }
 
-        tagMediaContext(CPath& path)
+        tagMediaContext(CPath& path) :
+            tagRowContext(path.IsDir() ? E_RowStyle::IS_RightTip : E_RowStyle::IS_Underline, path.GetName())
+            , pPath(&path)
         {
-            pPath = &path;
-
-            if (path.IsDir())
-            {
-                eStyle = E_RowStyle::IS_RightTip;
-            }
-            else
-            {
-                eStyle = E_RowStyle::IS_Underline;
-            }
-            strText = path.GetName();
         }
     };
 
