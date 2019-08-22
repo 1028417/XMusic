@@ -38,7 +38,11 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
+#if __android
+    m_sdcard.SetDir(L"/sdcard");
+#else
     m_sdcard.SetDir(L"c:/xmusic");
+#endif
     m_sdcard.startScan([&](CPath& dir) {
         emit signal_founddir(&dir);
     });
@@ -96,7 +100,7 @@ UINT CAddBkgView::getRowCount()
 {
     if (m_pDir)
     {
-        return m_pDir->files().size()/__PicColCount;
+        return MAX(1, m_pDir->files().size()/__PicColCount);
     }
 
     return m_paDirs.size();
@@ -114,10 +118,21 @@ UINT CAddBkgView::getColumnCount()
 
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-    m_paDirs.get(lvRow.uRow, [&](CPath& dir){
-        tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
-        _paintRow(painter, rc, lvRow, context);
-    });
+    if (m_pDir)
+    {
+        UINT uIdx = lvRow.uRow;
+
+        m_pDir->files().get(uIdx, [&](CPath& subFile){
+
+        });
+    }
+    else
+    {
+        m_paDirs.get(lvRow.uRow, [&](CPath& dir){
+            tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
+            _paintRow(painter, rc, lvRow, context);
+        });
+    }
 }
 
 
