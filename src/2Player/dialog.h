@@ -10,15 +10,26 @@
 class CDialog : public QDialog
 {
 public:
-    explicit CDialog() {}
+    CDialog()
+        : m_crBkg(180, 220, 255)
+    {
+    }
 
 private:
     QColor m_crBkg;
 
+private:
+    void _setBkgColor()
+    {
+        QPalette pe = this->palette();
+        pe.setColor(QPalette::Background, m_crBkg);
+        this->setPalette(pe);
+    }
+
 public:
     void show()
     {
-        setBkgColor(180, 220, 255);
+        _setBkgColor();
 
         this->setWindowFlags(Qt::FramelessWindowHint);
         QDialog::showFullScreen();
@@ -29,9 +40,7 @@ public:
     {
         m_crBkg.setRgb(r,g,b);
 
-        QPalette pe = this->palette();
-        pe.setColor(QPalette::Background, m_crBkg);
-        this->setPalette(pe);
+        _setBkgColor();
     }
 
     const QColor& bkgColor() const

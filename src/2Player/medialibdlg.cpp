@@ -23,8 +23,19 @@ void CMedialibDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
-    m_MedialibView.setTextColor(crText);
+    cauto& crBkg = bkgColor();
+    cauto& crFlashText = CPainter::mixColor(crText, crBkg, 85);
+    m_MedialibView.setTextColor(crText, crFlashText);
+
+    QColor crSelectedBkg = crBkg;
+    crSelectedBkg.setRed(crBkg.red()-10);
+    crSelectedBkg.setGreen(crBkg.green()-5);
+    m_MedialibView.setSelectedBkgColor(crSelectedBkg);
+
+#if __android
     m_MedialibView.setFont(0.5);
+#endif
+
     m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](){
@@ -241,15 +252,6 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
     strTitle << __wcFSSlant << MediaRes.GetName();
 }
 
-UINT CMedialibView::getRootCount()
-{
-#if __android
-    return isHLayout()?5:9;
-#else
-    return isHLayout()?5:7;
-#endif
-}
-
 UINT CMedialibView::getPageRowCount()
 {
     if (isInRoot())
@@ -284,6 +286,15 @@ UINT CMedialibView::getColumnCount()
     }
 
     return 1;
+}
+
+UINT CMedialibView::getRootCount()
+{
+#if __android
+    return isHLayout()?5:9;
+#else
+    return isHLayout()?5:7;
+#endif
 }
 
 bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
@@ -353,7 +364,7 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 }
 
-void CMedialibView::_genRowContext(tagMediaContext& context)
+void CMedialibView::_genMediaContext(tagMediaContext& context)
 {
     if (context.pMediaSet)
     {
@@ -421,22 +432,6 @@ void CMedialibView::_genRowContext(tagMediaContext& context)
 
            context.strText = MediaRes.GetTitle();
         }
-    }
-}
-
-void CMedialibView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagMediaContext&)
-{
-    if (lvRow.bSelect)
-    {
-        QColor crBkg = m_medialibDlg.bkgColor();
-        crBkg.setRed(crBkg.red()-10);
-        crBkg.setGreen(crBkg.green()-5);
-        painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, crBkg);
-    }
-
-    if (lvRow.bFlash)
-    {
-        painter.setPen(painter.mixColor(m_crText, m_medialibDlg.bkgColor(), 85));
     }
 }
 

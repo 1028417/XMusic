@@ -111,7 +111,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         {
             m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet){
                 tagMediaContext context(mediaSet);
-                _genRowContext(context);
+                _genMediaContext(context);
                 _paintRow(painter, rc, lvRow, context);
             });
         }
@@ -119,7 +119,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         {
             m_lstSubMedias.get(lvRow.uRow, [&](CMedia& media) {
                 tagMediaContext context(media);
-                _genRowContext(context);
+                _genMediaContext(context);
                 _paintRow(painter, rc, lvRow, context);
             });
         }
@@ -128,7 +128,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     {
         m_paSubPath.get(lvRow.uRow, [&](CPath& subPath) {
             tagMediaContext context(subPath);
-            _genRowContext(context);
+            _genMediaContext(context);
             _paintRow(painter, rc, lvRow, context);
         });
     }
@@ -256,5 +256,5 @@ void CListViewEx::upward()
         return;
     }
 
-    update(_scrollRecord());
+    scroll(_scrollRecord());
 }

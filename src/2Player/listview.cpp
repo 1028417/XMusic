@@ -41,8 +41,83 @@ void CListView::flashRow(UINT uRow, UINT uMSDelay)
     });
 }
 
+void CListView::_onPaint(CPainter& painter, const QRect&)
+{
+    int cx = width();
+    int cy = height();
+
+    UINT uRowCount = getRowCount();
+
+    UINT uPageRowCount = getPageRowCount();
+    if (0 == uPageRowCount)
+    {
+        uPageRowCount = MAX(1, uRowCount);
+    }
+
+    m_uRowHeight = cy/uPageRowCount;
+
+    if (uRowCount > uPageRowCount)
+    {
+        m_uMaxScrollPos = uRowCount - uPageRowCount;
+    }
+    else
+    {
+        m_uMaxScrollPos = 0;
+    }
+
+    m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
+
+    UINT uRow = m_fScrollPos;
+    int y = (-m_fScrollPos+uRow)*m_uRowHeight;
+
+    UINT uColumnCount = getColumnCount();
+    if (0 == uColumnCount)
+    {
+        uColumnCount = 1;
+    }
+    UINT cx_col = cx / uColumnCount;
+
+    for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
+    {
+        painter.setFont(this->font());
+        painter.setPen(m_crText);
+
+        tagLVRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
+        {
+            QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);
+            _onPaintRow(painter, rc, lvRow);
+        }
+
+        y += m_uRowHeight;
+        if (y >= cy)
+        {
+            break;
+        }
+    }
+}
+
+void CListView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+{
+    tagRowContext context;
+    if (_genRowContext(context))
+    {
+        _paintRow(painter, rc, lvRow, context);
+    }
+}
+
 void CListView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext& context)
 {
+    if (lvRow.bSelect)
+    {
+        painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, m_crSelectedBkg);
+    }
+
+    if (lvRow.bFlash)
+    {
+        painter.setPen(m_crFlashText);
+    }
+
     UINT sz_icon = rc.height();
     if (context.uIconSize > 0 && context.uIconSize < sz_icon)
     {
@@ -142,7 +217,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
         ulong dt = te.dt();
-        if (0 == dt || dt > 600)
+        if (0 == dt || dt > 500)
         {
             return;
         }
@@ -165,7 +240,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         _onAutoScrollBegin();
 
         m_uAutoScrollSeq = te.timestamp();
-        if (dt < 200)
+        if (dt < 100)
         {
             _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 100, 3000);
         }
@@ -227,61 +302,4 @@ void CListView::_autoScroll(ulong uSeq, int dy, ulong dt, ulong total)
 
         _autoScroll(uSeq, dy, dt, total-dt);
     });
-}
-
-void CListView::_onPaint(CPainter& painter, const QRect&)
-{
-    int cx = width();
-    int cy = height();
-
-    UINT uRowCount = getRowCount();
-
-    UINT uPageRowCount = getPageRowCount();
-    if (0 == uPageRowCount)
-    {
-        uPageRowCount = MAX(1, uRowCount);
-    }
-
-    m_uRowHeight = cy/uPageRowCount;
-
-    if (uRowCount > uPageRowCount)
-    {
-        m_uMaxScrollPos = uRowCount - uPageRowCount;
-    }
-    else
-    {
-        m_uMaxScrollPos = 0;
-    }
-
-    m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
-
-    UINT uRow = m_fScrollPos;
-    int y = (-m_fScrollPos+uRow)*m_uRowHeight;
-
-    UINT uColumnCount = getColumnCount();
-    if (0 == uColumnCount)
-    {
-        uColumnCount = 1;
-    }
-    UINT cx_col = cx / uColumnCount;
-
-    for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
-    {
-        painter.setFont(this->font());
-        painter.setPen(m_crText);
-
-        tagLVRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
-        lvRow.uDislpayRow = uIdx;
-        for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
-        {
-            QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);
-            _onPaintRow(painter, rc, lvRow);
-        }
-
-        y += m_uRowHeight;
-        if (y >= cy)
-        {
-            break;
-        }
-    }
 }

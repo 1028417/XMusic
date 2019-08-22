@@ -3,25 +3,6 @@
 
 #include "widget.h"
 
-struct tagLVRow
-{
-    tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
-        : uRow(t_uRow)
-        , uCol(t_uCol)
-        , bSelect(t_bSelect)
-        , bFlash(t_bFlash)
-    {
-    }
-
-    UINT uRow;
-    UINT uCol;
-
-    UINT uDislpayRow = 0;
-
-    bool bSelect;
-    bool bFlash;
-};
-
 class CListView : public CWidget<QWidget>
 {
 public:
@@ -29,6 +10,7 @@ public:
         : CWidget(parent)
         , m_uPageRowCount(uPageRowCount)
         , m_uColumnCount(uColumnCount)
+        , m_crSelectedBkg(0,0,0,5)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 
@@ -53,7 +35,11 @@ private:
 
     ulong m_uAutoScrollSeq = 0;
 
-protected:    
+    QColor m_crFlashText;
+
+    QColor m_crSelectedBkg;
+
+private:
     virtual UINT getPageRowCount()
     {
         return m_uPageRowCount;
@@ -64,10 +50,28 @@ protected:
         return m_uColumnCount;
     }
 
+protected:
     bool isAutoScrolling() const
     {
         return m_uAutoScrollSeq > 0;
     }
+
+    struct tagLVRow
+    {
+        tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+            : uRow(t_uRow)
+            , uCol(t_uCol)
+            , bSelect(t_bSelect)
+            , bFlash(t_bFlash)
+        {
+        }
+
+        UINT uRow;
+        UINT uCol;
+
+        bool bSelect;
+        bool bFlash;
+    };
 
     enum class E_RowStyle
     {
@@ -93,6 +97,7 @@ protected:
         wstring strText;
         wstring strRemark;
     };
+
     void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
@@ -110,17 +115,31 @@ public:
         return m_fScrollPos;
     }
 
-    void update()
-    {
-        CWidget<>::update();
-    }
-
-    void update(float fScrollPos)
+    void scroll(float fScrollPos)
     {
         m_fScrollPos = fScrollPos;
 
-        CWidget<>::update();
+        update();
     }
+
+    void showRow(UINT uRow, bool bToCenter=false);
+
+    void selectRow(UINT uRow, int nCol = -1)
+    {
+        m_nSelectRow = uRow;
+        m_nSelectCol = nCol;
+
+        update();
+    }
+
+    void dselectRow()
+    {
+        m_nSelectRow = -1;
+
+        update();
+    }
+
+    void flashRow(UINT uRow, UINT uMSDelay=300);
 
     void reset()
     {
@@ -132,30 +151,37 @@ public:
         m_uAutoScrollSeq = 0;
     }
 
-    void selectRow(UINT uRow, int nCol = -1)
+    void setTextColor(const QColor& crText)
     {
-        m_nSelectRow = uRow;
-        m_nSelectCol = nCol;
+        m_crFlashText = crText;
+        m_crFlashText.setAlpha(crText.alpha()/2);
 
-        CWidget<>::update();
+        CWidget<>::setTextColor(crText);
     }
 
-    void dselectRow()
+    void setTextColor(int r, int g, int b, int a=255)
     {
-        m_nSelectRow = -1;
-
-        CWidget<>::update();
+        setTextColor(QColor(r,g,b,a));
     }
 
-    void showRow(UINT uRow, bool bToCenter=false);
+    void setTextColor(const QColor& crText, const QColor& crFlashText)
+    {
+        m_crFlashText = crFlashText;
 
-    void flashRow(UINT uRow, UINT uMSDelay=300);
+        CWidget<>::setTextColor(crText);
+    }
+
+    void setSelectedBkgColor(const QColor& crSelectedBkg)
+    {
+        m_crSelectedBkg = crSelectedBkg;
+    }
 
 private:
     virtual UINT getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&) = 0;
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&);
+    virtual bool _genRowContext(tagRowContext&) {return false;}
 
     virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
     virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}

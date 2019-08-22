@@ -19,7 +19,9 @@ void CAddBkgDlg::init()
     ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
 
     m_addbkgView.setTextColor(crText);
+#if __android
     m_addbkgView.setFont(0.5);
+#endif
 
     ui.btnUpward->setVisible(false);
 

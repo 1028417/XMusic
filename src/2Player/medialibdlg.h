@@ -57,15 +57,13 @@ private:
 
     UINT getRootCount() override;
 
-    void _getTitle(CMediaSet&, WString& strTitle);
-    void _getTitle(CMediaRes&, WString& strTitle);
-
     bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
-    void _genRowContext(tagMediaContext&) override;
-
-    void _onPaintRow(CPainter&, QRect&, const tagLVRow&, const tagMediaContext&) override;
+    void _genMediaContext(tagMediaContext&) override;
 
     QPixmap& _getSingerPixmap(CSinger&);
+
+    void _getTitle(CMediaSet&, WString& strTitle);
+    void _getTitle(CMediaRes&, WString& strTitle);
 
     void _onMediaClick(const tagLVRow&, IMedia&);
 

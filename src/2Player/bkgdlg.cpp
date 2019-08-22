@@ -22,7 +22,7 @@ UINT CBkgView::getRowCount()
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-    if (0 == lvRow.uDislpayRow)
+    if (0 == lvRow.uRow)
     {
         rc.setBottom(rc.bottom()-__margin/2);
     }
@@ -85,7 +85,7 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         {
             if (m_bkgDlg.addBkg())
             {
-                update(getRowCount());
+                scroll(getRowCount());
             }
         }
     }

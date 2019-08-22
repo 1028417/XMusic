@@ -66,7 +66,7 @@ public:
     }
 
 public:
-    QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
+    static QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     {
         int r = crSrc.red();
         int g = crSrc.green();
