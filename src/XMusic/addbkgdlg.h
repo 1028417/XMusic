@@ -36,9 +36,11 @@ public:
     }
 
 private:
-    UINT getRowCount() override;
-
     UINT getColumnCount() override;
+
+    UINT getPageRowCount() override;
+
+    UINT getRowCount() override;
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 };

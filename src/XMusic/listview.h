@@ -5,6 +5,32 @@
 
 class CListView : public CWidget<QWidget>
 {
+protected:
+    enum class E_RowStyle
+    {
+        IS_None
+        , IS_Underline
+        , IS_RightTip
+    };
+    struct tagRowContext
+    {
+        tagRowContext(){}
+
+        tagRowContext(E_RowStyle t_eStyle, const wstring& t_strText)
+            : eStyle(t_eStyle)
+            , strText(t_strText)
+        {
+        }
+
+        E_RowStyle eStyle = E_RowStyle::IS_None;
+
+        QPixmap *pixmap = NULL;
+        UINT uIconSize = 0;
+
+        wstring strText;
+        wstring strRemark;
+    };
+
 public:
     CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
         : CWidget(parent)
@@ -40,21 +66,19 @@ private:
     QColor m_crSelectedBkg;
 
 private:
-    virtual UINT getPageRowCount()
-    {
-        return m_uPageRowCount;
-    }
-
     virtual UINT getColumnCount()
     {
         return m_uColumnCount;
     }
 
-protected:
-    bool isAutoScrolling() const
+    virtual UINT getPageRowCount()
     {
-        return m_uAutoScrollSeq > 0;
+        return m_uPageRowCount;
     }
+
+    virtual UINT getRowCount() = 0;
+
+    void _onPaint(CPainter& painter, const QRect& rc) override;
 
     struct tagLVRow
     {
@@ -72,31 +96,24 @@ protected:
         bool bSelect;
         bool bFlash;
     };
+    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&);
 
-    enum class E_RowStyle
+    virtual bool _genRowContext(tagRowContext&) {return false;}
+
+    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
+    virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}
+
+    bool _scroll(int dy);
+    void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);
+
+    virtual void _onAutoScrollBegin() {}
+    virtual void _onAutoScrollEnd() {}
+
+protected:
+    bool isAutoScrolling() const
     {
-        IS_None
-        , IS_Underline
-        , IS_RightTip
-    };
-    struct tagRowContext
-    {
-        tagRowContext(){}
-
-        tagRowContext(E_RowStyle t_eStyle, const wstring& t_strText)
-            : eStyle(t_eStyle)
-            , strText(t_strText)
-        {
-        }
-
-        E_RowStyle eStyle = E_RowStyle::IS_None;
-
-        QPixmap *pixmap = NULL;
-        UINT uIconSize = 0;
-
-        wstring strText;
-        wstring strRemark;
-    };
+        return m_uAutoScrollSeq > 0;
+    }
 
     void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
 
@@ -175,20 +192,4 @@ public:
     {
         m_crSelectedBkg = crSelectedBkg;
     }
-
-private:
-    virtual UINT getRowCount() = 0;
-
-    void _onPaint(CPainter& painter, const QRect& rc) override;
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&);
-    virtual bool _genRowContext(tagRowContext&) {return false;}
-
-    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
-    virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}
-
-    bool _scroll(int dy);
-    void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);
-
-    virtual void _onAutoScrollBegin() {}
-    virtual void _onAutoScrollEnd() {}
 };

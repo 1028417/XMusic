@@ -85,23 +85,13 @@ bool CAddBkgDlg::_handleReturn()
 
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs)
-    : CListView(&addbkgDlg, 1, 10)
+    : CListView(&addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
     , m_paDirs(paDirs)
 {
 }
 
 #define __PicColCount 4
-
-UINT CAddBkgView::getRowCount()
-{
-    if (m_pDir)
-    {
-        return MAX(1, m_pDir->files().size()/__PicColCount);
-    }
-
-    return m_paDirs.size();
-}
 
 UINT CAddBkgView::getColumnCount()
 {
@@ -111,6 +101,21 @@ UINT CAddBkgView::getColumnCount()
     }
 
     return 1;
+}
+
+UINT CAddBkgView::getPageRowCount()
+{
+    return 8;
+}
+
+UINT CAddBkgView::getRowCount()
+{
+    if (m_pDir)
+    {
+        return MAX(1, m_pDir->files().size()/__PicColCount);
+    }
+
+    return m_paDirs.size();
 }
 
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
