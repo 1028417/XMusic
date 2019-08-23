@@ -36,6 +36,8 @@ public:
     }
 
 private:
+    inline UINT _picLayoutCount() const;
+
     UINT getColumnCount() override;
 
     UINT getPageRowCount() override;

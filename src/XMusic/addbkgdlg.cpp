@@ -91,13 +91,24 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs)
 {
 }
 
-#define __PicColCount 4
+UINT CAddBkgView::_picLayoutCount() const
+{
+    if (m_pDir)
+    {
+        if (m_pDir->files().size() <= 4)
+        {
+            return 2;
+        }
+    }
+
+    return 3;
+}
 
 UINT CAddBkgView::getColumnCount()
 {
     if (m_pDir)
     {
-        return __PicColCount;
+        return _picLayoutCount();
     }
 
     return 1;
@@ -105,6 +116,11 @@ UINT CAddBkgView::getColumnCount()
 
 UINT CAddBkgView::getPageRowCount()
 {
+    if (m_pDir)
+    {
+        return _picLayoutCount();
+    }
+
     UINT uRet = 8;
     int cy = m_addbkgDlg.height();
     if (cy > 2160)
@@ -120,13 +136,14 @@ UINT CAddBkgView::getPageRowCount()
     {
         uRet = round((float)uRet*m_addbkgDlg.height()/1800);
     }
+    return uRet;
 }
 
 UINT CAddBkgView::getRowCount()
 {
     if (m_pDir)
     {
-        return MAX(1, m_pDir->files().size()/__PicColCount);
+        return (UINT)ceil(m_pDir->files().size()/_picLayoutCount());
     }
 
     return m_paDirs.size();
@@ -136,7 +153,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
 {
     if (m_pDir)
     {
-        UINT uIdx = lvRow.uRow;
+        UINT uIdx = lvRow.uRow * _picLayoutCount() + lvRow.uCol;
 
         m_pDir->files().get(uIdx, [&](CPath& subFile){
 
