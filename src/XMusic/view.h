@@ -2,7 +2,7 @@
 
 #include "ViewDef.h"
 #include "model.h"
-#include "../PlayerApp/controller.h"
+#include "../XMusicHost/controller.h"
 
 extern ITxtWriter& g_logger;
 

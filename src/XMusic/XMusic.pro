@@ -23,7 +23,7 @@ android: MOBILITY =
 
 SOURCES +=\
     mainwindow.cpp \
-    ../PlayerApp/controller.cpp \
+    ../XMusicHost/controller.cpp \
     main.cpp \
     view.cpp \
     PlayingList.cpp \
@@ -35,7 +35,7 @@ SOURCES +=\
     ListViewEx.cpp
 
 HEADERS  += mainwindow.h \
-    ../PlayerApp/controller.h \
+    ../XMusicHost/controller.h \
     view.h \
     label.h \
     PlayingList.h \
