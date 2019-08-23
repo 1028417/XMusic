@@ -130,6 +130,8 @@ using namespace NS_SSTL;
 
 #include "SQLiteDB.h"
 
+#include "mtutil.h"
+
 #if !__android
 #include "winfsutil.h"
 
@@ -139,8 +141,6 @@ using namespace NS_SSTL;
 
 #include "ProFile.h"
 #endif
-
-#include "mtutil.h"
 
 #undef min
 #undef max
