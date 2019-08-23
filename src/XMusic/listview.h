@@ -6,6 +6,23 @@
 class CListView : public CWidget<QWidget>
 {
 protected:
+    struct tagLVRow
+    {
+        tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+            : uRow(t_uRow)
+            , uCol(t_uCol)
+            , bSelect(t_bSelect)
+            , bFlash(t_bFlash)
+        {
+        }
+
+        UINT uRow;
+        UINT uCol;
+
+        bool bSelect;
+        bool bFlash;
+    };
+
     enum class E_RowStyle
     {
         IS_None
@@ -80,22 +97,6 @@ private:
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
 
-    struct tagLVRow
-    {
-        tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
-            : uRow(t_uRow)
-            , uCol(t_uCol)
-            , bSelect(t_bSelect)
-            , bFlash(t_bFlash)
-        {
-        }
-
-        UINT uRow;
-        UINT uCol;
-
-        bool bSelect;
-        bool bFlash;
-    };
     virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&);
 
     virtual bool _genRowContext(tagRowContext&) {return false;}

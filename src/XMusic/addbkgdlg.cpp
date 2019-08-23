@@ -105,7 +105,21 @@ UINT CAddBkgView::getColumnCount()
 
 UINT CAddBkgView::getPageRowCount()
 {
-    return 8;
+    UINT uRet = 8;
+    int cy = m_addbkgDlg.height();
+    if (cy > 2160)
+    {
+       uRet++;
+
+        if (cy > 2340)
+        {
+           uRet++;
+        }
+    }
+    else if (cy < 1800)
+    {
+        uRet = round((float)uRet*m_addbkgDlg.height()/1800);
+    }
 }
 
 UINT CAddBkgView::getRowCount()
