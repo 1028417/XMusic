@@ -35,6 +35,28 @@ extern ITxtWriter& g_logger;
 
 #include "MediaMixer.h"
 
+class XMediaLib : public CMediaLib, public CMediaSet
+{
+public:
+	XMediaLib(IMediaObserver& MediaObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)
+		: CMediaLib(MediaObserver)
+		, CMediaSet(L"曲库")
+		, m_PlaylistMgr(PlaylistMgr)
+		, m_SingerMgr(SingerMgr)
+	{
+	}
+
+private:
+	CPlaylistMgr& m_PlaylistMgr;
+	CSingerMgr& m_SingerMgr;
+
+	virtual void GetSubSets(TD_MediaSetList& lstSubSets)
+	{
+		lstSubSets.add(m_PlaylistMgr);
+		lstSubSets.add(m_SingerMgr);
+	}
+};
+
 class IModelObserver
 {
 public:
@@ -98,8 +120,7 @@ class IModel
 public:
 	virtual bool status() const = 0;
 
-	virtual CRootMediaRes& getRootMediaRes() = 0;
-	virtual CMediaSet& getRootMediaSet() = 0;
+	virtual XMediaLib& getMediaLib() = 0;
 	
 	virtual CPlaylistMgr& getPlaylistMgr() = 0;
 	virtual CPlayMgr& getPlayMgr() = 0;
@@ -111,8 +132,8 @@ public:
 	virtual CDataMgr& getDataMgr() = 0;
 	virtual CBackupMgr& getBackupMgr() = 0;
 
-	virtual bool initRootMediaRes(const wstring& strRootDir) = 0;
-	virtual void refreshRootMediaRes() = 0;
+	virtual bool initMediaLib(const wstring& strRootDir) = 0;
+	virtual void refreshMediaLib() = 0;
 		
 	virtual void attachDir(const wstring& strDir) = 0;
 	virtual void detachDir(const wstring& strDir) = 0;
@@ -147,28 +168,6 @@ public:
 
 class __ModelExt CModel : public IModel
 {
-private:
-	class CRootMediaSet : public CMediaSet
-	{
-	public:
-		CRootMediaSet(CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)
-			: CMediaSet(L"曲库")
-			, m_PlaylistMgr(PlaylistMgr)
-			, m_SingerMgr(SingerMgr)
-		{
-		}
-
-	private:
-		CPlaylistMgr& m_PlaylistMgr;
-		CSingerMgr& m_SingerMgr;
-
-		virtual void GetSubSets(TD_MediaSetList& lstSubSets)
-		{
-			lstSubSets.add(m_PlaylistMgr);
-			lstSubSets.add(m_SingerMgr);
-		}
-	};
-	
 public:
 	CModel(IModelObserver& ModelObserver);
 
@@ -184,9 +183,7 @@ private:
 
 	CBackupMgr m_BackupMgr;
 
-	CRootMediaRes m_RootMediaRes;
-
-	CRootMediaSet m_RootMediaSet;
+	XMediaLib m_MediaLib;
 
 	CPlaylistMgr m_PlaylistMgr;
 
@@ -203,14 +200,9 @@ public:
 
 	wstring db() const;
 
-	CRootMediaRes& getRootMediaRes() override
+	XMediaLib& getMediaLib() override
 	{
-		return m_RootMediaRes;
-	}
-
-	CMediaSet& getRootMediaSet() override
-	{
-		return m_RootMediaSet;
+		return m_MediaLib;
 	}
 
 	CPlaylistMgr& getPlaylistMgr() override
@@ -250,8 +242,8 @@ public:
 
 	bool init();
 
-	bool initRootMediaRes(const wstring& strRootDir) override;
-	void refreshRootMediaRes() override;
+	bool initMediaLib(const wstring& strRootDir) override;
+	void refreshMediaLib() override;
 
 	void attachDir(const wstring& strDir) override;
 	void detachDir(const wstring& strDir) override;
@@ -289,9 +281,9 @@ private:
 
     bool _initDB(const wstring& strDBFile);
 
-	inline void _refreshRootMediaRes()
+	inline void _refreshMediaLib()
 	{
-        m_RootMediaRes.setDir(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
+        m_MediaLib.setDir(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);

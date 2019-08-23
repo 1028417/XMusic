@@ -176,6 +176,32 @@ public:
 		}, eFilter, pstrFilter);
 	}
 
+	static bool findSubDir(const wstring& strDir, const function<void(const wstring&)>& cb
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
+	{
+		return _findFile(strDir, [&](tagFileInfo& fileInfo) {
+			if (fileInfo.bDir)
+			{
+				cb(fileInfo.strName);
+			}
+
+			return true;
+		}, eFilter, pstrFilter);
+	}
+
+	static bool findSubFile(const wstring& strDir, const function<void(const wstring&)>& cb
+		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
+	{
+		return _findFile(strDir, [&](tagFileInfo& fileInfo) {
+			if (!fileInfo.bDir)
+			{
+				cb(fileInfo.strName);
+			}
+
+			return true;
+		}, eFilter, pstrFilter);
+	}
+
 private:
     using CB_FindFile = const function<bool(tagFileInfo&)>&;
     static bool _findFile(const wstring& strDir, CB_FindFile cb, E_FindFindFilter eFilter, const wchar_t *pstrFilter);

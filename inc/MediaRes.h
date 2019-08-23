@@ -6,11 +6,9 @@
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
-	CMediaRes() {}
+	CMediaRes(const wstring& strDir=L"");
 
 	CMediaRes(const tagFileInfo& FileInfo, E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
-
-	CMediaRes(const wstring& strDir);
 
 private:
 	struct tagMediaTag

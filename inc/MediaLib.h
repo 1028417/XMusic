@@ -48,7 +48,7 @@ public:
     }
 };
 
-class __MediaLibExt CRootMediaRes : public CMediaRes
+class __MediaLibExt CMediaLib : public CMediaRes
 {
 public:
 	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
@@ -56,7 +56,7 @@ public:
 	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
 
 public:
-	CRootMediaRes(IMediaObserver& MediaObserver);
+	CMediaLib(IMediaObserver& MediaObserver);
 
 public:
 	IMediaObserver& m_MediaObserver;
@@ -74,9 +74,9 @@ private:
 public:
     void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 
-	bool available() const
+	bool empty() const
 	{
-		return CPath::count() > 0;
+		return CPath::count() == 0;
 	}
 
 	wstring toAbsPath(const wstring& strSubPath, bool bDir=false);
@@ -88,4 +88,4 @@ public:
 	CMediaRes* FindSubPath(const wstring& strSubPath, bool bDir) override;
 };
 
-extern CRootMediaRes *g_pRootMediaRes;
+extern CMediaLib *g_pMediaLib;

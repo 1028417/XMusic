@@ -24,9 +24,7 @@ class __UtilExt CPath
 	friend struct tagPathSortor;
 
 public:
-	CPath() {}
-
-	CPath(const wstring& strName, bool bDir);
+	CPath(const wstring& strDir=L"");
 
 	CPath(const tagFileInfo& FileInfo)
         : m_fi(FileInfo)
@@ -59,7 +57,7 @@ private:
 	template <typename CB>
 	inline bool _findFile(const CB& cb)
 	{
-		if (!fsutil::findFile(this->GetPath(), cb))
+		if (!fsutil::findFile(this->absPath(), cb))
 		{
 			m_eFindFileStatus = E_FindFileStatus::FFS_NotExists;
 			return false;
@@ -107,11 +105,9 @@ public:
 
 	wstring GetName() const;
 
-	wstring GetPath() const;
+	wstring absPath() const;
 
     wstring oppPath() const;
-
-    wstring parentPath() const;
 
 	void scan(const CB_PathScan& cb);
 
@@ -198,12 +194,8 @@ public:
 class __UtilExt CPathObject : public CPath, public CListObject
 {
 public:
-	CPathObject()
-	{
-	}
-
-	CPathObject(const wstring& strName, bool bDir)
-		: CPath(strName, bDir)
+	CPathObject(const wstring& strDir=L"")
+		: CPath(strDir)
 	{
 	}
 
@@ -227,7 +219,7 @@ class __UtilExt CDirObject : public CPathObject, public CTreeObject
 {
 public:
 	CDirObject(const wstring& strDir = L"")
-		: CPathObject(strDir, true)
+		: CPathObject(strDir)
 	{
 	}
 

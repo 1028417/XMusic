@@ -195,7 +195,7 @@ enum class E_RenameRetCode
 
 #include "MediaRes.h"
 
-#include "RootMediaRes.h"
+#include "MediaLib.h"
 
 #include "Media.h"
 
