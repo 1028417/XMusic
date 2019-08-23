@@ -30,7 +30,7 @@ __ViewExt IPlayerView& genView(IPlayerController& controller, IModel& model)
 	return inst;
 }
 
-CMainWnd* CPlayerView::init()
+CMainWnd* CPlayerView::show()
 {
 	if (g_bRuning)
 	{

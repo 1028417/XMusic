@@ -33,7 +33,7 @@ private:
 		return m_ModelObserver;
 	}
 
-	CMainWnd* init() override;
+	CMainWnd* show() override;
 
 	bool handleHotkey(const tagHotkeyInfo& HotkeyInfo) override;
 

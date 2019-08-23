@@ -58,14 +58,24 @@ MainWindow::MainWindow(CPlayerView& view) :
     ui.labelLogo->setParent(this);
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
+    ui.btnFullScreen->setParent(this);
 
-    ui.btnPause->setVisible(false);
+    connect(ui.btnFullScreen, &QPushButton::clicked, this, [&](){
+        auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+        bFullScreen = !bFullScreen;
+
+        setWindowState();
+    });
+
     ui.centralWidget->setVisible(false);
+    ui.centralWidget->raise();
 
     m_PlayingList.setParent(ui.centralWidget);
     m_PlayingList.raise();
 
     ui.btnExit->raise();
+
+    ui.btnPause->setVisible(false);
 
     this->setWindowFlags(Qt::FramelessWindowHint);
 }
@@ -94,8 +104,14 @@ void MainWindow::showLogo()
     pe.setColor(QPalette::Background, QColor(180, 220, 255));
     this->setPalette(pe);
 
-    QMainWindow::showFullScreen();
-    this->setWindowState(Qt::WindowFullScreen);
+#if __android
+    showFullScreen();
+    QMainWindow::setWindowState(Qt::WindowFullScreen);
+#else
+    QMainWindow::setWindowState(Qt::WindowMaximized);
+    setWindowState();
+    setVisible(true);
+#endif
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -218,13 +234,28 @@ void MainWindow::show()
     _relayout();
 
     ui.labelLogo->movie()->stop();
-    ui.labelLogo->setVisible(false);
-    ui.labelLogoTip->setVisible(false);
-    ui.labelLogoCompany->setVisible(false);
 
     m_timer = startTimer(1000);
 
     ui.centralWidget->setVisible(true);
+}
+
+void MainWindow::setWindowState()
+{
+#if !__android
+    RECT rcWorkArea{0,0,0,0};
+    if (m_view.getOptionMgr().getOption().bFullScreen)
+    {
+        rcWorkArea.right = GetSystemMetrics(SM_CXSCREEN);
+        rcWorkArea.bottom = GetSystemMetrics(SM_CYSCREEN);
+    }
+    else
+    {
+        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+    }
+    this->setGeometry(rcWorkArea.left, rcWorkArea.top
+                          , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
+#endif
 }
 
 bool MainWindow::event(QEvent *ev)
@@ -234,7 +265,18 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Move:
     case QEvent::Resize:
     case QEvent::Show:
+        setWindowState();
+
         _relayout();
+
+        break;
+    case QEvent::MouseButtonDblClick:
+    {
+        auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+        bFullScreen = !bFullScreen;
+
+        setWindowState();
+    }
 
         break;
     case QEvent::Timer:

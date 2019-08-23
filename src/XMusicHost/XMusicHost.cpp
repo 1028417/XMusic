@@ -48,7 +48,9 @@ bool CPlayerController::init()
 {
 	fsutil::setWorkDir(fsutil::getModuleDir());
 
-	return ((CModel&)m_model).init();
+	((CModel&)m_model).init();
+
+	return ((CModel&)m_model).start();
 }
 
 bool CPlayerController::start()

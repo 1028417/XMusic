@@ -10,8 +10,7 @@
 class CDialog : public QDialog
 {
 public:
-    CDialog()
-        : m_crBkg(180, 220, 255)
+    CDialog() : m_crBkg(180, 220, 255)
     {
     }
 

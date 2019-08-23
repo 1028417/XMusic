@@ -144,10 +144,12 @@ public:
         m_logger << "jniVer: " >> g_jniVer;
 #endif
 
+        m_model.init();
+
         m_mainWnd.showLogo();
 
         QTimer::singleShot(6000, [&](){
-            if (!m_model.init())
+            if (!m_model.start())
             {
                 m_logger >> "init model fail";
                 this->quit();

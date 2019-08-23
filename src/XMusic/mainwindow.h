@@ -89,6 +89,8 @@ public:
     void updateBkg();
 
 private:
+    inline void setWindowState();
+
     bool event(QEvent *) override;
 
     void _init();
