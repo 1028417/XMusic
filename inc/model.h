@@ -240,7 +240,9 @@ public:
 		return m_BackupMgr;
 	}
 
-	bool init();
+	void init();
+
+	bool start();
 
 	bool initMediaLib(const wstring& strRootDir) override;
 	void refreshMediaLib() override;
@@ -275,7 +277,7 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-	bool _init();
+	bool _initMediaLib();
 
     wstring _scanXMusicDir();
 

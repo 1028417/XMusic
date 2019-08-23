@@ -60,7 +60,7 @@ struct tagOption
 	bool bForce48000 = false;
 
     bool bHideMenuBar = false;
-    bool bFullScreen = false;
+    bool bFullScreen = !__winvc;
 
     wstring strHBkg;
     wstring strVBkg;

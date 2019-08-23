@@ -16,7 +16,7 @@ public:
 	virtual ~IView() {}
 
 public:
-	virtual CMainWnd* init() = 0;
+	virtual CMainWnd* show() = 0;
 
 	virtual bool handleCommand(UINT uID)
 	{
