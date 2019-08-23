@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="controller.cpp" />
+    <ClCompile Include="XMusicHost.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="controller.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="XMusicHost.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\view\MainWnd.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="XMusicHost.rc" />
+  </ItemGroup>
+</Project>
