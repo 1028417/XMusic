@@ -23,14 +23,8 @@ void CAddBkgDlg::init()
     m_addbkgView.setFont(0.5);
 #endif
 
-    ui.btnUpward->setVisible(false);
-
-    connect(ui.btnUpward, &CButton::signal_clicked, [&](){
-        m_addbkgView.upward();
-    });
-
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
-        this->close();
+        (void)this->_handleReturn();
     });
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
@@ -40,7 +34,7 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
-    m_root.startScan([&](CPath& dir) {
+    m_ImgRoot.startScan([&](CPath& dir) {
         emit signal_founddir(&dir);
     });
 }
@@ -49,35 +43,23 @@ void CAddBkgDlg::close()
 {
     m_paDirs.clear();
 
-    m_root.stopScan();
-    m_root.Clear();
+    m_ImgRoot.stopScan();
+    m_ImgRoot.Clear();
 
     CDialog::close();
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
-    cauto& rcReturn = ui.btnReturn->geometry();
-    int y_margin = rcReturn.top();
-
-    QRect rcUpward(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
-    ui.btnUpward->setGeometry(rcUpward);
-
-    //_resizeTitle();
-
-    int y_addbkgView = rcReturn.bottom() + y_margin;
+    int y_addbkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (m_addbkgView.isInRoot())
+    if (!m_addbkgView.upward())
     {
         this->close();
-    }
-    else
-    {
-        m_addbkgView.upward();
     }
 
     return true;
@@ -134,7 +116,8 @@ UINT CAddBkgView::getPageRowCount()
     }
     else if (cy < 1800)
     {
-        uRet = round((float)uRet*m_addbkgDlg.height()/1800);
+        uRet--;
+        uRet = ceil((float)uRet*m_addbkgDlg.height()/1800);
     }
     return uRet;
 }
@@ -168,5 +151,30 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     }
 }
 
+void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
+{
+    if (m_pDir)
+    {
 
+    }
+    else
+    {
+        m_paDirs.get(lvRow.uRow, [&](CPath& dir){
+            m_pDir = &dir;
+            update();
+        });
+    }
+}
 
+bool CAddBkgView::upward()
+{
+    if (m_pDir)
+    {
+        m_pDir = NULL;
+        update();
+
+        return true;
+    }
+
+    return false;
+}

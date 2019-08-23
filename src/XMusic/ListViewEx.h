@@ -48,6 +48,8 @@ private:
 
     TD_PathList m_paSubPath;
 
+    SSet<void*> m_setRootObject;
+
     map<void*, float> m_mapScrollRecord;
 
 private:
@@ -71,6 +73,9 @@ private:
     void _saveScrollRecord();
     void _clearScrollRecord();
 
+protected:
+    virtual bool _onUpward();
+
 public:
     void showRoot();
 
@@ -84,5 +89,5 @@ public:
         return NULL==m_pMediaset && NULL==m_pPath;
     }
 
-    void upward();
+    bool upward();
 };

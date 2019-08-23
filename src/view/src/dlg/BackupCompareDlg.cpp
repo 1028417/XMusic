@@ -318,9 +318,9 @@ BOOL CBackupCompareDlg::OnInitDialog()
 
 	m_wndSrcCombo.SetCurSel(uIdxSrc);
 
-	CMainApp::async([&]() {
+	CMainApp::async(50, [&]() {
 		_compare();
-	}, 50);
+	});
 	return TRUE;
 }
 

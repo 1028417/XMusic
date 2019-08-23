@@ -137,6 +137,15 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         tagMediaContext context;
         if (_genRootRowContext(lvRow, context))
         {
+            if (context.pMediaSet)
+            {
+                m_setRootObject.add(context.pMediaSet);
+            }
+            else if (context.pPath)
+            {
+                m_setRootObject.add(context.pPath);
+            }
+
             _paintRow(painter, rc, lvRow, context);
         }
     }
@@ -224,37 +233,52 @@ void CListViewEx::_clearScrollRecord()
     reset();
 }
 
-void CListViewEx::upward()
+bool CListViewEx::_onUpward()
 {
-    _clearScrollRecord();
-
     if (m_pMediaset)
     {
+        if (m_setRootObject.includes(m_pMediaset))
+        {
+            showRoot();
+            return true;
+        }
+
         if (m_pMediaset->m_pParent)
         {
             showMediaSet(*m_pMediaset->m_pParent);
         }
-        else
-        {
-            showRoot();
-        }
     }
     else if (m_pPath)
     {
+        if (m_setRootObject.includes(m_pPath))
+        {
+            showRoot();
+            return true;
+        }
+
         auto pParent = m_pPath->fileInfo().pParent;
         if (pParent)
         {
             showPath(*pParent);
         }
-        else
-        {
-            showRoot();
-        }
     }
     else
     {
-        return;
+        return false;
     }
 
-    scroll(_scrollRecord());
+    return true;
+}
+
+bool CListViewEx::upward()
+{
+    _clearScrollRecord();
+
+    if (_onUpward())
+    {
+        scroll(_scrollRecord());
+        return true;
+    }
+
+    return false;
 }

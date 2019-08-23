@@ -51,9 +51,7 @@ private:
 
 	bool m_bDocked = false;
 
-public:
 	HWND m_hWndPlaySpirit = NULL;
-
 	HWND m_hWndShadow = NULL;
 
 private:
@@ -64,6 +62,18 @@ private:
 	HRESULT __stdcall OnButton(ST_PlaySpiritButton eButton, short para);
 
 public:
+	void move(int x, int y)
+	{
+		(void)::SetWindowPos(m_hWndPlaySpirit, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+
+	const CRect& rect() const
+	{
+		static CRect rcPos;
+		(void)::GetWindowRect(m_hWndPlaySpirit, rcPos);
+		return rcPos;
+	}
+
 	BOOL Create(const CB_PlaySpiritEvent& cb, int iPosX, int iPosY);
 	
 	void Destroy();

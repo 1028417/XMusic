@@ -62,7 +62,7 @@ bool CController::start()
     };
 
 #if __winvc
-	CMainApp::async(fnTryPlay, 300);
+	CMainApp::async(300, fnTryPlay);
 
 #else
     g_threadPlayCtrl = thread([&, fnTryPlay]() {

@@ -132,8 +132,9 @@ Public Function Show(ByVal x As Integer, ByVal y As Integer) As Long
     
     m_Shadow.SetShadow PlayerForm, m_Player.Skin.MaskShadow(1), m_Player.Skin.MaskShadow(2), m_Player.Skin.MaskShadow(3)
 
-    SetWindowPos PlayerForm.hwnd, 0, x, y, 0, 0, 5
+    'SetWindowPos PlayerForm.hwnd, 0, x, y, 0, 0, 5
 
+    PlayerForm.Move x, y
     PlayerForm.Show
 
     Show = PlayerForm.hwnd

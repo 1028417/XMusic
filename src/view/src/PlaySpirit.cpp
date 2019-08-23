@@ -29,8 +29,8 @@ BOOL CPlaySpirit::_create(int iPosX, int iPosY)
 	{
 		return FALSE;
 	}
-	
-	m_hWndPlaySpirit = (HWND)(LONG_PTR)(*this)->Show(iPosX, iPosY);
+
+	m_hWndPlaySpirit = (HWND)(LONG_PTR)(*this)->Show(-1000, -1000);
 	if (NULL == m_hWndPlaySpirit)
 	{
 		return FALSE;
@@ -38,8 +38,7 @@ BOOL CPlaySpirit::_create(int iPosX, int iPosY)
 
 	m_hWndShadow = (HWND)(*this)->GetShadowHandle();
 
-	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, iPosX, iPosY
-		, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, iPosX, iPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	//必须
 	hResult = this->DispEventAdvise(*this);
@@ -73,25 +72,23 @@ void CPlaySpirit::Dock(bool bDock)
 		if (m_bDocked)
 		{
 			(void)::SetWindowLong(hwnd, GWLP_HWNDPARENT, (LONG)m_MainWnd.m_wndSysToolBar.m_hWnd);
-			(void)::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
+			(void)::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 		else
 		{
 			(void)::SetWindowLong(hwnd, GWLP_HWNDPARENT, (LONG)::GetDesktopWindow());
-			(void)::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+			(void)::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 		}
 	}
 }
 
 void CPlaySpirit::SetSkin(const wstring& strSkinPath)
 {
-	CRect rcPos;
-	(void)::GetWindowRect(m_hWndPlaySpirit, rcPos);
+	cauto& rcPos = rect();
 
 	(*this)->LoadSkin(bstr_t(strSkinPath.c_str()));
 
-	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, rcPos.left, rcPos.top
-		, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	move(rcPos.left, rcPos.top);
 
 	Dock(m_bDocked);
 }

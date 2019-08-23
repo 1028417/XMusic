@@ -91,7 +91,7 @@ BOOL CFindDlg::OnInitDialog()
 
 void CFindDlg::OnEnChangeEdit1()
 {
-	CMainApp::async([&]() {
+	CMainApp::async(300, [&]() {
 		CString cstrFind;
 		(void)m_wndEdit.GetWindowText(cstrFind);
 		(void)cstrFind.Trim();
@@ -107,7 +107,7 @@ void CFindDlg::OnEnChangeEdit1()
 		{
 			m_wndEdit.SetFocus();
 		}
-	}, 300);
+	});
 }
 
 const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode, const wstring& strFindText, const wstring& strFindSingerName)

@@ -98,18 +98,6 @@ void CMedialibDlg::update(const wstring& strTitle, bool bShowPlayButton, bool bS
     _resizeTitle();
 }
 
-bool CMedialibDlg::_handleReturn()
-{
-    if (m_MedialibView.isInRoot())
-    {
-        return false;
-    }
-
-    m_MedialibView.upward();
-
-    return true;
-}
-
 CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
     CListViewEx(&medialibDlg)
     , m_view(view)
@@ -270,7 +258,8 @@ UINT CMedialibView::getPageRowCount()
     }
     else if (cy < 1800)
     {
-        uRet = round((float)uRet*m_medialibDlg.height()/1800);
+        uRet--;
+        uRet = ceil((float)uRet*m_medialibDlg.height()/1800);
     }
 
     return uRet;
@@ -441,19 +430,20 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
 }
 
-void CMedialibView::upward()
+bool CMedialibView::_onUpward()
 {
-    if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset)
+    /*if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset
+            || &m_MediaLib == m_pMediaset || &m_rootDir == m_pMediaset)
     {
         showRoot();
-        return;
-    }
+        return true;
+    }*/
 
     if (m_pPath && NULL == m_pPath->fileInfo().pParent && dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
         showPath(m_MediaLib);
-        return;
+        return true;
     }
 
-    CListViewEx::upward();
+    return CListViewEx::_onUpward();
 }

@@ -24,7 +24,7 @@ BOOL CTimingWnd::Create(CWnd* pParentWnd, int x, int y)
 {
 	__AssertReturn(this->CreateDlg(MAKEINTRESOURCE(IDD_DLG_TIMING), pParentWnd), FALSE);
 	(void)this->UpdateData(FALSE);
-	(void)this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+	(void)this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	auto& TimerOption = m_view.getOptionMgr().getTimerOption();
 	this->SetDlgItemInt(IDC_EDIT_HOUR, TimerOption.nHour);

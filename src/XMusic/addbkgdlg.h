@@ -19,22 +19,6 @@ private:
 
     CPath *m_pDir = NULL;
 
-public:
-    bool isInRoot() const
-    {
-        return NULL == m_pDir;
-    }
-
-    void upward()
-    {
-        if (m_pDir)
-        {
-            m_pDir = NULL;
-
-            update();
-        }
-    }
-
 private:
     inline UINT _picLayoutCount() const;
 
@@ -45,16 +29,18 @@ private:
     UINT getRowCount() override;
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
+
+    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent&) override;
+
+public:
+    bool upward();
 };
 
 
-class CRootPath : public CPath
+class CImgRoot : public CPath
 {
 public:
-    CRootPath()
-#if __android
-        : CPath(L"/sdcard")
-#endif
+    CImgRoot() : CPath(L"/sdcard")
     {
     }
 
@@ -105,7 +91,7 @@ public:
 private:
     CAddBkgView m_addbkgView;
 
-    CRootPath m_root;
+    CImgRoot m_ImgRoot;
 
     TD_PathList m_paDirs;
 

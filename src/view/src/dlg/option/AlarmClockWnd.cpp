@@ -23,7 +23,7 @@ BOOL CAlarmClockWnd::Create(CWnd* pParentWnd, int x, int y)
 {
 	__AssertReturn(this->CreateDlg(MAKEINTRESOURCE(IDD_DLG_ALARMCLOCK), pParentWnd), FALSE);
 	(void)this->UpdateData(FALSE);
-	(void)this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOZORDER|SWP_NOSIZE);
+	(void)this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	m_wndMediaResCombo.SetDroppedWidth(350);
 	(void)m_wndMediaResCombo.InsertString(0, L"");

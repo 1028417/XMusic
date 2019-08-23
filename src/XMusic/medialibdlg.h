@@ -55,8 +55,6 @@ public:
 
     void showFile(const wstring& strPath);
 
-    void upward();
-
     void play();
 
 private:
@@ -89,6 +87,8 @@ private:
     {
         _onMediaClick(lvRow, (CMediaRes&)path);
     }
+
+    bool _onUpward() override;
 };
 
 class CMedialibDlg : public CDialog
@@ -136,5 +136,8 @@ private:
 
     void _resizeTitle() const;
 
-    bool _handleReturn() override;
+    bool _handleReturn() override
+    {
+        return m_MedialibView.upward();
+    }
 };

@@ -99,13 +99,13 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	{
 		m_PlaySpirit->clear();
 
-		CMainApp::async([&, iFlag]() {
+		CMainApp::async(3000, [&, iFlag]() {
 			if (iFlag != g_iFlag)
 			{
 				return;
 			}
 			(void)m_view.getPlayMgr().playNext(false);
-		}, 3000);
+		});
 
 		return;
 	}
@@ -208,8 +208,7 @@ void CPlayCtrl::close()
 		tagPlaySpiritOption& PlaySpiritOption = m_view.getOptionMgr().getPlaySpiritOption();
 		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
 
-		CRect rcPos;
-		(void)::GetWindowRect(m_PlaySpirit.m_hWndPlaySpirit, rcPos);
+		cauto& rcPos = m_PlaySpirit.rect();
 		PlaySpiritOption.iPosX = rcPos.left;
 		PlaySpiritOption.iPosY = rcPos.top;
 
