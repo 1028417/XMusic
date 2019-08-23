@@ -15,6 +15,39 @@ static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 
 static Ui::MainWindow ui;
 
+
+SSet<class CDialog*> g_setDlgs;
+
+bool g_bFullScreen = true;
+
+inline static void setFull(QWidget* wnd)
+{
+#if !__android
+    if (!g_bFullScreen)
+    {
+        RECT rcWorkArea{0,0,0,0};
+        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+        wnd->setGeometry(rcWorkArea.left, rcWorkArea.top
+                          , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
+    }
+#endif
+}
+
+void showFull(QWidget* wnd)
+{
+    if (__android || g_bFullScreen)
+    {
+        wnd->setWindowState(Qt::WindowFullScreen);
+    }
+    else
+    {
+        wnd->setWindowState(Qt::WindowMaximized);
+        setFull(wnd);
+    }
+
+    wnd->setVisible(true);
+}
+
 MainWindow::MainWindow(CPlayerView& view) :
     m_view(view),
     m_PlayingList(view),
@@ -58,14 +91,21 @@ MainWindow::MainWindow(CPlayerView& view) :
     ui.labelLogo->setParent(this);
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
+
+#if __android
+    ui.btnFullScreen->setVisible(false);
+
+#else
     ui.btnFullScreen->setParent(this);
 
     connect(ui.btnFullScreen, &QPushButton::clicked, this, [&](){
         auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
         bFullScreen = !bFullScreen;
+        g_bFullScreen = bFullScreen;
 
-        setWindowState();
+        showFull(this);
     });
+#endif
 
     ui.centralWidget->setVisible(false);
     ui.centralWidget->raise();
@@ -104,14 +144,8 @@ void MainWindow::showLogo()
     pe.setColor(QPalette::Background, QColor(180, 220, 255));
     this->setPalette(pe);
 
-#if __android
-    showFullScreen();
-    QMainWindow::setWindowState(Qt::WindowFullScreen);
-#else
-    QMainWindow::setWindowState(Qt::WindowMaximized);
-    setWindowState();
-    setVisible(true);
-#endif
+    g_bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+    showFull(this);
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -240,43 +274,21 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
 }
 
-void MainWindow::setWindowState()
-{
-#if !__android
-    RECT rcWorkArea{0,0,0,0};
-    if (m_view.getOptionMgr().getOption().bFullScreen)
-    {
-        rcWorkArea.right = GetSystemMetrics(SM_CXSCREEN);
-        rcWorkArea.bottom = GetSystemMetrics(SM_CYSCREEN);
-    }
-    else
-    {
-        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
-    }
-    this->setGeometry(rcWorkArea.left, rcWorkArea.top
-                          , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
-#endif
-}
-
 bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
     case QEvent::Move:
     case QEvent::Resize:
-    case QEvent::Show:
-        setWindowState();
+    //case QEvent::Show:
+        for (auto pDlg : g_setDlgs)
+        {
+            setFull(pDlg);
+        }
+
+        setFull(this);
 
         _relayout();
-
-        break;
-    case QEvent::MouseButtonDblClick:
-    {
-        auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
-        bFullScreen = !bFullScreen;
-
-        setWindowState();
-    }
 
         break;
     case QEvent::Timer:

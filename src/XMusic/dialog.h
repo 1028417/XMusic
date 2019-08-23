@@ -7,6 +7,10 @@
 
 #include <QEvent>
 
+extern void showFull(QWidget* wnd);
+
+extern SSet<class CDialog*> g_setDlgs;
+
 class CDialog : public QDialog
 {
 public:
@@ -25,14 +29,27 @@ private:
         this->setPalette(pe);
     }
 
+    virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
+
+    virtual bool _handleReturn() {return false;}
+
 public:
     void show()
     {
         _setBkgColor();
 
         this->setWindowFlags(Qt::FramelessWindowHint);
-        QDialog::showFullScreen();
-        this->setWindowState(Qt::WindowFullScreen);
+
+        showFull(this);
+
+        g_setDlgs.add(this);
+    }
+
+    void close()
+    {
+        g_setDlgs.del(this);
+
+        QDialog::close();
     }
 
     void setBkgColor(uint r, uint g, uint b)
@@ -54,7 +71,6 @@ protected:
         {
         case QEvent::Move:
         case QEvent::Resize:
-        case QEvent::Show:
         {
             int cx = this->width();
             int cy = this->height();
@@ -64,10 +80,12 @@ protected:
             break;
 #if __android
         case QEvent::KeyRelease:
-            if (_handleReturn())
+            if (!_handleReturn())
             {
-                return true;
+                close();
             }
+
+            return true;
 
             break;
 #endif
@@ -77,9 +95,4 @@ protected:
 
         return QDialog::event(ev);
     }
-
-private:
-    virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
-
-    virtual bool _handleReturn() {return false;}
 };

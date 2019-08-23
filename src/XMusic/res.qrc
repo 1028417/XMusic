@@ -25,5 +25,6 @@
         <file>img/file.png</file>
         <file>img/righttip.png</file>
         <file>img/add.png</file>
+        <file>img/btnFullScreen.png</file>
     </qresource>
 </RCC>

@@ -86,9 +86,11 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CAddBkgDlg();
+    explicit CAddBkgDlg(class CBkgDlg& bkgDlg);
 
 private:
+    class CBkgDlg& m_bkgDlg;
+
     CAddBkgView m_addbkgView;
 
     CImgRoot m_ImgRoot;

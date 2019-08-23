@@ -1,12 +1,15 @@
 #include "view.h"
 
+#include "bkgdlg.h"
+
 #include "addbkgdlg.h"
 #include "ui_addbkgdlg.h"
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg()
-    : m_addbkgView(*this, m_paDirs)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
+    : m_bkgDlg(bkgDlg)
+    , m_addbkgView(*this, m_paDirs)
 {
 }
 

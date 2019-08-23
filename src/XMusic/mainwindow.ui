@@ -841,17 +841,17 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnFullScreen">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>60</y>
-      <width>90</width>
-      <height>90</height>
+      <x>50</x>
+      <y>40</y>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">border-image: url(:/img/btnMore.png);</string>
+     <string notr="true">border-image: url(:/img/btnFullScreen.png);</string>
     </property>
     <property name="text">
      <string/>
