@@ -9,7 +9,8 @@
 
 extern void showFull(QWidget* wnd);
 
-extern SSet<class CDialog*> g_setDlgs;
+#include <set>
+extern set<class CDialog*> g_setDlgs;
 
 class CDialog : public QDialog
 {
@@ -42,12 +43,12 @@ public:
 
         showFull(this);
 
-        g_setDlgs.add(this);
+        g_setDlgs.insert(this);
     }
 
     void close()
     {
-        g_setDlgs.del(this);
+        g_setDlgs.erase(this);
 
         QDialog::close();
     }

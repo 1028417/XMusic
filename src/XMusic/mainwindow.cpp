@@ -16,7 +16,7 @@ static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 static Ui::MainWindow ui;
 
 
-SSet<class CDialog*> g_setDlgs;
+set<class CDialog*> g_setDlgs;
 
 bool g_bFullScreen = true;
 
