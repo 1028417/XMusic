@@ -10,7 +10,7 @@
 extern void showFull(QWidget* wnd);
 
 #include <set>
-extern set<class CDialog*> g_setDlgs;
+extern std::set<class CDialog*> g_setDlgs;
 
 class CDialog : public QDialog
 {
