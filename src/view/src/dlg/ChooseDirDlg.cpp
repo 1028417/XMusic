@@ -37,7 +37,7 @@ void CChooseDirDlg::OnOK()
 	CDirObject *pDirObject = (CDirObject*)m_wndTree.GetSelectedObject();
 	if (NULL != pDirObject)
 	{
-		m_strRetDir = pDirObject->GetPath();
+		m_strRetDir = pDirObject->absPath();
 	}
 
 	CDialog::OnOK();

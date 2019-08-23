@@ -98,7 +98,7 @@ private:
 
 	//void OnDeleteDir(CMediaRes& MediaRes);
 
-	void _showPath(CMediaRes *pRootMediaRes, CMediaRes *pMediaRes = NULL, CMediaRes *pHitestItem = NULL);
+	void _showPath(CMediaRes *pMediaLib, CMediaRes *pMediaRes = NULL, CMediaRes *pHitestItem = NULL);
 	void _showPath();
 
 	void _asyncTask();

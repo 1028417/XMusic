@@ -50,7 +50,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 	m_thread = thread([&]() {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
 
-		m_view.getRootMediaRes().scan([&](CPath& dir, TD_PathList& paSubFile) {
+		m_view.getMediaLib().scan([&](CPath& dir, TD_PathList& paSubFile) {
 			mtutil::usleep(1);
 			if (m_bCancel)
 			{

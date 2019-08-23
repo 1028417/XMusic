@@ -34,8 +34,8 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth * 2);
 
 	auto& globalSize = m_view.m_globalSize;
-	ColumnGuard.addDynamic(L"目录", 0.52)
-		.addDynamic(L"文件", 0.48)
+	ColumnGuard.addDynamic(L"目录", 0.48)
+		.addDynamic(L"文件", 0.52)
 		.addFix(L"大小", 120)
 		.addFix(L"时长", 70);
 
@@ -89,8 +89,15 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 
 	m_vecRowFlag.clear();
 
-	auto fnInsertItem = [&](auto& mediaRes, auto group, auto idx) {
-		m_wndList.InsertItemEx(uItem++, { mediaRes.parentPath(), mediaRes.GetName(), mediaRes.GetFileSizeString(false) }, L" ");
+	auto fnInsertItem = [&](CMediaRes& mediaRes, auto group, auto idx) {
+		wstring strDir;
+		auto pParent = mediaRes.parent();
+		if (pParent)
+		{
+			strDir = pParent->oppPath();
+		}
+
+		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.GetFileSizeString(false) }, L" ");
 		m_arrSimilarFileInfo.add({ group, idx });
 
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);
@@ -264,5 +271,5 @@ void CSimilarFileDlg::OnClose(bool bCancel)
 {
 	__super::OnClose(bCancel);
 
-	m_view.getModel().refreshRootMediaRes();
+	m_view.getModel().refreshMediaLib();
 }

@@ -109,7 +109,7 @@ bool CPlayerView::handleCommand(UINT uID)
 
 		break;
 	case ID_WholeTrack:
-		m_view.getModel().refreshRootMediaRes();
+		m_view.getModel().refreshMediaLib();
 		(void)CWholeTrackDlg(m_view).DoModal();
 
 		break;
@@ -119,7 +119,7 @@ bool CPlayerView::handleCommand(UINT uID)
 		break;
 	case ID_ExportDir:
 	{
-		m_view.getModel().refreshRootMediaRes();
+		m_view.getModel().refreshMediaLib();
 
 		CMediaRes* pDir = m_view.showChooseDirDlg(L"选择导出目录", true);
 		__EnsureBreak(pDir);
@@ -130,7 +130,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_Snapshot:
 	{
-		m_view.getModel().refreshRootMediaRes();
+		m_view.getModel().refreshMediaLib();
 
 		CMediaRes* pDir = m_view.showChooseDirDlg(L"选择目录", true);
 		__EnsureBreak(pDir);
@@ -150,7 +150,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_ExportMedia:
 		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
-		m_view.exportMediaSet(m_view.getRootMediaSet());
+		m_view.exportMediaSet(m_view.getMediaLib());
 
 		break;
 	case ID_VERIFY:
@@ -235,7 +235,7 @@ void CPlayerView::_verifyMedia()
 	m_view.m_ResModule.ActivateResource();
 
 	TD_MediaSetList lstMediaSets;
-	CMediaSetDlg MediaSetDlg(m_view, m_view.getRootMediaSet(), lstMediaSets, L"选择检测项");
+	CMediaSetDlg MediaSetDlg(m_view, m_view.getMediaLib(), lstMediaSets, L"选择检测项");
 	if (IDOK != MediaSetDlg.DoModal())
 	{
 		return;
@@ -295,7 +295,7 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 
 void CPlayerView::_checkSimilarFile()
 {
-	m_view.getModel().refreshRootMediaRes();
+	m_view.getModel().refreshMediaLib();
 
 	CMediaRes* pSrcPath = m_view.showChooseDirDlg(L"选择第一个目录", true);
 	if (NULL == pSrcPath)
@@ -303,7 +303,7 @@ void CPlayerView::_checkSimilarFile()
 		return;
 	}
 
-	if (pSrcPath == &m_view.getRootMediaRes())
+	if (pSrcPath == &m_view.getMediaLib())
 	{
 		m_view.checkSimilarFile(*pSrcPath);
 		return;
@@ -339,14 +339,14 @@ void CPlayerView::_addInMedia()
 	tagFileDlgOpt FileDlgOpt;
 	FileDlgOpt.strTitle = L"选择文件合入";
 	FileDlgOpt.strFilter = __MediaFilter;
-	FileDlgOpt.strInitialDir = fsutil::GetParentDir(m_view.getRootMediaRes().GetAbsPath());
+	FileDlgOpt.strInitialDir = fsutil::GetParentDir(m_view.getMediaLib().GetAbsPath());
 	CFileDlgEx fileDlg(FileDlgOpt);
 
 	list<wstring> lstFiles;
 	wstring strDir = fileDlg.ShowOpenMulti(lstFiles);		
 	__Ensure(!strDir.empty());
 
-	wstring strRootDir = m_view.getRootMediaRes().GetAbsPath();
+	wstring strRootDir = m_view.getMediaLib().GetAbsPath();
 	if (wsutil::matchIgnoreCase(strDir, strRootDir)
 		|| fsutil::CheckSubPath(strRootDir, strDir))
 	{
@@ -370,7 +370,7 @@ void CPlayerView::_addInMedia()
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
 				+ L"\n大小：" + SearchMediaInfo.GetFileSize() + L"字节\n时长："
 				+ CMedia::GetDurationString(CFileOpaqueEx::checkDuration(SearchMediaInfo.m_strAbsPath))
-				+ L"\n目录：" + m_view.getRootMediaRes().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+				+ L"\n目录：" + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联：";
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& Media) {

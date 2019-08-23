@@ -247,19 +247,19 @@ void CMediaResPanel::ShowPath(const wstring& strPath)
 	CMediaRes *pMediaRes = NULL;
 	if (!strPath.empty())
 	{
-		pMediaRes = m_view.getRootMediaRes().FindSubPath(strPath, true);
+		pMediaRes = m_view.getMediaLib().FindSubPath(strPath, true);
 	}
 	else
 	{
-		pMediaRes = &m_view.getRootMediaRes();
+		pMediaRes = &m_view.getMediaLib();
 	}
 	_showPath(pMediaRes);
 }
 
 void CMediaResPanel::Refresh()
 {
-	CMediaRes *pRootPath = m_view.getRootMediaRes().FindSubPath(m_strRootPath, true);
-	CMediaRes *pCurrPath = m_view.getRootMediaRes().FindSubPath(m_strCurrPath, true);
+	CMediaRes *pRootPath = m_view.getMediaLib().FindSubPath(m_strRootPath, true);
+	CMediaRes *pCurrPath = m_view.getMediaLib().FindSubPath(m_strCurrPath, true);
 	if (NULL == pCurrPath)
 	{
 		pCurrPath = pRootPath;
@@ -285,13 +285,13 @@ void CMediaResPanel::Refresh()
 	}*/
 }
 
-void CMediaResPanel::_showPath(CMediaRes *pRootMediaRes, CMediaRes *pMediaRes, CMediaRes *pHitestItem)
+void CMediaResPanel::_showPath(CMediaRes *pMediaLib, CMediaRes *pMediaRes, CMediaRes *pHitestItem)
 {
 	__Ensure(m_hWnd);
 
 	wstring strPrevCurrPath = m_strCurrPath;
 	
-	m_pCurrPath = m_pRootPath = pRootMediaRes;
+	m_pCurrPath = m_pRootPath = pMediaLib;
 	m_strCurrPath = m_strRootPath;
 	if (NULL == m_pCurrPath)
 	{
@@ -621,7 +621,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 		else
 		{
-			m_view.getModel().refreshRootMediaRes();
+			m_view.getModel().refreshMediaLib();
 		}
 
 		break;
@@ -757,7 +757,7 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrPath->files());
 		}
 
-		m_MenuGuard.EnableItem(ID_FIND, m_pCurrPath && m_pCurrPath != &m_view.getRootMediaRes());
+		m_MenuGuard.EnableItem(ID_FIND, m_pCurrPath && m_pCurrPath != &m_view.getMediaLib());
 
 		bool bFlag = m_wndList.GetItemCount()>0;
 		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrPath && bFlag);
@@ -766,7 +766,7 @@ void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrPath);
 		
-		if (&m_view.getRootMediaRes() == m_pCurrPath)
+		if (&m_view.getMediaLib() == m_pCurrPath)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
@@ -949,7 +949,7 @@ BOOL CMediaResPanel::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias
 
 int CMediaResPanel::GetTabImage()
 {
-	if (NULL != m_pCurrPath && m_pCurrPath != &m_view.getRootMediaRes())
+	if (NULL != m_pCurrPath && m_pCurrPath != &m_view.getMediaLib())
 	{
 		if (m_pCurrPath->parent()==NULL)
 		{

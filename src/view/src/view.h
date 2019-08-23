@@ -85,16 +85,11 @@ public:
 		return m_model;
 	}
 
-	CRootMediaRes& getRootMediaRes()
+	XMediaLib& getMediaLib()
 	{
-		return m_model.getRootMediaRes();
+		return m_model.getMediaLib();
 	}
 
-	CMediaSet& getRootMediaSet()
-	{
-		return m_model.getRootMediaSet();
-	}
-	
 	COptionMgr& getOptionMgr()
 	{
 		return m_model.getOptionMgr();

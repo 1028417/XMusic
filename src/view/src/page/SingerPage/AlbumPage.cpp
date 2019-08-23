@@ -494,7 +494,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			tagFileDlgOpt FileDlgOpt;
 			FileDlgOpt.strTitle = L"Ìí¼Ó×¨¼­ÇúÄ¿";
 			FileDlgOpt.strFilter = __MediaFilter;
-			FileDlgOpt.strInitialDir = m_view.getRootMediaRes().toAbsPath(m_pSinger->GetBaseDir(), true);
+			FileDlgOpt.strInitialDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
 			CFileDlgEx fileDlg(FileDlgOpt);
 
 			list<wstring> lstFiles;

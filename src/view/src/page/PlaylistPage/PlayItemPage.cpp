@@ -262,7 +262,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		tagFileDlgOpt FileDlgOpt;
 		FileDlgOpt.strTitle = L"添加列表曲目";
 		FileDlgOpt.strFilter = __MediaFilter;
-		FileDlgOpt.strInitialDir = m_view.getRootMediaRes().GetAbsPath();
+		FileDlgOpt.strInitialDir = m_view.getMediaLib().GetAbsPath();
 		CFileDlgEx fileDlg(FileDlgOpt);
 
 		list<wstring> lstFiles;

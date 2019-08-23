@@ -166,7 +166,7 @@ void CVerifyResultDlg::OnBnClickedVerify()
 
 void CVerifyResultDlg::OnBnClickedAutoMatch()
 {
-	m_view.getModel().refreshRootMediaRes();
+	m_view.getModel().refreshMediaLib();
 
 	CMediaRes* pDir = m_view.showChooseDirDlg(L"选择查找目录", true);
 	__Ensure(pDir);
@@ -196,7 +196,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				+ CMedia::GetDurationString(MediaResInfo.nDuration)
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-				+ L"\n原目录：" + fsutil::GetParentDir(m_view.getRootMediaRes().toOppPath(SearchMediaInfo.m_strAbsPath))
+				+ L"\n原目录：" + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联：";
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& Media) {
@@ -250,7 +250,7 @@ void CVerifyResultDlg::OnBnClickedLink()
 	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
 	__Assert(pMedia);
 
-	wstring strInitialDir = m_view.getRootMediaRes().toAbsPath(pMedia->GetBaseDir(), true);
+	wstring strInitialDir = m_view.getMediaLib().toAbsPath(pMedia->GetBaseDir(), true);
 
 	wstring strDir = pMedia->GetAbsPath();
 	while (!strDir.empty())
@@ -295,7 +295,7 @@ void CVerifyResultDlg::OnBnClickedLink()
 			continue;
 		}
 
-		strNewOppPath = m_view.getRootMediaRes().toOppPath(strNewPath);
+		strNewOppPath = m_view.getMediaLib().toOppPath(strNewPath);
 		if (strNewOppPath.empty())
 		{
 			CMainApp::showMsg(L"请选择根目录范围内的文件", __Title, this);
