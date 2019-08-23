@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    src/2Player
+    src/XMusic
 
 CONFIG += ordered
