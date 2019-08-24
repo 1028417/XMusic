@@ -34,7 +34,7 @@ public:
 public:
 	wstring GetPath() const override
 	{
-        return __wcFSSlant + m_FileInfo.strName;
+        return __wcFSSlant + GetName();
 	}
 
 	int _getImage() override
