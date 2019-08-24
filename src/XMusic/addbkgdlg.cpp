@@ -11,7 +11,7 @@ static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) :
     m_bkgDlg(bkgDlg)
-    , m_addbkgView(*this)
+    , m_addbkgView(*this, m_plDirs)
 {
 }
 
@@ -40,17 +40,40 @@ void CAddBkgDlg::show()
     CDialog::show();
 
     //m_ImgRoot.SetDir(L"D:/dev/cpp/XMusic/bin");
-    m_ImgRoot.startScan([&](CPath& dir) {        
-        emit signal_founddir(&dir);
+    m_ImgRoot.startScan([&](CPath& dir) {
+        for (auto pSubFile : dir.files())
+        {
+            QPixmap pm;
+            if (!pm.load(wsutil::toQStr(pSubFile->absPath())))
+            {
+                continue;
+            }
+
+#define __filterSize 300
+            if (pm.width()<__filterSize || pm.height()<__filterSize)
+            {
+                continue;
+            }
+
+#define __zoomoutSize 150
+            CPainter::zoomoutPixmap(pm, __zoomoutSize);
+
+            m_lstPixmap.push_back(pm);
+
+            emit signal_founddir(&dir, &m_lstPixmap.back());
+
+            break;
+        }
     });
 }
 
 void CAddBkgDlg::close()
 {
-    m_paDirs.clear();
-    m_alPixmap.clear();
-
     m_ImgRoot.stopScan();
+
+    m_plDirs.clear();
+    m_lstPixmap.clear();
+
     m_ImgRoot.Clear();
 
     CDialog::close();
@@ -72,7 +95,9 @@ bool CAddBkgDlg::_handleReturn()
     return true;
 }
 
-const QPixmap* CAddBkgDlg::getPixmap(CPath& path)
+
+map<void*, QPixmap> m_mapPixmaxp;
+const QPixmap* getPixmap(CPath& path)
 {
     auto itr = m_mapPixmaxp.find(&path);
     if (itr == m_mapPixmaxp.end())
@@ -91,9 +116,10 @@ const QPixmap* CAddBkgDlg::getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& plDirs)
     : CListView(&addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
+    , m_plDirs(plDirs)
 {
 }
 
@@ -153,7 +179,7 @@ UINT CAddBkgView::getRowCount()
         return (UINT)ceil(m_pDir->files().size()/_picLayoutCount());
     }
 
-    return m_addbkgDlg.dirs().size();
+    return m_plDirs.size();
 }
 
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
@@ -169,15 +195,15 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     }
     else
     {
-        m_addbkgDlg.dirs().get(uRow, [&](CPath& dir){
-            tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
+        tagRowContext context;
+        context.eStyle = E_RowStyle::IS_RightTip;
 
-            m_addbkgDlg.pixmap().get(uRow, [&](cauto& pm){
-                context.pixmap = &pm;
-            });
-
-            _paintRow(painter, rc, lvRow, context);
+        m_plDirs.get(uRow, [&](cauto& pr){
+            context.strText = pr.first->oppPath();
+            context.pixmap = pr.second;
         });
+
+        _paintRow(painter, rc, lvRow, context);
     }
 }
 
@@ -189,10 +215,10 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
     else
     {
-        m_addbkgDlg.dirs().get(lvRow.uRow, [&](CPath& dir){
-            m_pDir = &dir;
-            update();
+        m_plDirs.get(lvRow.uRow, [&](cauto& pr){
+            m_pDir = pr.first;
         });
+        update();
     }
 }
 

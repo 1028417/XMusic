@@ -62,7 +62,12 @@ INCLUDEPATH += \
 android {
 LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK
 
-DESTDIR = $$PWD/../../build
+DESTDIR = $$PWD/../../build/XMusic
+
+MOC_DIR = $$PWD/../../build/XMusic
+RCC_DIR = $$PWD/../../build/XMusic
+UI_DIR =$$PWD/../../build/XMusic
+OBJECTS_DIR = $$PWD/../../build/XMusic
 
     font.files += ../../bin/Microsoft-YaHei-Light.ttc
 #    font.files += ../../bin/Microsoft-YaHei-Regular.ttc

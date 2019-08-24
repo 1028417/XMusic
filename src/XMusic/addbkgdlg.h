@@ -5,15 +5,19 @@
 
 #include "ListViewEx.h"
 
+using TD_ImgDirList = PairList<CPath*, const QPixmap*>;
+
 class CAddBkgView : public CListView
 {
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& plDirs);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
+
+    const TD_ImgDirList& m_plDirs;
 
     CPath *m_pDir = NULL;
 
@@ -124,41 +128,19 @@ private:
 
     CImgRoot m_ImgRoot;
 
-    TD_PathList m_paDirs;
-    ArrList<QPixmap> m_alPixmap;
+    list<QPixmap> m_lstPixmap;
 
-    map<void*, QPixmap> m_mapPixmaxp;
+    TD_ImgDirList m_plDirs;
 
 signals:
-    void signal_founddir(void* pDir);
+    void signal_founddir(void* pDir, QPixmap *pm);
 
 private slots:
-    void slot_founddir(void *pDir)
+    void slot_founddir(void *pDir, QPixmap *pm)
     {
-        for (auto pSubFile : ((CPath*)pDir)->files())
-        {
-            QPixmap pm;
-            if (!pm.load(wsutil::toQStr(pSubFile->absPath())))
-            {
-                continue;
-            }
+        m_plDirs.add((CPath*)pDir, pm);
 
-#define __filterSize 300
-            if (pm.width()<__filterSize || pm.height()<__filterSize)
-            {
-                continue;
-            }
-
-#define __zoomoutSize 150
-            CPainter::zoomoutPixmap(pm, __zoomoutSize);
-
-            m_alPixmap.add(pm);
-            m_paDirs.add((CPath*)pDir);
-
-            m_addbkgView.update();
-
-            break;
-        }
+        m_addbkgView.update();
     }
 
 private:
@@ -172,16 +154,4 @@ public:
     void init();
 
     void show();
-
-    const TD_PathList& dirs() const
-    {
-        return m_paDirs;
-    }
-
-    const ArrList<QPixmap>& pixmap() const
-    {
-        return m_alPixmap;
-    }
-
-    const QPixmap* getPixmap(CPath& path);
 };
