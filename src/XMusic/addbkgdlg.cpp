@@ -9,9 +9,9 @@ const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
-    : m_bkgDlg(bkgDlg)
-    , m_addbkgView(*this, m_paDirs)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) :
+    m_bkgDlg(bkgDlg)
+    , m_addbkgView(*this)
 {
 }
 
@@ -48,6 +48,7 @@ void CAddBkgDlg::show()
 void CAddBkgDlg::close()
 {
     m_paDirs.clear();
+    m_alPixmap.clear();
 
     m_ImgRoot.stopScan();
     m_ImgRoot.Clear();
@@ -90,10 +91,9 @@ const QPixmap* CAddBkgDlg::getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs)
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg)
     : CListView(&addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
-    , m_paDirs(paDirs)
 {
 }
 
@@ -153,14 +153,15 @@ UINT CAddBkgView::getRowCount()
         return (UINT)ceil(m_pDir->files().size()/_picLayoutCount());
     }
 
-    return m_paDirs.size();
+    return m_addbkgDlg.dirs().size();
 }
 
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
+    auto uRow = lvRow.uRow;
     if (m_pDir)
     {
-        UINT uIdx = lvRow.uRow * _picLayoutCount() + lvRow.uCol;
+        UINT uIdx = uRow * _picLayoutCount() + lvRow.uCol;
 
         m_pDir->files().get(uIdx, [&](CPath& subFile){
 
@@ -168,9 +169,13 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     }
     else
     {
-        m_paDirs.get(lvRow.uRow, [&](CPath& dir){
+        m_addbkgDlg.dirs().get(uRow, [&](CPath& dir){
             tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
-            context.pixmap = m_addbkgDlg.getPixmap(dir);
+
+            m_addbkgDlg.pixmap().get(uRow, [&](cauto& pm){
+                context.pixmap = &pm;
+            });
+
             _paintRow(painter, rc, lvRow, context);
         });
     }
@@ -184,7 +189,7 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
     else
     {
-        m_paDirs.get(lvRow.uRow, [&](CPath& dir){
+        m_addbkgDlg.dirs().get(lvRow.uRow, [&](CPath& dir){
             m_pDir = &dir;
             update();
         });

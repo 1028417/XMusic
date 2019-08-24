@@ -9,7 +9,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CPlayerView& view) :
+CMedialibDlg::CMedialibDlg(CPlayerView& view) :
     m_view(view)
     , m_MedialibView(view, *this)
 {

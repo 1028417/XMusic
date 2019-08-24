@@ -191,6 +191,11 @@ int CApp::run()
 }
 
 
+QMainWindow& CPlayerView::getMainWnd() const
+{
+    return m_mainWnd;
+}
+
 IModelObserver& CPlayerView::getModelObserver()
 {
     return m_mainWnd;

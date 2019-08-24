@@ -226,7 +226,7 @@ void CBkgDlg::setBkg(UINT uIdx)
     cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
     (void)pmBkg.load(stBkgDir + strBkg);
-    m_view.getMainWnd().updateBkg();
+    ((MainWindow&)m_view.getMainWnd()).updateBkg();
 
     close();
 }
@@ -235,7 +235,7 @@ void CBkgDlg::unsetBkg()
 {
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
     pmBkg = QPixmap();
-    m_view.getMainWnd().updateBkg();
+    ((MainWindow&)m_view.getMainWnd()).updateBkg();
 
     close();
 }

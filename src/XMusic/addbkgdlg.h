@@ -10,16 +10,12 @@ class CAddBkgView : public CListView
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_PathList& m_paDirs);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
 
-    const TD_PathList& m_paDirs;
-
     CPath *m_pDir = NULL;
-
-    ArrList<QPixmap> m_paPixmap;
 
 private:
     inline UINT _picLayoutCount() const;
@@ -129,6 +125,8 @@ private:
     CImgRoot m_ImgRoot;
 
     TD_PathList m_paDirs;
+    ArrList<QPixmap> m_alPixmap;
+
     map<void*, QPixmap> m_mapPixmaxp;
 
 signals:
@@ -154,8 +152,7 @@ private slots:
 #define __zoomoutSize 150
             CPainter::zoomoutPixmap(pm, __zoomoutSize);
 
-            m_mapPixmaxp[pDir] = pm;
-
+            m_alPixmap.add(pm);
             m_paDirs.add((CPath*)pDir);
 
             m_addbkgView.update();
@@ -175,6 +172,16 @@ public:
     void init();
 
     void show();
+
+    const TD_PathList& dirs() const
+    {
+        return m_paDirs;
+    }
+
+    const ArrList<QPixmap>& pixmap() const
+    {
+        return m_alPixmap;
+    }
 
     const QPixmap* getPixmap(CPath& path);
 };

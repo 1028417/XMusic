@@ -4,6 +4,9 @@
 #include "model.h"
 #include "../XMusicHost/controller.h"
 
+#include <QApplication>
+#include <QMainWindow>
+
 #include <QTimer>
 
 extern ITxtWriter& g_logger;
@@ -11,7 +14,7 @@ extern ITxtWriter& g_logger;
 class CPlayerView : public IPlayerView
 {
 public:
-    CPlayerView(class QApplication& app, class MainWindow& mainWnd, IModel& model, IPlayerController& ctrl) :
+    CPlayerView(QApplication& app, class MainWindow& mainWnd, IModel& model, IPlayerController& ctrl) :
         m_app(app),
         m_mainWnd(mainWnd),
         m_model(model),
@@ -20,7 +23,8 @@ public:
     }
 
 private:
-    class QApplication& m_app;
+    QApplication& m_app;
+
     class MainWindow& m_mainWnd;
 
     IModel& m_model;
@@ -33,10 +37,7 @@ public:
         return m_app;
     }
 
-    MainWindow& getMainWnd() const
-    {
-        return m_mainWnd;
-    }
+    QMainWindow& getMainWnd() const;
 
     IPlayerController& getCtrl() const
     {
