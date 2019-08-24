@@ -22,6 +22,7 @@ bool g_bFullScreen = true;
 
 inline static void setFull(QWidget* wnd)
 {
+    (void)wnd;
 #if !__android
     if (!g_bFullScreen)
     {
@@ -280,7 +281,6 @@ bool MainWindow::event(QEvent *ev)
     {
     case QEvent::Move:
     case QEvent::Resize:
-    //case QEvent::Show:
         for (auto pDlg : g_setDlgs)
         {
             setFull(pDlg);
@@ -289,6 +289,10 @@ bool MainWindow::event(QEvent *ev)
         setFull(this);
 
         _relayout();
+
+        break;
+    case QEvent::Close:
+        m_view.getApp().quit();
 
         break;
     case QEvent::Timer:
@@ -870,7 +874,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnExit)
     {
-        m_view.getApp().quit();
+        this->close();
     }
     else if (button == ui.btnPause)
     {

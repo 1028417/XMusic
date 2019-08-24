@@ -71,11 +71,11 @@ DESTDIR = $$PWD/../../build
     font.path = /assets
     INSTALLS += font
 
-    hbkg.files += ../../bin/hbkg/win10.jpg
+    hbkg.files += ../../bin/hbkg/win10
     hbkg.path = /assets/hbkg
     INSTALLS += hbkg
 
-    vbkg.files += ../../bin/vbkg/win10.jpg
+    vbkg.files += ../../bin/vbkg/win10
     vbkg.path = /assets/vbkg
     INSTALLS += vbkg
 

@@ -18,6 +18,20 @@ public:
 
 private:
     CMediaRes m_root;
+
+private:
+    CPath* _newSubPath(const tagFileInfo& FileInfo) override
+    {
+        if (FileInfo.bDir)
+        {
+            if (wsutil::matchIgnoreCase(FileInfo.strName, L"XMusic"))
+            {
+                return NULL;
+            }
+        }
+
+        return CMediaRes::_newSubPath(FileInfo);
+    }
 };
 
 class CMedialibView : public CListViewEx

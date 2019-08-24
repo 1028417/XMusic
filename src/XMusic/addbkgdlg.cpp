@@ -39,8 +39,8 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
-    //m_ImgRoot.SetDir(L"C:/dev/XMusic/bin");
-    m_ImgRoot.startScan([&](CPath& dir) {
+    //m_ImgRoot.SetDir(L"D:/dev/cpp/XMusic/bin");
+    m_ImgRoot.startScan([&](CPath& dir) {        
         emit signal_founddir(&dir);
     });
 }

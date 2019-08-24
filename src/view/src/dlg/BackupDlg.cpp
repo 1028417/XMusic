@@ -252,7 +252,7 @@ void CBackupDlg::OnBnClickedBackup()
 		wsutil::ltrim(strPrevTag);
 	}
 
-	wstring strNewTag = m_BackupMgr.backup();
+	wstring strNewTag = m_view.getModel().backupDB();
 	__Ensure(!strNewTag.empty());
 	
 	Refresh();

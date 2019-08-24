@@ -68,11 +68,11 @@ bool __view::init()
 
 	m_MainWnd.show();
 
-	if (!m_model.status())
+	if (!m_model.status() && m_model.getMediaLib().empty())
 	{
 		CMainApp::async([&]() {
 			CFolderDlgEx FolderDlg;
-			wstring strRootDir = FolderDlg.Show(L"设定根目录", L"根目录不存在，请重新设定");
+			wstring strRootDir = FolderDlg.Show(L"设定根目录");
 			if (!strRootDir.empty())
 			{
 				(void)m_model.initMediaLib(strRootDir);

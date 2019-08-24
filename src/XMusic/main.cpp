@@ -69,7 +69,7 @@ public:
             strSdcardPath = pszSdcardPath;
         }*/
 
-        wstring strDataDir = L"/sdcard/Android/data/XMusic";
+        wstring strDataDir = L"/sdcard/XMusic/.xmusic";
         if (fsutil::createDir(strDataDir))
         {
             fsutil::setWorkDir(strDataDir);

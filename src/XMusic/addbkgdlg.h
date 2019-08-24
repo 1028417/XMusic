@@ -53,7 +53,7 @@ public:
     }
 
 private:
-    virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
+    CPath* _newSubPath(const tagFileInfo& FileInfo) override
     {
         if (FileInfo.bDir)
         {

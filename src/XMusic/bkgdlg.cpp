@@ -110,15 +110,18 @@ void CBkgDlg::init()
         this->close();
     });
 
+#define __hbkgdir L"/hbkg/"
+#define __vbkgdir L"/vbkg/"
 
-    m_strHBkgDir = fsutil::workDir() + L"/hbkg/";
-    m_strVBkgDir = fsutil::workDir() + L"/vbkg/";
+    m_strHBkgDir = fsutil::workDir() + __hbkgdir;
+    m_strVBkgDir = fsutil::workDir() + __vbkgdir;
 
+#define __win10bkg L"win10"
     if (!fsutil::existDir(m_strHBkgDir))
     {
         if (fsutil::createDir(m_strHBkgDir))
         {
-            fsutil::copyFile(L"assets:/hbkg/win10.jpg", m_strHBkgDir + L"win10");
+            fsutil::copyFile(L"assets:" __hbkgdir __win10bkg, m_strHBkgDir + __win10bkg);
         }
     }
 
@@ -126,7 +129,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strVBkgDir))
         {
-            fsutil::copyFile(L"assets:/vbkg/win10.jpg", m_strVBkgDir + L"win10");
+            fsutil::copyFile(L"assets:" __vbkgdir __win10bkg, m_strVBkgDir + __win10bkg);
         }
     }
 
