@@ -335,8 +335,25 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     if (m_view.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
         m_lstSingerPixmap.push_back(QPixmap());
-        auto& pm = m_lstSingerPixmap.back();
-        pm.load(wsutil::toQStr(strSingerImg));
+        QPixmap& pm = m_lstSingerPixmap.back();
+        if (pm.load(wsutil::toQStr(strSingerImg)))
+        {
+#define __scaleSize 200
+            if (pm.width() < pm.height())
+            {
+                if (pm.width() > __scaleSize)
+                {
+                    pm.scaledToWidth(__scaleSize);
+                }
+            }
+            else
+            {
+                if (pm.width() > __scaleSize)
+                {
+                    pm.scaledToHeight(__scaleSize);
+                }
+            }
+        }
 
         m_mapSingerPixmap[&Singer] = &pm;
 
