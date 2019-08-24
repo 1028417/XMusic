@@ -24,19 +24,17 @@ android: MOBILITY =
 SOURCES +=\
     mainwindow.cpp \
     ../XMusicHost/controller.cpp \
-    main.cpp \
-    view.cpp \
     PlayingList.cpp \
     widget.cpp \
     bkgdlg.cpp \
     listview.cpp \
     medialibdlg.cpp \
     addbkgdlg.cpp \
-    ListViewEx.cpp
+    ListViewEx.cpp \
+    app.cpp
 
 HEADERS  += mainwindow.h \
     ../XMusicHost/controller.h \
-    view.h \
     label.h \
     PlayingList.h \
     widget.h \
@@ -47,7 +45,8 @@ HEADERS  += mainwindow.h \
     dialog.h \
     medialibdlg.h \
     addbkgdlg.h \
-    ListViewEx.h
+    ListViewEx.h \
+    app.h
 
 RESOURCES += res.qrc
 

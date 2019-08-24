@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "view.h"
+#include "app.h"
 
 #include "listview.h"
 

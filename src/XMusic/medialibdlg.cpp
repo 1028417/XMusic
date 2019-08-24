@@ -1,5 +1,5 @@
 
-#include "view.h"
+#include "app.h"
 
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"

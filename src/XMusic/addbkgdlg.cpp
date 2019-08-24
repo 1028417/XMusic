@@ -1,4 +1,4 @@
-#include "view.h"
+#include "app.h"
 
 #include "bkgdlg.h"
 
