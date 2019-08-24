@@ -323,13 +323,10 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     return true;
 }
 
-static list<QPixmap> g_lstSingerPixmap;
-static map<CSinger*, QPixmap*> g_mapSingerPixmap;
-
-QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
+const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
 {
-    auto itr = g_mapSingerPixmap.find(&Singer);
-    if (itr != g_mapSingerPixmap.end())
+    auto itr = m_mapSingerPixmap.find(&Singer);
+    if (itr != m_mapSingerPixmap.end())
     {
         return *itr->second;
     }
@@ -337,16 +334,17 @@ QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     wstring strSingerImg;
     if (m_view.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
-        g_lstSingerPixmap.push_back(QPixmap());
-        QPixmap& pixmap = g_lstSingerPixmap.back();
-        pixmap.load(wsutil::toQStr(strSingerImg));
+        m_lstSingerPixmap.push_back(QPixmap());
+        auto& pm = m_lstSingerPixmap.back();
+        pm.load(wsutil::toQStr(strSingerImg));
 
-        g_mapSingerPixmap[&Singer] = &pixmap;
-        return pixmap;
+        m_mapSingerPixmap[&Singer] = &pm;
+
+        return pm;
     }
     else
     {
-        g_mapSingerPixmap[&Singer] = &m_pmDefaultSinger;
+        m_mapSingerPixmap[&Singer] = &m_pmDefaultSinger;
         return m_pmDefaultSinger;
     }
 }

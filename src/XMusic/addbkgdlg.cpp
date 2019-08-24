@@ -5,6 +5,8 @@
 #include "addbkgdlg.h"
 #include "ui_addbkgdlg.h"
 
+const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
+
 static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
@@ -37,6 +39,7 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
+    //m_ImgRoot.SetDir(L"C:/dev/XMusic/bin");
     m_ImgRoot.startScan([&](CPath& dir) {
         emit signal_founddir(&dir);
     });
@@ -66,6 +69,24 @@ bool CAddBkgDlg::_handleReturn()
     }
 
     return true;
+}
+
+const QPixmap* CAddBkgDlg::getPixmap(CPath& path)
+{
+    auto itr = m_mapPixmaxp.find(&path);
+    if (itr == m_mapPixmaxp.end())
+    {
+        if (!path.fileInfo().bDir)
+        {
+            auto& pm = m_mapPixmaxp[&path];
+            pm.load(wsutil::toQStr(path.absPath()));
+            return &pm;
+        }
+
+        return NULL;
+    }
+
+    return &itr->second;
 }
 
 
@@ -149,6 +170,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
     {
         m_paDirs.get(lvRow.uRow, [&](CPath& dir){
             tagRowContext context(E_RowStyle::IS_RightTip, dir.GetName());
+            context.pixmap = m_addbkgDlg.getPixmap(dir);
             _paintRow(painter, rc, lvRow, context);
         });
     }

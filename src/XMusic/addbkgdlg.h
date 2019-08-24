@@ -10,7 +10,7 @@ class CAddBkgView : public CListView
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_PathList& paDirs);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_PathList& m_paDirs);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
@@ -18,6 +18,8 @@ private:
     const TD_PathList& m_paDirs;
 
     CPath *m_pDir = NULL;
+
+    ArrList<QPixmap> m_paPixmap;
 
 private:
     inline UINT _picLayoutCount() const;
@@ -37,10 +39,41 @@ public:
 };
 
 
-class CImgRoot : public CPath
+extern const SSet<wstring>& g_setImgExtName;
+
+class CImgDir : public CPath
 {
 public:
-    CImgRoot() : CPath(L"/sdcard")
+    CImgDir(const wstring& strDir) : CPath(strDir)
+    {
+    }
+
+    CImgDir(const tagFileInfo& FileInfo) : CPath(FileInfo)
+    {
+    }
+
+private:
+    virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
+    {
+        if (FileInfo.bDir)
+        {
+            return new CImgDir(FileInfo);
+        }
+
+        cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(FileInfo.strName));
+        if (g_setImgExtName.includes(strExtName))
+        {
+            return new CPath(FileInfo);
+        }
+
+        return NULL;
+    }
+};
+
+class CImgRoot : public CImgDir
+{
+public:
+    CImgRoot() : CImgDir(L"/sdcard")
     {
     }
 
@@ -96,6 +129,7 @@ private:
     CImgRoot m_ImgRoot;
 
     TD_PathList m_paDirs;
+    map<void*, QPixmap> m_mapPixmaxp;
 
 signals:
     void signal_founddir(void* pDir);
@@ -104,6 +138,14 @@ private slots:
     void slot_founddir(void *pDir)
     {
         m_paDirs.add((CPath*)pDir);
+
+        QPixmap& pm = m_mapPixmaxp[pDir];
+        for (auto pSubFile : ((CPath*)pDir)->files())
+        {
+            pm.load(wsutil::toQStr(pSubFile->absPath()));
+            break;
+        }
+
         m_addbkgView.update();
     }
 
@@ -118,4 +160,6 @@ public:
     void init();
 
     void show();
+
+    const QPixmap* getPixmap(CPath& path);
 };

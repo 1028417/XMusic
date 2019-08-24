@@ -241,8 +241,6 @@ bool CBkgDlg::addBkg()
 {
 #if __android
     m_addbkgDlg.show();
-#else
-
 #endif
 
     return true;

@@ -41,7 +41,7 @@ protected:
 
         E_RowStyle eStyle = E_RowStyle::IS_None;
 
-        QPixmap *pixmap = NULL;
+        const QPixmap *pixmap = NULL;
         UINT uIconSize = 0;
 
         wstring strText;

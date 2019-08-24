@@ -50,6 +50,9 @@ private:
     QPixmap m_pmDirLink;
     QPixmap m_pmFile;
 
+    list<QPixmap> m_lstSingerPixmap;
+    map<CSinger*, QPixmap*> m_mapSingerPixmap;
+
 public:
     void init();
 
@@ -71,7 +74,7 @@ private:
     bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
-    QPixmap& _getSingerPixmap(CSinger&);
+    const QPixmap& _getSingerPixmap(CSinger&);
 
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaRes&, WString& strTitle);
