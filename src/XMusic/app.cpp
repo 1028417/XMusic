@@ -4,8 +4,6 @@
 
 #include "mainwindow.h"
 
-#include <QTimer>
-
 #include "app.h"
 
 #if __android
@@ -190,16 +188,6 @@ public:
 IModelObserver& CPlayerView::getModelObserver()
 {
     return m_mainWnd;
-}
-
-void CPlayerView::setTimer(UINT uMs, const function<bool()>& cb)
-{
-    QTimer::singleShot(uMs, [=](){
-        if (cb())
-        {
-            setTimer(uMs, cb);
-        }
-    });
 }
 
 int main(int argc, char *argv[])

@@ -4,6 +4,8 @@
 #include "model.h"
 #include "../XMusicHost/controller.h"
 
+#include <QTimer>
+
 extern ITxtWriter& g_logger;
 
 class CPlayerView : public IPlayerView
@@ -61,7 +63,15 @@ public:
         return m_model.getPlayMgr();
     }
 
-    void setTimer(UINT uMs, const function<bool()>& cb);
+    void setTimer(UINT uMs, const function<bool()>& cb)
+    {
+        QTimer::singleShot(uMs, [=](){
+            if (cb())
+            {
+                setTimer(uMs, cb);
+            }
+        });
+    }
 
 private:
     class IModelObserver& getModelObserver() override;
