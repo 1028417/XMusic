@@ -30,8 +30,6 @@ private:
 private:
 	bool _loadCue(const wstring& strFileName);
 
-	CPath* NewSubPath(const tagFileInfo& FileInfo) override;
-
 	void ReadMP3Tag(FILE *lpFile);
 	bool ReadFlacTag();
 
@@ -47,6 +45,9 @@ private:
 	{
 		return (CMediaRes*)this;
 	}
+
+protected:
+	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override;
 
 public:
     CMediaRes* parent() const

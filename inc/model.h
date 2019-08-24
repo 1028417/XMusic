@@ -11,8 +11,6 @@ extern ITxtWriter& g_logger;
 #define __ModelExt __dllimport
 #endif
 
-#define __dbfile L"xmusic.db"
-
 #include "MediaDef.h"
 
 #include "Dao.h"
@@ -163,6 +161,7 @@ public:
 
 	virtual void close() = 0;
 
+    virtual wstring backupDB() = 0;
 	virtual bool restoreDB(const wstring& strTag) = 0;
 };
 
@@ -197,8 +196,6 @@ public:
 	{
 		return m_db.GetStatus();
 	}
-
-	wstring db() const;
 
 	XMediaLib& getMediaLib() override
 	{
@@ -274,17 +271,20 @@ public:
 
 	void close() override;
 
+    wstring backupDB() override;
 	bool restoreDB(const wstring& strTag) override;
 
 private:
+    wstring _dbFile() const;
+
 	bool _initMediaLib();
 
     wstring _scanXMusicDir();
 
-    bool _initDB(const wstring& strDBFile);
+    bool _initData(const wstring& strDBFile, const wstring& strSingerImgDir);
 
 	inline void _refreshMediaLib()
-	{
+    {
         m_MediaLib.setDir(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
 	}
 

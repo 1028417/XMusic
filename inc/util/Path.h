@@ -54,18 +54,9 @@ protected:
     const tagFileInfo& m_FileInfo = m_fi;
 
 private:
-	template <typename CB>
-	inline bool _findFile(const CB& cb)
+	virtual CPath* _newSubPath(const tagFileInfo& FileInfo)
 	{
-		if (!fsutil::findFile(this->absPath(), cb))
-		{
-			m_eFindFileStatus = E_FindFileStatus::FFS_NotExists;
-			return false;
-		}
-
-		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
-
-		return true;
+		return new CPath(FileInfo);
 	}
 
 	void _sort(TD_PathList& paSubPath);
@@ -77,11 +68,6 @@ protected:
 	void _findFile();
 
 	virtual void _onFindFile(TD_PathList& paSubDir, TD_PathList& paSubFile);
-
-        virtual CPath* NewSubPath(const tagFileInfo& FileInfo)
-        {
-                return new CPath(FileInfo);
-        }
 
 	virtual int _sort(const CPath& lhs, const CPath& rhs) const;
 
@@ -209,7 +195,7 @@ public:
 	}
 
 protected:
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
+	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override
 	{
 		return new CPathObject(FileInfo);
 	}
@@ -233,7 +219,7 @@ public:
 	}
 
 protected:
-	virtual CPath* NewSubPath(const tagFileInfo& FileInfo) override
+	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override
 	{
 		if (FileInfo.bDir)
 		{

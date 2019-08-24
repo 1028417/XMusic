@@ -4,6 +4,8 @@ using CB_BackupCompare = function<void(const tagCompareBackupResult&)>;
 
 class __ModelExt CBackupMgr
 {
+friend class CModel;
+
 public:
 	CBackupMgr(CDao& dao, class CModel& model)
 		: m_dao(dao)
@@ -34,6 +36,11 @@ private:
 
 	bool _getCompareResult(const wstring& strSrcTag, const wstring& strDstTag, const CB_BackupCompare& cb);
 
+private:
+    wstring backup(const wstring& strDBFile);
+
+    bool restore(const wstring& strTag, const wstring& strDBFile);
+
 public:
 	const SArray<wstring>& getBackupTags()
 	{
@@ -43,12 +50,8 @@ public:
     void init();
 
 	void close();
-	
-	wstring backup();
 
 	void removeBackup(const wstring& strTag);
-	
-	bool restore(const wstring& strTag);
 
 	void getCompareResult(const SList<pair<wstring, wstring>>& lstTags, SList<tagCompareBackupResult>& lstResult);
 

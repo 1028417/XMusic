@@ -11,7 +11,7 @@ private:
 	map<wstring, vector<wstring>> m_mapSingerImgFile;
 
 public:
-	void init();
+	void init(const wstring& strSingerImgDir);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 

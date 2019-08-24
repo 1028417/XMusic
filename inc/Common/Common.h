@@ -87,7 +87,7 @@ class __CommonExt CFolderDlgEx : public CFolderDlg
 public:
 	CFolderDlgEx(){}
 
-	wstring Show(HWND hWndOwner, LPCWSTR lpszInitialDir = NULL, LPCWSTR lpszTitle = NULL, LPCWSTR lpszMessage = NULL
+	wstring Show(HWND hWndOwner, LPCWSTR lpszInitialDir = NULL, LPCWSTR lpszTitle = NULL, LPCWSTR lpszTip = NULL
 		, LPCWSTR lpszOKButton = NULL, LPCWSTR lpszCancelButton = NULL, UINT uWidth = 0, UINT uHeight = 0)
 	{
 		if (NULL == hWndOwner)
@@ -106,20 +106,15 @@ public:
 
 		wstring strRet;
 		CMainApp::GetMainApp()->thread([&]() {
-			strRet = CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszMessage
+			strRet = CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
 				, lpszOKButton, lpszCancelButton, uWidth, uHeight);
 		});
 		return strRet;
 	}
 
-	wstring Show(const wstring& strTitle, const wstring& strTipMsg, HWND hWndOwner = NULL)
+	wstring Show(const wstring& strTitle, const wstring& strTip = L"", HWND hWndOwner = NULL)
 	{
-		return Show(hWndOwner, NULL, strTitle.c_str(), strTipMsg.c_str());
-	}
-
-	wstring Show(const wstring& strTitle, const wstring& strTipMsg, const wstring& strInitialDir, HWND hWndOwner = NULL)
-	{
-		return Show(hWndOwner, strInitialDir.c_str(), strTitle.c_str(), strTipMsg.c_str());
+		return Show(hWndOwner, NULL, strTitle.c_str(), strTip.c_str());
 	}
 };
 
