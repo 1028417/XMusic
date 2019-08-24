@@ -137,16 +137,31 @@ signals:
 private slots:
     void slot_founddir(void *pDir)
     {
-        m_paDirs.add((CPath*)pDir);
-
-        QPixmap& pm = m_mapPixmaxp[pDir];
         for (auto pSubFile : ((CPath*)pDir)->files())
         {
-            pm.load(wsutil::toQStr(pSubFile->absPath()));
+            QPixmap pm;
+            if (!pm.load(wsutil::toQStr(pSubFile->absPath())))
+            {
+                continue;
+            }
+
+#define __filterSize 300
+            if (pm.width()<__filterSize || pm.height()<__filterSize)
+            {
+                continue;
+            }
+
+#define __zoomoutSize 150
+            CPainter::zoomoutPixmap(pm, __zoomoutSize);
+
+            m_mapPixmaxp[pDir] = pm;
+
+            m_paDirs.add((CPath*)pDir);
+
+            m_addbkgView.update();
+
             break;
         }
-
-        m_addbkgView.update();
     }
 
 private:

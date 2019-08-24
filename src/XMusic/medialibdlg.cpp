@@ -334,30 +334,19 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     wstring strSingerImg;
     if (m_view.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
-        m_lstSingerPixmap.push_back(QPixmap());
-        QPixmap& pm = m_lstSingerPixmap.back();
+        QPixmap pm;
         if (pm.load(wsutil::toQStr(strSingerImg)))
         {
-#define __scaleSize 200
-            if (pm.width() < pm.height())
-            {
-                if (pm.width() > __scaleSize)
-                {
-                    pm.scaledToWidth(__scaleSize);
-                }
-            }
-            else
-            {
-                if (pm.width() > __scaleSize)
-                {
-                    pm.scaledToHeight(__scaleSize);
-                }
-            }
+#define __zoomoutSize 150
+            CPainter::zoomoutPixmap(pm, __zoomoutSize);
         }
 
-        m_mapSingerPixmap[&Singer] = &pm;
+        m_lstSingerPixmap.push_back(QPixmap());
+        auto& back = m_lstSingerPixmap.back();
+        back.swap(pm);
 
-        return pm;
+        m_mapSingerPixmap[&Singer] = &back;
+        return back;
     }
     else
     {

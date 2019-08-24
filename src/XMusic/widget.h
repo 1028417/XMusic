@@ -13,6 +13,8 @@
 
 #include <QFont>
 
+#include <QPixmap>
+
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
@@ -182,6 +184,26 @@ public:
         }
 
         this->drawPixmap(rcDst, pixmap, rcSrc);
+    }
+
+    static void zoomoutPixmap(QPixmap& pm, size_t size)
+    {
+        if (pm.width() < pm.height())
+        {
+            if (pm.width() > (int)size)
+            {
+                auto&& temp = pm.scaledToWidth(size);
+                pm.swap(temp);
+            }
+        }
+        else
+        {
+            if (pm.width() > (int)size)
+            {
+                auto&& temp = pm.scaledToHeight(size);
+                pm.swap(temp);
+            }
+        }
     }
 };
 
