@@ -281,8 +281,8 @@ bool CImgDir::genSnapshot()
     {
         auto pSubFile = *m_itrSubFile;
 
-#define __zoomoutSize 150
-        if (_loadImg(*pSubFile, m_pmSnapshot, __zoomoutSize))
+#define __snapshotSize 150
+        if (_loadImg(*pSubFile, m_pmSnapshot, __snapshotSize))
         {
             return true;
         }
@@ -301,8 +301,9 @@ bool CImgDir::genSubImgs()
 
     auto pSubFile = *m_itrSubFile;
 
+#define __zoomoutSize 600
     QPixmap pm;
-    if (_loadImg(*pSubFile, pm, 600))
+    if (_loadImg(*pSubFile, pm, __zoomoutSize))
     {
         m_lstSubImgs.push_back({pSubFile, QPixmap()});
         auto& pr = m_lstSubImgs.back();

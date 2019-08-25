@@ -42,6 +42,10 @@ private:
     vector<WString> m_vecHBkg;
     vector<WString> m_vecVBkg;
 
+    list<QPixmap> m_lstSnapshot;
+    vector<const QPixmap*> m_vecHSnapshot;
+    vector<const QPixmap*> m_vecVSnapshot;
+
     bool m_bHScreen = false;
 
     QPixmap m_pmDefaultBkg;
@@ -49,7 +53,7 @@ private:
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
-public:    
+public:
     void init();
 
     void setDefaultBkg(const QPixmap& pmDefaultBkg)
@@ -72,7 +76,7 @@ public:
         return m_pmVBkg;
     }
 
-    UINT bkgCount()
+    UINT bkgCount() const
     {
         if (m_bHScreen)
         {
@@ -86,7 +90,7 @@ public:
 
     void paintDefaultBkg(QPainter& painter, const QRect& rcDst);
 
-    WString bkg(UINT uIdx);
+    const QPixmap* snapshot(UINT uIdx);
 
     void setBkg(UINT uIdx);
     void unsetBkg();
@@ -95,4 +99,14 @@ public:
 
 private:
     void _relayout(int cx, int cy) override;
+
+    void _onClose() override
+    {
+        m_vecHSnapshot.clear();
+        m_vecVSnapshot.clear();
+
+        m_lstSnapshot.clear();
+
+        m_bkgView.reset();
+    }
 };

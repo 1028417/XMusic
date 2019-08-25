@@ -34,6 +34,8 @@ private:
 
     virtual bool _handleReturn() {return false;}
 
+    virtual void _onClose(){}
+
 public:
     void show()
     {
@@ -44,13 +46,6 @@ public:
         showFull(this);
 
         g_setDlgs.insert(this);
-    }
-
-    void close()
-    {
-        g_setDlgs.erase(this);
-
-        QDialog::close();
     }
 
     void setBkgColor(uint r, uint g, uint b)
@@ -70,6 +65,11 @@ protected:
     {
         switch (ev->type())
         {
+        case QEvent::Close:
+            g_setDlgs.erase(this);
+            _onClose();
+
+            break;
         case QEvent::Move:
         case QEvent::Resize:
         {

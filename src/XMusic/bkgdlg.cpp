@@ -48,10 +48,10 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
     else
     {
         UINT uIdx = (UINT)nItem-1;
-        cauto& strBkg = m_bkgDlg.bkg(uIdx);
-        if (!strBkg.empty())
+        cauto pm = m_bkgDlg.snapshot(uIdx);
+        if (pm)
         {
-            painter.drawPixmapEx(rc, strBkg);
+            painter.drawPixmapEx(rc, *pm);
         }
         else
         {
@@ -199,16 +199,33 @@ void CBkgDlg::paintDefaultBkg(QPainter& painter, const QRect& rcDst)
     painter.drawPixmap(rcDst, m_pmDefaultBkg, rcSrc);
 }
 
-WString CBkgDlg::bkg(UINT uIdx)
+const QPixmap* CBkgDlg::snapshot(UINT uIdx)
 {
+    auto& vecSnapshot = m_bHScreen?m_vecHSnapshot:m_vecVSnapshot;
+    if (uIdx < vecSnapshot.size())
+    {
+        return vecSnapshot[uIdx];
+    }
+
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (uIdx >= vecBkg.size())
     {
-        return L"";
+        return NULL;
     }
 
     cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    return stBkgDir + vecBkg[uIdx];
+    cauto& strBkgFile = stBkgDir + vecBkg[uIdx];
+
+#define __zoomoutSize 1000
+    m_lstSnapshot.push_back(QPixmap());
+    auto pm = &m_lstSnapshot.back();
+    if (pm->load(strBkgFile))
+    {
+        CPainter::zoomoutPixmap(*pm, __zoomoutSize);
+    }
+
+    vecSnapshot.push_back(pm);
+    return pm;
 }
 
 void CBkgDlg::setBkg(UINT uIdx)
@@ -218,10 +235,16 @@ void CBkgDlg::setBkg(UINT uIdx)
     {
         return;
     }
+    cauto& strBkg = vecBkg[uIdx];
 
-    auto& strBkg = m_bHScreen?m_view.getOptionMgr().getOption().strHBkg
-                            :m_view.getOptionMgr().getOption().strVBkg;
-    strBkg = vecBkg[uIdx];
+    if (m_bHScreen)
+    {
+        m_view.getOptionMgr().getOption().strHBkg = strBkg;
+    }
+    else
+    {
+        m_view.getOptionMgr().getOption().strVBkg = strBkg;
+    }
 
     cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;

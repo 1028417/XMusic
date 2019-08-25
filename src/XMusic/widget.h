@@ -117,15 +117,6 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmapEx(const QRect& rcDst, const WString& strImgFile)
-    {
-        QPixmap pm;
-        if (pm.load(strImgFile))
-        {
-            drawPixmapEx(rcDst, pm);
-        }
-    }
-
     template <class T>
     void _drawFrame(UINT uWidth, const QRect& rc, const T& t)
     {
