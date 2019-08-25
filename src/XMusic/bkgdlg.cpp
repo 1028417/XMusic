@@ -94,7 +94,7 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 CBkgDlg::CBkgDlg(CPlayerView& view) :
     m_view(view),
     m_bkgView(*this),
-    m_addbkgDlg(*this)
+    m_addbkgDlg(view, *this)
 {
 }
 

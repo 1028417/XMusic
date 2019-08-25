@@ -7,9 +7,10 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) :
-    m_bkgDlg(bkgDlg)
-    , m_addbkgView(*this, m_paImgDirs)
+CAddBkgDlg::CAddBkgDlg(CPlayerView& view, CBkgDlg& bkgDlg) :
+    m_view(view)
+    , m_bkgDlg(bkgDlg)
+    , m_addbkgView(view, *this, m_paImgDirs)
 {
 }
 
@@ -38,7 +39,7 @@ void CAddBkgDlg::show()
     CDialog::show();
 
 #if !__android
-    m_ImgRoot.SetDir(L"D:/dev/cpp/XMusic/bin");
+    m_ImgRoot.SetDir(L"D:/des");
 #endif
     m_ImgRoot.startScan([&](CPath& dir) {
         CImgDir& imgDir = (CImgDir&)dir;
@@ -96,8 +97,9 @@ const QPixmap* getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir)
-    : CListView(&addbkgDlg)
+CAddBkgView::CAddBkgView(CPlayerView& view, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+    CListView(&addbkgDlg)
+    , m_view(view)
     , m_addbkgDlg(addbkgDlg)
     , m_paImgDirs(paImgDir)
 {
@@ -197,9 +199,23 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         _saveScrollRecord(NULL);
 
         m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
-            imgDir.genSubImgs();
-
             m_pImgDir = &imgDir;
+
+            m_view.setTimer(100, [&](){
+                if (NULL == m_pImgDir)
+                {
+                    return false;
+                }
+
+                if (!m_pImgDir->genSubImgs())
+                {
+                    return false;
+                }
+
+                CWidget::update();
+
+                return true;
+            });
         });
 
         update();
@@ -275,19 +291,25 @@ bool CImgDir::genSnapshot()
     return false;
 }
 
-void CImgDir::genSubImgs()
+bool CImgDir::genSubImgs()
 {
     cauto& files = CPath::files();
-    for (; m_itrSubFile != files.end(); ++m_itrSubFile)
+    if (files.end() == m_itrSubFile)
     {
-        auto pSubFile = *m_itrSubFile;
-
-        QPixmap pm;
-        if (_loadImg(*pSubFile, pm, 600))
-        {
-            m_lstSubImgs.push_back({pSubFile, QPixmap()});
-            auto& pr = m_lstSubImgs.back();
-            pr.second.swap(pm);
-        }
+        return false;
     }
+
+    auto pSubFile = *m_itrSubFile;
+
+    QPixmap pm;
+    if (_loadImg(*pSubFile, pm, 600))
+    {
+        m_lstSubImgs.push_back({pSubFile, QPixmap()});
+        auto& pr = m_lstSubImgs.back();
+        pr.second.swap(pm);
+    }
+
+    ++m_itrSubFile;
+
+    return true;
 }

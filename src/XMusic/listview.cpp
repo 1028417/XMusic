@@ -212,6 +212,8 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
+        m_bClicking = false; // TODO
+
         _scroll(te.dy());
     }
     else if (E_TouchEventType::TET_TouchEnd == type)

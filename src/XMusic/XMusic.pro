@@ -64,11 +64,6 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel 
 
 DESTDIR = $$PWD/../../build/XMusic
 
-MOC_DIR = $$PWD/../../build/XMusic
-RCC_DIR = $$PWD/../../build/XMusic
-UI_DIR =$$PWD/../../build/XMusic
-OBJECTS_DIR = $$PWD/../../build/XMusic
-
     font.files += ../../bin/Microsoft-YaHei-Light.ttc
 #    font.files += ../../bin/Microsoft-YaHei-Regular.ttc
     font.files += ../../bin/Microsoft-YaHei-Semibold.ttc
@@ -90,6 +85,11 @@ LIBS    += -L$$PWD/../../bin -lxMediaLib -lxmodel -lxPlaySDK
 
 DESTDIR = $$PWD/../../bin
 }
+
+MOC_DIR = $$PWD/../../build/XMusic
+RCC_DIR = $$PWD/../../build/XMusic
+UI_DIR = $$PWD/../../build/XMusic
+OBJECTS_DIR = $$PWD/../../build/XMusic
 
 DISTFILES += \
     android/AndroidManifest.xml \

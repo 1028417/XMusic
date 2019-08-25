@@ -34,7 +34,7 @@ public:
 
     bool genSnapshot();
 
-    void genSubImgs();
+    bool genSubImgs();
 
     const TD_SubImgList& subImgs()
     {
@@ -97,14 +97,16 @@ class CAddBkgView : public CListView
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CPlayerView& view, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
+    class CPlayerView& m_view;
+
     class CAddBkgDlg& m_addbkgDlg;
 
     const TD_ImgDirList& m_paImgDirs;
 
-    CPath *m_pImgDir = NULL;
+    CImgDir *m_pImgDir = NULL;
 
 private:
     inline UINT _picLayoutCount() const;
@@ -128,9 +130,11 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CAddBkgDlg(class CBkgDlg& bkgDlg);
+    explicit CAddBkgDlg(class CPlayerView& view, class CBkgDlg& bkgDlg);
 
 private:
+    class CPlayerView& m_view;
+
     class CBkgDlg& m_bkgDlg;
 
     CAddBkgView m_addbkgView;

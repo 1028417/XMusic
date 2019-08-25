@@ -495,30 +495,20 @@ void MainWindow::_relayout()
 
     if (m_bUsingCustomBkg)
     {
-#define __dy 5
-        if (fCXRate <= 1)
-        {
-#define __offset 8
-            int dy = int(fCXRate*__dy) +__offset*2;
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
-            {
-                pWidget->move(pWidget->x(), pWidget->y() - dy);
-            }
+#define __offset 10.0f
+        int yOffset = (int)round(__offset/fCXRate);
 
-            for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                                                , ui.btnSetting, ui.btnOrder, ui.btnRandom))
-            {
-                pWidget->move(pWidget->x(), pWidget->y() - __offset);
-            }
-        }
-        else
+        for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
         {
-            int dy = int(fCXRate*__dy);
-            for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                                                , ui.btnSetting, ui.btnOrder, ui.btnRandom))
-            {
-                pWidget->move(pWidget->x(), pWidget->y() + dy);
-            }
+            pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
+        }
+
+#define __dy 4
+        int dy = (int)round(fCXRate*__dy);
+        for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+                                            , ui.btnSetting, ui.btnOrder, ui.btnRandom))
+        {
+            pWidget->move(pWidget->x(), pWidget->y() + dy - yOffset);
         }
     }
 

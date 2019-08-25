@@ -130,7 +130,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
     }
     else if (E_MouseEventType::MET_Move == type)
     {
-        m_bClicking = false;
+        //m_bClicking = false;
 
         if (m_bMousePressed)
         {
