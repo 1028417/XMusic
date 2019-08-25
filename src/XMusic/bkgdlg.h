@@ -27,7 +27,12 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CBkgDlg(class CPlayerView& view);
+    CBkgDlg(class CPlayerView& view) :
+        m_view(view),
+        m_bkgView(*this),
+        m_addbkgDlg(view, *this)
+    {
+    }
 
 private:
     class CPlayerView& m_view;
@@ -88,8 +93,6 @@ public:
         }
     }
 
-    void paintDefaultBkg(QPainter& painter, const QRect& rcDst);
-
     const QPixmap* snapshot(UINT uIdx);
 
     void setBkg(UINT uIdx);
@@ -104,7 +107,6 @@ private:
     {
         m_vecHSnapshot.clear();
         m_vecVSnapshot.clear();
-
         m_lstSnapshot.clear();
 
         m_bkgView.reset();

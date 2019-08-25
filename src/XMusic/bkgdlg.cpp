@@ -43,7 +43,22 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
     int nItem = lvRow.uRow * 2 + lvRow.uCol;
     if (0 == nItem)
     {
-        m_bkgDlg.paintDefaultBkg(painter, rc);
+        cauto& pm = m_bkgDlg.defaultBkg();
+        QRect rcSrc = pm.rect();
+
+        float fHWRate = (float)rc.height()/rc.width();
+        if (fHWRate < 1)
+        {
+            rcSrc.setTop(rcSrc.bottom()-rcSrc.width()*fHWRate);
+        }
+        else
+        {
+        #define __offset    1080
+            rcSrc.setRight(__offset);
+            rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
+        }
+
+        painter.drawPixmap(rc, pm, rcSrc);
    }
     else
     {
@@ -89,13 +104,6 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             }
         }
     }
-}
-
-CBkgDlg::CBkgDlg(CPlayerView& view) :
-    m_view(view),
-    m_bkgView(*this),
-    m_addbkgDlg(view, *this)
-{
 }
 
 void CBkgDlg::init()
@@ -178,25 +186,6 @@ void CBkgDlg::_relayout(int cx, int cy)
         ui.labelTitle->move((cx-ui.labelTitle->width())/2, ui.labelTitle->y());
         ui.labelTitle->setVisible(true);
     }
-}
-
-void CBkgDlg::paintDefaultBkg(QPainter& painter, const QRect& rcDst)
-{
-    QRect rcSrc = m_pmDefaultBkg.rect();
-
-    float fHWRate = (float)rcDst.height()/rcDst.width();
-    if (fHWRate < 1)
-    {
-        rcSrc.setTop(rcSrc.bottom()-rcSrc.width()*fHWRate);
-    }
-    else
-    {
-    #define __offset    1080
-        rcSrc.setRight(__offset);
-        rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
-    }
-
-    painter.drawPixmap(rcDst, m_pmDefaultBkg, rcSrc);
 }
 
 const QPixmap* CBkgDlg::snapshot(UINT uIdx)
