@@ -112,7 +112,11 @@ class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CMedialibDlg(class CPlayerView& view);
+    CMedialibDlg(class CPlayerView& view) :
+        m_view(view)
+        , m_MedialibView(view, *this)
+    {
+    }
 
 private:
     class CPlayerView& m_view;

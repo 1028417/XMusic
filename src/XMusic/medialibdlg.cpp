@@ -9,12 +9,6 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(CPlayerView& view) :
-    m_view(view)
-    , m_MedialibView(view, *this)
-{
-}
-
 void CMedialibDlg::init()
 {
     ui.setupUi(this);
