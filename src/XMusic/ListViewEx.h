@@ -50,8 +50,6 @@ private:
 
     SSet<void*> m_setRootObject;
 
-    map<void*, float> m_mapScrollRecord;
-
 private:
     virtual void _onShowRoot() {}
     virtual void _onShowMediaSet(CMediaSet&) {}
@@ -69,9 +67,20 @@ private:
     virtual void _onRowClick(const tagLVRow&, CMedia&){}
     virtual void _onRowClick(const tagLVRow&, CPath&){}
 
-    float& _scrollRecord();
-    void _saveScrollRecord();
-    void _clearScrollRecord();
+    inline void* _current() const
+    {
+        void *p = m_pMediaset;
+        if (NULL == p)
+        {
+            p = m_pPath;
+        }
+        return p;
+    }
+
+    inline void _saveScrollRecord()
+    {
+        CListView::_saveScrollRecord(_current());
+    }
 
 protected:
     virtual bool _onUpward();

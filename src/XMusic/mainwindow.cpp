@@ -493,6 +493,22 @@ void MainWindow::_relayout()
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
+    if (m_bUsingCustomBkg && !m_bHScreen && fCXRate <= 0)
+    {
+        SList<QWidget*> lstWidget{ui.labelDuration, ui.progressBar, ui.labelPlayProgress};
+        for (auto pWidget : lstWidget)
+        {
+            pWidget->move(pWidget->x(), pWidget->y() - 20);
+        }
+
+        lstWidget.add(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+                      , ui.btnSetting, ui.btnOrder, ui.btnRandom);
+        for (auto pWidget : lstWidget)
+        {
+            pWidget->move(pWidget->x(), pWidget->y() - 20);
+        }
+    }
+
     int y_PlayingListMax = 0;
 
     ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);

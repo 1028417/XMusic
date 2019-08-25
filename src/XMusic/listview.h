@@ -82,6 +82,8 @@ private:
 
     QColor m_crSelectedBkg;
 
+    map<void*, float> m_mapScrollRecord;
+
 private:
     virtual UINT getColumnCount()
     {
@@ -121,6 +123,25 @@ protected:
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
+
+    float _scrollRecord(void* p)
+    {
+        return m_mapScrollRecord[p];
+    }
+
+    void _saveScrollRecord(void* p)
+    {
+        m_mapScrollRecord[p] = scrollPos();
+
+        reset();
+    }
+
+    void _clearScrollRecord(void *p)
+    {
+        m_mapScrollRecord.erase(p);
+
+        reset();
+    }
 
 public:
     void setPageRowCount(UINT uPageRowCount)

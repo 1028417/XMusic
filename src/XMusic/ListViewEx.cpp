@@ -204,35 +204,6 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
 }
 
-float& CListViewEx::_scrollRecord()
-{
-    void *p = m_pMediaset;
-    if (NULL == p)
-    {
-        p = m_pPath;
-    }
-    return m_mapScrollRecord[p];
-}
-
-void CListViewEx::_saveScrollRecord()
-{
-    _scrollRecord() = scrollPos();
-
-    reset();
-}
-
-void CListViewEx::_clearScrollRecord()
-{
-    void *p = m_pMediaset;
-    if (NULL == p)
-    {
-        p = m_pPath;
-    }
-    m_mapScrollRecord.erase(p);
-
-    reset();
-}
-
 bool CListViewEx::_onUpward()
 {
     if (m_pMediaset)
@@ -272,11 +243,11 @@ bool CListViewEx::_onUpward()
 
 bool CListViewEx::upward()
 {
-    _clearScrollRecord();
+    _clearScrollRecord(_current());
 
     if (_onUpward())
     {
-        scroll(_scrollRecord());
+        scroll(_scrollRecord(_current()));
         return true;
     }
 

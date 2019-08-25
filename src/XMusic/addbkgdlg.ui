@@ -16,8 +16,8 @@
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>30</y>
+     <x>40</x>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -44,8 +44,8 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>37</y>
+     <x>150</x>
+     <y>47</y>
      <width>300</width>
      <height>60</height>
     </rect>
