@@ -5,13 +5,11 @@
 #include "addbkgdlg.h"
 #include "ui_addbkgdlg.h"
 
-const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
-
 static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) :
     m_bkgDlg(bkgDlg)
-    , m_addbkgView(*this, m_plDirs)
+    , m_addbkgView(*this, m_paImgDirs)
 {
 }
 
@@ -39,30 +37,14 @@ void CAddBkgDlg::show()
 {
     CDialog::show();
 
-    //m_ImgRoot.SetDir(L"D:/dev/cpp/XMusic/bin");
+#if !__android
+    m_ImgRoot.SetDir(L"D:/dev/cpp/XMusic/bin");
+#endif
     m_ImgRoot.startScan([&](CPath& dir) {
-        for (auto pSubFile : dir.files())
+        CImgDir& imgDir = (CImgDir&)dir;
+        if (imgDir.genSnapshot())
         {
-            QPixmap pm;
-            if (!pm.load(wsutil::toQStr(pSubFile->absPath())))
-            {
-                continue;
-            }
-
-#define __filterSize 300
-            if (pm.width()<__filterSize || pm.height()<__filterSize)
-            {
-                continue;
-            }
-
-#define __zoomoutSize 150
-            CPainter::zoomoutPixmap(pm, __zoomoutSize);
-
-            m_lstPixmap.push_back(pm);
-
-            emit signal_founddir(&dir, &m_lstPixmap.back());
-
-            break;
+            emit signal_founddir(&imgDir);
         }
     });
 }
@@ -71,9 +53,7 @@ void CAddBkgDlg::close()
 {
     m_ImgRoot.stopScan();
 
-    m_plDirs.clear();
-    m_lstPixmap.clear();
-
+    m_paImgDirs.clear();
     m_ImgRoot.Clear();
 
     CDialog::close();
@@ -116,18 +96,18 @@ const QPixmap* getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& plDirs)
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir)
     : CListView(&addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
-    , m_plDirs(plDirs)
+    , m_paImgDirs(paImgDir)
 {
 }
 
 UINT CAddBkgView::_picLayoutCount() const
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
-        if (m_pDir->files().size() <= 4)
+        if (m_pImgDir->files().size() <= 4)
         {
             return 2;
         }
@@ -138,7 +118,7 @@ UINT CAddBkgView::_picLayoutCount() const
 
 UINT CAddBkgView::getColumnCount()
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
         return _picLayoutCount();
     }
@@ -148,7 +128,7 @@ UINT CAddBkgView::getColumnCount()
 
 UINT CAddBkgView::getPageRowCount()
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
         return _picLayoutCount();
     }
@@ -174,22 +154,22 @@ UINT CAddBkgView::getPageRowCount()
 
 UINT CAddBkgView::getRowCount()
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
-        return (UINT)ceil(m_pDir->files().size()/_picLayoutCount());
+        return (UINT)ceil(m_pImgDir->files().size()/_picLayoutCount());
     }
 
-    return m_plDirs.size();
+    return m_paImgDirs.size();
 }
 
 void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
     auto uRow = lvRow.uRow;
-    if (m_pDir)
+    if (m_pImgDir)
     {
         UINT uIdx = uRow * _picLayoutCount() + lvRow.uCol;
 
-        m_pDir->files().get(uIdx, [&](CPath& subFile){
+        m_pImgDir->files().get(uIdx, [&](CPath& subFile){
 
         });
     }
@@ -198,9 +178,9 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         tagRowContext context;
         context.eStyle = E_RowStyle::IS_RightTip;
 
-        m_plDirs.get(uRow, [&](cauto& pr){
-            context.strText = pr.first->oppPath();
-            context.pixmap = pr.second;
+        m_paImgDirs.get(uRow, [&](CImgDir& imgDir){
+            context.strText = imgDir.oppPath();
+            context.pixmap = &imgDir.snapshot();
         });
 
         _paintRow(painter, rc, lvRow, context);
@@ -209,28 +189,105 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
 
 void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
-
     }
     else
     {
-        m_plDirs.get(lvRow.uRow, [&](cauto& pr){
-            m_pDir = pr.first;
+        _saveScrollRecord(NULL);
+
+        m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
+            imgDir.genSubImgs();
+
+            m_pImgDir = &imgDir;
         });
+
         update();
     }
 }
 
 bool CAddBkgView::upward()
 {
-    if (m_pDir)
+    if (m_pImgDir)
     {
-        m_pDir = NULL;
+        m_pImgDir = NULL;
         update();
+
+        scroll(_scrollRecord(NULL));
 
         return true;
     }
 
     return false;
+}
+
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
+
+CPath* CImgDir::_newSubPath(const tagFileInfo& FileInfo)
+{
+    if (FileInfo.bDir)
+    {
+        return new CImgDir(FileInfo);
+    }
+
+    cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(FileInfo.strName));
+    if (g_setImgExtName.includes(strExtName))
+    {
+        return new CPath(FileInfo);
+    }
+
+    return NULL;
+}
+
+#define __filterSize 720
+
+inline static bool _loadImg(CPath& subFile, QPixmap& pm, UINT uZoomOutSize)
+{
+    if (!pm.load(wsutil::toQStr(subFile.absPath())))
+    {
+        return false;
+    }
+
+    if (pm.width()<__filterSize || pm.height()<__filterSize)
+    {
+        return false;
+    }
+
+    CPainter::zoomoutPixmap(pm, uZoomOutSize);
+
+    return true;
+}
+
+bool CImgDir::genSnapshot()
+{
+    cauto& files = CPath::files();
+    for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)
+    {
+        auto pSubFile = *m_itrSubFile;
+
+#define __zoomoutSize 150
+        if (_loadImg(*pSubFile, m_pmSnapshot, __zoomoutSize))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void CImgDir::genSubImgs()
+{
+    cauto& files = CPath::files();
+    for (; m_itrSubFile != files.end(); ++m_itrSubFile)
+    {
+        auto pSubFile = *m_itrSubFile;
+
+        QPixmap pm;
+        if (_loadImg(*pSubFile, pm, 600))
+        {
+            m_lstSubImgs.push_back({pSubFile, QPixmap()});
+            auto& pr = m_lstSubImgs.back();
+            pr.second.swap(pm);
+        }
+    }
 }

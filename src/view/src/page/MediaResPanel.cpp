@@ -128,7 +128,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.25f;
+			lvcd.fFontSizeOffset = -.2f;
 
 			break;
 		};

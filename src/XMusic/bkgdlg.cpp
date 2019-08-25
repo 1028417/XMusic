@@ -242,9 +242,9 @@ void CBkgDlg::unsetBkg()
 
 bool CBkgDlg::addBkg()
 {
-#if __android
+//#if __android
     m_addbkgDlg.show();
-#endif
+//#endif
 
     return true;
 }

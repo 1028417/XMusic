@@ -493,19 +493,32 @@ void MainWindow::_relayout()
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
-    if (m_bUsingCustomBkg && !m_bHScreen && fCXRate <= 0)
+    if (m_bUsingCustomBkg)
     {
-        SList<QWidget*> lstWidget{ui.labelDuration, ui.progressBar, ui.labelPlayProgress};
-        for (auto pWidget : lstWidget)
+#define __dy 5
+        if (fCXRate <= 1)
         {
-            pWidget->move(pWidget->x(), pWidget->y() - 20);
-        }
+#define __offset 8
+            int dy = int(fCXRate*__dy) +__offset*2;
+            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
+            {
+                pWidget->move(pWidget->x(), pWidget->y() - dy);
+            }
 
-        lstWidget.add(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                      , ui.btnSetting, ui.btnOrder, ui.btnRandom);
-        for (auto pWidget : lstWidget)
+            for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+                                                , ui.btnSetting, ui.btnOrder, ui.btnRandom))
+            {
+                pWidget->move(pWidget->x(), pWidget->y() - __offset);
+            }
+        }
+        else
         {
-            pWidget->move(pWidget->x(), pWidget->y() - 20);
+            int dy = int(fCXRate*__dy);
+            for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+                                                , ui.btnSetting, ui.btnOrder, ui.btnRandom))
+            {
+                pWidget->move(pWidget->x(), pWidget->y() + dy);
+            }
         }
     }
 

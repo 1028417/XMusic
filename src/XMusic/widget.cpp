@@ -206,3 +206,62 @@ void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
         m_ptTouch = tme.pos();
     }
 }
+
+
+void CPainter::zoomoutPixmap(QPixmap& pm, size_t size)
+{
+    if (pm.width() < pm.height())
+    {
+        if (pm.width() > (int)size)
+        {
+            auto&& temp = pm.scaledToWidth(size);
+            pm.swap(temp);
+        }
+    }
+    else
+    {
+        if (pm.width() > (int)size)
+        {
+            auto&& temp = pm.scaledToHeight(size);
+            pm.swap(temp);
+        }
+    }
+}
+
+QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
+{
+    int r = crSrc.red();
+    int g = crSrc.green();
+    int b = crSrc.blue();
+    int a = crSrc.blue();
+
+    r += (-r + crDst.red())*uAlpha / 255;
+    g += (-g + crDst.green())*uAlpha / 255;
+    b += (-b + crDst.blue())*uAlpha / 255;
+    a += (-a + crDst.alpha())*uAlpha / 255;
+
+    return QColor(r,g,b,a);
+}
+
+void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
+{
+    QRect rcSrc = pixmap.rect();
+    int height = rcSrc.height();
+    int width = rcSrc.width();
+
+    float fHWRate = (float)rcDst.height()/rcDst.width();
+    if ((float)height/width > fHWRate)
+    {
+        int dy = (height - width*fHWRate)/2;
+        rcSrc.setTop(rcSrc.top()+dy);
+        rcSrc.setBottom(rcSrc.bottom()-dy);
+    }
+    else
+    {
+        int dx = (width - height/fHWRate)/2;
+        rcSrc.setLeft(rcSrc.left()+dx);
+        rcSrc.setRight(rcSrc.right()-dx);
+    }
+
+    this->drawPixmap(rcDst, pixmap, rcSrc);
+}

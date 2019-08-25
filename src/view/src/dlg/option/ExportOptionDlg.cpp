@@ -8,6 +8,8 @@ BEGIN_MESSAGE_MAP(CExportOptionDlg, CDialog)
 
 	ON_BN_CLICKED(IDC_ActualMode, &CExportOptionDlg::OnBnClickedActualMode)
 
+	ON_BN_CLICKED(IDC_ExportXMSC, &CExportOptionDlg::OnBnClickedExportXMSC)
+
 	ON_BN_CLICKED(IDC_CompareFileSize, &CExportOptionDlg::OnBnClickedCompareFileSize)
 END_MESSAGE_MAP()
 
@@ -36,23 +38,42 @@ void CExportOptionDlg::OnBnClickedActualMode()
 {
 	BOOL bFlag = ((CButton*)GetDlgItem(IDC_ActualMode))->GetCheck();
 
-	auto pwndCheck = GetDlgItem(IDC_ExportXMSC);
-	pwndCheck->EnableWindow(bFlag);
+	auto pbtnCheck = (CButton*)GetDlgItem(IDC_ExportXMSC);
+	pbtnCheck->EnableWindow(bFlag);
 	if (!bFlag)
 	{
-		((CButton*)pwndCheck)->SetCheck(FALSE);
+		pbtnCheck->SetCheck(FALSE);
 	}
+}
+
+void CExportOptionDlg::OnBnClickedExportXMSC()
+{
+	BOOL bFlag = !((CButton*)GetDlgItem(IDC_ExportXMSC))->GetCheck();
+
+	auto pbtnCheck = (CButton*)GetDlgItem(IDC_CompareFileSize);
+	pbtnCheck->EnableWindow(bFlag);
+	if (!bFlag)
+	{
+		pbtnCheck->SetCheck(FALSE);
+	}
+
+	pbtnCheck = (CButton*)GetDlgItem(IDC_CompareFileTime);
+	pbtnCheck->EnableWindow(bFlag);
+	if (!bFlag)
+	{
+		pbtnCheck->SetCheck(FALSE);
+	}	
 }
 
 void CExportOptionDlg::OnBnClickedCompareFileSize()
 {
 	BOOL bFlag = ((CButton*)GetDlgItem(IDC_CompareFileSize))->GetCheck();
 	
-	auto pwndCheck = GetDlgItem(IDC_CompareFileTime);
-	pwndCheck->EnableWindow(bFlag);
+	auto pbtnCheck = (CButton*)GetDlgItem(IDC_CompareFileTime);
+	pbtnCheck->EnableWindow(bFlag);
 	if (!bFlag)
 	{
-		((CButton*)pwndCheck)->SetCheck(FALSE);
+		pbtnCheck->SetCheck(FALSE);
 	}
 }
 

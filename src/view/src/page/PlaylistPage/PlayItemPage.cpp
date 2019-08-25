@@ -54,12 +54,12 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	CListColumnGuard ColumnGuard(rcClient.Width() - globalSize.m_uLeftDockWidth - 5
 		- __XOffset - globalSize.m_uScrollbarWidth);
-	ColumnGuard.addDynamic(__ColumnText_Name, 0.6)
+	ColumnGuard.addDynamic(__ColumnText_Name, 0.62)
 		.addFix(L"类型", globalSize.m_ColWidth_Type, true)
 		.addFix(L"大小", globalSize.m_ColWidth_FileSize, true)
 		.addFix(L"时长", globalSize.m_ColWidth_Duration, true)
 		.addFix(L"歌手" __CNDot L"专辑", globalSize.m_ColWidth_RelatedSingerAlbum, true)
-		.addDynamic(_T("目录"), 0.4)
+		.addDynamic(_T("目录"), 0.38)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
@@ -85,12 +85,17 @@ BOOL CPlayItemPage::OnInitDialog()
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 
+			if (__Column_Path == lvcd.nSubItem)
+			{
+				lvcd.fFontSizeOffset = -.2f;
+			}
+
 			break;
 		case __Column_Name:
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.25f;
+			lvcd.fFontSizeOffset = -.2f;
 
 			break;
 		}

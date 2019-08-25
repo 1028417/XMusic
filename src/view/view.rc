@@ -265,8 +265,8 @@ BEGIN
         MENUITEM "播放",                          ID_PLAY_ALBUM
         MENUITEM "检测",                          ID_VERIFY_ALBUM
         MENUITEM "导出",                          ID_EXPORT_ALBUM
-        MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
         MENUITEM SEPARATOR
+        MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
         MENUITEM "新建专辑",                        ID_ADD_ALBUM
         MENUITEM "重命名",                         ID_RENAME_ALBUM
         MENUITEM "移除",                          ID_REMOVE_ALBUM
@@ -296,8 +296,8 @@ BEGIN
         MENUITEM "播放",                          ID_PLAY
         MENUITEM "检测",                          ID_VERIFY
         MENUITEM "导出",                          ID_EXPORT
-        MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
         MENUITEM SEPARATOR
+        MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
         MENUITEM "新建列表",                        ID_ADD_PLAYLIST
         MENUITEM "重命名",                         ID_RENAME
         MENUITEM "移除",                          ID_REMOVE

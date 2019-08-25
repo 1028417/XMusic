@@ -144,12 +144,17 @@ BOOL CAlbumPage::OnInitDialog()
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 
+			if (__Column_Path == lvcd.nSubItem)
+			{
+				lvcd.fFontSizeOffset = -.2f;
+			}
+
 			break;
 		case __Column_Name:
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.25f;
+			lvcd.fFontSizeOffset = -.2f;
 			
 			break;
 		};

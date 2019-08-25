@@ -205,5 +205,6 @@ IModelObserver& CPlayerView::getModelObserver()
 int main(int argc, char *argv[])
 {
     CApp app(argc, argv);
+
     return app.run();
 }

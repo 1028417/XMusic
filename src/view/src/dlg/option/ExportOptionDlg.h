@@ -18,6 +18,8 @@ private:
 	virtual BOOL OnInitDialog();
 	
 	void OnBnClickedActualMode();
+	
+	void OnBnClickedExportXMSC();
 
 	void OnBnClickedCompareFileSize();
 

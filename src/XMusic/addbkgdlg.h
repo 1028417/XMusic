@@ -5,44 +5,11 @@
 
 #include "ListViewEx.h"
 
-using TD_ImgDirList = PairList<CPath*, const QPixmap*>;
-
-class CAddBkgView : public CListView
-{
-    Q_OBJECT
-
-public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& plDirs);
-
-private:
-    class CAddBkgDlg& m_addbkgDlg;
-
-    const TD_ImgDirList& m_plDirs;
-
-    CPath *m_pDir = NULL;
-
-private:
-    inline UINT _picLayoutCount() const;
-
-    UINT getColumnCount() override;
-
-    UINT getPageRowCount() override;
-
-    UINT getRowCount() override;
-
-    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
-
-    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent&) override;
-
-public:
-    bool upward();
-};
-
-
-extern const SSet<wstring>& g_setImgExtName;
-
 class CImgDir : public CPath
 {
+public:
+    using TD_SubImgList = list<pair<CPath*, QPixmap>>;
+
 public:
     CImgDir(const wstring& strDir) : CPath(strDir)
     {
@@ -53,21 +20,29 @@ public:
     }
 
 private:
-    CPath* _newSubPath(const tagFileInfo& FileInfo) override
+    decltype(declval<TD_PathList>().begin()) m_itrSubFile;
+
+    QPixmap m_pmSnapshot;
+
+    TD_SubImgList m_lstSubImgs;
+
+public:
+    QPixmap& snapshot()
     {
-        if (FileInfo.bDir)
-        {
-            return new CImgDir(FileInfo);
-        }
-
-        cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(FileInfo.strName));
-        if (g_setImgExtName.includes(strExtName))
-        {
-            return new CPath(FileInfo);
-        }
-
-        return NULL;
+        return m_pmSnapshot;
     }
+
+    bool genSnapshot();
+
+    void genSubImgs();
+
+    const TD_SubImgList& subImgs()
+    {
+        return m_lstSubImgs;
+    }
+
+private:
+    CPath* _newSubPath(const tagFileInfo& FileInfo) override;
 };
 
 class CImgRoot : public CImgDir
@@ -115,6 +90,40 @@ public:
    }
 };
 
+using TD_ImgDirList = PtrArray<CImgDir>;
+
+class CAddBkgView : public CListView
+{
+    Q_OBJECT
+
+public:
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+
+private:
+    class CAddBkgDlg& m_addbkgDlg;
+
+    const TD_ImgDirList& m_paImgDirs;
+
+    CPath *m_pImgDir = NULL;
+
+private:
+    inline UINT _picLayoutCount() const;
+
+    UINT getColumnCount() override;
+
+    UINT getPageRowCount() override;
+
+    UINT getRowCount() override;
+
+    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
+
+    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent&) override;
+
+public:
+    bool upward();
+};
+
+
 class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
@@ -128,17 +137,15 @@ private:
 
     CImgRoot m_ImgRoot;
 
-    list<QPixmap> m_lstPixmap;
-
-    TD_ImgDirList m_plDirs;
+    TD_ImgDirList m_paImgDirs;
 
 signals:
-    void signal_founddir(void* pDir, QPixmap *pm);
+    void signal_founddir(void* pDir);
 
 private slots:
-    void slot_founddir(void *pDir, QPixmap *pm)
+    void slot_founddir(void *pDir)
     {
-        m_plDirs.add((CPath*)pDir, pm);
+        m_paImgDirs.add((CImgDir*)pDir);
 
         m_addbkgView.update();
     }
