@@ -8,7 +8,7 @@
 class CImgDir : public CPath
 {
 public:
-    using TD_SubImgList = list<pair<CPath*, QPixmap>>;
+    using TD_SubImgList = vector<pair<CPath*, QPixmap>>;
 
 public:
     CImgDir(const wstring& strDir) : CPath(strDir)
@@ -109,8 +109,6 @@ private:
     CImgDir *m_pImgDir = NULL;
 
 private:
-    inline UINT _picLayoutCount() const;
-
     UINT getColumnCount() override;
 
     UINT getPageRowCount() override;
