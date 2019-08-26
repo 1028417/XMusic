@@ -120,6 +120,11 @@ private:
     void _onRowClick(const tagLVRow& lvRow, const QMouseEvent&) override;
 
 public:
+    bool isInRoot() const
+    {
+        return NULL==m_pImgDir;
+    }
+
     bool upward();
 };
 
@@ -157,10 +162,15 @@ private:
 
     bool _handleReturn();
 
-    void close();
+    void _onClose() override;
 
 public:
     void init();
 
     void show();
+
+    void relayout()
+    {
+        _relayout(width(), height());
+    }
 };

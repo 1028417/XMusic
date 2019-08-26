@@ -150,7 +150,7 @@ public:
         m_MedialibView.showFile(strPath);
     }
 
-    void update(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
+    void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
 
 private:
     void _relayout(int cx, int cy) override;

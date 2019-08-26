@@ -52,14 +52,14 @@ public:
         m_uShadowWidth = uWidth;
         m_crShadow.setRgb(r,g,b);
 
-        CWidget::update();
+        update();
     }
 
     void setShadow(UINT uWidth)
     {
         m_uShadowWidth = uWidth;
 
-        CWidget::update();
+        update();
     }
 
 private:

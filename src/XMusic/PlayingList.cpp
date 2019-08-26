@@ -103,7 +103,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
     else
     {
-        CWidget::update();
+        update();
     }
 }
 

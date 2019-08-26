@@ -78,7 +78,7 @@ void CMedialibDlg::_resizeTitle() const
     ui.labelTitle->setGeometry(x_title, ui.labelTitle->y(), cx_title, ui.labelTitle->height());
 }
 
-void CMedialibDlg::update(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
+void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
 {
     ui.labelTitle->setText(wsutil::toQStr(strTitle));
 
@@ -142,7 +142,7 @@ void CMedialibView::play()
 
 void CMedialibView::_onShowRoot()
 {
-    m_medialibDlg.update(L"媒体库", false, false);
+    m_medialibDlg.updateHead(L"媒体库", false, false);
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
@@ -154,7 +154,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             || E_MediaSetType::MST_Album==MediaSet.m_eType
             || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
 
-    m_medialibDlg.update(strTitle, bPlayable, true);
+    m_medialibDlg.updateHead(strTitle, bPlayable, true);
 }
 
 void CMedialibView::_onShowPath(CPath& path)
@@ -165,7 +165,7 @@ void CMedialibView::_onShowPath(CPath& path)
         _getTitle((CMediaRes&)path, strTitle);
 
         bool bPlayable = path.files();
-        m_medialibDlg.update(strTitle, bPlayable, true);
+        m_medialibDlg.updateHead(strTitle, bPlayable, true);
     }
 }
 

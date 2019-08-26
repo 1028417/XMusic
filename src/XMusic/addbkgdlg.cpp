@@ -50,30 +50,27 @@ void CAddBkgDlg::show()
     });
 }
 
-void CAddBkgDlg::close()
+void CAddBkgDlg::_onClose()
 {
     m_ImgRoot.stopScan();
 
     m_paImgDirs.clear();
     m_ImgRoot.Clear();
-
-    CDialog::close();
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
-    int y_addbkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
+    int y_addbkgView = 0;
+    if (m_addbkgView.isInRoot())
+    {
+        y_addbkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
+    }
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (!m_addbkgView.upward())
-    {
-        this->close();
-    }
-
-    return true;
+    return m_addbkgView.upward();
 }
 
 
@@ -194,9 +191,10 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         _saveScrollRecord(NULL);
 
         m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
-            m_pImgDir = &imgDir;
+            m_pImgDir = &imgDir;          
+            update();
 
-            m_view.setTimer(100, [&](){
+            m_view.setTimer(100, [=](){
                 if (NULL == m_pImgDir)
                 {
                     return false;
@@ -207,13 +205,13 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
                     return false;
                 }
 
-                CWidget::update();
+                update();
 
                 return true;
             });
         });
 
-        update();
+        m_addbkgDlg.relayout();
     }
 }
 
@@ -223,6 +221,8 @@ bool CAddBkgView::upward()
     {
         m_pImgDir = NULL;
         update();
+
+        m_addbkgDlg.relayout();
 
         scroll(_scrollRecord(NULL));
 

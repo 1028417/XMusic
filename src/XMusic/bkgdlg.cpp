@@ -164,7 +164,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strHBkgDir))
         {
-            fsutil::copyFile(L"assets:" __hbkgdir __win10bkg, m_strHBkgDir + __win10bkg);
+            fsutil::copyFile(L"assets:" __hbkgdir __win10bkg, m_strHBkgDir + L'.' + __win10bkg);
         }
     }
 
@@ -172,7 +172,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strVBkgDir))
         {
-            fsutil::copyFile(L"assets:" __vbkgdir __win10bkg, m_strVBkgDir + __win10bkg);
+            fsutil::copyFile(L"assets:" __vbkgdir __win10bkg, m_strVBkgDir + L'.' + __win10bkg);
         }
     }
 
@@ -207,7 +207,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     {
         int x_bkgView = ui.btnReturn->geometry().right()+__margin/2;
 
-        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin);
+        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin-__margin/2);
 
         ui.labelTitle->move(cx, ui.labelTitle->y());
     }
