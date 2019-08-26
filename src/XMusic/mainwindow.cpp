@@ -18,7 +18,7 @@ static Ui::MainWindow ui;
 
 set<class CDialog*> g_setDlgs;
 
-bool g_bFullScreen = true;
+static bool g_bFullScreen = true;
 
 inline static void setFull(QWidget* wnd)
 {
@@ -138,6 +138,10 @@ void MainWindow::showLogo()
     peCompany.setColor(QPalette::WindowText, QColor(64, 128, 255, 0));
     ui.labelLogoCompany->setPalette(peCompany);
 
+#if __android
+    ui.labelLogo->resize(440,110);
+    ui.labelLogo->setScaledContents(true);
+#endif
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 

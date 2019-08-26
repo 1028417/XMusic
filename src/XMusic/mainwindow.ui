@@ -713,9 +713,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="labelLogo">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>230</y>
-      <width>520</width>
+      <x>80</x>
+      <y>210</y>
+      <width>400</width>
       <height>100</height>
      </rect>
     </property>
@@ -729,6 +729,9 @@ gridline-color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>X Music</string>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

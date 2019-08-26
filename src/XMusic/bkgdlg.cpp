@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __margin    48
+#define __margin    40
 
 static Ui::BkgDlg ui;
 
@@ -159,12 +159,13 @@ void CBkgDlg::init()
     m_strHBkgDir = fsutil::workDir() + __hbkgdir;
     m_strVBkgDir = fsutil::workDir() + __vbkgdir;
 
-#define __win10bkg L"win10"
+    auto strFileName = to_wstring(time(NULL));
+
     if (!fsutil::existDir(m_strHBkgDir))
     {
         if (fsutil::createDir(m_strHBkgDir))
         {
-            fsutil::copyFile(L"assets:" __hbkgdir __win10bkg, m_strHBkgDir + L'.' + __win10bkg);
+            fsutil::copyFile(L"assets:" __hbkgdir L"win10" , m_strHBkgDir + strFileName);
         }
     }
 
@@ -172,7 +173,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strVBkgDir))
         {
-            fsutil::copyFile(L"assets:" __vbkgdir __win10bkg, m_strVBkgDir + L'.' + __win10bkg);
+            fsutil::copyFile(L"assets:" __vbkgdir L"win10", m_strVBkgDir + strFileName);
         }
     }
 
