@@ -108,7 +108,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
                 painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
             }
 
-            painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
+            painter.drawFrame(8, rc, 255,255,255,240, Qt::BrushStyle::Dense7Pattern);
 
             return;
         }

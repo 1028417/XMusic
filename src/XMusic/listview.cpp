@@ -212,8 +212,6 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        m_bClicking = false; // TODO
-
         _scroll(te.dy());
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
@@ -248,7 +246,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
         else
         {
-            _autoScroll(m_uAutoScrollSeq, 10*dy, 50, 3000);
+            _autoScroll(m_uAutoScrollSeq, 10*dy, 45, 3000);
         }
     }
 }

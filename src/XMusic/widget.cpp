@@ -130,8 +130,6 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
     }
     else if (E_MouseEventType::MET_Move == type)
     {
-        //m_bClicking = false;
-
         if (m_bMousePressed)
         {
             _handleTouchMove(me);
@@ -198,6 +196,11 @@ void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
     int dy = tme.y()-m_ptTouch.y();
     if (dx != 0 || dy != 0)
     {
+        if (abs(dx)>2 || abs(dy)>2)
+        {
+            m_bClicking = false;
+        }
+
         tme.setDx(dx);
         tme.setDy(dy);
 
