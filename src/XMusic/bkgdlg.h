@@ -16,6 +16,10 @@ private:
     class CBkgDlg& m_bkgDlg;
 
 private:
+    UINT getPageRowCount() override;
+
+    UINT getColumnCount() override;
+
     UINT getRowCount() override;
 
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;

@@ -10,38 +10,66 @@
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg, 2, 2)
+    : CListView(&bkgDlg)
     , m_bkgDlg(bkgDlg)
 {
 }
 
+UINT CBkgView::getPageRowCount()
+{
+    if (m_bkgDlg.bkgCount() <= 2)
+    {
+        return 2;
+    }
+    else
+    {
+        return 3;
+    }
+}
+
+inline UINT CBkgView::getColumnCount()
+{
+    if (m_bkgDlg.bkgCount() <= 2)
+    {
+        return 2;
+    }
+    else
+    {
+        return 3;
+    }
+}
+
 UINT CBkgView::getRowCount()
 {
-    return 1+(1+m_bkgDlg.bkgCount())/2;
+    return (UINT)ceil((2.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-    if (0 == lvRow.uRow)
+    int cy = rc.height()-__margin;
+    int cx = 0;
+
+    UINT uColumnCount = getColumnCount();
+    if (2 == uColumnCount)
     {
-        rc.setBottom(rc.bottom()-__margin/2);
+        cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
     }
     else
     {
-        rc.setTop(rc.top()+__margin/2);
+        cx = rc.width()-__margin;
     }
 
     if (0 == lvRow.uCol)
     {
-        rc.setRight(rc.right()-__margin/2);
+        rc.setRect(rc.right()-__margin/2-cx, rc.top(), cx, cy);
     }
     else
     {
-        rc.setLeft(rc.left()+__margin/2);
+        rc.setRect(rc.left()+__margin/2, rc.top(), cx, cy);
     }
 
-    int nItem = lvRow.uRow * 2 + lvRow.uCol;
-    if (0 == nItem)
+    UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
+    if (0 == uItem)
     {
         cauto& pm = m_bkgDlg.defaultBkg();
         QRect rcSrc = pm.rect();
@@ -62,7 +90,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
    }
     else
     {
-        UINT uIdx = (UINT)nItem-1;
+        UINT uIdx = uItem-1;
         cauto pm = m_bkgDlg.snapshot(uIdx);
         if (pm)
         {
@@ -84,7 +112,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
-    int nItem = lvRow.uRow * 2 + lvRow.uCol;
+    int nItem = lvRow.uRow * getColumnCount() + lvRow.uCol;
     if (0 == nItem)
     {
         m_bkgDlg.unsetBkg();
@@ -168,23 +196,23 @@ void CBkgDlg::_relayout(int cx, int cy)
 {
     m_bHScreen = cx>cy;
 
-    int offset = ui.btnReturn->geometry().bottom() + __margin;
     if (m_bHScreen)
     {
-        int cx_bkgView = cx-__margin-offset;
-        int cy_bkgView = cx_bkgView*cy/cx;
-        m_bkgView.setGeometry(offset, (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
+        int x_bkgView = ui.btnReturn->geometry().right()+__margin/2;
 
-        ui.labelTitle->setVisible(false);
+        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin/2, cy-__margin);
+
+        ui.labelTitle->move(cx, ui.labelTitle->y());
     }
     else
     {
-        int cy_bkgView = cy-__margin-offset;
+        int y_bkgView = ui.btnReturn->geometry().bottom()+__margin;
+
+        int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
-        m_bkgView.setGeometry((cx-cx_bkgView)/2, offset, cx_bkgView, cy_bkgView);
+        m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
         ui.labelTitle->move((cx-ui.labelTitle->width())/2, ui.labelTitle->y());
-        ui.labelTitle->setVisible(true);
     }
 }
 

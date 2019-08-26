@@ -752,7 +752,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>@MusicroSoft</string>
+     <string>© MusicroSoft</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
