@@ -114,7 +114,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
         }
     }
 
-    painter.drawFrame(2, rc, 255,255,255,128);
+    painter.drawFrame(1, rc, 255,255,255,200);
 }
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
