@@ -122,8 +122,8 @@ public:
     {
         fillRect(rc.left(), rc.top(), rc.width(), uWidth, t);
         fillRect(rc.left(), rc.top()+uWidth, uWidth, rc.height()-uWidth*2, t);
-        fillRect(rc.left(), rc.bottom()-uWidth, rc.width(), uWidth, t);
-        fillRect(rc.right()-uWidth, rc.top()+uWidth, uWidth, rc.height()-uWidth*2, t);
+        fillRect(rc.left(), rc.bottom()-uWidth+1, rc.width(), uWidth, t);
+        fillRect(rc.right()-uWidth+1, rc.top()+uWidth, uWidth, rc.height()-uWidth*2, t);
     }
 
     void drawFrame(UINT uWidth, const QRect& rc, const QColor& cr, Qt::BrushStyle bs=Qt::SolidPattern)

@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __margin    50
+#define __margin    48
 
 static Ui::BkgDlg ui;
 
@@ -46,26 +46,29 @@ UINT CBkgView::getRowCount()
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 {
-    int cy = rc.height()-__margin;
+    UINT uColumnCount = getColumnCount();
+    int nMargin = __margin/(uColumnCount-1);
+
+    int cy = rc.height()-nMargin;
     int cx = 0;
 
-    UINT uColumnCount = getColumnCount();
     if (2 == uColumnCount)
     {
         cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
+        cx = MIN(cx, rc.width()-nMargin/2);
     }
     else
     {
-        cx = rc.width()-__margin;
+        cx = rc.width()-nMargin;
     }
 
     if (0 == lvRow.uCol)
     {
-        rc.setRect(rc.right()-__margin/2-cx, rc.top(), cx, cy);
+        rc.setRect(rc.right()-nMargin/2-cx, rc.top(), cx, cy);
     }
     else
     {
-        rc.setRect(rc.left()+__margin/2, rc.top(), cx, cy);
+        rc.setRect(rc.left()+nMargin/2, rc.top(), cx, cy);
     }
 
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
@@ -101,13 +104,17 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
             QPixmap pmAdd;
             if (pmAdd.load(":/img/add.png"))
             {
-#define __size  80
+#define __size  60
                 painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
             }
 
             painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
+
+            return;
         }
     }
+
+    painter.drawFrame(2, rc, 255,255,255,128);
 }
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
@@ -200,13 +207,13 @@ void CBkgDlg::_relayout(int cx, int cy)
     {
         int x_bkgView = ui.btnReturn->geometry().right()+__margin/2;
 
-        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin/2, cy-__margin);
+        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin);
 
         ui.labelTitle->move(cx, ui.labelTitle->y());
     }
     else
     {
-        int y_bkgView = ui.btnReturn->geometry().bottom()+__margin;
+        int y_bkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
 
         int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
