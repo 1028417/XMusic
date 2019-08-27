@@ -13,6 +13,7 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
     : CListView(&bkgDlg)
     , m_bkgDlg(bkgDlg)
 {
+    (void)m_pmX.load(":/img/btnX.png");
 }
 
 UINT CBkgView::getPageRowCount()
@@ -98,6 +99,9 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
         if (pm)
         {
             painter.drawPixmapEx(rc, *pm);
+
+#define __xsize 50
+            painter.drawPixmap(rc.right()-__xsize, rc.top(), __xsize, __xsize, m_pmX);
         }
         else
         {

@@ -15,6 +15,8 @@ public:
 private:
     class CBkgDlg& m_bkgDlg;
 
+    QPixmap m_pmX;
+
 private:
     UINT getPageRowCount() override;
 
