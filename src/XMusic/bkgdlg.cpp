@@ -9,9 +9,10 @@
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg)
+CBkgView::CBkgView(CBkgDlg& bkgDlg, CAddBkgDlg& addbkgDlg)
+    : CListView(&bkgDlg, 0, 0, {Qt::TapAndHoldGesture})
     , m_bkgDlg(bkgDlg)
+    , m_addbkgDlg(addbkgDlg)
 {
 }
 
@@ -108,13 +109,13 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
                 painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
             }
 
-            painter.drawFrame(8, rc, 255,255,255,240, Qt::BrushStyle::Dense7Pattern);
+            painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
 
             return;
         }
     }
 
-    painter.drawFrame(1, rc, 255,255,255,200);
+    painter.drawFrame(1, rc, 255,255,255,170);
 }
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
@@ -133,12 +134,29 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         }
         else
         {
-            if (m_bkgDlg.addBkg())
-            {
-                scroll(getRowCount());
-            }
+            m_addbkgDlg.show();
         }
     }
+}
+
+bool CBkgView::_onGesture(QGesture& gesture)
+{
+    if (Qt::TapAndHoldGesture == gesture.gestureType())
+    {
+        tagLVRow lvRow;
+        if (_hittest((int)gesture.hotSpot().x(), (int)gesture.hotSpot().y(), lvRow))
+        {
+            UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+            if (uIdx > 0)
+            {
+                m_bkgDlg.deleleBkg(uIdx-1);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 void CBkgDlg::init()
@@ -288,11 +306,39 @@ void CBkgDlg::unsetBkg()
     close();
 }
 
-bool CBkgDlg::addBkg()
+void CBkgDlg::addBkg(const wstring& strFile)
 {
-//#if __android
-    m_addbkgDlg.show();
-//#endif
+    wstring strNewName = to_wstring(time(NULL));
 
-    return true;
+    auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+    if (fsutil::copyFile(strFile, stBkgDir + strNewName))
+    {
+        auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+        vecBkg.push_back(strNewName);
+
+        setBkg(vecBkg.size()-1);
+
+        this->close();
+    }
+}
+
+void CBkgDlg::deleleBkg(UINT uIdx)
+{
+    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+    if (uIdx < vecBkg.size())
+    {
+        auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+
+        fsutil::removeFile(stBkgDir + vecBkg[uIdx]);
+
+        vecBkg.erase(vecBkg.begin()+uIdx);
+
+        auto& vecSnapshot = m_bHScreen?m_vecHSnapshot:m_vecVSnapshot;
+        if (uIdx < vecSnapshot.size())
+        {
+            vecSnapshot.erase(vecSnapshot.begin()+uIdx);
+        }
+
+        m_bkgView.update();
+    }
 }

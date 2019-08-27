@@ -8,6 +8,8 @@ class CListView : public CWidget<QWidget>
 protected:
     struct tagLVRow
     {
+        tagLVRow(){}
+
         tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
             : uRow(t_uRow)
             , uCol(t_uCol)
@@ -16,11 +18,11 @@ protected:
         {
         }
 
-        UINT uRow;
-        UINT uCol;
+        UINT uRow = 0;
+        UINT uCol = 0;
 
-        bool bSelect;
-        bool bFlash;
+        bool bSelect = false;
+        bool bFlash = false;
     };
 
     enum class E_RowStyle
@@ -49,8 +51,9 @@ protected:
     };
 
 public:
-    CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0)
-        : CWidget(parent)
+    CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0
+            , const list<Qt::GestureType>& lstGestureType={})
+        : CWidget(parent, lstGestureType)
         , m_uPageRowCount(uPageRowCount)
         , m_uColumnCount(uColumnCount)
         , m_crSelectedBkg(0,0,0,5)
@@ -117,6 +120,8 @@ protected:
     {
         return m_uAutoScrollSeq > 0;
     }
+
+    bool _hittest(int x, int y, tagLVRow& lvRow);
 
     void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
 

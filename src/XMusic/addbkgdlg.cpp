@@ -28,7 +28,7 @@ void CAddBkgDlg::init()
 #endif
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
-        (void)this->_handleReturn();
+        this->close();
     });
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
@@ -36,6 +36,8 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
+    m_paImgDirs.clear();
+
     CDialog::show();
 
 #if !__android
@@ -48,14 +50,6 @@ void CAddBkgDlg::show()
             emit signal_founddir(&imgDir);
         }
     });
-}
-
-void CAddBkgDlg::_onClose()
-{
-    m_ImgRoot.stopScan();
-
-    m_paImgDirs.clear();
-    m_ImgRoot.Clear();
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -71,6 +65,21 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 bool CAddBkgDlg::_handleReturn()
 {
     return m_addbkgView.upward();
+}
+
+void CAddBkgDlg::_onClose()
+{
+    m_ImgRoot.stopScan();
+
+    m_paImgDirs.clear();
+
+    m_addbkgView.clear();
+}
+
+void CAddBkgDlg::addBkg(const wstring& strFile)
+{
+    m_bkgDlg.addBkg(strFile);
+    this->close();
 }
 
 
@@ -147,7 +156,7 @@ UINT CAddBkgView::getRowCount()
 {
     if (m_pImgDir)
     {
-        return (UINT)ceil((float)m_pImgDir->files().size()/getColumnCount());
+        return (UINT)ceil((float)m_pImgDir->subImgs().size()/getColumnCount());
     }
 
     return m_paImgDirs.size();
@@ -165,6 +174,8 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         {
             cauto& pm = subImgs[uIdx].second;
             painter.drawPixmapEx(rc, pm);
+
+            painter.drawFrame(1, rc, 255,255,255,170);
         }
     }
     else
@@ -185,6 +196,13 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
     if (m_pImgDir)
     {
+        UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+
+        cauto& subImgs = m_pImgDir->subImgs();
+        if (uIdx < subImgs.size())
+        {
+            m_addbkgDlg.addBkg(subImgs[uIdx].first->absPath());
+        }
     }
     else
     {

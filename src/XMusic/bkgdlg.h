@@ -10,10 +10,12 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CBkgDlg& bkgDlg);
+    CBkgView(class CBkgDlg& bkgDlg, CAddBkgDlg& addbkgDlg);
 
 private:
     class CBkgDlg& m_bkgDlg;
+
+    CAddBkgDlg& m_addbkgDlg;
 
 private:
     UINT getPageRowCount() override;
@@ -25,6 +27,8 @@ private:
     void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
+
+    bool _onGesture(QGesture&) override;
 };
 
 class CBkgDlg : public CDialog
@@ -33,17 +37,17 @@ class CBkgDlg : public CDialog
 public:
     CBkgDlg(class CPlayerView& view) :
         m_view(view),
-        m_bkgView(*this),
-        m_addbkgDlg(view, *this)
+        m_addbkgDlg(view, *this),
+        m_bkgView(*this, m_addbkgDlg)
     {
     }
 
 private:
     class CPlayerView& m_view;
 
-    CBkgView m_bkgView;
-
     CAddBkgDlg m_addbkgDlg;
+
+    CBkgView m_bkgView;
 
     WString m_strHBkgDir;
     WString m_strVBkgDir;
@@ -102,7 +106,9 @@ public:
     void setBkg(UINT uIdx);
     void unsetBkg();
 
-    bool addBkg();
+    void addBkg(const wstring& strFile);
+
+    void deleleBkg(UINT uIdx);
 
 private:
     void _relayout(int cx, int cy) override;

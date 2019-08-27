@@ -22,6 +22,7 @@ public:
 private:
     decltype(declval<TD_PathList>().begin()) m_itrSubFile;
 
+protected:
     QPixmap m_pmSnapshot;
 
     TD_SubImgList m_lstSubImgs;
@@ -87,6 +88,12 @@ public:
        {
            m_thread.join();
        }
+
+       CPath::Clear();
+
+       m_pmSnapshot = QPixmap();
+
+       m_lstSubImgs.clear();
    }
 };
 
@@ -126,6 +133,11 @@ public:
     }
 
     bool upward();
+
+    void clear()
+    {
+        m_pImgDir = NULL;
+    }
 };
 
 
@@ -173,4 +185,6 @@ public:
     {
         _relayout(width(), height());
     }
+
+    void addBkg(const wstring& strFile);
 };

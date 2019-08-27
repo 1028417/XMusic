@@ -189,13 +189,9 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
     else if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
     {
-        if (0 != m_uRowHeight)
+        tagLVRow lvRow;
+        if (_hittest(me.pos().x(), me.pos().y(), lvRow))
         {
-            UINT uRow = UINT((float)me.pos().y()/m_uRowHeight + m_fScrollPos);
-            UINT cx_col = width() / getColumnCount();
-            UINT uCol = UINT(me.pos().x()/cx_col);
-            tagLVRow lvRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
-
             if (E_MouseEventType::MET_Click == type)
             {
                 _onRowClick(lvRow, me);
@@ -206,6 +202,21 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             }
         }
     }
+}
+
+bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
+{
+    if (0 == m_uRowHeight)
+    {
+        return false;
+    }
+
+    UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
+    UINT cx_col = width() / getColumnCount();
+    UINT uCol = UINT(x/cx_col);
+    lvRow = tagLVRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+
+    return true;
 }
 
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
