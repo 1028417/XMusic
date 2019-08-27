@@ -131,7 +131,7 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
     {
         if (me.pos().x() >= lvRow.rc.right()-__xsize && me.pos().y() <= lvRow.rc.top()+__xsize)
         {
-            //m_bkgDlg.deleleBkg(uIdx);
+            m_bkgDlg.deleleBkg(uIdx);
             return;
         }
     }
