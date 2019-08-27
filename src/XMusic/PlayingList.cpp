@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     int cy = this->rect().bottom();
 
@@ -11,6 +11,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvR
         fAlpha = m_fInactiveAlpha;
     }
 
+    QRect rc = lvRow.rc;
     if (rc.top() < 0)
     {
         fAlpha *= pow((double)rc.bottom()/rc.height(),3.3);

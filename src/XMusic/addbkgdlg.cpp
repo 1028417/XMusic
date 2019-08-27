@@ -162,9 +162,10 @@ UINT CAddBkgView::getRowCount()
     return m_paImgDirs.size();
 }
 
-void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+void CAddBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
-    auto uRow = lvRow.uRow;
+    cauto& rc = lvRow.rc;
+    cauto& uRow = lvRow.uRow;
     if (m_pImgDir)
     {
         UINT uIdx = uRow * getColumnCount() + lvRow.uCol;
@@ -191,7 +192,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
             context.pixmap = &imgDir.snapshot();
         });
 
-        _paintRow(painter, rc, lvRow, context);
+        _paintRow(painter, lvRow, context);
     }
 }
 

@@ -103,7 +103,7 @@ void CListViewEx::showPath(CPath& path)
     _onShowPath(path);
 }
 
-void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     if (m_pMediaset)
     {
@@ -112,7 +112,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
             m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet){
                 tagMediaContext context(mediaSet);
                 _genMediaContext(context);
-                _paintRow(painter, rc, lvRow, context);
+                _paintRow(painter, lvRow, context);
             });
         }
         else if (m_lstSubMedias)
@@ -120,7 +120,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
             m_lstSubMedias.get(lvRow.uRow, [&](CMedia& media) {
                 tagMediaContext context(media);
                 _genMediaContext(context);
-                _paintRow(painter, rc, lvRow, context);
+                _paintRow(painter, lvRow, context);
             });
         }
     }
@@ -129,7 +129,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
         m_paSubPath.get(lvRow.uRow, [&](CPath& subPath) {
             tagMediaContext context(subPath);
             _genMediaContext(context);
-            _paintRow(painter, rc, lvRow, context);
+            _paintRow(painter, lvRow, context);
         });
     }
     else
@@ -146,7 +146,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
                 m_setRootObject.add(context.pPath);
             }
 
-            _paintRow(painter, rc, lvRow, context);
+            _paintRow(painter, lvRow, context);
         }
     }
 }

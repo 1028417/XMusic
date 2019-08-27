@@ -68,7 +68,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
     m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
 
     UINT uRow = m_fScrollPos;
-    int y = (-m_fScrollPos+uRow)*m_uRowHeight;
+    int y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
 
     UINT uColumnCount = getColumnCount();
     if (0 == uColumnCount)
@@ -85,8 +85,8 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
         tagLVRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
-            QRect rc(uCol * cx_col, y, cx_col, m_uRowHeight);
-            _onPaintRow(painter, rc, lvRow);
+            lvRow.rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
+            _onPaintRow(painter, lvRow);
         }
 
         y += m_uRowHeight;
@@ -97,17 +97,18 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
     }
 }
 
-void CListView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+void CListView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     tagRowContext context;
     if (_genRowContext(context))
     {
-        _paintRow(painter, rc, lvRow, context);
+        _paintRow(painter, lvRow, context);
     }
 }
 
-void CListView::_paintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow, const tagRowContext& context)
+void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRowContext& context)
 {
+    QRect rc = lvRow.rc;
     if (lvRow.bSelect)
     {
         painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, m_crSelectedBkg);
@@ -215,6 +216,9 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
     UINT cx_col = width() / getColumnCount();
     UINT uCol = UINT(x/cx_col);
     lvRow = tagLVRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+
+    y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
+    lvRow.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
 
     return true;
 }

@@ -7,6 +7,8 @@
 
 #define __margin    40
 
+#define __xsize     50
+
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
@@ -45,11 +47,12 @@ UINT CBkgView::getRowCount()
     return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
-void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
+void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     UINT uColumnCount = getColumnCount();
     int nMargin = __margin/(uColumnCount-1);
 
+    QRect rc = lvRow.rc;
     int cy = rc.height()-nMargin;
     int cx = 0;
 
@@ -100,7 +103,6 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
         {
             painter.drawPixmapEx(rc, *pm);
 
-#define __xsize 40
             painter.drawPixmap(rc.right()-__xsize, rc.top(), __xsize, __xsize, m_pmX);
         }
         else
@@ -121,30 +123,20 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
     painter.drawFrame(1, rc, 255,255,255,128);
 }
 
-void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
+void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
 {
     UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
-    m_bkgDlg.setBkg(uIdx);
-}
 
-bool CBkgView::_onGesture(QGesture& gesture)
-{
-    if (Qt::TapAndHoldGesture == gesture.gestureType())
+    if (uIdx != 0 && uIdx < m_bkgDlg.bkgCount())
     {
-        tagLVRow lvRow;
-        if (_hittest((int)gesture.hotSpot().x(), (int)gesture.hotSpot().y(), lvRow))
+        if (me.pos().x() >= lvRow.rc.right()-__xsize && me.pos().y() <= lvRow.rc.top()+__xsize)
         {
-            UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
-            if (uIdx < m_bkgDlg.bkgCount())
-            {
-                m_bkgDlg.deleleBkg(uIdx-1);
-
-                return true;
-            }
+            //m_bkgDlg.deleleBkg(uIdx);
+            return;
         }
     }
 
-    return false;
+    m_bkgDlg.setBkg(uIdx);
 }
 
 void CBkgDlg::init()

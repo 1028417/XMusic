@@ -58,7 +58,7 @@ private:
     UINT getRowCount() override;
     virtual UINT getRootCount() = 0;
 
-    void _onPaintRow(CPainter&, QRect&, const tagLVRow&) override;
+    void _onPaintRow(CPainter&, const tagLVRow&) override;
 
     virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) {}

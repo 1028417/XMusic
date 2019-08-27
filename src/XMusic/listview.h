@@ -23,6 +23,8 @@ protected:
 
         bool bSelect = false;
         bool bFlash = false;
+
+        QRect rc;
     };
 
     enum class E_RowStyle
@@ -102,7 +104,7 @@ private:
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
 
-    virtual void _onPaintRow(CPainter&, QRect&, const tagLVRow&);
+    virtual void _onPaintRow(CPainter&, const tagLVRow&);
 
     virtual bool _genRowContext(tagRowContext&) {return false;}
 
@@ -123,7 +125,7 @@ protected:
 
     bool _hittest(int x, int y, tagLVRow& lvRow);
 
-    void _paintRow(CPainter&, QRect&, const tagLVRow&, const tagRowContext&);
+    void _paintRow(CPainter&, const tagLVRow&, const tagRowContext&);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 
