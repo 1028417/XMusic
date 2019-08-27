@@ -100,7 +100,7 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
         {
             painter.drawPixmapEx(rc, *pm);
 
-#define __xsize 50
+#define __xsize 40
             painter.drawPixmap(rc.right()-__xsize, rc.top(), __xsize, __xsize, m_pmX);
         }
         else

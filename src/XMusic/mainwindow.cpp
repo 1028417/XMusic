@@ -548,6 +548,8 @@ void MainWindow::_relayout()
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
+        ui.labelPlayingfile->setShadow(2);
+
         int cy_labelAlbumName = 80;
         int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
         int cx_progressBar = ui.progressBar->width();
@@ -633,6 +635,8 @@ void MainWindow::_relayout()
 
         if (bFlag)
         {
+            ui.labelPlayingfile->setShadow(2);
+
             int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 20;
             ui.labelPlayingfile->move(ui.wdgSingerImg->x() + 30, y_Playingfile);
 
@@ -640,6 +644,8 @@ void MainWindow::_relayout()
         }
         else
         {
+            ui.labelPlayingfile->setShadow(0);
+
             ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignBottom);
 
             y_PlayingListMax = ui.labelPlayingfile->y();
