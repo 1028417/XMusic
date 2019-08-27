@@ -175,7 +175,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRo
             cauto& pm = subImgs[uIdx].second;
             painter.drawPixmapEx(rc, pm);
 
-            painter.drawFrame(1, rc, 255,255,255,170);
+            painter.drawFrame(1, rc, 255,255,255,128);
         }
     }
     else

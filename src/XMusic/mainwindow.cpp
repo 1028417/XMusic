@@ -497,7 +497,7 @@ void MainWindow::_relayout()
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
-    if (m_bUsingCustomBkg)
+    if (m_bUsingCustomBkg && fCXRate<=1)
     {
 #define __offset 10.0f
         int yOffset = (int)round(__offset/fCXRate);
