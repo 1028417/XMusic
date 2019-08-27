@@ -9,16 +9,15 @@
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CBkgDlg& bkgDlg, CAddBkgDlg& addbkgDlg)
-    : CListView(&bkgDlg, 0, 0, {Qt::TapAndHoldGesture})
+CBkgView::CBkgView(CBkgDlg& bkgDlg)
+    : CListView(&bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_addbkgDlg(addbkgDlg)
 {
 }
 
 UINT CBkgView::getPageRowCount()
 {
-    if (m_bkgDlg.bkgCount() <= 2)
+    if (m_bkgDlg.bkgCount() <= 3)
     {
         return 2;
     }
@@ -30,7 +29,7 @@ UINT CBkgView::getPageRowCount()
 
 inline UINT CBkgView::getColumnCount()
 {
-    if (m_bkgDlg.bkgCount() <= 2)
+    if (m_bkgDlg.bkgCount() <= 3)
     {
         return 2;
     }
@@ -42,7 +41,7 @@ inline UINT CBkgView::getColumnCount()
 
 UINT CBkgView::getRowCount()
 {
-    return (UINT)ceil((2.0+m_bkgDlg.bkgCount())/ getColumnCount());
+    return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
 void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
@@ -120,23 +119,8 @@ void CBkgView::_onPaintRow(CPainter& painter, QRect& rc, const tagLVRow& lvRow)
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
-    int nItem = lvRow.uRow * getColumnCount() + lvRow.uCol;
-    if (0 == nItem)
-    {
-        m_bkgDlg.unsetBkg();
-    }
-    else
-    {
-        UINT uBkgIdx = (UINT)nItem-1;
-        if (uBkgIdx < m_bkgDlg.bkgCount())
-        {
-            m_bkgDlg.setBkg(uBkgIdx);
-        }
-        else
-        {
-            m_addbkgDlg.show();
-        }
-    }
+    UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+    m_bkgDlg.setBkg(uIdx);
 }
 
 bool CBkgView::_onGesture(QGesture& gesture)
@@ -147,13 +131,13 @@ bool CBkgView::_onGesture(QGesture& gesture)
         if (_hittest((int)gesture.hotSpot().x(), (int)gesture.hotSpot().y(), lvRow))
         {
             UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
-            if (uIdx > 0)
+            if (uIdx < m_bkgDlg.bkgCount())
             {
                 m_bkgDlg.deleleBkg(uIdx-1);
+
+                return true;
             }
         }
-
-        return true;
     }
 
     return false;
@@ -271,15 +255,8 @@ const QPixmap* CBkgDlg::snapshot(UINT uIdx)
     return pm;
 }
 
-void CBkgDlg::setBkg(UINT uIdx)
+void CBkgDlg::_setBkg(const wstring& strBkg)
 {
-    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
-    if (uIdx >= vecBkg.size())
-    {
-        return;
-    }
-    cauto& strBkg = vecBkg[uIdx];
-
     if (m_bHScreen)
     {
         m_view.getOptionMgr().getOption().strHBkg = strBkg;
@@ -289,21 +266,42 @@ void CBkgDlg::setBkg(UINT uIdx)
         m_view.getOptionMgr().getOption().strVBkg = strBkg;
     }
 
-    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    (void)pmBkg.load(stBkgDir + strBkg);
+    if (!strBkg.empty())
+    {
+        cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+        (void)pmBkg.load(stBkgDir + strBkg);
+    }
+    else
+    {
+        pmBkg = QPixmap();
+    }
+
     ((MainWindow&)m_view.getMainWnd()).updateBkg();
 
     close();
 }
 
-void CBkgDlg::unsetBkg()
+void CBkgDlg::setBkg(UINT uIdx)
 {
-    QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    pmBkg = QPixmap();
-    ((MainWindow&)m_view.getMainWnd()).updateBkg();
-
-    close();
+    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+    if (0 == uIdx)
+    {
+        _setBkg(L"");
+    }
+    else
+    {
+        uIdx--;
+        if (uIdx < vecBkg.size())
+        {
+            cauto& strBkg = vecBkg[uIdx];
+            _setBkg(strBkg);
+        }
+        else
+        {
+            m_addbkgDlg.show();
+        }
+    }
 }
 
 void CBkgDlg::addBkg(const wstring& strFile)
@@ -324,6 +322,12 @@ void CBkgDlg::addBkg(const wstring& strFile)
 
 void CBkgDlg::deleleBkg(UINT uIdx)
 {
+    if (0 == uIdx)
+    {
+        return;
+    }
+    uIdx--;
+
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (uIdx < vecBkg.size())
     {
@@ -341,4 +345,18 @@ void CBkgDlg::deleleBkg(UINT uIdx)
 
         m_bkgView.update();
     }
+}
+
+void CBkgDlg::_onClose()
+{
+    if (m_addbkgDlg.isVisible())
+    {
+        m_addbkgDlg.close();
+    }
+
+    m_vecHSnapshot.clear();
+    m_vecVSnapshot.clear();
+    m_lstSnapshot.clear();
+
+    m_bkgView.reset();
 }

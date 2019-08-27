@@ -71,7 +71,7 @@ bool CWidget<TParent>::event(QEvent *ev)
     case QEvent::Gesture:
     {
         QGestureEvent *ge = (QGestureEvent*)ev;
-        for (auto gestureType : m_lstGestureType)
+        for (auto gestureType : m_setGestureType)
         {
             if (QGesture *gesture = ge->gesture(gestureType))
             {
@@ -125,14 +125,14 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
         if (m_bClicking)
         {
-            QTimer::singleShot(100, [&](){
+            //QTimer::singleShot(0, [=](){
                 if (m_bClicking)
                 {
                     m_bClicking = false;
 
                     _onMouseEvent(E_MouseEventType::MET_Click, me);
                 }
-            });
+           // });
         }
     }
     else if (E_MouseEventType::MET_Move == type)

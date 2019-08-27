@@ -251,16 +251,16 @@ class CWidget : public TWidget
 public:
     CWidget(QWidget *parent, const list<Qt::GestureType>& lstGestureType={}) :
         TWidget(parent),
-        m_lstGestureType(lstGestureType)
+        m_setGestureType(lstGestureType)
     {
-        for (auto gestureType : m_lstGestureType)
+        for (auto gestureType : m_setGestureType)
         {
             this->grabGesture(gestureType);
         }
     }
 
 private:
-    list<Qt::GestureType> m_lstGestureType;
+    SSet<Qt::GestureType> m_setGestureType;
 
     CTouchEvent m_teBegin;
 

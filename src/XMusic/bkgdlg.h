@@ -10,12 +10,10 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CBkgDlg& bkgDlg, CAddBkgDlg& addbkgDlg);
+    CBkgView(class CBkgDlg& bkgDlg);
 
 private:
     class CBkgDlg& m_bkgDlg;
-
-    CAddBkgDlg& m_addbkgDlg;
 
 private:
     UINT getPageRowCount() override;
@@ -38,7 +36,7 @@ public:
     CBkgDlg(class CPlayerView& view) :
         m_view(view),
         m_addbkgDlg(view, *this),
-        m_bkgView(*this, m_addbkgDlg)
+        m_bkgView(*this)
     {
     }
 
@@ -93,18 +91,17 @@ public:
     {
         if (m_bHScreen)
         {
-            return m_vecHBkg.size();
+            return m_vecHBkg.size()+1;
         }
         else
         {
-            return m_vecVBkg.size();
+            return m_vecVBkg.size()+1;
         }
     }
 
     const QPixmap* snapshot(UINT uIdx);
 
     void setBkg(UINT uIdx);
-    void unsetBkg();
 
     void addBkg(const wstring& strFile);
 
@@ -113,12 +110,7 @@ public:
 private:
     void _relayout(int cx, int cy) override;
 
-    void _onClose() override
-    {
-        m_vecHSnapshot.clear();
-        m_vecVSnapshot.clear();
-        m_lstSnapshot.clear();
+    void _setBkg(const wstring& strBkg);
 
-        m_bkgView.reset();
-    }
+    void _onClose() override;
 };
