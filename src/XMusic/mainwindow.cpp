@@ -497,14 +497,19 @@ void MainWindow::_relayout()
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
-    if (m_bUsingCustomBkg && fCXRate<=1)
+    if (m_bUsingCustomBkg)
     {
-#define __offset 10.0f
-        int yOffset = (int)round(__offset/fCXRate);
+        int yOffset = 0;
 
-        for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
+        if (fCXRate <= 1)
         {
-            pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
+#define __offset 10.0f
+            yOffset = (int)round(__offset/fCXRate);
+
+            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
+            {
+                pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
+            }
         }
 
 #define __dy 4
