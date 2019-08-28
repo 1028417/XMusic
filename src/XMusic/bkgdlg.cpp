@@ -7,7 +7,7 @@
 
 #define __margin    40
 
-#define __xsize     50
+#define __xsize     60
 
 static Ui::BkgDlg ui;
 
