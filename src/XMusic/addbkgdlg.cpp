@@ -79,7 +79,7 @@ void CAddBkgDlg::_onClose()
 void CAddBkgDlg::addBkg(const wstring& strFile)
 {
     m_bkgDlg.addBkg(strFile);
-    this->close();
+    close();
 }
 
 

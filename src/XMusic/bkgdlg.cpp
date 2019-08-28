@@ -274,8 +274,6 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
     }
 
     ((MainWindow&)m_view.getMainWnd()).updateBkg();
-
-    close();
 }
 
 void CBkgDlg::setBkg(UINT uIdx)
@@ -284,6 +282,7 @@ void CBkgDlg::setBkg(UINT uIdx)
     if (0 == uIdx)
     {
         _setBkg(L"");
+        close();
     }
     else
     {
@@ -292,6 +291,7 @@ void CBkgDlg::setBkg(UINT uIdx)
         {
             cauto& strBkg = vecBkg[uIdx];
             _setBkg(strBkg);
+            close();
         }
         else
         {
@@ -311,8 +311,6 @@ void CBkgDlg::addBkg(const wstring& strFile)
         vecBkg.push_back(strNewName);
 
         setBkg(vecBkg.size());
-
-        this->close();
     }
 }
 
@@ -331,8 +329,7 @@ void CBkgDlg::deleleBkg(UINT uIdx)
                                   :m_view.getOptionMgr().getOption().strVBkg;
         if (strBkg == vecBkg[uIdx])
         {
-            strBkg.clear();
-            ((MainWindow&)m_view.getMainWnd()).updateBkg();
+            _setBkg(L"");
         }
 
         auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
