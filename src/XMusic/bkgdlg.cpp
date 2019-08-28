@@ -310,7 +310,7 @@ void CBkgDlg::addBkg(const wstring& strFile)
         auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
         vecBkg.push_back(strNewName);
 
-        setBkg(vecBkg.size()-1);
+        setBkg(vecBkg.size());
 
         this->close();
     }
@@ -327,8 +327,15 @@ void CBkgDlg::deleleBkg(UINT uIdx)
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (uIdx < vecBkg.size())
     {
-        auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+        auto& strBkg = m_bHScreen?m_view.getOptionMgr().getOption().strHBkg
+                                  :m_view.getOptionMgr().getOption().strVBkg;
+        if (strBkg == vecBkg[uIdx])
+        {
+            strBkg.clear();
+            ((MainWindow&)m_view.getMainWnd()).updateBkg();
+        }
 
+        auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
         fsutil::removeFile(stBkgDir + vecBkg[uIdx]);
 
         vecBkg.erase(vecBkg.begin()+uIdx);
