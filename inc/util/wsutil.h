@@ -150,13 +150,16 @@ public:
 	
     WString& operator<<(const WString& other)
     {
-		wstring::append(other);
-            return *this;
+        wstring::append(other);
+        return *this;
     }
 
     WString& operator<<(const wchar_t *pStr)
     {
-		wstring::append(pStr);
+        if (pStr)
+        {
+            wstring::append(pStr);
+        }
         return *this;
     }
 

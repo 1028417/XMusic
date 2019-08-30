@@ -229,13 +229,8 @@ public:
 	}
 
     size_t writeln(const char *pStr) const override
-	{
-		if (NULL == pStr)
-		{
-			return 0;
-		}
-
-		return _write(pStr, strlen(pStr), true);
+    {
+        return _write(pStr, pStr?strlen(pStr):0, true);
     }
 
     bool close();
