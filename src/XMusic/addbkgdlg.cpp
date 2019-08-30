@@ -242,7 +242,7 @@ bool CAddBkgView::upward()
     if (m_pImgDir)
     {
         m_pImgDir = NULL;
-        update();
+        reset();
 
         m_addbkgDlg.relayout();
 

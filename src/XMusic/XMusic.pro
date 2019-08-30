@@ -57,10 +57,10 @@ FORMS    += mainwindow.ui \
 
 INCLUDEPATH += \
     ../../inc \
-    ../../inc/util
+    ../../inc/util #../../inc/curl
 
 android {
-LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK
+LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK #-lssl -lcrypto -lcurl
 
 DESTDIR = $$PWD/../../build/XMusic
 
