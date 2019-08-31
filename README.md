@@ -56,11 +56,11 @@
 
 * 支持Win10平板触屏操作
 
-### 跨平台点播App
+### 跨平台点播APP
 使用Qt开发的跨平台UI，其他模块复用。
 
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
-已编译出windows上的版本和安卓安装包，其中安卓采用OpenSL ES播放音频流。
+已编译出Windows上的版本和安卓安装包，其中安卓采用OpenSL ES播放音频流。
 
 ![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg)
