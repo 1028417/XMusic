@@ -6,11 +6,6 @@
 
 #include "app.h"
 
-//extern "C"
-//{
-//    #include "curl.h"
-//};
-
 #if __android
 //#include <QAndroidJniObject>
 //#include <QAndroidJniEnvironment>
@@ -210,25 +205,6 @@ IModelObserver& CPlayerView::getModelObserver()
 int main(int argc, char *argv[])
 {
     CApp app(argc, argv);
-
-/*    CURL *curl = curl_easy_init();
-    curl_version_info_data *p = curl_version_info(CURLVERSION_NOW);
-    g_logger << " version " >> p->version;
-    g_logger << " version_num " >> p->version_num;
-    g_logger << " host " >> p->host;
-    g_logger << " features " >> p->features;
-    g_logger << " ssl_version " >> p->ssl_version;
-    g_logger << " libz_version " >> p->libz_version;
-    while (*p->protocols)
-    {
-        g_logger << " protocols " >> *p->protocols;
-        p->protocols++;
-    }
-    g_logger << " ares " >> p->ares;
-    g_logger << " ares_num " >> p->ares_num;
-    g_logger << " libidn " >> p->libidn;
-    g_logger << " iconv_ver_num " >> p->iconv_ver_num;
-    g_logger << " libssh_version " >> p->libssh_version;*/
 
     return app.run();
 }

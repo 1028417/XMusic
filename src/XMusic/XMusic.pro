@@ -57,10 +57,10 @@ FORMS    += mainwindow.ui \
 
 INCLUDEPATH += \
     ../../inc \
-    ../../inc/util #../../inc/curl
+    ../../inc/util
 
 android {
-LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK #-lssl -lcrypto -lcurl
+LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK
 
 DESTDIR = $$PWD/../../build/XMusic
 
@@ -108,6 +108,9 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/../../lib/armeabi-v7a/libxMediaLib.so \
         $$PWD/../../lib/armeabi-v7a/libxModel.so \
         $$PWD/../../lib/armeabi-v7a/libxPlaySDK.so \
+        $$PWD/../../lib/armeabi-v7a/libcrypto.so \
+        $$PWD/../../lib/armeabi-v7a/libssl.so \
+        $$PWD/../../lib/armeabi-v7a/libcurl.so \
         $$PWD/../../lib/armeabi-v7a/ffmpeg/libavcodec.so \
         $$PWD/../../lib/armeabi-v7a/ffmpeg/libavformat.so \
         $$PWD/../../lib/armeabi-v7a/ffmpeg/libavutil.so \

@@ -347,7 +347,7 @@ void MainWindow::_relayout()
     ui.labelLogo->move(x_Logo, y_Logo);
 
     int x_LogoTip = (cx - ui.labelLogoTip->width())/2;
-    int y_LogoTip = ui.labelLogo->geometry().bottom() + 20;
+    int y_LogoTip = ui.labelLogo->geometry().bottom() + 13;
     ui.labelLogoTip->move(x_LogoTip, y_LogoTip);
 
     ui.labelLogoCompany->adjustSize();
@@ -574,7 +574,7 @@ void MainWindow::_relayout()
             }
             else
             {
-                y_SingerImg = cy/2+100;
+                y_SingerImg = cy/2+150;
             }
         }
 
