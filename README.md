@@ -63,4 +63,6 @@
 
 已编译出Windows上的版本和安卓安装包，其中安卓采用OpenSL ES播放音频流。
 
-![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg)
+<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_Logo.jpg" width="430"> <img
+	src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg" width="430">
+<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_H.jpg" width="865">
