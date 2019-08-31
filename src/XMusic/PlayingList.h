@@ -65,6 +65,18 @@ private:
         return m_alPlayingItems.size();
     }
 
+    UINT getPageRowCount() override
+    {
+        UINT uRet = CListView::getPageRowCount();
+        UINT uRowCount = getRowCount();
+        if (uRowCount<uRet && uRowCount>=7)
+        {
+            uRet = uRowCount;
+        }
+
+        return uRet;
+    }
+
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
     void _onRowDblClick(const tagLVRow&, const QMouseEvent&) override;
