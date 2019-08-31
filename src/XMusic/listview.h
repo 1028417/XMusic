@@ -95,11 +95,6 @@ private:
         return m_uColumnCount;
     }
 
-    virtual UINT getPageRowCount()
-    {
-        return m_uPageRowCount;
-    }
-
     virtual UINT getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
@@ -118,6 +113,11 @@ private:
     virtual void _onAutoScrollEnd() {}
 
 protected:
+    virtual UINT getPageRowCount()
+    {
+        return m_uPageRowCount;
+    }
+
     bool isAutoScrolling() const
     {
         return m_uAutoScrollSeq > 0;
