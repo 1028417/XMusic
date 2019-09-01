@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Player.h"
+#include "FileOpaque.h"
 
 #define __DemandCount 20
 
@@ -12,42 +12,6 @@ enum class E_DemandMode
     DM_DemandAlbumItem,
     DM_DemandPlayItem,
     DM_DemandPlaylist
-};
-
-class __ModelExt CFileOpaqueEx : public CFileOpaque
-{
-public:
-	static UINT checkDuration(const wstring& strFile, bool bLock = true)
-	{
-		CFileOpaqueEx FileOpaque(strFile);
-		return FileOpaque.checkDuration(bLock);
-	}
-
-	static UINT checkDuration(IMedia& media, bool bLock = true)
-	{
-		return checkDuration(media.GetAbsPath(), bLock);
-	}
-
-public:
-	CFileOpaqueEx(const wstring& strFile)
-		: CFileOpaque(strFile)
-	{
-	}
-
-	UINT checkDuration(bool bLock = true)
-	{
-		return CFileOpaque::checkDuration(bLock);
-	}
-
-private:
-	void *m_pXmsc = NULL;
-
-private:
-	int64_t open() override;
-
-	void close() override;
-
-	size_t read(uint8_t *buf, int buf_size) override;
 };
 
 class __ModelExt CPlayMgr
