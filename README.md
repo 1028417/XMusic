@@ -61,7 +61,7 @@
 
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
-已编译出Windows上的版本和安卓安装包，其中安卓采用OpenSL ES播放音频流。
+已编译出Windows上的版本和安卓安装包，安卓采用OpenSL ES播放音频流。
 
 <img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_Logo.jpg" width="430"> <img
 	src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg" width="430">
