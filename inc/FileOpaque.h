@@ -59,6 +59,14 @@ public:
         close();
     }
 
+    void set(const wstring& strFile)
+    {
+        close();
+
+        m_strFile = strFile;
+        m_size = -1;
+    }
+
 protected:
     wstring m_strFile;
 
@@ -66,16 +74,9 @@ protected:
 
     int64_t m_size = -1;
 
-    bool m_bExist = false;
-
     uint64_t m_uPos = 0;
 
 public:
-    bool exists() const
-    {
-        return m_bExist;
-    }
-
     virtual int64_t size() const override
     {
         return m_size;
@@ -89,8 +90,6 @@ public:
         }
         m_size = -1;
 
-        m_bExist = false;
-
 #if __android
         m_pf = fopen(wsutil::toStr(m_strFile).c_str(), "rb");
 #else
@@ -98,8 +97,6 @@ public:
 #endif
         if (NULL != m_pf)
         {
-            m_bExist = true;
-
             tagFileStat32_64 stat;
             memset(&stat, 0, sizeof stat);
             if (fsutil::fileStat32_64(m_pf, stat))
@@ -111,6 +108,11 @@ public:
         m_uPos = 0;
 
         return m_size;
+    }
+
+    virtual bool seekable() override
+    {
+        return true;
     }
 
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override
@@ -147,12 +149,12 @@ public:
     }
 };
 
-class __ModelExt CFileOpaqueEx : public CFileOpaque
+class __ModelExt CAudioOpaque : public CFileOpaque
 {
 public:
 	static UINT checkDuration(const wstring& strFile, bool bLock = true)
 	{
-		CFileOpaqueEx FileOpaque(strFile);
+        CAudioOpaque FileOpaque(strFile);
 		return FileOpaque.checkDuration(bLock);
 	}
 
@@ -162,7 +164,9 @@ public:
 	}
 
 public:
-    CFileOpaqueEx(const wstring& strFile, bool bURL = false)
+    CAudioOpaque() {}
+
+    CAudioOpaque(const wstring& strFile, bool bURL = false)
 		: CFileOpaque(strFile)
 	{
         m_bURL = bURL;
@@ -172,6 +176,14 @@ public:
 	{
 		return CFileOpaque::checkDuration(bLock);
 	}
+
+    void set(const wstring& strFile, bool bURL = false)
+    {
+        close();
+
+        CFileOpaque::set(strFile);
+        m_bURL = bURL;
+    }
 
 private:
     bool m_bURL = false;
@@ -184,4 +196,9 @@ private:
 	void close() override;
 
 	size_t read(uint8_t *buf, int buf_size) override;
+
+    bool seekable() override
+    {
+        return !m_bURL;
+    }
 };

@@ -19,6 +19,7 @@ public:
 
     virtual int64_t open() = 0;
 
+    virtual bool seekable() = 0;
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
 
     virtual size_t read(uint8_t *buf, int buf_size) = 0;
@@ -58,12 +59,12 @@ public:
     static void QuitSDK();
 
 	static int CheckDuration(const wstring& strFile, bool bLock = true);
-    static int CheckDuration(IAudioOpaque& FileOpaque, bool bLock = true);
+    static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock = true);
 
 	UINT GetDuration() const;
 	
     bool Play(const wstring& strFile, uint64_t uStartPos = 0, bool bForce48000 = false);
-    bool Play(IAudioOpaque& FileOpaque, uint64_t uStartPos = 0, bool bForce48000 = false);
+    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos = 0, bool bForce48000 = false);
 
 	E_PlayStatus GetPlayStatus();
 

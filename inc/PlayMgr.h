@@ -36,7 +36,7 @@ private:
 
 	wstring m_strPlayingFile;
 	
-    CFileOpaqueEx m_FileOpaque;
+    CAudioOpaque m_AudioOpaque;
 
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
