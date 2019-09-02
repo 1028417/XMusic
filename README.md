@@ -21,11 +21,11 @@
 * 完美支持日、韩、泰、西欧小语种等字符集。
 
 ### 媒体库
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_Playlist.jpg)
 * 播放列表管理：管理播放列表及曲目的增删改，支持拖放，与资源浏览器、歌手/专辑联动。
-<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_Playlist.jpg" width="865">
 
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_SingerAlbum.jpg)
 * 歌手/专辑管理：分组管理歌手、专辑及曲目的增删改，支持拖放，与资源浏览器、播放列表联动。
-<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_SingerAlbum.jpg" width="865">
 
 * 曲目查找：按目录查找引用、按文件查找引用、按标题查找曲目、按歌手查找曲目、查看新曲目。
 
@@ -63,6 +63,5 @@
 
 已编译出Windows上的版本和安卓安装包，安卓采用OpenSL ES播放音频流。
 
-<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_Logo.jpg" width="430"> <img
-	src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg" width="430">
-<img src="https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_H.jpg" width="865">
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg)
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_H.jpg)
