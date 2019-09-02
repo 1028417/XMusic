@@ -2,19 +2,26 @@
 
 #include "Player.h"
 
-#if __android
+#include <deque>
+
 class CFileDownload
 {
 public:
-    CFileDownload(){}
-
-    ~CFileDownload()
+    CFileDownload()
+        : m_sgn(true)
     {
-        cleanup();
     }
 
 private:
     void *m_curl = NULL;
+
+    CSignal m_sgn;
+
+    std::mutex m_mtx;
+    list<pair<char*, size_t>> m_lstData;
+    int m_nDataSize = 0;
+
+    bool m_bCancel = false;
 
 private:
     static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
@@ -22,8 +29,7 @@ private:
         return ((CFileDownload*)context)->_onRecv(buffer, size, nmemb);
     }
 
-    virtual size_t _onRecv(void *buffer, size_t size, size_t nmemb) = 0;
-        //uRet = fwrite(buffer, size, nmemb, (FILE *)stream);
+    virtual size_t _onRecv(void *buffer, size_t size, size_t nmemb);
 
     /*static size_t _curlProgress(void *context, double total, double now, double, double)
     {
@@ -32,18 +38,31 @@ private:
 
     virtual size_t _onProgress(double total, double now) = 0;*/
 
+    void _init();
+
+    void _pause();
+
+    void _resume();
+
 public:
     bool download(const string& strUrl);
 
-    void init();
+    size_t getData(char *pBuff, size_t buffSize);
 
-    void cleanup();
+    void cancel(bool bWait = false)
+    {
+        m_bCancel = true;
+
+        if (bWait)
+        {
+            m_sgn.wait();
+        }
+    }
 
     static void cleanupCurl();
 
     static void initCurl();
 };
-#endif
 
 class __ModelExt CFileOpaque : public IAudioOpaque
 {
@@ -82,32 +101,42 @@ public:
         return m_size;
     }
 
-    virtual int64_t open() override
+    virtual bool open() override
     {
-        if (NULL != m_pf)
+        if (m_pf)
         {
             return m_size;
         }
-        m_size = -1;
+
+        m_size = -1;        
+        m_uPos = 0;
 
 #if __android
         m_pf = fopen(wsutil::toStr(m_strFile).c_str(), "rb");
 #else
         (void)_wfopen_s(&m_pf, m_strFile.c_str(), L"rb");
 #endif
-        if (NULL != m_pf)
+        if (NULL == m_pf)
         {
-            tagFileStat32_64 stat;
-            memset(&stat, 0, sizeof stat);
-            if (fsutil::fileStat32_64(m_pf, stat))
-            {
-                m_size = stat.st_size;
-            }
+            return false;
         }
 
-        m_uPos = 0;
+        tagFileStat32_64 stat;
+        memset(&stat, 0, sizeof stat);
+        if (!fsutil::fileStat32_64(m_pf, stat))
+        {
+            close();
+            return false;
+        }
 
-        return m_size;
+        m_size = stat.st_size;
+        if (0 == m_size)
+        {
+            close();
+            return false;
+        }
+
+        return true;
     }
 
     virtual bool seekable() override
@@ -187,11 +216,12 @@ public:
 
 private:
     bool m_bURL = false;
+    CFileDownload m_fileDownload;
 
 	void *m_pXmsc = NULL;
 
 private:
-	int64_t open() override;
+    bool open() override;
 
 	void close() override;
 

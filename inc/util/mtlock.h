@@ -54,9 +54,10 @@ public:
 private:
     mutex m_mutex;
 
-    T m_value;
-
     condition_variable m_condVar;
+
+protected:
+    T m_value;
 
 private:
     using CB_CheckSignal = const std::function<bool(const T& value)>&;
@@ -143,18 +144,38 @@ public:
     {
     }
 
-    void wait()
+    void wait(bool bReset = false)
     {
-        TSignal::wait([](bool bValue) {
-			return bValue;
-		});
+        TSignal::wait([=](bool bValue) {
+            if (bValue)
+            {
+                if (bReset)
+                {
+                    m_value = false;
+                }
+
+                return true;
+            }
+
+            return false;
+        });
     }
 
-    bool wait_for(UINT uMs)
+    bool wait_for(UINT uMs, bool bReset = false)
     {
         bool bValue = false;
-        if (!TSignal::wait_for(uMs, bValue, [](bool bValue) {
-			return bValue;
+        if (!TSignal::wait_for(uMs, bValue, [=](bool bValue) {
+           if (bValue)
+           {
+               if (bReset)
+               {
+                   m_value = false;
+               }
+
+               return true;
+           }
+
+           return false;
         }))
         {
             return false;

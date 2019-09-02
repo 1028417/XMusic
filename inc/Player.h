@@ -17,7 +17,7 @@ class __PlaySDKExt IAudioOpaque
 public:
     virtual int64_t size() const = 0;
 
-    virtual int64_t open() = 0;
+    virtual bool open() = 0;
 
     virtual bool seekable() = 0;
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
