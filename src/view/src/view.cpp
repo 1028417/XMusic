@@ -238,15 +238,13 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const functi
 
 			ProgressDlg.SetStatusText(task.first.c_str(), 1);
 
-			CFileOpaqueEx FileOpaque(task.first);
-			int nDuration = FileOpaque.checkDuration(false);
-			if (0 == nDuration)
+			CAudioOpaque AudioOpaque(task.first);
+			int nDuration = AudioOpaque.checkDuration(false);
+			if (AudioOpaque.size() == -1)
 			{
-				if (!FileOpaque.exists())
-				{
-					nDuration = -1;
-				}
+				nDuration = -1;
 			}
+			
 			if (nDuration <= 0)
 			{
 				lock.lock();
