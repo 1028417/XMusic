@@ -129,7 +129,7 @@ int CVerifyResultDlg::VerifyMediaItem(int nItem)
 	
 	CAudioOpaque AudioOpaque(pMedia->GetAbsPath());
 	int nDuration = AudioOpaque.checkDuration();
-	if (AudioOpaque.size() == -1)
+	if (AudioOpaque.fileSize() == -1)
 	{
 		nDuration = -1;
 	}

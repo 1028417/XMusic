@@ -11,10 +11,10 @@
 #include "dlg/ExportMediaSetDlg.h"
 #include "dlg/option/ExportOptionDlg.h"
 
-const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.dsf;*.dff;*.wma;*.aac;*.ac3;*.aif;*.m4a"
+const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.dsf;*.dff;*.wma;*.m4a;*.aac;*.ac3"
 	L"| Mp3文件|*.mp3| Flac文件|*.flac| Ape文件|*.ape"
 	L"| Wav文件|*.wav| Dsf文件|*.dsf| Dff文件|*.dff"
-	L"| Wma文件|*.wma| AAC文件|*.aac| AC3文件|*.ac3| AIF文件|*.aif| M4A文件|*.m4a|";
+	L"| Wma文件|*.wma| M4A文件|*.m4a| AAC文件|*.aac| AC3文件|*.ac3|";
 
 bool __view::init()
 {
@@ -240,7 +240,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const functi
 
 			CAudioOpaque AudioOpaque(task.first);
 			int nDuration = AudioOpaque.checkDuration(false);
-			if (AudioOpaque.size() == -1)
+			if (AudioOpaque.fileSize() == -1)
 			{
 				nDuration = -1;
 			}
