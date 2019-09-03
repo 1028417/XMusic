@@ -30,6 +30,8 @@ public:
 	int getSingerImg() const;
 
 	void AsyncTask() override;
+
+    void CheckRelatedMedia();
 };
 
 class __MediaLibExt CPlaylist : public CMediaSet
