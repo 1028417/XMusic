@@ -722,7 +722,7 @@ void MainWindow::refreshPlayingList(int nPlayingItem, bool bSetActive)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    PlayItem.AsyncTask();
+    PlayItem.CheckRelatedMedia();
 
     g_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.strTitle = PlayItem.GetTitle();
