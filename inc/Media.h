@@ -39,7 +39,7 @@ protected:
 
 	int m_nFileSize = 0;
 
-	UINT m_uDuration = 0;
+	int m_nDuration = -1;
 
 public:
 	int index() const;
@@ -80,17 +80,17 @@ public:
 
 	void SetDuration(UINT uDuration)
 	{
-		m_uDuration = uDuration;
+		m_nDuration = uDuration;
 	}
 
-	UINT GetDuration() const
+	int GetDuration() const
 	{
-		return m_uDuration;
+		return m_nDuration;
 	}
 
 	wstring GetDurationString() const;
 
-	static wstring GetDurationString(UINT uDuration);
+	static wstring GetDurationString(int nDuration);
 
 	CMediaSet *GetMediaSet() override
 	{

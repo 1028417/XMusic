@@ -51,20 +51,35 @@ private:
 	CSignal m_stopedSignal;
 
 private:
-	template <typename T>
-	bool _Play(T& input, uint64_t uStartPos, bool bForce48000);
+    template <typename T> bool _Play(T& input, uint64_t uStartPos, bool bForce48000);
+
+	template <typename T> static int _CheckDuration(T& input, bool bLock);
 
 public:
     static int InitSDK();
     static void QuitSDK();
+	
+	/*static int CheckDuration(const wstring& strFile, bool bLock)
+	{
+		return _CheckDuration(strFile, bLock);
+	}*/
 
-	static int CheckDuration(const wstring& strFile, bool bLock = true);
-    static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock = true);
+	static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock)
+	{
+		return _CheckDuration(AudioOpaque, bLock);
+	}
 
 	UINT GetDuration() const;
 	
-    bool Play(const wstring& strFile, uint64_t uStartPos = 0, bool bForce48000 = false);
-    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos = 0, bool bForce48000 = false);
+	/*bool Play(const wstring& strFile, uint64_t uStartPos, bool bForce48000)
+	{
+		return _Play(strFile, uStartPos, bForce48000);
+	}*/
+
+	bool CPlayer::Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000)
+	{
+		return _Play(AudioOpaque, uStartPos, bForce48000);
+	}
 
 	E_PlayStatus GetPlayStatus();
 

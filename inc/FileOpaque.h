@@ -18,6 +18,8 @@ private:
     CSignal m_sgn;
 
     std::mutex m_mtx;
+    std::condition_variable m_condvar;
+
     list<pair<char*, size_t>> m_lstData;
     int m_nDataSize = 0;
 
@@ -229,6 +231,6 @@ private:
 
     bool seekable() override
     {
-        return !m_bURL;
+		return !m_bURL;
     }
 };
