@@ -58,28 +58,12 @@ private:
 public:
     static int InitSDK();
     static void QuitSDK();
-	
-	/*static int CheckDuration(const wstring& strFile, bool bLock)
-	{
-		return _CheckDuration(strFile, bLock);
-	}*/
 
-	static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock)
-	{
-		return _CheckDuration(AudioOpaque, bLock);
-	}
+    static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock);
 
 	UINT GetDuration() const;
-	
-	/*bool Play(const wstring& strFile, uint64_t uStartPos, bool bForce48000)
-	{
-		return _Play(strFile, uStartPos, bForce48000);
-	}*/
 
-    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000)
-	{
-		return _Play(AudioOpaque, uStartPos, bForce48000);
-	}
+    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000);
 
 	E_PlayStatus GetPlayStatus();
 
