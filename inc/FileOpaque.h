@@ -4,6 +4,14 @@
 
 #include <deque>
 
+enum class E_DownloadStatus
+{
+    DS_None = 0,
+    DS_Downloading,
+    DS_Cancel,
+    DS_Fail
+};
+
 class CFileDownload
 {
 public:
@@ -16,6 +24,8 @@ private:
     void *m_curl = NULL;
 
     CSignal m_sgn;
+
+    E_DownloadStatus m_eStatus = E_DownloadStatus::DS_None;
 
     std::mutex m_mtx;
     std::condition_variable m_condvar;
@@ -47,6 +57,11 @@ private:
     void _resume();
 
 public:
+    E_DownloadStatus status() const
+    {
+        return m_eStatus;
+    }
+
     bool download(const string& strUrl);
 
     size_t getData(char *pBuff, size_t buffSize);
