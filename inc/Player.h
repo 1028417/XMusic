@@ -76,7 +76,7 @@ public:
 		return _Play(strFile, uStartPos, bForce48000);
 	}*/
 
-	bool CPlayer::Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000)
+    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000)
 	{
 		return _Play(AudioOpaque, uStartPos, bForce48000);
 	}
