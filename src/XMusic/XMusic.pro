@@ -65,7 +65,7 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel 
 DESTDIR = $$PWD/../../build/XMusic
 
     font.files += ../../bin/Microsoft-YaHei-Light.ttc
-#    font.files += ../../bin/Microsoft-YaHei-Regular.ttc
+    #font.files += ../../bin/Microsoft-YaHei-Regular.ttc
     font.files += ../../bin/Microsoft-YaHei-Semibold.ttc
     font.path = /assets
     INSTALLS += font
