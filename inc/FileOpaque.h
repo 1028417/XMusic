@@ -12,7 +12,7 @@ enum class E_DownloadStatus
     DS_Fail
 };
 
-class CFileDownload
+class __ModelExt CFileDownload
 {
 public:
     CFileDownload()
@@ -32,9 +32,7 @@ private:
 
     list<pair<char*, size_t>> m_lstData;
     int m_nDataSize = 0;
-
-    bool m_bCancel = false;
-
+	
 private:
     static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
     {
@@ -68,7 +66,7 @@ public:
 
     void cancel(bool bWait = false)
     {
-        m_bCancel = true;
+		m_eStatus = E_DownloadStatus::DS_Cancel;
 
         if (bWait)
         {
@@ -86,7 +84,8 @@ class __ModelExt CFileOpaque : public IAudioOpaque
 public:
     CFileOpaque() {}
 
-    CFileOpaque(const wstring& strFile) : m_strFile(strFile)
+    CFileOpaque(const wstring& strFile)
+		: m_strFile(strFile)
     {
     }
 
@@ -113,10 +112,20 @@ protected:
     uint64_t m_uPos = 0;
 
 public:
-    virtual int64_t size() const override
+	int64_t fileSize() const
+	{
+		return m_size;
+	}
+
+    /*virtual int64_t size() const override
     {
         return m_size;
     }
+
+	virtual uint64_t pos() const override
+	{
+		return m_uPos;
+	}*/
 
     virtual bool open() override
     {

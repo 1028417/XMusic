@@ -15,7 +15,8 @@
 class __PlaySDKExt IAudioOpaque
 {
 public:
-    virtual int64_t size() const = 0;
+    //virtual int64_t size() const = 0;
+	//virtual uint64_t pos() const = 0;
 
     virtual bool open() = 0;
 

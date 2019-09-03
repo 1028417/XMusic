@@ -13,10 +13,9 @@ enum class E_MediaFileType
 	, MFT_DSF
 	, MFT_DFF
 	, MFT_WMA
+	, MFT_M4A
 	, MFT_AAC
 	, MFT_AC3
-	, MFT_AIF
-	, MFT_M4A
 };
 
 class __MediaLibExt IMedia
