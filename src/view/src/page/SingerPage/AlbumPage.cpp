@@ -133,9 +133,12 @@ BOOL CAlbumPage::OnInitDialog()
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
 		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
-		if (NULL != pAlbumItem && pAlbumItem->GetFileSize() < 0)
+		if (NULL != pAlbumItem)
 		{
-			lvcd.uTextAlpha = 128;
+			if (pAlbumItem->GetFileSize() < 0 || pAlbumItem->GetDuration() == 0)
+			{
+				lvcd.uTextAlpha = 128;
+			}
 		}
 
 		switch (lvcd.nSubItem)

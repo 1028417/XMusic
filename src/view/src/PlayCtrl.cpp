@@ -95,7 +95,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
 	UINT iFlag = ++g_iFlag;
 
-	if (PlayItem.GetDuration() == 0)
+	if (PlayItem.GetDuration() <= 0)
 	{
 		m_PlaySpirit->clear();
 

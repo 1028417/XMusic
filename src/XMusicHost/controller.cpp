@@ -117,7 +117,7 @@ bool CController::start()
 
 			if (!m_model.getMediaLib().empty())
 			{
-                if (PlayMgr.getPlayer().GetDuration() == 0)
+                if (PlayMgr.getPlayer().GetDuration() <= 0)
                 {
                     (void)PlayMgr.playNext(false);
                 }

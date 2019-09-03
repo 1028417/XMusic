@@ -74,9 +74,12 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
-		if (NULL != pPlayItem && pPlayItem->GetFileSize() < 0)
+		if (NULL != pPlayItem)
 		{
-			lvcd.uTextAlpha = 128;
+			if (pPlayItem->GetFileSize() < 0 || pPlayItem->GetDuration() == 0)
+			{
+				lvcd.uTextAlpha = 128;
+			}
 		}
 
 		switch (lvcd.nSubItem)
