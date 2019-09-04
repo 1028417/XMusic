@@ -54,7 +54,7 @@ private:
 private:
     template <typename T> bool _Play(T& input, uint64_t uStartPos, bool bForce48000);
 
-	template <typename T> static int _CheckDuration(T& input, bool bLock);
+    template <typename T> static int _CheckDuration(T& input, bool bLock);
 
 public:
     static int InitSDK();
@@ -62,7 +62,7 @@ public:
 
     static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock);
 
-	UINT GetDuration() const;
+    int GetDuration() const;
 
     bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000);
 

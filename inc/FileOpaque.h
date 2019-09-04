@@ -196,28 +196,11 @@ public:
         }
 
         m_uPos = 0;
-    }
-
-    UINT checkDuration(bool bLock=true)
-    {
-        return CPlayer::CheckDuration(*this, bLock);
-    }
+    } 
 };
 
 class __ModelExt CAudioOpaque : public CFileOpaque
 {
-public:
-	static UINT checkDuration(const wstring& strFile, bool bLock = true)
-	{
-        CAudioOpaque FileOpaque(strFile);
-		return FileOpaque.checkDuration(bLock);
-	}
-
-	static UINT checkDuration(IMedia& media, bool bLock = true)
-	{
-		return checkDuration(media.GetAbsPath(), bLock);
-	}
-
 public:
     CAudioOpaque() {}
 
@@ -225,11 +208,6 @@ public:
 		: CFileOpaque(strFile)
 	{
         m_bURL = bURL;
-	}
-
-	UINT checkDuration(bool bLock = true)
-	{
-		return CFileOpaque::checkDuration(bLock);
 	}
 
     void set(const wstring& strFile, bool bURL = false)
@@ -245,6 +223,23 @@ private:
     CFileDownload m_fileDownload;
 
 	void *m_pXmsc = NULL;
+
+public:
+    static int checkDuration(const wstring& strFile, bool bLock = true)
+    {
+        CAudioOpaque FileOpaque(strFile);
+        return FileOpaque.checkDuration(bLock);
+    }
+
+    static int checkDuration(IMedia& media, bool bLock = true)
+    {
+        return checkDuration(media.GetAbsPath(), bLock);
+    }
+
+	int checkDuration(bool bLock = true)
+	{
+		return CPlayer::CheckDuration(*this, bLock);
+	}
 
 private:
     bool open() override;
