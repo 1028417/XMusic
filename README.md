@@ -21,11 +21,11 @@
 * 完美支持日、韩、泰、西欧小语种等字符集。
 
 ### 媒体库
-![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_Playlist.jpg)
 * 播放列表管理：管理播放列表及曲目的增删改，支持拖放，与资源浏览器、歌手/专辑联动。
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_Playlist.jpg)
 
-![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_SingerAlbum.jpg)
 * 歌手/专辑管理：分组管理歌手、专辑及曲目的增删改，支持拖放，与资源浏览器、播放列表联动。
+![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusicHost_SingerAlbum.jpg)
 
 * 曲目查找：按目录查找引用、按文件查找引用、按标题查找曲目、按歌手查找曲目、查看新曲目。
 
