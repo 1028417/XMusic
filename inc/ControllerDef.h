@@ -10,6 +10,7 @@ enum class E_PlayCtrl
     PC_PlayPrev,
     PC_PlayNext,
     PC_AutoPlayNext,
+    PC_PlayIndex,
     PC_Demand,
     PC_PlayMedias
 };
@@ -19,6 +20,12 @@ struct tagPlayCtrl
     tagPlayCtrl(E_PlayCtrl t_ePlayCtrl)
     {
         ePlayCtrl = t_ePlayCtrl;
+    }
+
+    tagPlayCtrl(UINT uIdx)
+    {
+        ePlayCtrl = E_PlayCtrl::PC_PlayIndex;
+        uPlayIdx = uIdx;
     }
 
     tagPlayCtrl(E_DemandMode eMode, E_LanguageType eLanguage = E_LanguageType::LT_None)
@@ -35,6 +42,8 @@ struct tagPlayCtrl
     }
 
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
+
+    UINT uPlayIdx = 0;
 
     E_DemandMode eDemandMode = E_DemandMode::DM_Null;
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
