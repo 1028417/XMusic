@@ -99,6 +99,10 @@ bool CController::start()
                     (void)PlayMgr.playNext(false);
                     break;
 
+                case E_PlayCtrl::PC_PlayIndex:
+                    (void)PlayMgr.play(PlayCtrl.uPlayIdx);
+
+                    break;
                 case E_PlayCtrl::PC_Demand:
                     (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
                     break;

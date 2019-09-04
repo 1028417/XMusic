@@ -785,6 +785,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
     ui.progressBar->setValue(0);
 
+    g_logger<<"nDuration  " >> m_PlayingInfo.nDuration;
     if (m_PlayingInfo.nDuration > 0)
     {
         ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
