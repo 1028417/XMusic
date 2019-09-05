@@ -204,19 +204,18 @@ class __ModelExt CAudioOpaque : public CFileOpaque
 public:
     CAudioOpaque() {}
 
-    CAudioOpaque(const wstring& strFile, bool bURL = false)
+	CAudioOpaque(const wstring& strFile, bool bURL = false)
 		: CFileOpaque(strFile)
 	{
-        m_bURL = bURL;
+		_set(strFile, bURL);
 	}
 
-    void set(const wstring& strFile, bool bURL = false)
-    {
-        close();
+	void set(const wstring& strFile, bool bURL = false)
+	{
+		CFileOpaque::set(strFile);
 
-        CFileOpaque::set(strFile);
-        m_bURL = bURL;
-    }
+		_set(strFile, bURL);
+	}
 
 private:
     bool m_bURL = false;
@@ -242,6 +241,18 @@ public:
 	}
 
 private:
+	void _set(const wstring& strFile, bool bURL);
+
+	wstring getFile() override
+	{
+		if (m_bURL || m_pXmsc)
+		{
+			return L"";
+		}
+		
+		return m_strFile;
+	}
+
     bool open() override;
 
 	void close() override;
