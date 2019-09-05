@@ -1163,8 +1163,6 @@ void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (0 < nCount));
 
-	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, (0 == nCount));
-	
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 }
 

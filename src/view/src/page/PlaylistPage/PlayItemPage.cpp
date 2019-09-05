@@ -249,8 +249,6 @@ void CPlayItemPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_RENAME, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_REMOVE, (0 < nCount));
 
-	m_MenuGuard.EnableItem(ID_ADD_PLAYITEM, (0 == nCount));
-	
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 }
 

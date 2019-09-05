@@ -81,6 +81,8 @@ void CExportOptionDlg::OnBnClickedOK()
 {
 	m_ExportOption.bActualMode = ((CButton*)GetDlgItem(IDC_ActualMode))->GetCheck();
 
+	m_ExportOption.bExportXMSC = ((CButton*)GetDlgItem(IDC_ExportXMSC))->GetCheck();
+
 	if (((CButton*)GetDlgItem(IDC_CompareFileSize))->GetCheck())
 	{
 		m_ExportOption.bCompareFileSize = true;
@@ -89,7 +91,7 @@ void CExportOptionDlg::OnBnClickedOK()
 
 	m_ExportOption.bDeleteOther = ((CButton*)GetDlgItem(IDC_DeleteOther))->GetCheck();
 
-	m_ExportOption.bExportXMSC = ((CButton*)GetDlgItem(IDC_ExportXMSC))->GetCheck();
-
+	m_ExportOption.bExportDB = ((CButton*)GetDlgItem(IDC_ExportDB))->GetCheck();
+	
 	CDialog::OnOK();
 }

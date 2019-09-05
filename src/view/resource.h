@@ -49,6 +49,8 @@
 #define IDD_DLG_TIMING                  2012
 #define IDR_MENU_PLAYLIST               2012
 #define IDC_EDIT2                       2012
+#define IDC_DeleteOther3                2012
+#define IDC_ExportDB                    2012
 #define IDD_DLG_ALARMCLOCK              2013
 #define IDR_MENU_PLAYITEM               2013
 #define IDC_COMBO_OPERATE               2014

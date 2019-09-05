@@ -253,8 +253,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME_ALBUMITEM
-        MENUITEM "移除",                          ID_REMOVE_ALBUMITEM
-        MENUITEM "添加",                          ID_ADD_ALBUMITEM
+        MENUITEM "移除曲目",                        ID_REMOVE_ALBUMITEM
+        MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
     END
 END
 
@@ -267,9 +267,9 @@ BEGIN
         MENUITEM "导出",                          ID_EXPORT_ALBUM
         MENUITEM SEPARATOR
         MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
-        MENUITEM "新建专辑",                        ID_ADD_ALBUM
         MENUITEM "重命名",                         ID_RENAME_ALBUM
-        MENUITEM "移除",                          ID_REMOVE_ALBUM
+        MENUITEM "移除专辑",                        ID_REMOVE_ALBUM
+        MENUITEM "新建专辑",                        ID_ADD_ALBUM
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
@@ -298,9 +298,9 @@ BEGIN
         MENUITEM "导出",                          ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
-        MENUITEM "新建列表",                        ID_ADD_PLAYLIST
         MENUITEM "重命名",                         ID_RENAME
-        MENUITEM "移除",                          ID_REMOVE
+        MENUITEM "移除列表",                        ID_REMOVE
+        MENUITEM "新建列表",                        ID_ADD_PLAYLIST
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
@@ -331,8 +331,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME
-        MENUITEM "移除",                          ID_REMOVE
-        MENUITEM "添加",                          ID_ADD_PLAYITEM
+        MENUITEM "移除曲目",                        ID_REMOVE
+        MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
     END
 END
 
@@ -396,18 +396,19 @@ BEGIN
     CONTROL         "隐藏菜单栏",IDC_HideMenuBar,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,14,52,10
 END
 
-IDD_DLG_ExportOption DIALOGEX 0, 0, 182, 147
+IDD_DLG_ExportOption DIALOGEX 0, 0, 182, 183
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "导出设置"
 FONT 8, "微软雅黑", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "取消",IDCANCEL,120,121,50,14
+    PUSHBUTTON      "取消",IDCANCEL,120,157,50,14
     CONTROL         "按实际路径导出",IDC_ActualMode,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,14,66,10
-    DEFPUSHBUTTON   "确定",IDOK,58,121,50,14
+    DEFPUSHBUTTON   "确定",IDOK,58,157,50,14
     CONTROL         "不覆盖大小相同的文件",IDC_CompareFileSize,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,49,79,10
     CONTROL         "删除多余文件",IDC_DeleteOther,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,52,10
     CONTROL         "比较修改时间",IDC_CompareFileTime,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,118,49,50,10
     CONTROL         "导出xmsc",IDC_ExportXMSC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,14,42,10
+    CONTROL         "导出DB文件",IDC_ExportDB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,117,52,10
 END
 
 IDD_DLG_FIND DIALOGEX 0, 0, 554, 296
@@ -658,8 +659,7 @@ BEGIN
         LEFTMARGIN, 13
         RIGHTMARGIN, 170
         TOPMARGIN, 14
-        BOTTOMMARGIN, 131
-        HORZGUIDE, 135
+        BOTTOMMARGIN, 171
     END
 
     IDD_DLG_FIND, DIALOG
