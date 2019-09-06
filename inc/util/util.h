@@ -1,26 +1,63 @@
 
 #pragma once
 
-#ifdef _MSC_VER
-	#define __winvc true
-	#define __winqt false
-	#define __android false
+#if defined(_MSC_VER)
+    #define __windows true
+    #define __winvc true
+    #define __winqt false
+    #define __android false
+    #define __ios false
+    #define __mac false
 
 #else
-	#ifdef __ANDROID__
-		#define __winvc false
-		#define __winqt false
-		#define __android true
-	#else
-		#define __winvc false
-		#define __winqt true
-		#define __android false
-	#endif
+    #include <qsystemdetection.h>
+
+    #if defined(Q_OS_ANDROID)
+        #define __windows false
+        #define __winvc false
+        #define __winqt false
+        #define __android true
+        #define __ios false
+        #define __mac false
+
+    #elif defined(Q_OS_IOS)
+    #define __windows false
+        #define __winvc false
+        #define __winqt false
+        #define __android false
+        #define __ios true
+        #define __mac false
+
+    #elif defined(Q_OS_MACOS)
+        #define __windows false
+        #define __winvc false
+        #define __winqt false
+        #define __android false
+        #define __ios false
+        #define __mac true
+
+    #else
+        #define __windows true
+        #define __winvc false
+        #define __winqt true
+        #define __android false
+        #define __ios false
+        #define __mac false
+    #endif
 #endif
 
 #if __winvc
+#ifdef _DEBUG
+    #define __isdebug true
+#else
+    #define __isdebug false
+#endif
+
     #pragma warning(disable: 4251)
     #pragma warning(disable: 4275)
+
+    #define __dllexport __declspec(dllexport)
+    #define __dllimport __declspec(dllimport)
 
     #include <stddef.h>
     #include <stdint.h>
@@ -28,17 +65,14 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-    #ifndef QT_NO_DEBUG
-        #define _DEBUG
-    #endif
-#endif
+    #define __dllexport //Q_CORE_EXPORT
+    #define __dllimport
 
-#if __android
-	#define __dllexport
-	#define __dllimport
+#ifdef QT_NO_DEBUG
+    #define __isdebug false
 #else
-	#define __dllexport __declspec(dllexport)
-	#define __dllimport __declspec(dllimport)
+    #define __isdebug true
+#endif
 #endif
 
 #ifdef __UtilPrj
@@ -132,7 +166,7 @@ using namespace NS_SSTL;
 
 #include "mtutil.h"
 
-#if !__android
+#if __windows
 #include "winfsutil.h"
 
 #include "fsdlg.h"

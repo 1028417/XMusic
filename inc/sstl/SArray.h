@@ -230,7 +230,7 @@ namespace NS_SSTL
 		{
 			int nRetPos = -1;
 
-			(*this)([&](__DataConstRef data, size_t pos) {
+            (*this)(startPos, [&](__DataConstRef data, size_t pos) {
 				if (cb(data))
 				{
 					nRetPos = pos;
@@ -238,7 +238,7 @@ namespace NS_SSTL
 				}
 
 				return true;
-			});
+            }, startPos);
 
 			return nRetPos;
 		}

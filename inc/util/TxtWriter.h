@@ -1,10 +1,10 @@
 
 #pragma once
 
-#if __android
-#define __DefEOL E_EOLFlag::eol_n
-#else
+#if __windows
 #define __DefEOL E_EOLFlag::eol_rn
+#else
+#define __DefEOL E_EOLFlag::eol_n
 #endif
 
 enum class E_EOLFlag

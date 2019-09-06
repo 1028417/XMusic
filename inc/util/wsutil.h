@@ -6,10 +6,8 @@
 #if !__winvc
 #include <QString>
 
-#if __android
 #define to_string(x) QString::number(x).toStdString()
 #define to_wstring(x) QString::number(x).toStdWString()
-#endif
 #endif
 
 class __UtilExt wsutil

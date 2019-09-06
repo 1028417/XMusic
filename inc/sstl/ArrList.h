@@ -213,7 +213,7 @@ namespace NS_SSTL
 
 		bool set(size_t pos, __DataConstRef& data)
 		{
-			return get([&](__DataRef m_data) {
+            return get(pos, [&](__DataRef m_data) {
 				m_data = data;
 			});
 		}

@@ -195,7 +195,7 @@ public:
     }
 };
 
-#if !__android
+#if __winvc || __winqt
 class __UtilExt CWinEvent
 {
 public:

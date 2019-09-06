@@ -331,7 +331,7 @@ namespace NS_SSTL
 		{
 			int nRetPos = -1;
 
-			(*this)([&](__RefType ref, size_t pos) {
+            (*this)(startPos, [&](__RefType ref, size_t pos) {
 				if (cb(ref))
 				{
 					nRetPos = pos;

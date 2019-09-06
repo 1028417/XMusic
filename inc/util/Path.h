@@ -235,7 +235,7 @@ public:
 		return CPath::GetName();
 	}
 
-	void GetTreeChilds(TD_TreeObjectList& lstChilds)
+    void GetTreeChilds(TD_TreeObjectList& lstChilds) override
 	{
 		lstChilds.add(TD_DirObjectList(this->dirs()));
 	}

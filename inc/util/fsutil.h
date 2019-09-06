@@ -10,10 +10,20 @@
 #include <QTime>
 #endif
 
+#if !__mac && !__ios
 #include <sys/utime.h>
+#endif
+
 #include <sys/stat.h>
 
-#if __android
+#if __windows
+using tagFileStat = struct _stat;
+using tagFileStat32 = struct _stat32;
+using tagFileStat32_64 = struct _stat32i64;
+using tagFileStat64_32 = struct _stat64i32;
+using tagFileStat64 = struct _stat64;
+
+#else
 using tagFileStat = struct stat;
 using tagFileStat32 = struct stat;
 using tagFileStat32_64 = struct stat;
@@ -21,12 +31,6 @@ using tagFileStat64_32 = struct stat;
 using tagFileStat64 = struct stat;
 
 #define _fileno fileno
-#else
-using tagFileStat = struct _stat;
-using tagFileStat32 = struct _stat32;
-using tagFileStat32_64 = struct _stat32i64;
-using tagFileStat64_32 = struct _stat64i32;
-using tagFileStat64 = struct _stat64;
 #endif
 
 enum class E_SeekFileFlag
@@ -74,20 +78,20 @@ private:
 
 public:
 	static const wchar_t wcFSSlant =
-#if __android
-		wcSlant;
+#if __windows
+    wcBackSlant;
 #else
-		wcBackSlant;
+    wcSlant;
 #endif
 
 	static const wchar_t wcDot = L'.';
 
 	static void transFSSlant(wstring& strPath)
 	{
-#if __android
-		wsutil::replaceChar(strPath, fsutil::wcBackSlant, fsutil::wcSlant);
+#if __windows
+        wsutil::replaceChar(strPath, fsutil::wcSlant, fsutil::wcBackSlant);
 #else
-		wsutil::replaceChar(strPath, fsutil::wcSlant, fsutil::wcBackSlant);
+        wsutil::replaceChar(strPath, fsutil::wcBackSlant, fsutil::wcSlant);
 #endif
 	}
 
@@ -150,7 +154,7 @@ public:
 
     static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
 
-#if !__android
+#if __windows
 	static wstring getModuleDir(wchar_t *pszModuleName = NULL);
 #endif
 
