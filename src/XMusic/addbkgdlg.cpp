@@ -40,9 +40,6 @@ void CAddBkgDlg::show()
 
     CDialog::show();
 
-#if !__android
-    m_ImgRoot.SetDir(L"C:/dev/XMusic/bin");
-#endif
     m_ImgRoot.startScan([&](CPath& dir) {
         CImgDir& imgDir = (CImgDir&)dir;
         if (imgDir.genSnapshot())

@@ -23,7 +23,8 @@ static bool g_bFullScreen = true;
 inline static void setFull(QWidget* wnd)
 {
     (void)wnd;
-#if !__android
+
+#if __windows
     if (!g_bFullScreen)
     {
         RECT rcWorkArea{0,0,0,0};
