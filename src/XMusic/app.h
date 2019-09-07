@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ViewDef.h"
-#include "model.h"
+#include "model/model.h"
 #include "../XMusicHost/controller.h"
 
 #include <QApplication>

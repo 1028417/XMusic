@@ -16,7 +16,7 @@ private:
 private:
 	void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage) override
 	{
-		((CMediaRes&)Object).GenListItem(bReportView, vecText, iImage, m_bShowRelatedSinger);
+		((CMediaRes&)Object).genMediaResListItem(bReportView, vecText, iImage, m_bShowRelatedSinger);
 	}
 };
 

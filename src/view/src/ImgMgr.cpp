@@ -3,8 +3,6 @@
 
 #include "ImgMgr.h"
 
-#include <algorithm>
-
 #define __Size(size) CSize(size, size)
 
 #define __SingerImgStartPos (sizeof g_lpImgFile / sizeof *g_lpImgFile)

@@ -60,10 +60,6 @@ INCLUDEPATH += \
     ../../inc/util
 
 android {
-LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxMediaLib -lxmodel -lxPlaySDK
-
-DESTDIR = $$PWD/../../build/XMusic
-
     font.files += ../../bin/Microsoft-YaHei-Light.ttc
     #font.files += ../../bin/Microsoft-YaHei-Regular.ttc
     font.files += ../../bin/Microsoft-YaHei-Semibold.ttc
@@ -78,13 +74,17 @@ DESTDIR = $$PWD/../../build/XMusic
     vbkg.path = /assets/vbkg
     INSTALLS += vbkg
 
-} else {
-LIBS    += -L$$PWD/../../bin -lxutil
+LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a
 
-LIBS    += -L$$PWD/../../bin -lxMediaLib -lxmodel -lxPlaySDK
+DESTDIR = $$PWD/../../build/XMusic
+
+} else {
+LIBS    += -L$$PWD/../../bin
 
 DESTDIR = $$PWD/../../bin
 }
+
+LIBS    += -lxutil -lxMediaLib -lxmodel -lxPlaySDK
 
 MOC_DIR = $$PWD/../../build/XMusic
 RCC_DIR = $$PWD/../../build/XMusic

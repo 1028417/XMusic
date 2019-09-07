@@ -8,7 +8,7 @@ class __view;
 
 #include "Common.h"
 
-#include "model.h"
+#include "model/model.h"
 
 #include "viewdef.h"
 

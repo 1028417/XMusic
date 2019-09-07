@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "model.h"
+#include "model/model.h"
 
 #include "listview.h"
 
