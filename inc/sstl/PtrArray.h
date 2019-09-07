@@ -29,6 +29,8 @@ namespace NS_SSTL
 		using __CB_RefType_bool = CB_T_bool<__RefType>;
 				
 	public:
+		virtual ~PtrArrayT() {} // ½â¾öqt-mac clang¸æ¾¯
+
 		PtrArrayT() {}
 
 		template <typename T, typename... args, typename = checkNotSameType_t<T, __DataType>>

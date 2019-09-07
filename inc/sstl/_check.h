@@ -2,8 +2,6 @@
 #ifndef __Check_H
 #define __Check_H
 
-#include <sstream>
-
 namespace NS_SSTL
 {
 	template <bool _test>

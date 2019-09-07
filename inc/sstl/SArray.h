@@ -19,6 +19,8 @@ namespace NS_SSTL
 		typedef decltype(declval<const __ContainerType&>().rbegin()) __CRItrType;
 
 	public:
+		virtual ~SArrayT() {} // ½â¾öqt-mac clang¸æ¾¯
+
 		SArrayT() = default;
 
 		template<typename... args>

@@ -24,6 +24,8 @@ namespace NS_SSTL
 			|| is_same<__ContainerType, std::unordered_multimap<__KeyType, __ValueType>>::value;
 
 	public:
+		virtual ~SMapT() {} // ½â¾öqt-mac clang¸æ¾¯
+
 		SMapT() = default;
 
 		template <typename T>
@@ -406,7 +408,7 @@ namespace NS_SSTL
 			return m_data.find(key) != m_data.end();
 		}
 
-		virtual void _toString(stringstream& ss, __PairConstRef pr) const override
+		void _toString(stringstream& ss, __PairConstRef pr) const override
 		{
 			tagSSTryLMove(ss) << '<' << pr.first << ", " << pr.second << '>';
 		}

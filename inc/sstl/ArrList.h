@@ -313,7 +313,7 @@ namespace NS_SSTL
 		}
 
 	protected:
-		virtual void _swap(__ContainerType& container)
+		void _swap(__ContainerType& container) override
 		{
 			if (&container != &m_data)
 			{

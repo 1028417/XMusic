@@ -558,7 +558,7 @@ namespace NS_SSTL
 		}
 
 	private:
-		virtual void _toString(stringstream& ss, __PairConstRef pr) const override
+		void _toString(stringstream& ss, __PairConstRef pr) const override
 		{
 			tagSSTryLMove(ss) << '<' << pr.first << ", " << pr.second << '>';
 		}

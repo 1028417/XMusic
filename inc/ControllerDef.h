@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model.h"
+#include "model/model.h"
 
 enum class E_PlayCtrl
 {

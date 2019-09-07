@@ -133,22 +133,10 @@ using BOOL = int;
 		break; \
 	}
 
-using namespace std;
-
-#include <sstream>
-
-#include <list>
-#include <vector>
-#include <set>
-#include <map>
-
-#include <algorithm>
-
-#include <functional>
-using fn_void = function<void()>;
-
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;
+
+using fn_void = function<void()>;
 
 #include "wsutil.h"
 
