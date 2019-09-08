@@ -17,6 +17,8 @@ enum class E_PlayCtrl
 
 struct tagPlayCtrl
 {
+    tagPlayCtrl() {}
+
     tagPlayCtrl(E_PlayCtrl t_ePlayCtrl)
     {
         ePlayCtrl = t_ePlayCtrl;

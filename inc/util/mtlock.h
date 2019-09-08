@@ -46,6 +46,8 @@ template <typename T>
 class TSignal
 {
 public:
+    TSignal() {}
+
     TSignal(const T& value) :
         m_value(value)
     {
