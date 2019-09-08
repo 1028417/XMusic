@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ViewDef.h"
+#include "viewdef.h"
 #include "model/model.h"
 #include "../XMusicHost/controller.h"
 

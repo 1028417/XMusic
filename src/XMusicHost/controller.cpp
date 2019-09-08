@@ -10,7 +10,7 @@ static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
 #if !__winvc
 thread g_threadPlayCtrl;
-TSignal<tagPlayCtrl> m_sigPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Null));
+TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif
 
 bool CController::start()

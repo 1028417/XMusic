@@ -59,7 +59,10 @@ public:
 
 CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
 {
-#if __android
+#if __winqt
+    fsutil::setWorkDir(fsutil::getModuleDir());
+
+#else
     /*string strSdcardPath
     char *pszSdcardPath = getenv("SECONDARY_STORAGE");
     if (NULL == pszSdcardPath)
@@ -76,8 +79,6 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
     {
         fsutil::setWorkDir(strDataDir);
     }
-#else
-    fsutil::setWorkDir(fsutil::getModuleDir());
 #endif
 
     m_logger.open(L"XMusic.log", true);

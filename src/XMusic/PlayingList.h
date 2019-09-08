@@ -97,5 +97,5 @@ private:
     void _onAutoScrollBegin() override;
     void _onAutoScrollEnd() override;
 
-    void timerEvent(QTimerEvent *);
+    void timerEvent(QTimerEvent *) override;
 };

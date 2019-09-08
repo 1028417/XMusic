@@ -170,9 +170,9 @@ private slots:
     }
 
 private:
-    void _relayout(int cx, int cy);
+    void _relayout(int cx, int cy) override;
 
-    bool _handleReturn();
+    bool _handleReturn() override;
 
     void _onClose() override;
 

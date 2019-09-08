@@ -39,14 +39,16 @@ HEADERS  += mainwindow.h \
     PlayingList.h \
     widget.h \
     button.h \
-    ProgressBar.h \
+    progressbar.h \
     bkgdlg.h \
     listview.h \
     dialog.h \
     medialibdlg.h \
     addbkgdlg.h \
     ListViewEx.h \
-    app.h
+    app.h \
+    ../../inc/ControllerDef.h \
+    ../../inc/viewdef.h
 
 RESOURCES += res.qrc
 
@@ -79,9 +81,16 @@ LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a
 DESTDIR = $$PWD/../../build/XMusic
 
 } else {
-LIBS    += -L$$PWD/../../bin
 
-DESTDIR = $$PWD/../../bin
+macx {
+    LIBS    += -L$$PWD/../../bin/macx
+
+    DESTDIR = $$PWD/../../bin/macx
+} else {
+    LIBS    += -L$$PWD/../../bin
+
+    DESTDIR = $$PWD/../../bin
+}
 }
 
 LIBS    += -lxutil -lxMediaLib -lxmodel -lxPlaySDK

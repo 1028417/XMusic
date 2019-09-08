@@ -1,5 +1,5 @@
 
-#include "Widget.h"
+#include "widget.h"
 
 #include <QTouchEvent>
 
