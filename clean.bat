@@ -11,12 +11,10 @@ del *.ipdb
 del *.iobj
 del *.ilk
 
-del *.cpp
-del *.o
 del *.a
 
 
-cd /d %~dp0src/2player
+cd /d %~dp0src/XMusic
 
 del qrc_res.cpp
 del *.obj
