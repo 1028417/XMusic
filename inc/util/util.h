@@ -157,12 +157,15 @@ using fn_void = function<void()>;
 #if __windows
 #include "winfsutil.h"
 
-#include "fsdlg.h"
+#include "winfsdlg.h"
 
 #include "wintimer.h"
 
 #include "ProFile.h"
+
+__UtilExt float getDPIRate();
 #endif
 
 #undef min
 #undef max
+
