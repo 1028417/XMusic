@@ -40,10 +40,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
     return JNI_ERR;
 }
-
-#define __FontSize 12
-#else
-#define __FontSize 14
 #endif
 
 static CUTF8Writer m_logger;
@@ -62,7 +58,7 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
 #if __winqt
     fsutil::setWorkDir(fsutil::getModuleDir());
 
-#else
+#elif __android
     /*string strSdcardPath
     char *pszSdcardPath = getenv("SECONDARY_STORAGE");
     if (NULL == pszSdcardPath)
@@ -79,6 +75,14 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
     {
         fsutil::setWorkDir(strDataDir);
     }
+
+#elif __mac
+    wstring strWorkDir = fsutil::workDir();
+    strWorkDir = fsutil::GetParentDir(strWorkDir);
+    strWorkDir = fsutil::GetParentDir(strWorkDir);
+    strWorkDir = fsutil::GetParentDir(strWorkDir);
+    strWorkDir = fsutil::GetParentDir(strWorkDir);
+    fsutil::setWorkDir(strWorkDir);
 #endif
 
     m_logger.open(L"XMusic.log", true);
@@ -91,6 +95,8 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
     mapFontFile([&](E_FontWeight eWeight, QString qsFontFile) {
 #if __android
         qsFontFile = "assets:/" +  qsFontFile;
+#elif __mac
+        qsFontFile = wsutil::toQStr(fsutil::workDir() + __wcFSSlant) + qsFontFile;
 #endif
 
         QString qsFontfamilyName;
@@ -106,8 +112,18 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
             }
         }
 
+        UINT uFontSize = 0;
+#if __android
+uFontSize = 12;
+#elif __mac
+uFontSize = 26;
+#else
+uFontSize = 21;
+uFontSize = UINT(uFontSize * getDPIRate());
+#endif
+
         QFont font(qsFontfamilyName);
-        font.setPointSizeF(__FontSize);
+        font.setPointSize(uFontSize);
         font.setWeight((int)eWeight);
         g_mapFont[eWeight] = font;
 

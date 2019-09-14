@@ -5,29 +5,8 @@
 
 #define uintRound(x) ((UINT)round(x))
 
-#include <ShellScalingApi.h>
-
-static HRESULT WINAPI GetDpiForMonitor(
-	_In_ HMONITOR hmonitor,
-	_In_ MONITOR_DPI_TYPE dpiType,
-	_Out_ UINT *dpiX,
-	_Out_ UINT *dpiY)
-{
-	HINSTANCE hInstWinSta = LoadLibraryW(L"SHCore.dll");
-
-	if (hInstWinSta == nullptr) return E_NOINTERFACE;
-
-	typedef HRESULT(WINAPI * PFN_GDFM)(HMONITOR, MONITOR_DPI_TYPE, UINT*, UINT*);
-
-	PFN_GDFM pGetDpiForMonitor = (PFN_GDFM)GetProcAddress(hInstWinSta, "GetDpiForMonitor");
-
-	if (pGetDpiForMonitor == nullptr) return E_NOINTERFACE;
-	
-	return pGetDpiForMonitor(hmonitor, dpiType, dpiX, dpiY);
-}
-
 // 开启对话框Per-Monitor DPI Aware支持(至少Win10)
-static inline BOOL EnablePerMonitorDialogScaling()
+static BOOL EnablePerMonitorDialogScaling()
 {
 	typedef BOOL(WINAPI *PFN_EnablePerMonitorDialogScaling)();
 	PFN_EnablePerMonitorDialogScaling pEnablePerMonitorDialogScaling =
@@ -39,7 +18,7 @@ static inline BOOL EnablePerMonitorDialogScaling()
 }
 
 // 开启子窗体DPI消息(至少Win10)
-static inline BOOL EnableChildWindowDpiMessage(_In_ HWND hWnd, _In_ BOOL bEnable)
+static BOOL EnableChildWindowDpiMessage(_In_ HWND hWnd, _In_ BOOL bEnable)
 {
 	typedef BOOL(WINAPI *PFN_EnableChildWindowDpiMessage)(HWND, BOOL);
 	PFN_EnableChildWindowDpiMessage pEnableChildWindowDpiMessage = 
@@ -49,8 +28,6 @@ static inline BOOL EnableChildWindowDpiMessage(_In_ HWND hWnd, _In_ BOOL bEnable
 	
 	return FALSE;
 }
-
-#define __DPIDefault 96.0f
 
 CGlobalSize::CGlobalSize()
 {
@@ -85,17 +62,6 @@ CGlobalSize::CGlobalSize()
 
 void CGlobalSize::init()
 {
-	UINT uDPIX = 0;
-	UINT uDPIY = 0;
-	HRESULT hr = GetDpiForMonitor(MonitorFromWindow(GetDesktopWindow(), MONITOR_DEFAULTTONEAREST), MDT_EFFECTIVE_DPI, &uDPIX, &uDPIY);
-	if (S_OK != hr)
-	{
-		HDC hDCDesk = GetDC(NULL);
-		uDPIX = GetDeviceCaps(hDCDesk, LOGPIXELSX);
-		uDPIY = GetDeviceCaps(hDCDesk, LOGPIXELSY);
-	}
-	m_uDPI = (uDPIX + uDPIY) / 2;
-
 	UINT uScreenWidth = GetSystemMetrics(SM_CXSCREEN);
 	UINT uScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
@@ -143,7 +109,7 @@ void CGlobalSize::init()
 	m_uTileHeight = uintRound(m_uTileHeight*fHRate);
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
 
-	float fDPIRate = __DPIDefault / m_uDPI;
+	float fDPIRate = getDPIRate();
 	m_fSmallFontSize = (fHRate - 1)*1.15f * fDPIRate * fDPIRate;
 
 	m_fBigFontSize = m_fSmallFontSize * 1.75f;

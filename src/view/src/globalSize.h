@@ -11,8 +11,6 @@ public:
 	void init();
 
 public:
-	UINT m_uDPI = 0;
-
 	UINT m_uScreenWidth = 0;
 	UINT m_uScreenHeight = 0;
 
