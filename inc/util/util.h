@@ -65,8 +65,12 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-    #define __dllexport //Q_CORE_EXPORT
-    #define __dllimport
+    #include <QtCore/qglobal.h>
+    #define __dllexport Q_DECL_EXPORT
+    #define __dllimport Q_DECL_IMPORT
+
+    //#define __dllexport
+    //#define __dllimport
 
 #ifdef QT_NO_DEBUG
     #define __isdebug false
