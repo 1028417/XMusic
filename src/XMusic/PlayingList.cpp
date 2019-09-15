@@ -27,9 +27,14 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-        painter.adjustFont(1, E_FontWeight::FW_SemiBold, false);
+#if __android
+#define __PlayingFontSize 0.8
+#else
+#define __PlayingFontSize 2.5
+#endif
+        painter.adjustFont(__PlayingFontSize, E_FontWeight::FW_SemiBold);
 
-        painter.drawText(rc.left(), rc.top() + 6, rc.width()
+        painter.drawText(rc.left(), rc.top()+3, rc.width()
             , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
     }
 

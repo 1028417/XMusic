@@ -232,7 +232,7 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
     strTitle << __wcFSSlant << MediaRes.GetName();
 }
 
-UINT CMedialibView::getPageRowCount()
+size_t CMedialibView::getPageRowCount()
 {
     if (isInRoot())
     {
@@ -259,7 +259,7 @@ UINT CMedialibView::getPageRowCount()
     return uRet;
 }
 
-UINT CMedialibView::getColumnCount()
+size_t CMedialibView::getColumnCount()
 {
     if (isInRoot() && isHLayout())
     {
@@ -269,13 +269,16 @@ UINT CMedialibView::getColumnCount()
     return 1;
 }
 
-UINT CMedialibView::getRootCount()
+size_t CMedialibView::getRootCount()
 {
-#if __android
-    return isHLayout()?5:9;
-#else
-    return isHLayout()?5:7;
-#endif
+    if (isHLayout())
+    {
+        return 6;
+    }
+    else
+    {
+        return 10;
+    }
 }
 
 bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
@@ -283,6 +286,11 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     context.eStyle = E_RowStyle::IS_None;
 
     bool bHScreen = isHLayout();
+    if (bHScreen)
+    {
+        context.fIconMargin = 0.05f;
+    }
+
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
         context.pixmap = &m_pmSingerGroup;

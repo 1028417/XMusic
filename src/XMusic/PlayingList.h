@@ -60,15 +60,15 @@ public:
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
 private:
-    UINT getRowCount() override
+    size_t getRowCount() override
     {
         return m_alPlayingItems.size();
     }
 
-    UINT getPageRowCount() override
+    size_t getPageRowCount() override
     {
-        UINT uRet = CListView::getPageRowCount();
-        UINT uRowCount = getRowCount();
+        size_t uRet = CListView::getPageRowCount();
+        size_t uRowCount = getRowCount();
         if (uRowCount<uRet && uRowCount>=7)
         {
             uRet = uRowCount;

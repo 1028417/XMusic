@@ -18,11 +18,11 @@ private:
     QPixmap m_pmX;
 
 private:
-    UINT getPageRowCount() override;
+    size_t getPageRowCount() override;
 
-    UINT getColumnCount() override;
+    size_t getColumnCount() override;
 
-    UINT getRowCount() override;
+    size_t getRowCount() override;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
@@ -87,7 +87,7 @@ public:
         return m_pmVBkg;
     }
 
-    UINT bkgCount() const
+    size_t bkgCount() const
     {
         if (m_bHScreen)
         {
@@ -101,11 +101,11 @@ public:
 
     const QPixmap* snapshot(UINT uIdx);
 
-    void setBkg(UINT uIdx);
+    void setBkg(size_t uIdx);
 
     void addBkg(const wstring& strFile);
 
-    void deleleBkg(UINT uIdx);
+    void deleleBkg(size_t uIdx);
 
 private:
     void _relayout(int cx, int cy) override;

@@ -96,7 +96,15 @@ public:
         QPainter::setFont(font);
     }
 
-    void adjustFontSize(float fSizeOffset)
+    void adjustFont(float fSizeOffset, E_FontWeight eWeight)
+    {
+        CFont font(*this);
+        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        font.setWeight(eWeight);
+        QPainter::setFont(font);
+    }
+
+    void adjustFont(float fSizeOffset)
     {
         CFont font(*this);
         font.setPointSizeF(font.pointSizeF() + fSizeOffset);

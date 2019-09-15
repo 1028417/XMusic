@@ -120,13 +120,9 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
     }
 
     UINT sz_icon = rc.height();
-    if (context.uIconSize > 0 && context.uIconSize < sz_icon)
+    if (context.fIconMargin > 0)
     {
-        sz_icon = context.uIconSize;
-    }
-    else
-    {
-        sz_icon = sz_icon *65/100;
+        sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
     }
 
     int nMargin = (rc.height()-sz_icon)/2;

@@ -108,7 +108,7 @@ CAddBkgView::CAddBkgView(CPlayerView& view, CAddBkgDlg& addbkgDlg, const TD_ImgD
 {
 }
 
-UINT CAddBkgView::getColumnCount()
+size_t CAddBkgView::getColumnCount()
 {
     if (m_pImgDir)
     {
@@ -123,7 +123,7 @@ UINT CAddBkgView::getColumnCount()
     return 1;
 }
 
-UINT CAddBkgView::getPageRowCount()
+size_t CAddBkgView::getPageRowCount()
 {
     if (m_pImgDir)
     {
@@ -149,7 +149,7 @@ UINT CAddBkgView::getPageRowCount()
     return uRet;
 }
 
-UINT CAddBkgView::getRowCount()
+size_t CAddBkgView::getRowCount()
 {
     if (m_pImgDir)
     {

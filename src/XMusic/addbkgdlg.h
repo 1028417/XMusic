@@ -116,11 +116,11 @@ private:
     CImgDir *m_pImgDir = NULL;
 
 private:
-    UINT getColumnCount() override;
+    size_t getColumnCount() override;
 
-    UINT getPageRowCount() override;
+    size_t getPageRowCount() override;
 
-    UINT getRowCount() override;
+    size_t getRowCount() override;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 

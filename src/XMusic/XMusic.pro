@@ -76,24 +76,22 @@ android {
     vbkg.path = /assets/vbkg
     INSTALLS += vbkg
 
-LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a
+LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
 
 DESTDIR = $$PWD/../../build/XMusic
 
 } else {
 
 macx {
-    LIBS    += -L$$PWD/../../bin/macx
+    LIBS    += -L$$PWD/../../bin/macx -lxutil.1 -lxPlaySDK.1 -lxMediaLib -lxmodel
 
     DESTDIR = $$PWD/../../bin/macx
 } else {
-    LIBS    += -L$$PWD/../../bin
+    LIBS    += -L$$PWD/../../bin -lxutil -lxPlaySDK -lxMediaLib -lxmodel
 
     DESTDIR = $$PWD/../../bin
 }
 }
-
-LIBS    += -lxutil -lxMediaLib -lxmodel -lxPlaySDK
 
 MOC_DIR = $$PWD/../../build/XMusic
 RCC_DIR = $$PWD/../../build/XMusic

@@ -6,7 +6,7 @@ CListViewEx::CListViewEx(QWidget *parent, UINT uColumnCount, UINT uPageRowCount)
 {
 }
 
-UINT CListViewEx::getRowCount()
+size_t CListViewEx::getRowCount()
 {
     if (m_pMediaset)
     {

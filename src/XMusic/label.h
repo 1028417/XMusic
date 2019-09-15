@@ -94,7 +94,7 @@ private:
             {
                 while (painter.fontMetrics().width(text) >= cx)
                 {
-                    painter.adjustFontSize(-0.1);
+                    painter.adjustFont(-0.1);
                 }
             }
             else

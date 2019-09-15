@@ -18,7 +18,7 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
     (void)m_pmX.load(":/img/btnX.png");
 }
 
-UINT CBkgView::getPageRowCount()
+size_t CBkgView::getPageRowCount()
 {
     if (m_bkgDlg.bkgCount() <= 3)
     {
@@ -30,7 +30,7 @@ UINT CBkgView::getPageRowCount()
     }
 }
 
-inline UINT CBkgView::getColumnCount()
+inline size_t CBkgView::getColumnCount()
 {
     if (m_bkgDlg.bkgCount() <= 3)
     {
@@ -42,14 +42,14 @@ inline UINT CBkgView::getColumnCount()
     }
 }
 
-UINT CBkgView::getRowCount()
+size_t CBkgView::getRowCount()
 {
     return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
 void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
-    UINT uColumnCount = getColumnCount();
+    size_t uColumnCount = getColumnCount();
     int nMargin = __margin/(uColumnCount-1);
 
     QRect rc = lvRow.rc;
@@ -125,7 +125,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 
 void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
 {
-    UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+    size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
     if (uIdx != 0 && uIdx < m_bkgDlg.bkgCount())
     {
@@ -276,7 +276,7 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
     ((MainWindow&)m_view.getMainWnd()).updateBkg();
 }
 
-void CBkgDlg::setBkg(UINT uIdx)
+void CBkgDlg::setBkg(size_t uIdx)
 {
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (0 == uIdx)
@@ -314,7 +314,7 @@ void CBkgDlg::addBkg(const wstring& strFile)
     }
 }
 
-void CBkgDlg::deleleBkg(UINT uIdx)
+void CBkgDlg::deleleBkg(size_t uIdx)
 {
     if (0 == uIdx)
     {

@@ -55,8 +55,8 @@ private:
     virtual void _onShowMediaSet(CMediaSet&) {}
     virtual void _onShowPath(CPath&) {}
 
-    UINT getRowCount() override;
-    virtual UINT getRootCount() = 0;
+    size_t getRowCount() override;
+    virtual size_t getRootCount() = 0;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 

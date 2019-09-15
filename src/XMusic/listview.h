@@ -46,7 +46,7 @@ protected:
         E_RowStyle eStyle = E_RowStyle::IS_None;
 
         const QPixmap *pixmap = NULL;
-        UINT uIconSize = 0;
+        float fIconMargin = 0.17f;
 
         wstring strText;
         wstring strRemark;
@@ -90,12 +90,12 @@ private:
     map<void*, float> m_mapScrollRecord;
 
 private:
-    virtual UINT getColumnCount()
+    virtual size_t getColumnCount()
     {
         return m_uColumnCount;
     }
 
-    virtual UINT getRowCount() = 0;
+    virtual size_t getRowCount() = 0;
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
 
@@ -113,7 +113,7 @@ private:
     virtual void _onAutoScrollEnd() {}
 
 protected:
-    virtual UINT getPageRowCount()
+    virtual size_t getPageRowCount()
     {
         return m_uPageRowCount;
     }

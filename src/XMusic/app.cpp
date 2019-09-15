@@ -112,14 +112,14 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
             }
         }
 
-        UINT uFontSize = 0;
+        UINT uFontSize = 12;
 #if __android
-uFontSize = 12;
+        uFontSize = 12;
 #elif __mac
-uFontSize = 26;
-#else
-uFontSize = 21;
-uFontSize = UINT(uFontSize * getDPIRate());
+        uFontSize = 26;
+#elif __windows
+        uFontSize = 21;
+        uFontSize = UINT(uFontSize * getDPIRate());
 #endif
 
         QFont font(qsFontfamilyName);
