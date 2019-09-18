@@ -13,7 +13,7 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
     g_pe = pe;
 
     CPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     _onPaint(painter, pe->rect());
 }
 
