@@ -93,11 +93,6 @@ macx {
 }
 }
 
-MOC_DIR = $$PWD/../../build/XMusic
-RCC_DIR = $$PWD/../../build/XMusic
-UI_DIR = $$PWD/../../build/XMusic
-OBJECTS_DIR = $$PWD/../../build/XMusic
-
 DISTFILES += \
     android/AndroidManifest.xml \
     android/gradle/wrapper/gradle-wrapper.jar \
@@ -123,3 +118,8 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         $$PWD/../../lib/armeabi-v7a/ffmpeg/libavutil.so \
         $$PWD/../../lib/armeabi-v7a/ffmpeg/libswresample.so
 }
+
+MOC_DIR = $$PWD/../../../build/XMusic
+RCC_DIR = $$PWD/../../../build/XMusic
+UI_DIR = $$PWD/../../../build/XMusic
+OBJECTS_DIR = $$PWD/../../../build/XMusic

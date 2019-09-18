@@ -293,26 +293,26 @@ void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 	verifyMedia(lstMedias, pWnd);
 }
 
-void __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
+bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	, const function<UINT(CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia)>& fnExport)
 {
 	static CFolderDlgEx FolderDlg;
 	wstring strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
-	__Ensure(!strExportPath.empty());
+	__EnsureReturn(!strExportPath.empty(), false);
 	if (!m_model.getMediaLib().checkIndependentDir(strExportPath, true))
 	{
 		CMainApp::showMsg(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
-		return;
+		return false;
 	}
 
 	tagExportMedia ExportMedia;
-	ExportMedia.strExportPath = strExportPath;
+	ExportMedia.strExportPath = strExportPath + L"/XMusic";
 	ExportMedia.bActualMode = bActualMode;
 
 	m_ResModule.ActivateResource();
 
 	CExportOptionDlg ExportOptionDlg(ExportMedia);
-	__Ensure(IDOK == ExportOptionDlg.DoModal());
+	__EnsureReturn(IDOK == ExportOptionDlg.DoModal(), false);
 	
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		UINT uCount = fnExport(ProgressDlg, ExportMedia);
@@ -345,12 +345,15 @@ void __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	};
 
 	CProgressDlg ProgressDlg(cb);
-	(void)ProgressDlg.DoModal(strTitle, &wnd);
+	return IDOK == ProgressDlg.DoModal(strTitle, &wnd);
 }
 
 void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 {
-	_exportMedia(wnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia) {
+	wstring strExportPath;
+	bool bRet = _exportMedia(wnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia) {
+		strExportPath = ExportMedia.strExportPath;
+
 		if (ExportMedia.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
@@ -381,6 +384,11 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 
 		return lstMedias.size();
 	});
+
+	if (bRet)
+	{
+		m_model.exportDB(strExportPath);
+	}
 }
 
 void __view::exportMediaSet(CMediaSet& MediaSet)
