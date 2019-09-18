@@ -13,12 +13,6 @@ del *.ilk
 
 del *.a
 
-del XMusic.exe
-del xmodel.dll
-del xMedialib.dll
-del xutil.dll
-del xPlaySDK.dll
-
 cd /d %~dp0src/XMusic
 
 del *makefile*
