@@ -156,6 +156,8 @@ public:
 	using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
 	virtual UINT exportMedia(const tagExportMedia& ExportMedia, const CB_exportorMedia& cb) = 0;
 
+	virtual bool exportDB(const wstring& strExportDir) = 0;
+
 	virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
 
@@ -265,6 +267,8 @@ public:
 	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
 	UINT exportMedia(const tagExportMedia& ExportMedia, const CB_exportorMedia& cb) override;
+
+	bool exportDB(const wstring& strExportDir) override;
 
 	void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
