@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <Windows.h>
+//#include <commdlg.h>
 
 class __UtilExt CFolderDlg
 {

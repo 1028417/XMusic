@@ -156,12 +156,15 @@ using fn_void = function<void()>;
 
 #include "SQLiteDB.h"
 
-#include "mtutil.h"
-
 #if __windows
-#include "winfsutil.h"
+//#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
 
+#if __winvc
 #include "winfsdlg.h"
+#endif
+
+#include "winfsutil.h"
 
 #include "wintimer.h"
 
@@ -170,6 +173,7 @@ using fn_void = function<void()>;
 __UtilExt float getDPIRate();
 #endif
 
+#include "mtutil.h"
+
 #undef min
 #undef max
-

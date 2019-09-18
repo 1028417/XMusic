@@ -2,10 +2,6 @@
 
 #include "util.h"
 
-#if __windows
-#include <Windows.h>
-#endif
-
 #include <thread>
 
 //#include <future>
