@@ -5,7 +5,7 @@
 
 #include <afxcmn.h>			// MFC 对 Windows 公共控件的支持
 
-#include "util.h"
+#include "../util/util.h"
 
 #ifdef __CommonPrj
 #define __CommonExt __dllexport

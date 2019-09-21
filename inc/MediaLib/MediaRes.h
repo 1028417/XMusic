@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "MediaLib/CueFile.h"
+#include "CueFile.h"
 
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {

@@ -1,7 +1,7 @@
 ﻿
 #pragma once
 
-#include "util.h"
+#include "../MediaLib/MediaDef.h"
 
 #ifdef __ModelPrj
 extern ITxtWriter& g_logger;
@@ -10,8 +10,6 @@ extern ITxtWriter& g_logger;
 #else
 #define __ModelExt __dllimport
 #endif
-
-#include "MediaLib/MediaDef.h"
 
 #include "Dao.h"
 

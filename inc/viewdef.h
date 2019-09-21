@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _MSC_VER
-#include "Common.h"
+#include "Common/Common.h"
 #endif
 
 #include "ControllerDef.h"

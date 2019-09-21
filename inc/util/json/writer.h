@@ -3,7 +3,7 @@
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
-#include "util.h"
+#include "../util.h"
 
 #ifndef JSON_WRITER_H_INCLUDED
 #define JSON_WRITER_H_INCLUDED
