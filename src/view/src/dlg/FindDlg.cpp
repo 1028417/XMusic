@@ -219,7 +219,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 				}
 				else if (NULL != pAlbumItem)
 				{
-					(void)m_view.hittestRelatedMediaSet(*pAlbumItem, E_MediaSetType::MST_Singer);
+					m_view.m_MediaResPage.HittestMediaRes(*pAlbumItem);
 				}
 				
 				return;

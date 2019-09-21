@@ -6,11 +6,9 @@ class __view;
 
 #define __PlaySpiritSkinDir (fsutil::workDir() + L"/skin/")
 
-#include "Common.h"
+#include "viewdef.h"
 
 #include "model/model.h"
-
-#include "viewdef.h"
 
 #include "globalSize.h"
 

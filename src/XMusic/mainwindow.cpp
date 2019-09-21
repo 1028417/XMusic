@@ -11,6 +11,10 @@
 
 #include "bkgdlg.h"
 
+#define __size1920 __size(1920)
+#define __size10 __size(10)
+#define __size50 __size(50)
+
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 
 static Ui::MainWindow ui;
@@ -37,7 +41,7 @@ inline static void setFull(QWidget* wnd)
 
 void showFull(QWidget* wnd)
 {
-    if (__android || g_bFullScreen)
+    if (__android || __ios || g_bFullScreen)
     {
         wnd->setWindowState(Qt::WindowFullScreen);
     }
@@ -94,7 +98,7 @@ MainWindow::MainWindow(CPlayerView& view) :
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
 
-#if __android
+#if __android || __ios
     ui.btnFullScreen->setVisible(false);
 
 #else
@@ -125,9 +129,17 @@ MainWindow::MainWindow(CPlayerView& view) :
 void MainWindow::showLogo()
 {
     float fFontSizeOffset = -0.5;
-#if __android
+#if __android || __ios
+    cauto& szScreen = QApplication::primaryScreen()->size();
+    int nScreenSize = MIN(szScreen.width(), szScreen.height());
+    int nLogoWidth = nScreenSize*40/100;
+
+    ui.labelLogo->setScaledContents(true);
+    ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
+
     fFontSizeOffset = -2;
 #endif
+
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
     ui.labelLogoCompany->setFont(CFont(fFontSizeOffset/3));
 
@@ -139,10 +151,6 @@ void MainWindow::showLogo()
     peCompany.setColor(QPalette::WindowText, QColor(64, 128, 255, 0));
     ui.labelLogoCompany->setPalette(peCompany);
 
-#if __android
-    ui.labelLogo->resize(440,110);
-    ui.labelLogo->setScaledContents(true);
-#endif
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
@@ -274,6 +282,9 @@ void MainWindow::show()
     _relayout();
 
     ui.labelLogo->movie()->stop();
+    ui.labelLogo->setVisible(false);
+    ui.labelLogoTip->setVisible(false);
+    ui.labelLogoCompany->setVisible(false);
 
     m_timer = startTimer(1000);
 
@@ -339,30 +350,27 @@ void MainWindow::_relayout()
     int y_Logo = (cy - ui.labelLogo->height())/2;
     if (m_bHScreen)
     {
-        y_Logo -= 60;
+        y_Logo -= __size(60);
     }
     else
     {
-        y_Logo -= 100;
+        y_Logo -= __size(100);
     }
     ui.labelLogo->move(x_Logo, y_Logo);
 
-    int x_LogoTip = (cx - ui.labelLogoTip->width())/2;
-    int y_LogoTip = ui.labelLogo->geometry().bottom() + 12;
-    ui.labelLogoTip->move(x_LogoTip, y_LogoTip);
+    int y_LogoTip = ui.labelLogo->geometry().bottom() + __size50;
+    ui.labelLogoTip->setGeometry(0, y_LogoTip, cx, ui.labelLogoTip->height());
 
-    ui.labelLogoCompany->adjustSize();
-    int y_LogoCompany = cy - 50 - ui.labelLogoCompany->height();
-    int x_LogoCompany = 0;
+    int y_LogoCompany = cy - __size50 - ui.labelLogoCompany->height();
+    ui.labelLogoCompany->setGeometry(__size50, y_LogoCompany, cx-__size50*2, ui.labelLogoCompany->height());
     if (m_bHScreen)
     {
-        x_LogoCompany = cx - 50 - ui.labelLogoCompany->width();
+        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
     }
     else
     {
-        x_LogoCompany = (cx-ui.labelLogoCompany->width())/2;
+        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
     }
-    ui.labelLogoCompany->move(x_LogoCompany, y_LogoCompany);
 
     cauto& pmDefaultBkg = m_bkgDlg.defaultBkg();
     float fCXRate = 0;
@@ -397,20 +405,21 @@ void MainWindow::_relayout()
         }
     }
     else
-    { 
+    {
         m_bUsingCustomBkg = false;
 
         ui.labelBkg->setPixmap(pmDefaultBkg);
 
+        int cx_bkg = 0;
         if (m_bHScreen)
         {
-            ui.labelBkg->resize(cx, cy_bkg);
+            cx_bkg = cx;
         }
         else
         {
-            ui.labelBkg->resize(fCXRate*pmDefaultBkg.width(), cy_bkg);
+            cx_bkg = fCXRate*pmDefaultBkg.width();
         }
-        ui.labelBkg->move(0, dy_bkg);
+        ui.labelBkg->setGeometry(0, __size(dy_bkg), cx_bkg, cy_bkg);
     }
 
     ui.labelDemandCN->setShadow(m_bUsingCustomBkg?1:0);
@@ -454,20 +463,20 @@ void MainWindow::_relayout()
         widgetPos.first->setGeometry(newPos);
     }
 
-    int y_frameDemand = 20;
-    if (cy > 1920)
+    int y_frameDemand = __size(20);
+    if (cy > __size1920)
     {
-        y_frameDemand = 35;
+        y_frameDemand = __size(35);
     }
-    if (1920 == cy)
+    else if (__size1920 == cy)
     {
-        y_frameDemand = 28;
+        y_frameDemand = __size(28);
     }
-    else if (cy < 1000)
+    else if (cy < __size(1000))
     {
         if (!m_bUsingCustomBkg)
         {
-            y_frameDemand = 12;
+            y_frameDemand = __size(12);
         }
     }
 
@@ -478,23 +487,23 @@ void MainWindow::_relayout()
             + ui.progressBar->x() - ui.frameDemand->width())/2;
     }
     else
-    {        
+    {
         x_frameDemand = (cx - ui.frameDemand->width())/2;
-        x_frameDemand -= 10;
+        x_frameDemand -= __size10;
     }
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    int x_btnMore = 20;
-#if __android
+    int x_btnMore = __size(20);
+#if __android || __ios
      ui.btnExit->move(-200,-200);
 
      if (!m_bHScreen)
      {
-         x_btnMore = cx - 20 - ui.btnMore->width();
+         x_btnMore = cx - __size(20) - ui.btnMore->width();
      }
 #else
-    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + 10);
-    ui.btnExit->move(x_btnExit, y_frameDemand + 10);
+    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size10);
+    ui.btnExit->move(x_btnExit, y_frameDemand + __size10);
 #endif
     ui.btnMore->move(x_btnMore, y_frameDemand+10);
 
@@ -504,7 +513,7 @@ void MainWindow::_relayout()
 
         if (fCXRate <= 1)
         {
-#define __offset 10.0f
+#define __offset __size(10.0f)
             yOffset = (int)round(__offset/fCXRate);
 
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
@@ -513,7 +522,7 @@ void MainWindow::_relayout()
             }
         }
 
-#define __dy 4
+#define __dy __size(4)
         int dy = (int)round(fCXRate*__dy);
         for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
@@ -551,7 +560,7 @@ void MainWindow::_relayout()
 
         ui.labelPlayingfile->setShadow(2);
 
-        int cy_labelAlbumName = 80;
+        int cy_labelAlbumName = __size(80);
         int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_progressBar, cy_labelAlbumName);
@@ -565,17 +574,17 @@ void MainWindow::_relayout()
 
             ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            y_SingerImg = y_labelAlbumName-300;
+            y_SingerImg = y_labelAlbumName-__size(300);
         }
         else
         {
             if (m_bHScreen)
             {
-                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + 50;
+                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size50;
             }
             else
             {
-                y_SingerImg = cy/2+150;
+                y_SingerImg = cy/2+__size(150);
             }
         }
 
@@ -592,7 +601,7 @@ void MainWindow::_relayout()
         ui.wdgSingerImg->setGeometry(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
 
         int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
-        ui.labelSingerName->setGeometry(x_SingerImg+15, y_labelSingerName, cx_SingerImg-15, ui.labelSingerName->height());
+        ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName, cx_SingerImg-__size(15), ui.labelSingerName->height());
 
         if (ui.wdgSingerImg->isVisible())
         {
@@ -627,19 +636,19 @@ void MainWindow::_relayout()
         bool bFlag = false;
         if (m_bHScreen)
         {
-            bFlag = (cy < 1080 || fCXRate > 1);
+            bFlag = (cy < __size(1080) || fCXRate > 1);
         }
         else
         {
-            bFlag = cy < 1920;
+            bFlag = cy < __size1920;
         }
 
         if (bFlag)
         {
             ui.labelPlayingfile->setShadow(2);
 
-            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - 20;
-            ui.labelPlayingfile->move(ui.wdgSingerImg->x() + 30, y_Playingfile);
+            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - __size(20);
+            ui.labelPlayingfile->move(ui.wdgSingerImg->x() + __size(30), y_Playingfile);
 
             y_PlayingListMax = ui.wdgSingerImg->y();
         }
@@ -672,32 +681,32 @@ void MainWindow::_relayout()
     UINT uRowCount = 10;
     if (m_bHScreen)
     {
-        UINT uMargin = 45;
+        UINT uMargin = __size(45);
         int x_PlayingList = ui.progressBar->geometry().right();
-        x_PlayingList += 90 * fCXRate;
+        x_PlayingList += __size(90) * fCXRate;
 
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin*fCXRate, cy-uMargin*2);
     }
     else
     {
-        UINT y_Margin = 30;
+        UINT y_Margin = __size(30);
 
         int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
-        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/100;
+        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/__size(100);
         if (uRowCount > 10)
         {
             uRowCount = 10;
-            y_Margin += 30;
+            y_Margin += __size(30);
 
             if (bZoomoutSingerImg)
             {
-                y_Margin += 30;
+                y_Margin += __size(30);
             }
         }
         else if (uRowCount < 7)
         {
             uRowCount = 7;
-            y_Margin -= 10;
+            y_Margin -= __size10;
         }
 
         UINT x_Margin = ui.frameDemand->x();

@@ -743,7 +743,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <x>670</x>
       <y>270</y>
       <width>281</width>
-      <height>60</height>
+      <height>80</height>
      </rect>
     </property>
     <property name="font">
@@ -767,7 +767,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <x>140</x>
       <y>360</y>
       <width>491</width>
-      <height>60</height>
+      <height>80</height>
      </rect>
     </property>
     <property name="font">
@@ -782,7 +782,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+     <set>Qt::AlignHCenter|Qt::AlignTop</set>
     </property>
    </widget>
    <widget class="CButton" name="btnExit">

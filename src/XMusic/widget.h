@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "util.h"
+#include "util/util.h"
 
 #include <QWidget>
 
@@ -14,6 +14,14 @@
 #include <QFont>
 
 #include <QPixmap>
+
+#include <QScreen>
+
+#if __ios
+#define __size(x) decltype(x)((x)/QApplication::primaryScreen()->devicePixelRatio())
+#else
+#define __size(x) (x)
+#endif
 
 enum class E_FontWeight
 {

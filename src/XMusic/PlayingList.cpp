@@ -27,7 +27,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-#if __android
+#if __android || __ios
 #define __PlayingFontSize 0.8
 #else
 #define __PlayingFontSize 2.5

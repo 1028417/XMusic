@@ -113,8 +113,8 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
         }
 
         UINT uFontSize = 12;
-#if __android
-        uFontSize = 12;
+#if __ios
+        uFontSize *= 2;
 #elif __mac
         uFontSize = 26;
 #elif __windows
@@ -221,6 +221,8 @@ IModelObserver& CPlayerView::getModelObserver()
 
 int main(int argc, char *argv[])
 {
+    //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
     CApp app(argc, argv);
 
     return app.run();

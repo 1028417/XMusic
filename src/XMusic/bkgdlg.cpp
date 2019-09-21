@@ -88,8 +88,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
         }
         else
         {
-        #define __offset    1080
-            rcSrc.setRight(__offset);
+            rcSrc.setRight(1080);
             rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
         }
 
@@ -110,8 +109,8 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
             QPixmap pmAdd;
             if (pmAdd.load(":/img/add.png"))
             {
-#define __size  60
-                painter.drawPixmap(rc.center().x()-__size, rc.center().y()-__size, __size*2, __size*2, pmAdd);
+#define __margin __size(60)
+                painter.drawPixmap(rc.center().x()-__margin, rc.center().y()-__margin, __margin*2, __margin*2, pmAdd);
             }
 
             painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);

@@ -26,7 +26,7 @@ void CMedialibDlg::init()
     crSelectedBkg.setGreen(crBkg.green()-5);
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
 
-#if __android
+#if __android || __ios
     m_MedialibView.setFont(0.5);
 #endif
 
@@ -84,7 +84,7 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
-#if __android
+#if __android || __ios
     bShowUpwardButton = false;
 #endif
     ui.btnUpward->setVisible(bShowUpwardButton);
@@ -178,7 +178,7 @@ void CMedialibView::showFile(const wstring& strPath)
         return;
     }
 
-#if __android
+#if __android || __ios
     if (fsutil::CheckSubPath(m_rootDir.GetAbsPath(), strPath))
     {
         pMediaRes = m_rootDir.FindSubPath(strPath.substr(m_rootDir.GetAbsPath().size()), false);
@@ -309,7 +309,7 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
         context.strText = __XMusic;
         context.pPath = &m_MediaLib;
     }
-#if __android
+#if __android || __ios
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
     {
         context.pixmap = &m_pmDir;

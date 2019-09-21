@@ -79,7 +79,7 @@ protected:
         }
 
             break;
-#if __android
+#if __android || __ios
         case QEvent::KeyRelease:
             if (!_handleReturn())
             {
