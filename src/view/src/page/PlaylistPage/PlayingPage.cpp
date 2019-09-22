@@ -42,7 +42,6 @@ BOOL CPlayingPage::OnInitDialog()
 
 	__super::RegMenuHotkey(m_wndList, VK_F2, ID_RENAME);
 	__super::RegMenuHotkey(m_wndList, VK_DELETE, ID_REMOVE);
-	// TODO __super::RegMenuHotkey(m_wndList, 'C', ID_CopyTitle);
 
 	this->RefreshList();
 	
