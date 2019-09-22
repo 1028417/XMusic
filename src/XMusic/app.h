@@ -37,7 +37,7 @@ public:
         return m_app;
     }
 
-    QMainWindow& getMainWnd() const;
+    class MainWindow& getMainWnd() const;
 
     IPlayerController& getCtrl() const
     {

@@ -11,8 +11,9 @@
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CBkgDlg& bkgDlg)
+CBkgView::CBkgView(CPlayerView& view, CBkgDlg& bkgDlg)
     : CListView(&bkgDlg)
+    , m_view(view)
     , m_bkgDlg(bkgDlg)
 {
     (void)m_pmX.load(":/img/btnX.png");
@@ -78,21 +79,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
     {
-        cauto& pm = m_bkgDlg.defaultBkg();
-        QRect rcSrc = pm.rect();
-
-        float fHWRate = (float)rc.height()/rc.width();
-        if (fHWRate < 1)
-        {
-            rcSrc.setTop(rcSrc.bottom()-rcSrc.width()*fHWRate);
-        }
-        else
-        {
-            rcSrc.setRight(1080);
-            rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
-        }
-
-        painter.drawPixmap(rc, pm, rcSrc);
+        m_view.getMainWnd().drawDefaultBkg(painter, rc);
    }
     else
     {
@@ -109,8 +96,8 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
             QPixmap pmAdd;
             if (pmAdd.load(":/img/add.png"))
             {
-#define __margin __size(60)
-                painter.drawPixmap(rc.center().x()-__margin, rc.center().y()-__margin, __margin*2, __margin*2, pmAdd);
+#define __offset __size(60)
+                painter.drawPixmap(rc.center().x()-__offset, rc.center().y()-__offset, __offset*2, __offset*2, pmAdd);
             }
 
             painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);

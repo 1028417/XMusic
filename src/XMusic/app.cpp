@@ -208,7 +208,7 @@ int CApp::run()
 }
 
 
-QMainWindow& CPlayerView::getMainWnd() const
+MainWindow& CPlayerView::getMainWnd() const
 {
     return m_mainWnd;
 }

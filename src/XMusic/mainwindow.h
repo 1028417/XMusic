@@ -88,6 +88,8 @@ public:
 
     void updateBkg();
 
+    void drawDefaultBkg(QPainter& painter, const QRect& rc);
+
 private:
     bool event(QEvent *) override;
 

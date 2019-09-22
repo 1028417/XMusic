@@ -62,7 +62,14 @@ MainWindow::MainWindow(CPlayerView& view) :
 {
     ui.setupUi(this);
 
-    m_bkgDlg.setDefaultBkg(*ui.labelBkg->pixmap());
+    m_PlayingList.setParent(ui.centralWidget);
+    m_PlayingList.raise();
+
+    ui.btnExit->raise();
+
+    ui.labelBkg->setVisible(false);
+
+    ui.btnPause->setVisible(false);
 
     QWidget* lpTopWidget[] = {
         ui.frameDemand, ui.btnMore
@@ -113,15 +120,14 @@ MainWindow::MainWindow(CPlayerView& view) :
     });
 #endif
 
+    ui.labelLogo->setAttribute(Qt::WA_TranslucentBackground);
+    ui.labelLogoTip->setAttribute(Qt::WA_TranslucentBackground);
+    ui.labelLogoCompany->setAttribute(Qt::WA_TranslucentBackground);
+
+    ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
+    ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
+
     ui.centralWidget->setVisible(false);
-    ui.centralWidget->raise();
-
-    m_PlayingList.setParent(ui.centralWidget);
-    m_PlayingList.raise();
-
-    ui.btnExit->raise();
-
-    ui.btnPause->setVisible(false);
 
     this->setWindowFlags(Qt::FramelessWindowHint);
 }
@@ -154,9 +160,9 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    QPalette pe;
-    pe.setColor(QPalette::Background, QColor(180, 220, 255));
-    this->setPalette(pe);
+//    QPalette pe;
+//    pe.setColor(QPalette::Background, QColor(180, 220, 255));
+//    this->setPalette(pe);
 
     g_bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
     showFull(this);
@@ -252,9 +258,6 @@ void MainWindow::_init()
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playFinish, this, &MainWindow::slot_playFinish);
 
-    ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
-    ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
-
     ui.labelSingerName->setFont(0.5);
     ui.labelPlayingfile->setFont(0.5);
     ui.labelDuration->setFont(-1);
@@ -279,22 +282,56 @@ void MainWindow::show()
 
     m_bkgDlg.init();
 
-    _relayout();
-
     ui.labelLogo->movie()->stop();
     ui.labelLogo->setVisible(false);
     ui.labelLogoTip->setVisible(false);
     ui.labelLogoCompany->setVisible(false);
+    ui.btnFullScreen->setVisible(false);
 
     m_timer = startTimer(1000);
 
+#if __android    
+    ui.centralWidget->setAttribute(Qt::WA_TranslucentBackground);
+
+    /*for (auto widget : ui.centralWidget->children())
+    {
+        widget->setParent(this);
+    }*/
+#endif
+
     ui.centralWidget->setVisible(true);
+
+    this->update();
 }
 
 bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
+    case QEvent::Paint:
+    {
+        CPainter painter(this);
+
+        if (ui.labelLogo->isVisible())
+        {
+            painter.fillRect(this->rect(), QColor(180, 220, 255));
+        }
+        else
+        {
+            m_bHScreen = this->width() > this->height();
+            cauto& pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+            if (!pmBkg.isNull())
+            {
+               painter.drawPixmapEx(this->rect(), pmBkg);
+            }
+            else
+            {
+                drawDefaultBkg(painter, this->rect());
+            }
+        }
+    }
+
+    break;
     case QEvent::Move:
     case QEvent::Resize:
         for (auto pDlg : g_setDlgs)
@@ -358,7 +395,7 @@ void MainWindow::_relayout()
     }
     ui.labelLogo->move(x_Logo, y_Logo);
 
-    int y_LogoTip = ui.labelLogo->geometry().bottom() + __size50;
+    int y_LogoTip = ui.labelLogo->geometry().bottom() + __size(30);
     ui.labelLogoTip->setGeometry(0, y_LogoTip, cx, ui.labelLogoTip->height());
 
     int y_LogoCompany = cy - __size50 - ui.labelLogoCompany->height();
@@ -372,55 +409,20 @@ void MainWindow::_relayout()
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
     }
 
-    cauto& pmDefaultBkg = m_bkgDlg.defaultBkg();
     float fCXRate = 0;
     if (m_bHScreen)
     {
-        fCXRate = (float)cx/pmDefaultBkg.width();
+        fCXRate = (float)cx/ui.labelBkg->pixmap()->width();
     }
     else
     {
         fCXRate = (float)cx/1080;
     }
-    int cy_bkg = fCXRate*pmDefaultBkg.height();
+    int cy_bkg = fCXRate*ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
     const QPixmap &pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-    if (!pmBkg.isNull())
-    {
-        m_bUsingCustomBkg = true;
-
-        ui.labelBkg->setPixmap(pmBkg);
-
-        float fHWRate = (float)pmBkg.height()/pmBkg.width();
-        if (fHWRate > (float)cy/cx)
-        {
-            cy_bkg = fHWRate * cx;
-            ui.labelBkg->setGeometry(0, -(cy_bkg-cy)/2, cx, cy_bkg);
-        }
-        else
-        {
-            int cx_bkg = (float)cy / fHWRate;
-            ui.labelBkg->setGeometry(-(cx_bkg-cx)/2, 0, cx_bkg, cy);
-        }
-    }
-    else
-    {
-        m_bUsingCustomBkg = false;
-
-        ui.labelBkg->setPixmap(pmDefaultBkg);
-
-        int cx_bkg = 0;
-        if (m_bHScreen)
-        {
-            cx_bkg = cx;
-        }
-        else
-        {
-            cx_bkg = fCXRate*pmDefaultBkg.width();
-        }
-        ui.labelBkg->setGeometry(0, __size(dy_bkg), cx_bkg, cy_bkg);
-    }
+    m_bUsingCustomBkg = !pmBkg.isNull();
 
     ui.labelDemandCN->setShadow(m_bUsingCustomBkg?1:0);
     ui.labelDemandHK->setShadow(m_bUsingCustomBkg?1:0);
@@ -965,6 +967,8 @@ void MainWindow::slot_buttonClicked(CButton* button)
 void MainWindow::updateBkg()
 {
     _relayout();
+
+    this->update();
 }
 
 static const QString __qsCheck = wsutil::toQStr(L"√");
@@ -1090,4 +1094,22 @@ void MainWindow::_demand(CButton* btnDemand)
     }
 
     m_view.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
+}
+
+void MainWindow::drawDefaultBkg(QPainter& painter, const QRect& rc)
+{
+    QRect rcSrc = ui.labelBkg->pixmap()->rect();
+
+    float fHWRate = (float)rc.height()/rc.width();
+    if (fHWRate < 1)
+    {
+        rcSrc.setTop(rcSrc.bottom()-rcSrc.width()*fHWRate);
+    }
+    else
+    {
+        rcSrc.setRight(1080);
+        rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
+    }
+
+    painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc);
 }

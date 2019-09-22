@@ -65,7 +65,7 @@ INCLUDEPATH += ../../inc
 android {
 LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
 
-DESTDIR = $$PWD/../../build/XMusic
+DESTDIR = $$PWD/../../../build/XMusic
 
 } else {
 
@@ -76,13 +76,15 @@ macx {
 } else {
     ios {
         LIBS    += -L$$PWD/../../../build/ioslib
+
+        DESTDIR = $$PWD/../../../build/XMusic
     } else {
         LIBS    += -L$$PWD/../../bin
+
+        DESTDIR = $$PWD/../../bin
     }
 
     LIBS    += -lxutil -lxPlaySDK -lxMediaLib -lxmodel
-
-    DESTDIR = $$PWD/../../bin
 }
 }
 

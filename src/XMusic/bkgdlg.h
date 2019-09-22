@@ -10,9 +10,10 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CBkgDlg& bkgDlg);
+    CBkgView(class CPlayerView& view, class CBkgDlg& bkgDlg);
 
 private:
+    class CPlayerView& m_view;
     class CBkgDlg& m_bkgDlg;
 
     QPixmap m_pmX;
@@ -36,7 +37,7 @@ public:
     CBkgDlg(class CPlayerView& view) :
         m_view(view),
         m_addbkgDlg(view, *this),
-        m_bkgView(*this)
+        m_bkgView(view, *this)
     {
     }
 
@@ -59,23 +60,11 @@ private:
 
     bool m_bHScreen = false;
 
-    QPixmap m_pmDefaultBkg;
-
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
 public:
     void init();
-
-    void setDefaultBkg(const QPixmap& pmDefaultBkg)
-    {
-        m_pmDefaultBkg = pmDefaultBkg;
-    }
-
-    const QPixmap& defaultBkg() const
-    {
-        return m_pmDefaultBkg;
-    }
 
     const QPixmap& hbkg() const
     {
