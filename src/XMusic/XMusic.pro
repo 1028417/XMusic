@@ -63,29 +63,25 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += ../../inc
 
 android {
-LIBS    += -L$$PWD/../../../XMusic/lib/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+    LIBS    += -L../../../XMusic/lib/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
 
-DESTDIR = $$PWD/../../../build/XMusic
+    DESTDIR = ../../../build/XMusic
+} else: macx {
+    LIBS    += -L../../bin/macx -lxutil.1 -lxPlaySDK.1 -lxMediaLib -lxmodel
 
-} else {
-
-macx {
-    LIBS    += -L$$PWD/../../bin/macx -lxutil.1 -lxPlaySDK.1 -lxMediaLib -lxmodel
-
-    DESTDIR = $$PWD/../../bin/macx
+    DESTDIR = ../../bin/macx
 } else {
     ios {
-        LIBS    += -L$$PWD/../../../build/ioslib
+        LIBS    += -L../../../build/ioslib
 
-        DESTDIR = $$PWD/../../../build/XMusic
+        DESTDIR = ../../../build/XMusic
     } else {
-        LIBS    += -L$$PWD/../../bin
+        LIBS    += -L../../bin
 
-        DESTDIR = $$PWD/../../bin
+        DESTDIR = ../../bin
     }
 
     LIBS    += -lxutil -lxPlaySDK -lxMediaLib -lxmodel
-}
 }
 
 android {
@@ -133,11 +129,11 @@ android {
 ios {
     QMAKE_IOS_DEPLOYMENT_TARGET = 9.0
 
-    #ios_icon.files += $$files($$PWD/ios/icons/*.png)
+    #ios_icon.files += $$files(ios/icons/*.png)
     #launch_image.files += xxx
     #QMAKE_BUNDLE_DATA  += ios_icon launch_image
 
-    LIBS    +=  -L$$PWD/../../../PlaySDK/ioslib
+    LIBS    +=  -L../../../PlaySDK/ioslib
 
     LIBS    +=  -lavcodec -lavformat -lavutil -lswresample \
                 -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
@@ -145,8 +141,8 @@ ios {
     LIBS    +=  -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
 
 } else {
-MOC_DIR = $$PWD/../../../build/XMusic
-RCC_DIR = $$PWD/../../../build/XMusic
-UI_DIR = $$PWD/../../../build/XMusic
+MOC_DIR = ../../../build/XMusic
+RCC_DIR = ../../../build/XMusic
+UI_DIR = ../../../build/XMusic
 }
-OBJECTS_DIR = $$PWD/../../../build/XMusic
+OBJECTS_DIR = ../../../build/XMusic

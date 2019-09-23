@@ -292,11 +292,6 @@ void MainWindow::show()
 
 #if __android    
     ui.centralWidget->setAttribute(Qt::WA_TranslucentBackground);
-
-    /*for (auto widget : ui.centralWidget->children())
-    {
-        widget->setParent(this);
-    }*/
 #endif
 
     ui.centralWidget->setVisible(true);
@@ -495,19 +490,22 @@ void MainWindow::_relayout()
     }
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    int x_btnMore = __size(20);
-#if __android || __ios
-     ui.btnExit->move(-200,-200);
+    int y_btnMore = ui.frameDemand->y() + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
+    int x_btnMore = __size(25);
 
+#if __android || __ios
      if (!m_bHScreen)
      {
-         x_btnMore = cx - __size(20) - ui.btnMore->width();
+         x_btnMore = cx - __size(25) - ui.btnMore->width();
      }
+
+     ui.btnExit->move(-200,-200);
 #else
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size10);
-    ui.btnExit->move(x_btnExit, y_frameDemand + __size10);
+    ui.btnExit->move(x_btnExit, y_btnMore);
 #endif
-    ui.btnMore->move(x_btnMore, y_frameDemand+10);
+
+    ui.btnMore->move(x_btnMore, y_btnMore);
 
     if (m_bUsingCustomBkg)
     {
