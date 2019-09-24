@@ -678,7 +678,7 @@ void MainWindow::_relayout()
 
     _showAlbumName();
 
-#define __CyPlayItem __size(110)
+#define __CyPlayItem __size(115)
     UINT uRowCount = 0;
     if (m_bHScreen)
     {
@@ -702,11 +702,11 @@ void MainWindow::_relayout()
         if (uRowCount > 10)
         {
             uRowCount = 10;
-            y_Margin += __size(30);
+            y_Margin += __size10;
 
             if (bZoomoutSingerImg)
             {
-                y_Margin += __size(30);
+                y_Margin += __size10;
             }
         }
         else if (uRowCount < 7)
