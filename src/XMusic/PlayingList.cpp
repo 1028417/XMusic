@@ -1,6 +1,25 @@
 
 #include "PlayingList.h"
 
+size_t CPlayingList::getPageRowCount()
+{
+    size_t uRet = CListView::getPageRowCount();
+    size_t uRowCount = getRowCount();
+    if (uRowCount >= 7)
+    {
+        if (uRowCount < uRet)
+        {
+            uRet = uRowCount;
+        }
+    }
+    else
+    {
+        uRet = 7;
+    }
+
+    return uRet;
+}
+
 void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     int cy = this->rect().bottom();

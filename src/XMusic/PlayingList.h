@@ -65,17 +65,7 @@ private:
         return m_alPlayingItems.size();
     }
 
-    size_t getPageRowCount() override
-    {
-        size_t uRet = CListView::getPageRowCount();
-        size_t uRowCount = getRowCount();
-        if (uRowCount<uRet && uRowCount>=7)
-        {
-            uRet = uRowCount;
-        }
-
-        return uRet;
-    }
+    size_t getPageRowCount() override;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
