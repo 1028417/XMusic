@@ -678,21 +678,27 @@ void MainWindow::_relayout()
 
     _showAlbumName();
 
-    UINT uRowCount = 10;
+#define __CyPlayItem __size(110)
+    UINT uRowCount = 0;
     if (m_bHScreen)
     {
         UINT uMargin = __size(45);
         int x_PlayingList = ui.progressBar->geometry().right();
         x_PlayingList += __size(90) * fCXRate;
 
-        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin*fCXRate, cy-uMargin*2);
+        int cy_PlayingList = cx-x_PlayingList-uMargin*fCXRate;
+        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cy_PlayingList, cy-uMargin*2);
+
+        uRowCount = cy/__CyPlayItem;
+        uRowCount = MAX(uRowCount,7);
+        uRowCount = MIN(uRowCount,10);
     }
     else
     {
         UINT y_Margin = __size(30);
 
         int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
-        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/__size(100);
+        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/__CyPlayItem;
         if (uRowCount > 10)
         {
             uRowCount = 10;
