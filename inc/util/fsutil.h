@@ -62,36 +62,32 @@ struct tagFileInfo
 };
 
 
-#define __wcFSSlant fsutil::wcFSSlant
-#define __wcDot fsutil::wcDot
+#define __wcSlant L'/'
+#define __wcBackSlant L'\\'
+
+#if __windows
+	#define __wcFSSlant	__wcBackSlant
+#else
+	#define __wcFSSlant	__wcSlant
+#endif
+
+#define __wcDot L'.'
 
 class __UtilExt fsutil
 {
 private:
-	static const wchar_t wcSlant = L'/';
-	static const wchar_t wcBackSlant = L'\\';
-
 	inline static bool _checkFSSlant(wchar_t wch)
 	{
-		return wcBackSlant == wch || wcSlant == wch;
+		return __wcBackSlant == wch || __wcSlant == wch;
 	}
 
 public:
-	static const wchar_t wcFSSlant =
-#if __windows
-    wcBackSlant;
-#else
-    wcSlant;
-#endif
-
-	static const wchar_t wcDot = L'.';
-
 	static void transFSSlant(wstring& strPath)
 	{
 #if __windows
-        wsutil::replaceChar(strPath, fsutil::wcSlant, fsutil::wcBackSlant);
+        wsutil::replaceChar(strPath, __wcSlant, __wcBackSlant);
 #else
-        wsutil::replaceChar(strPath, fsutil::wcBackSlant, fsutil::wcSlant);
+        wsutil::replaceChar(strPath, __wcBackSlant, __wcSlant);
 #endif
 	}
 
