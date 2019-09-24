@@ -89,15 +89,14 @@ android {
     #font.files += ../../bin/Microsoft-YaHei-Regular.ttc
     font.files += ../../bin/Microsoft-YaHei-Semibold.ttc
     font.path = /assets
-    INSTALLS += font
 
     hbkg.files += ../../bin/hbkg/win10
     hbkg.path = /assets/hbkg
-    INSTALLS += hbkg
 
     vbkg.files += ../../bin/vbkg/win10
     vbkg.path = /assets/vbkg
-    INSTALLS += vbkg
+
+    INSTALLS += font hbkg  vbkg
 
     DISTFILES += \
         android/AndroidManifest.xml \
