@@ -119,13 +119,13 @@ bool CController::start()
                 continue;
             }
 
-			if (!m_model.getMediaLib().empty())
+            /*if (!m_model.getMediaLib().empty())
 			{
                 if (PlayMgr.getPlayer().GetDuration() < 0)
                 {
                     (void)PlayMgr.playNext(false);
                 }
-            }
+            }*/
         }
     });
 #endif
