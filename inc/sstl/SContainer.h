@@ -1,6 +1,5 @@
 
-#ifndef __SContainer_H
-#define __SContainer_H
+#pragma once
 
 #include <sstream>
 
@@ -798,5 +797,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif //__SContainer_H

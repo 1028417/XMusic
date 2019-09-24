@@ -1,6 +1,5 @@
 
-#ifndef __PtrArray_H
-#define __PtrArray_H
+#pragma once
 
 #include "ptrcontainer.h"
 
@@ -1066,5 +1065,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __PtrArray_H

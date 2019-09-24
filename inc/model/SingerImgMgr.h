@@ -22,4 +22,6 @@ public:
 	void clearSingerImg();
 
 	bool getSingerImg(const wstring& strSingerName, UINT uIndex, wstring& strSingerImg) const;
+
+	void exportSingerImg(const wstring& strDir);
 };

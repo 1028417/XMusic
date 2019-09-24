@@ -1,6 +1,5 @@
 
-#ifndef __Check_H
-#define __Check_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -138,5 +137,3 @@ namespace NS_SSTL
 	template<class T, typename DATA>
 	using checkContainerData_t = checkSameType_t<containerDataType_t<T>, DATA>;
 };
-
-#endif // __Check_H

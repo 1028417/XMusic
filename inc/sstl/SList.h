@@ -1,6 +1,5 @@
 
-#ifndef __SList_H
-#define __SList_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -394,5 +393,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __SList_H

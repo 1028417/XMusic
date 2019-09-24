@@ -1,6 +1,5 @@
 
-#ifndef __Util_H
-#define __Util_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -313,5 +312,3 @@ namespace NS_SSTL
 		}
 	}
 }
-
-#endif // __Util_H

@@ -1,6 +1,5 @@
 
-#ifndef __SMap_H
-#define __SMap_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -594,5 +593,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __SMap_H

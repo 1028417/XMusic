@@ -1,6 +1,5 @@
 
-#ifndef __ptrcontainer_H
-#define __ptrcontainer_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -413,5 +412,3 @@ namespace NS_SSTL
 		}
 	};
 };
-
-#endif // __ptrcontainer_H

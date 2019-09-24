@@ -1,6 +1,5 @@
 
-#ifndef __PairList_H
-#define __PairList_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -710,5 +709,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __PairList_H

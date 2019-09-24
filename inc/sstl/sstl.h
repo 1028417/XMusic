@@ -1,6 +1,5 @@
 
-#ifndef __SSTL_H
-#define __SSTL_H
+#pragma once
 
 #include "_define.h"
 
@@ -55,5 +54,3 @@ namespace NS_SSTL
 #include "SSet.h"
 
 #include "SMap.h"
-
-#endif // __SSTL_H

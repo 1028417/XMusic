@@ -1,6 +1,5 @@
 
-#ifndef __ArrList_H
-#define __ArrList_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -412,5 +411,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif //__ArrList_H

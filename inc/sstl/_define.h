@@ -1,6 +1,5 @@
 
-#ifndef __Define_H
-#define __Define_H
+#pragma once
 
 //#include <initializer_list>
 
@@ -82,7 +81,4 @@ namespace NS_SSTL
 	__UsingSuperType(__CB_Ref_bool) \
 	\
 	__UsingSuperType(__CB_ConstRef_void) \
-	__UsingSuperType(__CB_ConstRef_bool) \
-
-
-#endif // __Define_H
+	__UsingSuperType(__CB_ConstRef_bool)

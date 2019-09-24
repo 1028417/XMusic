@@ -48,7 +48,7 @@ private:
 
     virtual size_t _onProgress(double total, double now) = 0;*/
 
-    void _init();
+    //void _init();
 
     void _pause();
 
@@ -76,7 +76,7 @@ public:
 
     static void cleanupCurl();
 
-    static void initCurl();
+    //static void initCurl();
 };
 
 class __ModelExt CFileOpaque : public IAudioOpaque

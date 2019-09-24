@@ -1,6 +1,5 @@
 
-#ifndef __SArray_H
-#define __SArray_H
+#pragma once
 
 #include <algorithm>
 
@@ -639,5 +638,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __SArray_H

@@ -1,6 +1,5 @@
 
-#ifndef __SSet_H
-#define __SSet_H
+#pragma once
 
 namespace NS_SSTL
 {
@@ -131,5 +130,3 @@ namespace NS_SSTL
 		}
 	};
 }
-
-#endif // __SSet_H
