@@ -698,7 +698,7 @@ void MainWindow::_relayout()
         UINT y_Margin = __size(30);
 
         int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
-        uRowCount = (y_PlayingListMax - y_frameDemandBottom)/__CyPlayItem;
+        uRowCount = (y_PlayingListMax - y_frameDemandBottom - y_Margin*2)/__CyPlayItem;
         if (uRowCount > 10)
         {
             uRowCount = 10;
