@@ -684,7 +684,7 @@ void MainWindow::_relayout()
     {
         UINT uMargin = __size(45);
         int x_PlayingList = ui.progressBar->geometry().right();
-        x_PlayingList += __size(90) * fCXRate;
+        x_PlayingList += __size(100) * fCXRate;
 
         int cy_PlayingList = cx-x_PlayingList-uMargin*fCXRate;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cy_PlayingList, cy-uMargin*2);
