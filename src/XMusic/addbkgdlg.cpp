@@ -269,7 +269,7 @@ CPath* CImgDir::_newSubPath(const tagFileInfo& FileInfo)
     return NULL;
 }
 
-#define __filterSize 720
+#define __filterSize 640
 
 inline static bool _loadImg(CPath& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
