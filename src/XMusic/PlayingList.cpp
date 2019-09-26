@@ -57,7 +57,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
             , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
     }
 
-    rc.setLeft(rc.left() + 30);
+    rc.setLeft(rc.left() + __size(35));
 
     m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
         if (!bPlayingItem && m_view.getPlayMgr().checkPlayedID(playingItem.uID))

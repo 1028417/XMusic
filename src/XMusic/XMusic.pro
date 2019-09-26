@@ -113,11 +113,12 @@ android {
         ANDROID_EXTRA_LIBS = \
             $$PWD/../../lib/armeabi-v7a/libxutil.so \
             $$PWD/../../lib/armeabi-v7a/libxMediaLib.so \
-            $$PWD/../../lib/armeabi-v7a/libxModel.so \
             $$PWD/../../lib/armeabi-v7a/libxPlaySDK.so \
+            $$PWD/../../lib/armeabi-v7a/libxModel.so \
             $$PWD/../../lib/armeabi-v7a/libcrypto.so \
             $$PWD/../../lib/armeabi-v7a/libssl.so \
             $$PWD/../../lib/armeabi-v7a/libcurl.so \
+            $$PWD/../../lib/armeabi-v7a/libCURLTool.so \
             $$PWD/../../lib/armeabi-v7a/ffmpeg/libavcodec.so \
             $$PWD/../../lib/armeabi-v7a/ffmpeg/libavformat.so \
             $$PWD/../../lib/armeabi-v7a/ffmpeg/libavutil.so \

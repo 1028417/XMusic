@@ -138,7 +138,7 @@ void MainWindow::showLogo()
 #if __android || __ios
     cauto& szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
-    int nLogoWidth = nScreenSize*40/100;
+    int nLogoWidth = nScreenSize*43/100;
 
     ui.labelLogo->setScaledContents(true);
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
