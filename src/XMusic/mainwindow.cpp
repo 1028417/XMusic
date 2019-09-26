@@ -143,7 +143,7 @@ void MainWindow::showLogo()
     ui.labelLogo->setScaledContents(true);
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
 
-    fFontSizeOffset = -2;
+    fFontSizeOffset = -1.5;
 #endif
 
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
