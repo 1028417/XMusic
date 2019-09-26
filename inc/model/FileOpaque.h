@@ -48,8 +48,6 @@ private:
 
     virtual size_t _onProgress(double total, double now) = 0;*/
 
-    //void _init();
-
     void _pause();
 
     void _resume();
@@ -64,19 +62,7 @@ public:
 
     size_t getData(char *pBuff, size_t buffSize);
 
-    void cancel(bool bWait = false)
-    {
-		m_eStatus = E_DownloadStatus::DS_Cancel;
-
-        if (bWait)
-        {
-            m_sgn.wait();
-        }
-    }
-
-    static void cleanupCurl();
-
-    //static void initCurl();
+    void cancel();
 };
 
 class __ModelExt CFileOpaque : public IAudioOpaque
