@@ -6,8 +6,7 @@
 
 enum class E_DownloadStatus
 {
-    DS_None = 0,
-    DS_Downloading,
+    DS_OK = 0,
     DS_Cancel,
     DS_Fail
 };
@@ -21,11 +20,9 @@ public:
     }
 
 private:
-    void *m_curl = NULL;
-
     CSignal m_sgn;
 
-    E_DownloadStatus m_eStatus = E_DownloadStatus::DS_None;
+    E_DownloadStatus m_eStatus = E_DownloadStatus::DS_OK;
 
     std::mutex m_mtx;
     std::condition_variable m_condvar;

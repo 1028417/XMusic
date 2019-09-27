@@ -21,7 +21,7 @@
         #define __mac false
 
     #elif defined(Q_OS_IOS)
-    #define __windows false
+        #define __windows false
         #define __winvc false
         #define __winqt false
         #define __android false

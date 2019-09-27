@@ -15,7 +15,7 @@ void CMedialibDlg::init()
 
     QColor crText(32, 128, 255);
     ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(2, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(2.5, E_FontWeight::FW_SemiBold);
 
     cauto& crBkg = bkgColor();
     cauto& crFlashText = CPainter::mixColor(crText, crBkg, 85);

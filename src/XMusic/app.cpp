@@ -114,7 +114,7 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
 
         UINT uFontSize = 12;
 #if __ios
-        uFontSize *= 2;
+        uFontSize = 30;
 #elif __mac
         uFontSize = 26;
 #elif __windows
@@ -167,7 +167,6 @@ int CApp::run()
 #endif
 
     m_model.init();
-
     m_mainWnd.showLogo();
 
     QTimer::singleShot(6000, [&](){
@@ -225,5 +224,7 @@ int main(int argc, char *argv[])
 
     CApp app(argc, argv);
 
-    return app.run();
+    int nRet = app.run();
+    exit(nRet); // TODO
+    return nRet;
 }

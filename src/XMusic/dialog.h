@@ -7,6 +7,8 @@
 
 #include <QEvent>
 
+#include "util/util.h"
+
 extern void showFull(QWidget* wnd);
 
 #include <set>
@@ -68,6 +70,10 @@ protected:
         case QEvent::Close:
             g_setDlgs.erase(this);
             _onClose();
+
+#if __mac
+            // TODO /*for (auto pDlg : g_setDlgs) pDlg->
+#endif
 
             break;
         case QEvent::Move:

@@ -17,7 +17,7 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++1y #gnu++1y
 
-#CONFIG -= app_bundle #macx可执行文件不打包
+#CONFIG -= app_bundle #macOS可执行文件不打包
 
 android {
     CONFIG += mobility
@@ -63,16 +63,23 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += ../../inc
 
 android {
-    LIBS    += -L../../../XMusic/lib/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+    LIBS    += -L../../../XMusic/libs/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
 
     DESTDIR = ../../../build/XMusic
 } else: macx {
-    LIBS    += -L../../bin/macx -lxutil.1 -lxPlaySDK.1 -lxMediaLib -lxmodel
+    LIBS    += -L../../bin/mac -lxutil.1 -lxPlaySDK.1 -lxMediaLib.1 -lxmodel.1
 
-    DESTDIR = ../../bin/macx
+    DESTDIR = ../../bin/mac
 } else {
     ios {
-        LIBS    += -L../../../build/ioslib
+        LIBS    += -L../../../build/ioslib -lCURLTool
+
+        LIBS    += -L../../libs/ios -lcurl -lcrypto -lssl -lnghttp2 -lz
+
+        LIBS    += -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
+
+        LIBS    += -lavcodec -lavformat -lavutil -lswresample \
+                    -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
 
         DESTDIR = ../../../build/XMusic
     } else {
@@ -111,18 +118,18 @@ android {
 
     contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         ANDROID_EXTRA_LIBS = \
-            $$PWD/../../lib/armeabi-v7a/libxutil.so \
-            $$PWD/../../lib/armeabi-v7a/libxMediaLib.so \
-            $$PWD/../../lib/armeabi-v7a/libxPlaySDK.so \
-            $$PWD/../../lib/armeabi-v7a/libxModel.so \
-            $$PWD/../../lib/armeabi-v7a/libcrypto.so \
-            $$PWD/../../lib/armeabi-v7a/libssl.so \
-            $$PWD/../../lib/armeabi-v7a/libcurl.so \
-            $$PWD/../../lib/armeabi-v7a/libCURLTool.so \
-            $$PWD/../../lib/armeabi-v7a/ffmpeg/libavcodec.so \
-            $$PWD/../../lib/armeabi-v7a/ffmpeg/libavformat.so \
-            $$PWD/../../lib/armeabi-v7a/ffmpeg/libavutil.so \
-            $$PWD/../../lib/armeabi-v7a/ffmpeg/libswresample.so
+            $$PWD/../../libs/armeabi-v7a/libxutil.so \
+            $$PWD/../../libs/armeabi-v7a/libxMediaLib.so \
+            $$PWD/../../libs/armeabi-v7a/libxPlaySDK.so \
+            $$PWD/../../libs/armeabi-v7a/libxModel.so \
+            $$PWD/../../libs/armeabi-v7a/libCURLTool.so \
+            $$PWD/../../libs/armeabi-v7a/libcurl.so \
+            $$PWD/../../libs/armeabi-v7a/libssl.so \
+            $$PWD/../../libs/armeabi-v7a/libcrypto.so \
+            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavcodec.so \
+            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavformat.so \
+            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavutil.so \
+            $$PWD/../../libs/armeabi-v7a/ffmpeg/libswresample.so
     }
 }
 
@@ -132,14 +139,6 @@ ios {
     #ios_icon.files += $$files(ios/icons/*.png)
     #launch_image.files += xxx
     #QMAKE_BUNDLE_DATA  += ios_icon launch_image
-
-    LIBS    +=  -L../../../PlaySDK/ioslib
-
-    LIBS    +=  -lavcodec -lavformat -lavutil -lswresample \
-                -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
-
-    LIBS    +=  -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
-
 } else {
 MOC_DIR = ../../../build/XMusic
 RCC_DIR = ../../../build/XMusic
