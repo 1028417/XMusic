@@ -478,19 +478,19 @@ namespace NS_SSTL
 		}
 
 	private:
-		template <class T = __ContainerType>
+		template <class __ContainerType>
 		class CAdaptor
 		{
 		public:
-			CAdaptor(T& data)
+			CAdaptor(__ContainerType& data)
 				: m_data(data)
 			{
 			}
 
 		private:
-			T& m_data;
+			__ContainerType& m_data;
 
-			using __ValueRef = decltype(declval<T&>().begin()->second)&;
+			using __ValueRef = decltype(m_data.begin()->second)&;
 
 		public:
 			template <typename CB, typename = checkCBBool_t<CB, __KeyConstRef, __ValueRef>>
@@ -581,15 +581,18 @@ namespace NS_SSTL
 				});
 			}
 		};
+#define __Adaptor CAdaptor<__ContainerType>
+#define __CAdaptor CAdaptor<const __ContainerType>
 
-		CAdaptor<> m_adaptor = CAdaptor<>(m_data);
-		inline CAdaptor<>& adaptor()
+		__Adaptor m_adaptor = __Adaptor(m_data);
+		inline __Adaptor& adaptor()
 		{
 			return m_adaptor;
 		}
-		inline CAdaptor<const __ContainerType>& adaptor() const
+		__CAdaptor m_cadaptor = __CAdaptor(m_data);
+		inline __CAdaptor& adaptor() const
 		{
-			return (CAdaptor<const __ContainerType>&)m_adaptor;
+			return (__CAdaptor&)m_cadaptor;
 		}
 	};
 }

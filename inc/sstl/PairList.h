@@ -563,27 +563,27 @@ namespace NS_SSTL
 		}
 
 	private:
-		template <class T = __ContainerType>
+		template <class __ContainerType>
 		class CAdaptor
 		{
 		public:
-			CAdaptor(T& data, const PtrArray<__PairType>& ptrArray)
+			CAdaptor(__ContainerType& data, const PtrArray<__PairType>& ptrArray)
 				: m_data(data)
 				, m_ptrArray(ptrArray)
 			{
 			}
 
 		private:
-			T& m_data;
+			__ContainerType& m_data;
 
 			const PtrArray<__PairType>& m_ptrArray;
 
-			using __PairRef = decltype(*declval<T&>().begin())&;
-			using __FirstRef = decltype(declval<T&>().begin()->first)&;
-			using __SecondRef = decltype(declval<T&>().begin()->second)&;
+			using __PairRef = decltype(m_data.front())&;
+			using __FirstRef = decltype(m_data.front().first)&;
+			using __SecondRef = decltype(m_data.front().second)&;
 
 		public:
-			template <typename CB, typename = checkCBBool_t<CB, __FirstConstRef, __SecondConstRef> >
+			template <typename CB, typename = checkCBBool_t<CB, __FirstRef, __SecondRef> >
 			SArray<__FirstType> firsts(const CB& cb) const
 			{
 				SArray<__FirstType> arr;
@@ -598,15 +598,15 @@ namespace NS_SSTL
 				return arr;
 			}
 
-			template <typename CB, typename = checkCBBool_t<CB, __FirstConstRef>, typename = void>
+			template <typename CB, typename = checkCBBool_t<CB, __FirstRef>, typename = void>
 			SArray<__FirstType> firsts(const CB& cb) const
 			{
-				return firsts([&](__FirstConstRef first, __SecondConstRef) {
+				return firsts([&](__FirstRef first, __SecondRef) {
 					return cb(first);
 				});
 			}
 
-			template <typename CB, typename = checkCBBool_t<CB, __FirstConstRef, __SecondConstRef> >
+			template <typename CB, typename = checkCBBool_t<CB, __FirstRef, __SecondRef> >
 			SArray<__SecondType> seconds(const CB& cb) const
 			{
 				SArray<__SecondType> arr;
@@ -621,29 +621,29 @@ namespace NS_SSTL
 				return arr;
 			}
 
-			template <typename CB, typename = checkCBBool_t<CB, __SecondConstRef>, typename = void>
+			template <typename CB, typename = checkCBBool_t<CB, __SecondRef>, typename = void>
 			SArray<__SecondType> seconds(const CB& cb) const
 			{
-				return seconds([&](__FirstConstRef, __SecondConstRef second) {
+				return seconds([&](__FirstRef, __SecondRef second) {
 					return cb(second);
 				});
 			}
 
 			template <typename CB, typename = checkCBBool_t<CB, __PairRef>>
-			void forEach(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, cb);
 			}
 
 			template <typename CB, typename = checkCBVoid_t<CB, __PairRef>, typename = void>
-			void forEach(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, cb);
 			}
 
 			template <typename CB, typename = checkCBBool_t<CB, __FirstRef, __SecondRef>
 				, typename = void, typename = void>
-			void forEach(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					return cb(pr.first, pr.second);
@@ -652,60 +652,60 @@ namespace NS_SSTL
 
 			template <typename CB, typename = checkCBVoid_t<CB, __FirstRef, __SecondRef>
 				, typename = void, typename = void, typename = void>
-			void forEach(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					cb(pr.first, pr.second);
-
 					return true;
 				});
 			}
-
+				
 			template <typename CB, typename = checkCBBool_t<CB, __FirstRef>>
-			void forFirst(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forFirst(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					return cb(pr.first);
 				});
 			}
-
+			
 			template <typename CB, typename = checkCBVoid_t<CB, __FirstRef>, typename = void>
-			void forFirst(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forFirst(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					cb(pr.first);
-
 					return true;
 				});
 			}
 
 			template <typename CB, typename = checkCBBool_t<CB, __SecondRef>>
-			void forSecond(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forSecond(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					return cb(pr.second);
 				});
 			}
-
+			
 			template <typename CB, typename = checkCBVoid_t<CB, __SecondRef>, typename = void>
-			void forSecond(const CB& cb, int startPos = 0, int endPos = -1) const
+			void forSecond(const CB& cb, int startPos = 0, int endPos = -1)
 			{
 				m_ptrArray(startPos, endPos, [&](__PairRef pr) {
 					cb(pr.second);
-
 					return true;
 				});
 			}
 		};
+#define __Adaptor CAdaptor<__ContainerType>
+#define __CAdaptor CAdaptor<const __ContainerType>
 
-		CAdaptor<> m_adaptor = CAdaptor<>(m_data, __Super::m_ptrArray);
-		inline CAdaptor<>& adaptor()
+		__Adaptor m_adaptor = __Adaptor(m_data, __Super::m_ptrArray);
+		inline __Adaptor& adaptor()
 		{
 			return m_adaptor;
 		}
-		inline CAdaptor<const __ContainerType>& adaptor() const
+		__CAdaptor m_cadaptor = __CAdaptor(m_data, __Super::m_ptrArray);
+		inline __CAdaptor& adaptor() const
 		{
-			return (CAdaptor<const __ContainerType>&)m_adaptor;
+			return (__CAdaptor&)m_cadaptor;
 		}
 	};
 }

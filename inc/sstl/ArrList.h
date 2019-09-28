@@ -86,6 +86,7 @@ namespace NS_SSTL
 			return *this;
 		}
 
+	public:
 		template<typename CB>
 		void operator() (int startPos, int endPos, const CB& cb)
 		{
@@ -380,34 +381,68 @@ namespace NS_SSTL
 		}
 
 	private:
-        template <typename T = __DataType>
+		template <class __ContainerType>
 		class CAdaptor
 		{
 		public:
-            CAdaptor(const PtrArray<T>& ptrArray)
-				: m_ptrArray(ptrArray)
+			CAdaptor(__ContainerType& data, const PtrArray<__DataType>& ptrArray)
+				: m_data(data)
+				, m_ptrArray(ptrArray)
 			{
 			}
 
 		private:
-            const PtrArray<T>& m_ptrArray;
+			__ContainerType& m_data;
+
+			const PtrArray<__DataType>& m_ptrArray;
+
+			using __RefType = decltype(m_data.front())&;
 
 		public:
-			template <typename CB>
-			void forEach(const CB& cb, int startPos = 0, int endPos = -1) const
+			template <typename CB, typename = checkCBBool_t<CB, __RefType, size_t>>
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
 			{
-				m_ptrArray(startPos, endPos, cb);
+				m_ptrArray(startPos, endPos, [&](__RefType ref, size_t pos) {
+					return cb(ref, pos);
+				});
+			}
+
+			template <typename CB, typename = checkCBVoid_t<CB, __RefType, size_t>, typename = void>
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
+			{
+				m_ptrArray(startPos, endPos, [&](__RefType ref, size_t pos) {
+					cb(ref, pos);
+				});
+			}
+
+			template <typename CB, typename = checkCBBool_t<CB, __RefType>, typename = void, typename = void>
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
+			{
+				m_ptrArray(startPos, endPos, [&](__RefType ref) {
+					return cb(ref);
+				});
+			}
+
+			template <typename CB, typename = checkCBVoid_t<CB, __RefType>, typename = void, typename = void, typename = void>
+			void forEach(const CB& cb, int startPos = 0, int endPos = -1)
+			{
+				m_ptrArray(startPos, endPos, [&](__RefType ref) {
+					cb(ref);
+				});
 			}
 		};
+#define __Adaptor CAdaptor<__ContainerType>
+#define __CAdaptor CAdaptor<const __ContainerType>
 
-        CAdaptor<> m_adaptor = CAdaptor<>(m_ptrArray);
-        CAdaptor<>& adaptor()
+		__Adaptor m_adaptor = __Adaptor(m_data, m_ptrArray);
+		inline __Adaptor& adaptor()
 		{
 			return m_adaptor;
 		}
-		CAdaptor<const __DataType>& adaptor() const
+		__CAdaptor m_cadaptor = __CAdaptor(m_data, m_ptrArray);
+		inline __CAdaptor& adaptor() const
 		{
-			return (CAdaptor<const __DataType>&)m_adaptor;
+			return (__CAdaptor&)m_cadaptor;
 		}
 	};
 }

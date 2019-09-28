@@ -175,5 +175,15 @@ __UtilExt float getDPIRate();
 
 #include "mtutil.h"
 
+enum class E_Platform
+{
+    PF_Windows,
+    PF_Android,
+    PF_IOS,
+    PF_Mac
+};
+
+E_Platform platform();
+
 #undef min
 #undef max

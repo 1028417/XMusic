@@ -35,7 +35,7 @@ private:
 
 	bool CheckRelatedMediaSetChanged(const tagMediaSetChanged& MediaSetChanged) override;
 
-	virtual bool GetRenameText(wstring& stRenameText) const override;
+	bool GetRenameText(wstring& stRenameText) const override;
 
 	void OnListItemRename(const wstring& strNewName) override;
 	

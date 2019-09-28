@@ -133,7 +133,7 @@ public:
 	virtual CDataMgr& getDataMgr() = 0;
 	virtual CBackupMgr& getBackupMgr() = 0;
 
-	virtual bool initMediaLib(const wstring& strRootDir) = 0;
+	virtual bool setupMediaLib(const wstring& strRootDir) = 0;
 	virtual void refreshMediaLib() = 0;
 		
 	virtual void attachDir(const wstring& strDir) = 0;
@@ -246,7 +246,7 @@ public:
 
 	bool start();
 
-	bool initMediaLib(const wstring& strRootDir) override;
+	bool setupMediaLib(const wstring& strRootDir) override;
 	void refreshMediaLib() override;
 
 	void attachDir(const wstring& strDir) override;
