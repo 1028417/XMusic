@@ -104,7 +104,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 		if (plUnmatchFile)
 		{
 			CMainApp::sync([&]() {
-				plUnmatchFile([&](CMediaRes *pMediaRes, wstring& strDir) {
+				plUnmatchFile([&](CMediaRes *pMediaRes, const wstring& strDir) {
 					showCueInfo(strDir, CCueFile::NoCue, pMediaRes);
 				});
 			});

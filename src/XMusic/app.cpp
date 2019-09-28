@@ -112,18 +112,20 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
             }
         }
 
-        UINT uFontSize = 12;
-#if __ios
-        uFontSize = 30;
+        float fFontSize = 0;
+#if __android
+        fFontSize = 11.5;
+#elif __ios
+        fFontSize = 30;
 #elif __mac
-        uFontSize = 26;
-#elif __windows
-        uFontSize = 21;
-        uFontSize = UINT(uFontSize * getDPIRate());
+        fFontSize = 28;
+#elif __winqt
+        fFontSize = 22;
+        fFontSize *= getDPIRate();
 #endif
 
         QFont font(qsFontfamilyName);
-        font.setPointSize(uFontSize);
+        font.setPointSizeF(fFontSize);
         font.setWeight((int)eWeight);
         g_mapFont[eWeight] = font;
 
@@ -223,7 +225,6 @@ int main(int argc, char *argv[])
     //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     CApp app(argc, argv);
-
     int nRet = app.run();
     exit(nRet); // TODO
     return nRet;

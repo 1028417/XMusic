@@ -574,7 +574,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandCN">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>-10</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -584,7 +584,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  国语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -593,7 +593,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandHK">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>100</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -603,7 +603,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  粤语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -612,7 +612,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandKR">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>210</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -622,7 +622,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  韩语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -631,7 +631,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandJP">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>320</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -641,7 +641,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  日语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -650,7 +650,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandTAI">
       <property name="geometry">
        <rect>
-        <x>440</x>
+        <x>430</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -660,7 +660,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  泰语</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -669,7 +669,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandEN">
       <property name="geometry">
        <rect>
-        <x>550</x>
+        <x>540</x>
         <y>0</y>
         <width>110</width>
         <height>60</height>
@@ -679,7 +679,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  英文</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>
@@ -688,7 +688,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandEUR">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>650</x>
         <y>0</y>
         <width>140</width>
         <height>60</height>
@@ -698,7 +698,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <string>  小语种</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
       </property>
       <property name="wordWrap">
        <bool>true</bool>

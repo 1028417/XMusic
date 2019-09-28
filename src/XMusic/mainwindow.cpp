@@ -136,14 +136,14 @@ void MainWindow::showLogo()
 {
     float fFontSizeOffset = -0.5;
 #if __android || __ios
+    fFontSizeOffset = -1;
+
     cauto& szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
     int nLogoWidth = nScreenSize*43/100;
 
     ui.labelLogo->setScaledContents(true);
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
-
-    fFontSizeOffset = -1.5;
 #endif
 
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
@@ -258,8 +258,8 @@ void MainWindow::_init()
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playFinish, this, &MainWindow::slot_playFinish);
 
-    ui.labelSingerName->setFont(0.5);
-    ui.labelPlayingfile->setFont(0.5);
+    ui.labelSingerName->setFont(0.3);
+    ui.labelPlayingfile->setFont(0.3);
     ui.labelDuration->setFont(-1);
 
     if (m_view.getOptionMgr().getOption().bRandomPlay)
@@ -975,7 +975,7 @@ void MainWindow::updateBkg()
     this->update();
 }
 
-static const QString __qsCheck = wsutil::toQStr(L"√");
+static const QString __qsCheck = wsutil::toQStr(L" √");
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
@@ -1048,9 +1048,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {E_LanguageType::LT_EN, ui.labelDemandEN}
             , {E_LanguageType::LT_EUR, ui.labelDemandEUR}};
         plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
-            if (!lblLanguage->text().startsWith(' '))
+            if (lblLanguage->text().startsWith(__qsCheck))
             {
-                lblLanguage->setText("  " + lblLanguage->text().mid(1));
+                lblLanguage->setText("  " + lblLanguage->text().mid(__qsCheck.length()));
 
                 lblLanguage->setTextColor(255,255,255);
             }

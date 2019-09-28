@@ -102,7 +102,7 @@ bool CPlayerController::handleCommand(UINT uID)
 		{
 			if (!wsutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
 			{
-				(void)m_model.initMediaLib(strRootDir);
+				(void)m_model.setupMediaLib(strRootDir);
 			}
 		}
 	}

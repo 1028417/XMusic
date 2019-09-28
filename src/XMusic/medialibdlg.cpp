@@ -84,7 +84,7 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
-#if __android || __ios
+#if __android// || __ios
     bShowUpwardButton = false;
 #endif
     ui.btnUpward->setVisible(bShowUpwardButton);

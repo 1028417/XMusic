@@ -75,7 +75,7 @@ bool __view::init()
 			wstring strRootDir = FolderDlg.Show(L"设定根目录");
 			if (!strRootDir.empty())
 			{
-				(void)m_model.initMediaLib(strRootDir);
+				(void)m_model.setupMediaLib(strRootDir);
 			}
 		});
 	}
