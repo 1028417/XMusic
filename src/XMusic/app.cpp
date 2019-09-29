@@ -219,10 +219,11 @@ IModelObserver& CPlayerView::getModelObserver()
     return m_mainWnd;
 }
 
-
 int main(int argc, char *argv[])
 {
     //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    fsutil::zcompressFile(L"E:/Music/.xmusic/medialib", L"e:/0");
 
     CApp app(argc, argv);
     int nRet = app.run();

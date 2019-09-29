@@ -74,7 +74,7 @@ android {
     ios {
         LIBS    += -L../../../build/ioslib -lCURLTool
 
-        LIBS    += -L../../libs/ios -lcurl -lcrypto -lssl -lnghttp2 -lz
+        LIBS    += -L../../libs/iossimulator -lcurl -lcrypto -lssl -lnghttp2 -lz
 
         LIBS    += -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
 
