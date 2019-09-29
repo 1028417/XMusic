@@ -8,6 +8,8 @@
 #include <QFile>
 #include <QDir>
 #include <QTime>
+
+#include <QByteArray>
 #endif
 
 #if !__mac && !__ios
@@ -76,12 +78,16 @@ struct tagFileInfo
 class __UtilExt fsutil
 {
 private:
-	inline static bool _checkFSSlant(wchar_t wch)
+	inline static bool _checkPathTail(wchar_t wch)
 	{
 		return __wcBackSlant == wch || __wcSlant == wch;
 	}
-
+	
 public:
+	static void trimPathTail(wstring& strPath);
+
+	static wstring trimPathTail_r(const wstring& strPath);
+
 	static void transFSSlant(wstring& strPath)
 	{
 #if __windows
@@ -182,6 +188,16 @@ public:
 			}
 		}, eFilter, pstrFilter);
 	}
+
+    static long zcompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+    static long zuncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+#if !__winvc
+    static long qcompressFile(const wstring& strSrcFile, const wstring& strDstFile, int nCompressLecvel=-1);
+
+    static long quncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+#endif
 };
 
 #include <fstream>
