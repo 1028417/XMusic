@@ -99,7 +99,7 @@ protected:
 	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 
 private:
-	void _start();
+	void _run();
 	void _run(class CMainWnd& MainWnd);
 
 	static BOOL _RegGlobalHotkey(HWND hWnd, const tagHotkeyInfo &HotkeyInfo);
