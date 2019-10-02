@@ -290,7 +290,23 @@ void CBkgDlg::setBkg(size_t uIdx)
         }
         else
         {
+#if __windows
+#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Gif;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+                |Png文件(*.Png)|*.Png|Gif文件(*.Gif)|*.Gif|位图文件(*.Bmp)|*.Bmp|"
+            tagFileDlgOpt FileDlgOpt;
+            FileDlgOpt.strTitle = L"选择背景图";
+            FileDlgOpt.strFilter = __MediaFilter;
+            FileDlgOpt.hWndOwner = (HWND)this->winId();
+            CFileDlg fileDlg(FileDlgOpt);
+
+            wstring strFile = fileDlg.ShowOpenSingle();
+            if (!strFile.empty())
+            {
+                this->addBkg(strFile);
+            }
+#else
             m_addbkgDlg.show();
+#endif
         }
     }
 }
