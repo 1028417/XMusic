@@ -50,7 +50,12 @@ bool CPlayerController::init()
 
 	((CModel&)m_model).init();
 
-	return ((CModel&)m_model).start();
+	if (!((CModel&)m_model).start())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool CPlayerController::start()

@@ -5,18 +5,6 @@
 
 #define uintRound(x) ((UINT)round(x))
 
-// 开启对话框Per-Monitor DPI Aware支持(至少Win10)
-static BOOL EnablePerMonitorDialogScaling()
-{
-	typedef BOOL(WINAPI *PFN_EnablePerMonitorDialogScaling)();
-	PFN_EnablePerMonitorDialogScaling pEnablePerMonitorDialogScaling =
-		(PFN_EnablePerMonitorDialogScaling)GetProcAddress(GetModuleHandleW(L"user32.dll"), (LPCSTR)2577);
-
-	if (pEnablePerMonitorDialogScaling) return pEnablePerMonitorDialogScaling();
-
-	return FALSE;
-}
-
 // 开启子窗体DPI消息(至少Win10)
 static BOOL EnableChildWindowDpiMessage(_In_ HWND hWnd, _In_ BOOL bEnable)
 {

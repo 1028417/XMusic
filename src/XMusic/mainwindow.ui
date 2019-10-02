@@ -218,7 +218,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>1560</y>
+      <y>1570</y>
       <width>630</width>
       <height>70</height>
      </rect>
@@ -294,7 +294,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>1495</y>
+      <y>1500</y>
       <width>1000</width>
       <height>46</height>
      </rect>
@@ -334,10 +334,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="QWidget" name="wdgSingerImg" native="true">
     <property name="geometry">
      <rect>
-      <x>41</x>
-      <y>1563</y>
-      <width>627</width>
-      <height>576</height>
+      <x>38</x>
+      <y>1569</y>
+      <width>633</width>
+      <height>573</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -581,7 +581,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  国语</string>
+       <string>国语</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -600,7 +600,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  粤语</string>
+       <string>粤语</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -619,7 +619,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  韩语</string>
+       <string>韩语</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -638,7 +638,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  日语</string>
+       <string>日语</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -657,7 +657,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  泰语</string>
+       <string>泰语</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -676,7 +676,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  英文</string>
+       <string>欧美</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
@@ -695,7 +695,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>  小语种</string>
+       <string>小语种</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

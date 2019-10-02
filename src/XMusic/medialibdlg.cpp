@@ -15,20 +15,20 @@ void CMedialibDlg::init()
 
     QColor crText(32, 128, 255);
     ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(2.5, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     cauto& crBkg = bkgColor();
     cauto& crFlashText = CPainter::mixColor(crText, crBkg, 85);
     m_MedialibView.setTextColor(crText, crFlashText);
 
+#if __android || __ios
+    m_MedialibView.setFont(1.05);
+#endif
+
     QColor crSelectedBkg = crBkg;
     crSelectedBkg.setRed(crBkg.red()-10);
     crSelectedBkg.setGreen(crBkg.green()-5);
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
-
-#if __android || __ios
-    m_MedialibView.setFont(0.5);
-#endif
 
     m_MedialibView.init();
 
@@ -47,11 +47,24 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    cauto& rcReturn = ui.btnReturn->geometry();
+    static const QRect rcReturnPrev = ui.btnReturn->geometry();
+    QRect rcReturn = __rect(rcReturnPrev);
+    if (cy >= __size(812*3)) // 针对全面屏刘海作偏移
+    {
+#define __yOffset __size(66)
+        rcReturn.setTop(rcReturn.top() + __yOffset);
+        rcReturn.setBottom(rcReturn.bottom() + __yOffset);
+    }
+    ui.btnReturn->setGeometry(rcReturn);
+
     int y_margin = rcReturn.top();
+
+    static const int x_btnUpward = __size(ui.btnUpward->x());
+    ui.btnUpward->setGeometry(x_btnUpward, y_margin, rcReturn.width(), rcReturn.height());
 
     ui.btnPlay->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
 
+    ui.labelTitle->move(ui.labelTitle->x(), rcReturn.center().y() - ui.labelTitle->height()/2);
     _resizeTitle();
 
     int y_MedialibView = rcReturn.bottom() + y_margin;
@@ -60,7 +73,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-#define __offset 30
+#define __offset __size(30)
 
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
     int x_title = pButton->geometry().right() + __offset;
@@ -241,19 +254,14 @@ size_t CMedialibView::getPageRowCount()
 
     UINT uRet = 10;
     int cy = m_medialibDlg.height();
-    if (cy > 2160)
+    /*if (cy >= __size(2560))
     {
        uRet++;
-
-        if (cy > 2340)
-        {
-           uRet++;
-        }
     }
-    else if (cy < 1800)
+    else*/ if (cy < __size(1800))
     {
         uRet--;
-        uRet = ceil((float)uRet*m_medialibDlg.height()/1800);
+        uRet = ceil((float)uRet*m_medialibDlg.height()/__size(1800));
     }
 
     return uRet;
@@ -277,7 +285,11 @@ size_t CMedialibView::getRootCount()
     }
     else
     {
+#if __android || __ios
         return 10;
+#else
+        return 8;
+#endif
     }
 }
 

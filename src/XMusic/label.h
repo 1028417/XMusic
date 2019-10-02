@@ -92,9 +92,17 @@ private:
 
             if (m_bAutoFit)
             {
+                QFont font = painter.font();
                 while (painter.fontMetrics().width(text) >= cx)
                 {
-                    painter.adjustFont(-0.1);
+                    auto fPointSize = font.pointSizeF()-0.1;
+                    if (fPointSize < 0)
+                    {
+                        break;
+                    }
+
+                    font.setPointSizeF(fPointSize);
+                    painter.setFont(font);
                 }
             }
             else

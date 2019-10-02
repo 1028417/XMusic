@@ -5,9 +5,9 @@
 
 #include "mainwindow.h"
 
-#define __margin    40
+#define __margin    __size(40)
 
-#define __xsize     60
+#define __xsize     __size(60)
 
 static Ui::BkgDlg ui;
 
@@ -80,7 +80,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     if (0 == uItem)
     {
         m_view.getMainWnd().drawDefaultBkg(painter, rc);
-   }
+    }
     else
     {
         UINT uIdx = uItem-1;
@@ -131,7 +131,7 @@ void CBkgDlg::init()
 
     QColor crText(32, 128, 255);
     ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(2.5, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
         this->close();
@@ -186,25 +186,34 @@ void CBkgDlg::init()
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    m_bHScreen = cx>cy;
+    static const QRect rcReturnPrev = ui.btnReturn->geometry();
+    QRect rcReturn = __rect(rcReturnPrev);
+    if (cy >= __size(812*3)) // 针对全面屏刘海作偏移
+    {
+#define __yOffset __size(66)
+        rcReturn.setTop(rcReturn.top() + __yOffset);
+        rcReturn.setBottom(rcReturn.bottom() + __yOffset);
+    }
+    ui.btnReturn->setGeometry(rcReturn);
 
+    m_bHScreen = cx>cy;
     if (m_bHScreen)
     {
-        int x_bkgView = ui.btnReturn->geometry().right()+__margin/2;
+        int x_bkgView = rcReturn.right()+__margin/2;
 
         m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin-__margin/2);
 
-        ui.labelTitle->move(cx, ui.labelTitle->y());
+        ui.labelTitle->move(cx, rcReturn.center().y() - ui.labelTitle->height()/2);
     }
     else
     {
-        int y_bkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
+        int y_bkgView = rcReturn.bottom() + rcReturn.top();
 
         int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
         m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
-        ui.labelTitle->move((cx-ui.labelTitle->width())/2, ui.labelTitle->y());
+        ui.labelTitle->move((cx-ui.labelTitle->width())/2, rcReturn.center().y() - ui.labelTitle->height()/2);
     }
 }
 

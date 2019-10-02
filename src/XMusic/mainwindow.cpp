@@ -11,9 +11,7 @@
 
 #include "bkgdlg.h"
 
-#define __size1920 __size(1920)
 #define __size10 __size(10)
-#define __size50 __size(50)
 
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
 
@@ -132,22 +130,28 @@ MainWindow::MainWindow(CPlayerView& view) :
     this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
+#include <QScreen>
+
 void MainWindow::showLogo()
 {
-    float fFontSizeOffset = -0.5;
+    float fFontSizeOffset = 1.0f;
 #if __android || __ios
-    fFontSizeOffset = -1;
+    fFontSizeOffset = 0.9;
 
     cauto& szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
-    int nLogoWidth = nScreenSize*43/100;
+    int nLogoWidth = nScreenSize*42/100;
 
     ui.labelLogo->setScaledContents(true);
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
 #endif
 
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
-    ui.labelLogoCompany->setFont(CFont(fFontSizeOffset/3));
+
+#if __android || __ios
+    fFontSizeOffset = 1;
+#endif
+    ui.labelLogoCompany->setFont(CFont(fFontSizeOffset));
 
     QPalette peTip;
     peTip.setColor(QPalette::WindowText, QColor(64, 128, 255));
@@ -239,7 +243,7 @@ void MainWindow::_init()
                 , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(0, E_FontWeight::FW_SemiBold);
+        label->setFont(1, E_FontWeight::FW_SemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelPlayProgress);
@@ -253,14 +257,16 @@ void MainWindow::_init()
         label->setTextColor(255,255,255);
     }
 
-    ui.labelSingerName->setShadow(2);
-
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playFinish, this, &MainWindow::slot_playFinish);
 
-    ui.labelSingerName->setFont(0.3);
-    ui.labelPlayingfile->setFont(0.3);
-    ui.labelDuration->setFont(-1);
+    ui.labelSingerName->setShadow(2);
+
+    ui.labelSingerName->setFont(1);
+    ui.labelAlbumName->setFont(1);
+    ui.labelPlayingfile->setFont(1);
+    ui.labelDuration->setFont(0.85);
+    m_PlayingList.setFont(0.9);
 
     if (m_view.getOptionMgr().getOption().bRandomPlay)
     {
@@ -299,6 +305,29 @@ void MainWindow::show()
     this->update();
 }
 
+void MainWindow::_onPaint(CPainter& painter)
+{
+    cauto& rect = this->rect();
+
+    if (ui.labelLogo->isVisible())
+    {
+        painter.fillRect(rect, QColor(180, 220, 255));
+    }
+    else
+    {
+        bool bHScreen = rect.width() > rect.height();
+        cauto& pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        if (!pmBkg.isNull())
+        {
+           painter.drawPixmapEx(rect, pmBkg);
+        }
+        else
+        {
+            drawDefaultBkg(painter, rect);
+        }
+    }
+}
+
 bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
@@ -306,24 +335,7 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Paint:
     {
         CPainter painter(this);
-
-        if (ui.labelLogo->isVisible())
-        {
-            painter.fillRect(this->rect(), QColor(180, 220, 255));
-        }
-        else
-        {
-            m_bHScreen = this->width() > this->height();
-            cauto& pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-            if (!pmBkg.isNull())
-            {
-               painter.drawPixmapEx(this->rect(), pmBkg);
-            }
-            else
-            {
-                drawDefaultBkg(painter, this->rect());
-            }
-        }
+        _onPaint(painter);
     }
 
     break;
@@ -393,8 +405,9 @@ void MainWindow::_relayout()
     int y_LogoTip = ui.labelLogo->geometry().bottom() + __size(30);
     ui.labelLogoTip->setGeometry(0, y_LogoTip, cx, ui.labelLogoTip->height());
 
-    int y_LogoCompany = cy - __size50 - ui.labelLogoCompany->height();
-    ui.labelLogoCompany->setGeometry(__size50, y_LogoCompany, cx-__size50*2, ui.labelLogoCompany->height());
+#define __LogoCompanyMargin __size(50)
+    int y_LogoCompany = cy - __LogoCompanyMargin - ui.labelLogoCompany->height();
+    ui.labelLogoCompany->setGeometry(__LogoCompanyMargin, y_LogoCompany, cx-__LogoCompanyMargin*2, ui.labelLogoCompany->height());
     if (m_bHScreen)
     {
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
@@ -405,6 +418,7 @@ void MainWindow::_relayout()
     }
 
     float fCXRate = 0;
+    float fCXRateEx = 0;
     if (m_bHScreen)
     {
         fCXRate = (float)cx/ui.labelBkg->pixmap()->width();
@@ -413,7 +427,9 @@ void MainWindow::_relayout()
     {
         fCXRate = (float)cx/1080;
     }
-    int cy_bkg = fCXRate*ui.labelBkg->pixmap()->height();
+    fCXRateEx = fCXRate * g_fPixelRatio;
+
+    int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
     const QPixmap &pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
@@ -447,25 +463,25 @@ void MainWindow::_relayout()
         cauto& pos = widgetPos.second;
         auto& newPos = m_mapWidgetNewPos[widgetPos.first];
 
-        if (fCXRate >= 1 && NULL != dynamic_cast<QPushButton*>(widgetPos.first))
+        int width = pos.width();
+        int height = pos.height();
+        if (fCXRate <= 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
         {
-            newPos.setRect(fCXRate*pos.center().x()-pos.width()/2
-                           , fCXRate*pos.center().y()-pos.height()/2+dy_bkg, pos.width(), pos.height());
+            width = int(width * fCXRate);
+            height = int(height * fCXRate);
         }
-        else
-        {
-            newPos.setRect(fCXRate*pos.left(), fCXRate*pos.top()+dy_bkg
-                           , fCXRate*pos.width(), fCXRate*pos.height());
-        }
+
+        newPos.setRect(fCXRate*pos.center().x() - width/2
+                       , fCXRate*pos.center().y() - height/2 + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
     }
 
     int y_frameDemand = __size(20);
-    if (cy > __size1920)
+    if (cy > __size(1920))
     {
-        y_frameDemand = __size(35);
+        y_frameDemand = __size(36);
     }
-    else if (__size1920 == cy)
+    else if (__size(1920) == cy)
     {
         y_frameDemand = __size(28);
     }
@@ -550,6 +566,8 @@ void MainWindow::_relayout()
         bZoomoutSingerImg = false;
     }
 
+    auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
+
     if (m_bUsingCustomBkg)
     {
         int x = ui.progressBar->x();
@@ -565,8 +583,6 @@ void MainWindow::_relayout()
         int cx_progressBar = ui.progressBar->width();
         ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_progressBar, cy_labelAlbumName);
 
-        ui.labelAlbumName->setFont(0.5);
-
         int y_SingerImg = 0;
         if (bZoomoutSingerImg)
         {
@@ -580,7 +596,7 @@ void MainWindow::_relayout()
         {
             if (m_bHScreen)
             {
-                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size50;
+                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(60);
             }
             else
             {
@@ -589,8 +605,7 @@ void MainWindow::_relayout()
         }
 
         int cy_SingerImg = y_labelAlbumName-y_SingerImg;
-        cauto& rcSingerImg = m_mapWidgetPos[ui.wdgSingerImg];
-        int cx_SingerImg = rcSingerImg.width()*cy_SingerImg/rcSingerImg.height();
+        int cx_SingerImg = cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
 
         int x_SingerImg = x;
         if (!bZoomoutSingerImg)
@@ -598,7 +613,8 @@ void MainWindow::_relayout()
             x_SingerImg += (cx_progressBar-cx_SingerImg)/2;
         }
 
-        ui.wdgSingerImg->setGeometry(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
+        rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
+        ui.wdgSingerImg->setGeometry(rcSingerImg);
 
         int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
         ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName, cx_SingerImg-__size(15), ui.labelSingerName->height());
@@ -619,38 +635,36 @@ void MainWindow::_relayout()
             }
         }
 
-        m_PlayingList.setFont(-1);
         m_PlayingList.setTextColor(255, 255, 255);
         m_PlayingList.setInactiveAlpha(0.4);
         m_PlayingList.setShadow(2);
     }
     else
     {
-        m_PlayingList.setFont(-1.5);
         m_PlayingList.setTextColor(255, 255, 255, 160);
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadow(0);
 
-        ui.labelAlbumName->setFont(0);
-
-        bool bFlag = false;
+        bool bFlag = fCXRateEx > 1;
         if (m_bHScreen)
         {
-            bFlag = (cy < __size(1080) || fCXRate > 1);
+             if (cy < __size(1000))
+             {
+                 bFlag = true;
+             }
         }
-        else
+        /*else
         {
-            bFlag = cy < __size1920;
-        }
-
+            bFlag = cy < __size(1920);
+        }*/
         if (bFlag)
         {
             ui.labelPlayingfile->setShadow(2);
 
-            int y_Playingfile = ui.wdgSingerImg->geometry().bottom()- ui.labelPlayingfile->height() - __size(20);
-            ui.labelPlayingfile->move(ui.wdgSingerImg->x() + __size(30), y_Playingfile);
+            int y_Playingfile = rcSingerImg.bottom()- ui.labelPlayingfile->height() - __size(20);
+            ui.labelPlayingfile->move(rcSingerImg.left() + __size(30), y_Playingfile);
 
-            y_PlayingListMax = ui.wdgSingerImg->y();
+            y_PlayingListMax = rcSingerImg.top();
         }
         else
         {
@@ -662,13 +676,13 @@ void MainWindow::_relayout()
         }
     }
 
-    UINT uMargin = 0;
-    if (m_bUsingCustomBkg)
-    {
-        uMargin = 2;
-    }
-    ui.labelSingerImg->setGeometry(uMargin, uMargin, ui.wdgSingerImg->width() - uMargin*2
-                                                   , ui.wdgSingerImg->height() - uMargin*2);
+#if __android || __ios
+#define __SingerImgMargin 2
+#else
+#define __SingerImgMargin 1
+#endif
+    ui.labelSingerImg->setGeometry(__SingerImgMargin, __SingerImgMargin, rcSingerImg.width() - __SingerImgMargin*2
+                                                   , rcSingerImg.height() - __SingerImgMargin*2);
 
     auto pPixmap = ui.labelSingerImg->pixmap();
     if (NULL != pPixmap && !pPixmap->isNull())
@@ -975,7 +989,7 @@ void MainWindow::updateBkg()
     this->update();
 }
 
-static const QString __qsCheck = wsutil::toQStr(L" √");
+static const QString __qsCheck = wsutil::toQStr(L"√");
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
@@ -1050,7 +1064,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
             if (lblLanguage->text().startsWith(__qsCheck))
             {
-                lblLanguage->setText("  " + lblLanguage->text().mid(__qsCheck.length()));
+                lblLanguage->setText(lblLanguage->text().mid(__qsCheck.length()));
 
                 lblLanguage->setTextColor(255,255,255);
             }
@@ -1060,7 +1074,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 {
                     m_eDemandLanguage = eLanguage;
 
-                    lblLanguage->setText(__qsCheck + lblLanguage->text().mid(2));
+                    lblLanguage->setText(__qsCheck + lblLanguage->text());
 
                     lblLanguage->setTextColor(210,255,220);
                 }

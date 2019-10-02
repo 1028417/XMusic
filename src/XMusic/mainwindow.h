@@ -93,6 +93,8 @@ public:
 private:
     bool event(QEvent *) override;
 
+    void _onPaint(CPainter& painter);
+
     void _init();
 
     void _relayout();

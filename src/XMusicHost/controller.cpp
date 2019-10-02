@@ -62,6 +62,18 @@ bool CController::start()
     };
 
 #if __winvc
+	if (!m_model.status() && m_model.getMediaLib().empty())
+	{
+		CMainApp::async([&]() {
+			CFolderDlgEx FolderDlg;
+			wstring strRootDir = FolderDlg.Show(L"设定根目录");
+			if (!strRootDir.empty())
+			{
+				(void)m_model.setupMediaLib(strRootDir);
+			}
+		});
+	}
+
 	CMainApp::async(300, fnTryPlay);
 
 #else
@@ -72,14 +84,13 @@ bool CController::start()
 
         while (true)
         {
-            tagPlayCtrl PlayCtrl(E_PlayCtrl::PC_Null);
-            if (m_sigPlayCtrl.wait_for(2000, PlayCtrl))
+            tagPlayCtrl PlayCtrl;
+            if (m_sigPlayCtrl.wait_for(2000, PlayCtrl, [](const tagPlayCtrl& PlayCtrl){
+                return PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null;
+            }))
             {
                 switch (PlayCtrl.ePlayCtrl)
                 {
-                case E_PlayCtrl::PC_Null:
-                    return;
-
                 case E_PlayCtrl::PC_Pause:
                     PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
                     break;
@@ -105,16 +116,21 @@ bool CController::start()
                     break;
                 case E_PlayCtrl::PC_Demand:
                     (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
-                    break;
 
+                    break;
                 case E_PlayCtrl::PC_PlayMedias:
-                {
-                    extern ITxtWriter& g_logger;
-                    g_logger >> "callPlayCtrl";
-                }
                     (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
+
+                    break;
+                case E_PlayCtrl::PC_Quit:
+                    return;
+
+                    break;
+                default:
                     break;
                 }
+
+                m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Null));
 
                 continue;
             }
@@ -136,9 +152,15 @@ bool CController::start()
 void CController::stop()
 {
 #if !__winvc
+    m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
+#endif
+
+    m_model.close();
+
+#if !__winvc
+    m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
     if (g_threadPlayCtrl.joinable())
     {
-        m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Null));
         g_threadPlayCtrl.join();
     }
 #endif

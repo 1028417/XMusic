@@ -15,14 +15,6 @@
 
 #include <QPixmap>
 
-#include <QScreen>
-
-#if __ios
-#define __size(x) decltype(x)((x)/QApplication::primaryScreen()->devicePixelRatio())
-#else
-#define __size(x) (x)
-#endif
-
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
@@ -33,6 +25,16 @@ enum class E_FontWeight
 #define __defFontWeight E_FontWeight::FW_Light
 
 extern map<E_FontWeight, QFont> g_mapFont;
+
+extern float g_fPixelRatio;
+
+#if __ios
+#define __size(x) decltype(x)((x)/g_fPixelRatio)
+#define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
+#else
+#define __size(x) (x)
+#define __rect(x) (x)
+#endif
 
 class CFont : public QFont
 {
@@ -50,7 +52,7 @@ public:
     CFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
         : QFont(g_mapFont[eWeight])
     {
-        setPointSizeF(pointSizeF() + fSizeOffset);
+        setPointSizeF(pointSizeF() * fSizeOffset);
         QFont::setWeight((int)eWeight);
         setItalic(bItalic);
     }
@@ -64,6 +66,25 @@ public:
     E_FontWeight weight() const
     {
         return (E_FontWeight)QFont::weight();
+    }    
+
+    void adjust(float fSizeOffset)
+    {
+        setPointSizeF(pointSizeF() * fSizeOffset);
+    }
+
+    void adjust(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    {
+        adjust(fSizeOffset, eWeight);
+
+        setItalic(bItalic);
+    }
+
+    void adjust(float fSizeOffset, E_FontWeight eWeight)
+    {
+        adjust(fSizeOffset);
+
+        setWeight(eWeight);
     }
 };
 
@@ -98,24 +119,21 @@ public:
     void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
     {
         CFont font(*this);
-        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
-        font.setWeight(eWeight);
-        font.setItalic(bItalic);
+        font.adjust(fSizeOffset, eWeight, bItalic);
         QPainter::setFont(font);
     }
 
     void adjustFont(float fSizeOffset, E_FontWeight eWeight)
     {
         CFont font(*this);
-        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
-        font.setWeight(eWeight);
+        font.adjust(fSizeOffset, eWeight);
         QPainter::setFont(font);
     }
 
     void adjustFont(float fSizeOffset)
     {
         CFont font(*this);
-        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        font.adjust(fSizeOffset);
         QPainter::setFont(font);
     }
 
@@ -273,6 +291,8 @@ public:
         {
             this->grabGesture(gestureType);
         }
+
+        setFont(1);
     }
 
 private:
@@ -341,16 +361,14 @@ public:
     void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
     {
         CFont font(*this);
-        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
-        font.setWeight(eWeight);
-        font.setItalic(bItalic);
+        font.adjust(fSizeOffset, eWeight, bItalic);
         TWidget::setFont(font);
     }
 
-    void adjustFontSize(float fSizeOffset)
+    void adjustFont(float fSizeOffset)
     {
         CFont font(*this);
-        font.setPointSizeF(font.pointSizeF() + fSizeOffset);
+        font.adjust(fSizeOffset);
         TWidget::setFont(font);
     }
 

@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-RC_ICONS = "icon.ico"
+RC_ICONS = "xmusic.ico"
 
 android: QT += androidextras
 
@@ -63,47 +63,43 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += ../../inc
 
 android {
-    LIBS    += -L../../../XMusic/libs/armeabi-v7a -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+    LIBS    += -L../../../XMusic/libs/armeabi-v7a
 
     DESTDIR = ../../../build/XMusic
 } else: macx {
-    LIBS    += -L../../bin/mac -lxutil.1 -lxPlaySDK.1 -lxMediaLib.1 -lxmodel.1
+    LIBS    += -L../../bin/mac
 
     DESTDIR = ../../bin/mac
+} else: ios {
+    LIBS    += -L../../../build/ioslib -lCURLTool
+    LIBS    += -L../../libs/iossimulator -lcurl -lssl -lcrypto -lnghttp2 -lz
+
+    LIBS    += -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
+
+    LIBS    += -lavcodec -lavformat -lavutil -lswresample \
+                -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
+
+    DESTDIR = ../../../build/XMusic
 } else {
-    ios {
-        LIBS    += -L../../../build/ioslib -lCURLTool
+    LIBS    += -L../../bin
 
-        LIBS    += -L../../libs/iossimulator -lcurl -lcrypto -lssl -lnghttp2 -lz
-
-        LIBS    += -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
-
-        LIBS    += -lavcodec -lavformat -lavutil -lswresample \
-                    -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
-
-        DESTDIR = ../../../build/XMusic
-    } else {
-        LIBS    += -L../../bin
-
-        DESTDIR = ../../bin
-    }
-
-    LIBS    += -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+    DESTDIR = ../../bin
 }
 
+LIBS    += -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+
+font.files += ../../bin/font/Microsoft-YaHei-Light.ttc
+#font.files += ../../bin/font/Microsoft-YaHei-Regular.ttc
+font.files += ../../bin/font/Microsoft-YaHei-Semibold.ttc
+
+hbkg.files += ../../bin/hbkg/win10
+vbkg.files += ../../bin/vbkg/win10
+
 android {
-    font.files += ../../bin/Microsoft-YaHei-Light.ttc
-    #font.files += ../../bin/Microsoft-YaHei-Regular.ttc
-    font.files += ../../bin/Microsoft-YaHei-Semibold.ttc
-    font.path = /assets
-
-    hbkg.files += ../../bin/hbkg/win10
+    font.path = /assets/font
     hbkg.path = /assets/hbkg
-
-    vbkg.files += ../../bin/vbkg/win10
     vbkg.path = /assets/vbkg
-
-    INSTALLS += font hbkg  vbkg
+    INSTALLS += font hbkg vbkg
 
     DISTFILES += \
         android/AndroidManifest.xml \
@@ -133,12 +129,29 @@ android {
     }
 }
 
+macx {
+    ICON = xmusic.iconset/xmusic.icns
+
+    QMAKE_INFO_PLIST += mac.plist
+
+    #target.path = /Application
+    #INSTALLS += target
+
+    font.path = Contents/MacOS/font
+    hbkg.path = Contents/MacOS/hbkg
+    vbkg.path = Contents/MacOS/vbkg
+    QMAKE_BUNDLE_DATA  += font hbkg vbkg
+}
+
 ios {
     QMAKE_IOS_DEPLOYMENT_TARGET = 9.0
 
-    #ios_icon.files += $$files(ios/icons/*.png)
-    #launch_image.files += xxx
-    #QMAKE_BUNDLE_DATA  += ios_icon launch_image
+    #QMAKE_INFO_PLIST += iossimulator.plist #ios.plist
+
+    font.path = /font
+    hbkg.path = /hbkg
+    vbkg.path = /vbkg
+    QMAKE_BUNDLE_DATA  += font hbkg vbkg
 } else {
 MOC_DIR = ../../../build/XMusic
 RCC_DIR = ../../../build/XMusic

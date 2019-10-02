@@ -6,6 +6,8 @@
 
 #include "app.h"
 
+#include <QScreen>
+
 #if __android
 //#include <QAndroidJniObject>
 //#include <QAndroidJniEnvironment>
@@ -47,6 +49,8 @@ ITxtWriter& g_logger(m_logger);
 
 map<E_FontWeight, QFont> g_mapFont;
 
+float g_fPixelRatio = 1;
+
 class CApplication : public QApplication
 {
 public:
@@ -55,20 +59,17 @@ public:
 
 CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
 {
-#if __winqt
-    fsutil::setWorkDir(fsutil::getModuleDir());
-
-#elif __android
-    /*string strSdcardPath
-    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
-    if (NULL == pszSdcardPath)
-    {
-        pszSdcardPath = getenv("EXTERNAL_STORAGE");
-    }
-    if (NULL != pszSdcardPath)
-    {
-        strSdcardPath = pszSdcardPath;
-    }*/
+#if __android
+//    string strSdcardPath
+//    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
+//    if (NULL == pszSdcardPath)
+//    {
+//        pszSdcardPath = getenv("EXTERNAL_STORAGE");
+//    }
+//    if (NULL != pszSdcardPath)
+//    {
+//        strSdcardPath = pszSdcardPath;
+//    }
 
     wstring strDataDir = L"/sdcard/XMusic/.xmusic";
     if (fsutil::createDir(strDataDir))
@@ -76,27 +77,74 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
         fsutil::setWorkDir(strDataDir);
     }
 
-#elif __mac
-    wstring strWorkDir = fsutil::workDir();
-    strWorkDir = fsutil::GetParentDir(strWorkDir);
-    strWorkDir = fsutil::GetParentDir(strWorkDir);
-    strWorkDir = fsutil::GetParentDir(strWorkDir);
-    strWorkDir = fsutil::GetParentDir(strWorkDir);
-    fsutil::setWorkDir(strWorkDir);
+#else
+    fsutil::setWorkDir(fsutil::getAppDir());
 #endif
 
     m_logger.open(L"XMusic.log", true);
 
+    QScreen *screen = QApplication::primaryScreen();
+    float fPixelRatio = screen->devicePixelRatio();
+    g_logger << "devicePixelRatio: " >> fPixelRatio;
+#if __ios
+    g_fPixelRatio = (UINT)fPixelRatio;
+#endif
+
+    float fFontSize = 0;
+#if __android
+    fFontSize = 12;
+#elif __ios
+
+    QSize szScreen = screen->size();
+    int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
+    fFontSize = this->font().pointSizeF();
+    fFontSize = fFontSize*nScreenWidth/540;
+
+    int nScreenSize = szScreen.width()*szScreen.height();
+    switch (nScreenSize)
+    {
+    case 320*568: // iPhoneSE
+        break;
+    case 375*667: // iPhone6 iPhone6S iPhone7 iPhone8
+        break;
+    case 414*736: // iPhone6plus iPhone6Splus iPhone7plus iPhone8plus
+        break;
+    case 375*812: // iPhoneX iPhoneXS ??
+        break;
+    case 414*896: // iPhoneXR iPhoneXSmax ??
+        break;
+    case 1024*1366: // iPadPro1_12.9 iPadPro2_12.9 iPadPro3_12.9
+        break;
+    case 834*1194: // iPadPro1_11
+        break;
+    case 834*1112: // iPadPro1_10.5
+        break;
+    case 768*1024: // iPadPro1_9.7 iPadAir2 iPadAir iPad6 iPad5
+        break;
+    default:        // iPadMini
+        break;
+    };
+
+#elif __mac
+    fFontSize = 29;
+#elif __windows
+    float fDPIRate = getDPIRate();
+    g_logger << "DPIRate: " >> fDPIRate;
+
+    fFontSize = 22;
+    fFontSize *= fDPIRate;
+#endif
+
     SMap<E_FontWeight, QString> mapFontFile {
-        { E_FontWeight::FW_Light, "Microsoft-YaHei-Light.ttc" }
-        //, { E_FontWeight::FW_Normal, "Microsoft-YaHei-Regular.ttc" }
-        , { E_FontWeight::FW_SemiBold, "Microsoft-YaHei-Semibold.ttc" }
+        { E_FontWeight::FW_Light, "/font/Microsoft-YaHei-Light.ttc" }
+        //, { E_FontWeight::FW_Normal, "/font/Microsoft-YaHei-Regular.ttc" }
+        , { E_FontWeight::FW_SemiBold, "/font/Microsoft-YaHei-Semibold.ttc" }
     };
     mapFontFile([&](E_FontWeight eWeight, QString qsFontFile) {
 #if __android
-        qsFontFile = "assets:/" +  qsFontFile;
-#elif __mac
-        qsFontFile = wsutil::toQStr(fsutil::workDir() + __wcFSSlant) + qsFontFile;
+        qsFontFile = "assets:" +  qsFontFile;
+#else
+        qsFontFile = wsutil::toQStr(fsutil::workDir()) + qsFontFile;
 #endif
 
         QString qsFontfamilyName;
@@ -111,18 +159,6 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
                 g_logger << "newfamilyName: " >> qsFontfamilyName;
             }
         }
-
-        float fFontSize = 0;
-#if __android
-        fFontSize = 11.5;
-#elif __ios
-        fFontSize = 30;
-#elif __mac
-        fFontSize = 28;
-#elif __winqt
-        fFontSize = 22;
-        fFontSize *= getDPIRate();
-#endif
 
         QFont font(qsFontfamilyName);
         font.setPointSizeF(fFontSize);
@@ -197,9 +233,6 @@ int CApp::run()
     m_logger >> "stop controller";
     m_ctrl.stop();
 
-    m_logger >> "close model";
-    m_model.close();
-
     CPlayer::QuitSDK();
 
     m_logger >> "quit";
@@ -221,12 +254,10 @@ IModelObserver& CPlayerView::getModelObserver()
 
 int main(int argc, char *argv[])
 {
-    //QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    fsutil::zcompressFile(L"E:/Music/.xmusic/medialib", L"e:/0");
+#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
+    QApplication:B:setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
     CApp app(argc, argv);
-    int nRet = app.run();
-    exit(nRet); // TODO
-    return nRet;
+    return app.run();
 }

@@ -20,12 +20,13 @@ void CAddBkgDlg::init()
 
     QColor crText(32, 128, 255);
     ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(2.5, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+
+#if __android || __ios
+    m_addbkgView.setFont(1.05);
+#endif
 
     m_addbkgView.setTextColor(crText);
-#if __android || __ios
-    m_addbkgView.setFont(0.5);
-#endif
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
         this->close();
@@ -51,10 +52,20 @@ void CAddBkgDlg::show()
 
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
+    static const QRect rcReturnPrev = ui.btnReturn->geometry();
+    QRect rcReturn = __rect(rcReturnPrev);
+    if (cy >= __size(812*3)) // 针对全面屏刘海作偏移
+    {
+#define __yOffset __size(66)
+        rcReturn.setTop(rcReturn.top() + __yOffset);
+        rcReturn.setBottom(rcReturn.bottom() + __yOffset);
+    }
+    ui.btnReturn->setGeometry(rcReturn);
+
     int y_addbkgView = 0;
     if (m_addbkgView.isInRoot())
     {
-        y_addbkgView = ui.btnReturn->geometry().bottom() + ui.btnReturn->y();
+        y_addbkgView = rcReturn.bottom() + rcReturn.top();
     }
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
@@ -132,19 +143,18 @@ size_t CAddBkgView::getPageRowCount()
 
     UINT uRet = 8;
     int cy = m_addbkgDlg.height();
-    if (cy > 2160)
+    if (cy > __size(2160))
     {
-       uRet++;
-
-        if (cy > 2340)
+        uRet++;
+        if (cy >= __size(2560))
         {
            uRet++;
         }
     }
-    else if (cy < 1800)
+    else if (cy < __size(1800))
     {
         uRet--;
-        uRet = ceil((float)uRet*m_addbkgDlg.height()/1800);
+        uRet = ceil((float)uRet*m_addbkgDlg.height()/__size(1800));
     }
     return uRet;
 }

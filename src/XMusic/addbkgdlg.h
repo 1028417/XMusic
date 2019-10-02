@@ -46,10 +46,20 @@ private:
     CPath* _newSubPath(const tagFileInfo& FileInfo) override;
 };
 
+#if __android
+#   define __ImgRootDir L"/sdcard"
+#elif __ios
+#   define __ImgRootDir L""
+#elif __mac
+#   define __ImgRootDir fsutil::getMacHomeDir()
+#else
+#   define __ImgRootDir L""
+#endif
+
 class CImgRoot : public CImgDir
 {
 public:
-    CImgRoot() : CImgDir(L"/sdcard")
+    CImgRoot() : CImgDir(__ImgRootDir)
     {
     }
 
