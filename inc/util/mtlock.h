@@ -63,30 +63,20 @@ protected:
 
 private:
     using CB_CheckSignal = const std::function<bool(const T& value)>&;
-    inline bool _wait(T& value, CB_CheckSignal cbCheck=NULL, int nMs = -1)
+    inline bool _wait(T& value, CB_CheckSignal cbCheck, int nMs = -1)
     {
         mutex_lock lock(m_mutex);
 
         if (nMs >= 0)
         {
-            if (cbCheck)
-            {
-                if (!cbCheck(m_value))
-                {
-                    if (cv_status::timeout == m_condVar.wait_for(lock, std::chrono::milliseconds(nMs)))
-                    {
-                        return false;
-                    }
-
-                    if (!cbCheck(m_value))
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
+            if (!cbCheck(m_value))
             {
                 if (cv_status::timeout == m_condVar.wait_for(lock, std::chrono::milliseconds(nMs)))
+                {
+                    return false;
+                }
+
+                if (!cbCheck(m_value))
                 {
                     return false;
                 }
@@ -94,14 +84,7 @@ private:
         }
         else
         {
-            if (cbCheck)
-            {
-                while (!cbCheck(m_value))
-                {
-                    m_condVar.wait(lock);
-                }
-            }
-            else
+            while (!cbCheck(m_value))
             {
                 m_condVar.wait(lock);
             }
@@ -113,7 +96,7 @@ private:
     }
 
 public:
-    T wait(CB_CheckSignal cbCheck=NULL)
+    T wait(CB_CheckSignal cbCheck)
     {
         T value;
         memset(&value, 0, sizeof value);
@@ -123,7 +106,7 @@ public:
         return value;
     }
 
-    bool wait_for(UINT uMs, T& value, CB_CheckSignal cbCheck=NULL)
+    bool wait_for(UINT uMs, T& value, CB_CheckSignal cbCheck)
     {
         return _wait(value, cbCheck, uMs);
     }
@@ -197,7 +180,7 @@ public:
     }
 };
 
-#if __winvc || __winqt
+#if __windows
 class __UtilExt CWinEvent
 {
 public:

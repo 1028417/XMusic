@@ -7,9 +7,8 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
-#include <QTime>
 
-#include <QByteArray>
+#include <QTime>
 #endif
 
 #if !__mac && !__ios
@@ -156,12 +155,20 @@ public:
 
     static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
 
-#if __windows
-	static wstring getModuleDir(wchar_t *pszModuleName = NULL);
-#endif
-
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);
+
+#if __windows
+    static wstring getModuleDir(wchar_t *pszModuleName = NULL);
+#endif
+
+#if !__winvc
+    static wstring getAppDir();
+#endif
+
+#if __mac
+    static wstring getMacHomeDir();
+#endif
 
 	using CB_FindFile = const function<void(tagFileInfo&)>&;
 	static bool findFile(const wstring& strDir, CB_FindFile cb

@@ -41,6 +41,7 @@ private:
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 private:
+    void _stopPlay();
     bool _playFile(const wstring& strFile, bool bURL = false, uint64_t uStartPos = 0);
 
 	bool _playNext(bool bNext, bool bManual);

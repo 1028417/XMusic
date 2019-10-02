@@ -12,7 +12,8 @@ enum class E_PlayCtrl
     PC_AutoPlayNext,
     PC_PlayIndex,
     PC_Demand,
-    PC_PlayMedias
+    PC_PlayMedias,
+    PC_Quit
 };
 
 struct tagPlayCtrl

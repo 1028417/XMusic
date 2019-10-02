@@ -2,47 +2,39 @@
 #pragma once
 
 #if defined(_MSC_VER)
-    #define __windows true
-    #define __winvc true
-    #define __winqt false
     #define __android false
     #define __ios false
     #define __mac false
+    #define __windows true
+    #define __winvc true
 
 #else
-    #include <qsystemdetection.h>
+    #define __winvc false
 
+    #include <qsystemdetection.h>
     #if defined(Q_OS_ANDROID)
-        #define __windows false
-        #define __winvc false
-        #define __winqt false
         #define __android true
         #define __ios false
         #define __mac false
+		#define __windows false
 
     #elif defined(Q_OS_IOS)
-        #define __windows false
-        #define __winvc false
-        #define __winqt false
         #define __android false
         #define __ios true
         #define __mac false
+		#define __windows false
 
     #elif defined(Q_OS_MACOS)
-        #define __windows false
-        #define __winvc false
-        #define __winqt false
         #define __android false
         #define __ios false
         #define __mac true
+		#define __windows false
 
     #else
-        #define __windows true
-        #define __winvc false
-        #define __winqt true
         #define __android false
         #define __ios false
         #define __mac false
+		#define __windows true
     #endif
 #endif
 
@@ -171,6 +163,7 @@ using fn_void = function<void()>;
 #include "ProFile.h"
 
 __UtilExt float getDPIRate();
+//__UtilExt BOOL EnablePerMonitorDialogScaling();
 #endif
 
 #include "mtutil.h"
@@ -184,6 +177,11 @@ enum class E_Platform
 };
 
 E_Platform platform();
+
+#if !__winvc
+wstring platformType();
+wstring platformVersion();
+#endif
 
 #undef min
 #undef max
