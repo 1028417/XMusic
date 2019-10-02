@@ -5,64 +5,63 @@
 #include "../XMusicHost/controller.h"
 
 #include <QApplication>
-#include <QMainWindow>
+
+#include "mainwindow.h"
 
 #include <QTimer>
 
 extern ITxtWriter& g_logger;
 
-class CPlayerView : public IPlayerView
+class CApp : public QApplication,  public IPlayerView
 {
 public:
-    CPlayerView(QApplication& app, class MainWindow& mainWnd, IModel& model, IPlayerController& ctrl) :
-        m_app(app),
-        m_mainWnd(mainWnd),
-        m_model(model),
-        m_ctrl(ctrl)
-    {
-    }
+    CApp(int argc, char **argv);
 
 private:
-    QApplication& m_app;
+    MainWindow m_mainWnd;
 
-    class MainWindow& m_mainWnd;
+    CModel m_model;
 
-    IModel& m_model;
+    CController m_ctrl;
 
-    IPlayerController& m_ctrl;
+private:
+    IModelObserver& getModelObserver()
+    {
+        return m_mainWnd;
+    }
 
 public:
-    QApplication& getApp() const
+    MainWindow& mainWnd()
     {
-        return m_app;
+        return m_mainWnd;
     }
 
-    class MainWindow& getMainWnd() const;
-
-    IPlayerController& getCtrl() const
-    {
-        return m_ctrl;
-    }
-
-    IModel& getModel() const
+    IModel& getModel()
     {
         return m_model;
     }
 
-    COptionMgr& getOptionMgr() const
+    COptionMgr& getOptionMgr()
     {
-        return m_model.getOptionMgr();
+        return getModel().getOptionMgr();
     }
 
-    CDataMgr& getDataMgr() const
+    CDataMgr& getDataMgr()
     {
-        return m_model.getDataMgr();
+        return getModel().getDataMgr();
     }
 
-    CPlayMgr& getPlayMgr() const
+    CPlayMgr& getPlayMgr()
     {
-        return m_model.getPlayMgr();
+        return getModel().getPlayMgr();
     }
+
+    IPlayerController& getCtrl()
+    {
+        return m_ctrl;
+    }
+
+    int run();
 
     void setTimer(UINT uMs, const function<bool()>& cb)
     {
@@ -73,7 +72,6 @@ public:
             }
         });
     }
-
-private:
-    class IModelObserver& getModelObserver() override;
 };
+
+extern CApp *g_app;

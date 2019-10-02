@@ -11,9 +11,8 @@
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CPlayerView& view, CBkgDlg& bkgDlg)
+CBkgView::CBkgView(CBkgDlg& bkgDlg)
     : CListView(&bkgDlg)
-    , m_view(view)
     , m_bkgDlg(bkgDlg)
 {
     (void)m_pmX.load(":/img/btnX.png");
@@ -79,7 +78,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
     {
-        m_view.getMainWnd().drawDefaultBkg(painter, rc);
+        g_app->mainWnd().drawDefaultBkg(painter, rc);
     }
     else
     {
@@ -169,13 +168,13 @@ void CBkgDlg::init()
         m_vecVBkg.push_back(strSubFile);
     });
 
-    cauto& strHBkg = m_view.getOptionMgr().getOption().strHBkg;
+    cauto& strHBkg = g_app->getOptionMgr().getOption().strHBkg;
     if (!strHBkg.empty())
     {
         (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
     }
 
-    cauto& strVBkg = m_view.getOptionMgr().getOption().strVBkg;
+    cauto& strVBkg = g_app->getOptionMgr().getOption().strVBkg;
     if (!strVBkg.empty())
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
@@ -250,11 +249,11 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
 {
     if (m_bHScreen)
     {
-        m_view.getOptionMgr().getOption().strHBkg = strBkg;
+        g_app->getOptionMgr().getOption().strHBkg = strBkg;
     }
     else
     {
-        m_view.getOptionMgr().getOption().strVBkg = strBkg;
+        g_app->getOptionMgr().getOption().strVBkg = strBkg;
     }
 
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
@@ -268,7 +267,7 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
         pmBkg = QPixmap();
     }
 
-    ((MainWindow&)m_view.getMainWnd()).updateBkg();
+    g_app->mainWnd().updateBkg();
 }
 
 void CBkgDlg::setBkg(size_t uIdx)
@@ -336,8 +335,8 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (uIdx < vecBkg.size())
     {
-        auto& strBkg = m_bHScreen?m_view.getOptionMgr().getOption().strHBkg
-                                  :m_view.getOptionMgr().getOption().strVBkg;
+        auto& strBkg = m_bHScreen?g_app->getOptionMgr().getOption().strHBkg
+                                  :g_app->getOptionMgr().getOption().strVBkg;
         if (strBkg == vecBkg[uIdx])
         {
             _setBkg(L"");

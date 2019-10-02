@@ -38,11 +38,9 @@ class MainWindow : public QMainWindow, public IModelObserver
     Q_OBJECT
 
 public:
-    explicit MainWindow(class CPlayerView& view);
+    explicit MainWindow();
 
 private:
-    class CPlayerView& m_view;
-
     class CPlayingList m_PlayingList;
 
     map<QWidget*, QRect> m_mapTopWidgetPos;

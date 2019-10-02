@@ -65,10 +65,12 @@ INCLUDEPATH += ../../inc
 android {
     LIBS    += -L../../../XMusic/libs/armeabi-v7a
 
+    build_dir = ../../../build/XMusic/android
     DESTDIR = ../../../build/XMusic
 } else: macx {
     LIBS    += -L../../bin/mac
 
+    build_dir = ../../../build/XMusic/mac
     DESTDIR = ../../bin/mac
 } else: ios {
     LIBS    += -L../../../build/ioslib -lCURLTool
@@ -79,10 +81,12 @@ android {
     LIBS    += -lavcodec -lavformat -lavutil -lswresample \
                 -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
 
+    build_dir = ../../../build/XMusic/ios
     DESTDIR = ../../../build/XMusic
 } else {
     LIBS    += -L../../bin
 
+    build_dir = ../../../build/XMusic/win
     DESTDIR = ../../bin
 }
 
@@ -153,8 +157,8 @@ ios {
     vbkg.path = /vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 } else {
-MOC_DIR = ../../../build/XMusic
-RCC_DIR = ../../../build/XMusic
-UI_DIR = ../../../build/XMusic
+MOC_DIR = $$build_dir
+RCC_DIR = $$build_dir
+UI_DIR = $$build_dir
 }
-OBJECTS_DIR = ../../../build/XMusic
+OBJECTS_DIR = $$build_dir

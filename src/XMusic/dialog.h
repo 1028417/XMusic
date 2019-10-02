@@ -17,8 +17,12 @@ extern std::set<class CDialog*> g_setDlgs;
 class CDialog : public QDialog
 {
 public:
-    CDialog() : m_crBkg(180, 220, 255)
+    CDialog(QWidget *parent=NULL) :
+        QDialog(parent)
+        , m_crBkg(180, 220, 255)
     {
+        this->setWindowFlags(Qt::Dialog);
+        this->setWindowModality(Qt::ApplicationModal);
     }
 
 private:

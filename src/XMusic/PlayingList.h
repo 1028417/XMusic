@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "app.h"
-
 #include "listview.h"
 
 struct tagPlayingItem
@@ -14,16 +12,12 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CPlayerView& view) :
-        m_view(view)
-        , m_crShadow(128,128,128)
+    CPlayingList() : m_crShadow(128,128,128)
     {
         this->startTimer(1000);
     }
 
 private:
-    CPlayerView& m_view;
-
     ArrList<tagPlayingItem> m_alPlayingItems;
 
     UINT m_uPlayingItem = 0;

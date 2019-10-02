@@ -1,5 +1,4 @@
 
-#include <QApplication>
 #include <QFontDatabase>
 
 #include "mainwindow.h"
@@ -51,13 +50,10 @@ map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
 
-class CApplication : public QApplication
-{
-public:
-    CApplication(int argc, char **argv);
-};
-
-CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
+CApp::CApp(int argc, char **argv) :
+    QApplication(argc, argv),
+    m_model(m_mainWnd),
+    m_ctrl(*this, m_model)
 {
 #if __android
 //    string strSdcardPath
@@ -172,32 +168,6 @@ CApplication::CApplication(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
-
-class CApp : public CApplication
-{
-public:
-    CApp(int argc, char **argv) :
-        CApplication(argc, argv),
-        m_model(m_mainWnd),
-        m_view(*this, m_mainWnd, m_model, m_ctrl),
-        m_ctrl(m_view, m_model),
-        m_mainWnd(m_view)
-    {
-    }
-
-private:
-    CModel m_model;
-
-    CPlayerView m_view;
-
-    CController m_ctrl;
-
-    class MainWindow m_mainWnd;
-
-public:
-    int run();
-};
-
 int CApp::run()
 {
 #if __android
@@ -241,16 +211,7 @@ int CApp::run()
     return nRet;
 }
 
-
-MainWindow& CPlayerView::getMainWnd() const
-{
-    return m_mainWnd;
-}
-
-IModelObserver& CPlayerView::getModelObserver()
-{
-    return m_mainWnd;
-}
+CApp *g_app = NULL;
 
 int main(int argc, char *argv[])
 {
@@ -258,6 +219,7 @@ int main(int argc, char *argv[])
     QApplication:B:setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    CApp app(argc, argv);
-    return app.run();
+    CApp *g_app = (CApp*)new char[sizeof(CApp)];
+    new (g_app) CApp(argc, argv);
+    return g_app->run();
 }

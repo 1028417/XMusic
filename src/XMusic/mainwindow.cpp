@@ -11,6 +11,8 @@
 
 #include "bkgdlg.h"
 
+#include "app.h"
+
 #define __size10 __size(10)
 
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
@@ -52,11 +54,7 @@ void showFull(QWidget* wnd)
     wnd->setVisible(true);
 }
 
-MainWindow::MainWindow(CPlayerView& view) :
-    m_view(view),
-    m_PlayingList(view),
-    m_medialibDlg(view),
-    m_bkgDlg(view)
+MainWindow::MainWindow()
 {
     ui.setupUi(this);
 
@@ -110,7 +108,7 @@ MainWindow::MainWindow(CPlayerView& view) :
     ui.btnFullScreen->setParent(this);
 
     connect(ui.btnFullScreen, &QPushButton::clicked, this, [&](){
-        auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+        auto& bFullScreen = g_app->getOptionMgr().getOption().bFullScreen;
         bFullScreen = !bFullScreen;
         g_bFullScreen = bFullScreen;
 
@@ -168,13 +166,13 @@ void MainWindow::showLogo()
 //    pe.setColor(QPalette::Background, QColor(180, 220, 255));
 //    this->setPalette(pe);
 
-    g_bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+    g_bFullScreen = g_app->getOptionMgr().getOption().bFullScreen;
     showFull(this);
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
 
-        m_view.setTimer(40, [&](){
+        g_app->setTimer(40, [&](){
             auto peCompany = ui.labelLogoCompany->palette();
             auto crCompany = peCompany.color(QPalette::WindowText);
 
@@ -185,7 +183,7 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                m_view.setTimer(500, [&](){
+                g_app->setTimer(500, [&](){
                     if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
@@ -268,7 +266,7 @@ void MainWindow::_init()
     ui.labelDuration->setFont(0.85);
     m_PlayingList.setFont(0.9);
 
-    if (m_view.getOptionMgr().getOption().bRandomPlay)
+    if (g_app->getOptionMgr().getOption().bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -352,19 +350,19 @@ bool MainWindow::event(QEvent *ev)
 
         break;
     case QEvent::Close:
-        m_view.getApp().quit();
+        g_app->quit();
 
         break;
     case QEvent::Timer:
     {
-        auto ePlayStatus = m_view.getPlayMgr().GetPlayStatus();
+        auto ePlayStatus = g_app->getPlayMgr().GetPlayStatus();
         if (E_PlayStatus::PS_Stop != ePlayStatus)
         {
             _playSingerImg(false);
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_view.getPlayMgr().getPlayer().getClock();
+                uint64_t uClock = g_app->getPlayMgr().getPlayer().getClock();
                 if (uClock > 0)
                 {
                     int nProgress = uClock / __1e6;
@@ -778,7 +776,7 @@ void MainWindow::onPlayFinish()
 {
     emit signal_playFinish();
 
-    m_view.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+    g_app->getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
 }
 
 void MainWindow::slot_playFinish()
@@ -834,7 +832,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
 void MainWindow::_showAlbumName()
 {
-    auto eDemandMode = m_view.getPlayMgr().demandMode();
+    auto eDemandMode = g_app->getPlayMgr().demandMode();
 
     WString strMediaSet;
     if (E_DemandMode::DM_DemandPlayItem == eDemandMode || m_PlayingInfo.strAlbum.empty())
@@ -915,7 +913,7 @@ void MainWindow::_playSingerImg(bool bReset)
     }
 
     wstring strSingerImg;
-    if (m_view.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
+    if (g_app->getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
     {
         QPixmap pm;
         if (pm.load(wsutil::toQStr(strSingerImg)))
@@ -942,27 +940,27 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        m_view.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
+        g_app->getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
         _updatePlayPauseButton(false);
     }
     else if (button == ui.btnPlay)
     {
-        m_view.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
+        g_app->getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
         _updatePlayPauseButton(true);
     }
     else if (button == ui.btnPlayPrev)
     {
-        m_view.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayPrev));
+        g_app->getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayPrev));
     }
     else if (button == ui.btnPlayNext)
     {
-        m_view.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayNext));
+        g_app->getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayNext));
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = m_view.getOptionMgr().getOption().bRandomPlay;
+        auto& bRandomPlay = g_app->getOptionMgr().getOption().bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);
@@ -1005,7 +1003,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_view.getModel().getSingerMgr().HittestMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = g_app->getModel().getSingerMgr().HittestMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1017,12 +1015,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         CMedia *pMedia = NULL;
         if (m_PlayingInfo.uRelatedAlbumItemID != 0)
         {
-            pMedia = m_view.getModel().getSingerMgr().HittestMedia(
+            pMedia = g_app->getModel().getSingerMgr().HittestMedia(
                                     E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
         }
         else if (m_PlayingInfo.uRelatedPlayItemID != 0)
         {
-            pMedia = m_view.getModel().getPlaylistMgr().HittestMedia(
+            pMedia = g_app->getModel().getPlaylistMgr().HittestMedia(
                                     E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
         }
         if (pMedia && pMedia->m_pParent)
@@ -1036,12 +1034,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelPlayProgress)
     {
-        if (E_PlayStatus::PS_Play == m_view.getPlayMgr().GetPlayStatus())
+        if (E_PlayStatus::PS_Play == g_app->getPlayMgr().GetPlayStatus())
         {
             if (ui.progressBar->maximum() > 0)
             {
                 UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
-                m_view.getPlayMgr().getPlayer().Seek(uPos);
+                g_app->getPlayMgr().getPlayer().Seek(uPos);
 
                 mtutil::yield();
 
@@ -1111,7 +1109,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
+    g_app->getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::drawDefaultBkg(QPainter& painter, const QRect& rc)

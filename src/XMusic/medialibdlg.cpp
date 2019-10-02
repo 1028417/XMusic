@@ -105,13 +105,12 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(class CPlayerView& view, CMedialibDlg& medialibDlg) :
+CMedialibView::CMedialibView(CMedialibDlg& medialibDlg) :
     CListViewEx(&medialibDlg)
-    , m_view(view)
     , m_medialibDlg(medialibDlg)
-    , m_SingerLib(view.getModel().getSingerMgr())
-    , m_PlaylistLib(view.getModel().getPlaylistMgr())
-    , m_MediaLib(view.getModel().getMediaLib())
+    , m_SingerLib(g_app->getModel().getSingerMgr())
+    , m_PlaylistLib(g_app->getModel().getPlaylistMgr())
+    , m_MediaLib(g_app->getModel().getMediaLib())
 {
 }
 
@@ -138,7 +137,7 @@ void CMedialibView::play()
         m_pMediaset->GetAllMedias(lstMedias);
         if (lstMedias)
         {
-            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+            g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
             dselectRow();
         }
     }
@@ -147,7 +146,7 @@ void CMedialibView::play()
         cauto& paSubFile = m_pPath->files();
         if (paSubFile)
         {
-            m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
+            g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
             dselectRow();
         }
     }
@@ -346,7 +345,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 
     wstring strSingerImg;
-    if (m_view.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+    if (g_app->getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
         QPixmap pm;
         if (pm.load(wsutil::toQStr(strSingerImg)))
@@ -445,7 +444,7 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
-    m_view.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
+    g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
 }
 
 bool CMedialibView::_onUpward()
