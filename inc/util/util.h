@@ -152,11 +152,9 @@ using fn_void = function<void()>;
 //#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-#if __winvc
-#include "winfsdlg.h"
-#endif
-
 #include "winfsutil.h"
+
+#include "winfsdlg.h"
 
 #include "wintimer.h"
 
