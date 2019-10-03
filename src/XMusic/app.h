@@ -18,11 +18,11 @@ public:
     CApp(int argc, char **argv);
 
 private:
-    MainWindow m_mainWnd;
-
     CModel m_model;
 
     CController m_ctrl;
+
+    MainWindow m_mainWnd;
 
 private:
     IModelObserver& getModelObserver()
