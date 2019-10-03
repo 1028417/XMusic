@@ -32,16 +32,13 @@ private:
 	
     CPlayer m_Player;
 
-	set<UINT> m_setPlayedIDs;
+    set<UINT> m_setPlayedIDs;
 
-	wstring m_strPlayingFile;
-	
     CAudioOpaque m_AudioOpaque;
 
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 private:
-    void _stopPlay();
     bool _playFile(const wstring& strFile, bool bURL = false, uint64_t uStartPos = 0);
 
 	bool _playNext(bool bNext, bool bManual);
@@ -76,9 +73,9 @@ public:
         return m_Playinglist.playItems();
 	}
 
-	const wstring& GetPlayingFile() const
+    wstring GetPlayingFile() const
 	{
-		return m_strPlayingFile;
+        return m_AudioOpaque.getFile();
 	}
 
 	bool init();

@@ -117,7 +117,7 @@ public:
             return m_size;
         }
 
-        m_size = -1;        
+        m_size = -1;
         m_uPos = 0;
 
 #if __windows
@@ -223,18 +223,18 @@ public:
 		return CPlayer::CheckDuration(*this, bLock);
 	}
 
+    wstring getFile() const override
+    {
+        if (m_bURL || m_pXmsc)
+        {
+            return L"";
+        }
+
+        return m_strFile;
+    }
+
 private:
 	void _set(const wstring& strFile, bool bURL);
-
-	wstring getFile() override
-	{
-		if (m_bURL || m_pXmsc)
-		{
-			return L"";
-		}
-		
-		return m_strFile;
-	}
 
     bool open() override;
 

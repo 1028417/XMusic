@@ -18,7 +18,7 @@ public:
     //virtual int64_t size() const = 0;
 	//virtual uint64_t pos() const = 0;
 	
-	virtual wstring getFile() { return L""; }
+    virtual wstring getFile() const { return L""; }
 
     virtual bool open() = 0;
 
