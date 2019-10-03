@@ -166,15 +166,16 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         }
     }
 
+    QString qsText = wsutil::toQStr(context.strText);
     if (context.bSingleLine)
     {
         int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;
-        QString qsText = painter.fontMetrics().elidedText(context.qsText, Qt::ElideRight, rc.width(), nTextFlag);
+        qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
         painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
     }
     else
     {
-        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, context.qsText);
+        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, qsText);
     }
 }
 
