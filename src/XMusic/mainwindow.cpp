@@ -305,6 +305,8 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
 
     this->update();
+
+    _relayout();
 }
 
 void MainWindow::_onPaint(CPainter& painter)
