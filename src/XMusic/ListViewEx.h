@@ -20,17 +20,20 @@ protected:
         tagMediaContext(CMediaSet& MediaSet) : tagRowContext(E_RowStyle::IS_RightTip, MediaSet.m_strName)
             , pMediaSet(&MediaSet)
         {
+            bSingleLine = true;
         }
 
         tagMediaContext(CMedia& media) : tagRowContext(E_RowStyle::IS_Underline, media.GetTitle())
             , pMedia(&media)
         {
+            bSingleLine = true;
         }
 
         tagMediaContext(CPath& path) :
             tagRowContext(path.fileInfo().bDir ? E_RowStyle::IS_RightTip : E_RowStyle::IS_Underline, path.GetName())
             , pPath(&path)
         {
+            bSingleLine = true;
         }
     };
 

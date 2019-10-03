@@ -46,9 +46,11 @@ protected:
         E_RowStyle eStyle = E_RowStyle::IS_None;
 
         const QPixmap *pixmap = NULL;
-        float fIconMargin = 0.17f;
+        float fIconMargin = 0.18f;
 
+        bool bSingleLine = false;
         wstring strText;
+
         wstring strRemark;
     };
 

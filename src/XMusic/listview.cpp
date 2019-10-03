@@ -166,8 +166,17 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         }
     }
 
+    int nTextFlag = Qt::TextShowMnemonic;
+    if (context.bSingleLine)
+    {
+        nTextFlag |= Qt::TextSingleLine;
+    }
+    else
+    {
+        nTextFlag |= Qt::TextWordWrap;
+    }
     QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(context.strText)
-                            , Qt::ElideRight, rc.width(), Qt::TextShowMnemonic);
+                                                       , Qt::ElideRight, rc.width(), nTextFlag);
     painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }
 
