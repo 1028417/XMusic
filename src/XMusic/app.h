@@ -73,5 +73,3 @@ public:
         });
     }
 };
-
-extern CApp *g_app;

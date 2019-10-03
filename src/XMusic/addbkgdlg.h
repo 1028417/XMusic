@@ -114,9 +114,11 @@ class CAddBkgView : public CListView
     Q_OBJECT
 
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CApp& app, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
+    class CApp& m_app;
+
     class CAddBkgDlg& m_addbkgDlg;
 
     const TD_ImgDirList& m_paImgDirs;
@@ -153,9 +155,11 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CAddBkgDlg(class CBkgDlg& bkgDlg);
+    explicit CAddBkgDlg(class CApp& app, class CBkgDlg& bkgDlg);
 
-private:
+private:    
+    class CApp& m_app;
+
     class CBkgDlg& m_bkgDlg;
 
     CAddBkgView m_addbkgView;

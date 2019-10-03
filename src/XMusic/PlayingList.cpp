@@ -3,6 +3,12 @@
 
 #include "app.h"
 
+CPlayingList::CPlayingList(class CApp& app)
+    : m_app(app), m_crShadow(128,128,128)
+{
+    this->startTimer(1000);
+}
+
 size_t CPlayingList::getPageRowCount()
 {
     size_t uRet = CListView::getPageRowCount();
@@ -62,7 +68,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     rc.setLeft(rc.left() + __size(35));
 
     m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
-        if (!bPlayingItem && g_app->getPlayMgr().checkPlayedID(playingItem.uID))
+        if (!bPlayingItem && m_app.getPlayMgr().checkPlayedID(playingItem.uID))
         {
             painter.adjustFontItalic(true);
         }
@@ -104,7 +110,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
     m_alPlayingItems.clear();
 
     tagPlayingItem playingItem;
-    g_app->getPlayMgr().getPlayingItems()([&](const CPlayItem& PlayItem){
+    m_app.getPlayMgr().getPlayingItems()([&](const CPlayItem& PlayItem){
         playingItem.uID = PlayItem.m_uID;
         playingItem.qsTitle = wsutil::toQStr(PlayItem.GetTitle());
         m_alPlayingItems.add(playingItem);
@@ -140,7 +146,7 @@ void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
 
     if (lvRow.uRow < m_alPlayingItems.size())
     {
-        g_app->getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
     }
 }
 

@@ -10,9 +10,11 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CBkgDlg& bkgDlg);
+    CBkgView(class CApp& app, class CBkgDlg& bkgDlg);
 
 private:
+    class CApp& m_app;
+
     class CBkgDlg& m_bkgDlg;
 
     QPixmap m_pmX;
@@ -33,13 +35,11 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CBkgDlg() :
-        m_addbkgDlg(*this),
-        m_bkgView(*this)
-    {
-    }
+    CBkgDlg(class CApp& app);
 
 private:
+    class CApp& m_app;
+
     CAddBkgDlg m_addbkgDlg;
 
     CBkgView m_bkgView;

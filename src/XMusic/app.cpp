@@ -53,7 +53,8 @@ float g_fPixelRatio = 1;
 CApp::CApp(int argc, char **argv) :
     QApplication(argc, argv),
     m_model(m_mainWnd),
-    m_ctrl(*this, m_model)
+    m_ctrl(*this, m_model),
+    m_mainWnd(*this)
 {
 #if __android
 //    string strSdcardPath
@@ -211,15 +212,12 @@ int CApp::run()
     return nRet;
 }
 
-CApp *g_app = NULL;
-
 int main(int argc, char *argv[])
 {
 #if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
     QApplication:B:setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    CApp *g_app = (CApp*)new char[sizeof(CApp)];
-    new (g_app) CApp(argc, argv);
-    return g_app->run();
+    CApp app(argc, argv);
+    return app.run();
 }

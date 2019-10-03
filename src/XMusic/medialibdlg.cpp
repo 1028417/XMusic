@@ -9,6 +9,12 @@
 
 static Ui::MedialibDlg ui;
 
+CMedialibDlg::CMedialibDlg(class CApp& app)
+    : m_app(app)
+    , m_MedialibView(app, *this)
+{
+}
+
 void CMedialibDlg::init()
 {
     ui.setupUi(this);
@@ -105,12 +111,13 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(CMedialibDlg& medialibDlg) :
+CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg) :
     CListViewEx(&medialibDlg)
+    , m_app(app)
     , m_medialibDlg(medialibDlg)
-    , m_SingerLib(g_app->getModel().getSingerMgr())
-    , m_PlaylistLib(g_app->getModel().getPlaylistMgr())
-    , m_MediaLib(g_app->getModel().getMediaLib())
+    , m_SingerLib(app.getModel().getSingerMgr())
+    , m_PlaylistLib(app.getModel().getPlaylistMgr())
+    , m_MediaLib(app.getModel().getMediaLib())
 {
 }
 
@@ -137,7 +144,7 @@ void CMedialibView::play()
         m_pMediaset->GetAllMedias(lstMedias);
         if (lstMedias)
         {
-            g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
             dselectRow();
         }
     }
@@ -146,7 +153,7 @@ void CMedialibView::play()
         cauto& paSubFile = m_pPath->files();
         if (paSubFile)
         {
-            g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
             dselectRow();
         }
     }
@@ -345,7 +352,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     }
 
     wstring strSingerImg;
-    if (g_app->getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+    if (m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
         QPixmap pm;
         if (pm.load(wsutil::toQStr(strSingerImg)))
@@ -444,7 +451,7 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
-    g_app->getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
+    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
 }
 
 bool CMedialibView::_onUpward()

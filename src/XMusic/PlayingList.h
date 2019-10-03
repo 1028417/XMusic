@@ -12,12 +12,11 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList() : m_crShadow(128,128,128)
-    {
-        this->startTimer(1000);
-    }
+    CPlayingList(class CApp& app);
 
 private:
+    class CApp& m_app;
+
     ArrList<tagPlayingItem> m_alPlayingItems;
 
     UINT m_uPlayingItem = 0;

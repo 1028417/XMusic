@@ -7,10 +7,11 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) :
+CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg) :
     //CDialog(bkgDlg),
+    m_app(app),
     m_bkgDlg(bkgDlg),
-    m_addbkgView(*this, m_paImgDirs)
+    m_addbkgView(app, *this, m_paImgDirs)
 {
 }
 
@@ -111,8 +112,9 @@ const QPixmap* getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
+    , m_app(app)
     , m_addbkgDlg(addbkgDlg)
     , m_paImgDirs(paImgDir)
 {
@@ -222,7 +224,7 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             m_pImgDir = &imgDir;          
             update();
 
-            g_app->setTimer(100, [=](){
+            m_app.setTimer(100, [=](){
                 if (NULL == m_pImgDir)
                 {
                     return false;
