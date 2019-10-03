@@ -9,6 +9,13 @@
 
 #include <QTextOption>
 
+enum class E_LabelTextOption
+{
+    LTO_None = 0,
+    LTO_AutoFit,
+    LtO_Elided
+};
+
 class CLabel : public CWidget<QLabel>
 {
     Q_OBJECT
@@ -24,7 +31,7 @@ public:
 private:
     bool m_bCutPixmap = false;
 
-    bool m_bAutoFit = false;
+    E_LabelTextOption m_eTextOption = E_LabelTextOption::LTO_AutoFit;
 
     UINT m_uShadowWidth = 0;
     QColor m_crShadow;
@@ -41,10 +48,11 @@ public:
         QLabel::setPixmap(pm);
     }
 
-    void setText(const QString &qsText, bool bAutoFit=true)
-    {
+    void setText(const QString &qsText, E_LabelTextOption eTextOption = E_LabelTextOption::LTO_AutoFit)
+    {        
+        m_eTextOption = eTextOption;
+
         QLabel::setText(qsText);
-        m_bAutoFit = bAutoFit;
     }
 
     void setShadow(UINT uWidth, UINT r, UINT g, UINT b)
@@ -86,11 +94,11 @@ private:
         }
 
         QString text = this->text();
-        if (!text.isEmpty())
+        if (!text.isEmpty() && E_LabelTextOption::LTO_None != m_eTextOption)
         {
             int cx = m_rc.right();
 
-            if (m_bAutoFit)
+            if (E_LabelTextOption::LTO_AutoFit == m_eTextOption)
             {
                 QFont font = painter.font();
                 while (painter.fontMetrics().width(text) >= cx)

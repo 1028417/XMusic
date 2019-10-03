@@ -206,11 +206,12 @@ void CBkgDlg::_relayout(int cx, int cy)
     m_bHScreen = cx>cy;
     if (m_bHScreen)
     {
-        int x_bkgView = rcReturn.right()+__margin/2;
+        int x_bkgView = rcReturn.right()+rcReturn.left();
+        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin*2);
 
-        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin-__margin/2);
-
-        ui.labelTitle->move(cx, rcReturn.center().y() - ui.labelTitle->height()/2);
+        ui.labelTitle->setGeometry(0, rcReturn.bottom() + rcReturn.top(), x_bkgView, cy);
+        ui.labelTitle->setWordWrap(true);
+        ui.labelTitle->setText("设\n置\n背\n景", E_LabelTextOption::LTO_None);
     }
     else
     {
@@ -220,7 +221,8 @@ void CBkgDlg::_relayout(int cx, int cy)
         int cx_bkgView = cy_bkgView*cx/cy;
         m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
-        ui.labelTitle->move((cx-ui.labelTitle->width())/2, rcReturn.center().y() - ui.labelTitle->height()/2);
+        ui.labelTitle->setGeometry(0, 0, cx, y_bkgView);
+        ui.labelTitle->setText("设置背景", E_LabelTextOption::LTO_None);
     }
 }
 
