@@ -10,10 +10,10 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CApp& app, class CBkgDlg& bkgDlg);
+    CBkgView(class CXMusicApp& app, class CBkgDlg& bkgDlg);
 
 private:
-    class CApp& m_app;
+    class CXMusicApp& m_app;
 
     class CBkgDlg& m_bkgDlg;
 
@@ -35,10 +35,10 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CBkgDlg(class CApp& app);
+    CBkgDlg(class CXMusicApp& app);
 
 private:
-    class CApp& m_app;
+    class CXMusicApp& m_app;
 
     CAddBkgDlg m_addbkgDlg;
 

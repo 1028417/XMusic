@@ -9,7 +9,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CApp& app)
+CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
     : m_app(app)
     , m_MedialibView(app, *this)
 {
@@ -111,7 +111,7 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg) :
+CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg) :
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)

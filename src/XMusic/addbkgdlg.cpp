@@ -7,7 +7,7 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg) :
+CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) :
     //CDialog(bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg),
@@ -112,7 +112,7 @@ const QPixmap* getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(class CXMusicApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
     , m_app(app)
     , m_addbkgDlg(addbkgDlg)

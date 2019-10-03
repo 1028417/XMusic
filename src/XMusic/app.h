@@ -12,10 +12,22 @@
 
 extern ITxtWriter& g_logger;
 
-class CApp : public QApplication,  public IPlayerView
+class CApp : public QApplication
 {
 public:
     CApp(int argc, char **argv);
+};
+
+class CXMusicApp : public CApp,  public IPlayerView
+{
+public:
+    CXMusicApp(int argc, char **argv) :
+        CApp(argc, argv),
+        m_model(m_mainWnd),
+        m_ctrl(*this, m_model),
+        m_mainWnd(*this)
+    {
+    }
 
 private:
     CModel m_model;

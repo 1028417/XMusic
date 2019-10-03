@@ -3,7 +3,7 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CApp& app)
+CPlayingList::CPlayingList(class CXMusicApp& app)
     : m_app(app), m_crShadow(128,128,128)
 {
     this->startTimer(1000);

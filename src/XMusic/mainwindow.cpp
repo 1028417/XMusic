@@ -54,7 +54,7 @@ void showFull(QWidget* wnd)
     wnd->setVisible(true);
 }
 
-MainWindow::MainWindow(CApp& app)
+MainWindow::MainWindow(CXMusicApp& app)
     : m_app(app)
     , m_PlayingList(app)
     , m_medialibDlg(app)

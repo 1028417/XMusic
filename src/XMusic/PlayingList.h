@@ -12,10 +12,10 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CApp& app);
+    CPlayingList(class CXMusicApp& app);
 
 private:
-    class CApp& m_app;
+    class CXMusicApp& m_app;
 
     ArrList<tagPlayingItem> m_alPlayingItems;
 

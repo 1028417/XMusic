@@ -37,10 +37,10 @@ private:
 class CMedialibView : public CListViewEx
 {
 public:
-    CMedialibView(class CApp& app, class CMedialibDlg& medialibDlg);
+    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg);
 
 private:
-    class CApp& m_app;
+    class CXMusicApp& m_app;
 
     class CMedialibDlg& m_medialibDlg;
 
@@ -112,10 +112,10 @@ class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CMedialibDlg(class CApp& m_app);
+    CMedialibDlg(class CXMusicApp& m_app);
 
 private:
-    class CApp& m_app;
+    class CXMusicApp& m_app;
 
     CMedialibView m_MedialibView;
 

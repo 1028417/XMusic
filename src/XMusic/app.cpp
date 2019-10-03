@@ -50,11 +50,7 @@ map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
 
-CApp::CApp(int argc, char **argv) :
-    QApplication(argc, argv),
-    m_model(m_mainWnd),
-    m_ctrl(*this, m_model),
-    m_mainWnd(*this)
+CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 {
 #if __android
 //    string strSdcardPath
@@ -169,7 +165,7 @@ CApp::CApp(int argc, char **argv) :
     });
 }
 
-int CApp::run()
+int CXMusicApp::run()
 {
 #if __android
     m_logger << "jniVer: " >> g_jniVer;
@@ -218,6 +214,6 @@ int main(int argc, char *argv[])
     QApplication:B:setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    CApp app(argc, argv);
+    CXMusicApp app(argc, argv);
     return app.run();
 }

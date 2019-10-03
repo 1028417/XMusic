@@ -11,7 +11,7 @@
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
+CBkgView::CBkgView(class CXMusicApp& app, CBkgDlg& bkgDlg)
     : CListView(&bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg)
@@ -125,7 +125,7 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
     m_bkgDlg.setBkg(uIdx);
 }
 
-CBkgDlg::CBkgDlg(class CApp& app) :
+CBkgDlg::CBkgDlg(class CXMusicApp& app) :
     m_app(app),
     m_addbkgDlg(app, *this),
     m_bkgView(app, *this)
