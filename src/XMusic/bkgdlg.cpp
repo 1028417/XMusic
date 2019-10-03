@@ -209,7 +209,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         int x_bkgView = rcReturn.right()+rcReturn.left();
         m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin*2);
 
-        ui.labelTitle->setGeometry(0, rcReturn.bottom() + rcReturn.top(), x_bkgView, cy);
+        ui.labelTitle->setGeometry(0, 0, x_bkgView, cy);
         ui.labelTitle->setWordWrap(true);
         ui.labelTitle->setText("设\n置\n背\n景", E_LabelTextOption::LTO_None);
     }

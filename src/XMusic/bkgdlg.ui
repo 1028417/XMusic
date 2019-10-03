@@ -57,6 +57,8 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <zorder>labelTitle</zorder>
+  <zorder>btnReturn</zorder>
  </widget>
  <customwidgets>
   <customwidget>
