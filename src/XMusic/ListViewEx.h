@@ -15,7 +15,10 @@ protected:
 
         CPath *pPath = NULL;
 
-        tagMediaContext(){}
+        tagMediaContext()
+        {
+            bSingleLine = true;
+        }
 
         tagMediaContext(CMediaSet& MediaSet) : tagRowContext(E_RowStyle::IS_RightTip, MediaSet.m_strName)
             , pMediaSet(&MediaSet)

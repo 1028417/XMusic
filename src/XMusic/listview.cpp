@@ -166,18 +166,16 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         }
     }
 
-    int nTextFlag = Qt::TextShowMnemonic;
     if (context.bSingleLine)
     {
-        nTextFlag |= Qt::TextSingleLine;
+        int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;
+        QString qsText = painter.fontMetrics().elidedText(context.qsText, Qt::ElideRight, rc.width(), nTextFlag);
+        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
     }
     else
     {
-        nTextFlag |= Qt::TextWordWrap;
+        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, context.qsText);
     }
-    QString qsText = painter.fontMetrics(). elidedText(wsutil::toQStr(context.strText)
-                                                       , Qt::ElideRight, rc.width(), nTextFlag);
-    painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

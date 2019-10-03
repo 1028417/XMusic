@@ -37,9 +37,9 @@ protected:
     {
         tagRowContext(){}
 
-        tagRowContext(E_RowStyle t_eStyle, const wstring& t_strText)
+        tagRowContext(E_RowStyle t_eStyle, const wstring& strText)
             : eStyle(t_eStyle)
-            , strText(t_strText)
+            , qsText(wsutil::toQStr(strText))
         {
         }
 
@@ -49,7 +49,7 @@ protected:
         float fIconMargin = 0.18f;
 
         bool bSingleLine = false;
-        wstring strText;
+        QString qsText;
 
         wstring strRemark;
     };
