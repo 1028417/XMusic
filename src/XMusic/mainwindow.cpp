@@ -13,6 +13,8 @@
 
 #include "app.h"
 
+#include <QScreen>
+
 #define __size10 __size(10)
 
 static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
@@ -132,8 +134,6 @@ MainWindow::MainWindow(CXMusicApp& app)
     this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
-#include <QScreen>
-
 void MainWindow::showLogo()
 {
     float fFontSizeOffset = 1.0f;
@@ -165,10 +165,6 @@ void MainWindow::showLogo()
 
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
-
-//    QPalette pe;
-//    pe.setColor(QPalette::Background, QColor(180, 220, 255));
-//    this->setPalette(pe);
 
     g_bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
     showFull(this);
@@ -267,8 +263,13 @@ void MainWindow::_init()
     ui.labelSingerName->setFont(1);
     ui.labelAlbumName->setFont(1);
     ui.labelPlayingfile->setFont(1);
-    ui.labelDuration->setFont(0.85);
+    ui.labelDuration->setFont(0.8);
+
+#if __windows
+    m_PlayingList.setFont(0.8);
+#else
     m_PlayingList.setFont(0.9);
+#endif
 
     if (m_app.getOptionMgr().getOption().bRandomPlay)
     {
@@ -700,11 +701,18 @@ void MainWindow::_relayout()
     UINT uRowCount = 0;
     if (m_bHScreen)
     {
-        UINT uMargin = __size(45);
         int x_PlayingList = ui.progressBar->geometry().right();
-        x_PlayingList += __size(100) * fCXRate;
+        if (cx >= __size(1920))
+        {
+            x_PlayingList += __size(100) * fCXRate;
+        }
+        else
+        {
+            x_PlayingList += __size(80);
+        }
 
-        int cy_PlayingList = cx-x_PlayingList-uMargin*fCXRate;
+        UINT uMargin = __size(45);
+        int cy_PlayingList = cx - x_PlayingList - uMargin * fCXRate;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cy_PlayingList, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;

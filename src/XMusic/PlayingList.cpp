@@ -54,11 +54,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-#if __windows
-#define __PlayingFontSize 1.05f
-#else
 #define __PlayingFontSize 0.95f
-#endif
         painter.setFont(__PlayingFontSize, E_FontWeight::FW_SemiBold);
 
         painter.drawText(rc.left(), rc.top() + __size(3), rc.width()
@@ -142,10 +138,12 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
 void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
 {
-    _updateActive();
+    //_updateActive();
 
     if (lvRow.uRow < m_alPlayingItems.size())
     {
+        updatePlayingItem(lvRow.uRow, false);
+
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
     }
 }
