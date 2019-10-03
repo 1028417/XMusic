@@ -187,21 +187,21 @@ class __ModelExt CAudioOpaque : public CFileOpaque
 public:
     CAudioOpaque() {}
 
-	CAudioOpaque(const wstring& strFile, bool bURL = false)
+    CAudioOpaque(const wstring& strFile, bool bUrlFile = false)
 		: CFileOpaque(strFile)
 	{
-		_set(strFile, bURL);
+        _set(strFile, bUrlFile);
 	}
 
-	void set(const wstring& strFile, bool bURL = false)
+    void set(const wstring& strFile, bool bUrlFile = false)
 	{
 		CFileOpaque::set(strFile);
 
-		_set(strFile, bURL);
+        _set(strFile, bUrlFile);
 	}
 
 private:
-    bool m_bURL = false;
+    bool m_bUrlFile = false;
     CFileDownload m_fileDownload;
 
 	void *m_pXmsc = NULL;
@@ -225,7 +225,7 @@ public:
 
     wstring getFile() const override
     {
-        if (m_bURL || m_pXmsc)
+        if (m_bUrlFile || m_pXmsc)
         {
             return L"";
         }
@@ -234,7 +234,7 @@ public:
     }
 
 private:
-	void _set(const wstring& strFile, bool bURL);
+    void _set(const wstring& strFile, bool bUrlFile);
 
     bool open() override;
 
@@ -244,6 +244,6 @@ private:
 
     bool seekable() override
     {
-		return !m_bURL;
+        return !m_bUrlFile;
     }
 };

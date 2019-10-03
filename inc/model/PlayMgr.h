@@ -39,7 +39,7 @@ private:
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 private:
-    bool _playFile(const wstring& strFile, bool bURL = false, uint64_t uStartPos = 0);
+    bool _playFile(const wstring& strFile, bool bUrlFile = false, uint64_t uStartPos = 0);
 
 	bool _playNext(bool bNext, bool bManual);
 
