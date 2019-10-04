@@ -44,6 +44,8 @@ private:
 
     void _resume();
 
+    void _clear();
+
 public:
     E_DownloadStatus status() const
     {
