@@ -5,8 +5,6 @@
 
 #include "mainwindow.h"
 
-#define __margin    __size(40)
-
 #define __xsize     __size(60)
 
 static Ui::BkgDlg ui;
@@ -51,29 +49,41 @@ size_t CBkgView::getRowCount()
 void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     size_t uColumnCount = getColumnCount();
-    int nMargin = __margin/(uColumnCount-1);
+
+    int nMargin = margin();
 
     QRect rc = lvRow.rc;
-    int cy = rc.height()-nMargin;
-    int cx = 0;
-
-    if (2 == uColumnCount)
+    if (rc.width() > rc.height())
     {
-        cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
-        cx = MIN(cx, rc.width()-nMargin/2);
+        nMargin /= 2;
+        rc.setLeft(rc.left() + nMargin);
+        rc.setTop(rc.top() + nMargin);
+        rc.setRight(rc.right() - nMargin);
+        rc.setBottom(rc.bottom() - nMargin);
     }
     else
     {
-        cx = rc.width()-nMargin;
-    }
+        int cy = rc.height()-nMargin;
+        int cx = 0;
 
-    if (0 == lvRow.uCol)
-    {
-        rc.setRect(rc.right()-nMargin/2-cx, rc.top(), cx, cy);
-    }
-    else
-    {
-        rc.setRect(rc.left()+nMargin/2, rc.top(), cx, cy);
+        if (2 == uColumnCount)
+        {
+            cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
+            cx = MIN(cx, rc.width()-nMargin/2);
+        }
+        else
+        {
+            cx = rc.width()-nMargin;
+        }
+
+        if (0 == lvRow.uCol)
+        {
+            rc.setRect(rc.right()-nMargin/2-cx, rc.top(), cx, cy);
+        }
+        else
+        {
+            rc.setRect(rc.left()+nMargin/2, rc.top(), cx, cy);
+        }
     }
 
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
@@ -207,7 +217,10 @@ void CBkgDlg::_relayout(int cx, int cy)
     if (m_bHScreen)
     {
         int x_bkgView = rcReturn.right()+rcReturn.left();
-        m_bkgView.setGeometry(x_bkgView, __margin, cx-x_bkgView-__margin, cy-__margin*2);
+        int cx_bkgView = cx-x_bkgView;
+        int cy_bkgView = cx_bkgView*cy/cx;
+        m_bkgView.setGeometry(x_bkgView - m_bkgView.margin()/2
+                              , (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
 
         ui.labelTitle->setGeometry(0, 0, x_bkgView, cy);
         ui.labelTitle->setWordWrap(true);
@@ -216,7 +229,6 @@ void CBkgDlg::_relayout(int cx, int cy)
     else
     {
         int y_bkgView = rcReturn.bottom() + rcReturn.top();
-
         int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
         m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);

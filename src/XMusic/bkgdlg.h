@@ -29,6 +29,13 @@ private:
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
+
+public:
+    inline size_t margin()
+    {
+#define __margin __size(40)
+        return __margin/(getColumnCount()-1);
+    }
 };
 
 class CBkgDlg : public CDialog

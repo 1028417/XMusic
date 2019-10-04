@@ -217,6 +217,11 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
     }
 
     UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
+    if (uRow >= getRowCount())
+    {
+        return false;
+    }
+
     UINT cx_col = width() / getColumnCount();
     UINT uCol = UINT(x/cx_col);
     lvRow = tagLVRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
