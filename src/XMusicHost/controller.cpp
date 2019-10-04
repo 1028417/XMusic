@@ -45,23 +45,7 @@ bool CController::start()
 
 		return true;
 	});
-#endif
-	
-    auto fnTryPlay = [&]() {
-		if (!m_model.getMediaLib().empty())
-		{
-			if (m_model.getPlayMgr().getPlayingItems())
-			{
-				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
-			}
-			else
-			{
-				(void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
-			}
-		}
-    };
 
-#if __winvc
 	if (!m_model.status() && m_model.getMediaLib().empty())
 	{
 		CMainApp::async([&]() {
@@ -74,14 +58,15 @@ bool CController::start()
 		});
 	}
 
-	CMainApp::async(300, fnTryPlay);
+    CMainApp::async(300, [&](){
+        _tryPlay();
+    });
 
 #else
-    g_threadPlayCtrl = thread([&, fnTryPlay]() {
+    g_threadPlayCtrl = thread([&]() {
+        _tryPlay();
+
         auto& PlayMgr = m_model.getPlayMgr();
-
-        fnTryPlay();
-
         while (true)
         {
             tagPlayCtrl PlayCtrl;
@@ -144,9 +129,31 @@ bool CController::start()
             }*/
         }
     });
+
+    _tryUpgrade();
 #endif
 
     return true;
+}
+
+void CController::_tryPlay()
+{
+    if (!m_model.getMediaLib().empty())
+    {
+        if (m_model.getPlayMgr().getPlayingItems())
+        {
+            m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
+        }
+        else
+        {
+            (void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
+        }
+    }
+}
+
+void CController::_tryUpgrade()
+{
+
 }
 
 void CController::stop()

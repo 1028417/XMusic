@@ -16,6 +16,11 @@ protected:
 
 	IModel& m_model;
 
+private:
+    void _tryPlay();
+
+    void _tryUpgrade();
+
 public:
 	bool start();
 
