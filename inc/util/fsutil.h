@@ -207,60 +207,103 @@ public:
 #endif
 };
 
-#include <fstream>
 
-class ibstream : public ifstream
+class __UtilExt bstream
 {
 public:
-	~ibstream()
-	{
-		close();
-	}
+    ~bstream()
+    {
+        close();
+    }
 
-	ibstream() {}
+    bstream() {}
 
-	ibstream(const wstring& strFile)
-	{
-		open(strFile);
-	}
+    bstream(const wstring& strFile, const wstring& strMode)
+    {
+        (void)_open(strFile, strMode);
+    }
 
-	void open(const wstring& strFile)
-	{
-		ifstream::open(
-#if __winvc
-			strFile
+protected:
+    FILE *m_pf = NULL;
+
+protected:
+    bool _open(const wstring& strFile, const wstring& strMode)
+    {
+#if __windows
+        if (_wfopen_s(&m_pf, strFile.c_str(), strMode.c_str()))
+        {
+            return false;
+        }
 #else
-			wsutil::toStr(strFile)
+        m_pf = fopen(wsutil::toStr(strFile).c_str(), wsutil::toStr(strMode).c_str());
 #endif
-			, ios_base::binary);
-	}
+
+        return m_pf != NULL;
+    }
+
+public:
+    operator bool() const
+    {
+        return m_pf != NULL;
+    }
+
+    bool is_open() const
+    {
+        return m_pf != NULL;
+    }
+
+    bool eof() const
+    {
+        return feof(m_pf);
+    }
+
+    void close()
+    {
+        fclose(m_pf);
+    }
 };
 
-class obstream : public ofstream
+
+class __UtilExt ibstream : public bstream
 {
 public:
-	~obstream()
-	{
-		close();
-	}
+    ibstream() {}
 
-	obstream() {}
+    ibstream(const wstring& strFile)
+    {
+        (void)open(strFile);
+    }
 
-	obstream(const wstring& strFile, bool bTrunc)
-	{
-		open(strFile, bTrunc);
-	}
+public:
+    bool open(const wstring& strFile)
+    {
+        return _open(strFile, L"rb");
+    }
 
-	void open(const wstring& strFile, bool bTrunc)
-	{
-        auto mode = bTrunc ? ios_base::trunc | ios_base::binary : ios_base::binary;
+    size_t read(void *buff, size_t buffSize) const
+    {
+        return fread(buff, 1, buffSize, m_pf);
+    }
+};
 
-		ofstream::open(
-#if __winvc
-			strFile
-#else
-			wsutil::toStr(strFile)
-#endif
-			, mode);
-	}
+class __UtilExt obstream : public bstream
+{
+public:
+    obstream() {}
+
+    obstream(const wstring& strFile, bool bTrunc)
+    {
+        (void)open(strFile, bTrunc);
+    }
+
+public:
+    bool open(const wstring& strFile, bool bTrunc)
+    {
+        return _open(strFile, bTrunc?L"wb":L"ab");
+    }
+
+    bool write(const void *buff, size_t buffSize) const
+    {
+        return fwrite(buff, 1, buffSize, m_pf) == buffSize;
+    }
 };
