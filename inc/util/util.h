@@ -148,6 +148,8 @@ using fn_void = function<void()>;
 
 #include "SQLiteDB.h"
 
+#include "jsonutil.h"
+
 #if __windows
 //#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>

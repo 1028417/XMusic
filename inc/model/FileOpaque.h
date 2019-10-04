@@ -14,22 +14,17 @@ enum class E_DownloadStatus
 class __ModelExt CFileDownload
 {
 public:
-    CFileDownload()
-        : m_sgn(true)
-    {
-    }
+    CFileDownload() {}
 
 private:
-    CSignal m_sgn;
-
     E_DownloadStatus m_eStatus = E_DownloadStatus::DS_OK;
 
-    std::mutex m_mtx;
     std::condition_variable m_condvar;
 
+    size_t m_uTotalSize = 0;
+    size_t m_uDataSize = 0;
     list<pair<char*, size_t>> m_lstData;
-    int m_nDataSize = 0;
-	
+
 private:
     static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
     {
@@ -55,7 +50,7 @@ public:
         return m_eStatus;
     }
 
-    bool download(const string& strUrl);
+    int download(const string& strUrl);
 
     size_t getData(char *pBuff, size_t buffSize);
 
