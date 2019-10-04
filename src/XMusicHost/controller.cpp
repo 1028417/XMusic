@@ -129,8 +129,6 @@ bool CController::start()
             }*/
         }
     });
-
-    _tryUpgrade();
 #endif
 
     return true;
@@ -149,11 +147,6 @@ void CController::_tryPlay()
             (void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
         }
     }
-}
-
-void CController::_tryUpgrade()
-{
-
 }
 
 void CController::stop()
