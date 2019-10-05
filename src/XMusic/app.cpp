@@ -211,7 +211,7 @@ int CXMusicApp::run()
 int main(int argc, char *argv[])
 {
 #if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
-    QApplication:B:setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
     CXMusicApp app(argc, argv);
