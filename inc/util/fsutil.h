@@ -254,15 +254,23 @@ public:
 
     bool eof() const
     {
+        if (NULL == m_pf)
+        {
+            return true;
+        }
+
         return feof(m_pf);
     }
 
     void close()
     {
-        fclose(m_pf);
+        if (m_pf)
+        {
+            fclose(m_pf);
+            m_pf = NULL;
+        }
     }
 };
-
 
 class __UtilExt ibstream : public bstream
 {
