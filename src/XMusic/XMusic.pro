@@ -73,10 +73,11 @@ android {
     build_dir = ../../../build/XMusic/mac
     DESTDIR = ../../bin/mac
 } else: ios {
-    LIBS    += -L../../../build/ioslib -lCURLTool
-    LIBS    += -L../../libs/iossimulator -lcurl -lssl -lcrypto -lnghttp2 -lz
+    LIBS    += -L../../libs/ios -lCURLTool
+    LIBS    += -L../../libs/ios/simulator -lcurl -lssl -lcrypto -lnghttp2 -lz
 
-    LIBS    += -lSDL2 -framework AVFoundation -framework GameController -framework CoreMotion
+    LIBS    += -L../../../PlaySDK/libs/ios/simulator -lSDL2 \
+                -framework AVFoundation -framework GameController -framework CoreMotion
 
     LIBS    += -lavcodec -lavformat -lavutil -lswresample \
                 -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
@@ -120,16 +121,16 @@ android {
         ANDROID_EXTRA_LIBS = \
             $$PWD/../../libs/armeabi-v7a/libxutil.so \
             $$PWD/../../libs/armeabi-v7a/libxMediaLib.so \
-            $$PWD/../../libs/armeabi-v7a/libxPlaySDK.so \
             $$PWD/../../libs/armeabi-v7a/libxModel.so \
             $$PWD/../../libs/armeabi-v7a/libCURLTool.so \
             $$PWD/../../libs/armeabi-v7a/libcurl.so \
             $$PWD/../../libs/armeabi-v7a/libssl.so \
             $$PWD/../../libs/armeabi-v7a/libcrypto.so \
-            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavcodec.so \
-            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavformat.so \
-            $$PWD/../../libs/armeabi-v7a/ffmpeg/libavutil.so \
-            $$PWD/../../libs/armeabi-v7a/ffmpeg/libswresample.so
+            $$PWD/../../libs/armeabi-v7a/libxPlaySDK.so \
+            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavcodec.so \
+            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavformat.so \
+            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavutil.so \
+            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libswresample.so
     }
 }
 
