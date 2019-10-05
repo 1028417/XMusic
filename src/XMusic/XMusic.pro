@@ -63,7 +63,7 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += ../../inc
 
 android {
-    LIBS    += -L../../../XMusic/libs/armeabi-v7a
+    LIBS    += -L../../libs/armeabi-v7a
 
     build_dir = ../../../build/XMusic/android
     DESTDIR = ../../../build/XMusic
