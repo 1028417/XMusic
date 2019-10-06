@@ -15,7 +15,7 @@ public:
     {
     }
 
-    CImgDir(const tagFileInfo& FileInfo) : CPath(FileInfo)
+    CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
     {
     }
 
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    CPath* _newSubPath(const tagFileInfo& FileInfo) override;
+    CPath* _newSubPath(const tagFileInfo& fileInfo) override;
 };
 
 #if __android

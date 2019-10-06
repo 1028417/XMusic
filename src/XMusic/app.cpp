@@ -59,12 +59,12 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 //    {
 //        pszSdcardPath = getenv("EXTERNAL_STORAGE");
 //    }
-//    if (NULL != pszSdcardPath)
+//    if (pszSdcardPath)
 //    {
-//        strSdcardPath = pszSdcardPath;
+//        strDataDir = pszSdcardPath;
 //    }
 
-    wstring strDataDir = L"/sdcard/XMusic/.xmusic";
+    wstring strDataDir = L"/sdcard/Android/data/com.musicrosoft.xmusic";
     if (fsutil::createDir(strDataDir))
     {
         fsutil::setWorkDir(strDataDir);

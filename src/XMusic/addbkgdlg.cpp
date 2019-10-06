@@ -264,17 +264,17 @@ bool CAddBkgView::upward()
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
 
-CPath* CImgDir::_newSubPath(const tagFileInfo& FileInfo)
+CPath* CImgDir::_newSubPath(const tagFileInfo& fileInfo)
 {
-    if (FileInfo.bDir)
+    if (fileInfo.bDir)
     {
-        return new CImgDir(FileInfo);
+        return new CImgDir(fileInfo);
     }
 
-    cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(FileInfo.strName));
+    cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (g_setImgExtName.includes(strExtName))
     {
-        return new CPath(FileInfo);
+        return new CPath(fileInfo);
     }
 
     return NULL;

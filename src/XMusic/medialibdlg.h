@@ -7,37 +7,10 @@
 
 #include "ListViewEx.h"
 
-class CRootDir : public CMediaRes
-{
-public:
-    CRootDir()
-        : CMediaRes(L"/sdcard")
-    {
-        ((tagFileInfo&)m_FileInfo).pParent = &m_root;
-    }
-
-private:
-    CMediaRes m_root;
-
-private:
-    CPath* _newSubPath(const tagFileInfo& FileInfo) override
-    {
-        if (FileInfo.bDir)
-        {
-            if (wsutil::matchIgnoreCase(FileInfo.strName, L"XMusic"))
-            {
-                return NULL;
-            }
-        }
-
-        return CMediaRes::_newSubPath(FileInfo);
-    }
-};
-
 class CMedialibView : public CListViewEx
 {
 public:
-    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg);
+    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaRes *pOuterDir=NULL);
 
 private:
     class CXMusicApp& m_app;
@@ -50,7 +23,7 @@ private:
 
     CMediaRes& m_MediaLib;
 
-    CRootDir m_rootDir;
+    CMediaRes *m_pOuterDir = NULL;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
@@ -108,6 +81,51 @@ private:
     bool _onUpward() override;
 };
 
+class CAndroidRootDir : public CMediaRes
+{
+public:
+    CAndroidRootDir()
+        : CMediaRes(L"/sdcard")
+    {
+        fileInfo().pParent = &m_root;
+    }
+
+    CAndroidRootDir(const tagFileInfo& fileInfo, E_MediaFileType eFileType)
+        : CMediaRes(fileInfo, eFileType)
+    {
+    }
+
+private:
+    static CMediaRes m_root;
+
+private:
+    CPath* _newSubPath(const tagFileInfo& fileInfo) override
+    {
+        if (fileInfo.bDir)
+        {
+            if (wsutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
+            {
+                return NULL;
+            }
+        }
+
+        return CMediaRes::_genSubPath<CAndroidRootDir>(fileInfo);
+    }
+
+    wstring GetPath() const override
+    {
+        auto pParent = fileinfo.pParent;
+        if (NULL == pParent || &m_root == pParent)
+        {
+            return L"..";
+        }
+
+        WString strOppPath(pParent->oppPath());
+        strOppPath << __wcFSSlant << fileinfo.strName;
+        return strOppPath;
+    }
+};
+
 class CMedialibDlg : public CDialog
 {
     Q_OBJECT
@@ -116,6 +134,13 @@ public:
 
 private:
     class CXMusicApp& m_app;
+
+#if __android
+    CAndroidRootDir m_AndroidRootDir;
+    CMediaRes *m_pOuterDir = &m_AndroidRootDir;
+#else
+    CMediaRes *m_pOuterDir = NULL;
+#endif
 
     CMedialibView m_MedialibView;
 

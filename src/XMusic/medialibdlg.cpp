@@ -7,11 +7,13 @@
 #define __XMusic L"XMusic"
 #define __InnerStorage L"内部存储"
 
+CMediaRes CAndroidRootDir::m_root;
+
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
     : m_app(app)
-    , m_MedialibView(app, *this)
+    , m_MedialibView(app, *this, m_pOuterDir)
 {
 }
 
@@ -111,13 +113,14 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg) :
+CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaRes *pOuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(app.getModel().getSingerMgr())
     , m_PlaylistLib(app.getModel().getPlaylistMgr())
     , m_MediaLib(app.getModel().getMediaLib())
+    , m_pOuterDir(pOuterDir)
 {
 }
 
@@ -138,24 +141,26 @@ void CMedialibView::init()
 
 void CMedialibView::play()
 {
+    SArray<wstring> arrOppPaths;
     if (m_pMediaset)
     {
         TD_MediaList lstMedias;
         m_pMediaset->GetAllMedias(lstMedias);
-        if (lstMedias)
-        {
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
-            dselectRow();
-        }
+        arrOppPaths = lstMedias.map([](IMedia& Media) {
+            return Media.GetPath();
+        });
     }
     else if (m_pPath)
     {
-        cauto& paSubFile = m_pPath->files();
-        if (paSubFile)
-        {
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(TD_MediaResList(paSubFile))));
-            dselectRow();
-        }
+        arrOppPaths = m_pPath->files().map([&](CPath& subFile) {
+            return ((CMediaRes&)subFile).GetPath();
+        });
+    }
+
+    if (arrOppPaths)
+    {
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(arrOppPaths));
+        dselectRow();
     }
 }
 
@@ -197,16 +202,18 @@ void CMedialibView::showFile(const wstring& strPath)
         return;
     }
 
-#if __android || __ios
-    if (fsutil::CheckSubPath(m_rootDir.GetAbsPath(), strPath))
+    if (m_pOuterDir)
     {
-        pMediaRes = m_rootDir.FindSubPath(strPath.substr(m_rootDir.GetAbsPath().size()), false);
-        if (pMediaRes)
+        cauto& strOuterRoot = m_pOuterDir->GetAbsPath();
+        if (fsutil::CheckSubPath(strOuterRoot, strPath))
         {
-            showPath(*pMediaRes);
+            pMediaRes = m_pOuterDir->FindSubPath(strPath.substr(strOuterRoot.size()), false);
+            if (pMediaRes)
+            {
+                showPath(*pMediaRes);
+            }
         }
     }
-#endif
 }
 
 #define __Dot L"·"
@@ -234,7 +241,7 @@ void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
         strTitle << __XMusic;
         return;
     }
-    else if (&MediaRes == &m_rootDir)
+    else if (&MediaRes == m_pOuterDir)
     {
         strTitle << __InnerStorage;
         return;
@@ -291,11 +298,15 @@ size_t CMedialibView::getRootCount()
     }
     else
     {
-#if __android || __ios
-        return 10;
-#else
-        return 8;
-#endif
+        if (m_pOuterDir)
+        {
+            return 10;
+        }
+        else
+        {
+            return 8;
+
+        }
     }
 }
 
@@ -314,33 +325,34 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
         context.pixmap = &m_pmSingerGroup;
         context.strText = m_SingerLib.m_strName;
         context.pMediaSet = &m_SingerLib;
+        return true;
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
         context.pixmap = &m_pmPlaylist;
         context.strText = m_PlaylistLib.m_strName;
         context.pMediaSet = &m_PlaylistLib;
+        return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
     {
         context.pixmap = &m_pmDir;
         context.strText = __XMusic;
         context.pPath = &m_MediaLib;
+        return true;
     }
-#if __android || __ios
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
     {
-        context.pixmap = &m_pmDir;
-        context.strText = __InnerStorage;
-        context.pPath = &m_rootDir;
-    }
-#endif
-    else
-    {
-        return false;
+        if (m_pOuterDir)
+        {
+            context.pixmap = &m_pmDir;
+            context.strText = __InnerStorage;
+            context.pPath = m_pOuterDir;
+            return true;
+        }
     }
 
-    return true;
+    return false;
 }
 
 const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
@@ -451,18 +463,11 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
-    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(media)));
+    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(SArray<wstring>(media.GetPath())));
 }
 
 bool CMedialibView::_onUpward()
 {
-    /*if (&m_SingerLib == m_pMediaset || &m_PlaylistLib == m_pMediaset
-            || &m_MediaLib == m_pMediaset || &m_rootDir == m_pMediaset)
-    {
-        showRoot();
-        return true;
-    }*/
-
     if (m_pPath && NULL == m_pPath->fileInfo().pParent && dynamic_cast<CAttachDir*>(m_pPath) != NULL)
     {
         showPath(m_MediaLib);

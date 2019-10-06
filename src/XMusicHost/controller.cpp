@@ -415,7 +415,7 @@ bool CController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 int CController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist)
 {
 	wstring strOppPath;
-	SArray<wstring> lstOppPaths;
+	SArray<wstring> arrOppPaths;
 	for (cauto& strFile : lstFiles)
 	{
 		strOppPath = m_model.getMediaLib().toOppPath(strFile);
@@ -426,12 +426,12 @@ int CController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist
 			return 0;
 		}
 
-		lstOppPaths.add(strOppPath);
+		arrOppPaths.add(strOppPath);
 	}
 
-	__EnsureReturn(m_model.getPlaylistMgr().AddPlayItems(lstOppPaths, Playlist, 0), -1);
+	__EnsureReturn(m_model.getPlaylistMgr().AddPlayItems(arrOppPaths, Playlist, 0), -1);
 
-	return lstOppPaths.size();
+	return arrOppPaths.size();
 }
 
 int CController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)

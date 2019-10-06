@@ -17,8 +17,6 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++1y #gnu++1y
 
-#CONFIG -= app_bundle #macOS可执行文件不打包
-
 android {
     CONFIG += mobility
     MOBILITY =
@@ -65,12 +63,12 @@ INCLUDEPATH += ../../inc
 android {
     LIBS    += -L../../libs/armeabi-v7a
 
-    build_dir = ../../../build/XMusic/android
+    platform = android
     DESTDIR = ../../../build/XMusic
 } else: macx {
     LIBS    += -L../../bin/mac
 
-    build_dir = ../../../build/XMusic/mac
+    platform = mac
     DESTDIR = ../../bin/mac
 } else: ios {
     LIBS    += -L../../libs/ios -lCURLTool
@@ -82,12 +80,12 @@ android {
     LIBS    += -lavcodec -lavformat -lavutil -lswresample \
                 -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
 
-    build_dir = ../../../build/XMusic/ios
+    platform = ios
     DESTDIR = ../../../build/XMusic
 } else {
     LIBS    += -L../../bin
 
-    build_dir = ../../../build/XMusic/win
+    platform =win
     DESTDIR = ../../bin
 }
 
@@ -147,6 +145,8 @@ macx {
     vbkg.path = Contents/MacOS/vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 }
+
+build_dir = ../../../build/XMusic/$$platform
 
 ios {
     QMAKE_IOS_DEPLOYMENT_TARGET = 9.0
