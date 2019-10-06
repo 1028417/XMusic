@@ -21,6 +21,10 @@ enum class E_MediaFileType
 class __MediaLibExt IMedia
 {
 public:
+    static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
+    static E_MediaFileType GetMediaFileType(const wstring& strExtName);
+
+public:
 	IMedia(E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
 
 	IMedia(const wstring& strPath);

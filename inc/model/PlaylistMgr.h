@@ -53,7 +53,7 @@ public:
 
 	CPlaylist *RepositPlaylist(UINT uID, UINT uNewPos);
 
-	BOOL AddPlayItems(const SArray<wstring>& lstOppPaths, CPlaylist& Playlist, int nPos);
+	BOOL AddPlayItems(const SArray<wstring>& arrOppPaths, CPlaylist& Playlist, int nPos);
 	BOOL AddPlayItems(const TD_IMediaList& lstMedias, CPlaylist& Playlist, int nPos);
 
 	BOOL RemovePlayItems(const TD_PlayItemList& arrPlayItems);

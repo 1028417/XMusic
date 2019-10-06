@@ -38,10 +38,10 @@ struct tagPlayCtrl
         eDemandLanguage = eLanguage;
     }
 
-    tagPlayCtrl(const TD_IMediaList& arrMedias)
+    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias)
     {
         ePlayCtrl = E_PlayCtrl::PC_PlayMedias;
-        arrPlayMedias.assign(arrMedias);
+        arrPlayMedias.assign(t_arrPlayMedias);
     }
 
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
@@ -51,7 +51,7 @@ struct tagPlayCtrl
     E_DemandMode eDemandMode = E_DemandMode::DM_Null;
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
 
-    TD_IMediaList arrPlayMedias;
+    SArray<wstring> arrPlayMedias;
 };
 
 using CB_AddInConfirm = function<E_MatchResult(CSearchMediaInfo&, tagMediaResInfo&)>;

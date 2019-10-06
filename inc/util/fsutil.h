@@ -266,7 +266,7 @@ public:
     {
         if (m_pf)
         {
-            fclose(m_pf);
+            fclose(m_pf);            
             m_pf = NULL;
         }
     }

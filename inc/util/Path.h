@@ -26,8 +26,8 @@ class __UtilExt CPath
 public:
 	CPath(const wstring& strDir=L"");
 
-	CPath(const tagFileInfo& FileInfo)
-        : m_fi(FileInfo)
+    CPath(const tagFileInfo& fileInfo)
+        : m_fileInfo(fileInfo)
 	{
 	}
 	
@@ -37,7 +37,7 @@ public:
 	}
 
 private:
-    tagFileInfo m_fi;
+    tagFileInfo m_fileInfo;
 
 	enum class E_FindFileStatus
 	{
@@ -51,12 +51,12 @@ private:
 	TD_PathList m_paSubFile;
 
 protected:
-    const tagFileInfo& m_FileInfo = m_fi;
+    const tagFileInfo& fileinfo = m_fileInfo;
 
 private:
-	virtual CPath* _newSubPath(const tagFileInfo& FileInfo)
+    virtual CPath* _newSubPath(const tagFileInfo& fileInfo)
 	{
-		return new CPath(FileInfo);
+        return new CPath(fileInfo);
 	}
 
 	void _sort(TD_PathList& paSubPath);
@@ -77,16 +77,21 @@ protected:
 	}
 
 public:
-	const tagFileInfo& fileInfo() const
+    tagFileInfo& fileInfo()
     {
-        return m_FileInfo;
+        return m_fileInfo;
+    }
+
+    const tagFileInfo& fileInfo() const
+    {
+        return m_fileInfo;
     }
 
     void SetDir(const wstring& strDir);
 
 	void SetName(const wstring& strNewName)
 	{
-        m_fi.strName = strNewName;
+        m_fileInfo.strName = strNewName;
 	}
 
 	wstring GetName() const;
@@ -185,8 +190,8 @@ public:
 	{
 	}
 
-	CPathObject(const tagFileInfo& FileInfo)
-		: CPath(FileInfo)
+    CPathObject(const tagFileInfo& fileInfo)
+        : CPath(fileInfo)
 	{
 	}
 
@@ -195,9 +200,9 @@ public:
 	}
 
 protected:
-	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override
+    virtual CPath* _newSubPath(const tagFileInfo& fileInfo) override
 	{
-		return new CPathObject(FileInfo);
+        return new CPathObject(fileInfo);
 	}
 };
 
@@ -209,8 +214,8 @@ public:
 	{
 	}
 
-	CDirObject(const tagFileInfo& FileInfo)
-		: CPathObject(FileInfo)
+    CDirObject(const tagFileInfo& fileInfo)
+        : CPathObject(fileInfo)
 	{
 	}
 
@@ -219,11 +224,11 @@ public:
 	}
 
 protected:
-	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override
+    virtual CPath* _newSubPath(const tagFileInfo& fileInfo) override
 	{
-		if (FileInfo.bDir)
+        if (fileInfo.bDir)
 		{
-			return new CDirObject(FileInfo);
+            return new CDirObject(fileInfo);
 		}
 
 		return NULL;

@@ -91,9 +91,11 @@ public:
 	
 	bool clear();
 
+	bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int iPos = -1);
 	bool insert(const TD_IMediaList& lstMedias, bool bPlay, int iPos = -1);
 
-    bool assign(const TD_IMediaList& lstMedias);
+	bool assign(const SArray<wstring>& arrOppPaths);
+	bool assign(const TD_IMediaList& lstMedias);
 
 	int move(const TD_PlayItemList& lstPlayItems, UINT uPos);
 	

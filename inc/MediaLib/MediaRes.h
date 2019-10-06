@@ -6,9 +6,16 @@
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
-	CMediaRes(const wstring& strDir=L"");
+    CMediaRes(const wstring& strDir=L"")
+        : CPathObject(strDir)
+    {
+    }
 
-	CMediaRes(const tagFileInfo& FileInfo, E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
+    CMediaRes(const tagFileInfo& fileInfo, E_MediaFileType eFileType)
+        : IMedia(eFileType)
+        , CPathObject(fileInfo)
+    {
+    }
 
 private:
 	struct tagMediaTag
@@ -47,12 +54,42 @@ private:
 	}
 
 protected:
-	virtual CPath* _newSubPath(const tagFileInfo& FileInfo) override;
+    template <class T>
+    T *_genSubPath(const tagFileInfo& fileInfo)
+    {
+        if (fileInfo.bDir)
+        {
+            return new T(fileInfo, E_MediaFileType::MFT_Null);
+        }
+        else
+        {
+            wstring strExtName = fsutil::GetFileExtName(fileInfo.strName);
+            auto eFileType = IMedia::GetMediaFileType(strExtName);
+            if (E_MediaFileType::MFT_Null == eFileType)
+            {
+    #if __winvc
+                if (L"cue" == strExtName)
+                {
+                    _loadCue(fileInfo.strName);
+                }
+    #endif
+
+                return NULL;
+            }
+
+            return new T(fileInfo, eFileType);
+        }
+    }
+
+    virtual CPath* _newSubPath(const tagFileInfo& fileInfo) override
+    {
+        return _genSubPath<CMediaRes>(fileInfo);
+    }
 
 public:
     CMediaRes* parent() const
 	{
-		return (CMediaRes*)m_FileInfo.pParent;
+        return (CMediaRes*)fileinfo.pParent;
 	}
 
 	const ArrList<CCueFile>& SubCueList()
@@ -70,7 +107,7 @@ public:
 
 	bool IsDir() const override
 	{
-        return m_FileInfo.bDir;
+        return fileinfo.bDir;
 	}
 
 	wstring GetName() const override
@@ -80,7 +117,7 @@ public:
 
 	int GetFileSize() const override
 	{
-		return (int)m_FileInfo.uFileSize;
+        return (int)fileinfo.uFileSize;
 	}
 	
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);

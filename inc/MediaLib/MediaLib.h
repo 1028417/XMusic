@@ -51,11 +51,6 @@ public:
 class __MediaLibExt CMediaLib : public CMediaRes
 {
 public:
-	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
-
-	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
-
-public:
 	CMediaLib(IMediaObserver& MediaObserver);
 
 public:
@@ -69,7 +64,7 @@ private:
 private:
     void _onFindFile(TD_PathList& lstSubDir, TD_PathList& lstSubFile) override;
 
-	CPath* _newSubPath(const tagFileInfo& FileInfo) override;
+    CPath* _newSubPath(const tagFileInfo& fileInfo) override;
 
 	int _sort(const CPath& lhs, const CPath& rhs) const override;
 	

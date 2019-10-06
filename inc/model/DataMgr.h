@@ -15,9 +15,16 @@ private:
 
 	tagOption& m_Option;
 
+private:
+    bool _downloadMedialib(const vector<string>& vecDBFile, const vector<string>& vecMedialib);
+
+    bool _upgradeMedialib(UINT uCurrVer, const string& strUpgradeConf);
+
 public:
 	bool init();
-	
+
+    bool upgradeMedialib(const wstring& strDBFile);
+
 	bool clearData();
 
 	bool updateMediaSetName(CMediaSet& MediaSet, const wstring& strName);
