@@ -104,7 +104,7 @@ public:
 
     static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-	using CB_CopyFile = function <void(char *lpData, size_t size)>;
+	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
     static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);
 
 	static bool fileStat(FILE *lpFile, tagFileStat& stat);

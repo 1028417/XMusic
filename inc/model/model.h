@@ -87,6 +87,15 @@ enum class E_CheckDuplicateMode
 	, CDM_SameTitle
 };
 
+struct tagExportMedia
+{
+	wstring strDstDir;
+
+	TD_IMediaList paMedias;
+
+	ArrList<CCueFile> alCueFiles;
+};
+
 struct tagExportOption
 {
 	bool bActualMode = false;
@@ -99,13 +108,10 @@ struct tagExportOption
 	bool bDeleteOther = true;
 
 	bool bExportDB = false;
-};
 
-struct tagExportMedia : tagExportOption
-{
 	wstring strExportPath;
 
-	PairList<wstring, TD_IMediaList> plMedias;
+	list<tagExportMedia> lstExportMedias;
 };
 
 using CB_checkDuplicateMedia = const function<bool(CMedia&)>&;
@@ -152,7 +158,7 @@ public:
 	virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
 
 	using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
-	virtual UINT exportMedia(const tagExportMedia& ExportMedia, const CB_exportorMedia& cb) = 0;
+	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
 	virtual bool exportDB(const wstring& strExportDir) = 0;
 
@@ -264,7 +270,7 @@ public:
 	
 	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
-	UINT exportMedia(const tagExportMedia& ExportMedia, const CB_exportorMedia& cb) override;
+	UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
 
 	bool exportDB(const wstring& strExportDir) override;
 

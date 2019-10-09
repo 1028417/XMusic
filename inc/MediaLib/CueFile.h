@@ -34,10 +34,10 @@ struct __MediaLibExt tagTrackInfo
 	UINT uMsBegin = 0;
 };
 
-typedef const struct CCueFile& CRCueFile;
-typedef const struct CCueFile* LPCCueFile;
+typedef const class CCueFile& CRCueFile;
+typedef const class CCueFile* LPCCueFile;
 
-struct __MediaLibExt CCueFile
+class __MediaLibExt CCueFile
 {
 public:
 	static const CCueFile NoCue;

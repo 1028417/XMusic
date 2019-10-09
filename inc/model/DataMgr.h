@@ -16,14 +16,14 @@ private:
 	tagOption& m_Option;
 
 private:
-    bool _downloadMedialib(const vector<string>& vecDBFile, const vector<string>& vecMedialib);
+    bool _syncMedialib();
 
-    bool _upgradeMedialib(UINT uCurrVer, const string& strUpgradeConf);
+    int _upgradeMedialib(UINT uCurrVer, const string& strUpgradeConf);
 
 public:
 	bool init();
 
-    bool upgradeMedialib(const wstring& strDBFile);
+    int upgradeMedialib(const wstring& strDBFile);
 
 	bool clearData();
 
