@@ -5,10 +5,9 @@
 #-------------------------------------------------
 
 QT       += core gui
+#android: QT += androidextras
 
 RC_ICONS = "xmusic.ico"
-
-android: QT += androidextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,11 +15,6 @@ TARGET = XMusic
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++1y #gnu++1y
-
-android {
-    CONFIG += mobility
-    MOBILITY =
-}
 
 SOURCES +=\
     mainwindow.cpp \
@@ -71,14 +65,15 @@ android {
     platform = mac
     DESTDIR = ../../bin/mac
 } else: ios {
-    LIBS    += -L../../libs/ios -lCURLTool
     LIBS    += -L../../libs/ios/simulator -lcurl -lssl -lcrypto -lnghttp2 -lz
+    LIBS    += -L../../libs/ios -lCURLTool
 
     LIBS    += -L../../../PlaySDK/libs/ios/simulator -lSDL2 \
                 -framework AVFoundation -framework GameController -framework CoreMotion
-
     LIBS    += -lavcodec -lavformat -lavutil -lswresample \
                 -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
+
+    LIBS    += -L../../../build/ioslib
 
     platform = ios
     DESTDIR = ../../../build/XMusic
@@ -99,6 +94,9 @@ hbkg.files += ../../bin/hbkg/win10
 vbkg.files += ../../bin/vbkg/win10
 
 android {
+    #CONFIG += mobility
+    #MOBILITY =
+
     font.path = /assets/font
     hbkg.path = /assets/hbkg
     vbkg.path = /assets/vbkg

@@ -265,11 +265,7 @@ void MainWindow::_init()
     ui.labelPlayingfile->setFont(1);
     ui.labelDuration->setFont(0.8);
 
-#if __windows
-    m_PlayingList.setFont(0.8);
-#else
     m_PlayingList.setFont(0.9);
-#endif
 
     if (m_app.getOptionMgr().getOption().bRandomPlay)
     {

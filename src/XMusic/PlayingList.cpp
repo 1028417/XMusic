@@ -54,8 +54,11 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-#define __PlayingFontSize 0.95f
-        painter.setFont(__PlayingFontSize, E_FontWeight::FW_SemiBold);
+        float fPlayingFontSize = 0.95f;
+#if __windows
+        fPlayingFontSize = 1;
+#endif
+        painter.setFont(fPlayingFontSize, E_FontWeight::FW_SemiBold);
 
         painter.drawText(rc.left(), rc.top() + __size(3), rc.width()
             , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");

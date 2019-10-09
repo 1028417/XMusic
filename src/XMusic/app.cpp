@@ -50,32 +50,42 @@ map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
 
-CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
-{
-#if __android
-//    string strSdcardPath
-//    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
-//    if (NULL == pszSdcardPath)
-//    {
-//        pszSdcardPath = getenv("EXTERNAL_STORAGE");
-//    }
-//    if (pszSdcardPath)
-//    {
-//        strDataDir = pszSdcardPath;
-//    }
+/*#if __android
+static const wstring g_strSdcardPath;
 
-    wstring strDataDir = L"/sdcard/Android/data/com.musicrosoft.xmusic";
-    if (fsutil::createDir(strDataDir))
+static const wstring& sdcardPath()
+{
+    if (!g_strSdcardPath.empty())
     {
-        fsutil::setWorkDir(strDataDir);
+        return g_strSdcardPath;
     }
 
-#else
-    fsutil::setWorkDir(fsutil::getAppDir());
-#endif
+    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
+    if (NULL == pszSdcardPath)
+    {
+        pszSdcardPath = getenv("EXTERNAL_STORAGE");
+    }
+    if (pszSdcardPath)
+    {
+        return g_strSdcardPath = wsutil::fromStr(pszSdcardPath);
+    }
 
-    m_logger.open(L"XMusic.log", true);
+    g_strSdcardPath = L"/mnt/sdcard";
+    if (!fsutil::existDir(g_strSdcardPath))
+    {
+        g_strSdcardPath = L"/storage/emulated/0";
+        if (!fsutil::existDir(g_strSdcardPath))
+        {
+            g_strSdcardPath = L"/sdcard";
+        }
+    }
 
+    return g_strSdcardPath;
+}
+#endif*/
+
+CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
+{
     QScreen *screen = QApplication::primaryScreen();
     float fPixelRatio = screen->devicePixelRatio();
     g_logger << "devicePixelRatio: " >> fPixelRatio;
@@ -210,9 +220,23 @@ int CXMusicApp::run()
 
 int main(int argc, char *argv[])
 {
-#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
+//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//#endif
+
+#if __android
+    wstring strDataDir = L"/sdcard/Android/data/com.musicrosoft.xmusic";
+    if (!fsutil::createDir(strDataDir))
+    {
+        return -1;
+    }
+    fsutil::setWorkDir(strDataDir);
+
+#else
+    fsutil::setWorkDir(fsutil::getAppDir());
 #endif
+
+    m_logger.open(L"XMusic.log", true);
 
     CXMusicApp app(argc, argv);
     return app.run();

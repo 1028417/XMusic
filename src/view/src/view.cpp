@@ -282,7 +282,7 @@ void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 }
 
 bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
-	, const function<UINT(CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia)>& fnExport)
+	, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport)
 {
 	static CFolderDlgEx FolderDlg;
 	wstring strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
@@ -293,33 +293,34 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 		return false;
 	}
 
-	tagExportMedia ExportMedia;
-	ExportMedia.strExportPath = strExportPath + L"/XMusic";
-	ExportMedia.bActualMode = bActualMode;
+	tagExportOption ExportOption;
+	ExportOption.strExportPath = strExportPath + L"/XMusic";
+	ExportOption.bActualMode = bActualMode;
 
 	m_ResModule.ActivateResource();
 
-	CExportOptionDlg ExportOptionDlg(ExportMedia);
+	CExportOptionDlg ExportOptionDlg(ExportOption);
 	__EnsureReturn(IDOK == ExportOptionDlg.DoModal(), false);
 	
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		UINT uCount = fnExport(ProgressDlg, ExportMedia);
-		if (0 == uCount || ExportMedia.plMedias.empty())
+		UINT uCount = fnExport(ProgressDlg, ExportOption);
+		if (0 == uCount || ExportOption.lstExportMedias.empty())
 		{
 			return;
 		}
 
 		ProgressDlg.SetProgress(0, uCount);
 
-		UINT uRet = m_model.exportMedia(ExportMedia
-			, [&](UINT uProgressOffset, const wstring& strDstFile) {
-
+		UINT uRet = m_model.exportMedia(ExportOption, [&](UINT uProgressOffset, const wstring& strDstFile) {
 			if (!strDstFile.empty())
 			{
 				ProgressDlg.SetStatusText(strDstFile.c_str());
 			}
 
-			ProgressDlg.ForwardProgress(uProgressOffset);
+			if (uProgressOffset != 0)
+			{
+				ProgressDlg.ForwardProgress(uProgressOffset);
+			}
 
 			if (ProgressDlg.checkCancel())
 			{
@@ -339,21 +340,24 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 {
 	wstring strExportPath;
-	bool bRet = _exportMedia(wnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia) {
-		strExportPath = ExportMedia.strExportPath;
+	bool bRet = _exportMedia(wnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+		strExportPath = ExportOption.strExportPath;
 
-		if (ExportMedia.bActualMode)
+		if (ExportOption.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
 			map<wstring, TD_IMediaList> mapMedias;
 			lstMedias([&](CMedia& media) {
-				auto& strDstDir = ExportMedia.strExportPath + fsutil::GetParentDir(media.GetPath());
+				auto& strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
 				mapMedias[mapDirs.insert(wsutil::lowerCase_r(strDstDir), strDstDir)].add(media);
 			});
 
 			for (auto& pr : mapMedias)
 			{
-				ExportMedia.plMedias.add(pr);
+				tagExportMedia ExportMedia;
+				ExportMedia.strDstDir = pr.first;
+				ExportMedia.paMedias.swap(pr.second);
+				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
 		}
 		else
@@ -365,8 +369,10 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 
 			for (auto& pr : mapMediaList)
 			{
-				auto& strDstDir = ExportMedia.strExportPath + __wcFSSlant + pr.first->GetExportName();
-				ExportMedia.plMedias.add(strDstDir, pr.second);
+				tagExportMedia ExportMedia;
+				ExportMedia.strDstDir = ExportOption.strExportPath + __wcFSSlant + pr.first->GetExportName();
+				ExportMedia.paMedias.swap(pr.second);
+				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
 		}
 
@@ -413,7 +419,10 @@ void __view::exportMediaSet(CMediaSet& MediaSet)
 
 void __view::exportDir(CMediaRes& dir)
 {
-	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia) {
+	dir.Clear();
+	CMediaResPanel::RefreshMediaResPanel();
+
+	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 
 		dir.scan([&](CPath& dir, TD_PathList& paSubFile) {
@@ -426,8 +435,11 @@ void __view::exportDir(CMediaRes& dir)
 			{
 				uCount += paSubFile.size();
 
-				cauto& strExportPath = ExportMedia.strExportPath + ((CMediaRes&)dir).GetPath();
-				ExportMedia.plMedias.add(strExportPath, TD_IMediaList(TD_MediaResList(paSubFile)));
+				tagExportMedia ExportMedia;
+				ExportMedia.strDstDir = ExportOption.strExportPath + ((CMediaRes&)dir).GetPath();
+				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
+				ExportMedia.alCueFiles.add(((CMediaRes&)dir).SubCueList());
+				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
 
 			return true;

@@ -135,7 +135,7 @@ private:
 	void _hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia = NULL, IMedia *pIMedia = NULL);
 
 	bool _exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
-		, const function<UINT(CProgressDlg& ProgressDlg, tagExportMedia& ExportMedia)>& fnExport);
+		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
 	void _snapshotDir(CMediaRes& dir, const wstring& strOutputFile);
 

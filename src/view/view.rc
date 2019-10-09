@@ -61,7 +61,7 @@ END
 
 IDR_MAINDLG MENU
 BEGIN
-    POPUP "XMusic"
+    POPUP "系统"
     BEGIN
         MENUITEM "设定根目录",                       ID_MODIFY_ROOT
         MENUITEM SEPARATOR
