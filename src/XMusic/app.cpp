@@ -220,6 +220,8 @@ int CXMusicApp::run()
 
 int main(int argc, char *argv[])
 {
+    //fsutil::zUncompressZip("d:/zlib-1.2.11.zip", "d:/zlib-1.2.11-----");
+
 //#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
 //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
