@@ -196,14 +196,13 @@ public:
 		}, eFilter, pstrFilter);
 	}
 
-    static long zcompressFile(const wstring& strSrcFile, const wstring& strDstFile);
-
-    static long zuncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static long zCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int level=0);
+    static long zUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static bool zUncompressZip(const string& strSrcFile, const string& strDstDir);
 
 #if !__winvc
-    static long qcompressFile(const wstring& strSrcFile, const wstring& strDstFile, int nCompressLecvel=-1);
-
-    static long quncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static long qCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int nCompressLecvel=-1);
+    static long qUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
 #endif
 };
 
