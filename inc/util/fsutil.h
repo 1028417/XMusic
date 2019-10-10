@@ -76,13 +76,12 @@ struct tagFileInfo
 
 class __UtilExt fsutil
 {
-private:
-	inline static bool _checkPathTail(wchar_t wch)
-	{
-		return __wcBackSlant == wch || __wcSlant == wch;
-	}
-	
 public:
+    inline static bool checkPathTail(wchar_t wch)
+    {
+        return __wcBackSlant == wch || __wcSlant == wch;
+    }
+
 	static void trimPathTail(wstring& strPath);
 
 	static wstring trimPathTail_r(const wstring& strPath);
@@ -196,13 +195,14 @@ public:
 		}, eFilter, pstrFilter);
 	}
 
-    static long zCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int level=0);
-    static long zUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
-    static bool zUncompressZip(const string& strSrcFile, const string& strDstDir);
-
 #if !__winvc
     static long qCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int nCompressLecvel=-1);
     static long qUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+    static long zCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int level=0);
+    static long zUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+    static bool zUncompressZip(const string& strZipFile, const string& strDstDir);
 #endif
 };
 
@@ -222,6 +222,11 @@ public:
         (void)_open(strFile, strMode);
     }
 
+    bstream(const string& strFile, const string& strMode)
+    {
+        (void)_open(strFile, strMode);
+    }
+
 protected:
     FILE *m_pf = NULL;
 
@@ -233,8 +238,23 @@ protected:
         {
             return false;
         }
+
+        return m_pf != NULL;
 #else
-        m_pf = fopen(wsutil::toStr(strFile).c_str(), wsutil::toStr(strMode).c_str());
+
+        return _open(wsutil::toStr(strFile).c_str(), wsutil::toStr(strMode).c_str());
+#endif
+    }
+
+    bool _open(const string& strFile, const string& strMode)
+    {
+#if __windows
+        if (fopen_s(&m_pf, strFile.c_str(), strMode.c_str()))
+        {
+            return false;
+        }
+#else
+        m_pf = fopen(strFile.c_str(), strMode.c_str());
 #endif
 
         return m_pf != NULL;
@@ -281,10 +301,20 @@ public:
         (void)open(strFile);
     }
 
+    ibstream(const string& strFile)
+    {
+        (void)open(strFile);
+    }
+
 public:
     bool open(const wstring& strFile)
     {
         return _open(strFile, L"rb");
+    }
+
+    bool open(const string& strFile)
+    {
+        return _open(strFile, "rb");
     }
 
     size_t read(void *buff, size_t buffSize) const
@@ -303,10 +333,20 @@ public:
         (void)open(strFile, bTrunc);
     }
 
+    obstream(const string& strFile, bool bTrunc)
+    {
+        (void)open(strFile, bTrunc);
+    }
+
 public:
     bool open(const wstring& strFile, bool bTrunc)
     {
         return _open(strFile, bTrunc?L"wb":L"ab");
+    }
+
+    bool open(const string& strFile, bool bTrunc)
+    {
+        return _open(strFile, bTrunc?"wb":"ab");
     }
 
     bool write(const void *buff, size_t buffSize) const
