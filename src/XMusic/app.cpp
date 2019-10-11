@@ -103,7 +103,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     fFontSize = this->font().pointSizeF();
     fFontSize = fFontSize*nScreenWidth/540;
 
-    int nScreenSize = szScreen.width()*szScreen.height();
+    /*int nScreenSize = szScreen.width()*szScreen.height();
     switch (nScreenSize)
     {
     case 320*568: // iPhoneSE
@@ -126,7 +126,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
         break;
     default:        // iPadMini
         break;
-    };
+    };*/
 
 #elif __mac
     fFontSize = 29;
@@ -184,7 +184,20 @@ int CXMusicApp::run()
     m_model.init();
     m_mainWnd.showLogo();
 
-    QTimer::singleShot(6000, [&](){
+    QTimer::singleShot(6000, [&](){    
+#if __windows
+        if (m_model.getOptionMgr().getOption().strRootDir.empty())
+        {
+            m_logger >> "setupRootDir";
+            if (!m_ctrl.setupRootDir((HWNd)m_mainWnd.winId()))
+            {
+                m_logger >> "setupRootDir fail";
+                this->quit();
+                return;
+            }
+        }
+#endif
+
         if (!m_model.start())
         {
             m_logger >> "init model fail";

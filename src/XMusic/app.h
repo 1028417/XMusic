@@ -32,7 +32,7 @@ public:
 private:
     CModel m_model;
 
-    CController m_ctrl;
+    CPlayerController m_ctrl;
 
     MainWindow m_mainWnd;
 

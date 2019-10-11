@@ -2,10 +2,10 @@
 
 #include "viewdef.h"
 
-class CController : public IPlayerController
+class CPlayerController : public IPlayerController
 {
 public:
-	CController(IPlayerView& view, IModel& model)
+	CPlayerController(IPlayerView& view, IModel& model)
 		: m_view(view)
 		, m_model(model)
 	{
@@ -20,6 +20,10 @@ private:
     void _tryPlay();
 
 public:
+#if __windows
+    bool setupRootDir(HWND hWndParent);
+#endif
+
 	bool start();
 
     void stop();

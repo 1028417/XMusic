@@ -39,12 +39,12 @@ public:
 
 	CModel m_model;
 
-	CPlayerController m_controller;
+	CController m_controller;
 };
 
 CPlayerApp theApp;
 
-bool CPlayerController::init()
+bool CController::init()
 {
 	fsutil::setWorkDir(fsutil::getModuleDir());
 
@@ -58,7 +58,7 @@ bool CPlayerController::init()
 	return true;
 }
 
-bool CPlayerController::start()
+bool CController::start()
 {
 	CMainApp::RegHotkey(tagHotkeyInfo('B', E_HotkeyFlag::HKF_Control, ID_Backup));
 
@@ -86,31 +86,21 @@ bool CPlayerController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_UP, E_HotkeyFlag::HKF_Alt, true));
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Alt, true));
 
-	return CController::start();
+	return CPlayerController::start();
 }
 
-void CPlayerController::stop()
+void CController::stop()
 {
-	CController::stop();
+	CPlayerController::stop();
 	m_model.close();
 }
 
-bool CPlayerController::handleCommand(UINT uID)
+bool CController::handleCommand(UINT uID)
 {
 	switch (uID)
 	{
 	case ID_MODIFY_ROOT:
-	{
-		static CFolderDlgEx FolderDlg;
-		wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
-		if (!strRootDir.empty())
-		{
-			if (!wsutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
-			{
-				(void)m_model.setupMediaLib(strRootDir);
-			}
-		}
-	}
+		(void)CPlayerController::setupRootDir();
 
 	break;
 	case ID_REFRESH_ROOT:

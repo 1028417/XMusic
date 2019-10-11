@@ -45,10 +45,6 @@ bool CPlayerMainWnd::Create()
 	
 	__EnsureReturn(__super::Create(MainWndInfo), false);
 
-	__EnsureReturn(m_wndSysToolBar.Create(*this), false);
-
-	__EnsureReturn(m_QuickFindDlg.Create(IDD_DLG_QuickFind, this), false);
-
 	static CMainMenu s_Menu(m_view);
 	s_Menu.Attach(MainWndInfo.hMenu);
 
@@ -56,6 +52,10 @@ bool CPlayerMainWnd::Create()
 	{
 		this->SetMenu(NULL);
 	}
+
+	__EnsureReturn(m_QuickFindDlg.Create(IDD_DLG_QuickFind, this), false);
+
+	__EnsureReturn(m_wndSysToolBar.Create(*this), false);
 
 	return true;
 }

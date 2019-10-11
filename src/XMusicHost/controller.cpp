@@ -13,7 +13,7 @@ thread g_threadPlayCtrl;
 TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif
 
-bool CController::start()
+bool CPlayerController::start()
 {
 #if __winvc
 	(void)wintimer::setTimer(60000, [&]() {
@@ -46,19 +46,17 @@ bool CController::start()
 		return true;
 	});
 
-	if (!m_model.status() && m_model.getMediaLib().empty())
-	{
-		CMainApp::async([&]() {
-			CFolderDlgEx FolderDlg;
-			wstring strRootDir = FolderDlg.Show(L"设定根目录");
-			if (!strRootDir.empty())
+    CMainApp::async([&](){
+		if (!m_model.status() && m_model.getMediaLib().empty())
+		{
+			if (!setupRootDir())
 			{
-				(void)m_model.setupMediaLib(strRootDir);
+				return;
 			}
-		});
-	}
+		}
+		
+		CMainApp::GetMainApp()->DoEvents();
 
-    CMainApp::async(300, [&](){
         _tryPlay();
     });
 
@@ -134,7 +132,36 @@ bool CController::start()
     return true;
 }
 
-void CController::_tryPlay()
+#if __windows
+bool CPlayerController::setupRootDir(HWND hWndParent)
+{
+#if __winvc
+	static CFolderDlgEx FolderDlg;
+    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录", hWndParent);
+#else
+    CFolderDlg FolderDlg;
+    wstring strRootDir = FolderDlg.Show(hWndParent, NULL, L"设定根目录", L"请选择媒体库根目录");
+#endif
+	if (strRootDir.empty())
+	{
+		return false;
+	}
+
+	if (wsutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
+	{
+		return false;
+	}
+
+	if (!m_model.setupMediaLib(strRootDir))
+	{
+		return false;
+	}
+
+	return true;
+}
+#endif
+
+void CPlayerController::_tryPlay()
 {
     if (!m_model.getMediaLib().empty())
     {
@@ -149,7 +176,7 @@ void CController::_tryPlay()
     }
 }
 
-void CController::stop()
+void CPlayerController::stop()
 {
 #if !__winvc
     m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
@@ -166,14 +193,14 @@ void CController::stop()
 #endif
 }
 
-void CController::callPlayCtrl(const tagPlayCtrl& PlayCtrl)
+void CPlayerController::callPlayCtrl(const tagPlayCtrl& PlayCtrl)
 {
 #if !__winvc
     m_sigPlayCtrl.set(PlayCtrl);
 #endif
 }
 
-E_RenameRetCode CController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
+E_RenameRetCode CPlayerController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
 {
 	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaSetName))
 	{
@@ -206,7 +233,7 @@ E_RenameRetCode CController::renameMediaSet(CMediaSet& MediaSet, const wstring& 
 	return E_RenameRetCode::RRC_Success;
 }
 
-bool CController::removeMediaSet(CMediaSet& MediaSet)
+bool CPlayerController::removeMediaSet(CMediaSet& MediaSet)
 {
 	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, E_MediaSetChanged::MSC_Remove, MediaSet.m_uID);
 
@@ -240,7 +267,7 @@ bool CController::removeMediaSet(CMediaSet& MediaSet)
 	return true;
 }
 
-CMediaRes* CController::attachDir(const wstring& strDir)
+CMediaRes* CPlayerController::attachDir(const wstring& strDir)
 {
 	if (strDir.size() <= 3)
 	{
@@ -269,7 +296,7 @@ CMediaRes* CController::attachDir(const wstring& strDir)
         __wcFSSlant + fsutil::GetFileName(strDir), true);
 }
 
-bool CController::renameMedia(IMedia& media, const wstring& strNewName)
+bool CPlayerController::renameMedia(IMedia& media, const wstring& strNewName)
 {
 	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaName))
 	{
@@ -327,7 +354,7 @@ bool CController::renameMedia(IMedia& media, const wstring& strNewName)
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
-void CController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
+void CPlayerController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
 {
 	TD_IMediaList lstSrcMedias;
 	lstMedias([&](IMedia& Media){
@@ -388,7 +415,7 @@ void CController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& s
 	m_model.refreshMediaLib();
 }
 
-bool CController::removeMediaRes(const TD_MediaResList& lstMediaRes)
+bool CPlayerController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 {
     std::set<wstring> setFiles;
 	lstMediaRes([&](CMediaRes& MediaRes) {
@@ -412,7 +439,7 @@ bool CController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 	return true;
 }
 
-int CController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist)
+int CPlayerController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist)
 {
 	wstring strOppPath;
 	SArray<wstring> arrOppPaths;
@@ -434,7 +461,7 @@ int CController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist
 	return arrOppPaths.size();
 }
 
-int CController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
+int CPlayerController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 {
 	wstring strSingerOppPath = Album.GetBaseDir();
 
@@ -456,7 +483,7 @@ int CController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 	return lstOppPaths.size();
 }
 
-bool CController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
+bool CPlayerController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
 	, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias)
 {
 	list<pair<CMedia*, wstring>> lstResult;
@@ -496,7 +523,7 @@ bool CController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedi
 	return true;
 }
 
-UINT CController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMediaProgress& cbProgress, const CB_AddInConfirm& cbAddInConfirm)
+UINT CPlayerController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMediaProgress& cbProgress, const CB_AddInConfirm& cbAddInConfirm)
 {
 	TD_MediaList lstMedias;
 	m_model.getMediaLib().GetAllMedias(lstMedias);
