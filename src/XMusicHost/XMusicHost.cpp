@@ -50,11 +50,10 @@ bool CController::init()
 
 	((CModel&)m_model).init();
 
-	if (!((CModel&)m_model).start())
-	{
-		return false;
-	}
-
+    if (!m_model.initMediaLib())
+    {
+        return false;
+    }
 	return true;
 }
 

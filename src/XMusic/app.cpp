@@ -178,7 +178,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 int CXMusicApp::run()
 {
 #if __android
-    m_logger << "jniVer: " >> g_jniVer;
+    g_logger << "jniVer: " >> g_jniVer;
 #endif
 
     m_model.init();
@@ -186,35 +186,50 @@ int CXMusicApp::run()
 
     QTimer::singleShot(6000, [&](){
 #if __windows
-        if (m_model.getOptionMgr().getOption().strRootDir.empty())
+        auto& strRootDir = m_OptionMgr.getOption().strRootDir;
+
+        if (strRootDir.empty())
         {
-            if (!m_ctrl.setupRootDir((HWND)m_mainWnd.winId()))
+            g_logger >> "setupRootDir";
+
+            CFolderDlg FolderDlg;
+            strRootDir = FolderDlg.Show(hWndParent, NULL, L"设定媒体库路径", L"请选择媒体库目录");
+            if (strRootDir.empty())
             {
-                return false;
+                g_logger >> "setupRootDir fail";
+                this->quit();
+                return;
             }
         }
 #endif
 
-        m_logger >> "start controller";
+        g_logger >> "initMediaLib";
+        if (!m_model.initMediaLib())
+        {
+            g_logger >> "initMediaLib fail";
+            return false;
+        }
+
+        g_logger >> "start controller";
         if (!m_ctrl.start())
         {
-            m_logger >> "start controller fail";
+            g_logger >> "start controller fail";
             this->quit();
             return;
         }
-        m_logger >> "start controller success, app running";
+        g_logger >> "start controller success, app running";
 
         m_mainWnd.show();
     });
 
     int nRet = exec();
 
-    m_logger >> "stop controller";
+    g_logger >> "stop controller";
     m_ctrl.stop();
 
     CPlayer::QuitSDK();
 
-    m_logger >> "quit";
+    g_logger >> "quit";
     m_logger.close();
 
     return nRet;
