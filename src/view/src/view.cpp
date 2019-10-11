@@ -378,11 +378,6 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 
 		return lstMedias.size();
 	});
-
-	if (bRet)
-	{
-		m_model.exportDB(strExportPath);
-	}
 }
 
 void __view::exportMediaSet(CMediaSet& MediaSet)

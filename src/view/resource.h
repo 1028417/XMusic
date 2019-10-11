@@ -22,7 +22,7 @@
 #define IDC_CHECK1                      2006
 #define IDC_CHECK                       2006
 #define IDC_CHECK_BEGIN                 2006
-#define IDR_MENU_PLAYINGITEM            2006
+#define IDR_MENU_PlayingPage            2006
 #define IDC_HideMenuBar                 2006
 #define IDD_DLG_MEDIASET                2007
 #define IDC_CHECK_END                   2007
