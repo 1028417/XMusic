@@ -125,6 +125,8 @@ using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 class IModel
 {
 public:
+	virtual bool start() = 0;
+
 	virtual bool status() const = 0;
 
 	virtual XMediaLib& getMediaLib() = 0;
@@ -168,12 +170,12 @@ public:
 	virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 	virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
+	virtual wstring backupDB() = 0;
+	virtual bool restoreDB(const wstring& strTag) = 0;
+
 	virtual bool clearData() = 0;
 
 	virtual void close() = 0;
-
-    virtual wstring backupDB() = 0;
-	virtual bool restoreDB(const wstring& strTag) = 0;
 };
 
 class __ModelExt CModel : public IModel
@@ -250,7 +252,7 @@ public:
 
 	void init();
 
-	bool start();
+	bool start() override;
 
 	bool setupMediaLib(const wstring& strRootDir) override;
 	void refreshMediaLib() override;
