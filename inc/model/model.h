@@ -125,7 +125,7 @@ using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 class IModel
 {
 public:
-	virtual bool start() = 0;
+    virtual bool initMediaLib() = 0;
 
 	virtual bool status() const = 0;
 
@@ -252,7 +252,7 @@ public:
 
 	void init();
 
-	bool start() override;
+    bool initMediaLib() override;
 
 	bool setupMediaLib(const wstring& strRootDir) override;
 	void refreshMediaLib() override;
@@ -291,8 +291,6 @@ public:
 
 private:
     wstring _dbFile() const;
-
-	bool _initMediaLib();
 
     wstring _scanXMusicDir();
 
