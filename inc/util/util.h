@@ -164,6 +164,8 @@ using fn_void = function<void()>;
 
 __UtilExt float getDPIRate();
 //__UtilExt BOOL EnablePerMonitorDialogScaling();
+
+__UtilExt const RECT& getWorkArea(bool bFullScreen);
 #endif
 
 #include "mtutil.h"

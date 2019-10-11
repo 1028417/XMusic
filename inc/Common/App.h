@@ -161,9 +161,7 @@ public:
 	}
 
 	static bool showConfirmMsg(const wstring& strMsg, class CPage& wndPage);
-	
-	static const CRect& getWorkArea(bool bFullScreen);
-	
+		
 	static bool getKeyState(UINT uKey)
 	{
 		return ::GetKeyState(uKey) < 0;

@@ -95,15 +95,6 @@ public:
 			hWndOwner = CMainApp::GetMainApp()->GetMainWnd()->GetSafeHwnd();
 		}
 
-		if (0 == uWidth)
-		{
-			uWidth = CMainApp::getWorkArea(true).Width() * 38/100;
-		}
-		if (0 == uHeight)
-		{
-			uHeight = CMainApp::getWorkArea(true).Height() * 83/100;
-		}
-
 		wstring strRet;
 		CMainApp::GetMainApp()->thread([&]() {
 			strRet = CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
