@@ -64,8 +64,6 @@ private:
 private:
     void _onFindFile(TD_PathList& lstSubDir, TD_PathList& lstSubFile) override;
 
-    CPath* _newSubPath(const tagFileInfo& fileInfo) override;
-
 	int _sort(const CPath& lhs, const CPath& rhs) const override;
 	
 public:

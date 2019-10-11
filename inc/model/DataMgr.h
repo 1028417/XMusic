@@ -16,14 +16,14 @@ private:
 	tagOption& m_Option;
 
 private:
-    bool _syncMedialib();
+    bool _syncMediaLib();
 
-    int _upgradeMedialib(UINT uCurrVer, const string& strUpgradeConf);
+    int _upgradeMediaLib(UINT uCurrVer, const string& strUpgradeConf);
 
 public:
 	bool init();
 
-    int upgradeMedialib(const wstring& strDBFile);
+    int upgradeMediaLib(const wstring& strDBFile);
 
 	bool clearData();
 

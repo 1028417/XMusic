@@ -11,6 +11,9 @@ extern ITxtWriter& g_logger;
 #define __ModelExt __dllimport
 #endif
 
+#define __xmedialib L".xmusic"
+#define __dbfile L"medialib"
+
 #include "Dao.h"
 
 #include "OptionMgr.h"
@@ -46,7 +49,21 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
-	virtual void GetSubSets(TD_MediaSetList& lstSubSets)
+private:
+	CPath* _newSubPath(const tagFileInfo& fileInfo) override
+	{
+		if (fileInfo.bDir)
+		{
+			if (wsutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
+			{
+				return NULL;
+			}
+		}
+
+		return CMediaRes::_newSubPath(fileInfo);
+	}
+
+    void GetSubSets(TD_MediaSetList& lstSubSets) override
 	{
 		lstSubSets.add(m_PlaylistMgr);
 		lstSubSets.add(m_SingerMgr);
@@ -162,8 +179,6 @@ public:
 	using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
 	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
-	virtual bool exportDB(const wstring& strExportDir) = 0;
-
 	virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
 
@@ -274,8 +289,6 @@ public:
 
 	UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
 
-	bool exportDB(const wstring& strExportDir) override;
-
 	void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
 
@@ -302,6 +315,8 @@ private:
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
+
+	bool _exportDB(const wstring& strExportDir);
 
 	void _clear();
 
