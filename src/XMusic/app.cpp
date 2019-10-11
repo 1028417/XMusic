@@ -189,7 +189,7 @@ int CXMusicApp::run()
         if (m_model.getOptionMgr().getOption().strRootDir.empty())
         {
             m_logger >> "setupRootDir";
-            if (!m_ctrl.setupRootDir((HWNd)m_mainWnd.winId()))
+            if (!m_ctrl.setupRootDir((HWND)m_mainWnd.winId()))
             {
                 m_logger >> "setupRootDir fail";
                 this->quit();

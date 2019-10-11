@@ -23,7 +23,7 @@ bool CPlayCtrl::init()
 		strSkinPath = __PlaySpiritSkinDir + PlaySpiritOption.strSkinName + L".skb";
 	}
 
-	cauto& rtWorkArea =	CMainApp::getWorkArea(false);
+	cauto& rtWorkArea =	getWorkArea(false);
 	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left + 30);
 	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top + 30);
 	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - 400);
