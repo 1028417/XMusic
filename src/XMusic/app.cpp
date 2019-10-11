@@ -184,27 +184,16 @@ int CXMusicApp::run()
     m_model.init();
     m_mainWnd.showLogo();
 
-    QTimer::singleShot(6000, [&](){    
+    QTimer::singleShot(6000, [&](){
 #if __windows
         if (m_model.getOptionMgr().getOption().strRootDir.empty())
         {
-            m_logger >> "setupRootDir";
             if (!m_ctrl.setupRootDir((HWND)m_mainWnd.winId()))
             {
-                m_logger >> "setupRootDir fail";
-                this->quit();
-                return;
+                return false;
             }
         }
 #endif
-
-        if (!m_model.start())
-        {
-            m_logger >> "init model fail";
-            this->quit();
-            return;
-        }
-        m_logger >> "init model success";
 
         m_logger >> "start controller";
         if (!m_ctrl.start())

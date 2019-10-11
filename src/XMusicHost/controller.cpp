@@ -15,6 +15,11 @@ TSignal<tagPlayCtrl> m_sigPlayCtrl;
 
 bool CPlayerController::start()
 {
+    if (!m_model.start())
+    {
+        return false;
+    }
+
 #if __winvc
 	(void)wintimer::setTimer(60000, [&]() {
 		wstring strAlarmmedia = m_model.getOptionMgr().checkAlarm();
