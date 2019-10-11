@@ -19,11 +19,12 @@ protected:
 private:
     void _tryPlay();
 
-public:
-#if __windows
-    bool setupRootDir(HWND hWndParent=NULL);
+#if __winvc
+protected:
+	bool setupRootDir();
 #endif
 
+public:
 	bool start();
 
     void stop();

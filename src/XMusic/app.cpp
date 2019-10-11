@@ -175,6 +175,44 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
+bool CXMusicApp::_run()
+{
+#if __windows
+    auto& strRootDir = m_model.getOptionMgr().getOption().strRootDir;
+    if (strRootDir.empty())
+    {
+        g_logger >> "setupRootDir";
+
+        CFolderDlg FolderDlg;
+        strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
+        if (strRootDir.empty())
+        {
+            g_logger >> "setupRootDir fail";
+            return false;
+        }
+    }
+#endif
+
+    g_logger >> "initMediaLib";
+    if (!m_model.initMediaLib())
+    {
+        g_logger >> "initMediaLib fail";
+        return false;
+    }
+
+    g_logger >> "start controller";
+    if (!m_ctrl.start())
+    {
+        g_logger >> "start controller fail";
+        return false;
+    }
+    g_logger >> "start controller success, app running";
+
+    m_mainWnd.show();
+
+    return true;
+}
+
 int CXMusicApp::run()
 {
 #if __android
@@ -184,42 +222,11 @@ int CXMusicApp::run()
     m_model.init();
     m_mainWnd.showLogo();
 
-    QTimer::singleShot(6000, [&](){
-#if __windows
-        auto& strRootDir = m_OptionMgr.getOption().strRootDir;
-
-        if (strRootDir.empty())
+    QTimer::singleShot(6000, [&]() {
+        if(!_run())
         {
-            g_logger >> "setupRootDir";
-
-            CFolderDlg FolderDlg;
-            strRootDir = FolderDlg.Show(hWndParent, NULL, L"设定媒体库路径", L"请选择媒体库目录");
-            if (strRootDir.empty())
-            {
-                g_logger >> "setupRootDir fail";
-                this->quit();
-                return;
-            }
-        }
-#endif
-
-        g_logger >> "initMediaLib";
-        if (!m_model.initMediaLib())
-        {
-            g_logger >> "initMediaLib fail";
-            return false;
-        }
-
-        g_logger >> "start controller";
-        if (!m_ctrl.start())
-        {
-            g_logger >> "start controller fail";
             this->quit();
-            return;
         }
-        g_logger >> "start controller success, app running";
-
-        m_mainWnd.show();
     });
 
     int nRet = exec();
@@ -229,7 +236,7 @@ int CXMusicApp::run()
 
     CPlayer::QuitSDK();
 
-    g_logger >> "quit";
+    g_logger >> "app exit";
     m_logger.close();
 
     return nRet;

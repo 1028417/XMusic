@@ -132,12 +132,12 @@ bool CPlayerController::start()
     return true;
 }
 
-#if __windows
-bool CPlayerController::setupRootDir(HWND hWndParent)
+#if __winvc
+bool CPlayerController::setupRootDir()
 {
 #if __winvc
 	static CFolderDlgEx FolderDlg;
-    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录", hWndParent);
+    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
 #else
     CFolderDlg FolderDlg;
     wstring strRootDir = FolderDlg.Show(hWndParent, NULL, L"设定根目录", L"请选择媒体库根目录");

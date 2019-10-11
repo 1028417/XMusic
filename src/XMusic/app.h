@@ -37,10 +37,12 @@ private:
     MainWindow m_mainWnd;
 
 private:
-    IModelObserver& getModelObserver()
+    IModelObserver& getModelObserver() override
     {
         return m_mainWnd;
     }
+
+    bool _run();
 
 public:
     MainWindow& mainWnd()
