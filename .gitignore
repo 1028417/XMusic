@@ -5,5 +5,4 @@
 *.exp
 
 *.user
-
-*.obj
+*.user.*
