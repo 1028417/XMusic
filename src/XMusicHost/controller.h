@@ -21,7 +21,7 @@ private:
 
 public:
 #if __windows
-    bool setupRootDir(HWND hWndParent);
+    bool setupRootDir(HWND hWndParent=NULL);
 #endif
 
 	bool start();
