@@ -85,6 +85,11 @@
 using UINT = unsigned int;
 #endif
 
+#ifdef NULL
+#undef NULL
+#endif
+#define NULL nullptr
+
 #ifndef BOOL
 using BOOL = int;
 
