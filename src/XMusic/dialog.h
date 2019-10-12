@@ -54,7 +54,7 @@ public:
         g_setDlgs.insert(this);
     }
 
-    void setBkgColor(uint r, uint g, uint b)
+    void setBkgColor(UINT r, UINT g, UINT b)
     {
         m_crBkg.setRgb(r,g,b);
 

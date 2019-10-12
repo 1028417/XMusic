@@ -26,7 +26,8 @@ SOURCES +=\
     medialibdlg.cpp \
     addbkgdlg.cpp \
     ListViewEx.cpp \
-    app.cpp
+    app.cpp \
+    label.cpp
 
 HEADERS  += mainwindow.h \
     ../XMusicHost/controller.h \
