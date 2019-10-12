@@ -57,18 +57,20 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-    #include <QtCore/qglobal.h>
-    #define __dllexport Q_DECL_EXPORT
-    #define __dllimport Q_DECL_IMPORT
-
-    //#define __dllexport
-    //#define __dllimport
+#ifdef NULL
+    #undef NULL
+#endif
+    #define NULL nullptr
 
 #ifdef QT_NO_DEBUG
     #define __isdebug false
 #else
     #define __isdebug true
 #endif
+
+    #include <QtCore/qglobal.h>
+    #define __dllexport Q_DECL_EXPORT
+    #define __dllimport Q_DECL_IMPORT
 #endif
 
 #ifdef __UtilPrj
@@ -84,11 +86,6 @@
 #ifndef UINT
 using UINT = unsigned int;
 #endif
-
-#ifdef NULL
-#undef NULL
-#endif
-#define NULL nullptr
 
 #ifndef BOOL
 using BOOL = int;
@@ -133,6 +130,8 @@ using BOOL = int;
 	{ \
 		break; \
 	}
+
+#include <math.h>
 
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;
