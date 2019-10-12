@@ -15,9 +15,13 @@
 #include <QTime>
 #endif
 
-#if !__mac && !__ios
+//#if !__mac && !__ios
+#ifdef __clang__
+#include <utime.h>
+#else
 #include <sys/utime.h>
 #endif
+//#endif
 
 #include <sys/stat.h>
 
