@@ -122,7 +122,7 @@ private:
 
         WString strOppPath(pParent->oppPath());
         strOppPath << __wcFSSlant << fileinfo.strName;
-        return strOppPath;
+        return std::move(strOppPath);
     }
 };
 
