@@ -180,7 +180,7 @@ bool CXMusicApp::_run()
 {
 #if __windows
     auto& strRootDir = m_model.getOptionMgr().getOption().strRootDir;
-    if (strRootDir.empty())
+    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         g_logger >> "setupRootDir";
 
