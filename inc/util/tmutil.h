@@ -36,5 +36,7 @@ public:
 #if __windows
 	static bool time64ToTM(time64_t tTime, tagTM& tm);
 	static wstring formatTime64(const wstring& strFormat, time64_t tTime = -1);
+
+	static time64_t transFileTime(unsigned long dwLowDateTime, unsigned long dwHighDateTime);
 #endif
 };

@@ -137,6 +137,7 @@ using BOOL = int;
 using namespace NS_SSTL;
 
 using fn_void = function<void()>;
+using fn_bool = function<bool()>;
 
 #include "wsutil.h"
 
@@ -144,11 +145,9 @@ using fn_void = function<void()>;
 
 #include "fsutil.h"
 
-#include "fsutil.h"
+#include "Path.h"
 
 #include "TxtWriter.h"
-
-#include "Path.h"
 
 #include "SQLiteDB.h"
 
@@ -162,8 +161,6 @@ using fn_void = function<void()>;
 
 #include "winfsdlg.h"
 
-#include "wintimer.h"
-
 #include "ProFile.h"
 
 __UtilExt float getDPIRate();
@@ -171,6 +168,8 @@ __UtilExt float getDPIRate();
 
 __UtilExt const RECT& getWorkArea(bool bFullScreen);
 #endif
+
+#include "timerutil.h"
 
 #include "mtutil.h"
 
@@ -182,11 +181,11 @@ enum class E_Platform
     PF_Mac
 };
 
-E_Platform platform();
+__UtilExt E_Platform platform();
 
 #if !__winvc
-wstring platformType();
-wstring platformVersion();
+__UtilExt wstring platformType();
+__UtilExt wstring platformVersion();
 #endif
 
 #undef min

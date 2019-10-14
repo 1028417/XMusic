@@ -4,9 +4,6 @@
 class __UtilExt winfsutil
 {
 public:
-	static time64_t transFileTime(const FILETIME& ft);
-	static wstring formatFileTime(const FILETIME& fileTime, const wstring& strFormat);
-
 	static void getSysDrivers(list<wstring>& lstDrivers);
 	
 	static bool removeDir(const wstring& strPath, HWND hwndParent, const wstring& strTitle=L"");

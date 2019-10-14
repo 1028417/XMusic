@@ -6,15 +6,12 @@
 class __UtilExt CFolderDlg
 {
 public:
-	CFolderDlg()
-	{
-	}
+	CFolderDlg() {}
 
-public:
+private:
 	wstring m_strInitialDir;
 
-	wstring m_strTitle;
-	
+	wstring m_strTitle;	
 	wstring m_strTip;
 	
 	wstring m_strOKButton;
@@ -23,11 +20,22 @@ public:
 	int m_nWidth = 0;
 	int m_nHeight = 0;
 
+	HWND m_hWnd = NULL;
+	HWND m_hWndOkButton = NULL;
+	HWND m_hWndCancelButton = NULL;
+
+	RECT m_rcPreClient{0,0,0,0};
+
 public:
 	wstring Show(HWND hWndOwner, LPCWSTR lpszInitialDir=NULL, LPCWSTR lpszTitle=NULL, LPCWSTR lpszTip=NULL
 		, LPCWSTR lpszOKButton=NULL, LPCWSTR lpszCancelButton=NULL, UINT uWidth=0, UINT uHeight=0);
 
+private:
 	static int __stdcall BrowseFolderCallBack(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpParam);
+
+	void _handleCallBack(HWND hWnd, UINT uMsg, LPARAM lParam);
+	void _initDlg();
+	void _relayout();
 };
 
 

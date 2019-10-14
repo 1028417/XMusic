@@ -111,8 +111,8 @@ public:
 	bool playNext(bool bManual=true);
 	void playPrev();
 	
-	void renameFile(bool bDir, const wstring& strPath, const wstring& strNewPath, const function<bool()>& cb);
-	void moveFile(const wstring& strPath, const wstring& strNewPath, const function<bool()>& cb);
+	void renameFile(bool bDir, const wstring& strPath, const wstring& strNewPath, const fn_bool& cb);
+	void moveFile(const wstring& strPath, const wstring& strNewPath, const fn_bool& cb);
 
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
     int demand(const TD_MediaList& lstMedias, UINT uDemandCount = __DemandCount);
