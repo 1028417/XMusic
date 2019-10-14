@@ -224,7 +224,7 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
             m_pImgDir = &imgDir;          
             update();
 
-            m_app.setTimer(100, [=](){
+            timerutil::setTimerEx(100, [=](){
                 if (NULL == m_pImgDir)
                 {
                     return false;

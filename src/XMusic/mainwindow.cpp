@@ -165,10 +165,27 @@ void MainWindow::showLogo()
     showFull(this);
     this->setVisible(true);
 
-    QTimer::singleShot(800, [&](){
+    QTimer::singleShot(100, [&](){
+#if !__android
+        mtutil::usleep(800);
+#endif
+
         ui.labelLogo->movie()->start();
 
-        m_app.setTimer(40, [&](){
+        QTimer::singleShot(500, [&](){
+            auto labelLogoTip = ui.labelLogoTip;
+            labelLogoTip->setText(labelLogoTip->text() + "播放器");
+
+            QTimer::singleShot(500, [=](){
+                labelLogoTip->setText(labelLogoTip->text() + " · 媒体库");
+
+                QTimer::singleShot(500, [=](){
+                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
+                });
+            });
+        });
+
+        timerutil::setTimerEx(40, [&](){
             auto peCompany = ui.labelLogoCompany->palette();
             auto crCompany = peCompany.color(QPalette::WindowText);
 
@@ -179,7 +196,7 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                m_app.setTimer(500, [&](){
+                timerutil::setTimerEx(500, [&](){
                     if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
@@ -205,19 +222,6 @@ void MainWindow::showLogo()
             }
 
             return true;
-        });
-
-        QTimer::singleShot(500, [&](){
-            auto labelLogoTip = ui.labelLogoTip;
-            labelLogoTip->setText(labelLogoTip->text() + "播放器");
-
-            QTimer::singleShot(500, [=](){
-                labelLogoTip->setText(labelLogoTip->text() + " · 媒体库");
-
-                QTimer::singleShot(500, [=](){
-                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
-                });
-            });
         });
     });
 }

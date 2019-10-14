@@ -76,14 +76,4 @@ public:
     }
 
     int run();
-
-    void setTimer(UINT uMs, const function<bool()>& cb)
-    {
-        QTimer::singleShot(uMs, [=](){
-            if (cb())
-            {
-                setTimer(uMs, cb);
-            }
-        });
-    }
 };

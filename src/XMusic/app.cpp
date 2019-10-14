@@ -180,7 +180,7 @@ bool CXMusicApp::_run()
 {
 #if __windows
     auto& strRootDir = m_model.getOptionMgr().getOption().strRootDir;
-    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+    if (strRootDir.empty())
     {
         g_logger >> "setupRootDir";
 
@@ -223,7 +223,7 @@ int CXMusicApp::run()
     m_model.init();
     m_mainWnd.showLogo();
 
-    QTimer::singleShot(6000, [&]() {
+    QTimer::singleShot(6500, [&]() {
         if(!_run())
         {
             this->quit();

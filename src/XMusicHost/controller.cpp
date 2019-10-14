@@ -16,7 +16,7 @@ TSignal<tagPlayCtrl> m_sigPlayCtrl;
 bool CPlayerController::start()
 {
 #if __winvc
-	(void)wintimer::setTimer(60000, [&]() {
+	(void)timerutil::setTimer(60000, [&]() {
 		wstring strAlarmmedia = m_model.getOptionMgr().checkAlarm();
 		if (!strAlarmmedia.empty())
 		{
@@ -42,8 +42,6 @@ bool CPlayerController::start()
 		{
 			(void)::WinExec("shutdown -h", 0);
 		}
-
-		return true;
 	});
 
     CMainApp::async([&](){
