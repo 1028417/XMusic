@@ -45,6 +45,10 @@ private:
 
     class CPlayingList m_PlayingList;
 
+    CMedialibDlg m_medialibDlg;
+
+    CBkgDlg m_bkgDlg;
+
     map<QWidget*, QRect> m_mapTopWidgetPos;
 
     map<QWidget*, QRect> m_mapWidgetPos;
@@ -52,20 +56,18 @@ private:
 
     int m_timer = 0;
 
+    CMtxLock<tagPlayingInfo> m_mtxPlayingInfo;
+
     tagPlayingInfo m_PlayingInfo;
     wstring m_strSingerName;
+
+    bool m_bHScreen = false;
 
     bool m_bUsingCustomBkg = false;
 
     bool m_bZoomoutSingerImg = false;
 
-    bool m_bHScreen = false;
-
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
-
-    CMedialibDlg m_medialibDlg;
-
-    CBkgDlg m_bkgDlg;
 
 signals:
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);

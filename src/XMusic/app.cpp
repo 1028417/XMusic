@@ -90,18 +90,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     float fPixelRatio = screen->devicePixelRatio();
     g_logger << "devicePixelRatio: " >> fPixelRatio;
 #if __ios
-    g_fPixelRatio = (UINT)fPixelRatio;
-#endif
-
-    float fFontSize = 0;
-#if __android
-    fFontSize = 12;
-#elif __ios
-
-    QSize szScreen = screen->size();
-    int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
-    fFontSize = this->font().pointSizeF();
-    fFontSize = fFontSize*nScreenWidth/540;
+    g_fPixelRatio = fPixelRatio;
 
     /*int nScreenSize = szScreen.width()*szScreen.height();
     switch (nScreenSize)
@@ -127,9 +116,21 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     default:        // iPadMini
         break;
     };*/
+#endif
+
+    float fFontSize = 0;
+#if __android
+    fFontSize = 12;
+
+#elif __ios
+    QSize szScreen = screen->size();
+    int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
+    fFontSize = this->font().pointSizeF();
+    fFontSize = fFontSize*nScreenWidth/540;
 
 #elif __mac
     fFontSize = 29;
+
 #elif __windows
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;

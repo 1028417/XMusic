@@ -17,10 +17,7 @@
 
 #define __size10 __size(10)
 
-static CMtxLock<tagPlayingInfo> g_mtxPlayingInfo;
-
 static Ui::MainWindow ui;
-
 
 set<class CDialog*> g_setDlgs;
 
@@ -52,8 +49,6 @@ void showFull(QWidget* wnd)
         wnd->setWindowState(Qt::WindowMaximized);
         setFull(wnd);
     }
-
-    wnd->setVisible(true);
 }
 
 MainWindow::MainWindow(CXMusicApp& app)
@@ -168,6 +163,7 @@ void MainWindow::showLogo()
 
     g_bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
     showFull(this);
+    this->setVisible(true);
 
     QTimer::singleShot(800, [&](){
         ui.labelLogo->movie()->start();
@@ -762,7 +758,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     PlayItem.CheckRelatedMedia();
 
-    g_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
+    m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.GetDuration();
@@ -800,7 +796,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    g_mtxPlayingInfo.get(m_PlayingInfo);
+    m_mtxPlayingInfo.get(m_PlayingInfo);
     _showAlbumName();
 
     ui.labelPlayingfile->setText(wsutil::toQStr(m_PlayingInfo.strTitle));

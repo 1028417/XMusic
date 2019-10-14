@@ -9,11 +9,6 @@
 
 #include "util/util.h"
 
-extern void showFull(QWidget* wnd);
-
-#include <set>
-extern std::set<class CDialog*> g_setDlgs;
-
 class CDialog : public QDialog
 {
 public:
@@ -21,8 +16,6 @@ public:
         QDialog(parent)
         , m_crBkg(180, 220, 255)
     {
-        this->setWindowFlags(Qt::Dialog);
-        this->setWindowModality(Qt::ApplicationModal);
     }
 
 private:
@@ -43,16 +36,7 @@ private:
     virtual void _onClose(){}
 
 public:
-    void show()
-    {
-        _setBkgColor();
-
-        this->setWindowFlags(Qt::FramelessWindowHint);
-
-        showFull(this);
-
-        g_setDlgs.insert(this);
-    }
+    void show();
 
     void setBkgColor(UINT r, UINT g, UINT b)
     {
@@ -67,43 +51,5 @@ public:
     }
 
 protected:
-    virtual bool event(QEvent *ev) override
-    {
-        switch (ev->type())
-        {
-        case QEvent::Close:
-            g_setDlgs.erase(this);
-            _onClose();
-
-#if __mac
-            // TODO /*for (auto pDlg : g_setDlgs) pDlg->
-#endif
-
-            break;
-        case QEvent::Move:
-        case QEvent::Resize:
-        {
-            int cx = this->width();
-            int cy = this->height();
-            _relayout(cx, cy);
-        }
-
-            break;
-#if __android || __ios
-        case QEvent::KeyRelease:
-            if (!_handleReturn())
-            {
-                close();
-            }
-
-            return true;
-
-            break;
-#endif
-        default:
-            break;
-        }
-
-        return QDialog::event(ev);
-    }
+    virtual bool event(QEvent *ev) override;
 };
