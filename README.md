@@ -2,7 +2,7 @@
 ![](https://raw.githubusercontent.com/Musicrosoft/XMusic/master/XMusicHost.jpg)
 
 ## **创作背景**
-07年用VB开发一个迷你播放器，支持mp3、wma、wav。  
+07年用VB开发一个迷你播放器，只支持Mp3、Wma、Wav格式播放。  
 
 09年用VC开发媒体库模型和配套界面。  
   
@@ -13,7 +13,7 @@
 ## **系统功能**
 ### 文件系统
 * 系统可挂载多个不同硬盘分区的目录；
-* 支持Mp3、Wav、Flac、Ape、Wma、AAC、AC3等常见文件格式，支持MP3/flac的tag信息读入；
+* 支持Mp3、Wma、Wav、Flac、Ape、Dsf/Dff、M4a、AAC、AC3等常见文件格式，支持MP3/flac的tag信息读入；
 * 资源浏览器可按平铺、图标、明细显示，与媒体库联动；
 * 导出目录和生成快照；
 * 智能检测相似文件；
