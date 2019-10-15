@@ -223,7 +223,7 @@ int CXMusicApp::run()
     m_model.init();
     m_mainWnd.showLogo();
 
-    QTimer::singleShot(6500, [&]() {
+    QTimer::singleShot(6000, [&]() {
         if(!_run())
         {
             this->quit();
