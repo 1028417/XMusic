@@ -62,7 +62,7 @@
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
 已编译出Windows、macOs版本和android安装包，安卓采用OpenSL ES播放音频流。
-正在开发ios版本
+完成ios版本编译和iPhone/iPad各机型适配，app待上架
 
 ![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_V.jpg)
 ![](https://raw.githubusercontent.com/1028417/Musicrosoft/master/XMusic/XMusic_H.jpg)
