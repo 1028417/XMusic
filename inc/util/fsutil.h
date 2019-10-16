@@ -3,10 +3,6 @@
 
 #define MAX_PATH 260
 
-#if __windows
-#include <direct.h>
-#endif
-
 #if !__winvc
 #include <QFileInfo>
 #include <QFile>
@@ -15,13 +11,16 @@
 #include <QTime>
 #endif
 
-//#if !__mac && !__ios
-#ifdef __clang__
-#include <utime.h>
-#else
+#if __windows
+#include <direct.h>
+
 #include <sys/utime.h>
+#else
+#include <utime.h>
+
+using _utimbuf = struct utimbuf;
+#define _wutime(f, t) utime(wsutil::toStr(f).c_str(), t)
 #endif
-//#endif
 
 #include <sys/stat.h>
 
@@ -34,10 +33,10 @@ using tagFileStat64 = struct _stat64;
 
 #else
 using tagFileStat = struct stat;
-using tagFileStat32 = struct stat;
-using tagFileStat32_64 = struct stat;
-using tagFileStat64_32 = struct stat;
-using tagFileStat64 = struct stat;
+using tagFileStat32 = tagFileStat;
+using tagFileStat32_64 = tagFileStat;
+using tagFileStat64_32 = tagFileStat;
+using tagFileStat64 = tagFileStat;
 
 #define _fileno fileno
 #endif

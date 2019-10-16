@@ -47,7 +47,7 @@ private:
 
 	bool _clear();
 
-	void _tryPause(const wstring& strCheckPath, const function<wstring(const wstring&)>& cb);
+	void _tryPause(const wstring& strCheckPath, const function<void(wstring&)>& cb);
 
 	void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
 	void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
