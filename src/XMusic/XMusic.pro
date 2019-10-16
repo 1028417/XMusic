@@ -14,7 +14,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = XMusic
 TEMPLATE = app
 
-#QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
+QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 
 SOURCES +=\
     mainwindow.cpp \

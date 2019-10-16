@@ -106,64 +106,61 @@ BEGIN
         MENUITEM "列表曲目 Ctrl+F4",                ID_DemandPlayItem
         MENUITEM "列表 Ctrl+F5",                  ID_DemandPlaylist
         MENUITEM SEPARATOR
-        POPUP "按语种"
+        POPUP "国语"
         BEGIN
-            POPUP "国语"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_CN
-                MENUITEM "专辑",                          ID_DemandAlbum_CN
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_CN
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_CN
-                MENUITEM "列表",                          ID_DemandPlaylist_CN
-            END
-            POPUP "粤语"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_HK
-                MENUITEM "专辑",                          ID_DemandAlbum_HK
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_HK
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_HK
-                MENUITEM "列表",                          ID_DemandPlaylist_HK
-            END
-            POPUP "韩语"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_KR
-                MENUITEM "专辑",                          ID_DemandAlbum_KR
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_KR
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_KR
-                MENUITEM "列表",                          ID_DemandPlaylist_KR
-            END
-            POPUP "日语"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_JP
-                MENUITEM "专辑",                          ID_DemandAlbum_JP
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_JP
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_JP
-                MENUITEM "列表",                          ID_DemandPlaylist_JP
-            END
-            POPUP "泰语"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_TAI
-                MENUITEM "专辑",                          ID_DemandAlbum_TAI
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_TAI
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_TAI
-                MENUITEM "列表",                          ID_DemandPlaylist_TAI
-            END
-            POPUP "英文"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_EN
-                MENUITEM "专辑",                          ID_DemandAlbum_EN
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EN
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_EN
-                MENUITEM "列表",                          ID_DemandPlaylist_EN
-            END
-            POPUP "小语种"
-            BEGIN
-                MENUITEM "歌手",                          ID_DemandSinger_EUR
-                MENUITEM "专辑",                          ID_DemandAlbum_EUR
-                MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
-                MENUITEM "列表曲目",                        ID_DemandPlayItem_EUR
-                MENUITEM "列表",                          ID_DemandPlaylist_EUR
-            END
+            MENUITEM "歌手",                          ID_DemandSinger_CN
+            MENUITEM "专辑",                          ID_DemandAlbum_CN
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_CN
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_CN
+            MENUITEM "列表",                          ID_DemandPlaylist_CN
+        END
+        POPUP "粤语"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_HK
+            MENUITEM "专辑",                          ID_DemandAlbum_HK
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_HK
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_HK
+            MENUITEM "列表",                          ID_DemandPlaylist_HK
+        END
+        POPUP "韩语"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_KR
+            MENUITEM "专辑",                          ID_DemandAlbum_KR
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_KR
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_KR
+            MENUITEM "列表",                          ID_DemandPlaylist_KR
+        END
+        POPUP "日语"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_JP
+            MENUITEM "专辑",                          ID_DemandAlbum_JP
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_JP
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_JP
+            MENUITEM "列表",                          ID_DemandPlaylist_JP
+        END
+        POPUP "泰语"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_TAI
+            MENUITEM "专辑",                          ID_DemandAlbum_TAI
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_TAI
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_TAI
+            MENUITEM "列表",                          ID_DemandPlaylist_TAI
+        END
+        POPUP "英文"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_EN
+            MENUITEM "专辑",                          ID_DemandAlbum_EN
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EN
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_EN
+            MENUITEM "列表",                          ID_DemandPlaylist_EN
+        END
+        POPUP "小语种"
+        BEGIN
+            MENUITEM "歌手",                          ID_DemandSinger_EUR
+            MENUITEM "专辑",                          ID_DemandAlbum_EUR
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
+            MENUITEM "列表曲目",                        ID_DemandPlayItem_EUR
+            MENUITEM "列表",                          ID_DemandPlaylist_EUR
         END
     END
 END
@@ -181,6 +178,66 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "列表曲目",                        ID_DemandPlayItem
             MENUITEM "列表",                          ID_DemandPlaylist
+            MENUITEM SEPARATOR
+            POPUP "按语种"
+            BEGIN
+                POPUP "国语"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_CN
+                    MENUITEM "专辑",                          ID_DemandAlbum_CN
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_CN
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_CN
+                    MENUITEM "列表",                          ID_DemandPlaylist_CN
+                END
+                POPUP "粤语"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_HK
+                    MENUITEM "专辑",                          ID_DemandAlbum_HK
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_HK
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_HK
+                    MENUITEM "列表",                          ID_DemandPlaylist_HK
+                END
+                POPUP "韩语"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_KR
+                    MENUITEM "专辑",                          ID_DemandAlbum_KR
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_KR
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_KR
+                    MENUITEM "列表",                          ID_DemandPlaylist_KR
+                END
+                POPUP "日语"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_JP
+                    MENUITEM "专辑",                          ID_DemandAlbum_JP
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_JP
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_JP
+                    MENUITEM "列表",                          ID_DemandPlaylist_JP
+                END
+                POPUP "泰语"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_TAI
+                    MENUITEM "专辑",                          ID_DemandAlbum_TAI
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_TAI
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_TAI
+                    MENUITEM "列表",                          ID_DemandPlaylist_TAI
+                END
+                POPUP "英文"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_EN
+                    MENUITEM "专辑",                          ID_DemandAlbum_EN
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EN
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_EN
+                    MENUITEM "列表",                          ID_DemandPlaylist_EN
+                END
+                POPUP "小语种"
+                BEGIN
+                    MENUITEM "歌手",                          ID_DemandSinger_EUR
+                    MENUITEM "专辑",                          ID_DemandAlbum_EUR
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
+                    MENUITEM "列表曲目",                        ID_DemandPlayItem_EUR
+                    MENUITEM "列表",                          ID_DemandPlaylist_EUR
+                END
+            END
         END
         MENUITEM "退出",                          ID_QUIT
     END
@@ -993,8 +1050,7 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
-
+#endif
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 
