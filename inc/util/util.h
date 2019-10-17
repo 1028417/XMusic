@@ -153,6 +153,8 @@ using fn_bool = function<bool()>;
 
 #include "jsonutil.h"
 
+#include "xmlutil.h"
+
 #if __windows
 //#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
