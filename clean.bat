@@ -13,8 +13,4 @@ del *.ilk
 
 del *.a
 
-cd /d %~dp0src/XMusic
-
-del *makefile*
-
 pause
