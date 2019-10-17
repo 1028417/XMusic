@@ -16,77 +16,73 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 
-SOURCES +=\
-    mainwindow.cpp \
-    ../XMusicHost/controller.cpp \
-    PlayingList.cpp \
-    widget.cpp \
-    bkgdlg.cpp \
-    listview.cpp \
-    medialibdlg.cpp \
-    addbkgdlg.cpp \
-    ListViewEx.cpp \
-    app.cpp \
-    label.cpp \
-    dialog.cpp
+SOURCES += ../XMusicHost/controller.cpp \
+    cpp/main.cpp \
+    cpp/app.cpp \
+    cpp/mainwindow.cpp \
+    cpp/PlayingList.cpp \
+    cpp/widget.cpp \
+    cpp/bkgdlg.cpp \
+    cpp/listview.cpp \
+    cpp/medialibdlg.cpp \
+    cpp/addbkgdlg.cpp \
+    cpp/ListViewEx.cpp \
+    cpp/label.cpp \
+    cpp/dialog.cpp
 
-HEADERS  += mainwindow.h \
-    ../XMusicHost/controller.h \
-    label.h \
-    PlayingList.h \
-    widget.h \
-    button.h \
-    progressbar.h \
-    bkgdlg.h \
-    listview.h \
-    dialog.h \
-    medialibdlg.h \
-    addbkgdlg.h \
-    ListViewEx.h \
-    app.h \
-    ../../inc/ControllerDef.h \
-    ../../inc/viewdef.h
+HEADERS += cpp/app.h \
+    cpp/mainwindow.h \
+    cpp/label.h \
+    cpp/PlayingList.h \
+    cpp/widget.h \
+    cpp/button.h \
+    cpp/progressbar.h \
+    cpp/bkgdlg.h \
+    cpp/listview.h \
+    cpp/dialog.h \
+    cpp/medialibdlg.h \
+    cpp/addbkgdlg.h \
+    cpp/ListViewEx.h
 
 RESOURCES += res.qrc
 
-FORMS    += mainwindow.ui \
-    bkgdlg.ui \
-    medialibdlg.ui \
-    addbkgdlg.ui
+FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui
 
-INCLUDEPATH += ../../inc
+INCLUDEPATH += ../../inc  cpp
 
 android {
-    LIBS    += -L../../libs/armeabi-v7a
+    LIBS += -L../../libs/armeabi-v7a
 
     platform = android
     DESTDIR = ../../../build/XMusic
 } else: macx {
-    LIBS    += -L../../bin/mac
+    LIBS += -L../../bin/mac
 
     platform = mac
     DESTDIR = ../../bin/mac
 } else: ios {
-    LIBS    += -L../../libs/ios/simulator -lcurl -lssl -lcrypto -lnghttp2 -lz
-    LIBS    += -L../../libs/ios -lCURLTool
+    LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2  -lz \
+			-L../../libs/ios  -lCURLTool \
+#
+            -L../../../PlaySDK/libs/ios/simulator  -lSDL2 \
+            -framework AVFoundation  -framework GameController  -framework CoreMotion \
+#
+            -lavcodec  -lavformat  -lavutil  -lswresample \
+            -framework CoreMedia  -framework VideoToolbox  -framework AVFoundation \
+            -framework CoreVideo  -framework Security  -lz  -lbz2  -liconv
 
-    LIBS    += -L../../../PlaySDK/libs/ios/simulator -lSDL2 \
-                -framework AVFoundation -framework GameController -framework CoreMotion
-    LIBS    += -lavcodec -lavformat -lavutil -lswresample \
-                -lz -lbz2 -liconv -framework CoreMedia -framework VideoToolbox -framework AVFoundation -framework CoreVideo -framework Security
-
-    LIBS    += -L../../../build/ioslib
+    LIBS += -L../../../build/ioslib
 
     platform = ios
     DESTDIR = ../../../build/XMusic
 } else {
-    LIBS    += -L../../bin
+    LIBS += -L../../bin
 
     platform =win
     DESTDIR = ../../bin
 }
 
-LIBS    += -lxutil -lxPlaySDK -lxMediaLib -lxmodel
+LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
 
 font.files += ../../bin/font/Microsoft-YaHei-Light.ttc
 #font.files += ../../bin/font/Microsoft-YaHei-Regular.ttc
