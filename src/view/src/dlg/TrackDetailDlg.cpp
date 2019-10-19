@@ -66,7 +66,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 			{
 				if (NULL != m_pMediaRes)
 				{
-					UINT uDuration = CAudioOpaque::checkDuration(*m_pMediaRes);
+					UINT uDuration = CMediaOpaque::checkDuration(*m_pMediaRes);
 					if (uDuration > 0)
 					{
 						uTrackDuration = uDuration - trackInfo.uMsBegin / 1000;

@@ -100,7 +100,7 @@ const QPixmap* getPixmap(CPath& path)
         if (!path.fileInfo().bDir)
         {
             auto& pm = m_mapPixmaxp[&path];
-            pm.load(wsutil::toQStr(path.absPath()));
+            pm.load(strutil::wstrToQStr(path.absPath()));
             return &pm;
         }
 
@@ -270,7 +270,7 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
-    cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    cauto& strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (g_setImgExtName.includes(strExtName))
     {
         return new XFile(fileInfo);
@@ -283,7 +283,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
-    if (!pm.load(wsutil::toQStr(subFile.absPath())))
+    if (!pm.load(strutil::wstrToQStr(subFile.absPath())))
     {
         return false;
     }

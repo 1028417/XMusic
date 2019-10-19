@@ -226,9 +226,9 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const functi
 
 			ProgressDlg.SetStatusText(task.first.c_str(), 1);
 
-			CAudioOpaque AudioOpaque(task.first);
-			int nDuration = AudioOpaque.checkDuration(false);
-			if (AudioOpaque.fileSize() == -1)
+			CMediaOpaque MediaOpaque(task.first);
+			int nDuration = MediaOpaque.checkDuration();
+			if (MediaOpaque.fileSize() == -1)
 			{
 				nDuration = -1;
 			}
@@ -349,7 +349,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 			map<wstring, TD_IMediaList> mapMedias;
 			lstMedias([&](CMedia& media) {
 				auto& strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
-				mapMedias[mapDirs.insert(wsutil::lowerCase_r(strDstDir), strDstDir)].add(media);
+				mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
 			});
 
 			for (auto& pr : mapMedias)
@@ -459,7 +459,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	wstring strFile = fileDlg.ShowSave();
 	if (!strFile.empty())
 	{
-		if (wsutil::lowerCase_r(fsutil::GetFileExtName(strFile)) != __snapshotExt)
+		if (strutil::lowerCase_r(fsutil::GetFileExtName(strFile)) != __snapshotExt)
 		{
 			strFile.append(__wcDot + __snapshotExt);
 		}

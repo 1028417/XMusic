@@ -177,7 +177,7 @@ void CBackupDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	__Ensure(iItem >= 0);
 
 	wstring strTag = m_wndList.GetItemText(iItem, 0);
-	wsutil::ltrim(strTag);
+	strutil::ltrim(strTag);
 
 	CBackupCompareDlg CompareDlg(m_view, strTag, false);
 	CompareDlg.DoModal();
@@ -191,7 +191,7 @@ void CBackupDlg::OnBnClickedRestore()
 	__Ensure(CMainApp::showConfirmMsg(L"确认使用选中的备份来恢复曲目库？", this));
 
 	wstring strTag = m_wndList.GetItemText(iItem, 0);
-	wsutil::ltrim(strTag);
+	strutil::ltrim(strTag);
 
 	this->OnCancel();
 
@@ -206,7 +206,7 @@ void CBackupDlg::OnBnClickedCompare()
 	if (iItem >= 0)
 	{
 		strTag = m_wndList.GetItemText(iItem, 0);
-		wsutil::ltrim(strTag);
+		strutil::ltrim(strTag);
 	}
 
 	CBackupCompareDlg CompareDlg(m_view, strTag, true);
@@ -221,7 +221,7 @@ void CBackupDlg::OnBnClickedDel()
 	__Ensure(CMainApp::showConfirmMsg(L"确认删除选中的备份？", this));
 
 	wstring strTag = m_wndList.GetItemText(iItem, 0);
-	wsutil::ltrim(strTag);
+	strutil::ltrim(strTag);
 
 	m_BackupMgr.removeBackup(strTag);
 
@@ -230,10 +230,10 @@ void CBackupDlg::OnBnClickedDel()
 	if (iItem > 0 && m_wndList.GetItemCount() > iItem)
 	{
 		wstring strNextTag = m_wndList.GetItemText(iItem - 1, 0);
-		wsutil::ltrim(strNextTag);
+		strutil::ltrim(strNextTag);
 
 		wstring strPrevTag = m_wndList.GetItemText(iItem, 0);
-		wsutil::ltrim(strPrevTag);
+		strutil::ltrim(strPrevTag);
 		
 		m_BackupMgr.compareBackup(strPrevTag, strNextTag);
 		
@@ -249,7 +249,7 @@ void CBackupDlg::OnBnClickedBackup()
 	if (m_wndList.GetItemCount() > 0)
 	{
 		strPrevTag = m_wndList.GetItemText(0, 0);
-		wsutil::ltrim(strPrevTag);
+		strutil::ltrim(strPrevTag);
 	}
 
 	wstring strNewTag = m_view.getModel().backupDB();

@@ -127,9 +127,9 @@ int CVerifyResultDlg::VerifyMediaItem(int nItem)
 	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
 	__AssertReturn(pMedia, -1);
 	
-	CAudioOpaque AudioOpaque(pMedia->GetAbsPath());
-	int nDuration = AudioOpaque.checkDuration();
-	if (AudioOpaque.fileSize() == -1)
+	CMediaOpaque MediaOpaque(pMedia->GetAbsPath());
+	int nDuration = MediaOpaque.checkDuration();
+	if (MediaOpaque.fileSize() == -1)
 	{
 		nDuration = -1;
 	}
@@ -278,7 +278,7 @@ void CVerifyResultDlg::OnBnClickedLink()
 		wstring strNewPath = fileDlg.ShowOpenSingle();
 		__Ensure(!strNewPath.empty());
 
-		if (wsutil::matchIgnoreCase(strNewPath, pMedia->GetAbsPath()))
+		if (strutil::matchIgnoreCase(strNewPath, pMedia->GetAbsPath()))
 		{
 			if (VerifyMediaItem(nItem) <= 0)
 			{

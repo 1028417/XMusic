@@ -145,7 +145,7 @@ bool CPlayerController::setupRootDir()
 		return false;
 	}
 
-	if (wsutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
+	if (strutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
 	{
 		return false;
 	}
@@ -211,7 +211,7 @@ E_RenameRetCode CPlayerController::renameMediaSet(CMediaSet& MediaSet, const wst
 	if (!arrMediaSets.every([&](CMediaSet& SubSet) {
 		if (&SubSet != &MediaSet)
 		{
-			if (wsutil::matchIgnoreCase(SubSet.m_strName, strNewName))
+			if (strutil::matchIgnoreCase(SubSet.m_strName, strNewName))
 			{
 				return false;
 			}
@@ -280,7 +280,7 @@ CMediaDir* CPlayerController::attachDir(const wstring& strDir)
 	}
 
     bool bExist = m_model.getOptionMgr().getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
-        return wsutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
+        return strutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
     });
 	if (bExist)
 	{
@@ -353,7 +353,7 @@ void CPlayerController::moveMediaFile(const TD_IMediaList& lstMedias, const wstr
 {
 	TD_IMediaList lstSrcMedias;
 	lstMedias([&](IMedia& Media){
-		if (!wsutil::matchIgnoreCase(fsutil::GetParentDir(Media.GetPath()), strDir))
+		if (!strutil::matchIgnoreCase(fsutil::GetParentDir(Media.GetPath()), strDir))
 		{
 			lstSrcMedias.add(Media);
 		}
@@ -414,7 +414,7 @@ bool CPlayerController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 {
     std::set<wstring> setFiles;
 	lstMediaRes([&](CMediaRes& MediaRes) {
-		setFiles.insert(wsutil::lowerCase_r(MediaRes.GetPath()));
+		setFiles.insert(strutil::lowerCase_r(MediaRes.GetPath()));
 	});
 	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
 

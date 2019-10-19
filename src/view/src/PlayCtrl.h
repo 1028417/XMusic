@@ -13,6 +13,8 @@ private:
 
 	CPlaySpirit m_PlaySpirit;
 	
+	wstring m_strPlayingFile;
+
 public:
 	inline CPlaySpirit& getPlaySpirit()
 	{

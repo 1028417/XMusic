@@ -803,13 +803,13 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     m_mtxPlayingInfo.get(m_PlayingInfo);
     _showAlbumName();
 
-    ui.labelPlayingfile->setText(wsutil::toQStr(m_PlayingInfo.strTitle));
+    ui.labelPlayingfile->setText(strutil::wstrToQStr(m_PlayingInfo.strTitle));
 
     if (m_PlayingInfo.strSinger != m_strSingerName)
     {
         m_strSingerName = m_PlayingInfo.strSinger;
 
-        ui.labelSingerName->setText(wsutil::toQStr(m_strSingerName));
+        ui.labelSingerName->setText(strutil::wstrToQStr(m_strSingerName));
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
@@ -827,7 +827,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     {
         ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
 
-        QString qsDuration = wsutil::toQStr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
+        QString qsDuration = strutil::wstrToQStr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
         ui.labelDuration->setText(qsDuration);
 
         _updatePlayPauseButton(true);
@@ -926,7 +926,7 @@ void MainWindow::_playSingerImg(bool bReset)
     if (m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
     {
         QPixmap pm;
-        if (pm.load(wsutil::toQStr(strSingerImg)))
+        if (pm.load(strutil::wstrToQStr(strSingerImg)))
         {
             ui.labelSingerImg->setPixmap(pm);
         }
@@ -997,7 +997,7 @@ void MainWindow::updateBkg()
     this->update();
 }
 
-static const QString __qsCheck = wsutil::toQStr(L"√");
+static const QString __qsCheck = strutil::wstrToQStr(L"√");
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {

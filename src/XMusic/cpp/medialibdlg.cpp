@@ -101,7 +101,7 @@ void CMedialibDlg::_resizeTitle() const
 
 void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
 {
-    ui.labelTitle->setText(wsutil::toQStr(strTitle));
+    ui.labelTitle->setText(strutil::wstrToQStr(strTitle));
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
@@ -367,7 +367,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     if (m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
         QPixmap pm;
-        if (pm.load(wsutil::toQStr(strSingerImg)))
+        if (pm.load(strutil::wstrToQStr(strSingerImg)))
         {
 #define __zoomoutSize 150
             CPainter::zoomoutPixmap(pm, __zoomoutSize);

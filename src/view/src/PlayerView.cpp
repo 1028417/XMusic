@@ -318,7 +318,7 @@ void CPlayerView::_checkSimilarFile()
 	{
 		wstring strSrcDir = pSrcDir->GetPath();
 		wstring strDstDir = pDstDir->GetPath();
-		if (wsutil::matchIgnoreCase(strSrcDir, strDstDir))
+		if (strutil::matchIgnoreCase(strSrcDir, strDstDir))
 		{
 			CMainApp::showMsg(L"请选择不同的目录！");
 			return;
@@ -347,7 +347,7 @@ void CPlayerView::_addInMedia()
 	__Ensure(!strDir.empty());
 
 	wstring strRootDir = m_view.getMediaLib().GetAbsPath();
-	if (wsutil::matchIgnoreCase(strDir, strRootDir)
+	if (strutil::matchIgnoreCase(strDir, strRootDir)
 		|| fsutil::CheckSubPath(strRootDir, strDir))
 	{
 		CMainApp::showMsg(L"请选择 " + strRootDir + L" 以外的文件！");
@@ -365,11 +365,11 @@ void CPlayerView::_addInMedia()
 		{
 			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
 				+ L"\n大小：" + MediaResInfo.strFileSize + L"字节\n时长："
-				+ CMedia::GetDurationString(CAudioOpaque::checkDuration(MediaResInfo.strPath))
+				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
 				+ L"\n大小：" + SearchMediaInfo.GetFileSize() + L"字节\n时长："
-				+ CMedia::GetDurationString(CAudioOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
 				+ L"\n目录：" + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联：";
 
@@ -392,7 +392,7 @@ void CPlayerView::_addInMedia()
 
 		ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(uRet) + L"个曲目").c_str());
 	};
-		
+	
 	CProgressDlg ProgressDlg(cbAddInMedia, lstFiles.size());
 	(void)ProgressDlg.DoModal(L"合入外部文件");
 }

@@ -201,7 +201,7 @@ void CPlayItemPage::UpdateTitle()
 
 void CPlayItemPage::UpdateHead()
 {
-	wstring strColumnText = wsutil::wcSpace + __ColumnText_Name;
+	wstring strColumnText = strutil::wcSpace + __ColumnText_Name;
 
 	int iItemCount = m_wndList.GetItemCount();
 	if (iItemCount > 0)

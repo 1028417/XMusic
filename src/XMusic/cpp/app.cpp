@@ -31,7 +31,7 @@ static const wstring& sdcardPath()
     }
     if (pszSdcardPath)
     {
-        return g_strSdcardPath = wsutil::fromStr(pszSdcardPath);
+        return g_strSdcardPath = strutil::fromStr(pszSdcardPath);
     }
 
     g_strSdcardPath = L"/mnt/sdcard";
@@ -120,7 +120,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
-        qsFontFile = wsutil::toQStr(fsutil::workDir()) + qsFontFile;
+        qsFontFile = strutil::wstrToQStr(fsutil::workDir()) + qsFontFile;
 #endif
 
         QString qsFontfamilyName;

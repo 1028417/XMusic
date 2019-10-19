@@ -101,7 +101,7 @@ private:
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
-        if (wsutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
+        if (strutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
         {
             return NULL;
         }

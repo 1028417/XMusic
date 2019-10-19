@@ -115,9 +115,10 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Last, true);
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
-
-	m_PlaySpirit->SetPlayState(_bstr_t(PlayItem.GetTitle().c_str())
-		, PlayItem.GetDuration() + 1, long(player().getClock()/__1e6));
+	
+	m_strPlayingFile = PlayItem.GetTitle();
+	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), PlayItem.GetDuration() + 1
+		, long(player().getClock()/__1e6));
 }
 
 void CPlayCtrl::onPlayFinish()
@@ -197,7 +198,7 @@ void CPlayCtrl::setVolume(int offset)
 void CPlayCtrl::seek(UINT uPos)
 {
 	player().Seek(uPos);
-	m_PlaySpirit->SetPlayState(_bstr_t(m_view.getPlayMgr().GetPlayingFile().c_str())
+	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
 		, (long)player().GetDuration() + 1, uPos);
 }
 
