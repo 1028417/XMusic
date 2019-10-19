@@ -24,6 +24,8 @@ BOOL CPlaySpirit::Create(const CB_PlaySpiritEvent& cb, int iPosX, int iPosY)
 
 BOOL CPlaySpirit::_create(int iPosX, int iPosY)
 {
+	(void)CoInitialize(NULL);
+
 	HRESULT hResult = __super::CreateInstance(__PlaySpirit_clsid);
 	if (S_OK != hResult)
 	{

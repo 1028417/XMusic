@@ -10,7 +10,7 @@
 class CMedialibView : public CListViewEx
 {
 public:
-    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaRes *pOuterDir=NULL);
+    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaDir *pOuterDir=NULL);
 
 private:
     class CXMusicApp& m_app;
@@ -21,9 +21,9 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    CMediaRes& m_MediaLib;
+    XMediaLib& m_MediaLib;
 
-    CMediaRes *m_pOuterDir = NULL;
+    CMediaDir *m_pOuterDir = NULL;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
@@ -43,7 +43,7 @@ private:
 public:
     void init();
 
-    void showFile(const wstring& strPath);
+    void showFile(const wstring& strFile);
 
     void play();
 
@@ -64,7 +64,7 @@ private:
     const QPixmap& _getSingerPixmap(CSinger&);
 
     void _getTitle(CMediaSet&, WString& strTitle);
-    void _getTitle(CMediaRes&, WString& strTitle);
+    void _getTitle(CMediaDir&, WString& strTitle);
 
     void _onMediaClick(const tagLVRow&, IMedia&);
 
@@ -81,35 +81,32 @@ private:
     bool _onUpward() override;
 };
 
-class CAndroidRootDir : public CMediaRes
+class CAndroidDir : public CMediaDir
 {
 public:
-    CAndroidRootDir()
-        : CMediaRes(L"/sdcard")
+    CAndroidDir()
+        : CMediaDir(L"/sdcard")
     {
         fileInfo().pParent = &m_root;
     }
 
-    CAndroidRootDir(const tagFileInfo& fileInfo, E_MediaFileType eFileType)
-        : CMediaRes(fileInfo, eFileType)
+    CAndroidDir(const tagFileInfo& fileInfo)
+        : CMediaDir(fileInfo)
     {
     }
 
 private:
-    static CMediaRes m_root;
+    static CMediaDir m_root;
 
 private:
-    CPath* _newSubPath(const tagFileInfo& fileInfo) override
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
-        if (fileInfo.bDir)
+        if (wsutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
         {
-            if (wsutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
-            {
-                return NULL;
-            }
+            return NULL;
         }
 
-        return CMediaRes::_genSubPath<CAndroidRootDir>(fileInfo);
+        return new CAndroidDir(fileInfo);
     }
 
     wstring GetPath() const override
@@ -136,10 +133,10 @@ private:
     class CXMusicApp& m_app;
 
 #if __android
-    CAndroidRootDir m_AndroidRootDir;
-    CMediaRes *m_pOuterDir = &m_AndroidRootDir;
+    CAndroidDir m_AndroidRootDir;
+    CMediaDir *m_pOuterDir = &m_AndroidRootDir;
 #else
-    CMediaRes *m_pOuterDir = NULL;
+    CMediaDir *m_pOuterDir = NULL;
 #endif
 
     CMedialibView m_MedialibView;
@@ -149,31 +146,44 @@ public:
 
     void show()
     {
-        CDialog::show();
         m_MedialibView.showRoot();
+
+        _show();
     }
 
     void showMediaSet(CMediaSet& MediaSet)
     {
-        CDialog::show();
         m_MedialibView.showMediaSet(MediaSet);
+
+        _show();
     }
 
     void showMedia(CMedia& media)
     {
-        CDialog::show();
         m_MedialibView.showMedia(media);
+
+        _show();
     }
 
     void showFile(const wstring& strPath)
     {
-        CDialog::show();
         m_MedialibView.showFile(strPath);
+
+        _show();
     }
 
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
 
 private:
+    void _show()
+    {
+        timerutil::async(0, [&](){
+            _resizeTitle();
+        });
+
+        CDialog::show();
+    }
+
     void _relayout(int cx, int cy) override;
 
     void _resizeTitle() const;

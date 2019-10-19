@@ -244,22 +244,22 @@ void CMediaResPanel::ShowPath(const wstring& strPath)
 
 	m_strRootPath = strPath;
 
-	CMediaRes *pMediaRes = NULL;
+	CMediaDir *pRootPath = NULL;
 	if (!strPath.empty())
 	{
-		pMediaRes = m_view.getMediaLib().FindSubPath(strPath, true);
+		pRootPath = m_view.getMediaLib().FindSubDir(strPath);
 	}
 	else
 	{
-		pMediaRes = &m_view.getMediaLib();
+		pRootPath = &m_view.getMediaLib();
 	}
-	_showPath(pMediaRes);
+	_showPath(pRootPath);
 }
 
 void CMediaResPanel::Refresh()
 {
-	CMediaRes *pRootPath = m_view.getMediaLib().FindSubPath(m_strRootPath, true);
-	CMediaRes *pCurrPath = m_view.getMediaLib().FindSubPath(m_strCurrPath, true);
+	CMediaDir *pRootPath = m_view.getMediaLib().FindSubDir(m_strRootPath);
+	CMediaDir *pCurrPath = m_view.getMediaLib().FindSubDir(m_strCurrPath);
 	if (NULL == pCurrPath)
 	{
 		pCurrPath = pRootPath;
@@ -285,13 +285,13 @@ void CMediaResPanel::Refresh()
 	}*/
 }
 
-void CMediaResPanel::_showPath(CMediaRes *pMediaLib, CMediaRes *pMediaRes, CMediaRes *pHitestItem)
+void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMediaRes *pHitestItem)
 {
 	__Ensure(m_hWnd);
 
 	wstring strPrevCurrPath = m_strCurrPath;
 	
-	m_pCurrPath = m_pRootPath = pMediaLib;
+	m_pCurrPath = m_pRootPath = pRootPath;
 	m_strCurrPath = m_strRootPath;
 	if (NULL == m_pCurrPath)
 	{
@@ -304,10 +304,10 @@ void CMediaResPanel::_showPath(CMediaRes *pMediaLib, CMediaRes *pMediaRes, CMedi
 
 	(void)m_wndStatic.ShowWindow(SW_HIDE);
 
-	if (NULL != pMediaRes)
+	if (pCurrPath)
 	{
-		m_pCurrPath = pMediaRes;
-		m_strCurrPath = pMediaRes->GetPath();
+		m_pCurrPath = pCurrPath;
+		m_strCurrPath = pCurrPath->GetPath();
 	}
 
 	wstring strTitle;
@@ -431,8 +431,7 @@ void CMediaResPanel::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 	}
 	
 	UINT uIdx = 0;
-	m_pCurrPath->subPath([&](CPath& SubPath){
-		auto& MediaRes = ((CMediaRes&)SubPath);
+	m_pCurrPath->subMediaRes([&](CMediaRes& MediaRes){
 		if (MediaRes.UpdateRelatedMediaSet(MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &MediaRes);
@@ -474,7 +473,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.IsDir())
 			{
-				_showPath(m_pRootPath, &MediaRes);
+				_showPath(m_pRootPath, (CMediaDir*)&MediaRes);
 			}
 			else
 			{
@@ -485,7 +484,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_EXPORT:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			m_view.exportDir(MediaRes);
+			if (MediaRes.IsDir())
+			{
+				m_view.exportDir((CMediaDir&)MediaRes);
+			}
 		}))
 		{
 			if (NULL != m_pCurrPath)
@@ -496,7 +498,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_Snapshot:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			m_view.snapshotDir(MediaRes);
+			if (MediaRes.IsDir())
+			{
+				m_view.snapshotDir((CMediaDir&)MediaRes);
+			}
 		}))
 		{
 			if (NULL != m_pCurrPath)
@@ -544,7 +549,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 				MediaRes.Clear();
 				CMediaResPanel::RefreshMediaResPanel();
 
-				m_view.checkSimilarFile(MediaRes);
+				m_view.checkSimilarFile((CMediaDir&)MediaRes);
 			}
 		}))
 		{
@@ -628,12 +633,12 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 }
 
-//void CMediaResPanel::OnDeleteDir(CMediaRes& MediaRes)
+//void CMediaResPanel::OnDeleteDir(CMediaRes& dir)
 //{
 //	CMediaRes *pTargetPath = m_pCurrPath;
 //	while(TRUE)
 //	{
-//		if (m_pCurrPath == &MediaRes || fsutil::CheckSubPath(MediaRes.GetPath(), m_strCurrPath))
+//		if (m_pCurrPath == &dir || fsutil::CheckSubPath(dir.GetPath(), m_strCurrPath))
 //		{
 //			if (pTargetPath == m_pRootPath)
 //			{
@@ -702,12 +707,12 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			lstObjects.assign(pObject);
 		}
-
+		
 		TD_MediaResList lstMediaRes(lstObjects);
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.IsDir())
 			{
-				_showDirMenu(&MediaRes);
+				_showDirMenu((CMediaDir*)&MediaRes);
 			}
 			else
 			{
@@ -726,7 +731,7 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
-void CMediaResPanel::_showDirMenu(CMediaRes *pSubDir)
+void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 {
 	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE, ID_Detach, ID_Attach }, FALSE);
 
@@ -951,7 +956,7 @@ int CMediaResPanel::GetTabImage()
 {
 	if (NULL != m_pCurrPath && m_pCurrPath != &m_view.getMediaLib())
 	{
-		if (m_pCurrPath->parent()==NULL)
+		if (m_pCurrPath->parent() == NULL)
 		{
 			return (int)E_GlobalImage::GI_DirLink;
 		}
@@ -987,10 +992,10 @@ void CMediaResPanel::attachDir()
 			break;
 		}
 
-		CMediaRes *pMediaRes = m_view.getController().attachDir(strDir);
-		if (NULL != pMediaRes)
+		CMediaDir *pMediaDir = m_view.getController().attachDir(strDir);
+		if (NULL != pMediaDir)
 		{
-			this->HittestMediaRes(*pMediaRes);
+			this->HittestMediaRes(*pMediaDir);
 			break;
 		}
 	}

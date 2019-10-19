@@ -8,7 +8,6 @@
 static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) :
-    //CDialog(bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg),
     m_addbkgView(app, *this, m_paImgDirs)
@@ -264,17 +263,17 @@ bool CAddBkgView::upward()
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
 
-CPath* CImgDir::_newSubPath(const tagFileInfo& fileInfo)
+CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
 {
-    if (fileInfo.bDir)
-    {
-        return new CImgDir(fileInfo);
-    }
+    return new CImgDir(fileInfo);
+}
 
+XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
+{
     cauto& strExtName = wsutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (g_setImgExtName.includes(strExtName))
     {
-        return new CPath(fileInfo);
+        return new XFile(fileInfo);
     }
 
     return NULL;
@@ -282,7 +281,7 @@ CPath* CImgDir::_newSubPath(const tagFileInfo& fileInfo)
 
 #define __filterSize 640
 
-inline static bool _loadImg(CPath& subFile, QPixmap& pm, UINT uZoomOutSize)
+inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
     if (!pm.load(wsutil::toQStr(subFile.absPath())))
     {

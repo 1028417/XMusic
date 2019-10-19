@@ -223,7 +223,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		{
 			m_view.getModel().refreshMediaLib();
 
-			CMediaRes* pDir = m_view.showChooseDirDlg(L"选择歌手目录", false);
+			CMediaDir* pDir = m_view.showChooseDirDlg(L"选择歌手目录", false);
 			__EnsureBreak(pDir);
 
 			CSingerGroup *pGroup = NULL;

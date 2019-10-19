@@ -7,6 +7,9 @@
 
 #include <QScreen>
 
+static CUTF8Writer m_logger;
+ITxtWriter& g_logger(m_logger);
+
 map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
@@ -47,6 +50,14 @@ static const wstring& sdcardPath()
 
 CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 {
+#if __android
+    fsutil::setWorkDir(__androidDataDir);
+#else
+    fsutil::setWorkDir(fsutil::getAppDir());
+#endif
+
+    m_logger.open(L"XMusic.log", true);
+
     QScreen *screen = QApplication::primaryScreen();
     float fPixelRatio = screen->devicePixelRatio();
     g_logger << "devicePixelRatio: " >> fPixelRatio;
@@ -195,6 +206,8 @@ int CXMusicApp::run()
     CPlayer::QuitSDK();
 
     g_logger >> "quit";
+
+    m_logger.close();
 
     return nRet;
 }

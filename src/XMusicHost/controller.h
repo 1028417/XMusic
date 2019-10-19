@@ -31,7 +31,7 @@ public:
 
     void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override;
 
-	CMediaRes* attachDir(const wstring& strDir) override;
+	CMediaDir* attachDir(const wstring& strDir) override;
 
 	bool renameMedia(IMedia& media, const wstring& strNewName) override;
 

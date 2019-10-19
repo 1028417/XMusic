@@ -8,7 +8,7 @@
 class CImgDir : public CPath
 {
 public:
-    using TD_SubImgList = vector<pair<CPath*, QPixmap>>;
+    using TD_SubImgList = vector<pair<XFile*, QPixmap>>;
 
 public:
     CImgDir(const wstring& strDir) : CPath(strDir)
@@ -20,7 +20,7 @@ public:
     }
 
 private:
-    decltype(declval<TD_PathList>().begin()) m_itrSubFile;
+    decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
 
 protected:
     QPixmap m_pmSnapshot;
@@ -43,7 +43,8 @@ public:
     }
 
 private:
-    CPath* _newSubPath(const tagFileInfo& fileInfo) override;
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
+    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 };
 
 #if __android
@@ -79,7 +80,7 @@ public:
        m_bScaning = true;
 
        m_thread = thread([=](){
-           CPath::scan([&](CPath& dir, TD_PathList& paSubFile){
+           CPath::scan([&](CPath& dir, TD_XFileList& paSubFile){
                if (paSubFile)
                {
                    cb(dir);

@@ -43,10 +43,10 @@ private:
 
 	CWnd m_wndStatic;
 
-	CMediaRes *m_pRootPath = NULL;
+	CMediaDir *m_pRootPath = NULL;
 	wstring m_strRootPath;
 
-	CMediaRes *m_pCurrPath = NULL;
+	CMediaDir *m_pCurrPath = NULL;
 	wstring m_strCurrPath;
 	
 	UINT m_Column_ID3 = 0;
@@ -90,15 +90,15 @@ private:
 
 	virtual int GetTabImage() override;
 
-	void _showDirMenu(CMediaRes *pSubDir);
+	void _showDirMenu(CMediaDir *pSubDir);
 	void _showFileMenu(TD_MediaResList& lstMediaRes);
 
 	DROPEFFECT OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext);
 	BOOL OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext);
 
-	//void OnDeleteDir(CMediaRes& MediaRes);
+	//void OnDeleteDir(CMediaDir& dir);
 
-	void _showPath(CMediaRes *pMediaLib, CMediaRes *pMediaRes = NULL, CMediaRes *pHitestItem = NULL);
+	void _showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath = NULL, CMediaRes *pHitestItem = NULL);
 	void _showPath();
 
 	void _asyncTask();

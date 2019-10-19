@@ -166,7 +166,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 {
 	m_view.getModel().refreshMediaLib();
 
-	CMediaRes* pDir = m_view.showChooseDirDlg(L"选择查找目录", true);
+	CMediaDir* pDir = m_view.showChooseDirDlg(L"选择查找目录", true);
 	__Ensure(pDir);
 
 	TD_MediaList lstMedias;

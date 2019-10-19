@@ -151,7 +151,7 @@ public:
 
 	void foregroundMainWnd();
 	
-	CMediaRes* showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir = L"");
+	CMediaDir* showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir = L"");
 
 	void showFindDlg(const wstring& strFind, bool bQuickHittest=false);
 	
@@ -163,12 +163,12 @@ public:
 
 	void exportMedia(const TD_MediaList& lstMedias, CWnd& wnd);
 	void exportMediaSet(CMediaSet& MediaSet);
-	void exportDir(CMediaRes& dir);
+	void exportDir(CMediaDir& dir);
 	
-	void snapshotDir(CMediaRes& dir);
+	void snapshotDir(CMediaDir& dir);
 
-	void checkSimilarFile(CMediaRes& dir);
-	void checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2);
+	void checkSimilarFile(CMediaDir& dir);
+	void checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2);
 
 	void hittestMedia(CMedia& Media);
 

@@ -147,7 +147,7 @@ void __view::foregroundMainWnd()
 	//m_MainWnd.OnFocus(TRUE);
 }
 
-CMediaRes* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir)
+CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir)
 {
 	CResGuard ResGuard(m_ResModule);
 
@@ -163,13 +163,13 @@ CMediaRes* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, con
 	
 	wstring strOppPath = m_model.getMediaLib().toOppPath(strRetDir);
 
-	CMediaRes *pMediaRes = m_model.getMediaLib().FindSubPath(strOppPath, true);
-	if (NULL == pMediaRes)
+	CMediaDir *pMediaDir = m_model.getMediaLib().FindSubDir(strOppPath);
+	if (NULL == pMediaDir)
 	{
 		CMainApp::showMsg(L"目录不存在！");
 	}
 
-	return pMediaRes;
+	return pMediaDir;
 }
 
 void __view::showFindDlg(const wstring& strFind, bool bQuickHittest)
@@ -412,7 +412,7 @@ void __view::exportMediaSet(CMediaSet& MediaSet)
 	exportMedia(lstMedias, m_MainWnd);
 }
 
-void __view::exportDir(CMediaRes& dir)
+void __view::exportDir(CMediaDir& dir)
 {
 	dir.Clear();
 	CMediaResPanel::RefreshMediaResPanel();
@@ -420,7 +420,7 @@ void __view::exportDir(CMediaRes& dir)
 	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 
-		dir.scan([&](CPath& dir, TD_PathList& paSubFile) {
+		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
@@ -433,7 +433,7 @@ void __view::exportDir(CMediaRes& dir)
 				tagExportMedia ExportMedia;
 				ExportMedia.strDstDir = ExportOption.strExportPath + ((CMediaRes&)dir).GetPath();
 				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
-				ExportMedia.alCueFiles.add(((CMediaRes&)dir).SubCueList());
+				ExportMedia.alCueFiles.add(((CMediaDir&)dir).SubCueList());
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
 
@@ -448,7 +448,7 @@ void __view::exportDir(CMediaRes& dir)
 
 static const wstring __snapshotExt = L"snapshot";
 
-void __view::snapshotDir(CMediaRes& dir)
+void __view::snapshotDir(CMediaDir& dir)
 {
 	tagFileDlgOpt FileDlgOpt;
 	FileDlgOpt.strTitle = L"选择保存快照路径";
@@ -496,7 +496,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText((L"正在生成" + dir.absPath() + L"目录快照").c_str());
 
-			dir.files()([&](CPath& subFile) {
+			dir.files()([&](XFile& subFile) {
 				auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
 				auto& strFileInfo = strPrfix + subFile.GetName() + L'\t' + strFileSize;
 				TxtWriter.writeln(strFileInfo);
@@ -550,11 +550,11 @@ void __view::_checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD
 	}
 }
 
-void __view::checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2)
+void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes1;
-		dir1.scan([&](CPath& dir, TD_PathList& paSubFile) {
+		dir1.scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
@@ -581,7 +581,7 @@ void __view::checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2)
 		UINT uProgress = lstMediaRes1.size();
 
 		TD_MediaResList lstMediaRes2;
-		dir2.scan([&](CPath& dir, TD_PathList& paSubFile) {
+		dir2.scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
@@ -618,11 +618,11 @@ void __view::checkSimilarFile(CMediaRes& dir1, CMediaRes& dir2)
 	});
 }
 
-void __view::checkSimilarFile(CMediaRes& dir)
+void __view::checkSimilarFile(CMediaDir& dir)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes;
-		dir.scan([&](CPath& dir, TD_PathList& paSubFile) {
+		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;

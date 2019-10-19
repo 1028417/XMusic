@@ -10,6 +10,8 @@
 
 #include <QTimer>
 
+#define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
+
 extern ITxtWriter& g_logger;
 
 class CApp : public QApplication

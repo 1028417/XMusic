@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>xmusic.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.Musicrosoft.XMusic</string>
+        <string>com.musicrossoft.xmusic</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>

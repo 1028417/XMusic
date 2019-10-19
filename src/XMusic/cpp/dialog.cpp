@@ -13,7 +13,6 @@ void CDialog::show()
     this->setWindowFlags(Qt::FramelessWindowHint);
 
     showFull(this);
-
     g_setDlgs.insert(this);
 
 #if __mac

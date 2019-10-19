@@ -265,7 +265,7 @@ bool CPlayerController::removeMediaSet(CMediaSet& MediaSet)
 	return true;
 }
 
-CMediaRes* CPlayerController::attachDir(const wstring& strDir)
+CMediaDir* CPlayerController::attachDir(const wstring& strDir)
 {
 	if (strDir.size() <= 3)
 	{
@@ -288,10 +288,7 @@ CMediaRes* CPlayerController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-	m_model.attachDir(strDir);
-
-	return (CMediaRes*)m_model.getMediaLib().FindSubPath(
-        __wcFSSlant + fsutil::GetFileName(strDir), true);
+	return m_model.attachDir(strDir);
 }
 
 bool CPlayerController::renameMedia(IMedia& media, const wstring& strNewName)
@@ -424,7 +421,7 @@ bool CPlayerController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 	lstMediaRes([&](CMediaRes& MediaRes) {
 		if (fsutil::removeFile(MediaRes.GetAbsPath()))
 		{
-			MediaRes.RemoveSelf();
+			MediaRes.Remove();
 		}
 		else
 		{

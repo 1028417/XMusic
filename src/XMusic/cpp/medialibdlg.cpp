@@ -7,7 +7,7 @@
 #define __XMusic L"XMusic"
 #define __InnerStorage L"内部存储"
 
-CMediaRes CAndroidRootDir::m_root;
+CMediaDir CAndroidDir::m_root;
 
 static Ui::MedialibDlg ui;
 
@@ -67,6 +67,9 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     int y_margin = rcReturn.top();
 
+    int y_MedialibView = rcReturn.bottom() + y_margin;
+    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
+
     static const int x_btnUpward = __size(ui.btnUpward->x());
     ui.btnUpward->setGeometry(x_btnUpward, y_margin, rcReturn.width(), rcReturn.height());
 
@@ -74,9 +77,6 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.labelTitle->move(ui.labelTitle->x(), rcReturn.center().y() - ui.labelTitle->height()/2);
     _resizeTitle();
-
-    int y_MedialibView = rcReturn.bottom() + y_margin;
-    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 }
 
 void CMedialibDlg::_resizeTitle() const
@@ -113,7 +113,7 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaRes *pOuterDir) :
+CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaDir* pOuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)
@@ -152,7 +152,7 @@ void CMedialibView::play()
     }
     else if (m_pPath)
     {
-        arrOppPaths = m_pPath->files().map([&](CPath& subFile) {
+        arrOppPaths = m_pPath->files().map([&](XFile& subFile) {
             return ((CMediaRes&)subFile).GetPath();
         });
     }
@@ -186,16 +186,16 @@ void CMedialibView::_onShowPath(CPath& path)
     if (path.fileInfo().bDir)
     {
         WString strTitle;
-        _getTitle((CMediaRes&)path, strTitle);
+        _getTitle((CMediaDir&)path, strTitle);
 
         bool bPlayable = path.files();
         m_medialibDlg.updateHead(strTitle, bPlayable, true);
     }
 }
 
-void CMedialibView::showFile(const wstring& strPath)
+void CMedialibView::showFile(const wstring& strFile)
 {
-    CMediaRes *pMediaRes = m_MediaLib.FindSubPath(strPath, false);
+    CMediaRes *pMediaRes = (CMediaRes*)m_MediaLib.FindSubFile(strFile);
     if (pMediaRes)
     {
         showPath(*pMediaRes);
@@ -205,9 +205,9 @@ void CMedialibView::showFile(const wstring& strPath)
     if (m_pOuterDir)
     {
         cauto& strOuterRoot = m_pOuterDir->GetAbsPath();
-        if (fsutil::CheckSubPath(strOuterRoot, strPath))
+        if (fsutil::CheckSubPath(strOuterRoot, strFile))
         {
-            pMediaRes = m_pOuterDir->FindSubPath(strPath.substr(strOuterRoot.size()), false);
+            pMediaRes = (CMediaRes*)m_pOuterDir->FindSubPath(strFile.substr(strOuterRoot.size()), false);
             if (pMediaRes)
             {
                 showPath(*pMediaRes);
@@ -234,7 +234,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     strTitle << __Dot << MediaSet.m_strName;
 }
 
-void CMedialibView::_getTitle(CMediaRes& MediaRes, WString& strTitle)
+void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
 {
     if (&MediaRes == &m_MediaLib)
     {

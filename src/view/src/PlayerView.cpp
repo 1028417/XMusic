@@ -121,7 +121,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	{
 		m_view.getModel().refreshMediaLib();
 
-		CMediaRes* pDir = m_view.showChooseDirDlg(L"选择导出目录", true);
+		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择导出目录", true);
 		__EnsureBreak(pDir);
 
 		m_view.exportDir(*pDir);
@@ -132,7 +132,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	{
 		m_view.getModel().refreshMediaLib();
 
-		CMediaRes* pDir = m_view.showChooseDirDlg(L"选择目录", true);
+		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择目录", true);
 		__EnsureBreak(pDir);
 
 		m_view.snapshotDir(*pDir);
@@ -297,40 +297,40 @@ void CPlayerView::_checkSimilarFile()
 {
 	m_view.getModel().refreshMediaLib();
 
-	CMediaRes* pSrcPath = m_view.showChooseDirDlg(L"选择第一个目录", true);
-	if (NULL == pSrcPath)
+	CMediaDir* pSrcDir = m_view.showChooseDirDlg(L"选择第一个目录", true);
+	if (NULL == pSrcDir)
 	{
 		return;
 	}
 
-	if (pSrcPath == &m_view.getMediaLib())
+	if (pSrcDir == &m_view.getMediaLib())
 	{
-		m_view.checkSimilarFile(*pSrcPath);
+		m_view.checkSimilarFile(*pSrcDir);
 		return;
 	}
 
-	CMediaRes* pDstPath = m_view.showChooseDirDlg(L"选择第二个目录", false);
-	if (NULL == pDstPath)
+	CMediaDir* pDstDir = m_view.showChooseDirDlg(L"选择第二个目录", false);
+	if (NULL == pDstDir)
 	{
-		m_view.checkSimilarFile(*pSrcPath);
+		m_view.checkSimilarFile(*pSrcDir);
 	}
 	else
 	{
-		wstring strSrcPath = pSrcPath->GetPath();
-		wstring strDstPath = pDstPath->GetPath();
-		if (wsutil::matchIgnoreCase(strSrcPath, strDstPath))
+		wstring strSrcDir = pSrcDir->GetPath();
+		wstring strDstDir = pDstDir->GetPath();
+		if (wsutil::matchIgnoreCase(strSrcDir, strDstDir))
 		{
 			CMainApp::showMsg(L"请选择不同的目录！");
 			return;
 		}
-		else if (fsutil::CheckSubPath(strSrcPath, strDstPath)
-			|| fsutil::CheckSubPath(strDstPath, strSrcPath))
+		else if (fsutil::CheckSubPath(strSrcDir, strDstDir)
+			|| fsutil::CheckSubPath(strDstDir, strSrcDir))
 		{
 			CMainApp::showMsg(L"请选择没有从属关系的目录！");
 			return;
 		}
 		
-		m_view.checkSimilarFile(*pSrcPath, *pDstPath);
+		m_view.checkSimilarFile(*pSrcDir, *pDstDir);
 	}
 }
 
