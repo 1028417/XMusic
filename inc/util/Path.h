@@ -4,6 +4,8 @@
 #include "fsutil.h"
 
 //CPath
+class XFile;
+using TD_XFileList = PtrArray<XFile>;
 class CPath;
 using TD_PathList = PtrArray<CPath>;
 
@@ -19,15 +21,66 @@ using TD_PathObjectList = PtrArray<CPathObject>;
 class CDirObject;
 using TD_DirObjectList = PtrArray<CDirObject>;
 
-class __UtilExt CPath
+class __UtilExt XFile
+{
+public:
+	XFile() {}
+
+	XFile(const wstring& strName)
+		: m_fileInfo(strName)
+	{
+	}
+
+	XFile(const tagFileInfo& fileInfo)
+		: m_fileInfo(fileInfo)
+	{
+	}
+
+	virtual ~XFile() {}
+
+private:
+	tagFileInfo m_fileInfo;
+
+protected:
+	const tagFileInfo& fileinfo = m_fileInfo;
+
+public:
+	tagFileInfo& fileInfo()
+	{
+		return m_fileInfo;
+	}
+
+	const tagFileInfo& fileInfo() const
+	{
+		return m_fileInfo;
+	}
+
+	void SetName(const wstring& strNewName)
+	{
+		m_fileInfo.strName = strNewName;
+	}
+
+	wstring GetName() const;
+
+	wstring absPath() const;
+
+	wstring oppPath() const;
+
+	void Remove();
+};
+
+class __UtilExt CPath : public XFile
 {
 	friend struct tagPathSortor;
 
 public:
-	CPath(const wstring& strDir=L"");
+	CPath(const wstring& strDir = L"")
+		: XFile(wsutil::rtrim_r(strDir, __wcFSSlant))
+	{
+	}
 
     CPath(const tagFileInfo& fileInfo)
-        : m_fileInfo(fileInfo)
+        : XFile(fileInfo)
 	{
 	}
 	
@@ -37,8 +90,6 @@ public:
 	}
 
 private:
-    tagFileInfo m_fileInfo;
-
 	enum class E_FindFileStatus
 	{
 		FFS_None
@@ -48,28 +99,28 @@ private:
 	E_FindFileStatus m_eFindFileStatus = E_FindFileStatus::FFS_None;
 
 	TD_PathList m_paSubDir;
-	TD_PathList m_paSubFile;
-
-protected:
-    const tagFileInfo& fileinfo = m_fileInfo;
+	TD_XFileList m_paSubFile;
 
 private:
-    virtual CPath* _newSubPath(const tagFileInfo& fileInfo)
+	virtual CPath* _newSubDir(const tagFileInfo& fileInfo)
 	{
-        return new CPath(fileInfo);
+		return new CPath(fileInfo);
 	}
 
-	void _sort(TD_PathList& paSubPath);
+    virtual XFile* _newSubFile(const tagFileInfo& fileInfo)
+	{
+		return new XFile(fileInfo);
+	}
 
-	using CB_PathScan = function<bool(CPath& dir, TD_PathList& paSubFile)>;
+	using CB_PathScan = function<bool(CPath& dir, TD_XFileList& paSubFile)>;
 	bool _scan(const CB_PathScan& cb);
 
 protected:
 	void _findFile();
 
-	virtual void _onFindFile(TD_PathList& paSubDir, TD_PathList& paSubFile);
+	virtual void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile);
 
-	virtual int _sort(const CPath& lhs, const CPath& rhs) const;
+	virtual int _sort(const XFile& lhs, const XFile& rhs) const;
 
 	size_t count() const
 	{
@@ -77,28 +128,12 @@ protected:
 	}
 
 public:
-    tagFileInfo& fileInfo()
-    {
-        return m_fileInfo;
-    }
-
-    const tagFileInfo& fileInfo() const
-    {
-        return m_fileInfo;
-    }
-
-    void SetDir(const wstring& strDir);
-
-	void SetName(const wstring& strNewName)
+	void SetDir(const wstring& strDir)
 	{
-        m_fileInfo.strName = strNewName;
+		Clear();
+
+		XFile::SetName(wsutil::rtrim_r(strDir, __wcFSSlant));
 	}
-
-	wstring GetName() const;
-
-	wstring absPath() const;
-
-    wstring oppPath() const;
 
 	void scan(const CB_PathScan& cb);
 
@@ -108,13 +143,13 @@ public:
 		return m_paSubDir;
 	}
 
-	const TD_PathList& files()
+	const TD_XFileList& files()
 	{
 		_findFile();
 		return m_paSubFile;
 	}
 
-	void subPath(const function<void(CPath&)>& cb)
+	void get(const function<void(XFile&)>& cb)
 	{
 		_findFile();
 
@@ -122,7 +157,7 @@ public:
 		m_paSubFile(cb);
 	}
 
-	/*void CPath::subPath(UINT uIdx, const function<void(CPath&)>& cb)
+    void get(UINT uIdx, const function<void(XFile&)>& cb)
 	{
 		_findFile();
 
@@ -134,14 +169,12 @@ public:
 		{
 			m_paSubFile.get(uIdx - m_paSubDir.size(), cb);
 		}
-	}*/
+	}
 
-	CPath *FindSubPath(wstring strSubPath, bool bDir);
+	XFile *FindSubPath(wstring strSubPath, bool bDir);
 
-	void RemoveSelf();
-
-	void Remove(CPath *pSubPath);
-
+	void RemoveSubObject(XFile *subPath);
+	
 	virtual void Clear();
 };
 
@@ -200,9 +233,14 @@ public:
 	}
 
 protected:
-    virtual CPath* _newSubPath(const tagFileInfo& fileInfo) override
+	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
-        return new CPathObject(fileInfo);
+		return new CPathObject(fileInfo);
+	}
+
+	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override
+	{
+		return new CPathObject(fileInfo);
 	}
 };
 
@@ -224,13 +262,13 @@ public:
 	}
 
 protected:
-    virtual CPath* _newSubPath(const tagFileInfo& fileInfo) override
+	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
-        if (fileInfo.bDir)
-		{
-            return new CDirObject(fileInfo);
-		}
+		return new CDirObject(fileInfo);
+	}
 
+        virtual XFile* _newSubFile(const tagFileInfo&) override
+	{
 		return NULL;
 	}
 

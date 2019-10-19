@@ -50,17 +50,14 @@ private:
 	CSingerMgr& m_SingerMgr;
 
 private:
-	CPath* _newSubPath(const tagFileInfo& fileInfo) override
+	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
-		if (fileInfo.bDir)
+		if (wsutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
 		{
-			if (wsutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
-			{
-				return NULL;
-			}
+			return NULL;
 		}
 
-		return CMediaRes::_newSubPath(fileInfo);
+		return CMediaDir::_newSubDir(fileInfo);
 	}
 
     void GetSubSets(TD_MediaSetList& lstSubSets) override
@@ -161,7 +158,7 @@ public:
 	virtual bool setupMediaLib(const wstring& strRootDir) = 0;
 	virtual void refreshMediaLib() = 0;
 		
-	virtual void attachDir(const wstring& strDir) = 0;
+	virtual CMediaDir* attachDir(const wstring& strDir) = 0;
 	virtual void detachDir(const wstring& strDir) = 0;
 
 	virtual bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) = 0;
@@ -272,7 +269,7 @@ public:
 	bool setupMediaLib(const wstring& strRootDir) override;
 	void refreshMediaLib() override;
 
-	void attachDir(const wstring& strDir) override;
+	CMediaDir* attachDir(const wstring& strDir) override;
 	void detachDir(const wstring& strDir) override;
 
 	bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) override;

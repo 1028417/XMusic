@@ -61,7 +61,7 @@ class IPlayerController
 public:
     virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;
 
-    virtual CMediaRes* attachDir(const wstring& strDir) = 0;
+    virtual CMediaDir* attachDir(const wstring& strDir) = 0;
 
     virtual bool renameMedia(IMedia& media, const wstring& strNewName) = 0;
 

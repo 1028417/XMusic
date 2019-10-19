@@ -117,11 +117,7 @@ public:
         m_size = -1;
         m_uPos = 0;
 
-#if __windows
-        (void)_wfopen_s(&m_pf, m_strFile.c_str(), L"rb");
-#else
-        m_pf = fopen(wsutil::toStr(m_strFile).c_str(), "rb");
-#endif
+		m_pf = fsutil::fopen(m_strFile, "rb");
         if (NULL == m_pf)
         {
             return false;

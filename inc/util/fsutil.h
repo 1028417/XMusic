@@ -57,9 +57,16 @@ enum class E_FindFindFilter
 
 struct tagFileInfo
 {
+	tagFileInfo() {}
+
+	tagFileInfo(const wstring& t_strName)
+		: strName(t_strName)
+	{
+	}
+
 	class CPath * pParent = NULL;
 
-	bool bDir = false;
+	bool bDir = true;
 
 	wstring strName;
 
@@ -101,6 +108,9 @@ public:
         wsutil::replaceChar(strPath, __wcBackSlant, __wcSlant);
 #endif
 	}
+
+    static FILE* fopen(const string& strFile, const string& strMode);
+    static FILE* fopen(const wstring& strFile, const string& strMode);
 
 	static bool loadBinary(const wstring& strFile, vector<char>& vecData, UINT uReadSize = 0);
 
@@ -216,20 +226,18 @@ public:
 
 class __UtilExt bstream
 {
-public:
+protected:
     ~bstream()
     {
         close();
     }
 
-    bstream() {}
+	bstream(FILE *pf = NULL)
+		: m_pf(pf)
+	{
+	}
 
-    bstream(const wstring& strFile, const wstring& strMode)
-    {
-        (void)_open(strFile, strMode);
-    }
-
-    bstream(const string& strFile, const string& strMode)
+    bstream(const wstring& strFile, const string& strMode)
     {
         (void)_open(strFile, strMode);
     }
@@ -238,35 +246,12 @@ protected:
     FILE *m_pf = NULL;
 
 protected:
-    bool _open(const wstring& strFile, const wstring& strMode)
+    bool _open(const wstring& strFile, const string& strMode)
     {
-#if __windows
-        if (_wfopen_s(&m_pf, strFile.c_str(), strMode.c_str()))
-        {
-            return false;
-        }
-
-        return m_pf != NULL;
-#else
-
-        return _open(wsutil::toStr(strFile).c_str(), wsutil::toStr(strMode).c_str());
-#endif
-    }
-
-    bool _open(const string& strFile, const string& strMode)
-    {
-#if __windows
-        if (fopen_s(&m_pf, strFile.c_str(), strMode.c_str()))
-        {
-            return false;
-        }
-#else
-        m_pf = fopen(strFile.c_str(), strMode.c_str());
-#endif
-
+		m_pf = fsutil::fopen(strFile, strMode);
         return m_pf != NULL;
     }
-
+	
 public:
     operator bool() const
     {
@@ -301,14 +286,12 @@ public:
 class __UtilExt ibstream : public bstream
 {
 public:
-    ibstream() {}
+	ibstream(FILE *pf = NULL)
+		: bstream(pf)
+    {
+	}
 
     ibstream(const wstring& strFile)
-    {
-        (void)open(strFile);
-    }
-
-    ibstream(const string& strFile)
     {
         (void)open(strFile);
     }
@@ -316,14 +299,9 @@ public:
 public:
     bool open(const wstring& strFile)
     {
-        return _open(strFile, L"rb");
-    }
-
-    bool open(const string& strFile)
-    {
         return _open(strFile, "rb");
     }
-
+	
     size_t read(void *buff, size_t buffSize) const
     {
         return fread(buff, 1, buffSize, m_pf);
@@ -333,25 +311,18 @@ public:
 class __UtilExt obstream : public bstream
 {
 public:
-    obstream() {}
+    obstream(FILE *pf = NULL)
+		: bstream(pf)
+	{
+	}
 
     obstream(const wstring& strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
-
-    obstream(const string& strFile, bool bTrunc)
-    {
-        (void)open(strFile, bTrunc);
-    }
-
+	
 public:
     bool open(const wstring& strFile, bool bTrunc)
-    {
-        return _open(strFile, bTrunc?L"wb":L"ab");
-    }
-
-    bool open(const string& strFile, bool bTrunc)
     {
         return _open(strFile, bTrunc?"wb":"ab");
     }

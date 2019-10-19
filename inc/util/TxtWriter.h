@@ -156,8 +156,17 @@ private:
 			|| E_TxtEncodeType::TET_Utf8_WithBom == m_eEncodeType;
 	}
 
-	bool _open(const wstring& strFile, bool bTrunc);
-	bool _open(const string& strFile, bool bTrunc);
+    bool _open(const wstring& strFile, bool bTrunc)
+    {
+        m_lpFile = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
+        return NULL != m_lpFile;
+    }
+
+    bool _open(const string& strFile, bool bTrunc)
+    {
+        m_lpFile = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
+        return NULL != m_lpFile;
+    }
 
 	void _writeHead();
 

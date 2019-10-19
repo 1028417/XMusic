@@ -14,13 +14,17 @@ struct __UtilExt tagXmlElementInfo
     vector<tagXmlElementInfo> vecChildInfo;
 
     void getChild(const list<string>& lstChildName, CB_XmlGetChild cb);
+    void getChild(const list<string>& lstChildName, const string& strAttrName
+                  , const string& strAttrValue, CB_XmlGetChild cb);
+
     void getChildAttr(const list<string>& lstChildName, const string& strAttrName, CB_XmlGetChildAttr cb);
+    void getChildAttr(const list<string>& lstChildName, const string& strAttrName, list<string>& lstAttrValue);
 };
 
 class __UtilExt xmlutil
 {
 public:
-        static bool loadXml(const string& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+        static bool loadXml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
 
-        static bool loadHtml(const string& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+        static bool loadHtml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
 };

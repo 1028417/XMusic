@@ -1,6 +1,6 @@
 #pragma once
 
-#if __windows
+#if __winvc
 #define __TimerID UINT_PTR
 #else
 #define __TimerID void
@@ -12,16 +12,17 @@ private:
     static __TimerID _setTimer(UINT uElapse, const fn_bool& cb);
 
 public:
-	static void singleShot(UINT uElapse, const fn_void& cb);
+	static void async(UINT uElapse, const fn_void& cb);
+
     static __TimerID setTimer(UINT uElapse, const fn_void& cb);
     static __TimerID setTimerEx(UINT uElapse, const fn_bool& cb);
 
-#if __windows
+#if __winvc
     static void killTimer(UINT_PTR idEvent);
 #endif
 };
 
-#if __windows
+#if __winvc
 class __UtilExt CWinTimer
 {
 public:

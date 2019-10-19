@@ -19,11 +19,11 @@ enum class E_AttachDirType
     , ADT_USB
 };
 
-class __MediaLibExt CAttachDir : public CMediaRes
+class __MediaLibExt CAttachDir : public CMediaDir
 {
 public:
 	CAttachDir(const wstring& strDir, E_AttachDirType eType)
-		: CMediaRes(strDir)
+		: CMediaDir(strDir)
 		, m_eType(eType)
 	{
 	}
@@ -48,7 +48,7 @@ public:
     }
 };
 
-class __MediaLibExt CMediaLib : public CMediaRes
+class __MediaLibExt CMediaLib : public CMediaDir
 {
 public:
 	CMediaLib(IMediaObserver& MediaObserver);
@@ -62,10 +62,12 @@ private:
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
-    void _onFindFile(TD_PathList& lstSubDir, TD_PathList& lstSubFile) override;
+    void _onFindFile(TD_PathList& lstSubDir, TD_XFileList& lstSubFile) override;
 
-	int _sort(const CPath& lhs, const CPath& rhs) const override;
+	int _sort(const XFile& lhs, const XFile& rhs) const override;
 	
+	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
+
 public:
     void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 
@@ -80,7 +82,8 @@ public:
 
 	bool checkIndependentDir(const wstring& strAbsDir, bool bCheckAttachDir);
 
-	CMediaRes* FindSubPath(const wstring& strSubPath, bool bDir) override;
+	CMediaDir* FindSubDir(const wstring& strSubDir);
+	CMediaRes* FindSubFile(const wstring& strSubFile);
 };
 
 extern CMediaLib *g_pMediaLib;
