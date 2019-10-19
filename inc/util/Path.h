@@ -75,7 +75,7 @@ class __UtilExt CPath : public XFile
 
 public:
 	CPath(const wstring& strDir = L"")
-		: XFile(wsutil::rtrim_r(strDir, __wcFSSlant))
+		: XFile(strutil::rtrim_r(strDir, __wcFSSlant))
 	{
 	}
 
@@ -132,7 +132,7 @@ public:
 	{
 		Clear();
 
-		XFile::SetName(wsutil::rtrim_r(strDir, __wcFSSlant));
+		XFile::SetName(strutil::rtrim_r(strDir, __wcFSSlant));
 	}
 
 	void scan(const CB_PathScan& cb);

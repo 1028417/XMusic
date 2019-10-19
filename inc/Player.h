@@ -15,19 +15,64 @@
 class __PlaySDKExt IAudioOpaque
 {
 public:
-    //virtual int64_t size() const = 0;
-	//virtual uint64_t pos() const = 0;
-	
-    virtual wstring getFile() const { return L""; }
+	virtual wstring getFile() const = 0;
 
     virtual bool open() = 0;
 
-    virtual bool seekable() = 0;
+    virtual bool seekable() const = 0;
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
 
     virtual size_t read(uint8_t *buf, int buf_size) = 0;
 
     virtual void close() = 0;
+};
+
+class __PlaySDKExt CAudioOpaque : public IAudioOpaque
+{
+public:
+	CAudioOpaque();
+
+	~CAudioOpaque();
+	
+protected:
+	void *m_pDecoder = NULL;
+
+	wstring m_strFile;
+
+	FILE *m_pf = NULL;
+
+	int32_t m_size = -1;
+
+	uint64_t m_uPos = 0;
+
+public:
+	int32_t fileSize() const
+	{
+		return m_size;
+	}
+
+	void setFile(const wstring& strFile);
+
+	int checkDuration();
+
+protected:
+	virtual wstring getFile() const override
+	{
+		return m_strFile;
+	}
+
+	virtual bool open() override;
+
+	virtual bool seekable() const override
+	{
+		return !m_strFile.empty();
+	}
+
+	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override;
+	
+	virtual size_t read(uint8_t *buf, int buf_size) override;
+	
+	virtual void close() override;
 };
 
 using CB_PlayFinish = fn_void;
@@ -55,14 +100,10 @@ private:
 
 private:
     template <typename T> bool _Play(T& input, uint64_t uStartPos, bool bForce48000);
-
-    template <typename T> static int _CheckDuration(T& input, bool bLock);
-
+	
 public:
     static int InitSDK();
     static void QuitSDK();
-
-    static int CheckDuration(IAudioOpaque& AudioOpaque, bool bLock);
 
     int GetDuration() const;
 

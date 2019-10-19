@@ -52,7 +52,7 @@ private:
 private:
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
-		if (wsutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
+		if (strutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
 		{
 			return NULL;
 		}

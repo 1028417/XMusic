@@ -101,6 +101,8 @@ private:
 	ArrList<CCueFile> m_alSubCueFile;
 
 	SHashMap<wstring, UINT> m_mapSubCueFile;
+	
+	unordered_map<string, string> m_mapFileUrl;
 
 private:
     bool _loadXURL(const wstring& strFile);
@@ -118,6 +120,8 @@ public:
 	}
 
 	CRCueFile getSubCueFile(CMediaRes& MediaRes);
+
+	string getFileUrl(const wstring& strFileName);
 
 	void subMediaRes(const function<void(CMediaRes&)>& cb)
 	{

@@ -19,7 +19,7 @@
 #include <utime.h>
 
 using _utimbuf = struct utimbuf;
-#define _wutime(f, t) utime(wsutil::toStr(f).c_str(), t)
+#define _wutime(f, t) utime(strutil::wstrToStr(f).c_str(), t)
 #endif
 
 #include <sys/stat.h>
@@ -103,9 +103,9 @@ public:
 	static void transFSSlant(wstring& strPath)
 	{
 #if __windows
-        wsutil::replaceChar(strPath, __wcSlant, __wcBackSlant);
+        strutil::replaceChar(strPath, __wcSlant, __wcBackSlant);
 #else
-        wsutil::replaceChar(strPath, __wcBackSlant, __wcSlant);
+        strutil::replaceChar(strPath, __wcBackSlant, __wcSlant);
 #endif
 	}
 

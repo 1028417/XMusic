@@ -139,7 +139,7 @@ using namespace NS_SSTL;
 using fn_void = function<void()>;
 using fn_bool = function<bool()>;
 
-#include "wsutil.h"
+#include "strutil.h"
 
 #include "tmutil.h"
 

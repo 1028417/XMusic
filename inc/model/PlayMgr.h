@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FileOpaque.h"
+#include "MediaOpaque.h"
 
 #define __DemandCount 20
 
@@ -34,13 +34,11 @@ private:
 
     set<UINT> m_setPlayedIDs;
 
-    CAudioOpaque m_AudioOpaque;
+    CMediaOpaque m_MediaOpaque;
 
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 private:
-    bool _playFile(const wstring& strFile, bool bUrlFile = false, uint64_t uStartPos = 0);
-
 	bool _playNext(bool bNext, bool bManual);
 
 	void _refresh();
@@ -71,11 +69,6 @@ public:
 	ArrList<CPlayItem>& getPlayingItems()
 	{
         return m_Playinglist.playItems();
-	}
-
-    wstring GetPlayingFile() const
-	{
-        return m_AudioOpaque.getFile();
 	}
 
 	bool init();
