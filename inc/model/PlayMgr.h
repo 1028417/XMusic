@@ -39,21 +39,23 @@ private:
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
 private:
-	bool _playNext(bool bNext, bool bManual);
+    void _refresh();
 
-	void _refresh();
+    bool _clear();
 
-	bool _clear();
+    bool _playNext(bool bNext, bool bManual);
 
-	void _tryPause(const wstring& strCheckPath, const function<void(wstring&)>& cb);
+    string _getUrl(const wstring& strFile);
 
-	void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
-	void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
-	void _genDemandablePlaylist(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
+    void _tryPause(const wstring& strCheckPath, const function<void(wstring&)>& cb);
 
-	int _demandAlbumItem(E_LanguageType eLanguageType);
-	int _demandPlayItem(E_LanguageType eLanguageType);
-	int _demandMediaSet(TD_MediaSetList& arrMediaSets);
+    void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
+    void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
+    void _genDemandablePlaylist(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
+
+    int _demandAlbumItem(E_LanguageType eLanguageType);
+    int _demandPlayItem(E_LanguageType eLanguageType);
+    int _demandMediaSet(TD_MediaSetList& arrMediaSets);
 
 public:
     E_DemandMode demandMode() const

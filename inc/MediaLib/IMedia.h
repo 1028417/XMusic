@@ -77,7 +77,7 @@ public:
 
 	E_MediaSetType GetMediaSetType();
 
-	virtual CMediaRes* GetMediaRes() const;
+    virtual CMediaRes* GetMediaRes() const = 0;
 
 	virtual wstring GetExportFileName()
 	{

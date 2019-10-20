@@ -103,7 +103,9 @@ public:
 	}
 	
 	void UpdatePath(const wstring& strPath);
-	
+
+    CMediaRes *GetMediaRes() const override;
+
 	CRCueFile getCueFile() const;
 
 	virtual void AsyncTask() override;
