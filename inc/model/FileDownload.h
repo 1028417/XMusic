@@ -39,9 +39,9 @@ private:
 public:
     bool download(const string& strUrl);
 
-    size_t getData(char *pBuff, size_t buffSize);
+    int getData(char *pBuff, size_t buffSize);
 
-	void setPause(bool bPause);
+    void setPause(bool bPause);
 
     void cancel();
 };
