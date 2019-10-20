@@ -39,11 +39,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 int main(int argc, char *argv[])
 {
-    /*if (!fsutil::zUncompressZip("d:/zlib-1.2.11.zip", "d:/zlib-1.2.11-----"))
-    {
-        return -1;
-    }*/
-
 //#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
 //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
@@ -55,11 +50,18 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    CXMusicApp app(argc, argv);
+    auto app = new CXMusicApp(argc, argv);
 
 #if __android
     g_logger << "jniVer: " >> g_jniVer;
 #endif
 
-    return app.run();
+    /*if (!fsutil::zUncompressZip("d:/zlib-1.2.11.zip", "d:/zlib-1.2.11-----"))
+    {
+        return -1;
+    }*/
+
+    int nRet = app->run();
+    delete app;
+    return nRet;
 }

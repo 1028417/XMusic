@@ -91,6 +91,15 @@ public:
     {
     }
 
+    void SetDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
+    {
+        m_strOuterDir = strOuterDir;
+        CPath::SetDir(strMediaLibDir + strOuterDir);
+    }
+
+private:
+    wstring m_strOuterDir;
+
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
@@ -107,7 +116,7 @@ private:
         auto pParent = fileinfo.pParent;
         if (NULL == pParent)
         {
-            return L"/..";
+            return m_strOuterDir;
         }
 
         WString strOppPath(((COuterDir*)pParent)->GetPath());
@@ -163,14 +172,7 @@ public:
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
 
 private:
-    void _show()
-    {
-        timerutil::async(0, [&](){
-            _resizeTitle();
-        });
-
-        CDialog::show();
-    }
+    void _show();
 
     void _relayout(int cx, int cy) override;
 

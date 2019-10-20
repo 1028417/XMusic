@@ -5,7 +5,7 @@
 #include "ui_medialibdlg.h"
 
 #define __XMusic L"XMusic"
-#define __InnerStorage L"内部存储"
+#define __OuterName L"根目录"
 
 static Ui::MedialibDlg ui;
 
@@ -17,9 +17,6 @@ CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
 
 void CMedialibDlg::init()
 {
-    cauto& strOuterDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
-    m_OuterDir.SetDir(strOuterDir);
-
     ui.setupUi(this);
 
     QColor crText(32, 128, 255);
@@ -52,6 +49,36 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_MedialibView.play();
     });
+}
+
+void CMedialibDlg::_show()
+{
+    cauto& strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
+    if (strMediaLibDir.empty())
+    {
+        return;
+    }
+
+    wstring strOuterDir;
+#if __windows
+    for (cauto& wch : strMediaLibDir)
+    {
+        if (fsutil::checkPathTail(wch))
+        {
+            strOuterDir.append(L"/..");
+        }
+    }
+
+#else
+    strOuterDir = L"/..";
+#endif
+    m_OuterDir.SetDir(strMediaLibDir, strOuterDir);
+
+    timerutil::async(0, [&](){
+        _resizeTitle();
+    });
+
+    CDialog::show();
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
@@ -244,7 +271,7 @@ void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
     }
     else if (&MediaRes == m_pOuterDir)
     {
-        strTitle << __InnerStorage;
+        strTitle << __OuterName;
         return;
     }
 
@@ -318,7 +345,7 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     bool bHScreen = isHLayout();
     if (bHScreen)
     {
-        context.fIconMargin = 0.05f;
+        context.fIconMargin /= 1.3;
     }
 
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
@@ -347,7 +374,7 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
         if (m_pOuterDir)
         {
             context.pixmap = &m_pmDir;
-            context.strText = __InnerStorage;
+            context.strText = __OuterName;
             context.pPath = m_pOuterDir;
             return true;
         }

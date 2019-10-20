@@ -84,6 +84,8 @@ android {
 
 LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
 
+build_dir = ../../../build/XMusic/$$platform
+
 font.files += ../../bin/font/Microsoft-YaHei-Light.ttc
 #font.files += ../../bin/font/Microsoft-YaHei-Regular.ttc
 font.files += ../../bin/font/Microsoft-YaHei-Semibold.ttc
@@ -102,12 +104,12 @@ android {
 
     DISTFILES += \
         android/AndroidManifest.xml \
-        android/gradle/wrapper/gradle-wrapper.jar \
-        android/gradlew \
         android/res/values/libs.xml \
         android/build.gradle \
-        android/gradle/wrapper/gradle-wrapper.properties \
-        android/gradlew.bat
+        android/gradlew.bat \
+        android/gradlew \
+        android/gradle/wrapper/gradle-wrapper.jar \
+        android/gradle/wrapper/gradle-wrapper.properties
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
@@ -126,9 +128,7 @@ android {
             $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavutil.so \
             $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libswresample.so
     }
-}
-
-macx {
+} else: macx {
     ICON = xmusic.iconset/xmusic.icns
 
     QMAKE_INFO_PLIST += mac.plist
@@ -141,8 +141,6 @@ macx {
     vbkg.path = Contents/MacOS/vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 }
-
-build_dir = ../../../build/XMusic/$$platform
 
 ios {
     QMAKE_IOS_DEPLOYMENT_TARGET = 9.0
@@ -159,19 +157,3 @@ RCC_DIR = $$build_dir
 UI_DIR = $$build_dir
 }
 OBJECTS_DIR = $$build_dir
-
-DISTFILES += \
-    android/AndroidManifest.xml \
-    android/AndroidManifest.xml \
-    android/build.gradle \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew \
-    android/gradlew \
-    android/gradlew.bat \
-    android/gradlew.bat \
-    android/res/values/libs.xml \
-    android/res/values/libs.xml
