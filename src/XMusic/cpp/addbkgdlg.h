@@ -11,9 +11,7 @@ public:
     using TD_SubImgList = vector<pair<XFile*, QPixmap>>;
 
 public:
-    CImgDir(const wstring& strDir) : CPath(strDir)
-    {
-    }
+    CImgDir() {}
 
     CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
     {
@@ -47,22 +45,11 @@ private:
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 };
 
-#if __android
-#   define __ImgRootDir L"/sdcard"
-#elif __ios
-#   define __ImgRootDir L""
-#elif __mac
-#   define __ImgRootDir fsutil::getMacHomeDir()
-#else
-#   define __ImgRootDir L""
-#endif
 
 class CImgRoot : public CImgDir
 {
 public:
-    CImgRoot() : CImgDir(__ImgRootDir)
-    {
-    }
+    CImgRoot() {}
 
 private:
    bool m_bScaning = false;
@@ -70,8 +57,10 @@ private:
    std::thread m_thread;
 
 public:
-   void startScan(const function<void(CPath& dir)>& cb)
+   void startScan(const wstring& strDir, const function<void(CPath& dir)>& cb)
    {
+       SetDir(strDir);
+
        if (m_thread.joinable())
        {
            return;

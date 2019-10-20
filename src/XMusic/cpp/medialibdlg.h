@@ -81,22 +81,15 @@ private:
     bool _onUpward() override;
 };
 
-class CAndroidDir : public CMediaDir
+class COuterDir : public CMediaDir
 {
 public:
-    CAndroidDir()
-        : CMediaDir(L"/sdcard")
-    {
-        fileInfo().pParent = &m_root;
-    }
+    COuterDir() {}
 
-    CAndroidDir(const tagFileInfo& fileInfo)
+    COuterDir(const tagFileInfo& fileInfo)
         : CMediaDir(fileInfo)
     {
     }
-
-private:
-    static CMediaDir m_root;
 
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
@@ -106,18 +99,18 @@ private:
             return NULL;
         }
 
-        return new CAndroidDir(fileInfo);
+        return new COuterDir(fileInfo);
     }
 
     wstring GetPath() const override
     {
         auto pParent = fileinfo.pParent;
-        if (NULL == pParent || &m_root == pParent)
+        if (NULL == pParent)
         {
-            return L"..";
+            return L"/..";
         }
 
-        WString strOppPath(pParent->oppPath());
+        WString strOppPath(((COuterDir*)pParent)->GetPath());
         strOppPath << __wcFSSlant << fileinfo.strName;
         return std::move(strOppPath);
     }
@@ -132,12 +125,7 @@ public:
 private:
     class CXMusicApp& m_app;
 
-#if __android
-    CAndroidDir m_AndroidRootDir;
-    CMediaDir *m_pOuterDir = &m_AndroidRootDir;
-#else
-    CMediaDir *m_pOuterDir = NULL;
-#endif
+    COuterDir m_OuterDir;
 
     CMedialibView m_MedialibView;
 

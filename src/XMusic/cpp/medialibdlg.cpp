@@ -7,18 +7,19 @@
 #define __XMusic L"XMusic"
 #define __InnerStorage L"内部存储"
 
-CMediaDir CAndroidDir::m_root;
-
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
     : m_app(app)
-    , m_MedialibView(app, *this, m_pOuterDir)
+    , m_MedialibView(app, *this, &m_OuterDir)
 {
 }
 
 void CMedialibDlg::init()
 {
+    cauto& strOuterDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
+    m_OuterDir.SetDir(strOuterDir);
+
     ui.setupUi(this);
 
     QColor crText(32, 128, 255);
@@ -105,9 +106,9 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
-#if __android// || __ios
+/*#if __android// || __ios
     bShowUpwardButton = false;
-#endif
+#endif*/
     ui.btnUpward->setVisible(bShowUpwardButton);
 
     _resizeTitle();

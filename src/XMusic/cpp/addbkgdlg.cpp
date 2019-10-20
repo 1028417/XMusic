@@ -41,7 +41,8 @@ void CAddBkgDlg::show()
 
     CDialog::show();
 
-    m_ImgRoot.startScan([&](CPath& dir) {
+    cauto& strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
+    m_ImgRoot.startScan(strRootDir, [&](CPath& dir) {
         CImgDir& imgDir = (CImgDir&)dir;
         if (imgDir.genSnapshot())
         {
