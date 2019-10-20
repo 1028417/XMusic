@@ -105,9 +105,9 @@ private:
 	unordered_map<string, string> m_mapFileUrl;
 
 private:
-    bool _loadXURL(const wstring& strFile);
-
 	bool _loadCue(const wstring& strFileName);
+
+    bool _loadXURL(const wstring& strFile);
 
 protected:	
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;

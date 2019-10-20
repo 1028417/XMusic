@@ -74,13 +74,15 @@ class __UtilExt CPath : public XFile
 	friend struct tagPathSortor;
 
 public:
-	CPath(const wstring& strDir = L"")
+        CPath() {}
+
+        CPath(const wstring& strDir)
 		: XFile(strutil::rtrim_r(strDir, __wcFSSlant))
 	{
 	}
 
-    CPath(const tagFileInfo& fileInfo)
-        : XFile(fileInfo)
+        CPath(const tagFileInfo& fileInfo)
+            : XFile(fileInfo)
 	{
 	}
 	

@@ -31,7 +31,7 @@ public:
 		return CAudioOpaque::m_strFile;
 	}
 
-	void setFile(const wstring& strFile, bool bXmsc = false);
+        int setFile(const wstring& strFile, bool bXmsc = false);
 	void setUrl(const string& strUrl);
 
 	int checkDuration()
