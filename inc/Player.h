@@ -22,7 +22,7 @@ public:
     virtual bool seekable() const = 0;
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
 
-    virtual size_t read(uint8_t *buf, int buf_size) = 0;
+    virtual int read(uint8_t *buf, int buf_size) = 0;
 
     virtual void close() = 0;
 };
@@ -70,7 +70,7 @@ protected:
 
 	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override;
 	
-	virtual size_t read(uint8_t *buf, int buf_size) override;
+    virtual int read(uint8_t *buf, int buf_size) override;
 	
 	virtual void close() override;
 };

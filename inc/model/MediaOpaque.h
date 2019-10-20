@@ -75,5 +75,5 @@ private:
 
 	void close() override;
 
-	size_t read(uint8_t *buf, int buf_size) override;
+        int read(uint8_t *buf, int buf_size) override;
 };

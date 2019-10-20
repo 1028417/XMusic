@@ -2,9 +2,9 @@
 
 enum class E_DownloadStatus
 {
-    DS_OK = 0,
-    DS_Cancel,
-    DS_Fail
+    DLS_Running = 0,
+    DLS_Cancel,
+    DLS_Stoped
 };
 
 class __ModelExt CFileDownload
@@ -13,9 +13,7 @@ public:
     CFileDownload() {}
 
 private:
-    E_DownloadStatus m_eStatus = E_DownloadStatus::DS_OK;
-
-    std::condition_variable m_condvar;
+    E_DownloadStatus m_eStatus = E_DownloadStatus::DLS_Stoped;
 
     size_t m_uTotalSize = 0;
     size_t m_uDataSize = 0;
@@ -39,7 +37,7 @@ private:
     void _clear();
 
 public:
-    int download(const string& strUrl);
+    bool download(const string& strUrl);
 
     size_t getData(char *pBuff, size_t buffSize);
 
