@@ -1,23 +1,16 @@
 #pragma once
 
-enum class E_DownloadStatus
-{
-    DLS_Running = 0,
-    DLS_Cancel,
-    DLS_Stoped
-};
-
 class __ModelExt CFileDownload
 {
 public:
     CFileDownload() {}
 
 private:
-    E_DownloadStatus m_eStatus = E_DownloadStatus::DLS_Stoped;
+    bool m_bStatus = false;
 
-    size_t m_uTotalSize = 0;
-    size_t m_uDataSize = 0;
     list<pair<char*, size_t>> m_lstData;
+    size_t m_uDataSize = 0;
+    //size_t m_uTotalSize = 0;
 
 private:
     static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
@@ -40,8 +33,6 @@ public:
     bool download(const string& strUrl);
 
     int getData(char *pBuff, size_t buffSize);
-
-    void setPause(bool bPause);
 
     void cancel();
 };
