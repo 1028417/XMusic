@@ -464,7 +464,7 @@ BEGIN
     CONTROL         "不覆盖大小相同的文件",IDC_CompareFileSize,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,49,79,10
     CONTROL         "删除多余文件",IDC_DeleteOther,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,83,52,10
     CONTROL         "比较修改时间",IDC_CompareFileTime,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,118,49,50,10
-    CONTROL         "导出xmsc",IDC_ExportXMSC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,14,42,10
+    CONTROL         "导出xmsc",IDC_ExportXmsc,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,118,14,42,10
     CONTROL         "导出DB文件",IDC_ExportDB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,117,52,10
 END
 
@@ -1050,7 +1050,8 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

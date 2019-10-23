@@ -163,7 +163,7 @@ CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, con
 	
 	wstring strOppPath = m_model.getMediaLib().toOppPath(strRetDir);
 
-	CMediaDir *pMediaDir = m_model.getMediaLib().FindSubDir(strOppPath);
+	CMediaDir *pMediaDir = m_model.getMediaLib().findSubDir(strOppPath);
 	if (NULL == pMediaDir)
 	{
 		CMainApp::showMsg(L"目录不存在！");
@@ -195,7 +195,7 @@ void __view::findMedia(const wstring& strFindPath, bool bDir, const wstring& str
 	(void)FindDlg.DoModal();
 }
 
-void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const function<void(const tagVerifyResult&)>&cb)
+void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<const tagVerifyResult&> cb)
 {
 	if (NULL == pWnd)
 	{
@@ -226,13 +226,12 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, const functi
 
 			ProgressDlg.SetStatusText(task.first.c_str(), 1);
 
-			CMediaOpaque MediaOpaque(task.first);
-			int nDuration = MediaOpaque.checkDuration();
-			if (MediaOpaque.fileSize() == -1)
+			int nFileSize = 0;
+			int nDuration = (int)CMediaOpaque().checkFileDuration(task.first, nFileSize);
+			if (nFileSize < 0)
 			{
 				nDuration = -1;
-			}
-			
+			}			
 			if (nDuration <= 0)
 			{
 				lock.lock();
@@ -414,7 +413,7 @@ void __view::exportMediaSet(CMediaSet& MediaSet)
 
 void __view::exportDir(CMediaDir& dir)
 {
-	dir.Clear();
+	dir.clear();
 	CMediaResPanel::RefreshMediaResPanel();
 
 	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
@@ -479,26 +478,26 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		wstring strPrfix;
 
-		function<bool(CPath&)> fnSnapshot;
+		fn_bool_t<CPath&> fnSnapshot;
 		fnSnapshot = [&](CPath& dir) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
 
-			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.GetName();
+			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.name();
 			TxtWriter.writeln(strDirInfo);
 
 			strPrfix.append(L"  ");
 
-			cauto& paSubDir = dir.dirs();
+			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText((L"正在生成" + dir.absPath() + L"目录快照").c_str());
 
 			dir.files()([&](XFile& subFile) {
 				auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
-				auto& strFileInfo = strPrfix + subFile.GetName() + L'\t' + strFileSize;
+				auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
 				TxtWriter.writeln(strFileInfo);
 			});
 

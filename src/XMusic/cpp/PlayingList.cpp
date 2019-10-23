@@ -111,7 +111,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
     tagPlayingItem playingItem;
     m_app.getPlayMgr().getPlayingItems()([&](const CPlayItem& PlayItem){
         playingItem.uID = PlayItem.m_uID;
-        playingItem.qsTitle = strutil::wstrToQStr(PlayItem.GetTitle());
+        playingItem.qsTitle = strutil::toQstr(PlayItem.GetTitle());
         m_alPlayingItems.add(playingItem);
     });
 

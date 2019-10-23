@@ -20,7 +20,7 @@ protected:
 
 	CMenuGuard m_MenuGuard;
 
-	using CB_GetCtrlDragData = function<bool(tagDragData&)>;
+	using CB_GetCtrlDragData = fn_bool_t<tagDragData&>;
 
 private:
 	bool m_bDragScrolling = false;

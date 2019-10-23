@@ -58,7 +58,7 @@ void CDragContext::DrawDragOverIcon(long nXPos, long nYPos)
 		if (CompDC)
 		{
 			BLENDFUNCTION bf;
-			memset(&bf, 0, sizeof(bf));
+			memzero(bf);
 			bf.SourceConstantAlpha = 0xff/4;
 
 			rcDragOverIcon.SetRect(nXPos, nYPos, nXPos + m_CompDC.m_cx, nYPos + m_CompDC.m_cy);

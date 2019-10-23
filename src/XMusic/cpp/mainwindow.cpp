@@ -135,7 +135,7 @@ void MainWindow::showLogo()
 #if __android || __ios
     fFontSizeOffset = 0.9;
 
-    cauto& szScreen = QApplication::primaryScreen()->size();
+    cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
     int nLogoWidth = nScreenSize*42/100;
 
@@ -308,7 +308,7 @@ void MainWindow::show()
 
 void MainWindow::_onPaint(CPainter& painter)
 {
-    cauto& rect = this->rect();
+    cauto rect = this->rect();
 
     if (ui.labelLogo->isVisible())
     {
@@ -317,7 +317,7 @@ void MainWindow::_onPaint(CPainter& painter)
     else
     {
         bool bHScreen = rect.width() > rect.height();
-        cauto& pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         if (!pmBkg.isNull())
         {
            painter.drawPixmapEx(rect, pmBkg);
@@ -365,7 +365,7 @@ bool MainWindow::event(QEvent *ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_app.getPlayMgr().getPlayer().getClock();
+                uint64_t uClock = m_app.getPlayMgr().getPlayer().clock();
                 if (uClock > 0)
                 {
                     int nProgress = uClock / __1e6;
@@ -448,7 +448,7 @@ void MainWindow::_relayout()
 
     ui.labelDuration->setShadow(m_bUsingCustomBkg?2:0);
 
-    for (cauto& widgetPos : m_mapTopWidgetPos)
+    for (cauto widgetPos : m_mapTopWidgetPos)
     {
         QRect pos = widgetPos.second;
         if (fCXRate < 1)
@@ -459,9 +459,9 @@ void MainWindow::_relayout()
         widgetPos.first->setGeometry(pos);
     }
 
-    for (cauto& widgetPos : m_mapWidgetPos)
+    for (cauto widgetPos : m_mapWidgetPos)
     {
-        cauto& pos = widgetPos.second;
+        cauto pos = widgetPos.second;
         auto& newPos = m_mapWidgetNewPos[widgetPos.first];
 
         int width = pos.width();
@@ -803,13 +803,13 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     m_mtxPlayingInfo.get(m_PlayingInfo);
     _showAlbumName();
 
-    ui.labelPlayingfile->setText(strutil::wstrToQStr(m_PlayingInfo.strTitle));
+    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
     if (m_PlayingInfo.strSinger != m_strSingerName)
     {
         m_strSingerName = m_PlayingInfo.strSinger;
 
-        ui.labelSingerName->setText(strutil::wstrToQStr(m_strSingerName));
+        ui.labelSingerName->setText(strutil::toQstr(m_strSingerName));
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
@@ -827,7 +827,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     {
         ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
 
-        QString qsDuration = strutil::wstrToQStr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
+        QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
         ui.labelDuration->setText(qsDuration);
 
         _updatePlayPauseButton(true);
@@ -881,7 +881,7 @@ void MainWindow::_showAlbumName()
 
     if (!m_bUsingCustomBkg)
     {
-        cauto& rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
+        cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
         labelAlbumName.adjustSize();
         if (labelAlbumName.width() < rcAlbumNamePrev.width())
         {
@@ -926,7 +926,7 @@ void MainWindow::_playSingerImg(bool bReset)
     if (m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
     {
         QPixmap pm;
-        if (pm.load(strutil::wstrToQStr(strSingerImg)))
+        if (pm.load(strutil::toQstr(strSingerImg)))
         {
             ui.labelSingerImg->setPixmap(pm);
         }
@@ -997,7 +997,7 @@ void MainWindow::updateBkg()
     this->update();
 }
 
-static const QString __qsCheck = strutil::wstrToQStr(L"√");
+static const QString __qsCheck = strutil::toQstr(L"√");
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {

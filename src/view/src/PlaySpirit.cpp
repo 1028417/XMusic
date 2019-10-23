@@ -86,7 +86,7 @@ void CPlaySpirit::Dock(bool bDock)
 
 void CPlaySpirit::SetSkin(const wstring& strSkinPath)
 {
-	cauto& rcPos = rect();
+	cauto rcPos = rect();
 
 	(*this)->LoadSkin(bstr_t(strSkinPath.c_str()));
 

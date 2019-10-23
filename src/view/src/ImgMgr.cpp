@@ -70,7 +70,7 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	__AssertReturn(m_imglstSmall.Init(__Size(uSmallIconSize)), false);
 	__AssertReturn(m_imglstTiny.Init(__Size(uTinyIconSize)), false);
 	
-	for (cauto& strImgFile : g_lpImgFile)
+	for (cauto strImgFile : g_lpImgFile)
 	{
 		__AssertReturn(_setImg(m_strImgDir + strImgFile), false);
 	}
@@ -161,7 +161,7 @@ void CImgMgr::clearSingerImg()
 //HBITMAP CImgMgr::getBitmap(UINT uImgPos, E_GlobalImglst eImglstType)
 //{
 //	IMAGEINFO ImageInfo;
-//	memset(&ImageInfo, 0, sizeof(ImageInfo));
+//	memzero(ImageInfo);
 //
 //	if (!GetImglst(eImglstType).GetImageInfo(uImgPos, &ImageInfo))
 //	{

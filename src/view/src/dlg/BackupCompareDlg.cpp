@@ -83,7 +83,7 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 			wstring strMediaPath = m_cbDblclk((UINT)iItem);
 			if (!strMediaPath.empty())
 			{
-				CMediaRes *pMediaRes = m_view.getMediaLib().FindSubFile(strMediaPath);
+				CMediaRes *pMediaRes = m_view.getMediaLib().findSubFile(strMediaPath);
 				if (NULL != pMediaRes)
 				{
 					m_view.m_PlayCtrl.addPlayingItem(TD_IMediaList(pMediaRes));

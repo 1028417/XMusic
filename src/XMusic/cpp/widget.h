@@ -211,10 +211,10 @@ public:
     CTouchEvent(const QTouchEvent& te)
         : m_ulTimestamp(te.timestamp())
     {
-        cauto& points = te.touchPoints();
+        cauto points = te.touchPoints();
         if (!points.empty())
         {
-            cauto& pos = points.at(0).pos();
+            cauto pos = points.at(0).pos();
             m_x = ((int)pos.x());
             m_y = ((int)pos.y());
         }

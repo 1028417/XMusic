@@ -126,30 +126,30 @@ int CVerifyResultDlg::VerifyMediaItem(int nItem)
 {
 	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
 	__AssertReturn(pMedia, -1);
-	
-	CMediaOpaque MediaOpaque(pMedia->GetAbsPath());
-	int nDuration = MediaOpaque.checkDuration();
-	if (MediaOpaque.fileSize() == -1)
-	{
-		nDuration = -1;
-	}
-	
-	m_VerifyResult.vctVerifyResult[nItem].second = nDuration;
 
 	wstring strVerifyResult;
-	if (-1 == nDuration)
+
+	int nFileSize = 0;
+	int nDuration = (int)CMediaOpaque::checkDuration(*pMedia, nFileSize);
+	if (nFileSize < 0)
 	{
+		nDuration = -1;
 		strVerifyResult = L"不存在";
-	}
-	else if (0 == nDuration)
-	{
-		strVerifyResult = L"不可播放";
 	}
 	else
 	{
-		strVerifyResult = L"正常";
+		if (0 == nDuration)
+		{
+			strVerifyResult = L"不可播放";
+		}
+		else
+		{
+			strVerifyResult = L"正常";
+		}
 	}
 
+	m_VerifyResult.vctVerifyResult[nItem].second = nDuration;
+	
 	(void)m_wndList.SetItemText(nItem, 0, strVerifyResult.c_str());
 
 	return nDuration;

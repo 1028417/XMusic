@@ -76,7 +76,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
 		if (NULL != pPlayItem)
 		{
-			if (pPlayItem->GetFileSize() < 0 || pPlayItem->GetDuration() == 0)
+			if (pPlayItem->GetDuration() == 0)
 			{
 				lvcd.uTextAlpha = 128;
 			}

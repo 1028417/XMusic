@@ -166,7 +166,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         }
     }
 
-    QString qsText = strutil::wstrToQStr(context.strText);
+    QString qsText = strutil::toQstr(context.strText);
     if (context.bSingleLine)
     {
         int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;

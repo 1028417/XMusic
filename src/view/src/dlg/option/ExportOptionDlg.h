@@ -19,7 +19,7 @@ private:
 	
 	void OnBnClickedActualMode();
 	
-	void OnBnClickedExportXMSC();
+	void OnBnClickedExportXmsc();
 
 	void OnBnClickedCompareFileSize();
 

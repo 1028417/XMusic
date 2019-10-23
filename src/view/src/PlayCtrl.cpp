@@ -23,7 +23,7 @@ bool CPlayCtrl::init()
 		strSkinPath = __PlaySpiritSkinDir + PlaySpiritOption.strSkinName + L".skb";
 	}
 
-	cauto& rtWorkArea =	getWorkArea(false);
+	cauto rtWorkArea =	getWorkArea(false);
 	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left + 30);
 	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top + 30);
 	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - 400);
@@ -95,7 +95,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
 	UINT iFlag = ++g_iFlag;
 
-	if (PlayItem.GetDuration() <= 0)
+	if (PlayItem.GetDuration() == 0)
 	{
 		m_PlaySpirit->clear();
 
@@ -118,7 +118,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	
 	m_strPlayingFile = PlayItem.GetTitle();
 	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), PlayItem.GetDuration() + 1
-		, long(player().getClock()/__1e6));
+		, long(player().GetClock()/__1e6));
 }
 
 void CPlayCtrl::onPlayFinish()
@@ -209,7 +209,7 @@ void CPlayCtrl::close()
 		tagPlaySpiritOption& PlaySpiritOption = m_view.getOptionMgr().getPlaySpiritOption();
 		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
 
-		cauto& rcPos = m_PlaySpirit.rect();
+		cauto rcPos = m_PlaySpirit.rect();
 		PlaySpiritOption.iPosX = rcPos.left;
 		PlaySpiritOption.iPosY = rcPos.top;
 

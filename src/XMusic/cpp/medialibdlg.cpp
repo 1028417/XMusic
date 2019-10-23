@@ -23,8 +23,8 @@ void CMedialibDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    cauto& crBkg = bkgColor();
-    cauto& crFlashText = CPainter::mixColor(crText, crBkg, 85);
+    cauto crBkg = bkgColor();
+    cauto crFlashText = CPainter::mixColor(crText, crBkg, 85);
     m_MedialibView.setTextColor(crText, crFlashText);
 
 #if __android || __ios
@@ -53,7 +53,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    cauto& strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
+    cauto strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
     if (strMediaLibDir.empty())
     {
         return;
@@ -61,7 +61,7 @@ void CMedialibDlg::_show()
 
     wstring strOuterDir;
 #if __windows
-    for (cauto& wch : strMediaLibDir)
+    for (cauto wch : strMediaLibDir)
     {
         if (fsutil::checkPathTail(wch))
         {
@@ -72,7 +72,7 @@ void CMedialibDlg::_show()
 #else
     strOuterDir = L"/..";
 #endif
-    m_OuterDir.SetDir(strMediaLibDir, strOuterDir);
+    m_OuterDir.setDir(strMediaLibDir, strOuterDir);
 
     timerutil::async(0, [&](){
         _resizeTitle();
@@ -129,7 +129,7 @@ void CMedialibDlg::_resizeTitle() const
 
 void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
 {
-    ui.labelTitle->setText(strutil::wstrToQStr(strTitle));
+    ui.labelTitle->setText(strutil::toQstr(strTitle));
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
@@ -232,7 +232,7 @@ void CMedialibView::showFile(const wstring& strFile)
 
     if (m_pOuterDir)
     {
-        cauto& strOuterRoot = m_pOuterDir->GetAbsPath();
+        cauto strOuterRoot = m_pOuterDir->GetAbsPath();
         if (fsutil::CheckSubPath(strOuterRoot, strFile))
         {
             pMediaRes = (CMediaRes*)m_pOuterDir->FindSubPath(strFile.substr(strOuterRoot.size()), false);
@@ -395,7 +395,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
     if (m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
     {
         QPixmap pm;
-        if (pm.load(strutil::wstrToQStr(strSingerImg)))
+        if (pm.load(strutil::toQstr(strSingerImg)))
         {
 #define __zoomoutSize 150
             CPainter::zoomoutPixmap(pm, __zoomoutSize);

@@ -19,7 +19,6 @@
 #include <atlcom.h>
 
 #include <functional>
-using namespace std;
 
 enum class E_PlaySpiritEvent
 {
@@ -85,5 +84,5 @@ public:
 		return m_bDocked;
 	}
 
-	void SetSkin(const wstring& strSkinPath);
+	void SetSkin(const std::wstring& strSkinPath);
 };

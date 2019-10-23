@@ -158,7 +158,7 @@ public:
 	void findMedia(const wstring& strFindPath, bool bDir, const wstring& strSingerName = L"");
 
 	void verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd = NULL
-		, const function<void(const tagVerifyResult&)>&cb = NULL);
+		, cfn_void_t<const tagVerifyResult&> cb = NULL);
 	void verifyMedia(CMediaSet& MediaSet, CWnd *pWnd = NULL);
 
 	void exportMedia(const TD_MediaList& lstMedias, CWnd& wnd);

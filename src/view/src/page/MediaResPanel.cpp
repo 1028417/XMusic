@@ -247,7 +247,7 @@ void CMediaResPanel::ShowPath(const wstring& strPath)
 	CMediaDir *pRootPath = NULL;
 	if (!strPath.empty())
 	{
-		pRootPath = m_view.getMediaLib().FindSubDir(strPath);
+		pRootPath = m_view.getMediaLib().findSubDir(strPath);
 	}
 	else
 	{
@@ -258,8 +258,8 @@ void CMediaResPanel::ShowPath(const wstring& strPath)
 
 void CMediaResPanel::Refresh()
 {
-	CMediaDir *pRootPath = m_view.getMediaLib().FindSubDir(m_strRootPath);
-	CMediaDir *pCurrPath = m_view.getMediaLib().FindSubDir(m_strCurrPath);
+	CMediaDir *pRootPath = m_view.getMediaLib().findSubDir(m_strRootPath);
+	CMediaDir *pCurrPath = m_view.getMediaLib().findSubDir(m_strCurrPath);
 	if (NULL == pCurrPath)
 	{
 		pCurrPath = pRootPath;
@@ -368,14 +368,14 @@ void CMediaResPanel::_showPath()
 	
 	m_wndList.SetPath(*m_pCurrPath);
 		
-	cauto& paSubDir = m_pCurrPath->dirs();
+	cauto paSubDir = m_pCurrPath->dirs();
 	if (m_bShowRelatedSinger && paSubDir)
 	{
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
 		m_view.getSingerMgr().GetSinger(m_pCurrPath->GetPath(), mapSingerInfo);
 		
 		paSubDir([&](CPath& subDir, size_t uIdx) {
-			auto itr = mapSingerInfo.find(subDir.GetName());
+			auto itr = mapSingerInfo.find(subDir.name());
 
 			auto& MediaRes = ((CMediaRes&)subDir);
 			if (itr != mapSingerInfo.end())
@@ -546,7 +546,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.IsDir())
 			{
-				MediaRes.Clear();
+				MediaRes.clear();
 				CMediaResPanel::RefreshMediaResPanel();
 
 				m_view.checkSimilarFile((CMediaDir&)MediaRes);
@@ -555,7 +555,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		{
 			if (NULL != m_pCurrPath)
 			{
-				m_pCurrPath->Clear();
+				m_pCurrPath->clear();
 				CMediaResPanel::RefreshMediaResPanel();
 
 				m_view.checkSimilarFile(*m_pCurrPath);
@@ -621,7 +621,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_REFRESH:
 		if (NULL != m_pCurrPath)
 		{
-			m_pCurrPath->Clear();
+			m_pCurrPath->clear();
 			CMediaResPanel::RefreshMediaResPanel();
 		}
 		else

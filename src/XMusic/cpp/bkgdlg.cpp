@@ -186,13 +186,13 @@ void CBkgDlg::init()
         m_vecVBkg.push_back(strSubFile);
     });
 
-    cauto& strHBkg = m_app.getOptionMgr().getOption().strHBkg;
+    cauto strHBkg = m_app.getOptionMgr().getOption().strHBkg;
     if (!strHBkg.empty())
     {
         (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
     }
 
-    cauto& strVBkg = m_app.getOptionMgr().getOption().strVBkg;
+    cauto strVBkg = m_app.getOptionMgr().getOption().strVBkg;
     if (!strVBkg.empty())
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
@@ -252,8 +252,8 @@ const QPixmap* CBkgDlg::snapshot(UINT uIdx)
         return NULL;
     }
 
-    cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    cauto& strBkgFile = stBkgDir + vecBkg[uIdx];
+    cauto stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+    cauto strBkgFile = stBkgDir + vecBkg[uIdx];
 
 #define __zoomoutSize 1000
     m_lstSnapshot.push_back(QPixmap());
@@ -281,7 +281,7 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
     if (!strBkg.empty())
     {
-        cauto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+        cauto stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
         (void)pmBkg.load(stBkgDir + strBkg);
     }
     else
@@ -305,7 +305,7 @@ void CBkgDlg::setBkg(size_t uIdx)
         uIdx--;
         if (uIdx < vecBkg.size())
         {
-            cauto& strBkg = vecBkg[uIdx];
+            cauto strBkg = vecBkg[uIdx];
             _setBkg(strBkg);
             close();
         }

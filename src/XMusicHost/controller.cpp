@@ -118,7 +118,7 @@ bool CPlayerController::start()
 
             /*if (!m_model.getMediaLib().empty())
 			{
-                if (PlayMgr.getPlayer().GetDuration() < 0)
+                if (PlayMgr.getPlayer().GetDuration() == 0)
                 {
                     (void)PlayMgr.playNext(false);
                 }
@@ -343,7 +343,7 @@ bool CPlayerController::renameMedia(IMedia& media, const wstring& strNewName)
 	CMediaRes *pMediaRes = media.GetMediaRes();
 	if (NULL != pMediaRes)
 	{
-		pMediaRes->SetName(strNewName + strExtName);
+        pMediaRes->setName(strNewName + strExtName);
 	}
 	
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
@@ -364,22 +364,22 @@ void CPlayerController::moveMediaFile(const TD_IMediaList& lstMedias, const wstr
 	SMap<wstring, wstring> mapMovedFiles;
 
 	lstSrcMedias([&](IMedia& Media){
-        cauto& strSrcPath = Media.GetPath();
+        cauto strSrcPath = Media.GetPath();
 		if (mapMovedFiles.includes(strSrcPath))
 		{
 			return;
 		}
 
-        cauto& strDstPath = strDir + __wcFSSlant + Media.GetName();
+        cauto strDstPath = strDir + __wcFSSlant + Media.GetName();
 
-        cauto& strSrcAbsPath = Media.GetAbsPath();
+        cauto strSrcAbsPath = Media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))
 		{
 			mapMovedFiles.insert(strSrcPath, strDstPath);
 			return;
 		}
 
-        cauto& strDstAbsPath = m_model.getMediaLib().toAbsPath(strDstPath);
+        cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDstPath);
 
         if (fsutil::existFile(strDstAbsPath))
 		{
@@ -421,7 +421,7 @@ bool CPlayerController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 	lstMediaRes([&](CMediaRes& MediaRes) {
 		if (fsutil::removeFile(MediaRes.GetAbsPath()))
 		{
-			MediaRes.Remove();
+            MediaRes.remove();
 		}
 		else
 		{
@@ -438,7 +438,7 @@ int CPlayerController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Pl
 {
 	wstring strOppPath;
 	SArray<wstring> arrOppPaths;
-	for (cauto& strFile : lstFiles)
+	for (cauto strFile : lstFiles)
 	{
 		strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (strOppPath.empty())
@@ -461,7 +461,7 @@ int CPlayerController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Albu
 	wstring strSingerOppPath = Album.GetBaseDir();
 
 	list<wstring> lstOppPaths;
-	for (cauto& strFile : lstFiles)
+	for (cauto strFile : lstFiles)
 	{
 		wstring strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (!fsutil::CheckSubPath(strSingerOppPath, strOppPath))

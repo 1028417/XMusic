@@ -41,7 +41,7 @@ void CAddBkgDlg::show()
 
     CDialog::show();
 
-    cauto& strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
+    cauto strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
     m_ImgRoot.startScan(strRootDir, [&](CPath& dir) {
         CImgDir& imgDir = (CImgDir&)dir;
         if (imgDir.genSnapshot())
@@ -101,7 +101,7 @@ const QPixmap* getPixmap(CPath& path)
         if (!path.fileInfo().bDir)
         {
             auto& pm = m_mapPixmaxp[&path];
-            pm.load(strutil::wstrToQStr(path.absPath()));
+            pm.load(strutil::toQstr(path.absPath()));
             return &pm;
         }
 
@@ -172,16 +172,16 @@ size_t CAddBkgView::getRowCount()
 
 void CAddBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
-    cauto& rc = lvRow.rc;
-    cauto& uRow = lvRow.uRow;
+    cauto rc = lvRow.rc;
+    cauto uRow = lvRow.uRow;
     if (m_pImgDir)
     {
         UINT uIdx = uRow * getColumnCount() + lvRow.uCol;
 
-        cauto& subImgs = m_pImgDir->subImgs();
+        cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
-            cauto& pm = subImgs[uIdx].second;
+            cauto pm = subImgs[uIdx].second;
             painter.drawPixmapEx(rc, pm);
 
             QRect rcFrame(rc);
@@ -210,7 +210,7 @@ void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     {
         UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        cauto& subImgs = m_pImgDir->subImgs();
+        cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
             m_addbkgDlg.addBkg(subImgs[uIdx].first->absPath());
@@ -271,7 +271,7 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
-    cauto& strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (g_setImgExtName.includes(strExtName))
     {
         return new XFile(fileInfo);
@@ -284,7 +284,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
-    if (!pm.load(strutil::wstrToQStr(subFile.absPath())))
+    if (!pm.load(strutil::toQstr(subFile.absPath())))
     {
         return false;
     }
@@ -301,7 +301,7 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 
 bool CImgDir::genSnapshot()
 {
-    cauto& files = CPath::files();
+    cauto files = CPath::files();
     for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)
     {
         auto pSubFile = *m_itrSubFile;
@@ -318,7 +318,7 @@ bool CImgDir::genSnapshot()
 
 bool CImgDir::genSubImgs()
 {
-    cauto& files = CPath::files();
+    cauto files = CPath::files();
     if (files.end() == m_itrSubFile)
     {
         return false;

@@ -33,7 +33,7 @@ protected:
         }
 
         tagMediaContext(CPath& path) :
-            tagRowContext(path.fileInfo().bDir ? E_RowStyle::IS_RightTip : E_RowStyle::IS_Underline, path.GetName())
+            tagRowContext(path.fileInfo().bDir ? E_RowStyle::IS_RightTip : E_RowStyle::IS_Underline, path.name())
             , pPath(&path)
         {
             bSingleLine = true;

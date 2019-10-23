@@ -59,7 +59,7 @@ private:
 public:
    void startScan(const wstring& strDir, const function<void(CPath& dir)>& cb)
    {
-       SetDir(strDir);
+       setDir(strDir);
 
        if (m_thread.joinable())
        {
@@ -89,7 +89,7 @@ public:
            m_thread.join();
        }
 
-       CPath::Clear();
+       CPath::clear();
 
        m_pmSnapshot = QPixmap();
 

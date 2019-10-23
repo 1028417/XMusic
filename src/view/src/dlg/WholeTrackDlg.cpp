@@ -208,7 +208,7 @@ void CWholeTrackDlg::OnBnClickedBtnExplore()
 	int iItem = m_wndList.GetSelItem();
 	__Ensure(iItem >= 0);
 
-	m_plCueFile.get((UINT)iItem, [&](cauto& pr) {
+	m_plCueFile.get((UINT)iItem, [&](cauto pr) {
 		if (NULL != pr.second)
 		{
 			pr.second->ShellExplore();

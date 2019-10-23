@@ -177,7 +177,7 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 
 	auto& lnkSingerAlbum = ItemLinks.lnkSingerAlbum;
 	auto& rcSingerAlbum = lnkSingerAlbum.rcPos;
-	memset(&rcSingerAlbum, 0, sizeof rcSingerAlbum);
+	memzero(rcSingerAlbum);
 	
 	CRect& rcSingerImg = ItemLinks.lnkSingerImg.rcPos;
 
@@ -195,7 +195,7 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 	}
 	else
 	{
-		memset(&rcSingerImg, 0, sizeof rcSingerImg);
+		memzero(rcSingerImg);
 
 		iLeft += 8;
 	}
@@ -542,7 +542,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 
 		auto& PlayMgr = m_view.getPlayMgr();
 		CRCueFile cueFile = PlayItem.getCueFile();
-		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.getPlayer().getClock() / 1000));
+		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.getPlayer().GetClock() / 1000));
 
 		UINT uTrackIndex = trackInfo.uIndex;
 		if (E_ItemLinkType::ILT_PrevTrack == eLinkType)

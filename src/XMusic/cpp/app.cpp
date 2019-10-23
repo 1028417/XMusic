@@ -120,7 +120,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
-        qsFontFile = strutil::wstrToQStr(fsutil::workDir()) + qsFontFile;
+        qsFontFile = strutil::toQstr(fsutil::workDir()) + qsFontFile;
 #endif
 
         QString qsFontfamilyName;
@@ -128,7 +128,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
         g_logger << "newFontId: " >> fontId;
         if (-1 != fontId)
         {
-            cauto& qslst = QFontDatabase::applicationFontFamilies(fontId);
+            cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
             if (!qslst.empty())
             {
                 qsFontfamilyName = qslst.at(0);

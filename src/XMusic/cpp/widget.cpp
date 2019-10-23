@@ -42,7 +42,7 @@ bool CWidget<TParent>::event(QEvent *ev)
 #endif
     case QEvent::MouseButtonPress:
     {
-        cauto& me = *(QMouseEvent*)ev;
+        cauto me = *(QMouseEvent*)ev;
         if (me.button() == Qt::MouseButton::LeftButton)
         {
             _handleMouseEvent(E_MouseEventType::MET_Press, me);
@@ -56,7 +56,7 @@ bool CWidget<TParent>::event(QEvent *ev)
         break;
     case QEvent::MouseButtonRelease:
     {
-        cauto& me = *(QMouseEvent*)ev;
+        cauto me = *(QMouseEvent*)ev;
         if (me.button() == Qt::MouseButton::LeftButton)
         {
             _handleMouseEvent(E_MouseEventType::MET_Release, me);

@@ -91,10 +91,10 @@ public:
     {
     }
 
-    void SetDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
+    void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
     {
         m_strOuterDir = strOuterDir;
-        CPath::SetDir(strMediaLibDir + strOuterDir);
+        CPath::setDir(strMediaLibDir + strOuterDir);
     }
 
 private:

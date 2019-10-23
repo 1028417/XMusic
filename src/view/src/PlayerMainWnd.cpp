@@ -82,7 +82,7 @@ void CPlayerMainWnd::OnWindowPosChanged(WINDOWPOS *pWndPos)
 	{
 		m_wndSysToolBar.GetToolBar().move();
 
-		cauto& rcPos = m_view.m_PlayCtrl.getPlaySpirit().rect();
+		cauto rcPos = m_view.m_PlayCtrl.getPlaySpirit().rect();
 		m_view.m_PlayCtrl.getPlaySpirit().move(rcPos.left - 1, rcPos.top - 1);
 		m_view.m_PlayCtrl.getPlaySpirit().move(rcPos.left, rcPos.top);
 	}
@@ -181,7 +181,7 @@ BOOL CPlayerMainWnd::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESUL
 			if (!m_bTrackMouseFlag)
 			{
 				TRACKMOUSEEVENT tme;
-				memset(&tme, 0, sizeof tme);
+				memzero(tme);
 				tme.cbSize = sizeof(tme);
 				tme.hwndTrack = m_hWnd;
 				tme.dwFlags = TME_LEAVE | TME_HOVER | TME_NONCLIENT;

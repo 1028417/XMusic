@@ -41,7 +41,7 @@
 #define IDC_LIST1                       2010
 #define IDR_MENU_ALBUMITEM              2010
 #define IDC_DeleteOther2                2010
-#define IDC_ExportXMSC                  2010
+#define IDC_ExportXmsc                  2010
 #define IDC_BUTTON1                     2011
 #define IDC_BTN_FIND                    2011
 #define IDC_EDIT_MINUTE                 2011
