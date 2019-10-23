@@ -85,7 +85,7 @@ public:
 
 	bool init();
 
-    CPlayer& getPlayer()
+    CPlayer& player()
 	{
         return m_Player;
 	}
