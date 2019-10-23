@@ -10,7 +10,7 @@ CPlayCtrl::CPlayCtrl(class __view& view)
 
 CPlayer& CPlayCtrl::player()
 {
-	return m_view.getPlayMgr().getPlayer();
+	return m_view.getPlayMgr().player();
 }
 
 bool CPlayCtrl::init()

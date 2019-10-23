@@ -542,7 +542,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 
 		auto& PlayMgr = m_view.getPlayMgr();
 		CRCueFile cueFile = PlayItem.getCueFile();
-		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.getPlayer().GetClock() / 1000));
+		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.player().GetClock() / 1000));
 
 		UINT uTrackIndex = trackInfo.uIndex;
 		if (E_ItemLinkType::ILT_PrevTrack == eLinkType)
