@@ -52,24 +52,24 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
-	static wstring utf8ToWstr(const string& str);
+    static wstring fromUtf8(const string& str);
 
-	static string wstrToUTF8(const wstring& str);
-	static string wstrToUTF8(const wchar_t *pStr);
+    static string toUtf8(const wstring& str);
+    static string toUtf8(const wchar_t *pStr);
 
-    static wstring strToWstr(const string& str, bool bCheckUTF8=false);
-    static wstring strToWstr(const char *pStr, bool bCheckUTF8=false);
+    static wstring toWstr(const string& str, bool bCheckUTF8=false);
+    static wstring toWstr(const char *pStr, bool bCheckUTF8=false);
 
-	static string wstrToStr(const wstring& str);
-	static string wstrToStr(const wchar_t *pStr);
+    static string toStr(const wstring& str);
+    static string toStr(const wchar_t *pStr);
 
 #if !__winvc
-	static QString wstrToQStr(const wstring& str)
+    static QString toQstr(const wstring& str)
 	{
 		return QString::fromStdWString(str);
 	}
 
-	static QString strToQStr(const string& str)
+    static QString toQstr(const string& str)
 	{
 		return QString::fromStdString(str);
 	}
@@ -151,12 +151,12 @@ public:
 #if !__winvc
     operator QString() const
     {
-        return strutil::wstrToQStr(*this);
+        return strutil::toQstr(*this);
     }
 
     QString qstr() const
     {
-        return strutil::wstrToQStr(*this);
+        return strutil::toQstr(*this);
     }
 #endif
 	

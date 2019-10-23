@@ -1,6 +1,6 @@
 #pragma once
 
-using CB_XmlGetChild = const function<bool(struct tagXmlElementInfo&)>&;
+using CB_XmlGetChild = cfn_bool_t<struct tagXmlElementInfo&>;
 using CB_XmlGetChildAttr = const function<bool(struct tagXmlElementInfo&, const string&)>&;
 
 struct __UtilExt tagXmlElementInfo

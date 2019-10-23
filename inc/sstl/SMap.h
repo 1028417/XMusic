@@ -23,17 +23,17 @@ namespace NS_SSTL
 			|| is_same<__ContainerType, std::unordered_multimap<__KeyType, __ValueType>>::value;
 
 	public:
-		virtual ~SMapT() {} // ½â¾öqt-mac clang¸æ¾¯
+		virtual ~SMapT() {} // è§£å†³qt-mac clangå‘Šè­¦
 
 		SMapT() = default;
 
 		template <typename T>
-		explicit SMapT(const T& keys, const function<__ValueType(__KeyConstRef)>& cb)
+        explicit SMapT(const T& keys, cfn_t<__ValueType, __KeyConstRef> cb)
 		{
 			set(keys, cb);
 		}
 
-		explicit SMapT(__InitList_Key keys, const function<__ValueType(__KeyConstRef)>& cb)
+        explicit SMapT(__InitList_Key keys, cfn_t<__ValueType, __KeyConstRef> cb)
 		{
 			set(keys, cb);
 		}
@@ -190,13 +190,13 @@ namespace NS_SSTL
 			set<__InitList>(initList);
 		}
 
-		void set(__InitList_Key keys, const function<__ValueType(__KeyConstRef)>& cb)
+        void set(__InitList_Key keys, cfn_t<__ValueType, __KeyConstRef> cb)
 		{
 			set<__InitList_Key>(keys, cb);
 		}
 
 		template <typename T>
-		void set(const T& container, const function<__ValueType(__KeyConstRef)>& cb)
+        void set(const T& container, cfn_t<__ValueType, __KeyConstRef> cb)
 		{
 			for (auto& key : container)
 			{
@@ -413,7 +413,7 @@ namespace NS_SSTL
 		}
 
 	private:
-		size_t _find(__KeyConstRef key, CB_T_Ret<__ItrType&, bool> cb)
+        size_t _find(__KeyConstRef key, cfn_bool_t<__ItrType&> cb)
 		{
 			auto itr = m_data.find(key);
 			if (itr == m_data.end())
@@ -441,7 +441,7 @@ namespace NS_SSTL
 			return uRet;
 		}
 
-		size_t _find(__KeyConstRef key, CB_T_Ret<__PairConstRef, bool> cb) const
+        size_t _find(__KeyConstRef key, cfn_bool_t<__PairConstRef> cb) const
 		{
 			auto itr = m_data.find(key);
 			if (itr == m_data.end())

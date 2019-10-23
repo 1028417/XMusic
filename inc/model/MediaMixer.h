@@ -48,7 +48,7 @@ private:
 
 	bool _compare(E_SortMediaType eSortType, const CMediaMixture& lhs, const CMediaMixture& rhs);
 
-	void _erase(SSet<CMedia*>& setMedias, const function<void(CMediaMixture&)>& cb);
+	void _erase(SSet<CMedia*>& setMedias, cfn_void_t<CMediaMixture&> cb);
 
 	void _remove(const CMediaMixture& MediaMixture);
 
@@ -72,9 +72,9 @@ public:
 
 	const TD_MediaMixtureVector& get(E_SortMediaType eSortType = E_SortMediaType::SMT_Default);
 
-	bool getMediaMixture(const function<void(const CMediaMixture&)>& cb, UINT uIndex
+	bool getMediaMixture(cfn_void_t<const CMediaMixture&> cb, UINT uIndex
 		, E_SortMediaType eSortType = E_SortMediaType::SMT_Default);
 
-	bool getMedia(const function<void(CMedia&)>& cb, UINT uIndex
+	bool getMedia(cfn_void_t<CMedia&> cb, UINT uIndex
 		, E_SortMediaType eSortType = E_SortMediaType::SMT_Default);
 };

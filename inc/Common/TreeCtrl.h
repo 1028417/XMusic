@@ -93,7 +93,7 @@ struct tagTVCustomDraw : tagTVNMCustomDraw
 class __CommonExt CObjectTree : public CBaseTree
 {
 public:
-	using CB_TVCustomDraw = function<void(tagTVCustomDraw& tvcd)>;
+	using CB_TVCustomDraw = fn_void_t<tagTVCustomDraw&>;
 
 public:
 	CObjectTree() {}
@@ -199,7 +199,7 @@ public:
 private:
 	bool m_bShowNocheck = true;
 
-	function<void(E_CheckState)> m_cbCheckChanged;
+	fn_void_t<E_CheckState> m_cbCheckChanged;
 
 //protected:
 	CImageList m_StateImageList;
@@ -207,7 +207,7 @@ private:
 public:
 	BOOL InitCtrl();
 
-	void setCheckChangedCB(const function<void(E_CheckState)>& cbCheckChanged)
+	void setCheckChangedCB(cfn_void_t<E_CheckState> cbCheckChanged)
 	{
 		m_cbCheckChanged = cbCheckChanged;
 	}

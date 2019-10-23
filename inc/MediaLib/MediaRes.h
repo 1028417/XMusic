@@ -19,8 +19,11 @@ public:
 
 	virtual ~CMediaRes() {}
 
-private:
 #if __winvc
+private:
+    LPCCueFile m_pCueFile = NULL;
+
+private:
 	wstring m_strCreateTime;
 	wstring m_strModifyTime;
 
@@ -30,16 +33,12 @@ private:
 		wstring strArtist;
 		wstring strAlbum;
 	} m_MediaTag;
-#endif
 
-	LPCCueFile m_pCueFile = NULL;
+    void ReadMP3Tag(FILE *pf);
+    bool ReadFlacTag();
+#endif
 
 private:
-#if __winvc
-	void ReadMP3Tag(FILE *lpFile);
-	bool ReadFlacTag();
-#endif
-
 	bool CheckRelatedMediaSetChanged(const tagMediaSetChanged& MediaSetChanged) override;
 
 	bool GetRenameText(wstring& stRenameText) const override;
@@ -54,9 +53,9 @@ private:
 	}
 
 public:
-	CRCueFile getCueFile();
+    CRCueFile getCueFile();
 
-	class CMediaDir* parent() const;
+    class CMediaDir* parent() const;
 
 	virtual wstring GetPath() const override;
 
@@ -69,14 +68,21 @@ public:
 
 	wstring GetName() const override
 	{
-		return CPath::GetName();
+		return CPath::name();
 	}
 
-	int GetFileSize() const override
+	int GetFileSize() const
 	{
-        return (int)fileinfo.uFileSize;
+        return fileinfo.uFileSize;
 	}
-	
+
+	wstring GetFileSizeString(bool bIgnoreByte=true) const
+	{
+		__EnsureReturn(!fileinfo.bDir, L"");
+
+		return IMedia::GetFileSizeString(fileinfo.uFileSize, bIgnoreByte);
+	}
+
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
 
     void genMediaResListItem(bool bReportView, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
@@ -97,51 +103,57 @@ public:
 	{
 	}
 
+#if __winvc
 private:
 	ArrList<CCueFile> m_alSubCueFile;
-
 	SHashMap<wstring, UINT> m_mapSubCueFile;
-	
-	unordered_map<string, string> m_mapFileUrl;
 
+    bool _loadCue(const wstring& strFileName);
+
+public:
+    CRCueFile getSubCueFile(CMediaRes& MediaRes);
+
+    const ArrList<CCueFile>& SubCueList()
+    {
+        return m_alSubCueFile;
+    }
+
+#else
 private:
-	bool _loadCue(const wstring& strFileName);
+    unordered_map<string, string> m_mapFileUrl;
 
     bool _loadXURL(const wstring& strFile);
+
+ public:
+    string getFileUrl(const wstring& strFileName);
+#endif
+
+	virtual void _onClear() override
+	{
+#if __winvc
+		m_mapSubCueFile.clear();
+		m_alSubCueFile.clear();
+#else
+		m_mapFileUrl.clear();
+#endif
+	}
 
 protected:	
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
 public:
-	const ArrList<CCueFile>& SubCueList()
-	{
-		return m_alSubCueFile;
-	}
-
-	CRCueFile getSubCueFile(CMediaRes& MediaRes);
-
-	string getFileUrl(const wstring& strFileName);
-
-	void subMediaRes(const function<void(CMediaRes&)>& cb)
+	void subMediaRes(cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get([&](XFile& subObj) {
 			cb((CMediaRes&)subObj);
 		});
 	}
 
-	void subMediaRes(UINT uIdx, const function<void(CMediaRes&)>& cb)
+	void subMediaRes(UINT uIdx, cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get(uIdx, [&](XFile& subObj) {
 			cb((CMediaRes&)subObj);
 		});
-	}
-	
-	virtual void Clear() override
-	{
-		m_mapSubCueFile.clear();
-		m_alSubCueFile.clear();
-
-		CPathObject::Clear();
 	}
 };

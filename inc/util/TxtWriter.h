@@ -141,7 +141,7 @@ public:
 private:
 	E_EOLFlag m_eEOLFlag;
 
-	FILE *m_lpFile = NULL;
+    FILE *m_pf = NULL;
 
 private:
 	inline bool _isUnicode() const
@@ -158,14 +158,14 @@ private:
 
     bool _open(const wstring& strFile, bool bTrunc)
     {
-        m_lpFile = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
-        return NULL != m_lpFile;
+        m_pf = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
+        return NULL != m_pf;
     }
 
     bool _open(const string& strFile, bool bTrunc)
     {
-        m_lpFile = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
-        return NULL != m_lpFile;
+        m_pf = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
+        return NULL != m_pf;
     }
 
 	void _writeHead();
@@ -181,7 +181,7 @@ private:
 public:
 	bool isOpened() const
 	{
-		return NULL != m_lpFile;
+        return NULL != m_pf;
 	}
 
 	bool open(const wstring& strFile, bool bTrunc);
@@ -242,7 +242,7 @@ public:
         return _write(pStr, pStr?strlen(pStr):0, true);
     }
 
-    bool close();
+    void close();
 };
 
 enum class E_UnicodeHeadOpt

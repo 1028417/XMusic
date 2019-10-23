@@ -239,7 +239,7 @@ namespace NS_SSTL
 
 	public:
 		template <typename T>
-		SListT<T> map(CB_T_Ret<__DataConstRef, T> cb) const
+        SListT<T> map(cfn_t<T, __DataConstRef> cb) const
 		{
 			SListT<T> lst;
 

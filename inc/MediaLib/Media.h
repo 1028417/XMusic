@@ -68,16 +68,6 @@ public:
 		return m_addTime;
 	}
 
-	int CheckFileSize()
-	{
-		return m_nFileSize = fsutil::GetFileSize(this->GetAbsPath());
-	}
-
-	int GetFileSize() const override
-	{
-		return m_nFileSize;
-	}
-
 	void SetDuration(UINT uDuration)
 	{
 		m_nDuration = uDuration;

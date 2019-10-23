@@ -22,7 +22,7 @@ private:
 	char ** m_pData = NULL;
 
 private:
-	bool _getData(UINT uRow, const function<void(const string&)>& cb);
+	bool _getData(UINT uRow, cfn_void_t<const string&> cb);
 
 public:
 	const UINT& GetColumnCount() override

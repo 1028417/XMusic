@@ -25,17 +25,17 @@ namespace NS_SSTL
 		using __SecondRef = __SecondType&;
 		using __SecondConstRef = const __SecondType&;
 
-		using __CB_FirstRef_void = CB_T_void<__FirstRef>;
-		using __CB_FirstRef_bool = CB_T_bool<__FirstRef>;
+        using __CB_FirstRef_void = cfn_void_t<__FirstRef>;
+        using __CB_FirstRef_bool = cfn_bool_t<__FirstRef>;
 
-		using __CB_FirstConstRef_void = CB_T_void<__FirstConstRef>;
-		using __CB_FirstConstRef_bool = CB_T_bool<__FirstConstRef>;
+        using __CB_FirstConstRef_void = cfn_void_t<__FirstConstRef>;
+        using __CB_FirstConstRef_bool = cfn_bool_t<__FirstConstRef>;
 
-		using __CB_SecondRef_void = CB_T_void<__SecondRef>;
-		using __CB_SecondRef_bool = CB_T_bool<__SecondRef>;
+        using __CB_SecondRef_void = cfn_void_t<__SecondRef>;
+        using __CB_SecondRef_bool = cfn_bool_t<__SecondRef>;
 
-		using __CB_SecondConstRef_void = CB_T_void<__SecondConstRef>;
-		using __CB_SecondConstRef_bool = CB_T_bool<__SecondConstRef>;
+        using __CB_SecondConstRef_void = cfn_void_t<__SecondConstRef>;
+        using __CB_SecondConstRef_bool = cfn_bool_t<__SecondConstRef>;
 
 	public:
 		PairListT() = default;

@@ -85,7 +85,7 @@ namespace NS_SSTL
 		}
 
 		template <typename T>
-		SSetT<T, __BaseType> map(CB_T_Ret<__DataConstRef, T> cb) const
+        SSetT<T, __BaseType> map(cfn_t<T, __DataConstRef> cb) const
 		{
 			SSetT<T, __BaseType> set;
 

@@ -5,7 +5,7 @@
 #define WM_EndProgress WM_USER+3
 
 
-using FN_Work = function<void(class CProgressDlg&)>;
+using FN_Work = fn_void_t<class CProgressDlg&>;
 
 class __CommonExt CProgressDlg : public CDialog, public CThreadGroup
 {

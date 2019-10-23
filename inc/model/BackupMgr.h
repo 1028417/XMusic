@@ -1,6 +1,6 @@
 #pragma once
 
-using CB_BackupCompare = function<void(const tagCompareBackupResult&)>;
+using CB_BackupCompare = fn_void_t <const tagCompareBackupResult&>;
 
 class __ModelExt CBackupMgr
 {

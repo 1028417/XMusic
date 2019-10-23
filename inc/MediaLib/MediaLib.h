@@ -7,7 +7,7 @@ public:
 
 	virtual class CMedia *findRelatedMedia(IMedia& media, E_MediaSetType eMediaSetType) = 0;
 
-    virtual int checkDuration(IMedia& media, int& nFileSize) = 0;
+    virtual UINT checkDuration(IMedia& media, int& nFileSize) = 0;
 
 	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
 };
@@ -82,8 +82,8 @@ public:
 
 	bool checkIndependentDir(const wstring& strAbsDir, bool bCheckAttachDir);
 
-	CMediaDir* FindSubDir(const wstring& strSubDir);
-	CMediaRes* FindSubFile(const wstring& strSubFile);
+    CMediaDir* findSubDir(const wstring& strSubDir);
+    CMediaRes* findSubFile(const wstring& strSubFile);
 };
 
 extern CMediaLib *g_pMediaLib;

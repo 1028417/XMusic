@@ -208,7 +208,7 @@ public:
 	bool clonePopup(CWnd *pWnd, UINT uItemHeight, float fFontSize = 0);
 };
 
-using CB_CompatableFont = function<void(LOGFONT&)>;
+using CB_CompatableFont = fn_void_t<LOGFONT&>;
 
 class __CommonExt CCompatableFont : public CFont
 {

@@ -7,73 +7,110 @@
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
 public:
-    CMediaOpaque() {}
-
-	CMediaOpaque(const wstring& strFile, bool bXmsc = false)
-	{
-		setFile(strFile, bXmsc);
-	}
+	CMediaOpaque() {}
 
 private:
-    string m_strUrl;
-    CFileDownload m_fileDownload;
+	wstring m_strFile;
 
-    void *m_pXmsc = NULL;
+	string m_strUrl;
+
+	void *m_pXmsc = NULL;
+
+private:
+	int _openFile(const wstring& strFile, bool bXmsc);
+
+	UINT _checkDuration()
+	{
+		UINT uDuration = CAudioOpaque::checkDuration();
+		close();
+		return uDuration;
+	}
+
+	static UINT _checkDuration(const wstring& strFile, bool bXmsc, int& nFileSize);
 
 public:
-	/*const string& url() const
+#if __winvc
+	int openFile(const wstring& strFile)
 	{
-		return m_strUrl;
-	}*/
-
-	const wstring& file() const
-	{
-		return CAudioOpaque::m_strFile;
+		return _openFile(strFile, false);
 	}
+#endif
 
-        int setFile(const wstring& strFile, bool bXmsc = false);
-	void setUrl(const string& strUrl);
-
-	int checkDuration()
+	int openFile(IMedia& media)
 	{
-		return CAudioOpaque::checkDuration();
+		return _openFile(media.GetAbsPath(), media.isXmsc());
 	}
+	
+	void openUrl(const string& strUrl);
 
-	static int checkDuration(const wstring& strFile)
+#if __winvc
+	UINT checkFileDuration(const wstring& strFile, int& nFileSize)
 	{
-		return _checkDuration(strFile, false); // TODO
-	}
-
-	static int checkDuration(IMedia& media)
-	{
-		bool bXmsc = media.GetFileType() == E_MediaFileType::MFT_Null;
-		return _checkDuration(media.GetAbsPath(), bXmsc);
-	}
-
-private:
-	static int _checkDuration(const wstring& strFile, bool bXmsc)
-	{
-		static mutex s_mutex;
-		mutex_lock lock(s_mutex);
-
-		static CMediaOpaque MediaOpaque;
-		MediaOpaque.setFile(strFile, bXmsc);
-		return MediaOpaque.checkDuration();
-	}
-
-	wstring getFile() const override
-	{
-		if (m_pXmsc)
+		nFileSize = _openFile(strFile, false);
+		if (nFileSize <= 0)
 		{
-			return L"";
+			return 0;
 		}
 
-		return CAudioOpaque::getFile();
+		return _checkDuration();
 	}
 
-	bool open() override;
+	UINT checkFileDuration(const wstring& strFile)
+	{
+		int nFileSize = 0;
+		return checkDuration(strFile, nFileSize);
+		(void)nFileSize;
+	}
+#endif
+
+	UINT checkMediaDuration(IMedia& media, int& nFileSize)
+	{
+		nFileSize = _openFile(media.GetAbsPath(), media.isXmsc());
+		if (nFileSize <= 0)
+		{
+			return 0;
+		}
+
+		return _checkDuration();
+	}
+
+	UINT checkMediaDuration(IMedia& media)
+	{
+		int nFileSize = 0;
+		return checkMediaDuration(media, nFileSize);
+		(void)nFileSize;
+	}
+
+	static UINT checkDuration(const wstring& strFile, int& nFileSize)
+	{
+		return _checkDuration(strFile, false, nFileSize);
+	}
+	static UINT checkDuration(const wstring& strFile)
+	{
+		int nFileSize = 0;
+		return checkDuration(strFile, nFileSize);
+		(void)nFileSize;
+	}
+
+	static UINT checkDuration(IMedia& media, int& nFileSize)
+	{
+        return _checkDuration(media.GetAbsPath(), media.isXmsc(), nFileSize);
+	}
+	static UINT checkDuration(IMedia& media)
+	{
+		int nFileSize = 0;
+		return checkDuration(media, nFileSize);
+		(void)nFileSize;
+	}
+
+public:
+	wstring file() const override 
+	{
+		return m_strFile;
+	}
 
 	void close() override;
 
-        int read(uint8_t *buf, int buf_size) override;
+private:
+    int read(uint8_t *buf, size_t size) override;
 };

@@ -114,7 +114,7 @@ struct tagExportOption
 {
 	bool bActualMode = false;
 
-	bool bExportXMSC = false;
+	bool bExportXmsc = false;
 
 	bool bCompareFileSize = false;
 	bool bCompareFileTime = false;
@@ -128,9 +128,9 @@ struct tagExportOption
 	list<tagExportMedia> lstExportMedias;
 };
 
-using CB_checkDuplicateMedia = const function<bool(CMedia&)>&;
+using CB_checkDuplicateMedia = cfn_bool_t<CMedia&>;
 
-using CB_checkSimilarFile = const function<bool(CMediaRes&)>&;
+using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
 
 using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
 

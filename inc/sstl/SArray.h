@@ -18,7 +18,7 @@ namespace NS_SSTL
 		typedef decltype(declval<const __ContainerType&>().rbegin()) __CRItrType;
 
 	public:
-		virtual ~SArrayT() {} // ½â¾öqt-mac clang¸æ¾¯
+		virtual ~SArrayT() {} // è§£å†³qt-mac clangå‘Šè­¦
 
 		SArrayT() = default;
 
@@ -411,7 +411,7 @@ namespace NS_SSTL
 		}
 
 		template <typename T>
-		SArrayT<T, __BaseType> map(CB_T_Ret<__DataConstRef, T> cb) const
+        SArrayT<T, __BaseType> map(cfn_t<T, __DataConstRef> cb) const
 		{
 			SArrayT<T, __BaseType> arr;
 

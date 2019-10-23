@@ -24,11 +24,11 @@ namespace NS_SSTL
 		using __ConstPtr = const __DataType*;
 		using __ConstRef = const __DataType&;
 		
-		using __CB_RefType_void = CB_T_void<__RefType>;
-		using __CB_RefType_bool = CB_T_bool<__RefType>;
+        using __CB_RefType_void = cfn_void_t<__RefType>;
+        using __CB_RefType_bool = cfn_bool_t<__RefType>;
 				
 	public:
-		virtual ~PtrArrayT() {} // ½â¾öqt-mac clang¸æ¾¯
+		virtual ~PtrArrayT() {} // è§£å†³qt-mac clangå‘Šè­¦
 
 		PtrArrayT() {}
 
@@ -479,7 +479,7 @@ namespace NS_SSTL
 			return m_data.del(initList);
 		}
 
-		size_t del_ex(const function<E_DelConfirm(__RefType)>& cb)
+        size_t del_ex(cfn_t<E_DelConfirm, __RefType> cb)
 		{
 			return __Super::del_ex([&](const __PtrType ptr) {
 				if (NULL != ptr)
@@ -491,7 +491,7 @@ namespace NS_SSTL
 			});
 		}
 
-		size_t del(const function<bool(__RefType)>& cb)
+        size_t del(cfn_bool_t<__RefType> cb)
 		{
 			return __Super::del([&](const __PtrType ptr) {
 				if (NULL != ptr)
@@ -957,7 +957,7 @@ namespace NS_SSTL
 
 	public:
 		template <typename T>
-		SArray<T> map(CB_T_Ret<__RefType, T> cb) const
+        SArray<T> map(cfn_t<T, __ConstRef> cb) const
 		{
 			SArray<T> arr;
 

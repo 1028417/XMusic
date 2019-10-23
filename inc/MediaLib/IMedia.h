@@ -3,18 +3,16 @@
 
 enum class E_MediaFileType
 {
-	MFT_Null = 0
-	
-	, MFT_MP3
-	, MFT_FLAC
-	, MFT_APE
-	, MFT_WAV
-	, MFT_DSF
-	, MFT_DFF
-	, MFT_WMA
-	, MFT_M4A
-	, MFT_AAC
-	, MFT_AC3
+	MFT_Null = 0,
+#if !__winvc
+	MFT_XMSC,
+#endif
+	MFT_FLAC, MFT_MP3, MFT_WAV,
+#if __winvc
+	MFT_DSF, MFT_DFF,
+#endif
+	MFT_APE, MFT_WMA, MFT_M4A,
+	MFT_AAC, MFT_AC3, MFT_MP4
 };
 
 class __MediaLibExt IMedia
@@ -62,12 +60,19 @@ public:
 		return m_eFileType;
 	}
 
+	bool isXmsc() const
+	{
+#if __winvc
+		return false;
+#else
+		return E_MediaFileType::MFT_XMSC == m_eFileType;
+#endif
+	}
+
     const wstring& GetFileTypeString() const;
 
 	wstring GetTitle() const;
 
-	virtual int GetFileSize() const = 0;
-	wstring GetFileSizeString(bool bIgnoreByte = true) const;
 	static wstring GetFileSizeString(int iFileSize, bool bIgnoreByte=true);
 	
 	virtual CMediaSet *GetMediaSet()

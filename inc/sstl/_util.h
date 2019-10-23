@@ -136,7 +136,7 @@ namespace NS_SSTL
 	template<typename __DataType> class tagDynamicArgsExtractor
 	{
 	public:
-		using FN_ExtractCB = const function<bool(__DataType&v)>&;
+        using FN_ExtractCB = cfn_t<bool, __DataType&>;
 
 		template<typename... args>
 		static bool extract(FN_ExtractCB cb, __DataType&v, args&... others)

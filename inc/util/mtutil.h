@@ -174,3 +174,91 @@ public:
 };
 
 #include "mtlock.h"
+
+using CB_XThread = function<void(const bool& bCancelSignal)>;
+
+class __UtilExt XThread
+{
+public:
+    XThread() : m_sgnRuning(false)
+	{
+	}
+
+	virtual ~XThread()
+	{
+        cancel();
+	}
+
+private:
+	mutex m_mutex;
+
+    CSignal m_sgnRuning;
+
+    thread m_thread;
+
+private:
+    virtual void _onStart(const bool& bCancelSignal)
+    {
+        (void)bCancelSignal;
+    }
+
+public:
+	void start(const fn_void& cb)
+	{
+        cancel();
+
+        mutex_lock lock(m_mutex);
+        m_thread = thread([&, cb]() {
+            m_sgnRuning.set();
+
+            cb();
+
+            m_sgnRuning.reset();
+		});
+
+        m_sgnRuning.wait();
+	}
+
+	void start(const CB_XThread& cb)
+	{
+		start([&, cb]() {
+            cb(m_sgnRuning.value());
+		});
+	}
+	
+	void start()
+	{
+		start([&]() {
+            _onStart(m_sgnRuning.value());
+		});
+	}
+
+    void cancel(bool bJoin = true)
+    {
+        if (m_thread.joinable())
+        {
+            mutex_lock lock(m_mutex);
+            if (m_thread.joinable())
+            {
+                m_sgnRuning.reset();
+
+				if (bJoin)
+				{
+					m_thread.join();
+				}
+            }
+        }
+    }
+
+	void join()
+	{
+		if (m_thread.joinable())
+		{
+			mutex_lock lock(m_mutex);
+			if (m_thread.joinable())
+			{
+				m_thread.join();
+			}
+		}
+	}
+};

@@ -12,113 +12,94 @@
 	#define __PlaySDKExt __dllimport
 #endif
 
-class __PlaySDKExt IAudioOpaque
+enum class E_DecodeStatus
 {
-public:
-	virtual wstring getFile() const = 0;
-
-    virtual bool open() = 0;
-
-    virtual bool seekable() const = 0;
-    virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
-
-    virtual int read(uint8_t *buf, int buf_size) = 0;
-
-    virtual void close() = 0;
+	DS_Opening,
+	DS_Decoding,
+	DS_Paused,
+	DS_Cancel,
+	DS_Finished,
 };
 
-class __PlaySDKExt CAudioOpaque : public IAudioOpaque
+class __PlaySDKExt CAudioOpaque
 {
 public:
-	CAudioOpaque();
+    CAudioOpaque(FILE *pf = NULL);
 
 	~CAudioOpaque();
-	
+
 protected:
-	void *m_pDecoder = NULL;
-
-	wstring m_strFile;
-
 	FILE *m_pf = NULL;
 
-	int32_t m_size = -1;
+    uint64_t m_uPos = 0;
 
-	uint64_t m_uPos = 0;
+private:
+    void *m_pDecoder = NULL;
 
 public:
-	int32_t fileSize() const
+	void* decoder()
 	{
-		return m_size;
+		return m_pDecoder;
 	}
 
-	void setFile(const wstring& strFile);
+	UINT checkDuration();
 
-	int checkDuration();
+	E_DecodeStatus decodeStatus();
 
-protected:
-	virtual wstring getFile() const override
-	{
-		return m_strFile;
-	}
+public:
+    virtual wstring file() const {return L"";}
 
-	virtual bool open() override;
+    virtual uint64_t pos() const
+    {
+        return m_uPos;
+    }
 
-	virtual bool seekable() const override
-	{
-		return !m_strFile.empty();
-	}
-
-	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override;
+    virtual bool seekable() const {return NULL!=m_pf;}
+    virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set);
 	
-    virtual int read(uint8_t *buf, int buf_size) override;
-	
-	virtual void close() override;
+    virtual int read(uint8_t *buf, size_t size);
+
+    virtual void close();
 };
 
-using CB_PlayFinish = fn_void;
-
-enum class E_PlayStatus
-{
-	PS_Stop
-	, PS_Play
-	, PS_Pause
-};
+using CB_PlayFinish = fn_void_t<E_DecodeStatus>;
 
 class __PlaySDKExt CPlayer
 {
 public:
-	CPlayer(const CB_PlayFinish& cbFinish = NULL)
-		: m_cbFinish(cbFinish)
-		, m_stopedSignal(true)
+	CPlayer(CAudioOpaque& AudioOpaque)
+		: m_AudioOpaque(AudioOpaque)
 	{
+	}
+
+	~CPlayer()
+	{
+		Stop();
 	}
 	
 private:
-	CB_PlayFinish m_cbFinish;
+	CAudioOpaque& m_AudioOpaque;
 	
-	CSignal m_stopedSignal;
+    mutex m_mutex;
 
-private:
-    template <typename T> bool _Play(T& input, uint64_t uStartPos, bool bForce48000);
+	XThread m_thread;
 	
+private:
+	virtual void _onFinish(E_DecodeStatus) {}
+
 public:
     static int InitSDK();
     static void QuitSDK();
 
-    int GetDuration() const;
-
-    bool Play(IAudioOpaque& AudioOpaque, uint64_t uStartPos, bool bForce48000);
-
-	E_PlayStatus GetPlayStatus();
-
-    void SetVolume(UINT uVolume);
-
-	uint64_t getClock() const;
+	void Stop();
+    bool Play(uint64_t uStartPos, bool bForce48000, const CB_PlayFinish& cbFinish = NULL);
+	
+	uint32_t GetDuration();
+	uint64_t GetClock();
     void Seek(UINT uPos);
 
     void Pause();
-
 	void Resume();
-
-    void Stop();
+	
+	void SetVolume(UINT uVolume);
 };

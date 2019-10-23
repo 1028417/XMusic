@@ -1,9 +1,6 @@
 
 #pragma once
 
-#include <gdiplus.h>
-using namespace Gdiplus;
-
 #include "ModuleApp.h"
 
 using CB_Sync = fn_void;
@@ -125,7 +122,7 @@ public:
 	static void sync(const CB_Sync& cb, bool bBlock=true);
 
 	template <typename T>
-	static void sync(const function<void(T&)>& cb, T& para, bool bBlock = true)
+	static void sync(cfn_void_t<T&> cb, T& para, bool bBlock = true)
 	{
 		sync([=]() {
 			cb(para);

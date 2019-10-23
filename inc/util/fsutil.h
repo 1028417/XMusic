@@ -19,7 +19,7 @@
 #include <utime.h>
 
 using _utimbuf = struct utimbuf;
-#define _wutime(f, t) utime(strutil::wstrToStr(f).c_str(), t)
+#define _wutime(f, t) utime(strutil::toStr(f).c_str(), t)
 #endif
 
 #include <sys/stat.h>
@@ -55,7 +55,7 @@ enum class E_FindFindFilter
 	, FFP_ByExt
 };
 
-struct tagFileInfo
+struct __UtilExt tagFileInfo
 {
 	tagFileInfo() {}
 
@@ -112,10 +112,10 @@ public:
     static FILE* fopen(const string& strFile, const string& strMode);
     static FILE* fopen(const wstring& strFile, const string& strMode);
 
-	static bool loadBinary(const wstring& strFile, vector<char>& vecData, UINT uReadSize = 0);
+    static bool loadBinary(const wstring& strFile, TD_ByteVector& vecBuff, UINT uReadSize = 0);
 
 	static bool loadTxt(const wstring& strFile, string& strText);
-	static bool loadTxt(const wstring& strFile, const function<bool(const string&)>& cb);
+	static bool loadTxt(const wstring& strFile, cfn_bool_t<const string&> cb);
 	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
     static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
@@ -123,27 +123,27 @@ public:
 	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
     static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);
 
-	static bool fileStat(FILE *lpFile, tagFileStat& stat);
+    static bool fileStat(FILE *pf, tagFileStat& stat);
 	static bool fileStat(const wstring& strFile, tagFileStat& stat);
 
-	static bool fileStat32(FILE *lpFile, tagFileStat32& stat);
+    static bool fileStat32(FILE *pf, tagFileStat32& stat);
 	static bool fileStat32(const wstring& strFile, tagFileStat32& stat);
-	static bool fileStat32_64(FILE *lpFile, tagFileStat32_64& stat);
+    static bool fileStat32_64(FILE *pf, tagFileStat32_64& stat);
 	static bool fileStat32_64(const wstring& strFile, tagFileStat32_64& stat);
 
-	static bool fileStat64(FILE *lpFile, tagFileStat64& stat);
+    static bool fileStat64(FILE *pf, tagFileStat64& stat);
 	static bool fileStat64(const wstring& strFile, tagFileStat64& stat);
-	static bool fileStat64_32(FILE *lpFile, tagFileStat64_32& stat);
+    static bool fileStat64_32(FILE *pf, tagFileStat64_32& stat);
 	static bool fileStat64_32(const wstring& strFile, tagFileStat64_32& stat);
 
-	static int GetFileSize(FILE *lpFile);
+    static int GetFileSize(FILE *pf);
 	static int GetFileSize(const wstring& strFile);
-	static int64_t GetFileSize64(FILE *lpFile);
+    static int64_t GetFileSize64(FILE *pf);
 	static int64_t GetFileSize64(const wstring& strFile);
 
-	static time32_t GetFileModifyTime(FILE *lpFile);
+    static time32_t GetFileModifyTime(FILE *pf);
 	static time32_t GetFileModifyTime(const wstring& strFile);
-	static time64_t GetFileModifyTime64(FILE *lpFile);
+    static time64_t GetFileModifyTime64(FILE *pf);
 	static time64_t GetFileModifyTime64(const wstring& strFile);
 
 	static void SplitPath(const wstring& strPath, wstring *pstrDir, wstring *pstrFile);
@@ -169,7 +169,7 @@ public:
 
 	static bool moveFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-    static int64_t seekFile(FILE *lpFile, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
+    static int64_t seekFile(FILE *pf, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
 
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);
@@ -186,11 +186,11 @@ public:
     static wstring getMacHomeDir();
 #endif
 
-	using CB_FindFile = const function<void(tagFileInfo&)>&;
+	using CB_FindFile = cfn_void_t<tagFileInfo&>;
 	static bool findFile(const wstring& strDir, CB_FindFile cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL);
 	
-	static bool findSubDir(const wstring& strDir, const function<void(const wstring&)>& cb
+	static bool findSubDir(const wstring& strDir, cfn_void_t<const wstring&> cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return findFile(strDir, [&](tagFileInfo& fileInfo) {
@@ -201,7 +201,7 @@ public:
 		}, eFilter, pstrFilter);
 	}
 
-	static bool findSubFile(const wstring& strDir, const function<void(const wstring&)>& cb
+	static bool findSubFile(const wstring& strDir, cfn_void_t<const wstring&> cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return findFile(strDir, [&](tagFileInfo& fileInfo) {
@@ -232,8 +232,11 @@ protected:
         close();
     }
 
-	bstream(FILE *pf = NULL)
+	bstream() {}
+
+	bstream(FILE *pf)
 		: m_pf(pf)
+		, m_uSize(fsutil::GetFileSize(m_pf))
 	{
 	}
 
@@ -245,11 +248,20 @@ protected:
 protected:
     FILE *m_pf = NULL;
 
+	size_t m_uSize = 0;
+
 protected:
     bool _open(const wstring& strFile, const string& strMode)
     {
 		m_pf = fsutil::fopen(strFile, strMode);
-        return m_pf != NULL;
+		if (NULL == m_pf)
+		{
+			return false;
+		}
+		
+		m_uSize = fsutil::GetFileSize(m_pf);
+
+		return true;
     }
 	
 public:
@@ -262,6 +274,11 @@ public:
     {
         return m_pf != NULL;
     }
+
+	size_t size() const
+	{
+		return m_uSize;
+	}
 
     bool eof() const
     {

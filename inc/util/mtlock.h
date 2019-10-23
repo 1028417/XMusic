@@ -55,14 +55,13 @@ public:
 
 private:
     mutex m_mutex;
-
-    condition_variable m_condVar;
+    condition_variable m_condition;
 
 protected:
     T m_value;
 
 private:
-    using CB_CheckSignal = const std::function<bool(const T& value)>&;
+    using CB_CheckSignal = const function<bool(const T& value)>&;
     inline bool _wait(T& value, CB_CheckSignal cbCheck, int nMs = -1)
     {
         mutex_lock lock(m_mutex);
@@ -71,7 +70,7 @@ private:
         {
             if (!cbCheck(m_value))
             {
-                if (cv_status::timeout == m_condVar.wait_for(lock, std::chrono::milliseconds(nMs)))
+                if (cv_status::timeout == m_condition.wait_for(lock, std::chrono::milliseconds(nMs)))
                 {
                     return false;
                 }
@@ -86,7 +85,7 @@ private:
         {
             while (!cbCheck(m_value))
             {
-                m_condVar.wait(lock);
+                m_condition.wait(lock);
             }
         }
 
@@ -96,10 +95,15 @@ private:
     }
 
 public:
+    const T& value() const
+    {
+        return m_value;
+    }
+
     T wait(CB_CheckSignal cbCheck)
     {
         T value;
-        memset(&value, 0, sizeof value);
+		memzero(value);
 
         (void)_wait(value, cbCheck);
     
@@ -117,7 +121,7 @@ public:
         
         m_value = value;
         
-        m_condVar.notify_one();
+        m_condition.notify_one();
     }
 };
 
@@ -127,6 +131,12 @@ public:
     CSignal(bool bInitValue)
         : TSignal(bInitValue)
     {
+    }
+
+public:
+    const bool& value() const
+    {
+        return m_value;
     }
 
     void wait(bool bReset = false)

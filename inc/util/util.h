@@ -57,10 +57,10 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-#ifdef NULL
+/*#ifdef NULL
     #undef NULL
 #endif
-    #define NULL nullptr
+    #define NULL nullptr*/
 
 #ifdef QT_NO_DEBUG
     #define __isdebug false
@@ -79,9 +79,10 @@
     #define __UtilExt __dllimport
 #endif
 
-#define zeroset(x) memset(&(x), 0, sizeof((x)))
+#define memzero(x) memset(&(x), 0, sizeof(x))
+#define zeroset(x) memzero(x)
 
-#define cauto const auto
+#define cauto const auto&
 
 #ifndef UINT
 using UINT = unsigned int;
@@ -136,8 +137,87 @@ using BOOL = int;
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;
 
-using fn_void = function<void()>;
-using fn_bool = function<bool()>;
+template<typename T>
+struct TBuffer
+{
+public:
+	TBuffer(size_t size)
+	{
+		m_size = MAX(1, size);
+		m_pBuff = (T*)calloc(1, m_size * sizeof(T));
+	}
+
+	~TBuffer()
+	{
+		free(m_pBuff);
+	}
+
+	TBuffer(const TBuffer& other) = delete;
+	TBuffer& operator=(const TBuffer& other) = delete;
+
+private:
+	size_t m_size;
+	T *m_pBuff;
+
+public:
+	size_t size() const
+	{
+		return m_size;
+	}
+
+	operator T*()
+	{
+		return m_pBuff;
+	}
+
+	operator const T*() const
+	{
+		return m_pBuff;
+	}
+};
+
+using TD_Byte = uint8_t;
+using TD_ByteVector = std::vector<TD_Byte>;
+
+class CByteVector : public TD_ByteVector
+{
+public:
+	CByteVector() {}
+
+	CByteVector(size_t size)
+		: TD_ByteVector(size)
+	{
+	}
+
+	inline TD_Byte* ptr()
+	{
+		return &TD_ByteVector::front();
+	}
+	inline const TD_Byte* ptr() const
+	{
+		return &TD_ByteVector::front();
+	}
+
+	operator TD_Byte*()
+	{
+		return ptr();
+	}
+	operator const TD_Byte*() const
+	{
+		return ptr();
+	}
+
+	template<typename T>
+	operator T*()
+	{
+		return (T*)ptr();
+	}
+	template<typename T>
+	operator T*() const
+	{
+		return (T*)ptr();
+	}
+};
 
 #include "strutil.h"
 

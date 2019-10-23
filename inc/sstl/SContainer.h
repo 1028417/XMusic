@@ -20,15 +20,15 @@ namespace NS_SSTL
 		using __ItrType = containerItrType_t<__ContainerType>;
 		using __CItrType = containerCItrType_t<__ContainerType>;
 
-		using CB_Del = CB_T_Ret<__DataRef, E_DelConfirm>;
+        using CB_Del = cfn_t<E_DelConfirm, __DataConstRef>;
 
 		using __InitList = InitList_T<__DataType>;
 
-		using __CB_Ref_void = CB_T_void<__DataRef>;
-		using __CB_Ref_bool = CB_T_bool<__DataRef>;
+        using __CB_Ref_void = cfn_void_t<__DataRef>;
+        using __CB_Ref_bool = cfn_bool_t<__DataRef>;
 
-		using __CB_ConstRef_void = CB_T_void<__DataConstRef>;
-		using __CB_ConstRef_bool = CB_T_bool<__DataConstRef>;
+        using __CB_ConstRef_void = cfn_void_t<__DataConstRef>;
+        using __CB_ConstRef_bool = cfn_bool_t<__DataConstRef>;
 
 		using __KeyType = __KeyType__;
 		using __KeyConstRef = const __KeyType&;
@@ -643,7 +643,7 @@ namespace NS_SSTL
 		}
 
 	public:
-		SContainerT map(CB_T_Ret<__DataConstRef, __DataType> cb) const
+        SContainerT map(cfn_t<__DataType, __DataConstRef> cb) const
 		{
 			SContainerT ret;
 
@@ -740,7 +740,7 @@ namespace NS_SSTL
 		}
 
 		template<typename... args>
-		static bool extractKeyTypeArgs(CB_T_bool<__KeyConstRef> cb, __KeyConstRef key, const args&... others)
+        static bool extractKeyTypeArgs(cfn_bool_t<__KeyConstRef> cb, __KeyConstRef key, const args&... others)
 		{
 			return tagDynamicArgsExtractor<const __KeyType>::extract([&](__KeyConstRef key) {
 				return cb(key);

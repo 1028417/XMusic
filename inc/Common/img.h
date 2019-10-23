@@ -40,7 +40,7 @@ public:
 		return m_CompDC;
 	}
 
-	void getBitmap(const function<void(CBitmap&)>& cb);
+	void getBitmap(cfn_void_t<CBitmap&> cb);
 
 	bool create(UINT cx, UINT cy, HDC hDC=NULL);
 
@@ -151,5 +151,5 @@ public:
 		(void)wndTreeCtrl.SetImageList(this, TVSIL_NORMAL);
 	}
 
-	HBITMAP GetBitmap(UINT uPos, const function<void(CDC&)>& cb=NULL);
+	HBITMAP GetBitmap(UINT uPos, cfn_void_t<CDC&> cb=NULL);
 };

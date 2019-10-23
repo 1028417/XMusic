@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <gdiplus.h>
+
 #include "Page.h"
 
 #include "Guard.h"
@@ -37,10 +39,10 @@ public:
 	CViewTab();
 
 private:
-	const Pen m_pen;
+	const Gdiplus::Pen m_pen;
 
-	const SolidBrush m_brushSel;
-	const SolidBrush m_brushUnsel;
+	const Gdiplus::SolidBrush m_brushSel;
+	const Gdiplus::SolidBrush m_brushUnsel;
 
 	CCompatableFont m_font;
 
@@ -72,7 +74,7 @@ private:
 
 	void OnPaint();
 
-	void _drawItem(CDC& dc, Graphics& graphics, int nItem, CRect& rcItem);
+	void _drawItem(CDC& dc, Gdiplus::Graphics& graphics, int nItem, CRect& rcItem);
 };
 
 enum class E_DockViewType

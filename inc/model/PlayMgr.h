@@ -14,6 +14,13 @@ enum class E_DemandMode
     DM_DemandPlaylist
 };
 
+enum class E_PlayStatus
+{
+	PS_Stop
+	, PS_Play
+	, PS_Pause
+};
+
 class __ModelExt CPlayMgr
 {
 public:
@@ -30,13 +37,12 @@ private:
 	
 	UINT& m_uPlayingItem;
 	
-    CPlayer m_Player;
-
     set<UINT> m_setPlayedIDs;
 
-    CMediaOpaque m_MediaOpaque;
-
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
+
+	CMediaOpaque m_MediaOpaque;
+	CPlayer m_Player;
 
 private:
     void _refresh();
@@ -45,9 +51,13 @@ private:
 
     bool _playNext(bool bNext, bool bManual);
 
+	bool _play(uint64_t uStartPos);
+	
+#if !__winvc
     string _getUrl(const wstring& strFile);
+#endif
 
-    void _tryPause(const wstring& strCheckPath, const function<void(wstring&)>& cb);
+    void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
 
     void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
     void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
@@ -99,7 +109,9 @@ public:
 
 	bool checkPlayedID(UINT uID);
 
+#if __winvc
 	bool playAlarm(const wstring& strFile);
+#endif
 
 	bool play(UINT uItem, bool bManual=true);
 

@@ -185,10 +185,10 @@ struct tagLVCustomDraw : tagLVNMCustomDraw
 class __CommonExt CObjectList : public CTouchWnd<CListCtrl>
 {
 public:
-	using CB_LVCustomDraw = function<void(tagLVCustomDraw& lvcd)>;
-	using CB_ListViewChanged = function<void(E_ListViewType)>;
+	using CB_LVCustomDraw = fn_void_t<tagLVCustomDraw&>;
+	using CB_ListViewChanged = fn_void_t<E_ListViewType>;
 
-	using CB_LButtonHover = function<void(const CPoint&)>;
+	using CB_LButtonHover = fn_void_t<const CPoint&>;
 
 	struct tagListPara
 	{

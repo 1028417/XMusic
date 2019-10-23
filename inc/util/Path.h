@@ -55,18 +55,18 @@ public:
 		return m_fileInfo;
 	}
 
-	void SetName(const wstring& strNewName)
+    void setName(const wstring& strNewName)
 	{
 		m_fileInfo.strName = strNewName;
 	}
 
-	wstring GetName() const;
+    wstring name() const;
 
 	wstring absPath() const;
 
 	wstring oppPath() const;
 
-	void Remove();
+    void remove();
 };
 
 class __UtilExt CPath : public XFile
@@ -81,14 +81,14 @@ public:
 	{
 	}
 
-        CPath(const tagFileInfo& fileInfo)
-            : XFile(fileInfo)
+    CPath(const tagFileInfo& fileInfo)
+        : XFile(fileInfo)
 	{
 	}
 	
 	virtual ~CPath()
 	{
-		Clear();
+        clear();
 	}
 
 private:
@@ -117,6 +117,8 @@ private:
 	using CB_PathScan = function<bool(CPath& dir, TD_XFileList& paSubFile)>;
 	bool _scan(const CB_PathScan& cb);
 
+    virtual void _onClear() {}
+
 protected:
 	void _findFile();
 
@@ -130,11 +132,11 @@ protected:
 	}
 
 public:
-	void SetDir(const wstring& strDir)
+    void setDir(const wstring& strDir)
 	{
-		Clear();
+        clear();
 
-		XFile::SetName(strutil::rtrim_r(strDir, __wcFSSlant));
+        XFile::setName(strutil::rtrim_r(strDir, __wcFSSlant));
 	}
 
 	void scan(const CB_PathScan& cb);
@@ -151,7 +153,7 @@ public:
 		return m_paSubFile;
 	}
 
-	void get(const function<void(XFile&)>& cb)
+	void get(cfn_void_t<XFile&> cb)
 	{
 		_findFile();
 
@@ -159,7 +161,7 @@ public:
 		m_paSubFile(cb);
 	}
 
-    void get(UINT uIdx, const function<void(XFile&)>& cb)
+    void get(UINT uIdx, cfn_void_t<XFile&> cb)
 	{
 		_findFile();
 
@@ -175,9 +177,9 @@ public:
 
 	XFile *FindSubPath(wstring strSubPath, bool bDir);
 
-	void RemoveSubObject(XFile *subPath);
-	
-	virtual void Clear();
+    void RemoveSubObject(XFile *subPath);
+
+	void clear();
 };
 
 class __UtilExt CListObject
@@ -277,7 +279,7 @@ protected:
 public:
 	wstring GetTreeText() const override
 	{
-		return CPath::GetName();
+        return CPath::name();
 	}
 
     void GetTreeChilds(TD_TreeObjectList& lstChilds) override
