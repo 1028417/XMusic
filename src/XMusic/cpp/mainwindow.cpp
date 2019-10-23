@@ -365,7 +365,7 @@ bool MainWindow::event(QEvent *ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_app.getPlayMgr().getPlayer().GetClock();
+                uint64_t uClock = m_app.getPlayMgr().player().GetClock();
                 if (uClock > 0)
                 {
                     int nProgress = uClock / __1e6;
@@ -1049,7 +1049,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             if (ui.progressBar->maximum() > 0)
             {
                 UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
-                m_app.getPlayMgr().getPlayer().Seek(uPos);
+                m_app.getPlayMgr().player().Seek(uPos);
 
                 mtutil::usleep(100);
 
