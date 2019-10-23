@@ -365,7 +365,7 @@ bool MainWindow::event(QEvent *ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_app.getPlayMgr().getPlayer().clock();
+                uint64_t uClock = m_app.getPlayMgr().getPlayer().GetClock();
                 if (uClock > 0)
                 {
                     int nProgress = uClock / __1e6;

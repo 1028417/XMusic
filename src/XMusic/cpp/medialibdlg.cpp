@@ -174,14 +174,14 @@ void CMedialibView::play()
     {
         TD_MediaList lstMedias;
         m_pMediaset->GetAllMedias(lstMedias);
-        arrOppPaths = lstMedias.map([](IMedia& Media) {
+        arrOppPaths = lstMedias.map([](const IMedia& Media) {
             return Media.GetPath();
         });
     }
     else if (m_pPath)
     {
-        arrOppPaths = m_pPath->files().map([&](XFile& subFile) {
-            return ((CMediaRes&)subFile).GetPath();
+        arrOppPaths = m_pPath->files().map([&](const XFile& subFile) {
+            return ((const CMediaRes&)subFile).GetPath();
         });
     }
 
@@ -223,7 +223,7 @@ void CMedialibView::_onShowPath(CPath& path)
 
 void CMedialibView::showFile(const wstring& strFile)
 {
-    CMediaRes *pMediaRes = (CMediaRes*)m_MediaLib.FindSubFile(strFile);
+    CMediaRes *pMediaRes = (CMediaRes*)m_MediaLib.findSubFile(strFile);
     if (pMediaRes)
     {
         showPath(*pMediaRes);
