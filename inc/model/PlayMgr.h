@@ -109,9 +109,7 @@ public:
 
 	bool checkPlayedID(UINT uID);
 
-#if __winvc
-	bool playAlarm(const wstring& strFile);
-#endif
+    bool playAlarm(const wstring& strFile);
 
 	bool play(UINT uItem, bool bManual=true);
 

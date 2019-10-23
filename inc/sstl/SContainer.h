@@ -20,7 +20,7 @@ namespace NS_SSTL
 		using __ItrType = containerItrType_t<__ContainerType>;
 		using __CItrType = containerCItrType_t<__ContainerType>;
 
-        using CB_Del = cfn_t<E_DelConfirm, __DataConstRef>;
+        using CB_Del = cfn_t<E_DelConfirm, __DataRef>;
 
 		using __InitList = InitList_T<__DataType>;
 

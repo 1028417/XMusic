@@ -29,12 +29,10 @@ private:
 	static UINT _checkDuration(const wstring& strFile, bool bXmsc, int& nFileSize);
 
 public:
-#if __winvc
-	int openFile(const wstring& strFile)
+    int openFile(const wstring& strFile)
 	{
 		return _openFile(strFile, false);
-	}
-#endif
+    }
 
 	int openFile(IMedia& media)
 	{
