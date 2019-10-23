@@ -24,23 +24,26 @@ enum class E_DecodeStatus
 class __PlaySDKExt CAudioOpaque
 {
 public:
-    CAudioOpaque(FILE *pf = NULL);
+    CAudioOpaque();
 
-	~CAudioOpaque();
-
-protected:
-	FILE *m_pf = NULL;
-
-    uint64_t m_uPos = 0;
+    virtual ~CAudioOpaque();
 
 private:
     void *m_pDecoder = NULL;
+
+private:
+	FILE *m_pf = NULL;
+
+    uint64_t m_uPos = 0;
 
 public:
 	void* decoder()
 	{
 		return m_pDecoder;
 	}
+
+    virtual void close();
+    int open(const wstring& strFile);
 
 	UINT checkDuration();
 
@@ -49,17 +52,10 @@ public:
 public:
     virtual wstring file() const {return L"";}
 
-    virtual uint64_t pos() const
-    {
-        return m_uPos;
-    }
-
     virtual bool seekable() const {return NULL!=m_pf;}
     virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set);
 	
     virtual int read(uint8_t *buf, size_t size);
-
-    virtual void close();
 };
 
 using CB_PlayFinish = fn_void_t<E_DecodeStatus>;

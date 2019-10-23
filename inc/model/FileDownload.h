@@ -18,7 +18,7 @@ private:
 	}
 
 private:
-	mutex m_mutex;
+    XThread m_thread;
 
     bool m_bStatus = false;
 
@@ -44,8 +44,10 @@ private:
 
     void _clear();
 
+    bool _download(const string& strUrl);
+
 public:
-    bool download(const string& strUrl);
+    void download(const string& strUrl);
     bool download(const string& strUrl, CByteVector& vecBuff);
 
     size_t dataSize() const

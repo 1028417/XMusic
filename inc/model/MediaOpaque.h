@@ -9,10 +9,12 @@ class __ModelExt CMediaOpaque : public CAudioOpaque
 public:
 	CMediaOpaque() {}
 
+    ~CMediaOpaque();
+
 private:
 	wstring m_strFile;
 
-	string m_strUrl;
+    bool m_bUrl = false;
 
 	void *m_pXmsc = NULL;
 
