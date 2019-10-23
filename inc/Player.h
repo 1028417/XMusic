@@ -36,12 +36,14 @@ private:
 
     uint64_t m_uPos = 0;
 
-public:
+private:
+    friend class CPlayer;
 	void* decoder()
 	{
 		return m_pDecoder;
 	}
 
+public:
     virtual void close();
     int open(const wstring& strFile);
 
