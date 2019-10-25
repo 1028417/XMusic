@@ -34,7 +34,7 @@ public:
 public:
 	wstring GetPath() const override
 	{
-        return __wcFSSlant + GetName();
+        return __wcDirSeparator + GetName();
 	}
 
 	int _getImage() override
@@ -82,8 +82,14 @@ public:
 
 	bool checkIndependentDir(const wstring& strAbsDir, bool bCheckAttachDir);
 
-    CMediaDir* findSubDir(const wstring& strSubDir);
-    CMediaRes* findSubFile(const wstring& strSubFile);
+    CMediaDir* findSubDir(const wstring& strSubDir) override
+    {
+        return (CMediaDir*)_findSubPath(strSubDir, true);
+    }
+    CMediaRes* findSubFile(const wstring& strSubFile) override
+    {
+        return _findSubPath(strSubFile, false);
+    }
 };
 
 extern CMediaLib *g_pMediaLib;

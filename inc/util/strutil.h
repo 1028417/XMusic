@@ -10,10 +10,19 @@
 #define to_wstring(x) QString::number(x).toStdWString()
 #endif
 
+#define __substr strutil::substr
+
 class __UtilExt strutil
 {
 public:
 	static const wchar_t wcSpace = L' ';
+
+public:
+    static int collate(const wstring& lhs, const wstring& rhs);
+    static int collate_cn(const wstring& lhs, const wstring& rhs);
+
+    static string substr(const string& str, size_t pos, size_t len = string::npos);
+    static wstring substr(const wstring& str, size_t pos, size_t len = wstring::npos);
 
 	static void trim(wstring& strText, wchar_t chr = ' ');
 	static void trim(string& strText, char chr = ' ');
@@ -33,7 +42,6 @@ public:
 	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet, bool bTrim = false);
 	static void split(const string& strText, char wcSplitor, vector<string>& vecRet, bool bTrim = false);
 
-	static int collate(const wstring& lhs, const wstring& rhs);
 	static bool matchIgnoreCase(const wstring& str1, const wstring& str2);
 
 	static void lowerCase(wstring& str);
@@ -45,6 +53,14 @@ public:
 	static void upperCase(string& str);
 	static wstring upperCase_r(const wstring& str);
 	static string upperCase_r(const string& str);
+
+    static void replace(wstring& str, const wstring& strFind, const wstring& strReplace=L"");
+    static wstring replace_r(const wstring& str, const wstring& strFind, const wstring& strReplace=L"")
+    {
+        wstring strRet = str;
+        replace(strRet, strFind, strReplace);
+        return strRet;
+    }
 
 	static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);

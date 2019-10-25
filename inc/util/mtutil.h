@@ -8,18 +8,18 @@ class __UtilExt mtutil
 {
 #if __windows
 public:
-	static bool apcWakeup(HANDLE hThread, const fn_void& fn = NULL)
+	static bool apcWakeup(HANDLE hThread, cfn_void fn = NULL)
 	{
 		return 0 != QueueUserAPC(APCFunc, hThread, fn ? (ULONG_PTR)&fn : 0);
 	}
 
-	static bool apcWakeup(DWORD dwThreadID, const fn_void& fn = NULL)
+	static bool apcWakeup(DWORD dwThreadID, cfn_void fn = NULL)
 	{
 		HANDLE hThread = OpenThread(PROCESS_ALL_ACCESS, FALSE, dwThreadID);
 		return apcWakeup(hThread, fn);
 	}
 
-	static bool poolStart(const fn_void& fn)
+	static bool poolStart(cfn_void fn)
 	{
 		return TRUE == QueueUserWorkItem(UserWorkItemProc, fn ? (PVOID)&fn : 0, WT_EXECUTEDEFAULT);
 	}
@@ -47,31 +47,43 @@ private:
 #endif
 
 public:
-	static void thread(const fn_void& cb)
+	static void thread(cfn_void cb)
 	{
 		std::thread(cb).detach();
 	}
 
-	template <typename FN, typename RET=decltype(declval<FN>()())>
-	static RET thread(const FN& fn, const fn_void& cbThread)
+	template <typename FN, typename CB, typename = checkCBVoid_t<FN>, typename = checkCBVoid_t<CB>>
+	static void thread(const FN& fn, const CB& cbThread)
+	{
+		std::thread thr(cbThread);
+
+		fn();
+		thr.join();
+	}
+
+	template <typename FN, typename CB, typename RET=decltype(declval<FN>()()), typename = checkCBVoid_t<CB>>
+	static RET thread(const FN& fn, const CB& cbThread)
 	{
 		std::thread thr(cbThread);
 		
 		RET ret = fn();
-
 		thr.join();
 
 		return ret;
 	}
 
-	template <typename FN, typename = checkCBVoid_t<FN>>
-	static void thread(const FN& fn, const fn_void& cbThread)
+    template <typename FN, typename CB, typename RET = decltype(declval<CB>()()), typename = checkCBVoid_t<FN>, typename=void>
+	static RET thread(const FN& fn, const CB& cbThread)
 	{
-		std::thread thr(cbThread);
+		RET ret;
+		std::thread thr([&]() {
+            ret = cbThread();
+		});
 
 		fn();
-
 		thr.join();
+
+		return ret;
 	}
 
 	inline static void usleep(UINT uMS = 0)
@@ -127,13 +139,10 @@ private:
 
 public:
 	using CB_SubTask = const function<bool(UINT uTaskIdx, T&, R&)>&;
+
 	static void start(ArrList<T>& alTask, vector<R>& vecResult, UINT uThreadCount, CB_SubTask cb)
 	{
-		if (0 == uThreadCount)
-		{
-			uThreadCount = 1;
-		}
-
+		uThreadCount = MAX(1, uThreadCount);
 		vecResult.resize(uThreadCount);
 
 		CThreadGroup ThreadGroup;
@@ -203,7 +212,7 @@ private:
     }
 
 public:
-	void start(const fn_void& cb)
+	void start(cfn_void cb)
 	{
         cancel();
 

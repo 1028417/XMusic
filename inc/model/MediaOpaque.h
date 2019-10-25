@@ -16,7 +16,7 @@ private:
 
     bool m_bUrl = false;
 
-	void *m_pXmsc = NULL;
+    void *m_pXmscCodec = NULL;
 
 private:
 	int _openFile(const wstring& strFile, bool bXmsc);
@@ -106,6 +106,11 @@ public:
 public:
 	wstring file() const override 
 	{
+        if (m_pXmscCodec)
+        {
+            return L"";
+        }
+
 		return m_strFile;
 	}
 

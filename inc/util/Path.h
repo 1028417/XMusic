@@ -66,6 +66,8 @@ public:
 
 	wstring oppPath() const;
 
+	const CPath* rootDir() const;
+
     void remove();
 };
 
@@ -77,7 +79,7 @@ public:
         CPath() {}
 
         CPath(const wstring& strDir)
-		: XFile(strutil::rtrim_r(strDir, __wcFSSlant))
+		: XFile(strutil::rtrim_r(strDir, __wcDirSeparator))
 	{
 	}
 
@@ -136,7 +138,7 @@ public:
 	{
         clear();
 
-        XFile::setName(strutil::rtrim_r(strDir, __wcFSSlant));
+        XFile::setName(strutil::rtrim_r(strDir, __wcDirSeparator));
 	}
 
 	void scan(const CB_PathScan& cb);
@@ -175,9 +177,22 @@ public:
 		}
 	}
 
-	XFile *FindSubPath(wstring strSubPath, bool bDir);
+    XFile* findSubPath(wstring strSubPath, bool bDir);
+    XFile* findSubFile(wstring strSubFile)
+    {
+        return findSubPath(strSubFile, false);
+    }
+    CPath* findSubDir(wstring strSubDir)
+    {
+        return (CPath*)findSubPath(strSubDir, true);
+    }
 
-    void RemoveSubObject(XFile *subPath);
+    void remove()
+    {
+        return XFile::remove();
+    }
+
+    void remove(XFile *subPath);
 
 	void clear();
 };

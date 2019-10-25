@@ -2,48 +2,49 @@
 #pragma once
 
 #if defined(_MSC_VER)
+    #define __winvc true
+    #define __windows true
+
     #define __android false
     #define __ios false
     #define __mac false
-    #define __windows true
-    #define __winvc true
 
 #else
     #define __winvc false
 
     #include <qsystemdetection.h>
     #if defined(Q_OS_ANDROID)
+        #define __windows false
         #define __android true
         #define __ios false
         #define __mac false
-		#define __windows false
 
     #elif defined(Q_OS_IOS)
+        #define __windows false
         #define __android false
         #define __ios true
         #define __mac false
-		#define __windows false
 
     #elif defined(Q_OS_MACOS)
+        #define __windows false
         #define __android false
         #define __ios false
         #define __mac true
-		#define __windows false
 
     #else
+        #define __windows true
         #define __android false
         #define __ios false
         #define __mac false
-		#define __windows true
     #endif
 #endif
 
 #if __winvc
-#ifdef _DEBUG
-    #define __isdebug true
-#else
-    #define __isdebug false
-#endif
+    #ifdef _DEBUG
+        #define __isdebug true
+    #else
+        #define __isdebug false
+    #endif
 
     #pragma warning(disable: 4251)
     #pragma warning(disable: 4275)
@@ -57,10 +58,10 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-/*#ifdef NULL
+#ifdef NULL
     #undef NULL
 #endif
-    #define NULL nullptr*/
+    #define NULL nullptr
 
 #ifdef QT_NO_DEBUG
     #define __isdebug false

@@ -64,13 +64,13 @@ struct __UtilExt tagFileInfo
 	{
 	}
 
-	class CPath * pParent = NULL;
+    class CPath *pParent = NULL;
 
 	bool bDir = true;
 
 	wstring strName;
 
-	unsigned long uFileSize = 0;
+    UINT uFileSize = 0;
 
 	time64_t tCreateTime = 0;
 	time64_t tModifyTime = 0;
@@ -81,9 +81,9 @@ struct __UtilExt tagFileInfo
 #define __wcBackSlant L'\\'
 
 #if __windows
-	#define __wcFSSlant	__wcBackSlant
+    #define __wcDirSeparator	__wcBackSlant
 #else
-	#define __wcFSSlant	__wcSlant
+    #define __wcDirSeparator	__wcSlant
 #endif
 
 #define __wcDot L'.'

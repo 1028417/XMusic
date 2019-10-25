@@ -129,7 +129,7 @@ public:
 		}, bBlock);
 	}
 	
-	void thread(const fn_void& cb);
+	void thread(cfn_void cb);
 
 	E_DoEventsResult DoEvents(bool bOnce=false);
 

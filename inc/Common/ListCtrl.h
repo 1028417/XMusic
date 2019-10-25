@@ -354,7 +354,7 @@ public:
 	using CB_AsyncTask = function<void(UINT uItem)>;
 	void AsyncTask(UINT uElapse, const CB_AsyncTask& cb=NULL);
 
-	void CObjectList::AsyncLButtondown(const fn_void& cb);
+	void CObjectList::AsyncLButtondown(cfn_void cb);
 
 protected:
 	virtual void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage);

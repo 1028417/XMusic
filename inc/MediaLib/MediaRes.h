@@ -138,7 +138,23 @@ private:
 #endif
 	}
 
-protected:	
+protected:
+#if !__winvc
+	void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
+	{
+		thread thr([&]() {
+			cauto strXurlFile = this->absPath() + L"/.xurl";
+			if (fsutil::existFile(strXurlFile))
+			{
+				(void)_loadXURL(strXurlFile);
+			}
+		});
+
+		CPath::_onFindFile(paSubDir, paSubFile);
+		thr.join();
+	}
+#endif
+
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
@@ -149,11 +165,19 @@ public:
 			cb((CMediaRes&)subObj);
 		});
 	}
-
 	void subMediaRes(UINT uIdx, cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get(uIdx, [&](XFile& subObj) {
 			cb((CMediaRes&)subObj);
 		});
 	}
+
+    virtual CMediaDir* findSubDir(const wstring& strSubDir)
+    {
+        return (CMediaDir*)CPath::findSubDir(strSubDir);
+    }
+    virtual CMediaRes* findSubFile(const wstring& strSubFile)
+    {
+        return (CMediaRes*)CPath::findSubFile(strSubFile);
+    }
 };
