@@ -27,28 +27,33 @@ protected:
         QRect rc;
     };
 
-    enum class E_RowStyle
+    enum E_RowStyle
     {
-        IS_None
-        , IS_Underline
-        , IS_RightTip
+        IS_None = 0
+
+        , IS_CenterAlign    = 0x1
+        , IS_MultiLine      = 0x2
+        , IS_RightTip       = 0x4
+        , IS_BottomLine     = 0x8
     };
     struct tagRowContext
     {
-        tagRowContext(){}
-
-        tagRowContext(E_RowStyle t_eStyle, const wstring& t_strText)
+        tagRowContext(UINT t_eStyle = E_RowStyle::IS_None)
             : eStyle(t_eStyle)
-            , strText(t_strText)
         {
         }
 
-        E_RowStyle eStyle = E_RowStyle::IS_None;
+        void setPixmap(const QPixmap *t_pixmap, float t_fIconMargin)
+        {
+            pixmap = t_pixmap;
+            fIconMargin = t_fIconMargin;
+        }
+
+        UINT eStyle = E_RowStyle::IS_None;
 
         const QPixmap *pixmap = NULL;
         float fIconMargin = 0.18f;
 
-        bool bSingleLine = false;
         wstring strText;
 
         wstring strRemark;

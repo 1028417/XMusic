@@ -57,14 +57,14 @@ private:
     vector<WString> m_vecHBkg;
     vector<WString> m_vecVBkg;
 
-    list<QPixmap> m_lstSnapshot;
-    vector<const QPixmap*> m_vecHSnapshot;
-    vector<const QPixmap*> m_vecVSnapshot;
+    QPixmap m_pmHBkg;
+    QPixmap m_pmVBkg;
 
     bool m_bHScreen = false;
 
-    QPixmap m_pmHBkg;
-    QPixmap m_pmVBkg;
+    list<QPixmap> m_lstSnapshot;
+    vector<const QPixmap*> m_vecHSnapshot;
+    vector<const QPixmap*> m_vecVSnapshot;
 
 public:
     void init();

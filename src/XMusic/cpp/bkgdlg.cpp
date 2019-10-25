@@ -381,11 +381,6 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-    if (m_addbkgDlg.isVisible())
-    {
-        m_addbkgDlg.close();
-    }
-
     m_vecHSnapshot.clear();
     m_vecVSnapshot.clear();
     m_lstSnapshot.clear();

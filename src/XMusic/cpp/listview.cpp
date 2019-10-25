@@ -128,7 +128,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
     int nMargin = (rc.height()-sz_icon)/2;
 
     int x_icon = 0;
-    if (E_RowStyle::IS_None == context.eStyle)
+    if (context.eStyle & E_RowStyle::IS_CenterAlign)
     {
         x_icon = rc.center().x()-sz_icon;
 
@@ -150,32 +150,32 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     rc.setLeft(x_icon + sz_icon + nMargin);
 
-    if (context.eStyle != E_RowStyle::IS_None)
+    if (context.eStyle & E_RowStyle::IS_RightTip)
+    {
+        int sz_righttip = sz_icon*30/100;
+        int x_righttip = rc.right()-sz_righttip;
+        int y_righttip = rc.center().y()-sz_righttip/2;
+
+        painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
+
+        rc.setRight(x_righttip - nMargin);
+    }
+
+    if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
         painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
-
-        if (E_RowStyle::IS_RightTip == context.eStyle)
-        {
-            int sz_righttip = sz_icon*30/100;
-            int x_righttip = rc.right()-sz_righttip;
-            int y_righttip = rc.center().y()-sz_righttip/2;
-
-            painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
-
-            rc.setRight(x_righttip - nMargin);
-        }
     }
 
     QString qsText = strutil::toQstr(context.strText);
-    if (context.bSingleLine)
+    if (context.eStyle & E_RowStyle::IS_MultiLine)
+    {
+        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, qsText);
+    }
+    else
     {
         int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
         painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
-    }
-    else
-    {
-        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, qsText);
     }
 }
 

@@ -61,17 +61,11 @@ BOOL CFindDlg::OnInitDialog()
 			//CMainApp::showMsg(L"未查找到曲目！", L"查找");
 			return FALSE;
 		}
-
 		if (vecMediaMixtures.size() == 1)
 		{
 			if (m_bQuickHittest)
 			{
-				CDialog::OnCancel();
-
-				vecMediaMixtures.front([&](CMediaMixture& MediaMixture) {
-					m_view.hittestMedia(*MediaMixture.GetMedia());
-				});
-
+				CDialog::OnCancel();				
 				return FALSE;
 			}
 		}
@@ -143,11 +137,17 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 	}
 
 	m_MediaMixer.clear();
-	auto& lstMediaMixture = m_MediaMixer.add(FindResult.lstRetMedias);
+	auto& vecMediaMixtures = m_MediaMixer.add(FindResult.lstRetMedias);
+	if (vecMediaMixtures.size() == 1)
+	{
+		vecMediaMixtures.front([&](CMediaMixture& MediaMixture) {
+			m_view.hittestMedia(*MediaMixture.GetMedia());
+		});
+	}
 
 	Refresh();
 
-	return lstMediaMixture;
+	return vecMediaMixtures;
 }
 
 void CFindDlg::Refresh()

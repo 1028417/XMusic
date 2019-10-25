@@ -13,48 +13,98 @@ protected:
         CMediaSet *pMediaSet = NULL;
         CMedia *pMedia = NULL;
 
-        CPath *pPath = NULL;
+        CPath *pDir = NULL;
+        XFile *pFile = NULL;
 
-        tagMediaContext()
-        {
-            bSingleLine = true;
-        }
+        tagMediaContext() {}
 
-        tagMediaContext(CMediaSet& MediaSet) : tagRowContext(E_RowStyle::IS_RightTip, MediaSet.m_strName)
+        tagMediaContext(CMediaSet& MediaSet) :
+            tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
             , pMediaSet(&MediaSet)
         {
-            bSingleLine = true;
+            strText = MediaSet.m_strName;
         }
-
-        tagMediaContext(CMedia& media) : tagRowContext(E_RowStyle::IS_Underline, media.GetTitle())
+        tagMediaContext(CMedia& media) :
+            tagRowContext(E_RowStyle::IS_BottomLine)
             , pMedia(&media)
         {
-            bSingleLine = true;
+            strText = media.GetTitle();
         }
 
-        tagMediaContext(CPath& path) :
-            tagRowContext(path.fileInfo().bDir ? E_RowStyle::IS_RightTip : E_RowStyle::IS_Underline, path.name())
-            , pPath(&path)
+        tagMediaContext(CPath& dir) :
+            tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
+            , pDir(&dir)
         {
-            bSingleLine = true;
+            strText = dir.name();
+        }
+        tagMediaContext(XFile& file) :
+            tagRowContext(E_RowStyle::IS_BottomLine)
+            , pFile(&file)
+        {
+            strText = file.name();
         }
     };
 
 public:
     CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
 
-protected:
-    CMediaSet *m_pMediaset = NULL;
-
-    CPath *m_pPath = NULL;
-
 private:
+    CMediaSet *m_pMediaset = NULL;
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
-    TD_PathList m_paSubPath;
+    CPath *m_pPath = NULL;
+    TD_PathList m_paSubDirs;
+    TD_XFileList m_paSubFiles;
 
-    SSet<void*> m_setRootObject;
+protected:
+    CMediaSet* currentMediaSet() const
+    {
+        return m_pMediaset;
+    }
+    const TD_MediaSetList& currentSubSets() const
+    {
+        return m_lstSubSets;
+    }
+    const TD_MediaList& currentSubMedias() const
+    {
+        return m_lstSubMedias;
+    }
+
+    CPath* currentPath() const
+    {
+        return m_pPath;
+    }
+    const TD_PathList & currentSubDirs() const
+    {
+        return m_paSubDirs;
+    }
+    const TD_XFileList & currentSubFiles() const
+    {
+        return m_paSubFiles;
+    }
+
+    virtual CMediaSet* _onUpward(CMediaSet& currentMediaSet)
+    {
+        return currentMediaSet.m_pParent;
+    }
+    virtual CPath* _onUpward(CPath& currentDir)
+    {
+        return (CPath*)currentDir.fileInfo().pParent;
+    }
+
+    void _clear()
+    {
+        CListView::reset();
+
+        m_pMediaset = NULL;
+        m_lstSubSets.clear();
+        m_lstSubMedias.clear();
+
+        m_pPath = NULL;
+        m_paSubDirs.clear();
+        m_paSubFiles.clear();
+    }
 
 private:
     virtual void _onShowRoot() {}
@@ -62,7 +112,8 @@ private:
     virtual void _onShowPath(CPath&) {}
 
     size_t getRowCount() override;
-    virtual size_t getRootCount() = 0;
+
+    virtual size_t _getRootRowCount() = 0;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
@@ -87,9 +138,6 @@ private:
     {
         CListView::_saveScrollRecord(_current());
     }
-
-protected:
-    virtual bool _onUpward();
 
 public:
     void showRoot();

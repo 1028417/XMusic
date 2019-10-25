@@ -149,21 +149,21 @@ void __view::foregroundMainWnd()
 
 CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir)
 {
-	CResGuard ResGuard(m_ResModule);
-
 	wstring strRootDir = t_strRootDir;
 	if (strRootDir.empty())
 	{
-		strRootDir = m_model.getMediaLib().GetAbsPath();
+		strRootDir = getMediaLib().GetAbsPath();
 	}
 
+	CResGuard ResGuard(m_ResModule);
 	wstring strRetDir;
 	CChooseDirDlg ChooseDirDlg(strTitle, strRootDir, bShowRoot, strRetDir);
 	__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
-	
-	wstring strOppPath = m_model.getMediaLib().toOppPath(strRetDir);
 
-	CMediaDir *pMediaDir = m_model.getMediaLib().findSubDir(strOppPath);
+	m_model.refreshMediaLib();
+	wstring strOppPath = getMediaLib().toOppPath(strRetDir);
+
+	CMediaDir *pMediaDir = getMediaLib().findSubDir(strOppPath);
 	if (NULL == pMediaDir)
 	{
 		CMainApp::showMsg(L"目录不存在！");
@@ -286,7 +286,7 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	static CFolderDlgEx FolderDlg;
 	wstring strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
 	__EnsureReturn(!strExportPath.empty(), false);
-	if (!m_model.getMediaLib().checkIndependentDir(strExportPath, true))
+	if (!getMediaLib().checkIndependentDir(strExportPath, true))
 	{
 		CMainApp::showMsg(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
 		return false;
@@ -369,7 +369,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 			for (auto& pr : mapMediaList)
 			{
 				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath + __wcFSSlant + pr.first->GetExportName();
+				ExportMedia.strDstDir = ExportOption.strExportPath + __wcDirSeparator + pr.first->GetExportName();
 				ExportMedia.paMedias.swap(pr.second);
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
@@ -721,7 +721,7 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 	int iRelatedMediaID = Media.GetRelatedMediaID(eMediaSetType);
 	if (0 < iRelatedMediaID)
 	{
-		CMedia *pRelatedMedia = m_model.getMediaLib().HittestMedia(eMediaSetType, (UINT)iRelatedMediaID);
+		CMedia *pRelatedMedia = getMediaLib().HittestMedia(eMediaSetType, (UINT)iRelatedMediaID);
 		if (NULL != pRelatedMedia && NULL != pRelatedMedia->m_pParent)
 		{
 			_hittestMediaSet(*pRelatedMedia->m_pParent, pRelatedMedia);
@@ -733,7 +733,7 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 	UINT uRelatedMediaSetID = Media.GetRelatedMediaSetID(eMediaSetType);
 	if (uRelatedMediaSetID > 0)
 	{
-		CMediaSet *pMediaSet = m_model.getMediaLib().HittestMediaSet(eMediaSetType, uRelatedMediaSetID);
+		CMediaSet *pMediaSet = getMediaLib().HittestMediaSet(eMediaSetType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
 		_hittestMediaSet(*pMediaSet, NULL, &Media);

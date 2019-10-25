@@ -4,14 +4,14 @@
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"
 
-#define __XMusic L"XMusic"
-#define __OuterName L"根目录"
+#define __XMusicDirName L"XMusic"
+#define __OuterDirName L"根目录"
 
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
     : m_app(app)
-    , m_MedialibView(app, *this, &m_OuterDir)
+    , m_MedialibView(app, *this, m_OuterDir)
 {
 }
 
@@ -35,8 +35,25 @@ void CMedialibDlg::init()
     crSelectedBkg.setRed(crBkg.red()-10);
     crSelectedBkg.setGreen(crBkg.green()-5);
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
-
     m_MedialibView.init();
+
+
+    cauto strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
+    wstring strOuterDir;
+#if __windows
+    for (cauto wch : strMediaLibDir)
+    {
+        if (fsutil::checkPathTail(wch))
+        {
+            strOuterDir.append(L"/..");
+        }
+    }
+
+#else
+    strOuterDir = L"/..";
+#endif
+    m_OuterDir.setDir(strMediaLibDir, strOuterDir);
+
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](){
         this->close();
@@ -53,27 +70,6 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    cauto strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
-    if (strMediaLibDir.empty())
-    {
-        return;
-    }
-
-    wstring strOuterDir;
-#if __windows
-    for (cauto wch : strMediaLibDir)
-    {
-        if (fsutil::checkPathTail(wch))
-        {
-            strOuterDir.append(L"/..");
-        }
-    }
-
-#else
-    strOuterDir = L"/..";
-#endif
-    m_OuterDir.setDir(strMediaLibDir, strOuterDir);
-
     timerutil::async(0, [&](){
         _resizeTitle();
     });
@@ -141,14 +137,21 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaDir* pOuterDir) :
+void CMedialibDlg::_onClose()
+{
+    m_MedialibView.clear();
+
+    m_OuterDir.clear();
+}
+
+CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(app.getModel().getSingerMgr())
     , m_PlaylistLib(app.getModel().getPlaylistMgr())
     , m_MediaLib(app.getModel().getMediaLib())
-    , m_pOuterDir(pOuterDir)
+    , m_OuterDir(OuterDir)
 {
 }
 
@@ -169,26 +172,21 @@ void CMedialibView::init()
 
 void CMedialibView::play()
 {
-    SArray<wstring> arrOppPaths;
-    if (m_pMediaset)
+    dselectRow();
+
+    SArray<wstring> arrOppPaths = CListViewEx::currentSubMedias().map(
+                [](const IMedia& Media) {
+        return Media.GetPath();
+    });
+    if (!arrOppPaths)
     {
-        TD_MediaList lstMedias;
-        m_pMediaset->GetAllMedias(lstMedias);
-        arrOppPaths = lstMedias.map([](const IMedia& Media) {
-            return Media.GetPath();
-        });
-    }
-    else if (m_pPath)
-    {
-        arrOppPaths = m_pPath->files().map([&](const XFile& subFile) {
+        arrOppPaths = CListViewEx::currentSubFiles().map([&](const XFile& subFile) {
             return ((const CMediaRes&)subFile).GetPath();
         });
     }
-
     if (arrOppPaths)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(arrOppPaths));
-        dselectRow();
     }
 }
 
@@ -222,24 +220,25 @@ void CMedialibView::_onShowPath(CPath& path)
 }
 
 void CMedialibView::showFile(const wstring& strFile)
-{
-    CMediaRes *pMediaRes = (CMediaRes*)m_MediaLib.findSubFile(strFile);
+{    
+    CMediaRes *pMediaRes = m_OuterDir.findSubFile(strFile);
+    if (NULL == pMediaRes)
+    {
+        pMediaRes = m_MediaLib.findSubFile(strFile);
+    }
     if (pMediaRes)
     {
         showPath(*pMediaRes);
         return;
     }
 
-    if (m_pOuterDir)
+    cauto strOuterRoot = m_OuterDir.GetAbsPath();
+    if (fsutil::CheckSubPath(strOuterRoot, strFile))
     {
-        cauto strOuterRoot = m_pOuterDir->GetAbsPath();
-        if (fsutil::CheckSubPath(strOuterRoot, strFile))
+        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strFile.substr(strOuterRoot.size()));
+        if (pMediaRes)
         {
-            pMediaRes = (CMediaRes*)m_pOuterDir->FindSubPath(strFile.substr(strOuterRoot.size()), false);
-            if (pMediaRes)
-            {
-                showPath(*pMediaRes);
-            }
+            showPath(*pMediaRes);
         }
     }
 }
@@ -266,12 +265,12 @@ void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
 {
     if (&MediaRes == &m_MediaLib)
     {
-        strTitle << __XMusic;
+        strTitle << __XMusicDirName;
         return;
     }
-    else if (&MediaRes == m_pOuterDir)
+    else if (&MediaRes == &m_OuterDir)
     {
-        strTitle << __OuterName;
+        strTitle << __OuterDirName;
         return;
     }
 
@@ -283,14 +282,14 @@ void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
 
     _getTitle(*pParent, strTitle);
 
-    strTitle << __wcFSSlant << MediaRes.GetName();
+    strTitle << __wcDirSeparator << MediaRes.GetName();
 }
 
 size_t CMedialibView::getPageRowCount()
 {
     if (isInRoot())
     {
-        return getRootCount();
+        return _getRootRowCount();
     }
 
     UINT uRet = 10;
@@ -318,7 +317,7 @@ size_t CMedialibView::getColumnCount()
     return 1;
 }
 
-size_t CMedialibView::getRootCount()
+size_t CMedialibView::_getRootRowCount()
 {
     if (isHLayout())
     {
@@ -326,21 +325,13 @@ size_t CMedialibView::getRootCount()
     }
     else
     {
-        if (m_pOuterDir)
-        {
-            return 10;
-        }
-        else
-        {
-            return 8;
-
-        }
+        return 10;
     }
 }
 
 bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
 {
-    context.eStyle = E_RowStyle::IS_None;
+    context.eStyle = E_RowStyle::IS_CenterAlign;
 
     bool bHScreen = isHLayout();
     if (bHScreen)
@@ -365,19 +356,16 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
     {
         context.pixmap = &m_pmDir;
-        context.strText = __XMusic;
-        context.pPath = &m_MediaLib;
+        context.strText = __XMusicDirName;
+        context.pDir = &m_MediaLib;
         return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
     {
-        if (m_pOuterDir)
-        {
-            context.pixmap = &m_pmDir;
-            context.strText = __OuterName;
-            context.pPath = m_pOuterDir;
-            return true;
-        }
+        context.pixmap = &m_pmDir;
+        context.strText = __OuterDirName;
+        context.pDir = &m_OuterDir;
+        return true;
     }
 
     return false;
@@ -448,9 +436,9 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             context.pixmap = &m_pmPlayItem;
         }
     }
-    else if (context.pPath)
+    else if (context.pDir || context.pFile)
     {
-        CMediaRes& MediaRes = (CMediaRes&)*context.pPath;
+        CMediaRes& MediaRes = context.pDir? (CMediaRes&)*context.pDir : (CMediaRes&)*context.pFile;
         if (MediaRes.IsDir())
         {
             context.pixmap = &m_pmDir;
@@ -494,13 +482,30 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
     m_app.getCtrl().callPlayCtrl(tagPlayCtrl(SArray<wstring>(media.GetPath())));
 }
 
-bool CMedialibView::_onUpward()
+CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
-    if (m_pPath && NULL == m_pPath->fileInfo().pParent && dynamic_cast<CAttachDir*>(m_pPath) != NULL)
+    if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {
-        showPath(m_MediaLib);
-        return true;
+        return NULL;
     }
 
-    return CListViewEx::_onUpward();
+    return CListViewEx::_onUpward(currentMediaSet);
+}
+
+CPath* CMedialibView::_onUpward(CPath& currentDir)
+{
+    if (NULL == currentDir.fileInfo().pParent && dynamic_cast<CAttachDir*>(&currentDir))
+    {
+        return &m_MediaLib;
+    }
+
+    return CListViewEx::_onUpward(currentDir);
+}
+
+void CMedialibView::clear()
+{
+    m_mapSingerPixmap.clear();
+    m_lstSingerPixmap.clear();
+
+    CListViewEx::_clear();
 }

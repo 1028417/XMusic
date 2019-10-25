@@ -11,11 +11,10 @@ CBasePage::CBasePage(__view& view, UINT uIDDlgRes, const wstring& strBaseTitle, 
 {
 }
 
-BOOL CBasePage::SetTitle(const wstring& strTitle)
+void CBasePage::SetTitle(const wstring& strTitle)
 {
 	int iImage = GetTabImage();
-
-	return __super::SetTitle((m_strBaseTitle + strTitle).c_str(), iImage);
+	__super::SetTitle((m_strBaseTitle + strTitle).c_str(), iImage);
 }
 
 BOOL CBasePage::RegDragDropCtrl(CWnd& wndCtrl, const CB_GetCtrlDragData& cb)

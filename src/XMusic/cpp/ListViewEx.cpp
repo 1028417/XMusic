@@ -14,22 +14,17 @@ size_t CListViewEx::getRowCount()
     }
     else if (m_pPath)
     {
-        return m_paSubPath.size();
+        return m_paSubDirs.size() + m_paSubFiles.size();
     }
     else
     {
-        return getRootCount();
+        return _getRootRowCount();
     }
 }
 
 void CListViewEx::showRoot()
 {
-    m_pPath = NULL;
-    m_paSubPath.clear();
-
-    m_pMediaset = NULL;
-    m_lstSubSets.clear();
-    m_lstSubMedias.clear();
+    _clear();
 
     update();
 
@@ -38,15 +33,10 @@ void CListViewEx::showRoot()
 
 void CListViewEx::showMediaSet(CMediaSet& MediaSet)
 {
-    m_pPath = NULL;
-    m_paSubPath.clear();
+    _clear();
 
     m_pMediaset = &MediaSet;
-
-    m_lstSubSets.clear();
     m_pMediaset->GetSubSets(m_lstSubSets);
-
-    m_lstSubMedias.clear();
     m_pMediaset->GetMedias(m_lstSubMedias);
 
     update();
@@ -90,13 +80,11 @@ void CListViewEx::showPath(CPath& path)
         return;
     }
 
-    m_pPath = &path;
-    m_paSubPath.assign(path.dirs());
-    m_paSubPath.add(path.files());
+    _clear();
 
-    m_pMediaset = NULL;
-    m_lstSubSets.clear();
-    m_lstSubMedias.clear();
+    m_pPath = &path;
+    m_paSubDirs.assign(path.dirs());
+    m_paSubFiles.assign(path.files());
 
     update();
 
@@ -126,26 +114,28 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
     else if (m_pPath)
     {
-        m_paSubPath.get(lvRow.uRow, [&](CPath& subPath) {
-            tagMediaContext context(subPath);
-            _genMediaContext(context);
-            _paintRow(painter, lvRow, context);
-        });
+        if (lvRow.uRow >= m_paSubDirs.size())
+        {
+            m_paSubFiles.get(lvRow.uRow-m_paSubDirs.size(), [&](XFile& subFile) {
+                tagMediaContext context(subFile);
+                _genMediaContext(context);
+                _paintRow(painter, lvRow, context);
+            });
+        }
+        else
+        {
+            m_paSubDirs.get(lvRow.uRow, [&](CPath& subPath) {
+                tagMediaContext context(subPath);
+                _genMediaContext(context);
+                _paintRow(painter, lvRow, context);
+            });
+        }
     }
     else
     {
         tagMediaContext context;
         if (_genRootRowContext(lvRow, context))
         {
-            if (context.pMediaSet)
-            {
-                m_setRootObject.add(context.pMediaSet);
-            }
-            else if (context.pPath)
-            {
-                m_setRootObject.add(context.pPath);
-            }
-
             _paintRow(painter, lvRow, context);
         }
     }
@@ -173,17 +163,19 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
     }
     else if (m_pPath)
     {
-        m_paSubPath.get(uRow, [&](CPath& subPath) {
-            if (subPath.fileInfo().bDir)
-            {
+        if (uRow >= m_paSubDirs.size())
+        {
+            m_paSubFiles.get(uRow-m_paSubDirs.size(), [&](XFile& subFile) {
+                _onRowClick(lvRow, (CPath&)subFile);
+            });
+        }
+        else
+        {
+            m_paSubDirs.get(uRow, [&](CPath& subPath) {
                 _saveScrollRecord();
                 showPath(subPath);
-            }
-            else
-            {
-                _onRowClick(lvRow, subPath);
-            }
-        });
+            });
+        }
     }
     else
     {
@@ -195,42 +187,41 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
                 _saveScrollRecord();
                 showMediaSet(*context.pMediaSet);
             }
-            else if (context.pPath)
+            else if (context.pDir)
             {
                 _saveScrollRecord();
-                showPath(*context.pPath);
+                showPath(*context.pDir);
             }
         }
     }
 }
 
-bool CListViewEx::_onUpward()
+bool CListViewEx::upward()
 {
+    _clearScrollRecord(_current());
+
     if (m_pMediaset)
     {
-        if (m_setRootObject.includes(m_pMediaset))
+        auto parent = _onUpward(*m_pMediaset);
+        if (parent)
+        {
+            showMediaSet(*parent);
+        }
+        else
         {
             showRoot();
-            return true;
-        }
-
-        if (m_pMediaset->m_pParent)
-        {
-            showMediaSet(*m_pMediaset->m_pParent);
         }
     }
     else if (m_pPath)
     {
-        if (m_setRootObject.includes(m_pPath))
+        auto parent = _onUpward(*m_pPath);
+        if (parent)
+        {
+            showPath(*parent);
+        }
+        else
         {
             showRoot();
-            return true;
-        }
-
-        auto pParent = m_pPath->fileInfo().pParent;
-        if (pParent)
-        {
-            showPath(*pParent);
         }
     }
     else
@@ -238,18 +229,6 @@ bool CListViewEx::_onUpward()
         return false;
     }
 
+    scroll(_scrollRecord(_current()));
     return true;
-}
-
-bool CListViewEx::upward()
-{
-    _clearScrollRecord(_current());
-
-    if (_onUpward())
-    {
-        scroll(_scrollRecord(_current()));
-        return true;
-    }
-
-    return false;
 }

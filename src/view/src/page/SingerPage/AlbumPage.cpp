@@ -301,21 +301,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 	if (bSingerChanged)
 	{
-		static CWinTimer s_timer;
-		s_timer.kill();
-
-		if (_playSingerImage(true))
-		{
-			s_timer.set(__PlaySingerImageElapse, [&]() {
-				_playSingerImage(false);
-				return true;
-			});
-		}
-		else
-		{
-			m_imgSingerDefault.StretchBltEx(m_imgSinger);
-			this->InvalidateRect(__SingerImgRect);
-		}
+		UpdateSingerImage();
 
 		(void)m_wndBrowseList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
 
@@ -376,15 +362,28 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 	}
 	
 	return false;
-
 }
 
 void CAlbumPage::UpdateSingerImage()
 {
-	_playSingerImage(true);
+	static CWinTimer s_timer;
+	if (_playSingerImage(true))
+	{
+		s_timer.set(__PlaySingerImageElapse, [&]() {
+			_playSingerImage(false);
+			return true;
+		});
+	}
+	else
+	{
+		s_timer.kill();
+
+		m_imgSingerDefault.StretchBltEx(m_imgSinger);
+		this->InvalidateRect(__SingerImgRect);
+	}
 }
 
-void CAlbumPage::UpdateTitle(const wstring& strTitle)
+void CAlbumPage::UpdateTitle()
 {
 	m_strBaseTitle = L" ∏Ë ÷";
 	if (NULL != m_pSinger)
@@ -398,7 +397,7 @@ void CAlbumPage::UpdateTitle(const wstring& strTitle)
 	}
 	else
 	{
-		SetTitle(strTitle);		
+		SetTitle(wstring(m_wndMediaResPanel.GetTitle()) + L" ");
 	}
 }
 

@@ -49,11 +49,11 @@ public:
 
 	void ShowSinger(CSinger *pSinger, CMedia *pAlbumItem=NULL, IMedia *pIMedia=NULL);
 
-	void UpdateTitle(const wstring& strTitle = L"");
-
 	void UpdateSingerName(const wstring& strSingerName);
 
 	void UpdateSingerImage();
+
+	void UpdateTitle();
 
 	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
 

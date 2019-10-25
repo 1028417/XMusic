@@ -209,41 +209,39 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_ADD_GROUP:
-		{
-			CSingerGroup *pGroup = m_view.getSingerMgr().AddGroup();
-			__EnsureBreak(pGroup);
+	{
+		CSingerGroup *pGroup = m_view.getSingerMgr().AddGroup();
+		__EnsureBreak(pGroup);
 
-			__EnsureBreak(this->RefreshTree(pGroup));
+		__EnsureBreak(this->RefreshTree(pGroup));
 
-			(void)m_wndTree.EditObject(*pGroup);
-		}
+		(void)m_wndTree.EditObject(*pGroup);
+	}
 
-		break;
+	break;
 	case ID_ADD_SINGER:
+	{
+		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择歌手目录", false);
+		__EnsureBreak(pDir);
+
+		CSingerGroup *pGroup = NULL;
+
+		if (pSingerObject)
 		{
-			m_view.getModel().refreshMediaLib();
-
-			CMediaDir* pDir = m_view.showChooseDirDlg(L"选择歌手目录", false);
-			__EnsureBreak(pDir);
-
-			CSingerGroup *pGroup = NULL;
-
-			if (pSingerObject)
-			{
-				if (E_MediaSetType::MST_Singer == pSingerObject->m_eType)
-				{					
-					pGroup = (CSingerGroup*)(CMediaSet*)m_wndTree.GetParentObject(*(CTreeObject*)pSingerObject);
-				}
-				else
-				{
-					pGroup = (CSingerGroup*)pSingerObject;
-				}
+			if (E_MediaSetType::MST_Singer == pSingerObject->m_eType)
+			{					
+				pGroup = (CSingerGroup*)(CMediaSet*)m_wndTree.GetParentObject(*(CTreeObject*)pSingerObject);
 			}
-
-			_addSinger(pDir, pGroup);
+			else
+			{
+				pGroup = (CSingerGroup*)pSingerObject;
+			}
 		}
 
-		break;
+		_addSinger(pDir, pGroup);
+	}
+
+	break;
 	case ID_PLAY:
 		__EnsureBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
 		
@@ -271,35 +269,36 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		
 		break;
 	case ID_ADD_IMAGE:
+	{
+		__AssertBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+
+		static auto& strFilter = L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Gif;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+			|Png文件(*.Png)|*.Png|Gif文件(*.Gif)|*.Gif|位图文件(*.Bmp)|*.Bmp|";
+
+		tagFileDlgOpt FileDlgOpt;
+		FileDlgOpt.strTitle = L"选择歌手头像";
+		FileDlgOpt.strFilter = strFilter;
+		static CFileDlgEx fileDlg(FileDlgOpt);
+
+		list<wstring> lstFiles;
+		(void)fileDlg.ShowOpenMulti(lstFiles);
+		if (!lstFiles.empty())
 		{
-			__AssertBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+			CMainApp::sync([=]() {
+				m_view.addSingerImage(*(CSinger*)pSingerObject, lstFiles);
 
-			static auto& strFilter = L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Gif;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
-				|Png文件(*.Png)|*.Png|Gif文件(*.Gif)|*.Gif|位图文件(*.Bmp)|*.Bmp|";
+				m_wndTree.UpdateImage(*pSingerObject);
 
-			tagFileDlgOpt FileDlgOpt;
-			FileDlgOpt.strTitle = L"选择歌手头像";
-			FileDlgOpt.strFilter = strFilter;
-			static CFileDlgEx fileDlg(FileDlgOpt);
-
-			list<wstring> lstFiles;
-			(void)fileDlg.ShowOpenMulti(lstFiles);
-			if (!lstFiles.empty())
-			{
-				CMainApp::sync([=]() {
-					m_view.addSingerImage(*(CSinger*)pSingerObject, lstFiles);
-
-					m_wndTree.UpdateImage(*pSingerObject);
-
-					m_AlbumPage.UpdateSingerImage();
-				});
-			}
+				m_AlbumPage.UpdateTitle();
+				m_AlbumPage.UpdateSingerImage();
+			});
 		}
+	}
 
-		break;
+	break;
 	case ID_FIND:
 	{
-		wstring strSingerDir = ((CSinger*)pSingerObject)->GetBaseDir() + __wcFSSlant;
+		wstring strSingerDir = ((CSinger*)pSingerObject)->GetBaseDir() + __wcDirSeparator;
 		m_view.findMedia(strSingerDir, true, pSingerObject->m_strName);
 	}
 	

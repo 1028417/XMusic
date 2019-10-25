@@ -10,7 +10,7 @@
 class CMedialibView : public CListViewEx
 {
 public:
-    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaDir *pOuterDir=NULL);
+    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
 
 private:
     class CXMusicApp& m_app;
@@ -23,7 +23,7 @@ private:
 
     XMediaLib& m_MediaLib;
 
-    CMediaDir *m_pOuterDir = NULL;
+    CMediaDir &m_OuterDir;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
@@ -47,6 +47,8 @@ public:
 
     void play();
 
+    void clear();
+
 private:
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet& MediaSet) override;
@@ -56,7 +58,7 @@ private:
 
     size_t getColumnCount() override;
 
-    size_t getRootCount() override;
+    size_t _getRootRowCount() override;
 
     bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
@@ -78,7 +80,8 @@ private:
         _onMediaClick(lvRow, (CMediaRes&)path);
     }
 
-    bool _onUpward() override;
+    CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
+    CPath* _onUpward(CPath& currentDir) override;
 };
 
 class COuterDir : public CMediaDir
@@ -86,42 +89,75 @@ class COuterDir : public CMediaDir
 public:
     COuterDir() {}
 
-    COuterDir(const tagFileInfo& fileInfo)
+    COuterDir(const tagFileInfo& fileInfo, const wstring& strMediaLibDir)
         : CMediaDir(fileInfo)
+        , m_strMediaLibDir(strMediaLibDir)
     {
     }
 
+private:
+    wstring m_strMediaLibDir;
+
+    wstring m_strOuterDir;
+
+public:
     void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
     {
         m_strOuterDir = strOuterDir;
         CPath::setDir(strMediaLibDir + strOuterDir);
-    }
 
-private:
-    wstring m_strOuterDir;
+#if __windows
+        m_strMediaLibDir = strMediaLibDir;
+#else
+        m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
+#endif
+    }
 
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
-        if (strutil::matchIgnoreCase(fileInfo.strName, L"XMusic"))
+#if __windows
+        wstring strSubDir = this->absPath() + __wcDirSeparator + fileInfo.strName;
+        QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
+        strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
+        if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
         {
             return NULL;
         }
 
-        return new COuterDir(fileInfo);
+        return new COuterDir(fileInfo, m_strMediaLibDir);
+
+#else
+        if (fileInfo.strName == m_strMediaLibDir)
+        {
+            return NULL;
+        }
+
+        return new CMediaDir(fileInfo);
+#endif
     }
 
     wstring GetPath() const override
     {
-        auto pParent = fileinfo.pParent;
-        if (NULL == pParent)
+        if (NULL == fileinfo.pParent)
         {
             return m_strOuterDir;
         }
 
-        WString strOppPath(((COuterDir*)pParent)->GetPath());
-        strOppPath << __wcFSSlant << fileinfo.strName;
-        return std::move(strOppPath);
+        return CMediaDir::GetPath();
+    }
+
+    CMediaRes* findSubFile(const wstring& strSubFile) override
+    {
+        if (__substr(strSubFile, 1, 2) != L"..")
+        {
+            return NULL;
+        }
+
+        cauto t_strSubFile = __substr(strSubFile, m_strOuterDir.size());
+        //strutil::replace_r(strutil::replace_r(strSubFile, L"/.."), L"\\..");
+
+        return CMediaDir::findSubFile(t_strSubFile);
     }
 };
 
@@ -182,4 +218,6 @@ private:
     {
         return m_MedialibView.upward();
     }
+
+    void _onClose() override;
 };

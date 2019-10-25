@@ -45,58 +45,6 @@ private:
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 };
 
-
-class CImgRoot : public CImgDir
-{
-public:
-    CImgRoot() {}
-
-private:
-   bool m_bScaning = false;
-
-   std::thread m_thread;
-
-public:
-   void startScan(const wstring& strDir, const function<void(CPath& dir)>& cb)
-   {
-       setDir(strDir);
-
-       if (m_thread.joinable())
-       {
-           return;
-       }
-
-       m_bScaning = true;
-
-       m_thread = thread([=](){
-           CPath::scan([&](CPath& dir, TD_XFileList& paSubFile){
-               if (paSubFile)
-               {
-                   cb(dir);
-               }
-
-               return m_bScaning;
-           });
-       });
-   }
-
-   void stopScan()
-   {
-       m_bScaning = false;
-
-       if (m_thread.joinable())
-       {
-           m_thread.join();
-       }
-
-       CPath::clear();
-
-       m_pmSnapshot = QPixmap();
-
-       m_lstSubImgs.clear();
-   }
-};
-
 using TD_ImgDirList = PtrArray<CImgDir>;
 
 class CAddBkgView : public CListView
@@ -154,7 +102,10 @@ private:
 
     CAddBkgView m_addbkgView;
 
-    CImgRoot m_ImgRoot;
+private:
+    CImgDir m_ImgRoot;
+    bool m_bScaning = false;
+    std::thread m_thread;
 
     TD_ImgDirList m_paImgDirs;
 
@@ -172,7 +123,10 @@ private slots:
 private:
     void _relayout(int cx, int cy) override;
 
-    bool _handleReturn() override;
+    bool _handleReturn() override
+    {
+        return m_addbkgView.upward();
+    }
 
     void _onClose() override;
 

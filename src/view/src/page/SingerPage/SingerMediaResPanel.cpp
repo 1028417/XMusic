@@ -11,7 +11,7 @@ void CSingerMediaResPanel::_OnInitDialog()
 
 void CSingerMediaResPanel::UpdateTitle(const wstring& strTitle)
 {
-	//__super::UpdateTitle(strTitle);
+	__super::UpdateTitle(strTitle);
 
-	m_wndAlbumPage.UpdateTitle(strTitle + L" ");
+	m_wndAlbumPage.UpdateTitle();
 }

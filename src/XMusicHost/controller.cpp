@@ -307,10 +307,9 @@ bool CPlayerController::renameMedia(IMedia& media, const wstring& strNewName)
 		strExtName = L"." + strExtName;
 	}
 
-    wstring strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wcFSSlant + strNewName + strExtName;
-	wstring strNewAbsPath = m_model.getMediaLib().toAbsPath(strNewOppPath);
-
-	wstring strOldAbsPath = media.GetAbsPath();
+	cauto strOldAbsPath = media.GetAbsPath();
+	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wcDirSeparator + strNewName + strExtName;
+	
 	bool bDir = media.IsDir();
     if (fsutil::existPath(strOldAbsPath, bDir))
 	{
@@ -345,7 +344,8 @@ bool CPlayerController::renameMedia(IMedia& media, const wstring& strNewName)
 	{
         pMediaRes->setName(strNewName + strExtName);
 	}
-	
+
+	cauto strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wcDirSeparator + strNewName + strExtName;
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
@@ -370,7 +370,7 @@ void CPlayerController::moveMediaFile(const TD_IMediaList& lstMedias, const wstr
 			return;
 		}
 
-        cauto strDstPath = strDir + __wcFSSlant + Media.GetName();
+        cauto strDstPath = strDir + __wcDirSeparator + Media.GetName();
 
         cauto strSrcAbsPath = Media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))
@@ -571,7 +571,7 @@ UINT CPlayerController::addInMedia(const list<wstring>& lstFiles, const CB_AddIn
 		CSearchMediaInfo& SearchMediaInfo = pr.second;
 
 		wstring strDstAbsPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
-            + __wcFSSlant + fsutil::GetFileName(strSrcAbsPath);
+            + __wcDirSeparator + fsutil::GetFileName(strSrcAbsPath);
 
 		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstAbsPath, [&]() {
             (void)fsutil::removeFile(SearchMediaInfo.m_strAbsPath);

@@ -37,17 +37,25 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
-    m_paImgDirs.clear();
-
     CDialog::show();
 
     cauto strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
-    m_ImgRoot.startScan(strRootDir, [&](CPath& dir) {
-        CImgDir& imgDir = (CImgDir&)dir;
-        if (imgDir.genSnapshot())
-        {
-            emit signal_founddir(&imgDir);
-        }
+    m_ImgRoot.setDir(strRootDir);
+
+    m_bScaning = true;
+    m_thread = std::thread([&](){
+        m_ImgRoot.scan([&](CPath& dir, TD_XFileList& paSubFile){
+            if (paSubFile)
+            {
+                CImgDir& imgDir = (CImgDir&)dir;
+                if (imgDir.genSnapshot())
+                {
+                    emit signal_founddir(&imgDir);
+                }
+            }
+
+            return m_bScaning;
+        });
     });
 }
 
@@ -71,14 +79,15 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
 
-bool CAddBkgDlg::_handleReturn()
-{
-    return m_addbkgView.upward();
-}
-
 void CAddBkgDlg::_onClose()
 {
-    m_ImgRoot.stopScan();
+    m_bScaning = false;
+    if (m_thread.joinable())
+    {
+        m_thread.join();
+    }
+
+    m_ImgRoot.clear();
 
     m_paImgDirs.clear();
 
@@ -192,15 +201,15 @@ void CAddBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
     else
     {
-        tagRowContext context;
-        context.eStyle = E_RowStyle::IS_RightTip;
-
         m_paImgDirs.get(uRow, [&](CImgDir& imgDir){
+            auto eStyle = E_RowStyle::IS_MultiLine
+                    | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
+            tagRowContext context(eStyle);
             context.strText = imgDir.oppPath();
             context.pixmap = &imgDir.snapshot();
-        });
 
-        _paintRow(painter, lvRow, context);
+            _paintRow(painter, lvRow, context);
+        });
     }
 }
 

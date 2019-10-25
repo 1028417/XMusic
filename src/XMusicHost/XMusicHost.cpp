@@ -4,11 +4,8 @@
 
 #include "../view/resource.h"
 
-static class __afxInit
-{
-public:
-	__afxInit()
-	{
+static struct __afxInit {
+	__afxInit() {
 		afxCurrentInstanceHandle = _AtlBaseModule.GetModuleInstance();
 		afxCurrentResourceHandle = _AtlBaseModule.GetResourceInstance();
 	}

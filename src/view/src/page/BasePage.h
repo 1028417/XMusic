@@ -43,5 +43,5 @@ protected:
 	bool DragScroll(CObjectList& wndList, LONG x, LONG y);
 
 public:
-	BOOL SetTitle(const wstring& strTitle);
+	void SetTitle(const wstring& strTitle);
 };
