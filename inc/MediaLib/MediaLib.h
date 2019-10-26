@@ -58,7 +58,6 @@ public:
 
 private:
     PairList<wstring, E_AttachDirType> m_plAttachDir;
-
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
@@ -66,6 +65,12 @@ private:
 
 	int _sort(const XFile& lhs, const XFile& rhs) const override;
 	
+    void _onClear() override
+    {
+        m_mapAttachDir.clear();
+        CMediaDir::_onClear();
+    }
+
 	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
 
 public:

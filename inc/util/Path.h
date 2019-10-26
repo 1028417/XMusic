@@ -119,14 +119,14 @@ private:
 	using CB_PathScan = function<bool(CPath& dir, TD_XFileList& paSubFile)>;
 	bool _scan(const CB_PathScan& cb);
 
-    virtual void _onClear() {}
-
 protected:
 	void _findFile();
 
 	virtual void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile);
 
 	virtual int _sort(const XFile& lhs, const XFile& rhs) const;
+
+    virtual void _onClear() {}
 
 	size_t count() const
 	{

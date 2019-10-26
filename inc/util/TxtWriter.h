@@ -36,24 +36,24 @@ protected:
     E_TxtEncodeType m_eEncodeType;
 
 public:
-    virtual size_t write(const wstring& strText) const = 0;
+    virtual bool write(const wstring& strText) const = 0;
 
-    virtual size_t writeln(const wstring& strText) const = 0;
+    virtual bool writeln(const wstring& strText) const = 0;
 
-    virtual size_t write(const string& strText) const = 0;
+    virtual bool write(const string& strText) const = 0;
 
-    virtual size_t writeln(const string& strText) const = 0;
+    virtual bool writeln(const string& strText) const = 0;
 
-    virtual size_t write(const wchar_t *pStr) const = 0;
+    virtual bool write(const wchar_t *pStr) const = 0;
 
-    virtual size_t writeln(const wchar_t *pStr) const = 0;
+    virtual bool writeln(const wchar_t *pStr) const = 0;
 
-    virtual size_t write(const char *pStr) const = 0;
+    virtual bool write(const char *pStr) const = 0;
 
-    virtual size_t writeln(const char *pStr) const = 0;
+    virtual bool writeln(const char *pStr) const = 0;
 
     template <typename T>
-    size_t write(const T& num) const
+    bool write(const T& num) const
     {
             if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
             {
@@ -66,7 +66,7 @@ public:
     }
 
     template <typename T>
-    size_t writeln(const T& num) const
+    bool writeln(const T& num) const
     {
             if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
             {
@@ -93,19 +93,19 @@ public:
     }
 
 #if !__winvc
-    size_t write(const QString& qstr) const
+    bool write(const QString& qstr) const
     {
         return write(qstr.toStdWString());
     }
 
-    size_t writeln(const QString& qstr) const
+    bool writeln(const QString& qstr) const
     {
         return writeln(qstr.toStdWString());
     }
 #endif
 };
 
-class __UtilExt CTxtWriter : public ITxtWriter
+class __UtilExt CTxtWriter : public ITxtWriter, private obstream
 {
 public:
 	static const string __UnicodeHead_LittleEndian;
@@ -113,8 +113,9 @@ public:
 	
 	static const string __UTF8Bom;
 
+public:
 	CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
-                ITxtWriter(eEncodeType),
+		ITxtWriter(eEncodeType),
 		m_eEOLFlag(eEOLFlag)
 	{
 	}
@@ -123,25 +124,17 @@ public:
         ITxtWriter(eEncodeType),
         m_eEOLFlag(eEOLFlag)
     {
-        (void)open(strFile, bTrunc);
+        (void)_open(strFile, bTrunc);
     }
-
     CTxtWriter(const string& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
         ITxtWriter(eEncodeType),
         m_eEOLFlag(eEOLFlag)
     {
-        (void)open(strFile, bTrunc);
+        (void)_open(strFile, bTrunc);
     }
-
-	~CTxtWriter()
-	{
-		close();
-	}
 
 private:
 	E_EOLFlag m_eEOLFlag;
-
-    FILE *m_pf = NULL;
 
 private:
 	inline bool _isUnicode() const
@@ -158,25 +151,19 @@ private:
 
     bool _open(const wstring& strFile, bool bTrunc)
     {
-        m_pf = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
-        return NULL != m_pf;
+        return obstream::open(strFile, bTrunc ? "wb" : "ab");
     }
-
     bool _open(const string& strFile, bool bTrunc)
     {
-        m_pf = fsutil::fopen(strFile, bTrunc ? "wb" : "ab");
-        return NULL != m_pf;
+        return obstream::open(strFile, bTrunc ? "wb" : "ab");
     }
 
-	void _writeHead();
+    bool _writeHead();
 
-	inline size_t _fwrite(const void *pData, size_t size) const;
+    bool _write(const char *pStr, size_t len, bool bEndLine = false) const;
+    bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false) const;
 
-	size_t _write(const char *pStr, size_t len, bool bEndLine = false) const;
-
-	size_t _write(const wchar_t *pStr, size_t len, bool bEndLine = false) const;
-
-	inline size_t _writeEndLine() const;
+    inline bool _writeEndLine() const;
 
 public:
 	bool isOpened() const
@@ -187,27 +174,27 @@ public:
 	bool open(const wstring& strFile, bool bTrunc);
 	bool open(const string& strFile, bool bTrunc);
 
-    size_t write(const wstring& strText) const override
+    bool write(const wstring& strText) const override
 	{
 		return _write(strText.c_str(), strText.size());
 	}
 
-    size_t writeln(const wstring& strText) const override
+    bool writeln(const wstring& strText) const override
 	{
 		return _write(strText.c_str(), strText.size(), true);
 	}
 
-    size_t write(const string& strText) const override
+    bool write(const string& strText) const override
 	{
 		return _write(strText.c_str(), strText.size());
 	}
 
-    size_t writeln(const string& strText) const override
+    bool writeln(const string& strText) const override
 	{
 		return _write(strText.c_str(), strText.size(), true);
 	}
 
-    size_t write(const wchar_t *pStr) const override
+    bool write(const wchar_t *pStr) const override
 	{
 		if (NULL == pStr)
 		{
@@ -217,7 +204,7 @@ public:
 		return _write(pStr, wcslen(pStr));
 	}
 
-    size_t writeln(const wchar_t *pStr) const override
+    bool writeln(const wchar_t *pStr) const override
 	{
 		if (NULL == pStr)
 		{
@@ -227,7 +214,7 @@ public:
 		return _write(pStr, wcslen(pStr), true);
 	}
 
-    size_t write(const char *pStr) const override
+    bool write(const char *pStr) const override
 	{
 		if (NULL == pStr)
 		{
@@ -235,14 +222,18 @@ public:
 		}
 
 		return _write(pStr, strlen(pStr));
-	}
+    }
 
-    size_t writeln(const char *pStr) const override
+    bool writeln(const char *pStr) const override
     {
         return _write(pStr, pStr?strlen(pStr):0, true);
     }
 
-    void close();
+    void close()
+    {
+        obstream::close();
+    }
+
 };
 
 enum class E_UnicodeHeadOpt

@@ -49,7 +49,16 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
+	map<string, string> m_mapFileUrl;
+	
+public:
+	bool loadXurl(const list<wstring>& lstFile);
+
+	string getUrl(CPlayItem& PlayItem);
+
 private:
+	bool _loadXurl(const wstring& strFile);
+
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
 		if (strutil::matchIgnoreCase(fileInfo.strName, __xmedialib))

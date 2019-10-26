@@ -108,55 +108,28 @@ private:
 	ArrList<CCueFile> m_alSubCueFile;
 	SHashMap<wstring, UINT> m_mapSubCueFile;
 
-    bool _loadCue(const wstring& strFileName);
+	bool _loadCue(const wstring& strFileName);
 
 public:
-    CRCueFile getSubCueFile(CMediaRes& MediaRes);
+	CRCueFile getSubCueFile(CMediaRes& MediaRes);
 
-    const ArrList<CCueFile>& SubCueList()
-    {
-        return m_alSubCueFile;
-    }
-
-#else
-private:
-    unordered_map<string, string> m_mapFileUrl;
-
-    bool _loadXURL(const wstring& strFile);
-
- public:
-    string getFileUrl(const wstring& strFileName);
-#endif
-
-	virtual void _onClear() override
+	const ArrList<CCueFile>& SubCueList()
 	{
-#if __winvc
-		m_mapSubCueFile.clear();
-		m_alSubCueFile.clear();
-#else
-		m_mapFileUrl.clear();
-#endif
+		return m_alSubCueFile;
 	}
+#endif
 
 protected:
-#if !__winvc
-	void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
-	{
-		thread thr([&]() {
-			cauto strXurlFile = this->absPath() + L"/.xurl";
-			if (fsutil::existFile(strXurlFile))
-			{
-				(void)_loadXURL(strXurlFile);
-			}
-		});
-
-		CPath::_onFindFile(paSubDir, paSubFile);
-		thr.join();
-	}
-#endif
-
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+
+#if __winvc
+    virtual void _onClear() override
+    {
+        m_mapSubCueFile.clear();
+        m_alSubCueFile.clear();
+    }
+#endif
 
 public:
 	void subMediaRes(cfn_void_t<CMediaRes&> cb)

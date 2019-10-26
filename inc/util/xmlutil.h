@@ -25,6 +25,8 @@ class __UtilExt xmlutil
 {
 public:
         static bool loadXml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+		static bool loadXml(char* buf, UINT length, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
 
         static bool loadHtml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+		static bool loadHtml(char* buf, UINT length, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
 };
