@@ -88,7 +88,6 @@ bool CController::start()
 void CController::stop()
 {
 	CPlayerController::stop();
-	m_model.close();
 }
 
 bool CController::handleCommand(UINT uID)

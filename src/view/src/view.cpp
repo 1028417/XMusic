@@ -486,7 +486,10 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			}
 
 			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.name();
-			TxtWriter.writeln(strDirInfo);
+			if (!TxtWriter.writeln(strDirInfo))
+			{
+				return false;
+			}
 
 			strPrfix.append(L"  ");
 
@@ -498,7 +501,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			dir.files()([&](XFile& subFile) {
 				auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
 				auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
-				TxtWriter.writeln(strFileInfo);
+				return TxtWriter.writeln(strFileInfo);
 			});
 
 			ProgressDlg.ForwardProgress();
