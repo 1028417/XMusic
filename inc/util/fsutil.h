@@ -112,7 +112,7 @@ public:
     static FILE* fopen(const string& strFile, const string& strMode);
     static FILE* fopen(const wstring& strFile, const string& strMode);
 
-    static bool loadBinary(const wstring& strFile, TD_ByteVector& vecBuff, UINT uReadSize = 0);
+    static bool loadBinary(const wstring& strFile, CByteBuff& vecBuff, UINT uReadSize = 0);
 
 	static bool loadTxt(const wstring& strFile, string& strText);
 	static bool loadTxt(const wstring& strFile, cfn_bool_t<const string&> cb);

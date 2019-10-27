@@ -46,9 +46,29 @@ private:
 
     bool _download(const string& strUrl);
 
+    template <class T>
+    size_t _getAllData(T& buff)
+    {
+        size_t uReadSize = m_uDataSize;
+        if (0 == uReadSize)
+        {
+            return 0;
+        }
+
+        auto ptr = buff.resizeMore(uReadSize);
+        size_t uCount = (size_t)MAX(0, getData((byte_t*)ptr, uReadSize));
+        if (uCount < uReadSize)
+        {
+            buff.resizeLess(uReadSize-uCount);
+        }
+
+        return uCount;
+    }
+
 public:
     void download(const string& strUrl);
-    bool download(const string& strUrl, CByteVector& vecBuff);
+    bool download(const string& strUrl, CByteBuff& vecRet);
+    bool download(const string& strUrl, CCharBuff& strRet);
 
     size_t dataSize() const
     {
@@ -60,7 +80,28 @@ public:
     }
 
     int getData(uint8_t *pBuff, size_t buffSize);
-    void getAllData(CByteVector& vecBuff);
+
+    CByteBuff&& getByteData()
+    {
+        CByteBuff vecRet;
+        (void)_getAllData(vecRet);
+        return std::move(vecRet);
+    }    
+    size_t getByteData(CByteBuff& vecBuff)
+    {
+        return _getAllData(vecBuff);
+    }
+
+    CCharBuff&& getTextData()
+    {
+        CCharBuff strRet;
+        (void)_getAllData(strRet);
+        return std::move(strRet);
+    }        
+    size_t getTextData(CCharBuff& strBuff)
+    {
+        return _getAllData(strBuff);
+    }
 
     void cancel();
 };

@@ -177,47 +177,131 @@ public:
 	}
 };
 
-using TD_Byte = uint8_t;
-using TD_ByteVector = std::vector<TD_Byte>;
-
-class CByteVector : public TD_ByteVector
+using byte_t = uint8_t;
+using TD_ByteVector = vector<byte_t>;
+class __UtilExt CByteBuff : public TD_ByteVector
 {
 public:
-	CByteVector() {}
+    CByteBuff() {}
 
-	CByteVector(size_t size)
-		: TD_ByteVector(size)
+    CByteBuff(size_t size)
+        : TD_ByteVector(size)
 	{
 	}
 
-	inline TD_Byte* ptr()
+    byte_t* resizeMore(size_t size)
+    {
+        if (0 == size)
+        {
+            return NULL;
+        }
+
+        auto pos = TD_ByteVector::size();
+        TD_ByteVector::resize(pos+size);
+        return ptr()+pos;
+    }
+
+    void resizeLess(size_t less)
+    {
+        int size = (int)TD_ByteVector::size() - less;
+        if (size >= 0)
+        {
+            TD_ByteVector::resize(size);
+        }
+    }
+
+    inline byte_t* ptr()
 	{
-		return &TD_ByteVector::front();
+        if (TD_ByteVector::empty())
+        {
+            return NULL;
+        }
+        return &TD_ByteVector::front();
 	}
-	inline const TD_Byte* ptr() const
+    inline const byte_t* ptr() const
 	{
-		return &TD_ByteVector::front();
+        if (TD_ByteVector::empty())
+        {
+            return NULL;
+        }
+        return &TD_ByteVector::front();
 	}
 
-	operator TD_Byte*()
+    operator byte_t*()
 	{
 		return ptr();
 	}
-	operator const TD_Byte*() const
+    operator const byte_t*() const
 	{
 		return ptr();
-	}
+    }
+};
 
-	template<typename T>
-	operator T*()
-	{
-		return (T*)ptr();
-	}
-	template<typename T>
-	operator T*() const
-	{
-		return (T*)ptr();
-	}
+class __UtilExt CCharBuff : public string
+{
+public:
+    CCharBuff() {}
+
+    CCharBuff(size_t size)
+        : string(size, '\0')
+    {
+    }
+
+    char* resizeMore(size_t more)
+    {
+        if (0 == more)
+        {
+            return NULL;
+        }
+
+        auto pos = string::size();
+        string::resize(pos+more);
+        return ptr()+pos;
+    }
+
+    void resizeLess(size_t less)
+    {
+        int size = (int)string::size() - less;
+        if (size >= 0)
+        {
+            string::resize(size);
+        }
+    }
+
+    inline char* ptr()
+    {
+        if (string::empty())
+        {
+            return NULL;
+        }
+        return &string::front();
+    }
+    inline const char* ptr() const
+    {
+        if (string::empty())
+        {
+            return NULL;
+        }
+        return &string::front();
+    }
+
+    operator char*()
+    {
+        return ptr();
+    }
+    operator const char*() const
+    {
+        return ptr();
+    }
+
+    operator byte_t*()
+    {
+        return (byte_t*)ptr();
+    }
+    operator const byte_t*() const
+    {
+        return (const byte_t*)ptr();
+    }
 };
 
 #include "strutil.h"

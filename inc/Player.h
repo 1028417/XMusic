@@ -14,7 +14,8 @@
 
 enum class E_DecodeStatus
 {
-	DS_Opening,
+    DS_Opening,
+    DS_OpenFail,
 	DS_Decoding,
 	DS_Paused,
 	DS_Cancel,
