@@ -16,7 +16,7 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 
-SOURCES += ../XMusicHost/controller.cpp \
+SOURCES += ../controller.cpp \
     cpp/main.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \

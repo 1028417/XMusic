@@ -2,7 +2,7 @@
 
 #include "viewdef.h"
 #include "model/model.h"
-#include "../XMusicHost/controller.h"
+#include "../controller.h"
 
 #include <QApplication>
 
