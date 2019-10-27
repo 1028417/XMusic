@@ -25,7 +25,7 @@ private:
 	mutex m_mtxDataLock;
     list<pair<uint8_t*, size_t>> m_lstData;
     size_t m_uDataSize = 0;
-    //size_t m_uTotalSize = 0;
+    size_t m_uSumSize = 0;
 
 private:
     static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
@@ -53,6 +53,10 @@ public:
     size_t dataSize() const
     {
         return m_uDataSize;
+    }
+    size_t sumSize() const
+    {
+        return m_uSumSize;
     }
 
     int getData(uint8_t *pBuff, size_t buffSize);

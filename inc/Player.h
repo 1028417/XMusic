@@ -31,7 +31,6 @@ public:
 private:
     void *m_pDecoder = NULL;
 
-private:
 	FILE *m_pf = NULL;
 
     uint64_t m_uPos = 0;
