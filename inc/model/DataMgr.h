@@ -16,9 +16,9 @@ private:
 	tagOption& m_Option;
 
 private:
-    bool _syncMediaLib(const CByteBuff& vecData);
+    bool _syncMediaLib(const CByteBuff& btbData);
 
-    bool _upgradeMediaLib(UINT uCurrVer, const CByteBuff& vecConfData);
+    bool _upgradeMediaLib(UINT uCurrVer, const CCharBuff& chbConf);
 
 public:
 	bool init();

@@ -178,14 +178,18 @@ public:
 };
 
 using byte_t = uint8_t;
-using TD_ByteVector = vector<byte_t>;
-class __UtilExt CByteBuff : public TD_ByteVector
+
+class __UtilExt CByteBuff
 {
+private:
+	using TD_ByteVector = vector<byte_t>;
+	TD_ByteVector m_vecBuff;
+
 public:
     CByteBuff() {}
 
     CByteBuff(size_t size)
-        : TD_ByteVector(size)
+        : m_vecBuff(size)
 	{
 	}
 
@@ -196,54 +200,117 @@ public:
             return NULL;
         }
 
-        auto pos = TD_ByteVector::size();
-        TD_ByteVector::resize(pos+size);
+        auto pos = m_vecBuff.size();
+		m_vecBuff.resize(pos+size);
         return ptr()+pos;
     }
 
     void resizeLess(size_t less)
     {
-        int size = (int)TD_ByteVector::size() - less;
+        int size = (int)m_vecBuff.size() - less;
         if (size >= 0)
         {
-            TD_ByteVector::resize(size);
+			m_vecBuff.resize(size);
         }
     }
 
-    inline byte_t* ptr()
+	operator bool() const
 	{
-        if (TD_ByteVector::empty())
-        {
-            return NULL;
-        }
-        return &TD_ByteVector::front();
+		return !m_vecBuff.empty();
 	}
+	bool operator !() const
+	{
+		return m_vecBuff.empty();
+	}
+
     inline const byte_t* ptr() const
 	{
-        if (TD_ByteVector::empty())
+        if (m_vecBuff.empty())
         {
             return NULL;
         }
-        return &TD_ByteVector::front();
+        return &m_vecBuff.front();
+	}
+	inline byte_t* ptr()
+	{
+		if (m_vecBuff.empty())
+		{
+			return NULL;
+		}
+		return &m_vecBuff.front();
 	}
 
-    operator byte_t*()
+	operator const byte_t*() const
 	{
 		return ptr();
 	}
-    operator const byte_t*() const
+	operator byte_t*()
 	{
 		return ptr();
-    }
+	}
+
+	operator const void*() const
+	{
+		return ptr();
+	}
+	operator void*()
+	{
+		return ptr();
+	}
+
+	const TD_ByteVector* operator->() const
+	{
+		return &m_vecBuff;
+	}
+	TD_ByteVector* operator->()
+	{
+		return &m_vecBuff;
+	}
+
+	const TD_ByteVector& operator*() const
+	{
+		return m_vecBuff;
+	}
+	TD_ByteVector& operator*()
+	{
+		return m_vecBuff;
+	}
+
+	operator const TD_ByteVector&() const
+	{
+		return m_vecBuff;
+	}
+	operator TD_ByteVector&()
+	{
+		return m_vecBuff;
+	}
+
+	const TD_ByteVector& vector() const
+	{
+		return m_vecBuff;
+	}
+	TD_ByteVector& vector()
+	{
+		return m_vecBuff;
+	}
+	
+	char* toStr()
+	{
+		m_vecBuff.push_back('\0');
+		return (char*)ptr();
+	}
 };
 
-class __UtilExt CCharBuff : public string
+class __UtilExt CCharBuff
 {
+private:
+	string m_strBuff;
+
 public:
     CCharBuff() {}
 
     CCharBuff(size_t size)
-        : string(size, '\0')
+        : m_strBuff(size, '\0')
     {
     }
 
@@ -254,54 +321,113 @@ public:
             return NULL;
         }
 
-        auto pos = string::size();
-        string::resize(pos+more);
+        auto pos = m_strBuff.size();
+		m_strBuff.resize(pos+more);
         return ptr()+pos;
     }
 
     void resizeLess(size_t less)
     {
-        int size = (int)string::size() - less;
+        int size = (int)m_strBuff.size() - less;
         if (size >= 0)
         {
-            string::resize(size);
+			m_strBuff.resize(size);
         }
     }
 
-    inline char* ptr()
-    {
-        if (string::empty())
-        {
-            return NULL;
-        }
-        return &string::front();
-    }
-    inline const char* ptr() const
-    {
-        if (string::empty())
-        {
-            return NULL;
-        }
-        return &string::front();
-    }
+	operator bool() const
+	{
+		return !m_strBuff.empty();
+	}
+	bool operator !() const
+	{
+		return m_strBuff.empty();
+	}
 
+	inline const char* ptr() const
+	{
+		if (m_strBuff.empty())
+		{
+			return NULL;
+		}
+		return &m_strBuff.front();
+	}
+	inline char* ptr()
+	{
+		if (m_strBuff.empty())
+		{
+			return NULL;
+		}
+		return &m_strBuff.front();
+	}
+
+	operator const char*() const
+	{
+		return ptr();
+	}
     operator char*()
     {
         return ptr();
     }
-    operator const char*() const
-    {
-        return ptr();
-    }
 
-    operator byte_t*()
-    {
-        return (byte_t*)ptr();
-    }
-    operator const byte_t*() const
-    {
-        return (const byte_t*)ptr();
-    }
+	operator const byte_t*() const
+	{
+		return (const byte_t*)ptr();
+	}
+	operator byte_t*()
+	{
+		return (byte_t*)ptr();
+	}
+
+	operator const void*() const
+	{
+		return (const byte_t*)ptr();
+	}
+	operator void*()
+	{
+		return (byte_t*)ptr();
+	}
+
+	const string* operator->() const
+	{
+		return &m_strBuff;
+	}
+	string* operator->()
+	{
+		return &m_strBuff;
+	}
+
+	const string& operator*() const
+	{
+		return m_strBuff;
+	}
+	string& operator*()
+	{
+		return m_strBuff;
+	}
+
+	operator const string&() const
+	{
+		return m_strBuff;
+	}
+	operator string&()
+	{
+		return m_strBuff;
+	}
+
+	const string& str() const
+	{
+		return m_strBuff;
+	}
+	string& str()
+	{
+		return m_strBuff;
+	}
+
+	const char* c_str() const
+	{
+		return m_strBuff.c_str();
+	}
 };
 
 #include "strutil.h"
@@ -309,16 +435,6 @@ public:
 #include "tmutil.h"
 
 #include "fsutil.h"
-
-#include "Path.h"
-
-#include "TxtWriter.h"
-
-#include "SQLiteDB.h"
-
-#include "jsonutil.h"
-
-#include "xmlutil.h"
 
 #if __windows
 //#define WIN32_LEAN_AND_MEAN

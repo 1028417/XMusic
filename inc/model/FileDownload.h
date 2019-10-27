@@ -67,8 +67,8 @@ private:
 
 public:
     void download(const string& strUrl);
-    bool download(const string& strUrl, CByteBuff& vecRet);
-    bool download(const string& strUrl, CCharBuff& strRet);
+    bool download(const string& strUrl, CByteBuff& btbData);
+    bool download(const string& strUrl, CCharBuff& chbData);
 
     size_t dataSize() const
     {
@@ -83,24 +83,24 @@ public:
 
     CByteBuff&& getByteData()
     {
-        CByteBuff vecRet;
-        (void)_getAllData(vecRet);
-        return std::move(vecRet);
+        CByteBuff btbData;
+        (void)_getAllData(btbData);
+        return std::move(btbData);
     }    
-    size_t getByteData(CByteBuff& vecBuff)
+    size_t getByteData(CByteBuff& btbData)
     {
-        return _getAllData(vecBuff);
+        return _getAllData(btbData);
     }
 
     CCharBuff&& getTextData()
     {
-        CCharBuff strRet;
-        (void)_getAllData(strRet);
-        return std::move(strRet);
+        CCharBuff chbData;
+        (void)_getAllData(chbData);
+        return std::move(chbData);
     }        
-    size_t getTextData(CCharBuff& strBuff)
+    size_t getTextData(CCharBuff& chbData)
     {
-        return _getAllData(strBuff);
+        return _getAllData(chbData);
     }
 
     void cancel();
