@@ -959,7 +959,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
         timerutil::async(100, [&](){
-            if (E_PlayStatus::PS_Pause == m_app.m_model.getPlayMgr().GetPlayStatus())
+            if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(false);
             }
@@ -970,7 +970,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
         timerutil::async(100, [&](){
-            if (E_PlayStatus::PS_Play == m_app.m_model.getPlayMgr().GetPlayStatus())
+            if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(true);
             }
