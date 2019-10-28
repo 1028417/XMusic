@@ -1,7 +1,7 @@
 
 #pragma once
 
-class ziputil
+class __UtilExt zutil
 {
 public:
 #if !__winvc
