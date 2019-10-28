@@ -8,7 +8,7 @@
 #include <QScreen>
 
 static CUTF8Writer m_logger;
-const ITxtWriter& g_logger(m_logger);
+ITxtWriter& g_logger(m_logger);
 
 map<E_FontWeight, QFont> g_mapFont;
 

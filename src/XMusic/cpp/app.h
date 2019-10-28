@@ -12,7 +12,7 @@
 
 #define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
 
-extern const ITxtWriter& g_logger;
+extern ITxtWriter& g_logger;
 
 class CApp : public QApplication
 {
