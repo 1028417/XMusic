@@ -365,14 +365,10 @@ bool MainWindow::event(QEvent *ev)
 
             if (E_PlayStatus::PS_Play == ePlayStatus)
             {
-                uint64_t uClock = m_app.getPlayMgr().player().GetClock();
-                if (uClock > 0)
+                int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
+                if (nProgress <= ui.progressBar->maximum())
                 {
-                    int nProgress = uClock / __1e6;
-                    if (nProgress <= ui.progressBar->maximum())
-                    {
-                        ui.progressBar->setValue(nProgress);
-                    }
+                    ui.progressBar->setValue(nProgress);
                 }
             }
         }
@@ -751,12 +747,8 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
     ui.btnPause->setVisible(bPlaying);
 }
 
-static UINT g_uPlaySeq = 0;
-
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    g_uPlaySeq++;
-
     PlayItem.CheckRelatedMedia();
 
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
@@ -777,6 +769,52 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     });
 
     emit signal_showPlaying(uPlayingItem, bManual);
+}
+
+static UINT g_uPlaySeq = 0;
+
+void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
+{
+    g_uPlaySeq++;
+
+    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
+
+    m_mtxPlayingInfo.get(m_PlayingInfo);
+    _showAlbumName();
+
+    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
+
+    if (m_PlayingInfo.strSinger != m_strSingerName)
+    {
+        m_strSingerName = m_PlayingInfo.strSinger;
+
+        ui.labelSingerName->setText(strutil::toQstr(m_strSingerName));
+
+        ui.labelSingerImg->setPixmap(QPixmap());
+
+        if (!m_strSingerName.empty())
+        {
+            _playSingerImg(true);
+        }
+
+        _relayout();
+    }
+
+    ui.progressBar->setValue(0);
+
+    _updatePlayPauseButton(true);
+
+    if (m_PlayingInfo.nDuration > 0)
+    {
+        ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
+
+        QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
+        ui.labelDuration->setText(qsDuration);
+    }
+    else
+    {
+        ui.labelDuration->clear();
+    }
 }
 
 void MainWindow::slot_playStoped(bool bOpenFail)
@@ -805,50 +843,6 @@ void MainWindow::slot_playStoped(bool bOpenFail)
                 _updatePlayPauseButton(false);
             }
         });
-    }
-}
-
-void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
-{
-    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
-    m_mtxPlayingInfo.get(m_PlayingInfo);
-    _showAlbumName();
-
-    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
-
-    if (m_PlayingInfo.strSinger != m_strSingerName)
-    {
-        m_strSingerName = m_PlayingInfo.strSinger;
-
-        ui.labelSingerName->setText(strutil::toQstr(m_strSingerName));
-
-        ui.labelSingerImg->setPixmap(QPixmap());
-
-        if (!m_strSingerName.empty())
-        {
-            _playSingerImg(true);
-        }
-
-        _relayout();
-    }
-
-    ui.progressBar->setValue(0);
-
-    if (m_PlayingInfo.nDuration >= 0)
-    {
-        ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
-
-        QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
-        ui.labelDuration->setText(qsDuration);
-
-        _updatePlayPauseButton(true);
-    }
-    else
-    {
-        ui.labelDuration->clear();
-
-        _updatePlayPauseButton(false);
     }
 }
 
@@ -964,13 +958,23 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
-        _updatePlayPauseButton(false);
+        timerutil::async(100, [&](){
+            if (E_PlayStatus::PS_Pause == m_app.m_model.getPlayMgr().GetPlayStatus())
+            {
+                _updatePlayPauseButton(false);
+            }
+        });
     }
     else if (button == ui.btnPlay)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
-        _updatePlayPauseButton(true);
+        timerutil::async(100, [&](){
+            if (E_PlayStatus::PS_Play == m_app.m_model.getPlayMgr().GetPlayStatus())
+            {
+                _updatePlayPauseButton(true);
+            }
+        });
     }
     else if (button == ui.btnPlayPrev)
     {
