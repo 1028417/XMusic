@@ -51,11 +51,15 @@ void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual
 	m_view.m_PlayCtrl.onPlay(PlayItem);
 }
 
-void CModelObserver::onPlayFinish()
+void CModelObserver::onPlayStoped(E_DecodeStatus decodeStatus)
 {
-	CMainApp::async([=]() {
-		m_view.m_PlayCtrl.onPlayFinish();
-	});
+	if (decodeStatus != E_DecodeStatus::DS_Cancel)
+	{
+		CMainApp::sync(0, [&, decodeStatus]() {
+			bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
+			m_view.m_PlayCtrl.onPlayStoped(bOpenFail);
+		});
+	}
 }
 
 UINT CModelObserver::GetSingerImgPos(UINT uSingerID)

@@ -65,7 +65,7 @@ void CPlayCtrl::_handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, s
 			{
 				s_bMenuShowed = true;
 
-				CMainApp::async([&]() {
+				__async([&]() {
 					CMenuGuard MenuGuard(m_view.m_ResModule, IDR_PLAYSPIRIT, 180);
 					MenuGuard.Popup(&m_view.m_MainWnd, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 
@@ -90,27 +90,12 @@ void CPlayCtrl::_handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, s
 	}
 }
 
-static UINT g_iFlag = 0;
+static UINT g_uPlaySeq = 0;
+
 void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
-	UINT iFlag = ++g_iFlag;
-
-	UINT uDuration = PlayItem.GetDuration();
-	if (0 == uDuration)
-	{
-		m_PlaySpirit->clear();
-
-		CMainApp::async(3000, [&, iFlag]() {
-			if (iFlag != g_iFlag)
-			{
-				return;
-			}
-			(void)m_view.getPlayMgr().playNext(false);
-		});
-
-		return;
-	}
-
+	g_uPlaySeq++;
+	
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
 
@@ -118,15 +103,27 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
 	
 	m_strPlayingFile = PlayItem.GetTitle();
-	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), PlayItem.GetDuration() + 1
-		, long(player().GetClock()/__1e6));
+	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
+		, PlayItem.GetDuration()+1, 0); // , long(player().GetClock()/__1e6));
 }
 
-void CPlayCtrl::onPlayFinish()
+void CPlayCtrl::onPlayStoped(bool bOpenFail)
 {
-	if (!m_view.getPlayMgr().playNext(false))
+	if (bOpenFail)
 	{
-		//m_PlaySpirit->clear();
+		m_PlaySpirit->clear();
+
+		auto uPlaySeq = g_uPlaySeq;
+		__async(1000, [&, uPlaySeq]() {
+			if (uPlaySeq == g_uPlaySeq)
+			{
+				(void)m_view.getPlayMgr().playNext(false);
+			}
+		});
+	}
+	else
+	{
+		(void)m_view.getPlayMgr().playNext(false);
 	}
 }
 

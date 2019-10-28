@@ -72,12 +72,12 @@ private:
 signals:
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);
 
-    void signal_playFinish();
+    void signal_playStoped(bool bOpenFail);
 
 private slots:
     void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
 
-    void slot_playFinish();
+    void slot_playStoped(bool bOpenFail);
 
     void slot_buttonClicked(CButton*);
 
@@ -110,8 +110,19 @@ private:
     void _demand(CButton* btnDemand);
 
 private:
-    void refreshPlayingList(int nPlayingItem, bool bSetActive = false) override;
+    void refreshPlayingList(int nPlayingItem, bool bSetActive) override
+    {
+        (void)bSetActive;
+        m_PlayingList.updateList(nPlayingItem);
+    }
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
-    void onPlayFinish() override;
+
+    void onPlayStoped(E_DecodeStatus decodeStatus) override
+    {
+        if (decodeStatus != E_DecodeStatus::DS_Cancel)
+        {
+            emit signal_playStoped(E_DecodeStatus::DS_OpenFail == decodeStatus);
+        }
+    }
 };

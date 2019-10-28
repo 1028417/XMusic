@@ -20,7 +20,7 @@ private:
 	void refreshPlayingList(int nPlayingItem = -1, bool bSetActive = false) override;
 
 	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
-	void onPlayFinish() override;
+	void onPlayStoped(E_DecodeStatus decodeStatus) override;
 	
 	UINT GetSingerImgPos(UINT uSingerID) override;
 

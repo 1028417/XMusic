@@ -70,7 +70,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    timerutil::async(0, [&](){
+    __async(0, [&](){
         _resizeTitle();
     });
 

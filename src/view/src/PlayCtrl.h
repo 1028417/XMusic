@@ -24,7 +24,7 @@ public:
 	bool init();
 
 	void onPlay(CPlayItem& PlayItem);
-	void onPlayFinish();
+	void onPlayStoped(bool bOpenFail);
 
 	void handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short para = 0);
 

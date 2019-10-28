@@ -44,7 +44,7 @@ bool CPlayerController::start()
 		}
 	});
 
-    CMainApp::async([&](){
+	__async([&](){
 		if (!m_model.status() && m_model.getMediaLib().empty())
 		{
 			if (!setupRootDir())
@@ -115,14 +115,6 @@ bool CPlayerController::start()
 
                 continue;
             }
-
-            /*if (!m_model.getMediaLib().empty())
-			{
-                if (PlayMgr.player().GetDuration() == 0)
-                {
-                    (void)PlayMgr.playNext(false);
-                }
-            }*/
         }
     });
 #endif

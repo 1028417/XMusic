@@ -318,7 +318,7 @@ BOOL CBackupCompareDlg::OnInitDialog()
 
 	m_wndSrcCombo.SetCurSel(uIdxSrc);
 
-	CMainApp::async(50, [&]() {
+	__async(50, [&]() {
 		_compare();
 	});
 	return TRUE;
@@ -369,7 +369,7 @@ void CBackupCompareDlg::_compare()
 		strDstTag.TrimLeft();
 
 		m_BackupMgr.compareBackup((wstring)strSrcTag, (wstring)strDstTag, [&](auto& result) {
-			CMainApp::async([&]() {
+			CMainApp::sync([&]() {
 				_fillResult(result);
 			});
 		});

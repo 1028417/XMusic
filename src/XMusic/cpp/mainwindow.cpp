@@ -256,7 +256,7 @@ void MainWindow::_init()
     }
 
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
-    connect(this, &MainWindow::signal_playFinish, this, &MainWindow::slot_playFinish);
+    connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
     ui.labelSingerName->setShadow(2);
 
@@ -751,15 +751,12 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
     ui.btnPause->setVisible(bPlaying);
 }
 
-void MainWindow::refreshPlayingList(int nPlayingItem, bool bSetActive)
-{
-    (void)bSetActive;
-
-    m_PlayingList.updateList(nPlayingItem);
-}
+static UINT g_uPlaySeq = 0;
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
+    g_uPlaySeq++;
+
     PlayItem.CheckRelatedMedia();
 
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
@@ -782,18 +779,33 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     emit signal_showPlaying(uPlayingItem, bManual);
 }
 
-void MainWindow::onPlayFinish()
-{
-    emit signal_playFinish();
-
-    m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-}
-
-void MainWindow::slot_playFinish()
+void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.progressBar->setValue(0);
 
-    _updatePlayPauseButton(false);
+    auto uPlaySeq = g_uPlaySeq;
+    if (bOpenFail)
+    {
+        _updatePlayPauseButton(false);
+
+        __async(1000, [&, uPlaySeq]() {
+            if (uPlaySeq == g_uPlaySeq)
+            {
+                m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+            }
+        });
+    }
+    else
+    {
+        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+
+        __async(1000, [&, uPlaySeq](){
+            if (uPlaySeq == g_uPlaySeq)
+            {
+                _updatePlayPauseButton(false);
+            }
+        });
+    }
 }
 
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
@@ -870,7 +882,7 @@ void MainWindow::_showAlbumName()
     }
 
     QLabel& labelAlbumName = *ui.labelAlbumName;
-    if (strMediaSet.empty())
+    if (strMediaSet->empty())
     {
         labelAlbumName.setVisible(false);
         return;

@@ -143,7 +143,7 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 	m_wndList.fixColumnWidth(rcList.Width());
 
 	auto& lstPlayingItems = m_view.getPlayMgr().getPlayingItems();
-	m_wndList.AsyncTask(50, [&](UINT uItem) {
+	m_wndList.AsyncTask(100, [&](UINT uItem) {
 		lstPlayingItems.get(uItem, [&](CPlayItem& PlayItem) {
 			PlayItem.AsyncTask();
 			m_wndList.Update(uItem);

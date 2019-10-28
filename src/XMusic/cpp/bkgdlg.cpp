@@ -359,7 +359,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     {
         auto& strBkg = m_bHScreen?m_app.getOptionMgr().getOption().strHBkg
                                   :m_app.getOptionMgr().getOption().strVBkg;
-        if (strBkg == vecBkg[uIdx])
+        if (strBkg == *vecBkg[uIdx])
         {
             _setBkg(L"");
         }

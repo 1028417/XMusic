@@ -76,7 +76,7 @@ BOOL CFindDlg::OnInitDialog()
 		}
 	}
 
-	CMainApp::async([&]() {
+	__async([&]() {
 		GetDlgItem(IDC_EDIT1)->SetFocus();
 	});
 	
@@ -85,7 +85,7 @@ BOOL CFindDlg::OnInitDialog()
 
 void CFindDlg::OnEnChangeEdit1()
 {
-	CMainApp::async(300, [&]() {
+	__async(300, [&]() {
 		CString cstrFind;
 		(void)m_wndEdit.GetWindowText(cstrFind);
 		(void)cstrFind.Trim();

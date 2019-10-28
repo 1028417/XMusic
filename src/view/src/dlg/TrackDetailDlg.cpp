@@ -55,7 +55,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 
 	m_wndList.ModifyStyle(0, LVS_SINGLESEL);
 
-	CMainApp::async([&]() {
+	__async([&]() {
 		m_cueFile.m_alTrackInfo([&](CRTrackInfo trackInfo, UINT uIdx) {
 			SVector<wstring> vecText{ trackInfo.strTitle, trackInfo.strPerformer };
 

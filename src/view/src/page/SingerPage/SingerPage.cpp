@@ -284,14 +284,12 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		(void)fileDlg.ShowOpenMulti(lstFiles);
 		if (!lstFiles.empty())
 		{
-			CMainApp::sync([=]() {
-				m_view.addSingerImage(*(CSinger*)pSingerObject, lstFiles);
+			m_view.addSingerImage(*(CSinger*)pSingerObject, lstFiles);
 
-				m_wndTree.UpdateImage(*pSingerObject);
+			m_wndTree.UpdateImage(*pSingerObject);
 
-				m_AlbumPage.UpdateTitle();
-				m_AlbumPage.UpdateSingerImage();
-			});
+			m_AlbumPage.UpdateTitle();
+			m_AlbumPage.UpdateSingerImage();
 		}
 	}
 
