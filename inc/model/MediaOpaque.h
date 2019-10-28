@@ -114,18 +114,28 @@ public:
 	}
 
 public:
-	wstring file() const override 
+	void close() override;
+
+	const wstring& currentFile() const
 	{
-        if (m_pXmscCodec)
-        {
-            return L"";
-        }
+		return m_strFile;
+	}
+
+private:
+	bool isLocalFile() const override
+	{
+        return !m_strFile.empty();
+	}
+
+	wstring localFile() const override
+	{
+		if (m_pXmscCodec)
+		{
+			return L"";
+		}
 
 		return m_strFile;
 	}
 
-	void close() override;
-
-private:
     int read(uint8_t *buf, size_t size) override;
 };

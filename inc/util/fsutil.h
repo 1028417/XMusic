@@ -41,12 +41,15 @@ using tagFileStat64 = tagFileStat;
 #define _fileno fileno
 #endif
 
-enum class E_SeekFileFlag
-{
-	SFF_Set = SEEK_SET,
-	SFF_Cur = SEEK_CUR,
-	SFF_End = SEEK_END
-};
+#if __ios || __mac
+#define ftell64 ftell
+
+#elif __winvc
+#define ftell64 _ftelli64
+
+#else
+#define ftell64(pf) fsutil::lSeek64(pf, 0, SEEK_CUR)
+#endif
 
 enum class E_FindFindFilter
 {
@@ -136,10 +139,8 @@ public:
     static bool fileStat64_32(FILE *pf, tagFileStat64_32& stat);
 	static bool fileStat64_32(const wstring& strFile, tagFileStat64_32& stat);
 
-    static int GetFileSize(FILE *pf);
-	static int GetFileSize(const wstring& strFile);
-    static int64_t GetFileSize64(FILE *pf);
-	static int64_t GetFileSize64(const wstring& strFile);
+	static long GetFileSize(const wstring& strFile);
+	static long long GetFileSize64(const wstring& strFile);
 
     static time32_t GetFileModifyTime(FILE *pf);
 	static time32_t GetFileModifyTime(const wstring& strFile);
@@ -169,7 +170,29 @@ public:
 
 	static bool moveFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-    static int64_t seekFile(FILE *pf, int64_t offset, E_SeekFileFlag eFlag=E_SeekFileFlag::SFF_Set);
+    static long lSeek(FILE *pf, long offset, int origin);
+    static long long lSeek64(FILE *pf, long long offset, int origin);
+
+    static bool seek(FILE *pf, long offset, int origin = SEEK_SET)
+    {
+        return lSeek(pf, offset, origin) >= 0;
+    }
+    static bool seek64(FILE *pf, long long offset, int origin = SEEK_SET)
+    {
+        return lSeek64(pf, offset, origin) >= 0;
+    }
+
+	static bool seekHead(FILE *pf)
+	{
+		return seek(pf, 0);
+	}
+	static bool seekEnd(FILE *pf)
+	{
+		return seek(pf, 0, SEEK_END);
+	}
+
+	static long GetFileSize(FILE *pf);
+	static long long GetFileSize64(FILE *pf);
 
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);

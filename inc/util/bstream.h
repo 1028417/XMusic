@@ -1,17 +1,17 @@
 
 #pragma once
 
-class __UtilExt bstream
+class __UtilExt BStream
 {
 protected:
-    virtual ~bstream()
+    virtual ~BStream()
     {
         close();
     }
 
-	bstream() {}
+	BStream() {}
 	
-	bstream(const wstring& strFile, const string& strMode)
+	BStream(const wstring& strFile, const string& strMode)
 	{
 		(void)_open(strFile, strMode);
 	}
@@ -31,9 +31,9 @@ protected:
 			return false;
 		}
 
-		fseek(m_pf, 0, SEEK_END);
+		fsutil::seekEnd(m_pf);
 		m_uSize = (UINT)ftell(m_pf);
-		fseek(m_pf, 0, SEEK_SET);
+		fsutil::seekHead(m_pf);
 
 		return true;
     }
@@ -76,70 +76,110 @@ public:
     }
 };
 
-class __UtilExt ibstream : public bstream
+class __UtilExt Instream
 {
 public:
-	ibstream() {}
+	virtual ~Instream() {}
 
-    ibstream(const wstring& strFile)
+    virtual size_t read(void *buff, size_t size, size_t count) = 0;
+	bool readex(void *buff, size_t size)
+	{
+		return read(buff, size, 1) == 1;
+	}
+
+	virtual bool seek(long offset, int origin) = 0;
+
+	virtual long pos() = 0;
+};
+
+class __UtilExt Outstream
+{
+public:
+	virtual ~Outstream() {}
+
+	virtual size_t write(const void *buff, size_t size, size_t count) = 0;
+	bool writeex(const void *buff, size_t size)
+	{
+		return write(buff, size, 1) == 1;
+	}
+
+    virtual void flush() = 0;
+};
+
+class __UtilExt IBStream : public BStream, public Instream
+{
+public:
+	virtual ~IBStream() {}
+
+	IBStream() {}
+
+    IBStream(const wstring& strFile)
     {
         (void)open(strFile);
     }
-    ibstream(const string& strFile)
+    IBStream(const string& strFile)
     {
         (void)open(strFile);
     }
 
 public:
-    bool open(const wstring& strFile)
+    virtual bool open(const wstring& strFile)
     {
         return _open(strFile, "rb");
     }
-    bool open(const string& strFile)
+    virtual bool open(const string& strFile)
     {
         return _open(strFile, "rb");
     }
-	
-    size_t read(void *buff, size_t count, size_t size=1) const
+
+    virtual size_t read(void *buff, size_t size, size_t count) override
     {
         return fread(buff, size, count, m_pf);
     }
+
+    virtual bool seek(long offset, int origin) override
+    {
+        return fsutil::seek(m_pf, offset, origin);
+    }
+
+	virtual long pos() override
+	{
+		return ftell(m_pf);
+	}
 };
 
-class __UtilExt obstream : public bstream
+class __UtilExt OBStream : public BStream, public Outstream
 {
 public:
-	obstream() {}
+	virtual ~OBStream() {}
 
-    obstream(const wstring& strFile, bool bTrunc)
+	OBStream() {}
+
+    OBStream(const wstring& strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
-    obstream(const string& strFile, bool bTrunc)
+    OBStream(const string& strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
 
 public:
-    bool open(const wstring& strFile, bool bTrunc)
+    virtual bool open(const wstring& strFile, bool bTrunc)
     {
         return _open(strFile, bTrunc?"wb":"ab");
     }
-    bool open(const string& strFile, bool bTrunc)
+    virtual bool open(const string& strFile, bool bTrunc)
     {
         return _open(strFile, bTrunc?"wb":"ab");
     }
 
-    bool write(const void *buff, size_t buffSize) const
-    {
-        return fwrite(buff, buffSize, 1, m_pf) == 1;
-    }
-    size_t write(const void *buff, size_t size, size_t count) const
-    {
-        return fwrite(buff, size, count, m_pf);
-    }
+	virtual size_t write(const void *buff, size_t size, size_t count) override
+	{
+		return fwrite(buff, size, count, m_pf);
+	}	
 
-    void flush() const
+    virtual void flush() override
     {
         (void)fflush(m_pf);
     }

@@ -27,6 +27,8 @@ enum class E_TxtEncodeType
 class __UtilExt ITxtWriter
 {
 public:
+	virtual ~ITxtWriter() {}
+
     ITxtWriter(E_TxtEncodeType eEncodeType)
         : m_eEncodeType(eEncodeType)
     {
@@ -36,24 +38,24 @@ protected:
     E_TxtEncodeType m_eEncodeType;
 
 public:
-    virtual bool write(const wstring& strText) const = 0;
+    virtual bool write(const wstring& strText) = 0;
 
-    virtual bool writeln(const wstring& strText) const = 0;
+    virtual bool writeln(const wstring& strText) = 0;
 
-    virtual bool write(const string& strText) const = 0;
+    virtual bool write(const string& strText) = 0;
 
-    virtual bool writeln(const string& strText) const = 0;
+    virtual bool writeln(const string& strText) = 0;
 
-    virtual bool write(const wchar_t *pStr) const = 0;
+    virtual bool write(const wchar_t *pStr) = 0;
 
-    virtual bool writeln(const wchar_t *pStr) const = 0;
+    virtual bool writeln(const wchar_t *pStr) = 0;
 
-    virtual bool write(const char *pStr) const = 0;
+    virtual bool write(const char *pStr) = 0;
 
-    virtual bool writeln(const char *pStr) const = 0;
+    virtual bool writeln(const char *pStr) = 0;
 
     template <typename T>
-    bool write(const T& num) const
+    bool write(const T& num)
     {
             if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
             {
@@ -66,7 +68,7 @@ public:
     }
 
     template <typename T>
-    bool writeln(const T& num) const
+    bool writeln(const T& num)
     {
             if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
             {
@@ -79,33 +81,33 @@ public:
     }
 
     template <typename T>
-    const ITxtWriter& operator<<(const T& t) const
+    ITxtWriter& operator<<(const T& t)
     {
             (void)write(t);
             return *this;
     }
 
     template <typename T>
-    const ITxtWriter& operator>>(const T& t) const
+    ITxtWriter& operator>>(const T& t)
     {
             (void)writeln(t);
             return *this;
     }
 
 #if !__winvc
-    bool write(const QString& qstr) const
+    bool write(const QString& qstr)
     {
         return write(qstr.toStdWString());
     }
 
-    bool writeln(const QString& qstr) const
+    bool writeln(const QString& qstr)
     {
         return writeln(qstr.toStdWString());
     }
 #endif
 };
 
-class __UtilExt CTxtWriter : public ITxtWriter, private obstream
+class __UtilExt CTxtWriter : public ITxtWriter, private OBStream
 {
 public:
 	static const string __UnicodeHead_LittleEndian;
@@ -114,6 +116,8 @@ public:
 	static const string __UTF8Bom;
 
 public:
+	virtual ~CTxtWriter() {}
+
 	CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
 		ITxtWriter(eEncodeType),
 		m_eEOLFlag(eEOLFlag)
@@ -151,19 +155,19 @@ private:
 
     bool _open(const wstring& strFile, bool bTrunc)
     {
-        return obstream::open(strFile, bTrunc ? "wb" : "ab");
+        return OBStream::open(strFile, bTrunc ? "wb" : "ab");
     }
     bool _open(const string& strFile, bool bTrunc)
     {
-        return obstream::open(strFile, bTrunc ? "wb" : "ab");
+        return OBStream::open(strFile, bTrunc ? "wb" : "ab");
     }
 
     bool _writeHead();
 
-    bool _write(const char *pStr, size_t len, bool bEndLine = false) const;
-    bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false) const;
+    bool _write(const char *pStr, size_t len, bool bEndLine = false);
+    bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false);
 
-    inline bool _writeEndLine() const;
+    inline bool _writeEndLine();
 
 public:
 	bool isOpened() const
@@ -174,27 +178,27 @@ public:
 	bool open(const wstring& strFile, bool bTrunc);
 	bool open(const string& strFile, bool bTrunc);
 
-    bool write(const wstring& strText) const override
+    bool write(const wstring& strText) override
 	{
 		return _write(strText.c_str(), strText.size());
 	}
 
-    bool writeln(const wstring& strText) const override
+    bool writeln(const wstring& strText) override
 	{
 		return _write(strText.c_str(), strText.size(), true);
 	}
 
-    bool write(const string& strText) const override
+    bool write(const string& strText) override
 	{
 		return _write(strText.c_str(), strText.size());
 	}
 
-    bool writeln(const string& strText) const override
+    bool writeln(const string& strText) override
 	{
 		return _write(strText.c_str(), strText.size(), true);
 	}
 
-    bool write(const wchar_t *pStr) const override
+    bool write(const wchar_t *pStr) override
 	{
 		if (NULL == pStr)
 		{
@@ -204,7 +208,7 @@ public:
 		return _write(pStr, wcslen(pStr));
 	}
 
-    bool writeln(const wchar_t *pStr) const override
+    bool writeln(const wchar_t *pStr) override
 	{
 		if (NULL == pStr)
 		{
@@ -214,7 +218,7 @@ public:
 		return _write(pStr, wcslen(pStr), true);
 	}
 
-    bool write(const char *pStr) const override
+    bool write(const char *pStr) override
 	{
 		if (NULL == pStr)
 		{
@@ -224,16 +228,15 @@ public:
 		return _write(pStr, strlen(pStr));
     }
 
-    bool writeln(const char *pStr) const override
+    bool writeln(const char *pStr) override
     {
         return _write(pStr, pStr?strlen(pStr):0, true);
     }
 
     void close()
     {
-        obstream::close();
+        OBStream::close();
     }
-
 };
 
 enum class E_UnicodeHeadOpt
@@ -245,6 +248,8 @@ enum class E_UnicodeHeadOpt
 class __UtilExt CUnicodeWriter : public CTxtWriter
 {
 public:
+	virtual ~CUnicodeWriter() {}
+
 	CUnicodeWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
 			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
@@ -273,6 +278,8 @@ public:
 class __UtilExt CUTF8Writer : public CTxtWriter
 {
 public:
+	virtual ~CUTF8Writer() {}
+
 	CUTF8Writer(bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
 	{

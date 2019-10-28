@@ -25,11 +25,15 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
+	virtual wstring localFile() const = 0;
+
 	virtual bool seekable() const = 0;
 
-	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
+	virtual int64_t seek(int64_t offset, int origin) = 0;
 
 	virtual int read(uint8_t *buf, size_t size) = 0;
+
+	virtual E_DecodeStatus decodeStatus() = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -59,20 +63,25 @@ public:
 
 	UINT checkDuration();
 
-	E_DecodeStatus decodeStatus();
+	E_DecodeStatus decodeStatus() override;
 
-	virtual wstring file() const
+	virtual bool isLocalFile() const
+	{
+		return true;
+	}
+
+protected:
+	virtual wstring localFile() const override
 	{
 		return L"";
 	}
 
-public:
     virtual bool seekable() const override
 	{
 		return NULL!=m_pf;
 	}
     
-	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override;
+	virtual int64_t seek(int64_t offset, int origin) override;
 
     virtual int read(uint8_t *buf, size_t size) override;
 };

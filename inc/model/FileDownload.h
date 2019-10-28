@@ -85,7 +85,7 @@ public:
     {
         CByteBuff btbData;
         (void)_getAllData(btbData);
-        return std::move(btbData);
+        return btbData;
     }    
     size_t getByteData(CByteBuff& btbData)
     {
@@ -96,7 +96,7 @@ public:
     {
         CCharBuff chbData;
         (void)_getAllData(chbData);
-        return std::move(chbData);
+		return chbData;
     }        
     size_t getTextData(CCharBuff& chbData)
     {
