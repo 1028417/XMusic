@@ -6,13 +6,19 @@
 #define __TimerID void
 #endif
 
+#define __async timerutil::async
+
 class __UtilExt timerutil
 {
 private:
     static __TimerID _setTimer(UINT uElapse, cfn_bool cb);
 
 public:
-	static void async(UINT uElapse, cfn_void cb);
+	static void async(UINT uDelayTime, cfn_void cb);
+	static void async(cfn_void cb)
+	{
+		async(0, cb);
+	}
 
     static __TimerID setTimer(UINT uElapse, cfn_void cb);
     static __TimerID setTimerEx(UINT uElapse, cfn_bool cb);

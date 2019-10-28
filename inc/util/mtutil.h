@@ -214,8 +214,6 @@ private:
 public:
 	void start(cfn_void cb)
 	{
-        cancel();
-
         mutex_lock lock(m_mutex);
         m_thread = thread([&, cb]() {
             m_sgnRuning.set();

@@ -85,15 +85,17 @@
 
 #define cauto const auto&
 
-#ifndef UINT
-using UINT = unsigned int;
-#endif
+using byte_t = uint8_t;
 
 #ifndef BOOL
 using BOOL = int;
 
 #define TRUE 1
 #define FALSE 0
+#endif
+
+#ifndef UINT
+using UINT = unsigned int;
 #endif
 
 #ifndef MIN
@@ -138,297 +140,7 @@ using BOOL = int;
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;
 
-template<typename T>
-struct TBuffer
-{
-public:
-	TBuffer(size_t size)
-	{
-		m_size = MAX(1, size);
-		m_pBuff = (T*)calloc(1, m_size * sizeof(T));
-	}
-
-	~TBuffer()
-	{
-		free(m_pBuff);
-	}
-
-	TBuffer(const TBuffer& other) = delete;
-	TBuffer& operator=(const TBuffer& other) = delete;
-
-private:
-	size_t m_size;
-	T *m_pBuff;
-
-public:
-	size_t size() const
-	{
-		return m_size;
-	}
-
-	operator T*()
-	{
-		return m_pBuff;
-	}
-
-	operator const T*() const
-	{
-		return m_pBuff;
-	}
-};
-
-using byte_t = uint8_t;
-
-class __UtilExt CByteBuff
-{
-private:
-	using TD_ByteVector = vector<byte_t>;
-	TD_ByteVector m_vecBuff;
-
-public:
-    CByteBuff() {}
-
-    CByteBuff(size_t size)
-        : m_vecBuff(size)
-	{
-	}
-
-    byte_t* resizeMore(size_t size)
-    {
-        if (0 == size)
-        {
-            return NULL;
-        }
-
-        auto pos = m_vecBuff.size();
-		m_vecBuff.resize(pos+size);
-        return ptr()+pos;
-    }
-
-    void resizeLess(size_t less)
-    {
-        int size = (int)m_vecBuff.size() - less;
-        if (size >= 0)
-        {
-			m_vecBuff.resize(size);
-        }
-    }
-
-	operator bool() const
-	{
-		return !m_vecBuff.empty();
-	}
-	bool operator !() const
-	{
-		return m_vecBuff.empty();
-	}
-
-    inline const byte_t* ptr() const
-	{
-        if (m_vecBuff.empty())
-        {
-            return NULL;
-        }
-        return &m_vecBuff.front();
-	}
-	inline byte_t* ptr()
-	{
-		if (m_vecBuff.empty())
-		{
-			return NULL;
-		}
-		return &m_vecBuff.front();
-	}
-
-	operator const byte_t*() const
-	{
-		return ptr();
-	}
-	operator byte_t*()
-	{
-		return ptr();
-	}
-
-	operator const void*() const
-	{
-		return ptr();
-	}
-	operator void*()
-	{
-		return ptr();
-	}
-
-	const TD_ByteVector* operator->() const
-	{
-		return &m_vecBuff;
-	}
-	TD_ByteVector* operator->()
-	{
-		return &m_vecBuff;
-	}
-
-	const TD_ByteVector& operator*() const
-	{
-		return m_vecBuff;
-	}
-	TD_ByteVector& operator*()
-	{
-		return m_vecBuff;
-	}
-
-	operator const TD_ByteVector&() const
-	{
-		return m_vecBuff;
-	}
-	operator TD_ByteVector&()
-	{
-		return m_vecBuff;
-	}
-
-	const TD_ByteVector& vector() const
-	{
-		return m_vecBuff;
-	}
-	TD_ByteVector& vector()
-	{
-		return m_vecBuff;
-	}
-	
-	char* toStr()
-	{
-		m_vecBuff.push_back('\0');
-		return (char*)ptr();
-	}
-};
-
-class __UtilExt CCharBuff
-{
-private:
-	string m_strBuff;
-
-public:
-    CCharBuff() {}
-
-    CCharBuff(size_t size)
-        : m_strBuff(size, '\0')
-    {
-    }
-
-    char* resizeMore(size_t more)
-    {
-        if (0 == more)
-        {
-            return NULL;
-        }
-
-        auto pos = m_strBuff.size();
-		m_strBuff.resize(pos+more);
-        return ptr()+pos;
-    }
-
-    void resizeLess(size_t less)
-    {
-        int size = (int)m_strBuff.size() - less;
-        if (size >= 0)
-        {
-			m_strBuff.resize(size);
-        }
-    }
-
-	operator bool() const
-	{
-		return !m_strBuff.empty();
-	}
-	bool operator !() const
-	{
-		return m_strBuff.empty();
-	}
-
-	inline const char* ptr() const
-	{
-		if (m_strBuff.empty())
-		{
-			return NULL;
-		}
-		return &m_strBuff.front();
-	}
-	inline char* ptr()
-	{
-		if (m_strBuff.empty())
-		{
-			return NULL;
-		}
-		return &m_strBuff.front();
-	}
-
-	operator const char*() const
-	{
-		return ptr();
-	}
-    operator char*()
-    {
-        return ptr();
-    }
-
-	operator const byte_t*() const
-	{
-		return (const byte_t*)ptr();
-	}
-	operator byte_t*()
-	{
-		return (byte_t*)ptr();
-	}
-
-	operator const void*() const
-	{
-		return (const byte_t*)ptr();
-	}
-	operator void*()
-	{
-		return (byte_t*)ptr();
-	}
-
-	const string* operator->() const
-	{
-		return &m_strBuff;
-	}
-	string* operator->()
-	{
-		return &m_strBuff;
-	}
-
-	const string& operator*() const
-	{
-		return m_strBuff;
-	}
-	string& operator*()
-	{
-		return m_strBuff;
-	}
-
-	operator const string&() const
-	{
-		return m_strBuff;
-	}
-	operator string&()
-	{
-		return m_strBuff;
-	}
-
-	const string& str() const
-	{
-		return m_strBuff;
-	}
-	string& str()
-	{
-		return m_strBuff;
-	}
-
-	const char* c_str() const
-	{
-		return m_strBuff.c_str();
-	}
-};
+#include "buffer.h"
 
 #include "strutil.h"
 
@@ -441,10 +153,8 @@ public:
 #include <Windows.h>
 
 #include "winfsutil.h"
-
 #include "winfsdlg.h"
-
-#include "ProFile.h"
+//#include "ProFile.h"
 
 __UtilExt float getDPIRate();
 //__UtilExt BOOL EnablePerMonitorDialogScaling();

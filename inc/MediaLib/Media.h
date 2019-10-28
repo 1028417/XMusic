@@ -72,7 +72,6 @@ public:
 	{
 		m_nDuration = uDuration;
 	}
-
 	int GetDuration() const
 	{
 		return m_nDuration;

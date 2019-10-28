@@ -9,8 +9,10 @@ public:
     static long qUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
 #endif
 
+    static int zCompress(const void* pData, size_t len, CByteBuff& btbBuff, int level=0);
     static long zCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int level=0);
+
     static long zUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-    static bool zUncompressZip(const string& strZipFile, const string& strDstDir);
+    static bool zipUncompress(const string& strZipFile, const string& strDstDir);
 };

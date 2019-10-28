@@ -106,6 +106,8 @@ private:
 
 	BOOL OnCommand(UINT uID);
 
+	static void _sync(const CB_Sync& cb);
+
 public:
 	void Quit();
 
@@ -113,21 +115,8 @@ public:
 
 	static bool removeMsg(UINT uMsg);
 
-	static void async(const CB_Sync& cb, UINT uDelayTime = 0);
-	static void async(UINT uDelayTime, const CB_Sync& cb)
-	{
-		async(cb, uDelayTime);
-	}
-
-	static void sync(const CB_Sync& cb, bool bBlock=true);
-
-	template <typename T>
-	static void sync(cfn_void_t<T&> cb, T& para, bool bBlock = true)
-	{
-		sync([=]() {
-			cb(para);
-		}, bBlock);
-	}
+	static void sync(const CB_Sync& cb);
+	static void sync(UINT uDelayTime, const CB_Sync& cb);
 	
 	void thread(cfn_void cb);
 

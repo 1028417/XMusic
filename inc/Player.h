@@ -22,7 +22,17 @@ enum class E_DecodeStatus
 	DS_Finished,
 };
 
-class __PlaySDKExt CAudioOpaque
+class IAudioOpaque
+{
+public:
+	virtual bool seekable() const = 0;
+
+	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) = 0;
+
+	virtual int read(uint8_t *buf, size_t size) = 0;
+};
+
+class __PlaySDKExt CAudioOpaque : public IAudioOpaque
 {
 public:
     CAudioOpaque();
@@ -51,13 +61,20 @@ public:
 
 	E_DecodeStatus decodeStatus();
 
-public:
-    virtual wstring file() const {return L"";}
+	virtual wstring file() const
+	{
+		return L"";
+	}
 
-    virtual bool seekable() const {return NULL!=m_pf;}
-    virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set);
-	
-    virtual int read(uint8_t *buf, size_t size);
+public:
+    virtual bool seekable() const override
+	{
+		return NULL!=m_pf;
+	}
+    
+	virtual int64_t seek(int64_t offset, E_SeekFileFlag eFlag = E_SeekFileFlag::SFF_Set) override;
+
+    virtual int read(uint8_t *buf, size_t size) override;
 };
 
 using CB_PlayFinish = fn_void_t<E_DecodeStatus>;
@@ -82,9 +99,6 @@ private:
 
 	XThread m_thread;
 	
-private:
-	virtual void _onFinish(E_DecodeStatus) {}
-
 public:
     static int InitSDK();
     static void QuitSDK();

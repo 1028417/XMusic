@@ -81,7 +81,7 @@ public:
 
     int getData(uint8_t *pBuff, size_t buffSize);
 
-    CByteBuff&& getByteData()
+    CByteBuff getByteData()
     {
         CByteBuff btbData;
         (void)_getAllData(btbData);
@@ -92,7 +92,7 @@ public:
         return _getAllData(btbData);
     }
 
-    CCharBuff&& getTextData()
+    CCharBuff getTextData()
     {
         CCharBuff chbData;
         (void)_getAllData(chbData);
