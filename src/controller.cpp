@@ -9,8 +9,8 @@ static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
 #if !__winvc
-thread g_threadPlayCtrl;
-TSignal<tagPlayCtrl> m_sigPlayCtrl;
+static thread g_threadPlayCtrl;
+static TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif
 
 bool CPlayerController::start()
@@ -125,13 +125,8 @@ bool CPlayerController::start()
 #if __winvc
 bool CPlayerController::setupRootDir()
 {
-#if __winvc
 	static CFolderDlgEx FolderDlg;
     wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
-#else
-    CFolderDlg FolderDlg;
-    wstring strRootDir = FolderDlg.Show(hWndParent, NULL, L"设定根目录", L"请选择媒体库根目录");
-#endif
 	if (strRootDir.empty())
 	{
 		return false;
@@ -170,17 +165,13 @@ void CPlayerController::stop()
 {
 #if !__winvc
     m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
-#endif
-
-    m_model.close();
-
-#if !__winvc
-    m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
     if (g_threadPlayCtrl.joinable())
     {
         g_threadPlayCtrl.join();
     }
 #endif
+
+    m_model.close();
 }
 
 void CPlayerController::callPlayCtrl(const tagPlayCtrl& PlayCtrl)
