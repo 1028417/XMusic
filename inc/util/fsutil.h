@@ -173,27 +173,6 @@ public:
     static long lSeek(FILE *pf, long offset, int origin);
     static long long lSeek64(FILE *pf, long long offset, int origin);
 
-    static bool seek(FILE *pf, long offset, int origin = SEEK_SET)
-    {
-        return lSeek(pf, offset, origin) >= 0;
-    }
-    static bool seek64(FILE *pf, long long offset, int origin = SEEK_SET)
-    {
-        return lSeek64(pf, offset, origin) >= 0;
-    }
-
-	static bool seekHead(FILE *pf)
-	{
-		return seek(pf, 0);
-	}
-	static bool seekEnd(FILE *pf)
-	{
-		return seek(pf, 0, SEEK_END);
-	}
-
-	static long GetFileSize(FILE *pf);
-	static long long GetFileSize64(FILE *pf);
-
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);
 

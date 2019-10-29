@@ -52,10 +52,6 @@ private:
     bool _playNext(bool bNext, bool bManual);
 
 	bool _play(uint64_t uStartPos);
-	
-#if !__winvc
-    string _getUrl(const wstring& strFile);
-#endif
 
     void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
 

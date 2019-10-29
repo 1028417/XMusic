@@ -31,9 +31,9 @@ protected:
 			return false;
 		}
 
-		fsutil::seekEnd(m_pf);
-		m_uSize = (UINT)ftell(m_pf);
-		fsutil::seekHead(m_pf);
+        (void)fseek(m_pf, 0, SEEK_END);
+        m_uSize = (UINT)ftell(m_pf);
+        (void)fseek(m_pf, 0, SEEK_SET);
 
 		return true;
     }
@@ -139,7 +139,7 @@ public:
 
     virtual bool seek(long offset, int origin) override
     {
-        return fsutil::seek(m_pf, offset, origin);
+        return 0==fseek(m_pf, offset, origin);
     }
 
 	virtual long pos() override
@@ -220,7 +220,9 @@ public:
         count = MIN(count, (m_size-m_pos)/size);
         if (0 != count)
         {
-            memcpy(buff, m_ptr+m_pos, size*count);
+            size *= count;
+            memcpy(buff, m_ptr+m_pos, size);
+            m_pos += size;
         }
 
         return count;

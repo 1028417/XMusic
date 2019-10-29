@@ -48,7 +48,7 @@ private:
 
 	FILE *m_pf = NULL;
 
-    uint64_t m_uPos = 0;
+    //uint32_t m_uPos = 0;
 
 private:
     friend class CPlayer;
@@ -59,7 +59,7 @@ private:
 
 public:
     virtual void close();
-    int open(const wstring& strFile);
+    long open(const wstring& strFile);
 
 	UINT checkDuration();
 
