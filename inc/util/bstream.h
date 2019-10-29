@@ -184,3 +184,79 @@ public:
         (void)fflush(m_pf);
     }
 };
+
+class __UtilExt IFBuff : public Instream
+{
+public:
+    IFBuff(byte_t *ptr, size_t size)
+        : m_ptr(ptr)
+        , m_size(size)
+    {
+    }
+
+    IFBuff(const CByteBuff& btbBuff)
+        : m_ptr(btbBuff)
+        , m_size(btbBuff->size())
+    {
+
+    }
+
+    virtual ~IFBuff(){}
+
+protected:
+    const byte_t *m_ptr;
+    size_t m_size;
+
+    size_t m_pos = 0;
+
+public:
+    operator bool() const
+    {
+        return m_ptr && 0!=m_size;
+    }
+
+    virtual size_t read(void *buff, size_t size, size_t count) override
+    {
+        count = MIN(count, (m_size-m_pos)/size);
+        if (0 != count)
+        {
+            memcpy(buff, m_ptr+m_pos, size*count);
+        }
+
+        return count;
+    }
+
+    virtual bool seek(long offset, int origin) override
+    {
+        int pos = m_pos;
+        if (SEEK_SET == origin)
+        {
+            pos = offset;
+        }
+        else if (SEEK_CUR == origin)
+        {
+            pos += offset;
+        }
+        else if (SEEK_END == origin)
+        {
+            pos = m_size-1+offset;
+        }
+        else
+        {
+            return false;
+        }
+
+        if (pos < 0 || pos >= (int)m_size)
+        {
+            return false;
+        }
+        m_pos = (size_t)pos;
+
+        return true;
+    }
+
+    virtual long pos() override
+    {
+        return m_pos;
+    }
+};
