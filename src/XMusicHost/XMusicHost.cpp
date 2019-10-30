@@ -4,13 +4,6 @@
 
 #include "../view/resource.h"
 
-static struct __afxInit {
-	__afxInit() {
-		afxCurrentInstanceHandle = _AtlBaseModule.GetModuleInstance();
-		afxCurrentResourceHandle = _AtlBaseModule.GetResourceInstance();
-	}
-} afxInit;
-
 class CPlayerApp : public CMainApp
 {
 public:
@@ -38,7 +31,6 @@ public:
 
 	CController m_controller;
 };
-
 CPlayerApp theApp;
 
 bool CController::init()
@@ -82,12 +74,12 @@ bool CController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_UP, E_HotkeyFlag::HKF_Alt, true));
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Alt, true));
 
-	return CPlayerController::start();
+	return CXController::start();
 }
 
 void CController::stop()
 {
-	CPlayerController::stop();
+	CXController::stop();
 }
 
 bool CController::handleCommand(UINT uID)
@@ -95,7 +87,7 @@ bool CController::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_MODIFY_ROOT:
-		(void)CPlayerController::setupRootDir();
+		(void)CXController::setupRootDir();
 
 	break;
 	case ID_REFRESH_ROOT:

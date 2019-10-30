@@ -34,7 +34,7 @@ public:
 private:
     CModel m_model;
 
-    CPlayerController m_ctrl;
+    CXController m_ctrl;
 
     MainWindow m_mainWnd;
 
@@ -72,7 +72,7 @@ public:
         return getModel().getPlayMgr();
     }
 
-    IPlayerController& getCtrl()
+    IXController& getCtrl()
     {
         return m_ctrl;
     }

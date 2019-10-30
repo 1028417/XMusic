@@ -44,7 +44,7 @@ struct tagVerifyResult
 class __view
 {
 public:
-	__view(IPlayerController& controller, IModel& model)
+	__view(IXController& controller, IModel& model)
 		: m_controller(controller)
 		, m_model(model)
 
@@ -68,12 +68,12 @@ public:
 	}
 
 private:
-	IPlayerController& m_controller;
+	IXController& m_controller;
 
 	IModel& m_model;
 
 public:
-	IPlayerController& getController()
+	IXController& getController()
 	{
 		return m_controller;
 	}

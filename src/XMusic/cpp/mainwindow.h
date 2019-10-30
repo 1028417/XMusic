@@ -13,8 +13,6 @@
 
 #include "bkgdlg.h"
 
-//namespace Ui { class MainWindow; }
-
 struct tagPlayingInfo
 {
     wstring strTitle;

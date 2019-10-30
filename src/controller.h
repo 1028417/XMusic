@@ -2,10 +2,10 @@
 
 #include "viewdef.h"
 
-class CPlayerController : public IPlayerController
+class CXController : public IXController
 {
 public:
-	CPlayerController(IPlayerView& view, IModel& model)
+	CXController(IPlayerView& view, IModel& model)
 		: m_view(view)
 		, m_model(model)
 	{

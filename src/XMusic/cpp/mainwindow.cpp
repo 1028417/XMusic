@@ -642,18 +642,18 @@ void MainWindow::_relayout()
         m_PlayingList.setInactiveAlpha(0.33);
         m_PlayingList.setShadow(0);
 
-        bool bFlag = fCXRateEx > 1;
+        bool bFlag = false;//fCXRateEx > 1;
         if (m_bHScreen)
         {
-             if (cy < __size(1000))
+             if (cy < __size(1080)*fCXRateEx)
              {
                  bFlag = true;
              }
         }
-        /*else
+        else
         {
-            bFlag = cy < __size(1920);
-        }*/
+            bFlag = fCXRateEx > 1; // bFlag = cy < __size(1920);
+        }
         if (bFlag)
         {
             ui.labelPlayingfile->setShadow(2);

@@ -2,11 +2,11 @@
 
 #include "../controller.h"
 
-class CController : public CPlayerController, public IController
+class CController : public CXController, public IController
 {
 public:
 	CController(IPlayerView& view, IModel& model)
-		: CPlayerController(view, model)
+		: CXController(view, model)
 	{
 	}
 

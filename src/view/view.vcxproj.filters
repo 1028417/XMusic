@@ -253,10 +253,9 @@
     <ClInclude Include="src\dlg\SimilarFileDlg.h">
       <Filter>src\dlg</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\ViewDef.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\inc\ControllerDef.h" />
+    <ClInclude Include="..\..\inc\viewdef.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="view.rc" />

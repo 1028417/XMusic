@@ -19,8 +19,14 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 
 		if (E_LabelTextOption::LTO_AutoFit == m_eTextOption)
 		{
-			QFont font = painter.font();
-			while (painter.fontMetrics().width(text) >= cx)
+            QFont font = painter.font();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5,13,0))
+#define __checkTextWidth(t) painter.fontMetrics().horizontalAdvance(t)
+#else
+#define __checkTextWidth(t) painter.fontMetrics().width(t)
+#endif
+            while (__checkTextWidth(text) >= cx)
 			{
 				auto fPointSize = font.pointSizeF()-0.1;
 				if (fPointSize < 0)

@@ -7,7 +7,7 @@
 class CPlayerView : public IPlayerView
 {
 public:
-	CPlayerView(IPlayerController& controller, IModel& model)
+	CPlayerView(IXController& controller, IModel& model)
 		: m_view(controller, model)
 		, m_ModelObserver(m_view)
 	{

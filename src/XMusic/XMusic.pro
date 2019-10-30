@@ -42,7 +42,9 @@ HEADERS += cpp/app.h \
     cpp/dialog.h \
     cpp/medialibdlg.h \
     cpp/addbkgdlg.h \
-    cpp/ListViewEx.h
+    cpp/ListViewEx.h \
+    ../../inc/ControllerDef.h \
+    ../../inc/viewdef.h
 
 RESOURCES += res.qrc
 

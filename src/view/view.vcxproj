@@ -196,7 +196,8 @@
     <ClCompile Include="src\view.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\ViewDef.h" />
+    <ClInclude Include="..\..\inc\ControllerDef.h" />
+    <ClInclude Include="..\..\inc\viewdef.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\dlg\BackupDlg.h" />
     <ClInclude Include="src\dlg\BackupCompareDlg.h" />

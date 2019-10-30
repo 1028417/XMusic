@@ -18,13 +18,7 @@
 
 #include "dlg/WholeTrackDlg.h"
 
-#pragma data_seg("Shared")
-static bool volatile g_bRuning = false;
-static HWND volatile g_hMainWnd = NULL;
-#pragma data_seg()
-#pragma comment(linker,"/section:Shared,RWS")
-
-__ViewExt IPlayerView& genView(IPlayerController& controller, IModel& model)
+__ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 {
 	static CPlayerView inst(controller, model);
 	return inst;
@@ -32,32 +26,10 @@ __ViewExt IPlayerView& genView(IPlayerController& controller, IModel& model)
 
 CMainWnd* CPlayerView::show()
 {
-	if (g_bRuning)
-	{
-		if (NULL != g_hMainWnd)
-		{
-			if (IsIconic(g_hMainWnd))
-			{
-				(void)ShowWindow(g_hMainWnd, SW_RESTORE);
-			}
-			else
-			{
-				//::SetWindowPos(g_hMainWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-				::SetForegroundWindow(g_hMainWnd);
-			}
-		}
-
-		return NULL;
-	}
-	g_bRuning = true;
-
-
 	if (!m_view.init())
 	{
 		return NULL;
 	}
-
-	g_hMainWnd = m_view.m_MainWnd.m_hWnd;
 
 	return &m_view.m_MainWnd;
 }
