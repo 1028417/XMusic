@@ -21,8 +21,6 @@ private:
     bool _upgradeMediaLib(UINT uCurrVer, const CCharBuff& chbConf);
 
 public:
-	bool init();
-
 	bool upgradeMediaLib(const wstring& strDBFile);
 
 	bool clearData();

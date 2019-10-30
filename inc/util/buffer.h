@@ -109,10 +109,10 @@ public:
 
     void resizeLess(size_t less)
     {
-        int size = (int)m_vecBuff.size() - less;
-        if (size >= 0)
+        size_t size = m_vecBuff.size();
+        if (less <= size)
         {
-			m_vecBuff.resize(size);
+            m_vecBuff.resize(size-less);
         }
     }
 
@@ -271,10 +271,10 @@ public:
 
     void resizeLess(size_t less)
     {
-        int size = (int)m_strBuff.size() - less;
-        if (size >= 0)
+        size_t size = m_strBuff.size();
+        if (less <= size)
         {
-			m_strBuff.resize(size);
+            m_strBuff.resize(size-less);
         }
     }
 
@@ -331,40 +331,14 @@ public:
 		return (byte_t*)ptr();
 	}
 
-	const string* operator->() const
+	operator string() const
 	{
-		return &m_strBuff;
-	}
-	string* operator->()
-	{
-		return &m_strBuff;
+		return m_strBuff.c_str();
 	}
 
-	const string& operator*() const
+	string str() const
 	{
-		return m_strBuff;
-	}
-	string& operator*()
-	{
-		return m_strBuff;
-	}
-
-	operator const string&() const
-	{
-		return m_strBuff;
-	}
-	operator string&()
-	{
-		return m_strBuff;
-	}
-
-	const string& str() const
-	{
-		return m_strBuff;
-	}
-	string& str()
-	{
-		return m_strBuff;
+		return m_strBuff.c_str();
 	}
 
 	const char* c_str() const

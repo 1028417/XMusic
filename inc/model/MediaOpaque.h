@@ -15,7 +15,7 @@ private:
 	wstring m_strFile;
 
     bool m_bUrl = false;
-    UINT m_uStreamPos = 0;
+    size_t m_uStreamPos = 0;
 
     void *m_pXmscCodec = NULL;
 
@@ -44,11 +44,11 @@ public:
 	
     void openUrl(const string& strUrl);
 
-    UINT streamPos() const
+    size_t streamPos() const
     {
         return m_uStreamPos;
     }
-    UINT streamSize() const
+    size_t streamSize() const
     {
         return CFileDownload::inst().sumSize();
     }

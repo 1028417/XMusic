@@ -107,7 +107,7 @@ public:
 #endif
 };
 
-class __UtilExt CTxtWriter : public ITxtWriter, private OBStream
+class __UtilExt CTxtWriter : public ITxtWriter
 {
 public:
 	static const string __UnicodeHead_LittleEndian;
@@ -128,17 +128,19 @@ public:
         ITxtWriter(eEncodeType),
         m_eEOLFlag(eEOLFlag)
     {
-        (void)_open(strFile, bTrunc);
+        (void)open(strFile, bTrunc);
     }
     CTxtWriter(const string& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
         ITxtWriter(eEncodeType),
         m_eEOLFlag(eEOLFlag)
     {
-        (void)_open(strFile, bTrunc);
+        (void)open(strFile, bTrunc);
     }
 
 private:
 	E_EOLFlag m_eEOLFlag;
+
+	OBStream m_obs;
 
 private:
 	inline bool _isUnicode() const
@@ -153,15 +155,6 @@ private:
 			|| E_TxtEncodeType::TET_Utf8_WithBom == m_eEncodeType;
 	}
 
-    bool _open(const wstring& strFile, bool bTrunc)
-    {
-        return OBStream::open(strFile, bTrunc ? "wb" : "ab");
-    }
-    bool _open(const string& strFile, bool bTrunc)
-    {
-        return OBStream::open(strFile, bTrunc ? "wb" : "ab");
-    }
-
     bool _writeHead();
 
     bool _write(const char *pStr, size_t len, bool bEndLine = false);
@@ -170,9 +163,9 @@ private:
     inline bool _writeEndLine();
 
 public:
-	bool isOpened() const
+	bool is_open() const
 	{
-        return NULL != m_pf;
+		return m_obs.is_open();
 	}
 
 	bool open(const wstring& strFile, bool bTrunc);
@@ -235,7 +228,7 @@ public:
 
     void close()
     {
-        OBStream::close();
+		m_obs.close();
     }
 };
 

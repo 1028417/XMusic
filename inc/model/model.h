@@ -49,6 +49,7 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
+#if !__winvc
 	map<string, string> m_mapFileUrl;
 	
 public:
@@ -58,7 +59,9 @@ public:
 
 private:
 	bool _loadXurl(const wstring& strFile);
+#endif
 
+private:
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
 		if (strutil::matchIgnoreCase(fileInfo.strName, __xmedialib))

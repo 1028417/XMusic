@@ -56,7 +56,7 @@ struct tagPlayCtrl
 
 using CB_AddInConfirm = function<E_MatchResult(CSearchMediaInfo&, tagMediaResInfo&)>;
 
-class IPlayerController
+class IXController
 {
 public:
     virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;

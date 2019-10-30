@@ -33,4 +33,4 @@ public:
 #define __ViewExt __dllimport
 #endif
 
-__ViewExt IPlayerView& genView(IPlayerController& controller, IModel& model);
+__ViewExt IPlayerView& genView(IXController& controller, IModel& model);

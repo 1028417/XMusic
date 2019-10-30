@@ -79,6 +79,12 @@ public:
 		return (CMainApp*)AfxGetApp();
 	}
 
+	CMainApp()
+	{
+		afxCurrentInstanceHandle = _AtlBaseModule.GetModuleInstance();
+		afxCurrentResourceHandle = _AtlBaseModule.GetResourceInstance();
+	}
+
 	virtual IView& getView() = 0;
 
 	virtual IController& getController()

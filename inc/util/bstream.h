@@ -19,23 +19,12 @@ protected:
 protected:
     FILE *m_pf = NULL;
 
-	size_t m_uSize = 0;
-
 protected:
     template <typename T>
     bool _open(const T& file, const string& strMode)
     {
         m_pf = fsutil::fopen(file, strMode);
-		if (NULL == m_pf)
-		{
-			return false;
-		}
-
-        (void)fseek(m_pf, 0, SEEK_END);
-        m_uSize = (UINT)ftell(m_pf);
-        (void)fseek(m_pf, 0, SEEK_SET);
-
-		return true;
+		return NULL != m_pf;
     }
 	
 public:
@@ -49,11 +38,6 @@ public:
         return m_pf != NULL;
     }
 
-	size_t size() const
-	{
-		return m_uSize;
-	}
-
     bool eof() const
     {
         if (NULL == m_pf)
@@ -64,15 +48,13 @@ public:
         return feof(m_pf);
     }
 
-    void close()
+    virtual void close()
     {
         if (m_pf)
         {
             fclose(m_pf);            
             m_pf = NULL;
         }
-
-		m_uSize = 0;
     }
 };
 
@@ -122,15 +104,39 @@ public:
         (void)open(strFile);
     }
 
+private:
+	UINT m_uSize = 0;
+
+private:
+	template <class T>
+	bool _open(const T& strFile)
+	{
+		if (!BStream::_open(strFile, "rb"))
+		{
+			return false;
+		}
+
+		(void)fseek(m_pf, 0, SEEK_END);
+		m_uSize = (UINT)ftell(m_pf);
+		(void)fseek(m_pf, 0, SEEK_SET);
+
+		return true;
+	}
+
 public:
-    virtual bool open(const wstring& strFile)
-    {
-        return _open(strFile, "rb");
-    }
-    virtual bool open(const string& strFile)
-    {
-        return _open(strFile, "rb");
-    }
+    UINT size() const
+	{
+		return m_uSize;
+	}
+
+	virtual bool open(const wstring& strFile)
+	{
+		return _open(strFile);
+	}
+	virtual bool open(const string& strFile)
+	{
+		return _open(strFile);
+	}
 
     virtual size_t read(void *buff, size_t size, size_t count) override
     {
@@ -145,6 +151,12 @@ public:
 	virtual long pos() override
 	{
 		return ftell(m_pf);
+	}
+
+	virtual void close() override
+	{
+		BStream::close();
+		m_uSize = 0;
 	}
 };
 
@@ -230,7 +242,7 @@ public:
 
     virtual bool seek(long offset, int origin) override
     {
-        int pos = m_pos;
+        long pos = (long)m_pos;
         if (SEEK_SET == origin)
         {
             pos = offset;
@@ -241,14 +253,14 @@ public:
         }
         else if (SEEK_END == origin)
         {
-            pos = m_size-1+offset;
+            pos = (long)m_size-1+offset;
         }
         else
         {
             return false;
         }
 
-        if (pos < 0 || pos >= (int)m_size)
+        if (pos < 0 || pos >= (long)m_size)
         {
             return false;
         }

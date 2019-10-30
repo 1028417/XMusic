@@ -100,8 +100,12 @@ public:
     }
 
 	static void trimPathTail(wstring& strPath);
-
-	static wstring trimPathTail_r(const wstring& strPath);
+	static wstring trimPathTail_r(const wstring& strPath)
+	{
+		wstring t_strPath(strPath);
+		trimPathTail(t_strPath);
+		return t_strPath;
+	}
 
 	static void transFSSlant(wstring& strPath)
 	{
