@@ -73,7 +73,7 @@ struct __UtilExt tagFileInfo
 
 	wstring strName;
 
-    UINT uFileSize = 0;
+    size_t uFileSize = 0;
 
 	time64_t tCreateTime = 0;
 	time64_t tModifyTime = 0;
@@ -118,12 +118,6 @@ public:
 
     static FILE* fopen(const string& strFile, const string& strMode);
     static FILE* fopen(const wstring& strFile, const string& strMode);
-
-    static bool loadFile(const wstring& strFile, CByteBuff& btbBuff, UINT uReadSize = 0);
-
-	static bool loadTxt(const wstring& strFile, string& strText);
-	static bool loadTxt(const wstring& strFile, cfn_bool_t<const string&> cb);
-	static bool loadTxt(const wstring& strFile, SVector<string>& vecLineText);
 
     static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
 
@@ -221,7 +215,7 @@ public:
 
 #include "Path.h"
 
-#include "bstream.h"
+#include "fstream.h"
 
 #include "TxtWriter.h"
 

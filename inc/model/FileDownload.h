@@ -56,19 +56,19 @@ private:
         }
 
         auto ptr = buff.resizeMore(uReadSize);
-        size_t uCount = (size_t)MAX(0, getData((byte_t*)ptr, uReadSize));
-        if (uCount < uReadSize)
+        size_t size = (size_t)MAX(0, getData((byte_t*)ptr, uReadSize));
+        if (size < uReadSize)
         {
-            buff.resizeLess(uReadSize-uCount);
+            buff.resizeLess(uReadSize - size);
         }
 
-        return uCount;
+        return size;
     }
 
 public:
     void download(const string& strUrl);
-    bool download(const string& strUrl, CByteBuff& btbData);
-    bool download(const string& strUrl, CCharBuff& chbData);
+    bool download(const string& strUrl, CByteBuffer& bbfData);
+    bool download(const string& strUrl, CCharBuffer& cbfData);
 
     size_t dataSize() const
     {
@@ -81,26 +81,26 @@ public:
 
     int getData(uint8_t *pBuff, size_t buffSize);
 
-    CByteBuff getByteData()
+    CByteBuffer getByteData()
     {
-        CByteBuff btbData;
-        (void)_getAllData(btbData);
-        return btbData;
+        CByteBuffer bbfData;
+        (void)_getAllData(bbfData);
+        return bbfData;
     }    
-    size_t getByteData(CByteBuff& btbData)
+    size_t getByteData(CByteBuffer& bbfData)
     {
-        return _getAllData(btbData);
+        return _getAllData(bbfData);
     }
 
-    CCharBuff getTextData()
+    CCharBuffer getTextData()
     {
-        CCharBuff chbData;
-        (void)_getAllData(chbData);
-		return chbData;
+        CCharBuffer cbfData;
+        (void)_getAllData(cbfData);
+		return cbfData;
     }        
-    size_t getTextData(CCharBuff& chbData)
+    size_t getTextData(CCharBuffer& cbfData)
     {
-        return _getAllData(chbData);
+        return _getAllData(cbfData);
     }
 
     void cancel();

@@ -24,9 +24,13 @@ struct __UtilExt tagXmlElementInfo
 class __UtilExt xmlutil
 {
 public:
-        static bool loadXml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
-		static bool loadXml(char* buf, UINT length, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+	static bool loadXml(char* buf, size_t length, bool bUtf8, bool bHtml, tagXmlElementInfo& rootElementInfo);
 
-        static bool loadHtml(const wstring& strFile, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
-		static bool loadHtml(char* buf, UINT length, tagXmlElementInfo& rootElementInfo, bool bUtf8 = false);
+	static bool loadXml(Instream& ins, bool bHtml, tagXmlElementInfo& rootElementInfo);
+	static bool loadXml(const wstring& strFile, bool bHtml, tagXmlElementInfo& rootElementInfo)
+	{
+		IFStream ifs(strFile);
+		__EnsureReturn(ifs, false);
+		return loadXml(ifs, bHtml, rootElementInfo);
+	}
 };

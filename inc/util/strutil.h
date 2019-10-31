@@ -68,44 +68,82 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
-    static wstring fromUtf8(const string& str);
+	static bool checkUtf8(const char *pStr, size_t len);
+	static bool checkUtf8(const char *pStr)
+	{
+		return checkUtf8(pStr, strlen(pStr));
+	}
+	static bool checkUtf8(const string& str)
+	{
+		return checkUtf8(str.c_str(), str.size());
+	}
 
+	static wstring fromUtf8(const char *pStr, size_t len);
+	static wstring fromUtf8(const char *pStr)
+	{
+		return fromUtf8(pStr, strlen(pStr));
+	}
+	static wstring fromUtf8(const string& str)
+	{
+		return fromUtf8(str.c_str(), str.size());
+	}
+
+	static string toUtf8(const wchar_t *pStr, size_t len);
+	static string toUtf8(const wchar_t *pStr)
+	{
+		return toUtf8(pStr, wcslen(pStr));
+	}
     static string toUtf8(const wstring& str);
-    static string toUtf8(const wchar_t *pStr);
 
-    static wstring toWstr(const string& str, bool bCheckUTF8=false);
-    static wstring toWstr(const char *pStr, bool bCheckUTF8=false);
+	static wstring toWstr(const char *pStr, size_t len);
+	static wstring toWstr(const char *pStr)
+	{
+		return toWstr(pStr, strlen(pStr));
+	}
+    static wstring toWstr(const string& str);
 
-    static string toStr(const wstring& str);
-    static string toStr(const wchar_t *pStr);
+	static string toStr(const wchar_t *pStr, size_t len);
+	static string toStr(const wchar_t *pStr)
+	{
+		return toStr(pStr, wcslen(pStr));
+	}
+	static string toStr(const wstring& str);
 
 #if !__winvc
     static QString toQstr(const wstring& str)
 	{
 		return QString::fromStdWString(str);
 	}
+    static QString toQstr(const wchar_t *pStr, size_t len)
+	{
+		return QString::fromStdWString(wstring(pStr, len));
+	}
 
-    static QString toQstr(const string& str)
+	static QString toQstr(const string& str)
 	{
 		return QString::fromStdString(str);
+	}
+	static QString toQstr(const char* pStr, size_t len)
+	{
+		return QString::fromStdString(string(pStr, len));
 	}
 #endif
 
 	template <typename T>
 	static wstring ContainerToStr(const T& container, const wstring& strSplitor)
 	{
-		wstringstream ssResult;
+        wstringstream strmRet;
         for (typename T::const_iterator it = container.begin(); ; )
 		{
-			ssResult << *it;
+            strmRet << *it;
 			
 			it++;
 			__EnsureBreak(it != container.end());
 
-			ssResult << strSplitor;
+            strmRet << strSplitor;
 		}
 
-		return ssResult.str();
+        return strmRet.str();
 	}
 	
 	struct tagCNSortor

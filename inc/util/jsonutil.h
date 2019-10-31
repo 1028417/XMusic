@@ -9,8 +9,30 @@ using JWriter = Json::StyledWriter;
 class __UtilExt jsonutil
 {
 public:
-    static bool load(const wstring& strFile, JValue& jRoot, bool bStrictRoot=true);
+	static bool loadData(const string& strData, JValue& jRoot, bool bStrictRoot = true)
+	{
+		Json::Features features;
+		features.strictRoot_ = bStrictRoot;
+		return JReader(features).parse(strData, jRoot, false);
+	}
 
+	static bool loadFile(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
+	{
+		string strText;
+		if (!CTxtReader().read(ins, strText))
+		{
+			return false;
+		}
+
+		return loadData(strText, jRoot, bStrictRoot);
+	}
+	static bool loadFile(const wstring& strFile, JValue& jRoot, bool bStrictRoot = true)
+	{
+		IFStream ifs(strFile);
+		__EnsureReturn(ifs, false);
+		return loadFile(ifs, jRoot, bStrictRoot);
+	}
+	
     static bool get(const JValue& jValue, wstring& strRet);
 
     static bool get(const JValue& jValue, string& strRet);

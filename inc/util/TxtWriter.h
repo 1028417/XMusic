@@ -17,11 +17,11 @@ enum class E_TxtEncodeType
 {
 	TET_Asc = 0,
 
-	TET_Unicode_LittleEndian,
-	TET_Unicode_BigEndian,
+	TET_UTF8_NoBom,
+	TET_UTF8_WithBom,
 
-	TET_Utf8_NoBom,
-	TET_Utf8_WithBom
+	TET_UCS2_LittleEndian,
+	TET_UCS2_BigEndian
 };
 
 class __UtilExt ITxtWriter
@@ -110,12 +110,6 @@ public:
 class __UtilExt CTxtWriter : public ITxtWriter
 {
 public:
-	static const string __UnicodeHead_LittleEndian;
-	static const string __UnicodeHead_BigEndian;
-	
-	static const string __UTF8Bom;
-
-public:
 	virtual ~CTxtWriter() {}
 
 	CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
@@ -140,19 +134,19 @@ public:
 private:
 	E_EOLFlag m_eEOLFlag;
 
-	OBStream m_obs;
+	OFStream m_ofs;
 
 private:
-	inline bool _isUnicode() const
-	{
-		return E_TxtEncodeType::TET_Unicode_LittleEndian == m_eEncodeType
-			|| E_TxtEncodeType::TET_Unicode_BigEndian == m_eEncodeType;
-	}
-
 	inline bool _isUtf8() const
 	{
-		return E_TxtEncodeType::TET_Utf8_NoBom == m_eEncodeType
-			|| E_TxtEncodeType::TET_Utf8_WithBom == m_eEncodeType;
+		return E_TxtEncodeType::TET_UTF8_NoBom == m_eEncodeType
+			|| E_TxtEncodeType::TET_UTF8_WithBom == m_eEncodeType;
+	}
+
+	inline bool _isUnicode() const
+	{
+		return E_TxtEncodeType::TET_UCS2_LittleEndian == m_eEncodeType
+			|| E_TxtEncodeType::TET_UCS2_BigEndian == m_eEncodeType;
 	}
 
     bool _writeHead();
@@ -165,7 +159,7 @@ private:
 public:
 	bool is_open() const
 	{
-		return m_obs.is_open();
+		return m_ofs.is_open();
 	}
 
 	bool open(const wstring& strFile, bool bTrunc);
@@ -228,7 +222,7 @@ public:
 
     void close()
     {
-		m_obs.close();
+		m_ofs.close();
     }
 };
 
@@ -238,53 +232,170 @@ enum class E_UnicodeHeadOpt
 	UHO_BigEndian,
 };
 
-class __UtilExt CUnicodeWriter : public CTxtWriter
-{
-public:
-	virtual ~CUnicodeWriter() {}
-
-	CUnicodeWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
-			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
-	{
-	}
-
-	CUnicodeWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
-			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
-	{
-	}
-
-    CUnicodeWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_Unicode_LittleEndian
-			: E_TxtEncodeType::TET_Unicode_BigEndian, eEOLFlag)
-	{
-	}
-};
-
 /*#if __winvc
 #define __DefUTF8BomOpt false
 #else
 #define __DefUTF8BomOpt false
 #endif*/
 
-class __UtilExt CUTF8Writer : public CTxtWriter
+class __UtilExt CUTF8TxtWriter : public CTxtWriter
 {
 public:
-	virtual ~CUTF8Writer() {}
+	virtual ~CUTF8TxtWriter() {}
 
-	CUTF8Writer(bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
+	CUTF8TxtWriter(bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8Writer(const wstring& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
+	CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8Writer(const string& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_Utf8_WithBom : E_TxtEncodeType::TET_Utf8_NoBom, eEOLFlag)
+	CUTF8TxtWriter(const string& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
+	}
+};
+
+class __UtilExt CUCS2TextWriter : public CTxtWriter
+{
+public:
+	virtual ~CUCS2TextWriter() {}
+
+	CUCS2TextWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
+			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+	{
+	}
+
+	CUCS2TextWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
+			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+	{
+	}
+
+	CUCS2TextWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
+			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+	{
+	}
+};
+
+enum class E_TxtHeadType
+{
+	THT_None = 0,
+	THT_UTF8Bom,
+	THT_UCS2Head_LittleEndian,
+	THT_UCS2Head_BigEndian,
+};
+
+class __UtilExt CTxtReader
+{
+public:
+	CTxtReader() {}
+
+private:
+	E_TxtHeadType m_eHeadType = E_TxtHeadType::THT_None;
+
+public:
+	E_TxtHeadType headType() const
+	{
+		return m_eHeadType;
+	}
+
+	bool hasUTF8Bom() const
+	{
+		return E_TxtHeadType::THT_UTF8Bom == m_eHeadType;
+	}
+
+	bool read(Instream& ins, string& strText)
+	{
+		string t_strText;
+		if (!_read(ins, t_strText))
+		{
+			return false;
+		}
+		strText.append(t_strText);
+
+		return true;
+	}
+	bool read(Instream& ins, wstring& strText)
+	{
+		wstring t_strText;
+		if (!_read(ins, t_strText))
+		{
+			return false;
+		}
+		strText.append(t_strText);
+
+		return true;
+	}
+
+	bool read(Instream& ins, cfn_bool_t<const string&> cb)
+	{
+		return _read(ins, cb);
+	}
+	bool read(Instream& ins, cfn_bool_t<const wstring&> cb)
+	{
+		return _read(ins, cb);
+	}
+
+private:
+	void _readData(const char *lpData, size_t len, string& strText);
+	void _readData(const char *lpData, size_t len, wstring& strText);
+
+	template <class T>
+	bool _read(Instream& ins, T& strText)
+	{
+		size_t len = ins.size();
+		TD_CharBuffer buff(len);
+		__EnsureReturn(ins.readex(buff, len), false);
+
+		_readData(buff, len, strText);
+
+		return true;
+	}
+
+	template <class T>
+	bool _read(Instream& ins, cfn_bool_t<const T&> cb)
+	{
+		T strText;
+		__EnsureReturn(_read(ins, strText), false);
+
+		size_t prePos = 0;
+		size_t pos = 0;
+		while (true)
+		{
+			pos = strText.find('\n', prePos);
+			if (T::npos == pos)
+			{
+				break;
+			}
+
+			auto strSub = strText.substr(prePos, pos - prePos);
+			if (!strSub.empty())
+			{
+				if ('\r' == *strText.rbegin())
+				{
+					strSub.pop_back();
+				}
+			}
+
+			if (!cb(strSub))
+			{
+				return true;
+			}
+
+			prePos = pos + 1;
+		}
+
+		if (prePos < strText.size())
+		{
+			cb(strText.substr(prePos));
+		}
+
+		return true;
 	}
 };

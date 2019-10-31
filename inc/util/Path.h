@@ -163,7 +163,7 @@ public:
 		m_paSubFile(cb);
 	}
 
-    void get(UINT uIdx, cfn_void_t<XFile&> cb)
+    void get(size_t uIdx, cfn_void_t<XFile&> cb)
 	{
 		_findFile();
 

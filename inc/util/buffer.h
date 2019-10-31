@@ -5,22 +5,29 @@ template<typename T>
 struct TBuffer
 {
 public:
-	TBuffer(size_t size)
+	TBuffer(size_t count)
 	{
-		m_size = MAX(1, size);
-		m_pBuff = (T*)calloc(1, m_size * sizeof(T));
-	}
+		m_count = MAX(1, count);
+		m_size = m_count * sizeof(T);
 
+		m_pBuff = (T*)malloc(m_size);
+		memset(m_pBuff, 0, m_size);
+	}
+	
 	~TBuffer()
 	{
 		free(m_pBuff);
 	}
 
 	TBuffer(const TBuffer& other) = delete;
+	TBuffer(TBuffer&& other) = delete;
 	TBuffer& operator=(const TBuffer& other) = delete;
+	TBuffer& operator=(TBuffer&& other) = delete;
 
 private:
+	size_t m_count;
 	size_t m_size;
+
 	T *m_pBuff;
 
 public:
@@ -28,67 +35,82 @@ public:
 	{
 		return m_size;
 	}
+	size_t count() const
+	{
+		return m_count;
+	}
+
+	T* ptr()
+	{
+		return m_pBuff;
+	}
+	const T* ptr() const
+	{
+		return m_pBuff;
+	}
 
 	operator T*()
 	{
 		return m_pBuff;
 	}
-
 	operator const T*() const
 	{
 		return m_pBuff;
 	}
 };
 
-class __UtilExt CByteBuff
+using TD_ByteBuffer = TBuffer<byte_t>;
+using TD_CharBuffer = TBuffer<char>;
+
+class __UtilExt CByteBuffer
 {
 private:
 	using TD_ByteVector = vector<byte_t>;
 	TD_ByteVector m_vecBuff;
 
 public:
-    CByteBuff() {}
+    CByteBuffer() {}
 
-    CByteBuff(size_t size)
-        : m_vecBuff(size)
+    CByteBuffer(size_t size, byte_t val = 0)
+        : m_vecBuff(size, val)
 	{
 	}
 
-	CByteBuff(const CByteBuff& other)
+	CByteBuffer(const CByteBuffer& other)
 		: m_vecBuff(other.m_vecBuff.begin(), other.m_vecBuff.end())
 	{
 	}
-	CByteBuff& operator=(const CByteBuff& other)
+	CByteBuffer& operator=(const CByteBuffer& other)
 	{
 		m_vecBuff.assign(other.m_vecBuff.begin(), other.m_vecBuff.end());
 		return *this;
 	}
 
-	CByteBuff(const TD_ByteVector& vecBuff)
+	CByteBuffer(const TD_ByteVector& vecBuff)
 		: m_vecBuff(vecBuff.begin(), vecBuff.end())
 	{
 	}
-	CByteBuff& operator=(const TD_ByteVector& vecBuff)
+	CByteBuffer& operator=(const TD_ByteVector& vecBuff)
 	{
 		m_vecBuff.assign(vecBuff.begin(), vecBuff.end());
 		return *this;
 	}
 
-	CByteBuff(CByteBuff&& other)
+	CByteBuffer(CByteBuffer&& other)
 	{
 		m_vecBuff.swap(other.m_vecBuff);
 	}
-	CByteBuff& operator=(CByteBuff&& other)
+	CByteBuffer& operator=(CByteBuffer&& other)
 	{
 		m_vecBuff.swap(other.m_vecBuff);
 		return *this;
 	}
 
-	CByteBuff(TD_ByteVector&& vecBuff)
+	CByteBuffer(TD_ByteVector&& vecBuff)
 	{
 		m_vecBuff.swap(vecBuff);
 	}
-	CByteBuff& operator=(TD_ByteVector&& vecBuff)
+	CByteBuffer& operator=(TD_ByteVector&& vecBuff)
 	{
 		m_vecBuff.swap(vecBuff);
 		return *this;
@@ -194,63 +216,57 @@ public:
 	TD_ByteVector& data()
 	{
 		return m_vecBuff;
-	}
-	
-	char* toStr()
-	{
-		m_vecBuff.push_back('\0');
-		return (char*)ptr();
-	}
+    }
 };
 
-class __UtilExt CCharBuff
+class __UtilExt CCharBuffer
 {
 private:
 	string m_strBuff;
 
 public:
-    CCharBuff() {}
+    CCharBuffer() {}
 
-    CCharBuff(size_t size)
-        : m_strBuff(size, '\0')
+    CCharBuffer(size_t size, char val = '\0')
+        : m_strBuff(size, val)
     {
     }
 
-	CCharBuff(const CCharBuff& other)
+	CCharBuffer(const CCharBuffer& other)
 		: m_strBuff(other.m_strBuff.begin(), other.m_strBuff.end())
 	{
 	}
-	CCharBuff operator=(const CCharBuff& other)
+	CCharBuffer operator=(const CCharBuffer& other)
 	{
 		m_strBuff.assign(other.m_strBuff.begin(), other.m_strBuff.end());
 		return *this;
 	}
 
-	CCharBuff(const string& strBuff)
+	CCharBuffer(const string& strBuff)
 		: m_strBuff(strBuff.begin(), strBuff.end())
 	{
 	}
-	CCharBuff operator=(const string& strBuff)
+	CCharBuffer operator=(const string& strBuff)
 	{
 		m_strBuff.assign(strBuff.begin(), strBuff.end());
 		return *this;
 	}
 
-	CCharBuff(CCharBuff&& other)
+	CCharBuffer(CCharBuffer&& other)
 	{
 		m_strBuff.swap(other.m_strBuff);
 	}
-	CCharBuff operator=(CCharBuff&& other)
+	CCharBuffer operator=(CCharBuffer&& other)
 	{
 		m_strBuff.swap(other.m_strBuff);
 		return *this;
 	}
 
-	CCharBuff(string&& strBuff)
+	CCharBuffer(string&& strBuff)
 	{
 		m_strBuff.swap(strBuff);
 	}
-	CCharBuff operator=(string&& strBuff)
+	CCharBuffer operator=(string&& strBuff)
 	{
 		m_strBuff.swap(strBuff);
 		return *this;
@@ -286,7 +302,7 @@ public:
 	{
 		return m_strBuff.empty();
 	}
-
+	
 	inline const char* ptr() const
 	{
 		if (m_strBuff.empty())
@@ -331,15 +347,41 @@ public:
 		return (byte_t*)ptr();
 	}
 
-	operator string() const
+	const string* operator->() const
 	{
-		return m_strBuff.c_str();
+		return &m_strBuff;
+	}
+	string* operator->()
+	{
+		return &m_strBuff;
 	}
 
-	string str() const
+	const string& operator*() const
 	{
-		return m_strBuff.c_str();
+		return m_strBuff;
 	}
+	string& operator*()
+	{
+		return m_strBuff;
+	}
+
+    operator const string&() const
+    {
+        return m_strBuff;
+    }
+    operator string&()
+    {
+        return m_strBuff;
+    }
+
+    const string& str() const
+    {
+        return m_strBuff;
+    }
+    string& str()
+    {
+        return m_strBuff;
+    }
 
 	const char* c_str() const
 	{

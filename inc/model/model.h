@@ -53,12 +53,12 @@ private:
 	map<string, string> m_mapFileUrl;
 	
 public:
-	bool loadXurl(const list<wstring>& lstFile);
+    bool loadXurl(Instream& ins);
 
 	string getUrl(CPlayItem& PlayItem);
 
 private:
-	bool _loadXurl(const wstring& strFile);
+	bool _loadXurl(const string& strText);
 #endif
 
 private:

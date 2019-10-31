@@ -1,20 +1,26 @@
 
 #pragma once
 
-class __UtilExt BStream
+class __UtilExt FStream
 {
-protected:
-    virtual ~BStream()
-    {
-        close();
-    }
+public:
+	virtual ~FStream()
+	{
+		close();
+	}
 
-	BStream() {}
+protected:
+	FStream() {}
 	
-	BStream(const wstring& strFile, const string& strMode)
+	FStream(const wstring& strFile, const string& strMode)
 	{
 		(void)_open(strFile, strMode);
 	}
+
+	FStream(const FStream& other) = delete;
+	FStream(FStream&& other) = delete;
+	FStream& operator=(const FStream& other) = delete;
+	FStream& operator=(FStream&& other) = delete;
 
 protected:
     FILE *m_pf = NULL;
@@ -64,14 +70,59 @@ public:
 	virtual ~Instream() {}
 
     virtual size_t read(void *buff, size_t size, size_t count) = 0;
+
 	bool readex(void *buff, size_t size)
 	{
 		return read(buff, size, 1) == 1;
 	}
 
+	template <typename T>
+	size_t readex(TBuffer<T>& buff)
+	{
+        return read(buff, sizeof(T), buff.count());
+	}
+
+	size_t readex(CByteBuffer& bbfBuff, size_t uReadSize = 0)
+	{
+		return _readex(bbfBuff, uReadSize);
+	}
+	size_t readex(CCharBuffer& cbfBuff, size_t uReadSize = 0)
+	{
+		return _readex(cbfBuff, uReadSize);
+	}
+
 	virtual bool seek(long offset, int origin) = 0;
 
 	virtual long pos() = 0;
+
+	virtual size_t size() = 0;
+
+private:
+	template <class T>
+	size_t _readex(T& buff, size_t uReadSize)
+	{
+		if (0 == uReadSize)
+		{
+			uReadSize = size();
+		}
+		else
+		{
+			uReadSize = MIN(uReadSize, size());
+		}
+		if (0 == uReadSize)
+		{
+			return 0;
+		}
+
+		auto ptr = buff.resizeMore(uReadSize);
+		size_t size = read(ptr, 1, uReadSize);
+		if (size < uReadSize)
+		{
+			buff.resizeLess(uReadSize - size);
+		}
+
+		return size;
+	}
 };
 
 class __UtilExt Outstream
@@ -88,45 +139,45 @@ public:
     virtual void flush() = 0;
 };
 
-class __UtilExt IBStream : public BStream, public Instream
+class __UtilExt IFStream : public FStream, public Instream
 {
 public:
-	virtual ~IBStream() {}
+	virtual ~IFStream() {}
 
-	IBStream() {}
+	IFStream() {}
 
-    IBStream(const wstring& strFile)
+    IFStream(const wstring& strFile)
     {
         (void)open(strFile);
     }
-    IBStream(const string& strFile)
+    IFStream(const string& strFile)
     {
         (void)open(strFile);
     }
 
 private:
-	UINT m_uSize = 0;
+	size_t m_size = 0;
 
 private:
 	template <class T>
 	bool _open(const T& strFile)
 	{
-		if (!BStream::_open(strFile, "rb"))
+		if (!FStream::_open(strFile, "rb"))
 		{
 			return false;
 		}
 
 		(void)fseek(m_pf, 0, SEEK_END);
-		m_uSize = (UINT)ftell(m_pf);
+		m_size = (size_t)ftell(m_pf);
 		(void)fseek(m_pf, 0, SEEK_SET);
 
 		return true;
 	}
 
 public:
-    UINT size() const
+    virtual size_t size() override
 	{
-		return m_uSize;
+		return m_size;
 	}
 
 	virtual bool open(const wstring& strFile)
@@ -155,23 +206,23 @@ public:
 
 	virtual void close() override
 	{
-		BStream::close();
-		m_uSize = 0;
+		FStream::close();
+		m_size = 0;
 	}
 };
 
-class __UtilExt OBStream : public BStream, public Outstream
+class __UtilExt OFStream : public FStream, public Outstream
 {
 public:
-	virtual ~OBStream() {}
+	virtual ~OFStream() {}
 
-	OBStream() {}
+	OFStream() {}
 
-    OBStream(const wstring& strFile, bool bTrunc)
+    OFStream(const wstring& strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
-    OBStream(const string& strFile, bool bTrunc)
+    OFStream(const string& strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
@@ -197,23 +248,27 @@ public:
     }
 };
 
-class __UtilExt IFBuff : public Instream
+class __UtilExt IFBuffer : public Instream
 {
 public:
-    IFBuff(byte_t *ptr, size_t size)
+    virtual ~IFBuffer(){}
+
+    IFBuffer(byte_t *ptr, size_t size)
         : m_ptr(ptr)
         , m_size(size)
     {
     }
 
-    IFBuff(const CByteBuff& btbBuff)
-        : m_ptr(btbBuff)
-        , m_size(btbBuff->size())
-    {
+	IFBuffer(const CByteBuffer& bbfBuff)
+		: m_ptr(bbfBuff)
+		, m_size(bbfBuff->size())
+	{
+	}
 
-    }
-
-    virtual ~IFBuff(){}
+	IFBuffer(const IFBuffer& other) = delete;
+	IFBuffer(IFBuffer&& other) = delete;
+	IFBuffer& operator=(const IFBuffer& other) = delete;
+	IFBuffer& operator=(IFBuffer&& other) = delete;
 
 protected:
     const byte_t *m_ptr;
@@ -273,4 +328,9 @@ public:
     {
         return m_pos;
     }
+
+	virtual size_t size() override
+	{
+		return m_size;
+	}
 };
