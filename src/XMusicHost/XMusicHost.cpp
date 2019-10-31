@@ -35,6 +35,8 @@ CPlayerApp theApp;
 
 bool CController::init()
 {
+	//CZipFile zipFile("d:/EASTL.zip");
+
 	fsutil::setWorkDir(fsutil::getModuleDir());
 
 	((CModel&)m_model).init();

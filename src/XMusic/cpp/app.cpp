@@ -7,7 +7,7 @@
 
 #include <QScreen>
 
-static CUTF8Writer m_logger;
+static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
 map<E_FontWeight, QFont> g_mapFont;
@@ -89,6 +89,9 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
         break;
     };*/
 #endif
+
+    auto fDPI = QApplication::primaryScreen()->logicalDotsPerInch();
+    g_logger << "current DPI: " >> fDPI;
 
     float fFontSize = 0;
 #if __android

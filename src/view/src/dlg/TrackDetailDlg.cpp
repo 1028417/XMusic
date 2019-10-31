@@ -46,7 +46,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 
 	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 	ColumnGuard.addDynamic(L"标题", 1.0)
-		.addFix(L"艺术家", 120)
+		.addFix(L"艺术家", 150)
 		.addFix(L"时长", 80);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);

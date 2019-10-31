@@ -469,7 +469,7 @@ void __view::snapshotDir(CMediaDir& dir)
 
 void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 {	
-	CUTF8Writer TxtWriter;
+	CUTF8TxtWriter TxtWriter;
 	if (!TxtWriter.open(strOutputFile, true))
 	{
 		return;
