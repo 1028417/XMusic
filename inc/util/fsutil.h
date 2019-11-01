@@ -180,10 +180,8 @@ public:
 
 #if !__winvc
     static wstring getAppDir();
-#endif
 
-#if __mac
-    static wstring getMacHomeDir();
+    static wstring getHomeDir();
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;

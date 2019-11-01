@@ -119,7 +119,7 @@ public:
 		return m_Option.TimerOption;
 	}
 
-	void init();
+	tagOption& init();
 
 	wstring checkAlarm();
 

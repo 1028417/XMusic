@@ -1,8 +1,10 @@
 
 #pragma once
 
-#if !__winvc
-#define __OnlineMediaLib 1
+#define __onlineMediaLib true
+#if __winvc
+#undef __onlineMediaLib
+#define __onlineMediaLib false
 #endif
 
 class XMediaLib : public CMediaLib, public CMediaSet

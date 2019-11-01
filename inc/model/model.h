@@ -231,7 +231,7 @@ public:
 		return m_BackupMgr;
 	}
 
-	void init();
+	tagOption& init();
 
     bool initMediaLib() override;
 
@@ -269,8 +269,6 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-    wstring _dbFile() const;
-
     wstring _scanXMusicDir();
 
     bool _initData(const wstring& strDBFile, const wstring& strSingerImgDir);
