@@ -44,7 +44,11 @@ private:
         return m_mainWnd;
     }
 
+    bool _init();
+
     bool _run();
+
+    bool _onlineUpdate();
 
 public:
     MainWindow& mainWnd()

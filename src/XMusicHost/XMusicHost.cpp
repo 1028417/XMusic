@@ -35,16 +35,12 @@ CPlayerApp theApp;
 
 bool CController::init()
 {
-	//CZipFile zipFile("d:/EASTL.zip");
-
 	fsutil::setWorkDir(fsutil::getModuleDir());
 
-	((CModel&)m_model).init();
+	(void)((CModel&)m_model).init();
+	
+	(void)m_model.initMediaLib();
 
-    if (!m_model.initMediaLib())
-    {
-        return false;
-    }
 	return true;
 }
 

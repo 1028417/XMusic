@@ -60,7 +60,9 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 
     QScreen *screen = QApplication::primaryScreen();
     float fPixelRatio = screen->devicePixelRatio();
-    g_logger << "devicePixelRatio: " >> fPixelRatio;
+    auto fDPI = screen->logicalDotsPerInch();
+    g_logger << "DPR: " << fPixelRatio << " DPI: " >> fDPI;
+
 #if __ios
     g_fPixelRatio = fPixelRatio;
 
@@ -89,9 +91,6 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
         break;
     };*/
 #endif
-
-    auto fDPI = QApplication::primaryScreen()->logicalDotsPerInch();
-    g_logger << "current DPI: " >> fDPI;
 
     float fFontSize = 0;
 #if __android
@@ -151,10 +150,67 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
-bool CXMusicApp::_run()
+int CXMusicApp::run()
 {
-#if __windows
-    auto& strRootDir = m_model.getOptionMgr().getOption().strRootDir;
+    m_mainWnd.showLogo();
+
+    timerutil::async([&](){
+        if (!_init())
+        {
+            this->quit();
+            return;
+        }
+
+        timerutil::async(6000, [&](){
+            if(!_run())
+            {
+                this->quit();
+                return;
+            }
+
+            m_mainWnd.show();
+        });
+    });
+
+    int nRet = exec();
+
+    g_logger >> "stop controller";
+    m_ctrl.stop();
+
+    CPlayer::QuitSDK();
+
+    g_logger >> "quit";
+
+    m_logger.close();
+
+    return nRet;
+}
+
+bool CXMusicApp::_init()
+{
+    auto& option = m_model.init();
+    auto& strRootDir = option.strRootDir;
+#if __android
+    strRootDir = L"/sdcard/XMusic";
+
+#elif __mac
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+    (void)fsutil::createDir(strRoot);
+
+#elif __ios
+#if TARGET_IPHONE_SIMULATOR
+    strRootDir = L"/Users/lhyuan/XMusic";
+#else
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+    (void)fsutil::createDir(strRoot);
+#endif
+
+#else
+#if __onlineMediaLib
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+    (void)fsutil::createDir(strRootDir);
+
+#else
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         g_logger >> "setupRootDir";
@@ -168,7 +224,13 @@ bool CXMusicApp::_run()
         }
     }
 #endif
+#endif
 
+    return true;
+}
+
+bool CXMusicApp::_run()
+{
     g_logger >> "initMediaLib";
     if (!m_model.initMediaLib())
     {
@@ -184,33 +246,10 @@ bool CXMusicApp::_run()
     }
     g_logger >> "start controller success, app running";
 
-    m_mainWnd.show();
-
     return true;
 }
 
-int CXMusicApp::run()
+bool CXMusicApp::_onlineUpdate()
 {
-    m_model.init();
-    m_mainWnd.showLogo();
-
-    QTimer::singleShot(6000, [&]() {
-        if(!_run())
-        {
-            this->quit();
-        }
-    });
-
-    int nRet = exec();
-
-    g_logger >> "stop controller";
-    m_ctrl.stop();
-
-    CPlayer::QuitSDK();
-
-    g_logger >> "quit";
-
-    m_logger.close();
-
-    return nRet;
+    return true;
 }
