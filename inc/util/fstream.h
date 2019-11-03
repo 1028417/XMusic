@@ -131,10 +131,27 @@ public:
 	virtual ~Outstream() {}
 
 	virtual size_t write(const void *buff, size_t size, size_t count) = 0;
-	bool writeex(const void *buff, size_t size)
+
+    bool writex(const void *buff, size_t size)
 	{
 		return write(buff, size, 1) == 1;
 	}
+
+    template <typename T>
+    size_t writex(TBuffer<T>& buff)
+    {
+        return read(buff, sizeof(T), buff.count());
+    }
+
+    size_t writex(CByteBuffer& bbfBuff)
+    {
+        return write(bbfBuff, 1, bbfBuff->size());
+    }
+
+    size_t writex(CCharBuffer& cbfBuff)
+    {
+        return write(cbfBuff, 1, cbfBuff->size());
+    }
 
     virtual void flush() = 0;
 };
