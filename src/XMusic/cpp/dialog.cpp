@@ -9,7 +9,7 @@ void CDialog::show()
 {
     _setBkgColor();
 
-    //this->setWindowFlags(Qt::Dialog);
+    this->setWindowFlags(Qt::Dialog);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
     showFull(this);

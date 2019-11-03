@@ -28,13 +28,9 @@ inline static void setFull(QWidget* wnd)
     (void)wnd;
 
 #if __windows
-    if (!g_bFullScreen)
-    {
-        RECT rcWorkArea{0,0,0,0};
-        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
-        wnd->setGeometry(rcWorkArea.left, rcWorkArea.top
-                          , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
-    }
+    const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
+    wnd->setGeometry(rcWorkArea.left, rcWorkArea.top
+                      , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
 #endif
 }
 
@@ -47,8 +43,9 @@ void showFull(QWidget* wnd)
     else
     {
         wnd->setWindowState(Qt::WindowMaximized);
-        setFull(wnd);
     }
+
+    setFull(wnd);
 }
 
 MainWindow::MainWindow(CXMusicApp& app)
