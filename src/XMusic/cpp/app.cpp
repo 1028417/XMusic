@@ -150,16 +150,49 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
+static void _resetRootDir(wstring& strRootDir)
+{
+#if __android
+    strRootDir = L"/sdcard/XMusic";
+
+#elif __mac
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+
+#elif __ios
+#if TARGET_IPHONE_SIMULATOR
+    strRootDir = L"/Users/lhyuan/XMusic";
+#else
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+#endif
+
+#else
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+#endif
+
+    (void)fsutil::createDir(strRootDir);
+}
+
 int CXMusicApp::run()
 {
     m_mainWnd.showLogo();
 
     timerutil::async([&](){
-        if (!_init())
+        auto& option = m_model.init();
+        auto& strRootDir = option.strRootDir;
+#if __windows && !__onlineMediaLib
+        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
         {
-            this->quit();
-            return;
+            CFolderDlg FolderDlg;
+            strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
+            if (strRootDir.empty())
+            {
+                this->quit();
+                return false;
+            }
         }
+#else
+        _resetRootDir(strRootDir);
+#endif
 
         timerutil::async(6000, [&](){
             if(!_run())
@@ -186,51 +219,17 @@ int CXMusicApp::run()
     return nRet;
 }
 
-bool CXMusicApp::_init()
-{
-    auto& option = m_model.init();
-    auto& strRootDir = option.strRootDir;
-#if __android
-    strRootDir = L"/sdcard/XMusic";
-
-#elif __mac
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-    (void)fsutil::createDir(strRoot);
-
-#elif __ios
-#if TARGET_IPHONE_SIMULATOR
-    strRootDir = L"/Users/lhyuan/XMusic";
-#else
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-    (void)fsutil::createDir(strRoot);
-#endif
-
-#else
-#if __onlineMediaLib
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-    (void)fsutil::createDir(strRootDir);
-
-#else
-    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
-    {
-        g_logger >> "setupRootDir";
-
-        CFolderDlg FolderDlg;
-        strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
-        if (strRootDir.empty())
-        {
-            g_logger >> "setupRootDir fail";
-            return false;
-        }
-    }
-#endif
-#endif
-
-    return true;
-}
-
 bool CXMusicApp::_run()
 {
+#if __onlineMediaLib
+    g_logger >> "upgradeMediaLib";
+    if (!m_model.upgradeMediaLib())
+    {
+        g_logger >> "upgradeMediaLib fail";
+        return false;
+    }
+#endif
+
     g_logger >> "initMediaLib";
     if (!m_model.initMediaLib())
     {
@@ -246,10 +245,5 @@ bool CXMusicApp::_run()
     }
     g_logger >> "start controller success, app running";
 
-    return true;
-}
-
-bool CXMusicApp::_onlineUpdate()
-{
     return true;
 }
