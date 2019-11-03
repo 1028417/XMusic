@@ -169,7 +169,7 @@ static void _resetRootDir(wstring& strRootDir)
     strRootDir = fsutil::getHomeDir() + L"/XMusic";
 #endif
 
-    (void)fsutil::createDir(strRootDir);
+    (void)fsutil::createDir(strRootDir + __medialibPath);
 }
 
 int CXMusicApp::run()
