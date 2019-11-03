@@ -11,8 +11,9 @@ extern ITxtWriter& g_logger;
 #define __ModelExt __dllimport
 #endif
 
-#define __xmedialib L".xmusic"
-#define __dbfile L"medialib"
+#define __medialibDir L".xmusic"
+#define __medialibPath L"/" __medialibDir L"/"
+#define __medialibFile L"medialib"
 
 #include "Dao.h"
 
@@ -232,6 +233,8 @@ public:
 	}
 
 	tagOption& init();
+
+    bool upgradeMediaLib();
 
     bool initMediaLib() override;
 

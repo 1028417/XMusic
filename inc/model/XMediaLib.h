@@ -25,19 +25,14 @@ private:
 	map<string, string> m_mapFileUrl;
 	
 public:
-    bool onlineUpdate();
+    bool loadXurl(Instream& ins);
 
 	string getUrl(CPlayItem& PlayItem);
 
 private:
-    bool _loadXurl(Instream& ins);
-
-	bool _loadXurl(const string& strText);
-
-private:
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
-		if (strutil::matchIgnoreCase(fileInfo.strName, __xmedialib))
+		if (strutil::matchIgnoreCase(fileInfo.strName, __medialibDir))
 		{
 			return NULL;
 		}
