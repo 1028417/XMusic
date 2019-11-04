@@ -35,15 +35,16 @@ public:
 private:
 	void* m_unzfile = NULL;
 
-	list<tagUnzFileInfo> m_lstSubFileInfo;
 	list<tagUnzFileInfo> m_lstSubDirInfo;
 
-	list<tagUnzFileInfo*> m_lstSubInfo;
+    map<string, tagUnzFileInfo> m_mapSubFileInfo;
+
+    list<tagUnzFileInfo*> m_lstSubInfo;
 
 private:
 	bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
 	
-	long _readCurrent(void *buf, size_t len);
+    long _readCurrent(void *buf, size_t len) const;
 
 public:
 	operator bool() const
@@ -51,10 +52,10 @@ public:
 		return m_unzfile != NULL;
 	}
 
-	const list<tagUnzFileInfo>& subFileInfo() const
-	{
-		return m_lstSubFileInfo;
-	}
+    const map<string, tagUnzFileInfo>& fileMap() const
+    {
+        return m_mapSubFileInfo;
+    }
 
 	bool open(const string& strFile)
 	{
@@ -63,17 +64,22 @@ public:
 
 	bool open(Instream& ins);
 
-	bool unzip(const wstring& strDstDir);
+    bool unzip(const wstring& strDstDir) const;
 
-	long read(const tagUnzFileInfo& unzFileInfo, void *buf, size_t len);
+    long read(const tagUnzFileInfo& unzFileInfo, void *buf, size_t len) const;
+    long read(const string& strPath, void *buf, size_t len) const
+    {
+        auto itr = m_mapSubFileInfo.find(strPath);
+        if (itr == m_mapSubFileInfo.end())
+        {
+            return -1;
+        }
 
-	bool readex(const tagUnzFileInfo& unzFileInfo, void *buf, size_t len)
-	{
-        return read(unzFileInfo, buf, len) == (long)len;
-	}
+        return read(itr->second, buf, len);
+    }
 
 	template <typename T>
-	long read(const tagUnzFileInfo& unzFileInfo, TBuffer<T>& buff)
+    long read(const tagUnzFileInfo& unzFileInfo, TBuffer<T>& buff) const
 	{
 		long size = read(unzFileInfo, buff.ptr(), buff.size());
 		if (size > 0)
@@ -83,21 +89,53 @@ public:
 
 		return size;
 	}
+    template <typename T>
+    long read(const string& strPath, TBuffer<T>& buff) const
+    {
+        auto itr = m_mapSubFileInfo.find(strPath);
+        if (itr == m_mapSubFileInfo.end())
+        {
+            return -1;
+        }
+
+        return read(itr->second, buff);
+    }
 	
-	long read(const tagUnzFileInfo& unzFileInfo, CByteBuffer& bbfBuff, size_t uReadSize = 0)
+    long read(const tagUnzFileInfo& unzFileInfo, CByteBuffer& bbfBuff, size_t uReadSize = 0) const
 	{
 		return _read(unzFileInfo, bbfBuff, uReadSize);
 	}
-	long read(const tagUnzFileInfo& unzFileInfo, CCharBuffer& cbfBuff, size_t uReadSize = 0)
+    long read(const string& strPath, CByteBuffer& bbfBuff, size_t uReadSize = 0) const
+    {
+        auto itr = m_mapSubFileInfo.find(strPath);
+        if (itr == m_mapSubFileInfo.end())
+        {
+            return -1;
+        }
+
+        return read(itr->second, bbfBuff, uReadSize);
+    }
+
+    long read(const tagUnzFileInfo& unzFileInfo, CCharBuffer& cbfBuff, size_t uReadSize = 0) const
 	{
 		return _read(unzFileInfo, cbfBuff, uReadSize);
 	}
+    long read(const string& strPath, CCharBuffer& cbfBuff, size_t uReadSize = 0) const
+    {
+        auto itr = m_mapSubFileInfo.find(strPath);
+        if (itr == m_mapSubFileInfo.end())
+        {
+            return -1;
+        }
+
+        return read(itr->second, cbfBuff, uReadSize);
+    }
 
 	void close();
 	
 private:
 	template <class T>
-	long _read(const tagUnzFileInfo& unzFileInfo, T& buff, size_t uReadSize)
+    long _read(const tagUnzFileInfo& unzFileInfo, T& buff, size_t uReadSize) const
 	{
 		if (0 == uReadSize)
 		{
