@@ -174,10 +174,11 @@ static void _resetRootDir(wstring& strRootDir)
 
 int CXMusicApp::run()
 {
+    auto& option = m_model.init();
+
     m_mainWnd.showLogo();
 
     timerutil::async([&](){
-        auto& option = m_model.init();
         auto& strRootDir = option.strRootDir;
 #if __windows && !__onlineMediaLib
         if (strRootDir.empty() || !fsutil::existDir(strRootDir))

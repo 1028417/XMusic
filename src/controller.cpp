@@ -148,16 +148,20 @@ bool CXController::setupRootDir()
 
 void CXController::_tryPlay()
 {
-    if (!m_model.getMediaLib().empty())
+#if !__onlineMediaLib
+    if (m_model.getMediaLib().empty())
     {
-        if (m_model.getPlayMgr().getPlayingItems())
-        {
-            m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
-        }
-        else
-        {
-            (void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
-        }
+        return;
+    }
+#endif
+
+    if (m_model.getPlayMgr().getPlayingItems())
+    {
+        m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
+    }
+    else
+    {
+        (void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
     }
 }
 
