@@ -19,10 +19,7 @@ public:
 	static bool loadFile(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
 	{
 		string strText;
-		if (!CTxtReader().read(ins, strText))
-		{
-			return false;
-		}
+        CTxtReader().read(ins, strText);
 
 		return loadData(strText, jRoot, bStrictRoot);
 	}

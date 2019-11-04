@@ -310,36 +310,26 @@ public:
 		return E_TxtHeadType::THT_UTF8Bom == m_eHeadType;
 	}
 
-	bool read(Instream& ins, string& strText)
+        void read(Instream& ins, string& strText)
 	{
 		string t_strText;
-		if (!_read(ins, t_strText))
-		{
-			return false;
-		}
-		strText.append(t_strText);
-
-		return true;
+                _read(ins, t_strText);
+                strText.append(t_strText);
 	}
-	bool read(Instream& ins, wstring& strText)
+        void read(Instream& ins, wstring& strText)
 	{
 		wstring t_strText;
-		if (!_read(ins, t_strText))
-		{
-			return false;
-		}
-		strText.append(t_strText);
-
-		return true;
+                _read(ins, t_strText);
+                strText.append(t_strText);
 	}
 
-	bool read(Instream& ins, cfn_bool_t<const string&> cb)
+        void read(Instream& ins, cfn_bool_t<const string&> cb)
 	{
-		return _read(ins, cb);
+                _read(ins, cb);
 	}
-	bool read(Instream& ins, cfn_bool_t<const wstring&> cb)
+        void read(Instream& ins, cfn_bool_t<const wstring&> cb)
 	{
-		return _read(ins, cb);
+                _read(ins, cb);
 	}
 
 private:
@@ -347,22 +337,20 @@ private:
 	void _readData(const char *lpData, size_t len, wstring& strText);
 
 	template <class T>
-	bool _read(Instream& ins, T& strText)
-	{
-		size_t len = ins.size();
-		TD_CharBuffer buff(len);
-		__EnsureReturn(ins.readex(buff, len), false);
+        void _read(Instream& ins, T& strText)
+        {
+                CCharBuffer cbfData;
+                (void)ins.readex(cbfData);
+                __Ensure(cbfData);
 
-		_readData(buff, len, strText);
-
-		return true;
+                _readData(cbfData, cbfData->size(), strText);
 	}
 
 	template <class T>
-	bool _read(Instream& ins, cfn_bool_t<const T&> cb)
+        void _read(Instream& ins, cfn_bool_t<const T&> cb)
 	{
 		T strText;
-		__EnsureReturn(_read(ins, strText), false);
+                _read(ins, strText);
 
 		size_t prePos = 0;
 		size_t pos = 0;
@@ -385,7 +373,7 @@ private:
 
 			if (!cb(strSub))
 			{
-				return true;
+                                return;
 			}
 
 			prePos = pos + 1;
@@ -394,8 +382,6 @@ private:
 		if (prePos < strText.size())
 		{
 			cb(strText.substr(prePos));
-		}
-
-		return true;
+                }
 	}
 };
