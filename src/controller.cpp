@@ -148,12 +148,13 @@ bool CXController::setupRootDir()
 
 void CXController::_tryPlay()
 {
-#if !__onlineMediaLib
-    if (m_model.getMediaLib().empty())
+    if (!CModel::m_bOnlineMediaLib)
     {
-        return;
+        if (m_model.getMediaLib().empty())
+        {
+            return;
+        }
     }
-#endif
 
     if (m_model.getPlayMgr().getPlayingItems())
     {

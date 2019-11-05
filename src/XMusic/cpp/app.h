@@ -8,8 +8,6 @@
 
 #include "mainwindow.h"
 
-#include <QTimer>
-
 #define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
 
 extern ITxtWriter& g_logger;
@@ -44,7 +42,12 @@ private:
         return m_mainWnd;
     }
 
+    bool _resetRootDir(wstring& strRootDir);
+
     bool _run();
+
+    bool _upgradeMediaLib();
+    bool _upgradeMediaLib(UINT uVersion, const string& strUrl);
 
 public:
     MainWindow& mainWnd()

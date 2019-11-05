@@ -3,8 +3,6 @@
 
 #include <QTouchEvent>
 
-#include <QTimer>
-
 static QPaintEvent *g_pe = NULL;
 
 template <class TParent>
@@ -137,7 +135,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
         if (m_bClicking)
         {
-            //QTimer::singleShot(0, [=](){
+            //timerutil::async(0, [=](){
                 if (m_bClicking)
                 {
                     m_bClicking = false;

@@ -5,8 +5,6 @@
 
 #include "widget.h"
 
-#include <QTimer>
-
 class CButton : public CWidget<QPushButton>
 {
     Q_OBJECT
@@ -34,7 +32,7 @@ private:
         {
             setOpacity(0.5);
 
-            QTimer::singleShot(300, [&](){
+            timerutil::async(300, [&](){
                 setOpacity(1);
             });
         }

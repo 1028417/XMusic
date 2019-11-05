@@ -150,7 +150,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
-static void _resetRootDir(wstring& strRootDir)
+bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 {
 #if __android
     strRootDir = L"/sdcard/XMusic";
@@ -166,10 +166,25 @@ static void _resetRootDir(wstring& strRootDir)
 #endif
 
 #else
+    if (!CModel::m_bOnlineMediaLib)
+    {
+        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+        {
+            CFolderDlg FolderDlg;
+            strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
+            if (strRootDir.empty())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     strRootDir = fsutil::getHomeDir() + L"/XMusic";
 #endif
 
-    (void)fsutil::createDir(strRootDir + __medialibPath);
+    return fsutil::createDir(strRootDir + __medialibPath);
 }
 
 int CXMusicApp::run()
@@ -179,21 +194,11 @@ int CXMusicApp::run()
     m_mainWnd.showLogo();
 
     timerutil::async([&](){
-        auto& strRootDir = option.strRootDir;
-#if __windows && !__onlineMediaLib
-        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+        if (!_resetRootDir(option.strRootDir))
         {
-            CFolderDlg FolderDlg;
-            strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
-            if (strRootDir.empty())
-            {
-                this->quit();
-                return false;
-            }
+            this->quit();
+            return;
         }
-#else
-        _resetRootDir(strRootDir);
-#endif
 
         timerutil::async(6000, [&](){
             if(!_run())
@@ -220,16 +225,176 @@ int CXMusicApp::run()
     return nRet;
 }
 
-bool CXMusicApp::_run()
+struct tagUpgradeConf
 {
-#if __onlineMediaLib
-    g_logger >> "upgradeMediaLib";
-    if (!m_model.upgradeMediaLib())
+    UINT uVersion = 0;
+
+    list<string> lstUrl;
+};
+
+static bool _readUpgradeConf(Instream& ins, tagUpgradeConf& upgradeConf)
+{
+    JValue jRoot;
+    if (!jsonutil::loadFile(ins, jRoot))
     {
-        g_logger >> "upgradeMediaLib fail";
+        g_logger >> "readUpgradeConf fail: invalid jsonStream";
         return false;
     }
-#endif
+    const JValue& medialib = jRoot["medialib"];
+    if (medialib.isNull())
+    {
+        g_logger >> "readUpgradeConf fail: medialib";
+        return false;
+    }
+
+    if (!jsonutil::get(medialib["version"], upgradeConf.uVersion))
+    {
+        g_logger >> "readUpgradeConf fail: version";
+        return false;
+    }
+
+    if (!jsonutil::getArray(medialib["url"], upgradeConf.lstUrl))
+    {
+        g_logger >> "readUpgradeConf fail: version";
+        return false;
+    }
+
+    return true;
+}
+
+#define __upgradeConfFile (m_model.getOptionMgr().getOption().strRootDir + __medialibPath L"upgrade.conf")
+
+bool CXMusicApp::_upgradeMediaLib()
+{
+    tagUpgradeConf upgradeConf;
+
+    IFStream ifsUpgradeConf;
+    if (ifsUpgradeConf.open(__upgradeConfFile))
+    {
+        __EnsureReturn(_readUpgradeConf(ifsUpgradeConf, upgradeConf), false);
+        ifsUpgradeConf.close();
+    }
+    else
+    {
+        QFile qf("qrc:/../../../PlayerSDK/upgrade.conf");
+        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            g_logger >> "loadUpgradeConfResource fail";
+            return false;
+        }
+
+        cauto ba = qf.readAll();
+        IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
+        if (!ifbUpgradeConf)
+        {
+            g_logger >> "loadUpgradeConf fail";
+            return false;
+        }
+
+        __EnsureReturn(_readUpgradeConf(ifbUpgradeConf, upgradeConf), false);
+    }
+
+    for (cauto strUrl : upgradeConf.lstUrl)
+    {
+        if (_upgradeMediaLib(upgradeConf.uVersion, strUrl))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CXMusicApp::_upgradeMediaLib(UINT uVersion, const string& strUrl)
+{
+    CByteBuffer bbfZip;
+    if (!CFileDownload::inst().download(strUrl, bbfZip))
+    {
+        g_logger << "download fail: " >> strUrl;
+        return false;
+    }
+
+    IFBuffer ifbZip(bbfZip);
+    CZipFile zipFile(ifbZip);
+    if (!zipFile)
+    {
+        g_logger >> "invalid zipfile";
+        return false;
+    }
+    CByteBuffer bbfUpgradeConf;
+    if (zipFile.read("upgrade.conf", bbfUpgradeConf) <= 0)
+    {
+        g_logger >> "readZip fail: upgrade.conf";
+        return false;
+    }
+
+    IFBuffer ifbUpgradeConf(bbfUpgradeConf);
+    tagUpgradeConf newUpgradeConf;
+    if (!_readUpgradeConf(ifbUpgradeConf, newUpgradeConf))
+    {
+        return false;
+    }
+    if (newUpgradeConf.uVersion > uVersion)
+    {
+        CByteBuffer bbfMedialib;
+        if (zipFile.read("medialib", bbfMedialib) <= 0)
+        {
+            g_logger >> "readZip fail: medialib";
+            return false;
+        }
+
+        cauto strDBFile = m_model.getOptionMgr().getOption().strRootDir + __medialibPath __medialibFile;
+        OFStream ofsMedialib(strDBFile, true);
+        if (!ofsMedialib)
+        {
+            return false;
+        }
+        (void)ofsMedialib.writex(bbfMedialib);
+
+        OFStream ofbUpgradeConf(__upgradeConfFile, true);
+        if (!ofbUpgradeConf)
+        {
+            return false;
+        }
+        (void)ofbUpgradeConf.writex(bbfUpgradeConf);
+    }
+
+    for (cauto pr : zipFile.fileMap())
+    {
+        const tagUnzFileInfo& fileInfo = pr.second;
+
+        if (__substr(fileInfo.strPath, (int)fileInfo.strPath.size()-4) == "xurl")
+        {
+            CByteBuffer bbfBuff;
+            if (zipFile.read(fileInfo, bbfBuff) <= 0)
+            {
+                g_logger << "readXurl fail: " >> fileInfo.strPath;
+                return false;
+            }
+
+            IFBuffer ifb(bbfBuff);
+            if (!m_model.getMediaLib().loadXurl(ifb))
+            {
+                g_logger << "loadXurl fail: " >> fileInfo.strPath;
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool CXMusicApp::_run()
+{
+    if (CModel::m_bOnlineMediaLib)
+    {
+        g_logger >> "upgradeMediaLib";
+        if (!_upgradeMediaLib())
+        {
+            g_logger >> "upgradeMediaLib fail";
+            return false;
+        }
+    }
 
     g_logger >> "initMediaLib";
     if (!m_model.initMediaLib())

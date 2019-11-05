@@ -56,11 +56,6 @@ int main(int argc, char *argv[])
     g_logger << "jniVer: " >> g_jniVer;
 #endif
 
-    /*if (!fsutil::zUncompressZip("d:/zlib-1.2.11.zip", "d:/zlib-1.2.11-----"))
-    {
-        return -1;
-    }*/
-
     int nRet = app->run();
     delete app;
     return nRet;

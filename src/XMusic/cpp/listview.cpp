@@ -1,8 +1,6 @@
 
 #include "listview.h"
 
-#include <QTimer>
-
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
     UINT uPageRowCount = getPageRowCount();
@@ -35,7 +33,7 @@ void CListView::flashRow(UINT uRow, UINT uMSDelay)
     m_nFlashRow = uRow;
     update();
 
-    QTimer::singleShot(uMSDelay, [&](){
+    timerutil::async(uMSDelay, [&](){
         m_nFlashRow = -1;
         update();
     });
@@ -309,7 +307,7 @@ bool CListView::_scroll(int dy)
 
 void CListView::_autoScroll(ulong uSeq, int dy, ulong dt, ulong total)
 {
-    QTimer::singleShot(dt, [=]() {
+    timerutil::async(dt, [=]() {
         if (uSeq != m_uAutoScrollSeq)
         {
             return;

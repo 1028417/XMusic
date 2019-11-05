@@ -3,8 +3,6 @@
 
 #include "ui_mainwindow.h"
 
-#include <QTimer>
-
 #include <QMovie>
 
 #include "widget.cpp"
@@ -162,21 +160,21 @@ void MainWindow::showLogo()
     showFull(this);
     this->setVisible(true);
 
-    QTimer::singleShot(100, [&](){
+    timerutil::async(100, [&](){
 #if !__android
         mtutil::usleep(800);
 #endif
 
         ui.labelLogo->movie()->start();
 
-        QTimer::singleShot(500, [&](){
+        timerutil::async(500, [&](){
             auto labelLogoTip = ui.labelLogoTip;
             labelLogoTip->setText(labelLogoTip->text() + "播放器");
 
-            QTimer::singleShot(500, [=](){
+            timerutil::async(500, [=](){
                 labelLogoTip->setText(labelLogoTip->text() + " · 媒体库");
 
-                QTimer::singleShot(500, [=](){
+                timerutil::async(500, [=](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
                 });
             });
@@ -797,9 +795,9 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
         _relayout();
     }
 
-    ui.progressBar->setValue(0);
-
     _updatePlayPauseButton(true);
+
+    ui.progressBar->setValue(0);
 
     if (m_PlayingInfo.nDuration > 0)
     {
@@ -810,6 +808,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     }
     else
     {
+        ui.progressBar->setMaximum(0);
+
         ui.labelDuration->clear();
     }
 }

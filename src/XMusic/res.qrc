@@ -27,5 +27,6 @@
         <file>img/add.png</file>
         <file>img/btnFullScreen.png</file>
         <file>img/btnX.png</file>
+        <file>../../../PlayerSDK/upgrade.conf</file>
     </qresource>
 </RCC>
