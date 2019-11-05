@@ -1,13 +1,7 @@
 
 #pragma once
 
-#define __onlineMediaLib true
-#if __winvc
-#undef __onlineMediaLib
-#define __onlineMediaLib false
-#endif
-
-class XMediaLib : public CMediaLib, public CMediaSet
+class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
 	XMediaLib(IMediaObserver& MediaObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)

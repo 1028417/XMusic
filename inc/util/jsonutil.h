@@ -41,7 +41,7 @@ public:
     static bool get(const JValue& jValue, UINT& uRet);
 
     template <typename T>
-    static bool getArray(const JValue& jValue, vector<T>& vecRet)
+    static bool getArray(const JValue& jValue, list<T>& lstRet)
     {
         if (!jValue.isArray())
         {
@@ -53,7 +53,7 @@ public:
         {
             if (get(jValue[uIdx], value))
             {
-                vecRet.push_back(value);
+                lstRet.push_back(value);
             }
         }
 

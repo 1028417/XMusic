@@ -187,7 +187,9 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-	bool status() const override
+    static bool m_bOnlineMediaLib;
+
+    bool status() const override
 	{
 		return m_db.GetStatus();
 	}
@@ -233,8 +235,6 @@ public:
 	}
 
 	tagOption& init();
-
-    bool upgradeMediaLib();
 
     bool initMediaLib() override;
 

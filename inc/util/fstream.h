@@ -270,7 +270,7 @@ class __UtilExt IFBuffer : public Instream
 public:
     virtual ~IFBuffer(){}
 
-    IFBuffer(byte_t *ptr, size_t size)
+    IFBuffer(const byte_t *ptr, size_t size)
         : m_ptr(ptr)
         , m_size(size)
     {
@@ -288,7 +288,7 @@ public:
 	IFBuffer& operator=(IFBuffer&& other) = delete;
 
 protected:
-    const byte_t *m_ptr;
+    const byte_t* m_ptr;
     size_t m_size;
 
     size_t m_pos = 0;

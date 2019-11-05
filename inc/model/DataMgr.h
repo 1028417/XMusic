@@ -15,14 +15,7 @@ private:
 
 	tagOption& m_Option;
 
-private:
-    bool _syncMediaLib(const CByteBuffer& bbfData);
-
-    bool _upgradeMediaLib(UINT uCurrVer, const CCharBuffer& cbfConf);
-
 public:
-	bool upgradeMediaLib(const wstring& strDBFile);
-
 	bool clearData();
 
 	bool updateMediaSetName(CMediaSet& MediaSet, const wstring& strName);
