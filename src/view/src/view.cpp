@@ -468,7 +468,7 @@ void __view::snapshotDir(CMediaDir& dir)
 }
 
 void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
-{	
+{
 	CUTF8TxtWriter TxtWriter;
 	if (!TxtWriter.open(strOutputFile, true))
 	{
@@ -478,12 +478,14 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		wstring strPrfix;
 
-		fn_bool_t<CPath&> fnSnapshot;
-		fnSnapshot = [&](CPath& dir) {
+		function<bool(CPath&, JValue&)> fnSnapshot;
+		fnSnapshot = [&](CPath& dir, JValue& jRoot) {
 			if (ProgressDlg.checkCancel())
 			{
 				return false;
 			}
+
+			jRoot["name"] = strutil::toUtf8(dir.name());
 
 			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.name();
 			if (!TxtWriter.writeln(strDirInfo))
@@ -498,16 +500,27 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText((L"正在生成" + dir.absPath() + L"目录快照").c_str());
 
-			dir.files()([&](XFile& subFile) {
-				auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
-				auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
-				return TxtWriter.writeln(strFileInfo);
-			});
+			cauto paSubFile = dir.files();
+			if (paSubFile)
+			{
+				JValue& jFiles = jRoot["files"];
 
+				paSubFile([&](XFile& subFile) {
+					auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
+
+					JValue jFile;
+					jFile["name"] = strutil::toUtf8(subFile.name());
+					jFile["size"] = ((CMediaRes&)subFile).GetFileSize();
+					jFiles.append(jFile);
+
+					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
+					return TxtWriter.writeln(strFileInfo);
+				});
+			}
 			ProgressDlg.ForwardProgress();
 
 			paSubDir([&](CPath& subDir) {
-				bool bRet = fnSnapshot(subDir);
+				bool bRet = fnSnapshot(subDir, jRoot["dirs"]);
 
 				ProgressDlg.ForwardProgress();
 
@@ -519,8 +532,20 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			return true;
 		};
 
-		(void)fnSnapshot(dir);
-		
+		JValue *pJRoot = new JValue;
+
+		if (fnSnapshot(dir, *pJRoot))
+		{
+			CUTF8TxtWriter TxtWriter;
+			if (TxtWriter.open(strOutputFile + L".json", true))
+			{
+				string str = Json::FastWriter().write(*pJRoot);
+				TxtWriter.writeln(str);
+			}
+		}
+
+		delete pJRoot;
+
 		ProgressDlg.SetStatusText(L"已生成快照");
 	};
 
