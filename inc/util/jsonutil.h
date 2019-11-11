@@ -4,7 +4,8 @@
 
 using JValue = Json::Value;
 using JReader = Json::Reader;
-using JWriter = Json::StyledWriter;
+using JFastWriter = Json::FastWriter;
+using JStyledWriter = Json::StyledWriter;
 
 class __UtilExt jsonutil
 {
@@ -29,7 +30,25 @@ public:
 		__EnsureReturn(ifs, false);
 		return loadFile(ifs, jRoot, bStrictRoot);
 	}
-	
+
+	static bool writeFile(const JValue& jRoot, const wstring& strFile, bool bStyled=false)
+	{
+		CUTF8TxtWriter TxtWriter;
+		if (!TxtWriter.open(strFile, true))
+		{
+			return false;
+		}
+
+		if (bStyled)
+		{
+			return TxtWriter.write(Json::StyledWriter().write(jRoot));
+		}
+		else
+		{
+			return TxtWriter.write(Json::FastWriter().write(jRoot));
+		}
+	}
+
     static bool get(const JValue& jValue, wstring& strRet);
 
     static bool get(const JValue& jValue, string& strRet);
