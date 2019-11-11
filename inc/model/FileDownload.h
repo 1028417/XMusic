@@ -44,7 +44,7 @@ private:
 
     void _clear();
 
-    bool _download(const string& strUrl);
+    int _download(const string& strUrl);
 
     template <class T>
     size_t _getAllData(T& buff)
@@ -67,8 +67,8 @@ private:
 
 public:
     void download(const string& strUrl);
-    bool download(const string& strUrl, CByteBuffer& bbfData);
-    bool download(const string& strUrl, CCharBuffer& cbfData);
+    int download(const string& strUrl, CByteBuffer& bbfData);
+    int download(const string& strUrl, CCharBuffer& cbfData);
 
     size_t dataSize() const
     {
