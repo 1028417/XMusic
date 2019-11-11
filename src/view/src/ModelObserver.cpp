@@ -69,5 +69,7 @@ UINT CModelObserver::GetSingerImgPos(UINT uSingerID)
 
 bool CModelObserver::renameMedia(IMedia& media, const wstring& strNewName)
 {
+	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+
 	return m_view.getController().renameMedia(media, strNewName);
 }
