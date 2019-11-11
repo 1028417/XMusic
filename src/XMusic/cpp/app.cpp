@@ -276,7 +276,11 @@ bool CXMusicApp::_upgradeMediaLib()
     }
     else
     {
-        QFile qf("qrc:/../../../PlayerSDK/upgrade.conf");
+#if __android
+        QFile qf("assets:/upgrade.conf");
+#else
+        QFile qf(":/upgrade.conf");
+#endif
         if (!qf.open(QFile::OpenModeFlag::ReadOnly))
         {
             g_logger >> "loadUpgradeConfResource fail";
@@ -296,7 +300,7 @@ bool CXMusicApp::_upgradeMediaLib()
 
     for (cauto strUrl : upgradeConf.lstUrl)
     {
-        if (_upgradeMediaLib(upgradeConf.uVersion, strUrl))
+        if (_downloadMediaLib(upgradeConf.uVersion, strUrl))
         {
             return true;
         }
@@ -305,12 +309,13 @@ bool CXMusicApp::_upgradeMediaLib()
     return false;
 }
 
-bool CXMusicApp::_upgradeMediaLib(UINT uVersion, const string& strUrl)
+bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
 {
     CByteBuffer bbfZip;
-    if (!CFileDownload::inst().download(strUrl, bbfZip))
+    int nRet = CFileDownload::inst().download(strUrl, bbfZip);
+    if (nRet != 0)
     {
-        g_logger << "download fail: " >> strUrl;
+        g_logger << "download fail: " << nRet << ", URL: " >> strUrl;
         return false;
     }
 

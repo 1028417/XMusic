@@ -47,7 +47,7 @@ private:
     bool _run();
 
     bool _upgradeMediaLib();
-    bool _upgradeMediaLib(UINT uVersion, const string& strUrl);
+    bool _downloadMediaLib(UINT uVersion, const string& strUrl);
 
 public:
     MainWindow& mainWnd()

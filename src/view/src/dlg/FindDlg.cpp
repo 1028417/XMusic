@@ -215,11 +215,11 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				if (NULL != pPlayItem)
 				{
-					m_view.m_MediaResPage.HittestMediaRes(*pPlayItem);
+					m_view.m_MediaResPage.HittestMediaRes(*pPlayItem, *this);
 				}
 				else if (NULL != pAlbumItem)
 				{
-					m_view.m_MediaResPage.HittestMediaRes(*pAlbumItem);
+					m_view.m_MediaResPage.HittestMediaRes(*pAlbumItem, *this);
 				}
 				
 				return;

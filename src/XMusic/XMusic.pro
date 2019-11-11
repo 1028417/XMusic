@@ -94,7 +94,7 @@ font.files += ../../bin/font/Microsoft-YaHei-Semibold.ttc
 
 hbkg.files += ../../bin/hbkg/win10
 vbkg.files += ../../bin/vbkg/win10
-upgradeConf.files += ../../bin/upgrade.conf
+upgradeConf.files += upgrade.conf
 
 android {
     #CONFIG += mobility

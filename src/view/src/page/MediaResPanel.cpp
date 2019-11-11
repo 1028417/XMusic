@@ -394,12 +394,12 @@ void CMediaResPanel::_showPath()
 	_asyncTask();
 }
 
-BOOL CMediaResPanel::HittestMediaRes(IMedia& media)
+BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
 {
 	CMediaRes *pMediaRes = media.GetMediaRes();
 	if (NULL == pMediaRes)
 	{
-		CMainApp::showMsg(L"未定位到曲目：\n\n\t" + media.GetPath(), *this);
+		CMainApp::showMsg(L"未定位到曲目：\n\n\t" + media.GetPath(), &wnd);
 		return FALSE;
 	}
 
