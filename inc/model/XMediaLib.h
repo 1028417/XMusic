@@ -16,7 +16,9 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
-        JValue m_jSnapshot;
+#if !__winvc
+private:
+	JValue m_jSnapshot;
 
 	map<string, string> m_mapFileUrl;
 	
@@ -29,7 +31,9 @@ public:
 
 private:
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+#endif
 
+private:
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
 		if (strutil::matchIgnoreCase(fileInfo.strName, __medialibDir))
