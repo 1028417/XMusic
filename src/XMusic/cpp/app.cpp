@@ -364,6 +364,19 @@ bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
         (void)ofbUpgradeConf.writex(bbfUpgradeConf);
     }
 
+    CByteBuffer bbfSnapshot;
+    if (zipFile.read("snapshot", bbfSnapshot) <= 0)
+    {
+        g_logger >> "readZip fail: snapshot";
+        return false;
+    }
+    IFBuffer ifbSnapshot(bbfSnapshot);
+    if (!m_model.getMediaLib().loadSnapshot(ifbSnapshot))
+    {
+        g_logger >> "loadSnapshot fail";
+        return false;
+    }
+
     for (cauto pr : zipFile.fileMap())
     {
         const tagUnzFileInfo& fileInfo = pr.second;

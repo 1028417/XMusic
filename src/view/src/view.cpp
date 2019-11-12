@@ -519,13 +519,20 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			}
 			ProgressDlg.ForwardProgress();
 
-			paSubDir([&](CPath& subDir) {
-				bool bRet = fnSnapshot(subDir, jRoot["dirs"]);
+			if (paSubDir)
+			{
+				auto& jDirs = jRoot["dirs"];
 
-				ProgressDlg.ForwardProgress();
+				paSubDir([&](CPath& subDir, size_t uIdx) {
+					jDirs.append(JValue());
 
-				return bRet;
-			});
+					bool bRet = fnSnapshot(subDir, jDirs[uIdx]);
+
+					ProgressDlg.ForwardProgress();
+
+					return bRet;
+				});
+			}
 
 			strPrfix = strPrfix.substr(0, strPrfix.size() - 2);
 
