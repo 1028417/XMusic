@@ -320,7 +320,7 @@ bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
     }
 
     IFBuffer ifbZip(bbfZip);
-    CZipFile zipFile(ifbZip);
+    CZipFile zipFile(ifbZip, "medialib.zip");
     if (!zipFile)
     {
         g_logger >> "invalid zipfile";
