@@ -6,18 +6,21 @@
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
-    CMediaRes(const wstring& strDir)
-        : CPathObject(strDir)
-    {
-    }
+	virtual ~CMediaRes() {}
 
-    CMediaRes(const tagFileInfo& fileInfo, E_MediaFileType eFileType)
+	CMediaRes() {}
+
+    CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
         : IMedia(eFileType)
         , CPathObject(fileInfo)
     {
     }
 
-	virtual ~CMediaRes() {}
+	CMediaRes(E_MediaFileType eFileType, bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+		: IMedia(eFileType)
+		, CPathObject(t_bDir, t_strName, t_pParent)
+	{
+	}
 
 #if __winvc
 private:
@@ -93,16 +96,20 @@ public:
 class __MediaLibExt CMediaDir : public CMediaRes
 {
 public:
-	CMediaDir(const wstring& strDir = L"")
-		: CMediaRes(strDir)
-	{
-	}
+	virtual ~CMediaDir() {}
+
+	CMediaDir() {}
 
 	CMediaDir(const tagFileInfo& fileInfo)
-		: CMediaRes(fileInfo, E_MediaFileType::MFT_Null)
+		: CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
 	{
 	}
 
+	CMediaDir(const wstring& t_strName, class CPath *t_pParent = NULL)
+		: CMediaRes(E_MediaFileType::MFT_Null, true, t_strName, t_pParent)
+	{
+	}
+	
 #if __winvc
 private:
 	ArrList<CCueFile> m_alSubCueFile;

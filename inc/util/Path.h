@@ -24,19 +24,19 @@ using TD_DirObjectList = PtrArray<CDirObject>;
 class __UtilExt XFile
 {
 public:
-	XFile() {}
+	virtual ~XFile() {}
 
-	XFile(const wstring& strName)
-		: m_fileInfo(strName)
-	{
-	}
+	XFile() {}
 
 	XFile(const tagFileInfo& fileInfo)
 		: m_fileInfo(fileInfo)
 	{
 	}
 
-	virtual ~XFile() {}
+	XFile(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+		: m_fileInfo(t_pParent, t_bDir, t_strName)
+	{
+	}
 
 private:
 	tagFileInfo m_fileInfo;
@@ -76,21 +76,21 @@ class __UtilExt CPath : public XFile
 	friend struct tagPathSortor;
 
 public:
-        CPath() {}
-
-        CPath(const wstring& strDir)
-		: XFile(strutil::rtrim_r(strDir, __wcDirSeparator))
+	virtual ~CPath()
 	{
+        clear();
 	}
+
+	CPath() {}
 
     CPath(const tagFileInfo& fileInfo)
         : XFile(fileInfo)
 	{
 	}
 	
-	virtual ~CPath()
+	CPath(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+		: XFile(t_bDir, t_bDir? strutil::rtrim_r(t_strName, __wcDirSeparator) : t_strName, t_pParent)
 	{
-        clear();
 	}
 
 private:
@@ -139,6 +139,21 @@ public:
         clear();
 
         XFile::setName(strutil::rtrim_r(strDir, __wcDirSeparator));
+	}
+
+	void assign(const TD_PathList& paSubDir, const TD_XFileList& paSubFile)
+	{
+		m_paSubDir.assign(paSubDir);
+		m_paSubFile.assign(paSubFile);
+
+		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
+	}
+	void swap(TD_PathList& paSubDir, TD_XFileList& paSubFile)
+	{
+		m_paSubDir.swap(paSubDir);
+		m_paSubFile.swap(paSubFile);
+
+		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
 	}
 
 	void scan(const CB_PathScan& cb);
@@ -237,17 +252,17 @@ public:
 class __UtilExt CPathObject : public CPath, public CListObject
 {
 public:
-	CPathObject(const wstring& strDir=L"")
-		: CPath(strDir)
-	{
-	}
+	virtual ~CPathObject() {}
+	
+	CPathObject() {}
 
     CPathObject(const tagFileInfo& fileInfo)
         : CPath(fileInfo)
 	{
 	}
 
-	virtual ~CPathObject()
+	CPathObject(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+		: CPath(t_bDir, t_strName, t_pParent)
 	{
 	}
 
@@ -266,17 +281,17 @@ protected:
 class __UtilExt CDirObject : public CPathObject, public CTreeObject
 {
 public:
-	CDirObject(const wstring& strDir = L"")
-		: CPathObject(strDir)
-	{
-	}
+	virtual ~CDirObject() {}
+
+	CDirObject() {}
 
     CDirObject(const tagFileInfo& fileInfo)
         : CPathObject(fileInfo)
 	{
 	}
 
-	virtual ~CDirObject()
+	CDirObject(const wstring& t_strName, class CPath *t_pParent = NULL)
+		: CPathObject(true, t_strName, t_pParent)
 	{
 	}
 

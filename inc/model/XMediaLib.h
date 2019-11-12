@@ -16,6 +16,8 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
+        JValue m_jSnapshot;
+
 	map<string, string> m_mapFileUrl;
 	
 public:
@@ -23,7 +25,11 @@ public:
 
 	string getUrl(CPlayItem& PlayItem);
 
+    bool loadSnapshot(Instream& ins);
+
 private:
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+
 	CPath* _newSubDir(const tagFileInfo& fileInfo) override
 	{
 		if (strutil::matchIgnoreCase(fileInfo.strName, __medialibDir))
