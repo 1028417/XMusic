@@ -17,14 +17,14 @@ class __UtilExt CZipFile
 public:
 	CZipFile() {}
 
-	CZipFile(const string& strFile)
+	CZipFile(const string& strFile, const string& strPwd = "")
 	{
-		(void)open(strFile);
+		(void)open(strFile, strPwd);
 	}
 
-	CZipFile(Instream& ins)
+	CZipFile(Instream& ins, const string& strPwd = "")
 	{
-		(void)open(ins);
+		(void)open(ins, strPwd);
 	}
 
 	virtual ~CZipFile()
@@ -33,6 +33,8 @@ public:
 	}
 
 private:
+	string m_strPwd;
+
 	void* m_unzfile = NULL;
 
 	list<tagUnzFileInfo> m_lstSubDirInfo;
@@ -57,12 +59,14 @@ public:
         return m_mapSubFileInfo;
     }
 
-	bool open(const string& strFile)
+	bool open(const string& strFile, const string& strPwd = "")
 	{
+		m_strPwd = strPwd;
+
 		return _open(strFile.c_str());
 	}
 
-	bool open(Instream& ins);
+	bool open(Instream& ins, const string& strPwd = "");
 
     bool unzip(const wstring& strDstDir) const;
 
@@ -164,13 +168,13 @@ private:
 class __UtilExt zutil
 {
 public:
-	static bool unzFile(const string& strZipFile, const wstring& strDstDir)
+	static bool unzFile(const string& strZipFile, const wstring& strDstDir, const string& strPwd = "")
 	{
-		return CZipFile(strZipFile).unzip(strDstDir);
+		return CZipFile(strZipFile, strPwd).unzip(strDstDir);
 	}
-    static bool unzFile(Instream& ins, const wstring& strDstDir)
+    static bool unzFile(Instream& ins, const wstring& strDstDir, const string& strPwd = "")
 	{
-		return CZipFile(ins).unzip(strDstDir);
+		return CZipFile(ins, strPwd).unzip(strDstDir);
 	}
 
     static int zCompress(const void* pData, size_t len, CByteBuffer& bbfBuff, int level=0);
