@@ -188,6 +188,8 @@ private:
 
 	int _queryMaxAlbumItemPos(int nAlbumID);
 
+	bool _queryDifferent(tagCompareBackupResult& result);
+	
 public:
 	bool execute(const string& strSql);
 	bool execute(const wstring& strSql);
@@ -211,7 +213,9 @@ public:
 	bool updateFiles(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir);
 	bool deleteFiles(const set<wstring>& setDeleteFiles);
 
-	bool queryDifferent(tagCompareBackupResult& result);
+	bool compare(const wstring& strFile, tagCompareBackupResult& result);
+
+	bool exportData(const wstring& strDstFile);
 
 	bool clearAll();
 
