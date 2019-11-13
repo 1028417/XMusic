@@ -58,11 +58,6 @@
     #include <sys/types.h>
     #include <unistd.h>
 
-#ifdef NULL
-    #undef NULL
-#endif
-    #define NULL nullptr
-
 #ifdef QT_NO_DEBUG
     #define __isdebug false
 #else
