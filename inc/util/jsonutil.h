@@ -56,8 +56,12 @@ public:
     static bool get(const JValue& jValue, bool& bRet);
 
     static bool get(const JValue& jValue, int& nRet);
+    static bool get(const JValue& jValue, unsigned int& uRet);
 
-    static bool get(const JValue& jValue, UINT& uRet);
+#ifdef JSON_HAS_INT64
+    static bool get(const JValue& jValue, Json::Value::Int64& nRet);
+    static bool get(const JValue& jValue, Json::Value::UInt64& uRet);
+#endif
 
     template <typename T>
     static bool getArray(const JValue& jValue, list<T>& lstRet)
