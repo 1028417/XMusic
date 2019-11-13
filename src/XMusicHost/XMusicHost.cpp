@@ -12,6 +12,8 @@ public:
 		, m_model(m_view.getModelObserver())
 		, m_controller(m_view, m_model)
 	{
+		extern void InitMinDump();
+		InitMinDump();
 	}
 
 	IView& getView() override

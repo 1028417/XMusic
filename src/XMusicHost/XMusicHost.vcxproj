@@ -159,6 +159,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Dump.cpp" />
     <ClCompile Include="XMusicHost.cpp" />
     <ClCompile Include="..\controller.cpp" />
   </ItemGroup>

@@ -78,7 +78,9 @@ android {
     platform = ios
     DESTDIR = ../../../build/XMusic
 } else {
-    LIBS += -L../../bin
+    SOURCES += ../Dump.cpp
+
+    LIBS += -L../../bin -lDbghelp
 
     platform =win
     DESTDIR = ../../bin
