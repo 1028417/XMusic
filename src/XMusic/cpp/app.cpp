@@ -219,7 +219,6 @@ int CXMusicApp::run()
     CPlayer::QuitSDK();
 
     g_logger >> "quit";
-
     m_logger.close();
 
     return nRet;
@@ -320,9 +319,9 @@ bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
     }
 
     IFBuffer ifbZip(bbfZip);
-    string strPwd = "medialib";
-    strPwd.append(".zip");
-    CZipFile zipFile(ifbZip, strPwd);
+    /*string strPwd = "medialib";
+    strPwd.append(".zip");*/
+    CZipFile zipFile(ifbZip);
     if (!zipFile)
     {
         g_logger >> "invalid zipfile";
