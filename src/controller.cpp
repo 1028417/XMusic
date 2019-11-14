@@ -490,8 +490,8 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 			mapMatchInfo[SearchMediaInfo.m_strAbsPath] = &MediaResInfo;
 		}
 
-		SearchMediaInfo.m_lstMedias([&](CMedia& Media){
-			mapUpdatedMedias[&Media] = MediaResInfo.strPath;
+		SearchMediaInfo.m_lstMedias([&](CMedia& media){
+			mapUpdatedMedias[&media] = MediaResInfo.strPath;
 		});
 
 		return E_MatchResult::MR_Yes;
@@ -514,8 +514,8 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 
 	CSearchMediaInfoGuard SearchMediaInfoGuard(m_model.getSingerMgr());
 	TD_SearchMediaInfoMap mapSearchMedias;
-	lstMedias([&](CMedia& Media) {
-		SearchMediaInfoGuard.genSearchMediaInfo(Media, mapSearchMedias);
+	lstMedias([&](CMedia& media) {
+		SearchMediaInfoGuard.genSearchMediaInfo(media, mapSearchMedias);
 	});
 
 	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
@@ -573,8 +573,8 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 			wstring strDstOppPath = m_model.getMediaLib().toOppPath(strDstAbsPath);
 			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strDstOppPath);
 
-			SearchMediaInfo.m_lstMedias([&](CMedia& Media) {
-				mapUpdatedMedias[&Media] = strDstOppPath;
+			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+				mapUpdatedMedias[&media] = strDstOppPath;
 			});
 
 			return true;

@@ -78,14 +78,14 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	return true;
 }
 
-bool CImgMgr::_setImg(const wstring& strFile, bool bSinger, int iPosReplace)
+bool CImgMgr::_setImg(const wstring& strFile, bool bSinger, int nPosReplace)
 {
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
 
-	m_imglst.SetImg(img, true, &g_rcMargin, iPosReplace);
-	m_imglstSmall.SetImg(img, true, &g_rcMargin, iPosReplace);
-	m_imglstTiny.SetImg(img, bSinger, &g_rcMargin, iPosReplace);
+	m_imglst.SetImg(img, true, &g_rcMargin, nPosReplace);
+	m_imglstSmall.SetImg(img, true, &g_rcMargin, nPosReplace);
+	m_imglstTiny.SetImg(img, bSinger, &g_rcMargin, nPosReplace);
 
 	return true;
 }

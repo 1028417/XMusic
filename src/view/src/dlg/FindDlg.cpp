@@ -264,8 +264,8 @@ void CFindDlg::OnBnClickedPlay()
 	TD_IMediaList lstMedias;
 	for (auto uItem : lstItems)
 	{
-		m_MediaMixer.getMedia([&](CMedia& Media) {
-			lstMedias.add(Media);
+		m_MediaMixer.getMedia([&](CMedia& media) {
+			lstMedias.add(media);
 		}, uItem);
 	}
 	

@@ -22,7 +22,7 @@ private:
 	CObjectList m_wndList;
 
 private:
-	void UpdateItem(int nItem, CMedia& Media);
+	void UpdateItem(int nItem, CMedia& media);
 
 	int VerifyMediaItem(int nItem);
 	

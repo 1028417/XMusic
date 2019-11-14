@@ -224,10 +224,9 @@ void CWholeTrackDlg::OnBnClickedPlay()
 {
 	int iItem = m_wndList.GetSelItem();
 	m_plCueFile.getSecond(iItem, [&](auto pMediaRes) {
-		if (NULL != pMediaRes)
+		if (pMediaRes)
 		{
-			TD_IMediaList lstMedias(pMediaRes);
-			m_view.m_PlayCtrl.addPlayingItem(lstMedias);
+			m_view.m_PlayCtrl.addPlayingItem(pMediaRes->GetPath());
 		}
 	});
 }

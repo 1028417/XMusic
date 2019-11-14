@@ -54,7 +54,7 @@ private:
 	HWND m_hWndShadow = NULL;
 
 private:
-	BOOL _create(int iPosX, int iPosY);
+	BOOL _create(int nPosX, int nPosY);
 
 	HRESULT __stdcall OnRButtonUp();
 	HRESULT __stdcall OnDblClick();
@@ -73,7 +73,7 @@ public:
 		return rcPos;
 	}
 
-	BOOL Create(const CB_PlaySpiritEvent& cb, int iPosX, int iPosY);
+	BOOL Create(const CB_PlaySpiritEvent& cb, int nPosX, int nPosY);
 	
 	void Destroy();
 

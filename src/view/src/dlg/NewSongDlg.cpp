@@ -105,10 +105,10 @@ void CNewSongDlg::Refresh()
 
 		m_MediaMixer.clear();
 
-		m_lstSrcMedias([&](CMedia& Media) {
-			__Ensure(Media.GetAddTime().m_tAddTime >= tFilterTime);
+		m_lstSrcMedias([&](CMedia& media) {
+			__Ensure(media.GetAddTime().m_tAddTime >= tFilterTime);
 
-			m_MediaMixer.add(Media);
+			m_MediaMixer.add(media);
 		});
 
 		CRedrawLockGuard RedrawGuard(m_wndList);

@@ -170,7 +170,7 @@ public:
 	void checkSimilarFile(CMediaDir& dir);
 	void checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2);
 
-	void hittestMedia(CMedia& Media);
+	void hittestMedia(CMedia& media);
 
 	bool hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType);
 

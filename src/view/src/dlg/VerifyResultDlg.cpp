@@ -79,24 +79,24 @@ BOOL CVerifyResultDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CVerifyResultDlg::UpdateItem(int nItem, CMedia& Media)
+void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 {
 	wstringstream ssMediaInfo;
-	if (Media.GetMediaSetType() == E_MediaSetType::MST_Album)
+	if (media.GetMediaSetType() == E_MediaSetType::MST_Album)
 	{
-		CAlbumItem& AlbumItem = (CAlbumItem&)Media;
+		CAlbumItem& AlbumItem = (CAlbumItem&)media;
 
 		ssMediaInfo << L"歌手" << __CNDot << AlbumItem.GetSingerName()
 			<< __CNDot << AlbumItem.GetAlbumName();
 	}
 	else
 	{
-		ssMediaInfo << L"播放列表" << __CNDot << ((CPlayItem&)Media).GetPlaylistName();
+		ssMediaInfo << L"播放列表" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
 	}
-	ssMediaInfo << __CNDot << Media.GetName();
+	ssMediaInfo << __CNDot << media.GetName();
 
 	(void)m_wndList.SetItemText(nItem, 1, ssMediaInfo.str().c_str());
-	(void)m_wndList.SetItemText(nItem, 2, fsutil::GetParentDir(Media.GetPath()).c_str());
+	(void)m_wndList.SetItemText(nItem, 2, fsutil::GetParentDir(media.GetPath()).c_str());
 }
 
 void CVerifyResultDlg::OnNMDBLClickList1(NMHDR *pNMHDR, LRESULT *pResult)
@@ -195,8 +195,8 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				+ L"\n原目录：" + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联：";
 
-			SearchMediaInfo.m_lstMedias([&](CMedia& Media) {
-				strText.append(L"\n" + Media.m_pParent->GetLogicPath());
+			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+				strText.append(L"\n" + media.m_pParent->GetLogicPath());
 			});
 
 			int iRet = ProgressDlg.showMsgBox(strText.c_str(), L"匹配到新文件", MB_YESNOCANCEL);

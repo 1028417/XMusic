@@ -28,7 +28,7 @@ private:
 	vector<UINT> m_vctSingerID;
 
 private:
-	bool _setImg(const wstring& strFile, bool bSinger = false, int iPosReplace = -1);
+	bool _setImg(const wstring& strFile, bool bSinger = false, int nPosReplace = -1);
 
 	bool _initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile);
 	

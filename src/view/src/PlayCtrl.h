@@ -34,13 +34,19 @@ public:
 	
 	void close();
 
-	bool addPlayingItem(const TD_IMediaList& lstMedias, int iPos = -1);
+	bool addPlayingItem(const SArray<wstring>& arrOppPaths, int nPos = -1);
+	bool addPlayingItem(const wstring& strOppPaths, int nPos = -1)
+	{
+		return addPlayingItem(SArray<wstring>(strOppPaths), nPos);
+	}
+	bool addPlayingItem(const TD_IMediaList& lstMedias, int nPos = -1);
+	
 	bool addPlayingItem(CMediaSet& MediaSet);
 
 private:
 	inline CPlayer& player();
 
-	bool _initPlaySpirit(int iPosX, int iPosY, const wstring& strSkin, UINT uVolume);
+	bool _initPlaySpirit(int nPosX, int nPosY, const wstring& strSkin, UINT uVolume);
 
 	void _handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, short para);
 };

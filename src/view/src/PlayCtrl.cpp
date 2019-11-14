@@ -24,22 +24,22 @@ bool CPlayCtrl::init()
 	}
 
 	cauto rtWorkArea =	getWorkArea(false);
-	PlaySpiritOption.iPosX = MAX(PlaySpiritOption.iPosX, rtWorkArea.left + 30);
-	PlaySpiritOption.iPosY = MAX(PlaySpiritOption.iPosY, rtWorkArea.top + 30);
-	PlaySpiritOption.iPosX = MIN(PlaySpiritOption.iPosX, rtWorkArea.right - 400);
-	PlaySpiritOption.iPosY = MIN(PlaySpiritOption.iPosY, rtWorkArea.bottom - 100);
+	PlaySpiritOption.nPosX = MAX(PlaySpiritOption.nPosX, rtWorkArea.left + 30);
+	PlaySpiritOption.nPosY = MAX(PlaySpiritOption.nPosY, rtWorkArea.top + 30);
+	PlaySpiritOption.nPosX = MIN(PlaySpiritOption.nPosX, rtWorkArea.right - 400);
+	PlaySpiritOption.nPosY = MIN(PlaySpiritOption.nPosY, rtWorkArea.bottom - 100);
 
-	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.iPosX
-		, PlaySpiritOption.iPosY, strSkinPath, PlaySpiritOption.uVolume), false);
+	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.nPosX
+		, PlaySpiritOption.nPosY, strSkinPath, PlaySpiritOption.uVolume), false);
 
 	return true;
 }
 
-bool CPlayCtrl::_initPlaySpirit(int iPosX, int iPosY, const wstring& strSkin, UINT uVolume)
+bool CPlayCtrl::_initPlaySpirit(int nPosX, int nPosY, const wstring& strSkin, UINT uVolume)
 {
 	if (!m_PlaySpirit.Create([&](E_PlaySpiritEvent eEvent, UINT uButton, short para) {
 		this->_handlePlaySpiritEvent(eEvent, uButton, para);
-	}, iPosX, iPosY))
+	}, nPosX, nPosY))
 	{
 		return false;
 	}
@@ -208,27 +208,35 @@ void CPlayCtrl::close()
 		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
 
 		cauto rcPos = m_PlaySpirit.rect();
-		PlaySpiritOption.iPosX = rcPos.left;
-		PlaySpiritOption.iPosY = rcPos.top;
+		PlaySpiritOption.nPosX = rcPos.left;
+		PlaySpiritOption.nPosY = rcPos.top;
 
 		m_PlaySpirit.Destroy();
 	}
 }
 
-bool CPlayCtrl::addPlayingItem(const TD_IMediaList& lstMedias, int iPos)
+bool CPlayCtrl::addPlayingItem(const SArray<wstring>& arrOppPaths, int nPos)
 {
-	bool bNeedPlay = (m_view.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Stop);
+	__EnsureReturn(arrOppPaths, false);
 
-	__EnsureReturn(lstMedias, false);
-
-	if (iPos >= 0 || CMainApp::getKeyState(VK_CONTROL))
+	if (nPos >= 0 || CMainApp::getKeyState(VK_CONTROL))
 	{
-		return m_view.getPlayMgr().insert(lstMedias, bNeedPlay, iPos);
+		bool bNeedPlay = (m_view.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Stop);
+		return m_view.getPlayMgr().insert(arrOppPaths, bNeedPlay, nPos);
 	}
 	else
 	{
-		return m_view.getPlayMgr().assign(lstMedias);
+		return m_view.getPlayMgr().assign(arrOppPaths);
 	}
+}
+
+bool CPlayCtrl::addPlayingItem(const TD_IMediaList& lstMedias, int nPos)
+{
+	SArray<wstring> arrOppPaths = lstMedias.map([](const IMedia& media) {
+		return media.GetPath();
+	});
+
+	return addPlayingItem(arrOppPaths, nPos);
 }
 
 bool CPlayCtrl::addPlayingItem(CMediaSet& MediaSet)

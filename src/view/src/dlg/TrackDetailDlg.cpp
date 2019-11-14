@@ -94,10 +94,10 @@ void CTrackDetailDlg::OnNMDbclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CTrackDetailDlg::OnBnClickedPlay()
 {
-	if (NULL != m_pMediaRes)
+	if (m_pMediaRes)
 	{
 		m_view.getPlayMgr().clear();
-		m_view.m_PlayCtrl.addPlayingItem(TD_IMediaList(m_pMediaRes));
+		m_view.m_PlayCtrl.addPlayingItem(m_pMediaRes->GetPath());
 
 		int iItem = m_wndList.GetSelItem();
 		if (iItem >= 1)

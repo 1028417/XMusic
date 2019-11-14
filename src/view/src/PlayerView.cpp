@@ -339,8 +339,8 @@ void CPlayerView::_addInMedia()
 				+ L"\n目录：" + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联：";
 
-			SearchMediaInfo.m_lstMedias([&](CMedia& Media) {
-				strText.append(L"\n" + Media.m_pParent->GetLogicPath());
+			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+				strText.append(L"\n" + media.m_pParent->GetLogicPath());
 			});
 
 			int iRet = ProgressDlg.showMsgBox(strText, L"匹配到文件", MB_YESNOCANCEL);

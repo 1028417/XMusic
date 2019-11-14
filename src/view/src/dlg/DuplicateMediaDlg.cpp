@@ -97,7 +97,7 @@ void CDuplicateMediaDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	m_arrDuplicateMediaInfo.get(lpNMList->iItem, [&](auto& pr) {
 		m_arrDuplicateMedia.get(pr.first, [&](TD_MediaList& arrDuplicateMedia) {
 			arrDuplicateMedia.get(pr.second, [&](auto& media) {
-				m_view.m_PlayCtrl.addPlayingItem(TD_IMediaList(media));
+				m_view.m_PlayCtrl.addPlayingItem(media.GetPath());
 			});
 		});
 	});

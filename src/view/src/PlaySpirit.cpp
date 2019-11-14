@@ -5,11 +5,11 @@
 
 static CComModule g_ComModule;
 
-BOOL CPlaySpirit::Create(const CB_PlaySpiritEvent& cb, int iPosX, int iPosY)
+BOOL CPlaySpirit::Create(const CB_PlaySpiritEvent& cb, int nPosX, int nPosY)
 {
 	m_cb = cb;
 
-	if (!_create(iPosX, iPosY))
+	if (!_create(nPosX, nPosY))
 	{
 		if (*this)
 		{
@@ -22,7 +22,7 @@ BOOL CPlaySpirit::Create(const CB_PlaySpiritEvent& cb, int iPosX, int iPosY)
 	return TRUE;
 }
 
-BOOL CPlaySpirit::_create(int iPosX, int iPosY)
+BOOL CPlaySpirit::_create(int nPosX, int nPosY)
 {
 	(void)CoInitialize(NULL);
 
@@ -40,7 +40,7 @@ BOOL CPlaySpirit::_create(int iPosX, int iPosY)
 
 	m_hWndShadow = (HWND)(*this)->GetShadowHandle();
 
-	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, iPosX, iPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, nPosX, nPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	//必须
 	hResult = this->DispEventAdvise(*this);

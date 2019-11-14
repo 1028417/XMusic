@@ -208,8 +208,8 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 	}
 
 	map<wstring, TD_MediaList> mapMedias;
-	lstMedias([&](CMedia& Media) {
-		mapMedias[Media.GetAbsPath()].add(Media);
+	lstMedias([&](CMedia& media) {
+		mapMedias[media.GetAbsPath()].add(media);
 	});
 
 	CCASLock lock;
@@ -235,8 +235,8 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			if (nDuration <= 0)
 			{
 				lock.lock();
-				task.second([&](CMedia& Media) {
-					VerifyResult.vctVerifyResult.push_back(std::make_pair(&Media, nDuration));
+				task.second([&](CMedia& media) {
+					VerifyResult.vctVerifyResult.push_back(std::make_pair(&media, nDuration));
 				});
 				lock.unlock();
 			}
@@ -741,11 +741,11 @@ void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMed
 	}
 }
 
-void __view::hittestMedia(CMedia& Media)
+void __view::hittestMedia(CMedia& media)
 {
-	if (NULL != Media.m_pParent)
+	if (NULL != media.m_pParent)
 	{
-		this->_hittestMediaSet(*Media.m_pParent, &Media);
+		this->_hittestMediaSet(*media.m_pParent, &media);
 	}
 }
 
