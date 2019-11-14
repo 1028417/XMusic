@@ -690,7 +690,7 @@ private:
 /** \brief base class for Value iterators.
  *
  */
-class JSON_API ValueIteratorBase {
+class JSON_API __UtilExt ValueIteratorBase {
 public:
   typedef std::bidirectional_iterator_tag iterator_category;
   typedef unsigned int size_t;
@@ -805,7 +805,7 @@ public:
 
 /** \brief Iterator for object and array value.
  */
-class JSON_API ValueIterator : public ValueIteratorBase {
+class JSON_API __UtilExt ValueIterator : public ValueIteratorBase {
   friend class Value;
 
 public:

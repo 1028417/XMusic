@@ -18,7 +18,7 @@ private:
 
 #if !__winvc
 private:
-	JValue m_jSnapshot;
+    list<JValue> m_lstSnapshot;
 
 	map<string, string> m_mapFileUrl;
 	

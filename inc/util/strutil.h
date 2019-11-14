@@ -21,8 +21,11 @@ public:
     static int collate(const wstring& lhs, const wstring& rhs);
     static int collate_cn(const wstring& lhs, const wstring& rhs);
 
-    static string substr(const string& str, size_t pos, size_t len = string::npos);
-    static wstring substr(const wstring& str, size_t pos, size_t len = wstring::npos);
+	static wstring substr(const wstring& str, size_t pos, size_t len = wstring::npos);
+	static string substr(const string& str, size_t pos, size_t len = string::npos);
+
+	static bool endWith(const wstring& str, const wstring& strEnd);
+	static bool endWith(const string& str, const string& strEnd);
 
 	static void trim(wstring& strText, wchar_t chr = ' ');
 	static void trim(string& strText, char chr = ' ');
