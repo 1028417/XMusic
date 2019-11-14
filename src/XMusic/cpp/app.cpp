@@ -166,7 +166,7 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 #endif
 
 #else
-    if (!CModel::m_bOnlineMediaLib)
+    if (!XMediaLib::m_bOnlineMediaLib)
     {
         if (strRootDir.empty() || !fsutil::existDir(strRootDir))
         {
@@ -406,7 +406,7 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
 
 bool CXMusicApp::_run()
 {
-    if (CModel::m_bOnlineMediaLib)
+    if (XMediaLib::m_bOnlineMediaLib)
     {
         g_logger >> "upgradeMediaLib";
         if (!_upgradeMediaLib())
