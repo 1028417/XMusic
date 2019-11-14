@@ -187,8 +187,6 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-    static bool m_bOnlineMediaLib;
-
     bool status() const override
 	{
 		return m_db.GetStatus();

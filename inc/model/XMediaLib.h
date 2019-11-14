@@ -4,6 +4,8 @@
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
+	static bool m_bOnlineMediaLib;
+
 	XMediaLib(IMediaObserver& MediaObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr)
 		: CMediaLib(MediaObserver)
 		, CMediaSet(L"曲库")
