@@ -298,35 +298,33 @@ bool CXMusicApp::_upgradeMediaLib()
     }
 
     for (cauto strUrl : upgradeConf.lstUrl)
-    {
-        if (_downloadMediaLib(upgradeConf.uVersion, strUrl))
+    {        
+        CByteBuffer bbfZip;
+        int nRet = CFileDownload::inst().download(strUrl, bbfZip);
+        if (nRet != 0)
         {
-            return true;
+            g_logger << "download fail: " << nRet << ", URL: " >> strUrl;
+            continue;
         }
+
+        IFBuffer ifbZip(bbfZip);
+        /*string strPwd = "medialib";
+        strPwd.append(".zip");*/
+        CZipFile zipFile(ifbZip);
+        if (!zipFile)
+        {
+            g_logger >> "invalid zipfile";
+            continue;
+        }
+
+        return _upgradeMediaLib(upgradeConf.uVersion, zipFile);
     }
 
     return false;
 }
 
-bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
+bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
 {
-    CByteBuffer bbfZip;
-    int nRet = CFileDownload::inst().download(strUrl, bbfZip);
-    if (nRet != 0)
-    {
-        g_logger << "download fail: " << nRet << ", URL: " >> strUrl;
-        return false;
-    }
-
-    IFBuffer ifbZip(bbfZip);
-    /*string strPwd = "medialib";
-    strPwd.append(".zip");*/
-    CZipFile zipFile(ifbZip);
-    if (!zipFile)
-    {
-        g_logger >> "invalid zipfile";
-        return false;
-    }
     CByteBuffer bbfUpgradeConf;
     if (zipFile.read("upgrade.conf", bbfUpgradeConf) <= 0)
     {
@@ -365,36 +363,39 @@ bool CXMusicApp::_downloadMediaLib(UINT uVersion, const string& strUrl)
         (void)ofbUpgradeConf.writex(bbfUpgradeConf);
     }
 
-    CByteBuffer bbfSnapshot;
-    if (zipFile.read("snapshot", bbfSnapshot) <= 0)
-    {
-        g_logger >> "readZip fail: snapshot";
-        return false;
-    }
-    IFBuffer ifbSnapshot(bbfSnapshot);
-    if (!m_model.getMediaLib().loadSnapshot(ifbSnapshot))
-    {
-        g_logger >> "loadSnapshot fail";
-        return false;
-    }
-
     for (cauto pr : zipFile.fileMap())
     {
         const tagUnzFileInfo& fileInfo = pr.second;
 
-        if (__substr(fileInfo.strPath, (int)fileInfo.strPath.size()-4) == "xurl")
+        if (strutil::endWith(fileInfo.strPath, ".xurl"))
         {
-            CByteBuffer bbfBuff;
-            if (zipFile.read(fileInfo, bbfBuff) <= 0)
+            CByteBuffer bbfXurl;
+            if (zipFile.read(fileInfo, bbfXurl) <= 0)
             {
                 g_logger << "readXurl fail: " >> fileInfo.strPath;
                 return false;
             }
 
-            IFBuffer ifb(bbfBuff);
-            if (!m_model.getMediaLib().loadXurl(ifb))
+            IFBuffer ifbXurl(bbfXurl);
+            if (!m_model.getMediaLib().loadXurl(ifbXurl))
             {
                 g_logger << "loadXurl fail: " >> fileInfo.strPath;
+                return false;
+            }
+        }
+        else if (strutil::endWith(fileInfo.strPath, ".snapshot"))
+        {
+            CByteBuffer bbfSnapshot;
+            if (zipFile.read(fileInfo, bbfSnapshot) <= 0)
+            {
+                g_logger << "readSnapshot fail: " >> fileInfo.strPath;
+                return false;
+            }
+
+            IFBuffer ifbSnapshot(bbfSnapshot);
+            if (!m_model.getMediaLib().loadSnapshot(ifbSnapshot))
+            {
+                g_logger << "loadSnapshot fail: " >> fileInfo.strPath;
                 return false;
             }
         }
