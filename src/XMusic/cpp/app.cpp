@@ -383,7 +383,7 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
                 return false;
             }
         }
-        else if (strutil::endWith(fileInfo.strPath, ".snapshot"))
+        else if (strutil::endWith(fileInfo.strPath, ".snapshot.json"))
         {
             CByteBuffer bbfSnapshot;
             if (zipFile.read(fileInfo, bbfSnapshot) <= 0)
