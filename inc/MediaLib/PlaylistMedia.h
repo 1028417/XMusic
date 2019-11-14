@@ -69,10 +69,10 @@ public:
 	}
 
 private:
-	int indexOf(const CMedia& Media) const override
+	int indexOf(const CMedia& media) const override
 	{
 		return m_lstPlayItems.find([&](const CPlayItem& PlayItem) {
-			return &PlayItem == &Media;
+			return &PlayItem == &media;
 		});
 	}
 

@@ -110,7 +110,7 @@ public:
 
 	void SetRelatedMediaSet(CMediaSet& MediaSet);
 
-	void SetRelatedMediaSet(CMedia& Media);
+	void SetRelatedMediaSet(CMedia& media);
 
 	void ClearRelatedMediaSet(E_MediaSetType eMediaSetType);
 

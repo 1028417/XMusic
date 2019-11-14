@@ -59,7 +59,7 @@ public:
 public:
 	CSearchMediaInfo() {}
 
-	CSearchMediaInfo(class CSearchMediaInfoGuard& SearchMediaInfoGuard, CMedia& Media, CSinger *pSinger);
+	CSearchMediaInfo(class CSearchMediaInfoGuard& SearchMediaInfoGuard, CMedia& media, CSinger *pSinger);
 
 	wstring GetFileSize();
 
@@ -84,7 +84,7 @@ private:
 	SSet<wstring> m_setSingerName;
 
 public:
-	void genSearchMediaInfo(CMedia& Media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
+	void genSearchMediaInfo(CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
 
 	inline static wstring transSingerName(const wstring& strSingerName);
 	

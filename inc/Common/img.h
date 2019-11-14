@@ -136,13 +136,13 @@ public:
 
 	BOOL Init(CBitmap& bitmap);
 
-	BOOL SetFile(const wstring& strFile, bool bHalfToneMode, LPCRECT prcMargin = NULL, int iPosReplace = -1);
+	BOOL SetFile(const wstring& strFile, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
 
-	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin, int iPosReplace);
+	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin, int nPosReplace);
 	
-	void SetBitmap(CBitmap& bitmap, int iPosReplace = -1);
+	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
 
-	void SetIcon(HICON hIcon, int iPosReplace = -1);
+	void SetIcon(HICON hIcon, int nPosReplace = -1);
 
 	void SetToListCtrl(CListCtrl &wndListCtrl, E_ImglstType eImglstType);
 

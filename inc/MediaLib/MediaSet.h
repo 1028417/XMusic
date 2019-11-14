@@ -146,7 +146,7 @@ private:
 		return available();
 	}
 
-	bool _FindMedia(CMedia& Media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
+	bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
 
 public:
 	const CMediasetProperty& property() const

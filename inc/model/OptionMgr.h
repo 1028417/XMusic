@@ -5,8 +5,8 @@ struct tagPlaySpiritOption
 {
 	wstring strSkinName;
 
-	int iPosX = 10000;
-	int iPosY = 10000;
+	int nPosX = 10000;
+	int nPosY = 10000;
 
     UINT uVolume = 100;
 };
