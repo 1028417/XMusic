@@ -42,6 +42,12 @@ using tagFileStat64 = tagFileStat;
 #endif
 
 #if __ios || __mac
+#define fseek64 fseek
+#elif __windows
+#define fseek64 _fseeki64
+#endif
+
+#if __ios || __mac
 #define ftell64 ftell
 
 #elif __winvc
