@@ -63,7 +63,7 @@ android {
     platform = mac
     DESTDIR = ../../bin/mac
 } else: ios {
-    LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2  -lz \
+    LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2 \
 			-L../../libs/ios  -lCURLTool \
 #
             -L../../../PlaySDK/libs/ios/simulator  -lSDL2 \
