@@ -16,6 +16,12 @@ protected:
 
 	IModel& m_model;
 
+#if !__winvc
+private:
+        thread m_threadPlayCtrl;
+        TSignal<tagPlayCtrl> m_sigPlayCtrl;
+#endif
+
 private:
     void _tryPlay();
 
@@ -27,9 +33,14 @@ protected:
 public:
 	bool start();
 
-    void stop();
+        void stop();
 
-    void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override;
+        void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override
+        {
+#if !__winvc
+            m_sigPlayCtrl.set(PlayCtrl);
+#endif
+        }
 
 	CMediaDir* attachDir(const wstring& strDir) override;
 

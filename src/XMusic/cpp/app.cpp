@@ -193,6 +193,9 @@ int CXMusicApp::run()
 
     m_mainWnd.showLogo();
 
+    std::thread thrUpgrade;
+    bool bUpgradeFail = false;
+
     timerutil::async([&](){
         if (!_resetRootDir(option.strRootDir))
         {
@@ -200,7 +203,29 @@ int CXMusicApp::run()
             return;
         }
 
+        if (XMediaLib::m_bOnlineMediaLib)
+        {
+            thrUpgrade = std::thread([&](){
+                g_logger >> "upgradeMediaLib";
+                if (!_upgradeMediaLib())
+                {
+                    g_logger >> "upgradeMediaLib fail";
+                    bUpgradeFail = true;
+                }
+            });
+        }
+
         timerutil::async(6000, [&](){
+            if (XMediaLib::m_bOnlineMediaLib)
+            {
+                thrUpgrade.join();
+                if (bUpgradeFail)
+                {
+                    this->quit();
+                    return;
+                }
+            }
+
             if(!_run())
             {
                 this->quit();
@@ -406,16 +431,6 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
 
 bool CXMusicApp::_run()
 {
-    if (XMediaLib::m_bOnlineMediaLib)
-    {
-        g_logger >> "upgradeMediaLib";
-        if (!_upgradeMediaLib())
-        {
-            g_logger >> "upgradeMediaLib fail";
-            return false;
-        }
-    }
-
     g_logger >> "initMediaLib";
     if (!m_model.initMediaLib())
     {

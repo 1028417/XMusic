@@ -8,11 +8,6 @@
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
-#if !__winvc
-static thread g_threadPlayCtrl;
-static TSignal<tagPlayCtrl> m_sigPlayCtrl;
-#endif
-
 bool CXController::start()
 {
 #if __winvc
@@ -59,7 +54,7 @@ bool CXController::start()
     });
 
 #else
-    g_threadPlayCtrl = thread([&]() {
+    m_threadPlayCtrl = thread([&]() {
         _tryPlay();
 
         auto& PlayMgr = m_model.getPlayMgr();
@@ -170,20 +165,13 @@ void CXController::stop()
 {
 #if !__winvc
     m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
-    if (g_threadPlayCtrl.joinable())
+    if (m_threadPlayCtrl.joinable())
     {
-        g_threadPlayCtrl.join();
+        m_threadPlayCtrl.join();
     }
 #endif
 
     m_model.close();
-}
-
-void CXController::callPlayCtrl(const tagPlayCtrl& PlayCtrl)
-{
-#if !__winvc
-    m_sigPlayCtrl.set(PlayCtrl);
-#endif
 }
 
 E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
