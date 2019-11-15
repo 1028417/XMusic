@@ -165,7 +165,7 @@ private:
 	}
 };
 
-class __UtilExt zutil
+class __UtilExt ziputil
 {
 public:
 	static bool unzFile(const string& strZipFile, const wstring& strDstDir, const string& strPwd = "")
