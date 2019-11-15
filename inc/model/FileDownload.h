@@ -66,6 +66,11 @@ private:
     }
 
 public:
+	bool status() const
+	{
+		return m_bStatus;
+	}
+
     void download(const string& strUrl);
     int download(const string& strUrl, CByteBuffer& bbfData);
     int download(const string& strUrl, CCharBuffer& cbfData);

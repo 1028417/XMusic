@@ -122,12 +122,14 @@ public:
 	}
 
 private:
-	bool isLocalFile() const override
+	bool checkdownloadDataSize(size_t size) const override;
+
+	bool isOnline() const override
 	{
-        return !m_strFile.empty();
+        return m_strFile.empty();
 	}
 
-	wstring localFile() const override
+	wstring localFilePath() const override
 	{
 		if (m_pXmscCodec)
 		{
