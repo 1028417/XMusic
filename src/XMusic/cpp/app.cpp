@@ -338,7 +338,7 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
     {
         return false;
     }
-    if (newUpgradeConf.uVersion > uVersion)
+    if (newUpgradeConf.uVersion != uVersion)
     {
         CByteBuffer bbfMedialib;
         if (zipFile.read("medialib", bbfMedialib) <= 0)
