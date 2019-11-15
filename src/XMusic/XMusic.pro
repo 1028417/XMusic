@@ -71,7 +71,7 @@ android {
 #
             -lavcodec  -lavformat  -lavutil  -lswresample \
             -framework CoreMedia  -framework VideoToolbox  -framework AVFoundation \
-            -framework CoreVideo  -framework Security  -lz  -lbz2  -liconv
+            -framework CoreVideo  -framework Security  -liconv  -lbz2  #-lz
 
     LIBS += -L../../../build/ioslib
 

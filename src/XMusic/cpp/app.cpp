@@ -333,9 +333,9 @@ bool CXMusicApp::_upgradeMediaLib()
         }
 
         IFBuffer ifbZip(bbfZip);
-        /*string strPwd = "medialib";
-        strPwd.append(".zip");*/
-        CZipFile zipFile(ifbZip);
+        string strPwd = "medialib";
+        strPwd.append(".zip");
+        CZipFile zipFile(ifbZip, strPwd);
         if (!zipFile)
         {
             g_logger >> "invalid zipfile";
