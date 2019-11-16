@@ -58,9 +58,16 @@ public:
 	static string upperCase_r(const string& str);
 
     static void replace(wstring& str, const wstring& strFind, const wstring& strReplace=L"");
+    static void replace(string& str, const string& strFind, const string& strReplace="");
     static wstring replace_r(const wstring& str, const wstring& strFind, const wstring& strReplace=L"")
     {
         wstring strRet = str;
+        replace(strRet, strFind, strReplace);
+        return strRet;
+    }
+    static string replace_r(const string& str, const string& strFind, const string& strReplace="")
+    {
+        string strRet = str;
         replace(strRet, strFind, strReplace);
         return strRet;
     }
