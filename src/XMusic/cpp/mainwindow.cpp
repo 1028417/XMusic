@@ -1064,7 +1064,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
                 m_app.getPlayMgr().player().Seek(uPos);
 
-                mtutil::usleep(100);
+                //mtutil::usleep(50);
 
                 ui.progressBar->setValue(uPos);
             }
