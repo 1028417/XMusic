@@ -89,7 +89,7 @@ public:
 	{
 		addFix(cstrText, 0, bCenter);
 
-		m_lstDblWidth.push_back({ &m_lstColumn.back(), dbWidth });
+		m_lstDblWidth.emplace_back( &m_lstColumn.back(), dbWidth );
 
 		return *this;
 	}

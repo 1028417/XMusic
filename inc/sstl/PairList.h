@@ -364,7 +364,7 @@ namespace NS_SSTL
 
 		__DataRef addFront(__FirstConstRef first, __SecondConstRef second)
 		{
-			m_data.push_front({ first, second });
+			m_data.emplace_front( first, second );
 			return *m_data.frnt();
 		}
 
