@@ -27,12 +27,15 @@ private:
 public:
     bool loadXurl(Instream& ins);
 
+    bool checkUrl(IMedia& media);
 	string getUrl(CPlayItem& PlayItem);
 
     bool loadSnapshot(Instream& ins);
 
 private:
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+
+    CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);
 #endif
 
 private:

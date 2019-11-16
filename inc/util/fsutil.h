@@ -159,13 +159,17 @@ public:
     static time64_t GetFileModifyTime64(FILE *pf);
 	static time64_t GetFileModifyTime64(const wstring& strFile);
 
-	static void SplitPath(const wstring& strPath, wstring *pstrDir, wstring *pstrFile);
+    static void SplitPath(const wstring& strPath, wstring *pstrDir, wstring *pstrFile);
+    static void SplitPath(const string& strPath, string *pstrDir, string *pstrFile);
 
 	static wstring GetRootDir(const wstring& strPath);
 	static wstring GetParentDir(const wstring& strPath);
 
 	static wstring GetFileName(const wstring& strPath);
-	static wstring getFileTitle(const wstring& strPath);
+
+    static wstring getFileTitle(const wstring& strPath);
+    static string getFileTitle(const string& strPath);
+
 	static wstring GetFileExtName(const wstring& strPath);
 
 	static bool CheckSubPath(const wstring& strDir, const wstring& strSubPath);
