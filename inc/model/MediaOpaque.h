@@ -122,7 +122,7 @@ public:
 	}
 
 private:
-	bool checkdownloadDataSize(size_t size) const override;
+    long downloadDataSize() const override;
 
 	bool isOnline() const override
 	{

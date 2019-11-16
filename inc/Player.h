@@ -25,10 +25,9 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-	virtual bool checkdownloadDataSize(size_t size) const
-	{
-        (void)size;
-		return false;
+    virtual long downloadDataSize() const
+    {
+        return -1;
 	}
 	virtual bool isOnline() const = 0;
 
@@ -42,7 +41,7 @@ public:
 
 	virtual E_DecodeStatus decodeStatus() const = 0;
 
-	virtual UINT bitRate() const = 0;
+    virtual UINT byteRate() const = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -94,7 +93,7 @@ protected:
 
     virtual int read(uint8_t *buf, size_t size) override;
 
-	UINT bitRate() const override;
+    UINT byteRate() const override;
 };
 
 using CB_PlayFinish = fn_void_t<E_DecodeStatus>;
