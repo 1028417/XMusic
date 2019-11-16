@@ -219,7 +219,7 @@ void CMedialibView::_onShowPath(CPath& path)
     }
 }
 
-void CMedialibView::showFile(const wstring& strFile)
+bool CMedialibView::showFile(const wstring& strFile)
 {    
     CMediaRes *pMediaRes = m_OuterDir.findSubFile(strFile);
     if (NULL == pMediaRes)
@@ -229,7 +229,7 @@ void CMedialibView::showFile(const wstring& strFile)
     if (pMediaRes)
     {
         showPath(*pMediaRes);
-        return;
+        return true;
     }
 
     cauto strOuterRoot = m_OuterDir.GetAbsPath();
@@ -239,8 +239,11 @@ void CMedialibView::showFile(const wstring& strFile)
         if (pMediaRes)
         {
             showPath(*pMediaRes);
+            return true;
         }
     }
+
+    return false;
 }
 
 #define __Dot L"·"

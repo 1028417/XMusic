@@ -43,7 +43,7 @@ private:
 public:
     void init();
 
-    void showFile(const wstring& strFile);
+    bool showFile(const wstring& strFile);
 
     void play();
 
@@ -200,9 +200,10 @@ public:
 
     void showFile(const wstring& strPath)
     {
-        m_MedialibView.showFile(strPath);
-
-        _show();
+        if (m_MedialibView.showFile(strPath))
+        {
+            _show();
+        }
     }
 
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
