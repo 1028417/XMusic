@@ -25,7 +25,7 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual long downloadDataSize() const
+    virtual long checkPreserveDataSize() const
     {
         return -1;
 	}
