@@ -84,7 +84,7 @@ BOOL CPlayRecordDlg::Refresh()
 	{
 		for (auto& pr : vecPlayRecord)
 		{
-			m_vctPlayRecord.push_back(CPlayRecord(pr.first, pr.second));
+			m_vctPlayRecord.emplace_back(pr.first, pr.second);
 
 			(void)m_wndList.InsertObject(m_vctPlayRecord.back());
 		}

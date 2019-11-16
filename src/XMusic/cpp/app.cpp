@@ -226,11 +226,20 @@ int CXMusicApp::run()
                 }
             }
 
-            if(!_run())
+            g_logger >> "initMediaLib";
+            if (!m_model.initMediaLib())
             {
                 this->quit();
                 return;
             }
+
+            g_logger >> "start controller";
+            if (!m_ctrl.start())
+            {
+                this->quit();
+                return;
+            }
+            g_logger >> "start controller success, app running";
 
             m_mainWnd.show();
         });
@@ -429,26 +438,6 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
             }
         }
     }
-
-    return true;
-}
-
-bool CXMusicApp::_run()
-{
-    g_logger >> "initMediaLib";
-    if (!m_model.initMediaLib())
-    {
-        g_logger >> "initMediaLib fail";
-        return false;
-    }
-
-    g_logger >> "start controller";
-    if (!m_ctrl.start())
-    {
-        g_logger >> "start controller fail";
-        return false;
-    }
-    g_logger >> "start controller success, app running";
 
     return true;
 }

@@ -236,7 +236,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			{
 				lock.lock();
 				task.second([&](CMedia& media) {
-					VerifyResult.vctVerifyResult.push_back(std::make_pair(&media, nDuration));
+					VerifyResult.vctVerifyResult.emplace_back(&media, nDuration);
 				});
 				lock.unlock();
 			}

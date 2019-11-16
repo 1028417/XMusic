@@ -527,7 +527,7 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 
 				if (E_MatchResult::MR_Yes == eRet)
 				{
-					lstMatchResult.push_back({ MediaResInfo.strPath, SearchMediaInfo });
+					lstMatchResult.emplace_back( MediaResInfo.strPath, SearchMediaInfo );
 				
 					(void)mapSearchMedias.erase(itr);
 
