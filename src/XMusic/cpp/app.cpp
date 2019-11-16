@@ -391,7 +391,6 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
     for (cauto pr : zipFile.fileMap())
     {
         const tagUnzFileInfo& fileInfo = pr.second;
-
         if (strutil::endWith(fileInfo.strPath, ".xurl"))
         {
             CByteBuffer bbfXurl;
@@ -408,7 +407,12 @@ bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
                 return false;
             }
         }
-        else if (strutil::endWith(fileInfo.strPath, ".snapshot.json"))
+    }
+
+    for (cauto pr : zipFile.fileMap())
+    {
+        const tagUnzFileInfo& fileInfo = pr.second;
+        if (strutil::endWith(fileInfo.strPath, ".snapshot.json"))
         {
             CByteBuffer bbfSnapshot;
             if (zipFile.read(fileInfo, bbfSnapshot) <= 0)
