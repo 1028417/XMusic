@@ -12,13 +12,14 @@
 class CDialog : public QDialog
 {
 public:
-    CDialog(QWidget *parent=NULL) :
-        QDialog(parent)
+    CDialog(QWidget& parent) : m_parent(parent)
         , m_crBkg(180, 220, 255)
     {
     }
 
 private:
+    QWidget& m_parent;
+
     QColor m_crBkg;
 
 private:

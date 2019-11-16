@@ -148,6 +148,11 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     rc.setLeft(x_icon + sz_icon + nMargin);
 
+    if (context.eStyle & E_RowStyle::IS_BottomLine)
+    {
+        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,128));
+    }
+
     if (context.eStyle & E_RowStyle::IS_RightTip)
     {
         int sz_righttip = sz_icon*30/100;
@@ -157,11 +162,6 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
 
         rc.setRight(x_righttip - nMargin);
-    }
-
-    if (context.eStyle & E_RowStyle::IS_BottomLine)
-    {
-        painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,128));
     }
 
     QString qsText = strutil::toQstr(context.strText);

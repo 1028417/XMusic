@@ -93,7 +93,7 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    explicit CAddBkgDlg(class CXMusicApp& app, class CBkgDlg& bkgDlg);
+    CAddBkgDlg(class CXMusicApp& app, class CBkgDlg& bkgDlg);
 
 private:    
     class CXMusicApp& m_app;

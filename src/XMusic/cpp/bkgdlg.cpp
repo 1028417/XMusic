@@ -135,7 +135,7 @@ void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
     m_bkgDlg.setBkg(uIdx);
 }
 
-CBkgDlg::CBkgDlg(class CXMusicApp& app) :
+CBkgDlg::CBkgDlg(class CXMusicApp& app) : CDialog(app.mainWnd()),
     m_app(app),
     m_addbkgDlg(app, *this),
     m_bkgView(app, *this)

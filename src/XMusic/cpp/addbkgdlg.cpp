@@ -7,7 +7,7 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) :
+CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&)bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg),
     m_addbkgView(app, *this, m_paImgDirs)

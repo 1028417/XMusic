@@ -9,8 +9,8 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
-    : m_app(app)
+CMedialibDlg::CMedialibDlg(class CXMusicApp& app) : CDialog(app.mainWnd()),
+    m_app(app)
     , m_MedialibView(app, *this, m_OuterDir)
 {
 }

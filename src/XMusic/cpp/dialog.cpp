@@ -30,12 +30,13 @@ bool CDialog::event(QEvent *ev)
 {
 	switch (ev->type())
 	{
-	case QEvent::Close:
-		g_setDlgs.erase(this);
-		_onClose();
+    case QEvent::Close:
+        _onClose();
 
-#if __mac
-		// TODO /*for (auto pDlg : g_setDlgs) pDlg->
+        g_setDlgs.erase(this);
+
+#if __windows
+        m_parent.activateWindow();
 #endif
 
 		break;
