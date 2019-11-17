@@ -3,7 +3,7 @@
 class CChooseDirDlg : public CDialogT<IDD_DLG_ChooseDir, true>
 {
 public:
-	CChooseDirDlg(const wstring& strTitle, const wstring& strRootDir, bool bShowRoot, wstring& strRetDir);
+	CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot, wstring& strRetDir);
 
 	void DoDataExchange(CDataExchange* pDX);
 
@@ -12,7 +12,7 @@ private:
 
 	bool m_bShowRoot = false;
 
-	CDirObject m_RootDir;
+	CMediaDir& m_RootDir;
 
 	wstring& m_strRetDir;
 

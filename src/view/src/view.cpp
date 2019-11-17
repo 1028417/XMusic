@@ -147,18 +147,25 @@ void __view::foregroundMainWnd()
 	//m_MainWnd.OnFocus(TRUE);
 }
 
-CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& t_strRootDir)
+CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& strRootDir)
 {
-	wstring strRootDir = t_strRootDir;
-	if (strRootDir.empty())
-	{
-		strRootDir = getMediaLib().GetAbsPath();
-	}
-
 	CResGuard ResGuard(m_ResModule);
 	wstring strRetDir;
-	CChooseDirDlg ChooseDirDlg(strTitle, strRootDir, bShowRoot, strRetDir);
-	__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
+
+	if (strRootDir.empty())
+	{
+		CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_model.getOptionMgr().getOption().plAttachDir);
+
+		CChooseDirDlg ChooseDirDlg(strTitle, RootDir, bShowRoot, strRetDir);
+		__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
+	}
+	else
+	{
+		CMediaDir RootDir(strRootDir);
+
+		CChooseDirDlg ChooseDirDlg(strTitle, RootDir, bShowRoot, strRetDir);
+		__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
+	}
 
 	m_model.refreshMediaLib();
 	wstring strOppPath = getMediaLib().toOppPath(strRetDir);

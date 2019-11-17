@@ -36,12 +36,21 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 #endif
+#include <QLockFile>
 
 int main(int argc, char *argv[])
 {
 #if __windows
     extern void InitMinDump();
     InitMinDump();
+#endif
+
+#if __windows || __mac
+    QLockFile lockFile("qlockFile");
+    if (!lockFile.tryLock(100))
+    {
+        return -1;
+    }
 #endif
 
 //#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
