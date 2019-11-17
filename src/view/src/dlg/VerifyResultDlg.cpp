@@ -164,6 +164,7 @@ void CVerifyResultDlg::OnBnClickedVerify()
 
 void CVerifyResultDlg::OnBnClickedAutoMatch()
 {
+	m_view.getModel().refreshMediaLib();
 	CMediaDir* pDir = m_view.showChooseDirDlg(L"Ñ¡Ôñ²éÕÒÄ¿Â¼");
 	__Ensure(pDir);
 

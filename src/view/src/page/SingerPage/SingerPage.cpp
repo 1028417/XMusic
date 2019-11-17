@@ -221,6 +221,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	break;
 	case ID_ADD_SINGER:
 	{
+		m_view.getModel().refreshMediaLib();
 		CMediaDir* pDir = m_view.showChooseDirDlg(L"Ñ¡Ôñ¸èÊÖÄ¿Â¼", false);
 		__EnsureBreak(pDir);
 

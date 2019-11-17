@@ -149,8 +149,6 @@ void __view::foregroundMainWnd()
 
 CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
 {
-	m_model.refreshMediaLib();
-
 	//CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_model.getOptionMgr().getOption().plAttachDir);
 
 	CResGuard ResGuard(m_ResModule);
