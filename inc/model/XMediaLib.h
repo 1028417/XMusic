@@ -27,8 +27,13 @@ private:
 public:
     bool loadXurl(Instream& ins);
 
-    bool checkUrl(IMedia& media);
-	string getUrl(CPlayItem& PlayItem);
+    bool checkFileUrl(const string& strFileTitle);
+    bool checkFileUrl(const wstring& strFileTitle)
+    {
+       return checkFileUrl(strutil::toUtf8(strFileTitle));
+    }
+
+    string getFileUrl(const wstring& strFileTitle);
 
     bool loadSnapshot(Instream& ins);
 
