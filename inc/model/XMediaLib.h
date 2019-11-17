@@ -22,7 +22,7 @@ private:
 private:
     list<JValue> m_lstSnapshot;
 
-	map<string, string> m_mapFileUrl;
+    unordered_map<string, string> m_mapFileUrl;
 	
 public:
     bool loadXurl(Instream& ins);
