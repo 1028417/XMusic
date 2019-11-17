@@ -93,7 +93,7 @@ public:
 	void AsyncTask() override;
 };
 
-class __MediaLibExt CMediaDir : public CMediaRes
+class __MediaLibExt CMediaDir : public CMediaRes, public CTreeObject
 {
 public:
 	virtual ~CMediaDir() {}
@@ -105,8 +105,8 @@ public:
 	{
 	}
 
-	CMediaDir(const wstring& t_strName, class CPath *t_pParent = NULL)
-		: CMediaRes(E_MediaFileType::MFT_Null, true, t_strName, t_pParent)
+	CMediaDir(const wstring& strPath, class CPath *t_pParent = NULL)
+		: CMediaRes(E_MediaFileType::MFT_Null, true, strPath, t_pParent)
 	{
 	}
 	
@@ -160,4 +160,15 @@ public:
     {
         return (CMediaRes*)CPath::findSubFile(strSubFile);
     }
+
+private:
+	wstring GetTreeText() const override
+	{
+		return fileinfo.strName;
+	}
+
+	void GetTreeChilds(TD_TreeObjectList& lstChilds) override
+	{
+		lstChilds.add(TD_MediaDirList(this->dirs()));
+	}
 };

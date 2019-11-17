@@ -7,53 +7,88 @@
 template <typename T>
 class CDirTreeT : public T
 {
-	struct tagDirSortor
+	/*struct tagDirSortor
 	{
 		bool operator () (CPath *pPath1, CPath *pPath2)
 		{
 			return 0 >= StrCmpA(pPath1->m_strName.c_str(), pPath2->m_strName.c_str());
 		}
-	};
+	};*/
 	
 public:
-	CDirTreeT()
-		: m_pRootDir(NULL)
-	{
-	}
+	CDirTreeT() {}
 
-	virtual	~CDirTreeT(void)
-	{
-	}
+	virtual	~CDirTreeT() {}
 
 private:
-	CDirObject *m_pRootDir;
-	 
+	void InsertChildsEx(CDirObject& DirObject)
+	{
+		DirObject.dirs()([&](CPath& SubDir) {
+			InsertChilds((CDirObject&)SubDir);
+		});
+	}
+
+	void InsertChildsEx(CTreeObject& DirObject)
+	{
+		TD_TreeObjectList paChildObject;
+		DirObject.GetTreeChilds(paChildObject);
+		paChildObject([&](CTreeObject& ChildObject) {
+			InsertChilds(ChildObject);
+		});
+	}
+
 public:
-	void SetRootDir(CDirObject *pRootDir, BOOL bShowRoot)
+	void SetRootDir(CDirObject& RootDir, BOOL bShowRoot)
 	{
 		(void)DeleteAllItems();
 
-		m_pRootDir = pRootDir;
-	
 		if (bShowRoot)
 		{
-			(void)InsertObject(*m_pRootDir);
-			InsertChilds(m_pRootDir);
+			(void)InsertObject(RootDir);
+			InsertChilds(RootDir);
 
-			(void)__super::SelectItem(getTreeItem(m_pRootDir));
-			(void)ExpandObject(*m_pRootDir);
+			(void)__super::SelectItem(getTreeItem(&RootDir));
+			(void)ExpandObject(RootDir);
 		}
 		else
 		{
-			InsertChilds(m_pRootDir);
-			InsertChildsEx(m_pRootDir);
+			InsertChilds(RootDir);
+			InsertChildsEx(RootDir);
 		}
 	}
 
-	void InsertChilds(CDirObject *pDirObject)
+	void SetRootDir(CTreeObject& RootDir, BOOL bShowRoot)
 	{
-		pDirObject->dirs()([&](CPath& SubDir){
-			(void)InsertObject((CDirObject&)SubDir, pDirObject);
+		(void)DeleteAllItems();
+
+		if (bShowRoot)
+		{
+			(void)InsertObject(RootDir);
+			InsertChilds(RootDir);
+
+			(void)__super::SelectItem(getTreeItem(&RootDir));
+			(void)ExpandObject(RootDir);
+		}
+		else
+		{
+			InsertChilds(RootDir);
+			InsertChildsEx(RootDir);
+		}
+	}
+
+	void InsertChilds(CTreeObject& DirObject)
+	{
+		TD_TreeObjectList paChildObject;
+		DirObject.GetTreeChilds(paChildObject);
+		paChildObject([&](CTreeObject& ChildObject) {
+			(void)InsertObject(ChildObject, &DirObject);
+		});
+	}
+
+	void InsertChilds(CDirObject& DirObject)
+	{
+		DirObject.dirs()([&](CPath& SubDir){
+			(void)InsertObject((CDirObject&)SubDir, &DirObject);
 		});
 	}
 	
@@ -67,23 +102,23 @@ public:
 			{
 				CWaitCursor WaitCursor;
 
-				CDirObject* pDirObject = (CDirObject*)__super::GetItemObject(pNMTreeView->itemNew.hItem);
-				__AssertReturn(pDirObject, FALSE);
-				InsertChildsEx(pDirObject);
+				CTreeObject* pTreeObject = __super::GetItemObject(pNMTreeView->itemNew.hItem);
+				__AssertReturn(pTreeObject, FALSE);
+				CDirObject *pDirObject = dynamic_cast<CDirObject*>(pTreeObject);
+				if (pDirObject)
+				{
+					InsertChildsEx(*pDirObject);
+				}
+				else
+				{
+					InsertChildsEx(*pTreeObject);
+				}
 
 				//return TRUE;
 			}
 		}
 
 		return __super::handleNMNotify(NMHDR, pResult);
-	}
-
-private:
-	void InsertChildsEx(CDirObject *pDirObject)
-	{
-		pDirObject->dirs()([&](CPath& SubDir){
-			InsertChilds((CDirObject*)&SubDir);
-		});
 	}
 };
 

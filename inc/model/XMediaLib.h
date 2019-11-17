@@ -46,16 +46,6 @@ private:
 #endif
 
 private:
-	CPath* _newSubDir(const tagFileInfo& fileInfo) override
-	{
-		if (strutil::matchIgnoreCase(fileInfo.strName, __medialibDir))
-		{
-			return NULL;
-		}
-
-		return CMediaDir::_newSubDir(fileInfo);
-	}
-
     void GetSubSets(TD_MediaSetList& lstSubSets) override
 	{
 		lstSubSets.add(m_PlaylistMgr);

@@ -26,6 +26,8 @@ using TD_MediaSetList = PtrArray<CMediaSet>;
 
 class CMediaRes;
 using TD_MediaResList = PtrArray<CMediaRes>;
+class CMediaDir;
+using TD_MediaDirList = PtrArray<CMediaDir>;
 
 class CPlayItem;
 using TD_PlayItemList = PtrArray<CPlayItem>;

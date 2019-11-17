@@ -11,7 +11,6 @@ extern ITxtWriter& g_logger;
 #define __ModelExt __dllimport
 #endif
 
-#define __medialibDir L".xmusic"
 #define __medialibPath L"/" __medialibDir L"/"
 #define __medialibFile L"medialib"
 
