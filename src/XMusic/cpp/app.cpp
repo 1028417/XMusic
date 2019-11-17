@@ -247,6 +247,11 @@ int CXMusicApp::run()
 
     int nRet = exec();
 
+    if (thrUpgrade.joinable())
+    {
+        thrUpgrade.join();
+    }
+
     g_logger >> "stop controller";
     m_ctrl.stop();
 
