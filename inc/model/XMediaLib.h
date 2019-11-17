@@ -33,6 +33,8 @@ public:
     bool loadSnapshot(Instream& ins);
 
 private:
+    void _insertFileUrl(const string& strFileName, const string& strUrl);
+
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
     CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);
