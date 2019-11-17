@@ -4,8 +4,7 @@ template <UINT _ResID=0, bool _CanOK = false, bool _CanCancel = true>
 class CDialogT : public CDialog
 {
 public:
-	CDialogT()
-		: CDialog(_ResID)
+	CDialogT() : CDialog(_ResID)
 	{
 	}
 
