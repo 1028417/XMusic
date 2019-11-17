@@ -164,7 +164,7 @@ void CVerifyResultDlg::OnBnClickedVerify()
 
 void CVerifyResultDlg::OnBnClickedAutoMatch()
 {
-	CMediaDir* pDir = m_view.showChooseDirDlg(L"选择查找目录", true);
+	CMediaDir* pDir = m_view.showChooseDirDlg(L"选择查找目录");
 	__Ensure(pDir);
 
 	TD_MediaList lstMedias;

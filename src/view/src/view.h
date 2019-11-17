@@ -151,7 +151,7 @@ public:
 
 	void foregroundMainWnd();
 	
-	CMediaDir* showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& strRootDir = L"");
+	CMediaDir* showChooseDirDlg(const wstring& strTitle, bool bShowRoot = true);
 
 	void showFindDlg(const wstring& strFind, bool bQuickHittest=false);
 	

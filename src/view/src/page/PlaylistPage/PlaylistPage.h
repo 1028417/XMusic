@@ -28,7 +28,7 @@ public:
 private:
 	void OnActive(BOOL bActive);
 
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 

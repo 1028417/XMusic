@@ -31,7 +31,7 @@ private:
 	const TD_MediaMixtureVector& _GetMediaMixture();
 
 public:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	afx_msg void OnDtnDatetimechange(NMHDR *pNMHDR, LRESULT *pResult);
 	

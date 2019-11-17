@@ -15,7 +15,7 @@ public:
 private:
 	tagExportOption& m_ExportOption;
 
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	
 	void OnBnClickedActualMode();
 	

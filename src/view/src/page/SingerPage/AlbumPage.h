@@ -71,7 +71,7 @@ private:
 	bool _playSingerImage(bool bReset);
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 

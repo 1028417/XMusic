@@ -91,7 +91,7 @@ bool CPlayerView::handleCommand(UINT uID)
 		break;
 	case ID_ExportDir:
 	{
-		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择导出目录", true);
+		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择导出目录");
 		__EnsureBreak(pDir);
 
 		m_view.exportDir(*pDir);
@@ -100,7 +100,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_Snapshot:
 	{
-		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择目录", true);
+		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择快照目录");
 		__EnsureBreak(pDir);
 
 		m_view.snapshotDir(*pDir);
@@ -263,7 +263,7 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 
 void CPlayerView::_checkSimilarFile()
 {
-	CMediaDir* pSrcDir = m_view.showChooseDirDlg(L"选择第一个目录", true);
+	CMediaDir* pSrcDir = m_view.showChooseDirDlg(L"选择第一个目录");
 	if (NULL == pSrcDir)
 	{
 		return;

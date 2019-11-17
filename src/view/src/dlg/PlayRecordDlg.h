@@ -49,7 +49,7 @@ private:
 	BOOL Refresh();
 
 public:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
 	afx_msg void OnDtnDatetimechange(NMHDR *pNMHDR, LRESULT *pResult);
 

@@ -21,7 +21,7 @@ private:
 	map<CMediaSet*, ULONGLONG> m_mapSumSize;
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	ULONGLONG _sumSize(CMediaSet& MediaSet);
 

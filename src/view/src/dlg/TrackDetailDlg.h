@@ -18,7 +18,7 @@ private:
 	CObjectList m_wndList;
 	
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnNMDbclickList1(NMHDR *pNMHDR, LRESULT *pResult);
 	

@@ -25,7 +25,7 @@ private:
 	CAlarmClockWnd m_AlarmClockWnd;
 
 public:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
 	afx_msg void OnCbnSelchangeComboSkin();
 	afx_msg void OnBnClickedHideMenubar();

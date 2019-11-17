@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 #endif
 
 #if __windows || __mac
-    QLockFile lockFile("qlockFile");
+    QLockFile lockFile("temp");
     if (!lockFile.tryLock(100))
     {
         return -1;

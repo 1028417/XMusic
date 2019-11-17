@@ -64,7 +64,7 @@ protected:
 	CMediaResList m_wndList;
 
 protected:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	virtual void UpdateTitle(const wstring& strTitle)
 	{

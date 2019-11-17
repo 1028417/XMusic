@@ -3,12 +3,11 @@
 
 #include "ChooseDirDlg.h"
 
-CChooseDirDlg::CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot, wstring& strRetDir)
+CChooseDirDlg::CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot)
 	: m_strTitle(strTitle)
 	, m_RootDir(RootDir)
-	, m_strRetDir(strRetDir)
+	, m_bShowRoot(bShowRoot)
 {
-	m_bShowRoot = bShowRoot;
 }
 
 void CChooseDirDlg::DoDataExchange(CDataExchange* pDX)
@@ -30,15 +29,4 @@ BOOL CChooseDirDlg::OnInitDialog()
 	m_wndTree.SetRootDir(m_RootDir, m_bShowRoot);
 
 	return TRUE;
-}
-
-void CChooseDirDlg::OnOK()
-{
-	CMediaDir *pMediaDir = (CMediaDir*)m_wndTree.GetSelectedObject();
-	if (pMediaDir)
-	{
-		m_strRetDir = pMediaDir->absPath();
-	}
-
-	CDialog::OnOK();
 }

@@ -30,7 +30,7 @@ private:
 	UINT m_uPos = 0;
 
 public:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 

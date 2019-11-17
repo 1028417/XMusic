@@ -25,7 +25,7 @@ private:
 	CWinTimer m_timer;
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void Refresh();
 
@@ -38,5 +38,5 @@ private:
 	void OnBnClickedRestore();
 	void OnBnClickedClearAllMedia();
 
-	void OnCancel();
+	void OnCancel() override;
 };

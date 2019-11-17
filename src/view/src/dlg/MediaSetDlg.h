@@ -20,7 +20,7 @@ private:
 	wstring m_strTitle;
 
 protected:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
-	virtual void OnOK();
+	virtual void OnOK() override;
 };

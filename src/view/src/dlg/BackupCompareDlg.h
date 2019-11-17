@@ -40,7 +40,7 @@ private:
 private:
 	void DoDataExchange(CDataExchange* pDX);
 
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnSize(UINT nType, int cx, int cy);
 
@@ -96,7 +96,7 @@ private:
 	SArray<wstring> m_arrBackupTag;
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnSelChangedDstCombo();
 

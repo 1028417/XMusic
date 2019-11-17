@@ -147,36 +147,15 @@ void __view::foregroundMainWnd()
 	//m_MainWnd.OnFocus(TRUE);
 }
 
-CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot, const wstring& strRootDir)
+CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
 {
-	CResGuard ResGuard(m_ResModule);
-	wstring strRetDir;
-
-	if (strRootDir.empty())
-	{
-		CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_model.getOptionMgr().getOption().plAttachDir);
-
-		CChooseDirDlg ChooseDirDlg(strTitle, RootDir, bShowRoot, strRetDir);
-		__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
-	}
-	else
-	{
-		CMediaDir RootDir(strRootDir);
-
-		CChooseDirDlg ChooseDirDlg(strTitle, RootDir, bShowRoot, strRetDir);
-		__EnsureReturn(IDOK == ChooseDirDlg.DoModal(), NULL);
-	}
-
 	m_model.refreshMediaLib();
-	wstring strOppPath = getMediaLib().toOppPath(strRetDir);
 
-	CMediaDir *pMediaDir = getMediaLib().findSubDir(strOppPath);
-	if (NULL == pMediaDir)
-	{
-		CMainApp::showMsg(L"Ä¿Â¼²»´æÔÚ£¡");
-	}
+	//CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_model.getOptionMgr().getOption().plAttachDir);
 
-	return pMediaDir;
+	CResGuard ResGuard(m_ResModule);
+	CChooseDirDlg ChooseDirDlg(strTitle, getMediaLib(), bShowRoot);
+	return ChooseDirDlg.show();
 }
 
 void __view::showFindDlg(const wstring& strFind, bool bQuickHittest)

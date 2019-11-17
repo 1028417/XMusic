@@ -3,7 +3,7 @@
 class CChooseDirDlg : public CDialogT<IDD_DLG_ChooseDir, true>
 {
 public:
-	CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot, wstring& strRetDir);
+	CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot);
 
 	void DoDataExchange(CDataExchange* pDX);
 
@@ -14,12 +14,24 @@ private:
 
 	CMediaDir& m_RootDir;
 
-	wstring& m_strRetDir;
+	CMediaDir* m_pSelDir = NULL;
 
 	CDirTree m_wndTree;
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
-	void OnOK();
+	void OnOK() override
+	{
+		m_pSelDir = (CMediaDir*)m_wndTree.GetSelectedObject();
+		CDialog::OnOK();
+	}
+
+public:
+	CMediaDir* show()
+	{
+		m_pSelDir = NULL;
+		(void)CDialog::DoModal();
+		return m_pSelDir;
+	}
 };

@@ -24,7 +24,7 @@ private:
 	PairList<LPCCueFile, CMediaRes*> m_plCueFile;
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void showCueInfo(const wstring& strDir, CRCueFile cueFile, CMediaRes *pMediaRes);
 
@@ -36,5 +36,5 @@ private:
 	void OnBnClickedBtnExplore();
 	void OnBnClickedViewDetail();
 
-	void OnCancel();
+	void OnCancel() override;
 };

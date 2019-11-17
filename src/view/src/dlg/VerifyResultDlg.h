@@ -27,7 +27,7 @@ private:
 	int VerifyMediaItem(int nItem);
 	
 public:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	afx_msg void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
 

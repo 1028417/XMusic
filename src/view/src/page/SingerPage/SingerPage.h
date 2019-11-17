@@ -42,7 +42,7 @@ private:
 	CMediaSet* _trySelectObject();
 
 private:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnActive(BOOL bActive);
 

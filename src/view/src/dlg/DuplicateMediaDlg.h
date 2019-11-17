@@ -26,7 +26,7 @@ private:
 	vector<bool> m_vecRowFlag;
 
 public:
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
 	void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);

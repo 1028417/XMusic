@@ -34,7 +34,7 @@ private:
 		return (int)E_GlobalImage::GI_Playlist;
 	}
 
-	BOOL OnInitDialog();
+	BOOL OnInitDialog() override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 

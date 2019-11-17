@@ -47,7 +47,7 @@ private:
 
 	void Refresh();
 
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	
 	afx_msg void OnEnChangeEdit1();
 
