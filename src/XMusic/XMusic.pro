@@ -28,7 +28,8 @@ SOURCES += ../controller.cpp \
     cpp/addbkgdlg.cpp \
     cpp/ListViewEx.cpp \
     cpp/label.cpp \
-    cpp/dialog.cpp
+    cpp/dialog.cpp \
+    cpp/msgbox.cpp
 
 HEADERS += cpp/app.h \
     cpp/mainwindow.h \
@@ -44,11 +45,13 @@ HEADERS += cpp/app.h \
     cpp/addbkgdlg.h \
     cpp/ListViewEx.h \
     ../../inc/ControllerDef.h \
-    ../../inc/viewdef.h
+    ../../inc/viewdef.h \
+    cpp/msgbox.h
 
 RESOURCES += res.qrc
 
-FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui
+FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui \
+    msgbox.ui
 
 INCLUDEPATH += ../../inc  cpp
 

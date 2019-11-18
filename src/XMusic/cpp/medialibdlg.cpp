@@ -174,15 +174,21 @@ void CMedialibView::play()
 {
     dselectRow();
 
-    SArray<wstring> arrOppPaths = CListViewEx::currentSubMedias().map(
-                [](const IMedia& Media) {
-        return Media.GetPath();
+    SArray<wstring> arrOppPaths = CListViewEx::currentSubFiles().map([&](const XFile& subFile) {
+        return ((const CMediaRes&)subFile).GetPath();
     });
     if (!arrOppPaths)
     {
-        arrOppPaths = CListViewEx::currentSubFiles().map([&](const XFile& subFile) {
-            return ((const CMediaRes&)subFile).GetPath();
-        });
+        CMediaSet *pMediaSet = CListViewEx::currentMediaSet();
+        if (pMediaSet)
+        {
+            TD_MediaList lstMedias;
+            pMediaSet->GetAllMedias(lstMedias);
+
+            arrOppPaths = lstMedias.map([](const IMedia& Media) {
+                return Media.GetPath();
+            });
+        }
     }
     if (arrOppPaths)
     {

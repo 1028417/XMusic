@@ -8,6 +8,8 @@
 
 #include "mainwindow.h"
 
+#include "msgbox.h"
+
 #define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
 
 extern ITxtWriter& g_logger;

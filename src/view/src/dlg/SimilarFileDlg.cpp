@@ -50,13 +50,22 @@ BOOL CSimilarFileDlg::OnInitDialog()
 		}
 	});
 
+	_genPercent();
+
+	Refresh(100);
+
+	return true;
+}
+
+void CSimilarFileDlg::_genPercent()
+{
 	SSet<UINT> setPercent;
 	m_arrSimilarFile([&](auto& arrSimilarFile) {
 		arrSimilarFile(1, [&](auto& pr) {
 			setPercent.add(pr.second);
 		});
 	});
-	m_arrPercent = setPercent;
+	m_arrPercent.assign(setPercent);
 
 	CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
 	pSlider->SetPageSize(1);
@@ -64,21 +73,15 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	auto uMax = m_arrPercent.size() - 1;
 	pSlider->SetRange(0, uMax);
 	pSlider->SetPos(uMax);
-
-	Refresh(uMax);
-
-	return true;
 }
 
 void CSimilarFileDlg::Refresh(UINT uPos)
 {
-	m_uPos = uPos;
+	CRedrawLockGuard RedrawLockGuard(m_wndList);
 
 	GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(FALSE);
-
-	CRedrawLockGuard RedrawLockGuard(m_wndList);
 
 	m_wndList.DeleteAllItems();
 
@@ -86,7 +89,6 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 
 	UINT uItem = 0;
 	UINT uGroupCount = 0;
-
 	m_vecRowFlag.clear();
 
 	auto fnInsertItem = [&](CMediaRes& mediaRes, auto group, auto idx) {
@@ -103,7 +105,9 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);
 	};
 
-	m_arrPercent.get(uPos, [&](UINT uPercent) {
+	m_uPos = MIN(uPos, m_arrPercent.size()-1);
+
+	m_arrPercent.get(m_uPos, [&](UINT uPercent) {
 		m_arrSimilarFile([&](auto& arrSimilarFile, size_t group) {
 			SMap<size_t, CMediaRes*> mapMediaRes;
 			arrSimilarFile(1, [&](auto& pr, size_t pos) {
@@ -175,7 +179,6 @@ void CSimilarFileDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 void CSimilarFileDlg::OnBnClickedRemove()
 {
 	set<CMediaRes*> setDelFile;
-	SArray<pair<UINT, UINT>> arrDelFileInfo;
 
 	list<UINT> lstItems;
 	m_wndList.GetSelItems(lstItems);
@@ -188,8 +191,6 @@ void CSimilarFileDlg::OnBnClickedRemove()
 			m_arrSimilarFile.get(group, [&](auto& arrSimilarFile){
 				arrSimilarFile.get(index, [&](auto& pr) {
 					setDelFile.insert(pr.first);
-
-					arrDelFileInfo.add({group,index});
 				});
 			});
 		});
@@ -203,18 +204,25 @@ void CSimilarFileDlg::OnBnClickedRemove()
 
 	TD_MediaResList arrDelFile(setDelFile);
 	__Ensure(m_view.getController().removeMediaRes(arrDelFile));
-
-	for (auto& pr : arrDelFileInfo)
+	
+	for (CMediaRes *pMediaRes : setDelFile)
 	{
-		m_arrSimilarFile.get(pr.first, [&](TD_SimilarFileGroup& arrSimilarFile) {
-			(void)arrSimilarFile.del_pos(pr.second);
+		m_arrSimilarFile.del([&](auto& similarGroup) {
+			similarGroup.del([&](auto& pr) {
+				return pr.first == pMediaRes;
+			});
+
+			return similarGroup.size() <= 1;
 		});
 	}
 
+	CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
+	auto prevPos = pSlider->GetPos();
+	_genPercent();
+
 	int iTopItem = m_wndList.GetTopIndex();
 
-	CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
-	Refresh(pSlider->GetPos());
+	Refresh(prevPos);
 
 	m_wndList.EnsureVisible(iTopItem, TRUE);
 	m_wndList.EnsureVisible(iTopItem + m_wndList.GetCountPerPage() - 1, TRUE);

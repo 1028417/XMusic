@@ -29,6 +29,13 @@ private:
 
 	UINT m_uPos = 0;
 
+private:
+	void _genPercent();
+
+	void Refresh(UINT uPos);
+
+	void OnClose(bool bCancel) override;
+
 public:
 	BOOL OnInitDialog() override;
 
@@ -42,9 +49,4 @@ public:
 	void OnBnClickedPlay();
 
 	void OnBnClickedExplore();
-
-private:
-	void Refresh(UINT uPos);
-
-	void OnClose(bool bCancel) override;
 };

@@ -221,6 +221,9 @@ int CXMusicApp::run()
                 thrUpgrade.join();
                 if (bUpgradeFail)
                 {
+                    //CMsgBox msgBox(m_mainWnd);
+                    //msgBox.show();
+
                     this->quit();
                     return;
                 }

@@ -15,15 +15,20 @@ void CDialog::show()
     showFull(this);
     g_setDlgs.insert(this);
 
-#if __mac
     this->exec();
-#else
-#if __windows
-    this->setModal(true); //this->setWindowModality(Qt::WindowModal);
-#endif
 
+/*#if __mac
+    this->exec();
+
+#elif __windows
+    //this->setModal(true); //this->setWindowModality(Qt::WindowModal);
+
+    this->setWindowModality(Qt::ApplicationModal);
     this->setVisible(true);
-#endif
+
+#else
+    this->setVisible(true);
+#endif*/
 }
 
 bool CDialog::event(QEvent *ev)
