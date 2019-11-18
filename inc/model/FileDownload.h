@@ -28,11 +28,6 @@ private:
     size_t m_uSumSize = 0;
 
 private:
-    static size_t _curlRecv(void *buffer, size_t size, size_t nmemb, void *context)
-    {
-        return ((CFileDownload*)context)->_onRecv(buffer, size, nmemb);
-    }
-
     virtual size_t _onRecv(void *buffer, size_t size, size_t nmemb);
 
     /*static size_t _curlProgress(void *context, double total, double now, double, double)
