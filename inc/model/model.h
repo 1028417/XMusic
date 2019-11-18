@@ -70,7 +70,7 @@ enum class E_CheckDuplicateMode
 	, CDM_SameTitle
 };
 
-struct tagExportMedia
+struct __ModelExt tagExportMedia
 {
 	wstring strDstDir;
 
@@ -79,7 +79,7 @@ struct tagExportMedia
 	ArrList<CCueFile> alCueFiles;
 };
 
-struct tagExportOption
+struct __ModelExt tagExportOption
 {
 	bool bActualMode = false;
 
@@ -105,9 +105,21 @@ using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
 
 using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 
+struct __ModelExt tagUpgradeConf
+{
+    UINT uVersion = 0;
+
+    list<string> lstUrl;
+};
+
 class IModel
 {
 public:
+#if !__winvc
+    virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
+    virtual bool dowloadMediaLib(const string& strUrl, UINT uCurrVer) = 0;
+#endif
+
     virtual bool initMediaLib() = 0;
 
 	virtual bool status() const = 0;
@@ -233,6 +245,11 @@ public:
 
 	tagOption& init();
 
+#if !__winvc
+    bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
+    bool dowloadMediaLib(const string& strUrl, UINT uCurrVer) override;
+#endif
+
     bool initMediaLib() override;
 
 	bool setupMediaLib(const wstring& strRootDir) override;
@@ -269,7 +286,9 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-    wstring _scanXMusicDir();
+        bool _upgradeMediaLib(UINT uVersion, CZipFile& zipFile);
+
+        wstring _scanXMusicDir();
 
     bool _initData(const wstring& strDBFile, const wstring& strSingerImgDir);
 
