@@ -207,7 +207,7 @@ int CXMusicApp::run()
         {
             thrUpgrade = std::thread([&](){
                 g_logger >> "upgradeMediaLib";
-                if (!_upgradeMediaLib())
+                if (!_dowloadMediaLib())
                 {
                     g_logger >> "upgradeMediaLib fail";
                     bUpgradeFail = true;
@@ -266,56 +266,10 @@ int CXMusicApp::run()
     return nRet;
 }
 
-struct tagUpgradeConf
-{
-    UINT uVersion = 0;
-
-    list<string> lstUrl;
-};
-
-static bool _readUpgradeConf(Instream& ins, tagUpgradeConf& upgradeConf)
-{
-    JValue jRoot;
-    if (!jsonutil::loadFile(ins, jRoot))
-    {
-        g_logger >> "readUpgradeConf fail: invalid jsonStream";
-        return false;
-    }
-    const JValue& medialib = jRoot["medialib"];
-    if (medialib.isNull())
-    {
-        g_logger >> "readUpgradeConf fail: medialib";
-        return false;
-    }
-
-    if (!jsonutil::get(medialib["version"], upgradeConf.uVersion))
-    {
-        g_logger >> "readUpgradeConf fail: version";
-        return false;
-    }
-
-    if (!jsonutil::getArray(medialib["url"], upgradeConf.lstUrl))
-    {
-        g_logger >> "readUpgradeConf fail: version";
-        return false;
-    }
-
-    return true;
-}
-
-#define __upgradeConfFile (m_model.getOptionMgr().getOption().strRootDir + __medialibPath L"upgrade.conf")
-
-bool CXMusicApp::_upgradeMediaLib()
+bool CXMusicApp::_dowloadMediaLib()
 {
     tagUpgradeConf upgradeConf;
-
-    IFStream ifsUpgradeConf;
-    if (ifsUpgradeConf.open(__upgradeConfFile))
-    {
-        __EnsureReturn(_readUpgradeConf(ifsUpgradeConf, upgradeConf), false);
-        ifsUpgradeConf.close();
-    }
-    else
+    if (!m_model.readUpgradeConf(upgradeConf))
     {
 #if __android
         QFile qf("assets:/upgrade.conf");
@@ -336,116 +290,21 @@ bool CXMusicApp::_upgradeMediaLib()
             return false;
         }
 
-        __EnsureReturn(_readUpgradeConf(ifbUpgradeConf, upgradeConf), false);
+        __EnsureReturn(m_model.readUpgradeConf(upgradeConf, &ifbUpgradeConf), false);
     }
 
     for (cauto strUrl : upgradeConf.lstUrl)
-    {        
-        CByteBuffer bbfZip;
-        int nRet = CFileDownload::inst().download(strUrl, bbfZip);
-        if (nRet != 0)
+    {
+        g_logger << "dowloadMediaLib: " >> strUrl;
+        if (m_model.dowloadMediaLib(strUrl, upgradeConf.uVersion))
         {
-            g_logger << "download fail: " << nRet << ", URL: " >> strUrl;
-            continue;
+            return true;
         }
-
-        IFBuffer ifbZip(bbfZip);
-        string strPwd;
-        //strPwd.append("medialib").append(".zip");
-        CZipFile zipFile(ifbZip, strPwd);
-        if (!zipFile)
+        else
         {
-            g_logger >> "invalid zipfile";
-            continue;
+            g_logger >> "dowloadMediaLib fail";
         }
-
-        return _upgradeMediaLib(upgradeConf.uVersion, zipFile);
     }
 
     return false;
-}
-
-bool CXMusicApp::_upgradeMediaLib(UINT uVersion, CZipFile& zipFile)
-{
-    CByteBuffer bbfUpgradeConf;
-    if (zipFile.read("upgrade.conf", bbfUpgradeConf) <= 0)
-    {
-        g_logger >> "readZip fail: upgrade.conf";
-        return false;
-    }
-
-    IFBuffer ifbUpgradeConf(bbfUpgradeConf);
-    tagUpgradeConf newUpgradeConf;
-    if (!_readUpgradeConf(ifbUpgradeConf, newUpgradeConf))
-    {
-        return false;
-    }
-    if (newUpgradeConf.uVersion != uVersion)
-    {
-        CByteBuffer bbfMedialib;
-        if (zipFile.read("medialib", bbfMedialib) <= 0)
-        {
-            g_logger >> "readZip fail: medialib";
-            return false;
-        }
-
-        cauto strDBFile = m_model.getOptionMgr().getOption().strRootDir + __medialibPath __medialibFile;
-        OFStream ofsMedialib(strDBFile, true);
-        if (!ofsMedialib)
-        {
-            return false;
-        }
-        (void)ofsMedialib.writex(bbfMedialib);
-
-        OFStream ofbUpgradeConf(__upgradeConfFile, true);
-        if (!ofbUpgradeConf)
-        {
-            return false;
-        }
-        (void)ofbUpgradeConf.writex(bbfUpgradeConf);
-    }
-
-    for (cauto pr : zipFile.fileMap())
-    {
-        const tagUnzFileInfo& fileInfo = pr.second;
-        if (strutil::endWith(fileInfo.strPath, ".xurl"))
-        {
-            CByteBuffer bbfXurl;
-            if (zipFile.read(fileInfo, bbfXurl) <= 0)
-            {
-                g_logger << "readXurl fail: " >> fileInfo.strPath;
-                return false;
-            }
-
-            IFBuffer ifbXurl(bbfXurl);
-            if (!m_model.getMediaLib().loadXurl(ifbXurl))
-            {
-                g_logger << "loadXurl fail: " >> fileInfo.strPath;
-                return false;
-            }
-        }
-    }
-
-    for (cauto pr : zipFile.fileMap())
-    {
-        const tagUnzFileInfo& fileInfo = pr.second;
-        if (strutil::endWith(fileInfo.strPath, ".snapshot.json"))
-        {
-            CByteBuffer bbfSnapshot;
-            if (zipFile.read(fileInfo, bbfSnapshot) <= 0)
-            {
-                g_logger << "readSnapshot fail: " >> fileInfo.strPath;
-                return false;
-            }
-
-            IFBuffer ifbSnapshot(bbfSnapshot);
-            if (!m_model.getMediaLib().loadSnapshot(ifbSnapshot))
-            {
-                g_logger << "loadSnapshot fail: " >> fileInfo.strPath;
-                return false;
-            }
-        }
-    }
-
-    return true;
 }
