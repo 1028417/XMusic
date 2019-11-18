@@ -3,17 +3,20 @@
 
 extern void showFull(QWidget* wnd);
 
-extern std::set<class CDialog*> g_setDlgs;
+extern std::set<class CDialog*> g_setFullScreenDlgs;
 
-void CDialog::show()
+void CDialog::show(bool bFullScreen)
 {
     _setBkgColor();
 
     this->setWindowFlags(Qt::Dialog);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
-    showFull(this);
-    g_setDlgs.insert(this);
+    if (bFullScreen)
+    {
+        showFull(this);
+        g_setFullScreenDlgs.insert(this);
+    }
 
     this->exec();
 
@@ -38,7 +41,7 @@ bool CDialog::event(QEvent *ev)
     case QEvent::Close:
         _onClose();
 
-        g_setDlgs.erase(this);
+        g_setFullScreenDlgs.erase(this);
 
 #if __windows
         m_parent.activateWindow();
@@ -47,11 +50,7 @@ bool CDialog::event(QEvent *ev)
 		break;
 	case QEvent::Move:
 	case QEvent::Resize:
-	{
-		int cx = this->width();
-		int cy = this->height();
-		_relayout(cx, cy);
-	}
+        _relayout(width(), height());
 
 		break;
 #if __android || __ios

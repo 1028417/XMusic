@@ -17,20 +17,20 @@
 
 static Ui::MainWindow ui;
 
-set<class CDialog*> g_setDlgs;
+set<class CDialog*> g_setFullScreenDlgs;
 
 static bool g_bFullScreen = true;
 
-inline static void setFull(QWidget* wnd)
-{
-    (void)wnd;
-
 #if __windows
+inline static void fixWorkArea(QWidget* wnd)
+{
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
     wnd->setGeometry(rcWorkArea.left, rcWorkArea.top
                       , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
-#endif
 }
+#else
+#define fixWorkArea(wnd)
+#endif
 
 void showFull(QWidget* wnd)
 {
@@ -43,7 +43,7 @@ void showFull(QWidget* wnd)
         wnd->setWindowState(Qt::WindowMaximized);
     }
 
-    setFull(wnd);
+    fixWorkArea(wnd);
 }
 
 MainWindow::MainWindow(CXMusicApp& app)
@@ -337,12 +337,12 @@ bool MainWindow::event(QEvent *ev)
     break;
     case QEvent::Move:
     case QEvent::Resize:
-        for (auto pDlg : g_setDlgs)
+        for (auto pDlg : g_setFullScreenDlgs)
         {
-            setFull(pDlg);
+            fixWorkArea(pDlg);
         }
 
-        setFull(this);
+        fixWorkArea(this);
 
         _relayout();
 
