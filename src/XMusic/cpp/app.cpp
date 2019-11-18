@@ -216,8 +216,8 @@ int CXMusicApp::run()
         }
 
         timerutil::async(6000, [&](){
-            CMsgBox msgBox(m_mainWnd);
-            msgBox.show(false);
+//            CMsgBox msgBox(m_mainWnd);
+//            msgBox.show(false);
 
             if (XMediaLib::m_bOnlineMediaLib)
             {
