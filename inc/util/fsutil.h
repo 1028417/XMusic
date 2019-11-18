@@ -197,8 +197,6 @@ public:
 #endif
 
 #if !__winvc
-    static wstring getAppDir();
-
     static wstring getHomeDir();
 #endif
 

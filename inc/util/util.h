@@ -64,7 +64,7 @@
     #define __isdebug true
 #endif
 
-    #include <QtCore/qglobal.h>
+    #include <QtGlobal>
     #define __dllexport Q_DECL_EXPORT
     #define __dllimport Q_DECL_IMPORT
 #endif
