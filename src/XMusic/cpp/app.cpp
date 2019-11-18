@@ -53,7 +53,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 #if __android
     fsutil::setWorkDir(__androidDataDir);
 #else
-    fsutil::setWorkDir(fsutil::getAppDir());
+    fsutil::setWorkDir(applicationDirPath().toStdWString());
 #endif
 
     m_logger.open(L"XMusic.log", true);
