@@ -36,33 +36,36 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 #endif
-#include <QLockFile>
+
+#if __windows || __mac
+#include <QSharedMemory>
+QSharedMemory sm("xmusic");
+#endif
 
 int main(int argc, char *argv[])
 {
+#if __windows || __mac
+    if (!sm.create(1))
+    {
+        return -1;
+    }
+
 #if __windows
     extern void InitMinDump();
     InitMinDump();
 #endif
 
-#if __windows || __mac
-    QLockFile lockFile("temp");
-    if (!lockFile.tryLock(100))
-    {
-        return -1;
-    }
-#endif
-
-//#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
-//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//#endif
-
-#if __android
+#elif __android
     if (!fsutil::createDir(__androidDataDir))
     {
         return -1;
     }
 #endif
+
+
+//#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
+//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//#endif
 
     auto app = new CXMusicApp(argc, argv);
 
