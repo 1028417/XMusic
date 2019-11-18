@@ -37,7 +37,7 @@ private:
     virtual void _onClose(){}
 
 public:
-    void show();
+    void show(bool bFullScreen = true);
 
     void setBkgColor(UINT r, UINT g, UINT b)
     {

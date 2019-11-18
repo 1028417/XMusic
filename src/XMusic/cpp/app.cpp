@@ -216,14 +216,14 @@ int CXMusicApp::run()
         }
 
         timerutil::async(6000, [&](){
+            CMsgBox msgBox(m_mainWnd);
+            msgBox.show(false);
+
             if (XMediaLib::m_bOnlineMediaLib)
             {
                 thrUpgrade.join();
                 if (bUpgradeFail)
                 {
-                    //CMsgBox msgBox(m_mainWnd);
-                    //msgBox.show();
-
                     this->quit();
                     return;
                 }
