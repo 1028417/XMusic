@@ -36,7 +36,8 @@ public:
        return checkUrl(strutil::toUtf8(strFileTitle));
     }
 
-    string getUrl(const wstring& strFileTitle);
+    string getXurl(const wstring& strFileTitle);
+    string getShareUrl(const wstring& strFileTitle);
 
     bool loadSnapshot(Instream& ins);
 
