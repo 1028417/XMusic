@@ -310,26 +310,26 @@ public:
 		return E_TxtHeadType::THT_UTF8Bom == m_eHeadType;
 	}
 
-        void read(Instream& ins, string& strText)
+	void read(Instream& ins, string& strText)
 	{
 		string t_strText;
-                _read(ins, t_strText);
-                strText.append(t_strText);
+        _read(ins, t_strText);
+        strText.append(t_strText);
 	}
-        void read(Instream& ins, wstring& strText)
+    void read(Instream& ins, wstring& strText)
 	{
 		wstring t_strText;
-                _read(ins, t_strText);
-                strText.append(t_strText);
+		_read(ins, t_strText);
+		strText.append(t_strText);
 	}
-
-        void read(Instream& ins, cfn_bool_t<const string&> cb)
+	
+	void read(Instream& ins, cfn_bool_t<const string&> cb)
 	{
-                _read(ins, cb);
+		_read(ins, cb);
 	}
-        void read(Instream& ins, cfn_bool_t<const wstring&> cb)
+	void read(Instream& ins, cfn_bool_t<const wstring&> cb)
 	{
-                _read(ins, cb);
+		_read(ins, cb);
 	}
 
 private:
@@ -337,13 +337,13 @@ private:
 	void _readData(const char *lpData, size_t len, wstring& strText);
 
 	template <class T>
-        void _read(Instream& ins, T& strText)
-        {
-                CCharBuffer cbfData;
-                (void)ins.readex(cbfData);
-                __Ensure(cbfData);
+    void _read(Instream& ins, T& strText)
+    {
+            CCharBuffer cbfData;
+            (void)ins.readex(cbfData, (size_t)ins.size());
+            __Ensure(cbfData);
 
-                _readData(cbfData, cbfData->size(), strText);
+            _readData(cbfData, cbfData->size(), strText);
 	}
 
 	template <class T>

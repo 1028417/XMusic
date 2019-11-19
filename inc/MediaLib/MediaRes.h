@@ -74,7 +74,7 @@ public:
 		return CPath::name();
 	}
 
-	int GetFileSize() const
+	uint64_t GetFileSize() const
 	{
         return fileinfo.uFileSize;
 	}

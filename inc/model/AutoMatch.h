@@ -24,7 +24,7 @@ struct __ModelExt tagMediaResInfo
 	tagMediaResInfo(const wstring& t_strPath)
 		: strPath(t_strPath)
 		, FileTitle(fsutil::getFileTitle(strPath))
-		, strFileSize(IMedia::GetFileSizeString(fsutil::GetFileSize(strPath), false))
+		, strFileSize(IMedia::GetFileSizeString(fsutil::GetFileSize64(strPath), false))
 	{
 	}
 

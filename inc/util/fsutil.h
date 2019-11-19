@@ -25,36 +25,16 @@ using _utimbuf = struct utimbuf;
 #include <sys/stat.h>
 
 #if __windows
-using tagFileStat = struct _stat;
-using tagFileStat32 = struct _stat32;
-using tagFileStat32_64 = struct _stat32i64;
-using tagFileStat64_32 = struct _stat64i32;
 using tagFileStat64 = struct _stat64;
 
 #else
-using tagFileStat = struct stat;
-using tagFileStat32 = tagFileStat;
-using tagFileStat32_64 = tagFileStat;
-using tagFileStat64_32 = tagFileStat;
-using tagFileStat64 = tagFileStat;
+#if __android
+using tagFileStat64 = struct stat64;
+#else
+using tagFileStat64 = struct stat;
+#endif
 
 #define _fileno fileno
-#endif
-
-#if __ios || __mac
-#define fseek64 fseek
-#elif __windows
-#define fseek64 _fseeki64
-#endif
-
-#if __ios || __mac
-#define ftell64 ftell
-
-#elif __winvc
-#define ftell64 _ftelli64
-
-#else
-#define ftell64(pf) fsutil::lSeek64(pf, 0, SEEK_CUR)
 #endif
 
 enum class E_FindFindFilter
@@ -87,7 +67,7 @@ struct __UtilExt tagFileInfo
 
 	wstring strName;
 
-    size_t uFileSize = 0;
+    uint64_t uFileSize = 0;
 
 	time64_t tCreateTime = 0;
 	time64_t tModifyTime = 0;
@@ -138,24 +118,11 @@ public:
 	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
     static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);
 
-    static bool fileStat(FILE *pf, tagFileStat& stat);
-	static bool fileStat(const wstring& strFile, tagFileStat& stat);
+    static bool fStat64(FILE *pf, tagFileStat64& stat);
+    static bool lStat64(const wstring& strFile, tagFileStat64& stat);
 
-    static bool fileStat32(FILE *pf, tagFileStat32& stat);
-	static bool fileStat32(const wstring& strFile, tagFileStat32& stat);
-    static bool fileStat32_64(FILE *pf, tagFileStat32_64& stat);
-	static bool fileStat32_64(const wstring& strFile, tagFileStat32_64& stat);
+    static long long GetFileSize64(const wstring& strFile);
 
-    static bool fileStat64(FILE *pf, tagFileStat64& stat);
-	static bool fileStat64(const wstring& strFile, tagFileStat64& stat);
-    static bool fileStat64_32(FILE *pf, tagFileStat64_32& stat);
-	static bool fileStat64_32(const wstring& strFile, tagFileStat64_32& stat);
-
-	static long GetFileSize(const wstring& strFile);
-	static long long GetFileSize64(const wstring& strFile);
-
-    static time32_t GetFileModifyTime(FILE *pf);
-	static time32_t GetFileModifyTime(const wstring& strFile);
     static time64_t GetFileModifyTime64(FILE *pf);
 	static time64_t GetFileModifyTime64(const wstring& strFile);
 

@@ -9,7 +9,7 @@ public:
 
 	virtual class CMedia *findRelatedMedia(IMedia& media, E_MediaSetType eMediaSetType) = 0;
 
-    virtual UINT checkDuration(IMedia& media, int& nFileSize) = 0;
+    virtual UINT checkDuration(IMedia& media, long long& nFileSize) = 0;
 
 	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
 };

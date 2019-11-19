@@ -82,32 +82,29 @@ public:
         return read(buff, sizeof(T), buff.count());
 	}
 
-	size_t readex(CByteBuffer& bbfBuff, size_t uReadSize = 0)
+	size_t readex(CByteBuffer& bbfBuff, size_t uReadSize)
 	{
 		return _readex(bbfBuff, uReadSize);
 	}
-	size_t readex(CCharBuffer& cbfBuff, size_t uReadSize = 0)
+	size_t readex(CCharBuffer& cbfBuff, size_t uReadSize)
 	{
 		return _readex(cbfBuff, uReadSize);
 	}
 
-	virtual bool seek(long offset, int origin) = 0;
+    virtual bool seek(long long offset, int origin) = 0;
 
-	virtual long pos() = 0;
+    virtual long long pos() = 0;
 
-	virtual size_t size() = 0;
+    virtual uint64_t size() = 0;
 
 private:
 	template <class T>
 	size_t _readex(T& buff, size_t uReadSize)
 	{
-		if (0 == uReadSize)
+		uint64_t max = this->size();
+		if (max < (uint64_t)uReadSize)
 		{
-			uReadSize = size();
-		}
-		else
-		{
-			uReadSize = MIN(uReadSize, size());
+			uReadSize = (size_t)max;
 		}
 		if (0 == uReadSize)
 		{
@@ -173,7 +170,7 @@ public:
     }
 
 private:
-	size_t m_size = 0;
+    uint64_t m_size = 0;
 
 private:
 	template <class T>
@@ -183,16 +180,15 @@ private:
 		{
 			return false;
 		}
-
-		(void)fseek(m_pf, 0, SEEK_END);
-		m_size = (size_t)ftell(m_pf);
-		(void)fseek(m_pf, 0, SEEK_SET);
+		
+        m_size = (uint64_t)fsutil::lSeek64(m_pf, 0, SEEK_END);
+		(void)fsutil::lSeek64(m_pf, 0, SEEK_SET);
 
 		return true;
 	}
 
 public:
-    virtual size_t size() override
+    virtual uint64_t size() override
 	{
 		return m_size;
 	}
@@ -211,14 +207,14 @@ public:
         return fread(buff, size, count, m_pf);
     }
 
-    virtual bool seek(long offset, int origin) override
+    virtual bool seek(long long offset, int origin) override
     {
-        return 0==fseek(m_pf, offset, origin);
+        return fsutil::lSeek64(m_pf, offset, origin) >= 0;
     }
 
-	virtual long pos() override
+	virtual long long pos() override
 	{
-		return ftell(m_pf);
+		return fsutil::lSeek64(m_pf, 0, SEEK_CUR);
 	}
 
 	virtual void close() override
@@ -289,9 +285,9 @@ public:
 
 protected:
     const byte_t* m_ptr;
-    size_t m_size;
+	uint64_t m_size;
 
-    size_t m_pos = 0;
+    uint64_t m_pos = 0;
 
 public:
     operator bool() const
@@ -301,7 +297,11 @@ public:
 
     virtual size_t read(void *buff, size_t size, size_t count) override
     {
-        count = MIN(count, (m_size-m_pos)/size);
+		uint64_t t_count = (m_size - m_pos) / size;
+		if (t_count < (uint64_t)count)
+		{
+			count = (size_t)t_count;
+		}
         if (0 != count)
         {
             size *= count;
@@ -312,9 +312,9 @@ public:
         return count;
     }
 
-    virtual bool seek(long offset, int origin) override
+    virtual bool seek(long long offset, int origin) override
     {
-        long pos = (long)m_pos;
+        long long pos = (long long)m_pos;
         if (SEEK_SET == origin)
         {
             pos = offset;
@@ -325,28 +325,28 @@ public:
         }
         else if (SEEK_END == origin)
         {
-            pos = (long)m_size-1+offset;
+            pos = (long long)m_size-1+offset;
         }
         else
         {
             return false;
         }
 
-        if (pos < 0 || pos >= (long)m_size)
+        if (pos < 0 || pos >= (long long)m_size)
         {
             return false;
         }
-        m_pos = (size_t)pos;
+        m_pos = (uint64_t)pos;
 
         return true;
     }
 
-    virtual long pos() override
+    virtual long long pos() override
     {
         return m_pos;
     }
 
-	virtual size_t size() override
+	virtual uint64_t size() override
 	{
 		return m_size;
 	}

@@ -75,7 +75,7 @@ public:
 
 	wstring GetTitle() const;
 
-	static wstring GetFileSizeString(int iFileSize, bool bIgnoreByte=true);
+	static wstring GetFileSizeString(long long nFileSize, bool bIgnoreByte=true);
 	
 	virtual CMediaSet *GetMediaSet()
 	{

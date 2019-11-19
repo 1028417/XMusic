@@ -56,18 +56,18 @@ private:
 
 	FILE *m_pf = NULL;
 
-    //UINT m_uPos = 0;
+    //uint64_t m_uPos = 0;
 
 private:
     friend class CPlayer;
 	void* decoder()
 	{
-		return m_pDecoder;
+        return m_pDecoder;
 	}
 
 public:
     virtual void close();
-    long open(const wstring& strFile);
+	long long open(const wstring& strFile);
 
 	UINT checkDuration();
 

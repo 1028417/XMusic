@@ -37,7 +37,7 @@ protected:
 	
 	CMediaTime m_addTime;
 
-	int m_nFileSize = 0;
+	long long m_nFileSize = 0;
 
 	int m_nDuration = -1;
 
