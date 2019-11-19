@@ -39,7 +39,8 @@ private:
 
     void _clear();
 
-    int _download(const string& strUrl);
+    using CB_FileDownload = function<void(char *ptr, size_t size)>;
+    int _download(const string& strUrl, const CB_FileDownload& cb = NULL);
 
     template <class T>
     size_t _getAllData(T& buff)
@@ -66,7 +67,7 @@ public:
 		return m_bStatus;
 	}
 
-    void download(const string& strUrl);
+    void download(const string& strUrl, const CB_FileDownload& cb = NULL);
     int download(const string& strUrl, CByteBuffer& bbfData);
     int download(const string& strUrl, CCharBuffer& cbfData);
 

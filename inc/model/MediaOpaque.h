@@ -15,7 +15,10 @@ private:
 	wstring m_strFile;
 
     bool m_bUrl = false;
+
+#if !__winvc
     size_t m_uStreamPos = 0;
+#endif
 
     void *m_pXmscCodec = NULL;
 
@@ -41,7 +44,8 @@ public:
 	{
 		return _openFile(media.GetAbsPath(), media.isXmsc());
 	}
-	
+
+#if !__winvc
     void openUrl(const string& strUrl, bool bXmsc);
 
     size_t streamPos() const
@@ -53,7 +57,7 @@ public:
         return CFileDownload::inst().sumSize();
     }
 
-#if __winvc
+#else
 	UINT checkFileDuration(const wstring& strFile, int& nFileSize)
 	{
 		nFileSize = _openFile(strFile, false);
