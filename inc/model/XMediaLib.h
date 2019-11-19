@@ -23,8 +23,7 @@ private:
     list<JValue> m_lstSnapshot;
 
     unordered_map<string, string> m_mapXurl;
-
-    map<string, string> m_mapShareUrl;
+    unordered_map<string, string> m_mapShareUrl;
 
 public:
     bool loadShare(Instream& ins);
