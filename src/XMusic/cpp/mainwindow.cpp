@@ -29,7 +29,7 @@ inline static void fixWorkArea(QWidget* wnd)
                       , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
 }
 #else
-#define fixWorkArea(wnd)
+#define fixWorkArea(wnd) (void)wnd
 #endif
 
 void showFull(QWidget* wnd)

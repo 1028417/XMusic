@@ -210,7 +210,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 
 			ProgressDlg.SetStatusText(task.first.c_str(), 1);
 
-			int nFileSize = 0;
+			long long nFileSize = 0;
 			int nDuration = (int)CMediaOpaque().checkFileDuration(task.first, nFileSize);
 			if (nFileSize < 0)
 			{

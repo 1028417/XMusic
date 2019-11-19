@@ -18,12 +18,12 @@ private:
 	thread m_thread;
 	bool m_bClosing = false;
 
-	map<CMediaSet*, ULONGLONG> m_mapSumSize;
+	map<CMediaSet*, uint64_t> m_mapSumSize;
 
 private:
 	BOOL OnInitDialog() override;
 
-	ULONGLONG _sumSize(CMediaSet& MediaSet);
+	uint64_t _sumSize(CMediaSet& MediaSet);
 
 	void _sumCheckedSize();
 

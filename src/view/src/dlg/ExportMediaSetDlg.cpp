@@ -36,7 +36,7 @@ void CExportMediaSetDlg::_sumCheckedSize()
 	TD_TreeObjectList lstChekedObjects;
 	m_wndTree.GetAllObjects(lstChekedObjects, CS_Checked);
 
-	ULONGLONG ulCheckedSize = 0;
+	uint64_t ulCheckedSize = 0;
 	UINT uCount = 0;
 
 	PtrArray<CPlaylist> lstPlaylist(lstChekedObjects);
@@ -58,7 +58,7 @@ void CExportMediaSetDlg::_sumCheckedSize()
 	{
 		strTitle << L"   " << uCount << L"¸öÎÄ¼þ";
 
-		ULONGLONG uMB = ulCheckedSize / __1e6;
+		uint64_t uMB = ulCheckedSize / __1e6;
 		if (0 != uMB)
 		{
 			strTitle << L'/' << uMB << L"MB";
@@ -68,19 +68,19 @@ void CExportMediaSetDlg::_sumCheckedSize()
 	this->SetWindowText(strTitle);
 }
 
-ULONGLONG CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
+uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 {
-	ULONGLONG uSumSize = 0;
+	uint64_t uSumSize = 0;
 	
 	TD_MediaList lstMedias;
 	MediaSet.GetMedias(lstMedias);
 
 	for (CMedia *pMedia : lstMedias)
 	{
-		int iFileSize = fsutil::GetFileSize(pMedia->GetAbsPath());
-		if (iFileSize > 0)
+		long long nFileSize = fsutil::GetFileSize64(pMedia->GetAbsPath());
+		if (nFileSize > 0)
 		{
-			uSumSize += (UINT)iFileSize;
+			uSumSize += (uint64_t)nFileSize;
 		}
 		
 		if (m_bClosing)
@@ -115,7 +115,7 @@ ULONGLONG CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 	if (0 != uSumSize)
 	{
 		CMainApp::sync([&]() {
-			ULONGLONG uMB = uSumSize / __1e6;
+			uint64_t uMB = uSumSize / __1e6;
 
 			m_mapSumSize[&MediaSet] = uSumSize;
 

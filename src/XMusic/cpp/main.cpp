@@ -39,7 +39,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 #if __windows || __mac
 #include <QSharedMemory>
-QSharedMemory sm("xmusic");
+static QSharedMemory sm("xmusic");
 #endif
 
 int main(int argc, char *argv[])

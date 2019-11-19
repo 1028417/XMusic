@@ -129,7 +129,7 @@ int CVerifyResultDlg::VerifyMediaItem(int nItem)
 
 	wstring strVerifyResult;
 
-	int nFileSize = 0;
+	long long nFileSize = 0;
 	int nDuration = (int)CMediaOpaque::checkDuration(*pMedia, nFileSize);
 	if (nFileSize < 0)
 	{
