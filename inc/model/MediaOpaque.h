@@ -32,9 +32,9 @@ private:
 	static UINT _checkDuration(const wstring& strFile, bool bXmsc, int& nFileSize);
 
 public:
-    int openFile(const wstring& strFile)
+    int openFile(const wstring& strFile, bool bXmsc)
 	{
-		return _openFile(strFile, false);
+		return _openFile(strFile, bXmsc);
     }
 
 	int openFile(IMedia& media)
@@ -42,7 +42,7 @@ public:
 		return _openFile(media.GetAbsPath(), media.isXmsc());
 	}
 	
-    void openUrl(const string& strUrl);
+    void openUrl(const string& strUrl, bool bXmsc);
 
     size_t streamPos() const
     {
