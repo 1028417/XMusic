@@ -22,23 +22,27 @@ private:
 private:
     list<JValue> m_lstSnapshot;
 
-    unordered_map<string, string> m_mapFileUrl;
-	
+    unordered_map<string, string> m_mapXurl;
+
+    map<string, string> m_mapShareUrl;
+
 public:
+    bool loadShare(Instream& ins);
+
     bool loadXurl(Instream& ins);
 
-    bool checkFileUrl(const string& strFileTitle);
-    bool checkFileUrl(const wstring& strFileTitle)
+    bool checkUrl(const string& strFileTitle);
+    bool checkUrl(const wstring& strFileTitle)
     {
-       return checkFileUrl(strutil::toUtf8(strFileTitle));
+       return checkUrl(strutil::toUtf8(strFileTitle));
     }
 
-    string getFileUrl(const wstring& strFileTitle);
+    string getUrl(const wstring& strFileTitle);
 
     bool loadSnapshot(Instream& ins);
 
 private:
-    void _insertFileUrl(const string& strFileName, const string& strUrl);
+    void _insertUrl(const string& strFileName, const string& strUrl);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
