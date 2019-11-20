@@ -287,6 +287,7 @@ public:
 
 private:
         bool _upgradeMediaLib(UINT uVersion, CZipFile& zipFile);
+        bool _loadShareLib(CZipFile& zipFile);
 
         wstring _scanXMusicDir();
 
