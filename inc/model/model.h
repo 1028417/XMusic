@@ -109,7 +109,7 @@ struct __ModelExt tagUpgradeConf
 {
     UINT uVersion = 0;
 
-    list<string> lstUrl;
+    PairList<string, string> plUrl;
 };
 
 class IModel
@@ -293,7 +293,7 @@ private:
 
         wstring _scanXMusicDir();
 
-    bool _initData(const wstring& strDBFile, const wstring& strSingerImgDir);
+    bool _initData(const wstring& strDBFile);
 
 	inline void _refreshMediaLib()
     {

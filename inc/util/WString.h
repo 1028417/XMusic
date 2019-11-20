@@ -99,16 +99,8 @@ public:
 
 	WString& operator<<(char c)
 	{
-		return *this << (wchar_t)c;
-	}
-
-	const wstring* operator->() const
-	{
-		return &m_str;
-	}
-	wstring* operator->()
-	{
-		return &m_str;
+		m_str.append(1, (wchar_t)c);
+		return *this;
 	}
 
     WString& operator<<(const wstring& str)
@@ -138,6 +130,15 @@ public:
         ret << t;
         return ret;
     }
+
+	const wstring* operator->() const
+	{
+		return &m_str;
+	}
+	wstring* operator->()
+	{
+		return &m_str;
+	}
 
 	const wstring& operator*() const
 	{

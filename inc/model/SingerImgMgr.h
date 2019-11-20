@@ -6,23 +6,12 @@ public:
 	CSingerImgMgr() {}
 
 private:
-	wstring m_strSingerImgDir;
+	wstring m_strDir;
 
-	map<wstring, vector<wstring>> m_mapSingerImgFile;
-
-#if !__winvc
-private:
-    unordered_map<string, string> m_mapUrl;
+	map<wstring, vector<wstring>> m_mapFile;
 
 public:
-    void setShareUrl(unordered_map<string, string>&& mapUrl)
-    {
-        m_mapUrl.swap(mapUrl);
-    }
-#endif
-
-public:
-	void init(const wstring& strSingerImgDir);
+	void init(const wstring& strSingerImgDir, const list<wstring>& lstOnlineImgFile);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
@@ -34,5 +23,5 @@ public:
 
 	bool getSingerImg(const wstring& strSingerName, UINT uIndex, wstring& strSingerImg) const;
 
-	void exportSingerImg(const wstring& strDir);
+	void getSingerImg(SList<wstring>& lstSingerImg) const;
 };
