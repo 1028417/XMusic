@@ -26,7 +26,10 @@ private:
     unordered_map<string, string> m_mapShareUrl;
 
 public:
-    bool loadShare(Instream& ins);
+    void addShareUrl(const unordered_map<string, string>& mapUrl)
+    {
+        m_mapShareUrl.insert(mapUrl.begin(), mapUrl.end());
+    }
 
     bool loadXurl(Instream& ins);
 
