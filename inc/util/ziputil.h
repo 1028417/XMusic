@@ -37,11 +37,11 @@ private:
 
 	void* m_unzfile = NULL;
 
-	list<tagUnzFileInfo> m_lstSubDirInfo;
+    list<tagUnzFileInfo> m_lstUnzDirInfo;
 
-    map<string, tagUnzFileInfo> m_mapSubFileInfo;
+    map<string, tagUnzFileInfo> m_mapUnzFileInfo;
 
-    list<tagUnzFileInfo*> m_lstSubInfo;
+    list<tagUnzFileInfo*> m_lstUnzFileInfo;
 
 private:
 	bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
@@ -54,9 +54,9 @@ public:
 		return m_unzfile != NULL;
 	}
 
-    const map<string, tagUnzFileInfo>& fileMap() const
+    const map<string, tagUnzFileInfo>& UnzFileMap() const
     {
-        return m_mapSubFileInfo;
+        return m_mapUnzFileInfo;
     }
 
 	bool open(const string& strFile, const string& strPwd = "")
@@ -73,8 +73,8 @@ public:
     long read(const tagUnzFileInfo& unzFileInfo, void *buf, size_t len) const;
     long read(const string& strPath, void *buf, size_t len) const
     {
-        auto itr = m_mapSubFileInfo.find(strPath);
-        if (itr == m_mapSubFileInfo.end())
+        auto itr = m_mapUnzFileInfo.find(strPath);
+        if (itr == m_mapUnzFileInfo.end())
         {
             return -1;
         }
@@ -96,8 +96,8 @@ public:
     template <typename T>
     long read(const string& strPath, TBuffer<T>& buff) const
     {
-        auto itr = m_mapSubFileInfo.find(strPath);
-        if (itr == m_mapSubFileInfo.end())
+        auto itr = m_mapUnzFileInfo.find(strPath);
+        if (itr == m_mapUnzFileInfo.end())
         {
             return -1;
         }
@@ -111,8 +111,8 @@ public:
 	}
     long read(const string& strPath, CByteBuffer& bbfBuff, size_t uReadSize = 0) const
     {
-        auto itr = m_mapSubFileInfo.find(strPath);
-        if (itr == m_mapSubFileInfo.end())
+        auto itr = m_mapUnzFileInfo.find(strPath);
+        if (itr == m_mapUnzFileInfo.end())
         {
             return -1;
         }
@@ -126,8 +126,8 @@ public:
 	}
     long read(const string& strPath, CCharBuffer& cbfBuff, size_t uReadSize = 0) const
     {
-        auto itr = m_mapSubFileInfo.find(strPath);
-        if (itr == m_mapSubFileInfo.end())
+        auto itr = m_mapUnzFileInfo.find(strPath);
+        if (itr == m_mapUnzFileInfo.end())
         {
             return -1;
         }
