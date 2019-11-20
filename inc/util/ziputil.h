@@ -54,7 +54,7 @@ public:
 		return m_unzfile != NULL;
 	}
 
-    const map<string, tagUnzFileInfo>& UnzFileMap() const
+    const map<string, tagUnzFileInfo>& unzfileInfoMap() const
     {
         return m_mapUnzFileInfo;
     }
