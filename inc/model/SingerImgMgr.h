@@ -10,15 +10,19 @@ private:
 
 	map<wstring, vector<wstring>> m_mapSingerImgFile;
 
-public:
-	void init(const wstring& strSingerImgDir);
-
 #if !__winvc
-    void setShareUrl(const unordered_map<string, string>& mapUrl)
+private:
+    unordered_map<string, string> m_mapUrl;
+
+public:
+    void setShareUrl(unordered_map<string, string>&& mapUrl)
     {
-        //m_mapShareUrl.insert(mapUrl.begin(), mapUrl.end());
+        m_mapUrl.swap(mapUrl);
     }
 #endif
+
+public:
+	void init(const wstring& strSingerImgDir);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
