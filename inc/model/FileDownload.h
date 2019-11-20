@@ -3,19 +3,12 @@
 class __ModelExt CFileDownload
 {
 public:
-    static CFileDownload& inst()
+    ~CFileDownload()
     {
-        static CFileDownload inst;
-        return inst;
+        _clear();
     }
 
-private:
     CFileDownload() {}
-
-	~CFileDownload()
-	{
-		_clear();
-	}
 
 private:
     XThread m_thread;

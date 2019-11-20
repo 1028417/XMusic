@@ -52,10 +52,7 @@ public:
     {
         return m_uStreamPos;
     }
-    size_t streamSize() const
-    {
-        return CFileDownload::inst().sumSize();
-    }
+    size_t streamSize() const;
 
 #else
 	UINT checkFileDuration(const wstring& strFile, long long& nFileSize)
@@ -126,7 +123,9 @@ public:
 	}
 
 private:
+#if !__winvc
     long checkPreserveDataSize() const override;
+#endif
 
 	bool isOnline() const override
 	{
