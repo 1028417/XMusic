@@ -288,7 +288,7 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-        bool _upgradeMediaLib(UINT uVersion, CZipFile& zipFile);
+        bool _upgradeMediaLib(UINT uPrevVersion, CZipFile& zipFile);
         bool _loadShareLib(CZipFile& zipFile);
 
         wstring _scanXMusicDir();
