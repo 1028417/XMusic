@@ -248,6 +248,8 @@ public:
 #if !__winvc
     bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
     bool dowloadMediaLib(const string& strUrl, UINT uCurrVer) override;
+
+    static string genUrl(const string& strUrl, const string& strFileTitle);
 #endif
 
     bool initMediaLib() override;
