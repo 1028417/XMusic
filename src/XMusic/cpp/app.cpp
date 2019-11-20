@@ -284,19 +284,13 @@ bool CXMusicApp::_dowloadMediaLib()
 
         cauto ba = qf.readAll();
         IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
-        if (!ifbUpgradeConf)
-        {
-            g_logger >> "loadUpgradeConf fail";
-            return false;
-        }
-
         __EnsureReturn(m_model.readUpgradeConf(upgradeConf, &ifbUpgradeConf), false);
     }
 
-    for (cauto strUrl : upgradeConf.lstUrl)
+    for (cauto prUrl : upgradeConf.plUrl)
     {
-        g_logger << "dowloadMediaLib: " >> strUrl;
-        if (m_model.dowloadMediaLib(strUrl, upgradeConf.uVersion))
+        g_logger << "dowloadMediaLib: " >> prUrl.first;
+        if (m_model.dowloadMediaLib(prUrl.first, upgradeConf.uVersion))
         {
             return true;
         }
