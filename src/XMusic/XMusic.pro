@@ -142,9 +142,6 @@ android {
 
     QMAKE_INFO_PLIST += mac.plist
 
-    #target.path = /Application
-    #INSTALLS += target
-
     font.path = Contents/MacOS/font
     hbkg.path = Contents/MacOS/hbkg
     vbkg.path = Contents/MacOS/vbkg
