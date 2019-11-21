@@ -287,17 +287,10 @@ bool CXMusicApp::_dowloadMediaLib()
         __EnsureReturn(m_model.readUpgradeConf(upgradeConf, &ifbUpgradeConf), false);
     }
 
-    for (cauto prUrl : upgradeConf.plUrl)
+    if (!m_model.upgradeMediaLib(upgradeConf))
     {
-        g_logger << "dowloadMediaLib: " >> prUrl.first;
-        if (m_model.dowloadMediaLib(prUrl.first, upgradeConf.uVersion))
-        {
-            return true;
-        }
-        else
-        {
-            g_logger >> "dowloadMediaLib fail";
-        }
+        g_logger >> "upgradeMediaLib fail";
+        return false;
     }
 
     return false;
