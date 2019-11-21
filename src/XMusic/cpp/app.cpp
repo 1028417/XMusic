@@ -150,7 +150,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
-bool CXMusicApp::_resetRootDir(wstring& strRootDir)
+static bool _resetRootDir(wstring& strRootDir)
 {
 #if __android
     strRootDir = L"/sdcard/XMusic";
@@ -219,14 +219,14 @@ int CXMusicApp::run()
 //            CMsgBox msgBox(m_mainWnd);
 //            msgBox.show(false);
 
-            if (XMediaLib::m_bOnlineMediaLib)
+            if (thrUpgrade.joinable())
             {
                 thrUpgrade.join();
-                if (bUpgradeFail)
-                {
-                    this->quit();
-                    return;
-                }
+            }
+            if (bUpgradeFail)
+            {
+                this->quit();
+                return;
             }
 
             g_logger >> "initMediaLib";
@@ -285,6 +285,7 @@ bool CXMusicApp::_dowloadMediaLib()
         cauto ba = qf.readAll();
         IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
         __EnsureReturn(m_model.readUpgradeConf(upgradeConf, &ifbUpgradeConf), false);
+        upgradeConf.uVersion = (UINT)-1;
     }
 
     if (!m_model.upgradeMediaLib(upgradeConf))
