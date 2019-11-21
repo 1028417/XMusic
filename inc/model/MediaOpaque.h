@@ -140,5 +140,5 @@ private:
 		return m_strFile;
 	}
 
-    int read(uint8_t *buf, size_t size) override;
+    int read(byte_t *buf, size_t size) override;
 };
