@@ -293,5 +293,5 @@ bool CXMusicApp::_dowloadMediaLib()
         return false;
     }
 
-    return false;
+    return true;
 }
