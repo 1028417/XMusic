@@ -2,8 +2,6 @@
 
 #include "Player.h"
 
-#include "FileDownload.h"
-
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
 public:
