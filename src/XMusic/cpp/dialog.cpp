@@ -44,29 +44,17 @@ bool CDialog::event(QEvent *ev)
 			close();
 		}
 
-		return true;
-
-		break;
+        return true;
 #elif __windows
     case QEvent::WindowActivate:
     {
-        list<HWND> lstHwnd(1, hwnd());
-        for (CDialog *pDlg = this; ;)
-        {
-            lstHwnd.push_front((HWND)pDlg->m_parent.winId());
+        CDialog *pDlg = this;
+        do {
+            ::SetWindowPos((HWND)pDlg->m_parent.winId(), pDlg->hwnd(), 0, 0, 0, 0
+                           , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
             pDlg = dynamic_cast<CDialog*>(&pDlg->m_parent);
-            if (NULL == pDlg)
-            {
-                break;
-            }
-        }
-
-        for (HWND hWnd : lstHwnd)
-        {
-            ::SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0
-                           , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        }
+        } while (pDlg);
     }
 
         break;

@@ -216,15 +216,15 @@ int CXMusicApp::run()
         }
 
         timerutil::async(6000, [&](){
-            CMsgBox msgBox(m_mainWnd);
-            msgBox.show("更新媒体库失败");
-
             if (thrUpgrade.joinable())
             {
                 thrUpgrade.join();
             }
             if (bUpgradeFail)
             {
+                CMsgBox msgBox(m_mainWnd);
+                msgBox.show("更新媒体库失败");
+
                 this->quit();
                 return;
             }
