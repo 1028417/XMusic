@@ -38,30 +38,29 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #endif
 
 #if __windows || __mac
-#include <QSharedMemory>
-static QSharedMemory sm("xmusic");
+#include <QLockFile>
 #endif
 
 int main(int argc, char *argv[])
 {
 #if __windows || __mac
-    if (!sm.create(1))
+    QLockFile lf(strutil::toQstr(fsutil::getHomeDir()) + "/xmusic.lock");
+    lf.setStaleLockTime(1);
+    if (!lf.tryLock(0))
     {
         return -1;
     }
+#endif
 
 #if __windows
     extern void InitMinDump();
     InitMinDump();
-#endif
-
 #elif __android
     if (!fsutil::createDir(__androidDataDir))
     {
         return -1;
     }
 #endif
-
 
 //#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
 //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

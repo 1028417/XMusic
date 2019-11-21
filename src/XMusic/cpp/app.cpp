@@ -288,6 +288,7 @@ bool CXMusicApp::_dowloadMediaLib()
         upgradeConf.uVersion = (UINT)-1;
     }
 
+    g_logger << "upgradeMediaLib, current version: " >> upgradeConf.uVersion;
     if (!m_model.upgradeMediaLib(upgradeConf))
     {
         g_logger >> "upgradeMediaLib fail";
