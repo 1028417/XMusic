@@ -44,6 +44,8 @@ private:
         return m_mainWnd;
     }
 
+    bool _resetRootDir(wstring& strRootDir);
+
     bool _dowloadMediaLib();
     bool _upgradeMediaLib(UINT uVersion, CZipFile& zipFile);
 
@@ -80,3 +82,5 @@ public:
 
     int run();
 };
+
+#define __BlueLabel 32, 128, 255

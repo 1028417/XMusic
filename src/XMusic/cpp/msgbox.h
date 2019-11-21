@@ -8,4 +8,6 @@ class CMsgBox : public CDialog
 
 public:
     CMsgBox(QWidget& parent);
+
+    void show(const QString& qsMsg);
 };

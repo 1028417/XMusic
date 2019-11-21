@@ -150,7 +150,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     });
 }
 
-static bool _resetRootDir(wstring& strRootDir)
+bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 {
 #if __android
     strRootDir = L"/sdcard/XMusic";
@@ -216,8 +216,8 @@ int CXMusicApp::run()
         }
 
         timerutil::async(6000, [&](){
-//            CMsgBox msgBox(m_mainWnd);
-//            msgBox.show(false);
+            CMsgBox msgBox(m_mainWnd);
+            msgBox.show("更新媒体库失败");
 
             if (thrUpgrade.joinable())
             {

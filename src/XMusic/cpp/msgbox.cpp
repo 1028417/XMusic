@@ -6,7 +6,34 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent)
+CMsgBox::CMsgBox(QWidget& parent)
+    : CDialog(parent, QColor(200, 230, 255))
 {
     ui.setupUi(this);
+
+    ui.labelTip->setFont(1, E_FontWeight::FW_SemiBold);
+    ui.labelTip->setTextColor(QColor(__BlueLabel));
+
+    ui.labelClose->setTextColor(QColor(__BlueLabel));
+
+    connect(ui.labelClose, &CLabel::signal_click, this, [&](){
+        this->close();
+    });
+}
+
+#include <QBitmap>
+
+void CMsgBox::show(const QString& qsMsg)
+{
+    ui.labelTip->setText(qsMsg);
+
+    QBitmap bmp(this->size());
+    bmp.fill();
+    QPainter painter(&bmp);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::black);
+    painter.drawRoundedRect(bmp.rect(),10,10);
+    setMask(bmp);
+
+    CDialog::show(false);
 }

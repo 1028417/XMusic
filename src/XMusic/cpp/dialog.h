@@ -17,6 +17,11 @@ public:
     {
     }
 
+    CDialog(QWidget& parent, const QColor& crBkg) : m_parent(parent)
+        , m_crBkg(crBkg)
+    {
+    }
+
 private:
     QWidget& m_parent;
 
@@ -50,6 +55,13 @@ public:
     {
         return m_crBkg;
     }
+
+#if __windows
+    HWND hwnd() const
+    {
+        return (HWND)winId();
+    }
+#endif
 
 protected:
     virtual bool event(QEvent *ev) override;

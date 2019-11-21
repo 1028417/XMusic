@@ -18,7 +18,7 @@ void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
-    QColor crText(32, 128, 255);
+    QColor crText(__BlueLabel);
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
