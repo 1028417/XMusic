@@ -117,7 +117,7 @@ class IModel
 public:
 #if !__winvc
     virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
-    virtual bool dowloadMediaLib(const string& strUrl, UINT uCurrVer) = 0;
+    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) = 0;
 #endif
 
     virtual bool initMediaLib() = 0;
@@ -247,7 +247,7 @@ public:
 
 #if !__winvc
     bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
-    bool dowloadMediaLib(const string& strUrl, UINT uCurrVer) override;
+    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) override;
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 #endif
@@ -288,7 +288,7 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-        bool _upgradeMediaLib(UINT uPrevVersion, CZipFile& zipFile);
+        bool _upgradeMediaLib(CZipFile& zipFile, UINT uPrevVersion);
         bool _loadShareLib(CZipFile& zipFile);
 
         wstring _scanXMusicDir();
