@@ -339,7 +339,7 @@ bool CImgDir::genSubImgs()
     QPixmap pm;
     if (_loadImg(*pSubFile, pm, __zoomoutSize))
     {
-        m_lstSubImgs.push_back({pSubFile, QPixmap()});
+        m_lstSubImgs.emplace_back(pSubFile, QPixmap());
         auto& pr = m_lstSubImgs.back();
         pr.second.swap(pm);
     }

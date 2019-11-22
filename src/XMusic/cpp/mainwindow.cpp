@@ -925,8 +925,8 @@ void MainWindow::_playSingerImg(bool bReset)
         return;
     }
 
-    wstring strSingerImg;
-    if (m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, strSingerImg))
+    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx);
+    if (!strSingerImg.empty())
     {
         QPixmap pm;
         if (pm.load(strutil::toQstr(strSingerImg)))

@@ -95,8 +95,8 @@ void CImgMgr::initSingerImg()
 	TD_MediaSetList arrSingers;
 	m_model.getSingerMgr().GetAllSinger(arrSingers);
 	arrSingers([&](CMediaSet& Singer) {
-		wstring strSingerImg;
-		if (m_model.getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+		cauto strSingerImg = m_model.getSingerImgMgr().getSingerImg(Singer.m_strName, 0);
+		if (!strSingerImg.empty())
 		{
 			(void)_initSingerImg(Singer.m_uID, Singer.m_strName, strSingerImg);
 		}
@@ -119,8 +119,8 @@ bool CImgMgr::addSingerImg(UINT uSingerID, const wstring& strSingerName, const l
 
 	if (_getSingerImgPos(uSingerID) < 0)
 	{
-		wstring strSingerImg;
-		__EnsureReturn(m_model.getSingerImgMgr().getSingerImg(strSingerName, 0, strSingerImg), false);
+		cauto strSingerImg = m_model.getSingerImgMgr().getSingerImg(strSingerName, 0);
+		__EnsureReturn(!strSingerImg.empty(), false);
 		
 		__EnsureReturn(_initSingerImg(uSingerID, strSingerName, strSingerImg), false);
 	}

@@ -256,7 +256,7 @@ const QPixmap* CBkgDlg::snapshot(UINT uIdx)
     cauto strBkgFile = stBkgDir + vecBkg[uIdx];
 
 #define __zoomoutSize 1000
-    m_lstSnapshot.push_back(QPixmap());
+    m_lstSnapshot.emplace_back(QPixmap());
     auto pm = &m_lstSnapshot.back();
     if (pm->load(strBkgFile))
     {

@@ -382,34 +382,33 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
 
 const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
 {
-    auto itr = m_mapSingerPixmap.find(&Singer);
-    if (itr != m_mapSingerPixmap.end())
+    auto& pSingerPixmap = m_mapSingerPixmap[&Singer];
+    if (pSingerPixmap)
     {
-        return *itr->second;
+        return *pSingerPixmap;
     }
 
-    wstring strSingerImg;
-    if (m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0, strSingerImg))
+    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0);
+    if (!strSingerImg.empty())
     {
-        QPixmap pm;
+        m_lstSingerPixmap.emplace_back(QPixmap());
+        QPixmap& pm = m_lstSingerPixmap.back();
         if (pm.load(strutil::toQstr(strSingerImg)))
         {
 #define __zoomoutSize 150
             CPainter::zoomoutPixmap(pm, __zoomoutSize);
+
+            pSingerPixmap = &pm;
+            return pm;
         }
-
-        m_lstSingerPixmap.push_back(QPixmap());
-        auto& back = m_lstSingerPixmap.back();
-        back.swap(pm);
-
-        m_mapSingerPixmap[&Singer] = &back;
-        return back;
+        else
+        {
+            m_lstSingerPixmap.pop_back();
+        }
     }
-    else
-    {
-        m_mapSingerPixmap[&Singer] = &m_pmDefaultSinger;
-        return m_pmDefaultSinger;
-    }
+
+    pSingerPixmap = &m_pmDefaultSinger;
+    return m_pmDefaultSinger;
 }
 
 void CMedialibView::_genMediaContext(tagMediaContext& context)
