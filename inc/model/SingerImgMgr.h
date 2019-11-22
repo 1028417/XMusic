@@ -10,8 +10,17 @@ private:
 
 	map<wstring, vector<wstring>> m_mapFile;
 
+    list<wstring> m_lstOnlineImgFile;
+    mutex m_mutex;
+    XThread m_thrDownload;
+
 public:
-	void init(const wstring& strSingerImgDir, const list<wstring>& lstOnlineImgFile);
+    void close()
+    {
+        m_thrDownload.cancel();
+    }
+
+	void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineImgFile);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
@@ -21,7 +30,7 @@ public:
 
 	void clearSingerImg();
 
-	bool getSingerImg(const wstring& strSingerName, UINT uIndex, wstring& strSingerImg) const;
+	wstring getSingerImg(const wstring& strSingerName, UINT uIndex) const;
 
 	void getSingerImg(SList<wstring>& lstSingerImg) const;
 };

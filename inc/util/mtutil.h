@@ -184,7 +184,7 @@ public:
 
 #include "mtlock.h"
 
-using CB_XThread = function<void(const bool& bCancelSignal)>;
+using CB_XThread = function<void(const bool& bRunSignal)>;
 
 class __UtilExt XThread
 {
@@ -206,9 +206,9 @@ private:
     thread m_thread;
 
 private:
-    virtual void _onStart(const bool& bCancelSignal)
+    virtual void _onStart(const bool& bRunSignal)
     {
-        (void)bCancelSignal;
+        (void)bRunSignal;
     }
 
 public:

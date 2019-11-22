@@ -197,6 +197,8 @@ private:
 
 	CPlayMgr m_PlayMgr;
 
+	string m_strSingerImgUrl;
+
 public:
     bool status() const override
 	{
