@@ -223,7 +223,7 @@ int CXMusicApp::run()
             if (bUpgradeFail)
             {
                 CMsgBox msgBox(m_mainWnd);
-                msgBox.show("更新媒体库失败");
+                msgBox.show("加载媒体库失败");
 
                 this->quit();
                 return;
@@ -268,28 +268,36 @@ int CXMusicApp::run()
 
 bool CXMusicApp::_dowloadMediaLib()
 {
-    tagUpgradeConf upgradeConf;
-    if (!m_model.readUpgradeConf(upgradeConf))
-    {
 #if __android
-        QFile qf("assets:/upgrade.conf");
+    QFile qf("assets:/upgrade.conf");
 #else
-        QFile qf(":/upgrade.conf");
+    QFile qf(":/upgrade.conf");
 #endif
-        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-        {
-            g_logger >> "loadUpgradeConfResource fail";
-            return false;
-        }
-
-        cauto ba = qf.readAll();
-        IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
-        __EnsureReturn(m_model.readUpgradeConf(upgradeConf, &ifbUpgradeConf), false);
-        upgradeConf.uVersion = (UINT)-1;
+    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        g_logger >> "loadUpgradeConfResource fail";
+        return false;
     }
 
-    g_logger << "upgradeMediaLib, current version: " >> upgradeConf.uVersion;
-    if (!m_model.upgradeMediaLib(upgradeConf))
+    cauto ba = qf.readAll();
+    IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
+    tagUpgradeConf orgUpgradeConf;
+    __EnsureReturn(m_model.readUpgradeConf(orgUpgradeConf, &ifbUpgradeConf), false);
+    g_logger << "upgradeMediaLib, orgVersion: " >> orgUpgradeConf.uVersion;
+
+    tagUpgradeConf *pUpgradeConf = &orgUpgradeConf;
+    tagUpgradeConf userUpgradeConf;
+    if (m_model.readUpgradeConf(userUpgradeConf))
+    {
+        g_logger << "upgradeMediaLib, userVersion: " >> userUpgradeConf.uVersion;
+
+        if (userUpgradeConf.uVersion >= orgUpgradeConf.uVersion)
+        {
+            pUpgradeConf = &userUpgradeConf;
+        }
+    }
+
+    if (!m_model.upgradeMediaLib(*pUpgradeConf))
     {
         g_logger >> "upgradeMediaLib fail";
         return false;
