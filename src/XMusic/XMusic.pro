@@ -65,6 +65,17 @@ android {
 
     platform = mac
     DESTDIR = ../../bin/mac
+
+    macDir = $$PWD/../../bin/mac
+    frameworkDir = $$macDir/XMusic.app/Contents/Frameworks
+    QMAKE_POST_LINK += mkdir $$frameworkDir \
+        && cp -f $$macDir/libavcodec.58.dylib $$frameworkDir/ \
+        && cp -f $$macDir/libavformat.58.dylib $$frameworkDir/ \
+        && cp -f $$macDir/libavutil.56.dylib $$frameworkDir/ \
+        && cp -f $$macDir/libswresample.3.dylib $$frameworkDir/ \
+        && mkdir $$frameworkDir/SDL2.framework \
+        && cp -R $$macDir/SDL2.framework/ $$frameworkDir/SDL2.framework \
+        && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir -dmg
 } else: ios {
     LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2 \
 			-L../../libs/ios  -lCURLTool \
