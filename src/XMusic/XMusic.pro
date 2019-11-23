@@ -78,7 +78,6 @@ android {
         && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir -dmg
 } else: ios {
     LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2 \
-			-L../../libs/ios  -lCURLTool \
 #
             -L../../../PlaySDK/libs/ios/simulator  -lSDL2 \
             -framework AVFoundation  -framework GameController  -framework CoreMotion \
@@ -138,7 +137,6 @@ android {
             $$PWD/../../libs/armeabi-v7a/libxutil.so \
             $$PWD/../../libs/armeabi-v7a/libxMediaLib.so \
             $$PWD/../../libs/armeabi-v7a/libxModel.so \
-            $$PWD/../../libs/armeabi-v7a/libCURLTool.so \
             $$PWD/../../libs/armeabi-v7a/libcurl.so \
             $$PWD/../../libs/armeabi-v7a/libssl.so \
             $$PWD/../../libs/armeabi-v7a/libcrypto.so \
