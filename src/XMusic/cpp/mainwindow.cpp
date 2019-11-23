@@ -103,7 +103,7 @@ MainWindow::MainWindow(CXMusicApp& app)
 #else
     ui.btnFullScreen->setParent(this);
 
-    connect(ui.btnFullScreen, &QPushButton::clicked, this, [&](){
+    connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
         auto& bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
         bFullScreen = !bFullScreen;
         g_bFullScreen = bFullScreen;
@@ -256,8 +256,9 @@ void MainWindow::_init()
     ui.labelSingerName->setShadow(2);
 
     ui.labelSingerName->setFont(1);
-    ui.labelAlbumName->setFont(1);
+
     ui.labelPlayingfile->setFont(1);
+
     ui.labelDuration->setFont(0.8);
 
     m_PlayingList.setFont(0.9);
@@ -866,6 +867,8 @@ void MainWindow::_showAlbumName()
     labelAlbumName.setVisible(true);
     labelAlbumName.setText(strMediaSet);
 
+    labelAlbumName.setFont(1);
+
     if (!m_bUsingCustomBkg)
     {
         cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
@@ -982,7 +985,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnSetting)
     {
-        m_bkgDlg.show();
+        m_bkgDlg.show(true);
     }
     else if (button == ui.btnMore)
     {

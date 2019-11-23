@@ -28,16 +28,14 @@ void CAddBkgDlg::init()
 
     m_addbkgView.setTextColor(crText);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
-        this->close();
-    });
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
 }
 
 void CAddBkgDlg::show()
 {
-    CDialog::show();
+    CDialog::show(true);
 
     cauto strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
     m_ImgRoot.setDir(strRootDir);

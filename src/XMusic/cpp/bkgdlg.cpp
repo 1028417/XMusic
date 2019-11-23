@@ -150,9 +150,7 @@ void CBkgDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, [&](CButton*) {
-        this->close();
-    });
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
 #define __hbkgdir L"/hbkg/"
 #define __vbkgdir L"/vbkg/"

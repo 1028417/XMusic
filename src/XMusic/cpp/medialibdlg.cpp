@@ -55,9 +55,7 @@ void CMedialibDlg::init()
     m_OuterDir.setDir(strMediaLibDir, strOuterDir);
 
 
-    connect(ui.btnReturn, &CButton::signal_clicked, [&](){
-        this->close();
-    });
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(ui.btnUpward, &CButton::signal_clicked, [&](){
         m_MedialibView.upward();
@@ -74,7 +72,7 @@ void CMedialibDlg::_show()
         _resizeTitle();
     });
 
-    CDialog::show();
+    CDialog::show(true);
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)

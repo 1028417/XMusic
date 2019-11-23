@@ -12,19 +12,20 @@
 class CDialog : public QDialog
 {
 public:
-    CDialog(QWidget& parent) : m_parent(parent)
+    CDialog(QWidget& parent) : m_parent(&parent)
         , m_crBkg(180, 220, 255)
     {
     }
 
-    CDialog(QWidget& parent, const QColor& crBkg) : m_parent(parent)
+    CDialog(QWidget& parent, const QColor& crBkg) : m_parent(&parent)
         , m_crBkg(crBkg)
     {
     }
 
-private:
-    QWidget& m_parent;
+protected:
+    QWidget *m_parent;
 
+private:
     QColor m_crBkg;
 
 private:
@@ -42,7 +43,7 @@ private:
     virtual void _onClose(){}
 
 public:
-    void show(bool bFullScreen = true);
+    void show(bool bFullScreen, const fn_void& cbClose = NULL);
 
     void setBkgColor(UINT r, UINT g, UINT b)
     {

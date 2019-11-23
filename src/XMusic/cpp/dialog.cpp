@@ -5,7 +5,7 @@ extern void showFull(QWidget* wnd);
 
 extern std::set<class CDialog*> g_setFullScreenDlgs;
 
-void CDialog::show(bool bFullScreen)
+void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 {
     _setBkgColor();
 
@@ -18,13 +18,18 @@ void CDialog::show(bool bFullScreen)
         showFull(this);
         g_setFullScreenDlgs.insert(this);
     }
-#if __android
-    else
+
+    if (cbClose)
     {
-        cauto ptCenter = m_parent.geometry().center();
-        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+        this->connect(this, &QDialog::close, cbClose);
     }
 
+#if __android
+    if (!bFullScreen)
+    {
+        cauto ptCenter = m_parent->geometry().center();
+        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+    }
     this->setVisible(true);
 
 #else
@@ -60,10 +65,10 @@ bool CDialog::event(QEvent *ev)
     {
         CDialog *pDlg = this;
         do {
-            ::SetWindowPos((HWND)pDlg->m_parent.winId(), pDlg->hwnd(), 0, 0, 0, 0
+            ::SetWindowPos((HWND)pDlg->m_parent->winId(), pDlg->hwnd(), 0, 0, 0, 0
                            , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
-            pDlg = dynamic_cast<CDialog*>(&pDlg->m_parent);
+            pDlg = dynamic_cast<CDialog*>(pDlg->m_parent);
         } while (pDlg);
     }
 

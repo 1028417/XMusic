@@ -209,7 +209,6 @@ int CXMusicApp::run()
                 g_logger >> "upgradeMediaLib";
                 if (!_dowloadMediaLib())
                 {
-                    g_logger >> "upgradeMediaLib fail";
                     bUpgradeFail = true;
                 }
             });
@@ -222,10 +221,10 @@ int CXMusicApp::run()
             }
             if (bUpgradeFail)
             {
-                CMsgBox msgBox(m_mainWnd);
-                msgBox.show("加载媒体库失败");
+                CMsgBox::show(m_mainWnd, "加载媒体库失败", [&](){
+                    this->quit();
+                });
 
-                this->quit();
                 return;
             }
 
