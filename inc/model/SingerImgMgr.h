@@ -21,7 +21,7 @@ private:
     XThread m_thrDownload;
 
 private:
-    void _download(const string& strBaseUrl, const map<wstring, wstring>& mapOnlineImgFile);
+    void _download(const string& strBaseUrl);
 #endif
 
 public:
