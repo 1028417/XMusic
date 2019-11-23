@@ -61,8 +61,14 @@ bool CXController::start()
         while (true)
         {
             tagPlayCtrl PlayCtrl;
-            if (m_sigPlayCtrl.wait_for(2000, PlayCtrl, [](const tagPlayCtrl& PlayCtrl){
-                return PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null;
+            if (m_sigPlayCtrl.wait_for(2000, [&](const tagPlayCtrl& t_PlayCtrl){
+                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
+                {
+                    PlayCtrl = t_PlayCtrl;
+                    return true;
+                }
+
+                return false;
             }))
             {
                 switch (PlayCtrl.ePlayCtrl)
