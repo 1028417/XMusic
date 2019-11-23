@@ -55,6 +55,12 @@ public:
 		return 0;
 	}
 
+    virtual void onSingerImgDownloaded(const wstring& strSingerName, const wstring& strFilePath)
+    {
+        (void)strSingerName;
+        (void)strFilePath;
+    }
+
 	virtual bool renameMedia(IMedia& media, const wstring& strNewName)
 	{
 		(void)media;
@@ -290,10 +296,10 @@ public:
 	bool restoreDB(const wstring& strTag) override;
 
 private:
-        bool _upgradeMediaLib(CZipFile& zipFile, UINT uPrevVersion);
-        bool _loadShareLib(CZipFile& zipFile);
+    bool _upgradeMediaLib(CZipFile& zipFile, UINT uPrevVersion);
+    bool _loadShareLib(CZipFile& zipFile);
 
-        wstring _scanXMusicDir();
+    wstring _scanXMusicDir();
 
     bool _initData(const wstring& strDBFile);
 
