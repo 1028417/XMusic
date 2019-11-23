@@ -1,6 +1,9 @@
 
 #include "dialog.h"
 
+#include <QPainter>
+#include <QBitmap>
+
 extern void showFull(QWidget* wnd);
 
 extern std::set<class CDialog*> g_setFullScreenDlgs;
@@ -18,20 +21,33 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         showFull(this);
         g_setFullScreenDlgs.insert(this);
     }
-
-    if (cbClose)
+    else
     {
-        this->connect(this, &QDialog::close, cbClose);
-    }
+        QBitmap bmp(this->size());
+        bmp.fill();
+        QPainter painter(&bmp);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::black);
+        painter.drawRoundedRect(bmp.rect(),15,15);
+        setMask(bmp);
 
-#if __android
-    if (!bFullScreen)
-    {
         cauto ptCenter = m_parent->geometry().center();
         move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
-    this->setVisible(true);
 
+    this->connect(this, &QDialog::finished, [&](){
+        _onClose();
+
+        g_setFullScreenDlgs.erase(this);
+
+        if (cbClose)
+        {
+            cbClose();
+        }
+    });
+
+#if __android
+    this->setVisible(true);
 #else
     this->exec();
 #endif
@@ -40,13 +56,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 bool CDialog::event(QEvent *ev)
 {
 	switch (ev->type())
-	{
-    case QEvent::Close:
-        _onClose();
-
-        g_setFullScreenDlgs.erase(this);
-
-		break;
+    {
 	case QEvent::Move:
 	case QEvent::Resize:
         _relayout(width(), height());

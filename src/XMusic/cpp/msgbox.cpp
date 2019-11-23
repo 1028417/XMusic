@@ -19,21 +19,11 @@ CMsgBox::CMsgBox(QWidget& parent)
     connect(ui.labelClose, &CLabel::signal_click, this, &QDialog::close);
 }
 
-#include <QBitmap>
-
 void CMsgBox::_show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose)
 {
     m_parent = &parent;
 
     ui.labelTip->setText(qsMsg);
-
-    QBitmap bmp(this->size());
-    bmp.fill();
-    QPainter painter(&bmp);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::black);
-    painter.drawRoundedRect(bmp.rect(),10,10);
-    setMask(bmp);
 
     CDialog::show(false, cbClose);
 }

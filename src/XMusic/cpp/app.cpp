@@ -152,18 +152,13 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 
 bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 {
+    strRootDir = fsutil::getHomeDir() + L"/XMusic";
+
 #if __android
     strRootDir = L"/sdcard/XMusic";
 
-#elif __mac
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-
-#elif __ios
-#if TARGET_IPHONE_SIMULATOR
-    strRootDir = L"/Users/lhyuan/XMusic";
-#else
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-#endif
+//#elif __ios && TARGET_IPHONE_SIMULATOR
+//    strRootDir = L"/Users/lhyuan/XMusic";
 
 #else
     if (!XMediaLib::m_bOnlineMediaLib)
@@ -180,8 +175,6 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 
         return true;
     }
-
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
 #endif
 
     return fsutil::createDir(strRootDir + __medialibPath);
@@ -218,14 +211,14 @@ int CXMusicApp::run()
             if (thrUpgrade.joinable())
             {
                 thrUpgrade.join();
-            }
-            if (bUpgradeFail)
-            {
-                CMsgBox::show(m_mainWnd, "加载媒体库失败", [&](){
-                    this->quit();
-                });
+                if (bUpgradeFail)
+                {
+                    CMsgBox::show(m_mainWnd, "加载媒体库失败", [&](){
+                        this->quit();
+                    });
 
-                return;
+                    return;
+                }
             }
 
             g_logger >> "initMediaLib";
