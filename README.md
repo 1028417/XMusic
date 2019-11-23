@@ -1,5 +1,5 @@
 # **XMusic介绍**
-![](https://gitee.com/Musicrossoft/XMusic/raw/master/XMusicHost.jpg)
+![](https://musicrossoft.coding.net/p/musicrossoft/git/raw/master/XMusicHost.jpg)
 
 ## **创作背景**
 07年用VB开发一个迷你播放器，只支持Mp3、Wma、Wav格式播放。  
@@ -22,10 +22,10 @@
 
 ### 媒体库
 * 播放列表管理：管理播放列表及曲目的增删改，支持拖放，与资源浏览器、歌手/专辑联动。
-![](https://gitee.com/Musicrossoft/XMusic/raw/master/XMusicHost_Playlist.jpg)
+![](https://musicrossoft.coding.net/p/musicrossoft/git/raw/master/XMusicHost_Playlist.jpg)
 
 * 歌手/专辑管理：分组管理歌手、专辑及曲目的增删改，支持拖放，与资源浏览器、播放列表联动。
-![](https://gitee.com/Musicrossoft/XMusic/raw/master/XMusicHost_SingerAlbum.jpg)
+![](https://musicrossoft.coding.net/p/musicrossoft/git/raw/master/XMusicHost_SingerAlbum.jpg)
 
 * 曲目查找：按目录查找引用、按文件查找引用、按标题查找曲目、按歌手查找曲目、查看新曲目。
 
@@ -64,5 +64,5 @@
 已编译出Windows、macOs版本和android安装包，安卓采用OpenSL ES播放音频流。
 完成ios版本编译和iPhone/iPad各机型适配，app待上架
 
-![](https://gitee.com/Musicrossoft/XMusic/raw/master/XMusic_V.jpg)
-![](https://gitee.com/Musicrossoft/XMusic/raw/master/XMusic_H.jpg)
+![](https://musicrossoft.coding.net/p/musicrossoft/git/raw/master/XMusic_V.jpg)
+![](https://musicrossoft.coding.net/p/musicrossoft/git/raw/master/XMusic_H.jpg)
