@@ -3,9 +3,14 @@
 class __ModelExt CSingerImgMgr
 {
 public:
-	CSingerImgMgr() {}
+    CSingerImgMgr(IModelObserver& ModelObserver)
+        : m_ModelObserver(ModelObserver)
+    {
+    }
 
 private:
+    IModelObserver& m_ModelObserver;
+
 	wstring m_strDir;
 
 	map<wstring, vector<wstring>> m_mapFile;
@@ -30,7 +35,7 @@ public:
 
 	void clearSingerImg();
 
-	wstring getSingerImg(const wstring& strSingerName, UINT uIndex) const;
+    wstring getSingerImg(const wstring& strSingerName, UINT uIndex);
 
 	void getSingerImg(SList<wstring>& lstSingerImg) const;
 };
