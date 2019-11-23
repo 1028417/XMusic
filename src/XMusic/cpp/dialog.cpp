@@ -18,8 +18,18 @@ void CDialog::show(bool bFullScreen)
         showFull(this);
         g_setFullScreenDlgs.insert(this);
     }
+#if __android
+    else
+    {
+        cauto ptCenter = m_parent.geometry().center();
+        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+    }
 
+    this->setVisible(true);
+
+#else
     this->exec();
+#endif
 }
 
 bool CDialog::event(QEvent *ev)

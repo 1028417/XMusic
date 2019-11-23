@@ -198,12 +198,16 @@ public:
         _show();
     }
 
-    void showFile(const wstring& strPath)
+    bool showFile(const wstring& strPath)
     {
-        if (m_MedialibView.showFile(strPath))
+        if (!m_MedialibView.showFile(strPath))
         {
-            _show();
+            return false;
         }
+
+        _show();
+
+        return true;
     }
 
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);

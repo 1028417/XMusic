@@ -856,7 +856,7 @@ void MainWindow::_showAlbumName()
         m_PlayingInfo.uRelatedPlayItemID = 0;
     }
 
-    QLabel& labelAlbumName = *ui.labelAlbumName;
+    CLabel& labelAlbumName = *ui.labelAlbumName;
     if (strMediaSet->empty())
     {
         labelAlbumName.setVisible(false);
@@ -870,14 +870,15 @@ void MainWindow::_showAlbumName()
     {
         cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
         labelAlbumName.adjustSize();
-        if (labelAlbumName.width() < rcAlbumNamePrev.width())
+        if (labelAlbumName.width() > rcAlbumNamePrev.width())
+        {
+            labelAlbumName.adjustFont(0.95f);
+            //labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
+        }
+        //else
         {
             int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
             labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
-        }
-        else
-        {
-            labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
         }
     }
 }
@@ -1043,7 +1044,10 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelPlayingfile)
     {
-        m_medialibDlg.showFile(m_PlayingInfo.strPath);
+        if (!m_medialibDlg.showFile(m_PlayingInfo.strPath))
+        {
+            slot_labelClick(ui.labelAlbumName, pos);
+        }
     }
     else if (label == ui.labelPlayProgress)
     {

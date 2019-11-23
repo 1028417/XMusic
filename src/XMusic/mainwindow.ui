@@ -877,7 +877,6 @@ gridline-color: rgb(255, 255, 255);</string>
    <zorder>btnPause</zorder>
    <zorder>btnPlayPrev</zorder>
    <zorder>btnPlayNext</zorder>
-   <zorder>labelAlbumName</zorder>
    <zorder>labelDuration</zorder>
    <zorder>btnOrder</zorder>
    <zorder>btnRandom</zorder>
@@ -894,6 +893,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <zorder>btnMore</zorder>
    <zorder>btnExit</zorder>
    <zorder>btnFullScreen</zorder>
+   <zorder>labelAlbumName</zorder>
   </widget>
   <action name="action">
    <property name="text">
