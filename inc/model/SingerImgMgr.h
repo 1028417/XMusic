@@ -25,11 +25,6 @@ private:
 #endif
 
 public:
-    void close()
-    {
-        m_thrDownload.cancel();
-    }
-
 	void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineImgFile);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);

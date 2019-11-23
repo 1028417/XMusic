@@ -62,7 +62,7 @@ protected:
 
 private:
     using CB_CheckSignal = const function<bool(const T& value)>&;
-    inline bool _wait(T& value, CB_CheckSignal cbCheck, int nMs = -1)
+    inline bool _wait(CB_CheckSignal cbCheck, int nMs = -1)
     {
         mutex_lock lock(m_mutex);
 
@@ -89,8 +89,6 @@ private:
             }
         }
 
-        value = m_value;
-
         return true;
     }
 
@@ -102,17 +100,20 @@ public:
 
     T wait(CB_CheckSignal cbCheck)
     {
-        T value;
-		memzero(value);
+        T ret;
+		memzero(ret);
 
-        (void)_wait(value, cbCheck);
-    
-        return value;
+		(void)_wait([&](const T& value) {
+			ret = value;
+			return cbCheck(value);
+		});
+
+        return ret;
     }
 
-    bool wait_for(UINT uMs, T& value, CB_CheckSignal cbCheck)
+    bool wait_for(UINT uMs, CB_CheckSignal cbCheck)
     {
-        return _wait(value, cbCheck, uMs);
+        return _wait(cbCheck, uMs);
     }
 
     void set(const T& value)
@@ -125,7 +126,7 @@ public:
     }
 };
 
-class CSignal : private TSignal<bool>
+class CSignal : public TSignal<bool>
 {
 public:
     CSignal(bool bInitValue)
@@ -158,8 +159,7 @@ public:
 
     bool wait_for(UINT uMs, bool bReset = false)
     {
-        bool bValue = false;
-        if (!TSignal::wait_for(uMs, bValue, [=](bool bValue) {
+        return TSignal::wait_for(uMs, [=](bool bValue) {
            if (bValue)
            {
                if (bReset)
@@ -171,12 +171,7 @@ public:
            }
 
            return false;
-        }))
-        {
-            return false;
-        }
-
-        return bValue;
+        });
     }
 
     void set()

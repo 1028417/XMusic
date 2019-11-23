@@ -240,6 +240,13 @@ public:
 		});
 	}
 
+	bool usleepex(UINT uMs)
+	{
+		return !((TSignal<bool>&)m_sgnRuning).wait_for(uMs, [](bool bValue) {
+			return false==bValue;
+		});
+	}
+
     void cancel(bool bJoin = true)
     {
         if (m_thread.joinable())
