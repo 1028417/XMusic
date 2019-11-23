@@ -52,8 +52,6 @@ private:
     map<QWidget*, QRect> m_mapWidgetPos;
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
-    int m_timer = 0;
-
     CMtxLock<tagPlayingInfo> m_mtxPlayingInfo;
 
     tagPlayingInfo m_PlayingInfo;

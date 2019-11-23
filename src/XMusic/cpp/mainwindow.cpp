@@ -288,7 +288,7 @@ void MainWindow::show()
     ui.labelLogoCompany->setVisible(false);
     ui.btnFullScreen->setVisible(false);
 
-    m_timer = startTimer(1000);
+    (void)startTimer(1000);
 
 #if __android    
     ui.centralWidget->setAttribute(Qt::WA_TranslucentBackground);
@@ -328,13 +328,6 @@ bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
-    case QEvent::Paint:
-    {
-        CPainter painter(this);
-        _onPaint(painter);
-    }
-
-    break;
     case QEvent::Move:
     case QEvent::Resize:
         for (auto pDlg : g_setFullScreenDlgs)
@@ -347,6 +340,13 @@ bool MainWindow::event(QEvent *ev)
         _relayout();
 
         break;
+    case QEvent::Paint:
+    {
+        CPainter painter(this);
+        _onPaint(painter);
+    }
+
+    break;
     case QEvent::Close:
         m_app.quit();
 
