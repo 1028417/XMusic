@@ -15,9 +15,14 @@ private:
 
 	map<wstring, vector<wstring>> m_mapFile;
 
+#if !__winvc
     list<wstring> m_lstOnlineImgFile;
     mutex m_mutex;
     XThread m_thrDownload;
+
+private:
+    void _download(const string& strBaseUrl, const map<wstring, wstring>& mapOnlineImgFile);
+#endif
 
 public:
     void close()
