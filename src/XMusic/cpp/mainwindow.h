@@ -124,10 +124,9 @@ private:
         }
     }
 
-    void onSingerImgDownloaded(const wstring& strSingerName, const wstring& strFilePath) override
+    void onSingerImgDownloaded(const wstring& strFile) override
     {
-        (void)strSingerName;
-        (void)strFilePath;
+        (void)strFile;
 
         emit signal_updateSingerImg();
     }
