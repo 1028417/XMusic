@@ -195,6 +195,7 @@ int CXMusicApp::run()
             this->quit();
             return;
         }
+        g_logger << "RootDir: " >> option.strRootDir;
 
         if (XMediaLib::m_bOnlineMediaLib)
         {
