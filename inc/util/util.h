@@ -1,6 +1,11 @@
 
 #pragma once
 
+#include <math.h>
+
+#include "../sstl/sstl.h"
+using namespace NS_SSTL;
+
 #if defined(_MSC_VER)
     #define __winvc true
     #define __windows true
@@ -75,6 +80,20 @@
     #define __UtilExt __dllimport
 #endif
 
+enum class E_Platform
+{
+    PF_Windows,
+    PF_Android,
+    PF_IOS,
+    PF_Mac
+};
+
+__UtilExt E_Platform platform();
+#if !__winvc
+__UtilExt wstring platformType();
+__UtilExt wstring platformVersion();
+#endif
+
 #define memzero(x) memset(&(x), 0, sizeof(x))
 #define zeroset(x) memzero(x)
 
@@ -130,11 +149,6 @@ using UINT = unsigned int;
 		break; \
 	}
 
-#include <math.h>
-
-#include "../sstl/sstl.h"
-using namespace NS_SSTL;
-
 #include "buffer.h"
 
 #include "strutil.h"
@@ -161,19 +175,10 @@ __UtilExt const RECT& getWorkArea(bool bFullScreen);
 
 #include "mtutil.h"
 
-enum class E_Platform
-{
-    PF_Windows,
-    PF_Android,
-    PF_IOS,
-    PF_Mac
-};
-
-__UtilExt E_Platform platform();
+#include "mtutil.h"
 
 #if !__winvc
-__UtilExt wstring platformType();
-__UtilExt wstring platformVersion();
+#include "curlutil.h"
 #endif
 
 #undef min
