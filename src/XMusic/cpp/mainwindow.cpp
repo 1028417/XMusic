@@ -353,18 +353,15 @@ bool MainWindow::event(QEvent *ev)
         break;
     case QEvent::Timer:
     {
-        auto ePlayStatus = m_app.getPlayMgr().GetPlayStatus();
-        if (E_PlayStatus::PS_Stop != ePlayStatus)
-        {
-            _playSingerImg(false);
+        _playSingerImg(false);
 
-            if (E_PlayStatus::PS_Play == ePlayStatus)
+        auto ePlayStatus = m_app.getPlayMgr().GetPlayStatus();
+        if (E_PlayStatus::PS_Play == ePlayStatus)
+        {
+            int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
+            if (nProgress <= ui.progressBar->maximum())
             {
-                int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
-                if (nProgress <= ui.progressBar->maximum())
-                {
-                    ui.progressBar->setValue(nProgress);
-                }
+                ui.progressBar->setValue(nProgress);
             }
         }
     }
@@ -545,18 +542,7 @@ void MainWindow::_relayout()
     ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
     ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
 
-    bool bZoomoutSingerImg = m_bZoomoutSingerImg;
-    const QPixmap *pmSingerImg = ui.labelSingerImg->pixmap();
-    if (NULL != pmSingerImg && !pmSingerImg->isNull())
-    {
-        ui.wdgSingerImg->setVisible(true);
-    }
-    else
-    {
-        ui.wdgSingerImg->setVisible(false);
-
-        bZoomoutSingerImg = false;
-    }
+    bool bZoomoutSingerImg = m_bZoomoutSingerImg && ui.wdgSingerImg->isVisible();
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
 
@@ -677,7 +663,7 @@ void MainWindow::_relayout()
                                                    , rcSingerImg.height() - __SingerImgMargin*2);
 
     auto pPixmap = ui.labelSingerImg->pixmap();
-    if (NULL != pPixmap && !pPixmap->isNull())
+    if (pPixmap && !pPixmap->isNull())
     {
         ui.labelSingerImg->setPixmap(*pPixmap);
     }
@@ -787,10 +773,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
-        if (!m_strSingerName.empty())
-        {
-            _playSingerImg(true);
-        }
+        ui.wdgSingerImg->setVisible(false);
+        _playSingerImg(true);
 
         _relayout();
     }
@@ -900,6 +884,11 @@ void MainWindow::_showAlbumName()
 
 void MainWindow::_playSingerImg(bool bReset)
 {
+    if (m_strSingerName.empty())
+    {
+        return;
+    }
+
     static UINT uTickCount = 0;
     static UINT uSingerImgIdx = 0;
     if (bReset)
@@ -920,11 +909,6 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    if (m_strSingerName.empty())
-    {
-        return;
-    }
-
     cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
@@ -932,6 +916,12 @@ void MainWindow::_playSingerImg(bool bReset)
         if (pm.load(strutil::toQstr(strSingerImg)))
         {
             ui.labelSingerImg->setPixmap(pm);
+
+            if (!ui.wdgSingerImg->isVisible())
+            {
+                ui.wdgSingerImg->setVisible(true);
+                _relayout();
+            }
         }
 
         uSingerImgIdx++;
@@ -1019,7 +1009,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         if (m_bUsingCustomBkg)
         {
             m_bZoomoutSingerImg = !m_bZoomoutSingerImg;
-            this->_relayout();
+            _relayout();
         }
     }
     else if (label == ui.labelSingerName)
