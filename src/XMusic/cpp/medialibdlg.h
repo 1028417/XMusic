@@ -49,6 +49,8 @@ public:
 
     void clear();
 
+    void updateSingerImg();
+
 private:
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet& MediaSet) override;
@@ -211,6 +213,11 @@ public:
     }
 
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
+
+    void updateSingerImg()
+    {
+        m_MedialibView.updateSingerImg();
+    }
 
 private:
     void _show();

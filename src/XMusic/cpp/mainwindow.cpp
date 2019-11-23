@@ -253,6 +253,16 @@ void MainWindow::_init()
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
+    if (XMediaLib::m_bOnlineMediaLib)
+    {
+        connect(this, &MainWindow::signal_updateSingerImg, [&](){
+            if (m_medialibDlg.isVisible())
+            {
+                m_medialibDlg.updateSingerImg();
+            }
+        });
+    }
+
     ui.labelSingerName->setShadow(2);
 
     ui.labelSingerName->setFont(1);
@@ -297,7 +307,7 @@ void MainWindow::show()
 
     ui.centralWidget->setVisible(true);
 
-    this->update();
+    update();
 
     _relayout();
 }
@@ -1001,7 +1011,7 @@ void MainWindow::updateBkg()
 {
     _relayout();
 
-    this->update();
+    update();
 }
 
 static const QString __qsCheck = strutil::toQstr(L"√");

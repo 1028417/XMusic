@@ -70,6 +70,8 @@ signals:
 
     void signal_playStoped(bool bOpenFail);
 
+    void signal_updateSingerImg();
+
 private slots:
     void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
 
@@ -120,5 +122,13 @@ private:
         {
             emit signal_playStoped(E_DecodeStatus::DS_OpenFail == decodeStatus);
         }
+    }
+
+    void onSingerImgDownloaded(const wstring& strSingerName, const wstring& strFilePath) override
+    {
+        (void)strSingerName;
+        (void)strFilePath;
+
+        emit signal_updateSingerImg();
     }
 };

@@ -35,7 +35,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
 
-    this->connect(this, &QDialog::finished, [&](){
+    this->connect(this, &QDialog::finished, [&, cbClose](){
         _onClose();
 
         g_setFullScreenDlgs.erase(this);
@@ -46,11 +46,12 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         }
     });
 
-#if __android
+    this->setModal(true);
     this->setVisible(true);
-#else
+
+/*#if !__android && !__ios // 移动端exec会露出任务栏
     this->exec();
-#endif
+#endif*/
 }
 
 bool CDialog::event(QEvent *ev)

@@ -160,7 +160,7 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 //#elif __ios && TARGET_IPHONE_SIMULATOR
 //    strRootDir = L"/Users/lhyuan/XMusic";
 
-#else
+#elif __window
     if (!XMediaLib::m_bOnlineMediaLib)
     {
         if (strRootDir.empty() || !fsutil::existDir(strRootDir))

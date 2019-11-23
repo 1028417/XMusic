@@ -405,7 +405,6 @@ const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
         }
     }
 
-    pSingerPixmap = &m_pmDefaultSinger;
     return m_pmDefaultSinger;
 }
 
@@ -514,4 +513,17 @@ void CMedialibView::clear()
     m_lstSingerPixmap.clear();
 
     CListViewEx::_clear();
+}
+
+void CMedialibView::updateSingerImg()
+{
+    CMediaSet* pMediaSet = currentMediaSet();
+    if (pMediaSet)
+    {
+        if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType
+            || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
+        {
+            update();
+        }
+    }
 }
