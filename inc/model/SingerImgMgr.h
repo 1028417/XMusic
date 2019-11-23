@@ -38,4 +38,6 @@ public:
     wstring getSingerImg(const wstring& strSingerName, UINT uIndex);
 
 	void getSingerImg(SList<wstring>& lstSingerImg) const;
+
+	bool exportSingerImg(const wstring& strDstDir);
 };

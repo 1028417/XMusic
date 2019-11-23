@@ -55,10 +55,9 @@ public:
 		return 0;
 	}
 
-    virtual void onSingerImgDownloaded(const wstring& strSingerName, const wstring& strFilePath)
+    virtual void onSingerImgDownloaded(const wstring& strFile)
     {
-        (void)strSingerName;
-        (void)strFilePath;
+        (void)strFile;
     }
 
 	virtual bool renameMedia(IMedia& media, const wstring& strNewName)
