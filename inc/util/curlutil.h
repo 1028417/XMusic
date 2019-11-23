@@ -8,7 +8,7 @@ class __UtilExt curlutil
 public:
     static int initCurl(string& strVerInfo);
 
-    static int curlPerform(const string& strURL, const CB_CURLDownload& cb, int& nRepCode, string& strErrMsg);
+    static int curlPerform(const string& strURL, const CB_CURLDownload& cb, string& strErrMsg);
     static int curlPerform(const string& strURL, const CB_CURLDownload& cb);
 
     static int curlToolPerform(const list<string>& lstParams);
