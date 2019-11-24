@@ -255,7 +255,7 @@ void MainWindow::_init()
 
     if (XMediaLib::m_bOnlineMediaLib)
     {
-        connect(this, &MainWindow::signal_updateSingerImg, [&](){
+        connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg();
