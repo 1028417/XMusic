@@ -137,7 +137,6 @@ android {
             $$PWD/../../libs/armeabi-v7a/libxutil.so \
             $$PWD/../../libs/armeabi-v7a/libxMediaLib.so \
             $$PWD/../../libs/armeabi-v7a/libxModel.so \
-            $$PWD/../../libs/armeabi-v7a/libcurl.so \
             $$PWD/../../libs/armeabi-v7a/libssl.so \
             $$PWD/../../libs/armeabi-v7a/libcrypto.so \
             $$PWD/../../libs/armeabi-v7a/libxPlaySDK.so \
