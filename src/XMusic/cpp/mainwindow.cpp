@@ -17,33 +17,29 @@
 
 static Ui::MainWindow ui;
 
-set<class CDialog*> g_setFullScreenDlgs;
-
 static bool g_bFullScreen = true;
 
-#if __windows
-inline static void fixWorkArea(QWidget* wnd)
+inline static void _fixWorkArea(QWidget& wnd)
 {
+#if __windows
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
-    wnd->setGeometry(rcWorkArea.left, rcWorkArea.top
+    wnd.setGeometry(rcWorkArea.left, rcWorkArea.top
                       , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
-}
-#else
-#define fixWorkArea(wnd) (void)wnd
 #endif
+}
 
-void showFull(QWidget* wnd)
+void fixWorkArea(QWidget& wnd)
 {
     if (__android || __ios || g_bFullScreen)
     {
-        wnd->setWindowState(Qt::WindowFullScreen);
+        wnd.setWindowState(Qt::WindowFullScreen);
     }
     else
     {
-        wnd->setWindowState(Qt::WindowMaximized);
+        wnd.setWindowState(Qt::WindowMaximized);
     }
 
-    fixWorkArea(wnd);
+    _fixWorkArea(wnd);
 }
 
 MainWindow::MainWindow(CXMusicApp& app)
@@ -108,7 +104,7 @@ MainWindow::MainWindow(CXMusicApp& app)
         bFullScreen = !bFullScreen;
         g_bFullScreen = bFullScreen;
 
-        showFull(this);
+        fixWorkArea(*this);
     });
 #endif
 
@@ -157,7 +153,7 @@ void MainWindow::showLogo()
     ui.labelLogo->setMovie(&movie);
 
     g_bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
-    showFull(this);
+    fixWorkArea(*this);
     this->setVisible(true);
 
     timerutil::async(100, [&](){
@@ -341,14 +337,10 @@ bool MainWindow::event(QEvent *ev)
     {
     case QEvent::Move:
     case QEvent::Resize:
-        for (auto pDlg : g_setFullScreenDlgs)
-        {
-            fixWorkArea(pDlg);
-        }
-
-        fixWorkArea(this);
-
+        _fixWorkArea(*this);
         _relayout();
+
+        CDialog::resetPos();
 
         break;
     case QEvent::Paint:

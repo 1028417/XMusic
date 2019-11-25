@@ -12,6 +12,8 @@
 class CDialog : public QDialog
 {
 public:
+    static void resetPos();
+
     CDialog(QWidget& parent) : m_parent(&parent)
         , m_crBkg(180, 220, 255)
     {
@@ -28,6 +30,8 @@ protected:
 private:
     QColor m_crBkg;
 
+    bool m_bFullScreen = false;
+
 private:
     void _setBkgColor()
     {
@@ -36,11 +40,16 @@ private:
         this->setPalette(pe);
     }
 
+    void _setPos();
+
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
 
     virtual bool _handleReturn() {return false;}
 
     virtual void _onClose(){}
+
+protected:
+    virtual bool event(QEvent *ev) override;
 
 public:
     void show(bool bFullScreen, const fn_void& cbClose = NULL);
@@ -63,7 +72,4 @@ public:
         return (HWND)winId();
     }
 #endif
-
-protected:
-    virtual bool event(QEvent *ev) override;
 };

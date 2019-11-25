@@ -145,7 +145,7 @@ void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
 
     if (lvRow.uRow < m_alPlayingItems.size())
     {
-        updatePlayingItem(lvRow.uRow, false);
+        //updatePlayingItem(lvRow.uRow, false);
 
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
     }

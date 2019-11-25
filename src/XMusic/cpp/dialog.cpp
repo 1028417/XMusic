@@ -4,24 +4,51 @@
 #include <QPainter>
 #include <QBitmap>
 
-extern void showFull(QWidget* wnd);
+extern void fixWorkArea(QWidget& wnd);
 
-extern std::set<class CDialog*> g_setFullScreenDlgs;
+static CDialog* g_pFrontDlg = NULL;
+
+void CDialog::resetPos()
+{
+    list<CDialog*> lstDlgs;
+    for (auto pDlg = g_pFrontDlg; pDlg; )
+    {
+        lstDlgs.push_front(pDlg);
+
+        pDlg = dynamic_cast<CDialog*>(pDlg->m_parent);
+    }
+
+    for (auto pDlg : lstDlgs)
+    {
+        pDlg->_setPos();
+    }
+}
+
+void CDialog::_setPos()
+{
+    if (m_bFullScreen)
+    {
+        fixWorkArea(*this);
+    }
+    else
+    {
+        cauto ptCenter = m_parent->geometry().center();
+        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+    }
+}
 
 void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 {
+    g_pFrontDlg = this;
+
     _setBkgColor();
 
     this->setWindowFlags(Qt::Dialog);
 
     this->setWindowFlags(Qt::FramelessWindowHint);
 
-    if (bFullScreen)
-    {
-        showFull(this);
-        g_setFullScreenDlgs.insert(this);
-    }
-    else
+    m_bFullScreen = bFullScreen;
+    if (!m_bFullScreen)
     {
         QBitmap bmp(this->size());
         bmp.fill();
@@ -30,15 +57,14 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         painter.setBrush(Qt::black);
         painter.drawRoundedRect(bmp.rect(),15,15);
         setMask(bmp);
-
-        cauto ptCenter = m_parent->geometry().center();
-        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
 
-    this->connect(this, &QDialog::finished, [&, cbClose](){
-        _onClose();
+    _setPos();
 
-        g_setFullScreenDlgs.erase(this);
+    this->connect(this, &QDialog::finished, [&, cbClose](){
+        g_pFrontDlg = dynamic_cast<CDialog*>(m_parent);
+
+        _onClose();
 
         if (cbClose)
         {
@@ -46,12 +72,13 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         }
     });
 
+#if __android || __ios // 移动端exec会露出任务栏
+    this->setVisible(true);
+#else
+    //this->exec();
     this->setModal(true);
     this->setVisible(true);
-
-/*#if !__android && !__ios // 移动端exec会露出任务栏
-    this->exec();
-#endif*/
+#endif
 }
 
 bool CDialog::event(QEvent *ev)

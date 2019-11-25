@@ -77,7 +77,7 @@ android {
         && cp -R $$macDir/SDL2.framework/ $$frameworkDir/SDL2.framework \
         && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir -dmg
 } else: ios {
-    LIBS += -L../../libs/ios/simulator  -lcurl  -lssl  -lcrypto  -lnghttp2 \
+    LIBS += -L../../libs/ios/simulator  -lssl  -lcrypto  -lnghttp2 \
 #
             -L../../../PlaySDK/libs/ios/simulator  -lSDL2 \
             -framework AVFoundation  -framework GameController  -framework CoreMotion \
