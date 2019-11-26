@@ -70,11 +70,11 @@ public:
     }
 
     using CB_Downloader = function<void(byte_t *ptr, size_t size)>;
-    int syncDownload(const string& strUrl, const CB_Downloader& cb = NULL);
-    int syncDownload(const string& strUrl, CByteBuffer& bbfData);
-    int syncDownload(const string& strUrl, CCharBuffer& cbfData);
+    int syncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
+    int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0);
+    int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0);
 
-    void asyncDownload(const string& strUrl, const CB_Downloader& cb = NULL);
+    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
 
     size_t dataSize() const
     {
