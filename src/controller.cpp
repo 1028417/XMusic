@@ -55,6 +55,8 @@ bool CXController::start()
 
 #else
     m_threadPlayCtrl = thread([&]() {
+        mtutil::usleep(100);
+
         _tryPlay();
 
         auto& PlayMgr = m_model.getPlayMgr();

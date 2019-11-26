@@ -15,6 +15,8 @@
 
 struct tagPlayingInfo
 {
+    UINT uPlaySeq = 0;
+
     wstring strTitle;
 
     int nDuration = -1;
@@ -66,6 +68,8 @@ private:
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
 signals:
+    void signal_updatePlayingList(int nPlayingItem);
+
     void signal_showPlaying(unsigned int uPlayingItem, bool bManual);
 
     void signal_playStoped(bool bOpenFail);
@@ -73,6 +77,11 @@ signals:
     void signal_updateSingerImg();
 
 private slots:
+    void slot_updatePlayingList(int nPlayingItem)
+    {
+        m_PlayingList.updateList(nPlayingItem);
+    }
+
     void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
 
     void slot_playStoped(bool bOpenFail);
@@ -108,21 +117,15 @@ private:
     void _demand(CButton* btnDemand);
 
 private:
-    void refreshPlayingList(int nPlayingItem, bool bSetActive) override
+    void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override
     {
         (void)bSetActive;
-        m_PlayingList.updateList(nPlayingItem);
+        emit signal_updatePlayingList(nPlayingItem);
     }
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
-    void onPlayStoped(E_DecodeStatus decodeStatus) override
-    {
-        if (decodeStatus != E_DecodeStatus::DS_Cancel)
-        {
-            emit signal_playStoped(E_DecodeStatus::DS_OpenFail == decodeStatus);
-        }
-    }
+    void onPlayStoped(E_DecodeStatus decodeStatus) override;
 
     void onSingerImgDownloaded(const wstring& strFile) override
     {

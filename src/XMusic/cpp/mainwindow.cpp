@@ -94,11 +94,6 @@ MainWindow::MainWindow(CXMusicApp& app)
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
 
-#if __android || __ios
-    ui.btnFullScreen->setVisible(false);
-
-#else
-    ui.btnFullScreen->setParent(this);
 
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
         auto& bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
@@ -107,7 +102,12 @@ MainWindow::MainWindow(CXMusicApp& app)
 
         fixWorkArea(*this);
     });
+
+    ui.btnFullScreen->setParent(this);
+#if __android || __ios
+    ui.btnFullScreen->setVisible(false);
 #endif
+
 
     ui.labelLogo->setAttribute(Qt::WA_TranslucentBackground);
     ui.labelLogoTip->setAttribute(Qt::WA_TranslucentBackground);
@@ -247,6 +247,7 @@ void MainWindow::_init()
         label->setTextColor(255,255,255);
     }
 
+    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
@@ -307,6 +308,8 @@ void MainWindow::show()
     update();
 
     _relayout();
+
+    m_PlayingList.updateList(m_app.getModel().getOptionMgr().getOption().uPlayingItem);
 }
 
 void MainWindow::_onPaint(CPainter& painter)
@@ -737,6 +740,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayItem.CheckRelatedMedia();
 
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
+        PlayingInfo.uPlaySeq++;
+
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.GetDuration();
@@ -756,12 +761,28 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     emit signal_showPlaying(uPlayingItem, bManual);
 }
 
-static UINT g_uPlaySeq = 0;
+void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
+{
+    if (decodeStatus != E_DecodeStatus::DS_Cancel)
+    {
+        bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
+        emit signal_playStoped(bOpenFail);
+
+        if (bOpenFail)
+        {
+            mtutil::usleep(1000);
+
+            m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+        }
+        else
+        {
+            m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+        }
+    }
+}
 
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
-    g_uPlaySeq++;
-
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
     m_mtxPlayingInfo.get(m_PlayingInfo);
@@ -806,24 +827,15 @@ void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.progressBar->setValue(0);
 
-    auto uPlaySeq = g_uPlaySeq;
     if (bOpenFail)
     {
         _updatePlayPauseButton(false);
-
-        __async(1000, [&, uPlaySeq]() {
-            if (uPlaySeq == g_uPlaySeq)
-            {
-                m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-            }
-        });
     }
     else
     {
-        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-
+        auto uPlaySeq = m_PlayingInfo.uPlaySeq;
         __async(1000, [&, uPlaySeq](){
-            if (uPlaySeq == g_uPlaySeq)
+            if (uPlaySeq == m_PlayingInfo.uPlaySeq)
             {
                 _updatePlayPauseButton(false);
             }
