@@ -75,7 +75,7 @@ private:
         return true;
     }*/
 
-    void _updateActive(int nActiveTime=6);
+    void _updateActive(int nActiveTime=10);
 
     void _onAutoScrollBegin() override;
     void _onAutoScrollEnd() override;

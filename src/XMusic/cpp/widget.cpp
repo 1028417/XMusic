@@ -28,7 +28,7 @@ bool CWidget<TParent>::event(QEvent *ev)
 
     switch (ev->type())
     {
-#if _winqt
+#if __windows
     case QEvent::Enter:
         _onMouseEnter();
 

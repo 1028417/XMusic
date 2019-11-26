@@ -4,7 +4,7 @@
 #include "../MediaLib/MediaDef.h"
 
 #ifdef __ModelPrj
-extern ITxtWriter& g_logger;
+extern ITxtWriter& m_modelLogger;
 
 #define __ModelExt __dllexport
 #else

@@ -21,6 +21,7 @@ static bool g_bFullScreen = true;
 
 inline static void _fixWorkArea(QWidget& wnd)
 {
+    (void)wnd;
 #if __windows
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
     wnd.setGeometry(rcWorkArea.left, rcWorkArea.top
