@@ -44,7 +44,7 @@ public:
 
 	virtual void refreshMedia() {}
 
-	virtual void refreshPlayingList(int nPlayingItem = -1, bool bSetActive = false) = 0;
+    virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
 
 	virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) = 0;
 	virtual void onPlayStoped(E_DecodeStatus decodeStatus) = 0;
