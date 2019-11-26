@@ -65,7 +65,7 @@ private:
     void _onRowDblClick(const tagLVRow&, const QMouseEvent&) override;
 
     void _onMouseEnter() override;
-    void _onMouseLeave() override;
+    //void _onMouseLeave() override;
 
     void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 

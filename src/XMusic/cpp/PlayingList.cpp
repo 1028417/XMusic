@@ -55,7 +55,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     if (bPlayingItem)
     {
         float fPlayingFontSize = 0.95f;
-#if __windows
+#if __windows || __mac
         fPlayingFontSize = 1;
 #endif
         painter.setFont(fPlayingFontSize, E_FontWeight::FW_SemiBold);
@@ -153,16 +153,16 @@ void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
 
 void CPlayingList::_onMouseEnter()
 {
-    _updateActive(-1);
+    _updateActive(); //_updateActive(-1);
 }
 
-void CPlayingList::_onMouseLeave()
+/*void CPlayingList::_onMouseLeave()
 {
     if (0 != m_nActiveTime)
     {
         _updateActive(0);
     }
-}
+}*/
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
