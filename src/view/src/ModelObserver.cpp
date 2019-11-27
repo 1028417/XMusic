@@ -30,7 +30,7 @@ void CModelObserver::refreshMedia()
 	m_view.m_PlayingPage.RefreshList();
 }
 
-void CModelObserver::refreshPlayingList(int nPlayingItem, bool bSetActive)
+void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
 	if (!m_view.getPlayMgr().getPlayinglist().available())
 	{

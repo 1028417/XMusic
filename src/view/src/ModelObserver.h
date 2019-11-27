@@ -17,7 +17,7 @@ private:
 
 	void refreshMedia() override;
 
-	void refreshPlayingList(int nPlayingItem = -1, bool bSetActive = false) override;
+	void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) override;
 
 	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 	void onPlayStoped(E_DecodeStatus decodeStatus) override;
