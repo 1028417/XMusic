@@ -1,18 +1,24 @@
 
 #pragma once
 
-using CB_CURLDownload = function<size_t(char *ptr, size_t size, size_t nmemb)>;
+using CB_CURLWrite = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
+using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
 class __UtilExt curlutil
 {
 public:
     static int initCurl(string& strVerInfo);
 
-    static int curlPerform(const string& strURL, const CB_CURLDownload& cb, string& strErrMsg);
-    static int curlPerform(const string& strURL, const CB_CURLDownload& cb);
+    static int curlDownload(const string& strURL, string& strErrMsg, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL);
+    static int curlDownload(const string& strURL, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL)
+    {
+        string strErrMsg;
+        return curlDownload(strURL, strErrMsg, cbWrite, cbProgress);
+        (void)strErrMsg;
+    }
 
     static int curlToolPerform(const list<string>& lstParams);
-    static int curlToolPerform(const string& strURL, const CB_CURLDownload& cb);
+    static int curlToolDownload(const string& strURL, CB_CURLWrite& cbWrite);
 };
 
 class __UtilExt CDownloader
@@ -36,12 +42,6 @@ private:
     size_t m_uSumSize = 0;
 
 private:
-    /*static size_t _curlProgress(void *context, double total, double now, double, double)
-    {
-        return ((CDownloader*)context)->_onProgress(total, now);
-    }
-    size_t _onProgress(double total, double now) = 0;*/
-
     void _clear();
 
     template <class T>
