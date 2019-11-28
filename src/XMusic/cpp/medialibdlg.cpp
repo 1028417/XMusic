@@ -64,6 +64,10 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_MedialibView.play();
     });
+
+    connect(this, signal_update, this, [&](){
+        update();
+    });
 }
 
 void CMedialibDlg::_show()
@@ -199,6 +203,8 @@ void CMedialibView::_onShowRoot()
     m_medialibDlg.updateHead(L"媒体库", false, false);
 }
 
+static XThread g_thrAsyncTask;
+
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
     WString strTitle;
@@ -209,6 +215,25 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
 
     m_medialibDlg.updateHead(strTitle, bPlayable, true);
+
+    if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
+    {
+        g_thrAsyncTask.start([&](const bool& bRunSignal){
+            cauto playItems = ((CPlaylist&)MediaSet).playItems();
+            playItems([&](CPlayItem& playItem){
+                playItem.CheckRelatedMedia();
+
+                g_thrAsyncTask.usleepex(100);
+
+                return bRunSignal;
+            });
+
+            if (bRunSignal)
+            {
+                emit signal_update;
+            }
+        });
+    }
 }
 
 void CMedialibView::_onShowPath(CPath& path)
@@ -489,6 +514,8 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
+    g_thrAsyncTask.cancel();
+
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {
         return NULL;
@@ -509,6 +536,8 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
 
 void CMedialibView::clear()
 {
+    g_thrAsyncTask.cancel();
+
     m_mapSingerPixmap.clear();
     m_lstSingerPixmap.clear();
 

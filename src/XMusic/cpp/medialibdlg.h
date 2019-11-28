@@ -40,6 +40,9 @@ private:
     list<QPixmap> m_lstSingerPixmap;
     map<CSinger*, QPixmap*> m_mapSingerPixmap;
 
+signals:
+    void signal_update;
+
 public:
     void init();
 

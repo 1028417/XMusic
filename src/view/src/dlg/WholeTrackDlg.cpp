@@ -143,7 +143,7 @@ void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMedi
 	{
 		vecText.add(pMediaRes->GetName());
 
-		(void)pMediaRes->AsyncTask();
+		//(void)pMediaRes->AsyncTask();
 		vecText.add(pMediaRes->GetFileSizeString());
 	}
 
