@@ -186,9 +186,9 @@ public:
 
 	void GetAllMedias(TD_MediaList& lstMedias);
 
-	CMediaSet* HittestMediaSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
+    CMediaSet* FindSubSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
 
-	CMedia* HittestMedia(E_MediaSetType eMediaSetType, UINT uMediaID);
+    CMedia* FindMedia(E_MediaSetType eMediaSetType, UINT uMediaID);
 
 	wstring GetLogicPath();
 
