@@ -1,6 +1,33 @@
 
 #pragma once
 
+struct __UtilExt tagCurlOpt
+{
+    tagCurlOpt(bool t_bShare)//, long t_dnsCacheTimeout)
+        : bShare(t_bShare)
+        //, dnsCacheTimeout(t_dnsCacheTimeout)
+    {
+    }
+
+    bool bShare;
+    //long dnsCacheTimeout;
+
+    unsigned long maxRedirect = 0;
+
+    unsigned long timeout = 0;
+    unsigned long connectTimeout = 0;
+
+    unsigned long lowSpeedLimit = 0;
+    unsigned long lowSpeedLimitTime = 0;
+
+    unsigned long maxSpeedLimit = 0;
+
+    //unsigned long keepAliveIdl = 0;
+    //unsigned long keepAliveInterval = 0;
+
+    string strUserAgent;
+};
+
 using CB_CURLWrite = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
 using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
@@ -8,28 +35,44 @@ class __UtilExt curlutil
 {
 public:
     static int initCurl(string& strVerInfo);
+    static void freeCurl();
 
-    static int curlDownload(const string& strURL, string& strErrMsg, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL);
-    static int curlDownload(const string& strURL, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL)
-    {
-        string strErrMsg;
-        return curlDownload(strURL, strErrMsg, cbWrite, cbProgress);
-        (void)strErrMsg;
-    }
+    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL);
 
     static int curlToolPerform(const list<string>& lstParams);
     static int curlToolDownload(const string& strURL, CB_CURLWrite& cbWrite);
+
+    static string getCurlErrMsg(UINT uErrCode);
 };
 
 class __UtilExt CDownloader
 {
 public:
-    ~CDownloader()
+    virtual ~CDownloader()
     {
         _clear();
     }
 
-    CDownloader() {}
+    CDownloader(bool bShare = false, unsigned long connectTimeout = 3
+            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
+            , unsigned long maxSpeedLimit = 0) : m_curlOpt(bShare)
+    {
+        m_curlOpt.connectTimeout = connectTimeout;
+
+        m_curlOpt.lowSpeedLimit = lowSpeedLimit; // 单位字节
+        m_curlOpt.lowSpeedLimitTime = lowSpeedLimitTime;
+
+        m_curlOpt.maxSpeedLimit = maxSpeedLimit;
+
+        m_curlOpt.strUserAgent = "curl/7.66.0";
+    }
+
+    CDownloader(const tagCurlOpt& curlOpt) : m_curlOpt(curlOpt)
+    {
+    }
+
+protected:
+    tagCurlOpt m_curlOpt;
 
 private:
     XThread m_thread;
@@ -61,6 +104,13 @@ private:
         }
 
         return size;
+    }
+
+    virtual bool _onProgress(int64_t dltotal, int64_t dlnow)
+    {
+        (void)dltotal;
+        (void)dlnow;
+        return true;
     }
 
 public:
