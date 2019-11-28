@@ -42,7 +42,7 @@ public:
     static int curlToolPerform(const list<string>& lstParams);
     static int curlToolDownload(const string& strURL, CB_CURLWrite& cbWrite);
 
-    static string getCurlErrMsg(UINT uErrCode);
+    static string getCurlErrMsg(UINT uCurlCode);
 };
 
 class __UtilExt CDownloader
@@ -73,6 +73,8 @@ public:
 
 protected:
     tagCurlOpt m_curlOpt;
+
+    time_t m_beginTime = 0;
 
 private:
     XThread m_thread;
