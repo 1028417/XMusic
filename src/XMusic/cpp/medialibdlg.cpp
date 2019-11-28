@@ -64,10 +64,6 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_MedialibView.play();
     });
-
-    connect(this, signal_update, this, [&](){
-        update();
-    });
 }
 
 void CMedialibDlg::_show()
@@ -170,6 +166,10 @@ void CMedialibView::init()
     (void)m_pmDir.load(":/img/dir.png");
     (void)m_pmDirLink.load(":/img/dirLink.png");
     (void)m_pmFile.load(":/img/file.png");
+
+    connect(this, signal_update, this, [&](){
+        update();
+    });
 }
 
 void CMedialibView::play()
@@ -219,8 +219,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
         g_thrAsyncTask.start([&](const bool& bRunSignal){
-            cauto playItems = ((CPlaylist&)MediaSet).playItems();
-            playItems([&](CPlayItem& playItem){
+            ((CPlaylist&)MediaSet).playItems()([&](CPlayItem& playItem){
                 playItem.CheckRelatedMedia();
 
                 g_thrAsyncTask.usleepex(100);
@@ -230,7 +229,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
             if (bRunSignal)
             {
-                emit signal_update;
+                emit signal_update();
             }
         });
     }
