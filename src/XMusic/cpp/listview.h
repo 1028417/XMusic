@@ -96,6 +96,12 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
+protected:
+    UINT rowHeight() const
+    {
+        return m_uRowHeight;
+    }
+
 private:
     virtual size_t getColumnCount()
     {
@@ -106,9 +112,7 @@ private:
 
     void _onPaint(CPainter& painter, const QRect& rc) override;
 
-    virtual void _onPaintRow(CPainter&, const tagLVRow&);
-
-    virtual bool _genRowContext(tagRowContext&) {return false;}
+    virtual void _onPaintRow(CPainter&, const tagLVRow&) = 0;
 
     virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
     virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}

@@ -61,7 +61,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 
     _setPos();
 
-    this->connect(this, &QDialog::finished, [&, cbClose](){
+    this->connect(this, finished, [&, cbClose](){
         g_pFrontDlg = dynamic_cast<CDialog*>(m_parent);
 
         _onClose();

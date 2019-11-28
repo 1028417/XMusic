@@ -740,7 +740,7 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 	int iRelatedMediaID = Media.GetRelatedMediaID(eMediaSetType);
 	if (0 < iRelatedMediaID)
 	{
-		CMedia *pRelatedMedia = getMediaLib().HittestMedia(eMediaSetType, (UINT)iRelatedMediaID);
+		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)iRelatedMediaID);
 		if (NULL != pRelatedMedia && NULL != pRelatedMedia->m_pParent)
 		{
 			_hittestMediaSet(*pRelatedMedia->m_pParent, pRelatedMedia);
@@ -752,7 +752,7 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 	UINT uRelatedMediaSetID = Media.GetRelatedMediaSetID(eMediaSetType);
 	if (uRelatedMediaSetID > 0)
 	{
-		CMediaSet *pMediaSet = getMediaLib().HittestMediaSet(eMediaSetType, uRelatedMediaSetID);
+		CMediaSet *pMediaSet = getMediaLib().FindSubSet(eMediaSetType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
 		_hittestMediaSet(*pMediaSet, NULL, &Media);

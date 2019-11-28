@@ -247,13 +247,13 @@ void MainWindow::_init()
         label->setTextColor(255,255,255);
     }
 
-    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
-    connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
-    connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
+    connect(this, signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
+    connect(this, signal_showPlaying, this, &MainWindow::slot_showPlaying);
+    connect(this, signal_playStoped, this, &MainWindow::slot_playStoped);
 
     if (XMediaLib::m_bOnlineMediaLib)
     {
-        connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
+        connect(this, signal_updateSingerImg, this, [&](){
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg();
@@ -1035,7 +1035,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_app.getModel().getSingerMgr().HittestMediaSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = m_app.getModel().getSingerMgr().FindSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1047,12 +1047,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         CMedia *pMedia = NULL;
         if (m_PlayingInfo.uRelatedAlbumItemID != 0)
         {
-            pMedia = m_app.getModel().getSingerMgr().HittestMedia(
+            pMedia = m_app.getModel().getSingerMgr().FindMedia(
                                     E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
         }
         else if (m_PlayingInfo.uRelatedPlayItemID != 0)
         {
-            pMedia = m_app.getModel().getPlaylistMgr().HittestMedia(
+            pMedia = m_app.getModel().getPlaylistMgr().FindMedia(
                                     E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
         }
         if (pMedia && pMedia->m_pParent)

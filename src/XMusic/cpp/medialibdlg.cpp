@@ -222,7 +222,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             ((CPlaylist&)MediaSet).playItems()([&](CPlayItem& playItem){
                 playItem.CheckRelatedMedia();
 
-                g_thrAsyncTask.usleepex(100);
+                mtutil::usleep(10);
 
                 return bRunSignal;
             });
@@ -402,15 +402,15 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     return false;
 }
 
-const QPixmap& CMedialibView::_getSingerPixmap(CSinger& Singer)
+const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& strSingerName)
 {
-    auto& pSingerPixmap = m_mapSingerPixmap[&Singer];
+    auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
     if (pSingerPixmap)
     {
         return *pSingerPixmap;
     }
 
-    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(Singer.m_strName, 0);
+    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(strSingerName, 0);
     if (!strSingerImg.empty())
     {
         m_lstSingerPixmap.emplace_back(QPixmap());
@@ -445,7 +445,8 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             context.pixmap = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pixmap = &_getSingerPixmap((CSinger&)*context.pMediaSet);
+            context.pixmap = &_getSingerPixmap(context.pMediaSet->m_uID,
+                                               context.pMediaSet->m_strName);
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pixmap = &m_pmSingerGroup;
@@ -463,6 +464,19 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         else
         {
             context.pixmap = &m_pmPlayItem;
+
+            if (context.pMedia->GetMediaSetType() == E_MediaSetType::MST_Playlist)
+            {
+                UINT uSingerID = context.pMedia->GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+                if (uSingerID > 0)
+                {
+                    cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+                    if (!strSingerName.empty())
+                    {
+                        context.pixmap = &_getSingerPixmap(uSingerID, strSingerName);
+                    }
+                }
+            }
         }
     }
     else if (context.pDir || context.pFile)
@@ -503,10 +517,27 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-void CMedialibView::_onMediaClick(const tagLVRow& lvRow, IMedia& media)
+void CMedialibView::_onMediaClick(const tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
+
+    if (me.x() <= (int)rowHeight())
+    {
+        if (media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
+        {
+            UINT uSingerID = media.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+            if (uSingerID > 0)
+            {
+                auto pSinger = m_SingerLib.FindSubSet(E_MediaSetType::MST_Singer, uSingerID);
+                if (pSinger)
+                {
+                    showMediaSet(*pSinger);
+                    return;
+                }
+            }
+        }
+    }
 
     m_app.getCtrl().callPlayCtrl(tagPlayCtrl(SArray<wstring>(media.GetPath())));
 }

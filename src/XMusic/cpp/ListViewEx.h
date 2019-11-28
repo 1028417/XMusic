@@ -121,8 +121,8 @@ private:
     virtual void _genMediaContext(tagMediaContext&) {}
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
-    virtual void _onRowClick(const tagLVRow&, CMedia&){}
-    virtual void _onRowClick(const tagLVRow&, CPath&){}
+    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&, CMedia&){}
+    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&, CPath&){}
 
     inline void* _current() const
     {

@@ -141,7 +141,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
 }
 
-void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
+void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
 {
     UINT uRow = lvRow.uRow;
 
@@ -157,7 +157,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(uRow, [&](CMedia& media){
-                _onRowClick(lvRow, media);
+                _onRowClick(lvRow, me, media);
             });
         }
     }
@@ -166,7 +166,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
         if (uRow >= m_paSubDirs.size())
         {
             m_paSubFiles.get(uRow-m_paSubDirs.size(), [&](XFile& subFile) {
-                _onRowClick(lvRow, (CPath&)subFile);
+                _onRowClick(lvRow, me, (CPath&)subFile);
             });
         }
         else

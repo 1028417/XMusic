@@ -40,7 +40,7 @@ private:
     QPixmap m_pmFile;
 
     list<QPixmap> m_lstSingerPixmap;
-    map<CSinger*, QPixmap*> m_mapSingerPixmap;
+    map<UINT, QPixmap*> m_mapSingerPixmap;
 
 signals:
     void signal_update();
@@ -70,21 +70,21 @@ private:
     bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
-    const QPixmap& _getSingerPixmap(CSinger&);
+    const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaDir&, WString& strTitle);
 
-    void _onMediaClick(const tagLVRow&, IMedia&);
+    void _onMediaClick(const tagLVRow&, const QMouseEvent&, IMedia&);
 
-    void _onRowClick(const tagLVRow& lvRow, CMedia& media) override
+    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent& me, CMedia& media) override
     {
-        _onMediaClick(lvRow, media);
+        _onMediaClick(lvRow, me, media);
     }
 
-    void _onRowClick(const tagLVRow& lvRow, CPath& path) override
+    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override
     {
-        _onMediaClick(lvRow, (CMediaRes&)path);
+        _onMediaClick(lvRow, me, (CMediaRes&)path);
     }
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
