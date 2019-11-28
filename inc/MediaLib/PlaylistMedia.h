@@ -8,8 +8,6 @@ public:
     CPlayItem(int nID, const wstring& strPath, mediatime_t time, class CPlaylist& Playlist);
 
 private:
-	bool CheckRelatedMediaSetChanged(const tagMediaSetChanged& MediaSetChanged) override;
-
 	wstring _GetDisplayName(bool bDynamic);
 
 	wstring GetExportFileName() override

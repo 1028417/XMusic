@@ -68,6 +68,8 @@ public:
 		return m_addTime;
 	}
 
+    int checkDuration();
+
 	void SetDuration(UINT uDuration)
 	{
 		m_nDuration = uDuration;
@@ -96,8 +98,6 @@ public:
     CMediaRes *GetMediaRes() const override;
 
 	CRCueFile getCueFile() const;
-
-	virtual void AsyncTask() override;
 
 private:
 	void _UpdatePath(const wstring& strPath);

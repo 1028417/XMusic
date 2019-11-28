@@ -42,8 +42,6 @@ private:
 #endif
 
 private:
-	bool CheckRelatedMediaSetChanged(const tagMediaSetChanged& MediaSetChanged) override;
-
 	bool GetRenameText(wstring& stRenameText) const override;
 
 	void OnListItemRename(const wstring& strNewName) override;
@@ -90,7 +88,7 @@ public:
 
     void genMediaResListItem(bool bReportView, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 
-	void AsyncTask() override;
+	void AsyncTask();
 };
 
 class __MediaLibExt CMediaDir : public CMediaRes, public CTreeObject

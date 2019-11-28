@@ -116,16 +116,10 @@ public:
 
 	void ClearRelatedMediaSet(E_MediaSetType eMediaSetType);
 
-	virtual void AsyncTask() = 0;
+	virtual void AsyncTask() {}
 
 	void ShellExplore(bool bSel=true);
 
 protected:
 	void UpdateFileType(const wstring& strPath);
-
-    virtual bool CheckRelatedMediaSetChanged(const tagMediaSetChanged& MediaSetChanged)
-    {
-        (void)MediaSetChanged;
-        return false;
-    }
 };
