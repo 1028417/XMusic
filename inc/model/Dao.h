@@ -244,7 +244,8 @@ public:
 	bool deletePlayItem(const list<UINT>& lstIDs);
 	bool deletePlayItem(UINT uPlaylistID);
 
-	bool updatePlayItemPath(UINT uPlayItemID, const wstring& strPath);
+    bool updatePlayItem(UINT uPlayItemID, const wstring& strPath);
+    bool updatePlayItem(UINT uPlayItemID, int nFileSize, int nDuration);
 
 	bool setbackPlayItem(UINT uPlaylistID, const list<UINT>& lstIDs);
 
@@ -280,7 +281,8 @@ public:
     using CB_addAlbumItem = function<void(UINT uPlayItemID, const wstring& strPath, dbtime_t)>;
     bool addAlbumItem(const list<wstring>& lstPaths, UINT uAlbumID, const CB_addAlbumItem& cb);
 
-	bool updateAlbumItemPath(UINT uAlbumItemID, const wstring& strPath);
+    bool updateAlbumItem(UINT uAlbumItemID, const wstring& strPath);
+    bool updateAlbumItem(UINT uAlbumItemID, int nFileSize, int nDuration);
 
 	bool deleteAlbumItem(UINT uAlbumItem);
 	bool deleteAlbumItem(const list<UINT>& lstAlbumItemIDs);
