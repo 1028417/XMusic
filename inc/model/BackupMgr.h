@@ -34,6 +34,8 @@ private:
 
 	bool _getCompareResult(const wstring& strSrcTag, const wstring& strDstTag, const CB_BackupCompare& cb);
 
+	void _saveMediaSizeDuration();
+
 public:
 	const SArray<wstring>& getBackupTags() const
 	{
