@@ -83,6 +83,11 @@ public:
 
 	static wstring GetDurationString(int nDuration);
 
+	long long fileSize() const
+	{
+		return m_nFileSize;
+	}
+
 	CMediaSet *GetMediaSet() override
 	{
 		return m_pParent;

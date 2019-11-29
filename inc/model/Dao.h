@@ -18,6 +18,9 @@ struct tagPlayItemInfo
 	int nPlaylistID = 0;
 	wstring strPath;
 	dbtime_t tTime = 0;
+
+	int fileSize = 0;
+	int duration = 0;
 };
 
 struct tagPlaylistInfo
@@ -37,6 +40,9 @@ struct tagAlbumItemInfo
 	int nID = 0;
 	wstring strPath;
 	dbtime_t tTime = 0;
+
+	int fileSize = 0;
+	int duration = 0;
 };
 
 struct tagAlbumInfo
