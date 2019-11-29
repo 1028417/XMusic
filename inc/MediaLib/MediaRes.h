@@ -48,11 +48,6 @@ private:
 	
 	virtual int _getImage();
 
-	CMediaRes* GetMediaRes() const override
-	{
-		return (CMediaRes*)this;
-	}
-
 public:
     CRCueFile getCueFile();
 
@@ -72,16 +67,9 @@ public:
 		return CPath::name();
 	}
 
-	uint64_t GetFileSize() const
+	long long fileSize() const override
 	{
         return fileinfo.uFileSize;
-	}
-
-	wstring GetFileSizeString(bool bIgnoreByte=true) const
-	{
-		__EnsureReturn(!fileinfo.bDir, L"");
-
-		return IMedia::GetFileSizeString(fileinfo.uFileSize, bIgnoreByte);
 	}
 
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);

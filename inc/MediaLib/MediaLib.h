@@ -111,6 +111,11 @@ public:
 	{
 		return _findSubPath(strSubFile, false);
 	}
+
+	CMediaRes* findSubFile(const IMedia& media)
+	{
+		return _findSubPath(media.GetPath(), false);
+	}
 };
 
 class __MediaLibExt CMediaLib : public CRootMediaDir

@@ -18,6 +18,8 @@ private:
 private:
 	int _indexOf(const CMediaSet&) const override;
 
+	BOOL _AddPlayItems(const list<tagAddPlayItem>& lstPlayItem, CPlaylist& Playlist, int nPos);
+
 public:
 	CPlaylist& playinglist()
 	{

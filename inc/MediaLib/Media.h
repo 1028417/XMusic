@@ -68,25 +68,25 @@ public:
 		return m_addTime;
 	}
 
-    int checkDuration();
-
-	void SetDuration(UINT uDuration)
+	long long fileSize() const override
 	{
-		m_nDuration = uDuration;
+		return m_nFileSize;
 	}
-	int GetDuration() const
+	
+	int duration() const override
 	{
 		return m_nDuration;
 	}
 
-	wstring GetDurationString() const;
-
 	static wstring GetDurationString(int nDuration);
-
-	long long fileSize() const
+	wstring GetDurationString() const;
+	
+	void SetDuration(UINT uDuration)
 	{
-		return m_nFileSize;
+		m_nDuration = uDuration;
 	}
+
+    int checkDuration();
 
 	CMediaSet *GetMediaSet() override
 	{
@@ -99,8 +99,6 @@ public:
 	}
 	
 	void UpdatePath(const wstring& strPath);
-
-    CMediaRes *GetMediaRes() const override;
 
 	CRCueFile getCueFile() const;
 

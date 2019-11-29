@@ -37,10 +37,19 @@ public:
 
 	bool GetData(UINT uRow, UINT uColumn, wstring& strData) override;
 	bool GetData(UINT uRow, UINT uColumn, string& strData) override;
+
 	bool GetData(UINT uRow, UINT uColumn, int& nValue) override;
 	bool GetData(UINT uRow, UINT uColumn, UINT& uValue) override;
-    bool GetData(UINT uRow, UINT uColumn, bool& bValue) override;
+
+	bool GetData(UINT uRow, UINT uColumn, long& nValue);
+	bool GetData(UINT uRow, UINT uColumn, unsigned long& nValue);
+
+	bool GetData(UINT uRow, UINT uColumn, long long& nValue);
+	bool GetData(UINT uRow, UINT uColumn, unsigned long long& nValue);
+
 	bool GetData(UINT uRow, UINT uColumn, double& dbValue) override;
+
+    bool GetData(UINT uRow, UINT uColumn, bool& bValue) override;
 
 	bool GetData(UINT uRow, SArray<wstring>& arrData) override;
 	bool GetData(UINT uRow, SArray<string>& arrData) override;

@@ -76,15 +76,28 @@ public:
 	wstring GetTitle() const;
 
 	static wstring GetFileSizeString(long long nFileSize, bool bIgnoreByte=true);
-	
+
+	wstring GetFileSizeString(bool bIgnoreByte = true)
+	{
+		return GetFileSizeString(fileSize(), bIgnoreByte);
+	}
+
+	virtual long long fileSize() const
+	{
+		return -1;
+	}
+
+	virtual int duration() const
+	{
+		return -1;
+	}
+
 	virtual CMediaSet *GetMediaSet()
 	{
 		return NULL;
 	}
 
 	E_MediaSetType GetMediaSetType();
-
-    virtual CMediaRes* GetMediaRes() const = 0;
 
 	virtual wstring GetExportFileName()
 	{

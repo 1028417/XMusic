@@ -41,7 +41,7 @@ struct tagAlbumItemInfo
 	wstring strPath;
 	dbtime_t tTime = 0;
 
-	int fileSize = 0;
+	long long fileSize = 0;
 	int duration = 0;
 };
 
@@ -151,6 +151,26 @@ struct tagCompareBackupResult
 	SArray<tagMovedMedia> arrMovedMedia;
 };
 
+struct __DalExt tagAddPlayItem
+{
+	tagAddPlayItem() {}
+
+	tagAddPlayItem(const wstring& t_strPath) : strPath(t_strPath)
+	{
+	}
+
+	tagAddPlayItem(const wstring& t_strPath, int t_nFileSize, int t_nDuration)
+		: strPath(t_strPath)
+		, nFileSize(t_nFileSize)
+		, nDuration(t_nDuration)
+	{
+	}
+
+	wstring strPath;
+	long long nFileSize = -1;
+	int nDuration = -1;
+};
+
 class __DalExt CDao
 {
 public:
@@ -239,13 +259,13 @@ public:
 	int GetMaxPlayItemPos(UINT uPlaylistID);
 
 	using CB_addPlayItem = function<void(UINT uPlayItemID, wstring strPath, dbtime_t)>;
-    bool addPlayItem(const SArray<wstring>& lstPaths, UINT uPlaylistID, const CB_addPlayItem& cb);
+    bool addPlayItem(const list<tagAddPlayItem>& lstPlayItem, UINT uPlaylistID, const CB_addPlayItem& cb);
 
 	bool deletePlayItem(const list<UINT>& lstIDs);
 	bool deletePlayItem(UINT uPlaylistID);
 
     bool updatePlayItem(UINT uPlayItemID, const wstring& strPath);
-    bool updatePlayItem(UINT uPlayItemID, int nFileSize, int nDuration);
+    bool updatePlayItem(UINT uPlayItemID, long long nFileSize, int nDuration);
 
 	bool setbackPlayItem(UINT uPlaylistID, const list<UINT>& lstIDs);
 
@@ -282,7 +302,7 @@ public:
     bool addAlbumItem(const list<wstring>& lstPaths, UINT uAlbumID, const CB_addAlbumItem& cb);
 
     bool updateAlbumItem(UINT uAlbumItemID, const wstring& strPath);
-    bool updateAlbumItem(UINT uAlbumItemID, int nFileSize, int nDuration);
+    bool updateAlbumItem(UINT uAlbumItemID, long long nFileSize, int nDuration);
 
 	bool deleteAlbumItem(UINT uAlbumItem);
 	bool deleteAlbumItem(const list<UINT>& lstAlbumItemIDs);
