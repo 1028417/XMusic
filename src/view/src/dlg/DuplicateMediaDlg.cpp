@@ -31,7 +31,7 @@ BOOL CDuplicateMediaDlg::OnInitDialog()
 	auto& globalSize = m_view.m_globalSize;
 	ColumnGuard.addDynamic(L"曲目", 0.55)
 		.addDynamic(L"目录", 0.45)
-		.addFix(_T("所属列表"), globalSize.m_ColWidth_RelatedPlaylist)
+		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
 		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);

@@ -69,10 +69,10 @@ public:
 		, m_strTag(strTag)
 		, m_bCompareCurrent(bCompareCurrent)
 		, m_dockView(*this)
-		, m_pageNew(view, m_dockView, L"新\n增", { { L"列表/专辑", 300 },{ L"新增曲目", 800 } })
-		, m_pageDeleled(view, m_dockView, L"删\n除", { { L"列表/专辑", 300 },{ L"刪除曲目", 800 } })
-		, m_pageModifyed(view, m_dockView, L"修\n改", { { L"列表/专辑", 250 }, { L"曲目", 450 }, { L"新文件", 400 } })
-		, m_pageMoved(view, m_dockView, L"移\n动", { { L"列表/专辑", 250 },{ L"曲目", 600 },{ L"新位置", 250 } })
+		, m_pageNew(view, m_dockView, L"新\n增", { { L"歌单/专辑", 300 },{ L"新增曲目", 800 } })
+		, m_pageDeleled(view, m_dockView, L"删\n除", { { L"歌单/专辑", 300 },{ L"刪除曲目", 800 } })
+		, m_pageModifyed(view, m_dockView, L"修\n改", { { L"歌单/专辑", 250 }, { L"曲目", 450 }, { L"新文件", 400 } })
+		, m_pageMoved(view, m_dockView, L"移\n动", { { L"歌单/专辑", 250 },{ L"曲目", 600 },{ L"新位置", 250 } })
 	{
 	}
 	

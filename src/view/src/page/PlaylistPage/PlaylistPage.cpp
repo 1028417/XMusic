@@ -8,7 +8,7 @@
 #include "PlayingPage.h"
 
 CPlaylistPage::CPlaylistPage(__view& view, CPlayItemPage& PlayItemPage)
-	: CBasePage(view, IDD_PAGE_PLAYLIST, L"ÁÐ±í¿â   ", IDR_MENU_PLAYLIST, true)
+	: CBasePage(view, IDD_PAGE_PLAYLIST, L"¸è µ¥      ", IDR_MENU_PLAYLIST, true)
 	, m_PlayItemPage(PlayItemPage)
 {
 }

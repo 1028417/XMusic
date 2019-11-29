@@ -854,7 +854,7 @@ void MainWindow::_showAlbumName()
         {
             if (m_bUsingCustomBkg)
             {
-                strMediaSet << L"列表：";
+                strMediaSet << L"歌单：";
             }
             strMediaSet << m_PlayingInfo.strPlaylist;
 

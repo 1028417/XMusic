@@ -113,7 +113,7 @@ BOOL CAlbumPage::OnInitDialog()
 		.addFix(_T("类型"), globalSize.m_ColWidth_Type, true)
 		.addFix(_T("大小"), globalSize.m_ColWidth_FileSize, true)
 		.addFix(_T("时长"), globalSize.m_ColWidth_Duration, true)
-		.addFix(_T("关联列表"), globalSize.m_ColWidth_RelatedPlaylist, true)
+		.addFix(_T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true)
 		.addDynamic(_T("目录"), 0.38)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 

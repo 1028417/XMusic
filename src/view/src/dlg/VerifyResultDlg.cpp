@@ -91,7 +91,7 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	}
 	else
 	{
-		ssMediaInfo << L"播放列表" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
+		ssMediaInfo << L"歌单" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
 	}
 	ssMediaInfo << __CNDot << media.GetName();
 

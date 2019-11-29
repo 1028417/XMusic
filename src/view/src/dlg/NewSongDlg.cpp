@@ -44,7 +44,7 @@ BOOL CNewSongDlg::OnInitDialog()
 	m_wndCombo.InsertString(uIndex++, L"      按标题");
 	m_wndCombo.InsertString(uIndex++, L"      按类型");
 	m_wndCombo.InsertString(uIndex++, L"      按路径");
-	m_wndCombo.InsertString(uIndex++, L"      按列表");
+	m_wndCombo.InsertString(uIndex++, L"      按歌单");
 	m_wndCombo.InsertString(uIndex++, L"      按歌手");
 	m_wndCombo.InsertString(uIndex++, L"      不排序");
 	m_wndCombo.SetCurSel(0);
@@ -57,7 +57,7 @@ BOOL CNewSongDlg::OnInitDialog()
 	ColumnGuard.addDynamic(_T("曲目"), 0.55)
 		.addFix(_T("类型"), globalSize.m_ColWidth_Type)
 		.addDynamic(_T("目录"), 0.45)
-		.addFix(_T("所属列表"), globalSize.m_ColWidth_RelatedPlaylist)
+		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
 		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum)
 		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.1));
 

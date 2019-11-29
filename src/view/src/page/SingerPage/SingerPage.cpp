@@ -7,7 +7,7 @@
 #include "dlg/ChooseDirDlg.h"
 
 CSingerPage::CSingerPage(__view& view, CAlbumPage& AlbumPage)
-	: CBasePage(view, IDD_PAGE_SINGER, L"歌手库   ", IDR_MENU_SINGEROBJECT, true)
+	: CBasePage(view, IDD_PAGE_SINGER, L"歌 手      ", IDR_MENU_SINGEROBJECT, true)
 	, m_AlbumPage(AlbumPage)
 {
 }
@@ -177,7 +177,7 @@ void CSingerPage::OnSize(UINT nType, int cx, int cy)
 
 void CSingerPage::_addSinger(CMediaRes *pSrcPath, CSingerGroup *pGroup)
 {
-	BOOL bInitAlbum = CMainApp::showConfirmMsg(L"是否生成专辑列表?", *this);
+	BOOL bInitAlbum = CMainApp::showConfirmMsg(L"是否生成专辑歌单?", *this);
 
 	CWaitCursor WaitCursor;
 	

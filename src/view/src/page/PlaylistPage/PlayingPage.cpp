@@ -4,7 +4,7 @@
 #include "PlayingPage.h"
 
 CPlayingPage::CPlayingPage(__view& view)
-	: CBasePage(view, IDD_PAGE_PLAYING, L"正在播放   ", IDR_MENU_PlayingPage, true)
+	: CBasePage(view, IDD_PAGE_PLAYING, L"正在播放     ", IDR_MENU_PlayingPage, true)
 	, m_wndList(view)
 {
 }

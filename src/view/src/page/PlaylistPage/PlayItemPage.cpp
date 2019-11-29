@@ -16,10 +16,10 @@ enum E_PlayItemColumn
 	, __Column_AddTime
 };
 
-#define __ColumnText_Name CString(_T("列表曲目"))
+#define __ColumnText_Name CString(_T("歌单曲目"))
 
 CPlayItemPage::CPlayItemPage(__view& view)
-	: CBasePage(view, IDD_PAGE_PLAYITEM, L" 列表", IDR_MENU_PLAYITEM, true)
+	: CBasePage(view, IDD_PAGE_PLAYITEM, L" 歌单", IDR_MENU_PLAYITEM, true)
 {
 }
 
@@ -266,7 +266,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		__Ensure(m_pPlaylist);
 
 		tagFileDlgOpt FileDlgOpt;
-		FileDlgOpt.strTitle = L"添加列表曲目";
+		FileDlgOpt.strTitle = L"添加歌单曲目";
 		FileDlgOpt.strFilter = __MediaFilter;
 		FileDlgOpt.strInitialDir = m_view.getMediaLib().GetAbsPath();
 		CFileDlgEx fileDlg(FileDlgOpt);

@@ -45,7 +45,7 @@ BOOL CFindDlg::OnInitDialog()
 	ColumnGuard.addDynamic(_T("曲目"), 0.55)
 		.addFix(_T("类型"), globalSize.m_ColWidth_Type)
 		.addDynamic(_T("目录"), 0.45)
-		.addFix(_T("所属列表"), globalSize.m_ColWidth_RelatedPlaylist)
+		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
 		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum)
 		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.1));
 

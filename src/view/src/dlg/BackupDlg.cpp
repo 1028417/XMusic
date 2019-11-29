@@ -266,7 +266,7 @@ void CBackupDlg::OnBnClickedBackup()
 
 void CBackupDlg::OnBnClickedClearAllMedia()
 {
-	__Ensure(CMainApp::showConfirmMsg(L"确认清空所有列表、歌手、专辑？",  this));
+	__Ensure(CMainApp::showConfirmMsg(L"确认清空所有歌单、歌手、专辑？",  this));
 
 	__Ensure(m_view.getModel().clearData());
 }
