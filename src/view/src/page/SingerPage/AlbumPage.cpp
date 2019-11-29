@@ -135,7 +135,7 @@ BOOL CAlbumPage::OnInitDialog()
 		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
 		if (NULL != pAlbumItem)
 		{
-			if (pAlbumItem->GetDuration() == 0)
+			if (pAlbumItem->duration() == 0)
 			{
 				lvcd.uTextAlpha = 128;
 			}

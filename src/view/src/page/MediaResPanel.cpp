@@ -396,7 +396,21 @@ void CMediaResPanel::_showPath()
 
 BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
 {
-	CMediaRes *pMediaRes = media.GetMediaRes();
+	CMediaRes *pMediaRes = m_view.getModel().getMediaLib().findSubFile(media);
+	if (NULL == pMediaRes)
+	{
+		cauto strDir = fsutil::GetParentDir(media.GetPath());
+		if (!strDir.empty())
+		{
+			CMediaDir *pMediaDir = m_view.getModel().getMediaLib().findSubDir(strDir);
+			if (pMediaDir)
+			{
+				pMediaDir->clear();
+				pMediaRes = (CMediaRes*)pMediaDir->findSubFile(media.GetName());
+			}
+		}
+	}
+	
 	if (NULL == pMediaRes)
 	{
 		CMainApp::showMsg(L"未定位到曲目：\n\n\t" + media.GetPath(), &wnd);

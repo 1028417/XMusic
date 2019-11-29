@@ -323,8 +323,8 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 		}
 	}
 
-	CMediaRes *pMediaRes = media.GetMediaRes();
-	if (NULL != pMediaRes)
+	CMediaRes *pMediaRes = m_model.getMediaLib().findSubFile(media);
+	if (pMediaRes)
 	{
         pMediaRes->setName(strNewName + strExtName);
 	}
@@ -336,10 +336,10 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
 {
 	TD_IMediaList lstSrcMedias;
-	lstMedias([&](IMedia& Media){
-		if (!strutil::matchIgnoreCase(fsutil::GetParentDir(Media.GetPath()), strDir))
+	lstMedias([&](IMedia& media){
+		if (!strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strDir))
 		{
-			lstSrcMedias.add(Media);
+			lstSrcMedias.add(media);
 		}
 	});
 	__Ensure(lstSrcMedias);
@@ -347,16 +347,16 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 
 	SMap<wstring, wstring> mapMovedFiles;
 
-	lstSrcMedias([&](IMedia& Media){
-        cauto strSrcPath = Media.GetPath();
+	lstSrcMedias([&](IMedia& media){
+        cauto strSrcPath = media.GetPath();
 		if (mapMovedFiles.includes(strSrcPath))
 		{
 			return;
 		}
 
-        cauto strDstPath = strDir + __wcDirSeparator + Media.GetName();
+        cauto strDstPath = strDir + __wcDirSeparator + media.GetName();
 
-        cauto strSrcAbsPath = Media.GetAbsPath();
+        cauto strSrcAbsPath = media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))
 		{
 			mapMovedFiles.insert(strSrcPath, strDstPath);
@@ -373,7 +373,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			}
 		}
 		
-		m_model.getPlayMgr().moveFile(Media.GetAbsPath(), strDstAbsPath, [&]() {
+		m_model.getPlayMgr().moveFile(media.GetAbsPath(), strDstAbsPath, [&]() {
 			(void)fsutil::removeFile(strDstAbsPath);
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{

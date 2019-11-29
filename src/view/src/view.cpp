@@ -494,7 +494,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 					JValue jFile;
 					jFile["name"] = strutil::toUtf8(subFile.name());
-					jFile["size"] = ((CMediaRes&)subFile).GetFileSize();
+					jFile["size"] = ((CMediaRes&)subFile).fileSize();
 					jFiles.append(jFile);
 
 					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;

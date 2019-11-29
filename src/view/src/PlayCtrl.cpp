@@ -104,7 +104,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	
 	m_strPlayingFile = PlayItem.GetTitle();
 	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
-		, PlayItem.GetDuration()+1, 0); // , long(player().GetClock()/__1e6));
+		, PlayItem.duration()+1, 0); // , long(player().GetClock()/__1e6));
 }
 
 void CPlayCtrl::onPlayStoped(bool bOpenFail)
