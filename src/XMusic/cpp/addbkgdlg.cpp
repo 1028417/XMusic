@@ -30,7 +30,7 @@ void CAddBkgDlg::init()
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    connect(this, signal_founddir, this, &CAddBkgDlg::slot_founddir);
+    connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
 }
 
 void CAddBkgDlg::show()

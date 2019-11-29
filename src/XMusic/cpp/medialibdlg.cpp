@@ -167,7 +167,7 @@ void CMedialibView::init()
     (void)m_pmDirLink.load(":/img/dirLink.png");
     (void)m_pmFile.load(":/img/file.png");
 
-    connect(this, signal_update, this, [&](){
+    connect(this, &CMedialibView::signal_update, this, [&](){
         update();
     });
 }

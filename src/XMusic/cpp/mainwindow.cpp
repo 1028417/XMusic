@@ -247,13 +247,13 @@ void MainWindow::_init()
         label->setTextColor(255,255,255);
     }
 
-    connect(this, signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
-    connect(this, signal_showPlaying, this, &MainWindow::slot_showPlaying);
-    connect(this, signal_playStoped, this, &MainWindow::slot_playStoped);
+    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
+    connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
+    connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
     if (XMediaLib::m_bOnlineMediaLib)
     {
-        connect(this, signal_updateSingerImg, this, [&](){
+        connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg();
