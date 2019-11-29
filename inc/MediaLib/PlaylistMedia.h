@@ -89,6 +89,6 @@ private:
 
 	wstring GetExportName() override
 	{
-		return L"列表" + _GetDisplayName();
+		return L"歌单" + _GetDisplayName();
 	}
 };

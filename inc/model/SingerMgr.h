@@ -1,14 +1,9 @@
-﻿#pragma once
+#pragma once
 
 class __ModelExt CSingerMgr : public CMediaSet
 {
 public:
-	CSingerMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver)
-		: CMediaSet(L"歌手库", &RootMediaSet)
-		, m_dao(dao)
-		, m_ModelObserver(ModelObserver)
-	{
-	}
+	CSingerMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver);
 
 private:
 	CDao& m_dao;

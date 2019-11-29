@@ -1,17 +1,11 @@
-﻿#pragma once
+#pragma once
 
 #define ID_PLAYLIST_NULL 0
 
 class __ModelExt CPlaylistMgr : public CMediaSet
 {
 public:
-	CPlaylistMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver)
-        : CMediaSet(L"列表库", &RootMediaSet)
-		, m_dao(dao)
-		, m_ModelObserver(ModelObserver)
-		, m_Playinglist(*this, ID_PLAYLIST_NULL, L"")
-	{
-	}
+	CPlaylistMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver);
 
 private:
 	CDao& m_dao;
