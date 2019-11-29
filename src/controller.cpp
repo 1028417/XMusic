@@ -323,7 +323,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 		}
 	}
 
-	CMediaRes *pMediaRes = m_model.getMediaLib().findSubFile(media);
+	CMediaRes *pMediaRes = m_model.getMediaLib().findSubPath(media);
 	if (pMediaRes)
 	{
         pMediaRes->setName(strNewName + strExtName);
