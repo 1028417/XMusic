@@ -112,9 +112,10 @@ public:
 		return _findSubPath(strSubFile, false);
 	}
 
-	CMediaRes* findSubFile(const IMedia& media)
+	CMediaRes* findSubFile(const CMedia& media);
+	CMediaRes* findSubPath(const IMedia& media)
 	{
-		return _findSubPath(media.GetPath(), false);
+		return _findSubPath(media.GetPath(), media.IsDir());
 	}
 };
 

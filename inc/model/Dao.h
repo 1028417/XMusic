@@ -159,7 +159,7 @@ struct __DalExt tagAddPlayItem
 	{
 	}
 
-	tagAddPlayItem(const wstring& t_strPath, int t_nFileSize, int t_nDuration)
+	tagAddPlayItem(const wstring& t_strPath, long long t_nFileSize, int t_nDuration)
 		: strPath(t_strPath)
 		, nFileSize(t_nFileSize)
 		, nDuration(t_nDuration)
