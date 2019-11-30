@@ -46,8 +46,7 @@ private:
 
     bool _resetRootDir(wstring& strRootDir);
 
-    bool _dowloadMediaLib();
-    bool _upgradeMediaLib(UINT uVersion, CZipFile& zipFile);
+    bool _upgradeMediaLib();
 
 public:
     MainWindow& mainWnd()

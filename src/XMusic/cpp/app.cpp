@@ -200,7 +200,7 @@ int CXMusicApp::run()
         if (XMediaLib::m_bOnlineMediaLib)
         {
             thrUpgrade = std::thread([&](){
-                bUpgradeResult = _dowloadMediaLib();
+                bUpgradeResult = _upgradeMediaLib();
             });
         }
 
@@ -255,7 +255,7 @@ int CXMusicApp::run()
     return nRet;
 }
 
-bool CXMusicApp::_dowloadMediaLib()
+bool CXMusicApp::_upgradeMediaLib()
 {
 #if __android
     QFile qf("assets:/upgrade.conf");
