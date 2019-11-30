@@ -68,6 +68,11 @@ public:
 		return m_addTime;
 	}
 
+	void SetFileSize(long long nFileSize)
+	{
+		m_nFileSize = nFileSize;
+	}
+
 	long long fileSize() const override
 	{
 		return m_nFileSize;

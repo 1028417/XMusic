@@ -130,9 +130,7 @@ template <typename T, typename R>
 class CMultiTask
 {
 public:
-	CMultiTask()
-	{
-	}
+	CMultiTask() {}
 
 private:
 	vector<R> m_vecResult;
