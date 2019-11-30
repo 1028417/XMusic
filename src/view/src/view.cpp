@@ -204,20 +204,20 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		UINT uThreadCount = plMedias.size() / 500;
 		uThreadCount = MIN(thread::hardware_concurrency(), uThreadCount);
 		
-		CMultiTask<pair<wstring, TD_MediaList>, TD_MediaList> multiTask;
+		CMultiTask<pair<wstring, TD_MediaList>, pair<CMediaOpaque, TD_MediaList>> multiTask;
 		cauto vecVerifyResult = multiTask.start(plMedias, uThreadCount
-			, [&](UINT taskIdx, auto& prTask, TD_MediaList& paResult) {
+			, [&](UINT taskIdx, auto& prTask, auto& prGroup) {
 			ProgressDlg.SetStatusText(prTask.first.c_str(), 1);
 
 			long long nFileSize = 0;
-			UINT uDuration = CMediaOpaque().checkFileDuration(prTask.first, nFileSize);
+			UINT uDuration = prGroup.first.checkFileDuration(prTask.first, nFileSize);
 			prTask.second([&](CMedia& media) {
 				media.SetFileSize(nFileSize);
 				media.SetDuration(uDuration);
 
 				if (0 == uDuration)
 				{
-					paResult.add(media);
+					prGroup.second.add(media);
 				}
 			});
 
@@ -229,12 +229,12 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			return true;
 		});
 
-		for (cauto paInvalidMedia : vecVerifyResult)
+		for (cauto prInvalidMedia : vecVerifyResult)
 		{
-			VerifyResult.paInvalidMedia.add(paInvalidMedia);
+			VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
 		}
 
-		if (VerifyResult.paInvalidMedia)
+		if (!VerifyResult.paInvalidMedia)
 		{
 			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
 		}
@@ -252,9 +252,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		(void)dlg.DoModal();
 	}
 
-#if 0
 	(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
-#endif
 
 	if (cb)
 	{
