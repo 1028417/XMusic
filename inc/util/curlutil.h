@@ -53,10 +53,11 @@ public:
         _clear();
     }
 
-    CDownloader(bool bShare = false, unsigned long connectTimeout = 3
+    CDownloader(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
             , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
             , unsigned long maxSpeedLimit = 0) : m_curlOpt(bShare)
     {
+        m_curlOpt.timeout = timeout;
         m_curlOpt.connectTimeout = connectTimeout;
 
         m_curlOpt.lowSpeedLimit = lowSpeedLimit; // 单位字节
