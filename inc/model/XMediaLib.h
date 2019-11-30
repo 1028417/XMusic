@@ -48,28 +48,14 @@ private:
     CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);
 #endif
 
-private:
+public:
     void GetSubSets(TD_MediaSetList& lstSubSets) override
 	{
 		lstSubSets.add(m_PlaylistMgr);
 		lstSubSets.add(m_SingerMgr);
 	}
 
-	bool FindMedia(E_MediaSetType eMediaSetType, const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) override
-	{
-		if (E_MediaSetType::MST_Playlist == eMediaSetType)
-		{
-			return m_PlaylistMgr.FindMedia(FindPara, FindResult);
-		}
-		else if (E_MediaSetType::MST_Playlist == eMediaSetType)
-		{
-			return m_SingerMgr.FindMedia(FindPara, FindResult);
-		}
-		else
-		{
-			return CMediaSet::FindMedia(FindPara, FindResult);
-		}
-	}
+	CMedia* FindRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) override;
 
 	void renameMedia(IMedia& media, const wstring& strNewName) override;
 

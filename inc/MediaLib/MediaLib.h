@@ -121,8 +121,8 @@ public:
 	}
 	
 public:
-	virtual bool FindMedia(E_MediaSetType eMediaSetType, const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) = 0;
-
+	virtual CMedia* FindRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) = 0;
+	
 	virtual void renameMedia(IMedia& media, const wstring& strNewName) = 0;
 
 	virtual UINT checkDuration(IMedia& media, long long& nFileSize) = 0;
