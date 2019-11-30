@@ -141,12 +141,12 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,170));
+        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,85));
     }
 
     if (context.eStyle & E_RowStyle::IS_RightTip)
     {
-        int sz_righttip = rc.height()*20/100;
+        int sz_righttip = rc.height()*22/100;
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
         painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
