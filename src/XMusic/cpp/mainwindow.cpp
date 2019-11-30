@@ -736,8 +736,8 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
-    PlayItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
+    auto pAlbumItem = PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
+    auto pPlayItem = PlayItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
 
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.uPlaySeq++;
@@ -745,6 +745,17 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.duration();
+        if (PlayingInfo.nDuration <= 0)
+        {
+            if (pAlbumItem)
+            {
+                PlayingInfo.nDuration = pAlbumItem->duration();
+            }
+            else if (pPlayItem)
+            {
+                PlayingInfo.nDuration = pPlayItem->duration();
+            }
+        }
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
