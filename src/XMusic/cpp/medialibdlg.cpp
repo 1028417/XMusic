@@ -373,14 +373,14 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
         context.pixmap = &m_pmSingerGroup;
-        context.strText = m_SingerLib.m_strName;
+        context.strText = L"歌 手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
         context.pixmap = &m_pmPlaylist;
-        context.strText = m_PlaylistLib.m_strName;
+        context.strText = L"歌 单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
