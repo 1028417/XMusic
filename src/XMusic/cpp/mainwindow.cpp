@@ -108,7 +108,6 @@ MainWindow::MainWindow(CXMusicApp& app)
     ui.btnFullScreen->setVisible(false);
 #endif
 
-
     ui.labelLogo->setAttribute(Qt::WA_TranslucentBackground);
     ui.labelLogoTip->setAttribute(Qt::WA_TranslucentBackground);
     ui.labelLogoCompany->setAttribute(Qt::WA_TranslucentBackground);
@@ -737,7 +736,8 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    PlayItem.CheckRelatedMedia();
+    PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
+    PlayItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
 
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.uPlaySeq++;
