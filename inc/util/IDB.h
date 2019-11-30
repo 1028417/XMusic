@@ -10,10 +10,19 @@ public:
 
 	virtual bool GetData(UINT uRow, UINT uColumn, wstring& strValue) = 0;
 	virtual bool GetData(UINT uRow, UINT uColumn, string& strValue) = 0;
+
 	virtual bool GetData(UINT uRow, UINT uColumn, int& nValue) = 0;
 	virtual bool GetData(UINT uRow, UINT uColumn, UINT& uValue) = 0;
-    virtual bool GetData(UINT uRow, UINT uColumn, bool& bValue) = 0;
+
+    virtual bool GetData(UINT uRow, UINT uColumn, long& nValue) = 0;
+    virtual bool GetData(UINT uRow, UINT uColumn, unsigned long& nValue) = 0;
+
+    virtual bool GetData(UINT uRow, UINT uColumn, long long& nValue) = 0;
+    virtual bool GetData(UINT uRow, UINT uColumn, unsigned long long& nValue) = 0;
+
 	virtual bool GetData(UINT uRow, UINT uColumn, double& dbValue) = 0;
+
+    virtual bool GetData(UINT uRow, UINT uColumn, bool& bValue) = 0;
 
 	virtual bool GetData(UINT uRow, SArray<wstring>& arrData) = 0;
 	virtual bool GetData(UINT uRow, SArray<string>& arrData) = 0;

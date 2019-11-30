@@ -41,11 +41,11 @@ public:
 	bool GetData(UINT uRow, UINT uColumn, int& nValue) override;
 	bool GetData(UINT uRow, UINT uColumn, UINT& uValue) override;
 
-	bool GetData(UINT uRow, UINT uColumn, long& nValue);
-	bool GetData(UINT uRow, UINT uColumn, unsigned long& nValue);
+    bool GetData(UINT uRow, UINT uColumn, long& nValue) override;
+    bool GetData(UINT uRow, UINT uColumn, unsigned long& nValue) override;
 
-	bool GetData(UINT uRow, UINT uColumn, long long& nValue);
-	bool GetData(UINT uRow, UINT uColumn, unsigned long long& nValue);
+    bool GetData(UINT uRow, UINT uColumn, long long& nValue) override;
+    bool GetData(UINT uRow, UINT uColumn, unsigned long long& nValue) override;
 
 	bool GetData(UINT uRow, UINT uColumn, double& dbValue) override;
 
