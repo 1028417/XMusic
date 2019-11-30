@@ -187,7 +187,7 @@ int CXMusicApp::run()
     m_mainWnd.showLogo();
 
     std::thread thrUpgrade;
-    bool bUpgradeFail = false;
+    bool bUpgradeResult = false;
 
     timerutil::async([&](){
         if (!_resetRootDir(option.strRootDir))
@@ -200,11 +200,7 @@ int CXMusicApp::run()
         if (XMediaLib::m_bOnlineMediaLib)
         {
             thrUpgrade = std::thread([&](){
-                g_logger >> "upgradeMediaLib";
-                if (!_dowloadMediaLib())
-                {
-                    bUpgradeFail = true;
-                }
+                bUpgradeResult = _dowloadMediaLib();
             });
         }
 
@@ -212,7 +208,7 @@ int CXMusicApp::run()
             if (thrUpgrade.joinable())
             {
                 thrUpgrade.join();
-                if (bUpgradeFail)
+                if (!bUpgradeResult)
                 {
                     CMsgBox::show(m_mainWnd, "加载媒体库失败", [&](){
                         this->quit();
