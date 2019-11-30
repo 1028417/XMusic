@@ -92,6 +92,8 @@ struct tagModifyedMedia
 	wstring strMediaSetName;
 
 	wstring strSingerName;
+
+	//wstring strSingerDir;
 };
 
 typedef struct tagNewPlayItem
@@ -109,7 +111,7 @@ typedef struct tagNewAlbumItem
 
 	wstring strSingerName;
 
-	wstring strSingerDir;
+	//wstring strSingerDir;
 
 	int iSingerID = 0;
 
@@ -124,14 +126,12 @@ struct tagMovedMedia
 
 	wstring strSingerName;
 
-	wstring strSingerPath;
+	wstring strSingerDir;
 };
 
 struct tagCompareBackupResult
 {
-	tagCompareBackupResult()
-	{
-	}
+	tagCompareBackupResult() {}
 
 	tagCompareBackupResult(const wstring t_strSrcTag, const wstring t_strDstTag=L"")
 		: strSrcTag(t_strSrcTag)
