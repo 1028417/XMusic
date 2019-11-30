@@ -367,7 +367,12 @@ bool MainWindow::event(QEvent *ev)
             int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
             if (nProgress <= ui.progressBar->maximum())
             {
-                ui.progressBar->setValue(nProgress, m_app.getPlayMgr().mediaOpaque().streamSize());
+                int bufferValue = -1;
+                if (XMediaLib::m_bOnlineMediaLib)
+                {
+                    bufferValue = m_app.getPlayMgr().mediaOpaque().streamSize()/1000;
+                }
+                ui.progressBar->setValue(nProgress, bufferValue);
             }
         }
     }
