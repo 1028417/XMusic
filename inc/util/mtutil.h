@@ -95,38 +95,38 @@ public:
     {
         std::this_thread::yield();
     }
+};
 
 
-    class __UtilExt CThreadGroup
+class __UtilExt CThreadGroup
+{
+public:
+    CThreadGroup()
+        //: m_CancelEvent(TRUE)
     {
-    public:
-        CThreadGroup()
-            //: m_CancelEvent(TRUE)
-        {
-        }
+    }
 
-    private:
-        vector<BOOL> m_vecThreadStatus;
+private:
+    vector<BOOL> m_vecThreadStatus;
 
-        volatile bool m_bPause = false;
+    volatile bool m_bPause = false;
 
-        bool m_bCancelEvent = false;
+    bool m_bCancelEvent = false;
 
-    public:
-        using CB_WorkThread = function<void(UINT uThreadIndex)>;
-        void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
+public:
+    using CB_WorkThread = function<void(UINT uThreadIndex)>;
+    void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
 
-        bool checkCancel();
+    bool checkCancel();
 
-    protected:
-        void pause(bool bPause = true);
+protected:
+    void pause(bool bPause = true);
 
-        void cancel();
+    void cancel();
 
-        UINT getActiveCount();
-    };
+    UINT getActiveCount();
 
-
+public:
 	template <class T, class R>
 	using CB_SubTask = const function<bool(UINT uTaskIdx, T&, R&)>&;
 	
@@ -163,26 +163,28 @@ public:
 			return cb(uTaskIdx, task);
 		});
 	}
-
-	template <typename T, typename R=BOOL>
-	class CMultiTask
-	{
-	public:
-		CMultiTask() {}
-
-	private:
-		vector<R> m_vecResult;
-
-	public:
-		using CB_SubTask = mtutil::CB_SubTask<T,R>;
-
-		vector<R>& start(ArrList<T>& alTask, UINT uThreadCount, CB_SubTask cb)
-		{
-			mtutil::startMultiTask(alTask, m_vecResult, uThreadCount, cb);
-			return m_vecResult;
-		}
-	};
 };
+
+
+template <typename T, typename R=BOOL>
+class CMultiTask
+{
+public:
+	CMultiTask() {}
+
+private:
+	vector<R> m_vecResult;
+
+public:
+	using CB_SubTask = CThreadGroup::CB_SubTask<T,R>;
+
+	vector<R>& start(ArrList<T>& alTask, UINT uThreadCount, CB_SubTask cb)
+	{
+		CThreadGroup::startMultiTask(alTask, m_vecResult, uThreadCount, cb);
+		return m_vecResult;
+	}
+};
+
 
 #include "mtlock.h"
 
