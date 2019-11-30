@@ -20,7 +20,9 @@ public:
 
 	bool updateMediaSetName(CMediaSet& MediaSet, const wstring& strName);
 	bool updateMediaSetProperty(CMediaSet& MediaSet, const CMediasetProperty& property);
-	
+
+	void updateMediaSizeDuration(const TD_MediaList& lstMedias);
+
 	bool initAlarmmedia();
 	
 	bool addAlarmmedia(const TD_IMediaList& lstMedias);
