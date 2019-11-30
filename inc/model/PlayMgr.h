@@ -72,20 +72,25 @@ public:
     }
 
     CMediaSet& getPlayinglist()
-	{
+    {
         return m_Playinglist;
-	}
+    }
 
 	ArrList<CPlayItem>& getPlayingItems()
-	{
-        return m_Playinglist.playItems();
+        {
+            return m_Playinglist.playItems();
 	}
 
-	bool init();
+        bool init();
 
-    CPlayer& player()
-	{
-        return m_Player;
+        const CMediaOpaque& mediaOpaque() const
+        {
+            return m_MediaOpaque;
+        }
+
+        CPlayer& player()
+        {
+            return m_Player;
 	}
 
 	E_PlayStatus GetPlayStatus();

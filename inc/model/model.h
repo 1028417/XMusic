@@ -205,10 +205,25 @@ private:
 	string m_strSingerImgUrl;
 
 public:
-    bool status() const override
+        bool status() const override
 	{
 		return m_db.GetStatus();
 	}
+
+        COptionMgr& getOptionMgr() override
+        {
+                return m_OptionMgr;
+        }
+
+        CDataMgr& getDataMgr() override
+        {
+                return m_DataMgr;
+        }
+
+		CBackupMgr& getBackupMgr() override
+		{
+			return m_BackupMgr;
+		}
 
 	XMediaLib& getMediaLib() override
 	{
@@ -233,21 +248,6 @@ public:
 	CSingerImgMgr& getSingerImgMgr() override
 	{
 		return m_SingerImgMgr;
-	}
-	
-	COptionMgr& getOptionMgr() override
-	{
-		return m_OptionMgr;
-	}
-
-	CDataMgr& getDataMgr() override
-	{
-		return m_DataMgr;
-	}
-
-	CBackupMgr& getBackupMgr() override
-	{
-		return m_BackupMgr;
 	}
 
 	tagOption& init();
