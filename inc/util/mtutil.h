@@ -159,7 +159,7 @@ public:
 	static void startMultiTask(ArrList<T>& alTask, UINT uThreadCount, const function<bool(UINT uTaskIdx, T&)>& cb)
 	{
 		vector<BOOL> vecResult;
-		start(alTask, vecResult, uThreadCount, [&](UINT uTaskIdx, T& task, BOOL&) {
+        startMultiTask(alTask, vecResult, uThreadCount, [&](UINT uTaskIdx, T& task, BOOL&) {
 			return cb(uTaskIdx, task);
 		});
 	}
