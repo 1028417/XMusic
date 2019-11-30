@@ -184,7 +184,8 @@ void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMed
 			strNewMediaSetName = MovedMedia.strNewMediaSetName;
 		}
 
-		m_wndList.InsertItemEx(uItem++, {strOldMediaSetName, MovedMedia.strPath, strNewMediaSetName}, L" ");
+		m_wndList.InsertItemEx(uItem++, {strOldMediaSetName
+			, fsutil::getFileTitle(MovedMedia.strPath), strNewMediaSetName}, L" ");
 	}
 
 	m_cbDblclk = [&](UINT uItem) {
