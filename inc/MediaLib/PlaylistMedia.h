@@ -31,7 +31,7 @@ public:
 
 	void AsyncTask() override;
 
-    void CheckRelatedMedia();
+    CMedia* CheckRelatedMedia();
 };
 
 class __MediaLibExt CPlaylist : public CMediaSet

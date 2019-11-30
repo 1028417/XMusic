@@ -6,9 +6,11 @@ class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 public:
 	static bool m_bOnlineMediaLib;
 
-	XMediaLib(IMediaObserver& MediaObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr);
+	XMediaLib(class IModelObserver& ModelObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr);
 
 private:
+	class IModelObserver& m_ModelObserver;
+
 	CPlaylistMgr& m_PlaylistMgr;
 	CSingerMgr& m_SingerMgr;
 
@@ -52,4 +54,26 @@ private:
 		lstSubSets.add(m_PlaylistMgr);
 		lstSubSets.add(m_SingerMgr);
 	}
+
+	bool FindMedia(E_MediaSetType eMediaSetType, const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) override
+	{
+		if (E_MediaSetType::MST_Playlist == eMediaSetType)
+		{
+			return m_PlaylistMgr.FindMedia(FindPara, FindResult);
+		}
+		else if (E_MediaSetType::MST_Playlist == eMediaSetType)
+		{
+			return m_SingerMgr.FindMedia(FindPara, FindResult);
+		}
+		else
+		{
+			return CMediaSet::FindMedia(FindPara, FindResult);
+		}
+	}
+
+	void renameMedia(IMedia& media, const wstring& strNewName) override;
+
+	UINT checkDuration(IMedia& media, long long& nFileSize) override;
+
+	UINT getSingerImgPos(UINT uSingerID) override;
 };

@@ -2,18 +2,6 @@
 
 #define __medialibDir L".xmusic"
 
-class IMediaObserver
-{
-public:
-	virtual void renameMedia(IMedia& media, const wstring& strNewName) = 0;
-
-	virtual class CMedia *findRelatedMedia(IMedia& media, E_MediaSetType eMediaSetType) = 0;
-
-    virtual UINT checkDuration(IMedia& media, long long& nFileSize) = 0;
-
-	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
-};
-
 enum class E_AttachDirType
 {
     ADT_Internal
@@ -119,13 +107,25 @@ public:
 	}
 };
 
+extern class CMediaLib *g_pMediaLib;
+
 class __MediaLibExt CMediaLib : public CRootMediaDir
 {
 public:
-	CMediaLib(IMediaObserver& MediaObserver);
-
+	CMediaLib()
+	{
+		if (NULL == g_pMediaLib)
+		{
+			g_pMediaLib = this;
+		}
+	}
+	
 public:
-	IMediaObserver& m_MediaObserver;
-};
+	virtual bool FindMedia(E_MediaSetType eMediaSetType, const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) = 0;
 
-extern CMediaLib *g_pMediaLib;
+	virtual void renameMedia(IMedia& media, const wstring& strNewName) = 0;
+
+	virtual UINT checkDuration(IMedia& media, long long& nFileSize) = 0;
+
+	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
+};

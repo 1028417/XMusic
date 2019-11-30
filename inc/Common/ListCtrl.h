@@ -353,7 +353,7 @@ public:
 
 	void AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
 
-	void AsyncTask(UINT uElapse, const function<bool(CListObject& object)> cb);
+	void AsyncTask(UINT uElapse, const function<bool(CListObject& object)>& cb);
 	
 	void AsyncLButtondown(cfn_void cb);
 

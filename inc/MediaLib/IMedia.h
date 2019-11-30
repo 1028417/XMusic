@@ -133,6 +133,8 @@ public:
 
 	void ShellExplore(bool bSel=true);
 
+	CMedia *findRelatedMedia(E_MediaSetType eMediaSetType);
+
 protected:
 	void UpdateFileType(const wstring& strPath);
 };
