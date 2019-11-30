@@ -55,7 +55,7 @@ public:
 		lstSubSets.add(m_SingerMgr);
 	}
 
-	CMedia* FindRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) override;
+	CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) override;
 
 	void renameMedia(IMedia& media, const wstring& strNewName) override;
 
