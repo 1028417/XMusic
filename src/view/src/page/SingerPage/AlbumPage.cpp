@@ -345,7 +345,7 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 		uSingerImgIdx = 0;
 	}
 
-	cauto strSingerImg = m_view.getModel().getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx);
+	cauto strSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx);
 	if (!strSingerImg.empty())
 	{
 		(void)m_imgSinger.LoadEx(strSingerImg);

@@ -81,11 +81,6 @@ public:
 		return m_model;
 	}
 
-	XMediaLib& getMediaLib()
-	{
-		return m_model.getMediaLib();
-	}
-
 	COptionMgr& getOptionMgr()
 	{
 		return m_model.getOptionMgr();
@@ -94,6 +89,16 @@ public:
 	CDataMgr& getDataMgr()
 	{
 		return m_model.getDataMgr();
+	}
+
+	CBackupMgr& getBackupMgr()
+	{
+		return m_model.getBackupMgr();
+	}
+
+	XMediaLib& getMediaLib()
+	{
+		return m_model.getMediaLib();
 	}
 
 	CPlaylistMgr& getPlaylistMgr()

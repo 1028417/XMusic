@@ -37,7 +37,7 @@ void CAddBkgDlg::show()
 {
     CDialog::show(true);
 
-    cauto strRootDir = m_app.getModel().getMediaLib().GetAbsPath() + L"/..";
+    cauto strRootDir = m_app.getMediaLib().GetAbsPath() + L"/..";
     m_ImgRoot.setDir(strRootDir);
 
     m_bScaning = true;

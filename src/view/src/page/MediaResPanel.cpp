@@ -396,13 +396,13 @@ void CMediaResPanel::_showPath()
 
 BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
 {
-	CMediaRes *pMediaRes = m_view.getModel().getMediaLib().findSubPath(media);
+	CMediaRes *pMediaRes = m_view.getMediaLib().findSubPath(media);
 	if (NULL == pMediaRes)
 	{
 		cauto strDir = fsutil::GetParentDir(media.GetPath());
 		if (!strDir.empty())
 		{
-			CMediaDir *pMediaDir = m_view.getModel().getMediaLib().findSubDir(strDir);
+			CMediaDir *pMediaDir = m_view.getMediaLib().findSubDir(strDir);
 			if (pMediaDir)
 			{
 				pMediaDir->clear();

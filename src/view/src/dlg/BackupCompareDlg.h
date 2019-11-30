@@ -65,7 +65,7 @@ class CBackupCompareDlg : public CDialogT<IDD_DLG_BackupCompare>
 public:
 	CBackupCompareDlg(__view& view, const wstring& strTag, bool bCompareCurrent)
 		: m_view(view)
-		, m_BackupMgr(view.getModel().getBackupMgr())
+		, m_BackupMgr(view.getBackupMgr())
 		, m_strTag(strTag)
 		, m_bCompareCurrent(bCompareCurrent)
 		, m_dockView(*this)

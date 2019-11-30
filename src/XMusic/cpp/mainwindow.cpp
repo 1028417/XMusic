@@ -308,7 +308,7 @@ void MainWindow::show()
 
     _relayout();
 
-    m_PlayingList.updateList(m_app.getModel().getOptionMgr().getOption().uPlayingItem);
+    m_PlayingList.updateList(m_app.getOptionMgr().getOption().uPlayingItem);
 }
 
 void MainWindow::_onPaint(CPainter& painter)
@@ -367,6 +367,7 @@ bool MainWindow::event(QEvent *ev)
             int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
             if (nProgress <= ui.progressBar->maximum())
             {
+                mediaOpaque().
                 ui.progressBar->setValue(nProgress);
             }
         }
@@ -835,20 +836,10 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     _updatePlayPauseButton(true);
 
     ui.progressBar->setValue(0);
+    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nFileSize);
 
-    if (m_PlayingInfo.nDuration > 0)
-    {
-        ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nFileSize);
-
-        QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
-        ui.labelDuration->setText(qsDuration);
-    }
-    else
-    {
-        ui.progressBar->setMaximum(0);
-
-        ui.labelDuration->clear();
-    }
+    QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
+    ui.labelDuration->setText(qsDuration);
 }
 
 void MainWindow::slot_playStoped(bool bOpenFail)
@@ -956,7 +947,7 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx);
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
         QPixmap pm;
@@ -1063,7 +1054,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_app.getModel().getSingerMgr().FindSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = m_app.getSingerMgr().FindSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1075,12 +1066,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         CMedia *pMedia = NULL;
         if (m_PlayingInfo.uRelatedAlbumItemID != 0)
         {
-            pMedia = m_app.getModel().getSingerMgr().FindMedia(
+            pMedia = m_app.getSingerMgr().FindMedia(
                                     E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
         }
         else if (m_PlayingInfo.uRelatedPlayItemID != 0)
         {
-            pMedia = m_app.getModel().getPlaylistMgr().FindMedia(
+            pMedia = m_app.getPlaylistMgr().FindMedia(
                                     E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
         }
         if (pMedia && pMedia->m_pParent)
@@ -1103,8 +1094,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             {
                 UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
                 m_app.getPlayMgr().player().Seek(uPos);
-
-                //mtutil::usleep(50);
 
                 ui.progressBar->setValue(uPos);
             }

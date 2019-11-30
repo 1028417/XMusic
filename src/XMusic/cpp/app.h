@@ -61,17 +61,37 @@ public:
 
     COptionMgr& getOptionMgr()
     {
-        return getModel().getOptionMgr();
+        return m_model.getOptionMgr();
     }
 
     CDataMgr& getDataMgr()
     {
-        return getModel().getDataMgr();
+        return m_model.getDataMgr();
+    }
+
+    XMediaLib& getMediaLib()
+    {
+        return m_model.getMediaLib();
+    }
+
+    CPlaylistMgr& getPlaylistMgr()
+    {
+        return m_model.getPlaylistMgr();
     }
 
     CPlayMgr& getPlayMgr()
     {
-        return getModel().getPlayMgr();
+        return m_model.getPlayMgr();
+    }
+
+    CSingerMgr& getSingerMgr()
+    {
+        return m_model.getSingerMgr();
+    }
+
+    CSingerImgMgr& getSingerImgMgr()
+    {
+        return m_model.getSingerImgMgr();
     }
 
     IXController& getCtrl()

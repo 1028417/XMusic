@@ -9,7 +9,7 @@ class CBackupDlg : public CDialogT<IDD_DLG_BACKUP>
 public:
 	CBackupDlg(__view& view)
 		: m_view(view)
-		, m_BackupMgr(view.getModel().getBackupMgr())
+		, m_BackupMgr(view.getBackupMgr())
 	{
 	}
 

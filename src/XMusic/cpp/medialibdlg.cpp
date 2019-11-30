@@ -38,7 +38,7 @@ void CMedialibDlg::init()
     m_MedialibView.init();
 
 
-    cauto strMediaLibDir = m_app.getModel().getMediaLib().GetAbsPath();
+    cauto strMediaLibDir = m_app.getMediaLib().GetAbsPath();
     wstring strOuterDir;
 #if __windows
     for (cauto wch : strMediaLibDir)
@@ -146,9 +146,9 @@ CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, C
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)
-    , m_SingerLib(app.getModel().getSingerMgr())
-    , m_PlaylistLib(app.getModel().getPlaylistMgr())
-    , m_MediaLib(app.getModel().getMediaLib())
+    , m_SingerLib(app.getSingerMgr())
+    , m_PlaylistLib(app.getPlaylistMgr())
+    , m_MediaLib(app.getMediaLib())
     , m_OuterDir(OuterDir)
 {
 }
@@ -410,7 +410,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& st
         return *pSingerPixmap;
     }
 
-    cauto strSingerImg = m_app.getModel().getSingerImgMgr().getSingerImg(strSingerName, 0);
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(strSingerName, 0);
     if (!strSingerImg.empty())
     {
         m_lstSingerPixmap.emplace_back(QPixmap());

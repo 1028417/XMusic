@@ -400,7 +400,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 
-	m_view.getModel().getSingerImgMgr().renameSinger(strOldName, strNewName);
+	m_view.getSingerImgMgr().renameSinger(strOldName, strNewName);
 
 	(void)m_wndTree.SetItemText(pTVDispInfo->item.hItem, strNewName.c_str());
 
