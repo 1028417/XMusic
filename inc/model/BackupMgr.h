@@ -46,7 +46,7 @@ public:
 
 	void close();
 
-	bool exportDB(const wstring& strDstFile, bool bXmsc = false);
+	bool exportDB(const wstring& strDstFile, bool bExportXmsc);
 
 	wstring backup();
 

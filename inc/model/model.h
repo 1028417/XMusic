@@ -309,7 +309,7 @@ private:
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
 
-	bool _exportDB(const wstring& strExportDir);
+	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
 
 	void _clear();
 
