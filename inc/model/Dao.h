@@ -210,9 +210,9 @@ private:
 	IDBResult *m_pRst = NULL;
 
 private:
-	wstring _getNextName(const wstring& strTableName, const wstring& strNameColumn, const wstring& strBaseName);
+	wstring _getNextName(const wstring& strTableName, const wstring& strColumnName, const wstring& strBaseName);
 
-	bool _getMaxValue(const wstring& strTableName, const wstring& strNameColumn, int& iRet);
+	bool _getMaxValue(const string& strTableName, const string& strColumnName, int& iRet);
 
 	int _queryMaxAlbumItemPos(int nAlbumID);
 
@@ -243,7 +243,7 @@ public:
 
 	bool compare(const wstring& strFile, tagCompareBackupResult& result);
 
-	bool exportData(const wstring& strDstFile, const list<wstring>& lstSingerImg);
+	bool exportData(bool bXmsc, const wstring& strDstFile, const list<wstring>& lstSingerImg);
 
 	bool clearAll();
 
