@@ -79,7 +79,7 @@ android {
 } else: ios {
     LIBS += -L../../../Common2.1/libs/mac  -lssl  -lcrypto  #-lnghttp2
 
-    LIBS += -L../../../PlaySDK/libs/mac  -lSDL2 \
+    LIBS += -L../../../PlaySDK/libs/ios/simulator  -lSDL2 \
             -framework AVFoundation  -framework GameController  -framework CoreMotion \
 #
             -lavcodec  -lavformat  -lavutil  -lswresample \
