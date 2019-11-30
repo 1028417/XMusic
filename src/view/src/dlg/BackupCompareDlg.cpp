@@ -115,7 +115,8 @@ void CCompareResultPage::fillModifyedMedia(const SArray<tagModifyedMedia>& arrMo
 			strMediaSetName = ModifyedMedia.strSingerName + __CNDot + strMediaSetName;
 		}
 
-		m_wndList.InsertItemEx(uItem++, { strMediaSetName, ModifyedMedia.strOldPath, ModifyedMedia.strNew }, L" ");
+		m_wndList.InsertItemEx(uItem++, { strMediaSetName, __substr(ModifyedMedia.strOldPath, 1)
+			, __substr(ModifyedMedia.strNewPath, 1) }, L" ");
 	}
 
 	m_cbDblclk = [&](UINT uItem) {
@@ -142,14 +143,14 @@ void CCompareResultPage::fillDeletedMedia(const SArray<tagDeletedPlayItem>& arrD
 	UINT uItem = 0;
 	for (auto& DeletedPlayItem : arrDeletedPlayItem)
 	{
-		m_wndList.InsertItemEx(uItem++, { DeletedPlayItem.strPlaylistName, DeletedPlayItem.strPath }, L" ");
+		m_wndList.InsertItemEx(uItem++, { DeletedPlayItem.strPlaylistName
+			, __substr(DeletedPlayItem.strPath, 1) }, L" ");
 	}
 
 	for (auto& DeletedAlbumItem : arrDeletedAlbumItem)
 	{
-		m_wndList.InsertItemEx(uItem++, {
-			DeletedAlbumItem.strSingerName + __CNDot + DeletedAlbumItem.strAlbumName, DeletedAlbumItem.strSingerDir + DeletedAlbumItem.strPath
-		}, L" ");
+		m_wndList.InsertItemEx(uItem++, {DeletedAlbumItem.strSingerName	+ __CNDot
+			+ DeletedAlbumItem.strAlbumName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
 	}
 
 	m_cbDblclk = [&](UINT uItem) {
@@ -185,7 +186,7 @@ void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMed
 		}
 
 		m_wndList.InsertItemEx(uItem++, {strOldMediaSetName
-			, fsutil::getFileTitle(MovedMedia.strPath), strNewMediaSetName}, L" ");
+			, __substr(MovedMedia.strPath, 1), strNewMediaSetName}, L" ");
 	}
 
 	m_cbDblclk = [&](UINT uItem) {
@@ -208,14 +209,13 @@ void CCompareResultPage::fillNewMedia(const SArray<tagNewPlayItem>& arrNewPlayIt
 	UINT uItem = 0;
 	for (auto& NewPlayItem : arrNewPlayItem)
 	{
-		m_wndList.InsertItemEx(uItem++, { NewPlayItem.strPlaylistName, NewPlayItem.strPath }, L" ");
+		m_wndList.InsertItemEx(uItem++, { NewPlayItem.strPlaylistName, __substr(NewPlayItem.strPath, 1) }, L" ");
 	}
 
 	for (auto& NewAlbumItem : arrNewAlbumItem)
 	{
-		m_wndList.InsertItemEx(uItem++, {
-			NewAlbumItem.strSingerName + __CNDot + NewAlbumItem.strAlbumName, NewAlbumItem.strSingerDir + NewAlbumItem.strPath
-		}, L" ");
+		m_wndList.InsertItemEx(uItem++, {NewAlbumItem.strSingerName + __CNDot
+			+ NewAlbumItem.strAlbumName, __substr(NewAlbumItem.strPath, 1) }, L" ");
 	}
 
 	m_cbDblclk = [&](UINT uItem) {
