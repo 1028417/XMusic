@@ -210,7 +210,7 @@ int CXMusicApp::run()
                 thrUpgrade.join();
                 if (!bUpgradeResult)
                 {
-                    CMsgBox::show(m_mainWnd, "加载媒体库失败", [&](){
+                    CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
                         this->quit();
                     });
 
@@ -218,16 +218,16 @@ int CXMusicApp::run()
                 }
             }
 
-            g_logger >> "initMediaLib";
             if (!m_model.initMediaLib())
             {
+                g_logger >> "initMediaLib fail";
                 this->quit();
                 return;
             }
 
-            g_logger >> "start controller";
             if (!m_ctrl.start())
             {
+                g_logger >> "start controller fail";
                 this->quit();
                 return;
             }
