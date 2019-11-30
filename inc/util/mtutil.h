@@ -95,50 +95,43 @@ public:
     {
         std::this_thread::yield();
     }
-};
 
-class __UtilExt CThreadGroup
-{
-public:
-	CThreadGroup()
-		//: m_CancelEvent(TRUE)
-	{
-	}
 
-private:
-	vector<BOOL> m_vecThreadStatus;
+    class __UtilExt CThreadGroup
+    {
+    public:
+        CThreadGroup()
+            //: m_CancelEvent(TRUE)
+        {
+        }
 
-	volatile bool m_bPause = false;
+    private:
+        vector<BOOL> m_vecThreadStatus;
 
-	bool m_bCancelEvent = false;
+        volatile bool m_bPause = false;
 
-public:
-	using CB_WorkThread = function<void(UINT uThreadIndex)>;
-	void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
+        bool m_bCancelEvent = false;
 
-	bool checkCancel();
+    public:
+        using CB_WorkThread = function<void(UINT uThreadIndex)>;
+        void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
 
-protected:
-	void pause(bool bPause = true);
+        bool checkCancel();
 
-	void cancel();
+    protected:
+        void pause(bool bPause = true);
 
-	UINT getActiveCount();
-};
+        void cancel();
 
-template <typename T, typename R>
-class CMultiTask
-{
-public:
-	CMultiTask() {}
+        UINT getActiveCount();
+    };
 
-private:
-	vector<R> m_vecResult;
 
-public:
+	template <class T, class R>
 	using CB_SubTask = const function<bool(UINT uTaskIdx, T&, R&)>&;
-
-	static void start(ArrList<T>& alTask, vector<R>& vecResult, UINT uThreadCount, CB_SubTask cb)
+	
+	template <typename T, typename R>
+	static void startMultiTask(ArrList<T>& alTask, vector<R>& vecResult, UINT uThreadCount, CB_SubTask<T, R> cb)
 	{
 		uThreadCount = MAX(1, uThreadCount);
 		vecResult.resize(uThreadCount);
@@ -162,22 +155,33 @@ public:
 		}, true);
 	}
 
-	static void start(ArrList<T>& alTask, UINT uThreadCount, const function<bool(UINT uTaskIdx, T&)>& cb)
+	template <typename T>
+	static void startMultiTask(ArrList<T>& alTask, UINT uThreadCount, const function<bool(UINT uTaskIdx, T&)>& cb)
 	{
-		vector<R> vecResult;
-		start(alTask, vecResult, uThreadCount, [&](UINT uTaskIdx, T& task, R&) {
+		vector<BOOL> vecResult;
+		start(alTask, vecResult, uThreadCount, [&](UINT uTaskIdx, T& task, BOOL&) {
 			return cb(uTaskIdx, task);
 		});
 	}
 
-	vector<R>& start(ArrList<T>& alTask, UINT uThreadCount, CB_SubTask cb)
+	template <typename T, typename R=BOOL>
+	class CMultiTask
 	{
-		start(alTask, m_vecResult, uThreadCount, [&](UINT uTaskIdx, T& task, R& result) {
-			return cb(uTaskIdx, task, result);
-		});
+	public:
+		CMultiTask() {}
 
-		return m_vecResult;
-	}
+	private:
+		vector<R> m_vecResult;
+
+	public:
+		using CB_SubTask = mtutil::CB_SubTask<T,R>;
+
+		vector<R>& start(ArrList<T>& alTask, UINT uThreadCount, CB_SubTask cb)
+		{
+			mtutil::startMultiTask(alTask, m_vecResult, uThreadCount, cb);
+			return m_vecResult;
+		}
+	};
 };
 
 #include "mtlock.h"

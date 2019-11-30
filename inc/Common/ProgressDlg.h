@@ -7,7 +7,7 @@
 
 using FN_Work = fn_void_t<class CProgressDlg&>;
 
-class __CommonExt CProgressDlg : public CDialog, public CThreadGroup
+class __CommonExt CProgressDlg : public CDialog, public mtutil::CThreadGroup
 {
 public:
 	CProgressDlg(const FN_Work& fnWork, UINT uMaxProgress=0)

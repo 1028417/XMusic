@@ -91,7 +91,7 @@ public:
 		m_nDuration = uDuration;
 	}
 
-    int checkDuration();
+    UINT checkDuration();
 
 	CMediaSet *GetMediaSet() override
 	{
