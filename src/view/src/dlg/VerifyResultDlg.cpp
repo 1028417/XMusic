@@ -79,21 +79,21 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	}
 	(void)m_wndList.SetItemText(nItem, 0, cstrStatus);
 
-	wstringstream ssMediaInfo;
+	WString strMediaInfo;
 	if (media.GetMediaSetType() == E_MediaSetType::MST_Album)
 	{
 		CAlbumItem& AlbumItem = (CAlbumItem&)media;
 
-		ssMediaInfo << L"歌手" << __CNDot << AlbumItem.GetSingerName()
+		strMediaInfo << L"歌手" << __CNDot << AlbumItem.GetSingerName()
 			<< __CNDot << AlbumItem.GetAlbumName();
 	}
 	else
 	{
-		ssMediaInfo << L"歌单" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
+		strMediaInfo << L"歌单" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
 	}
-	ssMediaInfo << __CNDot << media.GetName();
+	strMediaInfo << __CNDot << media.GetName();
 
-	(void)m_wndList.SetItemText(nItem, 1, ssMediaInfo.str().c_str());
+	(void)m_wndList.SetItemText(nItem, 1, strMediaInfo->c_str());
 	(void)m_wndList.SetItemText(nItem, 2, fsutil::GetParentDir(media.GetPath()).c_str());
 }
 
