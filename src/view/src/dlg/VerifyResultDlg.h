@@ -23,9 +23,9 @@ private:
 
 private:
 	void UpdateItem(int nItem, CMedia& media);
-
-	int VerifyMediaItem(int nItem);
 	
+	void LinkMedia(int nItem, CMedia& media);
+
 public:
 	BOOL OnInitDialog() override;
 

@@ -8,7 +8,7 @@
 #include "PlayingPage.h"
 
 CPlaylistPage::CPlaylistPage(__view& view, CPlayItemPage& PlayItemPage)
-	: CBasePage(view, IDD_PAGE_PLAYLIST, L"歌 单      ", IDR_MENU_PLAYLIST, true)
+	: CBasePage(view, IDD_PAGE_PLAYLIST, L"歌 单     ", IDR_MENU_PLAYLIST, true)
 	, m_PlayItemPage(PlayItemPage)
 {
 }
@@ -182,14 +182,14 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		
 		break;
 	case ID_RENAME:
-		__EnsureBreak(0 <= nItem);
+		__EnsureBreak(nItem >= 0);
 		m_wndList.EditLabel(nItem);
 
 		break;
 	case ID_REMOVE:
 	{
 		__Assert(pPlaylist);
-		__EnsureBreak(0 <= nItem);
+		__EnsureBreak(nItem >= 0);
 
 		__EnsureBreak(CMainApp::showConfirmMsg(L"确认删除所选列表?", *this));
 
@@ -293,7 +293,7 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	LPNMLISTVIEW lpNM = (LPNMLISTVIEW)pNMHDR;	
-	BOOL bEnable = (0 <= lpNM->iItem);
+	BOOL bEnable = (lpNM->iItem >= 0);
 
 	m_MenuGuard.EnableItem(ID_ADD_PLAYITEM, bEnable);	
 	m_MenuGuard.EnableItem(ID_RENAME, bEnable);
@@ -376,7 +376,7 @@ DROPEFFECT CPlaylistPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSe
 	__EnsureReturn(E_MediaSetType::MST_Playlist == pMediaSet->m_eType, DROPEFFECT_NONE);
 	
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
-	__AssertReturn(0 <= nDragingItem, DROPEFFECT_NONE);
+	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
 
 	handleDragOver(m_wndList, DragContext, [&](int& iDragOverPos) {
 		if (iDragOverPos > nDragingItem)
@@ -394,7 +394,7 @@ BOOL CPlaylistPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragCo
 	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet && E_MediaSetType::MST_Playlist == pMediaSet->m_eType, FALSE);
 
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
-	__AssertReturn(0 <= nDragingItem, FALSE);
+	__AssertReturn(nDragingItem >= 0, FALSE);
 	__EnsureReturn(DragContext.uTargetPos != nDragingItem, FALSE);
 
 	CPlaylist *pPlaylist = m_view.getPlaylistMgr().RepositPlaylist(pMediaSet->m_uID, DragContext.uTargetPos);
@@ -416,7 +416,7 @@ DROPEFFECT CPlaylistPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& 
 	bool bScroll = DragScroll(m_wndList, DragContext.x, DragContext.y);
 
 	int nItem = m_wndList.HitTest(CPoint(5, DragContext.y));
-	__EnsureReturn(0 <= nItem, DROPEFFECT_NONE);	
+	__EnsureReturn(nItem >= 0, DROPEFFECT_NONE);
 	CPlaylist *pDragOverPlaylist = (CPlaylist*)m_wndList.GetItemObject(nItem);
 	__AssertReturn(pDragOverPlaylist, DROPEFFECT_NONE);
 

@@ -466,13 +466,13 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 
 				if (m_nMouseMoveItem != uItem)
 				{
-					int iPreItem = m_nMouseMoveItem;
+					int nPreItem = m_nMouseMoveItem;
 					m_nMouseMoveItem = uItem;
 					bNeedUpdate = true;
 
-					if (0 <= iPreItem)
+					if (nPreItem >= 0)
 					{
-						this->Update(iPreItem);
+						this->Update(nPreItem);
 					}
 				}
 

@@ -424,7 +424,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	LPNMLISTVIEW lpNM = (LPNMLISTVIEW)pNMHDR;
-	BOOL bEnable = (0 < lpNM->iItem);
+	BOOL bEnable = (lpNM->iItem > 0);
 
 	m_AlbumMenuGuard.EnableItem(ID_RENAME_ALBUM, bEnable);
 	m_AlbumMenuGuard.EnableItem(ID_REMOVE_ALBUM, bEnable);
@@ -532,7 +532,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 
 		break;
 	case ID_RENAME_ALBUM:
-		__EnsureBreak(0 < nItem);
+		__EnsureBreak(nItem > 0);
 
 		(void)m_wndBrowseList.EditLabel(nItem);
 
@@ -886,7 +886,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverExploreList(const TD_IMediaList& lstMedia
 		for (UINT uIndex = 0; uIndex < sizeof(lpPoint)/sizeof(tagPOINT); ++uIndex)
 		{
 			nItem = m_wndAlbumItemList.HitTest(lpPoint[uIndex]);
-			if (0 <= nItem && mapItems.find(nItem) == mapItems.end())
+			if (nItem >= 0 && mapItems.find(nItem) == mapItems.end())
 			{
 				(void)m_wndAlbumItemList.GetItemRect(nItem, &mapItems[nItem], LVIR_BOUNDS);
 			}
@@ -968,7 +968,7 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 		}
 
 		nNewPos = m_view.getSingerMgr().RepositAlbumItem(*m_pAlbum, lstMedias, uTargetPos);
-		__EnsureReturn(0 <= nNewPos, FALSE);
+		__EnsureReturn(nNewPos >= 0, FALSE);
 	}
 
 	_showAlbum(m_pAlbum);
@@ -1081,7 +1081,7 @@ DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, 
 	__EnsureReturn(pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
 	
 	int nDragingItem = m_wndBrowseList.GetObjectItem(pMediaSet);
-	__AssertReturn(0 <= nDragingItem, DROPEFFECT_NONE);
+	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
 	
 	DROPEFFECT dwRet = DROPEFFECT_MOVE;
 	handleDragOver(m_wndBrowseList, DragContext, [&](int& iDragOverPos) {
@@ -1107,7 +1107,7 @@ BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragConte
 	__AssertReturn(pwndCtrl == &m_wndBrowseList && pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
 
 	int nDragingItem = m_wndBrowseList.GetObjectItem(pMediaSet);
-	__AssertReturn(0 <= nDragingItem, FALSE);
+	__AssertReturn(nDragingItem >= 0, FALSE);
 	
 	int iTargetPos = DragContext.uTargetPos;
 	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, iTargetPos-1);
@@ -1155,12 +1155,12 @@ void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	int nCount = m_wndAlbumItemList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_HITTEST_ALBUMITEM, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (0 < nCount));
+	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (nCount > 0));
 	
 	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_EXPLORE_ALBUMITEM, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (0 < nCount));
+	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nCount > 0));
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 }
@@ -1176,7 +1176,7 @@ void CAlbumPage::OnNMDblclkListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	__Ensure(0 <= lpNMList->iItem);
+	__Ensure(lpNMList->iItem >= 0);
 
 	m_wndAlbumItemList.DeselectAll();
 	m_wndAlbumItemList.SelectItem(lpNMList->iItem);
@@ -1237,13 +1237,9 @@ void CAlbumPage::_asyncTask()
 {
 	if (m_wndAlbumItemList.isReportView())
 	{
-		m_wndAlbumItemList.AsyncTask(100, [&](UINT uItem) {
-			__Ensure(m_pAlbum);
-
-			m_pAlbum->albumItems().get(uItem, [&](CAlbumItem& AlbumItem) {
-				AlbumItem.AsyncTask();
-				m_wndAlbumItemList.UpdateItem(uItem, &AlbumItem); // , { 2,3,__Column_Playlist });
-			});
+		m_wndAlbumItemList.AsyncTask(100, [](CListObject& object) {
+			((CAlbumItem&)object).AsyncTask();
+			return true;
 		});
 	}
 }

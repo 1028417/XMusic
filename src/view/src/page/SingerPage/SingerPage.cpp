@@ -7,7 +7,7 @@
 #include "dlg/ChooseDirDlg.h"
 
 CSingerPage::CSingerPage(__view& view, CAlbumPage& AlbumPage)
-	: CBasePage(view, IDD_PAGE_SINGER, L"∏Ë  ÷      ", IDR_MENU_SINGEROBJECT, true)
+	: CBasePage(view, IDD_PAGE_SINGER, L"∏Ë  ÷     ", IDR_MENU_SINGEROBJECT, true)
 	, m_AlbumPage(AlbumPage)
 {
 }

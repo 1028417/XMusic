@@ -4,7 +4,7 @@
 #include "PlayingPage.h"
 
 CPlayingPage::CPlayingPage(__view& view)
-	: CBasePage(view, IDD_PAGE_PLAYING, L"正在播放     ", IDR_MENU_PlayingPage, true)
+	: CBasePage(view, IDD_PAGE_PLAYING, L"正在播放    ", IDR_MENU_PlayingPage, true)
 	, m_wndList(view)
 {
 }
@@ -199,7 +199,7 @@ BOOL CPlayingPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, 
 	{
 		TD_PlayItemList lstPlayItems(lstMedias);
 		nNewPos = m_view.getPlayMgr().move(lstPlayItems, uDropPos);
-		__EnsureReturn(0 <= nNewPos, FALSE);
+		__EnsureReturn(nNewPos >= 0, FALSE);
 	}
 	else
 	{

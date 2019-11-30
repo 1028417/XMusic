@@ -73,7 +73,7 @@ void CAlarmClockWnd::OnBnClickedClear()
 	__Ensure(m_view.getDataMgr().clearAlarmmedia());
 
 	int nIndex = m_wndMediaResCombo.GetCount() - 1;
-	while (0 <= nIndex)
+	while (nIndex >= 0)
 	{
 		(void)m_wndMediaResCombo.DeleteString(nIndex);
 
@@ -91,11 +91,11 @@ void CAlarmClockWnd::OnDeltaposSpinHour(NMHDR *pNMHDR, LRESULT *pResult)
 	int& nHour = m_view.getOptionMgr().getAlarmOption().nHour;
 	nHour -= pNMUpDown->iDelta;
 
-	if (24 <= nHour)
+	if (nHour >= 24)
 	{
 		nHour = 0;
 	}
-	else if (0 > nHour)
+	else if (nHour < 0)
 	{
 		nHour = 23;
 	}
@@ -111,11 +111,11 @@ void CAlarmClockWnd::OnDeltaposSpinMinute(NMHDR *pNMHDR, LRESULT *pResult)
 	int& nMinute = m_view.getOptionMgr().getAlarmOption().nMinute;
 	nMinute -= pNMUpDown->iDelta;
 
-	if (60 <= nMinute)
+	if (nMinute >= 60)
 	{
 		nMinute = 0;
 	}
-	else if (0 > nMinute)
+	else if (nMinute < 0)
 	{
 		nMinute = 59;
 	}

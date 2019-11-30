@@ -248,7 +248,7 @@ void CFindDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	__Ensure(0 <= lpNMList->iItem);
+	__Ensure(lpNMList->iItem >= 0);
 
 	m_wndList.DeselectAll();
 	m_wndList.SelectItem(lpNMList->iItem);
@@ -278,16 +278,16 @@ void CFindDlg::OnBnClickedBtnVerify()
 		bool bFlag = false;
 
 		// ≤ﬂ¬‘£∫œ»…æ
-		if (VerifyResult.lstRemoveMedia)
+		if (VerifyResult.paRemoveMedia)
 		{
 			bFlag = true;
-			m_MediaMixer.remove(VerifyResult.lstRemoveMedia);
+			m_MediaMixer.remove(VerifyResult.paRemoveMedia);
 		}
 		
-		if (VerifyResult.lstUpdateMedia)
+		if (VerifyResult.paUpdateMedia)
 		{
 			bFlag = true;
-			m_MediaMixer.update(VerifyResult.lstUpdateMedia);
+			m_MediaMixer.update(VerifyResult.paUpdateMedia);
 		}
 		
 		if (bFlag)

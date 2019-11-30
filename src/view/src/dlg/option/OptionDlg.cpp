@@ -66,7 +66,7 @@ void COptionDlg::OnCbnSelchangeComboSkin()
 {
 	wstring strSkinName;
 	wstring strSkinPath;
-	if (0 < m_wndSkbCombo.GetCurSel())
+	if (m_wndSkbCombo.GetCurSel() > 0)
 	{
 		CString cstrText;
 		m_wndSkbCombo.GetLBText(m_wndSkbCombo.GetCurSel(), cstrText);

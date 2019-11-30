@@ -174,7 +174,7 @@ void CNewSongDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	__Ensure(0 <= lpNMList->iItem);
+	__Ensure(lpNMList->iItem >= 0);
 
 	m_wndList.DeselectAll();
 	m_wndList.SelectItem(lpNMList->iItem);

@@ -173,13 +173,9 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	m_wndList.AsyncTask(100, [&](UINT uItem) {
-		__Ensure(m_pPlaylist);
-
-		m_pPlaylist->playItems().get(uItem, [&](CPlayItem& PlayItem) {
-			PlayItem.AsyncTask();
-			m_wndList.UpdateItem(uItem, &PlayItem); // , { __Column_Size, __Column_Duration, __Column_SingerAlbum });
-		});
+	m_wndList.AsyncTask(100, [](CListObject& object) {
+		((CPlayItem&)object).AsyncTask();
+		return true;
 	});
 }
 
@@ -242,12 +238,12 @@ void CPlayItemPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int nCount = m_wndList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_HITTEST, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (0 < nCount));
+	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (nCount > 0));
 
 	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_EXPLORE, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_RENAME, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_REMOVE, (0 < nCount));
+	m_MenuGuard.EnableItem(ID_REMOVE, (nCount > 0));
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 }
@@ -347,7 +343,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		lstPlayItems.front([&](CMedia& media) {
 			int nItem = m_wndList.GetObjectItem(&media);
-			__Ensure(0 <= nItem);
+			__Ensure(nItem >= 0);
 			m_wndList.EditLabel(nItem);
 		});
 
@@ -406,7 +402,7 @@ BOOL CPlayItemPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 		}
 
 		nNewPos = m_view.getPlaylistMgr().RepositPlayItem(*m_pPlaylist, lstMedias, uTargetPos);
-		__EnsureReturn(0 <= nNewPos, FALSE);
+		__EnsureReturn(nNewPos >= 0, FALSE);
 
 		this->ShowPlaylist(m_pPlaylist);
 	}	
@@ -451,7 +447,7 @@ void CPlayItemPage::OnNMDblclkList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	__Ensure(0 <= lpNMList->iItem);
+	__Ensure(lpNMList->iItem >= 0);
 
 	m_wndList.DeselectAll();
 	m_wndList.SelectItem(lpNMList->iItem);

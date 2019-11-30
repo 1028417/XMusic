@@ -45,34 +45,17 @@ BOOL CVerifyResultDlg::OnInitDialog()
 	CWaitCursor WaitCursor;
 
 	CString strRet;
-	for (UINT uIndex = 0; uIndex < m_VerifyResult.vctVerifyResult.size(); uIndex++)
-	{
-		auto& prResult = m_VerifyResult.vctVerifyResult[uIndex];
+	m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
+		(void)m_wndList.InsertItem(uIdx, L"");
 
-		if (-1 == prResult.second)
-		{
-			strRet = _T("不存在");
-		}
-		else if (0 == prResult.second)
-		{
-			strRet = _T("不可播放");
-		}
-		else
-		{
-			strRet = _T("正常");
-		}
+		UpdateItem(uIdx, media);
+	});
 
-		(void)m_wndList.InsertItem(uIndex, strRet);
-		(void)m_wndList.SetItemData(uIndex, (DWORD_PTR)(CListObject*)prResult.first);
-
-		UpdateItem(uIndex, *prResult.first);
-	}
-
-	(void)m_wndList.SelectFirstItem();
+	m_wndList.SelectFirstItem();
 
 	CString cstrTitle;
 	(void)this->GetWindowText(cstrTitle);
-	cstrTitle.Format(cstrTitle + "(%d)", m_VerifyResult.vctVerifyResult.size());
+	cstrTitle.Format(cstrTitle + "(%d)", m_VerifyResult.paInvalidMedia.size());
 
 	(void)this->SetWindowText(cstrTitle);
 
@@ -81,6 +64,21 @@ BOOL CVerifyResultDlg::OnInitDialog()
 
 void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 {
+	CString cstrStatus;
+	if (media.fileSize() < 0)
+	{
+		cstrStatus.Append(_T("不存在"));
+	}
+	else if (media.duration() == 0)
+	{
+		cstrStatus.Append(_T("不可播放"));
+	}
+	else
+	{
+		cstrStatus.Append(_T("正常"));
+	}
+	(void)m_wndList.SetItemText(nItem, 0, cstrStatus);
+
 	wstringstream ssMediaInfo;
 	if (media.GetMediaSetType() == E_MediaSetType::MST_Album)
 	{
@@ -103,7 +101,7 @@ void CVerifyResultDlg::OnNMDBLClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
-	if (0 <= lpNMList->iItem)
+	if (lpNMList->iItem >= 0)
 	{
 		OnBnClickedLink();
 	}
@@ -122,43 +120,13 @@ void CVerifyResultDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 	(void)this->GetDlgItem(IDC_BTN_VERIFY)->EnableWindow(m_wndList.GetItemCount()>0);
 }
 
-int CVerifyResultDlg::VerifyMediaItem(int nItem)
-{
-	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
-	__AssertReturn(pMedia, -1);
-
-	wstring strVerifyResult;
-
-	long long nFileSize = 0;
-	int nDuration = (int)CMediaOpaque::checkDuration(*pMedia, nFileSize);
-	if (nFileSize < 0)
-	{
-		nDuration = -1;
-		strVerifyResult = L"不存在";
-	}
-	else
-	{
-		if (0 == nDuration)
-		{
-			strVerifyResult = L"不可播放";
-		}
-		else
-		{
-			strVerifyResult = L"正常";
-		}
-	}
-
-	m_VerifyResult.vctVerifyResult[nItem].second = nDuration;
-	
-	(void)m_wndList.SetItemText(nItem, 0, strVerifyResult.c_str());
-
-	return nDuration;
-}
-
 void CVerifyResultDlg::OnBnClickedVerify()
 {
 	m_wndList.AsyncTask(50, [&](UINT uItem) {
-		this->VerifyMediaItem(uItem);
+		m_VerifyResult.paInvalidMedia.get(uItem, [&](CMedia& media) {
+			(void)media.checkDuration();
+			UpdateItem(nItem, media);
+		});
 	});
 }
 
@@ -221,17 +189,13 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 	if (IDOK == ProgressDlg.DoModal(L"自动匹配曲目", this) && !mapUpdateMedias.empty())
 	{
 		CMedia* pMedia = NULL;
-		for (UINT uIndex = 0; uIndex < m_VerifyResult.vctVerifyResult.size(); uIndex++)
-		{
-			CMedia *pMedia = m_VerifyResult.vctVerifyResult[uIndex].first;
-
-			if (mapUpdateMedias.find(pMedia) != mapUpdateMedias.end())
+		m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
+			if (mapUpdateMedias.find(&media) != mapUpdateMedias.end())
 			{
-				m_VerifyResult.lstUpdateMedia.add(pMedia);
-			
-				UpdateItem(uIndex, *pMedia);
+				m_VerifyResult.paUpdateMedia.add(media);
 
-				this->VerifyMediaItem(uIndex);
+				(void)media.checkDuration();
+				UpdateItem(nItem, media);
 
 				(void)CMainApp::GetMainApp()->DoEvents();
 			}
@@ -242,14 +206,18 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 void CVerifyResultDlg::OnBnClickedLink()
 {
 	int nItem = m_wndList.GetSelItem();
-	__Ensure(0 <= nItem);
+	__Ensure(nItem >= 0);
 
-	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
-	__Assert(pMedia);
+	CMedia* pMedia = m_VerifyResult.paInvalidMedia.get((UINT)nItem, [&](CMedia& media) {
+		LinkMedia(nItem, media);
+	});
+}
 
+void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
+{
 	wstring strInitialDir = m_view.getMediaLib().toAbsPath(pMedia->GetBaseDir(), true);
 
-	wstring strDir = pMedia->GetAbsPath();
+	wstring strDir = media.GetAbsPath();
 	while (!strDir.empty())
 	{
 		strDir = fsutil::GetParentDir(strDir);
@@ -262,35 +230,20 @@ void CVerifyResultDlg::OnBnClickedLink()
 	}
 
 	tagFileDlgOpt FileDlgOpt;
-	FileDlgOpt.strTitle = L"打开 " + pMedia->GetTitle();
+	FileDlgOpt.strTitle = L"打开 " + media.GetTitle();
 	FileDlgOpt.strFilter = __MediaFilter;
 	FileDlgOpt.strInitialDir = strInitialDir;
-	FileDlgOpt.strFileName = pMedia->GetName();
+	FileDlgOpt.strFileName = media.GetName();
 	FileDlgOpt.hWndOwner = m_hWnd;
 	CFileDlgEx fileDlg(FileDlgOpt);
 
-	wstring strBaseDir = pMedia->GetBaseDir();
+	wstring strBaseDir = media.GetBaseDir();
 	wstring strNewOppPath;
 
 	while (true)
 	{
 		wstring strNewPath = fileDlg.ShowOpenSingle();
 		__Ensure(!strNewPath.empty());
-
-		if (strutil::matchIgnoreCase(strNewPath, pMedia->GetAbsPath()))
-		{
-			if (VerifyMediaItem(nItem) <= 0)
-			{
-				CMainApp::showMsg(L"请选择新的文件！", __Title, this);
-				continue;
-			}
-		}
-
-		if (!fsutil::existFile(strNewPath))
-		{
-			CMainApp::showConfirmMsg(L"文件不存在，请重新选择！", __Title, this);
-			continue;
-		}
 
 		strNewOppPath = m_view.getMediaLib().toOppPath(strNewPath);
 		if (strNewOppPath.empty())
@@ -308,37 +261,48 @@ void CVerifyResultDlg::OnBnClickedLink()
 			}
 		}
 
+		if (!fsutil::existFile(strNewPath))
+		{
+			CMainApp::showConfirmMsg(L"文件不存在，请重新选择！", __Title, this);
+			continue;
+		}
+
+		if (strutil::matchIgnoreCase(strNewPath, media.GetAbsPath()))
+		{
+			if (media.checkDuration() == 0)
+			{
+				CMainApp::showMsg(L"请选择新的文件！", __Title, this);
+				continue;
+			}
+		}
+
 		break;
 	}
 
 	__Assert(m_view.getModel().updateMediaPath({ { pMedia, strNewOppPath } }));
 
-	UpdateItem(nItem, *pMedia);
+	(void)media.checkDuration();
+	UpdateItem(nItem, media);
 
-	this->VerifyMediaItem(nItem);
-
-	m_VerifyResult.lstUpdateMedia.add(pMedia);
+	m_VerifyResult.paUpdateMedia.add(media);
 }
 
 void CVerifyResultDlg::OnBnClickedRemove()
 {
 	int nItem = m_wndList.GetSelItem();
-	__Assert(0 <= nItem);
+	__Assert(nItem >= 0);
 
-	CMedia* pMedia = (CMedia*)m_wndList.GetItemObject(nItem);
-	__Assert(pMedia);
+	m_VerifyResult.paInvalidMedia.get((UINT)nItem, [&](CMedia& media) {
+		__Ensure(CMainApp::showConfirmMsg(L"确认删除所选曲目?", __Title, this));
 
-	__Ensure(CMainApp::showConfirmMsg(L"确认删除所选曲目?", __Title, this));
-	
-	m_VerifyResult.vctVerifyResult.erase(m_VerifyResult.vctVerifyResult.begin()+nItem);
+		m_VerifyResult.paInvalidMedia.erase(m_VerifyResult.vctVerifyResult.begin() + nItem);
+		m_VerifyResult.paRemoveMedia.add(media);
 
-	m_VerifyResult.lstRemoveMedia.add(pMedia);
+		(void)m_wndList.DeleteItem(nItem);
+		(void)this->GetDlgItem(IDC_BTN_LINK)->EnableWindow(FALSE);
+		(void)this->GetDlgItem(IDC_BTN_VERIFY)->EnableWindow(FALSE);
+		(void)this->GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(FALSE);
 
-	__Assert(m_view.getModel().removeMedia(TD_MediaList(pMedia)));
-	
-	(void)m_wndList.DeleteItem(nItem);
-
-	(void)this->GetDlgItem(IDC_BTN_LINK)->EnableWindow(FALSE);
-	(void)this->GetDlgItem(IDC_BTN_VERIFY)->EnableWindow(FALSE);
-	(void)this->GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(FALSE);
+		__Assert(m_view.getModel().removeMedia(TD_MediaList(media)));
+	});
 }

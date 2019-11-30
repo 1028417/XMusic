@@ -31,14 +31,12 @@ class __view;
 
 extern const wstring __MediaFilter;
 
-typedef vector<pair<CMedia*, int>> TD_VerifyResultVector;
-
 struct tagVerifyResult
 {
-	TD_VerifyResultVector vctVerifyResult;
+	TD_MediaList paInvalidMedia;
 
-	TD_MediaList lstUpdateMedia;
-	TD_MediaList lstRemoveMedia;
+	TD_MediaList paUpdateMedia;
+	TD_MediaList paRemoveMedia;
 };
 
 class __view

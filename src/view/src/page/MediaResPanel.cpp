@@ -933,7 +933,7 @@ DROPEFFECT CMediaResPanel::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList&
 	DragContext.pTargetObj = m_pCurrPath;
 
 	int nItem = m_wndList.HitTest(CPoint(DragContext.x, DragContext.y));
-	if (0 <= nItem)
+	if (nItem >= 0)
 	{
 		CMediaRes *pDragOverPath = (CMediaRes*)m_wndList.GetItemObject(nItem);
 		if (pDragOverPath && pDragOverPath->IsDir())
@@ -983,14 +983,15 @@ void CMediaResPanel::_asyncTask()
 {
 	if (m_wndList.isReportView())
 	{
-		m_wndList.AsyncTask(200, [&](UINT uItem) {
-			CMediaRes *pMediaRes = (CMediaRes*)m_wndList.GetItemObject(uItem);
-			if (pMediaRes && !pMediaRes->IsDir())
+		m_wndList.AsyncTask(200, [](CListObject& object) {
+			CMediaRes& mediaRes = (CMediaRes&)object;
+			if (!mediaRes.IsDir())
 			{
-				pMediaRes->AsyncTask();
-
-				m_wndList.UpdateItem(uItem, pMediaRes); //, { m_Column_ID3, m_Column_ID3 + 1, m_Column_ID3 + 2, __Column_Playlist, __Column_SingerAlbum });
+				mediaRes.AsyncTask();
+				return true;
 			}
+
+			return false;
 		});
 	}
 }

@@ -196,34 +196,30 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		mapMedias[media.GetAbsPath()].add(media);
 	});
 
-	CCASLock lock;
-
 	tagVerifyResult VerifyResult;
+
 	auto fnVerify = [&](CProgressDlg& ProgressDlg) {
 		PairList<wstring, TD_MediaList> plMedias(mapMedias);
 
 		UINT uThreadCount = plMedias.size() / 500;
 		uThreadCount = MIN(thread::hardware_concurrency(), uThreadCount);
 		
-		CMultiTask<pair<wstring, TD_MediaList>, BOOL>::start(plMedias, uThreadCount
-			, [&](UINT taskIdx, auto& task) {
-
-			ProgressDlg.SetStatusText(task.first.c_str(), 1);
+		mtutil::CMultiTask<pair<wstring, TD_MediaList>, TD_MediaList> multiTask;
+		cauto vecVerifyResult = multiTask.start(plMedias, uThreadCount
+			, [&](UINT taskIdx, auto& prTask, TD_MediaList& paResult) {
+			ProgressDlg.SetStatusText(prTask.first.c_str(), 1);
 
 			long long nFileSize = 0;
-			int nDuration = (int)CMediaOpaque().checkFileDuration(task.first, nFileSize);
-			if (nFileSize < 0)
-			{
-				nDuration = -1;
-			}			
-			if (nDuration <= 0)
-			{
-				lock.lock();
-				task.second([&](CMedia& media) {
-					VerifyResult.vctVerifyResult.emplace_back(&media, nDuration);
-				});
-				lock.unlock();
-			}
+			UINT uDuration = CMediaOpaque().checkFileDuration(prTask.first, nFileSize);
+			prTask.second([&](CMedia& media) {
+				media.SetFileSize(nFileSize);
+				media.SetDuration(uDuration);
+
+				if (0 == uDuration)
+				{
+					paResult.add(media);
+				}
+			});
 
 			if (ProgressDlg.checkCancel())
 			{
@@ -233,7 +229,12 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			return true;
 		});
 
-		if (VerifyResult.vctVerifyResult.empty())
+		for (cauto paInvalidMedia : vecVerifyResult)
+		{
+			VerifyResult.paInvalidMedia.add(paInvalidMedia);
+		}
+
+		if (VerifyResult.paInvalidMedia)
 		{
 			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
 		}
@@ -244,7 +245,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 	};
 
 	CProgressDlg ProgressDlg(fnVerify, mapMedias.size());
-	if (IDOK == ProgressDlg.DoModal(L"检测曲目", pWnd) && !VerifyResult.vctVerifyResult.empty())
+	if (IDOK == ProgressDlg.DoModal(L"检测曲目", pWnd) && VerifyResult.paInvalidMedia)
 	{
 		CResGuard ResGuard(m_ResModule);
 		CVerifyResultDlg dlg(*this, VerifyResult);
@@ -737,10 +738,10 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 {
 	CWaitCursor WaitCursor;
 
-	int iRelatedMediaID = Media.GetRelatedMediaID(eMediaSetType);
-	if (0 < iRelatedMediaID)
+	int nRelatedMediaID = Media.GetRelatedMediaID(eMediaSetType);
+	if (nRelatedMediaID > 0)
 	{
-		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)iRelatedMediaID);
+		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
 		if (NULL != pRelatedMedia && NULL != pRelatedMedia->m_pParent)
 		{
 			_hittestMediaSet(*pRelatedMedia->m_pParent, pRelatedMedia);
