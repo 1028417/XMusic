@@ -252,6 +252,10 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		(void)dlg.DoModal();
 	}
 
+#if 1
+	(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
+#endif
+
 	if (cb)
 	{
 		cb(VerifyResult);
