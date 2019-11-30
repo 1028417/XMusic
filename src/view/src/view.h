@@ -116,6 +116,11 @@ public:
 		return m_model.getSingerMgr();
 	}
 
+	CSingerImgMgr& getSingerImgMgr()
+	{
+		return m_model.getSingerImgMgr();
+	}
+
 	CResModule m_ResModule;
 
 	CGlobalSize m_globalSize;
