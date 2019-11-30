@@ -123,6 +123,8 @@ struct tagMovedMedia
 	wstring strNewMediaSetName;
 
 	wstring strSingerName;
+
+	wstring strSingerPath;
 };
 
 struct tagCompareBackupResult
