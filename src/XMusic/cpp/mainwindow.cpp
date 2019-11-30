@@ -745,10 +745,9 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.duration();
-
         if (XMediaLib::m_bOnlineMediaLib)
         {
-            PlayingInfo.nFileSize = PlayItem.fileSize();
+            PlayingInfo.nFileSize = int(PlayItem.fileSize()/1000);
 
             if (pAlbumItem)
             {
@@ -759,7 +758,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
                 if (PlayingInfo.nFileSize <= 0)
                 {
-                    PlayingInfo.nFileSize = pAlbumItem->fileSize();
+                    PlayingInfo.nFileSize = int(pAlbumItem->fileSize()/1000);
                 }
             }
             else if (pPlayItem)
@@ -771,14 +770,13 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
                 if (PlayingInfo.nFileSize <= 0)
                 {
-                    PlayingInfo.nFileSize = pPlayItem->fileSize();
+                    PlayingInfo.nFileSize = int(pPlayItem->fileSize()/1000);
                 }
             }
         }
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
-
         PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
         PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
 
@@ -840,7 +838,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
     if (m_PlayingInfo.nDuration > 0)
     {
-        ui.progressBar->setMaximum(m_PlayingInfo.nDuration);
+        ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nFileSize);
 
         QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
         ui.labelDuration->setText(qsDuration);
