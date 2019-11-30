@@ -745,15 +745,34 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.duration();
-        if (PlayingInfo.nDuration <= 0)
+
+        if (XMediaLib::m_bOnlineMediaLib)
         {
+            PlayingInfo.nFileSize = PlayItem.fileSize();
+
             if (pAlbumItem)
             {
-                PlayingInfo.nDuration = pAlbumItem->duration();
+                if (PlayingInfo.nDuration <= 0)
+                {
+                    PlayingInfo.nDuration = pAlbumItem->duration();
+                }
+
+                if (PlayingInfo.nFileSize <= 0)
+                {
+                    PlayingInfo.nFileSize = pAlbumItem->fileSize();
+                }
             }
             else if (pPlayItem)
             {
-                PlayingInfo.nDuration = pPlayItem->duration();
+                if (PlayingInfo.nDuration <= 0)
+                {
+                    PlayingInfo.nDuration = pPlayItem->duration();
+                }
+
+                if (PlayingInfo.nFileSize <= 0)
+                {
+                    PlayingInfo.nFileSize = pPlayItem->fileSize();
+                }
             }
         }
 

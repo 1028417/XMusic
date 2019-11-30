@@ -20,6 +20,7 @@ struct tagPlayingInfo
     wstring strTitle;
 
     int nDuration = -1;
+    long long nFileSize = -1;
 
     wstring strSinger;
     UINT uSingerID = 0;
