@@ -120,7 +120,7 @@ public:
 		}
 	}
 	
-private:
+public:
 	virtual CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) = 0;
 	
 	virtual void renameMedia(IMedia& media, const wstring& strNewName) = 0;

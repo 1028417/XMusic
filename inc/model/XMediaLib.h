@@ -48,7 +48,7 @@ private:
     CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);
 #endif
 
-public:
+private:
     void GetSubSets(TD_MediaSetList& lstSubSets) override
 	{
 		lstSubSets.add(m_PlaylistMgr);
