@@ -107,25 +107,54 @@ public:
 	}
 };
 
-extern class CMediaLib *g_pMediaLib;
-
 class __MediaLibExt CMediaLib : public CRootMediaDir
 {
+private:
+	static CMediaLib *m_pInst;
+
 public:
+    static CMediaLib& inst()
+    {
+        if (m_pInst)
+        {
+            return *m_pInst;
+        }
+
+        static CMediaLib inst;
+        return inst;
+    }
+
+protected:
 	CMediaLib()
 	{
-		if (NULL == g_pMediaLib)
+        if (NULL == m_pInst)
 		{
-			g_pMediaLib = this;
+            m_pInst = this;
 		}
 	}
 	
 public:
-	virtual CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) = 0;
+	virtual CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType, CMediaSet*& pSinger)
+	{
+		(void)strPath;
+		(void)pSinger;
+		return NULL;
+	}
 	
-	virtual void renameMedia(IMedia& media, const wstring& strNewName) = 0;
+	virtual void renameMedia(IMedia&, const wstring& strNewName)
+	{
+		(void)strNewName;
+	}
 
-	virtual UINT checkDuration(IMedia& media, long long& nFileSize) = 0;
+	virtual UINT checkDuration(IMedia&, long long& nFileSize)
+	{
+		(void)nFileSize;
+		return 0;
+	}
 
-	virtual UINT getSingerImgPos(UINT uSingerID) = 0;
+	virtual UINT getSingerImgPos(UINT uSingerID)
+	{
+		(void)uSingerID;
+		return 0;
+	}
 };
