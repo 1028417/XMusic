@@ -204,7 +204,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		UINT uThreadCount = plMedias.size() / 500;
 		uThreadCount = MIN(thread::hardware_concurrency(), uThreadCount);
 		
-		mtutil::CMultiTask<pair<wstring, TD_MediaList>, TD_MediaList> multiTask;
+		CMultiTask<pair<wstring, TD_MediaList>, TD_MediaList> multiTask;
 		cauto vecVerifyResult = multiTask.start(plMedias, uThreadCount
 			, [&](UINT taskIdx, auto& prTask, TD_MediaList& paResult) {
 			ProgressDlg.SetStatusText(prTask.first.c_str(), 1);
@@ -252,7 +252,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		(void)dlg.DoModal();
 	}
 
-#if 1
+#if 0
 	(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
 #endif
 

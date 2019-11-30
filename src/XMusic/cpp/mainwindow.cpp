@@ -744,7 +744,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
-        PlayingInfo.nDuration = PlayItem.GetDuration();
+        PlayingInfo.nDuration = PlayItem.duration();
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
