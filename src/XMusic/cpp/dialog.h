@@ -14,11 +14,13 @@
 #define __defThemeColor qRgb(180, 220, 255)
 extern QColor g_crTheme;
 
-extern QColor g_crText;
+#define __BlueLabel qRgb(32, 128, 255)
 
 class CDialog : public QDialog
 {
 public:
+    static QColor m_crText;
+
     static void resetPos();
 
     CDialog(QWidget& parent) : m_parent(&parent)

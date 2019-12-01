@@ -1041,7 +1041,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnSetting)
     {
-        m_bkgDlg.show(true);
+        m_bkgDlg.show();
     }
     else if (button == ui.btnMore)
     {

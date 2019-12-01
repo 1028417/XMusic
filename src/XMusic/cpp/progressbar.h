@@ -9,8 +9,10 @@ class CProgressBar : public CWidget<QProgressBar>
 {
 public:
     CProgressBar(QWidget *parent) : CWidget<QProgressBar>(parent)
+        , m_brBackground(QColor(255,255,255))
+        , m_brBuffer(QColor(195,240,255))
+        , m_brForeground(QColor(150,205,255))
     {
-        setColor(QColor(255,255,255), QColor(195,240,255), QColor(150,205,255));
     }
 
     void setColor(const QColor& crBackground, const QColor& crBuffer, const QColor& crForeground)

@@ -18,16 +18,6 @@ void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
-    QColor crText(__BlueLabel);
-    ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
-
-#if __android || __ios
-    m_addbkgView.setFont(1.05);
-#endif
-
-    m_addbkgView.setTextColor(crText);
-
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
@@ -35,6 +25,15 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
+    ui.labelTitle->setTextColor(m_crText);
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+
+#if __android || __ios
+    m_addbkgView.setFont(1.05);
+#endif
+
+    m_addbkgView.setTextColor(m_crText);
+
     CDialog::show(true);
 
     cauto strRootDir = m_app.getMediaLib().GetAbsPath() + L"/..";

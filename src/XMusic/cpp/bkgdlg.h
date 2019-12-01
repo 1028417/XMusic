@@ -69,6 +69,8 @@ private:
 public:
     void init();
 
+    void show();
+
     const QPixmap& hbkg() const
     {
         return m_pmHBkg;

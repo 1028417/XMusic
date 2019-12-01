@@ -10,6 +10,8 @@
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
+QColor g_crText(255,255,255);
+
 map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
@@ -190,6 +192,7 @@ int CXMusicApp::run()
     if (option.crText > 0)
     {
         g_crText.setRgb(option.crText);
+        CDialog::m_crText.setRgb(option.crText);
     }
 
     std::thread thrUpgrade;

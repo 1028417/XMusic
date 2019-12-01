@@ -4,12 +4,13 @@
 #include <QPainter>
 #include <QBitmap>
 
-QColor g_crTheme(__defThemeColor);
-QColor g_crText(255,255,255);
-
 extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
+
+QColor g_crTheme(__defThemeColor);
+
+QColor CDialog::m_crText(__BlueLabel);
 
 void CDialog::resetPos()
 {

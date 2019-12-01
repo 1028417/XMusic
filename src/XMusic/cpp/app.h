@@ -14,6 +14,8 @@
 
 extern ITxtWriter& g_logger;
 
+extern QColor g_crText;
+
 class CApp : public QApplication
 {
 public:
@@ -101,5 +103,3 @@ public:
 
     int run();
 };
-
-#define __BlueLabel 32, 128, 255

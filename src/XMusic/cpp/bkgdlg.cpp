@@ -146,10 +146,6 @@ void CBkgDlg::init()
 {
     ui.setupUi(this);
 
-    QColor crText(__BlueLabel);
-    ui.labelTitle->setTextColor(crText);
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
-
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
 #define __hbkgdir L"/hbkg/"
@@ -197,6 +193,14 @@ void CBkgDlg::init()
     }
 
     m_addbkgDlg.init();
+}
+
+void CBkgDlg::show()
+{
+    ui.labelTitle->setTextColor(m_crText);
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+
+    CDialog::show(true);
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
