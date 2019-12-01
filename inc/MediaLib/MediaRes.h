@@ -1,7 +1,9 @@
 
 #pragma once
 
+#if __winvc
 #include "CueFile.h"
+#endif
 
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
@@ -49,7 +51,9 @@ private:
 	virtual int _getImage();
 
 public:
+#if __winvc
     CRCueFile getCueFile();
+#endif
 
     class CMediaDir* parent() const;
 

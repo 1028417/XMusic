@@ -105,7 +105,15 @@ public:
 	
 	void UpdatePath(const wstring& strPath);
 
-	CRCueFile getCueFile() const;
+#if __winvc
+    CRCueFile getCueFile() const
+    {
+        CMediaRes *pMediaRes = CMediaLib::inst().findSubFile(GetPath());
+        __EnsureReturn(pMediaRes, CCueFile::NoCue);
+
+        return pMediaRes->getCueFile();
+    }
+#endif
 
 private:
 	void _UpdatePath(const wstring& strPath);
