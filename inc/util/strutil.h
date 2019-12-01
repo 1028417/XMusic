@@ -78,6 +78,9 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
+    string base64_encode(const char *bytes_to_encode, unsigned int in_len);
+    string base64_decode(const string& encoded_string);
+
 	static bool checkUtf8(const char *pStr, size_t len);
 	static bool checkUtf8(const char *pStr)
 	{
@@ -162,7 +165,7 @@ public:
 		{
 			return strutil::collate(lhs, rhs)<0;
 		}
-	};
+    };
 };
 
 #include "WString.h"
