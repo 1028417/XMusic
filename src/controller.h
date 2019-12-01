@@ -10,20 +10,22 @@ public:
 		, m_model(model)
 	{
 	}
-	
+
 protected:
 	IPlayerView& m_view;
 
 	IModel& m_model;
 
+	COptionMgr m_OptionMgr;
+
 #if !__winvc
 private:
-        thread m_threadPlayCtrl;
-        TSignal<tagPlayCtrl> m_sigPlayCtrl;
+	thread m_threadPlayCtrl;
+	TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif
 
 private:
-    void _tryPlay();
+	void _tryPlay();
 
 #if __winvc
 protected:
@@ -31,6 +33,16 @@ protected:
 #endif
 
 public:
+        tagOption& initOption() override
+        {
+                return m_OptionMgr.init();
+        }
+
+	tagOption& getOption() override
+	{
+		return m_OptionMgr.getOption();
+	}
+
 	bool start();
 
         void stop();

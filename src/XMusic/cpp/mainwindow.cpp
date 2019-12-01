@@ -96,7 +96,7 @@ MainWindow::MainWindow(CXMusicApp& app)
 
 
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
-        auto& bFullScreen = COptionMgr::inst().getOption().bFullScreen;
+        auto& bFullScreen = m_app.getOption().bFullScreen;
         bFullScreen = !bFullScreen;
         g_bFullScreen = bFullScreen;
 
@@ -152,7 +152,7 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    g_bFullScreen = COptionMgr::inst().getOption().bFullScreen;
+    g_bFullScreen = m_app.getOption().bFullScreen;
     fixWorkArea(*this);
     this->setVisible(true);
 
@@ -270,7 +270,7 @@ void MainWindow::_init()
 
     m_PlayingList.setFont(0.9);
 
-    if (COptionMgr::inst().getOption().bRandomPlay)
+    if (m_app.getOption().bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -308,7 +308,7 @@ void MainWindow::show()
 
     _relayout();
 
-    m_PlayingList.updateList(COptionMgr::inst().getOption().uPlayingItem);
+    m_PlayingList.updateList(m_app.getOption().uPlayingItem);
 }
 
 void MainWindow::_onPaint(CPainter& painter)
@@ -321,9 +321,9 @@ void MainWindow::_onPaint(CPainter& painter)
         return;
     }
 
-    if (COptionMgr::inst().getOption().crTheme > 0)
+    if (m_app.getOption().crTheme > 0)
     {
-        painter.fillRect(rect, QColor(COptionMgr::inst().getOption().crTheme));
+        painter.fillRect(rect, QColor(m_app.getOption().crTheme));
         return;
     }
 
@@ -1020,7 +1020,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = COptionMgr::inst().getOption().bRandomPlay;
+        auto& bRandomPlay = m_app.getOption().bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);

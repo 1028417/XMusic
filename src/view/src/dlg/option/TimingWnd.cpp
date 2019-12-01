@@ -26,7 +26,7 @@ BOOL CTimingWnd::Create(CWnd* pParentWnd, int x, int y)
 	(void)this->UpdateData(FALSE);
 	(void)this->SetWindowPos(NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
-	auto& TimerOption = COptionMgr::inst().getTimerOption();
+	cauto TimerOption = m_view.getOption().TimerOption;
 	this->SetDlgItemInt(IDC_EDIT_HOUR, TimerOption.nHour);
 	this->SetDlgItemInt(IDC_EDIT_MINUTE, TimerOption.nMinute);
 
@@ -48,7 +48,7 @@ BOOL CTimingWnd::Create(CWnd* pParentWnd, int x, int y)
 
 void CTimingWnd::OnCbnSelchangeComboOperate()
 {
-	COptionMgr::inst().getTimerOption().eTimerOperate = (E_TimerOperate)m_wndOperateCombo.GetCurSel();
+	m_view.getOption().TimerOption.eTimerOperate = (E_TimerOperate)m_wndOperateCombo.GetCurSel();
 }
 
 void CTimingWnd::OnDeltaposSpinHour(NMHDR *pNMHDR, LRESULT *pResult)
@@ -56,7 +56,7 @@ void CTimingWnd::OnDeltaposSpinHour(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-	int& nHour = COptionMgr::inst().getTimerOption().nHour;
+	int& nHour = m_view.getOption().TimerOption.nHour;
 	nHour -= pNMUpDown->iDelta;
 
 	if (nHour >= 24)
@@ -76,7 +76,7 @@ void CTimingWnd::OnDeltaposSpinMinute(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
 
-	int& nMinute = COptionMgr::inst().getTimerOption().nMinute;
+	int& nMinute = m_view.getOption().TimerOption.nMinute;
 	nMinute -= pNMUpDown->iDelta;
 
 	if (nMinute >= 60)

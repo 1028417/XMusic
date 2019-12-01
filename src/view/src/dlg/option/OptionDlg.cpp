@@ -37,7 +37,7 @@ BOOL COptionDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-	if (COptionMgr::inst().getOption().bHideMenuBar)
+	if (m_view.getOption().bHideMenuBar)
 	{
 		((CButton*)GetDlgItem(IDC_HideMenuBar))->SetCheck(TRUE);
 	}
@@ -53,7 +53,7 @@ BOOL COptionDlg::OnInitDialog()
 	{
 		(void)m_wndSkbCombo.InsertString(nIndex++, strSkbName.c_str());
 	}
-	(void)m_wndSkbCombo.SelectString(0, COptionMgr::inst().getPlaySpiritOption().strSkinName.c_str());
+	(void)m_wndSkbCombo.SelectString(0, m_view.getOption().PlaySpiritOption.strSkinName.c_str());
 
 	__EnsureReturn(m_TimingWnd.Create(this, 13, 130), FALSE);
 
@@ -75,13 +75,13 @@ void COptionDlg::OnCbnSelchangeComboSkin()
 		strSkinPath = __PlaySpiritSkinDir + strSkinName + L".skb";
 	}
 
-	COptionMgr::inst().getPlaySpiritOption().strSkinName = strSkinName;
+	m_view.getOption().PlaySpiritOption.strSkinName = strSkinName;
 
 	m_view.m_PlayCtrl.getPlaySpirit().SetSkin(strSkinPath);
 }
 
 void COptionDlg::OnBnClickedHideMenubar()
 {
-	auto& bHideMenuBar = COptionMgr::inst().getOption().bHideMenuBar;
+	auto& bHideMenuBar = m_view.getOption().bHideMenuBar;
 	bHideMenuBar = !bHideMenuBar;
 }

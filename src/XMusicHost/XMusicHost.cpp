@@ -8,9 +8,9 @@ class CPlayerApp : public CMainApp
 {
 public:
 	CPlayerApp()
-		: m_view(genView(m_controller, m_model))
-		, m_model(m_view.getModelObserver())
-		, m_controller(m_view, m_model)
+		: m_controller(m_view, m_model)
+		, m_view(genView(m_controller, m_model))
+		, m_model(m_view.getModelObserver(), m_controller.getOption())
 	{
 		extern void InitMinDump();
 		InitMinDump();
@@ -27,19 +27,17 @@ public:
 	}
 
 public:
+	CController m_controller;
+	
 	IPlayerView& m_view;
 
 	CModel m_model;
-
-	CController m_controller;
 };
 CPlayerApp theApp;
 
 bool CController::init()
 {
-	fsutil::setWorkDir(fsutil::getModuleDir());
-
-	(void)((CModel&)m_model).init();
+	initOption();
 	
 	(void)m_model.initMediaLib();
 

@@ -12,7 +12,7 @@ bool CXController::start()
 {
 #if __winvc
 	(void)timerutil::setTimer(60000, [&]() {
-        wstring strAlarmmedia = COptionMgr::inst().checkAlarm();
+        wstring strAlarmmedia = m_OptionMgr.checkAlarm();
 		if (!strAlarmmedia.empty())
 		{
 			strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
@@ -24,7 +24,7 @@ bool CXController::start()
 			}
 		}
 
-        E_TimerOperate eTimerOperate = COptionMgr::inst().checkTimerOperate();
+        E_TimerOperate eTimerOperate = m_OptionMgr.checkTimerOperate();
 		if (TO_StopPlay == eTimerOperate)
 		{
 			m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
@@ -135,7 +135,7 @@ bool CXController::setupRootDir()
 		return false;
 	}
 
-    if (strutil::matchIgnoreCase(strRootDir, COptionMgr::inst().getOption().strRootDir))
+    if (strutil::matchIgnoreCase(strRootDir, m_OptionMgr.getOption().strRootDir))
 	{
 		return false;
 	}
@@ -180,6 +180,8 @@ void CXController::stop()
 #endif
 
     m_model.close();
+
+	m_OptionMgr.saveOption();
 }
 
 E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
@@ -263,7 +265,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-    bool bExist = COptionMgr::inst().getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
+    bool bExist = m_OptionMgr.getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
         return strutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
     });
 	if (bExist)

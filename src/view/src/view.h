@@ -71,6 +71,11 @@ private:
 	IModel& m_model;
 
 public:
+	tagOption& getOption()
+	{
+		return m_controller.getOption();
+	}
+
 	IXController& getController()
 	{
 		return m_controller;

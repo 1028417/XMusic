@@ -15,7 +15,7 @@ CPlayer& CPlayCtrl::player()
 
 bool CPlayCtrl::init()
 {
-	auto& PlaySpiritOption = COptionMgr::inst().getPlaySpiritOption();
+	auto& PlaySpiritOption = m_view.getOption().PlaySpiritOption;
 	
 	wstring strSkinPath;
 	if (!PlaySpiritOption.strSkinName.empty())
@@ -158,7 +158,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 		break;
 	case ST_PlaySpiritButton::PSB_Volume:
 		player().SetVolume((UINT)para);
-		COptionMgr::inst().getPlaySpiritOption().uVolume = (UINT)para;
+		m_view.getOption().PlaySpiritOption.uVolume = (UINT)para;
 
 		break;
 	case ST_PlaySpiritButton::PSB_Mute:
@@ -168,7 +168,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 		}
 		else
 		{
-			player().SetVolume(COptionMgr::inst().getPlaySpiritOption().uVolume);
+			player().SetVolume(m_view.getOption().PlaySpiritOption.uVolume);
 		}
 
 		break;
@@ -180,7 +180,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 
 void CPlayCtrl::setVolume(int offset)
 {
-	UINT& uVolume = COptionMgr::inst().getPlaySpiritOption().uVolume;
+	UINT& uVolume = m_view.getOption().PlaySpiritOption.uVolume;
 
 	int nVolume = uVolume;
 	nVolume += offset;
@@ -204,7 +204,7 @@ void CPlayCtrl::close()
 {
 	if (m_PlaySpirit)
 	{
-		tagPlaySpiritOption& PlaySpiritOption = COptionMgr::inst().getPlaySpiritOption();
+		tagPlaySpiritOption& PlaySpiritOption = m_view.getOption().PlaySpiritOption;
 		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
 
 		cauto rcPos = m_PlaySpirit.rect();

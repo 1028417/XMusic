@@ -48,7 +48,7 @@ bool CPlayerMainWnd::Create()
 	static CMainMenu s_Menu(m_view);
 	s_Menu.Attach(MainWndInfo.hMenu);
 
-	if (COptionMgr::inst().getOption().bHideMenuBar)
+	if (m_view.getOption().bHideMenuBar)
 	{
 		this->SetMenu(NULL);
 	}
@@ -62,7 +62,7 @@ bool CPlayerMainWnd::Create()
 
 void CPlayerMainWnd::show()
 {
-	fixWorkArea(COptionMgr::inst().getOption().bFullScreen);
+	fixWorkArea(m_view.getOption().bFullScreen);
 
 	ShowWindow(SW_SHOW);
 
@@ -242,7 +242,7 @@ void CPlayerMainWnd::_fixWorkArea(CRect& rcWorkArea, bool bFullScreen)
 	rcWorkArea.left -= __XOffset;
 	rcWorkArea.right += __XOffset - 1;
 
-	if (COptionMgr::inst().getOption().bHideMenuBar)
+	if (m_view.getOption().bHideMenuBar)
 	{
 		rcWorkArea.top -= 4;
 	}

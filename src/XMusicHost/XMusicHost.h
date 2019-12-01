@@ -8,6 +8,7 @@ public:
 	CController(IPlayerView& view, IModel& model)
 		: CXController(view, model)
 	{
+		(void)fsutil::setWorkDir(fsutil::getModuleDir());
 	}
 
 public:

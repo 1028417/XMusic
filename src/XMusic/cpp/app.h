@@ -25,16 +25,16 @@ class CXMusicApp : public CApp,  public IPlayerView
 public:
     CXMusicApp(int argc, char **argv) :
         CApp(argc, argv),
-        m_model(m_mainWnd),
         m_ctrl(*this, m_model),
+        m_model(m_mainWnd, m_ctrl.getOption()),
         m_mainWnd(*this)
     {
     }
 
 private:
-    CModel m_model;
-
     CXController m_ctrl;
+
+    CModel m_model;
 
     MainWindow m_mainWnd;
 
@@ -49,6 +49,16 @@ private:
     bool _upgradeMediaLib();
 
 public:
+    tagOption& getOption()
+    {
+        return m_ctrl.getOption();
+    }
+
+    IXController& getCtrl()
+    {
+        return m_ctrl;
+    }
+
     MainWindow& mainWnd()
     {
         return m_mainWnd;
@@ -87,11 +97,6 @@ public:
     CSingerImgMgr& getSingerImgMgr()
     {
         return m_model.getSingerImgMgr();
-    }
-
-    IXController& getCtrl()
-    {
-        return m_ctrl;
     }
 
     int run();
