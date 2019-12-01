@@ -273,8 +273,9 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	{
 		__AssertBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
 
-		static auto& strFilter = L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Gif;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
-			|Png文件(*.Png)|*.Png|Gif文件(*.Gif)|*.Gif|位图文件(*.Bmp)|*.Bmp|";
+		static auto& strFilter = L"所有支持图片|*.Jpg;*.Jpeg;*.Jfif;*.Png;*.Gif;*.Bmp\
+			|Jpg文件|*.Jpg|Jpeg文件|*.Jpeg|Jpeg文件|*.Jfif \
+			|Png文件|*.Png|Gif文件|*.Gif|位图文件(*.Bmp)|*.Bmp|";
 
 		tagFileDlgOpt FileDlgOpt;
 		FileDlgOpt.strTitle = L"选择歌手头像";
