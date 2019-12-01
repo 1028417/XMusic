@@ -70,7 +70,15 @@ public:
 	}
 };
 
-#if __winvc
+#if !__winvc
+struct __ModelExt tagUpgradeConf
+{
+    UINT uVersion = 0;
+
+    PairList<string, string> plUrl;
+};
+
+#else
 enum class E_CheckDuplicateMode
 {
     CDM_SamePath
@@ -84,13 +92,6 @@ using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
 
 using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
 using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
-
-struct __ModelExt tagUpgradeConf
-{
-    UINT uVersion = 0;
-
-    PairList<string, string> plUrl;
-};
 
 struct __ModelExt tagExportMedia
 {
