@@ -1,13 +1,18 @@
 
 #pragma once
 
+#include "util/util.h"
+
 #include <QDialog>
 
 #include <QPalette>
 
 #include <QEvent>
 
-#include "util/util.h"
+#include <QRgb>
+
+#define __defThemeColor qRgb(180, 220, 255)
+extern QColor g_crTheme;
 
 class CDialog : public QDialog
 {
@@ -15,12 +20,6 @@ public:
     static void resetPos();
 
     CDialog(QWidget& parent) : m_parent(&parent)
-        , m_crBkg(180, 220, 255)
-    {
-    }
-
-    CDialog(QWidget& parent, const QColor& crBkg) : m_parent(&parent)
-        , m_crBkg(crBkg)
     {
     }
 
@@ -28,18 +27,9 @@ protected:
     QWidget *m_parent;
 
 private:
-    QColor m_crBkg;
-
     bool m_bFullScreen = false;
 
 private:
-    void _setBkgColor()
-    {
-        QPalette pe = this->palette();
-        pe.setColor(QPalette::Background, m_crBkg);
-        this->setPalette(pe);
-    }
-
     void _setPos();
 
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
@@ -51,20 +41,15 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
+    void _setBkgColor(const QColor& crBkg)
+    {
+        QPalette pe = this->palette();
+        pe.setColor(QPalette::Background, crBkg);
+        this->setPalette(pe);
+    }
+
 public:
     void show(bool bFullScreen, const fn_void& cbClose = NULL);
-
-    void setBkgColor(UINT r, UINT g, UINT b)
-    {
-        m_crBkg.setRgb(r,g,b);
-
-        _setBkgColor();
-    }
-
-    const QColor& bkgColor() const
-    {
-        return m_crBkg;
-    }
 
 #if __windows
     HWND hwnd() const

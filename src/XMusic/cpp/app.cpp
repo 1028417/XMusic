@@ -182,9 +182,13 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 
 int CXMusicApp::run()
 {
-    auto& option = m_model.init();
-
     m_mainWnd.showLogo();
+
+    auto& option = m_model.init();
+    if (option.crTheme >= 0)
+    {
+        g_crTheme.setRgb(option.crTheme);
+    }
 
     std::thread thrUpgrade;
     bool bUpgradeResult = false;

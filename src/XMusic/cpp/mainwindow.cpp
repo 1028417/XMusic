@@ -317,7 +317,7 @@ void MainWindow::_onPaint(CPainter& painter)
 
     if (ui.labelLogo->isVisible())
     {
-        painter.fillRect(rect, QColor(180, 220, 255));
+        painter.fillRect(rect, QColor(__defThemeColor));
     }
     else
     {

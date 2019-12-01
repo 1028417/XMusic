@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QBitmap>
 
+QColor g_crTheme(__defThemeColor);
+
 extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
@@ -41,7 +43,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 {
     g_pFrontDlg = this;
 
-    _setBkgColor();
+    _setBkgColor(g_crTheme);
 
     this->setWindowFlags(Qt::Dialog);
 

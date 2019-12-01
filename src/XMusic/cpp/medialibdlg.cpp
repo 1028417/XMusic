@@ -23,17 +23,16 @@ void CMedialibDlg::init()
     ui.labelTitle->setTextColor(crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    cauto crBkg = bkgColor();
-    cauto crFlashText = CPainter::mixColor(crText, crBkg, 85);
+    cauto crFlashText = CPainter::mixColor(crText, g_crTheme, 85);
     m_MedialibView.setTextColor(crText, crFlashText);
 
 #if __android || __ios
     m_MedialibView.setFont(1.05);
 #endif
 
-    QColor crSelectedBkg = crBkg;
-    crSelectedBkg.setRed(crBkg.red()-10);
-    crSelectedBkg.setGreen(crBkg.green()-5);
+    QColor crSelectedBkg = g_crTheme;
+    crSelectedBkg.setRed(g_crTheme.red()-10);
+    crSelectedBkg.setGreen(g_crTheme.green()-5);
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
     m_MedialibView.init();
 
