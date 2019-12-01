@@ -62,7 +62,7 @@ private:
 
     bool m_bHScreen = false;
 
-    bool m_bUsingCustomBkg = false;
+    bool m_bUseDefaultBkg = false;
 
     bool m_bZoomoutSingerImg = false;
 

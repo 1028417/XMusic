@@ -437,20 +437,33 @@ void MainWindow::_relayout()
     int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
-    const QPixmap &pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-    m_bUsingCustomBkg = !pmBkg.isNull();
+    UINT uShadowWidth = 0;
+    if (m_app.getOption().crTheme > 0)
+    {
+        m_bUseDefaultBkg = false;
+    }
+    else
+    {
+        const QPixmap &pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        m_bUseDefaultBkg = pmBkg.isNull();
 
-    ui.labelDemandCN->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandHK->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandKR->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandJP->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandTAI->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandEN->setShadow(m_bUsingCustomBkg?1:0);
-    ui.labelDemandEUR->setShadow(m_bUsingCustomBkg?1:0);
+        if (m_bUseDefaultBkg)
+        {
+            m_bUseDefaultBkg = 1;
+        }
+    }
 
-    ui.labelAlbumName->setShadow(m_bUsingCustomBkg?2:0);
+    ui.labelDemandCN->setShadow(uShadowWidth);
+    ui.labelDemandHK->setShadow(uShadowWidth);
+    ui.labelDemandKR->setShadow(uShadowWidth);
+    ui.labelDemandJP->setShadow(uShadowWidth);
+    ui.labelDemandTAI->setShadow(uShadowWidth);
+    ui.labelDemandEN->setShadow(uShadowWidth);
+    ui.labelDemandEUR->setShadow(uShadowWidth);
 
-    ui.labelDuration->setShadow(m_bUsingCustomBkg?2:0);
+    ui.labelAlbumName->setShadow(uShadowWidth * 2);
+
+    ui.labelDuration->setShadow(uShadowWidth * 2);
 
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
@@ -492,7 +505,7 @@ void MainWindow::_relayout()
     }
     else if (cy < __size(1000))
     {
-        if (!m_bUsingCustomBkg)
+        if (m_bUseDefaultBkg)
         {
             y_frameDemand = __size(12);
         }
@@ -528,7 +541,7 @@ void MainWindow::_relayout()
 
     ui.btnMore->move(x_btnMore, y_btnMore);
 
-    if (m_bUsingCustomBkg)
+    if (!m_bUseDefaultBkg)
     {
         int yOffset = 0;
 
@@ -562,15 +575,17 @@ void MainWindow::_relayout()
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
 
-    if (m_bUsingCustomBkg)
+    ui.labelPlayingfile->setShadow(uShadowWidth * 2);
+
+    m_PlayingList.setShadow(uShadowWidth * 2);
+
+    if (!m_bUseDefaultBkg)
     {
         int x = ui.progressBar->x();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
-
-        ui.labelPlayingfile->setShadow(2);
 
         int cy_labelAlbumName = __size(80);
         int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
@@ -631,13 +646,11 @@ void MainWindow::_relayout()
 
         m_PlayingList.setTextColor(255, 255, 255);
         m_PlayingList.setInactiveAlpha(0.4);
-        m_PlayingList.setShadow(2);
     }
     else
     {
         m_PlayingList.setTextColor(255, 255, 255, 160);
         m_PlayingList.setInactiveAlpha(0.33);
-        m_PlayingList.setShadow(0);
 
         bool bFlag = false;//fCXRateEx > 1;
         if (m_bHScreen)
@@ -653,8 +666,6 @@ void MainWindow::_relayout()
         }
         if (bFlag)
         {
-            ui.labelPlayingfile->setShadow(2);
-
             int y_Playingfile = rcSingerImg.bottom()- ui.labelPlayingfile->height() - __size(20);
             ui.labelPlayingfile->move(rcSingerImg.left() + __size(30), y_Playingfile);
 
@@ -880,7 +891,7 @@ void MainWindow::_showAlbumName()
     {
         if (!m_PlayingInfo.strPlaylist.empty())
         {
-            if (m_bUsingCustomBkg)
+            if (!m_bUseDefaultBkg)
             {
                 strMediaSet << L"歌单：";
             }
@@ -891,7 +902,7 @@ void MainWindow::_showAlbumName()
     }
     else if (!m_PlayingInfo.strAlbum.empty())
     {
-        if (m_bUsingCustomBkg)
+        if (!m_bUseDefaultBkg)
         {
             strMediaSet << L"专辑：";
         }
@@ -912,7 +923,7 @@ void MainWindow::_showAlbumName()
 
     labelAlbumName.setFont(1);
 
-    if (!m_bUsingCustomBkg)
+    if (m_bUseDefaultBkg)
     {
         cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
         labelAlbumName.adjustSize();
@@ -1053,7 +1064,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
     {
-        if (m_bUsingCustomBkg)
+        if (!m_bUseDefaultBkg)
         {
             m_bZoomoutSingerImg = !m_bZoomoutSingerImg;
             _relayout();
