@@ -462,6 +462,7 @@ int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 	return lstOppPaths.size();
 }
 
+#if __winvc
 bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
 	, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias)
 {
@@ -587,3 +588,4 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 
 	return mapUpdatedMedias.size();
 }
+#endif
