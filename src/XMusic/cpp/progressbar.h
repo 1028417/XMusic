@@ -11,7 +11,7 @@ public:
     CProgressBar(QWidget *parent) :
         CWidget<QProgressBar>(parent)
         , m_brBackground(QColor(255,255,255))
-        , m_brBuffer(QColor(190,245,255))
+        , m_brBuffer(QColor(195,240,255))
         , m_brForeground(QColor(150,205,255))
     {
     }
