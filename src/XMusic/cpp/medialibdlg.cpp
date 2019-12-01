@@ -5,7 +5,7 @@
 #include "ui_medialibdlg.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName L"根目录"
+#define __OuterDirName L"库 外"
 
 static Ui::MedialibDlg ui;
 

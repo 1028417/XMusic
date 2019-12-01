@@ -141,7 +141,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,64));
+        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,70));
     }
 
     if (context.eStyle & E_RowStyle::IS_RightTip)
