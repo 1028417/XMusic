@@ -126,9 +126,8 @@ class IModel
 public:
     virtual bool initMediaLib() = 0;
 
-	virtual bool status() const = 0;
+    virtual bool status() const = 0;
 
-    virtual COptionMgr& getOptionMgr() = 0;
 
     virtual CDataMgr& getDataMgr() = 0;
 
@@ -196,8 +195,6 @@ private:
 	CSQLiteDB m_db;
 	CDao m_dao;
 	
-	COptionMgr m_OptionMgr;
-
 	CDataMgr m_DataMgr;
 
 #if __winvc
@@ -220,11 +217,6 @@ public:
 	{
 		return m_db.GetStatus();
 	}
-
-        COptionMgr& getOptionMgr() override
-        {
-                return m_OptionMgr;
-        }
 
         CDataMgr& getDataMgr() override
         {
@@ -321,7 +313,7 @@ private:
 
 	inline void _refreshMediaLib()
     {
-        m_MediaLib.setDir(m_OptionMgr.getOption().strRootDir, m_OptionMgr.getOption().plAttachDir);
+        m_MediaLib.setDir(COptionMgr::inst().getOption().strRootDir, COptionMgr::inst().getOption().plAttachDir);
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);

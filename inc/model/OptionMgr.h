@@ -67,6 +67,7 @@ struct __ModelExt tagOption
 #else
     wstring strHBkg;
     wstring strVBkg;
+
     int crTheme = -1;
     int crFont = -1;
 #endif
@@ -81,6 +82,13 @@ struct __ModelExt tagOption
 class __ModelExt COptionMgr
 {
 public:
+    static COptionMgr& inst()
+    {
+        static COptionMgr inst;
+        return inst;
+    }
+
+private:
 	COptionMgr() {}
 
 private:

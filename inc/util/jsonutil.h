@@ -57,6 +57,7 @@ public:
 
     static bool get(const JValue& jValue, int& nRet);
     static bool get(const JValue& jValue, unsigned int& uRet);
+    static bool getHex(const JValue& jValue, unsigned int& uRet);
 
 #ifdef JSON_HAS_INT64
     static bool get(const JValue& jValue, Json::Value::Int64& nRet);
