@@ -69,7 +69,7 @@ struct __ModelExt tagOption
     wstring strVBkg;
 
     int crTheme = -1;
-    int crFont = -1;
+    int crText = -1;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
