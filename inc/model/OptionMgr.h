@@ -67,7 +67,8 @@ struct __ModelExt tagOption
 #else
     wstring strHBkg;
     wstring strVBkg;
-    UINT crThemeColor = 0;
+    int crTheme = -1;
+    int crFont = -1;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;

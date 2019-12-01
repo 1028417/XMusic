@@ -207,4 +207,6 @@ enum class E_RenameRetCode
 
 #include "SingerMedia.h"
 
+#if __winvc
 #include "MediaMixture.h"
+#endif
