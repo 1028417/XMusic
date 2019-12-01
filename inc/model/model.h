@@ -20,7 +20,13 @@ extern ITxtWriter& m_modelLogger;
 
 #include "DataMgr.h"
 
+#if __winvc
 #include "BackupMgr.h"
+
+#include "AutoMatch.h"
+
+#include "MediaMixer.h"
+#endif
 
 #include "PlaylistMgr.h"
 
@@ -29,10 +35,6 @@ extern ITxtWriter& m_modelLogger;
 #include "SingerMgr.h"
 
 #include "SingerImgMgr.h"
-
-#include "AutoMatch.h"
-
-#include "MediaMixer.h"
 
 #include "XMediaLib.h"
 
@@ -120,14 +122,17 @@ struct __ModelExt tagUpgradeConf
 class IModel
 {
 public:
-#if !__winvc
-    virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
-    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) = 0;
-#endif
-
     virtual bool initMediaLib() = 0;
 
 	virtual bool status() const = 0;
+
+    virtual COptionMgr& getOptionMgr() = 0;
+
+    virtual CDataMgr& getDataMgr() = 0;
+
+#if __winvc
+    virtual CBackupMgr& getBackupMgr() = 0;
+#endif
 
 	virtual XMediaLib& getMediaLib() = 0;
 	
@@ -136,10 +141,6 @@ public:
 	
 	virtual CSingerMgr& getSingerMgr() = 0;
 	virtual CSingerImgMgr& getSingerImgMgr() = 0;
-
-	virtual COptionMgr& getOptionMgr() = 0;
-	virtual CDataMgr& getDataMgr() = 0;
-	virtual CBackupMgr& getBackupMgr() = 0;
 
 	virtual bool setupMediaLib(const wstring& strRootDir) = 0;
 	virtual void refreshMediaLib() = 0;
@@ -159,21 +160,27 @@ public:
 
 	virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
 
-	using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
-	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
-
 	virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
 
-	virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
-	virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
+    virtual bool clearData() = 0;
+
+    virtual void close() = 0;
+
+#if !__winvc
+    virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
+    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) = 0;
+
+#else
+    virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
+    virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
+
+    using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
+    virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
 	virtual wstring backupDB() = 0;
 	virtual bool restoreDB(const wstring& strTag) = 0;
-
-	virtual bool clearData() = 0;
-
-	virtual void close() = 0;
+#endif
 };
 
 class __ModelExt CModel : public IModel
@@ -191,7 +198,9 @@ private:
 
 	CDataMgr m_DataMgr;
 
+#if __winvc
 	CBackupMgr m_BackupMgr;
+#endif
 
 	XMediaLib m_MediaLib;
 
@@ -220,10 +229,12 @@ public:
                 return m_DataMgr;
         }
 
+#if __winvc
 		CBackupMgr& getBackupMgr() override
 		{
 			return m_BackupMgr;
 		}
+#endif
 
 	XMediaLib& getMediaLib() override
 	{
@@ -252,13 +263,6 @@ public:
 
 	tagOption& init();
 
-#if !__winvc
-    bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
-    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) override;
-
-    static string genUrl(const string& strUrl, const string& strFileTitle);
-#endif
-
     bool initMediaLib() override;
 
 	bool setupMediaLib(const wstring& strRootDir) override;
@@ -279,20 +283,31 @@ public:
 	
 	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
-	UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
-
 	void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
 		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
-
-	void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
-	void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
 	bool clearData() override;
 
 	void close() override;
 
+#if !__winvc
+    bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
+    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) override;
+
+    static string genUrl(const string& strUrl, const string& strFileTitle);
+
+#else
+    void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
+    void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
+
+    UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
+
     wstring backupDB() override;
 	bool restoreDB(const wstring& strTag) override;
+
+private:
+    bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
+#endif
 
 private:
     bool _upgradeMediaLib(CZipFile& zipFile, UINT uPrevVersion);
@@ -308,8 +323,6 @@ private:
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
-
-	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
 
 	void _clear();
 

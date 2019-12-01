@@ -76,10 +76,10 @@ typedef map<wstring, CSearchMediaInfo> TD_SearchMediaInfoMap;
 class __ModelExt CSearchMediaInfoGuard
 {
 public:
-	CSearchMediaInfoGuard(CSingerMgr& SingerMgr);
+	CSearchMediaInfoGuard(class CSingerMgr& SingerMgr);
 
 private:
-	CSingerMgr& m_SingerMgr;
+	class CSingerMgr& m_SingerMgr;
 
 	SSet<wstring> m_setSingerName;
 

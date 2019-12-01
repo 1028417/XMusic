@@ -1,7 +1,7 @@
 
 #pragma once
 
-struct tagPlaySpiritOption
+struct __ModelExt tagPlaySpiritOption
 {
 	wstring strSkinName;
 
@@ -11,7 +11,7 @@ struct tagPlaySpiritOption
     UINT uVolume = 100;
 };
 
-struct tagAlarmOption
+struct __ModelExt tagAlarmOption
 {
 	tagAlarmOption()
 	{
@@ -34,7 +34,7 @@ enum E_TimerOperate
 	, TO_Hibernal
 };
 
-struct tagTimerOperateOpt
+struct __ModelExt tagTimerOperateOpt
 {
 	tagTimerOperateOpt()
 	{
@@ -49,7 +49,7 @@ struct tagTimerOperateOpt
 	int nMinute = 0;
 };
 
-struct tagOption
+struct __ModelExt tagOption
 {
 	wstring strRootDir;
     PairList<wstring, E_AttachDirType> plAttachDir;
@@ -59,17 +59,22 @@ struct tagOption
     bool bRandomPlay = false;
 	bool bForce48000 = false;
 
-    bool bHideMenuBar = false;
     bool bFullScreen = !__winvc;
 
+#if __winvc
+    bool bHideMenuBar = false;
+
+#else
     wstring strHBkg;
     wstring strVBkg;
+    UINT crThemeColor = 0;
+#endif
 
-	tagPlaySpiritOption PlaySpiritOption;
+    tagPlaySpiritOption PlaySpiritOption;
 
-	tagAlarmOption AlarmOption;
-	
-	tagTimerOperateOpt TimerOption;
+    tagAlarmOption AlarmOption;
+
+    tagTimerOperateOpt TimerOption;
 };
 
 class __ModelExt COptionMgr
