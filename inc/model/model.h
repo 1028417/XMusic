@@ -70,11 +70,26 @@ public:
 	}
 };
 
+#if __winvc
 enum class E_CheckDuplicateMode
 {
-	CDM_SamePath
-	, CDM_SameName
-	, CDM_SameTitle
+    CDM_SamePath
+    , CDM_SameName
+    , CDM_SameTitle
+};
+
+using CB_checkDuplicateMedia = cfn_bool_t<CMedia&>;
+
+using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
+
+using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
+using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
+
+struct __ModelExt tagUpgradeConf
+{
+    UINT uVersion = 0;
+
+    PairList<string, string> plUrl;
 };
 
 struct __ModelExt tagExportMedia
@@ -103,21 +118,7 @@ struct __ModelExt tagExportOption
 
 	list<tagExportMedia> lstExportMedias;
 };
-
-using CB_checkDuplicateMedia = cfn_bool_t<CMedia&>;
-
-using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
-
-using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
-
-using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
-
-struct __ModelExt tagUpgradeConf
-{
-    UINT uVersion = 0;
-
-    PairList<string, string> plUrl;
-};
+#endif
 
 class IModel
 {
@@ -160,9 +161,6 @@ public:
 
 	virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
 
-	virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
-		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
-
     virtual bool clearData() = 0;
 
     virtual void close() = 0;
@@ -172,6 +170,9 @@ public:
     virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) = 0;
 
 #else
+    virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
+        , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
+
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
@@ -283,9 +284,6 @@ public:
 	
 	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
-	void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
-		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
-
 	bool clearData() override;
 
 	void close() override;
@@ -297,6 +295,9 @@ public:
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
 #else
+    void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
+        , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
+
     void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
     void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
