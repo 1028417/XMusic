@@ -187,6 +187,10 @@ int CXMusicApp::run()
     {
         g_crTheme.setRgb(option.crTheme);
     }
+    if (option.crText > 0)
+    {
+        g_crText.setRgb(option.crText);
+    }
 
     std::thread thrUpgrade;
     bool bUpgradeResult = false;

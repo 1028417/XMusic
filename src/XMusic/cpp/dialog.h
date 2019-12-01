@@ -14,6 +14,8 @@
 #define __defThemeColor qRgb(180, 220, 255)
 extern QColor g_crTheme;
 
+extern QColor g_crText;
+
 class CDialog : public QDialog
 {
 public:

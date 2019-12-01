@@ -5,6 +5,7 @@
 #include <QBitmap>
 
 QColor g_crTheme(__defThemeColor);
+QColor g_crText(255,255,255);
 
 extern void fixWorkArea(QWidget& wnd);
 

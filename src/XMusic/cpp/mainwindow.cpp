@@ -243,7 +243,7 @@ void MainWindow::_init()
     lstLabels.add(ui.labelDuration);
     for (auto label : lstLabels)
     {
-        label->setTextColor(255,255,255);
+        label->setTextColor(g_crText);
     }
 
     connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
@@ -644,12 +644,14 @@ void MainWindow::_relayout()
             }
         }
 
-        m_PlayingList.setTextColor(255, 255, 255);
+        m_PlayingList.setTextColor(g_crText);
         m_PlayingList.setInactiveAlpha(0.4);
     }
     else
     {
-        m_PlayingList.setTextColor(255, 255, 255, 160);
+        auto crText = g_crText;
+        crText.setAlpha(160);
+        m_PlayingList.setTextColor(crText);
         m_PlayingList.setInactiveAlpha(0.33);
 
         bool bFlag = false;//fCXRateEx > 1;
@@ -1136,7 +1138,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             {
                 lblLanguage->setText(lblLanguage->text().mid(__qsCheck.length()));
 
-                lblLanguage->setTextColor(255,255,255);
+                lblLanguage->setTextColor(g_crText);
             }
             else
             {
