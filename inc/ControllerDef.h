@@ -57,6 +57,9 @@ struct tagPlayCtrl
 class IXController
 {
 public:
+	virtual tagOption& initOption() = 0;
+	virtual tagOption& getOption() = 0;
+
     virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;
 
     virtual CMediaDir* attachDir(const wstring& strDir) = 0;

@@ -4,9 +4,9 @@
 class __ModelExt CDataMgr
 {
 public:
-	CDataMgr(CDao& dao)
+	CDataMgr(CDao& dao, tagOption& Option)
 		: m_dao(dao)
-		, m_Option(COptionMgr::inst().getOption())
+		, m_Option(Option)
 	{
 	}
 

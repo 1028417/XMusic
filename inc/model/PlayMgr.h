@@ -24,12 +24,14 @@ enum class E_PlayStatus
 class __ModelExt CPlayMgr
 {
 public:
-    CPlayMgr(class CModel& model, class IModelObserver& ModelObserver);
+    CPlayMgr(class CModel& model, class IModelObserver& ModelObserver, tagOption& Option);
 	
 private:
     class CModel& m_model;
 
 	IModelObserver& m_ModelObserver;
+
+	tagOption& m_Option;
 
 	CPlaylistMgr& m_PlaylistMgr;
 

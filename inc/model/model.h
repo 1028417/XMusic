@@ -187,11 +187,12 @@ public:
 class __ModelExt CModel : public IModel
 {
 public:
-	CModel(IModelObserver& ModelObserver);
+	CModel(IModelObserver& ModelObserver, tagOption& Option);
 
 private:
 	IModelObserver& m_ModelObserver;
-	
+	tagOption& m_Option;
+
 	CSQLiteDB m_db;
 	CDao m_dao;
 	
@@ -255,8 +256,6 @@ public:
 		return m_SingerImgMgr;
 	}
 
-	tagOption& init();
-
     bool initMediaLib() override;
 
 	bool setupMediaLib(const wstring& strRootDir) override;
@@ -313,7 +312,7 @@ private:
 
 	inline void _refreshMediaLib()
     {
-        m_MediaLib.setDir(COptionMgr::inst().getOption().strRootDir, COptionMgr::inst().getOption().plAttachDir);
+        m_MediaLib.setDir(m_Option.strRootDir, m_Option.plAttachDir);
 	}
 
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
