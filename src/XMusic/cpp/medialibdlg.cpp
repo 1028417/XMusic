@@ -274,8 +274,6 @@ bool CMedialibView::showFile(const wstring& strFile)
     return false;
 }
 
-#define __Dot L"·"
-
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
 {
     if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
@@ -289,7 +287,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
         _getTitle(*MediaSet.m_pParent, strTitle);
     }
 
-    strTitle << __Dot << MediaSet.m_strName;
+    strTitle << __CNDot << MediaSet.m_strName;
 }
 
 void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)

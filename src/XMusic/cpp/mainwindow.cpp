@@ -163,14 +163,14 @@ void MainWindow::showLogo()
 
         ui.labelLogo->movie()->start();
 
-        timerutil::async(500, [&](){
-            auto labelLogoTip = ui.labelLogoTip;
-            labelLogoTip->setText(labelLogoTip->text() + "播放器");
+        auto labelLogoTip = ui.labelLogoTip;
+        timerutil::async(500, [labelLogoTip](){
+            labelLogoTip->setText("播放器");
 
-            timerutil::async(500, [=](){
-                labelLogoTip->setText(labelLogoTip->text() + " · 媒体库");
+            timerutil::async(500, [labelLogoTip](){
+                labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
 
-                timerutil::async(500, [=](){
+                timerutil::async(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
                 });
             });
