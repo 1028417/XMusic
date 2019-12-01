@@ -36,12 +36,12 @@ bool CSysToolBar::Create(CWnd& wndParent)
 
 	move();
 
-	if (m_view.getOptionMgr().getOption().bRandomPlay)
+	if (COptionMgr::inst().getOption().bRandomPlay)
 	{
 		GetToolBarCtrl().SetState(ID_RandomPlay, TBSTATE_PRESSED);
 	}
 
-	if (m_view.getOptionMgr().getOption().bForce48000)
+	if (COptionMgr::inst().getOption().bForce48000)
 	{
 		GetToolBarCtrl().SetState(ID_Force48000, TBSTATE_PRESSED);
 	}
@@ -55,7 +55,7 @@ void CSysToolBar::move()
 	m_view.m_MainWnd.GetWindowRect(rcMainWnd);
 	rcMainWnd.right -= 2;
 
-	if (m_view.getOptionMgr().getOption().bHideMenuBar)
+	if (COptionMgr::inst().getOption().bHideMenuBar)
 	{
 		this->MoveWindow(X_TopToolBar + __BottomOffset, -1, 1000, 1000, FALSE);
 
@@ -98,7 +98,7 @@ void CSysToolBar::_onNMClick(UINT uID)
 	switch (uID)
 	{
 	case ID_Menu:
-		if (m_view.getOptionMgr().getOption().bHideMenuBar)
+		if (COptionMgr::inst().getOption().bHideMenuBar)
 		{
 			m_MenuGuard.clonePopup(&m_view.m_MainWnd, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
 		}
@@ -106,7 +106,7 @@ void CSysToolBar::_onNMClick(UINT uID)
 		break;
 	case ID_RandomPlay:
 	{
-		auto& bRandomPlay = m_view.getOptionMgr().getOption().bRandomPlay;
+		auto& bRandomPlay = COptionMgr::inst().getOption().bRandomPlay;
 		bRandomPlay = !bRandomPlay;
 
 		GetToolBarCtrl().SetState(ID_RandomPlay, bRandomPlay ? TBSTATE_PRESSED : TBSTATE_ENABLED);
@@ -115,7 +115,7 @@ void CSysToolBar::_onNMClick(UINT uID)
 	break;
 	case ID_Force48000:
 	{
-		auto& bForce48000 = m_view.getOptionMgr().getOption().bForce48000;
+		auto& bForce48000 = COptionMgr::inst().getOption().bForce48000;
 		bForce48000 = !bForce48000;
 
 		GetToolBarCtrl().SetState(ID_Force48000, bForce48000 ? TBSTATE_PRESSED : TBSTATE_ENABLED);
@@ -124,7 +124,7 @@ void CSysToolBar::_onNMClick(UINT uID)
 	break;
 	case ID_FullScreen:
 	{
-		auto& bFullScreen = m_view.getOptionMgr().getOption().bFullScreen;
+		auto& bFullScreen = COptionMgr::inst().getOption().bFullScreen;
 		bFullScreen = !bFullScreen;
 		m_view.m_MainWnd.fixWorkArea(bFullScreen);
 	}

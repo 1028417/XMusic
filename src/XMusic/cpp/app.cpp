@@ -182,8 +182,6 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 
 int CXMusicApp::run()
 {
-    m_mainWnd.showLogo();
-
     auto& option = m_model.init();
     if (option.crTheme >= 0)
     {
@@ -241,6 +239,7 @@ int CXMusicApp::run()
         });
     });
 
+    m_mainWnd.showLogo();
     int nRet = exec();
 
     if (thrUpgrade.joinable())

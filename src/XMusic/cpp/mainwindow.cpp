@@ -96,7 +96,7 @@ MainWindow::MainWindow(CXMusicApp& app)
 
 
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
-        auto& bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
+        auto& bFullScreen = COptionMgr::inst().getOption().bFullScreen;
         bFullScreen = !bFullScreen;
         g_bFullScreen = bFullScreen;
 
@@ -152,7 +152,7 @@ void MainWindow::showLogo()
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);
 
-    g_bFullScreen = m_app.getOptionMgr().getOption().bFullScreen;
+    g_bFullScreen = COptionMgr::inst().getOption().bFullScreen;
     fixWorkArea(*this);
     this->setVisible(true);
 
@@ -270,7 +270,7 @@ void MainWindow::_init()
 
     m_PlayingList.setFont(0.9);
 
-    if (m_app.getOptionMgr().getOption().bRandomPlay)
+    if (COptionMgr::inst().getOption().bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -308,7 +308,7 @@ void MainWindow::show()
 
     _relayout();
 
-    m_PlayingList.updateList(m_app.getOptionMgr().getOption().uPlayingItem);
+    m_PlayingList.updateList(COptionMgr::inst().getOption().uPlayingItem);
 }
 
 void MainWindow::_onPaint(CPainter& painter)
@@ -318,19 +318,24 @@ void MainWindow::_onPaint(CPainter& painter)
     if (ui.labelLogo->isVisible())
     {
         painter.fillRect(rect, QColor(__defThemeColor));
+        return;
+    }
+
+    if (COptionMgr::inst().getOption().crTheme > 0)
+    {
+        painter.fillRect(rect, QColor(COptionMgr::inst().getOption().crTheme));
+        return;
+    }
+
+    bool bHScreen = rect.width() > rect.height();
+    cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+    if (!pmBkg.isNull())
+    {
+       painter.drawPixmapEx(rect, pmBkg);
     }
     else
     {
-        bool bHScreen = rect.width() > rect.height();
-        cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-        if (!pmBkg.isNull())
-        {
-           painter.drawPixmapEx(rect, pmBkg);
-        }
-        else
-        {
-            drawDefaultBkg(painter, rect);
-        }
+        drawDefaultBkg(painter, rect);
     }
 }
 
@@ -1015,7 +1020,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = m_app.getOptionMgr().getOption().bRandomPlay;
+        auto& bRandomPlay = COptionMgr::inst().getOption().bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);

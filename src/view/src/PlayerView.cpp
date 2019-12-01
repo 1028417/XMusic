@@ -56,7 +56,7 @@ bool CPlayerView::handleCommand(UINT uID)
 		COptionDlg OptionDlg(m_view);
 		(void)OptionDlg.DoModal();
 
-		m_view.m_MainWnd.showMenu(!m_view.getOptionMgr().getOption().bHideMenuBar);
+		m_view.m_MainWnd.showMenu(!COptionMgr::inst().getOption().bHideMenuBar);
 
 		//CDockView *pDockView = m_view.m_MainWnd.GetView(E_DockViewType::DVT_DockCenter);
 		//if (NULL != pDockView)

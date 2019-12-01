@@ -12,7 +12,7 @@ bool CXController::start()
 {
 #if __winvc
 	(void)timerutil::setTimer(60000, [&]() {
-		wstring strAlarmmedia = m_model.getOptionMgr().checkAlarm();
+        wstring strAlarmmedia = COptionMgr::inst().checkAlarm();
 		if (!strAlarmmedia.empty())
 		{
 			strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
@@ -24,7 +24,7 @@ bool CXController::start()
 			}
 		}
 
-		E_TimerOperate eTimerOperate = m_model.getOptionMgr().checkTimerOperate();
+        E_TimerOperate eTimerOperate = COptionMgr::inst().checkTimerOperate();
 		if (TO_StopPlay == eTimerOperate)
 		{
 			m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
@@ -135,7 +135,7 @@ bool CXController::setupRootDir()
 		return false;
 	}
 
-	if (strutil::matchIgnoreCase(strRootDir, m_model.getOptionMgr().getOption().strRootDir))
+    if (strutil::matchIgnoreCase(strRootDir, COptionMgr::inst().getOption().strRootDir))
 	{
 		return false;
 	}
@@ -263,7 +263,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-    bool bExist = m_model.getOptionMgr().getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
+    bool bExist = COptionMgr::inst().getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
         return strutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
     });
 	if (bExist)

@@ -184,13 +184,13 @@ void CBkgDlg::init()
         m_vecVBkg.push_back(strSubFile);
     });
 
-    cauto strHBkg = m_app.getOptionMgr().getOption().strHBkg;
+    cauto strHBkg = COptionMgr::inst().getOption().strHBkg;
     if (!strHBkg.empty())
     {
         (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
     }
 
-    cauto strVBkg = m_app.getOptionMgr().getOption().strVBkg;
+    cauto strVBkg = COptionMgr::inst().getOption().strVBkg;
     if (!strVBkg.empty())
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
@@ -269,11 +269,11 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
 {
     if (m_bHScreen)
     {
-        m_app.getOptionMgr().getOption().strHBkg = strBkg;
+        COptionMgr::inst().getOption().strHBkg = strBkg;
     }
     else
     {
-        m_app.getOptionMgr().getOption().strVBkg = strBkg;
+        COptionMgr::inst().getOption().strVBkg = strBkg;
     }
 
     QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
@@ -355,8 +355,8 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
     if (uIdx < vecBkg.size())
     {
-        auto& strBkg = m_bHScreen?m_app.getOptionMgr().getOption().strHBkg
-                                  :m_app.getOptionMgr().getOption().strVBkg;
+        auto& strBkg = m_bHScreen ? COptionMgr::inst().getOption().strHBkg
+                                  : COptionMgr::inst().getOption().strVBkg;
         if (strBkg == *vecBkg[uIdx])
         {
             _setBkg(L"");

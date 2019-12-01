@@ -80,12 +80,7 @@ public:
 	{
 		return m_model;
 	}
-
-	COptionMgr& getOptionMgr()
-	{
-		return m_model.getOptionMgr();
-	}
-
+	
 	CDataMgr& getDataMgr()
 	{
 		return m_model.getDataMgr();
