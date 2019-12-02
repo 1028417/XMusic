@@ -46,31 +46,33 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 		auto alignment = this->alignment();
 
 		if (0 != m_uShadowWidth)
-		{
-			QPen pen = painter.pen();
-
-            UINT uShadowAlpha = (UINT)m_crText.alpha();
-			if (uShadowAlpha < 255)
+        {
+            int nShadowAlpha = m_crText.alpha();
+            if (nShadowAlpha < 255)
 			{
-				uShadowAlpha /= 2;
-			}
+                nShadowAlpha /= 2;
+            }
+            nShadowAlpha = nShadowAlpha * m_uShadowAlpha / 255;
 
-			QColor crShadow = m_crShadow;
-            crShadow.setAlpha((int)uShadowAlpha);
-			painter.setPen(crShadow);
+            if (nShadowAlpha > 0)
+            {
+                QPen pen = painter.pen();
 
-			for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
-			{
-				if (uIdx > 1)
-				{
-					crShadow.setAlpha(uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
-					painter.setPen(crShadow);
-				}
+                QColor crShadow(128,128,128, nShadowAlpha);
+                for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
+                {
+                    if (uIdx > 1)
+                    {
+                        crShadow.setAlpha(nShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                    }
 
-				painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
-		   }
+                    painter.setPen(crShadow);
 
-		   painter.setPen(pen);
+                    painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
+                }
+
+                painter.setPen(pen);
+            }
 		}
 
 		painter.drawText(m_rc, alignment, text, &m_rc);

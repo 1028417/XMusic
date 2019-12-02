@@ -5,7 +5,7 @@
 #include "ui_medialibdlg.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName L"库 外"
+#define __OuterDirName L" 库外"
 
 static Ui::MedialibDlg ui;
 
@@ -298,7 +298,7 @@ void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
     }
     else if (&MediaRes == &m_OuterDir)
     {
-        strTitle << __OuterDirName;
+        strTitle << strutil::trim_r(__OuterDirName);
         return;
     }
 
@@ -370,14 +370,14 @@ bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& c
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
         context.pixmap = &m_pmSingerGroup;
-        context.strText = L"歌 手";
+        context.strText = L" 歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
         context.pixmap = &m_pmPlaylist;
-        context.strText = L"歌 单";
+        context.strText = L" 歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }

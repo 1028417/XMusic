@@ -21,9 +21,7 @@ class CLabel : public CWidget<QLabel>
     Q_OBJECT
 
 public:
-    CLabel(QWidget *parent) :
-        CWidget<QLabel>(parent)
-        , m_crShadow(128,128,128)
+    CLabel(QWidget *parent) : CWidget<QLabel>(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
@@ -33,8 +31,8 @@ private:
 
     E_LabelTextOption m_eTextOption = E_LabelTextOption::LTO_AutoFit;
 
+    UINT m_uShadowAlpha = 255;
     UINT m_uShadowWidth = 0;
-    QColor m_crShadow;
 
     QRect m_rc;
 
@@ -55,16 +53,9 @@ public:
         QLabel::setText(qsText);
     }
 
-    void setShadow(UINT uWidth, UINT r, UINT g, UINT b)
+    void setShadow(UINT uAlpha, UINT uWidth = 1)
     {
-        m_uShadowWidth = uWidth;
-        m_crShadow.setRgb(r,g,b);
-
-        update();
-    }
-
-    void setShadow(UINT uWidth)
-    {
+        m_uShadowAlpha = uAlpha;
         m_uShadowWidth = uWidth;
 
         update();

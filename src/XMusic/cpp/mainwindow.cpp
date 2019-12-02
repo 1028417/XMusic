@@ -262,7 +262,6 @@ void MainWindow::_init()
 
     ui.wdgSingerImg->setVisible(false);
 
-    ui.labelSingerName->setShadow(2);
     ui.labelSingerName->setFont(1);
 
     ui.labelPlayingfile->setFont(1);
@@ -443,7 +442,7 @@ void MainWindow::_relayout()
     int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
-    UINT uShadowWidth = 0;
+    UINT uShadowAlpha = 0;
     if (m_app.getOption().crTheme > 0)
     {
         m_bUseDefaultBkg = false;
@@ -457,19 +456,25 @@ void MainWindow::_relayout()
         {
             m_bUseDefaultBkg = 1;
         }
+        else
+        {
+            uShadowAlpha = 170;
+        }
     }
 
-    ui.labelDemandCN->setShadow(uShadowWidth);
-    ui.labelDemandHK->setShadow(uShadowWidth);
-    ui.labelDemandKR->setShadow(uShadowWidth);
-    ui.labelDemandJP->setShadow(uShadowWidth);
-    ui.labelDemandTAI->setShadow(uShadowWidth);
-    ui.labelDemandEN->setShadow(uShadowWidth);
-    ui.labelDemandEUR->setShadow(uShadowWidth);
+    ui.labelDemandCN->setShadow(uShadowAlpha);
+    ui.labelDemandHK->setShadow(uShadowAlpha);
+    ui.labelDemandKR->setShadow(uShadowAlpha);
+    ui.labelDemandJP->setShadow(uShadowAlpha);
+    ui.labelDemandTAI->setShadow(uShadowAlpha);
+    ui.labelDemandEN->setShadow(uShadowAlpha);
+    ui.labelDemandEUR->setShadow(uShadowAlpha);
 
-    ui.labelAlbumName->setShadow(uShadowWidth * 2);
+    ui.labelSingerName->setShadow(2, 100);
 
-    ui.labelDuration->setShadow(uShadowWidth * 2);
+    ui.labelAlbumName->setShadow(uShadowAlpha);
+
+    ui.labelDuration->setShadow(uShadowAlpha);
 
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
@@ -581,9 +586,9 @@ void MainWindow::_relayout()
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
 
-    ui.labelPlayingfile->setShadow(uShadowWidth * 2);
+    m_PlayingList.setShadow(1);
 
-    m_PlayingList.setShadow(uShadowWidth * 2);
+    ui.labelPlayingfile->setShadow(uShadowAlpha);
 
     if (!m_bUseDefaultBkg)
     {
