@@ -367,18 +367,23 @@ bool MainWindow::event(QEvent *ev)
         _playSingerImg(false);
 
         auto ePlayStatus = m_app.getPlayMgr().GetPlayStatus();
-        if (E_PlayStatus::PS_Play == ePlayStatus)
+        if (ePlayStatus != E_PlayStatus::PS_Play)
         {
-            int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
-            if (nProgress <= ui.progressBar->maximum())
+            if (!XMediaLib::m_bOnlineMediaLib || ePlayStatus != E_PlayStatus::PS_Pause)
             {
-                int bufferValue = -1;
-                if (XMediaLib::m_bOnlineMediaLib)
-                {
-                    bufferValue = m_app.getPlayMgr().mediaOpaque().streamSize()/1000;
-                }
-                ui.progressBar->setValue(nProgress, bufferValue);
+                break;
             }
+        }
+
+        int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
+        if (nProgress <= ui.progressBar->maximum())
+        {
+            int bufferValue = -1;
+            if (XMediaLib::m_bOnlineMediaLib)
+            {
+                bufferValue = m_app.getPlayMgr().mediaOpaque().streamSize()/1000;
+            }
+            ui.progressBar->setValue(nProgress, bufferValue);
         }
     }
     break;
