@@ -3,8 +3,7 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CXMusicApp& app)
-    : m_app(app), m_crShadow(128,128,128)
+CPlayingList::CPlayingList(class CXMusicApp& app) : m_app(app)
 {
     this->startTimer(1000);
 }
@@ -74,20 +73,19 @@ void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
                 , Qt::ElideRight, rc.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
-        if (m_uShadowWidth != 0)
+        if (m_uShadowWidth > 0)
         {
-            UINT uShadowAlpha = crText.alpha()*fAlpha;
-            QColor crShadow = m_crShadow;
-            crShadow.setAlpha(uShadowAlpha);
-            painter.setPen(crShadow);
+            UINT uShadowAlpha = crText.alpha()*fAlpha * m_uShadowAlpha/255;
+            QColor crShadow(128, 128, 128, uShadowAlpha);
 
             for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
             {
                 if (uIdx > 1)
                 {
                     crShadow.setAlpha(uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
-                    painter.setPen(crShadow);
                 }
+
+                painter.setPen(crShadow);
 
                 QRectF rcShadow(rc);
                 rcShadow.setLeft(rcShadow.left()+uIdx);

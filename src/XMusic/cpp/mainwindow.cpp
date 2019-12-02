@@ -462,15 +462,15 @@ void MainWindow::_relayout()
         }
     }
 
-    ui.labelDemandCN->setShadow(uShadowAlpha);
     ui.labelDemandHK->setShadow(uShadowAlpha);
+    ui.labelDemandCN->setShadow(uShadowAlpha);
     ui.labelDemandKR->setShadow(uShadowAlpha);
     ui.labelDemandJP->setShadow(uShadowAlpha);
     ui.labelDemandTAI->setShadow(uShadowAlpha);
     ui.labelDemandEN->setShadow(uShadowAlpha);
     ui.labelDemandEUR->setShadow(uShadowAlpha);
 
-    ui.labelSingerName->setShadow(2, 100);
+    ui.labelSingerName->setShadow(100, 2);
 
     ui.labelAlbumName->setShadow(uShadowAlpha);
 
@@ -586,7 +586,7 @@ void MainWindow::_relayout()
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
 
-    m_PlayingList.setShadow(1);
+    m_PlayingList.setShadow(uShadowAlpha);
 
     ui.labelPlayingfile->setShadow(uShadowAlpha);
 

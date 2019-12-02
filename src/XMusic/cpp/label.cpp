@@ -45,13 +45,9 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 
 		auto alignment = this->alignment();
 
-		if (0 != m_uShadowWidth)
+        if (m_uShadowWidth > 0)
         {
             int nShadowAlpha = m_crText.alpha();
-            if (nShadowAlpha < 255)
-			{
-                nShadowAlpha /= 2;
-            }
             nShadowAlpha = nShadowAlpha * m_uShadowAlpha / 255;
 
             if (nShadowAlpha > 0)

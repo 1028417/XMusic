@@ -24,8 +24,8 @@ private:
     int m_nActiveTime = 0;
     float m_fInactiveAlpha = 1;
 
-    UINT m_uShadowWidth = 1;
-    QColor m_crShadow;
+    UINT m_uShadowAlpha = 255;
+    UINT m_uShadowWidth = 0;
 
 public:
     void setInactiveAlpha(float fAlpha)
@@ -33,16 +33,9 @@ public:
         m_fInactiveAlpha = fAlpha;
     }
 
-    void setShadow(UINT uWidth, UINT r, UINT g, UINT b)
+    void setShadow(UINT uAlpha, UINT uWidth = 1)
     {
-        m_uShadowWidth = uWidth;
-        m_crShadow.setRgb(r,g,b);
-
-        update();
-    }
-
-    void setShadow(UINT uWidth)
-    {
+        m_uShadowAlpha = uAlpha;
         m_uShadowWidth = uWidth;
 
         update();
