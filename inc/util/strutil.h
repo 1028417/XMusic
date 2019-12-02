@@ -78,8 +78,21 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
-    string base64_encode(const char *bytes_to_encode, unsigned int in_len);
-    string base64_decode(const string& encoded_string);
+	static string base64_encode(const char *bytes_to_encode, unsigned int in_len);
+	static string base64_encode(const string& str)
+	{
+		return base64_encode(str.c_str(), str.length());
+	}
+	static string base64_decode(const string& encoded_string);
+
+	static string toBase64(const wstring& str)
+	{
+		return base64_encode(toUtf8(str));
+	}
+	static wstring fromBase64(const string& str)
+	{
+		return fromUtf8(base64_decode(str));
+	}
 
 	static bool checkUtf8(const char *pStr, size_t len);
 	static bool checkUtf8(const char *pStr)
