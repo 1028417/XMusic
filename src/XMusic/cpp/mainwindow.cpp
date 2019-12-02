@@ -764,9 +764,6 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    auto pAlbumItem = PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
-    auto pPlayItem = PlayItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
-
     m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
         PlayingInfo.uPlaySeq++;
 
@@ -775,32 +772,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.nDuration = PlayItem.duration();
         if (XMediaLib::m_bOnlineMediaLib)
         {
-            PlayingInfo.nFileSize = int(PlayItem.fileSize()/1000);
-
-            if (pAlbumItem)
-            {
-                if (PlayingInfo.nDuration <= 0)
-                {
-                    PlayingInfo.nDuration = pAlbumItem->duration();
-                }
-
-                if (PlayingInfo.nFileSize <= 0)
-                {
-                    PlayingInfo.nFileSize = int(pAlbumItem->fileSize()/1000);
-                }
-            }
-            else if (pPlayItem)
-            {
-                if (PlayingInfo.nDuration <= 0)
-                {
-                    PlayingInfo.nDuration = pPlayItem->duration();
-                }
-
-                if (PlayingInfo.nFileSize <= 0)
-                {
-                    PlayingInfo.nFileSize = int(pPlayItem->fileSize()/1000);
-                }
-            }
+            PlayingInfo.nStreamSize = int(PlayItem.fileSize()/1000);
+        }
+        else
+        {
+            PlayingInfo.nStreamSize = -1;
         }
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
@@ -863,7 +839,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     _updatePlayPauseButton(true);
 
     ui.progressBar->setValue(0);
-    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nFileSize);
+    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nStreamSize);
 
     QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
