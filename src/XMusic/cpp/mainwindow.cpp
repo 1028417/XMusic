@@ -260,8 +260,9 @@ void MainWindow::_init()
         });
     }
 
-    ui.labelSingerName->setShadow(2);
+    ui.wdgSingerImg->setVisible(false);
 
+    ui.labelSingerName->setShadow(2);
     ui.labelSingerName->setFont(1);
 
     ui.labelPlayingfile->setFont(1);
