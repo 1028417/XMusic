@@ -30,8 +30,10 @@ public:
 
     void setValue(int value, int bufferValue=-1)
     {
-        m_bufferValue = bufferValue;
         QProgressBar::setValue(value);
+
+        m_bufferValue = bufferValue;
+        update();
     }
 
 private:
