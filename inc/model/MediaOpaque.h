@@ -22,7 +22,7 @@ private:
     void *m_pXmscCodec = NULL;
 
 private:
-    long long _openFile(const wstring& strFile, bool bXmsc, UINT uByteRate = 0);
+    long long _openFile(const wstring& strFile, bool bXmsc);
 
 	UINT _checkDuration()
 	{
@@ -45,7 +45,7 @@ public:
 	}
 
 #if !__winvc
-    void openUrl(const string& strUrl, bool bXmsc, int nByteRate = -1);
+    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 
     size_t streamPos() const
     {
