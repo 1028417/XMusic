@@ -13,6 +13,7 @@ private:
 	wstring m_strFile;
 
     bool m_bUrl = false;
+    UINT m_uByteRate = 0;
 
 #if !__winvc
     size_t m_uStreamPos = 0;
@@ -21,7 +22,7 @@ private:
     void *m_pXmscCodec = NULL;
 
 private:
-	long long _openFile(const wstring& strFile, bool bXmsc);
+    long long _openFile(const wstring& strFile, bool bXmsc, UINT uByteRate = 0);
 
 	UINT _checkDuration()
 	{
@@ -44,7 +45,7 @@ public:
 	}
 
 #if !__winvc
-    void openUrl(const string& strUrl, bool bXmsc);
+    void openUrl(const string& strUrl, bool bXmsc, int nByteRate = -1);
 
     size_t streamPos() const
     {
@@ -139,6 +140,18 @@ private:
 
 		return m_strFile;
 	}
+
+    UINT byteRate() const override
+    {
+        if (m_bUrl)
+        {
+            return m_uByteRate;
+        }
+        else
+        {
+            return CAudioOpaque::byteRate();
+        }
+    }
 
     int read(byte_t *buf, size_t size) override;
 };
