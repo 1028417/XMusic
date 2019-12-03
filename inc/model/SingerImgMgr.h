@@ -3,8 +3,7 @@
 class __ModelExt CSingerImgMgr
 {
 public:
-    CSingerImgMgr(IModelObserver& ModelObserver)
-        : m_ModelObserver(ModelObserver)
+    CSingerImgMgr(IModelObserver& ModelObserver) : m_ModelObserver(ModelObserver)
     {
     }
 
@@ -25,7 +24,7 @@ private:
 #endif
 
 public:
-    void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineImgFile);
+    void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineSingerImg);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
@@ -37,7 +36,7 @@ public:
 
     wstring getSingerImg(const wstring& strSingerName, UINT uIndex);
 
-	void getSingerImg(SList<string>& lstSingerImg) const;
+	void getSingerImg(list<wstring>& lstSingerImg) const;
 
 	bool exportSingerImg(const wstring& strDstDir);
 };

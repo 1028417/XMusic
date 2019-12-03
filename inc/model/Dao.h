@@ -243,7 +243,7 @@ public:
 
 	bool compare(const wstring& strFile, tagCompareBackupResult& result);
 
-	bool exportData(bool bXmsc, const wstring& strDstFile, const list<string>& lstSingerImg);
+	bool exportData(bool bXmsc, const wstring& strDstFile, const list<wstring>& lstSingerImg);
 
 	bool clearAll();
 
@@ -272,7 +272,7 @@ public:
 	bool setbackPlayItem(UINT uPlaylistID, const list<UINT>& lstIDs);
 
 public:
-        bool querySimgerImg(list<wstring>& lstSingerImg);
+	bool querySingerImg(list<wstring>& lstSingerImg);
 
 	bool querySinger(SArray<tagSingerGroupInfo>& arrSingerGroupInfo);
 
