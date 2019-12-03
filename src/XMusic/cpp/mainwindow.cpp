@@ -588,7 +588,7 @@ void MainWindow::_relayout()
 
     m_PlayingList.setShadow(uShadowAlpha);
 
-    ui.labelPlayingfile->setShadow(uShadowAlpha);
+    ui.labelPlayingfile->setShadow(255);
 
     if (!m_bUseDefaultBkg)
     {
