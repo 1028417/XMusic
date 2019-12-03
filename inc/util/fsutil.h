@@ -110,10 +110,11 @@ public:
 #endif
 	}
 
-    static FILE* fopen(const string& strFile, const string& strMode);
     static FILE* fopen(const wstring& strFile, const string& strMode);
+	static FILE* fopen(const string& strFile, const string& strMode);
 
-    static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
+	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
+	static bool copyFile(const string& strSrcFile, const string& strDstFile);
 
 	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
     static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);

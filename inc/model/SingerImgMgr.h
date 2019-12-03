@@ -25,7 +25,7 @@ private:
 #endif
 
 public:
-	void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineImgFile);
+    void init(const wstring& strDir, const string& strBaseUrl, const list<wstring>& lstOnlineImgFile);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
@@ -37,7 +37,7 @@ public:
 
     wstring getSingerImg(const wstring& strSingerName, UINT uIndex);
 
-	void getSingerImg(SList<wstring>& lstSingerImg) const;
+	void getSingerImg(SList<string>& lstSingerImg) const;
 
 	bool exportSingerImg(const wstring& strDstDir);
 };
