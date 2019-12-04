@@ -133,7 +133,7 @@ public:
     {
         return m_uDataSize;
     }
-    size_t sumSize() const
+    uint64_t sumSize() const
     {
         return m_uSumSize;
     }

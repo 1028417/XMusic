@@ -16,7 +16,7 @@ private:
     UINT m_uByteRate = 0;
 
 #if !__winvc
-    size_t m_uStreamPos = 0;
+    uint64_t m_uStreamPos = 0;
 #endif
 
     void *m_pXmscCodec = NULL;
@@ -47,11 +47,12 @@ public:
 #if !__winvc
     void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 
-    size_t streamPos() const
-    {
-        return m_uStreamPos;
-    }
-    size_t streamSize() const;
+    uint64_t streamSize() const;
+
+//    uint64_t streamPos() const
+//    {
+//        return m_uStreamPos;
+//    }
 
 #else
 	UINT checkFileDuration(const wstring& strFile, long long& nFileSize)
