@@ -379,7 +379,7 @@ bool MainWindow::event(QEvent *ev)
             UINT bufferValue = 0;
             if (XMediaLib::m_bOnlineMediaLib)
             {
-                bufferValue = m_app.getPlayMgr().mediaOpaque().streamSize()/1000;
+                bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().streamSize()/1000);
             }
             ui.progressBar->setValue(nProgress, bufferValue);
         }
@@ -1097,12 +1097,28 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
         {
-            if (ui.progressBar->maximum() > 0)
+            auto progressBar = ui.progressBar;
+            if (progressBar->maximum() > 0)
             {
-                UINT uPos = pos.x() * ui.progressBar->maximum() /ui.progressBar->width();
-                m_app.getPlayMgr().player().Seek(uPos);
+                UINT uSeekPos = pos.x() * progressBar->maximum() / progressBar->width();
+                if (progressBar->maxBuffer() > 0)
+                {
+                    if (uSeekPos > progressBar->value())
+                    {
+                        UINT uCutPos = pos.x() * progressBar->maxBuffer() / progressBar->width();
+                        if (uCutPos < progressBar->bufferValue())
+                        {
+                            m_app.getPlayMgr().mediaOpaque().cutData(uPos * 1000);
+                        }
 
-                ui.progressBar->setValue(uPos);
+                        progressBar->setValue(uSeekPos);
+                    }
+                }
+                else
+                {
+                    m_app.getPlayMgr().player().Seek(uSeekPos);
+                    progressBar->setValue(uSeekPos);
+                }
             }
         }
     }
