@@ -73,6 +73,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	break;
 	case ID_FIND:
 		arrSelPlayItem.front([&](auto& media) {
+			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
 			m_view.findMedia(media.GetPath(), false);
 		});
 
