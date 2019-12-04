@@ -156,11 +156,11 @@ void MainWindow::showLogo()
     fixWorkArea(*this);
     this->setVisible(true);
 
-    timerutil::async(100, [&](){
+    UINT uDelayTime = 100;
 #if !__android
-        mtutil::usleep(800);
+    uDelayTime += 800;
 #endif
-
+    timerutil::async(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
 
         auto labelLogoTip = ui.labelLogoTip;
@@ -805,17 +805,6 @@ void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
     {
         bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
         emit signal_playStoped(bOpenFail);
-
-        if (bOpenFail)
-        {
-            mtutil::usleep(1000);
-
-            m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-        }
-        else
-        {
-            m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-        }
     }
 }
 
@@ -861,14 +850,23 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     }
     else
     {
-        auto uPlaySeq = m_PlayingInfo.uPlaySeq;
-        __async(1000, [&, uPlaySeq](){
-            if (uPlaySeq == m_PlayingInfo.uPlaySeq)
+        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+    }
+
+    auto uPlaySeq = m_PlayingInfo.uPlaySeq;
+    __async(1000, [=](){
+        if (uPlaySeq == m_PlayingInfo.uPlaySeq)
+        {
+            if (bOpenFail)
+            {
+                m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+            }
+            else
             {
                 _updatePlayPauseButton(false);
             }
-        });
-    }
+        }
+    });
 }
 
 void MainWindow::_showAlbumName()
