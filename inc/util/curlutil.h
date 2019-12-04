@@ -85,7 +85,7 @@ private:
     mutex m_mtxDataLock;
     list<pair<byte_t*, size_t>> m_lstData;
     size_t m_uDataSize = 0;
-    size_t m_uSumSize = 0;
+    uint64_t m_uSumSize = 0;
 
 private:
     void _clear();
@@ -137,8 +137,17 @@ public:
     {
         return m_uSumSize;
     }
+    uint64_t readPos() const
+    {
+        return m_uSumSize - m_uDataSize;
+    }
 
     int getData(byte_t *pBuff, size_t buffSize);
+
+    int getData(TD_ByteBuffer& buff)
+    {
+        return getData(buff, buff.size());
+    }
 
     CByteBuffer getByteData()
     {
@@ -161,6 +170,8 @@ public:
     {
         return _getAllData(cbfData);
     }
+
+    void cutData(uint64_t uPos);
 
     void cancel();
 };

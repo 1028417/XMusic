@@ -54,6 +54,11 @@ public:
 //        return m_uStreamPos;
 //    }
 
+    void cutData(uint64_t uPos) const
+    {
+
+    }
+
 #else
 	UINT checkFileDuration(const wstring& strFile, long long& nFileSize)
 	{
