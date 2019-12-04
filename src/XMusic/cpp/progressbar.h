@@ -15,6 +15,24 @@ public:
     {
     }
 
+private:
+    QBrush m_brBackground;
+    QBrush m_brBuffer;
+    QBrush m_brForeground;
+
+    UINT m_maxBuffer = 0;
+    UINT m_bufferValue = 0;
+
+public:
+    UINT maxBuffer() const
+    {
+        return m_maxBuffer;
+    }
+    UINT bufferValue() const
+    {
+        return m_bufferValue;
+    }
+
     void setColor(const QColor& crBackground, const QColor& crBuffer, const QColor& crForeground)
     {
         m_brBackground.setColor(crBackground);
@@ -22,27 +40,19 @@ public:
         m_brForeground.setColor(crForeground);
     }
 
-    void setMaximum(int maxValue, int maxBuffer=-1)
+    void setMaximum(int maxValue, UINT maxBuffer=0)
     {
         m_maxBuffer = maxBuffer;
         QProgressBar::setMaximum(maxValue);
     }
 
-    void setValue(int value, int bufferValue=-1)
+    void setValue(int value, UINT bufferValue=0)
     {
         QProgressBar::setValue(value);
 
         m_bufferValue = bufferValue;
         update();
     }
-
-private:
-    QBrush m_brBackground;
-    QBrush m_brBuffer;
-    QBrush m_brForeground;
-
-    int m_maxBuffer = -1;
-    int m_bufferValue = -1;
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
