@@ -1109,9 +1109,10 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                         if (uCutPos < progressBar->bufferValue())
                         {
                             m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
-                        }
 
-                        progressBar->setValue(uSeekPos);
+                            m_app.getPlayMgr().player().Seekex(uSeekPos);
+                            progressBar->setValue(uSeekPos);
+                        }
                     }
                 }
                 else
