@@ -1108,7 +1108,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                         UINT uCutPos = pos.x() * progressBar->maxBuffer() / progressBar->width();
                         if (uCutPos < progressBar->bufferValue())
                         {
-                            m_app.getPlayMgr().mediaOpaque().cutData(uPos * 1000);
+                            m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
                         }
 
                         progressBar->setValue(uSeekPos);
