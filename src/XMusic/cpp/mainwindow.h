@@ -20,7 +20,7 @@ struct tagPlayingInfo
     wstring strTitle;
 
     int nDuration = -1;
-    int nStreamSize = -1;
+    UINT uStreamSize = 0;
 
     wstring strSinger;
     UINT uSingerID = 0;

@@ -250,15 +250,13 @@ void MainWindow::_init()
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
-    if (XMediaLib::m_bOnlineMediaLib)
-    {
-        connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
-            if (m_medialibDlg.isVisible())
-            {
-                m_medialibDlg.updateSingerImg();
-            }
-        });
-    }
+    //if (XMediaLib::m_bOnlineMediaLib)
+    connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
+        if (m_medialibDlg.isVisible())
+        {
+            m_medialibDlg.updateSingerImg();
+        }
+    });
 
     ui.wdgSingerImg->setVisible(false);
 
@@ -378,7 +376,7 @@ bool MainWindow::event(QEvent *ev)
         int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
         if (nProgress <= ui.progressBar->maximum())
         {
-            int bufferValue = -1;
+            UINT bufferValue = 0;
             if (XMediaLib::m_bOnlineMediaLib)
             {
                 bufferValue = m_app.getPlayMgr().mediaOpaque().streamSize()/1000;
@@ -776,13 +774,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.strTitle = PlayItem.GetTitle();
 
         PlayingInfo.nDuration = PlayItem.duration();
+
+        PlayingInfo.uStreamSize = 0;
         if (XMediaLib::m_bOnlineMediaLib)
         {
-            PlayingInfo.nStreamSize = int(PlayItem.fileSize()/1000);
-        }
-        else
-        {
-            PlayingInfo.nStreamSize = -1;
+            int nStreamSize = PlayItem.fileSize()/1000;
+            if (nStreamSize > 0)
+            {
+                PlayingInfo.uStreamSize = (UINT)nStreamSize;
+            }
         }
 
         PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
@@ -834,7 +834,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     _updatePlayPauseButton(true);
 
     ui.progressBar->setValue(0);
-    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.nStreamSize);
+    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
     QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
