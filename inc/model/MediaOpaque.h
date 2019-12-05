@@ -7,8 +7,6 @@ class __ModelExt CMediaOpaque : public CAudioOpaque
 public:
 	CMediaOpaque() {}
 
-    ~CMediaOpaque();
-
 private:
 	wstring m_strFile;
 
@@ -19,6 +17,7 @@ private:
     uint64_t m_uStreamPos = 0;
 #endif
 
+    bool m_bXmsc = false;
     void *m_pXmscCodec = NULL;
 
 private:
@@ -136,7 +135,7 @@ private:
 
 	wstring localFilePath() const override
 	{
-		if (m_pXmscCodec)
+        if (m_bXmsc)
 		{
 			return L"";
 		}
