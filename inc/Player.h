@@ -127,8 +127,8 @@ public:
 	
 	uint32_t GetDuration();
 	uint64_t GetClock();
+
 	void Seek(UINT uPos);
-	void Seekex(UINT uPos);
 
     void Pause();
 	void Resume();

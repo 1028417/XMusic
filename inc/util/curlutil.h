@@ -137,10 +137,10 @@ public:
     {
         return m_uSumSize;
     }
-    uint64_t readPos() const
-    {
-        return m_uSumSize - m_uDataSize;
-    }
+//    uint64_t readPos() const
+//    {
+//        return m_uSumSize - m_uDataSize;
+//    }
 
     int getData(byte_t *pBuff, size_t buffSize);
 

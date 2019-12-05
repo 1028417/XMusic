@@ -49,10 +49,10 @@ public:
 
     uint64_t streamSize() const;
 
-//    uint64_t streamPos() const
-//    {
-//        return m_uStreamPos;
-//    }
+    uint64_t streamPos() const
+    {
+        return m_uStreamPos;
+    }
 
     void cutData(uint64_t uPos) const;
 
