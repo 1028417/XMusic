@@ -373,6 +373,10 @@ bool MainWindow::event(QEvent *ev)
             }
         }
 
+//        UINT streamPos = m_app.getPlayMgr().mediaOpaque().streamPos()/1000;
+//        UINT pos = streamPos * ui.progressBar->maximum() / ui.progressBar->maxBuffer();
+//        ui.progressBar->setValue(pos);
+
         int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
         if (nProgress <= ui.progressBar->maximum())
         {
@@ -1098,28 +1102,25 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
         {
             auto progressBar = ui.progressBar;
-            if (progressBar->maximum() > 0)
+            UINT uSeekPos = pos.x() * progressBar->maximum() / progressBar->width();
+            if (progressBar->maxBuffer() > 0)
             {
-                UINT uSeekPos = pos.x() * progressBar->maximum() / progressBar->width();
-                if (progressBar->maxBuffer() > 0)
+                /*if (uSeekPos > progressBar->value())
                 {
-                    if (uSeekPos > progressBar->value())
+                    UINT uCutPos = pos.x() * progressBar->maxBuffer() / progressBar->width();
+                    if (uCutPos < progressBar->bufferValue())
                     {
-                        UINT uCutPos = pos.x() * progressBar->maxBuffer() / progressBar->width();
-                        if (uCutPos < progressBar->bufferValue())
-                        {
-                            m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
+                        m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
 
-                            m_app.getPlayMgr().player().Seekex(uSeekPos);
-                            progressBar->setValue(uSeekPos);
-                        }
+                        m_app.getPlayMgr().player().Seek(uSeekPos);
+                        progressBar->setValue(uSeekPos);
                     }
-                }
-                else
-                {
-                    m_app.getPlayMgr().player().Seek(uSeekPos);
-                    progressBar->setValue(uSeekPos);
-                }
+                }*/
+            }
+            else
+            {
+                m_app.getPlayMgr().player().Seek(uSeekPos);
+                progressBar->setValue(uSeekPos);
             }
         }
     }
