@@ -97,7 +97,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet){
+            m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet) {
                 tagMediaContext context(mediaSet);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);

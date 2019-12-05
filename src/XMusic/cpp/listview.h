@@ -10,14 +10,16 @@ protected:
     {
         tagLVRow(){}
 
-        tagLVRow(UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
-            : uRow(t_uRow)
+        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+            : uIdx(t_uIdx)
+            , uRow(t_uRow)
             , uCol(t_uCol)
             , bSelect(t_bSelect)
             , bFlash(t_bFlash)
         {
         }
 
+        UINT uIdx = 0;
         UINT uRow = 0;
         UINT uCol = 0;
 

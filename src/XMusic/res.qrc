@@ -28,5 +28,6 @@
         <file>img/btnFullScreen.png</file>
         <file>img/btnX.png</file>
         <file>upgrade.conf</file>
+        <file>img/btnAddplay.png</file>
     </qresource>
 </RCC>

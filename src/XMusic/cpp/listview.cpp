@@ -80,7 +80,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
         painter.setFont(this->font());
         painter.setPen(m_crText);
 
-        tagLVRow lvRow(uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        tagLVRow lvRow(uIdx, uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
             lvRow.rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
@@ -212,7 +212,7 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
 
     UINT cx_col = width() / getColumnCount();
     UINT uCol = UINT(x/cx_col);
-    lvRow = tagLVRow(uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+    lvRow = tagLVRow(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
 
     y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
     lvRow.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
