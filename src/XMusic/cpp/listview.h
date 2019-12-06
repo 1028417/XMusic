@@ -112,7 +112,7 @@ private:
 
     virtual size_t getRowCount() = 0;
 
-    void _onPaint(CPainter& painter, const QRect& rc) override;
+    void _onPaint(CPainter& painter, const QRect&) override;
 
     virtual void _onPaintRow(CPainter&, const tagLVRow&) = 0;
 
@@ -137,6 +137,8 @@ protected:
     }
 
     bool _hittest(int x, int y, tagLVRow& lvRow);
+
+    virtual void _onPaint(CPainter& painter, int cx, int cy);
 
     void _paintRow(CPainter&, const tagLVRow&, const tagRowContext&);
 

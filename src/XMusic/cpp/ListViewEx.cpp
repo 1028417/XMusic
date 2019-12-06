@@ -91,6 +91,19 @@ void CListViewEx::showPath(CPath& path)
     _onShowPath(path);
 }
 
+void CListViewEx::_onPaint(CPainter& painter, int cx, int cy)
+{
+    CListView::_onPaint(painter, cx, cy);
+
+    float fScrollPos = scrollPos();
+    size_t uPageRowCount = getPageRowCount();
+    auto uIdx = m_vecButton.size();
+    for (; uIdx < uPageRowCount; uIdx++)
+    {
+        m_vecButton.push_back(new CButton(this));
+    }
+}
+
 void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     if (m_pMediaset)

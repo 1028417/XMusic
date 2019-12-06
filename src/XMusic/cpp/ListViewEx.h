@@ -5,6 +5,8 @@
 
 #include "listview.h"
 
+#include "button.h"
+
 class CListViewEx : public CListView
 {
 protected:
@@ -56,6 +58,8 @@ private:
     CPath *m_pPath = NULL;
     TD_PathList m_paSubDirs;
     TD_XFileList m_paSubFiles;
+
+    vector<CButton*> m_vecButton;
 
 protected:
     CMediaSet* currentMediaSet() const
@@ -114,6 +118,8 @@ private:
     size_t getRowCount() override;
 
     virtual size_t _getRootRowCount() = 0;
+
+    void _onPaint(CPainter& painter, int cx, int cy) override;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 

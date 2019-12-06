@@ -10,8 +10,7 @@ class CButton : public CWidget<QPushButton>
     Q_OBJECT
 
 public:
-    CButton(QWidget *parent) :
-        CWidget(parent)
+    CButton(QWidget *parent) : CWidget(parent)
     {
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
     }
