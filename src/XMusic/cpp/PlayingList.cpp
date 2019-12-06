@@ -3,7 +3,9 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CXMusicApp& app) : m_app(app)
+CPlayingList::CPlayingList(class CXMusicApp& app)
+    : CListView(NULL)
+    , m_app(app)
 {
     this->startTimer(1000);
 }

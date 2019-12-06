@@ -93,8 +93,6 @@ void CListViewEx::showPath(CPath& path)
 
 void CListViewEx::_onPaint(CPainter& painter, int cx, int cy)
 {
-    CListView::_onPaint(painter, cx, cy);
-
     float fScrollPos = scrollPos();
     size_t uPageRowCount = getPageRowCount();
     auto uIdx = m_vecButton.size();
@@ -102,6 +100,8 @@ void CListViewEx::_onPaint(CPainter& painter, int cx, int cy)
     {
         m_vecButton.push_back(new CButton(this));
     }
+
+    CListView::_onPaint(painter, cx, cy);
 }
 
 void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)

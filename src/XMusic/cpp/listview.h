@@ -62,11 +62,11 @@ protected:
     };
 
 public:
-    CListView(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0
+    CListView(QWidget *parent, UINT uColumnCount=1, UINT uPageRowCount=0
             , const list<Qt::GestureType>& lstGestureType={})
         : CWidget(parent, lstGestureType)
-        , m_uPageRowCount(uPageRowCount)
         , m_uColumnCount(uColumnCount)
+        , m_uPageRowCount(uPageRowCount)
         , m_crSelectedBkg(0,0,0,5)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -77,8 +77,8 @@ public:
 private:
     QPixmap m_pmRightTip;
 
-    UINT m_uPageRowCount = 0;
     UINT m_uColumnCount = 1;
+    UINT m_uPageRowCount = 0;
 
     UINT m_uRowHeight = 0;
 

@@ -49,15 +49,16 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
     UINT uRowCount = getRowCount();
-    if (0 == uRowCount)
-    {
-        return;
-    }
 
     UINT uPageRowCount = getPageRowCount();
     if (0 == uPageRowCount)
     {
         uPageRowCount = uRowCount;
+    }
+
+    if (0 == uPageRowCount)
+    {
+        return;
     }
 
     m_uRowHeight = cy/uPageRowCount;

@@ -146,7 +146,7 @@ private:
 
     wstring GetPath() const override
     {
-        if (NULL == fileinfo.pParent)
+        if (fileinfo.pParent)
         {
             return m_strOuterDir;
         }
