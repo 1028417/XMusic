@@ -62,11 +62,8 @@ protected:
     };
 
 public:
-    CListView(QWidget *parent, UINT uColumnCount=1, UINT uPageRowCount=0
-            , const list<Qt::GestureType>& lstGestureType={})
+    CListView(QWidget *parent, const list<Qt::GestureType>& lstGestureType={})
         : CWidget(parent, lstGestureType)
-        , m_uColumnCount(uColumnCount)
-        , m_uPageRowCount(uPageRowCount)
         , m_crSelectedBkg(0,0,0,5)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -76,9 +73,6 @@ public:
 
 private:
     QPixmap m_pmRightTip;
-
-    UINT m_uColumnCount = 1;
-    UINT m_uPageRowCount = 0;
 
     UINT m_uRowHeight = 0;
 
@@ -107,7 +101,7 @@ protected:
 private:
     virtual size_t getColumnCount()
     {
-        return m_uColumnCount;
+        return 1;
     }
 
     virtual size_t getRowCount() = 0;
@@ -126,10 +120,7 @@ private:
     virtual void _onAutoScrollEnd() {}
 
 protected:
-    virtual size_t getPageRowCount()
-    {
-        return m_uPageRowCount;
-    }
+    virtual size_t getPageRowCount() = 0;
 
     bool isAutoScrolling() const
     {
@@ -166,11 +157,6 @@ protected:
     }
 
 public:
-    void setPageRowCount(UINT uPageRowCount)
-    {
-        m_uPageRowCount = uPageRowCount;
-    }
-
     float scrollPos() const
     {
         return m_fScrollPos;

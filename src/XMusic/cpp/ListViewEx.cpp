@@ -1,11 +1,6 @@
 
 #include "ListViewEx.h"
 
-CListViewEx::CListViewEx(QWidget *parent, UINT uColumnCount, UINT uPageRowCount)
-    : CListView(parent, uColumnCount, uPageRowCount)
-{
-}
-
 size_t CListViewEx::getRowCount()
 {
     if (m_pMediaset)
@@ -93,13 +88,20 @@ void CListViewEx::showPath(CPath& path)
 
 void CListViewEx::_onPaint(CPainter& painter, int cx, int cy)
 {
-    float fScrollPos = scrollPos();
     size_t uPageRowCount = getPageRowCount();
     auto uIdx = m_vecButton.size();
     for (; uIdx < uPageRowCount; uIdx++)
     {
         m_vecButton.push_back(new CButton(this));
     }
+
+    for (int nCount = m_vecButton.size(); nCount > uPageRowCount; nCount--)
+    {
+        delete m_vecButton.back();
+        m_vecButton.pop_back();
+    }
+
+    //float fScrollPos = scrollPos();
 
     CListView::_onPaint(painter, cx, cy);
 }

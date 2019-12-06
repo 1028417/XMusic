@@ -48,21 +48,16 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
-    UINT uRowCount = getRowCount();
-
     UINT uPageRowCount = getPageRowCount();
     if (0 == uPageRowCount)
     {
-        uPageRowCount = uRowCount;
-    }
-
-    if (0 == uPageRowCount)
-    {
         return;
+        //uPageRowCount = uRowCount;
     }
 
     m_uRowHeight = cy/uPageRowCount;
 
+    UINT uRowCount = getRowCount();
     if (uRowCount > uPageRowCount)
     {
         m_uMaxScrollPos = uRowCount - uPageRowCount;

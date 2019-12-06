@@ -12,21 +12,21 @@ CPlayingList::CPlayingList(class CXMusicApp& app)
 
 size_t CPlayingList::getPageRowCount()
 {
-    size_t uRet = CListView::getPageRowCount();
+    size_t uPageRowCount = m_uPageRowCount;
     size_t uRowCount = getRowCount();
     if (uRowCount >= 7)
     {
-        if (uRowCount < uRet)
+        if (uRowCount < uPageRowCount)
         {
-            uRet = uRowCount;
+            uPageRowCount = uRowCount;
         }
     }
     else
     {
-        uRet = 7;
+        uPageRowCount = 7;
     }
 
-    return uRet;
+    return uPageRowCount;
 }
 
 void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)

@@ -48,7 +48,9 @@ protected:
     };
 
 public:
-    CListViewEx(QWidget *parent=NULL, UINT uColumnCount = 1, UINT uPageRowCount=0);
+    CListViewEx(QWidget *parent) : CListView(parent)
+    {
+    }
 
 private:
     CMediaSet *m_pMediaset = NULL;

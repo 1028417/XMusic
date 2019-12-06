@@ -17,6 +17,8 @@ public:
 private:
     class CXMusicApp& m_app;
 
+    UINT m_uPageRowCount = 0;
+
     ArrList<tagPlayingItem> m_alPlayingItems;
 
     UINT m_uPlayingItem = 0;
@@ -45,13 +47,18 @@ public:
 
     void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
 
+    void setPageRowCount(UINT uPageRowCount)
+    {
+        m_uPageRowCount = uPageRowCount;
+    }
+
 private:
+    UINT getPageRowCount() override;
+
     size_t getRowCount() override
     {
         return m_alPlayingItems.size();
     }
-
-    size_t getPageRowCount() override;
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
