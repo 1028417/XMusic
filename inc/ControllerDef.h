@@ -5,16 +5,21 @@
 enum class E_PlayCtrl
 {
     PC_Null = 0,
+
     PC_Pause,
     PC_Play,
     PC_PlayPrev,
     PC_PlayNext,
     PC_AutoPlayNext,
+
     PC_PlayIndex,
-    PC_Demand,
-    PC_AssignMedias,
-    PC_AppendMedia,
+
+    PC_Assign,
+    PC_Append,
     PC_AppendPlay,
+
+    PC_Demand,
+
     PC_Quit
 };
 
@@ -33,22 +38,22 @@ struct tagPlayCtrl
         uPlayIdx = uIdx;
     }
 
+    tagPlayCtrl(IMedia& media, bool bInsertPlay)
+    {
+        ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
+        arrPlayMedias.assign(media.GetPath());
+    }
+    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias)
+    {
+        ePlayCtrl = E_PlayCtrl::PC_Assign;
+        arrPlayMedias.assign(t_arrPlayMedias);
+    }
+
     tagPlayCtrl(E_DemandMode eMode, E_LanguageType eLanguage = E_LanguageType::LT_None)
     {
         ePlayCtrl = E_PlayCtrl::PC_Demand;
         eDemandMode = eMode;
         eDemandLanguage = eLanguage;
-    }
-
-    tagPlayCtrl(IMedia& media, bool bInsertPlay)
-    {
-        ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_AppendMedia;
-        arrPlayMedias.assign(media.GetPath());
-    }
-    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias)
-    {
-        ePlayCtrl = E_PlayCtrl::PC_AssignMedias;
-        arrPlayMedias.assign(t_arrPlayMedias);
     }
 
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
