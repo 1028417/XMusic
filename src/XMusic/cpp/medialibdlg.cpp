@@ -512,6 +512,8 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
            context.pixmap = &m_pmFile;
 
            context.strText = MediaRes.GetTitle();
+
+           _showButton(context.lvRow);
         }
     }
 }
@@ -633,6 +635,10 @@ void CMedialibView::_showButton(const tagLVRow& lvRow)
         connect(pButton, &CButton::signal_clicked, [&, uRow](){
             currentSubMedias().get(uRow, [&](CMedia& media){
                 m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+            });
+
+            currentSubFiles().get(uRow, [&](XFile& media){
+                m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)media, false));
             });
         });
     }
