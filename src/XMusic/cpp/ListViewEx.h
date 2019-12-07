@@ -61,9 +61,11 @@ private:
     TD_PathList m_paSubDirs;
     TD_XFileList m_paSubFiles;
 
-    vector<CButton*> m_vecButton;
+    map<UINT, CButton*> m_mapButton;
 
 protected:
+    virtual bool event(QEvent *ev) override;
+
     CMediaSet* currentMediaSet() const
     {
         return m_pMediaset;
@@ -121,9 +123,9 @@ private:
 
     virtual size_t _getRootRowCount() = 0;
 
-    void _onPaint(CPainter& painter, int cx, int cy) override;
-
     void _onPaintRow(CPainter&, const tagLVRow&) override;
+
+    void _showButton(const tagLVRow& lvRow);
 
     virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) {}
@@ -161,4 +163,6 @@ public:
     }
 
     bool upward();
+
+    void update();
 };

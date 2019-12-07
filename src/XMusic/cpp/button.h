@@ -30,7 +30,6 @@ private:
         else if (E_MouseEventType::MET_Release == type)
         {
             setOpacity(0.5);
-
             timerutil::async(300, [&](){
                 setOpacity(1);
             });

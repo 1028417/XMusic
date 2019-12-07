@@ -17,6 +17,40 @@ size_t CListViewEx::getRowCount()
     }
 }
 
+void CListViewEx::update()
+{
+    CListView::update();
+
+    size_t uPageRowCount = getPageRowCount();
+
+    for (auto itr = m_mapButton.begin(); itr != m_mapButton.end(); )
+    {
+        if (itr->first >= uPageRowCount)
+        {
+            delete itr->second;
+            itr = m_mapButton.erase(itr);
+        }
+        else
+        {
+            itr->second->setVisible(false);
+
+            ++itr;
+        }
+    }
+}
+
+bool CListViewEx::event(QEvent *ev)
+{
+    bool bRet = CListView::event(ev);
+
+    if (ev->type() == QEvent::Resize)
+    {
+        update();
+    }
+
+    return bRet;
+}
+
 void CListViewEx::showRoot()
 {
     _clear();
@@ -86,24 +120,21 @@ void CListViewEx::showPath(CPath& path)
     _onShowPath(path);
 }
 
-void CListViewEx::_onPaint(CPainter& painter, int cx, int cy)
+void CListViewEx::_showButton(const tagLVRow& lvRow)
 {
-    size_t uPageRowCount = getPageRowCount();
-    auto uIdx = m_vecButton.size();
-    for (; uIdx < uPageRowCount; uIdx++)
+    CButton*& pButton = m_mapButton[lvRow.uIdx];
+    if (NULL == pButton)
     {
-        m_vecButton.push_back(new CButton(this));
+        pButton = new CButton(this);
+        pButton->setStyleSheet("border-image: url(:/img/btnAddplay.png);");
     }
 
-    for (int nCount = m_vecButton.size(); nCount > uPageRowCount; nCount--)
-    {
-        delete m_vecButton.back();
-        m_vecButton.pop_back();
-    }
-
-    //float fScrollPos = scrollPos();
-
-    CListView::_onPaint(painter, cx, cy);
+    auto height = lvRow.rc.height();
+    auto margin = height*20/100;
+    QRect rcPos(lvRow.rc.right()-height+margin, lvRow.rc.y()+margin
+                , height-margin*2, height-margin*2);
+    pButton->setGeometry(rcPos);
+    pButton->setVisible(true);
 }
 
 void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
@@ -124,6 +155,9 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
                 tagMediaContext context(media);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);
+
+
+                _showButton(lvRow);
             });
         }
     }
