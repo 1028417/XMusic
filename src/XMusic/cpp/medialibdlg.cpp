@@ -538,7 +538,7 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, const QMouseEvent& me, 
         }
     }
 
-    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media.GetPath()));
+    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, true));
 }
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
@@ -632,7 +632,7 @@ void CMedialibView::_showButton(const tagLVRow& lvRow)
         auto uRow = lvRow.uRow;
         connect(pButton, &CButton::signal_clicked, [&, uRow](){
             currentSubMedias().get(uRow, [&](CMedia& media){
-                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media.GetPath(), true));
+                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
             });
         });
     }
