@@ -386,6 +386,11 @@ public:
         TWidget::setFont(font);
     }
 
+    virtual void update()
+    {
+        TWidget::update();
+    }
+
 protected:
     virtual bool event(QEvent *ev) override;
 

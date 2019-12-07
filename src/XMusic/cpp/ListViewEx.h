@@ -12,35 +12,44 @@ class CListViewEx : public CListView
 protected:
     struct tagMediaContext : public tagRowContext
     {
+        const tagLVRow& lvRow;
+
         CMediaSet *pMediaSet = NULL;
         CMedia *pMedia = NULL;
 
         CPath *pDir = NULL;
         XFile *pFile = NULL;
 
-        tagMediaContext() {}
+        tagMediaContext(const tagLVRow& t_lvRow)
+            : lvRow(t_lvRow)
+        {
+        }
 
-        tagMediaContext(CMediaSet& MediaSet) :
+        tagMediaContext(const tagLVRow& t_lvRow, CMediaSet& MediaSet) :
             tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
+            , lvRow(t_lvRow)
             , pMediaSet(&MediaSet)
         {
             strText = MediaSet.m_strName;
         }
-        tagMediaContext(CMedia& media) :
+        tagMediaContext(const tagLVRow& t_lvRow, CMedia& media) :
             tagRowContext(E_RowStyle::IS_BottomLine)
+            , lvRow(t_lvRow)
             , pMedia(&media)
         {
             strText = media.GetTitle();
         }
 
-        tagMediaContext(CPath& dir) :
+        tagMediaContext(const tagLVRow& t_lvRow, CPath& dir) :
             tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
+            , lvRow(t_lvRow)
             , pDir(&dir)
         {
             strText = dir.name();
         }
-        tagMediaContext(XFile& file) :
+        tagMediaContext(const tagLVRow& t_lvRow, XFile& file) :
             tagRowContext(E_RowStyle::IS_BottomLine)
+            , lvRow(t_lvRow)
             , pFile(&file)
         {
             strText = file.name();
@@ -61,11 +70,7 @@ private:
     TD_PathList m_paSubDirs;
     TD_XFileList m_paSubFiles;
 
-    map<UINT, CButton*> m_mapButton;
-
 protected:
-    virtual bool event(QEvent *ev) override;
-
     CMediaSet* currentMediaSet() const
     {
         return m_pMediaset;
@@ -125,10 +130,8 @@ private:
 
     void _onPaintRow(CPainter&, const tagLVRow&) override;
 
-    void _showButton(const tagLVRow& lvRow);
-
     virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
-    virtual void _genMediaContext(tagMediaContext&) {}
+    virtual void _genMediaContext(tagMediaContext&) = 0;
 
     void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
     virtual void _onRowClick(const tagLVRow&, const QMouseEvent&, CMedia&){}
@@ -163,6 +166,4 @@ public:
     }
 
     bool upward();
-
-    void update();
 };

@@ -475,6 +475,8 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 }
             }
         }
+
+        _showButton(context.lvRow);
     }
     else if (context.pDir || context.pFile)
     {
@@ -536,7 +538,7 @@ void CMedialibView::_onMediaClick(const tagLVRow& lvRow, const QMouseEvent& me, 
         }
     }
 
-    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(SArray<wstring>(media.GetPath())));
+    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media.GetPath()));
 }
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
@@ -582,4 +584,63 @@ void CMedialibView::updateSingerImg()
             update();
         }
     }
+}
+
+void CMedialibView::update()
+{
+    CListViewEx::update();
+
+    size_t uPageRowCount = getPageRowCount();
+
+    for (auto itr = m_mapButton.begin(); itr != m_mapButton.end(); )
+    {
+        if (itr->first >= uPageRowCount)
+        {
+            delete itr->second;
+            itr = m_mapButton.erase(itr);
+        }
+        else
+        {
+            itr->second->setVisible(false);
+
+            ++itr;
+        }
+    }
+}
+
+bool CMedialibView::event(QEvent *ev)
+{
+    bool bRet = CListView::event(ev);
+
+    if (ev->type() == QEvent::Resize)
+    {
+        update();
+    }
+
+    return bRet;
+}
+
+void CMedialibView::_showButton(const tagLVRow& lvRow)
+{
+    CButton*& pButton = m_mapButton[lvRow.uIdx];
+    if (NULL == pButton)
+    {
+        pButton = new CButton(this);
+
+        pButton->setStyleSheet("border-image: url(:/img/btnAddplay.png);");
+
+        auto uRow = lvRow.uRow;
+        connect(pButton, &CButton::signal_clicked, [&, uRow](){
+            currentSubMedias().get(uRow, [&](CMedia& media){
+                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media.GetPath(), true));
+            });
+        });
+    }
+
+    auto size = lvRow.rc.height();
+    auto margin = size*20/100;
+    size -= margin*2;
+    QRect rcPos(lvRow.rc.right()-size-margin, lvRow.rc.y()+margin, size, size);
+    pButton->setGeometry(rcPos);
+    pButton->setVisible(true);
 }

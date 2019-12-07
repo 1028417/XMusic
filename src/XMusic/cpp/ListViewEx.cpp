@@ -17,40 +17,6 @@ size_t CListViewEx::getRowCount()
     }
 }
 
-void CListViewEx::update()
-{
-    CListView::update();
-
-    size_t uPageRowCount = getPageRowCount();
-
-    for (auto itr = m_mapButton.begin(); itr != m_mapButton.end(); )
-    {
-        if (itr->first >= uPageRowCount)
-        {
-            delete itr->second;
-            itr = m_mapButton.erase(itr);
-        }
-        else
-        {
-            itr->second->setVisible(false);
-
-            ++itr;
-        }
-    }
-}
-
-bool CListViewEx::event(QEvent *ev)
-{
-    bool bRet = CListView::event(ev);
-
-    if (ev->type() == QEvent::Resize)
-    {
-        update();
-    }
-
-    return bRet;
-}
-
 void CListViewEx::showRoot()
 {
     _clear();
@@ -120,23 +86,6 @@ void CListViewEx::showPath(CPath& path)
     _onShowPath(path);
 }
 
-void CListViewEx::_showButton(const tagLVRow& lvRow)
-{
-    CButton*& pButton = m_mapButton[lvRow.uIdx];
-    if (NULL == pButton)
-    {
-        pButton = new CButton(this);
-        pButton->setStyleSheet("border-image: url(:/img/btnAddplay.png);");
-    }
-
-    auto height = lvRow.rc.height();
-    auto margin = height*20/100;
-    QRect rcPos(lvRow.rc.right()-height+margin, lvRow.rc.y()+margin
-                , height-margin*2, height-margin*2);
-    pButton->setGeometry(rcPos);
-    pButton->setVisible(true);
-}
-
 void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
 {
     if (m_pMediaset)
@@ -144,7 +93,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
         if (m_lstSubSets)
         {
             m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet) {
-                tagMediaContext context(mediaSet);
+                tagMediaContext context(lvRow, mediaSet);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);
             });
@@ -152,12 +101,9 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(lvRow.uRow, [&](CMedia& media) {
-                tagMediaContext context(media);
+                tagMediaContext context(lvRow, media);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);
-
-
-                _showButton(lvRow);
             });
         }
     }
@@ -166,7 +112,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
         if (lvRow.uRow >= m_paSubDirs.size())
         {
             m_paSubFiles.get(lvRow.uRow-m_paSubDirs.size(), [&](XFile& subFile) {
-                tagMediaContext context(subFile);
+                tagMediaContext context(lvRow, subFile);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);
             });
@@ -174,7 +120,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
         else
         {
             m_paSubDirs.get(lvRow.uRow, [&](CPath& subPath) {
-                tagMediaContext context(subPath);
+                tagMediaContext context(lvRow, subPath);
                 _genMediaContext(context);
                 _paintRow(painter, lvRow, context);
             });
@@ -182,7 +128,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
     else
     {
-        tagMediaContext context;
+        tagMediaContext context(lvRow);
         if (_genRootRowContext(lvRow, context))
         {
             _paintRow(painter, lvRow, context);
@@ -228,7 +174,7 @@ void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
     }
     else
     {
-        tagMediaContext context;
+        tagMediaContext context(lvRow);
         if (_genRootRowContext(lvRow, context))
         {
             if (context.pMediaSet)

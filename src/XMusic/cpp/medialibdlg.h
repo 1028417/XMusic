@@ -42,6 +42,8 @@ private:
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
+    map<UINT, CButton*> m_mapButton;
+
 signals:
     void signal_update();
 
@@ -56,6 +58,8 @@ public:
 
     void updateSingerImg();
 
+    void update() override;
+
 private:
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet& MediaSet) override;
@@ -69,6 +73,10 @@ private:
 
     bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
+
+    bool event(QEvent *ev) override;
+
+    void _showButton(const tagLVRow& lvRow);
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 
