@@ -12,8 +12,9 @@ enum class E_PlayCtrl
     PC_AutoPlayNext,
     PC_PlayIndex,
     PC_Demand,
-    PC_PlayMedias,
-    PC_AppendMedias,
+    PC_AssignMedias,
+    PC_AppendMedia,
+    PC_AppendPlay,
     PC_Quit
 };
 
@@ -39,14 +40,14 @@ struct tagPlayCtrl
         eDemandLanguage = eLanguage;
     }
 
-    tagPlayCtrl(const wstring& strPath, bool bAppend = false)
+    tagPlayCtrl(IMedia& media, bool bInsertPlay)
     {
-        ePlayCtrl = bAppend ? E_PlayCtrl::PC_AppendMedias : E_PlayCtrl::PC_PlayMedias;
-        arrPlayMedias.assign(strPath);
+        ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_AppendMedia;
+        arrPlayMedias.assign(media.GetPath());
     }
-    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias, bool bAppend = false)
+    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias)
     {
-        ePlayCtrl = bAppend ? E_PlayCtrl::PC_AppendMedias : E_PlayCtrl::PC_PlayMedias;
+        ePlayCtrl = E_PlayCtrl::PC_AssignMedias;
         arrPlayMedias.assign(t_arrPlayMedias);
     }
 
