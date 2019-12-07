@@ -518,7 +518,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-void CMedialibView::_onMediaClick(const tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
+void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
     flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);

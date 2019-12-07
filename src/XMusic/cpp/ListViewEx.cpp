@@ -86,7 +86,7 @@ void CListViewEx::showPath(CPath& path)
     _onShowPath(path);
 }
 
-void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
+void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     if (m_pMediaset)
     {
@@ -136,7 +136,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
 }
 
-void CListViewEx::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
+void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
 {
     UINT uRow = lvRow.uRow;
 

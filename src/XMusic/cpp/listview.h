@@ -108,10 +108,10 @@ private:
 
     void _onPaint(CPainter& painter, const QRect&) override;
 
-    virtual void _onPaintRow(CPainter&, const tagLVRow&) = 0;
+    virtual void _onPaintRow(CPainter&, tagLVRow&) = 0;
 
-    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&) {}
-    virtual void _onRowDblClick(const tagLVRow&, const QMouseEvent&) {}
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&) {}
+    virtual void _onRowDblClick(tagLVRow&, const QMouseEvent&) {}
 
     bool _scroll(int dy);
     void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);

@@ -12,7 +12,7 @@ class CListViewEx : public CListView
 protected:
     struct tagMediaContext : public tagRowContext
     {
-        const tagLVRow& lvRow;
+        tagLVRow& lvRow;
 
         CMediaSet *pMediaSet = NULL;
         CMedia *pMedia = NULL;
@@ -20,19 +20,19 @@ protected:
         CPath *pDir = NULL;
         XFile *pFile = NULL;
 
-        tagMediaContext(const tagLVRow& t_lvRow)
+        tagMediaContext(tagLVRow& t_lvRow)
             : lvRow(t_lvRow)
         {
         }
 
-        tagMediaContext(const tagLVRow& t_lvRow, CMediaSet& MediaSet) :
+        tagMediaContext(tagLVRow& t_lvRow, CMediaSet& MediaSet) :
             tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
             , lvRow(t_lvRow)
             , pMediaSet(&MediaSet)
         {
             strText = MediaSet.m_strName;
         }
-        tagMediaContext(const tagLVRow& t_lvRow, CMedia& media) :
+        tagMediaContext(tagLVRow& t_lvRow, CMedia& media) :
             tagRowContext(E_RowStyle::IS_BottomLine)
             , lvRow(t_lvRow)
             , pMedia(&media)
@@ -40,14 +40,14 @@ protected:
             strText = media.GetTitle();
         }
 
-        tagMediaContext(const tagLVRow& t_lvRow, CPath& dir) :
+        tagMediaContext(tagLVRow& t_lvRow, CPath& dir) :
             tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
             , lvRow(t_lvRow)
             , pDir(&dir)
         {
             strText = dir.name();
         }
-        tagMediaContext(const tagLVRow& t_lvRow, XFile& file) :
+        tagMediaContext(tagLVRow& t_lvRow, XFile& file) :
             tagRowContext(E_RowStyle::IS_BottomLine)
             , lvRow(t_lvRow)
             , pFile(&file)
@@ -128,14 +128,14 @@ private:
 
     virtual size_t _getRootRowCount() = 0;
 
-    void _onPaintRow(CPainter&, const tagLVRow&) override;
+    void _onPaintRow(CPainter&, tagLVRow&) override;
 
     virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) = 0;
 
-    void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
-    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&, CMedia&){}
-    virtual void _onRowClick(const tagLVRow&, const QMouseEvent&, CPath&){}
+    void _onRowClick(tagLVRow&, const QMouseEvent&) override;
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMedia&){}
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CPath&){}
 
     inline void* _current() const
     {

@@ -176,7 +176,7 @@ size_t CAddBkgView::getRowCount()
     return m_paImgDirs.size();
 }
 
-void CAddBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
+void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     cauto rc = lvRow.rc;
     cauto uRow = lvRow.uRow;
@@ -210,7 +210,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     }
 }
 
-void CAddBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent&)
+void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
 {
     if (m_pImgDir)
     {

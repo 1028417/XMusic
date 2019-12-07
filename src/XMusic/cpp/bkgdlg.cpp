@@ -46,7 +46,7 @@ size_t CBkgView::getRowCount()
     return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
-void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
+void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     size_t uColumnCount = getColumnCount();
 
@@ -119,7 +119,7 @@ void CBkgView::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
     painter.drawFrame(1, rc, 255,255,255,128);
 }
 
-void CBkgView::_onRowClick(const tagLVRow& lvRow, const QMouseEvent& me)
+void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
 {
     size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 

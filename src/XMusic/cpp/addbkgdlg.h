@@ -70,9 +70,9 @@ private:
 
     size_t getRowCount() override;
 
-    void _onPaintRow(CPainter&, const tagLVRow&) override;
+    void _onPaintRow(CPainter&, tagLVRow&) override;
 
-    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent&) override;
+    void _onRowClick(tagLVRow& lvRow, const QMouseEvent&) override;
 
 public:
     bool isInRoot() const

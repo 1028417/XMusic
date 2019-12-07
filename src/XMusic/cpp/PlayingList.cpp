@@ -29,7 +29,7 @@ size_t CPlayingList::getPageRowCount()
     return uPageRowCount;
 }
 
-void CPlayingList::_onPaintRow(CPainter& painter, const tagLVRow& lvRow)
+void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     int cy = this->rect().bottom();
 
@@ -139,7 +139,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_onRowDblClick(const tagLVRow& lvRow, const QMouseEvent&)
+void CPlayingList::_onRowDblClick(tagLVRow& lvRow, const QMouseEvent&)
 {
     //_updateActive();
 

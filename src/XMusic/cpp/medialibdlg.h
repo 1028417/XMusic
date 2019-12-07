@@ -83,14 +83,14 @@ private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaDir&, WString& strTitle);
 
-    void _onMediaClick(const tagLVRow&, const QMouseEvent&, IMedia&);
+    void _onMediaClick(tagLVRow&, const QMouseEvent&, IMedia&);
 
-    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent& me, CMedia& media) override
+    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMedia& media) override
     {
         _onMediaClick(lvRow, me, media);
     }
 
-    void _onRowClick(const tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override
+    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override
     {
         _onMediaClick(lvRow, me, (CMediaRes&)path);
     }

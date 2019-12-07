@@ -26,9 +26,9 @@ private:
 
     size_t getRowCount() override;
 
-    void _onPaintRow(CPainter&, const tagLVRow&) override;
+    void _onPaintRow(CPainter&, tagLVRow&) override;
 
-    void _onRowClick(const tagLVRow&, const QMouseEvent&) override;
+    void _onRowClick(tagLVRow&, const QMouseEvent&) override;
 
 public:
     inline size_t margin()
