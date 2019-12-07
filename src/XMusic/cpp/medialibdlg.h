@@ -76,7 +76,7 @@ private:
 
     bool event(QEvent *ev) override;
 
-    void _showButton(const tagLVRow& lvRow);
+    void _showButton(tagLVRow& lvRow);
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 

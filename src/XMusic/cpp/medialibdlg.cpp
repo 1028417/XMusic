@@ -622,7 +622,7 @@ bool CMedialibView::event(QEvent *ev)
     return bRet;
 }
 
-void CMedialibView::_showButton(const tagLVRow& lvRow)
+void CMedialibView::_showButton(tagLVRow& lvRow)
 {
     CButton*& pButton = m_mapButton[lvRow.uIdx];
     if (NULL == pButton)
@@ -643,10 +643,14 @@ void CMedialibView::_showButton(const tagLVRow& lvRow)
         });
     }
 
-    auto size = lvRow.rc.height();
-    auto margin = size*20/100;
-    size -= margin*2;
-    QRect rcPos(lvRow.rc.right()-size-margin, lvRow.rc.y()+margin, size, size);
+    auto& rc = lvRow.rc;
+
+    auto height = rc.height();
+    auto margin = height*20/100;
+    int x = rc.right()-height+margin;
+    QRect rcPos(x, rc.y()+margin, height-margin*2, height-margin*2);
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
+
+    rc.setRight(x - margin);
 }
