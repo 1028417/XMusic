@@ -102,7 +102,7 @@ bool CXController::start()
                     (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
 
                     break;
-                case E_PlayCtrl::PC_AssignMedias:
+                case E_PlayCtrl::PC_Assign:
                     (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
 
                     break;
@@ -110,7 +110,7 @@ bool CXController::start()
                     (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, true);
 
                     break;
-                case E_PlayCtrl::PC_AppendMedia:
+                case E_PlayCtrl::PC_Append:
                     (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, false);
 
                     break;
