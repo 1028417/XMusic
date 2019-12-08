@@ -46,7 +46,7 @@ static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 	sprintf_s(pszExceptionInfo, "ExceptionCode=%u, ExceptionFlags=%u, ExceptionAddress=%d, NumberParameters=%u"
 		, exceptionRecord.ExceptionCode, exceptionRecord.ExceptionFlags, (int)exceptionRecord.ExceptionAddress, exceptionRecord.NumberParameters);
 	
-	wstring strDumpFile = tmutil::formatTime64(L"pc_crash_%Y%m%d_%H%M%S.dmp");
+	wstring strDumpFile = fsutil::workDir() + tmutil::formatTime64(L"\\pc_crash_%Y%m%d_%H%M%S.dmp");
 	CreateMiniDump(pExceptionInfo, strDumpFile);
 	
 	exit(0);
@@ -88,7 +88,8 @@ void InitMinDump()
 	DisableSetUnhandledExceptionFilter();
 }
 
-void CreateDumpFile(LPCSTR lpstrDumpFilePathName, EXCEPTION_POINTERS *pException)
+
+/*void CreateDumpFile(LPCSTR lpstrDumpFilePathName, EXCEPTION_POINTERS *pException)
 {
 	// 创建Dump文件
 	HANDLE hDumpFile = CreateFileA(lpstrDumpFilePathName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -105,23 +106,7 @@ void CreateDumpFile(LPCSTR lpstrDumpFilePathName, EXCEPTION_POINTERS *pException
 	CloseHandle(hDumpFile);
 }
 
-LONG WINAPI UnhandledExceptionFilterEx(struct _EXCEPTION_POINTERS *pException)
-{
-	char szMbsFile[MAX_PATH] = { 0 };
-	::GetModuleFileNameA(NULL, szMbsFile, MAX_PATH);	
-	char* pFind = strrchr(szMbsFile, '\\');
-	if (pFind)
-	{
-		*(pFind + 1) = 0;
-		strcat_s(szMbsFile, "CrashDumpFile.dmp");
-		CreateDumpFile(szMbsFile, pException);
-	}
-
-	FatalAppExitA(-1, "Fatal Error");
-	return EXCEPTION_CONTINUE_SEARCH;
-}
-
-LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(LPTOP_LEVEL_EXCEPTION_FILTER)
+/*LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(LPTOP_LEVEL_EXCEPTION_FILTER)
 {
 	return NULL;
 }
@@ -151,8 +136,24 @@ BOOL PreventSetUnhandledExceptionFilter()
 	return bRet;
 }
 
+LONG WINAPI UnhandledExceptionFilterEx(struct _EXCEPTION_POINTERS *pException)
+{
+	char szMbsFile[MAX_PATH] = { 0 };
+	::GetModuleFileNameA(NULL, szMbsFile, MAX_PATH);
+	char* pFind = strrchr(szMbsFile, '\\');
+	if (pFind)
+	{
+		*(pFind + 1) = 0;
+		strcat_s(szMbsFile, "CrashDumpFile.dmp");
+		CreateDumpFile(szMbsFile, pException);
+	}
+
+	FatalAppExitA(-1, "Fatal Error");
+	return EXCEPTION_CONTINUE_SEARCH;
+}
+
 void RunCrashHandler()
 {
 	SetUnhandledExceptionFilter(UnhandledExceptionFilterEx);
 	PreventSetUnhandledExceptionFilter();
-}
+}*/

@@ -8,8 +8,8 @@ class CPlayerApp : public CMainApp
 {
 public:
 	CPlayerApp()
-		: m_controller(m_view, m_model)
-		, m_view(genView(m_controller, m_model))
+		: m_view(genView(m_controller, m_model))
+		, m_controller(m_view, m_model)
 		, m_model(m_view.getModelObserver(), m_controller.getOption())
 	{
 		extern void InitMinDump();
@@ -27,10 +27,10 @@ public:
 	}
 
 public:
-	CController m_controller;
-	
 	IPlayerView& m_view;
 
+	CController m_controller;
+	
 	CModel m_model;
 };
 CPlayerApp theApp;
