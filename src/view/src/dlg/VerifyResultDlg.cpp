@@ -137,7 +137,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 	__Ensure(pDir);
 
 	TD_MediaList paInvalidMedia = m_VerifyResult.paInvalidMedia.filter([](CMedia& media) {
-		return media.duration() > 0;
+		return media.duration() <= 0;
 	});
 
 	map<CMedia*, wstring> mapUpdateMedias;
