@@ -334,14 +334,14 @@ void CPlayerView::_addInMedia()
 		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 		{
 			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
-				+ L"\n大小：" + MediaResInfo.strFileSize + L"字节\n时长："
+				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
 				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-				+ L"\n大小：" + SearchMediaInfo.GetFileSize() + L"字节\n时长："
+				+ L"\n大小: " + SearchMediaInfo.GetFileSize() + L"字节\n时长: "
 				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-				+ L"\n目录：" + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
-				+ L"\n\n关联：";
+				+ L"\n目录: " + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+				+ L"\n\n关联: ";
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
 				strText.append(L"\n" + media.m_pParent->GetLogicPath());

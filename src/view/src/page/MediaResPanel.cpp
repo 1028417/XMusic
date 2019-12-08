@@ -413,7 +413,7 @@ BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
 	
 	if (NULL == pMediaRes)
 	{
-		CMainApp::showMsg(L"未定位到曲目：\n\n\t" + media.GetPath(), &wnd);
+		CMainApp::showMsg(L"未定位到曲目: \n\n\t" + media.GetPath(), &wnd);
 		return FALSE;
 	}
 

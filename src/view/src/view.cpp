@@ -316,7 +316,7 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 			return true;
 		});
 
-		ProgressDlg.SetStatusText((L"成功导出文件：" + to_wstring(uRet)).c_str());
+		ProgressDlg.SetStatusText((L"成功导出文件: " + to_wstring(uRet)).c_str());
 	};
 
 	CProgressDlg ProgressDlg(cb);

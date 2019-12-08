@@ -277,7 +277,7 @@ void CFindDlg::OnBnClickedBtnVerify()
 	m_view.verifyMedia(m_MediaMixer.getMedias(), this, [&](const tagVerifyResult& VerifyResult) {
 		bool bFlag = false;
 
-		// 策略：先删
+		// 先删策略
 		if (VerifyResult.paRemoveMedia)
 		{
 			bFlag = true;

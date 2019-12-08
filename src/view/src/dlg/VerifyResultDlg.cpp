@@ -151,13 +151,13 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 		{
 			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
-				+ L"\n目录：" + fsutil::GetParentDir(MediaResInfo.strPath)
-				+ L"\n大小：" + MediaResInfo.strFileSize + L"字节\n时长："
+				+ L"\n目录: " + fsutil::GetParentDir(MediaResInfo.strPath)
+				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
 				+ CMedia::GetDurationString(MediaResInfo.nDuration)
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-				+ L"\n原目录：" + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))
-				+ L"\n\n关联：";
+				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))
+				+ L"\n\n关联: ";
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
 				strText.append(L"\n" + media.m_pParent->GetLogicPath());
@@ -251,7 +251,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		{
 			if (!fsutil::CheckSubPath(strBaseDir, strNewOppPath))
 			{
-				CMainApp::showMsg(L"请选择以下目录中的文件：\n\n\t" + strBaseDir, __Title, this);
+				CMainApp::showMsg(L"请选择以下目录中的文件: \n\n\t" + strBaseDir, __Title, this);
 				continue;
 			}
 		}

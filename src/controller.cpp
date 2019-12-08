@@ -311,7 +311,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
         m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]() {
 			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath))
 			{
-                m_view.showMsgBox(L"重命名失败：\n\n\t" + media.GetAbsPath());
+                m_view.showMsgBox(L"重命名失败: \n\n\t" + media.GetAbsPath());
 				return false;
 			}
 
@@ -377,7 +377,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 
         if (fsutil::existFile(strDstAbsPath))
 		{
-            if (!m_view.showMsgBox(L"确认替换文件：\n\n\t" + strDstAbsPath, true))
+            if (!m_view.showMsgBox(L"确认替换文件: \n\n\t" + strDstAbsPath, true))
 			{
 				return;
 			}
@@ -387,7 +387,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			(void)fsutil::removeFile(strDstAbsPath);
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
-                m_view.showMsgBox(L"移动文件失败：\n\n\t" + strDstAbsPath);
+                m_view.showMsgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
 				return false;
 			}
 
@@ -419,7 +419,7 @@ bool CXController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 		}
 		else
 		{
-			m_view.showMsgBox(L"删除文件失败：\n\n\t" + MediaRes.GetAbsPath());
+            m_view.showMsgBox(L"删除文件失败: \n\n\t" + MediaRes.GetAbsPath());
 		}
 	});
 
@@ -437,7 +437,7 @@ int CXController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 		strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (strOppPath.empty())
 		{
-            m_view.showMsgBox((L"添加曲目失败，请选择以下目录中的文件：\n\n\t"
+            m_view.showMsgBox((L"添加曲目失败，请选择以下目录中的文件: \n\n\t"
 				+ m_model.getMediaLib().GetAbsPath()).c_str());
 			return 0;
 		}
@@ -460,7 +460,7 @@ int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 		wstring strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (!fsutil::CheckSubPath(strSingerOppPath, strOppPath))
 		{
-            m_view.showMsgBox((L"添加专辑曲目失败，请选择以下目录中的文件：\n\n\t" + strSingerOppPath).c_str());
+            m_view.showMsgBox((L"添加专辑曲目失败，请选择以下目录中的文件: \n\n\t" + strSingerOppPath).c_str());
 			return 0;
 		}
 
@@ -573,7 +573,7 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 			
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
-                m_view.showMsgBox(L"复制文件失败：\n\n\t" + strDstAbsPath);
+                m_view.showMsgBox(L"复制文件失败: \n\n\t" + strDstAbsPath);
 				return false;
 			}
 
