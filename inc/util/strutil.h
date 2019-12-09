@@ -8,6 +8,8 @@
 
 #define to_string(x) QString::number(x).toStdString()
 #define to_wstring(x) QString::number(x).toStdWString()
+
+#define sscanf_s sscanf
 #endif
 
 #define __substr strutil::substr
