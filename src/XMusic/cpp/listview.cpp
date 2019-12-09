@@ -85,9 +85,16 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         painter.setPen(m_crText);
 
         tagLVRow lvRow(uIdx, uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        QRect& rc = lvRow.rc;
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
-            lvRow.rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
+            rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
+
+            if (lvRow.bSelect)
+            {
+                painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, m_crSelectedBkg);
+            }
+
             _onPaintRow(painter, lvRow);
         }
 
@@ -102,10 +109,6 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRowContext& context)
 {
     QRect rc = lvRow.rc;
-    if (lvRow.bSelect)
-    {
-        painter.fillRect(rc.left(), rc.top(), rc.width(), rc.height()-1, m_crSelectedBkg);
-    }
 
     if (lvRow.bFlash)
     {
