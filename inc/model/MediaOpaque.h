@@ -123,6 +123,8 @@ public:
 		return m_strFile;
 	}
 
+    int readHead(byte_t *buf, size_t size);
+
 private:
 #if !__winvc
     long checkPreserveDataSize() const override;
