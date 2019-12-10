@@ -33,6 +33,7 @@ SOURCES += ../controller.cpp \
     cpp/msgbox.cpp
 
 HEADERS += cpp/app.h \
+    cpp/colorbar.h \
     cpp/colordlg.h \
     cpp/mainwindow.h \
     cpp/label.h \

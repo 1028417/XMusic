@@ -105,12 +105,12 @@
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarBkgRed" native="true">
+   <widget class="CColorBar" name="pgbarBkgRed" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>70</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -130,12 +130,12 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarBkgGreen" native="true">
+   <widget class="CColorBar" name="pgbarBkgGreen" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>130</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -155,12 +155,12 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarBkgBlue" native="true">
+   <widget class="CColorBar" name="pgbarBkgBlue" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>190</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -232,12 +232,12 @@ gridline-color: rgb(255, 255, 255);</string>
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarFontBlue" native="true">
+   <widget class="CColorBar" name="pgbarFontBlue" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>190</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -257,12 +257,12 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarFontGreen" native="true">
+   <widget class="CColorBar" name="pgbarFontGreen" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>130</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -282,12 +282,12 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QWidget" name="pgbarFontRed" native="true">
+   <widget class="CColorBar" name="pgbarFontRed" native="true">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>70</y>
-      <width>160</width>
+      <width>110</width>
       <height>5</height>
      </rect>
     </property>
@@ -319,6 +319,12 @@ gridline-color: rgb(255, 255, 255);</string>
    <class>CLabel</class>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CColorBar</class>
+   <extends>QWidget</extends>
+   <header location="global">colorbar.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
