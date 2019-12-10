@@ -15,6 +15,7 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
 
 void CColorDlg::_relayout(int cx, int cy)
 {
+    (void)cx;
     static const QRect rcReturnPrev = ui.btnReturn->geometry();
     QRect rcReturn = __rect(rcReturnPrev);
     if (cy >= __size(812*3)) // 针对全面屏刘海作偏移
