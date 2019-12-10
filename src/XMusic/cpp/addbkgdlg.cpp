@@ -48,6 +48,7 @@ void CAddBkgDlg::show()
                 if (imgDir.genSnapshot())
                 {
                     emit signal_founddir(&imgDir);
+                    mtutil::usleep(100);
                 }
             }
 
@@ -178,19 +179,17 @@ size_t CAddBkgView::getRowCount()
 
 void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
-    cauto rc = lvRow.rc;
-    cauto uRow = lvRow.uRow;
     if (m_pImgDir)
     {
-        UINT uIdx = uRow * getColumnCount() + lvRow.uCol;
+        UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
+            QRect rcFrame(lvRow.rc);
             cauto pm = subImgs[uIdx].second;
-            painter.drawPixmapEx(rc, pm);
+            painter.drawPixmapEx(rcFrame, pm);
 
-            QRect rcFrame(rc);
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
             painter.drawFrame(1, rcFrame, 255,255,255,50);
@@ -198,7 +197,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
     else
     {
-        m_paImgDirs.get(uRow, [&](CImgDir& imgDir){
+        m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(eStyle);
