@@ -41,14 +41,17 @@ void CAddBkgDlg::show()
 
     m_bScaning = true;
     m_thread = std::thread([&](){
-        m_ImgRoot.scan([&](CPath& dir, TD_XFileList& paSubFile){
+        m_ImgRoot.scan([&](CPath& dir, TD_XFileList& paSubFile) {
             if (paSubFile)
             {
                 CImgDir& imgDir = (CImgDir&)dir;
                 if (imgDir.genSnapshot())
                 {
-                    emit signal_founddir(&imgDir);
-                    mtutil::usleep(100);
+                    if (m_bScaning)
+                    {
+                        emit signal_founddir(&imgDir);
+                        mtutil::usleep(10);
+                    }
                 }
             }
 
