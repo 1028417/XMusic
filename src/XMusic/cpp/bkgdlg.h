@@ -33,11 +33,7 @@ private:
     void _onRowClick(tagLVRow&, const QMouseEvent&) override;
 
 public:
-    inline size_t margin()
-    {
-#define __margin __size(40)
-        return __margin/(getColumnCount()-1);
-    }
+    size_t margin();
 };
 
 class CBkgDlg : public CDialog

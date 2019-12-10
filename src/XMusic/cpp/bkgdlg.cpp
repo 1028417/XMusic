@@ -134,6 +134,12 @@ void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
     m_bkgDlg.setBkg(uIdx);
 }
 
+inline size_t CBkgView::margin()
+{
+#define __margin __size(40)
+    return __margin/(getColumnCount()-1);
+}
+
 CBkgDlg::CBkgDlg(class CXMusicApp& app) : CDialog(app.mainWnd()),
     m_app(app),
     m_colorDlg(app, *this),
