@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>35</y>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -45,7 +45,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>43</y>
+     <y>48</y>
      <width>300</width>
      <height>60</height>
     </rect>
@@ -66,19 +66,6 @@
    <property name="title">
     <string>背景</string>
    </property>
-   <widget class="QSlider" name="sliderBkgRed">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>60</y>
-      <width>160</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelBkgRed">
     <property name="geometry">
      <rect>
@@ -90,19 +77,6 @@
     </property>
     <property name="text">
      <string>红</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="sliderBkgGreen">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>120</y>
-      <width>160</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLabel" name="labelBkgGreen">
@@ -131,17 +105,79 @@
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="QSlider" name="sliderBkgBlue">
+   <widget class="QWidget" name="pgbarBkgRed" native="true">
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>180</y>
+      <y>70</y>
       <width>160</width>
-      <height>16</height>
+      <height>5</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="pgbarBkgGreen" native="true">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>130</y>
+      <width>160</width>
+      <height>5</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="pgbarBkgBlue" native="true">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>190</y>
+      <width>160</width>
+      <height>5</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -157,19 +193,6 @@
    <property name="title">
     <string>前景</string>
    </property>
-   <widget class="QSlider" name="sliderFontRed">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>60</y>
-      <width>160</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="labelFontRed">
     <property name="geometry">
      <rect>
@@ -181,19 +204,6 @@
     </property>
     <property name="text">
      <string>红</string>
-    </property>
-   </widget>
-   <widget class="QSlider" name="sliderFontGreen">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>120</y>
-      <width>160</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <widget class="QLabel" name="labelFontGreen">
@@ -222,17 +232,79 @@
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="QSlider" name="sliderFontBlue">
+   <widget class="QWidget" name="pgbarFontBlue" native="true">
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>180</y>
+      <y>190</y>
       <width>160</width>
-      <height>16</height>
+      <height>5</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="pgbarFontGreen" native="true">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>130</y>
+      <width>160</width>
+      <height>5</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="pgbarFontRed" native="true">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>70</y>
+      <width>160</width>
+      <height>5</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(200, 200, 255);
+background-color: rgb(255, 255, 255);
+border-color: rgb(255, 255, 255);
+gridline-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="value" stdset="0">
+     <number>0</number>
+    </property>
+    <property name="textVisible" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="format" stdset="0">
+     <string/>
     </property>
    </widget>
   </widget>

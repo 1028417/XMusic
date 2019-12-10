@@ -106,7 +106,7 @@ void InitMinDump()
 	CloseHandle(hDumpFile);
 }
 
-/*LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(LPTOP_LEVEL_EXCEPTION_FILTER)
+LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(LPTOP_LEVEL_EXCEPTION_FILTER)
 {
 	return NULL;
 }

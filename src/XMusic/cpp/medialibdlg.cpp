@@ -109,19 +109,19 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-#define __offset __size(30)
+#define __xOffset __size(20)
 
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
-    int x_title = pButton->geometry().right() + __offset;
+    int x_title = pButton->geometry().right() + __xOffset;
 
     int cx_title = 0;
     if (ui.btnPlay->isVisible())
     {
-        cx_title = ui.btnPlay->x() - __offset - x_title;
+        cx_title = ui.btnPlay->x() - __xOffset - x_title;
     }
     else
     {
-        cx_title = width() - __offset - x_title;
+        cx_title = width() - __xOffset - x_title;
     }
 
     ui.labelTitle->setGeometry(x_title, ui.labelTitle->y(), cx_title, ui.labelTitle->height());

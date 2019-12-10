@@ -47,25 +47,25 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int y = rcBkgGroup.height()/4;
     ui.labelBkgRed->move(ui.labelBkgRed->x(), y-ui.labelBkgRed->height()/2);
-    ui.sliderBkgRed->setGeometry(ui.sliderBkgRed->x(), y-ui.sliderBkgRed->height()/2
-                              , rcBkgGroup.width()-ui.sliderBkgRed->x()-ui.labelBkgRed->x()
-                              , ui.sliderBkgRed->height());
+    ui.pgbarBkgRed->setGeometry(ui.pgbarBkgRed->x(), y-ui.pgbarBkgRed->height()/2
+                              , rcBkgGroup.width()-ui.pgbarBkgRed->x()-ui.labelBkgRed->x()
+                              , ui.pgbarBkgRed->height());
 
     ui.labelBkgGreen->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.sliderBkgGreen->setGeometry(ui.sliderBkgRed->x(), ui.sliderBkgRed->y()+y
-                                   , ui.sliderBkgRed->width(), ui.sliderBkgRed->height());
+    ui.pgbarBkgGreen->setGeometry(ui.pgbarBkgRed->x(), ui.pgbarBkgRed->y()+y
+                                   , ui.pgbarBkgRed->width(), ui.pgbarBkgRed->height());
 
     y+=y;
     ui.labelBkgBlue->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.sliderBkgBlue->setGeometry(ui.sliderBkgRed->x(), ui.sliderBkgRed->y()+y
-                                   , ui.sliderBkgRed->width(), ui.sliderBkgRed->height());
+    ui.pgbarBkgBlue->setGeometry(ui.pgbarBkgRed->x(), ui.pgbarBkgRed->y()+y
+                                   , ui.pgbarBkgRed->width(), ui.pgbarBkgRed->height());
 
     ui.labelFontRed->setGeometry(ui.labelBkgRed->geometry());
-    ui.sliderFontRed->setGeometry(ui.sliderBkgRed->geometry());
+    ui.pgbarFontRed->setGeometry(ui.pgbarBkgRed->geometry());
     ui.labelFontBlue->setGeometry(ui.labelBkgBlue->geometry());
-    ui.sliderFontBlue->setGeometry(ui.sliderBkgBlue->geometry());
+    ui.pgbarFontBlue->setGeometry(ui.pgbarBkgBlue->geometry());
     ui.labelFontGreen->setGeometry(ui.labelBkgGreen->geometry());
-    ui.sliderFontGreen->setGeometry(ui.sliderBkgGreen->geometry());
+    ui.pgbarFontGreen->setGeometry(ui.pgbarBkgGreen->geometry());
 }
 
 void CColorDlg::show()

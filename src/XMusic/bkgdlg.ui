@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>440</width>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>35</y>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -44,9 +44,9 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>43</y>
-     <width>200</width>
+     <x>140</x>
+     <y>48</y>
+     <width>170</width>
      <height>60</height>
     </rect>
    </property>
@@ -60,8 +60,8 @@
   <widget class="CButton" name="btnColor">
    <property name="geometry">
     <rect>
-     <x>630</x>
-     <y>30</y>
+     <x>330</x>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>

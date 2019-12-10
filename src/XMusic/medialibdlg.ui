@@ -16,8 +16,8 @@
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>35</y>
+     <x>35</x>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -45,20 +45,23 @@
    <property name="geometry">
     <rect>
      <x>230</x>
-     <y>43</y>
-     <width>300</width>
+     <y>48</y>
+     <width>471</width>
      <height>60</height>
     </rect>
    </property>
    <property name="text">
     <string/>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="CButton" name="btnUpward">
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>35</y>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>
@@ -86,7 +89,7 @@
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>35</y>
+     <y>40</y>
      <width>80</width>
      <height>80</height>
     </rect>

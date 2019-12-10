@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __xsize     __size(64)
+#define __xsize     __size(66)
 
 static Ui::BkgDlg ui;
 
