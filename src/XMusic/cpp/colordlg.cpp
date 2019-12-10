@@ -32,7 +32,7 @@ void CColorDlg::_relayout(int cx, int cy)
     QRect rcFontGroup;
     if (cy > cx)
     {
-        rcBkgGroup.setRect(__margin, yClient, cx-__margin*2, (cy-__margin-yClient)/2);
+        rcBkgGroup.setRect(__margin, yClient, cx-__margin*2, (cy-yClient)/2-__margin);
 
         rcFontGroup.setRect(__margin, rcBkgGroup.bottom()+__margin, rcBkgGroup.width(), rcBkgGroup.height());
     }
