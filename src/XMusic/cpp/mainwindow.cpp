@@ -840,12 +840,12 @@ void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
     if (decodeStatus != E_DecodeStatus::DS_Cancel)
     {
         bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
-        emit signal_playStoped(bOpenFail);
+        if (bOpenFail)
+        {
+            mtutil::usleep(1000);
+        }
 
-//        if (bOpenFail)
-//        {
-//            mtutil::usleep(100);
-//        }
+        emit signal_playStoped(bOpenFail);
 
         m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
     }

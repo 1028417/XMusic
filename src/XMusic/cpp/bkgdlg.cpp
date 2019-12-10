@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __xsize     __size(68)
+#define __xsize     __size(64)
 
 static Ui::BkgDlg ui;
 
@@ -98,8 +98,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         if (pm)
         {
             painter.drawPixmapEx(rc, *pm);
-
-            painter.drawPixmap(rc.right()-__xsize, rc.top(), __xsize, __xsize, m_pmX);
+            painter.drawPixmap(rc.right()-__xsize-5, rc.top()+5, __xsize, __xsize, m_pmX);
         }
         else
         {
