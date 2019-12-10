@@ -7,6 +7,8 @@
 
 #include "addbkgdlg.h"
 
+#include "colordlg.h"
+
 class CBkgView : public CListView
 {
 public:
@@ -46,6 +48,8 @@ public:
 
 private:
     class CXMusicApp& m_app;
+
+    CColorDlg m_colorDlg;
 
     CAddBkgDlg m_addbkgDlg;
 

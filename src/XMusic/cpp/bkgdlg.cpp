@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 
-#define __xsize     __size(70)
+#define __xsize     __size(68)
 
 static Ui::BkgDlg ui;
 
@@ -137,6 +137,7 @@ void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
 
 CBkgDlg::CBkgDlg(class CXMusicApp& app) : CDialog(app.mainWnd()),
     m_app(app),
+    m_colorDlg(app, *this),
     m_addbkgDlg(app, *this),
     m_bkgView(app, *this)
 {
@@ -147,6 +148,10 @@ void CBkgDlg::init()
     ui.setupUi(this);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
+        m_colorDlg.show();
+    });
 
 #define __hbkgdir L"/hbkg/"
 #define __vbkgdir L"/vbkg/"

@@ -17,6 +17,7 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 
 SOURCES += ../controller.cpp \
+    cpp/colordlg.cpp \
     cpp/main.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
@@ -32,6 +33,7 @@ SOURCES += ../controller.cpp \
     cpp/msgbox.cpp
 
 HEADERS += cpp/app.h \
+    cpp/colordlg.h \
     cpp/mainwindow.h \
     cpp/label.h \
     cpp/PlayingList.h \
@@ -51,6 +53,7 @@ HEADERS += cpp/app.h \
 RESOURCES += res.qrc
 
 FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui \
+    colordlg.ui \
     msgbox.ui
 
 INCLUDEPATH += ../../inc  cpp
