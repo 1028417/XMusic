@@ -25,20 +25,22 @@ void CColorDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    cauto yClient = rcReturn.bottom() + rcReturn.top();
-    cauto margin = rcReturn.left();
+#define __margin 100
+    cauto yClient = rcReturn.bottom() + __margin;
 
     QRect rcBkgGroup;
     QRect rcFontGroup;
     if (cy > cx)
     {
-        rcBkgGroup.setRect(margin, yClient, cx-margin*2, cy-margin-yClient);
+        rcBkgGroup.setRect(__margin, yClient, cx-__margin*2, (cy-__margin-yClient)/2);
+
+        rcFontGroup.setRect(__margin, rcBkgGroup.bottom()+__margin, rcBkgGroup.width(), rcBkgGroup.height());
     }
     else
     {
-        rcBkgGroup.setRect(margin, yClient, cx/2-margin*1.5, cy-margin-yClient);
+        rcBkgGroup.setRect(__margin, yClient, cx/2-__margin*1.5, cy-__margin-yClient);
 
-        rcFontGroup.setRect(cx/2+margin/2, yClient, rcBkgGroup.width(), rcBkgGroup.height());
+        rcFontGroup.setRect(cx/2+__margin/2, yClient, rcBkgGroup.width(), rcBkgGroup.height());
     }
     ui.groupBkgColor->setGeometry(rcBkgGroup);
     ui.groupFontColor->setGeometry(rcFontGroup);
@@ -57,6 +59,13 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.labelBkgBlue->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
     ui.sliderBkgBlue->setGeometry(ui.sliderBkgRed->x(), ui.sliderBkgRed->y()+y
                                    , ui.sliderBkgRed->width(), ui.sliderBkgRed->height());
+
+    ui.labelFontRed->setGeometry(ui.labelBkgRed->geometry());
+    ui.sliderFontRed->setGeometry(ui.sliderBkgRed->geometry());
+    ui.labelFontBlue->setGeometry(ui.labelBkgBlue->geometry());
+    ui.sliderFontBlue->setGeometry(ui.sliderBkgBlue->geometry());
+    ui.labelFontGreen->setGeometry(ui.labelBkgGreen->geometry());
+    ui.sliderFontGreen->setGeometry(ui.sliderBkgGreen->geometry());
 }
 
 void CColorDlg::show()
