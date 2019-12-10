@@ -29,5 +29,6 @@
         <file>img/btnX.png</file>
         <file>upgrade.conf</file>
         <file>img/btnAddplay.png</file>
+        <file>img/btnColor.png</file>
     </qresource>
 </RCC>

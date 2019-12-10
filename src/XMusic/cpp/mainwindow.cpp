@@ -803,15 +803,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     emit signal_showPlaying(uPlayingItem, bManual);
 }
 
-void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
-{
-    if (decodeStatus != E_DecodeStatus::DS_Cancel)
-    {
-        bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
-        emit signal_playStoped(bOpenFail);
-    }
-}
-
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 {
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -844,6 +835,22 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     ui.labelDuration->setText(qsDuration);
 }
 
+void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
+{
+    if (decodeStatus != E_DecodeStatus::DS_Cancel)
+    {
+        bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
+        emit signal_playStoped(bOpenFail);
+
+//        if (bOpenFail)
+//        {
+//            mtutil::usleep(100);
+//        }
+
+        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
+    }
+}
+
 void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.progressBar->setValue(0);
@@ -854,23 +861,14 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     }
     else
     {
-        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-    }
-
-    auto uPlaySeq = m_PlayingInfo.uPlaySeq;
-    __async(1000, [=](){
-        if (uPlaySeq == m_PlayingInfo.uPlaySeq)
-        {
-            if (bOpenFail)
-            {
-                m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-            }
-            else
+        auto uPlaySeq = m_PlayingInfo.uPlaySeq;
+        __async(1000, [&, uPlaySeq]() {
+            if (uPlaySeq == m_PlayingInfo.uPlaySeq)
             {
                 _updatePlayPauseButton(false);
             }
-        }
-    });
+        });
+    }
 }
 
 void MainWindow::_showAlbumName()

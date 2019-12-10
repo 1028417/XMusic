@@ -87,21 +87,23 @@ void CMedialibDlg::_relayout(int cx, int cy)
     }
     else if (cy > cx)
     {
+#define __szOffset 15
         rcReturn.setTop(rcReturn.top() + 10);
-        rcReturn.setBottom(rcReturn.bottom() + 30);
+        rcReturn.setBottom(rcReturn.bottom() + 10 + __szOffset);
+        rcReturn.setRight(rcReturn.right() + __szOffset);
     }
 
     ui.btnReturn->setGeometry(rcReturn);
 
-    int y_margin = rcReturn.top();
+    int yMargin = rcReturn.top();
 
-    int y_MedialibView = rcReturn.bottom() + y_margin;
+    int y_MedialibView = rcReturn.bottom() + yMargin;
     m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 
     static const int x_btnUpward = __size(ui.btnUpward->x());
-    ui.btnUpward->setGeometry(x_btnUpward, y_margin, rcReturn.width(), rcReturn.height());
+    ui.btnUpward->setGeometry(x_btnUpward, yMargin, rcReturn.width(), rcReturn.height());
 
-    ui.btnPlay->setGeometry(cx-rcReturn.right(), y_margin, rcReturn.width(), rcReturn.height());
+    ui.btnPlay->setGeometry(cx-rcReturn.right(), yMargin, rcReturn.width(), rcReturn.height());
 
     ui.labelTitle->move(ui.labelTitle->x(), rcReturn.center().y() - ui.labelTitle->height()/2);
     _resizeTitle();
@@ -653,7 +655,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     auto& rc = lvRow.rc;
 
     auto height = rc.height();
-    auto margin = height*22/100;
+    auto margin = height*20/100;
     int x = rc.right()-height+margin;
     QRect rcPos(x, rc.y()+margin, height-margin*2, height-margin*2);
     pButton->setGeometry(rcPos);
