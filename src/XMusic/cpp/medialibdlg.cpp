@@ -109,7 +109,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-#define __xOffset __size(20)
+#define __xOffset __size(40)
 
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
     int x_title = pButton->geometry().right() + __xOffset;
@@ -285,39 +285,46 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
     {
         strTitle << MediaSet.m_strName;
-        return;
     }
-
-    if (MediaSet.m_pParent)
+    else if (E_MediaSetType::MST_Album == MediaSet.m_eType)
     {
-        _getTitle(*MediaSet.m_pParent, strTitle);
+        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
     }
+    else
+    {
+        if (MediaSet.m_pParent)
+        {
+            _getTitle(*MediaSet.m_pParent, strTitle);
+        }
 
-    strTitle << __CNDot << MediaSet.m_strName;
+        strTitle << __CNDot << MediaSet.m_strName;
+    }
 }
 
-void CMedialibView::_getTitle(CMediaDir& MediaRes, WString& strTitle)
+void CMedialibView::_getTitle(CMediaDir& MediaDir, WString& strTitle)
 {
-    if (&MediaRes == &m_MediaLib)
+    if (&MediaDir == &m_MediaLib)
     {
         strTitle << __XMusicDirName;
-        return;
     }
-    else if (&MediaRes == &m_OuterDir)
+    else if (&MediaDir == &m_OuterDir)
     {
         strTitle << strutil::trim_r(__OuterDirName);
-        return;
     }
-
-    auto pParent = MediaRes.parent();
-    if (NULL == pParent)
+    else
     {
-        pParent = &m_MediaLib;
+        strTitle << MediaDir.GetName();
+
+        /*auto pParent = MediaDir.parent();
+        if (NULL == pParent)
+        {
+            pParent = &m_MediaLib;
+        }
+
+        _getTitle(*pParent, strTitle);
+
+        strTitle << __wcDirSeparator << MediaDir.GetName();*/
     }
-
-    _getTitle(*pParent, strTitle);
-
-    strTitle << __wcDirSeparator << MediaRes.GetName();
 }
 
 size_t CMedialibView::getPageRowCount()

@@ -44,7 +44,7 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>160</x>
      <y>48</y>
      <width>300</width>
      <height>60</height>

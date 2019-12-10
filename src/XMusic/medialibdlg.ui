@@ -16,7 +16,7 @@
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
-     <x>35</x>
+     <x>40</x>
      <y>40</y>
      <width>80</width>
      <height>80</height>
@@ -44,9 +44,9 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>260</x>
      <y>48</y>
-     <width>471</width>
+     <width>420</width>
      <height>60</height>
     </rect>
    </property>
@@ -54,13 +54,13 @@
     <string/>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
   <widget class="CButton" name="btnUpward">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>150</x>
      <y>40</y>
      <width>80</width>
      <height>80</height>
