@@ -218,8 +218,8 @@ void CBkgDlg::_relayout(int cx, int cy)
     m_bHScreen = cx>cy;
     if (m_bHScreen)
     {
-        ui.btnColor->setGeometry(cx - rcReturn.left() - rcReturn.width()
-                                 , rcReturn.top(), rcReturn.width(), rcReturn.height());
+        ui.btnColor->setGeometry(rcReturn.left(), cy - rcReturn.top() - rcReturn.height()
+                                 , rcReturn.width(), rcReturn.height());
 
         int x_bkgView = rcReturn.right()+rcReturn.left();
         int cx_bkgView = cx-x_bkgView;
@@ -233,8 +233,8 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     else
     {
-        ui.btnColor->setGeometry(rcReturn.left(), cy - rcReturn.top() - rcReturn.height()
-                                 , rcReturn.width(), rcReturn.height());
+        ui.btnColor->setGeometry(cx - rcReturn.left() - rcReturn.width()
+                                 , rcReturn.top(), rcReturn.width(), rcReturn.height());
 
         int y_bkgView = rcReturn.bottom() + rcReturn.top();
         int cy_bkgView = cy-y_bkgView;
