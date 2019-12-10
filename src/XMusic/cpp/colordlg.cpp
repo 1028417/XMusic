@@ -45,7 +45,7 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.groupBkgColor->setGeometry(rcBkgGroup);
     ui.groupFontColor->setGeometry(rcFontGroup);
 
-    int y = rcBkgGroup.height()/3.9;
+    int y = rcBkgGroup.height()/3.8;
     ui.labelBkgRed->move(ui.labelBkgRed->x(), y-ui.labelBkgRed->height()/2);
     ui.pgbarBkgRed->setGeometry(ui.pgbarBkgRed->x(), y-ui.pgbarBkgRed->height()/2
                               , rcBkgGroup.width()-ui.pgbarBkgRed->x()-ui.labelBkgRed->x()

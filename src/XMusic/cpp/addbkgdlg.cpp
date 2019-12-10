@@ -50,7 +50,7 @@ void CAddBkgDlg::show()
                     if (m_bScaning)
                     {
                         emit signal_founddir(&imgDir);
-                        mtutil::usleep(10);
+                        //mtutil::usleep(10);
                     }
                 }
             }
