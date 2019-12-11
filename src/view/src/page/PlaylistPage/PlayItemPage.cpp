@@ -64,8 +64,8 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 
-	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
-	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
+	ListPara.nHeaderHeight = 0; //globalSize.m_uHeadHeight;
+	//ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
 
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;

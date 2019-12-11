@@ -106,7 +106,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	CObjectList::tagListPara ListPara;
 	ListPara.lstColumns = lstColumns;
 	
-	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
+	ListPara.nHeaderHeight = globalSize.m_uHeadHeight;
 	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
 
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;

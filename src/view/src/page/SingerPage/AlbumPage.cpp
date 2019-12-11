@@ -99,7 +99,7 @@ BOOL CAlbumPage::OnInitDialog()
 	});
 
 	(void)m_wndAlbumItemList.ModifyStyle(WS_VISIBLE | LVS_ALIGNLEFT
-		, LVS_AUTOARRANGE | LVS_EDITLABELS);
+		, LVS_AUTOARRANGE | LVS_EDITLABELS | LVS_NOCOLUMNHEADER);
 
 	m_wndAlbumItemList.SetImageList(&m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big)
 		, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Small));
@@ -119,8 +119,8 @@ BOOL CAlbumPage::OnInitDialog()
 
 	ListPara = CObjectList::tagListPara(ColumnGuard);
 
-	ListPara.uHeaderHeight = globalSize.m_uHeadHeight;
-	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
+	ListPara.nHeaderHeight = 0; //globalSize.m_uHeadHeight;
+	//ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
 
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;
@@ -305,7 +305,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndBrowseList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
 
-		(void)m_wndBrowseList.InsertItem(0, (strutil::wcSpace + pSinger->m_strName).c_str(), (int)E_GlobalImage::GI_Dir);
+		(void)m_wndBrowseList.InsertItem(0, (L"       " + pSinger->m_strName).c_str(), (int)E_GlobalImage::GI_Dir);
 
 		m_wndMediaResPanel.ShowPath(m_pSinger->GetBaseDir());
 	}
