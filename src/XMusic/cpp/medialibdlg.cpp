@@ -86,9 +86,9 @@ void CMedialibDlg::_relayout(int cx, int cy)
     }
     else if (cy > cx)
     {
-#define __szOffset 3
-        rcReturn.setTop(rcReturn.top() + __szOffset);
-        rcReturn.setBottom(rcReturn.bottom() + __szOffset*2);
+#define __szOffset 10
+        rcReturn.setTop(rcReturn.top() + 3);
+        rcReturn.setBottom(rcReturn.bottom() + 3 + __szOffset);
         rcReturn.setRight(rcReturn.right() + __szOffset);
     }
     ui.btnReturn->setGeometry(rcReturn);

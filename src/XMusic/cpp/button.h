@@ -30,7 +30,12 @@ private:
         else if (E_MouseEventType::MET_Release == type)
         {
             setOpacity(0.5);
-            timerutil::async(500, [&](){
+
+            UINT uDelayTime = 0;
+#if __windows || __mac
+            uDelayTime = 500;
+#endif
+            timerutil::async(uDelayTime, [&](){
                 setOpacity(1);
             });
         }
