@@ -209,7 +209,7 @@ public:
 		COLORREF crText = 0;
 		float fFontSize = 0;
 
-		UINT uHeaderHeight = 0;
+		int nHeaderHeight = 0;
 		float fHeaderFontSize = 0;
 
 		UINT uItemHeight = 0;
