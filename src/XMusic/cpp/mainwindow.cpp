@@ -79,7 +79,7 @@ MainWindow::MainWindow(CXMusicApp& app)
     QWidget* lpWidget[] = {
         ui.labelPlayingfile, ui.wdgSingerImg, ui.labelSingerName, ui.labelAlbumName
 
-        , ui.labelDuration, ui.progressBar, ui.labelPlayProgress
+        , ui.labelDuration, ui.barProgress, ui.labelProgress
 
         , ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
 
@@ -235,7 +235,7 @@ void MainWindow::_init()
         label->setFont(1, E_FontWeight::FW_SemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
-                , ui.labelPlayProgress);
+                , ui.labelProgress);
     for (auto label : lstLabels)
     {
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
@@ -374,18 +374,18 @@ bool MainWindow::event(QEvent *ev)
         }
 
 //        UINT streamPos = m_app.getPlayMgr().mediaOpaque().streamPos()/1000;
-//        UINT pos = streamPos * ui.progressBar->maximum() / ui.progressBar->maxBuffer();
-//        ui.progressBar->setValue(pos);
+//        UINT pos = streamPos * ui.barProgress->maximum() / ui.barProgress->maxBuffer();
+//        ui.barProgress->setValue(pos);
 
         int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
-        if (nProgress <= ui.progressBar->maximum())
+        if (nProgress <= ui.barProgress->maximum())
         {
             UINT bufferValue = 0;
             if (XMediaLib::m_bOnlineMediaLib)
             {
                 bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().streamSize()/1000);
             }
-            ui.progressBar->setValue(nProgress, bufferValue);
+            ui.barProgress->setValue(nProgress, bufferValue);
         }
     }
     break;
@@ -527,8 +527,8 @@ void MainWindow::_relayout()
     int x_frameDemand = 0;
     if (m_bHScreen)
     {
-        x_frameDemand = (ui.progressBar->geometry().right()
-            + ui.progressBar->x() - ui.frameDemand->width())/2;
+        x_frameDemand = (ui.barProgress->geometry().right()
+            + ui.barProgress->x() - ui.frameDemand->width())/2;
     }
     else
     {
@@ -563,7 +563,7 @@ void MainWindow::_relayout()
 #define __offset __size(10.0f)
             yOffset = (int)round(__offset/fCXRate);
 
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressBar, ui.labelPlayProgress}))
+            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.barProgress, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
             }
@@ -594,7 +594,7 @@ void MainWindow::_relayout()
 
     if (!m_bUseDefaultBkg)
     {
-        int x = ui.progressBar->x();
+        int x = ui.barProgress->x();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
@@ -602,8 +602,8 @@ void MainWindow::_relayout()
 
         int cy_labelAlbumName = __size(80);
         int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
-        int cx_progressBar = ui.progressBar->width();
-        ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_progressBar, cy_labelAlbumName);
+        int cx_barProgress = ui.barProgress->width();
+        ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_barProgress, cy_labelAlbumName);
 
         int y_SingerImg = 0;
         if (bZoomoutSingerImg)
@@ -632,7 +632,7 @@ void MainWindow::_relayout()
         int x_SingerImg = x;
         if (!bZoomoutSingerImg)
         {
-            x_SingerImg += (cx_progressBar-cx_SingerImg)/2;
+            x_SingerImg += (cx_barProgress-cx_SingerImg)/2;
         }
 
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
@@ -716,7 +716,7 @@ void MainWindow::_relayout()
     UINT uRowCount = 0;
     if (m_bHScreen)
     {
-        int x_PlayingList = ui.progressBar->geometry().right();
+        int x_PlayingList = ui.barProgress->geometry().right();
         if (cx >= __size(1920))
         {
             x_PlayingList += __size(100) * fCXRate;
@@ -828,8 +828,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
     _updatePlayPauseButton(true);
 
-    ui.progressBar->setValue(0);
-    ui.progressBar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
+    ui.barProgress->setValue(0);
+    ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
     QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
@@ -853,7 +853,7 @@ void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
 
 void MainWindow::slot_playStoped(bool bOpenFail)
 {
-    ui.progressBar->setValue(0);
+    ui.barProgress->setValue(0);
 
     if (bOpenFail)
     {
@@ -1095,30 +1095,30 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             slot_labelClick(ui.labelAlbumName, pos);
         }
     }
-    else if (label == ui.labelPlayProgress)
+    else if (label == ui.labelProgress)
     {
         if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
         {
-            auto progressBar = ui.progressBar;
-            UINT uSeekPos = pos.x() * progressBar->maximum() / progressBar->width();
-            if (progressBar->maxBuffer() > 0)
+            auto barProgress = ui.barProgress;
+            UINT uSeekPos = pos.x() * barProgress->maximum() / barProgress->width();
+            if (barProgress->maxBuffer() > 0)
             {
-                /*if (uSeekPos > progressBar->value())
+                /*if (uSeekPos > barProgress->value())
                 {
-                    UINT uCutPos = pos.x() * progressBar->maxBuffer() / progressBar->width();
-                    if (uCutPos < progressBar->bufferValue())
+                    UINT uCutPos = pos.x() * barProgress->maxBuffer() / barProgress->width();
+                    if (uCutPos < barProgress->bufferValue())
                     {
                         m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
 
                         m_app.getPlayMgr().player().Seek(uSeekPos);
-                        progressBar->setValue(uSeekPos);
+                        barProgress->setValue(uSeekPos);
                     }
                 }*/
             }
             else
             {
                 m_app.getPlayMgr().player().Seek(uSeekPos);
-                progressBar->setValue(uSeekPos);
+                barProgress->setValue(uSeekPos);
             }
         }
     }

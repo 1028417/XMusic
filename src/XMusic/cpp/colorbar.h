@@ -7,6 +7,13 @@
 
 #include <QBrush>
 
+enum class E_BarColor
+{
+    BC_Red,
+    BC_Green,
+    BC_Blue,
+};
+
 class CColorBar : public CWidget<QProgressBar>
 {
 public:
@@ -14,13 +21,13 @@ public:
     {
     }
 
-    void setColor(const QColor& color)
+    void setColor(E_BarColor eColor)
     {
-        m_color = color;
+        m_eColor = eColor;
     }
 
 private:
-    QColor m_color;
+    E_BarColor m_eColor;
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
@@ -28,7 +35,20 @@ private:
         QRect rect = this->rect();
         QLinearGradient gradient(rect.topLeft(), rect.topRight());
         gradient.setColorAt(0, QColor(0,0,0));
-        gradient.setColorAt(1, QColor(255,0,0));
+
+        if (E_BarColor::BC_Red == m_eColor)
+        {
+            gradient.setColorAt(1, QColor(255,0,0));
+        }
+        else if (E_BarColor::BC_Green == m_eColor)
+        {
+            gradient.setColorAt(1, QColor(0,255,0));
+        }
+        else if (E_BarColor::BC_Blue == m_eColor)
+        {
+            gradient.setColorAt(1, QColor(0,0,255));
+        }
+
         QBrush br(gradient);
         painter.fillRect(rect, br);
     }

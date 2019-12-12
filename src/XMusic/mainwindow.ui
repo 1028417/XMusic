@@ -39,7 +39,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="CProgressBar" name="progressBar" native="true">
+   <widget class="CProgressBar" name="barProgress" native="true">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -274,7 +274,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelPlayProgress">
+   <widget class="CLabel" name="labelProgress">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -888,8 +888,8 @@ gridline-color: rgb(255, 255, 255);</string>
    <zorder>labelLogoCompany</zorder>
    <zorder>labelLogoTip</zorder>
    <zorder>labelPlayingfile</zorder>
-   <zorder>progressBar</zorder>
-   <zorder>labelPlayProgress</zorder>
+   <zorder>barProgress</zorder>
+   <zorder>labelProgress</zorder>
    <zorder>btnMore</zorder>
    <zorder>btnExit</zorder>
    <zorder>btnFullScreen</zorder>

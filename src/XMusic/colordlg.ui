@@ -105,7 +105,7 @@
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarBkgRed" native="true">
+   <widget class="CColorBar" name="barBkgRed" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -130,7 +130,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarBkgGreen" native="true">
+   <widget class="CColorBar" name="barBkgGreen" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -155,7 +155,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarBkgBlue" native="true">
+   <widget class="CColorBar" name="barBkgBlue" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -232,7 +232,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string>蓝</string>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarFontBlue" native="true">
+   <widget class="CColorBar" name="barFontBlue" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -257,7 +257,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarFontGreen" native="true">
+   <widget class="CColorBar" name="barFontGreen" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -282,7 +282,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="CColorBar" name="pgbarFontRed" native="true">
+   <widget class="CColorBar" name="barFontRed" native="true">
     <property name="geometry">
      <rect>
       <x>150</x>

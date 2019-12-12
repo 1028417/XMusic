@@ -10,6 +10,13 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
 {
     ui.setupUi(this);
 
+    ui.barBkgRed->setColor(E_BarColor::BC_Red);
+    ui.barBkgGreen->setColor(E_BarColor::BC_Green);
+    ui.barBkgBlue->setColor(E_BarColor::BC_Blue);
+    ui.barFontRed->setColor(E_BarColor::BC_Red);
+    ui.barFontGreen->setColor(E_BarColor::BC_Green);
+    ui.barFontBlue->setColor(E_BarColor::BC_Blue);
+
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 }
 
@@ -47,25 +54,25 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int y = rcBkgGroup.height()/3.8;
     ui.labelBkgRed->move(ui.labelBkgRed->x(), y-ui.labelBkgRed->height()/2);
-    ui.pgbarBkgRed->setGeometry(ui.pgbarBkgRed->x(), y-ui.pgbarBkgRed->height()/2
-                              , rcBkgGroup.width()-ui.pgbarBkgRed->x()-ui.labelBkgRed->x()
-                              , ui.pgbarBkgRed->height());
+    ui.barBkgRed->setGeometry(ui.barBkgRed->x(), y-ui.barBkgRed->height()/2
+                              , rcBkgGroup.width()-ui.barBkgRed->x()-ui.labelBkgRed->x()
+                              , ui.barBkgRed->height());
 
     ui.labelBkgGreen->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.pgbarBkgGreen->setGeometry(ui.pgbarBkgRed->x(), ui.pgbarBkgRed->y()+y
-                                   , ui.pgbarBkgRed->width(), ui.pgbarBkgRed->height());
+    ui.barBkgGreen->setGeometry(ui.barBkgRed->x(), ui.barBkgRed->y()+y
+                                   , ui.barBkgRed->width(), ui.barBkgRed->height());
 
     y+=y;
     ui.labelBkgBlue->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.pgbarBkgBlue->setGeometry(ui.pgbarBkgRed->x(), ui.pgbarBkgRed->y()+y
-                                   , ui.pgbarBkgRed->width(), ui.pgbarBkgRed->height());
+    ui.barBkgBlue->setGeometry(ui.barBkgRed->x(), ui.barBkgRed->y()+y
+                                   , ui.barBkgRed->width(), ui.barBkgRed->height());
 
     ui.labelFontRed->setGeometry(ui.labelBkgRed->geometry());
-    ui.pgbarFontRed->setGeometry(ui.pgbarBkgRed->geometry());
+    ui.barFontRed->setGeometry(ui.barBkgRed->geometry());
     ui.labelFontBlue->setGeometry(ui.labelBkgBlue->geometry());
-    ui.pgbarFontBlue->setGeometry(ui.pgbarBkgBlue->geometry());
+    ui.barFontBlue->setGeometry(ui.barBkgBlue->geometry());
     ui.labelFontGreen->setGeometry(ui.labelBkgGreen->geometry());
-    ui.pgbarFontGreen->setGeometry(ui.pgbarBkgGreen->geometry());
+    ui.barFontGreen->setGeometry(ui.barBkgGreen->geometry());
 }
 
 void CColorDlg::show()
