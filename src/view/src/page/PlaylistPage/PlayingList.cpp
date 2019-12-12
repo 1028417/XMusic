@@ -41,7 +41,7 @@ BOOL CPlayingList::InitCtrl(UINT uItemHeight)
 
 	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize, 0, true), FALSE);
 
-	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .75f;
+	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .62f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
 
 	__AssertReturn(m_fontUnderline.create(*this, fSmallFontSize, 0, false, true), FALSE);
@@ -63,36 +63,38 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::OnCustomDraw(tagLVDrawSubItem& lvcd)
 {
-	CRect rcItem(lvcd.rc);
-	if (0 == rcItem.right || 0 == rcItem.bottom)
+	cauto rc = lvcd.rc;
+	if (0 == rc.right || 0 == rc.bottom)
 	{
 		return;
 	}
 
-	rcItem.left = 0;
-
 	m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
+		int cx = rc.right - rc.left;
+		int cy = rc.bottom - rc.top;
+
 		CCompDC CompDC;
-		(void)CompDC.create(rcItem.Width(), rcItem.Height(), lvcd.dc);
+		(void)CompDC.create(cx, cy, lvcd.dc);
 		CDC& MemDC = CompDC.getDC();
 
-		DrawItem(MemDC, CRect(0,0, rcItem.Width(), rcItem.Height()), lvcd.uItem, PlayItem);
+		DrawItem(PlayItem, MemDC, cx, cy, lvcd);
 
-		(void)lvcd.dc.BitBlt(rcItem.left, rcItem.top, rcItem.Width(), rcItem.Height(), &MemDC, 0, 0, SRCCOPY);
+		(void)lvcd.dc.BitBlt(0, lvcd.rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
 
 		lvcd.bSkipDefault = true;
 	});
 }
 
-void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayItem)
+void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVDrawSubItem& lvcd)
 {
+	int nItem = lvcd.uItem;
+
 	CFont *pFontPrev = dc.GetCurrentFont();
 
-	int iItemHeight = rcItem.Height();
-	int iYMiddlePos = rcItem.top + iItemHeight / 2 + 1;
+	int iYMiddlePos = cy / 2 + 1;
 
-	bool bPlayingItem = (iItem == m_nPlayingItem);
-	bool bMouseMoveItem = (iItem == m_nMouseMoveItem);
+	bool bPlayingItem = (nItem == m_nPlayingItem);
+	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
 
 	CFont *pFont = &m_font;
 	COLORREF crTextColor = __Color_Text;
@@ -116,18 +118,19 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 			crBkColor = BkgColor_Hit;
 		}
 
-		if (this->GetItemState(iItem, LVIS_SELECTED))
+		if (this->GetItemState(nItem, LVIS_SELECTED))
 		{
 			crBkColor = BkgColor_Select;
 		}
 	}
 
 	(void)dc.SetTextColor(crTextColor);
-	dc.FillSolidRect(rcItem, crBkColor);
+	RECT rcItem { 0, 0, cx, cy };
+	dc.FillSolidRect(&rcItem, crBkColor);
 
-	rcItem.right -= 8;
+	cx -= 8;
 
-	if (iItem == m_nRenameItem)
+	if (nItem == m_nRenameItem)
 	{
 		auto *pEdit = GetEditControl();
 		if (NULL != pEdit && pEdit->IsWindowVisible())
@@ -172,42 +175,49 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 			}
 		}
 	}
-	
-	tagItemLinks& ItemLinks = m_vecItemLinks[iItem];
+
+	tagItemLinks& ItemLinks = m_vecItemLinks[nItem];
 
 	auto& lnkSingerAlbum = ItemLinks.lnkSingerAlbum;
 	auto& rcSingerAlbum = lnkSingerAlbum.rcPos;
 	memzero(rcSingerAlbum);
-	
+
 	CRect& rcSingerImg = ItemLinks.lnkSingerImg.rcPos;
 
-	int iLeft = rcItem.left;
+#define __Margin 0
+
+	int x = 0;
 	if (iImage >= 0)
 	{
-#define __Margin 8
-		rcSingerImg = CRect(CPoint(rcItem.left + __Margin, rcItem.top + __Margin)
-			, CSize(iItemHeight - __Margin * 2, iItemHeight - __Margin * 2));
-
+		UINT nStyle = ILD_SCALE;
+		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
+		{
+			nStyle = ILD_NORMAL;
+			rcSingerImg.SetRect(0, 1, cy, cy-1);
+		}
+		else
+		{
+			rcSingerImg.SetRect(__Margin, __Margin, cy - __Margin, cy - __Margin);
+		}
 		m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big).DrawEx(&dc, iImage
-			, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_DEFAULT, CLR_DEFAULT, ILD_SCALE);
+			, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_DEFAULT, CLR_DEFAULT, nStyle);
 
-		iLeft += iItemHeight;
+		x = cy;
 	}
 	else
 	{
 		memzero(rcSingerImg);
-
-		iLeft += 8;
 	}
+	x += 8;
 
-	int iXPosDuration = rcItem.right;
+	int iXPosDuration = cx;
 	auto& strDuration = PlayItem.GetDurationString();
 	if (!strDuration.empty())
 	{
 		(void)dc.SelectObject(m_fontSmall);
 
 		iXPosDuration -= 43 + int(strDuration.size() - 4) * 12;
-		RECT rcPos = { iXPosDuration, iYMiddlePos, rcItem.right, rcItem.bottom };
+		RECT rcPos = { iXPosDuration, iYMiddlePos, cx, cy };
 		dc.DrawText(strDuration.c_str(), &rcPos, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	}
 
@@ -236,9 +246,9 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 		wstring strTracks = to_wstring(cueFile.m_alTrackInfo.size()) + L"สื";
 		CSize szLink = dc.GetTextExtent(strTracks.c_str());
 
-		int iTop = iYMiddlePos + (iItemHeight / 2 - szLink.cy) / 2 - 2;
+		int iTop = iYMiddlePos + (cy / 2 - szLink.cy) / 2 - 2;
 		int iBottom = iTop + szLink.cy;
-		rcTrackCountLink = { iLeft, iTop, iLeft + szLink.cx, iBottom };
+		rcTrackCountLink = { x, iTop, x + szLink.cx, iBottom };
 
 		dc.DrawText(strTracks.c_str(), &rcTrackCountLink, 0);
 
@@ -254,7 +264,7 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 			}
 
 			szLink = dc.GetTextExtent(__PrevTrack);
-			int iXMiddlePos = (iLeft + szLink.cx * 2 / 3 + iXPosDuration) / 2;
+			int iXMiddlePos = (x + szLink.cx * 2 / 3 + iXPosDuration) / 2;
 			rcPrevTrackLink = { iXMiddlePos - 5 - szLink.cx, iTop, iXMiddlePos - 5, iBottom };
 			dc.DrawText(__PrevTrack, &rcPrevTrackLink, 0);
 
@@ -285,15 +295,15 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 		}
 		CSize szLink = dc.GetTextExtent(strSingerAlbum.c_str());
 
-		rcSingerAlbum.left = iLeft;
-		rcSingerAlbum.top = iYMiddlePos + (iItemHeight / 2 - szLink.cy) / 2 - 2;
+		rcSingerAlbum.left = x;
+		rcSingerAlbum.top = iYMiddlePos + (cy / 2 - szLink.cy) / 2 - 2;
 		rcSingerAlbum.right = MIN(rcSingerAlbum.left + szLink.cx, iXPosDuration - 20);
 		rcSingerAlbum.bottom = rcSingerAlbum.top + szLink.cy;
 
 		dc.DrawText(strSingerAlbum.c_str(), rcSingerAlbum, DT_NOPREFIX | DT_SINGLELINE | DT_WORD_ELLIPSIS);
 	}
 
-	CRect rcTitle(iLeft, rcItem.top, rcItem.right, rcItem.bottom);
+	RECT rcTitle { x, 0, cx, cy };
 	if (bFlag)
 	{
 		rcTitle.bottom = iYMiddlePos+5;
@@ -313,7 +323,7 @@ void CPlayingList::DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayIt
 	}
 
 	dc.SelectObject(pFont);
-	dc.DrawText(PlayItem.GetTitle().c_str(), rcTitle, uFormat);
+	dc.DrawText(PlayItem.GetTitle().c_str(), &rcTitle, uFormat);
 
 	(void)dc.SelectObject(pFontPrev);
 }

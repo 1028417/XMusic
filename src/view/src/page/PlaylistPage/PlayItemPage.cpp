@@ -197,7 +197,9 @@ void CPlayItemPage::UpdateTitle()
 
 void CPlayItemPage::UpdateHead()
 {
-	wstring strColumnText = strutil::wcSpace + __ColumnText_Name;
+	m_view.m_PlaylistPage.Invalidate();
+
+	/*wstring strColumnText = strutil::wcSpace + __ColumnText_Name;
 
 	int iItemCount = m_wndList.GetItemCount();
 	if (iItemCount > 0)
@@ -205,7 +207,7 @@ void CPlayItemPage::UpdateHead()
 		strColumnText.append(L"(").append(to_wstring(iItemCount)).append(L")");
 	}
 	
-	m_wndList.SetColumnText(0, strColumnText);
+	m_wndList.SetColumnText(0, strColumnText);*/
 }
 
 /*void CPlayItemPage::removeItem(set<CListObject*>& setPlayItemObjects)

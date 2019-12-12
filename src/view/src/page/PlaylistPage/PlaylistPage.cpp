@@ -56,25 +56,51 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
+	float fBigFontSize = m_view.m_globalSize.m_fBigFontSize * 3.5f;
+	__AssertReturn(m_fontBig.create(*this, fBigFontSize), FALSE);
+
+	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .66f;
+	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
+
 	m_wndList.SetCustomDraw(NULL, [&](tagLVDrawSubItem& lvcd) {
 		CPlaylist *pPlaylist = (CPlaylist *)lvcd.pObject;
 		if (pPlaylist)
 		{
 			CDC& dc = lvcd.dc;
-			auto& rc = lvcd.rc;
-			rc.left += 100;
 
+			BYTE uTextAlpha = 0;
 			if (pPlaylist->property().isDisableDemand() && pPlaylist->property().isDisableExport())
 			{
-				lvcd.setTextAlpha(200);
+				uTextAlpha = 200;
 			}
 			else if (pPlaylist->property().isDisableDemand() || pPlaylist->property().isDisableExport())
 			{
-				lvcd.setTextAlpha(128);
+				uTextAlpha = 128;
 			}
-			dc.SetTextColor(lvcd.crText);
+			dc.SetTextColor(lvcd.getTextColor(uTextAlpha));
+
+			CRect rc(lvcd.rc);
+			rc.left += 100;
+			rc.top -= 22;
+			rc.bottom -= 12;
+
+			dc.DrawText(pPlaylist->m_strName.c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+
+			auto pPrevFont = dc.SelectObject(m_fontBig);
+			dc.SetTextColor(lvcd.getTextColor(225));
+
+			cauto strIndex = to_wstring(pPlaylist->index() + 1) + L" ";
+			dc.DrawText(strIndex.c_str(), &lvcd.rc, DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
+
+			auto uCount = pPlaylist->playItems().size();
+			if (uCount != 0)
+			{
+				dc.SetTextColor(lvcd.getTextColor(200));
+				dc.SelectObject(m_fontSmall);
+				dc.DrawText((to_wstring(uCount) + L"สื").c_str(), &rc, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
+			}
 			
-			dc.DrawText(pPlaylist->GetDisplayName().c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+			dc.SelectObject(pPrevFont);
 		}
 	});
 

@@ -12,6 +12,9 @@ public:
 private:
 	CPlayItemPage& m_PlayItemPage;
 
+	CCompatableFont m_fontBig;
+	CCompatableFont m_fontSmall;
+
 	int m_width = 0;
 
 public:

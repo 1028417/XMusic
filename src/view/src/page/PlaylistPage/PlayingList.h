@@ -127,7 +127,7 @@ public:
 private:
 	void OnCustomDraw(tagLVDrawSubItem& lvcd);
 	
-	void DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayItem);
+	void DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVDrawSubItem& lvcd);
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;
 
