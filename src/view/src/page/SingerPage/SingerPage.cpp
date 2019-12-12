@@ -47,17 +47,17 @@ BOOL CSingerPage::OnInitDialog()
 
 	m_wndTree.SetIndent(m_wndTree.GetIndent() - 10);
 
-	m_wndTree.SetCustomDraw([&](tagTVCustomDraw& tvcd) {
+	m_wndTree.SetCustomDraw([&](tagTVDrawItem& tvcd) {
 		CMediaSet *pSingerObject = (CMediaSet *)tvcd.pObject;
-		if (NULL != pSingerObject)
+		if (pSingerObject)
 		{
-			if (pSingerObject->property().isDisableDemand())
+			if (pSingerObject->property().isDisableDemand() && pSingerObject->property().isDisableExport())
 			{
-				tvcd.uTextAlpha = pSingerObject->property().isDisableExport() ? 200 : 128;
+				tvcd.setTextAlpha(200);
 			}
-			else if (pSingerObject->property().isDisableExport())
+			else if (pSingerObject->property().isDisableDemand() || pSingerObject->property().isDisableExport())
 			{
-				tvcd.uTextAlpha = 128;
+				tvcd.setTextAlpha(128);
 			}
 		}
 	});

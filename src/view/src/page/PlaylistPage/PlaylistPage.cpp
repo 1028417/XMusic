@@ -56,18 +56,25 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+	m_wndList.SetCustomDraw(NULL, [&](tagLVDrawSubItem& lvcd) {
 		CPlaylist *pPlaylist = (CPlaylist *)lvcd.pObject;
-		if (NULL != pPlaylist)
+		if (pPlaylist)
 		{
-			if (pPlaylist->property().isDisableDemand())
+			CDC& dc = lvcd.dc;
+			auto& rc = lvcd.rc;
+			rc.left += 100;
+
+			if (pPlaylist->property().isDisableDemand() && pPlaylist->property().isDisableExport())
 			{
-				lvcd.uTextAlpha += 100;
+				lvcd.setTextAlpha(200);
 			}
-			if (pPlaylist->property().isDisableExport())
+			else if (pPlaylist->property().isDisableDemand() || pPlaylist->property().isDisableExport())
 			{
-				lvcd.uTextAlpha += 100;
+				lvcd.setTextAlpha(128);
 			}
+			dc.SetTextColor(lvcd.crText);
+			
+			dc.DrawText(pPlaylist->m_strName.c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 		}
 	});
 

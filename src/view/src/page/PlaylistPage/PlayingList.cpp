@@ -18,7 +18,7 @@ BOOL CPlayingList::InitCtrl(UINT uItemHeight)
 	ListPara.uItemHeight = uItemHeight;
 	__super::InitCtrl(ListPara);
 
-	__super::SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		OnCustomDraw(lvcd);
 	});
 
@@ -61,7 +61,7 @@ void CPlayingList::fixColumnWidth(int width)
 	(void)SetColumnWidth(0, width);
 }
 
-void CPlayingList::OnCustomDraw(tagLVCustomDraw& lvcd)
+void CPlayingList::OnCustomDraw(tagLVDrawSubItem& lvcd)
 {
 	CRect rcItem(lvcd.rc);
 	if (0 == rcItem.right || 0 == rcItem.bottom)

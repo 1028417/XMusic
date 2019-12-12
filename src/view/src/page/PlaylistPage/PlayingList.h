@@ -125,7 +125,7 @@ public:
 	void GetSelItems(TD_PlayItemList& arrSelPlayItem);
 
 private:
-	void OnCustomDraw(tagLVCustomDraw& lvcd);
+	void OnCustomDraw(tagLVDrawSubItem& lvcd);
 	
 	void DrawItem(CDC& dc, CRect& rcItem, int iItem, CPlayItem& PlayItem);
 	

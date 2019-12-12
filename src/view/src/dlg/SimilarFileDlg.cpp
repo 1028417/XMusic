@@ -43,7 +43,7 @@ BOOL CSimilarFileDlg::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		if (m_vecRowFlag[lvcd.uItem])
 		{
 			lvcd.crBkg = __Color_Flag;

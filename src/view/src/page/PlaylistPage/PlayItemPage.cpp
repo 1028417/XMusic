@@ -72,13 +72,13 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
 		if (NULL != pPlayItem)
 		{
 			if (pPlayItem->duration() == 0)
 			{
-				lvcd.uTextAlpha = 128;
+				lvcd.setTextAlpha(128);
 			}
 		}
 

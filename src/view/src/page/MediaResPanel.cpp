@@ -116,7 +116,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_wndList.SetCustomDraw([&](tagLVCustomDraw& lvcd) {
+	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Name:
