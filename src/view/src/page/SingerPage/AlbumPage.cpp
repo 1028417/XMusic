@@ -116,7 +116,7 @@ BOOL CAlbumPage::OnInitDialog()
 
 	CRect rcClient;
 	m_view.m_MainWnd.GetClientRect(rcClient);
-	UINT width = rcClient.Width() - globalSize.m_uLeftDockWidth - globalSize.m_uAlbumDockWidth - globalSize.m_uScrollbarWidth/2;
+	UINT width = rcClient.Width() - globalSize.m_uLeftDockWidth - globalSize.m_uAlbumDockWidth - globalSize.m_uScrollbarWidth;
 	
 	CListColumnGuard ColumnGuard(width + globalSize.m_ColWidth_AddTime);
 	ColumnGuard.addDynamic(_T("×¨¼­ÇúÄ¿"), 0.63)

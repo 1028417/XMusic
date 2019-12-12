@@ -42,8 +42,8 @@ CGlobalSize::CGlobalSize()
 
 	m_ColWidth_Type = 45;
 	m_ColWidth_FileSize = 58;
-	m_ColWidth_RelatedPlaylist = 105;
-	m_ColWidth_RelatedSingerAlbum = 165;
+	m_ColWidth_RelatedPlaylist = 120;
+	m_ColWidth_RelatedSingerAlbum = 175;
 	m_ColWidth_AddTime = 82;
 }
 
