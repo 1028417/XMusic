@@ -154,26 +154,51 @@ struct tagLVNMCustomDraw
 
 	CDC dc;
 
-	const CRect rc;
+	CRect rc;
 	const UINT uItem;
 	CListObject * const pObject;
 };
 
-struct tagLVCustomDraw : tagLVNMCustomDraw
+struct tagLVDrawSubItem : tagLVNMCustomDraw
 {
-	tagLVCustomDraw(NMLVCUSTOMDRAW& lvcd)
+	tagLVDrawSubItem(NMLVCUSTOMDRAW& lvcd)
 		: tagLVNMCustomDraw(lvcd.nmcd)
 		, nSubItem(lvcd.iSubItem)
 		, crBkg(lvcd.clrTextBk)
 		, crText(lvcd.clrText)
 	{
 	}
+
+	const COLORREF& setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
+	{
+		crText = t_crText;
+		setTextAlpha(uTextAlpha);
+	}
 	
+	const COLORREF& setTextAlpha(BYTE uTextAlpha)
+	{
+		if (0 != uTextAlpha && uTextAlpha <= 255)
+		{
+			auto pb = (BYTE*)&crText;
+			int r = *pb;
+			int g = pb[1];
+			int b = pb[2];
+
+			pb = (BYTE*)&crBkg;
+			r += (-r + pb[0])*uTextAlpha / 255;
+			g += (-g + pb[1])*uTextAlpha / 255;
+			b += (-b + pb[2])*uTextAlpha / 255;
+
+			crText = RGB(r, g, b);
+		}
+
+		return crText;
+	}
+
 	const int nSubItem;
 	
 	COLORREF& crBkg;
 	COLORREF& crText;
-	BYTE uTextAlpha = 0;
 
 	float fFontSizeOffset = 0;
 
@@ -185,7 +210,9 @@ struct tagLVCustomDraw : tagLVNMCustomDraw
 class __CommonExt CObjectList : public CTouchWnd<CListCtrl>
 {
 public:
-	using CB_LVCustomDraw = fn_void_t<tagLVCustomDraw&>;
+	using CB_LVDrawSubItem = fn_void_t<tagLVDrawSubItem&>;
+	using CB_LVPostDraw = CB_LVDrawSubItem;
+
 	using CB_ListViewChanged = fn_void_t<E_ListViewType>;
 
 	using CB_LButtonHover = fn_void_t<const CPoint&>;
@@ -229,7 +256,9 @@ public:
 private:
 	tagListPara m_para;
 
-	CB_LVCustomDraw m_cbCustomDraw;
+	CB_LVDrawSubItem m_cbDrawSubItem;
+	CB_LVPostDraw m_cbPostDraw;
+
 	CB_ListViewChanged m_cbViewChanged;
 	CB_TrackMouseEvent m_cbTrackMouseEvent;
 
@@ -281,9 +310,10 @@ public:
 
 	void SetTileSize(ULONG cx, ULONG cy);
 
-	void SetCustomDraw(const CB_LVCustomDraw& cb)
+	void SetCustomDraw(const CB_LVDrawSubItem& cbDrawSubItem, const CB_LVPostDraw& cbPostDraw = NULL)
 	{
-		m_cbCustomDraw = cb;
+		m_cbDrawSubItem = cbDrawSubItem;
+		m_cbPostDraw = cbPostDraw;
 	}
 
 	void SetViewAutoChange(const CB_ListViewChanged& cb)

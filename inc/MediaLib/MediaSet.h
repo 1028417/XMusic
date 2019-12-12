@@ -123,11 +123,6 @@ private:
 private:
 	virtual int _indexOf(const CMediaSet&) const { return -1; }
 
-	void GenListItem(bool, vector<wstring>& vecText, int&) override
-	{
-		vecText.push_back(m_strName.c_str());
-	}
-
 	bool GetRenameText(wstring& stRenameText) const override
 	{
 		stRenameText = m_strName;

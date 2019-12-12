@@ -82,7 +82,7 @@ private:
     void GenListItem(bool, vector<wstring>& vecText, int& iImage) override
 	{
 		iImage = (int)E_GlobalImage::GI_Playlist;
-		vecText.push_back(_GetDisplayName().c_str());
+		//vecText.push_back(_GetDisplayName().c_str());
 	}
 
 	wstring GetExportName() override

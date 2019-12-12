@@ -67,23 +67,48 @@ struct tagTVNMCustomDraw
 
 	CDC dc;
 
-	const CRect rc;
+	CRect rc;
 	const HTREEITEM hItem;
 	CTreeObject * const pObject;
 };
 
-struct tagTVCustomDraw : tagTVNMCustomDraw
+struct tagTVDrawItem : tagTVNMCustomDraw
 {
-	tagTVCustomDraw(NMTVCUSTOMDRAW& tvcd)
+	tagTVDrawItem(NMTVCUSTOMDRAW& tvcd)
 		: tagTVNMCustomDraw(tvcd.nmcd)
 		, crBkg(tvcd.clrTextBk)
 		, crText(tvcd.clrText)
 	{
 	}
-	
+
+	const COLORREF& setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
+	{
+		crText = t_crText;
+		return setTextAlpha(uTextAlpha);
+	}
+
+	const COLORREF& setTextAlpha(BYTE uTextAlpha)
+	{
+		if (0 != uTextAlpha && uTextAlpha <= 255)
+		{
+			auto pb = (BYTE*)&crText;
+			int r = *pb;
+			int g = pb[1];
+			int b = pb[2];
+
+			pb = (BYTE*)&crBkg;
+			r += (-r + pb[0])*uTextAlpha / 255;
+			g += (-g + pb[1])*uTextAlpha / 255;
+			b += (-b + pb[2])*uTextAlpha / 255;
+
+			crText = RGB(r, g, b);
+		}
+
+		return crText;
+	}
+
 	COLORREF& crBkg;
 	COLORREF& crText;
-	BYTE uTextAlpha = 0;
 
 	bool bSkipDefault = false;
 };
@@ -93,7 +118,7 @@ struct tagTVCustomDraw : tagTVNMCustomDraw
 class __CommonExt CObjectTree : public CBaseTree
 {
 public:
-	using CB_TVCustomDraw = fn_void_t<tagTVCustomDraw&>;
+	using CB_TVDrawItem = fn_void_t<tagTVDrawItem&>;
 
 public:
 	CObjectTree() {}
@@ -101,12 +126,12 @@ public:
 private:
 	map<const CTreeObject*, HTREEITEM> m_mapTreeObject;
 
-	CB_TVCustomDraw m_cbCustomDraw;
+	CB_TVDrawItem m_cbDrawItem;
 
 public:
-	void SetCustomDraw(const CB_TVCustomDraw& cb)
+	void SetCustomDraw(const CB_TVDrawItem& cb)
 	{
-		m_cbCustomDraw = cb;
+		m_cbDrawItem = cb;
 	}
 
 	CTreeObject *GetItemObject(HTREEITEM hItem);
