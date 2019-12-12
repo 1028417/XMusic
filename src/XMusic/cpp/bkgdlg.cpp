@@ -102,11 +102,12 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
         else
         {
-            QPixmap pmAdd;
-            if (pmAdd.load(":/img/add.png"))
+            QPixmap pmAddBkg;
+            if (pmAddBkg.load(":/img/addBkg.png"))
             {
 #define __offset __size(60)
-                painter.drawPixmap(rc.center().x()-__offset, rc.center().y()-__offset, __offset*2, __offset*2, pmAdd);
+                painter.drawPixmap(rc.center().x()-__offset, rc.center().y()-__offset
+                                   , __offset*2, __offset*2, pmAddBkg);
             }
 
             painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);

@@ -24,11 +24,13 @@
         <file>img/singergroup.png</file>
         <file>img/file.png</file>
         <file>img/righttip.png</file>
-        <file>img/add.png</file>
         <file>img/btnFullScreen.png</file>
         <file>img/btnX.png</file>
         <file>upgrade.conf</file>
         <file>img/btnAddplay.png</file>
         <file>img/btnColor.png</file>
+        <file>img/addBkg.png</file>
+        <file>img/btnAdd.png</file>
+        <file>img/btnSub.png</file>
     </qresource>
 </RCC>
