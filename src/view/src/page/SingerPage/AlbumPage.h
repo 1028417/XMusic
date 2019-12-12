@@ -23,7 +23,7 @@ private:
 
 	CSingerMediaResPanel m_wndMediaResPanel;
 
-	CObjectList m_wndBrowseList;
+	CObjectList m_wndAlbumList;
 
 	CObjectList m_wndAlbumItemList;
 

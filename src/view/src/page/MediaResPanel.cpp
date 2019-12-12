@@ -119,16 +119,22 @@ BOOL CMediaResPanel::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		switch (lvcd.nSubItem)
 		{
-		case __Column_Name:
+		case __Column_Type:
+		case __Column_Size:
+			lvcd.fFontSizeOffset = -.15f;
 
 			break;
 		case __Column_Playlist:
 		case __Column_SingerAlbum:
 			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.15f;
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.2f;
+			if (lvcd.nSubItem >= __Column_ModifyTime)
+			{
+				lvcd.fFontSizeOffset = -.2f;
+			}
 
 			break;
 		};

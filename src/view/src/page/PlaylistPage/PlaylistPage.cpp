@@ -79,7 +79,7 @@ BOOL CPlaylistPage::OnInitDialog()
 			}
 			dc.SetTextColor(lvcd.getTextColor(uTextAlpha));
 
-			CRect rc(lvcd.rc);
+			RECT rc(lvcd.rc);
 			rc.left += 100;
 			rc.top -= 22;
 			rc.bottom -= 12;

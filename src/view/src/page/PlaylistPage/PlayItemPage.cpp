@@ -8,9 +8,7 @@
 enum E_PlayItemColumn
 {
 	__Column_Name = 0
-	, __Column_Type
-	, __Column_Size
-	, __Column_Duration
+	, __Column_Info
 	, __Column_SingerAlbum
 	, __Column_Path
 	, __Column_AddTime
@@ -54,12 +52,10 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	CListColumnGuard ColumnGuard(rcClient.Width() - globalSize.m_uLeftDockWidth - 5
 		- __XOffset - globalSize.m_uScrollbarWidth);
-	ColumnGuard.addDynamic(__ColumnText_Name, 0.62)
-		.addFix(L"类型", globalSize.m_ColWidth_Type, true)
-		.addFix(L"大小", globalSize.m_ColWidth_FileSize, true)
-		.addFix(L"时长", globalSize.m_ColWidth_Duration, true)
+	ColumnGuard.addDynamic(__ColumnText_Name, 0.63)
+		.addFix(L"类型/大小/时长", globalSize.m_ColWidth_Type + globalSize.m_ColWidth_FileSize, true)
 		.addFix(L"歌手" __CNDot L"专辑", globalSize.m_ColWidth_RelatedSingerAlbum, true)
-		.addDynamic(_T("目录"), 0.38)
+		.addDynamic(_T("目录"), 0.37)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
@@ -74,32 +70,59 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
-		if (NULL != pPlayItem)
+		if (NULL == pPlayItem)
 		{
-			if (pPlayItem->duration() == 0)
-			{
-				lvcd.setTextAlpha(128);
-			}
+			return;
 		}
 
+		if (pPlayItem->duration() == 0)
+		{
+			lvcd.setTextAlpha(128);
+		}
+		
 		switch (lvcd.nSubItem)
 		{
-		case __Column_SingerAlbum:
-		case __Column_Path:
-			lvcd.bSetUnderline = true;
+		case __Column_Info:
+		{
+			CDC& dc = lvcd.dc;
+			cauto rc = lvcd.rc;
+			dc.FillSolidRect(&rc, lvcd.crBkg);
 
-			if (__Column_Path == lvcd.nSubItem)
-			{
-				lvcd.fFontSizeOffset = -.2f;
-			}
+			dc.SetTextColor(lvcd.crText);
+			m_wndList.SetCustomFont(dc, -.2f, false);
+			RECT rcText = rc;
+			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
+
+			dc.DrawText(pPlayItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			rcText.left = rcText.right;
+			rcText.right = rc.right;
+			rcText.bottom = (rcText.bottom + rcText.top) / 2;
+			dc.DrawText(pPlayItem->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			rcText.top = rcText.bottom;
+			rcText.bottom = rc.bottom;
+			dc.DrawText(pPlayItem->GetDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+
+		lvcd.bSkipDefault = true;
+
+		break;
+		case __Column_SingerAlbum:
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.15f;
 
 			break;
-		case __Column_Name:
+		case __Column_Path:
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.2f;
+			
+			break;
+		case __Column_AddTime:
+			lvcd.fFontSizeOffset = -.2f;
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.2f;
-
 			break;
 		}
 	});

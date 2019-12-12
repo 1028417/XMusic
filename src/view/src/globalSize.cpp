@@ -40,12 +40,11 @@ CGlobalSize::CGlobalSize()
 	m_ColWidth_MediaTag_Artist = 90;
 	m_ColWidth_MediaTag_Album = 120;
 
-	m_ColWidth_Type = 48;
+	m_ColWidth_Type = 45;
 	m_ColWidth_FileSize = 58;
-	m_ColWidth_Duration = 52;
 	m_ColWidth_RelatedPlaylist = 105;
 	m_ColWidth_RelatedSingerAlbum = 165;
-	m_ColWidth_AddTime = 83;
+	m_ColWidth_AddTime = 82;
 }
 
 void CGlobalSize::init()
@@ -72,11 +71,10 @@ void CGlobalSize::init()
 
 		m_uAlbumDockWidth = uintRound(m_uAlbumDockWidth*fWRate);
 
-		for (auto p : { &m_ColWidth_Name, &m_ColWidth_MediaTag_Title
-		   , &m_ColWidth_Name, &m_ColWidth_MediaTag_Title, &m_ColWidth_MediaTag_Artist
-		   , &m_ColWidth_MediaTag_Album, &m_ColWidth_Type, &m_ColWidth_FileSize
-		   , &m_ColWidth_Duration, &m_ColWidth_RelatedPlaylist, &m_ColWidth_AddTime
-		   , &m_ColWidth_RelatedSingerAlbum, &m_ColWidth_Time })
+		for (auto p : { &m_ColWidth_Name, &m_ColWidth_MediaTag_Title, &m_ColWidth_Name
+			, &m_ColWidth_MediaTag_Title, &m_ColWidth_MediaTag_Artist, &m_ColWidth_MediaTag_Album
+			, &m_ColWidth_Type, &m_ColWidth_FileSize, &m_ColWidth_RelatedPlaylist
+			, &m_ColWidth_AddTime, &m_ColWidth_RelatedSingerAlbum, &m_ColWidth_Time })
 		{
 			*p = uintRound(*p*fWRate);
 		}
@@ -98,9 +96,9 @@ void CGlobalSize::init()
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
 
 	float fDPIRate = getDPIRate();
-	m_fSmallFontSize = (fHRate - 1)*1.15f * fDPIRate * fDPIRate;
+	m_fSmallFontSize = (fHRate - 1)*1.13f * fDPIRate * fDPIRate;
 
-	m_fBigFontSize = m_fSmallFontSize * 1.75f;
+	m_fBigFontSize = m_fSmallFontSize * 1.77f;
 
 	m_fMenuFontSize = (m_fBigFontSize + m_fSmallFontSize)/2.5f;
 	m_fMenuBarFontSize = (m_fMenuFontSize + m_fSmallFontSize)/2.5f;

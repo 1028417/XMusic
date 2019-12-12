@@ -8,9 +8,7 @@
 enum E_AlbumItemColumn
 {
 	__Column_Name = 0
-	, __Column_Type
-	, __Column_Size
-	, __Column_Duration
+	, __Column_Info
 	, __Column_Playlist
 	, __Column_Path
 	, __Column_AddTime
@@ -51,7 +49,7 @@ END_MESSAGE_MAP()
 
 void CAlbumPage::DoDataExchange(CDataExchange* pDX)
 {
-	DDX_Control(pDX, IDC_LIST_BROWSE, m_wndBrowseList);
+	DDX_Control(pDX, IDC_LIST_BROWSE, m_wndAlbumList);
 	DDX_Control(pDX, IDC_LIST_EXPLORE, m_wndAlbumItemList);
 
 	CPage::DoDataExchange(pDX);
@@ -72,18 +70,18 @@ BOOL CAlbumPage::OnInitDialog()
 	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.png";	
 	__AssertReturn(m_imgSingerDefault.LoadEx(strDefaultImg), FALSE);
 
-	(void)m_wndBrowseList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);
+	(void)m_wndAlbumList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);
 	
-	m_wndBrowseList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
+	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
 
 	CObjectList::tagListPara ListPara({ { _T(""), globalSize.m_uAlbumDockWidth } });
 
 	ListPara.fFontSize = m_view.m_globalSize.m_fBigFontSize;
 	ListPara.crText = __Color_Text;
 
-	__AssertReturn(m_wndBrowseList.InitCtrl(ListPara), FALSE);
+	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
 
-	m_wndBrowseList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
+	m_wndAlbumList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbum *pAlbum = (CAlbum *)lvcd.pObject;
 		if (pAlbum)
 		{
@@ -109,12 +107,10 @@ BOOL CAlbumPage::OnInitDialog()
 	UINT width = rcClient.Width() - globalSize.m_uLeftDockWidth - globalSize.m_uAlbumDockWidth - globalSize.m_uScrollbarWidth/2;
 	
 	CListColumnGuard ColumnGuard(width + globalSize.m_ColWidth_AddTime);
-	ColumnGuard.addDynamic(_T("专辑曲目"), 0.62)
-		.addFix(_T("类型"), globalSize.m_ColWidth_Type, true)
-		.addFix(_T("大小"), globalSize.m_ColWidth_FileSize, true)
-		.addFix(_T("时长"), globalSize.m_ColWidth_Duration, true)
+	ColumnGuard.addDynamic(_T("专辑曲目"), 0.63)
+		.addFix(_T("类型/大小/时长"), globalSize.m_ColWidth_Type + globalSize.m_ColWidth_FileSize, true)
 		.addFix(_T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true)
-		.addDynamic(_T("目录"), 0.38)
+		.addDynamic(_T("目录"), 0.37)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
 	ListPara = CObjectList::tagListPara(ColumnGuard);
@@ -133,32 +129,59 @@ BOOL CAlbumPage::OnInitDialog()
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
-		if (pAlbumItem)
+		if (NULL == pAlbumItem)
 		{
-			if (pAlbumItem->duration() == 0)
-			{
-				lvcd.setTextAlpha(128);
-			}
+			return;
 		}
 
+		if (pAlbumItem->duration() == 0)
+		{
+			lvcd.setTextAlpha(128);
+		}
+		
 		switch (lvcd.nSubItem)
 		{
-		case __Column_Playlist:
-		case __Column_Path:
-			lvcd.bSetUnderline = true;
+		case __Column_Info:
+		{
+			CDC& dc = lvcd.dc;
+			cauto rc = lvcd.rc;
+			dc.FillSolidRect(&rc, lvcd.crBkg);
 
-			if (__Column_Path == lvcd.nSubItem)
-			{
-				lvcd.fFontSizeOffset = -.2f;
-			}
+			dc.SetTextColor(lvcd.crText);
+			m_wndAlbumItemList.SetCustomFont(dc, -.2f, false);
+			RECT rcText = rc;
+			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
+
+			dc.DrawText(pAlbumItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			rcText.left = rcText.right;
+			rcText.right = rc.right;
+			rcText.bottom = (rcText.bottom + rcText.top) / 2;
+			dc.DrawText(pAlbumItem->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			rcText.top = rcText.bottom;
+			rcText.bottom = rc.bottom;
+			dc.DrawText(pAlbumItem->GetDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+
+		lvcd.bSkipDefault = true;
+
+		break;
+		case __Column_Playlist:
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.15f;
 
 			break;
-		case __Column_Name:
+		case __Column_Path:
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.2f;
+
+			break;
+		case __Column_AddTime:
+			lvcd.fFontSizeOffset = -.2f;
 
 			break;
 		default:
-			lvcd.fFontSizeOffset = -.2f;
-			
 			break;
 		};
 	});
@@ -174,8 +197,8 @@ BOOL CAlbumPage::OnInitDialog()
 
 	__AssertReturn(m_wndMediaResPanel.Create(*this), FALSE);
 
-	(void)__super::RegDragDropCtrl(m_wndBrowseList, [&](tagDragData& DragData) {
-		CAlbum *pAlbum = (CAlbum*)m_wndBrowseList.GetSelObject();
+	(void)__super::RegDragDropCtrl(m_wndAlbumList, [&](tagDragData& DragData) {
+		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetSelObject();
 		__EnsureReturn(pAlbum, false);
 
 		__EnsureReturn(0 != pAlbum->m_uID, false);
@@ -201,9 +224,9 @@ BOOL CAlbumPage::OnInitDialog()
 		return true;
 	});
 
-	__super::RegMenuHotkey(m_wndBrowseList, VK_RETURN, ID_PLAY_ALBUM);
-	__super::RegMenuHotkey(m_wndBrowseList, VK_F2, ID_RENAME_ALBUM);
-	__super::RegMenuHotkey(m_wndBrowseList, VK_DELETE, ID_REMOVE_ALBUM);
+	__super::RegMenuHotkey(m_wndAlbumList, VK_RETURN, ID_PLAY_ALBUM);
+	__super::RegMenuHotkey(m_wndAlbumList, VK_F2, ID_RENAME_ALBUM);
+	__super::RegMenuHotkey(m_wndAlbumList, VK_DELETE, ID_REMOVE_ALBUM);
 
 	__super::RegMenuHotkey(m_wndAlbumItemList, VK_RETURN, ID_PLAY_ALBUMITEM);
 	__super::RegMenuHotkey(m_wndAlbumItemList, VK_F2, ID_RENAME_ALBUMITEM);
@@ -251,7 +274,7 @@ void CAlbumPage::OnSize(UINT nType, int cx, int cy)
 		rcPos.left = __XOffset;
 		m_wndAlbumItemList.MoveWindow(rcPos);
 		
-		m_wndBrowseList.MoveWindow(x-1, __BrowseTop, m_view.m_globalSize.m_uAlbumDockWidth
+		m_wndAlbumList.MoveWindow(x-1, __BrowseTop, m_view.m_globalSize.m_uAlbumDockWidth
 			, cy - __BrowseTop + m_view.m_globalSize.m_uScrollbarWidth);
 
 		CRect rcSingerImg(__SingerImgRect);
@@ -282,8 +305,8 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	{
 		UpdateTitle();
 
-		(void)m_wndBrowseList.ShowWindow(SW_HIDE);
-		(void)m_wndBrowseList.DeleteAllItems();
+		(void)m_wndAlbumList.ShowWindow(SW_HIDE);
+		(void)m_wndAlbumList.DeleteAllItems();
 
 		(void)m_wndAlbumItemList.ShowWindow(SW_HIDE);
 		(void)m_wndAlbumItemList.DeleteAllItems();
@@ -297,15 +320,15 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 		return;
 	}
 
-	(void)m_wndBrowseList.ShowWindow(SW_SHOW);
+	(void)m_wndAlbumList.ShowWindow(SW_SHOW);
 
 	if (bSingerChanged)
 	{
 		UpdateSingerImage();
 
-		(void)m_wndBrowseList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
+		(void)m_wndAlbumList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
 
-		(void)m_wndBrowseList.InsertItem(0, pSinger->m_strName.c_str(), (int)E_GlobalImage::GI_Dir);
+		(void)m_wndAlbumList.InsertItem(0, pSinger->m_strName.c_str(), (int)E_GlobalImage::GI_Dir);
 
 		m_wndMediaResPanel.ShowPath(m_pSinger->GetBaseDir());
 	}
@@ -314,14 +337,14 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	{
 		m_pAlbum = (CAlbum*)pAlbumItem->m_pParent;
 
-		m_wndBrowseList.SelectObject(m_pAlbum);
+		m_wndAlbumList.SelectObject(m_pAlbum);
 
 		m_wndAlbumItemList.DeselectAll();
 		m_wndAlbumItemList.SelectObject(pAlbumItem);
 	}
 	else
 	{
-		(void)m_wndBrowseList.SelectFirstItem();
+		(void)m_wndAlbumList.SelectFirstItem();
 	}
 
 	if (pAlbumItem)
@@ -403,7 +426,7 @@ void CAlbumPage::UpdateTitle()
 
 void CAlbumPage::UpdateSingerName(const wstring& strSingerName)
 {
-	m_wndBrowseList.SetItemText(0, 0, (L" " + strSingerName).c_str());
+	m_wndAlbumList.SetItemText(0, 0, (L" " + strSingerName).c_str());
 
 	UpdateTitle();
 }
@@ -445,7 +468,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	bool bAvalible = false;
 	if (bEnable)
 	{
-		CAlbum *pAlbum = (CAlbum*)m_wndBrowseList.GetItemObject(lpNM->iItem);
+		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(lpNM->iItem);
 		__Assert(pAlbum);
 		const CMediasetProperty& property = pAlbum->property();
 
@@ -474,8 +497,8 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CAlbumPage::OnMenuCommand_Album(UINT uID)
 {
-	int nItem = m_wndBrowseList.GetSelItem();
-	CAlbum *pAlbum = (CAlbum*)m_wndBrowseList.GetSelObject();
+	int nItem = m_wndAlbumList.GetSelItem();
+	CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetSelObject();
 
 	switch (uID)
 	{
@@ -511,7 +534,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			int iRet = m_view.getController().addAlbumItems(lstFiles, *pAlbum);
 			if (iRet > 0)
 			{
-				m_wndBrowseList.SelectObject(pAlbum);
+				m_wndAlbumList.SelectObject(pAlbum);
 
 				this->_showAlbum(pAlbum);
 
@@ -527,14 +550,14 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 		pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger);
 		__EnsureBreak(pAlbum);
 
-		nItem = m_wndBrowseList.InsertObject(*pAlbum);
-		(void)m_wndBrowseList.EditLabel(nItem);
+		nItem = m_wndAlbumList.InsertObject(*pAlbum);
+		(void)m_wndAlbumList.EditLabel(nItem);
 
 		break;
 	case ID_RENAME_ALBUM:
 		__EnsureBreak(nItem > 0);
 
-		(void)m_wndBrowseList.EditLabel(nItem);
+		(void)m_wndAlbumList.EditLabel(nItem);
 
 		break;
 
@@ -543,8 +566,8 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 
 		__EnsureBreak(CMainApp::showConfirmMsg(L"确认删除所选专辑?", *this));
 
-		(void)m_wndBrowseList.DeleteItem(nItem);
-		(void)m_wndBrowseList.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
+		(void)m_wndAlbumList.DeleteItem(nItem);
+		(void)m_wndAlbumList.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
 
 		__EnsureBreak(m_view.getController().removeMediaSet(*pAlbum));
 
@@ -566,12 +589,12 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			bool bDisableDemand = !property.isDisableDemand();
 			property.setDisableDemand(bDisableDemand);
 			property.setDisableExport(bDisableDemand);
-			m_wndBrowseList.UpdateItem(nItem);
+			m_wndAlbumList.UpdateItem(nItem);
 		}
 		else if (ID_DisableExport == uID)
 		{
 			property.setDisableExport(!property.isDisableExport());
-			m_wndBrowseList.UpdateItem(nItem);
+			m_wndAlbumList.UpdateItem(nItem);
 		}
 		else
 		{
@@ -657,7 +680,7 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 	case ID_HITTEST_ALBUMITEM:
 		__AssertBreak(1 == lstAlbumItems.size());
 		
-		(void)m_wndBrowseList.SelectFirstItem();
+		(void)m_wndAlbumList.SelectFirstItem();
 		lstAlbumItems.front([&](auto& media) {
 			if (m_wndMediaResPanel.HittestMediaRes(media, *this))
 			{
@@ -710,7 +733,7 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 void CAlbumPage::OnMenuCommand(UINT uID, UINT uVkKey)
 {
 	CWnd *pWndFocus = CWnd::GetFocus();
-	if (&m_wndBrowseList == pWndFocus)
+	if (&m_wndAlbumList == pWndFocus)
 	{
 		this->OnMenuCommand_Album(uID);
 	}
@@ -729,7 +752,7 @@ void CAlbumPage::OnLvnItemchangedListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 
 	__Ensure(pNMLV->uNewState & LVIS_SELECTED);
 
-	CAlbum *pAlbum = (CAlbum*)m_wndBrowseList.GetItemObject(pNMLV->iItem);
+	CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(pNMLV->iItem);
 	_showAlbum(pAlbum);
 }
 
@@ -792,7 +815,7 @@ void CAlbumPage::OnLvnEndlabeleditListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	NMLVDISPINFO *pLVDispInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
 
-	CAlbum *pAlbum = (CAlbum*)m_wndBrowseList.GetItemObject(pLVDispInfo->item.iItem);
+	CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(pLVDispInfo->item.iItem);
 	__Ensure(pAlbum);
 
 
@@ -817,7 +840,7 @@ void CAlbumPage::OnLvnEndlabeleditListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 
-	(void)m_wndBrowseList.SetItemText(pLVDispInfo->item.iItem, 0, cstrNewName);
+	(void)m_wndAlbumList.SetItemText(pLVDispInfo->item.iItem, 0, cstrNewName);
 
 	this->UpdateTitle();
 }
@@ -1002,13 +1025,13 @@ BOOL CAlbumPage::_checkMediasDropable(const TD_IMediaList& lstMedias)
 
 DROPEFFECT CAlbumPage::OnMediasDragOverBrowseList(const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	bool bScroll = DragScroll(m_wndBrowseList, DragContext.x, DragContext.y);
+	bool bScroll = DragScroll(m_wndAlbumList, DragContext.x, DragContext.y);
 
 	__EnsureReturn(_checkMediasDropable(lstMedias), DROPEFFECT_NONE);
 
-	int nItem = m_wndBrowseList.HitTest(CPoint(5, DragContext.y));
+	int nItem = m_wndAlbumList.HitTest(CPoint(5, DragContext.y));
 	__EnsureReturn(1 <= nItem, DROPEFFECT_NONE);	
-	CAlbum *pDropHilightAlbum = (CAlbum*)m_wndBrowseList.GetItemObject(nItem);
+	CAlbum *pDropHilightAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(nItem);
 	__AssertReturn(pDropHilightAlbum, DROPEFFECT_NONE);
 	
 	CMediaSet *pSrcMediaSet = NULL;
@@ -1021,7 +1044,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverBrowseList(const TD_IMediaList& lstMedias
 	if (!bScroll)
 	{
 		CRect rcItem;
-		(void)m_wndBrowseList.GetItemRect(nItem, &rcItem, LVIR_BOUNDS);
+		(void)m_wndAlbumList.GetItemRect(nItem, &rcItem, LVIR_BOUNDS);
 		DragContext.DrawDragOverRect(rcItem.top, rcItem.bottom);
 	}
 
@@ -1062,7 +1085,7 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstMedias, *pTargetAlbum), FALSE);
 	}
 
-	m_wndBrowseList.SelectObject(pTargetAlbum);
+	m_wndAlbumList.SelectObject(pTargetAlbum);
 
 	_showAlbum(pTargetAlbum);
 
@@ -1076,15 +1099,15 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 
 DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__EnsureReturn(pwndCtrl == &m_wndBrowseList, DROPEFFECT_NONE);
+	__EnsureReturn(pwndCtrl == &m_wndAlbumList, DROPEFFECT_NONE);
 	
 	__EnsureReturn(pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
 	
-	int nDragingItem = m_wndBrowseList.GetObjectItem(pMediaSet);
+	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
 	
 	DROPEFFECT dwRet = DROPEFFECT_MOVE;
-	handleDragOver(m_wndBrowseList, DragContext, [&](int& iDragOverPos) {
+	handleDragOver(m_wndAlbumList, DragContext, [&](int& iDragOverPos) {
 		if (iDragOverPos < 1)
 		{
 			dwRet = DROPEFFECT_NONE;
@@ -1104,25 +1127,25 @@ DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, 
 
 BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__AssertReturn(pwndCtrl == &m_wndBrowseList && pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
+	__AssertReturn(pwndCtrl == &m_wndAlbumList && pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
 
-	int nDragingItem = m_wndBrowseList.GetObjectItem(pMediaSet);
+	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
 	
 	int iTargetPos = DragContext.uTargetPos;
 	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, iTargetPos-1);
 	__EnsureReturn(pAlbum, FALSE);
 
-	(void)m_wndBrowseList.DeleteItem(nDragingItem);
-	(void)m_wndBrowseList.InsertObject(*pAlbum, iTargetPos);
-	m_wndBrowseList.SelectItem(iTargetPos);
+	(void)m_wndAlbumList.DeleteItem(nDragingItem);
+	(void)m_wndAlbumList.InsertObject(*pAlbum, iTargetPos);
+	m_wndAlbumList.SelectItem(iTargetPos);
 	
 	return TRUE;
 }
 
 DROPEFFECT CAlbumPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	if (pwndCtrl == &m_wndBrowseList)
+	if (pwndCtrl == &m_wndAlbumList)
 	{
 		return OnMediasDragOverBrowseList(lstMedias, DragContext);
 	}
@@ -1136,7 +1159,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& lst
 
 BOOL CAlbumPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	if (pwndCtrl == &m_wndBrowseList)
+	if (pwndCtrl == &m_wndAlbumList)
 	{
 		return OnMediasDropBrowseList(lstMedias, (CAlbum*)DragContext.pTargetObj, DragContext.nDropEffect);
 	}
