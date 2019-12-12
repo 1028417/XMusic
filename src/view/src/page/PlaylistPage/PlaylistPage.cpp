@@ -74,7 +74,7 @@ BOOL CPlaylistPage::OnInitDialog()
 			}
 			dc.SetTextColor(lvcd.crText);
 			
-			dc.DrawText(pPlaylist->m_strName.c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pPlaylist->GetDisplayName().c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 		}
 	});
 
