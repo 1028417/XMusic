@@ -278,7 +278,6 @@ private:
 
 	CCompatableFont m_font;
 	CCompatableFont m_fontUnderline;
-	CCompatableFont m_fontCustom;
 
 	CListHeader m_wndHeader;
 
@@ -324,6 +323,8 @@ public:
 		m_cbDrawSubItem = cbDrawSubItem;
 		m_cbPostDraw = cbPostDraw;
 	}
+
+	void SetCustomFont(CDC& dc, float fFontSizeOffset, bool bUnderline = false);
 
 	void SetViewAutoChange(const CB_ListViewChanged& cb)
 	{
