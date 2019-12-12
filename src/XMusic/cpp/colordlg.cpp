@@ -35,43 +35,53 @@ void CColorDlg::_relayout(int cx, int cy)
 #define __margin 100
     cauto yClient = rcReturn.bottom() + __margin;
 
-    QRect rcBkgGroup;
-    QRect rcFontGroup;
     if (cy > cx)
     {
-        rcBkgGroup.setRect(__margin, yClient, cx-__margin*2, (cy-yClient)/2-__margin);
+        ui.groupBkgColor->setGeometry(__margin, yClient, cx-__margin*2, (cy-yClient)/2-__margin);
 
-        rcFontGroup.setRect(__margin, rcBkgGroup.bottom()+__margin, rcBkgGroup.width(), rcBkgGroup.height());
+        ui.groupFontColor->move(__margin, ui.groupBkgColor->geometry().bottom()+__margin);
     }
     else
     {
-        rcBkgGroup.setRect(__margin, yClient, cx/2-__margin*1.5, cy-__margin-yClient);
+        ui.groupBkgColor->setGeometry(__margin, yClient, cx/2-__margin*1.5, cy-__margin-yClient);
 
-        rcFontGroup.setRect(cx/2+__margin/2, yClient, rcBkgGroup.width(), rcBkgGroup.height());
+        ui.groupFontColor->move(cx/2+__margin/2, yClient);
     }
-    ui.groupBkgColor->setGeometry(rcBkgGroup);
-    ui.groupFontColor->setGeometry(rcFontGroup);
+    ui.groupFontColor->resize(ui.groupBkgColor->size());
 
-    int y = rcBkgGroup.height()/3.85;
-    ui.labelBkgRed->move(ui.labelBkgRed->x(), y-ui.labelBkgRed->height()/2);
-    ui.barBkgRed->setGeometry(ui.barBkgRed->x(), y-ui.barBkgRed->height()/2
-                              , rcBkgGroup.width()-ui.barBkgRed->x()-ui.labelBkgRed->x()
-                              , ui.barBkgRed->height());
+    int cx_group = ui.groupBkgColor->rect().width();
+    int cy_group = ui.groupBkgColor->rect().height();
 
-    ui.labelBkgGreen->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.barBkgGreen->setGeometry(ui.barBkgRed->x(), ui.barBkgRed->y()+y
-                                   , ui.barBkgRed->width(), ui.barBkgRed->height());
+    int x = ui.btnSubBkgRed->x();
+    int y = cy_group/3.85;
+
+    ui.btnSubBkgRed->move(x, y-ui.btnSubBkgRed->height()/2);
+    ui.btnAddBkgRed->move(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y());
+
+    int x_bar = ui.barBkgRed->x();
+    int cx_bar = cx_group-x_bar*2;
+    int cy_bar = ui.barBkgRed->height();
+    ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
+
+    ui.btnSubBkgGreen->move(x, ui.btnSubBkgRed->y()+y);
+    ui.btnAddBkgGreen->move(ui.btnAddBkgRed->x(), ui.btnSubBkgGreen->y());
+    ui.barBkgGreen->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
     y+=y;
-    ui.labelBkgBlue->move(ui.labelBkgRed->x(), ui.labelBkgRed->y()+y);
-    ui.barBkgBlue->setGeometry(ui.barBkgRed->x(), ui.barBkgRed->y()+y
-                                   , ui.barBkgRed->width(), ui.barBkgRed->height());
+    ui.btnSubBkgBlue->move(x, ui.btnSubBkgRed->y()+y);
+    ui.btnAddBkgBlue->move(ui.btnAddBkgRed->x(), ui.btnSubBkgBlue->y());
+    ui.barBkgBlue->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
-    ui.labelFontRed->setGeometry(ui.labelBkgRed->geometry());
+    ui.btnSubFontRed->setGeometry(ui.btnSubBkgRed->geometry());
+    ui.btnAddFontRed->setGeometry(ui.btnAddBkgRed->geometry());
     ui.barFontRed->setGeometry(ui.barBkgRed->geometry());
-    ui.labelFontBlue->setGeometry(ui.labelBkgBlue->geometry());
+
+    ui.btnSubFontBlue->setGeometry(ui.btnSubBkgBlue->geometry());
+    ui.btnAddFontBlue->setGeometry(ui.btnAddBkgBlue->geometry());
     ui.barFontBlue->setGeometry(ui.barBkgBlue->geometry());
-    ui.labelFontGreen->setGeometry(ui.labelBkgGreen->geometry());
+
+    ui.btnSubFontGreen->setGeometry(ui.btnSubBkgGreen->geometry());
+    ui.btnAddFontGreen->setGeometry(ui.btnAddBkgGreen->geometry());
     ui.barFontGreen->setGeometry(ui.barBkgGreen->geometry());
 }
 
@@ -80,11 +90,11 @@ void CColorDlg::show()
     ui.labelTitle->setTextColor(m_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    SList<QWidget*> lstWidget {ui.groupBkgColor, ui.labelBkgRed, ui.labelBkgGreen, ui.labelBkgBlue
-                              , ui.groupFontColor, ui.labelFontRed, ui.labelFontGreen, ui.labelFontBlue};
+    SList<QWidget*> lstWidget {ui.groupBkgColor, ui.btnSubBkgRed, ui.btnSubBkgGreen, ui.btnSubBkgBlue
+                              , ui.groupFontColor, ui.btnSubFontRed, ui.btnSubFontGreen, ui.btnSubFontBlue};
     for (auto widget : lstWidget)
     {
-        QPalette pe = ui.labelBkgRed->palette();
+        QPalette pe = ui.btnSubBkgRed->palette();
         pe.setColor(QPalette::WindowText, m_crText);
         widget->setPalette(pe);
     }

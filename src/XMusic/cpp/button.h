@@ -33,7 +33,7 @@ private:
 
             UINT uDelayTime = 0;
 #if __windows || __mac
-            uDelayTime = 500;
+            uDelayTime = 200;
 #endif
             timerutil::async(uDelayTime, [&](){
                 setOpacity(1);
