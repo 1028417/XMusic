@@ -305,7 +305,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndBrowseList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
 
-		(void)m_wndBrowseList.InsertItem(0, (L"       " + pSinger->m_strName).c_str(), (int)E_GlobalImage::GI_Dir);
+		(void)m_wndBrowseList.InsertItem(0, pSinger->m_strName.c_str(), (int)E_GlobalImage::GI_Dir);
 
 		m_wndMediaResPanel.ShowPath(m_pSinger->GetBaseDir());
 	}

@@ -140,13 +140,14 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 			}
 		}
 	}
-	if (NULL != pSingerObject)
+
+	RedrawLockGuard.Unlock();
+	
+	if (pSingerObject)
 	{
 		(void)m_wndTree.SelectObject(*pSingerObject);
 		(void)m_wndTree.EnsureVisible(*pSingerObject);
 	}
-	
-	RedrawLockGuard.Unlock();
 	
 	return TRUE;
 }

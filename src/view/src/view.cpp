@@ -693,6 +693,8 @@ void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
 	{
 		m_AlbumPage.UpdateRelated(MediaSetChanged);
 	}
+
+	m_PlayingPage.RefreshList();
 }
 
 void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia)
