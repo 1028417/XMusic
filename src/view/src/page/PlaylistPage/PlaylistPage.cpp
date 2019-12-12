@@ -56,10 +56,10 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	float fBigFontSize = m_view.m_globalSize.m_fBigFontSize * 3.5f;
+	float fBigFontSize = m_view.m_globalSize.m_fBigFontSize * 3.6f;
 	__AssertReturn(m_fontBig.create(*this, fBigFontSize), FALSE);
 
-	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .66f;
+	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .5f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
 
 	m_wndList.SetCustomDraw(NULL, [&](tagLVDrawSubItem& lvcd) {
@@ -87,7 +87,7 @@ BOOL CPlaylistPage::OnInitDialog()
 			dc.DrawText(pPlaylist->m_strName.c_str(), &rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
 			auto pPrevFont = dc.SelectObject(m_fontBig);
-			dc.SetTextColor(lvcd.getTextColor(225));
+			dc.SetTextColor(lvcd.getTextColor(236));
 
 			cauto strIndex = to_wstring(pPlaylist->index() + 1) + L" ";
 			dc.DrawText(strIndex.c_str(), &lvcd.rc, DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
@@ -95,7 +95,7 @@ BOOL CPlaylistPage::OnInitDialog()
 			auto uCount = pPlaylist->playItems().size();
 			if (uCount != 0)
 			{
-				dc.SetTextColor(lvcd.getTextColor(200));
+				dc.SetTextColor(lvcd.getTextColor(MAX(uTextAlpha, 150)));
 				dc.SelectObject(m_fontSmall);
 				dc.DrawText((to_wstring(uCount) + L"สื").c_str(), &rc, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
 			}

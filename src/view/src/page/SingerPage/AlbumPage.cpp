@@ -82,7 +82,7 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
 
 	m_wndAlbumList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		CAlbum *pAlbum = (CAlbum *)lvcd.pObject;
+		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
 		if (pAlbum)
 		{
 			if (pAlbum->property().isDisableDemand() && pAlbum->property().isDisableExport())
@@ -93,6 +93,18 @@ BOOL CAlbumPage::OnInitDialog()
 			{
 				lvcd.setTextAlpha(128);
 			}
+		}
+	}, [&](tagLVDrawSubItem& lvcd) {
+		if (0 == lvcd.uItem && m_pSinger)
+		{
+			CDC& dc = lvcd.dc;
+			auto& rc = lvcd.rc;
+			rc.left += 60;
+
+			dc.SetTextColor(lvcd.crText);
+			dc.DrawText(m_pSinger->m_strName.c_str(), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			lvcd.bSkipDefault = true;
 		}
 	});
 
@@ -328,7 +340,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
 
-		(void)m_wndAlbumList.InsertItem(0, pSinger->m_strName.c_str(), (int)E_GlobalImage::GI_Dir);
+		(void)m_wndAlbumList.InsertItem(0, L"", (int)E_GlobalImage::GI_Dir);
 
 		m_wndMediaResPanel.ShowPath(m_pSinger->GetBaseDir());
 	}
