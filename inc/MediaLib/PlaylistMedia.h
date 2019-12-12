@@ -64,6 +64,8 @@ public:
 		return !m_lstPlayItems.empty();
 	}
 
+	wstring GetDisplayName();
+
 private:
 	int indexOf(const CMedia& media) const override
 	{
@@ -77,16 +79,14 @@ private:
 		lstMedias.add(m_lstPlayItems);
 	}
 
-	wstring _GetDisplayName();
-
     void GenListItem(bool, vector<wstring>& vecText, int& iImage) override
 	{
 		iImage = (int)E_GlobalImage::GI_Playlist;
-        (void)vecText;//vecText.push_back(_GetDisplayName().c_str());
+        (void)vecText;//vecText.push_back(GetDisplayName().c_str());
 	}
 
 	wstring GetExportName() override
 	{
-		return L"歌单" + _GetDisplayName();
+		return L"歌单" + GetDisplayName();
 	}
 };
