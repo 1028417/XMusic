@@ -169,17 +169,12 @@ struct tagLVDrawSubItem : tagLVNMCustomDraw
 	{
 	}
 
-	const COLORREF& setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
+	COLORREF getTextColor(BYTE uTextAlpha)
 	{
-		crText = t_crText;
-		setTextAlpha(uTextAlpha);
-	}
-	
-	const COLORREF& setTextAlpha(BYTE uTextAlpha)
-	{
-		if (0 != uTextAlpha && uTextAlpha <= 255)
+		COLORREF t_crText = crText;
+		if (uTextAlpha != 0)
 		{
-			auto pb = (BYTE*)&crText;
+			auto pb = (BYTE*)&t_crText;
 			int r = *pb;
 			int g = pb[1];
 			int b = pb[2];
@@ -189,10 +184,24 @@ struct tagLVDrawSubItem : tagLVNMCustomDraw
 			g += (-g + pb[1])*uTextAlpha / 255;
 			b += (-b + pb[2])*uTextAlpha / 255;
 
-			crText = RGB(r, g, b);
+			t_crText = RGB(r, g, b);
 		}
 
-		return crText;
+		return t_crText;
+	}
+
+	void setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
+	{
+		crText = t_crText;
+		if (uTextAlpha != 0)
+		{
+			crText = getTextColor(uTextAlpha);
+		}
+	}
+	
+	void setTextAlpha(BYTE uTextAlpha)
+	{
+		crText = getTextColor(uTextAlpha);
 	}
 
 	const int nSubItem;

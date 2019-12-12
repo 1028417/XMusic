@@ -81,30 +81,28 @@ struct tagTVDrawItem : tagTVNMCustomDraw
 	{
 	}
 
-	const COLORREF& setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
+	void setTextColor(const COLORREF& t_crText, BYTE uTextAlpha = 0)
 	{
 		crText = t_crText;
-		return setTextAlpha(uTextAlpha);
+		if (uTextAlpha != 0)
+		{
+			setTextAlpha(uTextAlpha);
+		}
 	}
 
-	const COLORREF& setTextAlpha(BYTE uTextAlpha)
+	void setTextAlpha(BYTE uTextAlpha)
 	{
-		if (0 != uTextAlpha && uTextAlpha <= 255)
-		{
-			auto pb = (BYTE*)&crText;
-			int r = *pb;
-			int g = pb[1];
-			int b = pb[2];
+		auto pb = (BYTE*)&crText;
+		int r = *pb;
+		int g = pb[1];
+		int b = pb[2];
 
-			pb = (BYTE*)&crBkg;
-			r += (-r + pb[0])*uTextAlpha / 255;
-			g += (-g + pb[1])*uTextAlpha / 255;
-			b += (-b + pb[2])*uTextAlpha / 255;
+		pb = (BYTE*)&crBkg;
+		r += (-r + pb[0])*uTextAlpha / 255;
+		g += (-g + pb[1])*uTextAlpha / 255;
+		b += (-b + pb[2])*uTextAlpha / 255;
 
-			crText = RGB(r, g, b);
-		}
-
-		return crText;
+		crText = RGB(r, g, b);
 	}
 
 	COLORREF& crBkg;
