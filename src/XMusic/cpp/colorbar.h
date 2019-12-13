@@ -75,7 +75,7 @@ private:
         auto len = cy*2;
         auto margin = 2;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
-        painter.fillRect(x, rc.top()+margin, len, cy-margin*2);
+        painter.fillRect(x, rc.top()+margin, len, cy-margin*2, Qt::GlobalColor::white);
     }
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
