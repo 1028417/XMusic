@@ -76,7 +76,7 @@ struct __ModelExt tagOption
 
     bool bUseThemeColor = false;
     UINT crTheme = __defThemeColor;
-    UINT crText = 0;
+    UINT crText = QRGB(255, 255, 255);
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
