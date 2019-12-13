@@ -67,7 +67,13 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int x_bar = ui.barBkgRed->x();
     int cx_bar = cx_group-x_bar*2;
-    int cy_bar = ui.barBkgRed->height();
+
+#if __windows || __mac
+    int cy_bar = 7;//ui.barBkgRed->height();
+#else
+    int cy_bar = 12;
+#endif
+
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
 
     ui.btnSubBkgGreen->move(x, ui.btnSubBkgRed->y()+y);
