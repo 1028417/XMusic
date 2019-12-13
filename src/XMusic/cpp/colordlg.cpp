@@ -60,7 +60,7 @@ void CColorDlg::_relayout(int cx, int cy)
     int cy_group = ui.groupBkgColor->rect().height();
 
     int x = ui.btnSubBkgRed->x();
-    int y = cy_group/3.85;
+    int y = cy_group/3.83;
 
     ui.btnSubBkgRed->move(x, y-ui.btnSubBkgRed->height()/2);
     ui.btnAddBkgRed->move(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y());

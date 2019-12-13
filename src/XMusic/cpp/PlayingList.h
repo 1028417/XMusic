@@ -53,7 +53,7 @@ public:
     }
 
 private:
-    UINT getPageRowCount() override;
+    size_t getPageRowCount() override;
 
     size_t getRowCount() override
     {

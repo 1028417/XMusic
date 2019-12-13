@@ -3,7 +3,7 @@
 
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
-    UINT uPageRowCount = getPageRowCount();
+    size_t uPageRowCount = getPageRowCount();
 
     if (bToCenter)
     {
@@ -48,7 +48,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
-    UINT uPageRowCount = getPageRowCount();
+    size_t uPageRowCount = getPageRowCount();
     if (0 == uPageRowCount)
     {
         return;
