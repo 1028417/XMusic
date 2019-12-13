@@ -24,7 +24,20 @@ public:
     void setColor(E_BarColor eColor, uint8_t uValue)
     {
         m_eColor = eColor;
+
+        setValue(uValue);
+        update();
+    }
+
+    void setValue(uint8_t uValue)
+    {
         m_uValue = uValue;
+        update();
+    }
+
+    uint8_t value() const
+    {
+        return m_uValue;
     }
 
 private:

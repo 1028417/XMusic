@@ -12,17 +12,12 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    for (auto pButton : SList<QWidget*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
+    for (auto pButton : SList<CButton*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
                                         , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
                                         , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubBkgBlue, ui.btnAddBkgBlue}))
     {
-        connect(ui.btnReturn, &CButton::signal_clicked, this, &CColorDlg::onButton);
+        connect(pButton, &CButton::signal_clicked, this, &CColorDlg::slot_buttonClicked);
     }
-}
-
-void CColorDlg::onButton(CButton *pButton)
-{
-
 }
 
 void CColorDlg::_relayout(int cx, int cy)
@@ -112,4 +107,65 @@ void CColorDlg::show()
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
 
     CDialog::show(true);
+}
+
+void CColorDlg::slot_buttonClicked(CButton *pButton)
+{
+    if (ui.btnSubBkgRed == pButton)
+    {
+        modifyColor(ui.barBkgRed, -1);
+    }
+    else if (ui.btnAddBkgRed == pButton)
+    {
+        modifyColor(ui.barBkgRed, 1);
+    }
+    else if (ui.btnSubBkgGreen == pButton)
+    {
+        modifyColor(ui.barBkgGreen, -1);
+    }
+    else if (ui.btnAddBkgGreen == pButton)
+    {
+        modifyColor(ui.barBkgGreen, 1);
+    }
+    else if (ui.btnSubBkgBlue == pButton)
+    {
+        modifyColor(ui.barBkgBlue, -1);
+    }
+    else if (ui.btnAddBkgBlue == pButton)
+    {
+        modifyColor(ui.barBkgBlue, 1);
+    }
+    else if (ui.btnSubFontRed == pButton)
+    {
+        modifyColor(ui.barFontRed, -1);
+    }
+    else if (ui.btnAddFontRed == pButton)
+    {
+        modifyColor(ui.barFontRed, 1);
+    }
+    else if (ui.btnSubFontGreen == pButton)
+    {
+        modifyColor(ui.barFontGreen, -1);
+    }
+    else if (ui.btnAddFontGreen == pButton)
+    {
+        modifyColor(ui.barFontGreen, -1);
+    }
+    else if (ui.btnSubBkgBlue == pButton)
+    {
+        modifyColor(ui.barFontBlue, -1);
+    }
+    else if (ui.btnAddBkgBlue == pButton)
+    {
+        modifyColor(ui.barFontBlue, -1);
+    }
+}
+
+void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
+{
+    int value = pBar->value();
+    value += offset;
+    value = MAX(0, value);
+    value = MIN(255, value);
+    pBar->setValue((uint8_t)value);
 }

@@ -3,6 +3,10 @@
 
 #include "dialog.h"
 
+#include "button.h"
+
+#include "colorbar.h"
+
 class CColorDlg : public CDialog
 {
     Q_OBJECT
@@ -15,7 +19,10 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
-    void onButton(CButton *pButton);
+    void modifyColor(CColorBar *pBar, int8_t offset);
+
+private slots:
+    void slot_buttonClicked(CButton *pButton);
 
 public:
     void show();
