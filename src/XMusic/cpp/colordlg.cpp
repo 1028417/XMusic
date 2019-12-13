@@ -155,7 +155,7 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     }
     else if (ui.btnAddFontGreen == pButton)
     {
-        modifyColor(ui.barFontGreen, -1);
+        modifyColor(ui.barFontGreen, 1);
     }
     else if (ui.btnSubFontBlue == pButton)
     {
@@ -163,7 +163,7 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     }
     else if (ui.btnAddFontBlue == pButton)
     {
-        modifyColor(ui.barFontBlue, -1);
+        modifyColor(ui.barFontBlue, 1);
     }
 }
 
@@ -178,5 +178,5 @@ void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
 
 void CColorDlg::slot_barClicked(CColorBar *pBar, const QPoint& pos)
 {
-    pBar->setValue(pos.x()/pBar->width()*255);
+    pBar->setValue(255*pos.x()/pBar->width());
 }
