@@ -448,6 +448,8 @@ void MainWindow::_relayout()
     if (m_app.getOption().bUseThemeColor)
     {
         m_bUseDefaultBkg = false;
+
+        uShadowAlpha = 85;
     }
     else
     {
@@ -590,7 +592,7 @@ void MainWindow::_relayout()
 
     m_PlayingList.setShadow(uShadowAlpha);
 
-    ui.labelPlayingfile->setShadow(255);
+    ui.labelPlayingfile->setShadow(uShadowAlpha);
 
     if (!m_bUseDefaultBkg)
     {
