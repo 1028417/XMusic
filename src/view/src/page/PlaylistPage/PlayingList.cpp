@@ -8,14 +8,14 @@
 #define __PrevTrack L"上一曲"
 #define __NextTrack L"下一曲"
 
-BOOL CPlayingList::InitCtrl(UINT uItemHeight)
+BOOL CPlayingList::InitCtrl()
 {
 	(void)this->ModifyStyle(LVS_SINGLESEL
 		, LVS_NOCOLUMNHEADER | LVS_EDITLABELS);
 	(void)this->ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 
 	tagListPara ListPara({ { _T(""), 0 } });
-	ListPara.uItemHeight = uItemHeight;
+	ListPara.uItemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
 	__super::InitCtrl(ListPara);
 
 	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
@@ -34,14 +34,14 @@ BOOL CPlayingList::InitCtrl(UINT uItemHeight)
 		}
 	});
 
-	auto fBigFontSize = m_view.m_globalSize.m_fBigFontSize * .94f;
+	auto fBigFontSize = m_view.m_globalSize.m_fBigFontSize * .93f;
 	__AssertReturn(m_font.create(*this, fBigFontSize), FALSE);
 
 	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 650), FALSE);
 
 	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize, 0, true), FALSE);
 
-	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .64f;
+	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .63f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
 
 	__AssertReturn(m_fontUnderline.create(*this, fSmallFontSize, 0, false, true), FALSE);

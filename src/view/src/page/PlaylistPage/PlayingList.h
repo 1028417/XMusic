@@ -112,7 +112,7 @@ private:
 	vector<tagItemLinks> m_vecItemLinks;
 	
 public:
-	BOOL InitCtrl(UINT uItemHeight);
+	BOOL InitCtrl();
 
 	void fixColumnWidth(int width);
 

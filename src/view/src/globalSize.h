@@ -47,7 +47,6 @@ public:
 
 	UINT m_ColWidth_Type = 0;
 	UINT m_ColWidth_FileSize = 0;
-	UINT m_ColWidth_Duration = 0;
 	UINT m_ColWidth_RelatedPlaylist = 0;
 	UINT m_ColWidth_RelatedSingerAlbum = 0;
 	UINT m_ColWidth_AddTime = 0;

@@ -26,7 +26,7 @@ BOOL CPlayingPage::OnInitDialog()
 {
 	CPage::OnInitDialog();
 
-	__AssertReturn(m_wndList.InitCtrl(m_view.m_globalSize.m_uPlayingItemHeight), FALSE);
+	__AssertReturn(m_wndList.InitCtrl(), FALSE);
 
 	(void)__super::RegDragDropCtrl(m_wndList, [&](tagDragData& DragData) {
 		TD_PlayItemList arrSelPlayItem;

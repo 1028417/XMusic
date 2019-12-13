@@ -29,7 +29,7 @@ CGlobalSize::CGlobalSize()
 	m_uTabHeight = 24;
 	m_uMenuItemHeight = 24;
 
-	m_uPlayingItemHeight = 63;
+	m_uPlayingItemHeight = 61;
 
 	m_uTileHeight = 79;
 	m_uIconSpace = 64;

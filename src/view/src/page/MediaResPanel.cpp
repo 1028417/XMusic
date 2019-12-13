@@ -8,8 +8,7 @@
 enum E_AlbumItemColumn
 {
 	__Column_Name = 0
-	, __Column_Type
-	, __Column_Size
+	, __Column_Info
 	, __Column_Playlist
 	, __Column_SingerAlbum
 	, __Column_ModifyTime
@@ -77,8 +76,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	TD_ListColumn lstColumns = {
 		{ _T("文件名称"), uColWidth_FileName }
-		,{ _T("类型"), globalSize.m_ColWidth_Type, true }
-		,{ _T("大小"), globalSize.m_ColWidth_FileSize, true }
+		,{ _T("类型/大小"), globalSize.m_ColWidth_Type*2, true }
 		,{ _T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true }
 	};
 	
@@ -119,11 +117,33 @@ BOOL CMediaResPanel::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		switch (lvcd.nSubItem)
 		{
-		case __Column_Type:
-		case __Column_Size:
-			lvcd.fFontSizeOffset = -.15f;
+		case __Column_Info:
+		{
+			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
+			if (NULL == pMediaRes)
+			{
+				return;
+			}
 
-			break;
+			CDC& dc = lvcd.dc;
+			cauto rc = lvcd.rc;
+			dc.FillSolidRect(&rc, lvcd.crBkg);
+
+			dc.SetTextColor(lvcd.crText);
+			m_wndList.SetCustomFont(dc, -.2f, false);
+			RECT rcText = rc;
+			rcText.bottom = (rcText.bottom + rcText.top)/2 +4;
+
+			dc.DrawText(pMediaRes->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			rcText.top = rcText.bottom -8;
+			rcText.bottom = rc.bottom;
+			dc.DrawText(pMediaRes->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+
+		lvcd.bSkipDefault = true;
+		
+		break;
 		case __Column_Playlist:
 		case __Column_SingerAlbum:
 			lvcd.bSetUnderline = true;
