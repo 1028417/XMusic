@@ -67,8 +67,8 @@ private:
         QBrush br(gradient);
         painter.fillRect(rc, br);
 
-        auto size = rc.height();
-        int x = size/2+m_uValue*(rc.width()-size)/255;
+        auto size = rc.height()-1;
+        int x = m_uValue*(rc.width()-size)/255;
         QRect rcPos(x, rc.top(), size, size);
         painter.drawEllipse(rcPos);
     }
