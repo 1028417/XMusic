@@ -47,8 +47,8 @@ private:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
-        QRect rect = this->rect();
-        QLinearGradient gradient(rect.topLeft(), rect.topRight());
+        QRect rc = this->rect();
+        QLinearGradient gradient(rc.topLeft(), rc.topRight());
         gradient.setColorAt(0, QColor(0,0,0));
 
         if (E_BarColor::BC_Red == m_eColor)
@@ -65,6 +65,11 @@ private:
         }
 
         QBrush br(gradient);
-        painter.fillRect(rect, br);
+        painter.fillRect(rc, br);
+
+        auto size = rc.height();
+        int x = size/2+m_uValue*(rc.width()-size)/255;
+        QRect rcPos(x, rc.top(), size, size);
+        painter.drawEllipse(rcPos);
     }
 };

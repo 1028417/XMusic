@@ -311,29 +311,29 @@ void MainWindow::show()
 
 void MainWindow::_onPaint(CPainter& painter)
 {
-    cauto rect = this->rect();
+    cauto rc = this->rect();
 
     if (ui.labelLogo->isVisible())
     {
-        painter.fillRect(rect, QColor(__defThemeColor));
+        painter.fillRect(rc, QColor(__defThemeColor));
         return;
     }
 
     if (m_app.getOption().crTheme > 0)
     {
-        painter.fillRect(rect, QColor(m_app.getOption().crTheme));
+        painter.fillRect(rc, QColor(m_app.getOption().crTheme));
         return;
     }
 
-    bool bHScreen = rect.width() > rect.height();
+    bool bHScreen = rc.width() > rc.height();
     cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
     if (!pmBkg.isNull())
     {
-       painter.drawPixmapEx(rect, pmBkg);
+       painter.drawPixmapEx(rc, pmBkg);
     }
     else
     {
-        drawDefaultBkg(painter, rect);
+        drawDefaultBkg(painter, rc);
     }
 }
 

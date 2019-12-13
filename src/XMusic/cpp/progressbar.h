@@ -57,19 +57,19 @@ public:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
-        QRect rect = this->rect();
-        painter.fillRect(rect, m_brBackground);
+        QRect rc = this->rect();
+        painter.fillRect(rc, m_brBackground);
 
         if (m_maxBuffer > 0 && m_bufferValue > 0)
         {
-            rect.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
-            painter.fillRect(rect, m_brBuffer);
+            rc.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
+            painter.fillRect(rc, m_brBuffer);
         }
 
         if (this->maximum() > 0 && this->value() > 0)
         {
-            rect.setRight(this->rect().right() * this->value()/this->maximum());
-            painter.fillRect(rect, m_brForeground);
+            rc.setRight(this->rect().right() * this->value()/this->maximum());
+            painter.fillRect(rc, m_brForeground);
         }
     }
 };
