@@ -30,7 +30,7 @@ private:
         {
             setOpacity(0.5);
 
-            UINT uDelayTime = 50;
+            UINT uDelayTime = 100;
 #if __windows || __mac
             uDelayTime = 200;
 #endif
