@@ -24,6 +24,8 @@ private:
 private slots:
     void slot_buttonClicked(CButton *pButton);
 
+    void slot_barClicked(CColorBar *pBar, const QPoint& pos);
+
 public:
     void show();
 };

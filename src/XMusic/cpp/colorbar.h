@@ -14,10 +14,10 @@ enum class E_BarColor
     BC_Blue,
 };
 
-class CColorBar : public CWidget<QProgressBar>
+class CColorBar : public CWidget<QWidget>
 {
 public:
-    CColorBar(QWidget *parent) : CWidget<QProgressBar>(parent)
+    CColorBar(QWidget *parent) : CWidget<QWidget>(parent)
     {
     }
 
@@ -43,6 +43,9 @@ public:
 private:
     E_BarColor m_eColor;
     uint8_t m_uValue = 0;
+
+signals:
+    void signal_click(CColorBar*, const QPoint& pos);
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
@@ -71,5 +74,13 @@ private:
         int x = m_uValue*(rc.width()-size)/255;
         QRect rcPos(x, rc.top(), size, size);
         painter.drawEllipse(rcPos);
+    }
+
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+    {
+        if (E_MouseEventType::MET_Click == type)
+        {
+            emit signal_click(this, me.pos());
+        }
     }
 };
