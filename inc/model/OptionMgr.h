@@ -68,6 +68,7 @@ struct __ModelExt tagOption
     wstring strHBkg;
     wstring strVBkg;
 
+    bool bUseThemeColor = false;
     int crTheme = -1;
     int crText = -1;
 #endif
