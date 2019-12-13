@@ -69,8 +69,8 @@ struct __ModelExt tagOption
     wstring strVBkg;
 
     bool bUseThemeColor = false;
-    int crTheme = -1;
-    int crText = -1;
+    UINT crTheme = 0;
+    UINT crText = 0;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
