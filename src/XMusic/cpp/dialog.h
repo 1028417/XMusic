@@ -9,12 +9,9 @@
 
 #include <QEvent>
 
-#include <QRgb>
+#define __BlueLabel QRGB(32, 128, 255)
 
-#define __defThemeColor qRgb(180, 220, 255)
 extern QColor g_crTheme;
-
-#define __BlueLabel qRgb(32, 128, 255)
 
 class CDialog : public QDialog
 {

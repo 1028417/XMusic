@@ -115,6 +115,8 @@ void CColorDlg::show()
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
 
     g_crTheme.setRgb(m_app.getOption().crTheme);
+    m_bkgDlg.setBkgColor(g_crTheme);
+
     m_app.getOption().bUseThemeColor = true;
 
     CDialog::show(true);
@@ -185,7 +187,7 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
-        auto rgb = qRgb(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+        auto rgb = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
         m_app.getOption().crTheme = rgb;
 
         g_crTheme.setRgb(rgb);

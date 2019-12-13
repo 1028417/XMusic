@@ -185,10 +185,7 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 int CXMusicApp::run()
 {
     auto& option = m_ctrl.initOption();
-    if (option.bUseThemeColor)
-    {
-        g_crTheme.setRgb(option.crTheme);
-    }
+    g_crTheme.setRgb(option.crTheme);
 
     g_crText.setRgb(option.crText);
     CDialog::m_crText.setRgb(option.crText);

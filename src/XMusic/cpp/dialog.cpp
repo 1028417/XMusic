@@ -8,7 +8,7 @@ extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
 
-QColor g_crTheme(__defThemeColor);
+QColor g_crTheme;
 
 QColor CDialog::m_crText(__BlueLabel);
 
