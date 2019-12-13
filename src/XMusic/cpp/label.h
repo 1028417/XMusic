@@ -19,9 +19,8 @@ enum class E_LabelTextOption
 class CLabel : public CWidget<QLabel>
 {
     Q_OBJECT
-
 public:
-    CLabel(QWidget *parent) : CWidget<QLabel>(parent)
+    CLabel(QWidget *parent) : CWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }

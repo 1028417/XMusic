@@ -50,7 +50,6 @@ using TD_ImgDirList = PtrArray<CImgDir>;
 class CAddBkgView : public CListView
 {
     Q_OBJECT
-
 public:
     CAddBkgView(class CXMusicApp& app, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 

@@ -5,7 +5,6 @@
 class CMsgBox : public CDialog
 {
     Q_OBJECT
-
 private:
     CMsgBox(QWidget& parent);
 

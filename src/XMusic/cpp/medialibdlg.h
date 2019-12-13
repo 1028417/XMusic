@@ -10,7 +10,6 @@
 class CMedialibView : public CListViewEx
 {
     Q_OBJECT
-
 public:
     CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
 

@@ -37,7 +37,6 @@ struct tagPlayingInfo
 class MainWindow : public QMainWindow, public IModelObserver
 {
     Q_OBJECT
-
 public:
     MainWindow(class CXMusicApp& app);
 

@@ -8,7 +8,6 @@
 class CButton : public CWidget<QPushButton>
 {
     Q_OBJECT
-
 public:
     CButton(QWidget *parent) : CWidget(parent)
     {

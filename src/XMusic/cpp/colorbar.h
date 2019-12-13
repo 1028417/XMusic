@@ -16,8 +16,9 @@ enum class E_BarColor
 
 class CColorBar : public CWidget<QWidget>
 {
+    Q_OBJECT
 public:
-    CColorBar(QWidget *parent) : CWidget<QWidget>(parent)
+    CColorBar(QWidget *parent) : CWidget(parent)
     {
     }
 
@@ -70,10 +71,11 @@ private:
         QBrush br(gradient);
         painter.fillRect(rc, br);
 
-        auto size = rc.height()-1;
-        int x = m_uValue*(rc.width()-size)/255;
-        QRect rcPos(x, rc.top(), size, size);
-        painter.drawEllipse(rcPos);
+        auto cy = rc.height();
+        auto len = cy*2;
+        auto margin = 2;
+        int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
+        painter.fillRect(x, rc.top()+margin, len, cy-margin*2);
     }
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
