@@ -1,6 +1,12 @@
 
 #pragma once
 
+#if !__winvc
+//#include <QRgb>
+#define QRGB(r, g, b) ((0xffu << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | (b & 0xffu))
+#define __defThemeColor QRGB(180, 220, 255)
+#endif
+
 struct __ModelExt tagPlaySpiritOption
 {
 	wstring strSkinName;
@@ -69,7 +75,7 @@ struct __ModelExt tagOption
     wstring strVBkg;
 
     bool bUseThemeColor = false;
-    UINT crTheme = 0;
+    UINT crTheme = __defThemeColor;
     UINT crText = 0;
 #endif
 

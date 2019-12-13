@@ -183,3 +183,8 @@ __UtilExt const RECT& getWorkArea(bool bFullScreen);
 
 #undef min
 #undef max
+
+#if !__winvc
+//#include <QRgb>
+#define QRGB(r, g, b) ((0xffu << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | (b & 0xffu))
+#endif
