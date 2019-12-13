@@ -26,7 +26,7 @@ public:
     {
         m_eColor = eColor;
 
-        setValue(uValue);
+        m_uValue = uValue;
     }
 
     void setValue(uint8_t uValue)
@@ -76,7 +76,7 @@ private:
         painter.fillRect(rc, br);
 
         auto cy = rc.height();
-        auto len = cy + 4;
+        auto len = cy + 3;
         auto margin = 2;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.fillRect(x, rc.top()+margin, len, cy-margin*2, Qt::GlobalColor::white);
@@ -86,9 +86,10 @@ private:
     {
         if (E_MouseEventType::MET_Click == type)
         {
-            auto cy = height();
-            auto len = cy + 4;
-            int nValue = 255*(me.pos().x()-len/2)/width();
+            auto len = height() + 3;
+            auto margin = 2;
+
+            int nValue = 255*(me.pos().x()-len/2-margin)/(width()-margin*2-len);
             nValue = MAX(0, nValue);
             nValue = MIN(255, nValue);
 
