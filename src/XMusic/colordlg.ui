@@ -146,8 +146,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>50</x>
       <y>50</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -174,8 +174,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>50</x>
       <y>110</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -202,8 +202,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>50</x>
       <y>170</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -230,8 +230,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>290</x>
       <y>110</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -258,8 +258,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>290</x>
       <y>170</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -286,8 +286,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>290</x>
       <y>50</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -402,8 +402,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>60</x>
       <y>170</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -430,8 +430,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>60</x>
       <y>110</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -458,8 +458,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>60</x>
       <y>50</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -486,8 +486,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>280</x>
       <y>170</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -514,8 +514,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>280</x>
       <y>110</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -542,8 +542,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>280</x>
       <y>50</y>
-      <width>50</width>
-      <height>50</height>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="autoFillBackground">

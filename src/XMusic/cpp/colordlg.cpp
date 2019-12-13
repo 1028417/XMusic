@@ -71,7 +71,7 @@ void CColorDlg::_relayout(int cx, int cy)
 #if __windows || __mac
     int cy_bar = 7;//ui.barBkgRed->height();
 #else
-    int cy_bar = 12;
+    int cy_bar = 15;
 #endif
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
