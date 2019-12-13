@@ -114,6 +114,7 @@ void CColorDlg::show()
     ui.barFontGreen->setColor(E_BarColor::BC_Green, 0);
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
 
+    g_crTheme.setRgb(m_app.getOption().crTheme);
     m_app.getOption().bUseThemeColor = true;
 
     CDialog::show(true);
