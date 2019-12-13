@@ -33,7 +33,7 @@ BOOL CPlayRecordDlg::OnInitDialog()
 
 	CRect rcClient;
 	m_wndList.GetClientRect(rcClient);
-	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth * 2);
+	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 	ColumnGuard.addFix(_T("时间"), 160)
 		.addDynamic(_T("文件"), 1.0);
 

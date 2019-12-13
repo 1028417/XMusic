@@ -97,10 +97,10 @@ BOOL CPlayItemPage::OnInitDialog()
 
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
-			rcText.bottom = (rcText.bottom + rcText.top) / 2 +4;
+			rcText.bottom = (rcText.bottom + rcText.top) / 2 +6;
 			dc.DrawText(pPlayItem->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			rcText.top = rcText.bottom -8;
+			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
 			dc.DrawText(pPlayItem->GetDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}

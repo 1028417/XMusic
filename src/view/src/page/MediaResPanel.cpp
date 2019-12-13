@@ -76,7 +76,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	TD_ListColumn lstColumns = {
 		{ _T("文件名称"), uColWidth_FileName }
-		,{ _T("类型/大小"), globalSize.m_ColWidth_Type*2, true }
+		,{ _T("类型/大小"), globalSize.m_ColWidth_Type*3, true }
 		,{ _T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true }
 	};
 	
@@ -132,11 +132,11 @@ BOOL CMediaResPanel::OnInitDialog()
 			dc.SetTextColor(lvcd.crText);
 			m_wndList.SetCustomFont(dc, -.2f, false);
 			RECT rcText = rc;
-			rcText.bottom = (rcText.bottom + rcText.top)/2 +4;
+			rcText.bottom = (rcText.bottom + rcText.top)/2 +6;
 
 			dc.DrawText(pMediaRes->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			rcText.top = rcText.bottom -8;
+			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
 			dc.DrawText(pMediaRes->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}

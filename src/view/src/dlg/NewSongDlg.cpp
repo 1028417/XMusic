@@ -51,15 +51,15 @@ BOOL CNewSongDlg::OnInitDialog()
 
 	CRect rcClient;
 	m_wndList.GetClientRect(rcClient);
-	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth * 2);
+	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 
 	auto& globalSize = m_view.m_globalSize;
 	ColumnGuard.addDynamic(_T("曲目"), 0.55)
-		.addFix(_T("类型"), globalSize.m_ColWidth_Type)
+		.addFix(_T("类型"), globalSize.m_ColWidth_Type*2)
 		.addDynamic(_T("目录"), 0.45)
 		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
 		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum)
-		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.1));
+		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.2));
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);

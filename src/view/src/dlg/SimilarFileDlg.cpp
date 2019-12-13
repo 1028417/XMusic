@@ -31,7 +31,7 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	
 	CRect rcClient;
 	m_wndList.GetClientRect(rcClient);
-	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth * 2);
+	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 
 	auto& globalSize = m_view.m_globalSize;
 	ColumnGuard.addDynamic(L"Ŀ¼", 0.48)
