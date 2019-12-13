@@ -45,11 +45,16 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    void _setBkgColor(const QColor& crBkg)
+    void setBkgColor(const QColor& crBkg)
     {
         QPalette pe = this->palette();
         pe.setColor(QPalette::Background, crBkg);
         this->setPalette(pe);
+    }
+
+    void setBkgColor(int r, int g, int b, int a=255)
+    {
+        setBkgColor(QColor(r, g, b, a);
     }
 
 public:

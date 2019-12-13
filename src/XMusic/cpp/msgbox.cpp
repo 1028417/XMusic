@@ -27,5 +27,5 @@ void CMsgBox::_show(QWidget& parent, const QString& qsMsg, const fn_void& cbClos
 
     CDialog::show(false, cbClose);
 
-    _setBkgColor(QColor(200, 230, 255));
+    setBkgColor(QColor(200, 230, 255));
 }

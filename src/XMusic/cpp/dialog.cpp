@@ -45,7 +45,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 {
     g_pFrontDlg = this;
 
-    _setBkgColor(g_crTheme);
+    setBkgColor(g_crTheme);
 
     this->setWindowFlags(Qt::Dialog);
 

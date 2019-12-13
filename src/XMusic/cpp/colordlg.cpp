@@ -178,4 +178,12 @@ void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
 
 void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
+    if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
+    {
+        this->setBkgColor(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+    }
+    else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
+    {
+
+    }
 }
