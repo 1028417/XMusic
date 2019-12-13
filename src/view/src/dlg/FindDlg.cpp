@@ -42,11 +42,11 @@ BOOL CFindDlg::OnInitDialog()
 	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 
 	auto& globalSize = m_view.m_globalSize;
-	ColumnGuard.addDynamic(_T("曲目"), 0.55)
+	ColumnGuard.addDynamic(_T("曲目"), 0.35)
 		.addFix(_T("类型"), globalSize.m_ColWidth_Type*2)
-		.addDynamic(_T("目录"), 0.45)
-		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
-		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum)
+		.addDynamic(_T("目录"), 0.3)
+		.addDynamic(_T("所属歌单"), 0.15)
+		.addDynamic(_T("所属专辑"), 0.2)
 		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.2));
 
 	CObjectList::tagListPara ListPara(ColumnGuard);

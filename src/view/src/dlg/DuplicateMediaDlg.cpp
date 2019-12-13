@@ -29,10 +29,10 @@ BOOL CDuplicateMediaDlg::OnInitDialog()
 	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 
 	auto& globalSize = m_view.m_globalSize;
-	ColumnGuard.addDynamic(L"曲目", 0.55)
-		.addDynamic(L"目录", 0.45)
-		.addFix(_T("所属歌单"), globalSize.m_ColWidth_RelatedPlaylist)
-		.addFix(_T("所属专辑"), globalSize.m_ColWidth_RelatedSingerAlbum);
+	ColumnGuard.addDynamic(L"曲目", 0.35)
+		.addDynamic(L"目录", 0.3)
+		.addDynamic(_T("所属歌单"), 0.15)
+		.addDynamic(_T("所属专辑"), 0.2);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	
