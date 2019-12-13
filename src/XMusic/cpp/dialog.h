@@ -54,7 +54,7 @@ protected:
 
     void setBkgColor(int r, int g, int b, int a=255)
     {
-        setBkgColor(QColor(r, g, b, a);
+        setBkgColor(QColor(r, g, b, a));
     }
 
 public:
