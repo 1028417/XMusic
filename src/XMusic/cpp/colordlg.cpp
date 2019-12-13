@@ -110,12 +110,9 @@ void CColorDlg::show()
     ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
     ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crTheme.blue());
 
-    ui.barFontRed->setColor(E_BarColor::BC_Red, 0);
-    ui.barFontGreen->setColor(E_BarColor::BC_Green, 0);
-    ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
-
-    g_crTheme.setRgb(m_app.getOption().crTheme);
-    m_bkgDlg.setBkgColor(g_crTheme);
+    ui.barFontRed->setColor(E_BarColor::BC_Red, g_crText.red());
+    ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
+    ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
 
     m_app.getOption().bUseThemeColor = true;
 
@@ -187,16 +184,15 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
-        auto rgb = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
-        m_app.getOption().crTheme = rgb;
+        m_app.getOption().crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
 
-        g_crTheme.setRgb(rgb);
+        g_crTheme.setRgb(m_app.getOption().crTheme);
         this->setBkgColor(g_crTheme);
 
         m_bkgDlg.setBkgColor(g_crTheme);
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
-
+        g_crText.setRgb(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
     }
 }
