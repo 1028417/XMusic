@@ -45,6 +45,7 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
+public:
     void setBkgColor(const QColor& crBkg)
     {
         QPalette pe = this->palette();
@@ -52,7 +53,6 @@ protected:
         this->setPalette(pe);
     }
 
-public:
     void show(bool bFullScreen, const fn_void& cbClose = NULL);
 
 #if __windows

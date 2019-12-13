@@ -288,6 +288,8 @@ const QPixmap* CBkgDlg::snapshot(UINT uIdx)
 
 void CBkgDlg::_setBkg(const wstring& strBkg)
 {
+    m_app.getOption().bUseThemeColor = false;
+
     if (m_bHScreen)
     {
         m_app.getOption().strHBkg = strBkg;

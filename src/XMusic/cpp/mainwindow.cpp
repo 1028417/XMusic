@@ -319,9 +319,9 @@ void MainWindow::_onPaint(CPainter& painter)
         return;
     }
 
-    if (m_app.getOption().crTheme > 0)
+    if (m_app.getOption().bUseThemeColor)
     {
-        painter.fillRect(rc, QColor(m_app.getOption().crTheme));
+        painter.fillRect(rc, g_crTheme);
         return;
     }
 
@@ -445,7 +445,7 @@ void MainWindow::_relayout()
     int dy_bkg = cy - cy_bkg;
 
     UINT uShadowAlpha = 0;
-    if (m_app.getOption().crTheme > 0)
+    if (m_app.getOption().bUseThemeColor)
     {
         m_bUseDefaultBkg = false;
     }
