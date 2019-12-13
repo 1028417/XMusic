@@ -27,13 +27,17 @@ public:
         m_eColor = eColor;
 
         setValue(uValue);
-        update();
     }
 
     void setValue(uint8_t uValue)
     {
-        m_uValue = uValue;
-        update();
+        if (uValue != m_uValue)
+        {
+            m_uValue = uValue;
+            update();
+
+            emit signal_valueChanged(this, m_uValue);
+        }
     }
 
     uint8_t value() const
@@ -46,7 +50,7 @@ private:
     uint8_t m_uValue = 0;
 
 signals:
-    void signal_click(CColorBar*, const QPoint& pos);
+    void signal_valueChanged(CColorBar*, uint8_t uValue);
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
@@ -72,16 +76,23 @@ private:
         painter.fillRect(rc, br);
 
         auto cy = rc.height();
+        auto len = cy + 4;
         auto margin = 2;
-        int x = margin + m_uValue*(rc.width()-margin*2-cy)/255;
-        painter.fillRect(x, rc.top()+margin, cy, cy-margin*2, Qt::GlobalColor::white);
+        int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
+        painter.fillRect(x, rc.top()+margin, len, cy-margin*2, Qt::GlobalColor::white);
     }
 
-    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override
     {
         if (E_MouseEventType::MET_Click == type)
         {
-            emit signal_click(this, me.pos());
+            auto cy = height();
+            auto len = cy + 4;
+            int nValue = 255*(me.pos().x()-len/2)/width();
+            nValue = MAX(0, nValue);
+            nValue = MIN(255, nValue);
+
+            setValue((uint8_t)nValue);
         }
     }
 };

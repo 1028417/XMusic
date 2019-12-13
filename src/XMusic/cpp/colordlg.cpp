@@ -22,7 +22,7 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
     for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barFontBlue
                                        , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
     {
-        connect(pBar, &CColorBar::signal_click, this, &CColorDlg::slot_barClicked);
+        connect(pBar, &CColorBar::signal_valueChanged, this, &CColorDlg::slot_barValueChanged);
     }
 }
 
@@ -176,7 +176,6 @@ void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
     pBar->setValue((uint8_t)value);
 }
 
-void CColorDlg::slot_barClicked(CColorBar *pBar, const QPoint& pos)
+void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
-    pBar->setValue(255*pos.x()/pBar->width());
 }

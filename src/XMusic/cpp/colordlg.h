@@ -24,7 +24,7 @@ private:
 private slots:
     void slot_buttonClicked(CButton *pButton);
 
-    void slot_barClicked(CColorBar *pBar, const QPoint& pos);
+    void slot_barValueChanged(CColorBar*, uint8_t uValue);
 
 public:
     void show();
