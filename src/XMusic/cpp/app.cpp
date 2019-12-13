@@ -188,7 +188,6 @@ int CXMusicApp::run()
     g_crTheme.setRgb(option.crTheme);
 
     g_crText.setRgb(option.crText);
-    CDialog::m_crText.setRgb(option.crText);
 
     std::thread thrUpgrade;
     bool bUpgradeResult = false;

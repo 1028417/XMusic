@@ -195,6 +195,7 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
-        g_crText.setRgb(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
+        m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
+        g_crText.setRgb(m_app.getOption().crText);
     }
 }
