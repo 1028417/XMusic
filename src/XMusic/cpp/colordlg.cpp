@@ -182,6 +182,8 @@ void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
 
 void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
+    (void)uValue;
+
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
         m_app.getOption().crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
