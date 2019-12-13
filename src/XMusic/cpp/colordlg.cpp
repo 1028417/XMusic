@@ -10,14 +10,19 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
 {
     ui.setupUi(this);
 
-    ui.barBkgRed->setColor(E_BarColor::BC_Red);
-    ui.barBkgGreen->setColor(E_BarColor::BC_Green);
-    ui.barBkgBlue->setColor(E_BarColor::BC_Blue);
-    ui.barFontRed->setColor(E_BarColor::BC_Red);
-    ui.barFontGreen->setColor(E_BarColor::BC_Green);
-    ui.barFontBlue->setColor(E_BarColor::BC_Blue);
-
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    for (auto pButton : SList<QWidget*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
+                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
+                                        , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubBkgBlue, ui.btnAddBkgBlue}))
+    {
+        connect(ui.btnReturn, &CButton::signal_clicked, this, &CColorDlg::onButton);
+    }
+}
+
+void CColorDlg::onButton(CButton *pButton)
+{
+
 }
 
 void CColorDlg::_relayout(int cx, int cy)
@@ -98,6 +103,13 @@ void CColorDlg::show()
         pe.setColor(QPalette::WindowText, m_crText);
         widget->setPalette(pe);
     }
+
+    ui.barBkgRed->setColor(E_BarColor::BC_Red, 0);
+    ui.barBkgGreen->setColor(E_BarColor::BC_Green, 0);
+    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, 0);
+    ui.barFontRed->setColor(E_BarColor::BC_Red, 0);
+    ui.barFontGreen->setColor(E_BarColor::BC_Green, 0);
+    ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
 
     CDialog::show(true);
 }

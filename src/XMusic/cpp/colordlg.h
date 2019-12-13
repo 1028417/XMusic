@@ -15,6 +15,8 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
+    void onButton(CButton *pButton);
+
 public:
     void show();
 };

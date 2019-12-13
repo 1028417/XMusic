@@ -21,13 +21,15 @@ public:
     {
     }
 
-    void setColor(E_BarColor eColor)
+    void setColor(E_BarColor eColor, uint8_t uValue)
     {
         m_eColor = eColor;
+        m_uValue = uValue;
     }
 
 private:
     E_BarColor m_eColor;
+    uint8_t m_uValue = 0;
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
