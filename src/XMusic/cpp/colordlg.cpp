@@ -6,7 +6,8 @@
 static Ui::ColorDlg ui;
 
 CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&)bkgDlg),
-    m_app(app)
+    m_app(app),
+    m_bkgDlg(bkgDlg)
 {
     ui.setupUi(this);
 
@@ -19,7 +20,7 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
         connect(pButton, &CButton::signal_clicked, this, &CColorDlg::slot_buttonClicked);
     }
 
-    for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barFontBlue
+    for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
                                        , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
     {
         connect(pBar, &CColorBar::signal_valueChanged, this, &CColorDlg::slot_barValueChanged);
@@ -105,12 +106,16 @@ void CColorDlg::show()
         widget->setPalette(pe);
     }
 
-    ui.barBkgRed->setColor(E_BarColor::BC_Red, 0);
-    ui.barBkgGreen->setColor(E_BarColor::BC_Green, 0);
-    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, 0);
+    ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
+    ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
+    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crTheme.blue());
+
     ui.barFontRed->setColor(E_BarColor::BC_Red, 0);
     ui.barFontGreen->setColor(E_BarColor::BC_Green, 0);
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, 0);
+
+
+    m_app.getOption().bUseThemeColor = true;
 
     CDialog::show(true);
 }
@@ -180,7 +185,13 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 {
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
-        this->setBkgColor(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+        auto rgb = qRgb(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+        m_app.getOption().crTheme = rgb;
+
+        g_crTheme.setRgb(rgb);
+        this->setBkgColor(g_crTheme);
+
+        m_bkgDlg.setBkgColor(g_crTheme);
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {

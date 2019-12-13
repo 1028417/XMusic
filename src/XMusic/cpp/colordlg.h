@@ -15,6 +15,7 @@ public:
 
 private:    
     class CXMusicApp& m_app;
+    class CBkgDlg& m_bkgDlg;
 	
 private:
     void _relayout(int cx, int cy) override;

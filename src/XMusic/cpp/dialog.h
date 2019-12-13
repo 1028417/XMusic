@@ -52,11 +52,6 @@ protected:
         this->setPalette(pe);
     }
 
-    void setBkgColor(int r, int g, int b, int a=255)
-    {
-        setBkgColor(QColor(r, g, b, a));
-    }
-
 public:
     void show(bool bFullScreen, const fn_void& cbClose = NULL);
 
