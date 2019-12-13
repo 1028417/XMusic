@@ -76,24 +76,21 @@ private:
         painter.fillRect(rc, br);
 
         auto cy = rc.height();
-        auto len = cy + 3;
-        auto margin = 2;
+        auto len = cy;
+        auto margin = 3;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.fillRect(x, rc.top()+margin, len, cy-margin*2, Qt::GlobalColor::white);
     }
 
-    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override
+    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
     {
-        if (E_MouseEventType::MET_Click == type)
-        {
-            auto len = height() + 3;
-            auto margin = 2;
+        auto len = height();
+        auto margin = 3;
 
-            int nValue = 255*(me.pos().x()-len/2-margin)/(width()-margin*2-len);
-            nValue = MAX(0, nValue);
-            nValue = MIN(255, nValue);
+        int nValue = 255*(te.x()-len/2-margin)/(width()-margin*2-len);
+        nValue = MAX(0, nValue);
+        nValue = MIN(255, nValue);
 
-            setValue((uint8_t)nValue);
-        }
+        setValue((uint8_t)nValue);
     }
 };
