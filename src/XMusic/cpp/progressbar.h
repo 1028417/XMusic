@@ -59,8 +59,10 @@ private:
     {
         painter.setPen(Qt::transparent);
 
-        QRect rc = this->rect();
-        UINT uRadius = 4;
+        QRect rc = this->rect();        
+        painter.fillRect(rc, g_crTheme);
+
+        UINT uRadius = 3;
 
         painter.setBrush(m_brBackground);
         painter.drawRoundedRect(rc, uRadius, uRadius);

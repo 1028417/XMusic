@@ -7,6 +7,8 @@
 
 #include <QBrush>
 
+#include "dialog.h"
+
 enum class E_BarColor
 {
     BC_Red,
@@ -55,7 +57,11 @@ signals:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
+        painter.setPen(Qt::transparent);
+
         QRect rc = this->rect();
+        painter.fillRect(rc, g_crTheme);
+
         QLinearGradient gradient(rc.topLeft(), rc.topRight());
         gradient.setColorAt(0, QColor(0,0,0));
 
@@ -71,12 +77,10 @@ private:
         {
             gradient.setColorAt(1, QColor(0,0,255));
         }
-
-        painter.setPen(Qt::transparent);
-
         QBrush br(gradient);
         painter.setBrush(br);
-        painter.drawRoundedRect(rc, 5, 5);
+
+        painter.drawRoundedRect(rc, 4, 4);
 
         auto cy = rc.height();
         auto len = cy;
