@@ -70,7 +70,7 @@ void CPlayingList::OnCustomDraw(tagLVDrawSubItem& lvcd)
 	}
 
 	m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
-		int cx = rc.right - rc.left;
+		int cx = rc.right - rc.left+4;
 		int cy = rc.bottom - rc.top;
 
 		CCompDC CompDC;
@@ -87,49 +87,46 @@ void CPlayingList::OnCustomDraw(tagLVDrawSubItem& lvcd)
 
 void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVDrawSubItem& lvcd)
 {
-	int nItem = lvcd.uItem;
-
 	CFont *pFontPrev = dc.GetCurrentFont();
 
 	int iYMiddlePos = cy / 2 + 1;
 
+	int nItem = lvcd.uItem;
 	bool bPlayingItem = (nItem == m_nPlayingItem);
 	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
 
-	CFont *pFont = &m_font;
-	COLORREF crTextColor = __Color_Text;
 	COLORREF crBkColor = GetSysColor(COLOR_WINDOW);
+	COLORREF crTextColor = __Color_Text;
+	CFont *pFont = &m_font;
 	if (bPlayingItem)
 	{
-		pFont = &m_fontPlaying;
-		crTextColor = GetSysColor(COLOR_HIGHLIGHTTEXT);
 		crBkColor = GetSysColor(COLOR_HIGHLIGHT);
+		crTextColor = GetSysColor(COLOR_HIGHLIGHTTEXT);
+		pFont = &m_fontPlaying;
 	}
 	else
 	{
-		if (m_view.getPlayMgr().checkPlayedID(PlayItem.m_uID))
-		{
-			pFont = &m_fontPlayed;
-			crTextColor = RGB(85, 26, 139);
-		}
-
-		if (bMouseMoveItem)
-		{
-			crBkColor = BkgColor_Hit;
-		}
-
 		if (this->GetItemState(nItem, LVIS_SELECTED))
 		{
 			crBkColor = BkgColor_Select;
 		}
+		else if (bMouseMoveItem)
+		{
+			crBkColor = BkgColor_Hit;
+		}
+
+		if (m_view.getPlayMgr().checkPlayedID(PlayItem.m_uID))
+		{
+			crTextColor = RGB(85, 26, 139);
+			pFont = &m_fontPlayed;
+		}
 	}
 
-	(void)dc.SetTextColor(crTextColor);
 	RECT rcItem { 0, 0, cx, cy };
 	dc.FillSolidRect(&rcItem, crBkColor);
 
-	cx -= 8;
-
+	(void)dc.SetTextColor(crTextColor);
+	
 	if (nItem == m_nRenameItem)
 	{
 		auto *pEdit = GetEditControl();
@@ -186,7 +183,7 @@ void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVD
 
 #define __Margin 0
 
-	int x = 0;
+	int x = 8;
 	if (iImage >= 0)
 	{
 		UINT nStyle = ILD_SCALE;
@@ -202,13 +199,16 @@ void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVD
 		m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big).DrawEx(&dc, iImage
 			, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_DEFAULT, CLR_DEFAULT, nStyle);
 
-		x = cy;
+		x += cy-__Margin;
 	}
 	else
 	{
 		memzero(rcSingerImg);
+
+		x += 8;
 	}
-	x += 8;
+
+	cx -= 8;
 
 	int iXPosDuration = cx;
 	auto& strDuration = PlayItem.GetDurationString();
