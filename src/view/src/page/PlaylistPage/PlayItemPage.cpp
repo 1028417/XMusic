@@ -89,7 +89,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			cauto rc = lvcd.rc;
 			dc.FillSolidRect(&rc, lvcd.crBkg);
 
-			dc.SetTextColor(lvcd.crText);
+			dc.SetTextColor(lvcd.getTextColor(uTextAlpha));
 
 			m_wndList.SetCustomFont(dc, -.2f, false);
 			RECT rcText = rc;
@@ -97,10 +97,13 @@ BOOL CPlayItemPage::OnInitDialog()
 
 			dc.DrawText(pPlayItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			auto bitRate = pPlayItem->fileSize()/ pPlayItem->duration();
-			if (bitRate < 2e5)
+			if (pPlayItem->duration() > 0)
 			{
-				dc.SetTextColor(lvcd.getTextColor(BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2))));
+				UINT bitRate = UINT(pPlayItem->fileSize() / pPlayItem->duration());
+				if (bitRate < 2e5)
+				{
+					dc.SetTextColor(lvcd.getTextColor(BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2))));
+				}
 			}
 
 			rcText.left = rcText.right;

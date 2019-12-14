@@ -76,7 +76,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	TD_ListColumn lstColumns = {
 		{ _T("文件名称"), uColWidth_FileName }
-		,{ _T("类型/大小"), globalSize.m_ColWidth_Type*3, true }
+		,{ _T("类型"), globalSize.m_ColWidth_FileSize, true }
 		,{ _T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true }
 	};
 	
