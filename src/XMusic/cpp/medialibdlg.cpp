@@ -65,7 +65,7 @@ void CMedialibDlg::_show()
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
 
     cauto crFlashText = CPainter::mixColor(g_crText, g_crTheme, 85);
-    m_MedialibView.setTextColor(m_crText, crFlashText);
+    m_MedialibView.setTextColor(g_crText, crFlashText);
 
     __async(0, [&](){
         _resizeTitle();

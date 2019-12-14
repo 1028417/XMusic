@@ -12,7 +12,7 @@ CMsgBox::CMsgBox(QWidget& parent)
     ui.setupUi(this);
 
     ui.labelTip->setFont(1, E_FontWeight::FW_SemiBold);
-    ui.labelTip->setTextColor(m_crText);
+    ui.labelTip->setTextColor(g_crText);
 
     ui.labelClose->setTextColor(m_crText);
 
