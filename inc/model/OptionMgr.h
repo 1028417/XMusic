@@ -63,7 +63,7 @@ struct __ModelExt tagOption
 	UINT uPlayingItem = 0;
 
     bool bRandomPlay = false;
-	bool bForce48000 = false;
+	bool bForce48KHz = false;
 
     bool bFullScreen = !__winvc;
 

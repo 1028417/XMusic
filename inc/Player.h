@@ -123,7 +123,7 @@ public:
     static void QuitSDK();
 
 	void Stop();
-    bool Play(uint64_t uStartPos, bool bForce48000, const CB_PlayFinish& cbFinish = NULL);
+    bool Play(uint64_t uStartPos, bool bForce48KHz, const CB_PlayFinish& cbFinish = NULL);
 	
 	uint32_t GetDuration();
 	uint64_t GetClock();
