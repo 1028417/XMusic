@@ -180,12 +180,11 @@ void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVD
 	memzero(rcSingerAlbum);
 
 	CRect& rcSingerImg = ItemLinks.lnkSingerImg.rcPos;
-
-#define __Margin 0
-
+	
 	int x = 8;
 	if (iImage >= 0)
 	{
+#define __Margin 0
 		UINT nStyle = ILD_SCALE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
