@@ -1,6 +1,8 @@
 
 #include "label.h"
 
+#include "dialog.h"
+
 void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 {
 	m_rc = this->rect();
@@ -47,19 +49,16 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 
         if (m_uShadowWidth > 0)
         {
-            int nShadowAlpha = m_crText.alpha();
-            nShadowAlpha = nShadowAlpha * m_uShadowAlpha / 255;
-
-            if (nShadowAlpha > 0)
+            if (m_uShadowAlpha > 0)
             {
                 QPen pen = painter.pen();
 
-                QColor crShadow(128,128,128, nShadowAlpha);
+                QColor crShadow(128,128,128, m_uShadowAlpha);
                 for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
                 {
                     if (uIdx > 1)
                     {
-                        crShadow.setAlpha(nShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                        crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                     }
 
                     painter.setPen(crShadow);
@@ -71,6 +70,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
             }
 		}
 
+        painter.setPen(g_crText);
 		painter.drawText(m_rc, alignment, text, &m_rc);
 
 		return;

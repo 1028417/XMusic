@@ -13,7 +13,7 @@ class CColorDlg : public CDialog
 public:
     CColorDlg(class CXMusicApp& app, class CBkgDlg& bkgDlg);
 
-private:    
+private:
     class CXMusicApp& m_app;
     class CBkgDlg& m_bkgDlg;
 	

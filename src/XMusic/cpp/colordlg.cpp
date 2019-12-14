@@ -96,17 +96,12 @@ void CColorDlg::_relayout(int cx, int cy)
 
 void CColorDlg::show()
 {
-    ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    SList<QWidget*> lstWidget {ui.groupBkgColor, ui.btnSubBkgRed, ui.btnSubBkgGreen, ui.btnSubBkgBlue
-                              , ui.groupFontColor, ui.btnSubFontRed, ui.btnSubFontGreen, ui.btnSubFontBlue};
-    for (auto widget : lstWidget)
-    {
-        QPalette pe = ui.btnSubBkgRed->palette();
-        pe.setColor(QPalette::WindowText, g_crText);
-        widget->setPalette(pe);
-    }
+    QPalette pe = ui.groupBkgColor->palette();
+    pe.setColor(QPalette::WindowText, g_crText);
+    ui.groupBkgColor->setPalette(pe);
+    ui.groupFontColor->setPalette(pe);
 
     ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
     ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
@@ -195,6 +190,11 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     {
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
+
+        QPalette pe = ui.groupBkgColor->palette();
+        pe.setColor(QPalette::WindowText, g_crText);
+        ui.groupBkgColor->setPalette(pe);
+        ui.groupFontColor->setPalette(pe);
     }
 
     this->update();
