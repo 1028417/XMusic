@@ -208,7 +208,6 @@ void CBkgDlg::init()
 
 void CBkgDlg::show()
 {
-    ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     CDialog::show(true);
@@ -240,7 +239,7 @@ void CBkgDlg::_relayout(int cx, int cy)
 
         ui.labelTitle->setGeometry(0, 0, x_bkgView, cy);
         ui.labelTitle->setWordWrap(true);
-        ui.labelTitle->setText("设\n置\n背\n景", E_LabelTextOption::LTO_None);
+        ui.labelTitle->setText("设\n置\n背\n景");
     }
     else
     {
@@ -253,7 +252,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
         ui.labelTitle->setGeometry(0, 0, cx, y_bkgView);
-        ui.labelTitle->setText("设置背景", E_LabelTextOption::LTO_None);
+        ui.labelTitle->setText("设置背景");
     }
 }
 

@@ -11,7 +11,6 @@
 
 enum class E_LabelTextOption
 {
-    LTO_None = 0,
     LTO_AutoFit,
     LtO_Elided
 };

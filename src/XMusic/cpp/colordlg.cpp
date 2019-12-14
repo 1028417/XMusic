@@ -198,4 +198,6 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     }
 
     this->update();
+    //m_bkgDlg.update();
+    //m_app.mainWnd().update();
 }

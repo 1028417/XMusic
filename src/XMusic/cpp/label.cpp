@@ -14,9 +14,11 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 		return;
 	}
 
+    painter.setPen(g_crText);
+
 	QString text = this->text();
-	if (!text.isEmpty() && E_LabelTextOption::LTO_None != m_eTextOption)
-	{
+    if (!text.isEmpty())
+    {
 		int cx = m_rc.right();
 
 		if (E_LabelTextOption::LTO_AutoFit == m_eTextOption)
@@ -70,7 +72,6 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
             }
 		}
 
-        painter.setPen(g_crText);
 		painter.drawText(m_rc, alignment, text, &m_rc);
 
 		return;
