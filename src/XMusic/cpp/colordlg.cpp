@@ -96,7 +96,7 @@ void CColorDlg::_relayout(int cx, int cy)
 
 void CColorDlg::show()
 {
-    ui.labelTitle->setTextColor(m_crText);
+    ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     SList<QWidget*> lstWidget {ui.groupBkgColor, ui.btnSubBkgRed, ui.btnSubBkgGreen, ui.btnSubBkgBlue
@@ -104,7 +104,7 @@ void CColorDlg::show()
     for (auto widget : lstWidget)
     {
         QPalette pe = ui.btnSubBkgRed->palette();
-        pe.setColor(QPalette::WindowText, m_crText);
+        pe.setColor(QPalette::WindowText, g_crText);
         widget->setPalette(pe);
     }
 
@@ -199,5 +199,7 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     {
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
+
+        this->update();
     }
 }

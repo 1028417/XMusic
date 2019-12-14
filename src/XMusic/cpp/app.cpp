@@ -10,8 +10,6 @@
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
-QColor g_crText(255,255,255);
-
 map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;

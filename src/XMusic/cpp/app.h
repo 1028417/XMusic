@@ -14,8 +14,6 @@
 
 extern ITxtWriter& g_logger;
 
-extern QColor g_crText;
-
 class CApp : public QApplication
 {
 public:

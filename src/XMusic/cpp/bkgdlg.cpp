@@ -208,7 +208,7 @@ void CBkgDlg::init()
 
 void CBkgDlg::show()
 {
-    ui.labelTitle->setTextColor(m_crText);
+    ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     CDialog::show(true);
