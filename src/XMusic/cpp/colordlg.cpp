@@ -189,17 +189,13 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
         m_app.getOption().crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
-
         g_crTheme.setRgb(m_app.getOption().crTheme);
-        this->setBkgColor(g_crTheme);
-
-        m_bkgDlg.setBkgColor(g_crTheme);
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
-
-        this->update();
     }
+
+    this->update();
 }

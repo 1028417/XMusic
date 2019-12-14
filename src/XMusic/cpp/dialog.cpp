@@ -95,6 +95,13 @@ bool CDialog::event(QEvent *ev)
         _relayout(width(), height());
 
 		break;
+    case QEvent::Paint:
+    {
+        QPainter painter(this);
+        painter.fillRect(0, 0, width(), height(), g_crTheme);
+    }
+
+    break;
 #if __android || __ios
 	case QEvent::KeyRelease:
 		if (!_handleReturn())
