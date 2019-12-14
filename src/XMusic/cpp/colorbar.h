@@ -80,7 +80,7 @@ private:
         QBrush br(gradient);
         painter.setBrush(br);
 
-        painter.drawRoundedRect(rc, 4, 4);
+        painter.drawRoundedRect(rc, 5, 5);
 
         auto cy = rc.height();
         auto len = cy;
