@@ -57,19 +57,24 @@ public:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
+        painter.setPen(Qt::transparent);
+
         QRect rc = this->rect();
-        painter.fillRect(rc, m_brBackground);
+        painter.setBrush(m_brBackground);
+        painter.drawRoundedRect(rc, 3, 3);
 
         if (m_maxBuffer > 0 && m_bufferValue > 0)
         {
             rc.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
-            painter.fillRect(rc, m_brBuffer);
+            painter.setBrush(m_brBuffer);
+            painter.drawRoundedRect(rc, 3, 3);
         }
 
         if (this->maximum() > 0 && this->value() > 0)
         {
             rc.setRight(this->rect().right() * this->value()/this->maximum());
-            painter.fillRect(rc, m_brForeground);
+            painter.setBrush(m_brForeground);
+            painter.drawRoundedRect(rc, 3, 3);
         }
     }
 };

@@ -72,14 +72,18 @@ private:
             gradient.setColorAt(1, QColor(0,0,255));
         }
 
+        painter.setPen(Qt::transparent);
+
         QBrush br(gradient);
-        painter.fillRect(rc, br);
+        painter.setBrush(br);
+        painter.drawRoundedRect(rc, 3, 3);
 
         auto cy = rc.height();
         auto len = cy;
         auto margin = 3;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
-        painter.fillRect(x, rc.top()+margin, len, cy-margin*2, Qt::GlobalColor::white);
+        painter.setBrush(Qt::GlobalColor::white);
+        painter.drawRoundedRect(x, rc.top()+margin, len, cy-margin*2, 3, 3);
     }
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
