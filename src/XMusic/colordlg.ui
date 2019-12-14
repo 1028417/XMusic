@@ -64,7 +64,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>背景</string>
+    <string> 背景</string>
    </property>
    <widget class="CColorBar" name="barBkgRed" native="true">
     <property name="geometry">
@@ -320,7 +320,7 @@ gridline-color: rgb(255, 255, 255);</string>
     </rect>
    </property>
    <property name="title">
-    <string>前景</string>
+    <string> 前景</string>
    </property>
    <widget class="CColorBar" name="barFontBlue" native="true">
     <property name="geometry">

@@ -60,21 +60,23 @@ private:
         painter.setPen(Qt::transparent);
 
         QRect rc = this->rect();
+        UINT uRadius = 4;
+
         painter.setBrush(m_brBackground);
-        painter.drawRoundedRect(rc, 3, 3);
+        painter.drawRoundedRect(rc, uRadius, uRadius);
 
         if (m_maxBuffer > 0 && m_bufferValue > 0)
         {
             rc.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
             painter.setBrush(m_brBuffer);
-            painter.drawRoundedRect(rc, 3, 3);
+            painter.drawRoundedRect(rc, uRadius, uRadius);
         }
 
         if (this->maximum() > 0 && this->value() > 0)
         {
             rc.setRight(this->rect().right() * this->value()/this->maximum());
             painter.setBrush(m_brForeground);
-            painter.drawRoundedRect(rc, 3, 3);
+            painter.drawRoundedRect(rc, uRadius, uRadius);
         }
     }
 };
