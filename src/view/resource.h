@@ -174,7 +174,7 @@
 #define ID_Upward                       32888
 #define ID_FullScreen                   32890
 #define ID_CopyTitle                    32892
-#define ID_Force48000                   32899
+#define ID_Force48KHz                   32899
 #define ID_DisableDemand                32904
 #define ID_DisableExport                32905
 #define ID_CNLanguage                   32914

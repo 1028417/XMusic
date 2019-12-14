@@ -1013,7 +1013,7 @@ IDR_TOOLBAR1 TOOLBAR 64, 24
 BEGIN
     BUTTON      ID_Menu
     BUTTON      ID_RandomPlay
-    BUTTON      ID_Force48000
+    BUTTON      ID_Force48KHz
     SEPARATOR
     BUTTON      ID_MIN
     BUTTON      ID_FullScreen

@@ -41,9 +41,9 @@ bool CSysToolBar::Create(CWnd& wndParent)
 		GetToolBarCtrl().SetState(ID_RandomPlay, TBSTATE_PRESSED);
 	}
 
-	if (m_view.getOption().bForce48000)
+	if (m_view.getOption().bForce48KHz)
 	{
-		GetToolBarCtrl().SetState(ID_Force48000, TBSTATE_PRESSED);
+		GetToolBarCtrl().SetState(ID_Force48KHz, TBSTATE_PRESSED);
 	}
 
 	return true;
@@ -113,12 +113,12 @@ void CSysToolBar::_onNMClick(UINT uID)
 	}
 
 	break;
-	case ID_Force48000:
+	case ID_Force48KHz:
 	{
-		auto& bForce48000 = m_view.getOption().bForce48000;
-		bForce48000 = !bForce48000;
+		auto& bForce48KHz = m_view.getOption().bForce48KHz;
+		bForce48KHz = !bForce48KHz;
 
-		GetToolBarCtrl().SetState(ID_Force48000, bForce48000 ? TBSTATE_PRESSED : TBSTATE_ENABLED);
+		GetToolBarCtrl().SetState(ID_Force48KHz, bForce48KHz ? TBSTATE_PRESSED : TBSTATE_ENABLED);
 	}
 	
 	break;
