@@ -25,15 +25,13 @@ CGlobalSize::CGlobalSize()
 	m_uSmallIconSize = 44;
 	m_uBigIconSize = 61;
 
-	m_uHeadHeight = 24;
-	m_uTabHeight = 24;
-	m_uMenuItemHeight = 24;
-
-	m_uPlayingItemHeight = 59;
+	m_uHeadHeight = m_uTabHeight = m_uMenuItemHeight = 24;
 
 	m_uTileHeight = 79;
 	m_uIconSpace = 64;
 	
+	m_uPlayingItemHeight = 43;
+
 	m_ColWidth_Name = 255;
 	m_ColWidth_Time = 85;
 	m_ColWidth_MediaTag_Title = 150;
@@ -90,11 +88,11 @@ void CGlobalSize::init()
 	m_uTabHeight = uintRound(m_uTabHeight*fHRate*fHRate);
 	m_uHeadHeight = uintRound(m_uHeadHeight*fHRate*fHRate);
 	
-	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fHRate);
-	
 	m_uTileHeight = uintRound(m_uTileHeight*fHRate);
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
 
+	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fWRate*fHRate);
+	
 	float fDPIRate = getDPIRate();
 	m_fSmallFontSize = (fWRate - 1) * fDPIRate;
 
