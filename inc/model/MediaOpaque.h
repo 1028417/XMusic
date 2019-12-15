@@ -10,12 +10,11 @@ public:
 private:
 	wstring m_strFile;
 
-    bool m_bUrl = false;
-    UINT m_uByteRate = 0;
-
 #if !__winvc
     uint64_t m_uStreamPos = 0;
 #endif
+
+	UINT m_uByteRate = 0;
 
     bool m_bXmsc = false;
     void *m_pXmscCodec = NULL;
@@ -147,14 +146,14 @@ private:
 
     UINT byteRate() const override
     {
-        if (m_bUrl)
-        {
-            return m_uByteRate;
-        }
-        else
-        {
-            return CAudioOpaque::byteRate();
-        }
+#if !__winvc
+		if (m_strFile.empty())
+		{
+			return m_uByteRate;
+		}
+#endif
+
+		return CAudioOpaque::byteRate();	
     }
 
     int read(byte_t *buf, size_t size) override;
