@@ -37,7 +37,7 @@ public:
 
 	virtual int64_t seek(int64_t offset, int origin) = 0;
 
-    virtual int read(byte_t *buf, size_t size) = 0;
+    virtual int read(byte_p buf, size_t size) = 0;
 
 	virtual E_DecodeStatus decodeStatus() const = 0;
 
@@ -91,7 +91,7 @@ protected:
     
 	virtual int64_t seek(int64_t offset, int origin) override;
 
-    virtual int read(byte_t *buf, size_t size) override;
+    virtual int read(byte_p buf, size_t size) override;
 
     UINT byteRate() const override;
 };

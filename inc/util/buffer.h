@@ -117,7 +117,7 @@ public:
 	}
 
 public:
-    byte_t* resizeMore(size_t size)
+    byte_p resizeMore(size_t size)
     {
         if (0 == size)
         {
@@ -147,7 +147,7 @@ public:
 		return m_vecBuff.empty();
 	}
 
-    inline const byte_t* ptr() const
+    inline c_byte_p ptr() const
 	{
         if (m_vecBuff.empty())
         {
@@ -155,7 +155,7 @@ public:
         }
         return &m_vecBuff.front();
 	}
-	inline byte_t* ptr()
+	inline byte_p ptr()
 	{
 		if (m_vecBuff.empty())
 		{
@@ -164,11 +164,11 @@ public:
 		return &m_vecBuff.front();
 	}
 
-	operator const byte_t*() const
+	operator c_byte_p() const
 	{
 		return ptr();
 	}
-	operator byte_t*()
+	operator byte_p()
 	{
 		return ptr();
 	}
@@ -329,22 +329,22 @@ public:
         return ptr();
     }
 
-	operator const byte_t*() const
+	operator c_byte_p() const
 	{
-		return (const byte_t*)ptr();
+		return (c_byte_p)ptr();
 	}
-	operator byte_t*()
+	operator byte_p()
 	{
-		return (byte_t*)ptr();
+		return (byte_p)ptr();
 	}
 
 	operator const void*() const
 	{
-		return (const byte_t*)ptr();
+		return ptr();
 	}
 	operator void*()
 	{
-		return (byte_t*)ptr();
+		return (byte_p)ptr();
 	}
 
 	const string* operator->() const

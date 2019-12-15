@@ -100,6 +100,8 @@ __UtilExt wstring platformVersion();
 #define cauto const auto&
 
 using byte_t = uint8_t;
+using byte_p = byte_t*;
+using c_byte_p = const byte_t*;
 
 #ifndef BOOL
 using BOOL = int;

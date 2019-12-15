@@ -122,7 +122,7 @@ public:
 		return m_strFile;
 	}
 
-    int readHead(byte_t *buf, size_t size);
+    int readHead(byte_p buf, size_t size);
 
 private:
 #if !__winvc
@@ -156,5 +156,5 @@ private:
 		return CAudioOpaque::byteRate();	
     }
 
-    int read(byte_t *buf, size_t size) override;
+    int read(byte_p buf, size_t size) override;
 };

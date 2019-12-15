@@ -83,7 +83,7 @@ private:
     bool m_bStatus = false;
 
     mutex m_mtxDataLock;
-    list<pair<byte_t*, size_t>> m_lstData;
+    list<pair<byte_p, size_t>> m_lstData;
     size_t m_uDataSize = 0;
     uint64_t m_uSumSize = 0;
 
@@ -100,7 +100,7 @@ private:
         }
 
         auto ptr = buff.resizeMore(uReadSize);
-        size_t size = (size_t)MAX(0, getData((byte_t*)ptr, uReadSize));
+        size_t size = (size_t)MAX(0, getData((byte_p)ptr, uReadSize));
         if (size < uReadSize)
         {
             buff.resizeLess(uReadSize - size);
@@ -122,7 +122,7 @@ public:
         return m_bStatus;
     }
 
-    using CB_Downloader = function<bool(byte_t *ptr, size_t size)>;
+    using CB_Downloader = function<bool(string& strData)>;
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
     int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0);
     int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0);
@@ -142,7 +142,7 @@ public:
 //        return m_uSumSize - m_uDataSize;
 //    }
 
-    int getData(byte_t *pBuff, size_t buffSize);
+    int getData(byte_p pBuff, size_t buffSize);
 
     int getData(TD_ByteBuffer& buff)
     {
