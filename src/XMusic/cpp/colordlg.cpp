@@ -59,7 +59,7 @@ void CColorDlg::_relayout(int cx, int cy)
     int cx_group = ui.groupBkgColor->rect().width();
     int cy_group = ui.groupBkgColor->rect().height();
 
-    int x = ui.btnSubBkgRed->x();
+    int x = 40;//ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
 
 #define __szButton 80
@@ -71,7 +71,7 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int cy_bar = 11;
 #if __android || __ios
-    cy_bar += 2;
+    cy_bar += 3;
 #endif
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
