@@ -7,8 +7,6 @@
 
 #include <QBrush>
 
-#include "dialog.h"
-
 enum class E_BarColor
 {
     BC_Red,

@@ -14,6 +14,11 @@ map<E_FontWeight, QFont> g_mapFont;
 
 float g_fPixelRatio = 1;
 
+QColor g_crTheme;
+
+QColor g_crText;
+//#define __BlueLabel QRGB(32, 128, 255)
+
 /*#if __android
 static const wstring g_strSdcardPath;
 

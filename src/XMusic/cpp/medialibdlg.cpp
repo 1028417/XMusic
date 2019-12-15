@@ -56,7 +56,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    ui.labelTitle->setTextColor(g_crText);
+   //ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
     QColor crSelectedBkg = g_crTheme;
@@ -64,8 +64,8 @@ void CMedialibDlg::_show()
     crSelectedBkg.setGreen(g_crTheme.green()-5);
     m_MedialibView.setSelectedBkgColor(crSelectedBkg);
 
-    cauto crFlashText = CPainter::mixColor(g_crText, g_crTheme, 85);
-    m_MedialibView.setTextColor(g_crText, crFlashText);
+    //cauto crFlashText = CPainter::mixColor(g_crText, g_crTheme, 85);
+    //m_MedialibView.setTextColor(g_crText, crFlashText);
 
     __async(0, [&](){
         _resizeTitle();

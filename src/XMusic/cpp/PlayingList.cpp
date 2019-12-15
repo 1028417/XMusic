@@ -31,15 +31,15 @@ size_t CPlayingList::getPageRowCount()
 
 void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
-    int cy = this->rect().bottom();
+    auto& rc = lvRow.rc;
+
+    int cy = height();//this->rect().bottom();
 
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
         fAlpha = m_fInactiveAlpha;
     }
-
-    QRect rc = lvRow.rc;
     if (rc.top() < 0)
     {
         fAlpha *= pow((double)rc.bottom()/rc.height(),3.3);
@@ -48,8 +48,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     {
         fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
     }
-    QColor crText(m_crText);
-    crText.setAlpha(crText.alpha()*fAlpha);
+    QColor crText(g_crText);
+    crText.setAlpha(255*fAlpha);
     painter.setPen(crText);
 
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
@@ -75,9 +75,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
                 , Qt::ElideRight, rc.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
-        if (m_uShadowWidth > 0)
+        if (m_uShadowWidth > 0 && m_uShadowAlpha )
         {
-            UINT uShadowAlpha = crText.alpha()*fAlpha * m_uShadowAlpha/255;
+            UINT uShadowAlpha = m_uShadowAlpha*fAlpha*fAlpha;//crText.alpha()*fAlpha * m_uShadowAlpha/255;
             QColor crShadow(128, 128, 128, uShadowAlpha);
 
             for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)

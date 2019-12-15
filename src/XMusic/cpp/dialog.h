@@ -9,14 +9,11 @@
 
 #include <QEvent>
 
-extern QColor g_crTheme;
-extern QColor g_crText;
+#include "widget.h"
 
 class CDialog : public QDialog
 {
 public:
-    static QColor m_crText;
-
     static void resetPos();
 
     CDialog(QWidget& parent) : m_parent(&parent)

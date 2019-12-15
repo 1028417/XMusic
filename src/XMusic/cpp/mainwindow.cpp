@@ -240,11 +240,11 @@ void MainWindow::_init()
     {
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
-    lstLabels.add(ui.labelDuration);
+    /*lstLabels.add(ui.labelDuration);
     for (auto label : lstLabels)
     {
         label->setTextColor(g_crText);
-    }
+    }*/
 
     connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
@@ -659,15 +659,15 @@ void MainWindow::_relayout()
             }
         }
 
-        m_PlayingList.setTextColor(g_crText);
+        //m_PlayingList.setTextColor(g_crText);
         m_PlayingList.setInactiveAlpha(0.4);
     }
     else
     {
-        auto crText = g_crText;
+        m_PlayingList.setInactiveAlpha(0.3);
+        /*auto crText = g_crText;
         crText.setAlpha(160);
-        m_PlayingList.setTextColor(crText);
-        m_PlayingList.setInactiveAlpha(0.33);
+        m_PlayingList.setTextColor(crText);*/
 
         bool bFlag = false;//fCXRateEx > 1;
         if (m_bHScreen)
@@ -1141,7 +1141,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             {
                 lblLanguage->setText(lblLanguage->text().mid(__qsCheck.length()));
 
-                lblLanguage->setTextColor(g_crText);
+                //lblLanguage->setTextColor(g_crText);
             }
             else
             {
@@ -1151,7 +1151,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 
                     lblLanguage->setText(__qsCheck + lblLanguage->text());
 
-                    lblLanguage->setTextColor(210,255,220);
+                    //lblLanguage->setTextColor(210,255,220);
                 }
             }
         });

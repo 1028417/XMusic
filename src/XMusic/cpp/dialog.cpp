@@ -8,11 +8,6 @@ extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
 
-QColor g_crTheme;
-QColor g_crText;
-
-//#define __BlueLabel QRGB(32, 128, 255)
-
 void CDialog::resetPos()
 {
     list<CDialog*> lstDlgs;

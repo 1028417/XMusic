@@ -198,12 +198,12 @@ public:
         m_uAutoScrollSeq = 0;
     }
 
-    void setTextColor(const QColor& crText)
+    /*void setTextColor(const QColor& crText)
     {
+        CWidget<>::setTextColor(crText);
+
         m_crFlashText = crText;
         m_crFlashText.setAlpha(crText.alpha()/2);
-
-        CWidget<>::setTextColor(crText);
     }
 
     void setTextColor(int r, int g, int b, int a=255)
@@ -213,10 +213,10 @@ public:
 
     void setTextColor(const QColor& crText, const QColor& crFlashText)
     {
-        m_crFlashText = crFlashText;
-
         CWidget<>::setTextColor(crText);
-    }
+
+        m_crFlashText = crFlashText;
+    }*/
 
     void setSelectedBkgColor(const QColor& crSelectedBkg)
     {

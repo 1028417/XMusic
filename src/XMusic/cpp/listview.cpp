@@ -82,7 +82,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
         painter.setFont(this->font());
-        painter.setPen(m_crText);
+        painter.setPen(g_crText);
 
         tagLVRow lvRow(uIdx, uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
         QRect& rc = lvRow.rc;
@@ -112,7 +112,9 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (lvRow.bFlash)
     {
-        painter.setPen(m_crFlashText);
+        QColor crFlashText(g_crText);
+        crFlashText.setAlpha(220);
+        painter.setPen(crFlashText);
     }
 
     if (context.pixmap && !context.pixmap->isNull())

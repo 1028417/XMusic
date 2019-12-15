@@ -14,6 +14,8 @@
 
 extern ITxtWriter& g_logger;
 
+extern float g_fPixelRatio;
+
 class CApp : public QApplication
 {
 public:

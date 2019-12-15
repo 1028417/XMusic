@@ -21,12 +21,12 @@ enum class E_FontWeight
     //FW_Normal = QFont::Weight::Normal,
     FW_SemiBold = QFont::Weight::DemiBold
 };
-
 #define __defFontWeight E_FontWeight::FW_Light
 
 extern map<E_FontWeight, QFont> g_mapFont;
 
-extern float g_fPixelRatio;
+extern QColor g_crTheme;
+extern QColor g_crText;
 
 #if __ios
 #define __size(x) decltype(x)((x)/g_fPixelRatio)
@@ -309,18 +309,12 @@ private:
     QGraphicsOpacityEffect m_goe;
 
 protected:
-    QColor m_crText;
-
     bool m_bClicking = false;
 
-public:
-    void setOpacity(float fValue)
-    {
-       m_goe.setOpacity(fValue);
-       this->setGraphicsEffect(&m_goe);
-    }
+    //QColor m_crText;
 
-    const QColor& textColor() const
+public:
+    /*const QColor& textColor() const
     {
         return m_crText;
     }
@@ -346,7 +340,7 @@ public:
             m_crText.setAlpha(nAlpha);
             setTextColor(m_crText);
         }
-    }
+    }*/
 
     void setFont(const QFont& font)
     {
@@ -384,6 +378,12 @@ public:
         CFont font(*this);
         font.setItalic(bItalic);
         TWidget::setFont(font);
+    }
+
+    void setOpacity(float fValue)
+    {
+       m_goe.setOpacity(fValue);
+       this->setGraphicsEffect(&m_goe);
     }
 
     virtual void update()

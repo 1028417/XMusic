@@ -113,6 +113,8 @@ void CColorDlg::show()
 
     m_app.getOption().bUseThemeColor = true;
 
+    m_app.mainWnd().updateBkg();
+
     CDialog::show(true);
 }
 
