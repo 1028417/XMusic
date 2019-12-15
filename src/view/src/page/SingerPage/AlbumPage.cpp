@@ -76,7 +76,7 @@ BOOL CAlbumPage::OnInitDialog()
 
 	CObjectList::tagListPara ListPara({ { _T(""), globalSize.m_uAlbumDockWidth } });
 
-	ListPara.fFontSize = m_view.m_globalSize.m_fBigFontSize;
+	ListPara.fFontSize = m_view.m_globalSize.m_fMidFontSize;
 	ListPara.crText = __Color_Text;
 
 	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
@@ -504,7 +504,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 
 	(void)m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUM, NULL != m_pSinger);
 
-	(void)m_AlbumMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_AlbumMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CAlbumPage::OnMenuCommand_Album(UINT uID)
@@ -1197,7 +1197,7 @@ void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nCount));
 	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nCount > 0));
 
-	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CAlbumPage::OnNMDblclkListBrowse(NMHDR *pNMHDR, LRESULT *pResult)

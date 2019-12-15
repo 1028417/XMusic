@@ -36,8 +36,7 @@ public:
 	float m_fSmallFontSize = 0;
 	float m_fBigFontSize = 0;
 	
-	float m_fMenuFontSize = 0;
-	float m_fMenuBarFontSize = 0;
+	float m_fMidFontSize = 0;
 	
 	UINT m_ColWidth_Name = 0;
 	UINT m_ColWidth_Time = 0;

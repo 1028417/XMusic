@@ -26,7 +26,7 @@ BOOL CQuickFindDlg::OnInitDialog()
 	__super::OnInitDialog();
 
 	static CCompatableFont font1;
-	(void)font1.setFont(m_Edit, (m_view.m_globalSize.m_fBigFontSize+m_view.m_globalSize.m_fSmallFontSize)/2);
+	(void)font1.setFont(m_Edit, m_view.m_globalSize.m_fMidFontSize);
 
 	static CCompatableFont font2;
 	(void)font2.setFont(m_Button, m_view.m_globalSize.m_fBigFontSize);

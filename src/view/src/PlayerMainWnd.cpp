@@ -8,7 +8,7 @@ class CMainMenu : public CMenuEx
 public:
 	CMainMenu(__view& view)
 		: CMenuEx(225, view.m_globalSize.m_uMenuItemHeight
-			, view.m_globalSize.m_fMenuFontSize, view.m_globalSize.m_fMenuBarFontSize)
+			, view.m_globalSize.m_fMidFontSize, view.m_globalSize.m_fMidFontSize)
 	{
 	}
 

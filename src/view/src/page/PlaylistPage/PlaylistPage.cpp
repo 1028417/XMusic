@@ -51,13 +51,12 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	CObjectList::tagListPara ListPara({ { _T(""), 0 } });
 	
-	ListPara.fFontSize = m_view.m_globalSize.m_fBigFontSize;
+	ListPara.fFontSize = m_view.m_globalSize.m_fMidFontSize;
 	ListPara.crText = __Color_Text;
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	float fBigFontSize = m_view.m_globalSize.m_fBigFontSize * 3.6f;
-	__AssertReturn(m_fontBig.create(*this, fBigFontSize), FALSE);
+	__AssertReturn(m_fontBig.create(*this, m_view.m_globalSize.m_fBigFontSize * 3.5f), FALSE);
 
 	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .5f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
@@ -368,7 +367,7 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_VERIFY, bAvalible);
 	m_MenuGuard.EnableItem(ID_EXPORT, bAvalible);
 
-	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CPlaylistPage::OnLvnEndlabeleditList(NMHDR *pNMHDR, LRESULT *pResult)

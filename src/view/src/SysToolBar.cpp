@@ -100,7 +100,7 @@ void CSysToolBar::_onNMClick(UINT uID)
 	case ID_Menu:
 		if (m_view.getOption().bHideMenuBar)
 		{
-			m_MenuGuard.clonePopup(&m_view.m_MainWnd, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+			m_MenuGuard.clonePopup(&m_view.m_MainWnd, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 		}
 
 		break;

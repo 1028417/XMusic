@@ -53,14 +53,14 @@ BOOL CPlayingList::InitCtrl()
 		}
 	});
 
-	auto fBigFontSize = m_view.m_globalSize.m_fBigFontSize * .93f;
+	auto fBigFontSize = m_view.m_globalSize.m_fMidFontSize;
 	__AssertReturn(m_font.create(*this, fBigFontSize), FALSE);
 
 	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 650), FALSE);
 
 	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize, 0, true), FALSE);
 
-	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .63f;
+	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .6f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
 
 	__AssertReturn(m_fontUnderline.create(*this, fSmallFontSize, 0, false, true), FALSE);

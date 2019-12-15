@@ -819,7 +819,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 	m_MenuGuard.EnableItem(ID_Upward, m_pCurrPath&& m_pCurrPath != m_pRootPath);
 
-	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
@@ -848,7 +848,7 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 
 	m_FileMenuGuard.EnableItem(ID_Upward, m_pCurrPath != m_pRootPath);
 	
-	(void)m_FileMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_FileMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)

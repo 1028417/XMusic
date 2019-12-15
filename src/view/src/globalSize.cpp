@@ -94,12 +94,11 @@ void CGlobalSize::init()
 	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fWRate*fHRate);
 	
 	float fDPIRate = getDPIRate();
-	m_fSmallFontSize = (fWRate - 1) * fDPIRate;
+	m_fSmallFontSize = (fWRate - 1.08) * fDPIRate;
 
-	m_fBigFontSize = m_fSmallFontSize * 2.5f * fDPIRate;
+	m_fBigFontSize = m_fSmallFontSize * 3.0f * fDPIRate;
 
-	m_fMenuFontSize = (m_fBigFontSize + m_fSmallFontSize)/2.5f;
-	m_fMenuBarFontSize = (m_fMenuFontSize + m_fSmallFontSize)/2.5f;
+	m_fMidFontSize = (m_fBigFontSize + m_fSmallFontSize)/2;
 
 	m_uScreenWidth = uScreenWidth;
 	m_uScreenHeight = uScreenHeight;

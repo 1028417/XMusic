@@ -41,7 +41,7 @@ BOOL CSingerPage::OnInitDialog()
 	m_wndTree.SetTextColor(__Color_Text);
 	m_wndTree.SetLineColor(RGB(200, 200, 255));
 
-	m_wndTree.SetFontSize(m_view.m_globalSize.m_fBigFontSize);
+	m_wndTree.SetFontSize(m_view.m_globalSize.m_fMidFontSize);
 
 	m_wndTree.SetImageList(m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
 
@@ -636,7 +636,7 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_VERIFY, bAvalible);
 	m_MenuGuard.EnableItem(ID_EXPORT, bAvalible);
 
-	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
 
 void CSingerPage::OnTvnItemexpandedTree(NMHDR *pNMHDR, LRESULT *pResult)

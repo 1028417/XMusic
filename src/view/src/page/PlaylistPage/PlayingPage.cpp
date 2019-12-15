@@ -263,5 +263,5 @@ void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.EnableItem(ID_RENAME, false);
 	}
 
-	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMenuFontSize);
+	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
