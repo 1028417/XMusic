@@ -660,7 +660,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     auto& rc = lvRow.rc;
 
     auto height = rc.height();
-    auto margin = height*22/100;
+    auto margin = height*15/100;
     int x = rc.right()-height+margin;
     QRect rcPos(x, rc.y()+margin, height-margin*2, height-margin*2);
     pButton->setGeometry(rcPos);
