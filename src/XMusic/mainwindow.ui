@@ -233,10 +233,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnOrder">
     <property name="geometry">
      <rect>
-      <x>975</x>
-      <y>2225</y>
-      <width>60</width>
-      <height>60</height>
+      <x>965</x>
+      <y>2215</y>
+      <width>80</width>
+      <height>80</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -255,10 +255,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnRandom">
     <property name="geometry">
      <rect>
-      <x>975</x>
-      <y>2225</y>
-      <width>60</width>
-      <height>60</height>
+      <x>965</x>
+      <y>2215</y>
+      <width>80</width>
+      <height>80</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -312,10 +312,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnSetting">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>2225</y>
-      <width>60</width>
-      <height>60</height>
+      <x>35</x>
+      <y>2215</y>
+      <width>80</width>
+      <height>80</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -849,8 +849,8 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>40</x>
       <y>30</y>
-      <width>60</width>
-      <height>60</height>
+      <width>80</width>
+      <height>80</height>
      </rect>
     </property>
     <property name="autoFillBackground">

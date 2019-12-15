@@ -666,5 +666,5 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
 
-    rc.setRight(x - margin);
+    //rc.setRight(x - margin);
 }
