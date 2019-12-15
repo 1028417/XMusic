@@ -99,7 +99,7 @@ BOOL CAlbumPage::OnInitDialog()
 		{
 			CDC& dc = lvcd.dc;
 			auto& rc = lvcd.rc;
-			rc.left += 60;
+			rc.left = rc.bottom - 10;
 
 			dc.SetTextColor(lvcd.crText);
 			dc.DrawText(m_pSinger->m_strName.c_str(), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
