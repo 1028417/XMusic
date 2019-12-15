@@ -52,7 +52,7 @@ protected:
 
 struct tagTVNMCustomDraw
 {
-	tagTVNMCustomDraw(const tagNMCUSTOMDRAWINFO& nmcd) :
+	tagTVNMCustomDraw(tagNMCUSTOMDRAWINFO& nmcd) :
 		rc(nmcd.rc)
 		, hItem((HTREEITEM)nmcd.dwItemSpec)
 		, pObject((CTreeObject*)nmcd.lItemlParam)
@@ -67,7 +67,7 @@ struct tagTVNMCustomDraw
 
 	CDC dc;
 
-	CRect rc;
+	RECT& rc;
 	const HTREEITEM hItem;
 	CTreeObject * const pObject;
 };

@@ -154,7 +154,7 @@ struct tagLVNMCustomDraw
 
 	CDC dc;
 
-	CRect rc;
+	RECT& rc;
 	const UINT uItem;
 	CListObject * const pObject;
 };
