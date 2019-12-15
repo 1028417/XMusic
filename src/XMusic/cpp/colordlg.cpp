@@ -69,7 +69,7 @@ void CColorDlg::_relayout(int cx, int cy)
     int x_bar = ui.barBkgRed->x();
     int cx_bar = cx_group-x_bar*2;
 
-    int cy_bar = 11;
+    int cy_bar = 10;
 #if __android || __ios
     cy_bar += 3;
 #endif
