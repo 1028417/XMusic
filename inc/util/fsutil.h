@@ -117,7 +117,8 @@ public:
 	static bool copyFile(const string& strSrcFile, const string& strDstFile);
 
 	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
-    static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile, const CB_CopyFile& cb=NULL);
+    static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile
+		, const CB_CopyFile& cb = NULL, const string& strHead = "");
 
     static bool fStat64(FILE *pf, tagFileStat64& stat);
     static bool lStat64(const wstring& strFile, tagFileStat64& stat);
