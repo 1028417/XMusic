@@ -68,7 +68,10 @@ void CColorDlg::_relayout(int cx, int cy)
     int x_bar = ui.barBkgRed->x();
     int cx_bar = cx_group-x_bar*2;
 
-    int cy_bar = 11;//ui.barBkgRed->height();
+    int cy_bar = 11;
+#if __android || __ios
+    cy_bar += 2;
+#endif
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
 
@@ -200,6 +203,6 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     }
 
     this->update();
-    //m_bkgDlg.update();
-    //m_app.mainWnd().update();
+    m_bkgDlg.update();
+    m_app.mainWnd().update();
 }
