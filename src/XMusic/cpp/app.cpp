@@ -276,7 +276,7 @@ bool CXMusicApp::_upgradeMediaLib()
     }
 
     cauto ba = qf.readAll();
-    IFBuffer ifbUpgradeConf((const byte_t*)ba.data(), ba.size());
+    IFBuffer ifbUpgradeConf((c_byte_p)ba.data(), ba.size());
     tagUpgradeConf orgUpgradeConf;
     __EnsureReturn(m_model.readUpgradeConf(orgUpgradeConf, &ifbUpgradeConf), false);
     g_logger << "upgradeMediaLib, orgVersion: " >> orgUpgradeConf.uVersion;
