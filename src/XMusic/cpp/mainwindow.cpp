@@ -540,7 +540,7 @@ void MainWindow::_relayout()
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
     int y_btnMore = ui.frameDemand->y() + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
-    int x_btnMore = __size(25);
+    int x_btnMore = __size(30);
 
 #if __android || __ios
      if (!m_bHScreen)
