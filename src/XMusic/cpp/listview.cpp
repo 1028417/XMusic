@@ -113,7 +113,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
     if (lvRow.bFlash)
     {
         QColor crFlashText(g_crText);
-        crFlashText.setAlpha(220);
+        crFlashText.setAlpha(210);
         painter.setPen(crFlashText);
     }
 
