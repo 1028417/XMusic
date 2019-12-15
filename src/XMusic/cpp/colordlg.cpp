@@ -62,8 +62,9 @@ void CColorDlg::_relayout(int cx, int cy)
     int x = ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
 
-    ui.btnSubBkgRed->move(x, y-ui.btnSubBkgRed->height()/2);
-    ui.btnAddBkgRed->move(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y());
+#define __szButton 80
+    ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, __szButton, __szButton);
+    ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), __szButton, __szButton);
 
     int x_bar = ui.barBkgRed->x();
     int cx_bar = cx_group-x_bar*2;
@@ -75,13 +76,13 @@ void CColorDlg::_relayout(int cx, int cy)
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
 
-    ui.btnSubBkgGreen->move(x, ui.btnSubBkgRed->y()+y);
-    ui.btnAddBkgGreen->move(ui.btnAddBkgRed->x(), ui.btnSubBkgGreen->y());
+    ui.btnSubBkgGreen->setGeometry(x, ui.btnSubBkgRed->y()+y, __szButton, __szButton);
+    ui.btnAddBkgGreen->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgGreen->y(), __szButton, __szButton);
     ui.barBkgGreen->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
     y+=y;
-    ui.btnSubBkgBlue->move(x, ui.btnSubBkgRed->y()+y);
-    ui.btnAddBkgBlue->move(ui.btnAddBkgRed->x(), ui.btnSubBkgBlue->y());
+    ui.btnSubBkgBlue->setGeometry(x, ui.btnSubBkgRed->y()+y, __szButton, __szButton);
+    ui.btnAddBkgBlue->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgBlue->y(), __szButton, __szButton);
     ui.barBkgBlue->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
     ui.btnSubFontRed->setGeometry(ui.btnSubBkgRed->geometry());

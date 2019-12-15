@@ -86,7 +86,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     }
     else if (cy > cx)
     {
-#define __szOffset 15
+#define __szOffset 12
         rcReturn.setTop(rcReturn.top() + 3);
         rcReturn.setBottom(rcReturn.bottom() + 3 + __szOffset);
         rcReturn.setRight(rcReturn.right() + __szOffset);
@@ -660,7 +660,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     auto& rc = lvRow.rc;
 
     auto height = rc.height();
-    auto margin = height*20/100;
+    auto margin = height*22/100;
     int x = rc.right()-height+margin;
     QRect rcPos(x, rc.y()+margin, height-margin*2, height-margin*2);
     pButton->setGeometry(rcPos);

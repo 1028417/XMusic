@@ -18,8 +18,8 @@
     <rect>
      <x>40</x>
      <y>40</y>
-     <width>80</width>
-     <height>80</height>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -62,8 +62,8 @@
     <rect>
      <x>150</x>
      <y>40</y>
-     <width>80</width>
-     <height>80</height>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -90,8 +90,8 @@
     <rect>
      <x>710</x>
      <y>40</y>
-     <width>80</width>
-     <height>80</height>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
