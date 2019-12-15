@@ -106,10 +106,10 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
     fFontSize = 29;
 
 #elif __windows
+    fFontSize = 22;
+
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;
-
-    fFontSize = 22;
     fFontSize *= fDPIRate;
 #endif
 
