@@ -19,7 +19,26 @@ BOOL CPlayingList::InitCtrl()
 	__super::InitCtrl(ListPara);
 
 	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		OnCustomDraw(lvcd);
+		cauto rc = lvcd.rc;
+		if (0 == rc.right || 0 == rc.bottom)
+		{
+			return;
+		}
+
+		m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
+			int cx = rc.right - rc.left + 4;
+			int cy = rc.bottom - rc.top;
+
+			CCompDC CompDC;
+			(void)CompDC.create(cx, cy, lvcd.dc);
+			CDC& MemDC = CompDC.getDC();
+
+			DrawItem(lvcd.uItem, PlayItem, MemDC, cx, cy);
+
+			(void)lvcd.dc.BitBlt(0, lvcd.rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
+
+			lvcd.bSkipDefault = true;
+		});
 	});
 
 	__super::SetTrackMouse([&](E_TrackMouseEvent eMouseEvent, const CPoint& point) {
@@ -61,39 +80,15 @@ void CPlayingList::fixColumnWidth(int width)
 	(void)SetColumnWidth(0, width);
 }
 
-void CPlayingList::OnCustomDraw(tagLVDrawSubItem& lvcd)
+void CPlayingList::DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy)
 {
-	cauto rc = lvcd.rc;
-	if (0 == rc.right || 0 == rc.bottom)
-	{
-		return;
-	}
-
-	m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
-		int cx = rc.right - rc.left+4;
-		int cy = rc.bottom - rc.top;
-
-		CCompDC CompDC;
-		(void)CompDC.create(cx, cy, lvcd.dc);
-		CDC& MemDC = CompDC.getDC();
-
-		DrawItem(PlayItem, MemDC, cx, cy, lvcd);
-
-		(void)lvcd.dc.BitBlt(0, lvcd.rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
-
-		lvcd.bSkipDefault = true;
-	});
-}
-
-void CPlayingList::DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVDrawSubItem& lvcd)
-{
-	CFont *pFontPrev = dc.GetCurrentFont();
+	int nItem = uItem;
+	bool bPlayingItem = (nItem == m_nPlayingItem);
+	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
 
 	int iYMiddlePos = cy / 2 + 1;
 
-	int nItem = lvcd.uItem;
-	bool bPlayingItem = (nItem == m_nPlayingItem);
-	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
+	CFont *pFontPrev = dc.GetCurrentFont();
 
 	COLORREF crBkColor = GetSysColor(COLOR_WINDOW);
 	COLORREF crTextColor = __Color_Text;
@@ -405,7 +400,11 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 
 BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
-	if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
+	if (WM_MEASUREITEM == message)
+	{
+		exit(0);
+	}
+	else if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
 	{
 		m_bMouseDown = (WM_LBUTTONDOWN == message);
 		

@@ -125,9 +125,7 @@ public:
 	void GetSelItems(TD_PlayItemList& arrSelPlayItem);
 
 private:
-	void OnCustomDraw(tagLVDrawSubItem& lvcd);
-	
-	void DrawItem(CPlayItem& PlayItem, CDC& dc, int cx, int cy, tagLVDrawSubItem& lvcd);
+	void DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy);
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;
 
