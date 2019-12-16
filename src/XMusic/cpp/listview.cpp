@@ -92,7 +92,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (lvRow.bSelect)
             {
-                painter.fillRect(rc.left(), rc.top(), rc.width(), cy-1, m_crSelectedBkg);
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight, m_crSelectedBkg);
             }
 
             _onPaintRow(painter, lvRow);
@@ -146,6 +146,8 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         painter.drawPixmapEx(rcPixmap, *context.pixmap, 5);
 
         rc.setLeft(x_icon + sz_icon + nMargin);
+
+        nMargin += 3;
     }
     else
     {
@@ -159,23 +161,24 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, QColor(255,255,255,70));
     }
 
-    if (context.eStyle & E_RowStyle::IS_RightTip)
-    {
-        int sz_righttip = cy*22/100;
-        int x_righttip = rc.right()-sz_righttip;
-        int y_righttip = rc.center().y()-sz_righttip/2;
-        QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
-        painter.drawPixmap(rcRighttip, m_pmRightTip);
-
-        rc.setRight(rc.right() - cy);
-    }
-    else if (context.eStyle & E_RowStyle::IS_RightButton)
+    if (context.eStyle & E_RowStyle::IS_RightButton)
     {
         rc.setRight(rc.right() - cy);
     }
     else
     {
         rc.setRight(rc.right() - nMargin);
+
+        if (context.eStyle & E_RowStyle::IS_RightTip)
+        {
+            int sz_righttip = cy*22/100;
+            int x_righttip = rc.right()-sz_righttip;
+            int y_righttip = rc.center().y()-sz_righttip/2;
+            QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
+            painter.drawPixmap(rcRighttip, m_pmRightTip);
+
+            rc.setRight(x_righttip - nMargin);
+        }
     }
 
     QString qsText = strutil::toQstr(context.strText);
