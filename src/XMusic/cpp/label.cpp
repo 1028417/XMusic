@@ -9,7 +9,8 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 	if (pm && !pm->isNull())
 	{
 #define __szRound 8
-        painter.drawPixmapEx(m_rc, *pm, __szRound);
+        QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);
+        painter.drawPixmapEx(rcImg, *pm, __szRound);
 
         if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
         {
