@@ -122,7 +122,7 @@ public:
         return m_bStatus;
     }
 
-    using CB_Downloader = function<bool(string& strData)>;
+    using CB_Downloader = function<void(string& strData)>;
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
     int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0);
     int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0);
