@@ -500,6 +500,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         }
 
         _showButton(context.lvRow);
+        context.eStyle |= E_RowStyle::IS_RightButton;
     }
     else if (context.pDir || context.pFile)
     {
@@ -537,6 +538,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
            context.strText = MediaRes.GetTitle();
 
            _showButton(context.lvRow);
+           context.eStyle |= E_RowStyle::IS_RightButton;
         }
     }
 }
@@ -674,6 +676,4 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     QRect rcPos(x, rc.y()+margin, height-margin*2, height-margin*2);
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
-
-    //rc.setRight(x);
 }

@@ -33,10 +33,12 @@ protected:
     {
         IS_None = 0
 
-        , IS_CenterAlign    = 0x1
-        , IS_MultiLine      = 0x2
-        , IS_RightTip       = 0x4
-        , IS_BottomLine     = 0x8
+        , IS_CenterAlign    = 0x0001
+        , IS_MultiLine      = 0x0002
+
+        , IS_BottomLine     = 0x0004
+        , IS_RightTip       = 0x0008
+        , IS_RightButton    = 0x0010
     };
     struct tagRowContext
     {

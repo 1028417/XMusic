@@ -171,6 +171,10 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
         rc.setRight(x_righttip - nMargin);
     }
+    else if (context.eStyle & E_RowStyle::IS_RightButton)
+    {
+        rc.setRight(rc.right() - rc.height());
+    }
 
     QString qsText = strutil::toQstr(context.strText);
     if (context.eStyle & E_RowStyle::IS_MultiLine)
