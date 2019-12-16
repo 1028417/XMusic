@@ -400,7 +400,7 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 
 BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
-	else if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
+	if (WM_MOUSEMOVE == message || WM_LBUTTONDOWN == message || WM_LBUTTONUP == message || WM_LBUTTONDBLCLK == message)
 	{
 		m_bMouseDown = (WM_LBUTTONDOWN == message);
 		
