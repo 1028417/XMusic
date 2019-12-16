@@ -48,11 +48,11 @@ BOOL CPlayingList::InitCtrl()
 	//ListPara.uItemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
 	__super::InitCtrl(ListPara);
 
-	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
+	/*__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		_drawItem(lvcd.dc, lvcd.rc, lvcd.uItem);
 
 		lvcd.bSkipDefault = true;
-	});
+	});*/
 
 	__super::SetTrackMouse([&](E_TrackMouseEvent eMouseEvent, const CPoint& point) {
 		if (E_TrackMouseEvent::LME_MouseLeave == eMouseEvent)
