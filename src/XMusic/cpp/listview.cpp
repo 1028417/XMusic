@@ -117,6 +117,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         painter.setPen(crFlashText);
     }
 
+    int nMargin = 0;
     if (context.pixmap && !context.pixmap->isNull())
     {
         UINT sz_icon = rc.height();
@@ -125,7 +126,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
             sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
         }
 
-        int nMargin = (rc.height()-sz_icon)/2;
+        nMargin = (rc.height()-sz_icon)/2;
 
         int x_icon = 0;
         if (context.eStyle & E_RowStyle::IS_CenterAlign)
@@ -143,14 +144,21 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
         int y_icon = rc.center().y()-sz_icon/2;
         QRect rcPixmap(x_icon, y_icon, sz_icon, sz_icon);
-        painter.drawPixmapEx(rcPixmap, *context.pixmap);
+        painter.drawPixmapEx(rcPixmap, *context.pixmap, 5);
 
         rc.setLeft(x_icon + sz_icon + nMargin);
+    }
+    else
+    {
+        nMargin = rc.height()/5;
+
+        rc.setLeft(nMargin);
+        rc.setRight(rc.right() - nMargin);
     }
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        painter.fillRect(rc.left(), rc.bottom(), rc.width()-3, 1, QColor(255,255,255,70));
+        painter.fillRect(rc.left(), rc.bottom(), rc.width(), 1, QColor(255,255,255,70));
     }
 
     if (context.eStyle & E_RowStyle::IS_RightTip)
@@ -161,7 +169,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
         painter.drawPixmap(rcRighttip, m_pmRightTip);
 
-        rc.setRight(x_righttip);
+        rc.setRight(x_righttip - nMargin);
     }
 
     QString qsText = strutil::toQstr(context.strText);

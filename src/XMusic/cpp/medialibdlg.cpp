@@ -84,12 +84,21 @@ void CMedialibDlg::_relayout(int cx, int cy)
         rcReturn.setTop(rcReturn.top() + __yOffset);
         rcReturn.setBottom(rcReturn.bottom() + __yOffset);
     }
-    else if (cy > cx)
+    else
     {
-#define __szOffset 12
-        rcReturn.setTop(rcReturn.top() + 3);
-        rcReturn.setBottom(rcReturn.bottom() + 3 + __szOffset);
-        rcReturn.setRight(rcReturn.right() + __szOffset);
+        int cyOffset = 0;
+#if __windows || __mac
+        cyOffset = __size(-8);
+#else
+        if (cy > cx)
+        {
+            cyOffset = __size(12);
+        }
+#endif
+
+        rcReturn.setTop(rcReturn.top() + cyOffset/4);
+        rcReturn.setBottom(rcReturn.bottom() + cyOffset/4 + cyOffset);
+        rcReturn.setRight(rcReturn.right() + cyOffset);
     }
     ui.btnReturn->setGeometry(rcReturn);
 
@@ -666,5 +675,5 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
 
-    //rc.setRight(x - margin);
+    rc.setRight(x - margin);
 }
