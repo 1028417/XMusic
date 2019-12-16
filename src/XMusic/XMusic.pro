@@ -4,17 +4,17 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets
 #android: QT += androidextras
 
 RC_ICONS = "xmusic.ico"
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = XMusic
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += ../controller.cpp \
     cpp/colordlg.cpp \

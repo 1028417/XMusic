@@ -265,7 +265,58 @@ QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     return QColor(r,g,b,a);
 }
 
-void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
+void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
+               Qt::PenStyle style, UINT xround, UINT yround)
+{
+    auto prevPen = this->pen();
+
+    QPen pen;
+    pen.setWidth(uWidth);
+    pen.setColor(cr);
+    pen.setStyle(style);
+    this->setPen(pen);
+
+    if (xround > 0 && yround > 0)
+    {
+        drawRoundRect(rc, xround, yround);
+    }
+    else
+    {
+        drawRect(rc);
+    }
+
+    this->setPen(prevPen);
+}
+
+void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
+                            , const QRect& rcSrc, UINT xround, UINT yround)
+{
+    if (xround > 0 && yround > 0)
+    {
+        auto prevBrush = this->brush();
+        auto prevPen = this->pen();
+
+        QBrush brush(pixmap.copy(rcSrc));
+        QTransform transform;
+        transform.translate(rcDst.left(), rcDst.top());
+        auto fScale = (float)rcDst.width()/rcSrc.width();
+        transform.scale(fScale, fScale);
+        brush.setTransform(transform);
+        this->setBrush(brush);
+
+        this->setPen(Qt::NoPen);
+        this->drawRoundRect(rcDst,2,4);
+
+        this->setPen(prevPen);
+        this->setBrush(prevBrush);
+    }
+    else
+    {
+        QPainter::drawPixmap(rcDst, pixmap, rcSrc);
+    }
+}
+
+void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
 {
     QRect rcSrc = pixmap.rect();
     int height = rcSrc.height();
@@ -285,5 +336,5 @@ void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap)
         rcSrc.setRight(rcSrc.right()-dx);
     }
 
-    this->drawPixmap(rcDst, pixmap, rcSrc);
+    this->drawPixmap(rcDst, pixmap, rcSrc, xround, yround);
 }

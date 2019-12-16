@@ -97,7 +97,7 @@ public:
 
     void updateBkg();
 
-    void drawDefaultBkg(QPainter& painter, const QRect& rc);
+    void drawDefaultBkg(CPainter& painter, const QRect& rc, UINT xround=0, UINT yround=0);
 
 private:
     bool event(QEvent *) override;

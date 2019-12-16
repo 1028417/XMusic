@@ -75,8 +75,8 @@ private:
         {
             gradient.setColorAt(1, QColor(0,0,255));
         }
-        QBrush br(gradient);
-        painter.setBrush(br);
+        QBrush brush(gradient);
+        painter.setBrush(brush);
 
         painter.drawRoundedRect(rc, 5, 5);
 

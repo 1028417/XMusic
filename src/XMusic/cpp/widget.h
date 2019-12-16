@@ -151,33 +151,12 @@ public:
         QPainter::setFont(font);
     }
 
-    template <class T>
-    void _drawFrame(UINT uWidth, const QRect& rc, const T& t)
-    {
-        fillRect(rc.left(), rc.top(), rc.width(), uWidth, t);
-        fillRect(rc.left(), rc.top()+uWidth, uWidth, rc.height()-uWidth*2, t);
-        fillRect(rc.left(), rc.bottom()-uWidth+1, rc.width(), uWidth, t);
-        fillRect(rc.right()-uWidth+1, rc.top()+uWidth, uWidth, rc.height()-uWidth*2, t);
-    }
+    void drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
+                   Qt::PenStyle style=Qt::PenStyle::SolidLine, UINT xround=0, UINT yround=0);
 
-    void drawFrame(UINT uWidth, const QRect& rc, const QColor& cr, Qt::BrushStyle bs=Qt::SolidPattern)
-    {
-        if (Qt::SolidPattern == bs)
-        {
-            _drawFrame(uWidth, rc, cr);
-        }
-        else
-        {
-            _drawFrame(uWidth, rc, QBrush(cr, bs));
-        }
-    }
+    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, const QRect& rcSrc=QRect(), UINT xround=0, UINT yround=0);
 
-    void drawFrame(UINT uWidth, const QRect& rc, int r, int g, int b, int a=255, Qt::BrushStyle bs=Qt::SolidPattern)
-    {
-        drawFrame(uWidth, rc, QColor(r,g,b,a), bs);
-    }
-
-    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap);
+    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
 };
 
 enum class E_MouseEventType

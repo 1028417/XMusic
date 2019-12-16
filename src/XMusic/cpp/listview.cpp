@@ -158,7 +158,8 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         int sz_righttip = rc.height()*22/100;
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
-        painter.drawPixmap(x_righttip, y_righttip, sz_righttip, sz_righttip, m_pmRightTip);
+        QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
+        painter.drawPixmap(rcRighttip, m_pmRightTip);
 
         rc.setRight(x_righttip);
     }

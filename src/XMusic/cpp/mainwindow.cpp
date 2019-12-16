@@ -1184,7 +1184,7 @@ void MainWindow::_demand(CButton* btnDemand)
     m_app.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
 }
 
-void MainWindow::drawDefaultBkg(QPainter& painter, const QRect& rc)
+void MainWindow::drawDefaultBkg(CPainter& painter, const QRect& rc, UINT xround, UINT yround)
 {
     QRect rcSrc = ui.labelBkg->pixmap()->rect();
 
@@ -1199,5 +1199,5 @@ void MainWindow::drawDefaultBkg(QPainter& painter, const QRect& rc)
         rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
     }
 
-    painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc);
+    painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
 }

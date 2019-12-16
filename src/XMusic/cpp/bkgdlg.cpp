@@ -89,7 +89,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
     {
-        m_app.mainWnd().drawDefaultBkg(painter, rc);
+        m_app.mainWnd().drawDefaultBkg(painter, rc, 2, 3);
     }
     else
     {
@@ -97,8 +97,9 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         cauto pm = m_bkgDlg.snapshot(uIdx);
         if (pm)
         {
-            painter.drawPixmapEx(rc, *pm);
-            painter.drawPixmap(rc.right()-__xsize-5, rc.top()+5, __xsize, __xsize, m_pmX);
+            painter.drawPixmapEx(rc, *pm, 2, 3);
+            QRect rcX(rc.right()-__xsize-5, rc.top()+5, __xsize, __xsize);
+            painter.drawPixmap(rcX, m_pmX);
         }
         else
         {
@@ -106,17 +107,16 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             if (pmAddBkg.load(":/img/addBkg.png"))
             {
 #define __offset __size(60)
-                painter.drawPixmap(rc.center().x()-__offset, rc.center().y()-__offset
-                                   , __offset*2, __offset*2, pmAddBkg);
+                QRect rcAddBkg(rc.center().x()-__offset, rc.center().y()-__offset
+                               , __offset*2, __offset*2);
+                painter.drawPixmap(rcAddBkg, pmAddBkg);
             }
 
-            painter.drawFrame(8, rc, 255,255,255,255, Qt::BrushStyle::Dense7Pattern);
-
-            return;
+            rc.setRight(rc.right());
+            painter.drawFrame(rc, 2, QColor(255,255,255, 50)
+                              , Qt::PenStyle::DotLine, 3, 3);
         }
     }
-
-    //painter.drawFrame(1, rc, 255,255,255,128);
 }
 
 void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)

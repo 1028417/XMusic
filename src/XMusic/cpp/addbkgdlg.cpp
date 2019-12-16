@@ -195,7 +195,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
-            painter.drawFrame(1, rcFrame, 255,255,255,50);
+            painter.drawFrame(rcFrame, 1, QColor(255,255,255,50));
         }
     }
     else
