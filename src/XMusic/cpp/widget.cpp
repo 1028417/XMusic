@@ -265,6 +265,8 @@ QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     return QColor(r,g,b,a);
 }
 
+#define drawRoundRect drawRoundedRect
+
 void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
                Qt::PenStyle style, UINT xround, UINT yround)
 {
@@ -278,11 +280,11 @@ void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
 
     if (xround > 0 && yround > 0)
     {
-        drawRoundRect(rc, xround, yround);
+        this->drawRoundRect(rc, xround, yround);
     }
     else
     {
-        drawRect(rc);
+        this->drawRect(rc);
     }
 
     this->setPen(prevPen);
