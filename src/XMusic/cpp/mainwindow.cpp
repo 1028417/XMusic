@@ -77,7 +77,7 @@ MainWindow::MainWindow(CXMusicApp& app)
     }
 
     QWidget* lpWidget[] = {
-        ui.labelPlayingfile, ui.wdgSingerImg, ui.labelSingerName, ui.labelAlbumName
+        ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
 
         , ui.labelDuration, ui.barProgress, ui.labelProgress
 
@@ -258,8 +258,8 @@ void MainWindow::_init()
         }
     });
 
-    ui.wdgSingerImg->setVisible(false);
-    ui.labelSingerImg->setShadow(100);
+    ui.labelSingerImg->setVisible(false);
+    ui.labelSingerImg->setShadow(85);
 
     ui.labelSingerName->setFont(1);
 
@@ -587,9 +587,9 @@ void MainWindow::_relayout()
     ui.labelAlbumName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
     ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
 
-    bool bZoomoutSingerImg = m_bZoomoutSingerImg && ui.wdgSingerImg->isVisible();
+    bool bZoomoutSingerImg = m_bZoomoutSingerImg && ui.labelSingerImg->isVisible();
 
-    auto& rcSingerImg = m_mapWidgetNewPos[ui.wdgSingerImg];
+    auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
 
     m_PlayingList.setShadow(uShadowAlpha);
 
@@ -639,12 +639,12 @@ void MainWindow::_relayout()
         }
 
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
-        ui.wdgSingerImg->setGeometry(rcSingerImg);
+        ui.labelSingerImg->setGeometry(rcSingerImg);
 
         int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
         ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName, cx_SingerImg-__size(15), ui.labelSingerName->height());
 
-        if (ui.wdgSingerImg->isVisible())
+        if (ui.labelSingerImg->isVisible())
         {
             y_PlayingListMax = y_SingerImg;
         }
@@ -699,13 +699,11 @@ void MainWindow::_relayout()
         }
     }
 
-    ui.labelSingerImg->setGeometry(0, 0, rcSingerImg.width(), rcSingerImg.height());
-
-    auto pPixmap = ui.labelSingerImg->pixmap();
-    if (pPixmap && !pPixmap->isNull())
-    {
-        ui.labelSingerImg->setPixmap(*pPixmap);
-    }
+//    auto pPixmap = ui.labelSingerImg->pixmap();
+//    if (pPixmap && !pPixmap->isNull())
+//    {
+//        ui.labelSingerImg->setPixmap(*pPixmap);
+//    }
 
     _showAlbumName();
 
@@ -817,7 +815,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
-        ui.wdgSingerImg->setVisible(false);
+        ui.labelSingerImg->setVisible(false);
         _playSingerImg(true);
 
         _relayout();
@@ -961,9 +959,9 @@ void MainWindow::_playSingerImg(bool bReset)
         {
             ui.labelSingerImg->setPixmap(pm);
 
-            if (!ui.wdgSingerImg->isVisible())
+            if (!ui.labelSingerImg->isVisible())
             {
-                ui.wdgSingerImg->setVisible(true);
+                ui.labelSingerImg->setVisible(true);
                 _relayout();
             }
         }
