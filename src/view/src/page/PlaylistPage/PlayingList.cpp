@@ -20,7 +20,14 @@ void CPlayingList::PreSubclassWindow()
 
 void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
-	lpMeasureItemStruct->itemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
+	RECT rcClient{ 0,0,0,0 };
+	GetClientRect(&rcClient);
+	UINT cy = UINT(rcClient.bottom - rcClient.top);
+
+	UINT utemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
+	UINT uRowCount = cy/utemHeight;
+
+	lpMeasureItemStruct->itemHeight = cy/uRowCount + 1;
 }
 
 void CPlayingList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
@@ -38,7 +45,7 @@ BOOL CPlayingList::InitCtrl()
 	(void)this->ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 
 	tagListPara ListPara({ { _T(""), 0 } });
-	ListPara.uItemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
+	//ListPara.uItemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
 	__super::InitCtrl(ListPara);
 
 	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
@@ -89,7 +96,7 @@ void CPlayingList::fixColumnWidth(int width)
 void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
 	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
-		int cx = rc.right - rc.left + 4;
+		int cx = rc.right - rc.left;
 		int cy = rc.bottom - rc.top;
 
 		CCompDC CompDC;
