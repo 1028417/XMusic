@@ -130,6 +130,15 @@ private:
 	CCompDC m_CompDC;
 
 public:
+	UINT iconWidth() const
+	{
+		return m_cx;
+	}
+	UINT iconHeight() const
+	{
+		return m_cy;
+	}
+
 	BOOL Init(UINT cx, UINT cy);
 
 	BOOL Init(const CSize& size, const TD_IconVec& vecIcons = {});
