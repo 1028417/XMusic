@@ -92,7 +92,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (lvRow.bSelect)
             {
-                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight, m_crSelectedBkg);
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, m_crSelectedBkg);
             }
 
             _onPaintRow(painter, lvRow);
@@ -147,7 +147,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
         rc.setLeft(x_icon + sz_icon + nMargin);
 
-        nMargin += 3;
+        nMargin += 5;
     }
     else
     {
