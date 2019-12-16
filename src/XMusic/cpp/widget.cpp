@@ -265,8 +265,6 @@ QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     return QColor(r,g,b,a);
 }
 
-#define drawRoundRect drawRoundedRect
-
 void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
                Qt::PenStyle style, UINT xround, UINT yround)
 {
@@ -278,9 +276,13 @@ void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
     pen.setStyle(style);
     this->setPen(pen);
 
-    if (xround > 0 && yround > 0)
+    if (xround > 0)
     {
-        this->drawRoundRect(rc, xround, yround);
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+        this->drawRoundedRect(rc, xround, yround);
     }
     else
     {
@@ -293,21 +295,26 @@ void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
 void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
                             , const QRect& rcSrc, UINT xround, UINT yround)
 {
-    if (xround > 0 && yround > 0)
+    if (xround > 0)
     {
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+
         auto prevBrush = this->brush();
         auto prevPen = this->pen();
 
         QBrush brush(pixmap.copy(rcSrc));
         QTransform transform;
         transform.translate(rcDst.left(), rcDst.top());
-        auto fScale = (float)rcDst.width()/rcSrc.width();
-        transform.scale(fScale, fScale);
+        auto scaleRate = (double)rcDst.width()/rcSrc.width();
+        transform.scale(scaleRate, scaleRate);
         brush.setTransform(transform);
         this->setBrush(brush);
 
         this->setPen(Qt::NoPen);
-        this->drawRoundRect(rcDst,2,4);
+        this->drawRoundedRect(rcDst,xround,yround);
 
         this->setPen(prevPen);
         this->setBrush(prevBrush);

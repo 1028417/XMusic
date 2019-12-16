@@ -86,10 +86,12 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
     }
 
+#define __szRound 7
+
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
     {
-        m_app.mainWnd().drawDefaultBkg(painter, rc, 2, 3);
+        m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
     else
     {
@@ -97,7 +99,8 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         cauto pm = m_bkgDlg.snapshot(uIdx);
         if (pm)
         {
-            painter.drawPixmapEx(rc, *pm, 2, 3);
+            painter.drawPixmapEx(rc, *pm, __szRound);
+
             QRect rcX(rc.right()-__xsize-5, rc.top()+5, __xsize, __xsize);
             painter.drawPixmap(rcX, m_pmX);
         }
@@ -114,7 +117,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
             rc.setRight(rc.right());
             painter.drawFrame(rc, 2, QColor(255,255,255, 50)
-                              , Qt::PenStyle::DotLine, 3, 3);
+                              , Qt::PenStyle::DotLine, __szRound);
         }
     }
 }
