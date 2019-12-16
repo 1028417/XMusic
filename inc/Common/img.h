@@ -130,11 +130,11 @@ private:
 	CCompDC m_CompDC;
 
 public:
-	UINT iconWidth() const
+	UINT imgWidth() const
 	{
 		return m_cx;
 	}
-	UINT iconHeight() const
+	UINT imgHeight() const
 	{
 		return m_cy;
 	}
