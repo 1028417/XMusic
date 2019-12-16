@@ -133,7 +133,8 @@ private:
 
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
 
-	void DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy);
+	void _drawItem(CDC& dc, RECT& rc, UINT uItem);
+	void _drawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy);
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;
 

@@ -15,7 +15,7 @@ END_MESSAGE_MAP()
 void CPlayingList::PreSubclassWindow()
 {
 	__super::PreSubclassWindow();
-	//(void)this->ModifyStyle(0, LVS_OWNERDRAWFIXED);
+	(void)this->ModifyStyle(0, LVS_OWNERDRAWFIXED);
 }
 
 void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
@@ -25,17 +25,15 @@ void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 
 void CPlayingList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-	CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
-	if (NULL == pDC)
+	if (lpDrawItemStruct->itemID >= 0)
 	{
-		return;
+		CDC dc;
+		if (dc.Attach(lpDrawItemStruct->hDC))
+		{
+			_drawItem(dc, lpDrawItemStruct->rcItem, (UINT)lpDrawItemStruct->itemID);
+			dc.Detach();
+		}
 	}
-
-	int nItem = lpDrawItemStruct->itemID;
-	CPlayItem *pPlayItem = (CPlayItem*)this->GetItemObject(nItem);
-	__Assert(pPlayItem);
-
-	auto& rcItem = lpDrawItemStruct->rcItem;
 }
 
 BOOL CPlayingList::InitCtrl()
@@ -49,26 +47,9 @@ BOOL CPlayingList::InitCtrl()
 	__super::InitCtrl(ListPara);
 
 	__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		cauto rc = lvcd.rc;
-		if (0 == rc.right || 0 == rc.bottom)
-		{
-			return;
-		}
+		_drawItem(lvcd.dc, lvcd.rc, lvcd.uItem);
 
-		m_view.getPlayMgr().getPlayingItems().get(lvcd.uItem, [&](CPlayItem& PlayItem) {
-			int cx = rc.right - rc.left + 4;
-			int cy = rc.bottom - rc.top;
-
-			CCompDC CompDC;
-			(void)CompDC.create(cx, cy, lvcd.dc);
-			CDC& MemDC = CompDC.getDC();
-
-			DrawItem(lvcd.uItem, PlayItem, MemDC, cx, cy);
-
-			(void)lvcd.dc.BitBlt(0, lvcd.rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
-
-			lvcd.bSkipDefault = true;
-		});
+		lvcd.bSkipDefault = true;
 	});
 
 	__super::SetTrackMouse([&](E_TrackMouseEvent eMouseEvent, const CPoint& point) {
@@ -110,7 +91,23 @@ void CPlayingList::fixColumnWidth(int width)
 	(void)SetColumnWidth(0, width);
 }
 
-void CPlayingList::DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy)
+void CPlayingList::_drawItem(CDC& dc, RECT& rc, UINT uItem)
+{
+	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
+		int cx = rc.right - rc.left + 4;
+		int cy = rc.bottom - rc.top;
+
+		CCompDC CompDC;
+		(void)CompDC.create(cx, cy, dc);
+		CDC& MemDC = CompDC.getDC();
+
+		_drawItem(uItem, PlayItem, MemDC, cx, cy);
+
+		(void)dc.BitBlt(0, rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
+	});
+}
+
+void CPlayingList::_drawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy)
 {
 	int nItem = uItem;
 	bool bPlayingItem = (nItem == m_nPlayingItem);
