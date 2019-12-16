@@ -835,10 +835,10 @@ void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
     if (decodeStatus != E_DecodeStatus::DS_Cancel)
     {
         bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
-        if (bOpenFail)
+        /*if (bOpenFail)
         {
             mtutil::usleep(1000);
-        }
+        }*/
 
         emit signal_playStoped(bOpenFail);
 

@@ -91,6 +91,7 @@ bool CXController::start()
 					(void)PlayMgr.playNext();
                     break;
                 case E_PlayCtrl::PC_AutoPlayNext:
+                    mtutil::usleep(1000);
                     (void)PlayMgr.playNext(false);
                     break;
 
