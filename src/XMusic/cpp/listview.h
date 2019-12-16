@@ -8,7 +8,7 @@ class CListView : public CWidget<QWidget>
 protected:
     struct tagLVRow
     {
-        tagLVRow(){}
+        tagLVRow() {}
 
         tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
             : uIdx(t_uIdx)
