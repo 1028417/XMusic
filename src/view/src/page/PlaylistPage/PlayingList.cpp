@@ -27,12 +27,7 @@ void CPlayingList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
 	if (lpDrawItemStruct->itemID >= 0)
 	{
-		CDC dc;
-		if (dc.Attach(lpDrawItemStruct->hDC))
-		{
-			_drawItem(dc, lpDrawItemStruct->rcItem, (UINT)lpDrawItemStruct->itemID);
-			dc.Detach();
-		}
+		_drawItem(lpDrawItemStruct->hDC, lpDrawItemStruct->rcItem, (UINT)lpDrawItemStruct->itemID);
 	}
 }
 
@@ -91,25 +86,24 @@ void CPlayingList::fixColumnWidth(int width)
 	(void)SetColumnWidth(0, width);
 }
 
-void CPlayingList::_drawItem(CDC& dc, RECT& rc, UINT uItem)
+void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
 	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
 		int cx = rc.right - rc.left + 4;
 		int cy = rc.bottom - rc.top;
 
 		CCompDC CompDC;
-		(void)CompDC.create(cx, cy, dc);
+		(void)CompDC.create(cx, cy, hDC);
 		CDC& MemDC = CompDC.getDC();
 
-		_drawItem(uItem, PlayItem, MemDC, cx, cy);
+		_drawItem(MemDC, cx, cy, uItem, PlayItem);
 
-		(void)dc.BitBlt(0, rc.top, cx, cy, &MemDC, 0, 0, SRCCOPY);
+		(void)::BitBlt(hDC, 0, rc.top, cx, cy, MemDC, 0, 0, SRCCOPY);
 	});
 }
 
-void CPlayingList::_drawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy)
+void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& PlayItem)
 {
-	int nItem = uItem;
 	bool bPlayingItem = (nItem == m_nPlayingItem);
 	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
 
