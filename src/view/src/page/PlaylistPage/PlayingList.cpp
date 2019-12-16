@@ -180,18 +180,19 @@ void CPlayingList::DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, in
 	if (iImage >= 0)
 	{
 #define __Margin 0
-		UINT nStyle = ILD_SCALE;
+		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
-			nStyle = ILD_NORMAL;
+			nStyle |= ILD_NORMAL;
 			rcSingerImg.SetRect(3, 1, cy, cy-1);
 		}
 		else
 		{
+			nStyle |= ILD_SCALE;
 			rcSingerImg.SetRect(__Margin, __Margin, cy - __Margin, cy - __Margin);
 		}
-		m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big).DrawEx(&dc, iImage
-			, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_DEFAULT, CLR_DEFAULT, nStyle);
+		auto& imgList = m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big);
+		imgList.DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
 
 		x += cy-__Margin;
 	}
