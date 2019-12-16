@@ -259,6 +259,7 @@ void MainWindow::_init()
     });
 
     ui.wdgSingerImg->setVisible(false);
+    ui.labelSingerImg->setShadow(100);
 
     ui.labelSingerName->setFont(1);
 
@@ -698,13 +699,7 @@ void MainWindow::_relayout()
         }
     }
 
-#if __android || __ios
-#define __SingerImgMargin 2
-#else
-#define __SingerImgMargin 1
-#endif
-    ui.labelSingerImg->setGeometry(__SingerImgMargin, __SingerImgMargin, rcSingerImg.width() - __SingerImgMargin*2
-                                                   , rcSingerImg.height() - __SingerImgMargin*2);
+    ui.labelSingerImg->setGeometry(0, 0, rcSingerImg.width(), rcSingerImg.height());
 
     auto pPixmap = ui.labelSingerImg->pixmap();
     if (pPixmap && !pPixmap->isNull())

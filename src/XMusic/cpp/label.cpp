@@ -1,6 +1,8 @@
 
 #include "label.h"
 
+static QColor g_crShadow(128,128,128);
+
 void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 {
 	m_rc = this->rect();
@@ -8,7 +10,20 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 	auto pm = pixmap();
 	if (pm && !pm->isNull())
 	{
-		painter.drawPixmapEx(m_rc, *pm);
+        painter.drawPixmapEx(m_rc, *pm);
+
+        if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
+        {
+            g_crShadow.setAlpha(m_uShadowAlpha);
+            for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
+            {
+                g_crShadow.setAlpha(m_uShadowAlpha*(uIdx+1)/m_uShadowWidth);
+                painter.setPen(g_crShadow);
+
+                painter.drawRect(uIdx, uIdx, m_rc.right()-uIdx, m_rc.bottom()-uIdx);
+            }
+        }
+
 		return;
 	}
 
@@ -51,15 +66,15 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
         {
             QPen pen = painter.pen();
 
-            QColor crShadow(128,128,128, m_uShadowAlpha);
+            g_crShadow.setAlpha(m_uShadowAlpha);
             for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
             {
                 if (uIdx > 1)
                 {
-                    crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                    g_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                 }
 
-                painter.setPen(crShadow);
+                painter.setPen(g_crShadow);
 
                 painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
             }
@@ -79,7 +94,7 @@ void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
 	if (E_MouseEventType::MET_Click == type)
 	{
-		if (m_rc.contains(me.pos()))
+        if (m_rc.contains(me.pos()))
 		{
 			emit signal_click(this, me.pos());
 		}

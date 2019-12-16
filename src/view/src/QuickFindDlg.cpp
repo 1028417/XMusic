@@ -28,8 +28,8 @@ BOOL CQuickFindDlg::OnInitDialog()
 	static CCompatableFont font1;
 	(void)font1.setFont(m_Edit, m_view.m_globalSize.m_fMidFontSize);
 
-	static CCompatableFont font2;
-	(void)font2.setFont(m_Button, m_view.m_globalSize.m_fBigFontSize);
+	//static CCompatableFont font2;
+	//(void)font2.setFont(m_Button, m_view.m_globalSize.m_fBigFontSize);
 
 	auto pDC = m_Edit.GetDC();
 	pDC->SelectObject(font1);
