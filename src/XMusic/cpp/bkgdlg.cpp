@@ -86,7 +86,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
     }
 
-#define __szRound 7
+#define __szRound 8
 
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
@@ -115,7 +115,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
                 painter.drawPixmap(rcAddBkg, pmAddBkg);
             }
 
-            rc.setRight(rc.right());
+            rc.setLeft(rc.left()+1);
             painter.drawFrame(rc, 2, QColor(255,255,255, 60)
                               , Qt::PenStyle::DotLine, __szRound);
         }

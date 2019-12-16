@@ -259,7 +259,7 @@ void MainWindow::_init()
     });
 
     ui.labelSingerImg->setVisible(false);
-    ui.labelSingerImg->setShadow(85);
+    ui.labelSingerImg->setShadow(85,2,255,255,255);
 
     ui.labelSingerName->setFont(1);
 

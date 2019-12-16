@@ -1,8 +1,6 @@
 
 #include "label.h"
 
-static QColor g_crShadow(128,128,128);
-
 void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 {
 	m_rc = this->rect();
@@ -10,16 +8,16 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 	auto pm = pixmap();
 	if (pm && !pm->isNull())
 	{
-#define __szRound 6
+#define __szRound 7
         painter.drawPixmapEx(m_rc, *pm, __szRound);
 
         if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
         {
-            g_crShadow.setAlpha(m_uShadowAlpha);
+            m_crShadow.setAlpha(m_uShadowAlpha);
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
-                g_crShadow.setAlpha(m_uShadowAlpha*(uIdx+1)/m_uShadowWidth);
-                painter.setPen(g_crShadow);
+                m_crShadow.setAlpha(m_uShadowAlpha*(uIdx+1)/m_uShadowWidth);
+                painter.setPen(m_crShadow);
 
                 painter.drawRoundedRect(uIdx, uIdx, m_rc.right()-uIdx, m_rc.bottom()-uIdx, __szRound, __szRound);
             }
@@ -67,15 +65,15 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
         {
             QPen pen = painter.pen();
 
-            g_crShadow.setAlpha(m_uShadowAlpha);
+            m_crShadow.setAlpha(m_uShadowAlpha);
             for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
             {
                 if (uIdx > 1)
                 {
-                    g_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
+                    m_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
                 }
 
-                painter.setPen(g_crShadow);
+                painter.setPen(m_crShadow);
 
                 painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
             }
