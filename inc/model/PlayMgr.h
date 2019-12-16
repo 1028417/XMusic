@@ -53,6 +53,8 @@ private:
 
     bool _playNext(bool bNext, bool bManual);
 
+	bool _play(UINT uItem, bool bManual, CPlayItem& PlayItem);
+
 	bool _play(uint64_t uStartPos);
 
     void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
