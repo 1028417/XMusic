@@ -8,7 +8,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 	auto pm = pixmap();
 	if (pm && !pm->isNull())
 	{
-#define __szRound 7
+#define __szRound 8
         painter.drawPixmapEx(m_rc, *pm, __szRound);
 
         if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
@@ -16,10 +16,10 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
             m_crShadow.setAlpha(m_uShadowAlpha);
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
-                m_crShadow.setAlpha(m_uShadowAlpha*(uIdx+1)/m_uShadowWidth);
+                m_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx)/m_uShadowWidth);
                 painter.setPen(m_crShadow);
 
-                painter.drawRoundedRect(uIdx, uIdx, m_rc.right()-uIdx, m_rc.bottom()-uIdx, __szRound, __szRound);
+                painter.drawRoundedRect(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2, __szRound, __szRound);
             }
         }
 
