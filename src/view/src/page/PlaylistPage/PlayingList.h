@@ -90,6 +90,8 @@ public:
 	{
 	}
 
+	DECLARE_MESSAGE_MAP();
+
 private:
 	__view& m_view;
 	
@@ -125,6 +127,12 @@ public:
 	void GetSelItems(TD_PlayItemList& arrSelPlayItem);
 
 private:
+	void PreSubclassWindow() override;
+
+	void MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+
+	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
+
 	void DrawItem(UINT uItem, CPlayItem& PlayItem, CDC& dc, int cx, int cy);
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;

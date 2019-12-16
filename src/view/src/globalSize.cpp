@@ -96,7 +96,7 @@ void CGlobalSize::init()
 	float fDPIRate = getDPIRate();
 	m_fSmallFontSize = float((pow(fWRate, (2-fDPIRate))-1.1)*pow(fDPIRate,2.5));
 
-	m_fBigFontSize = m_fSmallFontSize * pow(fWRate,3.5) * fDPIRate;
+	m_fBigFontSize = m_fSmallFontSize * (float)pow(fWRate,3.5) * fDPIRate;
 
 	m_fMidFontSize = (m_fBigFontSize + m_fSmallFontSize)/2;
 

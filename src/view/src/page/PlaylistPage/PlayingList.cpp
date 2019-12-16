@@ -8,6 +8,36 @@
 #define __PrevTrack L"上一曲"
 #define __NextTrack L"下一曲"
 
+BEGIN_MESSAGE_MAP(CPlayingList, CObjectList)
+	ON_WM_MEASUREITEM_REFLECT()
+END_MESSAGE_MAP()
+
+void CPlayingList::PreSubclassWindow()
+{
+	__super::PreSubclassWindow();
+	//(void)this->ModifyStyle(0, LVS_OWNERDRAWFIXED);
+}
+
+void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+{
+	lpMeasureItemStruct->itemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
+}
+
+void CPlayingList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+	CDC *pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
+	if (NULL == pDC)
+	{
+		return;
+	}
+
+	int nItem = lpDrawItemStruct->itemID;
+	CPlayItem *pPlayItem = (CPlayItem*)this->GetItemObject(nItem);
+	__Assert(pPlayItem);
+
+	auto& rcItem = lpDrawItemStruct->rcItem;
+}
+
 BOOL CPlayingList::InitCtrl()
 {
 	(void)this->ModifyStyle(LVS_SINGLESEL
