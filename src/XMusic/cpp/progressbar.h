@@ -9,16 +9,17 @@ class CProgressBar : public CWidget<QProgressBar>
 {
 public:
     CProgressBar(QWidget *parent) : CWidget(parent)
-        , m_brBackground(QColor(255,255,255))
-        , m_brBuffer(QColor(195,240,255))
-        , m_brForeground(QColor(150,205,255))
+        , m_crBackground(255,255,255)
+        , m_crBuffer(195,240,255)
+        , m_crForeground(150,205,255)
     {
+        setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
-    QBrush m_brBackground;
-    QBrush m_brBuffer;
-    QBrush m_brForeground;
+    QColor m_crBackground;
+    QColor m_crBuffer;
+    QColor m_crForeground;
 
     UINT m_maxBuffer = 0;
     UINT m_bufferValue = 0;
@@ -35,9 +36,9 @@ public:
 
     void setColor(const QColor& crBackground, const QColor& crBuffer, const QColor& crForeground)
     {
-        m_brBackground.setColor(crBackground);
-        m_brBuffer.setColor(crBuffer);
-        m_brForeground.setColor(crForeground);
+        m_crBackground = crBackground;
+        m_crBuffer = crBuffer;
+        m_crForeground = crForeground;
     }
 
     void setMaximum(int maxValue, UINT maxBuffer=0)
@@ -55,30 +56,30 @@ public:
     }
 
 private:
-    void _onPaint(CPainter& painter, const QRect&) override
+    void _onPaint(CPainter& painter, const QRect& t_rc) override
     {
-        painter.setPen(Qt::transparent);
+        auto rc = this->rect();
 
-        QRect rc = this->rect();        
-        painter.fillRect(rc, g_crTheme);
+        UINT xround = 3;
 
-        UINT uRadius = 3;
-
-        painter.setBrush(m_brBackground);
-        painter.drawRoundedRect(rc, uRadius, uRadius);
+        painter.fillRectEx(rc, m_crBackground, xround);
 
         if (m_maxBuffer > 0 && m_bufferValue > 0)
         {
             rc.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
-            painter.setBrush(m_brBuffer);
-            painter.drawRoundedRect(rc, uRadius, uRadius);
+
+            auto crBegin = m_crBuffer;
+            crBegin.setAlpha(crBegin.alpha()/3);
+            painter.fillRectEx(rc, crBegin, m_crBuffer, xround);
         }
 
         if (this->maximum() > 0 && this->value() > 0)
         {
             rc.setRight(this->rect().right() * this->value()/this->maximum());
-            painter.setBrush(m_brForeground);
-            painter.drawRoundedRect(rc, uRadius, uRadius);
+
+            auto crBegin = m_crForeground;
+            crBegin.setAlpha(crBegin.alpha()/3);
+            painter.fillRectEx(rc, crBegin, m_crForeground, xround);
         }
     }
 };

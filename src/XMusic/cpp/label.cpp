@@ -83,12 +83,8 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
             painter.setPen(pen);
         }
 
-		painter.drawText(m_rc, alignment, text, &m_rc);
-
-		return;
-	}
-
-	CWidget<QLabel>::_onPaint(painter, rc);
+        painter.drawText(m_rc, alignment, text, &m_rc);
+    }
 }
 
 void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

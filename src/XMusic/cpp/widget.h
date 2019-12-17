@@ -386,8 +386,6 @@ public:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    virtual void _onPaint(CPainter&, const QRect& rc);
-
     bool isHLayout() const
     {
         return TWidget::width()>TWidget::height();
@@ -395,6 +393,8 @@ protected:
 
 private:
     void paintEvent(QPaintEvent *pe) override;
+
+    virtual void _onPaint(CPainter&, const QRect& rc);
 
     void _handleTouchBegin(const CTouchEvent&);
     void _handleTouchEnd(const CTouchEvent&);
