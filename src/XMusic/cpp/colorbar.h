@@ -60,32 +60,29 @@ private:
         QRect rc = this->rect();
         painter.fillRect(rc, g_crTheme);
 
-        QLinearGradient gradient(rc.topLeft(), rc.topRight());
-        gradient.setColorAt(0, QColor(0,0,0));
-
+        QColor crBegin(0,0,0);
+        UINT xround = 5;
         if (E_BarColor::BC_Red == m_eColor)
         {
-            gradient.setColorAt(1, QColor(255,0,0));
+            painter.fillRectEx(rc, crBegin, QColor(255,0,0), xround);
         }
         else if (E_BarColor::BC_Green == m_eColor)
         {
-            gradient.setColorAt(1, QColor(0,255,0));
+            painter.fillRectEx(rc, crBegin, QColor(0,255,0), xround);
         }
         else if (E_BarColor::BC_Blue == m_eColor)
         {
-            gradient.setColorAt(1, QColor(0,0,255));
+            painter.fillRectEx(rc, crBegin, QColor(0,0,255), xround);
         }
-        QBrush brush(gradient);
-        painter.setBrush(brush);
-
-        painter.drawRoundedRect(rc, 5, 5);
 
         auto cy = rc.height();
         auto len = cy;
         auto margin = 3;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.setBrush(Qt::GlobalColor::white);
-        painter.drawRoundedRect(x, rc.top()+margin, len, cy-margin*2, 3, 3);
+
+        QRect rcPos(x, rc.top()+margin, len, cy-margin*2);
+        painter.drawRectEx(rcPos, margin);
     }
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override

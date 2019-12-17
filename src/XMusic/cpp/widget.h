@@ -91,8 +91,8 @@ public:
 class CPainter : public QPainter
 {
 public:
-    CPainter(QWidget* widget)
-        : QPainter(widget)
+    CPainter(QPaintDevice* device)
+        : QPainter(device)
     {
     }
 
@@ -151,12 +151,25 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
-                   Qt::PenStyle style=Qt::PenStyle::SolidLine, UINT xround=0, UINT yround=0);
-
     void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, const QRect& rcSrc=QRect(), UINT xround=0, UINT yround=0);
 
     void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+
+    void drawRectEx(const QRect& rc, UINT xround=0, UINT yround=0);
+
+    void drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
+                   Qt::PenStyle style=Qt::PenStyle::SolidLine, UINT xround=0, UINT yround=0);
+
+    void fillRectEx(const QRect& rc, const QBrush& br, UINT xround=0, UINT yround=0);
+
+    void fillRectEx(const QRect& rc, const QColor& cr, UINT xround=0, UINT yround=0)
+    {
+        QBrush brush(cr);
+        fillRectEx(rc, brush, xround, yround);
+    }
+
+    void fillRectEx(const QRect& rc, const QColor& crBegin
+                    , const QColor& crEnd, UINT xround=0, UINT yround=0);
 };
 
 enum class E_MouseEventType

@@ -52,11 +52,12 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
     {
         QBitmap bmp(this->size());
         bmp.fill();
-        QPainter painter(&bmp);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(Qt::black);
-        painter.drawRoundedRect(bmp.rect(),15,15);
-        setMask(bmp);
+
+        CPainter painter(&bmp);
+        //painter.setBrush(Qt::black);
+        painter.fillRectEx(bmp.rect(),15);
+
+        this->setMask(bmp);
     }
 
     _setPos();

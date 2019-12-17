@@ -265,33 +265,6 @@ QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     return QColor(r,g,b,a);
 }
 
-void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
-               Qt::PenStyle style, UINT xround, UINT yround)
-{
-    auto prevPen = this->pen();
-
-    QPen pen;
-    pen.setWidth(uWidth);
-    pen.setColor(cr);
-    pen.setStyle(style);
-    this->setPen(pen);
-
-    if (xround > 0)
-    {
-        if (0 == yround)
-        {
-            yround = xround;
-        }
-        this->drawRoundedRect(rc, xround, yround);
-    }
-    else
-    {
-        this->drawRect(rc);
-    }
-
-    this->setPen(prevPen);
-}
-
 void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
                             , const QRect& rcSrc, UINT xround, UINT yround)
 {
@@ -302,18 +275,19 @@ void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
             yround = xround;
         }
 
-        auto prevBrush = this->brush();
-        auto prevPen = this->pen();
-
         QBrush brush(pixmap.copy(rcSrc));
         QTransform transform;
         transform.translate(rcDst.left(), rcDst.top());
         auto scaleRate = (double)rcDst.width()/rcSrc.width();
         transform.scale(scaleRate, scaleRate);
         brush.setTransform(transform);
+
+        auto prevBrush = this->brush();
         this->setBrush(brush);
 
-        this->setPen(Qt::NoPen);
+        auto prevPen = this->pen();
+        this->setPen(Qt::transparent);
+
         this->drawRoundedRect(rcDst,xround,yround);
 
         this->setPen(prevPen);
@@ -346,4 +320,74 @@ void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xrou
     }
 
     this->drawPixmap(rcDst, pixmap, rcSrc, xround, yround);
+}
+
+void CPainter::drawRectEx(const QRect& rc, UINT xround, UINT yround)
+{
+    if (xround > 0)
+    {
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+
+        this->drawRoundedRect(rc, xround, yround);
+    }
+    else
+    {
+        this->drawRect(rc);
+    }
+}
+
+void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
+               Qt::PenStyle style, UINT xround, UINT yround)
+{
+    auto prevPen = this->pen();
+
+    QPen pen;
+    pen.setWidth(uWidth);
+    pen.setColor(cr);
+    pen.setStyle(style);
+    this->setPen(pen);
+
+    this->drawRectEx(rc, xround, yround);
+
+    this->setPen(prevPen);
+}
+
+void CPainter::fillRectEx(const QRect& rc, const QBrush& br, UINT xround, UINT yround)
+{
+    if (xround > 0)
+    {
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+
+        auto prevPen = this->pen();
+        this->setPen(Qt::transparent);
+
+        auto prevBrush = this->brush();
+        this->setBrush(br);
+
+        this->drawRoundedRect(rc, xround, yround);
+
+        this->setBrush(prevBrush);
+        this->setPen(prevPen);
+    }
+    else
+    {
+        this->fillRect(rc, br);
+    }
+}
+
+void CPainter::fillRectEx(const QRect& rc, const QColor& crBegin
+                , const QColor& crEnd, UINT xround, UINT yround)
+{
+    QLinearGradient gradient(rc.topLeft(), rc.topRight());
+    gradient.setColorAt(0, crBegin);
+    gradient.setColorAt(1, crEnd);
+    QBrush brush(gradient);
+
+    fillRectEx(rc, brush, xround, yround);
 }

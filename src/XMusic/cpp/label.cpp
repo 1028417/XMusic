@@ -20,7 +20,8 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
                 m_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx)/m_uShadowWidth);
                 painter.setPen(m_crShadow);
 
-                painter.drawRoundedRect(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2, __szRound, __szRound);
+                QRect rcShadow(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2);
+                painter.drawRectEx(rcShadow, __szRound);
             }
         }
 
