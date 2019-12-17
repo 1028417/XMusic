@@ -91,14 +91,14 @@ void CColorDlg::_relayout(int cx, int cy)
     int cx_group = ui.groupBkgColor->rect().width();
     int cy_group = ui.groupBkgColor->rect().height();
 
-    int x = 40;//ui.btnSubBkgRed->x();
+    int x = __size(40);//ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
 
 #define __szButton __size(80)
     ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, __szButton, __szButton);
     ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), __szButton, __szButton);
 
-    int x_bar = ui.barBkgRed->x();
+    int x_bar = 2*x + __szButton;
     int cx_bar = cx_group-x_bar*2;
 
     int cy_bar = __size(11);

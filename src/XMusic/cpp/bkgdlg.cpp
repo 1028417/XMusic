@@ -86,7 +86,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
     }
 
-#define __szRound 8
+#define __szRound __size(8)
 
     UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)

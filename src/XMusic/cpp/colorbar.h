@@ -61,7 +61,7 @@ private:
         painter.fillRect(rc, g_crTheme);
 
         QColor crBegin(0,0,0);
-        UINT xround = 5;
+        UINT xround = __size(5);
         if (E_BarColor::BC_Red == m_eColor)
         {
             painter.fillRectEx(rc, crBegin, QColor(255,0,0), xround);

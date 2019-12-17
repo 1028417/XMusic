@@ -60,7 +60,7 @@ private:
     {
         auto rc = this->rect();
 
-        UINT xround = 3;
+        UINT xround = __size(3);
 
         painter.fillRectEx(rc, m_crBackground, xround);
 

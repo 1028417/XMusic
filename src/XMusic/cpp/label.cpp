@@ -8,7 +8,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 	auto pm = pixmap();
 	if (pm && !pm->isNull())
 	{
-#define __szRound 8
+#define __szRound __size(8)
         QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);
         painter.drawPixmapEx(rcImg, *pm, __szRound);
 
