@@ -27,6 +27,11 @@ private:
     bool m_bFullScreen = false;
 
 private:
+    virtual const QColor& bkgColor() const
+    {
+        return g_crTheme;
+    }
+
     void _setPos();
 
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
@@ -39,13 +44,6 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 public:
-    void setBkgColor(const QColor& crBkg)
-    {
-        QPalette pe = this->palette();
-        pe.setColor(QPalette::Background, crBkg);
-        this->setPalette(pe);
-    }
-
     void show(bool bFullScreen, const fn_void& cbClose = NULL);
 
 #if __windows
@@ -54,4 +52,11 @@ public:
         return (HWND)winId();
     }
 #endif
+
+    static void setWidgetColor(QWidget *widget, const QColor& cr)
+    {
+        QPalette pe = widget->palette();
+        pe.setColor(QPalette::WindowText, cr);
+        widget->setPalette(pe);
+    }
 };

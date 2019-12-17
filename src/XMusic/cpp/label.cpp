@@ -28,7 +28,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect& rc)
 		return;
 	}
 
-    painter.setPen(g_crText);
+    painter.setPen(textColor());
 
 	QString text = this->text();
     if (!text.isEmpty())

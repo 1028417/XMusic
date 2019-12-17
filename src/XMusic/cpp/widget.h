@@ -303,37 +303,7 @@ private:
 protected:
     bool m_bClicking = false;
 
-    //QColor m_crText;
-
 public:
-    /*const QColor& textColor() const
-    {
-        return m_crText;
-    }
-
-    void setTextColor(const QColor& crText)
-    {
-        m_crText = crText;
-
-        QPalette pe = TWidget::palette();
-        pe.setColor(QPalette::WindowText, crText);
-        TWidget::setPalette(pe);
-    }
-
-    void setTextColor(int r, int g, int b, int a=255)
-    {
-        setTextColor(QColor(r,g,b,a));
-    }
-
-    void setTextAlpha(int nAlpha)
-    {
-        if (nAlpha != m_crText.alpha())
-        {
-            m_crText.setAlpha(nAlpha);
-            setTextColor(m_crText);
-        }
-    }*/
-
     void setFont(const QFont& font)
     {
         TWidget::setFont(font);

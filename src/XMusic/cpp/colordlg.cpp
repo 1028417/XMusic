@@ -102,10 +102,8 @@ void CColorDlg::show()
 {
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    QPalette pe = ui.groupBkgColor->palette();
-    pe.setColor(QPalette::WindowText, g_crText);
-    ui.groupBkgColor->setPalette(pe);
-    ui.groupFontColor->setPalette(pe);
+    CDialog::setWidgetColor(ui.groupBkgColor(), g_crText);
+    CDialog::setWidgetColor(ui.groupFontColor, g_crText);
 
     ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
     ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
@@ -197,10 +195,8 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
 
-        QPalette pe = ui.groupBkgColor->palette();
-        pe.setColor(QPalette::WindowText, g_crText);
-        ui.groupBkgColor->setPalette(pe);
-        ui.groupFontColor->setPalette(pe);
+        CDialog::setWidgetColor(ui.groupBkgColor(), g_crText);
+        CDialog::setWidgetColor(ui.groupFontColor, g_crText);
     }
 
     this->update();

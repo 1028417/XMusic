@@ -41,8 +41,6 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 {
     g_pFrontDlg = this;
 
-    setBkgColor(g_crTheme);
-
     this->setWindowFlags(Qt::Dialog);
 
     this->setWindowFlags(Qt::FramelessWindowHint);
@@ -54,8 +52,8 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         bmp.fill();
 
         CPainter painter(&bmp);
-        //painter.setBrush(Qt::black);
-        painter.fillRectEx(bmp.rect(),15);
+        painter.setBrush(Qt::white);
+        painter.drawRectEx(bmp.rect(),15);
 
         this->setMask(bmp);
     }
@@ -94,7 +92,7 @@ bool CDialog::event(QEvent *ev)
     case QEvent::Paint:
     {
         QPainter painter(this);
-        painter.fillRect(0, 0, width(), height(), g_crTheme);
+        painter.fillRect(0, 0, width(), height(), bkgColor());
     }
 
     break;

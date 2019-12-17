@@ -12,9 +12,10 @@ CMsgBox::CMsgBox(QWidget& parent)
     ui.setupUi(this);
 
     ui.labelTip->setFont(1, E_FontWeight::FW_SemiBold);
-    //ui.labelTip->setTextColor(g_crText);
+    QColor crText(64, 128, 255);
+    ui.labelTip->setTextColor(crText);
 
-    //ui.labelClose->setTextColor(g_crText);
+    ui.labelClose->setTextColor(crText);
 
     connect(ui.labelClose, &CLabel::signal_click, this, &QDialog::close);
 }
@@ -26,6 +27,4 @@ void CMsgBox::_show(QWidget& parent, const QString& qsMsg, const fn_void& cbClos
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(false, cbClose);
-
-    setBkgColor(QColor(200, 230, 255));
 }

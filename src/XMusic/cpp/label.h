@@ -30,6 +30,9 @@ private:
 
     E_LabelTextOption m_eTextOption = E_LabelTextOption::LTO_AutoFit;
 
+    bool m_bUseCustomColor = false;
+    QColor m_crText;
+
     UINT m_uShadowAlpha = 255;
     UINT m_uShadowWidth = 0;
 
@@ -39,6 +42,21 @@ private:
 
 signals:
     void signal_click(CLabel*, const QPoint& pos);
+
+private:
+    void _onPaint(CPainter& painter, const QRect& rc) override;
+
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
+
+    virtual const QColor& textColor() const
+    {
+        if (m_bUseCustomColor)
+        {
+            return m_crText;
+        }
+
+        return g_crText;
+    }
 
 public:
     void setPixmap(const QPixmap & pm, bool bCut=true)
@@ -54,6 +72,21 @@ public:
         QLabel::setText(qsText);
     }
 
+    void setTextColor(const QColor& crText)
+    {
+        m_bUseCustomColor = true;
+        m_crText = crText;
+
+        QPalette pe = QLabel::palette();
+        pe.setColor(QPalette::WindowText, crText);
+        QLabel::setPalette(pe);
+    }
+
+    void setTextColor(int r, int g, int b, int a=255)
+    {
+        setTextColor(QColor(r,g,b,a));
+    }
+
     void setShadow(UINT uAlpha, UINT uWidth = 1, int r=128, int g=128, int b=128)
     {
         m_uShadowAlpha = uAlpha;
@@ -63,9 +96,4 @@ public:
 
         update();
     }
-
-private:
-    void _onPaint(CPainter& painter, const QRect& rc) override;
-	
-    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 };
