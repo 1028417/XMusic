@@ -14,14 +14,7 @@
 class CDialog : public QDialog
 {
 public:
-    static void resetPos();
-
-    CDialog(QWidget& parent) : m_parent(&parent)
-    {
-    }
-
-protected:
-    QWidget *m_parent;
+    CDialog() {}
 
 private:
     bool m_bFullScreen = false;
@@ -44,19 +37,21 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 public:
-    void show(bool bFullScreen, const fn_void& cbClose = NULL);
-
-#if __windows
-    HWND hwnd() const
-    {
-        return (HWND)winId();
-    }
-#endif
-
     static void setWidgetColor(QWidget *widget, const QColor& cr)
     {
         QPalette pe = widget->palette();
         pe.setColor(QPalette::WindowText, cr);
         widget->setPalette(pe);
     }
+
+#if __windows
+    static void resetPos();
+
+    HWND hwnd() const
+    {
+        return (HWND)winId();
+    }
+#endif
+
+    void show(QWidget& parent, bool bFullScreen, const fn_void& cbClose = NULL);
 };

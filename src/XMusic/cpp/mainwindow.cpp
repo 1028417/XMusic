@@ -341,7 +341,9 @@ bool MainWindow::event(QEvent *ev)
         _fixWorkArea(*this);
         _relayout();
 
+#if __windows
         CDialog::resetPos();
+#endif
 
         break;
     case QEvent::Paint:

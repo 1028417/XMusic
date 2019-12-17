@@ -8,6 +8,7 @@ extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
 
+#if __windows
 void CDialog::resetPos()
 {
     list<CDialog*> lstDlgs;
@@ -15,7 +16,7 @@ void CDialog::resetPos()
     {
         lstDlgs.push_front(pDlg);
 
-        pDlg = dynamic_cast<CDialog*>(pDlg->m_parent);
+        pDlg = dynamic_cast<CDialog*>(pDlg->parent());
     }
 
     for (auto pDlg : lstDlgs)
@@ -23,6 +24,7 @@ void CDialog::resetPos()
         pDlg->_setPos();
     }
 }
+#endif
 
 void CDialog::_setPos()
 {
@@ -32,18 +34,18 @@ void CDialog::_setPos()
     }
     else
     {
-        cauto ptCenter = m_parent->geometry().center();
-        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+        auto pParent = dynamic_cast<QWidget*>(parent());
+        if (pParent)
+        {
+            cauto ptCenter = pParent->geometry().center();
+            move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+        }
     }
 }
 
-void CDialog::show(bool bFullScreen, const fn_void& cbClose)
+void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
 {
-    g_pFrontDlg = this;
-
-    this->setWindowFlags(Qt::Dialog);
-
-    this->setWindowFlags(Qt::FramelessWindowHint);
+    setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
 
     m_bFullScreen = bFullScreen;
     if (!m_bFullScreen)
@@ -60,8 +62,9 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 
     _setPos();
 
-    this->connect(this, &QDialog::finished, [&, cbClose](){
-        g_pFrontDlg = dynamic_cast<CDialog*>(m_parent);
+    g_pFrontDlg = this;
+    connect(this, &QDialog::finished, [&, cbClose]() {
+        g_pFrontDlg = dynamic_cast<CDialog*>(&parent);
 
         _onClose();
 
@@ -73,10 +76,8 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 
 #if __android || __ios // 移动端exec会露出任务栏
     this->setVisible(true);
-#elif __mac
-    this->exec();
 #else
-    this->setModal(true);
+    this->setWindowModality(Qt::ApplicationModal); //this->setModal(true);
     this->setVisible(true);
 #endif
 }
@@ -105,20 +106,23 @@ bool CDialog::event(QEvent *ev)
 		}
 
         return true;
-#elif __windows
+#endif
+/*#if __windows
     case QEvent::WindowActivate:
     {
         CDialog *pDlg = this;
         do {
-            ::SetWindowPos((HWND)pDlg->m_parent->winId(), pDlg->hwnd(), 0, 0, 0, 0
+            auto pParent = dynamic_cast<QWidget*>(pDlg->parent());
+
+            ::SetWindowPos((HWND)pParent->winId(), pDlg->hwnd(), 0, 0, 0, 0
                            , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 
-            pDlg = dynamic_cast<CDialog*>(pDlg->m_parent);
+            pDlg = dynamic_cast<CDialog*>(pParent);
         } while (pDlg);
     }
 
         break;
-#endif
+#endif*/
 	default:
         break;
 	}

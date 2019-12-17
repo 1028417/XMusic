@@ -7,8 +7,8 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&)bkgDlg),
-    m_app(app),
+CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg)
+    : m_app(app),
     m_bkgDlg(bkgDlg),
     m_addbkgView(app, *this, m_paImgDirs)
 {
@@ -34,7 +34,7 @@ void CAddBkgDlg::show()
 
     //m_addbkgView.setTextColor(g_crText);
 
-    CDialog::show(true);
+    CDialog::show(m_bkgDlg, true);
 
     cauto strRootDir = m_app.getMediaLib().GetAbsPath() + L"/..";
     m_ImgRoot.setDir(strRootDir);

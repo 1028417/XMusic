@@ -9,8 +9,8 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CXMusicApp& app) : CDialog(app.mainWnd())
-    , m_app(app)
+CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
+    : m_app(app)
     , m_MedialibView(app, *this, m_OuterDir)
 {
 }
@@ -71,7 +71,7 @@ void CMedialibDlg::_show()
         _resizeTitle();
     });
 
-    CDialog::show(true);
+    CDialog::show(m_app.mainWnd(), true);
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)

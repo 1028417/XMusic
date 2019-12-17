@@ -28,6 +28,8 @@ extern map<E_FontWeight, QFont> g_mapFont;
 extern QColor g_crTheme;
 extern QColor g_crText;
 
+extern float g_fPixelRatio;
+
 #if __ios
 #define __size(x) decltype(x)((x)/g_fPixelRatio)
 #define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))

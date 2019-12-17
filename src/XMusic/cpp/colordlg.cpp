@@ -5,8 +5,8 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&)bkgDlg),
-    m_app(app),
+CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg)
+    : m_app(app),
     m_bkgDlg(bkgDlg)
 {
 }
@@ -54,7 +54,7 @@ void CColorDlg::show()
 
     m_app.mainWnd().updateBkg();
 
-    CDialog::show(true);
+    CDialog::show(m_bkgDlg, true);
 }
 
 void CColorDlg::_relayout(int cx, int cy)

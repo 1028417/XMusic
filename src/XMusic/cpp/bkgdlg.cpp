@@ -145,8 +145,8 @@ inline size_t CBkgView::margin()
     return __margin/(getColumnCount()-1);
 }
 
-CBkgDlg::CBkgDlg(class CXMusicApp& app) : CDialog(app.mainWnd()),
-    m_app(app),
+CBkgDlg::CBkgDlg(class CXMusicApp& app)
+    : m_app(app),
     m_colorDlg(app, *this),
     m_addbkgDlg(app, *this),
     m_bkgView(app, *this)
@@ -216,7 +216,7 @@ void CBkgDlg::show()
 {
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    CDialog::show(true);
+    CDialog::show(m_app.mainWnd(), true);
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
