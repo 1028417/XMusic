@@ -253,7 +253,12 @@ int CXMusicApp::run()
     });
 
     m_mainWnd.showLogo();
+
+    m_bRunSignal = true;
+
     int nRet = exec();
+
+    m_bRunSignal = false;
 
     if (thrUpgrade.joinable())
     {
@@ -288,13 +293,13 @@ bool CXMusicApp::_upgradeMediaLib()
     IFBuffer ifbUpgradeConf((c_byte_p)ba.data(), ba.size());
     tagUpgradeConf orgUpgradeConf;
     __EnsureReturn(m_model.readUpgradeConf(orgUpgradeConf, &ifbUpgradeConf), false);
-    g_logger << "upgradeMediaLib, orgVersion: " >> orgUpgradeConf.uVersion;
+    g_logger << "MediaLib, orgVersion: " >> orgUpgradeConf.uVersion;
 
     tagUpgradeConf *pUpgradeConf = &orgUpgradeConf;
     tagUpgradeConf userUpgradeConf;
     if (m_model.readUpgradeConf(userUpgradeConf))
     {
-        g_logger << "upgradeMediaLib, userVersion: " >> userUpgradeConf.uVersion;
+        g_logger << "MediaLib, userVersion: " >> userUpgradeConf.uVersion;
 
         if (userUpgradeConf.uVersion >= orgUpgradeConf.uVersion)
         {
@@ -302,7 +307,11 @@ bool CXMusicApp::_upgradeMediaLib()
         }
     }
 
-    if (!m_model.upgradeMediaLib(*pUpgradeConf))
+    if (!m_model.upgradeMediaLib(*pUpgradeConf, [&](int64_t dltotal, int64_t dlnow){
+        (void)dltotal;
+        (void)dlnow;
+        return m_bRunSignal;
+    }))
     {
         g_logger >> "upgradeMediaLib fail";
         return false;

@@ -41,6 +41,8 @@ private:
 
     MainWindow m_mainWnd;
 
+    bool m_bRunSignal = false;
+
 signals:
     void signal_run(bool bUpgradeResult);
 
