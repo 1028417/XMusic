@@ -72,6 +72,8 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
+    ui.labelTitle->move(rcReturn.right() + rcReturn.left(), rcReturn.center().y() - ui.labelTitle->height()/2);
+
     int y_addbkgView = 0;
     if (m_addbkgView.isInRoot())
     {

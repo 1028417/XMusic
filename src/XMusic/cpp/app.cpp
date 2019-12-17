@@ -187,31 +187,35 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
 
 void CXMusicApp::slot_run(bool bUpgradeResult)
 {
-   if (!bUpgradeResult)
-   {
-       CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
-           this->quit();
-       });
+    if (!m_bRunSignal)
+    {
+        return;
+    }
 
-       return;
-   }
+    if (!bUpgradeResult)
+    {
+        CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
+            this->quit();
+        });
+        return;
+    }
 
-   if (!m_model.initMediaLib())
-   {
-       g_logger >> "initMediaLib fail";
-       this->quit();
-       return;
-   }
+    if (!m_model.initMediaLib())
+    {
+        g_logger >> "initMediaLib fail";
+        this->quit();
+        return;
+    }
 
-   if (!m_ctrl.start())
-   {
-       g_logger >> "start controller fail";
-       this->quit();
-       return;
-   }
-   g_logger >> "start controller success, app running";
+    if (!m_ctrl.start())
+    {
+        g_logger >> "start controller fail";
+        this->quit();
+        return;
+    }
+    g_logger >> "start controller success, app running";
 
-   m_mainWnd.show();
+    m_mainWnd.show();
 }
 
 int CXMusicApp::run()

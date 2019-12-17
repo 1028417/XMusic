@@ -69,7 +69,9 @@ void CColorDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-#define __margin 100
+    ui.labelTitle->move(rcReturn.right() + rcReturn.left(), rcReturn.center().y() - ui.labelTitle->height()/2);
+
+#define __margin __size(100)
     cauto yClient = rcReturn.bottom() + __margin;
 
     if (cy > cx)
@@ -92,16 +94,16 @@ void CColorDlg::_relayout(int cx, int cy)
     int x = 40;//ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
 
-#define __szButton 80
+#define __szButton __size(80)
     ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, __szButton, __szButton);
     ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), __szButton, __szButton);
 
     int x_bar = ui.barBkgRed->x();
     int cx_bar = cx_group-x_bar*2;
 
-    int cy_bar = 11;
+    int cy_bar = __size(11);
 #if __android || __ios
-    cy_bar += 3;
+    cy_bar += __size(3);
 #endif
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
