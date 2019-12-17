@@ -96,9 +96,8 @@ MainWindow::MainWindow(CXMusicApp& app)
 
 
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
-        auto& bFullScreen = m_app.getOption().bFullScreen;
-        bFullScreen = !bFullScreen;
-        g_bFullScreen = bFullScreen;
+        g_bFullScreen = !g_bFullScreen;
+        m_app.getOption().bFullScreen = g_bFullScreen;
 
         fixWorkArea(*this);
     });

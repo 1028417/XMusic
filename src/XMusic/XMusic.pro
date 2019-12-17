@@ -72,7 +72,10 @@ android {
 
     macDir = $$PWD/../../bin/mac
     frameworkDir = $$macDir/XMusic.app/Contents/Frameworks
-    QMAKE_POST_LINK += mkdir $$frameworkDir \
+    QMAKE_POST_LINK += \
+        rm -f $$macDir/XMusic.dmg \
+        && rm -rf $$frameworkDir \
+        && mkdir $$frameworkDir \
         && cp -f $$macDir/libavcodec.58.dylib $$frameworkDir/ \
         && cp -f $$macDir/libavformat.58.dylib $$frameworkDir/ \
         && cp -f $$macDir/libavutil.56.dylib $$frameworkDir/ \
