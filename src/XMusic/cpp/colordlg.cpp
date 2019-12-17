@@ -102,7 +102,7 @@ void CColorDlg::show()
 {
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    CDialog::setWidgetColor(ui.groupBkgColor(), g_crText);
+    CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
     CDialog::setWidgetColor(ui.groupFontColor, g_crText);
 
     ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
@@ -195,7 +195,7 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
 
-        CDialog::setWidgetColor(ui.groupBkgColor(), g_crText);
+        CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
         CDialog::setWidgetColor(ui.groupFontColor, g_crText);
     }
 
