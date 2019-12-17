@@ -207,6 +207,8 @@ void CBkgDlg::init()
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
     }
 
+    m_colorDlg.init();
+
     m_addbkgDlg.init();
 }
 

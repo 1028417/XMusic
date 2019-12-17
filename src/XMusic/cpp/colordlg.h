@@ -28,5 +28,7 @@ private slots:
     void slot_barValueChanged(CColorBar*, uint8_t uValue);
 
 public:
+    void init();
+
     void show();
 };

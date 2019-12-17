@@ -223,7 +223,7 @@ int CXMusicApp::run()
 
     std::thread thrUpgrade;
 
-    timerutil::async([&](){
+    timerutil::async(100, [&](){
         if (!_resetRootDir(option.strRootDir))
         {
             this->quit();

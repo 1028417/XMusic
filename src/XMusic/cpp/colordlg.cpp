@@ -9,7 +9,17 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
     m_app(app),
     m_bkgDlg(bkgDlg)
 {
+}
+
+void CColorDlg::init()
+{
     ui.setupUi(this);
+
+    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+
+    CFont font(1.05);
+    ui.groupBkgColor->setFont(font);
+    ui.groupFontColor->setFont(font);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
@@ -25,6 +35,26 @@ CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg) : CDialog((QWidget&
     {
         connect(pBar, &CColorBar::signal_valueChanged, this, &CColorDlg::slot_barValueChanged);
     }
+}
+
+void CColorDlg::show()
+{
+    CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
+    CDialog::setWidgetColor(ui.groupFontColor, g_crText);
+
+    ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
+    ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
+    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crTheme.blue());
+
+    ui.barFontRed->setColor(E_BarColor::BC_Red, g_crText.red());
+    ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
+    ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
+
+    m_app.getOption().bUseThemeColor = true;
+
+    m_app.mainWnd().updateBkg();
+
+    CDialog::show(true);
 }
 
 void CColorDlg::_relayout(int cx, int cy)
@@ -96,28 +126,6 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.btnSubFontGreen->setGeometry(ui.btnSubBkgGreen->geometry());
     ui.btnAddFontGreen->setGeometry(ui.btnAddBkgGreen->geometry());
     ui.barFontGreen->setGeometry(ui.barBkgGreen->geometry());
-}
-
-void CColorDlg::show()
-{
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
-
-    CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
-    CDialog::setWidgetColor(ui.groupFontColor, g_crText);
-
-    ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
-    ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
-    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crTheme.blue());
-
-    ui.barFontRed->setColor(E_BarColor::BC_Red, g_crText.red());
-    ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
-    ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
-
-    m_app.getOption().bUseThemeColor = true;
-
-    m_app.mainWnd().updateBkg();
-
-    CDialog::show(true);
 }
 
 void CColorDlg::slot_buttonClicked(CButton *pButton)

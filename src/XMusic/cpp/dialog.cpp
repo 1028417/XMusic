@@ -73,8 +73,9 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
 
 #if __android || __ios // 移动端exec会露出任务栏
     this->setVisible(true);
+#elseif __mac
+    this->exec();
 #else
-    //this->exec();
     this->setModal(true);
     this->setVisible(true);
 #endif
