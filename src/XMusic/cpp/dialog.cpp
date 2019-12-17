@@ -52,7 +52,7 @@ void CDialog::show(bool bFullScreen, const fn_void& cbClose)
         bmp.fill();
 
         CPainter painter(&bmp);
-        painter.setBrush(Qt::white);
+        painter.setBrush(Qt::black);
         painter.drawRectEx(bmp.rect(),15);
 
         this->setMask(bmp);

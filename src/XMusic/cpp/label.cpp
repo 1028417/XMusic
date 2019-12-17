@@ -1,7 +1,7 @@
 
 #include "label.h"
 
-void CLabel::_onPaint(CPainter& painter, const QRect& rc)
+void CLabel::_onPaint(CPainter& painter, const QRect&)
 {
 	m_rc = this->rect();
 

@@ -185,6 +185,35 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
     return fsutil::createDir(strRootDir + __medialibPath);
 }
 
+void CXMusicApp::slot_run(bool bUpgradeResult)
+{
+   if (!bUpgradeResult)
+   {
+       CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
+           this->quit();
+       });
+
+       return;
+   }
+
+   if (!m_model.initMediaLib())
+   {
+       g_logger >> "initMediaLib fail";
+       this->quit();
+       return;
+   }
+
+   if (!m_ctrl.start())
+   {
+       g_logger >> "start controller fail";
+       this->quit();
+       return;
+   }
+   g_logger >> "start controller success, app running";
+
+   m_mainWnd.show();
+}
+
 int CXMusicApp::run()
 {
     auto& option = m_ctrl.initOption();
@@ -193,7 +222,6 @@ int CXMusicApp::run()
     g_crText.setRgb(option.crText);
 
     std::thread thrUpgrade;
-    bool bUpgradeResult = false;
 
     timerutil::async([&](){
         if (!_resetRootDir(option.strRootDir))
@@ -203,43 +231,24 @@ int CXMusicApp::run()
         }
         g_logger << "RootDir: " >> option.strRootDir;
 
-        if (XMediaLib::m_bOnlineMediaLib)
-        {
-            thrUpgrade = std::thread([&](){
+        connect(this, &CXMusicApp::signal_run, this, &CXMusicApp::slot_run);
+
+        thrUpgrade = std::thread([&]() {
+            auto timeBegin = time(NULL);
+
+            bool bUpgradeResult = true;
+            if (XMediaLib::m_bOnlineMediaLib)
+            {
                 bUpgradeResult = _upgradeMediaLib();
-            });
-        }
-
-        timerutil::async(6000, [&](){
-            if (thrUpgrade.joinable())
-            {
-                thrUpgrade.join();
-                if (!bUpgradeResult)
-                {
-                    CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
-                        this->quit();
-                    });
-
-                    return;
-                }
             }
 
-            if (!m_model.initMediaLib())
+            auto timeWait = 6 - (time(NULL) - timeBegin);
+            if (timeWait > 0)
             {
-                g_logger >> "initMediaLib fail";
-                this->quit();
-                return;
+                mtutil::usleep(timeWait*1000);
             }
 
-            if (!m_ctrl.start())
-            {
-                g_logger >> "start controller fail";
-                this->quit();
-                return;
-            }
-            g_logger >> "start controller success, app running";
-
-            m_mainWnd.show();
+            emit signal_run(bUpgradeResult);
         });
     });
 

@@ -24,6 +24,7 @@ public:
 
 class CXMusicApp : public CApp,  public IPlayerView
 {
+    Q_OBJECT
 public:
     CXMusicApp(int argc, char **argv) :
         CApp(argc, argv),
@@ -39,6 +40,12 @@ private:
     CModel m_model;
 
     MainWindow m_mainWnd;
+
+signals:
+    void signal_run(bool bUpgradeResult);
+
+private slots:
+    void slot_run(bool bUpgradeResult);
 
 private:
     IModelObserver& getModelObserver() override
