@@ -69,7 +69,7 @@ private:
             rc.setRight(this->rect().right() * m_bufferValue/m_maxBuffer);
 
             auto crBegin = m_crBuffer;
-            crBegin.setAlpha(crBegin.alpha()/3);
+            crBegin.setAlpha(crBegin.alpha()*m_bufferValue/m_maxBuffer);
             painter.fillRectEx(rc, crBegin, m_crBuffer, xround);
         }
 
@@ -78,7 +78,7 @@ private:
             rc.setRight(this->rect().right() * this->value()/this->maximum());
 
             auto crBegin = m_crForeground;
-            crBegin.setAlpha(crBegin.alpha()/3);
+            crBegin.setAlpha(crBegin.alpha()*this->value()/this->maximum());
             painter.fillRectEx(rc, crBegin, m_crForeground, xround);
         }
     }
