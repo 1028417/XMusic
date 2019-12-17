@@ -56,7 +56,7 @@ public:
     }
 
 private:
-    void _onPaint(CPainter& painter, const QRect& t_rc) override
+    void _onPaint(CPainter& painter, const QRect&) override
     {
         auto rc = this->rect();
 
