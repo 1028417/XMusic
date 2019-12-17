@@ -167,7 +167,7 @@ public:
 
 #if !__winvc
     virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
-    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) = 0;
+    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf, CB_DownloadProgress& cbProgress) = 0;
 
 #else
     virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
@@ -282,7 +282,7 @@ public:
 
 #if !__winvc
     bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
-    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf) override;
+    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf, CB_DownloadProgress& cbProgress) override;
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 

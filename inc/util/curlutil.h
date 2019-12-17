@@ -45,6 +45,9 @@ public:
     static string getCurlErrMsg(UINT uCurlCode);
 };
 
+using CB_DownloadRecv = const function<void(string& strData)>&;
+using CB_DownloadProgress = const function<bool(int64_t dltotal, int64_t dlnow)>&;
+
 class __UtilExt CDownloader
 {
 public:
@@ -109,25 +112,21 @@ private:
         return size;
     }
 
-    virtual bool _onProgress(int64_t dltotal, int64_t dlnow)
-    {
-        (void)dltotal;
-        (void)dlnow;
-        return true;
-    }
-
 public:
     bool status() const
     {
         return m_bStatus;
     }
 
-    using CB_Downloader = function<void(string& strData)>;
-    int syncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
-    int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0);
-    int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0);
+    int syncDownload(const string& strUrl, UINT uRetryTime = 0
+            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
+    int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0
+            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
+    int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0
+            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
 
-    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, const CB_Downloader& cb = NULL);
+    void asyncDownload(const string& strUrl, UINT uRetryTime = 0
+            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
 
     size_t dataSize() const
     {
