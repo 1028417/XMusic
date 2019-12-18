@@ -76,7 +76,7 @@ private:
         }
 
         auto cy = rc.height();
-        auto margin = cy/4;
+        auto margin = cy/4+1;
         auto len = cy+1;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.setBrush(Qt::GlobalColor::white);
