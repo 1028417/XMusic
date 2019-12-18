@@ -45,18 +45,15 @@ public:
     static string getCurlErrMsg(UINT uCurlCode);
 };
 
-using CB_DownloadRecv = const function<void(string& strData)>&;
+//using CB_DownloadRecv = const function<void(string& strData)>&;
 using CB_DownloadProgress = const function<bool(int64_t dltotal, int64_t dlnow)>&;
 
-class __UtilExt CDownloader
+class __UtilExt CCurlDownload
 {
 public:
-    virtual ~CDownloader()
-    {
-        _clear();
-    }
+    virtual ~CCurlDownload() {}
 
-    CDownloader(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
+    CCurlDownload(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
             , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
             , unsigned long maxSpeedLimit = 0) : m_curlOpt(bShare)
     {
@@ -71,7 +68,7 @@ public:
         m_curlOpt.strUserAgent = "curl/7.66.0";
     }
 
-    CDownloader(const tagCurlOpt& curlOpt) : m_curlOpt(curlOpt)
+    CCurlDownload(const tagCurlOpt& curlOpt) : m_curlOpt(curlOpt)
     {
     }
 
@@ -85,13 +82,49 @@ private:
 
     bool m_bStatus = false;
 
+private:
+    virtual void _onRecv(string&) {};
+
+    virtual void _clear() {}
+
+public:
+    bool status() const
+    {
+        return m_bStatus;
+    }
+
+    int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress& cbProgress = NULL);
+
+    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress& cbProgress = NULL);
+
+    void cancel();
+};
+
+class __UtilExt CDownloader : public CCurlDownload
+{
+public:
+    CDownloader(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
+            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
+            , unsigned long maxSpeedLimit = 0)
+        : CCurlDownload(bShare, timeout, connectTimeout, lowSpeedLimit, lowSpeedLimitTime, maxSpeedLimit)
+    {
+    }
+
+    CDownloader(const tagCurlOpt& curlOpt) : CCurlDownload(curlOpt)
+    {
+    }
+
+private:
     mutex m_mtxDataLock;
     list<string> m_lstData;
     size_t m_uDataSize = 0;
     uint64_t m_uSumSize = 0;
 
+protected:
+    virtual void _onRecv(string&) override;
+
 private:
-    void _clear();
+    void _clear() override;
 
     template <class T>
     size_t _getAllData(T& buff)
@@ -113,20 +146,10 @@ private:
     }
 
 public:
-    bool status() const
-    {
-        return m_bStatus;
-    }
-
-    int syncDownload(const string& strUrl, UINT uRetryTime = 0
-            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
     int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0
-            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
+            , CB_DownloadProgress& cbProgress = NULL);
     int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0
-            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
-
-    void asyncDownload(const string& strUrl, UINT uRetryTime = 0
-            , CB_DownloadRecv cbRecv = NULL, CB_DownloadProgress& cbProgress = NULL);
+            , CB_DownloadProgress& cbProgress = NULL);
 
     size_t dataSize() const
     {
@@ -171,6 +194,4 @@ public:
     }
 
     void cutData(uint64_t uPos);
-
-    void cancel();
 };
