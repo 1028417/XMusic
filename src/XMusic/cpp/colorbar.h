@@ -76,13 +76,13 @@ private:
         }
 
         auto cy = rc.height();
-        auto len = cy;
-        auto margin = 3;
+        auto margin = cy/4;
+        auto len = cy+1;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.setBrush(Qt::GlobalColor::white);
 
         QRect rcPos(x, rc.top()+margin, len, cy-margin*2);
-        painter.drawRectEx(rcPos, margin);
+        painter.drawRectEx(rcPos, xround-1);
     }
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
