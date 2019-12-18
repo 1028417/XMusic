@@ -56,6 +56,13 @@ struct tagPlayCtrl
         eDemandLanguage = eLanguage;
     }
 
+    void reset()
+    {
+        ePlayCtrl = E_PlayCtrl::PC_Null;
+
+        arrPlayMedias.clear();
+    }
+
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
 
     UINT uPlayIdx = 0;

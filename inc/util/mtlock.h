@@ -61,7 +61,7 @@ protected:
     T m_value;
 
 private:
-    using CB_CheckSignal = const function<bool(const T& value)>&;
+    using CB_CheckSignal = const function<bool(T& value)>&;
     inline bool _wait(CB_CheckSignal cbCheck, int nMs = -1)
     {
         if (nMs >= 0)
@@ -103,7 +103,7 @@ public:
         T ret;
                 memzero(ret);
 
-                (void)_wait([&](const T& value) {
+                (void)_wait([&](T& value) {
                         ret = value;
                         return cbCheck(value);
                 });
