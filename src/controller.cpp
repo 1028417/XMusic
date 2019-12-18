@@ -63,10 +63,13 @@ bool CXController::start()
         while (true)
         {
             tagPlayCtrl PlayCtrl;
-            if (m_sigPlayCtrl.wait_for(2000, [&](const tagPlayCtrl& t_PlayCtrl){
+            if (m_sigPlayCtrl.wait_for(2000, [&](tagPlayCtrl& t_PlayCtrl){
                 if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
                 {
                     PlayCtrl = t_PlayCtrl;
+
+                    t_PlayCtrl.reset();
+
                     return true;
                 }
 
@@ -122,8 +125,6 @@ bool CXController::start()
                 default:
                     break;
                 }
-
-                m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Null));
 
                 continue;
             }
