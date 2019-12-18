@@ -86,7 +86,7 @@ private:
     bool m_bStatus = false;
 
     mutex m_mtxDataLock;
-    list<pair<byte_p, size_t>> m_lstData;
+    list<string> m_lstData;
     size_t m_uDataSize = 0;
     uint64_t m_uSumSize = 0;
 
