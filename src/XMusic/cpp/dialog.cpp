@@ -76,8 +76,10 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
 
 #if __android || __ios // 移动端exec会露出任务栏
     this->setVisible(true);
+#elif __mac
+    this->exec();
 #else
-    this->setWindowModality(Qt::ApplicationModal); //this->setModal(true);
+    this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
     this->setVisible(true);
 #endif
 }
