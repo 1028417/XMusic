@@ -253,7 +253,7 @@ public:
 	virtual size_t write(const void *buff, size_t size, size_t count) override
 	{
 		return fwrite(buff, size, count, m_pf);
-	}	
+	}
 
     virtual void flush() override
     {

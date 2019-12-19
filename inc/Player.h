@@ -14,8 +14,6 @@
 
 enum class E_DecodeStatus
 {
-    DS_Opening,
-    DS_OpenFail,
 	DS_Decoding,
 	DS_Paused,
 	DS_Cancel,
@@ -96,7 +94,7 @@ protected:
     UINT byteRate() const override;
 };
 
-using CB_PlayFinish = fn_void_t<E_DecodeStatus>;
+using CB_PlayStop = cfn_void_t<bool>;
 
 class __PlaySDKExt CPlayer
 {
@@ -123,7 +121,7 @@ public:
     static void QuitSDK();
 
 	void Stop();
-    bool Play(uint64_t uStartPos, bool bForce48KHz, const CB_PlayFinish& cbFinish = NULL);
+    bool Play(uint64_t uStartPos, bool bForce48KHz, CB_PlayStop cbStop = NULL);
 	
 	uint32_t GetDuration();
 	uint64_t GetClock();
