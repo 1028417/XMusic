@@ -99,12 +99,14 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), __szButton, __szButton);
 
     int x_bar = 2*x + __szButton;
-    int cx_bar = cx_group-x_bar*2;
+    int cx_bar = cx_group-x_bar*2+1;
+    int cy_bar = __size(40);
 
-    int cy_bar = __size(11);
-#if __android || __ios
-    cy_bar += __size(3);
-#endif
+    for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
+                                       , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
+    {
+        pBar->setMargin((cy_bar-11)/2);
+    }
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
 

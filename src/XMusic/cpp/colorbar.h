@@ -49,8 +49,17 @@ private:
     E_BarColor m_eColor;
     uint8_t m_uValue = 0;
 
+    UINT m_uMargin = 0;
+
 signals:
     void signal_valueChanged(CColorBar*, uint8_t uValue);
+
+public:
+    void setMargin(UINT uMargin)
+    {
+        m_uMargin = uMargin;
+        update();
+    }
 
 private:
     void _onPaint(CPainter& painter, const QRect&) override
@@ -60,8 +69,13 @@ private:
         QRect rc = this->rect();
         painter.fillRect(rc, g_crTheme);
 
+        rc.setTop(rc.top() + m_uMargin);
+        rc.setBottom(rc.bottom() - m_uMargin);
+
+        auto cy = rc.height();
+
         QColor crBegin(0,0,0);
-        UINT xround = __size(5);
+        UINT xround = cy/2;
         if (E_BarColor::BC_Red == m_eColor)
         {
             painter.fillRectEx(rc, crBegin, QColor(255,0,0), xround);
@@ -75,14 +89,13 @@ private:
             painter.fillRectEx(rc, crBegin, QColor(0,0,255), xround);
         }
 
-        auto cy = rc.height();
         auto margin = cy/4+1;
         auto len = cy+1;
         int x = margin + m_uValue*(rc.width()-margin*2-len)/255;
         painter.setBrush(Qt::GlobalColor::white);
 
         QRect rcPos(x, rc.top()+margin, len, cy-margin*2);
-        painter.drawRectEx(rcPos, xround-1);
+        painter.drawRectEx(rcPos, rcPos.height()/2);
     }
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
