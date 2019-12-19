@@ -107,7 +107,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 		, PlayItem.duration()+1, 0); // , long(player().GetClock()/__1e6));
 }
 
-void CPlayCtrl::onPlayStoped(bool bOpenFail)
+void CPlayCtrl::onPlayFinish(bool bOpenFail)
 {
 	if (bOpenFail)
 	{

@@ -51,13 +51,12 @@ void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual
 	m_view.m_PlayCtrl.onPlay(PlayItem);
 }
 
-void CModelObserver::onPlayStoped(E_DecodeStatus decodeStatus)
+void CModelObserver::onPlayStop(bool bOpenFail)
 {
-	if (decodeStatus != E_DecodeStatus::DS_Cancel)
+	if (m_view.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
 	{
-		CMainApp::sync(0, [&, decodeStatus]() {
-			bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
-			m_view.m_PlayCtrl.onPlayStoped(bOpenFail);
+		CMainApp::sync(0, [&, bOpenFail]() {
+			m_view.m_PlayCtrl.onPlayFinish(bOpenFail);
 		});
 	}
 }

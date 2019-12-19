@@ -117,6 +117,8 @@ MainWindow::MainWindow(CXMusicApp& app)
     ui.centralWidget->setVisible(false);
 
     this->setWindowFlags(Qt::FramelessWindowHint);
+
+    qRegisterMetaType<QVariant>("QVariant"); //写在构造函数里
 }
 
 void MainWindow::showLogo()
@@ -361,10 +363,17 @@ bool MainWindow::event(QEvent *ev)
     {
         _playSingerImg(false);
 
-        auto ePlayStatus = m_app.getPlayMgr().GetPlayStatus();
-        if (ePlayStatus != E_PlayStatus::PS_Play)
+        E_DecodeStatus eDecodeStatus = m_app.getPlayMgr().mediaOpaque().decodeStatus();
+        if (XMediaLib::m_bOnlineMediaLib)
         {
-            if (!XMediaLib::m_bOnlineMediaLib || ePlayStatus != E_PlayStatus::PS_Pause)
+            if (eDecodeStatus != E_DecodeStatus::DS_Decoding && eDecodeStatus != E_DecodeStatus::DS_Paused)
+            {
+                break;
+            }
+        }
+        else
+        {
+            if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
             {
                 break;
             }
@@ -763,51 +772,55 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    m_mtxPlayingInfo.lock([&](tagPlayingInfo& PlayingInfo) {
-        PlayingInfo.uPlaySeq++;
+    m_uPlaySeq++;
 
-        PlayingInfo.strTitle = PlayItem.GetTitle();
+    tagPlayingInfo PlayingInfo;
+    PlayingInfo.strTitle = PlayItem.GetTitle();
 
-        PlayingInfo.nDuration = PlayItem.duration();
+    PlayingInfo.nDuration = PlayItem.duration();
 
-        PlayingInfo.uStreamSize = 0;
-        if (XMediaLib::m_bOnlineMediaLib)
+    PlayingInfo.uStreamSize = 0;
+    if (XMediaLib::m_bOnlineMediaLib)
+    {
+        int nStreamSize = PlayItem.fileSize()/1000;
+        if (nStreamSize > 0)
         {
-            int nStreamSize = PlayItem.fileSize()/1000;
-            if (nStreamSize > 0)
-            {
-                PlayingInfo.uStreamSize = (UINT)nStreamSize;
-            }
+            PlayingInfo.uStreamSize = (UINT)nStreamSize;
         }
+    }
 
-        PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
-        PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
-        PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
-        PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
+    PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+    PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+    PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
+    PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
 
-        PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
-        PlayingInfo.uRelatedPlayItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Playlist);
+    PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
+    PlayingInfo.uRelatedPlayItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Playlist);
 
-        PlayingInfo.strPath = PlayItem.GetPath();
-    });
+    PlayingInfo.strPath = PlayItem.GetPath();
 
-    emit signal_showPlaying(uPlayingItem, bManual);
+    QVariant var;
+    var.setValue(PlayingInfo);
+
+    //m_mtxPlayingInfo.set(PlayingInfo);
+
+    emit signal_showPlaying(uPlayingItem, bManual, var);
 }
 
-void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
+void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var)
 {
+    auto strPrevSinger = m_PlayingInfo.strSinger;
+    m_PlayingInfo = var.value<tagPlayingInfo>(); //m_mtxPlayingInfo.get(m_PlayingInfo);
+
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    m_mtxPlayingInfo.get(m_PlayingInfo);
     _showAlbumName();
 
     ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
-    if (m_PlayingInfo.strSinger != m_strSingerName)
+    if (m_PlayingInfo.strSinger != strPrevSinger)
     {
-        m_strSingerName = m_PlayingInfo.strSinger;
-
-        ui.labelSingerName->setText(strutil::toQstr(m_strSingerName));
+        ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSinger));
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
@@ -826,17 +839,16 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual)
     ui.labelDuration->setText(qsDuration);
 }
 
-void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
+void MainWindow::onPlayStop(bool bOpenFail)
 {
-    if (decodeStatus != E_DecodeStatus::DS_Cancel)
+    emit signal_playStoped(bOpenFail);
+
+    if (m_app.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
     {
-        bool bOpenFail = E_DecodeStatus::DS_OpenFail == decodeStatus;
         /*if (bOpenFail)
         {
             mtutil::usleep(1000);
         }*/
-
-        emit signal_playStoped(bOpenFail);
 
         m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
     }
@@ -844,7 +856,7 @@ void MainWindow::onPlayStoped(E_DecodeStatus decodeStatus)
 
 void MainWindow::slot_playStoped(bool bOpenFail)
 {
-    ui.barProgress->setValue(0);
+    ui.barProgress->setMaximum(0);
 
     if (bOpenFail)
     {
@@ -852,9 +864,9 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     }
     else
     {
-        auto uPlaySeq = m_PlayingInfo.uPlaySeq;
-        __async(1000, [&, uPlaySeq]() {
-            if (uPlaySeq == m_PlayingInfo.uPlaySeq)
+        auto uPlaySeq = m_uPlaySeq;
+        __async(2000, [&, uPlaySeq]() {
+            if (uPlaySeq == m_uPlaySeq)
             {
                 _updatePlayPauseButton(false);
             }
@@ -922,7 +934,7 @@ void MainWindow::_showAlbumName()
 
 void MainWindow::_playSingerImg(bool bReset)
 {
-    if (m_strSingerName.empty())
+    if (m_PlayingInfo.strSinger.empty())
     {
         return;
     }
@@ -947,7 +959,7 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx);
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSinger, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
         QPixmap pm;

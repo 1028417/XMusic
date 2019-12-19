@@ -15,8 +15,6 @@
 
 struct tagPlayingInfo
 {
-    UINT uPlaySeq = 0;
-
     wstring strTitle;
 
     int nDuration = -1;
@@ -33,6 +31,7 @@ struct tagPlayingInfo
 
     wstring strPath;
 };
+Q_DECLARE_METATYPE(tagPlayingInfo);
 
 class MainWindow : public QMainWindow, public IModelObserver
 {
@@ -54,10 +53,8 @@ private:
     map<QWidget*, QRect> m_mapWidgetPos;
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
-    CMtxLock<tagPlayingInfo> m_mtxPlayingInfo;
-
-    tagPlayingInfo m_PlayingInfo;
-    wstring m_strSingerName;
+    UINT m_uPlaySeq = 0;
+    tagPlayingInfo m_PlayingInfo; //CMtxLock<tagPlayingInfo> m_mtxPlayingInfo;
 
     bool m_bHScreen = false;
 
@@ -70,7 +67,7 @@ private:
 signals:
     void signal_updatePlayingList(int nPlayingItem);
 
-    void signal_showPlaying(unsigned int uPlayingItem, bool bManual);
+    void signal_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var);
 
     void signal_playStoped(bool bOpenFail);
 
@@ -82,7 +79,7 @@ private slots:
         m_PlayingList.updateList(nPlayingItem);
     }
 
-    void slot_showPlaying(unsigned int uPlayingItem, bool bManual);
+    void slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var);
 
     void slot_playStoped(bool bOpenFail);
 
@@ -125,7 +122,7 @@ private:
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
-    void onPlayStoped(E_DecodeStatus decodeStatus) override;
+    void onPlayStop(bool bOpenFail) override;
 
     void onSingerImgDownloaded(const wstring& strFile) override
     {
