@@ -40,6 +40,15 @@ public:
 
         mutex::unlock();
     }
+
+    void set(const T& data)
+    {
+        mutex::lock();
+
+        m_data = data;
+
+        mutex::unlock();
+    }
 };
 
 template <typename T>
