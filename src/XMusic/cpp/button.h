@@ -24,18 +24,18 @@ private:
     {
         if (E_MouseEventType::MET_Press == type)
         {
-            setOpacity(0.5);
+            setOpacityEffect(0.5);
         }
         else if (E_MouseEventType::MET_Release == type)
         {
-            setOpacity(0.5);
+            setOpacityEffect(0.5);
 
             UINT uDelayTime = 100;
 #if __windows || __mac
             uDelayTime = 200;
 #endif
             timerutil::async(uDelayTime, [&](){
-                setOpacity(1);
+                setOpacityEffect(1);
             });
         }
         else if (E_MouseEventType::MET_Click == type)

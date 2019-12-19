@@ -300,8 +300,6 @@ private:
 
     bool m_bMousePressed = false;
 
-    QGraphicsOpacityEffect m_goe;
-
 protected:
     bool m_bClicking = false;
 
@@ -344,10 +342,57 @@ public:
         TWidget::setFont(font);
     }
 
-    void setOpacity(float fValue)
+    void setOpacityEffect(float fValue)
     {
-       m_goe.setOpacity(fValue);
-       this->setGraphicsEffect(&m_goe);
+        QGraphicsOpacityEffect *oe = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+        if (NULL == oe)
+        {
+            oe = new QGraphicsOpacityEffect(this);
+        }
+
+        oe->setOpacity(fValue);
+
+        this->setGraphicsEffect(oe);
+    }
+
+    void setDropShadowEffect (UINT dx, UINT dy)
+    {
+        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
+        if (NULL == dse)
+        {
+            dse = new QGraphicsDropShadowEffect(this);
+        }
+
+        dse->setOffset(dx, dy);
+
+        this->setGraphicsEffect(dse);
+    }
+
+    void setColorizeEffect(const QColor& cr, float fStength)
+    {
+        QGraphicsColorizeEffect *ce = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
+        if (NULL == ce)
+        {
+            ce = new QGraphicsColorizeEffect(this);
+        }
+
+        ce->setColor(cr);
+        ce->setStrength(fStength);
+
+        this->setGraphicsEffect(ce);
+    }
+
+    void setBlurEffect(float fStength)
+    {
+        QGraphicsBlurEffect *be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        if (NULL == be)
+        {
+            be = new QGraphicsBlurEffect(this);
+        }
+
+        be->setBlurRadius(fStength);
+
+        this->setGraphicsEffect(be);
     }
 
     virtual void update()
