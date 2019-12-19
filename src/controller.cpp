@@ -62,19 +62,29 @@ bool CXController::start()
         auto& PlayMgr = m_model.getPlayMgr();
         while (true)
         {
+            mtutil::usleep(100);
+
             tagPlayCtrl PlayCtrl;
-            if (m_sigPlayCtrl.wait_for(2000, [&](tagPlayCtrl& t_PlayCtrl){
+            m_mtxPlayCtrl.lock([&](tagPlayCtrl& t_PlayCtrl){
                 if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
                 {
                     PlayCtrl = t_PlayCtrl;
 
                     t_PlayCtrl.reset();
-
-                    return true;
                 }
+            });
+//            if (m_sigPlayCtrl.wait_for(2000, [&](tagPlayCtrl& t_PlayCtrl){
+//                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
+//                {
+//                    PlayCtrl = t_PlayCtrl;
 
-                return false;
-            }))
+//                    t_PlayCtrl.reset();
+
+//                    return true;
+//                }
+
+//                return false;
+//            }))
             {
                 switch (PlayCtrl.ePlayCtrl)
                 {
@@ -125,8 +135,6 @@ bool CXController::start()
                 default:
                     break;
                 }
-
-                continue;
             }
         }
     });
@@ -182,7 +190,7 @@ void CXController::_tryPlay()
 void CXController::stop()
 {
 #if !__winvc
-    m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
+    m_mtxPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));// m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
     if (m_threadPlayCtrl.joinable())
     {
         m_threadPlayCtrl.join();

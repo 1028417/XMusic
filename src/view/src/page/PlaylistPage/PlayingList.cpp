@@ -96,7 +96,8 @@ void CPlayingList::fixColumnWidth(int width)
 void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
 	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
-		int cx = rc.right - rc.left;
+#define __xOffset 1
+		int cx = rc.right - rc.left - __xOffset;
 		int cy = rc.bottom - rc.top;
 
 		CCompDC CompDC;
@@ -105,7 +106,7 @@ void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 
 		_drawItem(MemDC, cx, cy, uItem, PlayItem);
 
-		(void)::BitBlt(hDC, 0, rc.top, cx, cy, MemDC, 0, 0, SRCCOPY);
+		(void)::BitBlt(hDC, __xOffset, rc.top, cx, cy, MemDC, 0, 0, SRCCOPY);
 	});
 }
 
@@ -204,7 +205,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 
 	CRect& rcSingerImg = ItemLinks.lnkSingerImg.rcPos;
 	
-	int x = 8;
+	int x = 0;
 	if (iImage >= 0)
 	{
 #define __Margin 0
@@ -222,16 +223,15 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 		auto& imgList = m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big);
 		imgList.DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
 
-		x += cy-__Margin;
+		x = cy-__Margin;
 	}
 	else
 	{
 		memzero(rcSingerImg);
-
-		x += 8;
 	}
-
-	cx -= 8;
+	x += 7;
+	
+	cx -= 7;
 
 	int iXPosDuration = cx;
 	auto& strDuration = PlayItem.GetDurationString();

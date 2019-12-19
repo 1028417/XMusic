@@ -21,7 +21,7 @@ protected:
 #if !__winvc
 private:
 	thread m_threadPlayCtrl;
-	TSignal<tagPlayCtrl> m_sigPlayCtrl;
+        CMtxLock<tagPlayCtrl> m_mtxPlayCtrl; //TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif
 
 private:
@@ -50,7 +50,7 @@ public:
         void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override
         {
 #if !__winvc
-            m_sigPlayCtrl.set(PlayCtrl);
+            m_mtxPlayCtrl.set(PlayCtrl);//m_sigPlayCtrl.set(PlayCtrl);
 #endif
         }
 
