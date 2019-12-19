@@ -192,6 +192,4 @@ public:
     {
         return _getAllData(cbfData);
     }
-
-    void cutData(uint64_t uPos);
 };
