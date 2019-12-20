@@ -217,8 +217,9 @@ private:
 
 public:
 	void start(cfn_void cb)
-	{
-        mutex_lock lock(m_mutex);
+    {
+        m_mutex.lock();
+
         m_thread = thread([&, cb]() {
             m_sgnRuning.set();
 
@@ -228,6 +229,8 @@ public:
 		});
 
         m_sgnRuning.wait();
+
+        m_mutex.unlock();
 	}
 
 	void start(const CB_XThread& cb)
@@ -255,7 +258,8 @@ public:
     {
         if (m_thread.joinable())
         {
-            mutex_lock lock(m_mutex);
+            m_mutex.lock();
+
             if (m_thread.joinable())
             {
                 m_sgnRuning.reset();
@@ -265,18 +269,23 @@ public:
 					m_thread.join();
 				}
             }
+
+            m_mutex.unlock();
         }
     }
 
 	void join()
 	{
 		if (m_thread.joinable())
-		{
-			mutex_lock lock(m_mutex);
+        {
+            m_mutex.lock();
+
 			if (m_thread.joinable())
 			{
 				m_thread.join();
 			}
+
+            m_mutex.unlock();
 		}
 	}
 };
