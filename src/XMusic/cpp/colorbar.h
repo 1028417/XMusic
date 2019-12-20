@@ -104,7 +104,7 @@ private:
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
     {
         QRect rc = _rect();
-        auto margin = rc.height()/4;
+        auto margin = rc.height()/4+1;
         auto len = rc.height();
 
         int nValue = 255*(te.x()-len/2-margin)/(width()-margin*2-len);
