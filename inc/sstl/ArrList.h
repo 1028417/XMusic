@@ -179,19 +179,9 @@ namespace NS_SSTL
 	public:
 		int find(__CB_ConstRef_bool cb, size_t startPos = 0) const
 		{
-			int nRetPos = -1;
-
-            (*this)(startPos, [&](__DataConstRef data, size_t pos) {
-				if (cb(data))
-				{
-					nRetPos = pos;
-					return false;
-				}
-
-				return true;
-			});
-
-			return nRetPos;
+			return m_ptrArray.find([&](__DataConstRef data) {
+				return cb(data);
+			}, startPos);
 		}
 
 		bool get(size_t pos, __CB_Ref_void cb)
@@ -204,17 +194,17 @@ namespace NS_SSTL
 			return m_ptrArray.get(pos, cb);
 		}
 
-		bool get(size_t pos, __DataRef& data) const
+		bool get(size_t pos, __DataRef data) const
 		{
-			return m_ptrArray.get(pos, [&](__DataConstRef& t_data) {
+			return m_ptrArray.get(pos, [&](__DataConstRef t_data) {
 				data = t_data;
 			});
 		}
 
-		bool set(size_t pos, __DataConstRef& data)
+		bool set(size_t pos, __DataConstRef data)
 		{
-            return get(pos, [&](__DataRef m_data) {
-				m_data = data;
+            return get(pos, [&](__DataRef t_data) {
+				t_data = data;
 			});
 		}
 

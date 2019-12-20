@@ -150,14 +150,14 @@ namespace NS_SSTL
 			return adaptor().get(pos, cb);
 		}
 		
-		bool get(size_t pos, __DataRef& data) const
+		bool get(size_t pos, __DataRef data) const
 		{
-			return adaptor().get(pos, [&](__DataConstRef& t_data) {
+			return adaptor().get(pos, [&](__DataConstRef t_data) {
 				data = t_data;
 			});
 		}
 
-		bool set(size_t pos, __DataConstRef& data)
+		bool set(size_t pos, __DataConstRef data)
 		{
 			return get(pos, [&](__DataRef t_data) {
 				t_data = data;
@@ -231,15 +231,15 @@ namespace NS_SSTL
 		{
 			int nRetPos = -1;
 
-            (*this)(startPos, [&](__DataConstRef data, size_t pos) {
+            (*this)((int)startPos, [&](__DataConstRef data, size_t pos) {
 				if (cb(data))
 				{
-					nRetPos = pos;
+					nRetPos = (int)pos;
 					return false;
 				}
 
 				return true;
-            }, startPos);
+            });
 
 			return nRetPos;
 		}

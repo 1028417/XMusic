@@ -332,10 +332,10 @@ namespace NS_SSTL
 		{
 			int nRetPos = -1;
 
-            (*this)(startPos, [&](__RefType ref, size_t pos) {
+            (*this)((int)startPos, [&](__RefType ref, size_t pos) {
 				if (cb(ref))
 				{
-					nRetPos = pos;
+					nRetPos = (int)pos;
 					return false;
 				}
 
