@@ -142,8 +142,8 @@ void MainWindow::showLogo()
 #endif
     ui.labelLogoCompany->setFont(CFont(fFontSizeOffset));
 
-    CDialog::setWidgetColor(ui.labelLogoTip, QColor(64, 128, 255));
-    CDialog::setWidgetColor(ui.labelLogoCompany, QColor(64, 128, 255, 0));
+    CDialog::setWidgetTextColor(ui.labelLogoTip, QColor(64, 128, 255));
+    CDialog::setWidgetTextColor(ui.labelLogoCompany, QColor(64, 128, 255, 0));
 
     static QMovie movie(":/img/logo.gif");
     ui.labelLogo->setMovie(&movie);

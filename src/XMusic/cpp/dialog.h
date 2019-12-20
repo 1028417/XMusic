@@ -37,7 +37,7 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 public:
-    static void setWidgetColor(QWidget *widget, const QColor& cr)
+    static void setWidgetTextColor(QWidget *widget, const QColor& cr)
     {
         QPalette pe = widget->palette();
         pe.setColor(QPalette::WindowText, cr);
