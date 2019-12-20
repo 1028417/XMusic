@@ -296,7 +296,6 @@ void MainWindow::show()
 #if __android    
     ui.centralWidget->setAttribute(Qt::WA_TranslucentBackground);
 #endif
-
     ui.centralWidget->setVisible(true);
 
     update();

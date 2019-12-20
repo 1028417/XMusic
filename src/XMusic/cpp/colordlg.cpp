@@ -19,7 +19,9 @@ void CColorDlg::init()
 
     CFont font(1.05);
     ui.groupBkgColor->setFont(font);
+    ui.groupBkgColor->setAttribute(Qt::WA_TranslucentBackground);
     ui.groupFontColor->setFont(font);
+    ui.groupFontColor->setAttribute(Qt::WA_TranslucentBackground);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
@@ -39,8 +41,8 @@ void CColorDlg::init()
 
 void CColorDlg::show()
 {
-    CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
-    CDialog::setWidgetColor(ui.groupFontColor, g_crText);
+    //CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
+    //CDialog::setWidgetColor(ui.groupFontColor, g_crText);
 
     ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
     ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
@@ -207,8 +209,8 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
         m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crText.setRgb(m_app.getOption().crText);
 
-        CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
-        CDialog::setWidgetColor(ui.groupFontColor, g_crText);
+        //CDialog::setWidgetColor(ui.groupBkgColor, g_crText);
+        //CDialog::setWidgetColor(ui.groupFontColor, g_crText);
     }
 
     this->update();

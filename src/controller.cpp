@@ -73,68 +73,65 @@ bool CXController::start()
                     t_PlayCtrl.reset();
                 }
             });
-//            if (m_sigPlayCtrl.wait_for(2000, [&](tagPlayCtrl& t_PlayCtrl){
-//                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
-//                {
-//                    PlayCtrl = t_PlayCtrl;
-
-//                    t_PlayCtrl.reset();
-
-//                    return true;
-//                }
-
-//                return false;
-//            }))
-            {
-                switch (PlayCtrl.ePlayCtrl)
+            /*m_sigPlayCtrl.wait([&](tagPlayCtrl& t_PlayCtrl) {
+                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
                 {
-                case E_PlayCtrl::PC_Pause:
-                    PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
-                    break;
-
-                case E_PlayCtrl::PC_Play:
-                    PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
-                    break;
-
-                case E_PlayCtrl::PC_PlayPrev:
-                    PlayMgr.playPrev();
-                    break;
-
-                case E_PlayCtrl::PC_PlayNext:
-					(void)PlayMgr.playNext();
-                    break;
-                case E_PlayCtrl::PC_AutoPlayNext:
-                    mtutil::usleep(1000);
-                    (void)PlayMgr.playNext(false);
-                    break;
-
-                case E_PlayCtrl::PC_PlayIndex:
-                    (void)PlayMgr.play(PlayCtrl.uPlayIdx);
-
-                    break;
-                case E_PlayCtrl::PC_Demand:
-                    (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
-
-                    break;
-                case E_PlayCtrl::PC_Assign:
-                    (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
-
-                    break;
-                case E_PlayCtrl::PC_AppendPlay:
-                    (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, true);
-
-                    break;
-                case E_PlayCtrl::PC_Append:
-                    (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, false);
-
-                    break;
-                case E_PlayCtrl::PC_Quit:
-                    return;
-
-                    break;
-                default:
-                    break;
+                    PlayCtrl = t_PlayCtrl;
+                    t_PlayCtrl.reset();
+                    return true;
                 }
+
+                return false;
+            });*/
+
+            switch (PlayCtrl.ePlayCtrl)
+            {
+            case E_PlayCtrl::PC_Pause:
+                PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
+                break;
+
+            case E_PlayCtrl::PC_Play:
+                PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
+                break;
+
+            case E_PlayCtrl::PC_PlayPrev:
+                PlayMgr.playPrev();
+                break;
+
+            case E_PlayCtrl::PC_PlayNext:
+                (void)PlayMgr.playNext();
+                break;
+            case E_PlayCtrl::PC_AutoPlayNext:
+                mtutil::usleep(1000);
+                (void)PlayMgr.playNext(false);
+                break;
+
+            case E_PlayCtrl::PC_PlayIndex:
+                (void)PlayMgr.play(PlayCtrl.uPlayIdx);
+
+                break;
+            case E_PlayCtrl::PC_Demand:
+                (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
+
+                break;
+            case E_PlayCtrl::PC_Assign:
+                (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
+
+                break;
+            case E_PlayCtrl::PC_AppendPlay:
+                (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, true);
+
+                break;
+            case E_PlayCtrl::PC_Append:
+                (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, false);
+
+                break;
+            case E_PlayCtrl::PC_Quit:
+                return;
+
+                break;
+            default:
+                break;
             }
         }
     });
@@ -190,7 +187,8 @@ void CXController::_tryPlay()
 void CXController::stop()
 {
 #if !__winvc
-    m_mtxPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));// m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
+    m_mtxPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
+    //m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
     if (m_threadPlayCtrl.joinable())
     {
         m_threadPlayCtrl.join();
