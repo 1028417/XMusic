@@ -82,6 +82,8 @@ private:
 
     bool m_bStatus = false;
 
+    uint64_t m_uSumSize = 0;
+
 private:
     virtual bool _onRecv(char *ptr, size_t size) = 0;
 
@@ -91,6 +93,11 @@ public:
     bool status() const
     {
         return m_bStatus;
+    }
+
+    uint64_t sumSize() const
+    {
+        return m_uSumSize;
     }
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
@@ -118,7 +125,6 @@ private:
     mutex m_mtxDataLock;
     list<string> m_lstData;
     size_t m_uDataSize = 0;
-    uint64_t m_uSumSize = 0;
 
 protected:
     virtual bool _onRecv(string& strData);
@@ -156,10 +162,6 @@ public:
     size_t dataSize() const
     {
         return m_uDataSize;
-    }
-    uint64_t sumSize() const
-    {
-        return m_uSumSize;
     }
 //    uint64_t readPos() const
 //    {
