@@ -32,19 +32,12 @@ private:
 	static UINT _checkDuration(const wstring& strFile, bool bXmsc, long long& nFileSize);
 
 public:
-    long long openFile(const wstring& strFile, bool bXmsc)
-	{
-		return _openFile(strFile, bXmsc);
+    const wstring& currentFile() const
+    {
+        return m_strFile;
     }
 
-	long long openFile(IMedia& media)
-	{
-		return _openFile(media.GetAbsPath(), media.isXmsc());
-	}
-
 #if !__winvc
-    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
-
     uint64_t streamSize() const;
 
     uint64_t streamPos() const
@@ -52,7 +45,20 @@ public:
         return m_uStreamPos;
     }
 
-#else
+    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
+
+#endif
+
+    long long openFile(const wstring& strFile, bool bXmsc)
+    {
+        return _openFile(strFile, bXmsc);
+    }
+
+    long long openFile(IMedia& media)
+    {
+        return _openFile(media.GetAbsPath(), media.isXmsc());
+    }
+
 	UINT checkFileDuration(const wstring& strFile, long long& nFileSize)
 	{
 		nFileSize = _openFile(strFile, false);
@@ -69,8 +75,7 @@ public:
 		long long nFileSize = 0;
 		return checkDuration(strFile, nFileSize);
 		(void)nFileSize;
-	}
-#endif
+    }
 
 	UINT checkMediaDuration(IMedia& media, long long& nFileSize)
 	{
@@ -113,11 +118,6 @@ public:
 	}
 
 	void close() override;
-
-	const wstring& currentFile() const
-	{
-		return m_strFile;
-	}
 
 private:
 	bool isOnline() const override
