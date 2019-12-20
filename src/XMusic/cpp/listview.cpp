@@ -57,7 +57,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
     m_uRowHeight = cy/uPageRowCount;
 
-    UINT uRowCount = getRowCount();
+    size_t uRowCount = getRowCount();
     if (uRowCount > uPageRowCount)
     {
         m_uMaxScrollPos = uRowCount - uPageRowCount;
@@ -72,7 +72,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     UINT uRow = m_fScrollPos;
     int y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
 
-    UINT uColumnCount = getColumnCount();
+    size_t uColumnCount = getColumnCount();
     if (0 == uColumnCount)
     {
         uColumnCount = 1;
@@ -322,7 +322,7 @@ bool CListView::_scroll(int dy)
     return bFlag;
 }
 
-void CListView::_autoScroll(ulong uSeq, int dy, ulong dt, ulong total)
+void CListView::_autoScroll(ulong uSeq, int dy, UINT dt, UINT total)
 {
     timerutil::async(dt, [=]() {
         if (uSeq != m_uAutoScrollSeq)

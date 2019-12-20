@@ -78,7 +78,7 @@ private:
 
     UINT m_uRowHeight = 0;
 
-    UINT m_uMaxScrollPos = 0;
+    size_t m_uMaxScrollPos = 0;
     float m_fScrollPos = 0;
 
     int m_nSelectRow = -1;
@@ -116,7 +116,7 @@ private:
     virtual void _onRowDblClick(tagLVRow&, const QMouseEvent&) {}
 
     bool _scroll(int dy);
-    void _autoScroll(ulong uSeq, int dy, ulong dt, ulong total);
+    void _autoScroll(ulong uSeq, int dy, UINT dt, UINT total);
 
     virtual void _onAutoScrollBegin() {}
     virtual void _onAutoScrollEnd() {}

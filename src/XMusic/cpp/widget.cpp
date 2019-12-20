@@ -230,7 +230,7 @@ void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
 }
 
 
-void CPainter::zoomoutPixmap(QPixmap& pm, size_t size)
+void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
 {
     if (pm.width() < pm.height())
     {

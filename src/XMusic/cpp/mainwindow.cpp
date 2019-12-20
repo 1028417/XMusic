@@ -781,7 +781,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.uStreamSize = 0;
     if (XMediaLib::m_bOnlineMediaLib)
     {
-        int nStreamSize = PlayItem.fileSize()/1000;
+        auto nStreamSize = PlayItem.fileSize()/1000;
         if (nStreamSize > 0)
         {
             PlayingInfo.uStreamSize = (UINT)nStreamSize;

@@ -99,7 +99,7 @@ public:
     }
 
 public:
-    static void zoomoutPixmap(QPixmap& pm, size_t size);
+    static void zoomoutPixmap(QPixmap& pm, UINT size);
 
     static QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha);
 

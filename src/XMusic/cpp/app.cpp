@@ -249,7 +249,7 @@ int CXMusicApp::run()
             auto timeWait = 6 - (time(NULL) - timeBegin);
             if (timeWait > 0)
             {
-                mtutil::usleep(timeWait*1000);
+                mtutil::usleep((UINT)timeWait*1000);
             }
 
             emit signal_run(bUpgradeResult);

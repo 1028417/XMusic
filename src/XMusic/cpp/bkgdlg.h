@@ -33,7 +33,7 @@ private:
     void _onRowClick(tagLVRow&, const QMouseEvent&) override;
 
 public:
-    size_t margin();
+    UINT margin();
 };
 
 class CBkgDlg : public CDialog
@@ -93,7 +93,7 @@ public:
         }
     }
 
-    const QPixmap* snapshot(UINT uIdx);
+    const QPixmap* snapshot(size_t uIdx);
 
     void setBkg(size_t uIdx);
 

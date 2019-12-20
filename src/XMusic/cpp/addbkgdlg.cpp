@@ -186,7 +186,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     if (m_pImgDir)
     {
-        UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+        size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
@@ -218,7 +218,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
 {
     if (m_pImgDir)
     {
-        UINT uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+        size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())

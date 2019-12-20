@@ -88,14 +88,14 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
 #define __szRound __size(8)
 
-    UINT uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
+    size_t uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
     if (0 == uItem)
     {
         m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
     else
     {
-        UINT uIdx = uItem-1;
+        size_t uIdx = uItem-1;
         cauto pm = m_bkgDlg.snapshot(uIdx);
         if (pm)
         {
@@ -139,7 +139,7 @@ void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
     m_bkgDlg.setBkg(uIdx);
 }
 
-inline size_t CBkgView::margin()
+inline UINT CBkgView::margin()
 {
 #define __margin __size(40)
     return __margin/(getColumnCount()-1);
@@ -262,7 +262,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
 }
 
-const QPixmap* CBkgDlg::snapshot(UINT uIdx)
+const QPixmap* CBkgDlg::snapshot(size_t uIdx)
 {
     auto& vecSnapshot = m_bHScreen?m_vecHSnapshot:m_vecVSnapshot;
     if (uIdx < vecSnapshot.size())
