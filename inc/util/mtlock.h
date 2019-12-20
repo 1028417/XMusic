@@ -107,20 +107,12 @@ public:
         return m_value;
     }
 
-    T wait(CB_CheckSignal cbCheck)
+    void wait(CB_CheckSignal cbCheck)
     {
-        T ret;
-                memzero(ret);
-
-                (void)_wait([&](T& value) {
-                        ret = value;
-                        return cbCheck(value);
-                });
-
-        return ret;
+        (void)_wait(cbCheck);
     }
 
-    bool wait_for(UINT uMs, CB_CheckSignal cbCheck)
+    bool wait(UINT uMs, CB_CheckSignal cbCheck)
     {
         return _wait(cbCheck, uMs);
     }
@@ -151,7 +143,7 @@ public:
 
     void wait(bool bReset = false)
     {
-        TSignal::wait([=](bool bValue) {
+        (void)TSignal::wait([=](bool bValue) {
             if (bValue)
             {
                 if (bReset)
@@ -166,9 +158,9 @@ public:
         });
     }
 
-    bool wait_for(UINT uMs, bool bReset = false)
+    bool wait(UINT uMs, bool bReset = false)
     {
-        return TSignal::wait_for(uMs, [=](bool bValue) {
+        return TSignal::wait(uMs, [=](bool bValue) {
            if (bValue)
            {
                if (bReset)
