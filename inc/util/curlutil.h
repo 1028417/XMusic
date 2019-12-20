@@ -45,7 +45,7 @@ public:
     static string getCurlErrMsg(UINT uCurlCode);
 };
 
-//using CB_DownloadRecv = const function<void(string& strData)>&;
+//using CB_DownloadRecv = const function<bool(char *ptr, size_t size)>&;
 using CB_DownloadProgress = const function<bool(int64_t dltotal, int64_t dlnow)>&;
 
 class __UtilExt CCurlDownload
@@ -83,7 +83,7 @@ private:
     bool m_bStatus = false;
 
 private:
-    virtual void _onRecv(string&) {};
+    virtual bool _onRecv(char *ptr, size_t size) = 0;
 
     virtual void _clear() {}
 
@@ -93,9 +93,9 @@ public:
         return m_bStatus;
     }
 
-    int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress& cbProgress = NULL);
+    int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
-    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress& cbProgress = NULL);
+    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
     void cancel();
 };
@@ -121,9 +121,11 @@ private:
     uint64_t m_uSumSize = 0;
 
 protected:
-    virtual void _onRecv(string&) override;
+    virtual bool _onRecv(string& strData);
 
 private:
+    bool _onRecv(char *ptr, size_t size) override;
+
     void _clear() override;
 
     template <class T>
@@ -147,9 +149,9 @@ private:
 
 public:
     int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0
-            , CB_DownloadProgress& cbProgress = NULL);
+            , CB_DownloadProgress cbProgress = NULL);
     int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0
-            , CB_DownloadProgress& cbProgress = NULL);
+            , CB_DownloadProgress cbProgress = NULL);
 
     size_t dataSize() const
     {
