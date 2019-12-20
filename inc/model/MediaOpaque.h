@@ -124,7 +124,7 @@ public:
 
 private:
 #if !__winvc
-    long checkPreserveDataSize() const override;
+    size_t checkPreserveDataSize() const override;
 #endif
 
 	bool isOnline() const override
