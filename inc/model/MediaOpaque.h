@@ -112,7 +112,6 @@ public:
 		(void)nFileSize;
 	}
 
-public:
 	void close() override;
 
 	const wstring& currentFile() const
@@ -120,13 +119,7 @@ public:
 		return m_strFile;
 	}
 
-    int readHead(byte_p buf, size_t size);
-
 private:
-#if !__winvc
-    size_t checkPreserveDataSize() const override;
-#endif
-
 	bool isOnline() const override
 	{
         return m_strFile.empty();
@@ -142,17 +135,9 @@ private:
 		return m_strFile;
 	}
 
-    UINT byteRate() const override
-    {
+    size_t read(byte_p buf, size_t bufSize) override;
+
 #if !__winvc
-		if (m_strFile.empty())
-		{
-			return m_uByteRate;
-		}
+    size_t _readStream(byte_p buf, size_t bufSize);
 #endif
-
-		return CAudioOpaque::byteRate();	
-    }
-
-    int read(byte_p buf, size_t size) override;
 };

@@ -23,23 +23,17 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual size_t checkPreserveDataSize() const
-    {
-        return 0;
-	}
-	virtual bool isOnline() const = 0;
+    virtual bool isOnline() const = 0;
 
-	virtual wstring localFilePath() const = 0;
+    virtual wstring localFilePath() const = 0;
 
-	virtual bool seekable() const = 0;
+    virtual bool seekable() const = 0;
 
-	virtual int64_t seek(int64_t offset, int origin) = 0;
+    virtual int64_t seek(int64_t offset, int origin) = 0;
 
-    virtual int read(byte_p buf, size_t size) = 0;
+    virtual size_t read(byte_p buf, size_t size) = 0;
 
-	virtual E_DecodeStatus decodeStatus() const = 0;
-
-    virtual UINT byteRate() const = 0;
+    virtual E_DecodeStatus decodeStatus() const = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -89,9 +83,7 @@ protected:
     
 	virtual int64_t seek(int64_t offset, int origin) override;
 
-    virtual int read(byte_p buf, size_t size) override;
-
-    UINT byteRate() const override;
+    virtual size_t read(byte_p buf, size_t size) override;
 };
 
 using CB_PlayStop = cfn_void_t<bool>;
