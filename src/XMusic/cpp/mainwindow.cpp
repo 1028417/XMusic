@@ -107,18 +107,11 @@ MainWindow::MainWindow(CXMusicApp& app)
     ui.btnFullScreen->setVisible(false);
 #endif
 
-    ui.labelLogo->setAttribute(Qt::WA_TranslucentBackground);
-    ui.labelLogoTip->setAttribute(Qt::WA_TranslucentBackground);
-    ui.labelLogoCompany->setAttribute(Qt::WA_TranslucentBackground);
-
-    ui.frameDemand->setAttribute(Qt::WA_TranslucentBackground);
-    ui.frameDemandLanguage->setAttribute(Qt::WA_TranslucentBackground);
-
     ui.centralWidget->setVisible(false);
 
-    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 
-    qRegisterMetaType<QVariant>("QVariant"); //写在构造函数里
+    qRegisterMetaType<QVariant>("QVariant");
 }
 
 void MainWindow::showLogo()
@@ -215,11 +208,16 @@ void MainWindow::showLogo()
 
 void MainWindow::_init()
 {
-    SList<CButton*> lstButtons {ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
+    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
+                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
+    {
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+    }
+
+    for (auto button : SList<CButton*>(ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
                 , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
-                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom};
-    for (auto button : lstButtons)
+                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom))
     {
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
@@ -291,11 +289,6 @@ void MainWindow::show()
     ui.labelLogoCompany->setVisible(false);
     ui.btnFullScreen->setVisible(false);
 
-    (void)startTimer(1000);
-
-#if __android    
-    ui.centralWidget->setAttribute(Qt::WA_TranslucentBackground);
-#endif
     ui.centralWidget->setVisible(true);
 
     update();
@@ -303,6 +296,8 @@ void MainWindow::show()
     _relayout();
 
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
+
+    (void)startTimer(1000);
 }
 
 void MainWindow::_onPaint(CPainter& painter)
