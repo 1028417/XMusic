@@ -340,7 +340,7 @@ void CPainter::drawRectEx(const QRect& rc, UINT xround, UINT yround)
     }
 }
 
-void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
+void CPainter::drawRectEx(const QRect& rc, UINT uWidth, const QColor& cr,
                Qt::PenStyle style, UINT xround, UINT yround)
 {
     //auto prevPen = this->pen();

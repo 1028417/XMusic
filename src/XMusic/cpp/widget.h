@@ -162,8 +162,8 @@ public:
 
     void drawRectEx(const QRect& rc, UINT xround=0, UINT yround=0);
 
-    void drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
-                   Qt::PenStyle style=Qt::PenStyle::SolidLine, UINT xround=0, UINT yround=0);
+    void drawRectEx(const QRect& rc, UINT uWidth, const QColor& cr,
+                   Qt::PenStyle style=Qt::SolidLine, UINT xround=0, UINT yround=0);
 
     void fillRectEx(const QRect& rc, const QBrush& br, UINT xround=0, UINT yround=0);
 

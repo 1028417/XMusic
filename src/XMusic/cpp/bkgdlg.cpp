@@ -115,7 +115,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
-            painter.drawFrame(rc, 2, QColor(255,255,255, 60)
+            painter.drawRectEx(rc, 2, QColor(255,255,255, 60)
                               , Qt::PenStyle::DotLine, __szRound);
         }
     }

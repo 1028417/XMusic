@@ -61,7 +61,6 @@ private:
         auto rc = this->rect();
 
         UINT xround = __size(3);
-
         painter.fillRectEx(rc, m_crBackground, xround);
 
         if (m_maxBuffer > 0 && m_bufferValue > 0)
@@ -81,5 +80,7 @@ private:
             crBegin.setAlpha(crBegin.alpha()*this->value()/this->maximum());
             painter.fillRectEx(rc, crBegin, m_crForeground, xround);
         }
+
+        painter.drawRectEx(this->rect(), 1, QColor(255,255,255,50), Qt::SolidLine, xround);
     }
 };
