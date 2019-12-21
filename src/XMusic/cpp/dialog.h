@@ -11,6 +11,8 @@
 
 #include "widget.h"
 
+#include <QBitmap>
+
 class CDialog : public QDialog
 {
 public:
