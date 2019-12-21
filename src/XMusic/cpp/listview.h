@@ -65,7 +65,7 @@ protected:
 
 public:
     CListView(QWidget *parent, const list<Qt::GestureType>& lstGestureType={})
-        : CWidget(parent, lstGestureType)
+        : CWidget(parent, __defRenderHints, lstGestureType)
         , m_crSelectedBkg(0,0,0,5)
     {
         setAttribute(Qt::WA_TranslucentBackground);

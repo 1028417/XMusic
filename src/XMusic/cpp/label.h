@@ -19,7 +19,7 @@ class CLabel : public CWidget<QLabel>
 {
     Q_OBJECT
 public:
-    CLabel(QWidget *parent) : CWidget(parent)
+    CLabel(QWidget *parent) : CWidget(parent, QPainter::TextAntialiasing)
       //, m_crShadow(128,128,128)
     {
         setAttribute(Qt::WA_TranslucentBackground);

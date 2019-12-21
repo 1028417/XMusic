@@ -10,8 +10,7 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
 {
     g_pe = pe;
 
-    CPainter painter(this);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    CPainter painter(this, m_eRenderHints);
     _onPaint(painter, pe->rect());
 }
 
@@ -236,7 +235,7 @@ void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
     {
         if (pm.width() > (int)size)
         {
-            auto&& temp = pm.scaledToWidth(size);
+            auto&& temp = pm.scaledToWidth(size, Qt::SmoothTransformation);
             pm.swap(temp);
         }
     }
@@ -244,7 +243,7 @@ void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
     {
         if (pm.width() > (int)size)
         {
-            auto&& temp = pm.scaledToHeight(size);
+            auto&& temp = pm.scaledToHeight(size, Qt::SmoothTransformation);
             pm.swap(temp);
         }
     }
@@ -282,16 +281,18 @@ void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
         transform.scale(scaleRate, scaleRate);
         brush.setTransform(transform);
 
-        auto prevBrush = this->brush();
-        this->setBrush(brush);
+        //auto prevBrush = this->brush();
+        //auto prevPen = this->pen();
+        this->save();
 
-        auto prevPen = this->pen();
+        this->setBrush(brush);
         this->setPen(Qt::transparent);
 
         this->drawRoundedRect(rcDst,xround,yround);
 
-        this->setPen(prevPen);
-        this->setBrush(prevBrush);
+        this->restore();
+        //this->setPen(prevPen);
+        //this->setBrush(prevBrush);
     }
     else
     {
@@ -342,7 +343,8 @@ void CPainter::drawRectEx(const QRect& rc, UINT xround, UINT yround)
 void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
                Qt::PenStyle style, UINT xround, UINT yround)
 {
-    auto prevPen = this->pen();
+    //auto prevPen = this->pen();
+    this->save();
 
     QPen pen;
     pen.setWidth(uWidth);
@@ -352,7 +354,8 @@ void CPainter::drawFrame(const QRect& rc, UINT uWidth, const QColor& cr,
 
     this->drawRectEx(rc, xround, yround);
 
-    this->setPen(prevPen);
+    this->restore();
+    //this->setPen(prevPen);
 }
 
 void CPainter::fillRectEx(const QRect& rc, const QBrush& br, UINT xround, UINT yround)
@@ -364,16 +367,18 @@ void CPainter::fillRectEx(const QRect& rc, const QBrush& br, UINT xround, UINT y
             yround = xround;
         }
 
-        auto prevPen = this->pen();
-        this->setPen(Qt::transparent);
+        //auto prevPen = this->pen();
+        //auto prevBrush = this->brush();
+        this->save();
 
-        auto prevBrush = this->brush();
+        this->setPen(Qt::transparent);
         this->setBrush(br);
 
         this->drawRoundedRect(rc, xround, yround);
 
-        this->setBrush(prevBrush);
-        this->setPen(prevPen);
+        this->restore();
+        //this->setBrush(prevBrush);
+        //this->setPen(prevPen);
     }
     else
     {

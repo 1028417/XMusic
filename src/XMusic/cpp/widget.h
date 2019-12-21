@@ -90,12 +90,15 @@ public:
     }
 };
 
+#define __defRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform)
+
 class CPainter : public QPainter
 {
 public:
-    CPainter(QPaintDevice* device)
+    CPainter(QPaintDevice* device, RenderHints eRenderHints = __defRenderHints)
         : QPainter(device)
     {
+        this->setRenderHints(eRenderHints);
     }
 
 public:
@@ -277,8 +280,10 @@ template <class TWidget = QWidget>
 class CWidget : public TWidget
 {
 public:
-    CWidget(QWidget *parent, const list<Qt::GestureType>& lstGestureType={}) :
+    CWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints
+            , const list<Qt::GestureType>& lstGestureType={}) :
         TWidget(parent),
+        m_eRenderHints(eRenderHints),
         m_setGestureType(lstGestureType)
     {
         for (auto gestureType : m_setGestureType)
@@ -290,6 +295,8 @@ public:
     }
 
 private:
+    QPainter::RenderHints m_eRenderHints;
+
     SSet<Qt::GestureType> m_setGestureType;
 
     CTouchEvent m_teBegin;
@@ -355,7 +362,7 @@ public:
         this->setGraphicsEffect(oe);
     }
 
-    void setDropShadowEffect (UINT dx, UINT dy)
+    void setDropShadowEffect(const QColor& cr, UINT dx, UINT dy, float fBlur=0)
     {
         QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
         if (NULL == dse)
@@ -363,7 +370,9 @@ public:
             dse = new QGraphicsDropShadowEffect(this);
         }
 
+        dse->setColor(cr);
         dse->setOffset(dx, dy);
+        dse->setBlurRadius(fBlur);
 
         this->setGraphicsEffect(dse);
     }

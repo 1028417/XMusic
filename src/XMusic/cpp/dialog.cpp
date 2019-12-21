@@ -7,6 +7,8 @@ extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
 
+#define __xround 15
+
 void CDialog::resetPos()
 {
     list<CDialog*> lstDlgs;
@@ -51,8 +53,9 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
         bmp.fill();
 
         CPainter painter(&bmp);
+        painter.setPen(Qt::transparent);
         painter.setBrush(Qt::black);
-        painter.drawRectEx(bmp.rect(),15);
+        painter.drawRectEx(bmp.rect(), __xround);
 
         this->setMask(bmp);
     }
@@ -91,9 +94,15 @@ bool CDialog::event(QEvent *ev)
 
 		break;
     case QEvent::Paint:
+    if (m_bFullScreen)
     {
         QPainter painter(this);
-        painter.fillRect(0, 0, width(), height(), bkgColor());
+        painter.fillRect(rect(), bkgColor());
+    }
+    else
+    {
+        CPainter painter(this);
+        painter.fillRectEx(rect(), bkgColor(), __xround);
     }
 
     break;
