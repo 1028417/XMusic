@@ -1,13 +1,10 @@
 
 #include "mainwindow.h"
-
 #include "ui_mainwindow.h"
 
 #include <QMovie>
 
 #include "widget.cpp"
-
-#include "bkgdlg.h"
 
 #include "app.h"
 

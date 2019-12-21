@@ -1,9 +1,6 @@
 
 #include "dialog.h"
 
-#include <QPainter>
-#include <QBitmap>
-
 extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
