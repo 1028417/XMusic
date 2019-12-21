@@ -16,10 +16,10 @@ private:
 
 #if !__winvc
 private:
-    list<JValue> m_lstSnapshot;
-
     unordered_map<string, string> m_mapXurl;
     unordered_map<string, string> m_mapShareUrl;
+
+    list<JValue> m_lstSnapshot;
 
 public:
     void addShareUrl(const unordered_map<string, string>& mapUrl)
