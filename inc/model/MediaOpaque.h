@@ -133,8 +133,10 @@ private:
 
 		return m_strFile;
 	}
-	
+
 #if !__winvc
+    int64_t size() const override;
+
     bool seekable() const override;
 
 	int64_t seek(int64_t offset, int origin) override;

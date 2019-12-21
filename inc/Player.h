@@ -33,7 +33,7 @@ public:
 
     virtual size_t read(byte_p buf, size_t size) = 0;
 
-    virtual E_DecodeStatus decodeStatus() const = 0;
+    virtual int64_t size() const {return -1;}
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -48,8 +48,6 @@ private:
 
 	FILE *m_pf = NULL;
 
-    //uint64_t m_uPos = 0;
-
 private:
     friend class CPlayer;
 	void* decoder()
@@ -58,13 +56,13 @@ private:
 	}
 
 public:
-        virtual void close();
+    virtual void close();
 
-        long long open(const wstring& strFile);
+    long long open(const wstring& strFile);
 
 	UINT checkDuration();
 
-	E_DecodeStatus decodeStatus() const override;
+    E_DecodeStatus decodeStatus() const;
 
 private:
 	virtual bool isOnline() const override
@@ -77,17 +75,17 @@ private:
 		return L"";
 	}
 
-        virtual bool seekable() const override
-	{
-		return NULL!=m_pf;
-        }
-
 protected:
+    virtual bool seekable() const override
+    {
+        return NULL!=m_pf;
+    }
+
 	virtual int64_t seek(int64_t offset, int origin) override;
 
-        virtual size_t read(byte_p buf, size_t size) override;
+    virtual size_t read(byte_p buf, size_t size) override;
 
-        UINT byteRate() const;
+    UINT byteRate() const;
 };
 
 using CB_PlayStop = cfn_void_t<bool>;
