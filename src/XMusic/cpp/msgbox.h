@@ -5,7 +5,7 @@
 class CMsgBox : private CDialog
 {
     Q_OBJECT
-private:
+ public:
     CMsgBox();
 
 public:
