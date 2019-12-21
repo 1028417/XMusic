@@ -33,7 +33,7 @@ public:
 
     virtual size_t read(byte_p buf, size_t size) = 0;
 
-    virtual int64_t size() const {return -1;}
+    virtual int64_t size() const = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -46,7 +46,9 @@ public:
 private:
     void *m_pDecoder = NULL;
 
-	FILE *m_pf = NULL;
+    FILE *m_pf = NULL;
+
+    long long m_nFileSize = 0;
 
 private:
     friend class CPlayer;
@@ -76,6 +78,11 @@ private:
 	}
 
 protected:
+    virtual int64_t size() const override
+    {
+        return m_nFileSize;
+    }
+
     virtual bool seekable() const override
     {
         return NULL!=m_pf;
