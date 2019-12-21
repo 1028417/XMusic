@@ -8,7 +8,6 @@ extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
 
-#if __windows
 void CDialog::resetPos()
 {
     list<CDialog*> lstDlgs;
@@ -24,7 +23,6 @@ void CDialog::resetPos()
         pDlg->_setPos();
     }
 }
-#endif
 
 void CDialog::_setPos()
 {

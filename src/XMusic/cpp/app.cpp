@@ -53,12 +53,12 @@ static const wstring& sdcardPath()
 }
 #endif*/
 
-CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
+CAppInit::CAppInit(QApplication& app)
 {
 #if __android
     fsutil::setWorkDir(__androidDataDir);
 #else
-    fsutil::setWorkDir(applicationDirPath().toStdWString());
+    fsutil::setWorkDir(app.applicationDirPath().toStdWString());
 #endif
 
     m_logger.open(L"XMusic.log", true);
@@ -150,7 +150,7 @@ CApp::CApp(int argc, char **argv) : QApplication(argc, argv)
 
         if (__defFontWeight == eWeight)
         {
-            this->setFont(font);
+            app.setFont(font);
         }
     });
 }
@@ -194,8 +194,7 @@ void CXMusicApp::slot_run(bool bUpgradeResult)
 
     if (!bUpgradeResult)
     {
-        CMsgBox msgbox;
-        msgbox.show(m_mainWnd, "更新媒体库失败", [&](){
+        m_msgbox.show(m_mainWnd, "更新媒体库失败", [&](){
             this->quit();
         });
         return;

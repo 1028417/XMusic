@@ -44,9 +44,9 @@ public:
         widget->setPalette(pe);
     }
 
-#if __windows
     static void resetPos();
 
+#if __windows
     HWND hwnd() const
     {
         return (HWND)winId();

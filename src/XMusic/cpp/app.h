@@ -14,18 +14,19 @@
 
 extern ITxtWriter& g_logger;
 
-class CApp : public QApplication
+class CAppInit
 {
-public:
-    CApp(int argc, char **argv);
+protected:
+    CAppInit(QApplication& app);
 };
 
-class CXMusicApp : public CApp,  public IPlayerView
+class CXMusicApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
 public:
     CXMusicApp(int argc, char **argv) :
-        CApp(argc, argv),
+        QApplication(argc, argv),
+        CAppInit((QApplication&)*this),
         m_ctrl(*this, m_model),
         m_model(m_mainWnd, m_ctrl.getOption()),
         m_mainWnd(*this)
@@ -38,6 +39,8 @@ private:
     CModel m_model;
 
     MainWindow m_mainWnd;
+
+    CMsgBox m_msgbox;
 
     bool m_bRunSignal = false;
 
