@@ -46,7 +46,6 @@ public:
     }
 
     void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
-
 #endif
 
     long long openFile(const wstring& strFile, bool bXmsc)
@@ -134,10 +133,14 @@ private:
 
 		return m_strFile;
 	}
+	
+#if !__winvc
+    bool seekable() const override;
+
+	int64_t seek(int64_t offset, int origin) override;
+
+	size_t _readStream(byte_p buf, size_t bufSize);
+#endif
 
     size_t read(byte_p buf, size_t bufSize) override;
-
-#if !__winvc
-    size_t _readStream(byte_p buf, size_t bufSize);
-#endif
 };

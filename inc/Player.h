@@ -58,14 +58,15 @@ private:
 	}
 
 public:
-    virtual void close();
-	long long open(const wstring& strFile);
+        virtual void close();
+
+        long long open(const wstring& strFile);
 
 	UINT checkDuration();
 
 	E_DecodeStatus decodeStatus() const override;
 
-protected:
+private:
 	virtual bool isOnline() const override
 	{
 		return false;
@@ -76,14 +77,17 @@ protected:
 		return L"";
 	}
 
-    virtual bool seekable() const override
+        virtual bool seekable() const override
 	{
 		return NULL!=m_pf;
-	}
-    
+        }
+
+protected:
 	virtual int64_t seek(int64_t offset, int origin) override;
 
-    virtual size_t read(byte_p buf, size_t size) override;
+        virtual size_t read(byte_p buf, size_t size) override;
+
+        UINT byteRate() const;
 };
 
 using CB_PlayStop = cfn_void_t<bool>;
