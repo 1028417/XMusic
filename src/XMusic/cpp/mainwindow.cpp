@@ -1089,29 +1089,17 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
-        if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
+        auto barProgress = ui.barProgress;
+        if (barProgress->maximum() > 0 && m_app.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Play)
         {
-            auto barProgress = ui.barProgress;
             UINT uSeekPos = pos.x() * barProgress->maximum() / barProgress->width();
             if (barProgress->maxBuffer() > 0)
             {
-                /*if (uSeekPos > barProgress->value())
-                {
-                    UINT uCutPos = pos.x() * barProgress->maxBuffer() / barProgress->width();
-                    if (uCutPos < barProgress->bufferValue())
-                    {
-                        m_app.getPlayMgr().mediaOpaque().cutData((uint64_t)uCutPos * 1000);
+                //UINT uPlayablePos = barProgress->maximum()*barProgress->bufferValue()/barProgress->maxBuffer()-10;
+                //uSeekPos = MIN(uSeekPos, uPlayablePos);
+            }
 
-                        m_app.getPlayMgr().player().Seek(uSeekPos);
-                        barProgress->setValue(uSeekPos);
-                    }
-                }*/
-            }
-            else
-            {
-                m_app.getPlayMgr().player().Seek(uSeekPos);
-                barProgress->setValue(uSeekPos);
-            }
+            m_app.getPlayMgr().player().Seek(uSeekPos);
         }
     }
     else
