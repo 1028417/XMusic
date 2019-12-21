@@ -9,7 +9,7 @@ class CMsgBox : private CDialog
     CMsgBox();
 
 public:
-    static void show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose);
+    void show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose);
 
 private:
     const QColor& bkgColor() const override
