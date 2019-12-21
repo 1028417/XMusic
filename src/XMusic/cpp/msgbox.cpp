@@ -21,8 +21,7 @@ CMsgBox::CMsgBox()
 
 void CMsgBox::show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose)
 {
-    static CMsgBox inst;
     ui.labelTip->setText(qsMsg);
 
-    ((CDialog&)inst).show(parent, false, cbClose);
+    CDialog::show(parent, false, cbClose);
 }

@@ -194,7 +194,8 @@ void CXMusicApp::slot_run(bool bUpgradeResult)
 
     if (!bUpgradeResult)
     {
-        CMsgBox::show(m_mainWnd, "更新媒体库失败", [&](){
+        CMsgBox msgbox;
+        msgbox.show(m_mainWnd, "更新媒体库失败", [&](){
             this->quit();
         });
         return;
