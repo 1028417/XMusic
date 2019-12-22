@@ -77,8 +77,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
                 , Qt::ElideRight, rc.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
         if (m_uShadowWidth > 0 && m_uShadowAlpha )
         {
+            QColor crShadow(__ShadowColor);
             UINT uShadowAlpha = m_uShadowAlpha*fAlpha*fAlpha;//crText.alpha()*fAlpha * m_uShadowAlpha/255;
-            QColor crShadow(128, 128, 128, uShadowAlpha);
+            crShadow.setAlpha(uShadowAlpha);
 
             for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
             {

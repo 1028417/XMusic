@@ -12,6 +12,8 @@ public:
     CButton(QWidget *parent) : CWidget(parent)
     {
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
+
+        this->setDropShadowEffect(50, 2, 2);
     }
 
 signals:

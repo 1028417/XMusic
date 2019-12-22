@@ -15,6 +15,16 @@
 
 #include <QPixmap>
 
+#if __ios
+#define __size(x) decltype(x)((x)/g_fPixelRatio)
+#define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
+#else
+#define __size(x) (x)
+#define __rect(x) (x)
+#endif
+
+#define __ShadowColor QRGB(128,128,128)
+
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
@@ -29,14 +39,6 @@ extern QColor g_crTheme;
 extern QColor g_crText;
 
 extern float g_fPixelRatio;
-
-#if __ios
-#define __size(x) decltype(x)((x)/g_fPixelRatio)
-#define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
-#else
-#define __size(x) (x)
-#define __rect(x) (x)
-#endif
 
 class CFont : public QFont
 {
@@ -375,6 +377,13 @@ public:
         dse->setBlurRadius(fBlur);
 
         this->setGraphicsEffect(dse);
+    }
+
+    void setDropShadowEffect(UINT uAlpha, UINT dx, UINT dy, float fBlur=0)
+    {
+        QColor cr(__ShadowColor);
+        cr.setAlpha(uAlpha);
+        setDropShadowEffect(cr, dx, dy, fBlur);
     }
 
     void setColorizeEffect(const QColor& cr, float fStength)
