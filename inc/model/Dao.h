@@ -260,7 +260,7 @@ public:
 
 	int GetMaxPlayItemPos(UINT uPlaylistID);
 
-	using CB_addPlayItem = function<void(UINT uPlayItemID, wstring strPath, dbtime_t)>;
+        using CB_addPlayItem = function<void(const tagAddPlayItem& playItem, UINT uPlayItemID, dbtime_t)>;
     bool addPlayItem(const list<tagAddPlayItem>& lstPlayItem, UINT uPlaylistID, const CB_addPlayItem& cb);
 
 	bool deletePlayItem(const list<UINT>& lstIDs);
