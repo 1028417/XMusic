@@ -192,19 +192,20 @@ void CMedialibView::play()
     dselectRow();
 
     TD_IMediaList paMedias;
-    CListViewEx::currentSubFiles()([&](const XFile& subFile) {
-        paMedias.add((IMedia&)(CMediaRes&)subFile);
-    });
-    if (!paMedias)
+    CMediaSet *pMediaSet = CListViewEx::currentMediaSet();
+    if (pMediaSet)
     {
-        CMediaSet *pMediaSet = CListViewEx::currentMediaSet();
-        if (pMediaSet)
-        {
-            TD_MediaList lstMedias;
-            pMediaSet->GetAllMedias(lstMedias);
-            paMedias.assign(lstMedias);
-        }
+        TD_MediaList lstMedias;
+        pMediaSet->GetAllMedias(lstMedias);
+        paMedias.assign(lstMedias);
     }
+    else
+    {
+        CListViewEx::currentSubFiles()([&](const XFile& subFile) {
+            paMedias.add((IMedia&)(CMediaRes&)subFile);
+        });
+    }
+
     if (paMedias)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(paMedias));
