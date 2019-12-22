@@ -202,10 +202,7 @@ void CMedialibView::play()
         {
             TD_MediaList lstMedias;
             pMediaSet->GetAllMedias(lstMedias);
-
-            paMedias = lstMedias.map([](const IMedia& media) {
-                return &(IMedia&)media;
-            });
+            paMedias.assign(lstMedias);
         }
     }
     if (paMedias)
