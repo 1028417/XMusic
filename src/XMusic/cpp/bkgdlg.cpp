@@ -104,19 +104,28 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
         else
         {
-            QPixmap pmAddBkg;
+            /*QPixmap pmAddBkg;
             if (pmAddBkg.load(":/img/addBkg.png"))
             {
 #define __offset __size(60)
                 QRect rcAddBkg(rc.center().x()-__offset, rc.center().y()-__offset
                                , __offset*2, __offset*2);
                 painter.drawPixmap(rcAddBkg, pmAddBkg);
-            }
+            }*/
 
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
-            painter.drawRectEx(rc, 2, QColor(255,255,255, 60)
-                              , Qt::PenStyle::DotLine, __szRound);
+            QColor cr = g_crText;
+            cr.setAlpha(60);
+            painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
+
+            int len = rc.width()/8;
+#define __szAdd 4
+            cauto pt = rc.center();
+            rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
+            painter.fillRectEx(rc, g_crText, __szAdd/2);
+            rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
+            painter.fillRectEx(rc, g_crText, __szAdd/2);
         }
     }
 }

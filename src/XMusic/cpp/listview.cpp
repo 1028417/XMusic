@@ -285,7 +285,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
         else
         {
-            _autoScroll(m_uAutoScrollSeq, 10*dy, 45, 3000);
+            _autoScroll(m_uAutoScrollSeq, m_uRowHeight/10*dy, 45, 3000);
         }
     }
 }

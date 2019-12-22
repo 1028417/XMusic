@@ -14,6 +14,8 @@ public:
         , m_crForeground(150,205,255)
     {
         setAttribute(Qt::WA_TranslucentBackground);
+
+        this->setDropShadowEffect(32, 2, 2);
     }
 
 private:

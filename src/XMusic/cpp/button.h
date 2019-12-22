@@ -13,7 +13,7 @@ public:
     {
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
-        this->setDropShadowEffect(50, 2, 2);
+        this->setDropShadowEffect(50, 1, 1);
     }
 
 signals:

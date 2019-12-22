@@ -28,7 +28,6 @@
         <file>upgrade.conf</file>
         <file>img/btnAddplay.png</file>
         <file>img/btnColor.png</file>
-        <file>img/addBkg.png</file>
         <file>img/btnAdd.png</file>
         <file>img/btnSub.png</file>
     </qresource>
