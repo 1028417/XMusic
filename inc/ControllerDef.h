@@ -41,12 +41,12 @@ struct tagPlayCtrl
     tagPlayCtrl(IMedia& media, bool bInsertPlay)
     {
         ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
-        arrPlayMedias.assign(media.GetPath());
+        paMedias.assign(media);
     }
-    tagPlayCtrl(const SArray<wstring>& t_arrPlayMedias)
+    tagPlayCtrl(const TD_MediaList& t_paMedias)
     {
         ePlayCtrl = E_PlayCtrl::PC_Assign;
-        arrPlayMedias.assign(t_arrPlayMedias);
+        paMedias.assign(t_paMedias);
     }
 
     tagPlayCtrl(E_DemandMode eMode, E_LanguageType eLanguage = E_LanguageType::LT_None)
@@ -60,7 +60,7 @@ struct tagPlayCtrl
     {
         ePlayCtrl = E_PlayCtrl::PC_Null;
 
-        arrPlayMedias.clear();
+        paMedias.clear();
     }
 
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
@@ -70,7 +70,7 @@ struct tagPlayCtrl
     E_DemandMode eDemandMode = E_DemandMode::DM_Null;
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
 
-    SArray<wstring> arrPlayMedias;
+    TD_IMediaList paMedias;
 };
 
 class IXController

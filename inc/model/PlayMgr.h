@@ -49,6 +49,9 @@ private:
 private:
     void _refresh();
 
+    template <class T>
+    bool _insert(const T& t, bool bPlay, int nPos = -1);
+
     bool _clear();
 
     bool _playNext(bool bNext, bool bManual);
@@ -81,20 +84,20 @@ public:
     }
 
 	ArrList<CPlayItem>& getPlayingItems()
-        {
-            return m_Playinglist.playItems();
+    {
+        return m_Playinglist.playItems();
 	}
 
-        bool init();
+    bool init();
 
-        const CMediaOpaque& mediaOpaque() const
-        {
-            return m_MediaOpaque;
-        }
+    const CMediaOpaque& mediaOpaque() const
+    {
+        return m_MediaOpaque;
+    }
 
-        CPlayer& player()
-        {
-            return m_Player;
+    CPlayer& player()
+    {
+        return m_Player;
 	}
 
 	E_PlayStatus GetPlayStatus();
@@ -103,8 +106,8 @@ public:
 	
 	bool clear();
 
-	bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
-	bool insert(const TD_IMediaList& lstMedias, bool bPlay, int nPos = -1);
+        bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
+        bool insert(const TD_IMediaList& lstMedias, bool bPlay, int nPos = -1);
 
 	bool assign(const SArray<wstring>& arrOppPaths);
 	bool assign(const TD_IMediaList& lstMedias);
