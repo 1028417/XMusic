@@ -113,6 +113,12 @@ MainWindow::MainWindow(CXMusicApp& app)
 
 void MainWindow::showLogo()
 {
+    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
+                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
+    {
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+    }
+
     float fFontSizeOffset = 1.0f;
 #if __android || __ios
     fFontSizeOffset = 0.9;
@@ -205,12 +211,6 @@ void MainWindow::showLogo()
 
 void MainWindow::_init()
 {
-    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
-                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
-    {
-        widget->setAttribute(Qt::WA_TranslucentBackground);
-    }
-
     for (auto button : SList<CButton*>(ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
                 , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay

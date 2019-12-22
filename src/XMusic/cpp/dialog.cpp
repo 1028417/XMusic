@@ -50,6 +50,7 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
     if (!m_bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(Qt::WA_NoSystemBackground); //for android
 
         /*QBitmap bmp(this->size());
         bmp.fill();
