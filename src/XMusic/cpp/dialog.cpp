@@ -49,15 +49,17 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
     m_bFullScreen = bFullScreen;
     if (!m_bFullScreen)
     {
-        QBitmap bmp(this->size());
+        setAttribute(Qt::WA_TranslucentBackground);
+
+        /*QBitmap bmp(this->size());
         bmp.fill();
 
         CPainter painter(&bmp);
-        painter.setPen(Qt::transparent);
+        //painter.setPen(Qt::transparent);
         painter.setBrush(Qt::black);
         painter.drawRectEx(bmp.rect(), __xround);
 
-        this->setMask(bmp);
+        this->setMask(bmp);*/
     }
 
     _setPos();
@@ -94,18 +96,18 @@ bool CDialog::event(QEvent *ev)
 
 		break;
     case QEvent::Paint:
-    if (m_bFullScreen)
-    {
-        QPainter painter(this);
-        painter.fillRect(rect(), bkgColor());
-    }
-    else
-    {
-        CPainter painter(this);
-        painter.fillRectEx(rect(), bkgColor(), __xround);
-    }
+        if (m_bFullScreen)
+        {
+            QPainter painter(this);
+            painter.fillRect(rect(), bkgColor());
+        }
+        else
+        {
+            CPainter painter(this);
+            painter.fillRectEx(rect(), bkgColor(), __xround);
+        }
 
-    break;
+        break;
 #if __android || __ios
 	case QEvent::KeyRelease:
 		if (!_handleReturn())
