@@ -115,15 +115,15 @@ bool CXController::start()
 
                 break;
             case E_PlayCtrl::PC_Assign:
-                (void)PlayMgr.assign(PlayCtrl.arrPlayMedias);
+                (void)PlayMgr.assign(PlayCtrl.paMedias);
 
                 break;
             case E_PlayCtrl::PC_AppendPlay:
-                (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, true);
+                (void)PlayMgr.insert(PlayCtrl.paMedias, true);
 
                 break;
             case E_PlayCtrl::PC_Append:
-                (void)PlayMgr.insert(PlayCtrl.arrPlayMedias, false);
+                (void)PlayMgr.insert(PlayCtrl.paMedias, false);
 
                 break;
             case E_PlayCtrl::PC_Quit:

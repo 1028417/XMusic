@@ -49,10 +49,9 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
     m_bFullScreen = bFullScreen;
     if (!m_bFullScreen)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
-        setAttribute(Qt::WA_NoSystemBackground); //for android
+        setAttribute(Qt::WA_TranslucentBackground); //setAttribute(Qt::WA_NoSystemBackground);
 
-        /*QBitmap bmp(this->size());
+        QBitmap bmp(this->size());
         bmp.fill();
 
         CPainter painter(&bmp);
@@ -60,7 +59,7 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
         painter.setBrush(Qt::black);
         painter.drawRectEx(bmp.rect(), __xround);
 
-        this->setMask(bmp);*/
+        this->setMask(bmp);
     }
 
     _setPos();

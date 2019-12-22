@@ -191,10 +191,11 @@ void CMedialibView::play()
 {
     dselectRow();
 
-    SArray<wstring> arrOppPaths = CListViewEx::currentSubFiles().map([&](const XFile& subFile) {
-        return ((const CMediaRes&)subFile).GetPath();
+    TD_IMediaList paMedias;
+    CListViewEx::currentSubFiles()([&](const XFile& subFile) {
+        paMedias.add((IMedia&)(CMediaRes&)subFile);
     });
-    if (!arrOppPaths)
+    if (!paMedias)
     {
         CMediaSet *pMediaSet = CListViewEx::currentMediaSet();
         if (pMediaSet)
@@ -202,14 +203,14 @@ void CMedialibView::play()
             TD_MediaList lstMedias;
             pMediaSet->GetAllMedias(lstMedias);
 
-            arrOppPaths = lstMedias.map([](const IMedia& Media) {
-                return Media.GetPath();
+            paMedias = lstMedias.map([](const IMedia& media) {
+                return &(IMedia&)media;
             });
         }
     }
-    if (arrOppPaths)
+    if (paMedias)
     {
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(arrOppPaths));
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(paMedias));
     }
 }
 

@@ -227,19 +227,26 @@ void CBackupDlg::OnBnClickedDel()
 
 	m_wndList.DeleteItem(iItem);
 
-	if (iItem > 0 && m_wndList.GetItemCount() > iItem)
+	if (iItem > 0)
 	{
 		wstring strNextTag = m_wndList.GetItemText(iItem - 1, 0);
-		strutil::ltrim(strNextTag);
+		if (iItem < m_wndList.GetItemCount())
+		{
+			strutil::ltrim(strNextTag);
 
-		wstring strPrevTag = m_wndList.GetItemText(iItem, 0);
-		strutil::ltrim(strPrevTag);
-		
-		m_BackupMgr.compareBackup(strPrevTag, strNextTag);
-		
-		m_mapCompareBackupResult.del(strNextTag);
+			wstring strPrevTag = m_wndList.GetItemText(iItem, 0);
+			strutil::ltrim(strPrevTag);
 
-		Refresh();
+			m_BackupMgr.compareBackup(strPrevTag, strNextTag);
+
+			m_mapCompareBackupResult.del(strNextTag);
+
+			Refresh();
+		}
+		else
+		{
+			m_wndList.SetItemTexts(iItem - 1, { strNextTag, L"-", L"-" , L"-", L"-" });
+		}
 	}
 }
 

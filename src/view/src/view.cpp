@@ -349,8 +349,8 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 		else
 		{
 			map<CMediaSet*, TD_IMediaList> mapMediaList;
-			lstMedias([&](auto& Media) {
-				mapMediaList[Media.m_pParent].add(Media);
+			lstMedias([&](auto& media) {
+				mapMediaList[media.m_pParent].add(media);
 			});
 
 			for (auto& pr : mapMediaList)
@@ -485,7 +485,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
-			ProgressDlg.SetStatusText((L"正在生成" + dir.absPath() + L"目录快照").c_str());
+			ProgressDlg.SetStatusText((L"正在生成目录快照: " + dir.absPath()).c_str());
 
 			cauto paSubFile = dir.files();
 			if (paSubFile)
@@ -498,6 +498,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 					JValue jFile;
 					jFile["name"] = strutil::toUtf8(subFile.name());
 					jFile["size"] = ((CMediaRes&)subFile).fileSize();
+					jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
 					jFiles.append(jFile);
 
 					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
@@ -738,11 +739,11 @@ void __view::hittestMedia(CMedia& media)
 	}
 }
 
-bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
+bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 {
 	CWaitCursor WaitCursor;
 
-	int nRelatedMediaID = Media.GetRelatedMediaID(eMediaSetType);
+	int nRelatedMediaID = media.GetRelatedMediaID(eMediaSetType);
 	if (nRelatedMediaID > 0)
 	{
 		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
@@ -754,13 +755,13 @@ bool __view::hittestRelatedMediaSet(IMedia& Media, E_MediaSetType eMediaSetType)
 		}
 	}
 
-	UINT uRelatedMediaSetID = Media.GetRelatedMediaSetID(eMediaSetType);
+	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eMediaSetType);
 	if (uRelatedMediaSetID > 0)
 	{
 		CMediaSet *pMediaSet = getMediaLib().FindSubSet(eMediaSetType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
-		_hittestMediaSet(*pMediaSet, NULL, &Media);
+		_hittestMediaSet(*pMediaSet, NULL, &media);
 
 		return true;
 	}
