@@ -224,7 +224,7 @@ void CBkgDlg::show()
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11.1;
+    int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
@@ -235,7 +235,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    g_xsize = rcReturn.width()-3;
+    g_xsize = rcReturn.width()-__size(5);
 
     m_bHScreen = cx>cy;
     if (m_bHScreen)

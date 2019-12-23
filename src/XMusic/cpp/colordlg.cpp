@@ -61,7 +61,7 @@ void CColorDlg::show()
 
 void CColorDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11.1;
+    int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
@@ -76,7 +76,7 @@ void CColorDlg::_relayout(int cx, int cy)
 
     cauto yClient = rcReturn.bottom() + xMargin;
 
-    int xFrame = xMargin * 1.5;
+    int xFrame = xMargin * 2;
     if (cy > cx)
     {
         ui.groupBkgColor->setGeometry(xFrame, yClient, cx-xFrame*2, (cy-yClient)/2-xFrame);

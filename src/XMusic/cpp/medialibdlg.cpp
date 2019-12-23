@@ -68,16 +68,15 @@ void CMedialibDlg::_show()
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11.1;
-    int yReturn = sz/4;
+    int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
-    if (cy < cx)
-    {
-#define __szOffset __size(6)
-        yReturn -= __szOffset;
-        xMargin += __szOffset;
-    }
-
+    int yReturn = sz/4;
+//    if (cy < cx)
+//    {
+//#define __szOffset __size(6)
+//        yReturn -= __szOffset;
+//        xMargin += __szOffset;
+//    }
     QRect rcReturn(xMargin, yReturn, sz-yReturn*2, sz-yReturn*2);
 
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
