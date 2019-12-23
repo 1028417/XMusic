@@ -14,7 +14,11 @@
 class CDialog : public QDialog
 {
 public:
-    CDialog() {}
+    CDialog(bool bFullScreen = true, QWidget *parent = NULL)
+        : QDialog(parent)
+        , m_bFullScreen(bFullScreen)
+    {
+    }
 
 private:
     bool m_bFullScreen = false;
@@ -54,4 +58,5 @@ public:
 #endif
 
     void show(QWidget& parent, bool bFullScreen, const fn_void& cbClose = NULL);
+    void show(const fn_void& cbClose = NULL);
 };

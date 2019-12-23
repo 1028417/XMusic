@@ -42,11 +42,8 @@ void CDialog::_setPos()
     }
 }
 
-void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
+void CDialog::show(const fn_void& cbClose)
 {
-    setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
-
-    m_bFullScreen = bFullScreen;
     if (!m_bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground); //setAttribute(Qt::WA_NoSystemBackground);
@@ -66,7 +63,7 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
 
     g_pFrontDlg = this;
     connect(this, &QDialog::finished, [&, cbClose]() {
-        g_pFrontDlg = dynamic_cast<CDialog*>(&parent);
+        g_pFrontDlg = dynamic_cast<CDialog*>(parent());
 
         _onClose();
 
@@ -84,6 +81,15 @@ void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
     this->setVisible(true);
 #endif
+}
+
+void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
+{
+    setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
+
+    m_bFullScreen = bFullScreen;
+
+    show(cbClose);
 }
 
 bool CDialog::event(QEvent *ev)

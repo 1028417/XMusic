@@ -6,7 +6,8 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox()
+CMsgBox::CMsgBox(QWidget *parent)
+    : CDialog(false, parent)
 {
     ui.setupUi(this);
 
@@ -24,4 +25,11 @@ void CMsgBox::show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(parent, false, cbClose);
+}
+
+void CMsgBox::show(const QString& qsMsg, const fn_void& cbClose)
+{
+    ui.labelTip->setText(qsMsg);
+
+    CDialog::show(cbClose);
 }

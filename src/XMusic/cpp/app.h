@@ -29,7 +29,8 @@ public:
         CAppInit((QApplication&)*this),
         m_ctrl(*this, m_model),
         m_model(m_mainWnd, m_ctrl.getOption()),
-        m_mainWnd(*this)
+        m_mainWnd(*this),
+        m_msgbox(&m_mainWnd)
     {
     }
 
