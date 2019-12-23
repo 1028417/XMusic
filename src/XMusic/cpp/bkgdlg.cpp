@@ -235,7 +235,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    g_xsize = xMargin*0.9;
+    g_xsize = rcReturn.width()-3;
 
     m_bHScreen = cx>cy;
     if (m_bHScreen)
