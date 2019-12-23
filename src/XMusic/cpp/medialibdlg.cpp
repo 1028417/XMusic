@@ -68,9 +68,9 @@ void CMedialibDlg::_show()
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    static const QRect rcReturnPrev = ui.btnReturn->geometry();
-    QRect rcReturn = __rect(rcReturnPrev);
-    if (cy >= __size(812*3)) // 针对全面屏刘海作偏移
+    static const QRect rcReturnPrev = __rect(ui.btnReturn->geometry());
+    QRect rcReturn = rcReturnPrev;
+    if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
         rcReturn.setTop(rcReturn.top() + __yOffset);
