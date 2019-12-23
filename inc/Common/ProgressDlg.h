@@ -31,6 +31,7 @@ private:
 	UINT m_uProgress = 0;
 
 	CCASLock m_csLock;
+	mutex m_mtx;
 	
 	bool m_bFinished = false;
 
@@ -51,7 +52,8 @@ public:
 		return showMsgBox(strText, m_strTitle, uType);
 	}
 
-	void SetStatusText(const CString& cstrStatusText, UINT uOffsetProgress=0);
+	void SetStatusText(const CString& cstrStatusText);
+	void SetStatusText(const CString& cstrStatusText, UINT uOffsetProgress);
 
 	void SetProgress(UINT uProgress);
 	void SetProgress(UINT uProgress, UINT uMaxProgress);
