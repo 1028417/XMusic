@@ -68,41 +68,33 @@ void CMedialibDlg::_show()
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    static const QRect rcReturnPrev = __rect(ui.btnReturn->geometry());
-    QRect rcReturn = rcReturnPrev;
+    int sz = MAX(cx, cy)/11.1;
+    int yReturn = sz/4;
+    int xMargin = sz/4;
+    if (cy < cx)
+    {
+#define __szOffset __size(6)
+        yReturn -= __szOffset;
+        xMargin += __szOffset;
+    }
+
+    QRect rcReturn(xMargin, yReturn, sz-yReturn*2, sz-yReturn*2);
+
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
         rcReturn.setTop(rcReturn.top() + __yOffset);
         rcReturn.setBottom(rcReturn.bottom() + __yOffset);
     }
-    else
-    {
-        int cyOffset = 0;
-#if __windows || __mac
-        cyOffset = __size(-8);
-#else
-        if (cy > cx)
-        {
-            cyOffset = __size(12);
-        }
-#endif
 
-        rcReturn.setTop(rcReturn.top() + cyOffset/4);
-        rcReturn.setBottom(rcReturn.bottom() + cyOffset/4 + cyOffset);
-        rcReturn.setRight(rcReturn.right() + cyOffset);
-    }
     ui.btnReturn->setGeometry(rcReturn);
 
-    int yMargin = rcReturn.top();
-
-    int y_MedialibView = rcReturn.bottom() + yMargin;
+    int y_MedialibView = rcReturn.bottom() + yReturn;
     m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 
-    static const int x_btnUpward = __size(ui.btnUpward->x());
-    ui.btnUpward->setGeometry(x_btnUpward, yMargin, rcReturn.width(), rcReturn.height());
+    ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, yReturn, rcReturn.width(), rcReturn.height());
 
-    ui.btnPlay->setGeometry(cx-rcReturn.right(), yMargin, rcReturn.width(), rcReturn.height());
+    ui.btnPlay->setGeometry(cx-rcReturn.right(), yReturn, rcReturn.width(), rcReturn.height());
 
     ui.labelTitle->move(ui.labelTitle->x(), rcReturn.center().y() - ui.labelTitle->height()/2);
     _resizeTitle();
@@ -110,22 +102,21 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-#define __xOffset __size(40)
-
+    int margin = ui.btnReturn->x();
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
-    int x_title = pButton->geometry().right() + __xOffset;
+    int x_title = pButton->geometry().right() + margin;
 
     int cx_title = 0;
     if (ui.btnPlay->isVisible())
     {
-        cx_title = ui.btnPlay->x() - __xOffset - x_title;
+        cx_title = ui.btnPlay->x() - margin - x_title;
     }
     else
     {
-        cx_title = width() - __xOffset - x_title;
+        cx_title = width() - margin - x_title;
     }
 
-    ui.labelTitle->setGeometry(x_title, ui.labelTitle->y(), cx_title, ui.labelTitle->height());
+    ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
 }
 
 void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)

@@ -61,8 +61,9 @@ void CColorDlg::show()
 
 void CColorDlg::_relayout(int cx, int cy)
 {
-    static const QRect rcReturnPrev = __rect(ui.btnReturn->geometry());
-    QRect rcReturn = rcReturnPrev;
+    int sz = MAX(cx, cy)/11.1;
+    int margin = sz/4;
+    QRect rcReturn(margin, margin, sz-margin*2, sz-margin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)

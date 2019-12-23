@@ -3,7 +3,7 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __xsize     __size(68)
+#define __xsize     __size(80)
 
 static Ui::BkgDlg ui;
 
@@ -115,8 +115,8 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             cr.setAlpha(nAlpha);
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
 
-            int len = MIN(rc.width(), rc.height())/3;
-#define __szAdd 4
+            int len = MIN(rc.width(), rc.height())/4;
+#define __szAdd __size(4)
             cauto pt = rc.center();
             rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
             painter.fillRectEx(rc, g_crText, __szAdd/2);
@@ -224,8 +224,9 @@ void CBkgDlg::show()
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    static const QRect rcReturnPrev = __rect(ui.btnReturn->geometry());
-    QRect rcReturn = rcReturnPrev;
+    int sz = MAX(cx, cy)/11.1;
+    int margin = sz/4;
+    QRect rcReturn(margin, margin, sz-margin*2, sz-margin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
