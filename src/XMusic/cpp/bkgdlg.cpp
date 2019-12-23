@@ -115,7 +115,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             cr.setAlpha(nAlpha);
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
 
-            int len = MAX(rc.width(), rc.height())/8;
+            int len = MIN(rc.width(), rc.height())/3;
 #define __szAdd 4
             cauto pt = rc.center();
             rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);

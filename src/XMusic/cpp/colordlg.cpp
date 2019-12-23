@@ -107,7 +107,7 @@ void CColorDlg::_relayout(int cx, int cy)
     for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
                                        , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
     {
-        pBar->setMargin((cy_bar-11)/2);
+        pBar->setMargin((cy_bar-__size(11))/2);
     }
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
