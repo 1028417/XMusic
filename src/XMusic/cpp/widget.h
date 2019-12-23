@@ -355,7 +355,7 @@ public:
 
     void setOpacityEffect(float fValue)
     {
-        QGraphicsOpacityEffect *oe = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+        auto oe = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
         if (NULL == oe)
         {
             oe = new QGraphicsOpacityEffect(this);
@@ -368,7 +368,7 @@ public:
 
     void unsetOpacityEffect()
     {
-        QGraphicsOpacityEffect *dse = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+        auto dse = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
         if (dse)
         {
             dse->setEnabled(false);
@@ -377,7 +377,7 @@ public:
 
     void setBlurEffect(float fStength)
     {
-        QGraphicsBlurEffect *be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        auto be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
         if (NULL == be)
         {
             be = new QGraphicsBlurEffect(this);
@@ -390,7 +390,7 @@ public:
 
     void unsetBlurEffect()
     {
-        QGraphicsBlurEffect *dse = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        auto dse = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
         if (dse)
         {
             dse->setEnabled(false);
@@ -399,7 +399,7 @@ public:
 
     void setColorizeEffect(const QColor& cr, float fStength)
     {
-        QGraphicsColorizeEffect *ce = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
+        auto ce = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
         if (NULL == ce)
         {
             ce = new QGraphicsColorizeEffect(this);
@@ -413,23 +413,39 @@ public:
 
     void unsetColorizeEffect()
     {
-        QGraphicsColorizeEffect *dse = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
+        auto dse = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
         if (dse)
         {
             dse->setEnabled(false);
         }
     }
 
-    void setDropShadowEffect(const QColor& cr, UINT dx, UINT dy, float fBlur=0)
+    /*class CDropShadowEffect : public QGraphicsDropShadowEffect
     {
-        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
+    public:
+        CDropShadowEffect(QObject *parent) : QGraphicsDropShadowEffect(parent)
+        {
+        }
+
+    private:
+        void draw(QPainter *painter) override
+        {
+            //painter->fillRect()
+            QGraphicsDropShadowEffect::draw(painter);
+        }
+    };*/
+
+    template <class T = QGraphicsDropShadowEffect>
+    void setDropShadowEffect(const QColor& cr, int dx, int dy, float fBlur=0)
+    {
+        auto dse = dynamic_cast<T*>(this->graphicsEffect());
         if (dse)
         {
             dse->setEnabled(true);
         }
         else
         {
-            dse = new QGraphicsDropShadowEffect(this);
+            dse = new T(this);
         }
 
         dse->setColor(cr);
@@ -441,7 +457,7 @@ public:
 
     void unsetDropShadowEffect()
     {
-        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
+        auto dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
         if (dse)
         {
             dse->setEnabled(false);
