@@ -213,7 +213,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	m_wndList.AsyncTask(100, [](CListObject& object) {
+	m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
 		((CPlayItem&)object).AsyncTask();
 		return true;
 	});

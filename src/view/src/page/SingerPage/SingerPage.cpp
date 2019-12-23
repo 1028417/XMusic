@@ -176,8 +176,12 @@ void CSingerPage::OnSize(UINT nType, int cx, int cy)
 	}
 }
 
-void CSingerPage::_addSinger(CMediaRes *pSrcPath, CSingerGroup *pGroup)
+void CSingerPage::_addSinger(CSingerGroup *pGroup)
 {
+	m_view.getModel().refreshMediaLib();
+	CMediaRes *pSrcPath = m_view.showChooseDirDlg(L"选择歌手目录", false);
+	__EnsureBreak(pSrcPath);
+
 	BOOL bInitAlbum = CMainApp::showConfirmMsg(L"是否生成专辑歌单?", *this);
 
 	CWaitCursor WaitCursor;
@@ -222,12 +226,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	break;
 	case ID_ADD_SINGER:
 	{
-		m_view.getModel().refreshMediaLib();
-		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择歌手目录", false);
-		__EnsureBreak(pDir);
-
 		CSingerGroup *pGroup = NULL;
-
 		if (pSingerObject)
 		{
 			if (E_MediaSetType::MST_Singer == pSingerObject->m_eType)
@@ -240,7 +239,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			}
 		}
 
-		_addSinger(pDir, pGroup);
+		_addSinger(pGroup);
 	}
 
 	break;

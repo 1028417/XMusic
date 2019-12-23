@@ -115,11 +115,10 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
-            QColor cr = g_crText;
-            cr.setAlpha(60);
+            cauto cr = CPainter::mixColor(g_crTheme, g_crText, 64);
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
 
-            int len = rc.width()/8;
+            int len = MAX(rc.width(), rc.height())/8;
 #define __szAdd 4
             cauto pt = rc.center();
             rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);

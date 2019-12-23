@@ -122,7 +122,7 @@ void CVerifyResultDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CVerifyResultDlg::OnBnClickedVerify()
 {
-	m_wndList.AsyncTask(50, [&](UINT uItem) {
+	m_wndList.AsyncTask(__AsyncTaskElapse, [&](UINT uItem) {
 		m_VerifyResult.paInvalidMedia.get(uItem, [&](CMedia& media) {
 			(void)media.checkDuration();
 			UpdateItem(uItem, media);

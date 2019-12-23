@@ -37,7 +37,7 @@ public:
 	void Active(CSinger& Singer);
 
 private:
-	void _addSinger(CMediaRes *pSrcPath, CSingerGroup *pGroup);
+	void _addSinger(CSingerGroup *pGroup);
 
 	CMediaSet* _trySelectObject();
 

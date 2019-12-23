@@ -6,6 +6,8 @@ class __view;
 
 #define __PlaySpiritSkinDir (fsutil::workDir() + L"/skin/")
 
+#define __AsyncTaskElapse 50
+
 #include "viewdef.h"
 
 #include "model/model.h"

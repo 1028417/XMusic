@@ -1009,7 +1009,7 @@ void CMediaResPanel::_asyncTask()
 {
 	if (m_wndList.isReportView())
 	{
-		m_wndList.AsyncTask(200, [](CListObject& object) {
+		m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
 			CMediaRes& mediaRes = (CMediaRes&)object;
 			if (!mediaRes.IsDir())
 			{

@@ -201,7 +201,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 	auto fnVerify = [&](CProgressDlg& ProgressDlg) {
 		PairList<wstring, TD_MediaList> plMedias(mapMedias);
 
-		UINT uThreadCount = plMedias.size() / 500;
+		UINT uThreadCount = plMedias.size() / 300;
 		uThreadCount = MIN(thread::hardware_concurrency(), uThreadCount);
 		
 		CMultiTask<pair<wstring, TD_MediaList>, pair<CMediaOpaque, TD_MediaList>> multiTask;
@@ -214,7 +214,6 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			prTask.second([&](CMedia& media) {
 				media.SetFileSize(nFileSize);
 				media.SetDuration(uDuration);
-
 				if (0 == uDuration)
 				{
 					prGroup.second.add(media);
@@ -462,6 +461,8 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 		return;
 	}
 
+	bool bGenDuration = &dir != &m_model.getMediaLib();
+
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		wstring strPrfix;
 
@@ -498,7 +499,10 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 					JValue jFile;
 					jFile["name"] = strutil::toUtf8(subFile.name());
 					jFile["size"] = ((CMediaRes&)subFile).fileSize();
-					jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+					if (bGenDuration)
+					{
+						jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+					}
 					jFiles.append(jFile);
 
 					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;

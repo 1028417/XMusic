@@ -1272,7 +1272,7 @@ void CAlbumPage::_asyncTask()
 {
 	if (m_wndAlbumItemList.isReportView())
 	{
-		m_wndAlbumItemList.AsyncTask(100, [](CListObject& object) {
+		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
 			((CAlbumItem&)object).AsyncTask();
 			return true;
 		});
