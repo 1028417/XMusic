@@ -251,17 +251,17 @@ void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
 
 QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
 {
-    int r = crSrc.red();
-    int g = crSrc.green();
-    int b = crSrc.blue();
-    int a = crSrc.blue();
+    uAlpha = uAlpha * crSrc.alpha()/255 * crDst.alpha()/255;
 
-    r += (-r + crDst.red())*uAlpha / 255;
-    g += (-g + crDst.green())*uAlpha / 255;
-    b += (-b + crDst.blue())*uAlpha / 255;
-    a += (-a + crDst.alpha())*uAlpha / 255;
+    int r = MIN(crSrc.red(), crDst.red());
+    int g = MIN(crSrc.green(), crDst.green());
+    int b = MIN(crSrc.blue(), crDst.blue());
 
-    return QColor(r,g,b,a);
+    r += (-r + MAX(crSrc.red(), crDst.red()))*uAlpha / 255;
+    g += (-g + MAX(crSrc.green(), crDst.green()))*uAlpha / 255;
+    b += (-b + MAX(crSrc.blue(), crDst.blue()))*uAlpha / 255;
+
+    return QColor(r,g,b,uAlpha);
 }
 
 void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap

@@ -92,7 +92,18 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (lvRow.bSelect)
             {
-                painter.fillRect(rc.left(), rc.top()+1, rc.width(), m_uRowHeight-2, m_crSelectedBkg);
+                int dr = 128-g_crTheme.red();
+                int dg = 128-g_crTheme.green();
+                int db = 128-g_crTheme.blue();
+                int d = 10;
+                dr = MIN(dr, d);
+                dr = MAX(dr, -d);
+                dg = MIN(dg, d);
+                dg = MAX(dg, -d);
+                db = MIN(db, d);
+                db = MAX(db, -d);
+                QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
+                painter.fillRect(rc.left(), rc.top()+1, rc.width(), m_uRowHeight-2, cr);
             }
 
             _onPaintRow(painter, lvRow);
@@ -113,8 +124,8 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (lvRow.bFlash)
     {
-        QColor crFlashText(g_crText);
-        crFlashText.setAlpha(210);
+        QColor crFlashText = g_crText;
+        crFlashText.setAlpha(222);
         painter.setPen(crFlashText);
     }
 
@@ -158,7 +169,18 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, QColor(255,255,255,70));
+        int dr = g_crText.red()-g_crTheme.red();
+        int dg = g_crText.green()-g_crTheme.green();
+        int db = g_crText.blue()-g_crTheme.blue();
+        int d = 30;
+        dr = MIN(dr, d);
+        dr = MAX(dr, -d);
+        dg = MIN(dg, d);
+        dg = MAX(dg, -d);
+        db = MIN(db, d);
+        db = MAX(db, -d);
+        QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
+        painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
     }
 
     if (context.eStyle & E_RowStyle::IS_RightButton)
@@ -285,7 +307,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
         else
         {
-            _autoScroll(m_uAutoScrollSeq, m_uRowHeight/10*dy, 45, 3000);
+            _autoScroll(m_uAutoScrollSeq, m_uRowHeight/20*dy, 45, 3000);
         }
     }
 }

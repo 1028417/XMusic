@@ -66,7 +66,6 @@ protected:
 public:
     CListView(QWidget *parent, const list<Qt::GestureType>& lstGestureType={})
         : CWidget(parent, __defRenderHints, lstGestureType)
-        , m_crSelectedBkg(0,0,0,5)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 
@@ -89,8 +88,6 @@ private:
     ulong m_uAutoScrollSeq = 0;
 
     QColor m_crFlashText;
-
-    QColor m_crSelectedBkg;
 
     map<void*, float> m_mapScrollRecord;
 
@@ -203,9 +200,6 @@ public:
     /*void setTextColor(const QColor& crText)
     {
         CWidget<>::setTextColor(crText);
-
-        m_crFlashText = crText;
-        m_crFlashText.setAlpha(crText.alpha()/2);
     }
 
     void setTextColor(int r, int g, int b, int a=255)
@@ -216,12 +210,5 @@ public:
     void setTextColor(const QColor& crText, const QColor& crFlashText)
     {
         CWidget<>::setTextColor(crText);
-
-        m_crFlashText = crFlashText;
     }*/
-
-    void setSelectedBkgColor(const QColor& crSelectedBkg)
-    {
-        m_crSelectedBkg = crSelectedBkg;
-    }
 };

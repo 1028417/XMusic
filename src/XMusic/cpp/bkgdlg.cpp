@@ -104,18 +104,20 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
         else
         {
-            /*QPixmap pmAddBkg;
-            if (pmAddBkg.load(":/img/addBkg.png"))
-            {
-#define __offset __size(60)
-                QRect rcAddBkg(rc.center().x()-__offset, rc.center().y()-__offset
-                               , __offset*2, __offset*2);
-                painter.drawPixmap(rcAddBkg, pmAddBkg);
-            }*/
-
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
-            cauto cr = CPainter::mixColor(g_crTheme, g_crText, 64);
+
+            int dr = g_crText.red()-g_crTheme.red();
+            int dg = g_crText.green()-g_crTheme.green();
+            int db = g_crText.blue()-g_crTheme.blue();
+            int d = 30;
+            dr = MIN(dr, d);
+            dr = MAX(dr, -d);
+            dg = MIN(dg, d);
+            dg = MAX(dg, -d);
+            db = MIN(db, d);
+            db = MAX(db, -d);
+            QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
 
             int len = MAX(rc.width(), rc.height())/8;
