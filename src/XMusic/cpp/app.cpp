@@ -7,17 +7,15 @@
 
 #include <QScreen>
 
-static CUTF8TxtWriter m_logger;
-ITxtWriter& g_logger(m_logger);
+float g_fPixelRatio = 1;
 
 map<E_FontWeight, QFont> g_mapFont;
 
-float g_fPixelRatio = 1;
-
 QColor g_crTheme;
-
 QColor g_crText;
-//#define __BlueLabel QRGB(32, 128, 255)
+
+static CUTF8TxtWriter m_logger;
+ITxtWriter& g_logger(m_logger);
 
 /*#if __android
 static const wstring g_strSdcardPath;
@@ -222,7 +220,6 @@ int CXMusicApp::run()
 {
     auto& option = m_ctrl.initOption();
     g_crTheme.setRgb(option.crTheme);
-
     g_crText.setRgb(option.crText);
 
     std::thread thrUpgrade;
@@ -258,12 +255,9 @@ int CXMusicApp::run()
 
     m_mainWnd.showLogo();
 
-    m_bRunSignal = true;
-
     int nRet = exec();
 
     m_bRunSignal = false;
-
     if (thrUpgrade.joinable())
     {
         thrUpgrade.join();

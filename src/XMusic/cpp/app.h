@@ -43,7 +43,7 @@ private:
 
     CMsgBox m_msgbox;
 
-    bool m_bRunSignal = false;
+    bool m_bRunSignal = true;
 
 signals:
     void signal_run(bool bUpgradeResult);
