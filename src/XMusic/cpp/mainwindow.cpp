@@ -6,6 +6,8 @@
 
 #include <QMovie>
 
+#include <QScreen>
+
 #include "app.h"
 
 #define __size10 __size(10)
