@@ -87,32 +87,31 @@ void CMedialibDlg::_relayout(int cx, int cy)
 {
     int sz = cy/(1.1+getPageRowCount());
     int xMargin = sz/4;
-    int yReturn = sz/4;
 //    if (cy < cx)
 //    {
 //#define __szOffset __size(6)
-//        yReturn -= __szOffset;
 //        xMargin += __szOffset;
+//        yReturn -= __szOffset;
 //    }
-    QRect rcReturn(xMargin, yReturn, sz-yReturn*2, sz-yReturn*2);
+    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
 
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
-        rcReturn.setTop(rcReturn.top() + __yOffset);
+        rcReturn.setTop(rcReturn.top()+__yOffset);
         rcReturn.setBottom(rcReturn.bottom() + __yOffset);
     }
 
     ui.btnReturn->setGeometry(rcReturn);
 
-    int y_MedialibView = rcReturn.bottom() + yReturn;
-    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
+    ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
-    ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, yReturn, rcReturn.width(), rcReturn.height());
-
-    ui.btnPlay->setGeometry(cx-rcReturn.right(), yReturn, rcReturn.width(), rcReturn.height());
+    ui.btnPlay->setGeometry(cx-rcReturn.right(), rcReturn.top(), rcReturn.width(), rcReturn.height());
 
     _resizeTitle();
+
+    int y_MedialibView = rcReturn.bottom() + rcReturn.top();
+    m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 }
 
 void CMedialibDlg::_resizeTitle() const
