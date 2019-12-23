@@ -95,7 +95,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
                 auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
                     + abs(g_crText.blue()-g_crTheme.blue()))/3;
                 int nAlpha = 255-(255*pow(d/255.0,0.1));
-                nAlpha = MAX(nAlpha, 32);
+                nAlpha = MAX(nAlpha, 30);
                 QColor cr = g_crText;
                 cr.setAlpha(nAlpha);
 
@@ -161,7 +161,7 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
             + abs(g_crText.blue()-g_crTheme.blue()))/3;
         int nAlpha = 255-(255*pow(d/255.0,0.5));
-        nAlpha = MAX(nAlpha, 85);
+        nAlpha = MAX(nAlpha, 64);
         QColor cr = g_crText;
         cr.setAlpha(nAlpha);
         painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
