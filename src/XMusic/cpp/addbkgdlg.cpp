@@ -63,8 +63,8 @@ void CAddBkgDlg::show()
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/11.1;
-    int margin = sz/4;
-    QRect rcReturn(margin, margin, sz-margin*2, sz-margin*2);
+    int xMargin = sz/4;
+    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
@@ -73,7 +73,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    ui.labelTitle->move(rcReturn.right() + rcReturn.left(), rcReturn.center().y() - ui.labelTitle->height()/2);
+    ui.labelTitle->move(rcReturn.right() + xMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
     int y_addbkgView = 0;
     if (m_addbkgView.isInRoot())

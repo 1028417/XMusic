@@ -96,24 +96,23 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnPlay->setGeometry(cx-rcReturn.right(), yReturn, rcReturn.width(), rcReturn.height());
 
-    ui.labelTitle->move(ui.labelTitle->x(), rcReturn.center().y() - ui.labelTitle->height()/2);
     _resizeTitle();
 }
 
 void CMedialibDlg::_resizeTitle() const
 {
-    int margin = ui.btnReturn->x();
+    int xMargin = ui.btnReturn->x();
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
-    int x_title = pButton->geometry().right() + margin;
+    int x_title = pButton->geometry().right() + xMargin;
 
     int cx_title = 0;
     if (ui.btnPlay->isVisible())
     {
-        cx_title = ui.btnPlay->x() - margin - x_title;
+        cx_title = ui.btnPlay->x() - xMargin - x_title;
     }
     else
     {
-        cx_title = width() - margin - x_title;
+        cx_title = width() - xMargin - x_title;
     }
 
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());

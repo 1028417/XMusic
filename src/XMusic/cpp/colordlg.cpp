@@ -62,8 +62,8 @@ void CColorDlg::show()
 void CColorDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/11.1;
-    int margin = sz/4;
-    QRect rcReturn(margin, margin, sz-margin*2, sz-margin*2);
+    int xMargin = sz/4;
+    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
@@ -72,22 +72,21 @@ void CColorDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    ui.labelTitle->move(rcReturn.right() + rcReturn.left(), rcReturn.center().y() - ui.labelTitle->height()/2);
+    ui.labelTitle->move(rcReturn.right() + xMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
-#define __margin __size(100)
-    cauto yClient = rcReturn.bottom() + __margin;
+    cauto yClient = rcReturn.bottom() + xMargin;
 
     if (cy > cx)
     {
-        ui.groupBkgColor->setGeometry(__margin, yClient, cx-__margin*2, (cy-yClient)/2-__margin);
+        ui.groupBkgColor->setGeometry(xMargin, yClient, cx-xMargin*2, (cy-yClient)/2-xMargin);
 
-        ui.groupFontColor->move(__margin, ui.groupBkgColor->geometry().bottom()+__margin);
+        ui.groupFontColor->move(xMargin, ui.groupBkgColor->geometry().bottom()+xMargin);
     }
     else
     {
-        ui.groupBkgColor->setGeometry(__margin, yClient, cx/2-__margin*1.5, cy-__margin-yClient);
+        ui.groupBkgColor->setGeometry(xMargin, yClient, cx/2-xMargin*1.5, cy-xMargin-yClient);
 
-        ui.groupFontColor->move(cx/2+__margin/2, yClient);
+        ui.groupFontColor->move(cx/2+xMargin/2, yClient);
     }
     ui.groupFontColor->resize(ui.groupBkgColor->size());
 
@@ -97,11 +96,11 @@ void CColorDlg::_relayout(int cx, int cy)
     int x = __size(40);//ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
 
-#define __szButton __size(80)
-    ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, __szButton, __szButton);
-    ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), __szButton, __szButton);
+    int szButton = rcReturn.width()-3;
+    ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, szButton, szButton);
+    ui.btnAddBkgRed->setGeometry(cx_group-x-ui.btnAddBkgRed->width(), ui.btnSubBkgRed->y(), szButton, szButton);
 
-    int x_bar = 2*x + __szButton;
+    int x_bar = 2*x + szButton;
     int cx_bar = cx_group-x_bar*2+1;
     int cy_bar = __size(40);
 
@@ -113,13 +112,13 @@ void CColorDlg::_relayout(int cx, int cy)
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);
 
-    ui.btnSubBkgGreen->setGeometry(x, ui.btnSubBkgRed->y()+y, __szButton, __szButton);
-    ui.btnAddBkgGreen->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgGreen->y(), __szButton, __szButton);
+    ui.btnSubBkgGreen->setGeometry(x, ui.btnSubBkgRed->y()+y, szButton, szButton);
+    ui.btnAddBkgGreen->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgGreen->y(), szButton, szButton);
     ui.barBkgGreen->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
     y+=y;
-    ui.btnSubBkgBlue->setGeometry(x, ui.btnSubBkgRed->y()+y, __szButton, __szButton);
-    ui.btnAddBkgBlue->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgBlue->y(), __szButton, __szButton);
+    ui.btnSubBkgBlue->setGeometry(x, ui.btnSubBkgRed->y()+y, szButton, szButton);
+    ui.btnAddBkgBlue->setGeometry(ui.btnAddBkgRed->x(), ui.btnSubBkgBlue->y(), szButton, szButton);
     ui.barBkgBlue->setGeometry(x_bar, ui.barBkgRed->y()+y, cx_bar, cy_bar);
 
     ui.btnSubFontRed->setGeometry(ui.btnSubBkgRed->geometry());

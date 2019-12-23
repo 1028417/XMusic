@@ -3,7 +3,7 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __xsize     __size(80)
+#define __xsize     __size(70)
 
 static Ui::BkgDlg ui;
 
@@ -225,8 +225,8 @@ void CBkgDlg::show()
 void CBkgDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/11.1;
-    int margin = sz/4;
-    QRect rcReturn(margin, margin, sz-margin*2, sz-margin*2);
+    int xMargin = sz/4;
+    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
 #define __yOffset __size(66)
@@ -238,10 +238,10 @@ void CBkgDlg::_relayout(int cx, int cy)
     m_bHScreen = cx>cy;
     if (m_bHScreen)
     {
-        ui.btnColor->setGeometry(rcReturn.left(), cy - rcReturn.top() - rcReturn.height()
+        ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()
                                  , rcReturn.width(), rcReturn.height());
 
-        int x_bkgView = rcReturn.right()+rcReturn.left();
+        int x_bkgView = rcReturn.right()+xMargin;
         int cx_bkgView = cx-x_bkgView;
         int cy_bkgView = cx_bkgView*cy/cx;
         m_bkgView.setGeometry(x_bkgView - m_bkgView.margin()/2
@@ -253,7 +253,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     else
     {
-        ui.btnColor->setGeometry(cx - rcReturn.left() - rcReturn.width()
+        ui.btnColor->setGeometry(cx-xMargin-rcReturn.width()
                                  , rcReturn.top(), rcReturn.width(), rcReturn.height());
 
         int y_bkgView = rcReturn.bottom() + rcReturn.top();
