@@ -11,7 +11,7 @@
 
 #include "widget.h"
 
-#define __BangsOffset __size(40)
+#define __BangsOffset __size(30)
 
 class CDialog : public QDialog
 {
