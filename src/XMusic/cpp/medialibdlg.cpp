@@ -66,9 +66,26 @@ void CMedialibDlg::_show()
     CDialog::show(m_app.mainWnd(), true);
 }
 
+size_t CMedialibDlg::getPageRowCount()
+{
+    UINT uRet = 10;
+    int cy = height();
+    /*if (cy >= __size(2560))
+    {
+       uRet++;
+    }
+    else*/ if (cy < __size(1800))
+    {
+        //uRet--;
+        uRet = ceil((float)uRet*cy/__size(1800));
+    }
+
+    return uRet;
+}
+
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    int sz = cy>cx ? cy/11.1 : cy/6.1;
+    int sz = cy/(1.1+getPageRowCount());
     int xMargin = sz/4;
     int yReturn = sz/4;
 //    if (cy < cx)
@@ -323,19 +340,7 @@ size_t CMedialibView::getPageRowCount()
         return _getRootRowCount();
     }
 
-    UINT uRet = 10;
-    int cy = m_medialibDlg.height();
-    /*if (cy >= __size(2560))
-    {
-       uRet++;
-    }
-    else*/ if (cy < __size(1800))
-    {
-        //uRet--;
-        uRet = ceil((float)uRet*m_medialibDlg.height()/__size(1800));
-    }
-
-    return uRet;
+    return m_medialibDlg.getPageRowCount();
 }
 
 size_t CMedialibView::getColumnCount()
@@ -652,7 +657,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     auto& rc = lvRow.rc;
 
     int szButton = ui.btnReturn->height();
-    auto margin = (rc.height()-szButton)/100;
+    auto margin = (rc.height()-szButton)/2;
     int x = rc.right()-margin-szButton;
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
     pButton->setGeometry(rcPos);

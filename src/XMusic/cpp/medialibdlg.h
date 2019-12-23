@@ -196,6 +196,8 @@ public:
         _show();
     }
 
+    size_t getPageRowCount();
+
     void showMediaSet(CMediaSet& MediaSet)
     {
         m_MedialibView.showMediaSet(MediaSet);
