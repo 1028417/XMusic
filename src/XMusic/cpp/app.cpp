@@ -102,7 +102,7 @@ CAppInit::CAppInit(QApplication& app)
 #elif __ios
     QSize szScreen = screen->size();
     int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
-    fFontSize = this->font().pointSizeF();
+    fFontSize = app.font().pointSizeF();
     fFontSize = fFontSize*nScreenWidth/540;
 
 #elif __mac
