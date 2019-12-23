@@ -1,14 +1,12 @@
 
+#include "widget.cpp"
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QMovie>
 
-#include "widget.cpp"
-
 #include "app.h"
-
-#include <QScreen>
 
 #define __size10 __size(10)
 

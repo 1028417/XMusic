@@ -3,11 +3,11 @@
 
 #include <QMainWindow>
 
-#include "PlayingList.h"
+#include "label.h"
 
 #include "button.h"
 
-#include "label.h"
+#include "PlayingList.h"
 
 #include "medialibdlg.h"
 

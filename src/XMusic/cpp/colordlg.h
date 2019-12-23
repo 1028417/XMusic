@@ -3,8 +3,6 @@
 
 #include "dialog.h"
 
-#include "button.h"
-
 #include "colorbar.h"
 
 class CColorDlg : public CDialog
@@ -23,7 +21,7 @@ private:
     void modifyColor(CColorBar *pBar, int8_t offset);
 
 private slots:
-    void slot_buttonClicked(CButton *pButton);
+    void slot_buttonClicked(class CButton *pButton);
 
     void slot_barValueChanged(CColorBar*, uint8_t uValue);
 

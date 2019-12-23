@@ -5,8 +5,6 @@
 
 #include "listview.h"
 
-#include "button.h"
-
 class CListViewEx : public CListView
 {
 protected:

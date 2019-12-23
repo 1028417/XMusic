@@ -282,17 +282,10 @@ template <class TWidget = QWidget>
 class CWidget : public TWidget
 {
 public:
-    CWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints
-            , const list<Qt::GestureType>& lstGestureType={}) :
+    CWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints) :
         TWidget(parent),
-        m_eRenderHints(eRenderHints),
-        m_setGestureType(lstGestureType)
+        m_eRenderHints(eRenderHints)
     {
-        for (auto gestureType : m_setGestureType)
-        {
-            this->grabGesture(gestureType);
-        }
-
         setFont(1);
     }
 
@@ -313,6 +306,15 @@ protected:
     bool m_bClicking = false;
 
 public:
+    void grabGesture(const list<Qt::GestureType>& lstGestureType)
+    {
+        m_setGestureType = lstGestureType;
+        for (auto gestureType : m_setGestureType)
+        {
+            this->grabGesture(gestureType);
+        }
+    }
+
     void setFont(const QFont& font)
     {
         TWidget::setFont(font);
@@ -364,26 +366,35 @@ public:
         this->setGraphicsEffect(oe);
     }
 
-    void setDropShadowEffect(const QColor& cr, UINT dx, UINT dy, float fBlur=0)
+    void unsetOpacityEffect()
     {
-        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
-        if (NULL == dse)
+        QGraphicsOpacityEffect *dse = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+        if (dse)
         {
-            dse = new QGraphicsDropShadowEffect(this);
+            dse->setEnabled(false);
         }
-
-        dse->setColor(cr);
-        dse->setOffset(dx, dy);
-        dse->setBlurRadius(fBlur);
-
-        this->setGraphicsEffect(dse);
     }
 
-    void setDropShadowEffect(UINT uAlpha, UINT dx, UINT dy, float fBlur=0)
+    void setBlurEffect(float fStength)
     {
-        QColor cr(__ShadowColor);
-        cr.setAlpha(uAlpha);
-        setDropShadowEffect(cr, dx, dy, fBlur);
+        QGraphicsBlurEffect *be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        if (NULL == be)
+        {
+            be = new QGraphicsBlurEffect(this);
+        }
+
+        be->setBlurRadius(fStength);
+
+        this->setGraphicsEffect(be);
+    }
+
+    void unsetBlurEffect()
+    {
+        QGraphicsBlurEffect *dse = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        if (dse)
+        {
+            dse->setEnabled(false);
+        }
     }
 
     void setColorizeEffect(const QColor& cr, float fStength)
@@ -400,17 +411,57 @@ public:
         this->setGraphicsEffect(ce);
     }
 
-    void setBlurEffect(float fStength)
+    void unsetColorizeEffect()
     {
-        QGraphicsBlurEffect *be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
-        if (NULL == be)
+        QGraphicsColorizeEffect *dse = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
+        if (dse)
         {
-            be = new QGraphicsBlurEffect(this);
+            dse->setEnabled(false);
+        }
+    }
+
+    void setDropShadowEffect(const QColor& cr, UINT dx, UINT dy, float fBlur=0)
+    {
+        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
+        if (dse)
+        {
+            dse->setEnabled(true);
+        }
+        else
+        {
+            dse = new QGraphicsDropShadowEffect(this);
         }
 
-        be->setBlurRadius(fStength);
+        dse->setColor(cr);
+        dse->setOffset(dx, dy);
+        dse->setBlurRadius(fBlur);
 
-        this->setGraphicsEffect(be);
+        this->setGraphicsEffect(dse);
+    }
+
+    void unsetDropShadowEffect()
+    {
+        QGraphicsDropShadowEffect *dse = dynamic_cast<QGraphicsDropShadowEffect*>(this->graphicsEffect());
+        if (dse)
+        {
+            dse->setEnabled(false);
+        }
+    }
+
+    void setDropShadowEx()
+    {
+        int avg = (g_crTheme.red()+g_crTheme.green()+g_crTheme.blue())/3;
+        int alpha = 100*pow(avg/255.0, 5);
+        if (alpha > 0)
+        {
+            QColor crShadow(__ShadowColor);
+            crShadow.setAlpha(alpha);
+            this->setDropShadowEffect(crShadow, 1, 1);
+        }
+        else
+        {
+            this->unsetDropShadowEffect();
+        }
     }
 
     virtual void update()

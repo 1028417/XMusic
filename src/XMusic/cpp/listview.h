@@ -64,10 +64,14 @@ protected:
     };
 
 public:
-    CListView(QWidget *parent, const list<Qt::GestureType>& lstGestureType={})
-        : CWidget(parent, __defRenderHints, lstGestureType)
+    CListView(QWidget *parent) : CWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
+
+        /*if (!lstGestureType.empty())
+        {
+            grabGesture(lstGestureType);
+        }*/
 
         (void)m_pmRightTip.load(":/img/righttip.png");
     }

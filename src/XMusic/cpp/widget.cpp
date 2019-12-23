@@ -185,7 +185,6 @@ void CWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEven
     }
 }
 
-
 template <class TParent>
 void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
 {

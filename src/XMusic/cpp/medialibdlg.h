@@ -3,8 +3,6 @@
 
 #include "dialog.h"
 
-#include "button.h"
-
 #include "ListViewEx.h"
 
 class CMedialibView : public CListViewEx
@@ -41,7 +39,7 @@ private:
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
-    map<UINT, CButton*> m_mapButton;
+    map<UINT, class CButton*> m_mapButton;
 
 signals:
     void signal_update();

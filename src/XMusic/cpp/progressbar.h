@@ -14,8 +14,6 @@ public:
         , m_crForeground(150,205,255)
     {
         setAttribute(Qt::WA_TranslucentBackground);
-
-        this->setDropShadowEffect(32, 2, 2);
     }
 
 private:
@@ -60,6 +58,8 @@ public:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
+        setDropShadowEx();
+
         auto rc = this->rect();
 
         UINT xround = __size(3);

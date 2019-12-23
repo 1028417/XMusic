@@ -12,8 +12,6 @@ public:
     CButton(QWidget *parent) : CWidget(parent)
     {
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
-
-        this->setDropShadowEffect(50, 1, 1);
     }
 
 signals:
@@ -22,29 +20,9 @@ signals:
     //void signal_contextMenu(CButton*);
 
 private:
-    void _onMouseEvent(E_MouseEventType type, const QMouseEvent&) override
-    {
-        if (E_MouseEventType::MET_Press == type)
-        {
-            setOpacityEffect(0.5);
-        }
-        else if (E_MouseEventType::MET_Release == type)
-        {
-            setOpacityEffect(0.5);
+    bool event(QEvent *ev) override;
 
-            UINT uDelayTime = 100;
-#if __windows || __mac
-            uDelayTime = 200;
-#endif
-            timerutil::async(uDelayTime, [&](){
-                setOpacityEffect(1);
-            });
-        }
-        else if (E_MouseEventType::MET_Click == type)
-        {
-            emit signal_clicked(this);
-        }
-    }
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent&) override;
 
     /*bool _onGesture(QGesture&) override
     {
