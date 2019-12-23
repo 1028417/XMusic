@@ -3,7 +3,7 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __xsize     __size(68)
+static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
 
@@ -99,7 +99,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         {
             painter.drawPixmapEx(rc, *pm, __szRound);
 
-            QRect rcX(rc.right()-__xsize-5, rc.top()+5, __xsize, __xsize);
+            QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
             painter.drawPixmap(rcX, m_pmX);
         }
         else
@@ -132,7 +132,7 @@ void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
 
     if (uIdx != 0 && uIdx < m_bkgDlg.bkgCount())
     {
-        if (me.pos().x() >= lvRow.rc.right()-__xsize && me.pos().y() <= lvRow.rc.top()+__xsize)
+        if (me.pos().x() >= lvRow.rc.right()-g_xsize && me.pos().y() <= lvRow.rc.top()+g_xsize)
         {
             m_bkgDlg.deleleBkg(uIdx);
             return;
@@ -234,6 +234,8 @@ void CBkgDlg::_relayout(int cx, int cy)
         rcReturn.setBottom(rcReturn.bottom() + __yOffset);
     }
     ui.btnReturn->setGeometry(rcReturn);
+
+    g_xsize = xMargin*0.9;
 
     m_bHScreen = cx>cy;
     if (m_bHScreen)

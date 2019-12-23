@@ -76,17 +76,18 @@ void CColorDlg::_relayout(int cx, int cy)
 
     cauto yClient = rcReturn.bottom() + xMargin;
 
+    int xFrame = xMargin * 1.5;
     if (cy > cx)
     {
-        ui.groupBkgColor->setGeometry(xMargin, yClient, cx-xMargin*2, (cy-yClient)/2-xMargin);
+        ui.groupBkgColor->setGeometry(xFrame, yClient, cx-xFrame*2, (cy-yClient)/2-xFrame);
 
-        ui.groupFontColor->move(xMargin, ui.groupBkgColor->geometry().bottom()+xMargin);
+        ui.groupFontColor->move(xFrame, ui.groupBkgColor->geometry().bottom()+xFrame);
     }
     else
     {
-        ui.groupBkgColor->setGeometry(xMargin, yClient, cx/2-xMargin*1.5, cy-xMargin-yClient);
+        ui.groupBkgColor->setGeometry(xFrame, yClient, cx/2-xFrame*1.5, cy-xFrame-yClient);
 
-        ui.groupFontColor->move(cx/2+xMargin/2, yClient);
+        ui.groupFontColor->move(cx/2+xFrame/2, yClient);
     }
     ui.groupFontColor->resize(ui.groupBkgColor->size());
 
