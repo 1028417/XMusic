@@ -97,7 +97,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
-#define __yOffset __size(66)
+#define __yOffset __size(50)
         rcReturn.setTop(rcReturn.top()+__yOffset);
         rcReturn.setBottom(rcReturn.bottom() + __yOffset);
     }
