@@ -445,6 +445,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& st
 
 void CMedialibView::_genMediaContext(tagMediaContext& context)
 {
+    context.eStyle |= E_RowStyle::IS_MultiLine;
     if (context.pMediaSet)
     {
         switch (context.pMediaSet->m_eType)

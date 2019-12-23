@@ -18,6 +18,8 @@ public:
         : QDialog(parent)
         , m_bFullScreen(bFullScreen)
     {
+        this->setWindowFlag(Qt::Dialog);
+        this->setWindowFlag(Qt::FramelessWindowHint);
     }
 
 private:
