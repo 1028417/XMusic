@@ -107,17 +107,12 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
 
-            int dr = g_crText.red()-g_crTheme.red();
-            int dg = g_crText.green()-g_crTheme.green();
-            int db = g_crText.blue()-g_crTheme.blue();
-            int d = 30;
-            dr = MIN(dr, d);
-            dr = MAX(dr, -d);
-            dg = MIN(dg, d);
-            dg = MAX(dg, -d);
-            db = MIN(db, d);
-            db = MAX(db, -d);
-            QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
+            auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
+                + abs(g_crText.blue()-g_crTheme.blue()))/3;
+            int nAlpha = 255-(255*pow((float)d/255,0.5));
+            nAlpha = MAX(nAlpha, 85);
+            QColor cr = g_crText;
+            cr.setAlpha(nAlpha);
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
 
             int len = MAX(rc.width(), rc.height())/8;

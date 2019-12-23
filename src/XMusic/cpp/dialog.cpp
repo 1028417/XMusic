@@ -96,16 +96,10 @@ bool CDialog::event(QEvent *ev)
 
 		break;
     case QEvent::Paint:
-        if (m_bFullScreen)
-        {
-            QPainter painter(this);
-            painter.fillRect(rect(), bkgColor());
-        }
-        else
-        {
-            CPainter painter(this);
-            painter.fillRectEx(rect(), bkgColor(), __xround);
-        }
+    {
+        QPainter painter(this);
+        painter.fillRect(rect(), bkgColor());
+    }
 
         break;
 #if __android || __ios

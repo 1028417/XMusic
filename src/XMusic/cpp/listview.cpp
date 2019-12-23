@@ -92,18 +92,14 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (lvRow.bSelect)
             {
-                int dr = 128-g_crTheme.red();
-                int dg = 128-g_crTheme.green();
-                int db = 128-g_crTheme.blue();
-                int d = 10;
-                dr = MIN(dr, d);
-                dr = MAX(dr, -d);
-                dg = MIN(dg, d);
-                dg = MAX(dg, -d);
-                db = MIN(db, d);
-                db = MAX(db, -d);
-                QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
-                painter.fillRect(rc.left(), rc.top()+1, rc.width(), m_uRowHeight-2, cr);
+                auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
+                    + abs(g_crText.blue()-g_crTheme.blue()))/3;
+                int nAlpha = 255-(255*pow((float)d/255,0.1));
+                nAlpha = MAX(nAlpha, 32);
+                QColor cr = g_crText;
+                cr.setAlpha(nAlpha);
+
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, cr);
             }
 
             _onPaintRow(painter, lvRow);
@@ -121,13 +117,6 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 {
     QRect rc = lvRow.rc;
     int cy = rc.height();
-
-    if (lvRow.bFlash)
-    {
-        QColor crFlashText = g_crText;
-        crFlashText.setAlpha(222);
-        painter.setPen(crFlashText);
-    }
 
     int nMargin = 0;
     if (context.pixmap && !context.pixmap->isNull())
@@ -169,17 +158,12 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        int dr = g_crText.red()-g_crTheme.red();
-        int dg = g_crText.green()-g_crTheme.green();
-        int db = g_crText.blue()-g_crTheme.blue();
-        int d = 30;
-        dr = MIN(dr, d);
-        dr = MAX(dr, -d);
-        dg = MIN(dg, d);
-        dg = MAX(dg, -d);
-        db = MIN(db, d);
-        db = MAX(db, -d);
-        QColor cr(g_crTheme.red()+dr, g_crTheme.green()+dg, g_crTheme.blue()+db);
+        auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
+            + abs(g_crText.blue()-g_crTheme.blue()))/3;
+        int nAlpha = 255-(255*pow((float)d/255,0.5));
+        nAlpha = MAX(nAlpha, 85);
+        QColor cr = g_crText;
+        cr.setAlpha(nAlpha);
         painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
     }
 
@@ -201,6 +185,20 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
 
             rc.setRight(x_righttip - nMargin);
         }
+    }    
+
+    if (lvRow.bSelect)
+    {
+        if (lvRow.bFlash)
+        {
+            QColor cr = g_crText;
+            cr.setAlpha(170);
+            painter.setPen(cr);
+        }
+
+        auto font = painter.font();
+        font.setBold(true);
+        painter.setFont(font);
     }
 
     QString qsText = strutil::toQstr(context.strText);
