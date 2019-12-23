@@ -166,8 +166,8 @@ void CBkgDlg::init()
         m_colorDlg.show();
     });
 
-#define __hbkgdir L"/hbkg/"
-#define __vbkgdir L"/vbkg/"
+#define __hbkgdir L"/bkg/hbkg/"
+#define __vbkgdir L"/bkg/vbkg/"
 
     m_strHBkgDir = fsutil::workDir() + __hbkgdir;
     m_strVBkgDir = fsutil::workDir() + __vbkgdir;
