@@ -16,8 +16,8 @@ private:
 
 	UINT m_uByteRate = 0;
 
-    bool m_bXmsc = false;
     void *m_pXmscCodec = NULL;
+    UINT m_uXmscHeadLen = 0;
 
 private:
     long long _openFile(const wstring& strFile, bool bXmsc);
@@ -126,7 +126,7 @@ private:
 
 	wstring localFilePath() const override
 	{
-        if (m_bXmsc)
+        if (m_pXmscCodec)
 		{
 			return L"";
 		}

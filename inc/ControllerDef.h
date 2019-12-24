@@ -43,7 +43,7 @@ struct tagPlayCtrl
         ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
         paMedias.assign(media);
     }
-    tagPlayCtrl(const TD_MediaList& t_paMedias)
+    tagPlayCtrl(const TD_IMediaList& t_paMedias)
     {
         ePlayCtrl = E_PlayCtrl::PC_Assign;
         paMedias.assign(t_paMedias);

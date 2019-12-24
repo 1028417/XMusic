@@ -48,6 +48,7 @@ private:
 
     FILE *m_pf = NULL;
 
+protected:
     long long m_nFileSize = 0;
 
 private:
