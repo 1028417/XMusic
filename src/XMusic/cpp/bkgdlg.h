@@ -104,7 +104,7 @@ public:
 
     size_t bkgCount() const
     {
-        (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size()+1;
+        return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size()+1;
     }
 
     const QPixmap* snapshot(size_t uIdx);
