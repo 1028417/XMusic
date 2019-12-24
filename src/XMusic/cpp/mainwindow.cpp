@@ -514,11 +514,11 @@ void MainWindow::_relayout()
     }
     else if (cy > __size(1920))
     {
-        y_frameDemand = __size(30);
+        y_frameDemand = __size(36);
     }
     else if (__size(1920) == cy)
     {
-        y_frameDemand = __size(25);
+        y_frameDemand = __size(28);
     }
     else if (cy < __size(1000))
     {
