@@ -653,7 +653,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
 
     auto& rc = lvRow.rc;
 
-    int szButton = ui.btnReturn->height();
+    int szButton = ui.btnReturn->height()+3;
     auto margin = (rc.height()-szButton)/2;
     int x = rc.right()-margin-szButton;
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
