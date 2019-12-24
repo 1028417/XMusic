@@ -508,9 +508,9 @@ void MainWindow::_relayout()
     }
 
     int y_frameDemand = __size(20);
-    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
-        y_frameDemand += __BangsOffset;
+        y_frameDemand = __cyIPhoneXBangs-y_frameDemand;
     }
     else if (cy > __size(1920))
     {

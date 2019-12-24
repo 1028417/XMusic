@@ -12,7 +12,7 @@
 
 #define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
 
-#define __BangsOffset __size(35)
+#define __cyIPhoneXBangs __size(128)
 
 extern ITxtWriter& g_logger;
 
@@ -64,7 +64,7 @@ private:
     bool _upgradeMediaLib();
 
 public:
-    static bool checkBangs(int cx, int cy)
+    static bool checkIPhoneXBangs(int cx, int cy)
     {
         return __ios && 375 == cx && 812 == cy;
     }
