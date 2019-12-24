@@ -24,9 +24,9 @@ void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
 	}
 	else if (E_MouseEventType::MET_Release == type)
     {
-        m_bPressing = true;
+        //m_bPressing = true;
         //unsetDropShadowEffect();
-        setOpacityEffect(0.5);
+        //setOpacityEffect(0.5);
 
 		UINT uDelayTime = 100;
 #if __windows || __mac
