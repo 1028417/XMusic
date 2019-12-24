@@ -66,7 +66,7 @@ private:
 public:
     static bool checkIPhoneXBangs(int cx, int cy)
     {
-        return __ios && 375 == cx && 812 == cy;
+        return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
     }
 
     tagOption& getOption()
