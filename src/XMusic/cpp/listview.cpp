@@ -1,7 +1,7 @@
 
 #include "listview.h"
 
-#include "App.h"
+#include "app.h"
 
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
