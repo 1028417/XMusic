@@ -134,7 +134,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
         if (m_bClicking)
         {
-            //timerutil::async(0, [me](){
+            //CApp::async([me](){
                 //if (!m_bClicking)
                 //{
                 //    return;

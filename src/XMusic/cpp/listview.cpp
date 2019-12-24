@@ -1,6 +1,8 @@
 
 #include "listview.h"
 
+#include "App.h"
+
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
     size_t uPageRowCount = getPageRowCount();
@@ -33,7 +35,7 @@ void CListView::flashRow(UINT uRow, UINT uMSDelay)
     m_nFlashRow = uRow;
     update();
 
-    timerutil::async(uMSDelay, [&](){
+    CApp::async(uMSDelay, [&](){
         m_nFlashRow = -1;
         update();
     });
@@ -344,7 +346,7 @@ bool CListView::_scroll(int dy)
 
 void CListView::_autoScroll(ulong uSeq, int dy, UINT dt, UINT total)
 {
-    timerutil::async(dt, [=]() {
+    CApp::async(dt, [=]() {
         if (uSeq != m_uAutoScrollSeq)
         {
             return;

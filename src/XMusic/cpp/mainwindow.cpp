@@ -152,17 +152,17 @@ void MainWindow::showLogo()
 #if !__android
     uDelayTime += 800;
 #endif
-    timerutil::async(uDelayTime, [&](){
+    CApp::async(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
 
         auto labelLogoTip = ui.labelLogoTip;
-        timerutil::async(500, [labelLogoTip](){
+        CApp::async(500, [labelLogoTip](){
             labelLogoTip->setText("播放器");
 
-            timerutil::async(500, [labelLogoTip](){
+            CApp::async(500, [labelLogoTip](){
                 labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
 
-                timerutil::async(500, [labelLogoTip](){
+                CApp::async(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
                 });
             });
@@ -861,8 +861,8 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     else
     {
         auto uPlaySeq = m_uPlaySeq;
-        __async(1000, [&, uPlaySeq]() {
-            if (uPlaySeq == m_uPlaySeq && m_app.RunSignal())
+        CApp::async(1000, [&, uPlaySeq]() {
+            if (uPlaySeq == m_uPlaySeq)
             {
                 _updatePlayPauseButton(false);
             }
@@ -991,7 +991,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
-        timerutil::async(100, [&](){
+        CApp::async(100, [&](){
             if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(false);
@@ -1002,7 +1002,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
-        timerutil::async(100, [&](){
+        CApp::async(100, [&](){
             if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(true);

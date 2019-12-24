@@ -45,7 +45,7 @@ private:
 
     CMsgBox m_msgbox;
 
-    bool m_bRunSignal = true;
+    static bool m_bRunSignal;
 
 signals:
     void signal_run(bool bUpgradeResult);
@@ -69,10 +69,11 @@ public:
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
     }
 
-    bool RunSignal() const
+    static void async(UINT uDelayTime, cfn_void cb);
+    static void async(cfn_void cb)
     {
-        return m_bRunSignal;
-    };
+        async(0, cb);
+    }
 
     tagOption& getOption()
     {
@@ -125,4 +126,10 @@ public:
     }
 
     int run();
+
+    void quit()
+    {
+        m_bRunSignal = false;
+        QApplication::quit();
+    }
 };

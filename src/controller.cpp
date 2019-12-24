@@ -39,7 +39,7 @@ bool CXController::start()
 		}
 	});
 
-    __async([&]() {
+	__async([&]() {
 		if (!m_model.status() && m_model.getMediaLib().empty())
 		{
 			if (!setupRootDir())

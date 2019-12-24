@@ -153,6 +153,21 @@ CAppInit::CAppInit(QApplication& app)
     });
 }
 
+bool CApp::m_bRunSignal = true;
+
+void CApp::async(UINT uDelayTime, cfn_void cb)
+{
+    __async(uDelayTime, [&, cb](){
+        if (!m_bRunSignal)
+        {
+            return;
+        }
+
+        cb();
+    });
+}
+
+
 bool CApp::_resetRootDir(wstring& strRootDir)
 {
     strRootDir = fsutil::getHomeDir() + L"/XMusic";
@@ -224,7 +239,7 @@ int CApp::run()
 
     std::thread thrUpgrade;
 
-    timerutil::async(100, [&](){
+    CApp::async(100, [&](){
         if (!_resetRootDir(option.strRootDir))
         {
             this->quit();
@@ -256,8 +271,8 @@ int CApp::run()
     m_mainWnd.showLogo();
 
     int nRet = exec();
-
     m_bRunSignal = false;
+
     if (thrUpgrade.joinable())
     {
         thrUpgrade.join();

@@ -59,7 +59,7 @@ void CMedialibDlg::_show()
    //ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    __async(0, [&](){
+    CApp::async([&](){
         _resizeTitle();
     });
 
