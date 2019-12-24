@@ -7,7 +7,7 @@ bool CButton::event(QEvent *ev)
 {
     if (!m_bPressing && ev->type() == QEvent::Paint)
     {
-        unsetOpacityEffect();
+        //unsetOpacityEffect();
         setDropShadowEx();
     }
 
@@ -19,13 +19,13 @@ void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
 	if (E_MouseEventType::MET_Press == type)
 	{
         m_bPressing = true;
-        unsetDropShadowEffect();
+        //unsetDropShadowEffect();
         setOpacityEffect(0.5);
 	}
 	else if (E_MouseEventType::MET_Release == type)
     {
         m_bPressing = true;
-        unsetDropShadowEffect();
+        //unsetDropShadowEffect();
         setOpacityEffect(0.5);
 
 		UINT uDelayTime = 100;
