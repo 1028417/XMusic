@@ -191,11 +191,11 @@ void CBkgDlg::init()
     }
 
     fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
-        m_vecHBkg.push_back(strSubFile);
+        m_vecHBkgFile.push_back(strSubFile);
     });
 
     fsutil::findSubFile(m_strVBkgDir, [&](const wstring& strSubFile) {
-        m_vecVBkg.push_back(strSubFile);
+        m_vecVBkgFile.push_back(strSubFile);
     });
 
     cauto strHBkg = m_app.getOption().strHBkg;
@@ -268,20 +268,19 @@ void CBkgDlg::_relayout(int cx, int cy)
 
 const QPixmap* CBkgDlg::snapshot(size_t uIdx)
 {
-    auto& vecSnapshot = m_bHScreen?m_vecHSnapshot:m_vecVSnapshot;
+    auto& vecSnapshot = _vecSnapshot();
     if (uIdx < vecSnapshot.size())
     {
         return vecSnapshot[uIdx];
     }
 
-    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
-    if (uIdx >= vecBkg.size())
+    auto& vecBkgFile = _vecBkgFile();
+    if (uIdx >= vecBkgFile.size())
     {
         return NULL;
     }
 
-    cauto stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    cauto strBkgFile = stBkgDir + vecBkg[uIdx];
+    cauto strBkgFile = _bkgDir() + vecBkgFile[uIdx];
 
 #define __zoomoutSize 1000
     m_lstSnapshot.emplace_back(QPixmap());
@@ -295,24 +294,23 @@ const QPixmap* CBkgDlg::snapshot(size_t uIdx)
     return pm;
 }
 
-void CBkgDlg::_setBkg(const wstring& strBkg)
+void CBkgDlg::_setBkg(const wstring& strFile)
 {
     m_app.getOption().bUseThemeColor = false;
 
     if (m_bHScreen)
     {
-        m_app.getOption().strHBkg = strBkg;
+        m_app.getOption().strHBkg = strFile;
     }
     else
     {
-        m_app.getOption().strVBkg = strBkg;
+        m_app.getOption().strVBkg = strFile;
     }
 
-    QPixmap& pmBkg = m_bHScreen? m_pmHBkg:m_pmVBkg;
-    if (!strBkg.empty())
+    QPixmap& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    if (!strFile.empty())
     {
-        cauto stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-        (void)pmBkg.load(stBkgDir + strBkg);
+        (void)pmBkg.load(_bkgDir() + strFile);
     }
     else
     {
@@ -324,7 +322,7 @@ void CBkgDlg::_setBkg(const wstring& strBkg)
 
 void CBkgDlg::setBkg(size_t uIdx)
 {
-    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
+    auto& vecBkgFile = _vecBkgFile();
     if (0 == uIdx)
     {
         _setBkg(L"");
@@ -333,17 +331,16 @@ void CBkgDlg::setBkg(size_t uIdx)
     else
     {
         uIdx--;
-        if (uIdx < vecBkg.size())
+        if (uIdx < vecBkgFile.size())
         {
-            cauto strBkg = vecBkg[uIdx];
-            _setBkg(strBkg);
+            _setBkg(vecBkgFile[uIdx]);
             close();
         }
         else
         {
 #if __windows
-#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Gif;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
-                |Png文件(*.Png)|*.Png|Gif文件(*.Gif)|*.Gif|位图文件(*.Bmp)|*.Bmp|"
+#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+                |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
             tagFileDlgOpt FileDlgOpt;
             FileDlgOpt.strTitle = L"选择背景图";
             FileDlgOpt.strFilter = __MediaFilter;
@@ -364,15 +361,13 @@ void CBkgDlg::setBkg(size_t uIdx)
 
 void CBkgDlg::addBkg(const wstring& strFile)
 {
-    wstring strNewName = to_wstring(time(NULL));
+    wstring strFileName = to_wstring(time(NULL));
 
-    auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    if (fsutil::copyFile(strFile, stBkgDir + strNewName))
+    if (fsutil::copyFile(strFile, _bkgDir() + strFileName))
     {
-        auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
-        vecBkg.push_back(strNewName);
+        _vecBkgFile().push_back(strFileName);
 
-        setBkg(vecBkg.size());
+        _setBkg(strFileName);
     }
 }
 
@@ -384,22 +379,21 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     }
     uIdx--;
 
-    auto& vecBkg = m_bHScreen?m_vecHBkg:m_vecVBkg;
-    if (uIdx < vecBkg.size())
+    auto& vecBkgFile = _vecBkgFile();
+    if (uIdx < vecBkgFile.size())
     {
         auto& strBkg = m_bHScreen ? m_app.getOption().strHBkg
                                   : m_app.getOption().strVBkg;
-        if (strBkg == *vecBkg[uIdx])
+        if (strBkg == *vecBkgFile[uIdx])
         {
             _setBkg(L"");
         }
 
-        auto& stBkgDir = m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-        fsutil::removeFile(stBkgDir + vecBkg[uIdx]);
+        fsutil::removeFile(_bkgDir() + vecBkgFile[uIdx]);
 
-        vecBkg.erase(vecBkg.begin()+uIdx);
+        vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
-        auto& vecSnapshot = m_bHScreen?m_vecHSnapshot:m_vecVSnapshot;
+        auto& vecSnapshot = _vecSnapshot();
         if (uIdx < vecSnapshot.size())
         {
             vecSnapshot.erase(vecSnapshot.begin()+uIdx);

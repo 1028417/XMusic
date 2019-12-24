@@ -103,26 +103,6 @@ void CAddBkgDlg::addBkg(const wstring& strFile)
 }
 
 
-map<void*, QPixmap> m_mapPixmaxp;
-const QPixmap* getPixmap(CPath& path)
-{
-    auto itr = m_mapPixmaxp.find(&path);
-    if (itr == m_mapPixmaxp.end())
-    {
-        if (!path.fileInfo().bDir)
-        {
-            auto& pm = m_mapPixmaxp[&path];
-            pm.load(strutil::toQstr(path.absPath()));
-            return &pm;
-        }
-
-        return NULL;
-    }
-
-    return &itr->second;
-}
-
-
 CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
     , m_app(app)
@@ -271,12 +251,12 @@ bool CAddBkgView::upward()
     return false;
 }
 
-static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"bmp", L"png");
-
 CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
 {
     return new CImgDir(fileInfo);
 }
+
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"png", L"bmp");
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
@@ -289,8 +269,6 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     return NULL;
 }
 
-#define __filterSize 640
-
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
     if (!pm.load(strutil::toQstr(subFile.absPath())))
@@ -298,6 +276,7 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
         return false;
     }
 
+#define __filterSize 640
     if (pm.width()<__filterSize || pm.height()<__filterSize)
     {
         return false;
