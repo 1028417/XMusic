@@ -51,10 +51,10 @@ class CAddBkgView : public CListView
 {
     Q_OBJECT
 public:
-    CAddBkgView(class CXMusicApp& app, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CApp& app, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     class CAddBkgDlg& m_addbkgDlg;
 
@@ -92,10 +92,10 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CAddBkgDlg(class CXMusicApp& app, class CBkgDlg& bkgDlg);
+    CAddBkgDlg(class CApp& app, class CBkgDlg& bkgDlg);
 
 private:    
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     class CBkgDlg& m_bkgDlg;
 

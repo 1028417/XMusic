@@ -9,10 +9,10 @@ class CColorDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CColorDlg(class CXMusicApp& app, class CBkgDlg& bkgDlg);
+    CColorDlg(class CApp& app, class CBkgDlg& bkgDlg);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
     class CBkgDlg& m_bkgDlg;
 	
 private:

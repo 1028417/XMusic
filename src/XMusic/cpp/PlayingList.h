@@ -12,10 +12,10 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CXMusicApp& app);
+    CPlayingList(class CApp& app);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     UINT m_uPageRowCount = 0;
 

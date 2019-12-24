@@ -9,7 +9,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CXMusicApp& app)
+CMedialibDlg::CMedialibDlg(class CApp& app)
     : m_app(app)
     , m_MedialibView(app, *this, m_OuterDir)
 {
@@ -95,7 +95,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 //    }
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
 
-    if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.setTop(rcReturn.top() + __BangsOffset);
         rcReturn.setBottom(rcReturn.bottom() + __BangsOffset);
@@ -153,7 +153,7 @@ void CMedialibDlg::_onClose()
     m_OuterDir.clear();
 }
 
-CMedialibView::CMedialibView(class CXMusicApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
+CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
     , m_medialibDlg(medialibDlg)

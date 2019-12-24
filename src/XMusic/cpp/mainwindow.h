@@ -37,10 +37,10 @@ class MainWindow : public QMainWindow, public IModelObserver
 {
     Q_OBJECT
 public:
-    MainWindow(class CXMusicApp& app);
+    MainWindow(class CApp& app);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     class CPlayingList m_PlayingList;
 

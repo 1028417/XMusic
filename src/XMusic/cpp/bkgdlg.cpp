@@ -7,7 +7,7 @@ static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(class CXMusicApp& app, CBkgDlg& bkgDlg)
+CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
     : CListView(&bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg)
@@ -148,7 +148,7 @@ inline UINT CBkgView::margin()
     return __margin/(getColumnCount()-1);
 }
 
-CBkgDlg::CBkgDlg(class CXMusicApp& app)
+CBkgDlg::CBkgDlg(class CApp& app)
     : m_app(app),
     m_colorDlg(app, *this),
     m_addbkgDlg(app, *this),
@@ -227,7 +227,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
-    if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.setTop(rcReturn.top() + __BangsOffset);
         rcReturn.setBottom(rcReturn.bottom() + __BangsOffset);

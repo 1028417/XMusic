@@ -7,7 +7,7 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CXMusicApp& app, CBkgDlg& bkgDlg)
+CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg)
     : m_app(app),
     m_bkgDlg(bkgDlg),
     m_addbkgView(app, *this, m_paImgDirs)
@@ -65,7 +65,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
-    if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.setTop(rcReturn.top() + __BangsOffset);
         rcReturn.setBottom(rcReturn.bottom() + __BangsOffset);
@@ -124,7 +124,7 @@ const QPixmap* getPixmap(CPath& path)
 }
 
 
-CAddBkgView::CAddBkgView(class CXMusicApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
     , m_app(app)
     , m_addbkgDlg(addbkgDlg)

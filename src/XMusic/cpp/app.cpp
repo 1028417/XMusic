@@ -153,7 +153,7 @@ CAppInit::CAppInit(QApplication& app)
     });
 }
 
-bool CXMusicApp::_resetRootDir(wstring& strRootDir)
+bool CApp::_resetRootDir(wstring& strRootDir)
 {
     strRootDir = fsutil::getHomeDir() + L"/XMusic";
 
@@ -183,7 +183,7 @@ bool CXMusicApp::_resetRootDir(wstring& strRootDir)
     return fsutil::createDir(strRootDir + __medialibPath);
 }
 
-void CXMusicApp::slot_run(bool bUpgradeResult)
+void CApp::slot_run(bool bUpgradeResult)
 {
     if (!m_bRunSignal)
     {
@@ -216,7 +216,7 @@ void CXMusicApp::slot_run(bool bUpgradeResult)
     m_mainWnd.show();
 }
 
-int CXMusicApp::run()
+int CApp::run()
 {
     auto& option = m_ctrl.initOption();
     g_crTheme.setRgb(option.crTheme);
@@ -232,7 +232,7 @@ int CXMusicApp::run()
         }
         g_logger << "RootDir: " >> option.strRootDir;
 
-        connect(this, &CXMusicApp::signal_run, this, &CXMusicApp::slot_run);
+        connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
             auto timeBegin = time(NULL);
@@ -274,7 +274,7 @@ int CXMusicApp::run()
     return nRet;
 }
 
-bool CXMusicApp::_upgradeMediaLib()
+bool CApp::_upgradeMediaLib()
 {
 #if __android
     QFile qf("assets:/upgrade.conf");

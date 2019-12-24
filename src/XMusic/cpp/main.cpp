@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
 
-    auto app = new CXMusicApp(argc, argv);
+    auto app = new CApp(argc, argv);
 
 #if __android
     g_logger << "jniVer: " >> g_jniVer;

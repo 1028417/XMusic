@@ -3,7 +3,7 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CXMusicApp& app)
+CPlayingList::CPlayingList(class CApp& app)
     : CListView(NULL)
     , m_app(app)
 {
@@ -90,11 +90,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
                 painter.setPen(crShadow);
 
-                QRectF rcShadow(rc);
-                rcShadow.setLeft(rcShadow.left()+uIdx);
-                rcShadow.setTop(rcShadow.top()+uIdx);
-                rcShadow.setRight(rcShadow.right()+uIdx);
-                rcShadow.setBottom(rcShadow.bottom()+uIdx);
+                QRectF rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
                 painter.drawText(rcShadow, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
             }
 

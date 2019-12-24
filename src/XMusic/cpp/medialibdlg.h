@@ -9,10 +9,10 @@ class CMedialibView : public CListViewEx
 {
     Q_OBJECT
 public:
-    CMedialibView(class CXMusicApp& app, class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
+    CMedialibView(class CApp& app, class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     class CMedialibDlg& m_medialibDlg;
 
@@ -177,10 +177,10 @@ class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CMedialibDlg(class CXMusicApp& m_app);
+    CMedialibDlg(class CApp& m_app);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     COuterDir m_OuterDir;
 

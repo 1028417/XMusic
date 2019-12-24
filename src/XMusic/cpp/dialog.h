@@ -11,8 +11,6 @@
 
 #include "widget.h"
 
-#define __BangsOffset __size(30)
-
 class CDialog : public QDialog
 {
 public:
@@ -42,11 +40,6 @@ private:
 
 protected:
     virtual bool event(QEvent *ev) override;
-
-    bool _checkBangs(int cx, int cy)
-    {
-        return 375 == cx && 812 == cy;
-    }
 
 public:
     static void setWidgetTextColor(QWidget *widget, const QColor& cr)

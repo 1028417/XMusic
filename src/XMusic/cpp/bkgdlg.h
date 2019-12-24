@@ -12,10 +12,10 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CXMusicApp& app, class CBkgDlg& bkgDlg);
+    CBkgView(class CApp& app, class CBkgDlg& bkgDlg);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     class CBkgDlg& m_bkgDlg;
 
@@ -40,10 +40,10 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CBkgDlg(class CXMusicApp& app);
+    CBkgDlg(class CApp& app);
 
 private:
-    class CXMusicApp& m_app;
+    class CApp& m_app;
 
     CColorDlg m_colorDlg;
 

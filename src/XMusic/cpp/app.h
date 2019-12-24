@@ -12,6 +12,8 @@
 
 #define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
 
+#define __BangsOffset __size(35)
+
 extern ITxtWriter& g_logger;
 
 class CAppInit
@@ -20,11 +22,11 @@ protected:
     CAppInit(QApplication& app);
 };
 
-class CXMusicApp : public QApplication, private CAppInit, private IPlayerView
+class CApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
 public:
-    CXMusicApp(int argc, char **argv) :
+    CApp(int argc, char **argv) :
         QApplication(argc, argv),
         CAppInit((QApplication&)*this),
         m_ctrl(*this, m_model),
@@ -62,6 +64,11 @@ private:
     bool _upgradeMediaLib();
 
 public:
+    static bool checkBangs(int cx, int cy)
+    {
+        return __ios && 375 == cx && 812 == cy;
+    }
+
     tagOption& getOption()
     {
         return m_ctrl.getOption();

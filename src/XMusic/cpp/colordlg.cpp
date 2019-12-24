@@ -5,7 +5,7 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(class CXMusicApp& app, CBkgDlg& bkgDlg)
+CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg)
     : m_app(app),
     m_bkgDlg(bkgDlg)
 {
@@ -64,7 +64,7 @@ void CColorDlg::_relayout(int cx, int cy)
     int sz = cy>cx ? cy/11.1 : cy/6.1;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
-    if (_checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.setTop(rcReturn.top() + __BangsOffset);
         rcReturn.setBottom(rcReturn.bottom() + __BangsOffset);

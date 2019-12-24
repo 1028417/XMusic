@@ -40,7 +40,7 @@ void fixWorkArea(QWidget& wnd)
     _fixWorkArea(wnd);
 }
 
-MainWindow::MainWindow(CXMusicApp& app)
+MainWindow::MainWindow(CApp& app)
     : m_app(app)
     , m_PlayingList(app)
     , m_medialibDlg(app)
@@ -393,8 +393,11 @@ bool MainWindow::event(QEvent *ev)
 
 void MainWindow::_relayout()
 {
-    int cx = this->width();
-    int cy = this->height();
+    cauto rc = rect();
+    ui.centralWidget->setGeometry(rc); //for iPhoneX
+
+    int cx = rc.width();
+    int cy = rc.height();
     m_bHScreen = cx > cy; // 橫屏
 
     int x_Logo = (cx - ui.labelLogo->width())/2;
@@ -505,7 +508,11 @@ void MainWindow::_relayout()
     }
 
     int y_frameDemand = __size(20);
-    if (cy > __size(1920))
+    if (CApp::checkBangs(cx, cy)) // 针对全面屏刘海作偏移
+    {
+        y_frameDemand += __BangsOffset;
+    }
+    else if (cy > __size(1920))
     {
         y_frameDemand = __size(30);
     }
