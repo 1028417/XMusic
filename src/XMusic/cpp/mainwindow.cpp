@@ -314,7 +314,7 @@ void MainWindow::_onPaint(CPainter& painter)
     }
 
     bool bHScreen = rc.width() > rc.height();
-    cauto pmBkg = bHScreen?m_bkgDlg.bkg():m_bkgDlg.vbkg();
+    cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
     if (!pmBkg.isNull())
     {
        painter.drawPixmapEx(rc, pmBkg);
