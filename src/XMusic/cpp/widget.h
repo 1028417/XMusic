@@ -360,6 +360,10 @@ public:
         {
             oe = new QGraphicsOpacityEffect(this);
         }
+        else
+        {
+            oe->setEnabled(true);
+        }
 
         oe->setOpacity(fValue);
 
@@ -368,10 +372,10 @@ public:
 
     void unsetOpacityEffect()
     {
-        auto dse = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
-        if (dse)
+        auto oe = dynamic_cast<QGraphicsOpacityEffect*>(this->graphicsEffect());
+        if (oe)
         {
-            dse->setEnabled(false);
+            oe->setEnabled(false);
         }
     }
 
@@ -382,6 +386,10 @@ public:
         {
             be = new QGraphicsBlurEffect(this);
         }
+        else
+        {
+            be->setEnabled(true);
+        }
 
         be->setBlurRadius(fStength);
 
@@ -390,10 +398,10 @@ public:
 
     void unsetBlurEffect()
     {
-        auto dse = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
-        if (dse)
+        auto be = dynamic_cast<QGraphicsBlurEffect*>(this->graphicsEffect());
+        if (be)
         {
-            dse->setEnabled(false);
+            be->setEnabled(false);
         }
     }
 
@@ -404,6 +412,10 @@ public:
         {
             ce = new QGraphicsColorizeEffect(this);
         }
+        else
+        {
+            ce->setEnabled(true);
+        }
 
         ce->setColor(cr);
         ce->setStrength(fStength);
@@ -413,10 +425,10 @@ public:
 
     void unsetColorizeEffect()
     {
-        auto dse = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
-        if (dse)
+        auto ce = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
+        if (ce)
         {
-            dse->setEnabled(false);
+            ce->setEnabled(false);
         }
     }
 
@@ -439,13 +451,13 @@ public:
     void setDropShadowEffect(const QColor& cr, int dx, int dy, float fBlur=0)
     {
         auto dse = dynamic_cast<T*>(this->graphicsEffect());
-        if (dse)
+        if (NULL == dse)
         {
-            dse->setEnabled(true);
+            dse = new T(this);
         }
         else
         {
-            dse = new T(this);
+            dse->setEnabled(true);
         }
 
         dse->setColor(cr);

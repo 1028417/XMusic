@@ -14,6 +14,9 @@ public:
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
     }
 
+private:
+    bool m_bPressing = false;
+
 signals:
     void signal_clicked(CButton*);
 
