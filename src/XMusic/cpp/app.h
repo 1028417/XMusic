@@ -69,6 +69,11 @@ public:
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
     }
 
+    bool RunSignal() const
+    {
+        return m_bRunSignal;
+    };
+
     tagOption& getOption()
     {
         return m_ctrl.getOption();

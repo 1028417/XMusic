@@ -768,8 +768,6 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
-    m_uPlaySeq++;
-
     tagPlayingInfo PlayingInfo;
     PlayingInfo.strTitle = PlayItem.GetTitle();
 
@@ -805,6 +803,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
 void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var)
 {
+    m_uPlaySeq++;
+
     auto strPrevSinger = m_PlayingInfo.strSinger;
     m_PlayingInfo = var.value<tagPlayingInfo>(); //m_mtxPlayingInfo.get(m_PlayingInfo);
 
@@ -861,8 +861,8 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     else
     {
         auto uPlaySeq = m_uPlaySeq;
-        __async(2000, [&, uPlaySeq]() {
-            if (uPlaySeq == m_uPlaySeq)
+        __async(1000, [&, uPlaySeq]() {
+            if (uPlaySeq == m_uPlaySeq && m_app.RunSignal())
             {
                 _updatePlayPauseButton(false);
             }
