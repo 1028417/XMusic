@@ -36,6 +36,11 @@ public:
     }
 
 #if !__winvc
+    bool isOnline() const override
+    {
+        return m_strFile.empty();
+    }
+
     int64_t size() const override;
 
 	bool seekable() const override;
@@ -114,19 +119,14 @@ public:
 	void close() override;
 
 private:
-	bool isOnline() const override
-	{
-        return m_strFile.empty();
-	}
-
 	wstring localFilePath() const override
-	{
-        if (m_pXmscCodec)
-		{
-			return L"";
-		}
+        {
+            if (m_pXmscCodec)
+            {
+                    return L"";
+            }
 
-		return m_strFile;
+            return m_strFile;
 	}
 
 #if !__winvc
