@@ -1,6 +1,23 @@
 
 #pragma once
 
+class CSnapshotMediaRes : public CMediaRes
+{
+public:
+    CSnapshotMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
+        : CMediaRes(eFileType, fileInfo)
+    {
+    }
+
+    UINT m_uDuration = 0;
+
+private:
+    int duration() const override
+    {
+        return m_uDuration;
+    }
+};
+
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:

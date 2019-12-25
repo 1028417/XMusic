@@ -120,13 +120,13 @@ public:
 
 private:
 	wstring localFilePath() const override
-        {
-            if (m_pXmscCodec)
-            {
-                    return L"";
-            }
+	{
+        if (m_pXmscCodec)
+		{
+			return L"";
+		}
 
-            return m_strFile;
+		return m_strFile;
 	}
 
 #if !__winvc

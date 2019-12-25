@@ -56,7 +56,7 @@ private:
 
     bool _playNext(bool bNext, bool bManual);
 
-	bool _play(UINT uItem, bool bManual, CPlayItem& PlayItem);
+    BOOL _play(CPlayItem& PlayItem);
 
 	bool _play(uint64_t uStartPos);
 

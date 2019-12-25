@@ -49,7 +49,7 @@ private:
     FILE *m_pf = NULL;
 
 protected:
-    long long m_nFileSize = 0;
+    long long m_nFileSize = -1;
 
 private:
     friend class CPlayer;
