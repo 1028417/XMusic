@@ -55,7 +55,7 @@ void CModelObserver::onPlayStop(bool bOpenFail)
 {
 	if (m_view.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
 	{
-		CMainApp::sync(0, [&, bOpenFail]() {
+		CMainApp::sync([&, bOpenFail]() {
 			m_view.m_PlayCtrl.onPlayFinish(bOpenFail);
 		});
 	}
