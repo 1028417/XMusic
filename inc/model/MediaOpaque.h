@@ -45,6 +45,8 @@ public:
         return m_uStreamPos;
     }
 
+	bool seekable() const override;
+
     void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 #endif
 
@@ -115,8 +117,6 @@ public:
 		return checkDuration(media, nFileSize);
 		(void)nFileSize;
 	}
-
-    bool seekable() const override;
 
 	void close() override;
 
