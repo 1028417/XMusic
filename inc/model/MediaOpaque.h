@@ -10,14 +10,12 @@ public:
 private:
 	wstring m_strFile;
 
-#if !__winvc
-    uint64_t m_uStreamPos = 0;
-#endif
-
 	UINT m_uByteRate = 0;
 
     void *m_pXmscCodec = NULL;
     UINT m_uXmscHeadLen = 0;
+
+    //uint64_t m_uPos = 0;
 
 private:
     long long _openFile(const wstring& strFile, bool bXmsc);
@@ -38,12 +36,7 @@ public:
     }
 
 #if !__winvc
-    uint64_t streamSize() const;
-
-    uint64_t streamPos() const
-    {
-        return m_uStreamPos;
-    }
+    int64_t size() const override;
 
 	bool seekable() const override;
 
@@ -137,8 +130,6 @@ private:
 	}
 
 #if !__winvc
-    int64_t size() const override;
-
 	int64_t seek(int64_t offset, int origin) override;
 
 	size_t _readStream(byte_p buf, size_t bufSize);
