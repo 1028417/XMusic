@@ -782,13 +782,16 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     PlayingInfo.nDuration = PlayItem.duration();
 
-    PlayingInfo.uFileSize = 0;
+    PlayingInfo.uStreamSize = 0;
     if (XMediaLib::m_bOnlineMediaLib)
     {
-        auto nStreamSize = PlayItem.fileSize()/1000;
-        if (nStreamSize > 0)
+        if (m_app.getPlayMgr().mediaOpaque().isOnline())
         {
-            PlayingInfo.uFileSize = (UINT)nStreamSize;
+            auto nStreamSize = PlayItem.fileSize()/1000;
+            if (nStreamSize > 0)
+            {
+                PlayingInfo.uStreamSize = (UINT)nStreamSize;
+            }
         }
     }
 
@@ -838,7 +841,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     _updatePlayPauseButton(true);
 
     ui.barProgress->setValue(0);
-    ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uFileSize);
+    ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
     QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
