@@ -297,34 +297,6 @@ void MainWindow::show()
     (void)startTimer(1000);
 }
 
-void MainWindow::_onPaint(CPainter& painter)
-{
-    cauto rc = this->rect();
-
-    if (ui.labelLogo->isVisible())
-    {
-        painter.fillRect(rc, QColor(__defThemeColor));
-        return;
-    }
-
-    if (m_app.getOption().bUseThemeColor)
-    {
-        painter.fillRect(rc, g_crTheme);
-        return;
-    }
-
-    bool bHScreen = rc.width() > rc.height();
-    cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-    if (!pmBkg.isNull())
-    {
-       painter.drawPixmapEx(rc, pmBkg);
-    }
-    else
-    {
-        drawDefaultBkg(painter, rc);
-    }
-}
-
 bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
@@ -349,40 +321,10 @@ bool MainWindow::event(QEvent *ev)
 
         break;
     case QEvent::Timer:
-    {
         _playSingerImg(false);
 
-        E_DecodeStatus eDecodeStatus = m_app.getPlayMgr().mediaOpaque().decodeStatus();
-        if (XMediaLib::m_bOnlineMediaLib)
-        {
-            if (eDecodeStatus != E_DecodeStatus::DS_Decoding && eDecodeStatus != E_DecodeStatus::DS_Paused)
-            {
-                break;
-            }
-        }
-        else
-        {
-            if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
-            {
-                break;
-            }
-        }
+        _updateProgress();
 
-//        UINT streamPos = m_app.getPlayMgr().mediaOpaque().streamPos()/1000;
-//        UINT pos = streamPos * ui.barProgress->maximum() / ui.barProgress->maxBuffer();
-//        ui.barProgress->setValue(pos);
-
-        int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
-        if (nProgress <= ui.barProgress->maximum())
-        {
-            UINT bufferValue = 0;
-            if (XMediaLib::m_bOnlineMediaLib)
-            {
-                bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().streamSize()/1000);
-            }
-            ui.barProgress->setValue(nProgress, bufferValue);
-        }
-    }
     break;
     default:
         break;
@@ -760,6 +702,64 @@ void MainWindow::_relayout()
     m_PlayingList.setPageRowCount(uRowCount);
 }
 
+void MainWindow::_onPaint(CPainter& painter)
+{
+    cauto rc = this->rect();
+
+    if (ui.labelLogo->isVisible())
+    {
+        painter.fillRect(rc, QColor(__defThemeColor));
+        return;
+    }
+
+    if (m_app.getOption().bUseThemeColor)
+    {
+        painter.fillRect(rc, g_crTheme);
+        return;
+    }
+
+    bool bHScreen = rc.width() > rc.height();
+    cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+    if (!pmBkg.isNull())
+    {
+       painter.drawPixmapEx(rc, pmBkg);
+    }
+    else
+    {
+        drawDefaultBkg(painter, rc);
+    }
+}
+
+void MainWindow::_updateProgress()
+{
+    E_DecodeStatus eDecodeStatus = m_app.getPlayMgr().mediaOpaque().decodeStatus();
+    if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
+    {
+        if (XMediaLib::m_bOnlineMediaLib)
+        {
+            if (eDecodeStatus != E_DecodeStatus::DS_Paused)
+            {
+                return;
+            }
+        }
+        else
+        {
+             return;
+        }
+    }
+
+    int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
+    if (nProgress <= ui.barProgress->maximum())
+    {
+        UINT bufferValue = 0;
+        if (XMediaLib::m_bOnlineMediaLib)
+        {
+            bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().streamSize()/1000);
+        }
+        ui.barProgress->setValue(nProgress, bufferValue);
+    }
+}
+
 void MainWindow::_updatePlayPauseButton(bool bPlaying)
 {
     ui.btnPlay->setVisible(!bPlaying);
@@ -1096,6 +1096,11 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
+        if (!m_app.getPlayMgr().mediaOpaque().seekable())
+        {
+            return;
+        }
+
         auto barProgress = ui.barProgress;
         if (barProgress->maximum() > 0 && m_app.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Play)
         {
@@ -1107,6 +1112,10 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             }*/
 
             m_app.getPlayMgr().player().Seek(uSeekPos);
+
+            CApp::async(100, [&](){
+                _updateProgress();
+            });
         }
     }
     else

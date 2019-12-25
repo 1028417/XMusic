@@ -97,13 +97,15 @@ public:
     void drawDefaultBkg(CPainter& painter, const QRect& rc, UINT xround=0, UINT yround=0);
 
 private:
+    void _init();
+
     bool event(QEvent *) override;
 
     void _onPaint(CPainter& painter);
 
-    void _init();
-
     void _relayout();
+
+    void _updateProgress();
 
     void _showAlbumName();
 
