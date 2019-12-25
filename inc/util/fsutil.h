@@ -37,6 +37,22 @@ using tagFileStat64 = struct stat;
 #define _fileno fileno
 #endif
 
+#if __ios || __mac
+#define fseek64 fseek
+#define ftell64 ftell
+#define lseek64 lseek
+
+#elif __windows
+#define fseek64 _fseeki64
+#define ftell64 _ftelli64
+#define lseek64 _lseeki64
+#define lseek(fno, offset, origin) (long)lseek64(fno, offset, origin)
+
+#else
+#define fseek64 fseeko
+#define ftell64 ftello
+#endif
+
 enum class E_FindFindFilter
 {
 	FFP_None
@@ -155,8 +171,8 @@ public:
 
 	static bool moveFile(const wstring& strSrcFile, const wstring& strDstFile);
 
-    static long lSeek(FILE *pf, long offset, int origin);
-    static long long lSeek64(FILE *pf, long long offset, int origin);
+    static long fSeekTell(FILE *pf, long offset, int origin);
+    static long long fSeekTell64(FILE *pf, long long offset, int origin);
 
     static wstring workDir();
     static bool setWorkDir(const wstring& strWorkDir);

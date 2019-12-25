@@ -181,8 +181,9 @@ private:
 			return false;
 		}
 		
-        m_size = (uint64_t)fsutil::lSeek64(m_pf, 0, SEEK_END);
-		(void)fsutil::lSeek64(m_pf, 0, SEEK_SET);
+        (void)fseek64(m_pf, 0, SEEK_END);
+        m_size = (uint64_t)ftell64(m_pf);
+        (void)fseek64(m_pf, 0, SEEK_SET);
 
 		return true;
 	}
@@ -209,12 +210,12 @@ public:
 
     virtual bool seek(long long offset, int origin) override
     {
-        return fsutil::lSeek64(m_pf, offset, origin) >= 0;
+        return fseek64(m_pf, offset, origin) == 0;
     }
 
 	virtual long long pos() override
 	{
-		return fsutil::lSeek64(m_pf, 0, SEEK_CUR);
+        return ftell64(m_pf);
 	}
 
 	virtual void close() override
