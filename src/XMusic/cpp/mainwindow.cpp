@@ -546,10 +546,19 @@ void MainWindow::_relayout()
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
-        int cy_labelAlbumName = __size(80);
-        int y_labelAlbumName = y_Playingfile - cy_labelAlbumName;
         int cx_barProgress = ui.barProgress->width();
-        ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_barProgress, cy_labelAlbumName);
+
+        int y_labelAlbumName = 0;
+        if (ui.labelAlbumName->isVisible())
+        {
+#define __cylabelAlbumName __size(80)
+            y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
+            ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_barProgress, __cylabelAlbumName);
+        }
+        else
+        {
+            y_labelAlbumName = y_Playingfile;
+        }
 
         int y_SingerImg = 0;
         if (bZoomoutSingerImg)
