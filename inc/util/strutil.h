@@ -80,16 +80,16 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
-    static string base64_encode(const char *pStr, size_t len, char chrTail = '=');
-	static string base64_encode(const string& str, char chrTail = '=')
+    static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
+	static string base64_encode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
-		return base64_encode(str.c_str(), str.length(), chrTail);
+		return base64_encode(str.c_str(), str.length(), pszBase, chrTail);
 	}
 
-    static string base64_decode(const char *pStr, size_t len, char chrTail = '=');
-    static string base64_decode(const string& str, char chrTail = '=')
+    static string base64_decode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
+    static string base64_decode(const string& str, const char *pszBase = NULL, char chrTail = 0)
     {
-        return base64_decode(str.c_str(), str.length(), chrTail);
+        return base64_decode(str.c_str(), str.length(), pszBase, chrTail);
     }
 
 	static bool checkUtf8(const char *pStr, size_t len);
