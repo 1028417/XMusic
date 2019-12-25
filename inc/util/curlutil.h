@@ -126,11 +126,8 @@ private:
     list<string> m_lstData;
     size_t m_uDataSize = 0;
 
-protected:
-    virtual bool _onRecv(string& strData);
-
 private:
-    bool _onRecv(char *ptr, size_t size) override;
+    virtual bool _onRecv(char *ptr, size_t size) override;
 
     void _clear() override;
 
