@@ -103,8 +103,6 @@ BOOL CAlbumPage::OnInitDialog()
 
 			dc.SetTextColor(lvcd.crText);
 			dc.DrawText(m_pSinger->m_strName.c_str(), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
-			lvcd.bSkipDefault = true;
 		}
 	});
 
