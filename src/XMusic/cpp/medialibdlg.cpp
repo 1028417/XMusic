@@ -15,17 +15,8 @@ CMedialibDlg::CMedialibDlg(class CApp& app)
 {
 }
 
-void CMedialibDlg::init()
+void CMedialibDlg::_initOuter()
 {
-    ui.setupUi(this);
-
-#if __android || __ios
-    m_MedialibView.setFont(1.05);
-#endif
-
-    m_MedialibView.init();
-
-
     cauto strMediaLibDir = m_app.getMediaLib().GetAbsPath();
     wstring strOuterDir;
 #if __windows
@@ -41,7 +32,18 @@ void CMedialibDlg::init()
     strOuterDir = L"/..";
 #endif
     m_OuterDir.setDir(strMediaLibDir, strOuterDir);
+}
 
+void CMedialibDlg::init()
+{
+    ui.setupUi(this);
+
+    _initOuter();
+
+#if __android || __ios
+    m_MedialibView.setFont(1.05);
+#endif
+    m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
@@ -200,7 +202,7 @@ void CMedialibView::play()
         if (pDir)
         {
             pDir->files()([&](XFile& file){
-               paMedias.add((CMediaRes&)file);
+                paMedias.add(file);
             });
         }
     }
