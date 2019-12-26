@@ -97,11 +97,15 @@ bool CDialog::event(QEvent *ev)
 {
 	switch (ev->type())
     {
-	case QEvent::Move:
-	case QEvent::Resize:
+    //case QEvent::Move:
+    case QEvent::Resize:
         _relayout(width(), height());
 
-		break;
+        break;
+    case QEvent::Show:
+        _relayout(width(), height());
+
+        break;
     case QEvent::Paint:
     {
         QPainter painter(this);

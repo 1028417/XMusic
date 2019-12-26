@@ -301,9 +301,10 @@ bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
-    case QEvent::Move:
+    //case QEvent::Move:
     case QEvent::Resize:
         _fixWorkArea(*this);
+
         _relayout();
 
         CDialog::resetPos();
@@ -524,6 +525,8 @@ void MainWindow::_relayout()
         }
     }
 
+    _showAlbumName();
+
     int y_PlayingListMax = 0;
 
     ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
@@ -553,6 +556,7 @@ void MainWindow::_relayout()
         {
 #define __cylabelAlbumName __size(80)
             y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
+
             ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_barProgress, __cylabelAlbumName);
         }
         else
@@ -660,8 +664,6 @@ void MainWindow::_relayout()
 //    {
 //        ui.labelSingerImg->setPixmap(*pPixmap);
 //    }
-
-    _showAlbumName();
 
 #define __CyPlayItem __size(115)
     UINT uRowCount = 0;
@@ -826,7 +828,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    _showAlbumName();
+    //_relayout(); //_showAlbumName();
 
     ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
@@ -839,7 +841,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
         ui.labelSingerImg->setVisible(false);
         _playSingerImg(true);
 
-        _relayout();
+        //_relayout();
     }
 
     _updatePlayPauseButton(true);
@@ -849,6 +851,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
+
+    _relayout();
 }
 
 void MainWindow::onPlayStop(bool bOpenFail)
