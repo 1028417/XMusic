@@ -123,6 +123,15 @@ public:
 
 	static void sync(const CB_Sync& cb);
 	static void sync(UINT uDelayTime, const CB_Sync& cb);
+
+	static void async(const CB_Sync& cb)
+	{
+		sync(0, cb);
+	}
+	static void async(UINT uDelayTime, const CB_Sync& cb)
+	{
+		sync(uDelayTime, cb);
+	}
 	
 	void thread(cfn_void cb);
 
