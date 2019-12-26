@@ -53,7 +53,7 @@ void CDialog::show(const fn_void& cbClose)
         bmp.fill();
 
         CPainter painter(&bmp);
-        //painter.setPen(Qt::transparent);
+        painter.setPen(Qt::transparent);
         painter.setBrush(Qt::black);
         painter.drawRectEx(bmp.rect(), __xround);
 

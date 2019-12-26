@@ -187,7 +187,7 @@ void CMedialibView::play()
     dselectRow();
 
     TD_IMediaList paMedias;
-    CMediaSet *pMediaSet = CListViewEx::currentMediaSet();
+    CMediaSet *pMediaSet = currentMediaSet();
     if (pMediaSet)
     {
         TD_MediaList lstMedias;
@@ -196,7 +196,7 @@ void CMedialibView::play()
     }
     else
     {
-        CPath *pDir = CListViewEx::currentPath();
+        CPath *pDir = currentPath();
         if (pDir)
         {
             TD_MediaResList paMediaRes(pDir->files());
@@ -644,7 +644,7 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
 
         auto uRow = lvRow.uRow;
         connect(pButton, &CButton::signal_clicked, [&, uRow](){
-            CPath *pDir = CListViewEx::currentPath();
+            CPath *pDir = currentPath();
             if (pDir)
             {
                 pDir->get(uRow, [&](XFile& file){
