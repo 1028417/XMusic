@@ -196,9 +196,12 @@ void CMedialibView::play()
     }
     else
     {
-        CListViewEx::currentSubFiles()([&](const XFile& subFile) {
-            paMedias.add((IMedia&)(CMediaRes&)subFile);
-        });
+        CPath *pDir = CListViewEx::currentPath();
+        if (pDir)
+        {
+            TD_MediaResList paMediaRes(pDir->files());
+            paMedias.add(paMediaRes);
+        }
     }
 
     if (paMedias)
@@ -641,13 +644,19 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
 
         auto uRow = lvRow.uRow;
         connect(pButton, &CButton::signal_clicked, [&, uRow](){
-            currentSubMedias().get(uRow, [&](CMedia& media){
-                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
-            });
-
-            currentSubFiles().get(uRow, [&](XFile& media){
-                m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)media, false));
-            });
+            CPath *pDir = CListViewEx::currentPath();
+            if (pDir)
+            {
+                pDir->get(uRow, [&](XFile& file){
+                    m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)file, false));
+                });
+            }
+            else
+            {
+                currentSubMedias().get(uRow, [&](CMedia& media){
+                    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+                });
+            }
         });
     }
 

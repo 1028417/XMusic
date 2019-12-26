@@ -86,14 +86,6 @@ protected:
     {
         return m_pPath;
     }
-    const TD_PathList & currentSubDirs() const
-    {
-        return m_paSubDirs;
-    }
-    const TD_XFileList & currentSubFiles() const
-    {
-        return m_paSubFiles;
-    }
 
     virtual CMediaSet* _onUpward(CMediaSet& currentMediaSet)
     {

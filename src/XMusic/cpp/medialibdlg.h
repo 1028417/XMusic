@@ -151,12 +151,7 @@ private:
 
     wstring GetPath() const override
     {
-        if (fileinfo.pParent)
-        {
-            return m_strOuterDir;
-        }
-
-        return CMediaDir::GetPath();
+        return m_strOuterDir + CMediaDir::GetPath();
     }
 
     CMediaRes* findSubFile(const wstring& strSubFile) override
