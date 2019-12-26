@@ -557,7 +557,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            y_labelAlbumName = y_Playingfile;
+            y_labelAlbumName = y_Playingfile - __size(20);
         }
 
         int y_SingerImg = 0;
@@ -594,7 +594,6 @@ void MainWindow::_relayout()
         ui.labelSingerImg->setGeometry(rcSingerImg);
 
         int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
-        ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName, cx_SingerImg-__size(15), ui.labelSingerName->height());
 
         if (ui.labelSingerImg->isVisible())
         {
@@ -610,7 +609,12 @@ void MainWindow::_relayout()
             {
                 y_PlayingListMax = y_labelAlbumName;
             }
+
+            y_labelSingerName += __size(20);
         }
+
+        ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
+                                        , cx_SingerImg-__size(15), ui.labelSingerName->height());
 
         //m_PlayingList.setTextColor(g_crText);
         m_PlayingList.setInactiveAlpha(0.4);
