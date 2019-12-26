@@ -12,7 +12,7 @@ struct __UtilExt tagCurlOpt
     bool bShare;
     //long dnsCacheTimeout;
 
-    unsigned long maxRedirect = 0;
+    unsigned long maxRedirect = 1;
 
     unsigned long timeout = 0;
     unsigned long connectTimeout = 0;
