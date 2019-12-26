@@ -115,14 +115,15 @@ private:
 public:
     void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
     {
-        m_strOuterDir = strOuterDir;
-        CPath::setDir(strMediaLibDir + strOuterDir);
-
 #if __windows
         m_strMediaLibDir = strMediaLibDir;
 #else
         m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
 #endif
+
+        m_strOuterDir = strOuterDir;
+
+        CPath::setDir(strMediaLibDir + strOuterDir);
     }
 
 private:
@@ -182,19 +183,23 @@ private:
     CMedialibView m_MedialibView;
 
 public:
+    size_t getPageRowCount();
+
     void init();
 
     void show()
     {
+        _initOuter();
+
         m_MedialibView.showRoot();
 
         _show();
     }
 
-    size_t getPageRowCount();
-
     void showMediaSet(CMediaSet& MediaSet)
     {
+        _initOuter();
+
         m_MedialibView.showMediaSet(MediaSet);
 
         _show();
@@ -202,6 +207,8 @@ public:
 
     void showMedia(CMedia& media)
     {
+        _initOuter();
+
         m_MedialibView.showMedia(media);
 
         _show();
@@ -209,6 +216,8 @@ public:
 
     bool showFile(const wstring& strPath)
     {
+        _initOuter();
+
         if (!m_MedialibView.showFile(strPath))
         {
             return false;
@@ -227,6 +236,8 @@ public:
     }
 
 private:
+    void _initOuter();
+
     void _show();
 
     void _relayout(int cx, int cy) override;

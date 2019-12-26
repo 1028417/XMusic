@@ -546,7 +546,7 @@ void MainWindow::_relayout()
         int x = ui.barProgress->x();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
-        int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
+        int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile - __size(2);
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
         int cx_barProgress = ui.barProgress->width();

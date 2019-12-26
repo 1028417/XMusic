@@ -204,7 +204,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <x>930</x>
       <y>2110</y>
       <width>100</width>
-      <height>50</height>
+      <height>45</height>
      </rect>
     </property>
     <property name="text">
@@ -278,9 +278,9 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>2160</y>
+      <y>2155</y>
       <width>990</width>
-      <height>29</height>
+      <height>36</height>
      </rect>
     </property>
     <property name="text">
@@ -872,12 +872,12 @@ gridline-color: rgb(255, 255, 255);</string>
    <zorder>labelLogoCompany</zorder>
    <zorder>labelLogoTip</zorder>
    <zorder>barProgress</zorder>
-   <zorder>labelProgress</zorder>
    <zorder>btnMore</zorder>
    <zorder>btnExit</zorder>
    <zorder>btnFullScreen</zorder>
    <zorder>labelAlbumName</zorder>
    <zorder>labelPlayingfile</zorder>
+   <zorder>labelProgress</zorder>
   </widget>
   <action name="action">
    <property name="text">
