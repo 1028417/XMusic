@@ -877,7 +877,7 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     else
     {
         auto uPlaySeq = m_uPlaySeq;
-        CApp::async(1000, [&, uPlaySeq]() {
+        CApp::async(2000, [&, uPlaySeq]() {
             if (uPlaySeq == m_uPlaySeq)
             {
                 _updatePlayPauseButton(false);
