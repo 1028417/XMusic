@@ -42,8 +42,8 @@ protected:
     };
     struct tagRowContext
     {
-        tagRowContext(UINT t_eStyle = E_RowStyle::IS_None)
-            : eStyle(t_eStyle)
+        tagRowContext(tagLVRow& t_lvRow, UINT t_eStyle = E_RowStyle::IS_None)
+            : lvRow(t_lvRow), eStyle(t_eStyle)
         {
         }
 
@@ -53,14 +53,14 @@ protected:
             fIconMargin = t_fIconMargin;
         }
 
+        tagLVRow& lvRow;
+
         UINT eStyle = E_RowStyle::IS_None;
 
         const QPixmap *pixmap = NULL;
         float fIconMargin = 0.18f;
 
         wstring strText;
-
-        wstring strRemark;
     };
 
 public:
@@ -134,7 +134,9 @@ protected:
 
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 
-    void _paintRow(CPainter&, const tagLVRow&, const tagRowContext&);
+    void _paintRow(CPainter&, const tagRowContext&);
+
+    virtual void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 

@@ -68,7 +68,7 @@ private:
 
     size_t _getRootRowCount() override;
 
-    bool _genRootRowContext(const tagLVRow&, tagMediaContext&) override;
+    bool _genRootRowContext(tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
     bool event(QEvent *ev) override;

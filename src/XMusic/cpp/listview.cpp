@@ -115,8 +115,9 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     }
 }
 
-void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRowContext& context)
+void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 {
+    cauto lvRow = context.lvRow;
     QRect rc = lvRow.rc;
     int cy = rc.height();
 
@@ -203,6 +204,11 @@ void CListView::_paintRow(CPainter& painter, const tagLVRow& lvRow, const tagRow
         painter.setFont(font);
     }
 
+    _paintText(painter, rc, context);
+}
+
+void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
+{
     QString qsText = strutil::toQstr(context.strText);
     if (context.eStyle & E_RowStyle::IS_MultiLine)
     {

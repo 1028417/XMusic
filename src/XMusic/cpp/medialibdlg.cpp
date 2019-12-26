@@ -368,8 +368,10 @@ size_t CMedialibView::_getRootRowCount()
     }
 }
 
-bool CMedialibView::_genRootRowContext(const tagLVRow& lvRow, tagMediaContext& context)
+bool CMedialibView::_genRootRowContext(tagMediaContext& context)
 {
+    cauto lvRow = context.lvRow;
+
     context.eStyle = E_RowStyle::IS_CenterAlign;
 
     bool bHScreen = isHLayout();
@@ -505,7 +507,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 {
                     context.pixmap = &m_pmDirLink;
 
-                    if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+                    /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                     {
                         context.strRemark = L"扩展";
                     }
@@ -516,7 +518,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                     else
                     {
                         context.strRemark = L"內部";
-                    }
+                    }*/
                 }
             }
         }

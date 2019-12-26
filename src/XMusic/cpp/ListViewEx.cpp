@@ -95,7 +95,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             m_lstSubSets.get(lvRow.uRow, [&](CMediaSet& mediaSet) {
                 tagMediaContext context(lvRow, mediaSet);
                 _genMediaContext(context);
-                _paintRow(painter, lvRow, context);
+                _paintRow(painter, context);
             });
         }
         else if (m_lstSubMedias)
@@ -103,7 +103,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             m_lstSubMedias.get(lvRow.uRow, [&](CMedia& media) {
                 tagMediaContext context(lvRow, media);
                 _genMediaContext(context);
-                _paintRow(painter, lvRow, context);
+                _paintRow(painter, context);
             });
         }
     }
@@ -114,7 +114,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             m_paSubFiles.get(lvRow.uRow-m_paSubDirs.size(), [&](XFile& subFile) {
                 tagMediaContext context(lvRow, subFile);
                 _genMediaContext(context);
-                _paintRow(painter, lvRow, context);
+                _paintRow(painter, context);
             });
         }
         else
@@ -122,18 +122,49 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             m_paSubDirs.get(lvRow.uRow, [&](CPath& subPath) {
                 tagMediaContext context(lvRow, subPath);
                 _genMediaContext(context);
-                _paintRow(painter, lvRow, context);
+                _paintRow(painter, context);
             });
         }
     }
     else
     {
         tagMediaContext context(lvRow);
-        if (_genRootRowContext(lvRow, context))
+        if (_genRootRowContext(context))
         {
-            _paintRow(painter, lvRow, context);
+            _paintRow(painter, context);
         }
     }
+}
+
+void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
+{
+    tagMediaContext& mediaContext = (tagMediaContext&)context;
+
+    if (mediaContext.pMediaSet)
+    {
+        size_t uCount = 0;
+        if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
+        {
+            auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
+            uCount = pAlbum->albumItems().size();
+        }
+        else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
+        {
+            auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
+            uCount = pPlaylist->playItems().size();
+        }
+
+        if (uCount > 0)
+        {
+            QString qsRemark;
+            qsRemark.sprintf("%u项", uCount);
+            painter.drawText(rc, Qt::AlignRight|Qt::AlignVCenter, qsRemark);
+
+            rc.setRight(rc.right() - 100);
+        }
+    }
+
+    CListView::_paintText(painter, rc, context);
 }
 
 void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
@@ -175,7 +206,7 @@ void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
     else
     {
         tagMediaContext context(lvRow);
-        if (_genRootRowContext(lvRow, context))
+        if (_genRootRowContext(context))
         {
             if (context.pMediaSet)
             {

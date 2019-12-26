@@ -10,44 +10,37 @@ class CListViewEx : public CListView
 protected:
     struct tagMediaContext : public tagRowContext
     {
-        tagLVRow& lvRow;
-
         CMediaSet *pMediaSet = NULL;
         CMedia *pMedia = NULL;
 
         CPath *pDir = NULL;
         XFile *pFile = NULL;
 
-        tagMediaContext(tagLVRow& t_lvRow)
-            : lvRow(t_lvRow)
+        tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
         {
         }
 
-        tagMediaContext(tagLVRow& t_lvRow, CMediaSet& MediaSet) :
-            tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
-            , lvRow(t_lvRow)
+        tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
+            tagRowContext(lvRow, E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
             , pMediaSet(&MediaSet)
         {
             strText = MediaSet.m_strName;
         }
-        tagMediaContext(tagLVRow& t_lvRow, CMedia& media) :
-            tagRowContext(E_RowStyle::IS_BottomLine)
-            , lvRow(t_lvRow)
+        tagMediaContext(tagLVRow& lvRow, CMedia& media) :
+            tagRowContext(lvRow, E_RowStyle::IS_BottomLine)
             , pMedia(&media)
         {
             strText = media.GetTitle();
         }
 
-        tagMediaContext(tagLVRow& t_lvRow, CPath& dir) :
-            tagRowContext(E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
-            , lvRow(t_lvRow)
+        tagMediaContext(tagLVRow& lvRow, CPath& dir) :
+            tagRowContext(lvRow, E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
             , pDir(&dir)
         {
             strText = dir.name();
         }
-        tagMediaContext(tagLVRow& t_lvRow, XFile& file) :
-            tagRowContext(E_RowStyle::IS_BottomLine)
-            , lvRow(t_lvRow)
+        tagMediaContext(tagLVRow& lvRow, XFile& file) :
+            tagRowContext(lvRow, E_RowStyle::IS_BottomLine)
             , pFile(&file)
         {
             strText = file.name();
@@ -120,7 +113,9 @@ private:
 
     void _onPaintRow(CPainter&, tagLVRow&) override;
 
-    virtual bool _genRootRowContext(const tagLVRow&, tagMediaContext&) = 0;
+    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context) override;
+
+    virtual bool _genRootRowContext(tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) = 0;
 
     void _onRowClick(tagLVRow&, const QMouseEvent&) override;

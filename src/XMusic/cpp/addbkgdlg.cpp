@@ -184,11 +184,11 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
-            tagRowContext context(eStyle);
+            tagRowContext context(lvRow, eStyle);
             context.strText = imgDir.oppPath();
             context.pixmap = &imgDir.snapshot();
 
-            _paintRow(painter, lvRow, context);
+            _paintRow(painter, context);
         });
     }
 }
