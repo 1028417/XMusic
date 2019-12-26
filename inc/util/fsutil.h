@@ -129,8 +129,18 @@ public:
     static FILE* fopen(const wstring& strFile, const string& strMode);
 	static FILE* fopen(const string& strFile, const string& strMode);
 
-	static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
-	static bool copyFile(const string& strSrcFile, const string& strDstFile);
+    static bool copyFile(const wstring& strSrcFile, const wstring& strDstFile);
+
+#if __windows
+    static bool copyFile(const string& strSrcFile, const string& strDstFile);
+#endif
+
+#if !__winvc
+    static bool copyFile(const QString& qsSrcFile, const QString& qsDstFile)
+    {
+        return QFile::copy(qsSrcFile, qsDstFile);
+    }
+#endif
 
 	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
     static bool copyFileEx(const wstring& strSrcFile, const wstring& strDstFile
