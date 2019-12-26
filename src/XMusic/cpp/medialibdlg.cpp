@@ -199,8 +199,9 @@ void CMedialibView::play()
         CPath *pDir = currentPath();
         if (pDir)
         {
-            TD_MediaResList paMediaRes(pDir->files());
-            paMedias.add(paMediaRes);
+            pDir->files()([&](XFile& file){
+               paMedias.add((CMediaRes&)file);
+            });
         }
     }
 
