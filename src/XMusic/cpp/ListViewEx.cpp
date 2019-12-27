@@ -143,7 +143,6 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
     if (mediaContext.pMediaSet)
     {
         QString qsRemark;
-
         if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
             auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
