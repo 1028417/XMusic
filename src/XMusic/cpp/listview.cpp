@@ -190,9 +190,14 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         }
     }    
 
-    if (lvRow.bSelect)
+    _paintText(painter, rc, context);
+}
+
+void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
+{
+    if (context.lvRow.bSelect)
     {
-        if (lvRow.bFlash)
+        if (context.lvRow.bFlash)
         {
             QColor cr = g_crText;
             cr.setAlpha(170);
@@ -204,11 +209,6 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         painter.setFont(font);
     }
 
-    _paintText(painter, rc, context);
-}
-
-void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
-{
     QString qsText = strutil::toQstr(context.strText);
     if (context.eStyle & E_RowStyle::IS_MultiLine)
     {

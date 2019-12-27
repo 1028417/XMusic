@@ -142,29 +142,49 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
 
     if (mediaContext.pMediaSet)
     {
-        size_t uCount = 0;
-        if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
+        QString qsRemark;
+
+        if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
+        {
+            auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%u歌手", pSingerGroup->singers().size());
+        }
+        else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+        {
+            auto pSinger = (CSinger*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%u专辑", pSinger->albums().size());
+        }
+        else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
         {
             auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
-            uCount = pAlbum->albumItems().size();
+            qsRemark.sprintf("%u曲目", pAlbum->albumItems().size());
         }
         else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
         {
             auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
-            uCount = pPlaylist->playItems().size();
+            qsRemark.sprintf("%u曲目", pPlaylist->playItems().size());
         }
 
-        if (uCount > 0)
+        if (!qsRemark.isEmpty())
         {
-            QString qsRemark;
-            qsRemark.sprintf("%u项", uCount);
+            painter.save();
+
+            painter.adjustFont(0.9f);
+
+            auto cr = painter.pen().color();
+            cr.setAlpha(cr.alpha()/2);
+            painter.setPen(cr);
+
             painter.drawText(rc, Qt::AlignRight|Qt::AlignVCenter, qsRemark);
+
+            painter.restore();
 
             rc.setRight(rc.right() - 100);
         }
     }
 
     CListView::_paintText(painter, rc, context);
+
 }
 
 void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
