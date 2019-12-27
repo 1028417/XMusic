@@ -97,7 +97,7 @@ bool CDialog::event(QEvent *ev)
 {
 	switch (ev->type())
     {
-    //case QEvent::Move:
+    case QEvent::Move:
     case QEvent::Resize:
         _relayout(width(), height());
 
