@@ -121,7 +121,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     QRect rc = lvRow.rc;
     int cy = rc.height();
 
-    int nMargin = __size(42);
+    int nMargin = __size(40);
     if (context.pixmap && !context.pixmap->isNull())
     {
         UINT sz_icon = cy;
