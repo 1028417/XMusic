@@ -202,7 +202,7 @@ void CMedialibView::play()
         if (pDir)
         {
             pDir->files()([&](XFile& file){
-                paMedias.add(file);
+                paMedias.add((CMediaRes&)file);
             });
         }
     }
@@ -461,10 +461,12 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pixmap = &m_pmSingerGroup;
-            break;
+            return;
         default:
             break;
         };
+
+        _showButton(context.lvRow);
     }
     else if (context.pMedia)
     {
@@ -491,7 +493,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         }
 
         _showButton(context.lvRow);
-        context.eStyle |= E_RowStyle::IS_RightButton;
+        //context.eStyle |= E_RowStyle::IS_RightButton;
     }
     else if (context.pDir || context.pFile)
     {
@@ -655,13 +657,18 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
                 pDir->get(uRow, [&](XFile& file){
                     m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)file, false));
                 });
+                return;
             }
-            else
+
+            if (currentSubSets().get(uRow, [&](CMediaSet& mediaSet){
+            }))
             {
-                currentSubMedias().get(uRow, [&](CMedia& media){
-                    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
-                });
+                return;
             }
+
+            currentSubMedias().get(uRow, [&](CMedia& media){
+                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+            });
         });
     }
 
@@ -673,4 +680,6 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
+
+    rc.setRight(rc.right()-szButton);
 }
