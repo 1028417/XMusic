@@ -62,7 +62,7 @@ void CAddBkgDlg::show()
 
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MIN(cx, cy)/6;
+    int sz = (MAX(cx, cy)/11 + MIN(cx, cy)/6)/2;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
