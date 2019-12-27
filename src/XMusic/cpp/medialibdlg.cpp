@@ -7,6 +7,8 @@
 #define __XMusicDirName L"XMusic"
 #define __OuterDirName L" 库外"
 
+#define __xPlayButtonOffset __size(10)
+
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CApp& app)
@@ -106,7 +108,8 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
-    ui.btnPlay->setGeometry(cx-rcReturn.right(), rcReturn.top(), rcReturn.width(), rcReturn.height());
+    int x_btnPlay = cx-rcReturn.right() + __xPlayButtonOffset;
+    ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
     _resizeTitle();
 
@@ -676,11 +679,11 @@ void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
 
     pButton->setStyleSheet(bMedia?"border-image: url(:/img/btnAddplay.png);"
                                 : "border-image: url(:/img/btnPlay.png);");
-    auto& rc = lvRow.rc;
 
+    auto& rc = lvRow.rc;
     int szButton = ui.btnReturn->height()-__size(8);
     auto margin = (rc.height()-szButton)/2;
-    int x = rc.right()-margin-szButton;
+    int x = rc.right()-margin-szButton + __xPlayButtonOffset;
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
