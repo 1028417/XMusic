@@ -121,7 +121,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     QRect rc = lvRow.rc;
     int cy = rc.height();
 
-    int nMargin = 0;
+    int nMargin = __size(42);
     if (context.pixmap && !context.pixmap->isNull())
     {
         UINT sz_icon = cy;
@@ -130,7 +130,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
             sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
         }
 
-        nMargin = (cy-sz_icon)/2;
+        //nMargin = (cy-sz_icon)/2;
 
         int x_icon = 0;
         if (context.eStyle & E_RowStyle::IS_CenterAlign)
@@ -150,11 +150,11 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 
         rc.setLeft(x_icon + sz_icon + nMargin);
 
-        nMargin += 5;
+        //nMargin += __size(3);
     }
     else
     {
-        nMargin = cy/5;
+        //nMargin = cy/5;
 
         rc.setLeft(nMargin);
     }
