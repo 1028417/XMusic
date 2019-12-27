@@ -466,7 +466,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             break;
         };
 
-        _showButton(context.lvRow);
+        _showButton(context.lvRow, false);
         context.eStyle |= E_RowStyle::IS_RightButton;
     }
     else if (context.pMedia)
@@ -493,7 +493,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             }
         }
 
-        _showButton(context.lvRow);
+        _showButton(context.lvRow, true);
         context.eStyle |= E_RowStyle::IS_RightButton;
     }
     else if (context.pDir || context.pFile)
@@ -531,7 +531,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
 
            context.strText = MediaRes.GetTitle();
 
-           _showButton(context.lvRow);
+           _showButton(context.lvRow, true);
            context.eStyle |= E_RowStyle::IS_RightButton;
         }
     }
@@ -641,14 +641,12 @@ bool CMedialibView::event(QEvent *ev)
     return bRet;
 }
 
-void CMedialibView::_showButton(tagLVRow& lvRow)
+void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
 {
     CButton*& pButton = m_mapButton[lvRow.uIdx];
     if (NULL == pButton)
     {
         pButton = new CButton(this);
-
-        pButton->setStyleSheet("border-image: url(:/img/btnAddplay.png);");
 
         auto uRow = lvRow.uRow;
         connect(pButton, &CButton::signal_clicked, [&, uRow]() {
@@ -676,9 +674,11 @@ void CMedialibView::_showButton(tagLVRow& lvRow)
         });
     }
 
+    pButton->setStyleSheet(bMedia?"border-image: url(:/img/btnAddplay.png);"
+                                : "border-image: url(:/img/btnPlay.png);");
     auto& rc = lvRow.rc;
 
-    int szButton = ui.btnReturn->height();
+    int szButton = ui.btnReturn->height()-__size(8);
     auto margin = (rc.height()-szButton)/2;
     int x = rc.right()-margin-szButton;
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
