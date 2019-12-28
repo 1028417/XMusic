@@ -61,8 +61,7 @@ private:
 
 	void _onClear() override
 	{
-		m_mapAttachDir.clear();
-		CMediaDir::_onClear();
+                m_mapAttachDir.clear();
 	}
 
 	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
