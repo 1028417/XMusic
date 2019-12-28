@@ -86,13 +86,14 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         painter.setFont(this->font());
         painter.setPen(g_crText);
 
-        tagLVRow lvRow(uIdx, uRow, 0, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+        bool bSelected = (int)uRow == m_nSelectRow;
+        tagLVRow lvRow(uIdx, uRow, 0, bSelected, (int)uRow == m_nFlashRow);
         QRect& rc = lvRow.rc;
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
             rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
 
-            if (lvRow.bSelect)
+            if (bSelected)
             {
                 auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
                     + abs(g_crText.blue()-g_crTheme.blue()))/3;
@@ -195,18 +196,17 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 
 void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
 {
-    if (context.lvRow.bSelect)
+    if (context.lvRow.bSelected)
     {
-        if (context.lvRow.bFlash)
-        {
-            QColor cr = g_crText;
-            cr.setAlpha(170);
-            painter.setPen(cr);
-        }
-
         auto font = painter.font();
         font.setBold(true);
         painter.setFont(font);
+    }    
+    if (context.lvRow.bFlashing)
+    {
+        QColor cr = g_crText;
+        cr.setAlpha(170);
+        painter.setPen(cr);
     }
 
     QString qsText = strutil::toQstr(context.strText);

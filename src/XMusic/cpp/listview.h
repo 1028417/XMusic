@@ -10,12 +10,12 @@ protected:
     {
         tagLVRow() {}
 
-        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelect, bool t_bFlash)
+        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected, bool t_bFlashing)
             : uIdx(t_uIdx)
             , uRow(t_uRow)
             , uCol(t_uCol)
-            , bSelect(t_bSelect)
-            , bFlash(t_bFlash)
+            , bSelected(t_bSelected)
+            , bFlashing(t_bFlashing)
         {
         }
 
@@ -23,8 +23,8 @@ protected:
         UINT uRow = 0;
         UINT uCol = 0;
 
-        bool bSelect = false;
-        bool bFlash = false;
+        bool bSelected = false;
+        bool bFlashing = false;
 
         QRect rc;
     };
