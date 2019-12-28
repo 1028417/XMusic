@@ -362,13 +362,16 @@ void CBkgDlg::setBkg(size_t uIdx)
 void CBkgDlg::addBkg(const wstring& strFile)
 {
     wstring strFileName = to_wstring(time(NULL));
-
-    if (fsutil::copyFile(strFile, _bkgDir() + strFileName))
+    if (!fsutil::copyFile(strFile, _bkgDir() + strFileName))
     {
-        _vecBkgFile().push_back(strFileName);
-
-        _setBkg(strFileName);
+        return;
     }
+
+    _vecBkgFile().push_back(strFileName);
+    m_bkgView.update();
+
+    _setBkg(strFileName);
+    close();
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
@@ -390,7 +393,6 @@ void CBkgDlg::deleleBkg(size_t uIdx)
         }
 
         fsutil::removeFile(_bkgDir() + vecBkgFile[uIdx]);
-
         vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
         auto& vecSnapshot = _vecSnapshot();
