@@ -717,19 +717,17 @@ void MainWindow::_relayout()
     m_PlayingList.setPageRowCount(uRowCount);
 }
 
-#define __logoBkgColor QRGB(180, 220, 255) // __defThemeColor
-
 void MainWindow::_onPaint(CPainter& painter)
 {
     cauto rc = this->rect();
 
-    if (ui.labelLogo->isVisible())
-    {
-        painter.fillRect(rc, QColor(__logoBkgColor));
-        return;
-    }
+//    if (ui.labelLogo->isVisible())
+//    {
+//        painter.fillRect(rc, QColor(__defThemeColor));
+//        return;
+//    }
 
-    if (m_app.getOption().bUseThemeColor)
+    if (ui.labelLogo->isVisible() || m_app.getOption().bUseThemeColor)
     {
         painter.fillRect(rc, g_crTheme);
         return;

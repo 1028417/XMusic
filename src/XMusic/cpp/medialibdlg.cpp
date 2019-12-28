@@ -7,7 +7,7 @@
 #define __XMusicDirName L"XMusic"
 #define __OuterDirName L" 库外"
 
-#define __xPlayButtonOffset __size(10)
+#define __xPlayButtonOffset __size(8)
 
 static Ui::MedialibDlg ui;
 
