@@ -4,7 +4,8 @@
 #if !__winvc
 //#include <QRgb>
 #define QRGB(r, g, b) ((0xffu << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | (b & 0xffu))
-#define __defThemeColor QRGB(180, 220, 255)
+#define __defThemeColor QRGB(170, 220, 255)
+#define __defTextColor QRGB(255, 255, 200)
 #endif
 
 struct __ModelExt tagPlaySpiritOption
@@ -76,7 +77,7 @@ struct __ModelExt tagOption
 
     bool bUseThemeColor = false;
     UINT crTheme = __defThemeColor;
-    UINT crText = QRGB(255, 255, 185);
+    UINT crText = __defTextColor;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
