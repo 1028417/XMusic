@@ -43,6 +43,11 @@ public:
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+
+    void _onClear() override
+    {
+        m_lstSubImgs.clear();
+    }
 };
 
 using TD_ImgDirList = PtrArray<CImgDir>;
