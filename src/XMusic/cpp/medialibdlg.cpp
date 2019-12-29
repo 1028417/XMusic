@@ -197,7 +197,7 @@ void CMedialibView::play()
     {
         TD_MediaList lstMedias;
         pMediaSet->GetAllMedias(lstMedias);
-        paMedias.assign(lstMedias);
+        paMedias.add(lstMedias);
     }
     else
     {
@@ -650,32 +650,11 @@ void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
     if (NULL == pButton)
     {
         pButton = new CButton(this);
-
-        auto uRow = lvRow.uRow;
-        connect(pButton, &CButton::signal_clicked, [&, uRow]() {
-            CPath *pDir = currentPath();
-            if (pDir)
-            {
-                pDir->get(uRow, [&](XFile& file){
-                    m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)file, false));
-                });
-                return;
-            }
-
-            if (currentSubSets().get(uRow, [&](CMediaSet& mediaSet){
-                 TD_MediaList lstMedias;
-                 mediaSet.GetAllMedias(lstMedias);
-                 m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
-            }))
-            {
-                return;
-            }
-
-            currentSubMedias().get(uRow, [&](CMedia& media){
-                m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
-            });
+        connect(pButton, &CButton::signal_clicked, [&, pButton]() {
+            _onButton(m_mapButtonIdx[pButton]);
         });
     }
+    m_mapButtonIdx[pButton] = lvRow.uRow;
 
     pButton->setStyleSheet(bMedia?"border-image: url(:/img/btnAddplay.png);"
                                 : "border-image: url(:/img/btnPlay.png);");
@@ -687,4 +666,29 @@ void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
     pButton->setGeometry(rcPos);
     pButton->setVisible(true);
+}
+
+void CMedialibView::_onButton(UINT uRow)
+{
+    CPath *pDir = currentPath();
+    if (pDir)
+    {
+        pDir->get(uRow, [&](XFile& file){
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)file, false));
+        });
+        return;
+    }
+
+    if (currentSubSets().get(uRow, [&](CMediaSet& mediaSet){
+         TD_MediaList lstMedias;
+         mediaSet.GetAllMedias(lstMedias);
+         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+    }))
+    {
+        return;
+    }
+
+    currentSubMedias().get(uRow, [&](CMedia& media){
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+    });
 }

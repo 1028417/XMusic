@@ -40,6 +40,7 @@ private:
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
     map<UINT, class CButton*> m_mapButton;
+    map<class CButton*, UINT> m_mapButtonIdx;
 
 signals:
     void signal_update();
@@ -74,6 +75,7 @@ private:
     bool event(QEvent *ev) override;
 
     void _showButton(tagLVRow& lvRow, bool bMedia);
+    void _onButton(UINT uRow);
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 
