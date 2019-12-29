@@ -614,7 +614,7 @@ void MainWindow::_relayout()
                 y_PlayingListMax = y_labelAlbumName;
             }
 
-            y_labelSingerName += __size(20);
+            y_labelSingerName += __size(10);
         }
 
         ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
