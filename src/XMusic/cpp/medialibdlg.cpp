@@ -5,7 +5,7 @@
 #include "ui_medialibdlg.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName L" 库外"
+#define __OuterDirName L" 本地"
 
 #define __xPlayButtonOffset __size(8)
 
