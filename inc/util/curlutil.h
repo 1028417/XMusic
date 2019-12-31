@@ -3,7 +3,7 @@
 
 struct __UtilExt tagCurlOpt
 {
-    tagCurlOpt(bool t_bShare)//, long t_dnsCacheTimeout)
+    tagCurlOpt(bool t_bShare = false)//, long t_dnsCacheTimeout)
         : bShare(t_bShare)
         //, dnsCacheTimeout(t_dnsCacheTimeout)
     {
@@ -25,7 +25,7 @@ struct __UtilExt tagCurlOpt
     //unsigned long keepAliveIdl = 0;
     //unsigned long keepAliveInterval = 0;
 
-    string strUserAgent;
+    string strUserAgent = "curl/7.66.0";
 };
 
 using CB_CURLWrite = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
@@ -64,8 +64,6 @@ public:
         m_curlOpt.lowSpeedLimitTime = lowSpeedLimitTime;
 
         m_curlOpt.maxSpeedLimit = maxSpeedLimit;
-
-        m_curlOpt.strUserAgent = "curl/7.66.0";
     }
 
     CCurlDownload(const tagCurlOpt& curlOpt) : m_curlOpt(curlOpt)
