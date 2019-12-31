@@ -71,9 +71,11 @@ public:
 };
 
 #if !__winvc
-struct __ModelExt tagUpgradeConf
+struct __ModelExt tagMedialibConf
 {
-    UINT uVersion = 0;
+    UINT uCompatibleAppVersion = 0;
+
+    UINT uMedialibVersion = 0;
 
     PairList<string, string> plUrl;
 };
@@ -166,8 +168,8 @@ public:
     virtual void close() = 0;
 
 #if !__winvc
-    virtual bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) = 0;
-    virtual bool upgradeMediaLib(const tagUpgradeConf& upgradeConf, CB_DownloadProgress& cbProgress) = 0;
+    virtual bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL) = 0;
+    virtual bool upgradeMediaLib(const tagMedialibConf& medialibConf, CB_DownloadProgress& cbProgress) = 0;
 
 #else
     virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
@@ -281,8 +283,8 @@ public:
 	void close() override;
 
 #if !__winvc
-    bool readUpgradeConf(tagUpgradeConf& upgradeConf, Instream *pins = NULL) override;
-    bool upgradeMediaLib(const tagUpgradeConf& upgradeConf, CB_DownloadProgress& cbProgress) override;
+    bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL) override;
+    bool upgradeMediaLib(const tagMedialibConf& medialibConf, CB_DownloadProgress& cbProgress) override;
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
@@ -303,7 +305,7 @@ private:
 #endif
 
 private:
-    bool _upgradeMediaLib(CZipFile& zipFile, UINT uPrevVersion);
+    bool _upgradeMediaLib(CZipFile& zipFile, const tagMedialibConf& prevMedialibConf);
     bool _loadShareLib(CZipFile& zipFile);
 
     wstring _scanXMusicDir();
