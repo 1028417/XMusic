@@ -293,11 +293,7 @@ int CApp::run()
 
 bool CApp::_upgradeMediaLib()
 {
-#if __android
-    QFile qf("assets:/medialib.conf");
-#else
     QFile qf(":/medialib.conf");
-#endif
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
         g_logger >> "loadMedialibConfResource fail";
