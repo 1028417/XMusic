@@ -53,7 +53,9 @@ static const wstring& sdcardPath()
 
 CAppInit::CAppInit(QApplication& app)
 {
-#if __android
+#if __windows
+    fsutil::setWorkDir(fsutil::getModuleDir());
+#elif __android
     fsutil::setWorkDir(__androidDataDir);
 #else
     fsutil::setWorkDir(app.applicationDirPath().toStdWString());
