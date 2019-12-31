@@ -299,14 +299,15 @@ public:
 
     wstring backupDB() override;
 	bool restoreDB(const wstring& strTag) override;
-
-private:
-    bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
 #endif
 
 private:
+#if !__winvc
     bool _upgradeMediaLib(CZipFile& zipFile, const tagMedialibConf& prevMedialibConf);
     bool _loadShareLib(CZipFile& zipFile);
+#else
+	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
+#endif
 
     wstring _scanXMusicDir();
 
