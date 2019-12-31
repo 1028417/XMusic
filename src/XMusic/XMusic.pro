@@ -117,7 +117,7 @@ font.files += ../../bin/font/Microsoft-YaHei-Semibold.ttc
 
 hbkg.files += ../../bin/bkg/hbkg/win10
 vbkg.files += ../../bin/bkg/vbkg/win10
-upgradeConf.files += upgrade.conf
+medialibConf.files += medialib.conf
 
 android {
     #CONFIG += mobility
@@ -126,8 +126,8 @@ android {
     font.path = /assets/font
     hbkg.path = /assets/bkg/hbkg
     vbkg.path = /assets/bkg/vbkg
-    upgradeConf.path = /assets
-    INSTALLS += font hbkg vbkg upgradeConf
+    medialibConf.path = /assets
+    INSTALLS += font hbkg vbkg medialibConf
 
     DISTFILES += \
         android/AndroidManifest.xml \

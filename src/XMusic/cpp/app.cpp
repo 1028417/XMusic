@@ -292,35 +292,38 @@ int CApp::run()
 bool CApp::_upgradeMediaLib()
 {
 #if __android
-    QFile qf("assets:/upgrade.conf");
+    QFile qf("assets:/medialib.conf");
 #else
-    QFile qf(":/upgrade.conf");
+    QFile qf(":/medialib.conf");
 #endif
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
-        g_logger >> "loadUpgradeConfResource fail";
+        g_logger >> "loadMedialibConfResource fail";
         return false;
     }
 
     cauto ba = qf.readAll();
-    IFBuffer ifbUpgradeConf((c_byte_p)ba.data(), ba.size());
-    tagUpgradeConf orgUpgradeConf;
-    __EnsureReturn(m_model.readUpgradeConf(orgUpgradeConf, &ifbUpgradeConf), false);
-    g_logger << "MediaLib, orgVersion: " >> orgUpgradeConf.uVersion;
+    IFBuffer ifbMedialibConf((c_byte_p)ba.data(), ba.size());
+    tagMedialibConf orgMedialibConf;
+    __EnsureReturn(m_model.readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
+    g_logger << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
 
-    tagUpgradeConf *pUpgradeConf = &orgUpgradeConf;
-    tagUpgradeConf userUpgradeConf;
-    if (m_model.readUpgradeConf(userUpgradeConf))
+    tagMedialibConf *pMedialibConf = &orgMedialibConf;
+    tagMedialibConf userMedialibConf;
+    if (m_model.readMedialibConf(userMedialibConf))
     {
-        g_logger << "MediaLib, userVersion: " >> userUpgradeConf.uVersion;
-
-        if (userUpgradeConf.uVersion >= orgUpgradeConf.uVersion)
+        if (userMedialibConf.uCompatibleAppVersion == orgMedialibConf.uCompatibleAppVersion)
         {
-            pUpgradeConf = &userUpgradeConf;
+            g_logger << "MediaLib userVersion: " >> userMedialibConf.uMedialibVersion;
+
+            if (userMedialibConf.uMedialibVersion >= orgMedialibConf.uMedialibVersion)
+            {
+                pMedialibConf = &userMedialibConf;
+            }
         }
     }
 
-    if (!m_model.upgradeMediaLib(*pUpgradeConf, [&](int64_t dltotal, int64_t dlnow){
+    if (!m_model.upgradeMediaLib(*pMedialibConf, [&](int64_t dltotal, int64_t dlnow){
         (void)dltotal;
         (void)dlnow;
         return m_bRunSignal;
