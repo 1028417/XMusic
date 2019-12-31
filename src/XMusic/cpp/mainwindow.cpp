@@ -301,7 +301,7 @@ bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
     {
-    //case QEvent::Move:
+    case QEvent::Move:
     case QEvent::Resize:
         _fixWorkArea(*this);
 
@@ -950,6 +950,8 @@ void MainWindow::_showAlbumName()
     }
 }
 
+#define ___singerImgElapse 8
+
 void MainWindow::_playSingerImg(bool bReset)
 {
     if (m_PlayingInfo.strSinger.empty())
@@ -966,7 +968,7 @@ void MainWindow::_playSingerImg(bool bReset)
     }
     else
     {
-        if (uTickCount >= 8)
+        if (uTickCount >= ___singerImgElapse)
         {
             uTickCount = 0;
         }
