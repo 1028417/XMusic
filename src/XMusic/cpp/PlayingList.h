@@ -26,7 +26,6 @@ private:
     int m_nActiveTime = 0;
     float m_fInactiveAlpha = 1;
 
-    UINT m_uShadowAlpha = 255;
     UINT m_uShadowWidth = 0;
 
 public:
@@ -35,9 +34,8 @@ public:
         m_fInactiveAlpha = fAlpha;
     }
 
-    void setShadow(UINT uAlpha, UINT uWidth = 1)
+    void setShadow(UINT uWidth=1)
     {
-        m_uShadowAlpha = uAlpha;
         m_uShadowWidth = uWidth;
 
         update();

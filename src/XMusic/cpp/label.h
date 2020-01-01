@@ -32,10 +32,7 @@ private:
     bool m_bUseCustomColor = false;
     QColor m_crText;
 
-    UINT m_uShadowAlpha = 255;
-    UINT m_uShadowWidth = 0;
-
-    QColor m_crShadow;
+    UINT m_uShadowWidth = 1;
 
     QRect m_rc;
 
@@ -86,12 +83,9 @@ public:
         setTextColor(QColor(r,g,b,a));
     }
 
-    void setShadow(UINT uAlpha, UINT uWidth = 1, const QColor& cr = QColor(__ShadowColor))
+    void setShadow(UINT uWidth=1)
     {
-        m_uShadowAlpha = uAlpha;
         m_uShadowWidth = uWidth;
-
-        m_crShadow = cr;
 
         update();
     }

@@ -12,7 +12,7 @@ bool CXController::start()
 {
 #if __winvc
 	(void)timerutil::setTimer(60000, [&]() {
-        wstring strAlarmmedia = m_OptionMgr.checkAlarm();
+        wstring strAlarmmedia = m_model.getDataMgr().checkAlarm();
 		if (!strAlarmmedia.empty())
 		{
 			strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);

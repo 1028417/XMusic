@@ -23,7 +23,9 @@
 #define __rect(x) (x)
 #endif
 
-#define __ShadowColor QRGB(128,128,128)
+#define __ShadowColor(alpha) QColor(128, 128, 128, alpha)
+
+#define __ShadowAlpha 50
 
 enum class E_FontWeight
 {
@@ -177,6 +179,19 @@ public:
 
     void fillRectEx(const QRect& rc, const QColor& crBegin
                     , const QColor& crEnd, UINT xround=0, UINT yround=0);
+
+    void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
+                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+    void drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
+                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+
+    void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText
+                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+    {
+        drawTextEx(crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
+    }
+    void drawTextEx(const QRect& rc, int flags, const QString& qsText
+                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
 };
 
 enum class E_MouseEventType
@@ -476,20 +491,20 @@ public:
         }
     }
 
-    void setDropShadowEx()
+    void setDropShadow()
     {
-        int avg = (g_crTheme.red()+g_crTheme.green()+g_crTheme.blue())/3;
+        /*int avg = (g_crTheme.red()+g_crTheme.green()+g_crTheme.blue())/3;
         int alpha = 100*pow(avg/255.0, 5);
         if (alpha > 0)
         {
-            QColor crShadow(__ShadowColor);
-            crShadow.setAlpha(alpha);
-            this->setDropShadowEffect(crShadow, 1, 1);
+            this->setDropShadowEffect(__ShadowColor(alpha), 1, 1);
         }
         else
         {
             this->unsetDropShadowEffect();
-        }
+        }*/
+
+        this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
     }
 
     virtual void update()

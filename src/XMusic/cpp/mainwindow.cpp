@@ -250,7 +250,7 @@ void MainWindow::_init()
     });
 
     ui.labelSingerImg->setVisible(false);
-    ui.labelSingerImg->setShadow(85, 2, QColor(255,255,255));
+    ui.labelSingerImg->setShadow(2);
 
     ui.labelSingerName->setFont(1);
 
@@ -385,41 +385,32 @@ void MainWindow::_relayout()
     int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
-    UINT uShadowAlpha = 0;
+    UINT uShadowWidth = 1;
     if (m_app.getOption().bUseThemeColor)
     {
         m_bUseDefaultBkg = false;
-
-        uShadowAlpha = 85;
     }
     else
     {
         cauto pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bUseDefaultBkg = pmBkg.isNull();
-
         if (m_bUseDefaultBkg)
         {
-            m_bUseDefaultBkg = 1;
-        }
-        else
-        {
-            uShadowAlpha = 170;
+            uShadowWidth = 0;
         }
     }
 
-    ui.labelDemandHK->setShadow(uShadowAlpha);
-    ui.labelDemandCN->setShadow(uShadowAlpha);
-    ui.labelDemandKR->setShadow(uShadowAlpha);
-    ui.labelDemandJP->setShadow(uShadowAlpha);
-    ui.labelDemandTAI->setShadow(uShadowAlpha);
-    ui.labelDemandEN->setShadow(uShadowAlpha);
-    ui.labelDemandEUR->setShadow(uShadowAlpha);
+    ui.labelDemandHK->setShadow(uShadowWidth);
+    ui.labelDemandCN->setShadow(uShadowWidth);
+    ui.labelDemandKR->setShadow(uShadowWidth);
+    ui.labelDemandJP->setShadow(uShadowWidth);
+    ui.labelDemandTAI->setShadow(uShadowWidth);
+    ui.labelDemandEN->setShadow(uShadowWidth);
+    ui.labelDemandEUR->setShadow(uShadowWidth);
 
-    ui.labelSingerName->setShadow(100, 2);
+    ui.labelAlbumName->setShadow(uShadowWidth);
 
-    ui.labelAlbumName->setShadow(uShadowAlpha);
-
-    ui.labelDuration->setShadow(uShadowAlpha);
+    ui.labelDuration->setShadow(uShadowWidth);
 
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
@@ -537,9 +528,9 @@ void MainWindow::_relayout()
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
 
-    m_PlayingList.setShadow(uShadowAlpha);
+    m_PlayingList.setShadow(uShadowWidth);
 
-    ui.labelPlayingfile->setShadow(uShadowAlpha);
+    ui.labelPlayingfile->setShadow(uShadowWidth);
 
     if (!m_bUseDefaultBkg)
     {
@@ -621,11 +612,11 @@ void MainWindow::_relayout()
                                         , cx_SingerImg-__size(15), ui.labelSingerName->height());
 
         //m_PlayingList.setTextColor(g_crText);
-        m_PlayingList.setInactiveAlpha(0.4);
+        m_PlayingList.setInactiveAlpha(0.35);
     }
     else
     {
-        m_PlayingList.setInactiveAlpha(0.3);
+        m_PlayingList.setInactiveAlpha(0.25);
         /*auto crText = g_crText;
         crText.setAlpha(160);
         m_PlayingList.setTextColor(crText);*/
@@ -715,6 +706,16 @@ void MainWindow::_relayout()
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
     m_PlayingList.setPageRowCount(uRowCount);
+
+
+    if (ui.labelSingerImg->isVisible())
+    {
+        ui.labelSingerName->setShadow(1);
+    }
+    else
+    {
+        ui.labelSingerName->setShadow(1);
+    }
 }
 
 #define __logoBkgColor QRGB(180, 220, 255)

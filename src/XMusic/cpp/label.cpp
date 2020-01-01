@@ -12,13 +12,14 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
         QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);
         painter.drawPixmapEx(rcImg, *pm, __szRound);
 
-        if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
+        if (m_uShadowWidth > 0)
         {
-            m_crShadow.setAlpha(m_uShadowAlpha);
+
+            QColor crShadow(__ReverseColor(g_crTheme));
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
-                m_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx)/m_uShadowWidth);
-                painter.setPen(m_crShadow);
+                UINT uAlpha = __ShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
+                painter.setPen(__ShadowColor(uAlpha));
 
                 QRect rcShadow(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2);
                 painter.drawRectEx(rcShadow, __szRound);
@@ -30,8 +31,8 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 
     painter.setPen(textColor());
 
-	QString text = this->text();
-    if (!text.isEmpty())
+    QString qsText = this->text();
+    if (!qsText.isEmpty())
     {
 		int cx = m_rc.right();
 
@@ -44,7 +45,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 #else
 #define __checkTextWidth(t) painter.fontMetrics().width(t)
 #endif
-            while (__checkTextWidth(text) >= cx)
+            while (__checkTextWidth(qsText) >= cx)
 			{
 				auto fPointSize = font.pointSizeF()-0.1;
 				if (fPointSize < 0)
@@ -58,32 +59,10 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 		}
 		else
 		{
-			text = painter.fontMetrics().elidedText(text, Qt::ElideRight, cx, Qt::TextShowMnemonic);
+            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx, Qt::TextShowMnemonic);
 		}
 
-		auto alignment = this->alignment();
-
-        if (m_uShadowWidth > 0 && m_uShadowAlpha > 0)
-        {
-            QPen pen = painter.pen();
-
-            m_crShadow.setAlpha(m_uShadowAlpha);
-            for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
-            {
-                if (uIdx > 1)
-                {
-                    m_crShadow.setAlpha(m_uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
-                }
-
-                painter.setPen(m_crShadow);
-
-                painter.drawText(QRectF(uIdx, uIdx, cx, m_rc.bottom()), alignment, text);
-            }
-
-            painter.setPen(pen);
-        }
-
-        painter.drawText(m_rc, alignment, text, &m_rc);
+        painter.drawTextEx(m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth);
     }
 }
 

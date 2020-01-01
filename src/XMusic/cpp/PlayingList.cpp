@@ -33,7 +33,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     auto& rc = lvRow.rc;
 
-    int cy = height();//this->rect().bottom();
+    int cy = height();
 
     float fAlpha = 1;
     if (0 == m_nActiveTime)
@@ -48,9 +48,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     {
         fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
     }
-    QColor crText(g_crText);
-    crText.setAlpha(255*fAlpha);
-    painter.setPen(crText);
+    UINT uTextAlpha = 255*fAlpha;
+    UINT uShadowAlpha = __ShadowAlpha * fAlpha;
 
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
@@ -61,8 +60,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 #endif
         painter.setFont(fPlayingFontSize, E_FontWeight::FW_SemiBold);
 
-        painter.drawText(rc.left(), rc.top() + __size(3), rc.width()
-            , rc.height(), Qt::AlignLeft|Qt::AlignVCenter, "*");
+        painter.drawTextEx(QRect(rc.left(), rc.top() + __size(3), rc.width()
+            , rc.height()), Qt::AlignLeft|Qt::AlignVCenter, "*"
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
     rc.setLeft(rc.left() + __size(35));
@@ -75,29 +75,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
                 , Qt::ElideRight, rc.width(), Qt::TextSingleLine | Qt::TextShowMnemonic);
-        if (m_uShadowWidth > 0 && m_uShadowAlpha )
-        {
-            QColor crShadow(__ShadowColor);
-            UINT uShadowAlpha = m_uShadowAlpha*fAlpha*fAlpha;//crText.alpha()*fAlpha * m_uShadowAlpha/255;
-            crShadow.setAlpha(uShadowAlpha);
-
-            for (UINT uIdx=0; uIdx<=m_uShadowWidth; uIdx++)
-            {
-                if (uIdx > 1)
-                {
-                    crShadow.setAlpha(uShadowAlpha*(m_uShadowWidth-uIdx+1)/m_uShadowWidth);
-                }
-
-                painter.setPen(crShadow);
-
-                QRectF rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
-                painter.drawText(rcShadow, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
-            }
-
-            painter.setPen(crText);
-        }
-
-        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle);
+        painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     });
 }
 

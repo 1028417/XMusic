@@ -201,25 +201,23 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
         auto font = painter.font();
         font.setBold(true);
         painter.setFont(font);
-    }    
-    if (context.lvRow.bFlashing)
-    {
-        QColor cr = g_crText;
-        cr.setAlpha(170);
-        painter.setPen(cr);
     }
 
     QString qsText = strutil::toQstr(context.strText);
+    int flags = Qt::AlignLeft|Qt::AlignVCenter;
     if (context.eStyle & E_RowStyle::IS_MultiLine)
     {
-        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWrapAnywhere, qsText);
+        flags |= Qt::TextWrapAnywhere;
     }
     else
     {
         int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
-        painter.drawText(rc, Qt::AlignLeft|Qt::AlignVCenter, qsText);
     }
+
+    cauto cr = (context.lvRow.bSelected|context.lvRow.bFlashing) ? g_crTheme:g_crText;
+    painter.drawTextEx(cr, rc, flags, qsText
+                       , 1, context.lvRow.bFlashing?32:50, context.lvRow.bFlashing?170:255);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

@@ -8,7 +8,7 @@ bool CButton::event(QEvent *ev)
     if (!m_bPressing && ev->type() == QEvent::Paint)
     {
         //unsetOpacityEffect();
-        setDropShadowEx();
+        setDropShadow();
     }
 
 	return CWidget::event(ev);

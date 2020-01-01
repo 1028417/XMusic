@@ -170,11 +170,9 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
 
             painter.adjustFont(0.9f);
 
-            auto cr = painter.pen().color();
-            cr.setAlpha(cr.alpha()/2);
-            painter.setPen(cr);
-
-            painter.drawText(rc, Qt::AlignRight|Qt::AlignVCenter, qsRemark);
+            cauto crText = painter.pen().color();
+            painter.drawTextEx(crText, rc, Qt::AlignRight|Qt::AlignVCenter
+                               , qsRemark, 1, 32, 128);
 
             painter.restore();
 

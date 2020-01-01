@@ -395,3 +395,49 @@ void CPainter::fillRectEx(const QRect& rc, const QColor& crBegin
 
     fillRectEx(rc, brush, xround, yround);
 }
+
+void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
+                        , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
+{
+    this->save();
+
+    if (uShadowWidth > 0 && uShadowAlpha > 0)
+    {
+        QColor crShadow(__ReverseColor(crText));
+        crShadow.setAlpha(uShadowAlpha);
+
+        for (UINT uIdx=0; uIdx<=uShadowWidth; uIdx++)
+        {
+            if (uIdx > 1)
+            {
+                crShadow.setAlpha(uShadowAlpha*(uShadowWidth-uIdx+1)/uShadowWidth);
+            }
+
+            this->setPen(crShadow);
+
+            QRectF rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
+            QPainter::drawText(rcShadow, flags, qsText);
+        }
+
+    }
+
+    QColor t_crText = crText;
+    t_crText.setAlpha(uTextAlpha);
+    this->setPen(t_crText);
+    QPainter::drawText(rc, flags, qsText, prcRet);
+
+    this->restore();
+}
+
+void CPainter::drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
+                        , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
+{
+    drawTextEx(g_crText, rc, flags, qsText, prcRet, uShadowWidth, uShadowAlpha, uTextAlpha);
+}
+
+void CPainter::drawTextEx(const QRect& rc, int flags, const QString& qsText
+              , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
+{
+    drawTextEx(g_crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
+}
+
