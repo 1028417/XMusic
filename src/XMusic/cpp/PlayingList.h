@@ -72,7 +72,7 @@ private:
         }
     }*/
 
-    void _onMouseEvent(E_MouseEventType eMouseEventType, const QMouseEvent&) override
+    void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override
     {
         if (0 == m_nActiveTime)
         {
