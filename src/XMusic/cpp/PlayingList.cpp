@@ -38,13 +38,10 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
+        fAlpha = 0.3f;
         if (m_app.getOption().bUseThemeColor)
         {
             fAlpha *= 2;
-        }
-        else
-        {
-            fAlpha = 0.3f;
         }
     }
     if (rc.top() < 0)
@@ -133,19 +130,6 @@ void CPlayingList::_onRowDblClick(tagLVRow& lvRow, const QMouseEvent&)
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
     }
 }
-
-void CPlayingList::_onMouseEnter()
-{
-    _updateActive(); //_updateActive(-1);
-}
-
-/*void CPlayingList::_onMouseLeave()
-{
-    if (0 != m_nActiveTime)
-    {
-        _updateActive(0);
-    }
-}*/
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {

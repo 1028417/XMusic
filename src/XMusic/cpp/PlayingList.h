@@ -3,6 +3,8 @@
 
 #include "listview.h"
 
+#define __ActiveTime 10
+
 struct tagPlayingItem
 {
     UINT uID = 0;
@@ -56,8 +58,30 @@ private:
 
     void _onRowDblClick(tagLVRow&, const QMouseEvent&) override;
 
-    void _onMouseEnter() override;
-    //void _onMouseLeave() override;
+#if __windows
+    void _onMouseEnter() override
+    {
+        _updateActive(); //_updateActive(-1);
+    }
+
+    /*void _onMouseLeave() override
+    {
+        if (0 != m_nActiveTime)
+        {
+            _updateActive(0);
+        }
+    }*/
+
+    void _onMouseEvent(E_MouseEventType eMouseEventType, const QMouseEvent&) override
+    {
+        if (0 == m_nActiveTime)
+        {
+            update();
+        }
+
+        m_nActiveTime = __ActiveTime;
+    }
+#endif
 
     void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
@@ -67,7 +91,7 @@ private:
         return true;
     }*/
 
-    void _updateActive(int nActiveTime=10);
+    void _updateActive(int nActiveTime=__ActiveTime);
 
     void _onAutoScrollBegin() override;
     void _onAutoScrollEnd() override;
