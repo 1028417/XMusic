@@ -3,6 +3,8 @@
 
 #include "app.h"
 
+#define __FlashingAlpha 170
+
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
     size_t uPageRowCount = getPageRowCount();
@@ -199,6 +201,14 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
         painter.setFont(font);
     }
 
+    UINT uTextAlpha = 255;
+    UINT uShadowAlpha = __ShadowAlpha;
+    if (context.lvRow.bFlashing)
+    {
+        uTextAlpha = __FlashingAlpha;
+        uShadowAlpha = uShadowAlpha*__FlashingAlpha/255;
+    }
+
     QString qsText = strutil::toQstr(context.strText);
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
     if (context.eStyle & E_RowStyle::IS_MultiLine)
@@ -211,9 +221,8 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
     }
 
-    cauto cr = (context.lvRow.bSelected|context.lvRow.bFlashing) ? g_crTheme:g_crText;
-    painter.drawTextEx(cr, rc, flags, qsText
-                       , 1, context.lvRow.bFlashing?32:50, context.lvRow.bFlashing?170:255);
+    //cauto cr = (context.lvRow.bSelected|context.lvRow.bFlashing) ? g_crTheme:g_crText;
+    painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
