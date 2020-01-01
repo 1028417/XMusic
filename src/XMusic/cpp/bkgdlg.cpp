@@ -107,9 +107,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
 
-            auto d = (abs(g_crText.red()-g_crTheme.red()) + abs(g_crText.green()-g_crTheme.green())
-                + abs(g_crText.blue()-g_crTheme.blue()))/3;
-            int nAlpha = 255-(255*pow(d/255.0,0.5));
+            int nAlpha = 255-(255*pow(__ColorOffsetRate, 0.5));
             nAlpha = MAX(nAlpha, 85);
             QColor cr = g_crText;
             cr.setAlpha(nAlpha);

@@ -416,7 +416,7 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
 
             this->setPen(crShadow);
 
-            QRectF rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
+            QRect rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
             QPainter::drawText(rcShadow, flags, qsText);
         }
     }

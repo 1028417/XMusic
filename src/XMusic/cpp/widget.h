@@ -40,6 +40,10 @@ extern map<E_FontWeight, QFont> g_mapFont;
 extern QColor g_crTheme;
 extern QColor g_crText;
 
+#define __ColorOffsetRate  ((abs(g_crText.red()-g_crTheme.red()) \
+    + abs(g_crText.green()-g_crTheme.green()) \
+    + abs(g_crText.blue()-g_crTheme.blue())) / 3.0 / 255)
+
 extern float g_fPixelRatio;
 
 class CFont : public QFont
