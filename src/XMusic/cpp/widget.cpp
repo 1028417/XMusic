@@ -419,7 +419,6 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
             QRectF rcShadow(rc.left()+uIdx, rc.top()+uIdx, rc.width(), rc.height());
             QPainter::drawText(rcShadow, flags, qsText);
         }
-
     }
 
     QColor t_crText = crText;
