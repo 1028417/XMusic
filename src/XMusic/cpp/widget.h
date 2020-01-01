@@ -25,7 +25,7 @@
 
 #define __ShadowColor(alpha) QColor(128, 128, 128, alpha)
 
-#define __ShadowAlpha 50
+#define __ShadowAlpha 30
 
 enum class E_FontWeight
 {
@@ -259,10 +259,6 @@ public:
     {
         return m_y;
     }
-    QPoint pos() const
-    {
-        return QPoint(m_x, m_y);
-    }
 
     ulong dt() const
     {
@@ -311,7 +307,8 @@ private:
 
     CTouchEvent m_teBegin;
 
-    QPointF m_ptTouch;
+    int m_xTouch = 0;
+    int m_yTouch = 0;
 
     bool m_bTouching = false;
 
@@ -526,8 +523,8 @@ private:
     virtual void _onPaint(CPainter&, const QRect& rc);
 
     void _handleTouchBegin(const CTouchEvent&);
-    void _handleTouchEnd(const CTouchEvent&);
-    void _handleTouchMove(const CTouchEvent&);
+    void _handleTouchEnd(CTouchEvent);
+    void _handleTouchMove(CTouchEvent);
 
     void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
 

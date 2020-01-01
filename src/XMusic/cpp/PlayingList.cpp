@@ -38,7 +38,11 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        fAlpha = m_fInactiveAlpha;
+        fAlpha = 0.3f;
+        if (m_app.getOption().bUseThemeColor)
+        {
+            fAlpha += 0.2f;
+        }
     }
     if (rc.top() < 0)
     {
@@ -49,7 +53,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
     }
     UINT uTextAlpha = 255*fAlpha;
-    UINT uShadowAlpha = __ShadowAlpha * fAlpha;
+    UINT uShadowAlpha = __ShadowAlpha*fAlpha;
 
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)

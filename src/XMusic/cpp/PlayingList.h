@@ -24,16 +24,10 @@ private:
     UINT m_uPlayingItem = 0;
 
     int m_nActiveTime = 0;
-    float m_fInactiveAlpha = 1;
 
     UINT m_uShadowWidth = 0;
 
 public:
-    void setInactiveAlpha(float fAlpha)
-    {
-        m_fInactiveAlpha = fAlpha;
-    }
-
     void setShadow(UINT uWidth=1)
     {
         m_uShadowWidth = uWidth;

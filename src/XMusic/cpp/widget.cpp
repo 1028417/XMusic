@@ -189,28 +189,28 @@ template <class TParent>
 void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
 {
     m_teBegin = te;
-    m_ptTouch = te.pos();
+
+    m_xTouch = te.x();
+    m_yTouch = te.y();
 
     _onTouchEvent(E_TouchEventType::TET_TouchBegin, te);
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchEnd(const CTouchEvent& te)
+void CWidget<TParent>::_handleTouchEnd(CTouchEvent te)
 {
-    CTouchEvent tee(te);
-    tee.setDt(te.timestamp() - m_teBegin.timestamp());
-    tee.setDx(te.x() - m_teBegin.x());
-    tee.setDy(te.y() - m_teBegin.y());
+    te.setDt(te.timestamp() - m_teBegin.timestamp());
+    te.setDx(te.x() - m_teBegin.x());
+    te.setDy(te.y() - m_teBegin.y());
 
-    _onTouchEvent(E_TouchEventType::TET_TouchEnd, tee);
+    _onTouchEvent(E_TouchEventType::TET_TouchEnd, te);
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
+void CWidget<TParent>::_handleTouchMove(CTouchEvent te)
 {
-    CTouchEvent tme(te);
-    int dx = tme.x()-m_ptTouch.x();
-    int dy = tme.y()-m_ptTouch.y();
+    int dx = te.x()-m_xTouch;
+    int dy = te.y()-m_yTouch;
     if (dx != 0 || dy != 0)
     {
         if (abs(dx)>2 || abs(dy)>2)
@@ -218,12 +218,13 @@ void CWidget<TParent>::_handleTouchMove(const CTouchEvent& te)
             m_bClicking = false;
         }
 
-        tme.setDx(dx);
-        tme.setDy(dy);
+        te.setDx(dx);
+        te.setDy(dy);
 
-        _onTouchEvent(E_TouchEventType::TET_TouchMove, tme);
+        _onTouchEvent(E_TouchEventType::TET_TouchMove, te);
 
-        m_ptTouch = tme.pos();
+        m_xTouch = te.x();
+        m_yTouch = te.y();
     }
 }
 
@@ -408,9 +409,9 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
 
         for (UINT uIdx=0; uIdx<=uShadowWidth; uIdx++)
         {
-            if (uIdx > 1)
+            if (uIdx > 0)
             {
-                crShadow.setAlpha(uShadowAlpha*(uShadowWidth-uIdx+1)/uShadowWidth);
+                crShadow.setAlpha(uShadowAlpha*(uShadowWidth-uIdx+1)/(uShadowWidth+1));
             }
 
             this->setPen(crShadow);

@@ -612,11 +612,9 @@ void MainWindow::_relayout()
                                         , cx_SingerImg-__size(15), ui.labelSingerName->height());
 
         //m_PlayingList.setTextColor(g_crText);
-        m_PlayingList.setInactiveAlpha(0.35);
     }
     else
     {
-        m_PlayingList.setInactiveAlpha(0.25);
         /*auto crText = g_crText;
         crText.setAlpha(160);
         m_PlayingList.setTextColor(crText);*/
