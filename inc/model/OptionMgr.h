@@ -18,21 +18,6 @@ struct __ModelExt tagPlaySpiritOption
     UINT uVolume = 100;
 };
 
-struct __ModelExt tagAlarmOption
-{
-	tagAlarmOption()
-	{
-#if __winvc
-		tmutil::getCurrentTime(nHour, nMinute);
-#endif
-	}
-
-	int nHour = 0;
-	int nMinute = 0;
-
-	vector<wstring> vctAlarmmedia;
-};
-
 enum E_TimerOperate
 {
 	TO_Null = 0
@@ -82,7 +67,8 @@ struct __ModelExt tagOption
 
     tagPlaySpiritOption PlaySpiritOption;
 
-    tagAlarmOption AlarmOption;
+    int nAlarmHour = 0;
+    int nAlarmMinute = 0;
 
     tagTimerOperateOpt TimerOption;
 };
@@ -116,15 +102,6 @@ public:
 		return m_Option.PlaySpiritOption;
 	}
 
-	tagAlarmOption& getAlarmOption()
-	{
-		return m_Option.AlarmOption;
-	}
-	const tagAlarmOption& getAlarmOption() const
-	{
-		return m_Option.AlarmOption;
-	}
-
 	tagTimerOperateOpt& getTimerOption()
 	{
 		return m_Option.TimerOption;
@@ -135,8 +112,6 @@ public:
 	}
 
 	tagOption& init();
-
-	wstring checkAlarm();
 
 	E_TimerOperate checkTimerOperate();
 

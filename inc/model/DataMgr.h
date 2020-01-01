@@ -13,7 +13,9 @@ public:
 private:
 	CDao& m_dao;
 
-	tagOption& m_Option;
+    tagOption& m_Option;
+
+    vector<wstring> m_vctAlarmmedia;
 
 public:
 	bool clearData();
@@ -30,6 +32,13 @@ public:
 	bool removeAlarmmedia(UINT uIndex);
 
 	bool clearAlarmmedia();
+
+    wstring checkAlarm();
+
+    const vector<wstring>& alarmmedias() const
+    {
+        return m_vctAlarmmedia;
+    }
 
 	bool queryPlayRecordMaxTime(dbtime_t& tTime);
 	bool queryPlayRecord(dbtime_t tTime, vector<pair<wstring, int>>& vecPlayRecord);
