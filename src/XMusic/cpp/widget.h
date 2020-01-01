@@ -200,8 +200,8 @@ public:
 
 enum class E_MouseEventType
 {
-    MET_Press,
     MET_Move,
+    MET_Press,
     MET_Release,
     MET_Click,
     MET_DblClick

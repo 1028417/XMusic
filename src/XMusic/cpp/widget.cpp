@@ -37,6 +37,10 @@ bool CWidget<TParent>::event(QEvent *ev)
 
         break;
 #endif
+    case QEvent::MouseMove:
+        _handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
+
+        break;
     case QEvent::MouseButtonPress:
     {
         cauto me = *(QMouseEvent*)ev;
@@ -47,10 +51,6 @@ bool CWidget<TParent>::event(QEvent *ev)
     }
 
     break;
-    case QEvent::MouseMove:
-        _handleMouseEvent(E_MouseEventType::MET_Move, *(QMouseEvent*)ev);
-
-        break;
     case QEvent::MouseButtonRelease:
     {
         cauto me = *(QMouseEvent*)ev;

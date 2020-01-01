@@ -58,7 +58,7 @@ private:
 
     void _onRowDblClick(tagLVRow&, const QMouseEvent&) override;
 
-#if __windows
+#if __windows || __mac
     void _onMouseEnter() override
     {
         _updateActive(); //_updateActive(-1);

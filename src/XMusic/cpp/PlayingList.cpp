@@ -7,6 +7,10 @@ CPlayingList::CPlayingList(class CApp& app)
     : CListView(NULL)
     , m_app(app)
 {
+#if __windows || __mac
+    this->setMouseTracking(true);
+#endif
+
     this->startTimer(1000);
 }
 
@@ -38,10 +42,13 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        fAlpha = 0.3f;
         if (m_app.getOption().bUseThemeColor)
         {
-            fAlpha *= 2;
+            fAlpha = 0.5f;
+        }
+        else
+        {
+            fAlpha = 0.3f;
         }
     }
     if (rc.top() < 0)
