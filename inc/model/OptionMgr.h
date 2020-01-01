@@ -2,8 +2,6 @@
 #pragma once
 
 #if !__winvc
-//#include <QRgb>
-#define QRGB(r, g, b) ((0xffu << 24) | ((r & 0xffu) << 16) | ((g & 0xffu) << 8) | (b & 0xffu))
 #define __defThemeColor QRGB(160, 210, 255)
 #define __defTextColor QRGB(255, 255, 225)
 #endif
