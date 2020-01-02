@@ -90,7 +90,7 @@ private:
         }*/
     }
 
-    void _showButton(tagLVRow& lvRow, bool bMedia);
+    void _showButton(tagMediaContext& context, bool bMedia);
     void _onButton(UINT uRow);
 #endif
 

@@ -6,17 +6,19 @@
 #define __XMusicDirName L"XMusic"
 #define __OuterDirName L" 本地"
 
-#define _showButton(lvRow, bMedia)
+#define _showButton(context, bMedia)
 
 #if 0
-void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
+void CMedialibView::_showButton(tagMediaContext& context, bool bMedia)
 {
     return;
+
+    context.eStyle |= E_RowStyle::IS_RightButton;
 
     static map<UINT, class CButton*> m_mapButton;
     static map<class CButton*, UINT> m_mapButtonIdx;
 
-    CButton*& pButton = m_mapButton[lvRow.uIdx];
+    CButton*& pButton = m_mapButton[context.lvRow.uIdx];
     if (NULL == pButton)
     {
         pButton = new CButton(this);
@@ -25,12 +27,12 @@ void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
         });
         pButton->setVisible(true);
     }
-    m_mapButtonIdx[pButton] = lvRow.uRow;
+    m_mapButtonIdx[pButton] = context.lvRow.uRow;
 
     pButton->setStyleSheet(bMedia?"border-image: url(:/img/btnAddplay.png);"
                                 : "border-image: url(:/img/btnPlay.png);");
 
-    auto& rc = lvRow.rc;
+    auto& rc = context.lvRow.rc;
     int szButton = ui.btnReturn->height()-__size(8);
     auto margin = (rc.height()-szButton)/2;
     int x = rc.right()-margin-szButton + __xPlayButtonOffset;
@@ -376,8 +378,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             break;
         };
 
-        _showButton(context.lvRow, false);
-        context.eStyle |= E_RowStyle::IS_RightButton;
+        _showButton(context, false);
     }
     else if (context.pMedia)
     {
@@ -403,8 +404,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             }
         }
 
-        _showButton(context.lvRow, true);
-        context.eStyle |= E_RowStyle::IS_RightButton;
+        _showButton(context, true);
     }
     else if (context.pDir || context.pFile)
     {
@@ -441,8 +441,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
 
            context.strText = MediaRes.GetTitle();
 
-           _showButton(context.lvRow, true);
-           context.eStyle |= E_RowStyle::IS_RightButton;
+           _showButton(context, true);
         }
     }
 }
