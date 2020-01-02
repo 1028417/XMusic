@@ -113,5 +113,7 @@ public:
 
 	E_TimerOperate checkTimerOperate();
 
+    bool checkAlarm();
+
 	void saveOption();
 };

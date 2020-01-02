@@ -5,15 +5,12 @@ class __ModelExt CDataMgr
 {
 public:
 	CDataMgr(CDao& dao, tagOption& Option)
-		: m_dao(dao)
-		, m_Option(Option)
+        : m_dao(dao)
 	{
 	}
 
 private:
 	CDao& m_dao;
-
-    tagOption& m_Option;
 
     vector<wstring> m_vctAlarmmedia;
 
@@ -32,8 +29,6 @@ public:
 	bool removeAlarmmedia(UINT uIndex);
 
 	bool clearAlarmmedia();
-
-    wstring checkAlarm();
 
     const vector<wstring>& alarmmedias() const
     {
