@@ -230,14 +230,15 @@ void CApp::slot_run(bool bUpgradeResult)
     }
     g_logger >> "start controller success, app running";
 
+    g_crTheme.setRgb(m_ctrl.getOption().crTheme);
+    g_crText.setRgb(m_ctrl.getOption().crText);
+
     m_mainWnd.show();
 }
 
 int CApp::run()
 {
     auto& option = m_ctrl.initOption();
-    g_crTheme.setRgb(option.crTheme);
-    g_crText.setRgb(option.crText);
 
     std::thread thrUpgrade;
 
