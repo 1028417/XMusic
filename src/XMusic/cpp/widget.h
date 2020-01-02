@@ -508,10 +508,12 @@ public:
         this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
     }
 
+#if 0
     virtual void update()
     {
         TWidget::update();
     }
+#endif
 
 protected:
     virtual bool event(QEvent *ev) override;

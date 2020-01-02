@@ -52,7 +52,7 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
 
 #define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crText, g_crTheme)/255.0, f)))
 
-inline UINT CListView::oppTextAlpha(UINT uMinAlpha, float fPow)
+UINT CListView::oppTextAlpha(UINT uMinAlpha, float fPow)
 {
     UINT uOppAlpha = __OppAlpha(fPow);
     return MAX(uMinAlpha, uOppAlpha);

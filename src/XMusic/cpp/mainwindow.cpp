@@ -934,13 +934,18 @@ void MainWindow::_showAlbumName()
         if (labelAlbumName.width() > rcAlbumNamePrev.width())
         {
             labelAlbumName.adjustFont(0.95f);
-            //labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
+            labelAlbumName.adjustSize();
+
+            if (labelAlbumName.width() < rcAlbumNamePrev.width())
+            {
+                labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
+                return;
+            }
+
         }
-        //else
-        {
-            int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
-            labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
-        }
+
+        int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
+        labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
     }
 }
 
