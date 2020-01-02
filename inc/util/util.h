@@ -189,5 +189,4 @@ __UtilExt const RECT& getWorkArea(bool bFullScreen);
 #if !__winvc
 //#include <QRgb>
 #define QRGB(r, g, b) ((0xffu << 24) | (((r) & 0xffu) << 16) | (((g) & 0xffu) << 8) | ((b) & 0xffu))
-#define __ReverseColor(cr) QRGB(255-cr.red(), 255-cr.green(), 255-cr.blue())
 #endif
