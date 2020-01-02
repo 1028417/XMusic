@@ -563,7 +563,7 @@ void MainWindow::_relayout()
         {
             if (m_bHScreen)
             {
-                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(60);
+                y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(50);
             }
             else
             {
