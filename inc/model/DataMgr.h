@@ -4,7 +4,7 @@
 class __ModelExt CDataMgr
 {
 public:
-	CDataMgr(CDao& dao, tagOption& Option)
+    CDataMgr(CDao& dao)
         : m_dao(dao)
 	{
 	}
