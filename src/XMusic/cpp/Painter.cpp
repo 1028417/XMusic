@@ -179,7 +179,7 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
         int r = crText.red();
         int g = crText.green();
         int b = crText.blue();
-        QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, uShadowAlpha);
+        QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, uShadowAlpha/(uShadowWidth+1));
 
         for (UINT uIdx=0; uIdx<=uShadowWidth; uIdx++)
         {
@@ -201,16 +201,4 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
     QPainter::drawText(rc, flags, qsText, prcRet);
 
     this->restore();
-}
-
-void CPainter::drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                        , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
-{
-    drawTextEx(g_crText, rc, flags, qsText, prcRet, uShadowWidth, uShadowAlpha, uTextAlpha);
-}
-
-void CPainter::drawTextEx(const QRect& rc, int flags, const QString& qsText
-              , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
-{
-    drawTextEx(g_crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
 }

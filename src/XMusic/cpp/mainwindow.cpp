@@ -703,7 +703,7 @@ void MainWindow::_relayout()
 
     if (ui.labelSingerImg->isVisible())
     {
-        ui.labelSingerName->setShadow(1);
+        ui.labelSingerName->setShadow(2);
     }
     else
     {

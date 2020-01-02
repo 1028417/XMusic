@@ -33,6 +33,7 @@ private:
     QColor m_crText;
 
     UINT m_uShadowWidth = 1;
+    UINT m_uShadowAlpha = __ShadowAlpha;
 
     UINT m_szRound = 0;
 
@@ -90,9 +91,10 @@ public:
         setTextColor(QColor(r,g,b,a));
     }
 
-    void setShadow(UINT uWidth=1)
+    void setShadow(UINT uWidth, UINT uAlpha=__ShadowAlpha)
     {
         m_uShadowWidth = uWidth;
+        m_uShadowAlpha = uAlpha;
 
         update();
     }

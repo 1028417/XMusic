@@ -9,6 +9,14 @@
 
 #include "painter.h"
 
+#if __ios
+#define __size(x) decltype(x)((x)/g_fPixelRatio)
+#define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
+#else
+#define __size(x) (x)
+#define __rect(x) (x)
+#endif
+
 enum class E_MouseEventType
 {
     MET_Move,
@@ -301,22 +309,6 @@ public:
         {
             dse->setEnabled(false);
         }
-    }
-
-    void setDropShadow()
-    {
-        /*int avg = (g_crTheme.red()+g_crTheme.green()+g_crTheme.blue())/3;
-        int alpha = 100*pow(avg/255.0, 5);
-        if (alpha > 0)
-        {
-            this->setDropShadowEffect(__ShadowColor(alpha), 1, 1);
-        }
-        else
-        {
-            this->unsetDropShadowEffect();
-        }*/
-
-        this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
     }
 
 #if 0

@@ -11,23 +11,7 @@
 
 #include "util/util.h"
 
-#if __ios
-#define __size(x) decltype(x)((x)/g_fPixelRatio)
-#define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
-#else
-#define __size(x) (x)
-#define __rect(x) (x)
-#endif
-
-enum class E_FontWeight
-{
-    FW_Light = QFont::Weight::Light,
-    //FW_Normal = QFont::Weight::Normal,
-    FW_SemiBold = QFont::Weight::DemiBold
-};
-#define __defFontWeight E_FontWeight::FW_Light
-
-extern map<E_FontWeight, QFont> g_mapFont;
+extern float g_fPixelRatio;
 
 extern QColor g_crTheme;
 extern QColor g_crText;
@@ -40,7 +24,15 @@ extern QColor g_crText;
 
 #define __ShadowAlpha 80
 
-extern float g_fPixelRatio;
+enum class E_FontWeight
+{
+    FW_Light = QFont::Weight::Light,
+    //FW_Normal = QFont::Weight::Normal,
+    FW_SemiBold = QFont::Weight::DemiBold
+};
+#define __defFontWeight E_FontWeight::FW_Light
+
+extern map<E_FontWeight, QFont> g_mapFont;
 
 class CFont : public QFont
 {
@@ -183,7 +175,10 @@ public:
     void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
                   , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
     void drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+                            , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+    {
+        drawTextEx(g_crText, rc, flags, qsText, prcRet, uShadowWidth, uShadowAlpha, uTextAlpha);
+    }
 
     void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText
                   , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
@@ -191,5 +186,8 @@ public:
         drawTextEx(crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
     void drawTextEx(const QRect& rc, int flags, const QString& qsText
-                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+    {
+        drawTextEx(g_crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
+    }
 };

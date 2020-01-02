@@ -15,7 +15,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
-                UINT uAlpha = __ShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
+                UINT uAlpha = m_uShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
                 painter.setPen(__ShadowColor(uAlpha));
 
                 QRect rcShadow(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2);
@@ -59,7 +59,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
             qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx, Qt::TextShowMnemonic);
 		}
 
-        painter.drawTextEx(m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth);
+        painter.drawTextEx(m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth, m_uShadowAlpha);
     }
 }
 
