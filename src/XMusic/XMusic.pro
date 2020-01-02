@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += ../controller.cpp \
     cpp/MedialibView.cpp \
+    cpp/painter.cpp \
     cpp/button.cpp \
     cpp/colordlg.cpp \
     cpp/main.cpp \
@@ -36,6 +37,7 @@ SOURCES += ../controller.cpp \
 
 HEADERS += cpp/app.h \
     cpp/MedialibView.h \
+    cpp/painter.h \
     cpp/colorbar.h \
     cpp/colordlg.h \
     cpp/mainwindow.h \

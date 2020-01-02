@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "util/util.h"
-
 #include <QDialog>
 
 #include <QPalette>
