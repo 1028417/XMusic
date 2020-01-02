@@ -77,7 +77,10 @@ struct __ModelExt tagMedialibConf
 
     UINT uMedialibVersion = 0;
 
-    PairList<string, string> plUrl;
+    list<string> lstUrl;
+
+    list<string> lstOnlineHBkg;
+    list<string> lstOnlineVBkg;
 };
 
 #else
