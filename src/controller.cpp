@@ -12,16 +12,23 @@ bool CXController::start()
 {
 #if __winvc
 	(void)timerutil::setTimer(60000, [&]() {
-        wstring strAlarmmedia = m_model.getDataMgr().checkAlarm();
-		if (!strAlarmmedia.empty())
-		{
-			strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
+        if (m_OptionMgr.checkAlarm())
+        {
+            cauto vctAlarmmedia = m_model.getDataMgr().alarmmedias();
+            if (!vctAlarmmedia.empty())
+            {
+                __srand
+                auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
+                strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
 
-			if (m_model.getPlayMgr().playAlarm(strAlarmmedia))
-			{
-				(void)m_view.showMsgBox(L"点击确定停止闹铃！");
-				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
-			}
+                if (m_model.getPlayMgr().playAlarm(strAlarmmedia))
+                {
+                    (void)m_view.showMsgBox(L"点击确定停止闹铃！");
+                    m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
+                }
+
+                return;//
+            }
 		}
 
         E_TimerOperate eTimerOperate = m_OptionMgr.checkTimerOperate();
