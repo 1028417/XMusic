@@ -646,13 +646,15 @@ bool CMedialibView::event(QEvent *ev)
 
 void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
 {
+    return;
     CButton*& pButton = m_mapButton[lvRow.uIdx];
     if (NULL == pButton)
     {
-        pButton = new CButton(this);
+        pButton = new CButton(&m_medialibDlg);
         connect(pButton, &CButton::signal_clicked, [&, pButton]() {
             _onButton(m_mapButtonIdx[pButton]);
         });
+        pButton->setVisible(true);
     }
     m_mapButtonIdx[pButton] = lvRow.uRow;
 
@@ -665,7 +667,6 @@ void CMedialibView::_showButton(tagLVRow& lvRow, bool bMedia)
     int x = rc.right()-margin-szButton + __xPlayButtonOffset;
     QRect rcPos(x, rc.y()+margin, szButton, szButton);
     pButton->setGeometry(rcPos);
-    pButton->setVisible(true);
 }
 
 void CMedialibView::_onButton(UINT uRow)

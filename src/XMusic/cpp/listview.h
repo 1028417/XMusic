@@ -132,6 +132,8 @@ protected:
 
     bool _hittest(int x, int y, tagLVRow& lvRow);
 
+    UINT oppTextAlpha(UINT uMinAlpha, float fPow=0.1);
+
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 
     void _paintRow(CPainter&, const tagRowContext&);

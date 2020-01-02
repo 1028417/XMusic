@@ -23,10 +23,6 @@
 #define __rect(x) (x)
 #endif
 
-#define __ShadowColor(alpha) QColor(128, 128, 128, alpha)
-
-#define __ShadowAlpha 30
-
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
@@ -40,9 +36,13 @@ extern map<E_FontWeight, QFont> g_mapFont;
 extern QColor g_crTheme;
 extern QColor g_crText;
 
-#define __ColorOffsetRate  ((abs(g_crText.red()-g_crTheme.red()) \
-    + abs(g_crText.green()-g_crTheme.green()) \
-    + abs(g_crText.blue()-g_crTheme.blue())) / 3.0 / 255)
+#define __ColorOffset(cr1, cr2) (abs(cr1.red()-cr2.red()) + abs(cr1.green()-cr2.green()) \
+    + abs(cr1.blue()-cr2.blue()))
+#define __ColorOffsetAvg(cr1, cr2) (__ColorOffset(cr1, cr2) / 3)
+
+#define __ShadowColor(alpha) QColor(128, 128, 128, 128*alpha/255)
+
+#define __ShadowAlpha 80
 
 extern float g_fPixelRatio;
 

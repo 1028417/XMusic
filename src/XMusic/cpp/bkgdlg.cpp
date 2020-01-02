@@ -107,19 +107,31 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             rc.setLeft(rc.left()+2);
             rc.setRight(rc.right()-1);
 
-            int nAlpha = 255-(255*pow(__ColorOffsetRate, 0.5));
-            nAlpha = MAX(nAlpha, 85);
-            QColor cr = g_crText;
-            cr.setAlpha(nAlpha);
+            int r = g_crTheme.red();
+            int g = g_crTheme.green();
+            int b = g_crTheme.blue();
+            QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
+
+            int d = abs(cr.red()+cr.green()+cr.blue()-g_crTheme.red()-g_crTheme.green()-g_crTheme.blue());
+            if (abs(d) == 128)
+            {
+                cr.setAlpha(128);
+            }
+            else
+            {
+                cr.setAlpha(64);
+            }
+
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
+            cr.setAlpha(255);
 
             int len = MIN(rc.width(), rc.height())/4;
 #define __szAdd __size(4)
             cauto pt = rc.center();
             rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
-            painter.fillRectEx(rc, g_crText, __szAdd/2);
+            painter.fillRectEx(rc, cr, __szAdd/2);
             rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
-            painter.fillRectEx(rc, g_crText, __szAdd/2);
+            painter.fillRectEx(rc, cr, __szAdd/2);
         }
     }
 }

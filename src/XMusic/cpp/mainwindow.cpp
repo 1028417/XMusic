@@ -385,21 +385,16 @@ void MainWindow::_relayout()
     int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
     int dy_bkg = cy - cy_bkg;
 
-    UINT uShadowWidth = 1;
-    if (m_app.getOption().bUseThemeColor)
-    {
-        m_bUseDefaultBkg = false;
-    }
-    else
+    m_bUseDefaultBkg = false;
+    if (!m_app.getOption().bUseThemeColor)
     {
         cauto pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bUseDefaultBkg = pmBkg.isNull();
-        if (m_bUseDefaultBkg)
-        {
-            uShadowWidth = 0;
-        }
     }
 
+    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__size(8));
+
+    UINT uShadowWidth = m_bUseDefaultBkg?0:1;
     ui.labelDemandHK->setShadow(uShadowWidth);
     ui.labelDemandCN->setShadow(uShadowWidth);
     ui.labelDemandKR->setShadow(uShadowWidth);

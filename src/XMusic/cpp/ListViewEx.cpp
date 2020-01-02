@@ -1,6 +1,8 @@
 
 #include "ListViewEx.h"
 
+#define __RemarkAlpha 170
+
 size_t CListViewEx::getRowCount()
 {
     if (m_pMediaset)
@@ -138,7 +140,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
 void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
 {
-    tagMediaContext& mediaContext = (tagMediaContext&)context;
+    cauto mediaContext = (tagMediaContext&)context;
 
     if (mediaContext.pMediaSet)
     {
@@ -170,9 +172,9 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
 
             painter.adjustFont(0.9f);
 
-            cauto crText = painter.pen().color();
-            painter.drawTextEx(crText, rc, Qt::AlignRight|Qt::AlignVCenter
-                               , qsRemark, 1, 32, 128);
+            UINT uAlpha = oppTextAlpha(__RemarkAlpha);
+            painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
+                               , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 
             painter.restore();
 
@@ -181,7 +183,6 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
     }
 
     CListView::_paintText(painter, rc, context);
-
 }
 
 void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)

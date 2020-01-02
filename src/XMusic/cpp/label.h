@@ -34,6 +34,8 @@ private:
 
     UINT m_uShadowWidth = 1;
 
+    UINT m_szRound = 0;
+
     QRect m_rc;
 
 signals:
@@ -55,6 +57,11 @@ private:
     }
 
 public:
+    void setPixmapRound(UINT szRound)
+    {
+        m_szRound = szRound;
+    }
+
     void setPixmap(const QPixmap & pm, bool bCut=true)
     {
         m_bCutPixmap = bCut;

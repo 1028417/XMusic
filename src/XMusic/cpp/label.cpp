@@ -7,22 +7,19 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 
 	auto pm = pixmap();
 	if (pm && !pm->isNull())
-	{
-#define __szRound __size(8)
+    {
         QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);
-        painter.drawPixmapEx(rcImg, *pm, __szRound);
+        painter.drawPixmapEx(rcImg, *pm, m_szRound);
 
         if (m_uShadowWidth > 0)
         {
-
-            QColor crShadow(__ReverseColor(g_crTheme));
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
                 UINT uAlpha = __ShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
                 painter.setPen(__ShadowColor(uAlpha));
 
                 QRect rcShadow(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2);
-                painter.drawRectEx(rcShadow, __szRound);
+                painter.drawRectEx(rcShadow, m_szRound);
             }
         }
 

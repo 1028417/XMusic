@@ -404,8 +404,10 @@ void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, cons
 
     if (uShadowWidth > 0 && uShadowAlpha > 0)
     {
-        QColor crShadow(__ReverseColor(crText));
-        crShadow.setAlpha(uShadowAlpha);
+        int r = crText.red();
+        int g = crText.green();
+        int b = crText.blue();
+        QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, uShadowAlpha);
 
         for (UINT uIdx=0; uIdx<=uShadowWidth; uIdx++)
         {
