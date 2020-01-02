@@ -58,7 +58,7 @@ public:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
-        setDropShadow();
+        this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
 
         auto rc = this->rect();
 
