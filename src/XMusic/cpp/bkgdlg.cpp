@@ -123,14 +123,16 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             }
 
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
-            cr.setAlpha(200);
+            cr.setAlpha(170);
 
             int len = MIN(rc.width(), rc.height())/4;
 #define __szAdd __size(4)
             cauto pt = rc.center();
             rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
             painter.fillRectEx(rc, cr, __szAdd/2);
+
             rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
+            painter.fillRect(rc, g_crTheme);
             painter.fillRectEx(rc, cr, __szAdd/2);
         }
     }
