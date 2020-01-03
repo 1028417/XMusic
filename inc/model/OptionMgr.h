@@ -1,11 +1,6 @@
 
 #pragma once
 
-#if !__winvc
-#define __defThemeColor QRGB(160, 210, 255)
-#define __defTextColor QRGB(255, 255, 225)
-#endif
-
 struct __ModelExt tagPlaySpiritOption
 {
 	wstring strSkinName;
@@ -59,8 +54,8 @@ struct __ModelExt tagOption
     wstring strVBkg;
 
     bool bUseThemeColor = false;
-    UINT crTheme = __defThemeColor;
-    UINT crText = __defTextColor;
+    int crTheme = -1;
+    int crText = -1;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
