@@ -81,6 +81,18 @@ struct __ModelExt tagMedialibConf
 
     list<string> lstOnlineHBkg;
     list<string> lstOnlineVBkg;
+
+    void clear()
+    {
+        uCompatibleAppVersion = 0;
+
+        uMedialibVersion = 0;
+
+        lstUrl.clear();
+
+        lstOnlineHBkg.clear();
+        lstOnlineVBkg.clear();
+    }
 };
 
 #else
@@ -172,7 +184,10 @@ public:
 
 #if !__winvc
     virtual bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL) = 0;
-    virtual bool upgradeMediaLib(const tagMedialibConf& medialibConf, CB_DownloadProgress& cbProgress) = 0;
+
+    virtual bool upgradeMediaLib(const tagMedialibConf& prevMedialibConf, CB_DownloadProgress& cbProgress) = 0;
+
+    virtual const tagMedialibConf& medialibConf() const = 0;
 
 #else
     virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
@@ -205,6 +220,8 @@ private:
 
 #if __winvc
 	CBackupMgr m_BackupMgr;
+#else
+    tagMedialibConf m_newMedialibConf;
 #endif
 
 	XMediaLib m_MediaLib;
@@ -216,10 +233,8 @@ private:
 
 	CPlayMgr m_PlayMgr;
 
-	string m_strSingerImgUrl;
-
 public:
-        bool status() const override
+    bool status() const override
 	{
 		return m_db.GetStatus();
 	}
@@ -287,8 +302,13 @@ public:
 
 #if !__winvc
     bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL) override;
-    bool upgradeMediaLib(const tagMedialibConf& medialibConf, CB_DownloadProgress& cbProgress) override;
 
+    bool upgradeMediaLib(const tagMedialibConf& prevMedialibConf, CB_DownloadProgress& cbProgress) override;
+
+    const tagMedialibConf& medialibConf() const override
+    {
+        m_newMedialibConf;
+    }
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
 #else
