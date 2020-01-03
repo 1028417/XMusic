@@ -307,7 +307,7 @@ public:
 
     const tagMedialibConf& medialibConf() const override
     {
-        m_newMedialibConf;
+        return m_newMedialibConf;
     }
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
