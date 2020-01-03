@@ -148,22 +148,22 @@ void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& 
         if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
             auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u歌手", pSingerGroup->singers().size());
+            qsRemark.sprintf("%d歌手", pSingerGroup->singers().size());
         }
         else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         {
             auto pSinger = (CSinger*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u专辑", pSinger->albums().size());
+            qsRemark.sprintf("%d专辑", pSinger->albums().size());
         }
         else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
         {
             auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u曲目", pAlbum->albumItems().size());
+            qsRemark.sprintf("%d曲目", pAlbum->albumItems().size());
         }
         else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
         {
             auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u曲目", pPlaylist->playItems().size());
+            qsRemark.sprintf("%d曲目", pPlaylist->playItems().size());
         }
 
         if (!qsRemark.isEmpty())

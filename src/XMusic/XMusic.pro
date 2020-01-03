@@ -75,18 +75,15 @@ android {
     platform = mac
     DESTDIR = ../../bin/mac
 
+    libDir = $$PWD/../../../PlaySDK/bin/mac
     macDir = $$PWD/../../bin/mac
     frameworkDir = $$macDir/XMusic.app/Contents/Frameworks
     QMAKE_POST_LINK += \
         rm -f $$macDir/XMusic.dmg \
         && rm -rf $$frameworkDir \
         && mkdir $$frameworkDir \
-        && cp -f $$macDir/libavcodec.58.dylib $$frameworkDir/ \
-        && cp -f $$macDir/libavformat.58.dylib $$frameworkDir/ \
-        && cp -f $$macDir/libavutil.56.dylib $$frameworkDir/ \
-        && cp -f $$macDir/libswresample.3.dylib $$frameworkDir/ \
-        && mkdir $$frameworkDir/SDL2.framework \
-        && cp -R $$macDir/SDL2.framework/ $$frameworkDir/SDL2.framework \
+        && echo $$macDir $$frameworkDir | xargs -n 1 cp -rfv \
+            $$libDir/{SDL2.framework,libavcodec.58.dylib,libavformat.58.dylib,libavutil.56.dylib,libswresample.3.dylib} \
         && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir -dmg
 } else: ios {
     LIBS += -L../../../Common2.1/libs/mac  -lssl  -lcrypto  #-lnghttp2
