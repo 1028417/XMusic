@@ -227,11 +227,11 @@ void CApp::slot_run(bool bUpgradeResult)
 
     if (m_ctrl.getOption().crTheme >= 0)
     {
-        g_crTheme.setRgb(m_ctrl.getOption().crTheme);
+        g_crTheme.setRgb((int)m_ctrl.getOption().crTheme);
     }
     if (m_ctrl.getOption().crText >= 0)
     {
-        g_crText.setRgb(m_ctrl.getOption().crText);
+        g_crText.setRgb((int)m_ctrl.getOption().crText);
     }
 
     m_mainWnd.show();

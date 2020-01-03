@@ -200,13 +200,15 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
-        m_app.getOption().crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
-        g_crTheme.setRgb(m_app.getOption().crTheme);
+        int crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+        g_crTheme.setRgb(crTheme);
+        m_app.getOption().crTheme = (UINT)crTheme;
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
-        m_app.getOption().crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
-        g_crText.setRgb(m_app.getOption().crText);
+        int crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
+        g_crText.setRgb(crText);
+        m_app.getOption().crText = (UINT)crText;
 
         CDialog::setWidgetTextColor(ui.groupBkgColor, g_crText);
         CDialog::setWidgetTextColor(ui.groupFontColor, g_crText);
