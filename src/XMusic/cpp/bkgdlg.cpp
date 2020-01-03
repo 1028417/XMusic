@@ -115,15 +115,15 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             int d = abs(cr.red()+cr.green()+cr.blue()-g_crTheme.red()-g_crTheme.green()-g_crTheme.blue());
             if (abs(d) == 128)
             {
-                cr.setAlpha(128);
+                cr.setAlpha(100);
             }
             else
             {
-                cr.setAlpha(64);
+                cr.setAlpha(50);
             }
 
             painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
-            cr.setAlpha(170);
+            cr.setAlpha(150);
 
             int len = MIN(rc.width(), rc.height())/4;
 #define __szAdd __size(4)
