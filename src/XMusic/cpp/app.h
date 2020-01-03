@@ -37,6 +37,8 @@ public:
     }
 
 private:
+    static bool m_bRunSignal;
+
     CXController m_ctrl;
 
     CModel m_model;
@@ -44,8 +46,6 @@ private:
     MainWindow m_mainWnd;
 
     CMsgBox m_msgbox;
-
-    static bool m_bRunSignal;
 
 signals:
     void signal_run(bool bUpgradeResult);

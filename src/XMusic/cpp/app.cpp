@@ -308,7 +308,7 @@ bool CApp::_upgradeMediaLib()
     __EnsureReturn(m_model.readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
     g_logger << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
 
-    tagMedialibConf *pMedialibConf = &orgMedialibConf;
+    tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
     tagMedialibConf userMedialibConf;
     if (m_model.readMedialibConf(userMedialibConf))
     {
@@ -318,12 +318,12 @@ bool CApp::_upgradeMediaLib()
 
             if (userMedialibConf.uMedialibVersion >= orgMedialibConf.uMedialibVersion)
             {
-                pMedialibConf = &userMedialibConf;
+                pPrevMedialibConf = &userMedialibConf;
             }
         }
     }
 
-    if (!m_model.upgradeMediaLib(*pMedialibConf, [&](int64_t dltotal, int64_t dlnow){
+    if (!m_model.upgradeMediaLib(*pPrevMedialibConf, [&](int64_t dltotal, int64_t dlnow){
         (void)dltotal;
         (void)dlnow;
         return m_bRunSignal;
