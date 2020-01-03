@@ -150,7 +150,8 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, const QRect& rcSrc=QRect(), UINT xround=0, UINT yround=0);
+    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, const QRect& rcSrc, UINT xround=0, UINT yround=0);
 
     void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
 
