@@ -9,11 +9,6 @@
 
 float g_fPixelRatio = 1;
 
-map<E_FontWeight, QFont> g_mapFont;
-
-QColor g_crTheme;
-QColor g_crText;
-
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
@@ -230,8 +225,14 @@ void CApp::slot_run(bool bUpgradeResult)
     }
     g_logger >> "start controller success, app running";
 
-    g_crTheme.setRgb(m_ctrl.getOption().crTheme);
-    g_crText.setRgb(m_ctrl.getOption().crText);
+    if (m_ctrl.getOption().crTheme >= 0)
+    {
+        g_crTheme.setRgb(m_ctrl.getOption().crTheme);
+    }
+    if (m_ctrl.getOption().crText >= 0)
+    {
+        g_crText.setRgb(m_ctrl.getOption().crText);
+    }
 
     m_mainWnd.show();
 }

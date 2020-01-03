@@ -1,6 +1,14 @@
 
 #include "painter.h"
 
+#define __defThemeColor QRGB(160, 210, 255)
+#define __defTextColor QRGB(255, 255, 225)
+
+QColor g_crTheme(__defThemeColor);
+QColor g_crText(__defTextColor);
+
+map<E_FontWeight, QFont> g_mapFont;
+
 void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
 {
     if (pm.width() < pm.height())

@@ -11,8 +11,6 @@
 
 #include "util/util.h"
 
-extern float g_fPixelRatio;
-
 extern QColor g_crTheme;
 extern QColor g_crText;
 
