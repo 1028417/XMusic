@@ -384,27 +384,39 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
+inline bool CMedialibView::_playIconRect(const tagMediaContext& mediaContext, QRect& rcPlayIcon)
 {
-    cauto mediaContext = (tagMediaContext&)context;
-
     if ((mediaContext.pMediaSet && E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
          || E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType
          || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         || mediaContext.pMedia || mediaContext.pFile)
     {
-        UINT cy = rc.height();
-        int margin = cy * context.fIconMargin*1.5;
+        UINT cy = mediaContext.lvRow.rc.height();
+        int margin = cy * mediaContext.fIconMargin*1.5;
         cy -= margin*2;
 
-        int x_icon = rc.right()-margin-cy;
-        int y_icon = rc.top()+margin;
+        int x_icon = mediaContext.lvRow.rc.right()-margin-cy;
+        int y_icon = mediaContext.lvRow.rc.top()+margin;
+        rcPlayIcon.setRect(x_icon, y_icon, cy, cy);
 
+        return true;
+    }
+
+    return false;
+}
+
+void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
+{
+    cauto mediaContext = (tagMediaContext&)context;
+
+    QRect rcPlayIcon;
+    if (_playIconRect(mediaContext, rcPlayIcon))
+    {
         bool bFlashing = (int)context.lvRow.uRow == m_nFlashingRow;
         cauto pixmap = mediaContext.pMediaSet
                 ?(bFlashing?m_pmPlayAlpha:m_pmPlay)
                :(bFlashing?m_pmAddPlayAlpha:m_pmAddPlay);
-        painter.drawPixmap(QRect(x_icon, y_icon, cy, cy), pixmap);
+        painter.drawPixmap(rcPlayIcon, pixmap);
 
         rc.setRight(rc.right()-rc.height());
     }
@@ -460,21 +472,24 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 }
 
-void CMedialibView::_onRowClick(tagLVRow& context, const QMouseEvent&, CMediaSet& mediaSet)
+void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)
 {
-    tagMediaContext& mediaContext = (tagMediaContext&)context;
-    if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
-            || E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType
-            || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+    QRect rcPlayIcon;
+    if (_playIconRect(tagMediaContext(lvRow, mediaSet), rcPlayIcon))
     {
-
+        if (rcPlayIcon.contains(me.x(), me.y()))
+        {
+            return;
+        }
     }
+
+    CListViewEx::_onRowClick(lvRow, me, mediaSet);
 }
 
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
-    _flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
+    _flashRow(lvRow.uRow);
 
     if (me.x() <= (int)rowHeight())
     {

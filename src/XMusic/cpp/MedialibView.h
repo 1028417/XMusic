@@ -81,6 +81,8 @@ private:
 
     void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags) override;
 
+    bool _playIconRect(const tagMediaContext& mediaContext, QRect& rcPlayIcon);
+
     bool event(QEvent *ev) override;
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);

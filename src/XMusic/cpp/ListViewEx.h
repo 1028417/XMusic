@@ -62,6 +62,19 @@ private:
     TD_XFileList m_paSubFiles;
 
 protected:
+    void _clear()
+    {
+        reset();
+
+        m_pMediaset = NULL;
+        m_lstSubSets.clear();
+        m_lstSubMedias.clear();
+
+        m_pPath = NULL;
+        m_paSubDirs.clear();
+        m_paSubFiles.clear();
+    }
+
     CMediaSet* currentMediaSet() const
     {
         return m_pMediaset;
@@ -89,17 +102,10 @@ protected:
         return (CPath*)currentDir.fileInfo().pParent;
     }
 
-    void _clear()
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet)
     {
-        reset();
-
-        m_pMediaset = NULL;
-        m_lstSubSets.clear();
-        m_lstSubMedias.clear();
-
-        m_pPath = NULL;
-        m_paSubDirs.clear();
-        m_paSubFiles.clear();
+        _saveScrollRecord();
+        showMediaSet(mediaSet);
     }
 
 private:
@@ -116,12 +122,8 @@ private:
     virtual bool _genRootRowContext(tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) = 0;
 
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&) override;
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet)
-    {
-        _saveScrollRecord();
-        showMediaSet(mediaSet);
-    }
+    void _onRowClick(tagLVRow&, const QMouseEvent&) override;
+
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMedia&){}
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CPath&){}
 
