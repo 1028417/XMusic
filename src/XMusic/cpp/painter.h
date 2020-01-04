@@ -96,6 +96,14 @@ public:
     }
 
 public:
+    static void alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst);
+    static QPixmap alphaPixmap(const QPixmap& pmSrc, int alpha)
+    {
+        QPixmap pmDst(pmSrc.size());
+        alphaPixmap(pmSrc, alpha, pmDst);
+        return std::move(pmDst);
+    }
+
     static void zoomoutPixmap(QPixmap& pm, UINT size);
 
     static QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha);

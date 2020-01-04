@@ -56,6 +56,7 @@ void CDialog::show(const fn_void& cbClose)
         painter.setPen(Qt::transparent);
         painter.setBrush(Qt::black);
         painter.drawRectEx(bmp.rect(), __xround);
+        painter.end();
 
         this->setMask(bmp);
     }

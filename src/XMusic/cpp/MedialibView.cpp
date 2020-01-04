@@ -16,6 +16,10 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
     , m_PlaylistLib(app.getPlaylistMgr())
     , m_MediaLib(app.getMediaLib())
     , m_OuterDir(OuterDir)
+    , m_pmPlay(":/img/btnPlay.png")
+    , m_pmPlayAlpha(CPainter::alphaPixmap(m_pmPlay, 128))
+    , m_pmAddPlay(":/img/btnAddplay.png")
+    , m_pmAddPlayAlpha(CPainter::alphaPixmap(m_pmAddPlay, 128))
 {
 }
 
@@ -32,9 +36,6 @@ void CMedialibView::init()
     (void)m_pmDir.load(":/img/dir.png");
     (void)m_pmDirLink.load(":/img/dirLink.png");
     (void)m_pmFile.load(":/img/file.png");
-
-    (void)m_pmPlayButton.load(":/img/btnPlay.png");
-    (void)m_pmAddPlayButton.load(":/img/btnAddplay.png");
 
     connect(this, &CMedialibView::signal_update, this, [&](){
         update();
@@ -389,12 +390,17 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         || mediaContext.pMedia || mediaContext.pFile)
     {
         UINT cy = rc.height();
-        int margin = cy * context.fIconMargin;
+        int margin = cy * context.fIconMargin*1.5;
         cy -= margin*2;
 
         int x_icon = rc.right()-margin-cy;
         int y_icon = rc.top()+margin;
-        painter.drawPixmap(QRect(x_icon, y_icon, cy, cy), m_pmAddPlayButton);
+
+        cauto pixmap = mediaContext.pMediaSet
+                ?(context.lvRow.bFlashing?m_pmPlayAlpha:m_pmPlay)
+               :(context.lvRow.bFlashing?m_pmAddPlayAlpha:m_pmAddPlay);
+        painter.drawPixmap(QRect(x_icon, y_icon, cy, cy), pixmap);
+
         rc.setRight(rc.right()-rc.height());
     }
 

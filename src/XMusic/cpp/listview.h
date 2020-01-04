@@ -3,6 +3,8 @@
 
 #include "widget.h"
 
+#define __crSelMask QColor(g_crText.red(), g_crText.green(), g_crText.blue(), oppTextAlpha(20))
+
 class CListView : public CWidget<QWidget>
 {
 protected:

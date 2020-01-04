@@ -105,10 +105,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (bSelected)
             {
-                UINT uAlpha = oppTextAlpha(20);
-                QColor cr = g_crText;
-                cr.setAlpha(uAlpha);
-                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, cr);
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, __crSelMask);
             }
 
             _onPaintRow(painter, lvRow);
@@ -204,7 +201,7 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
     if (context.lvRow.bFlashing)
     {
         uTextAlpha = __FlashingAlpha;
-        uShadowAlpha = uShadowAlpha*__FlashingAlpha/255;
+        uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
     }
 
     QString qsText = strutil::toQstr(context.strText);
@@ -219,7 +216,6 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
     }
 
-    //cauto cr = (context.lvRow.bSelected|context.lvRow.bFlashing) ? g_crTheme:g_crText;
     painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 }
 

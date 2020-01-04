@@ -34,8 +34,10 @@ private:
     QPixmap m_pmDirLink;
     QPixmap m_pmFile;
 
-    QPixmap m_pmPlayButton;
-    QPixmap m_pmAddPlayButton;
+    QPixmap m_pmPlay;
+    QPixmap m_pmPlayAlpha;
+    QPixmap m_pmAddPlay;
+    QPixmap m_pmAddPlayAlpha;
 
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
