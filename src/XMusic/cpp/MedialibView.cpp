@@ -386,9 +386,9 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
 
 inline bool CMedialibView::_playIconRect(const tagMediaContext& mediaContext, QRect& rcPlayIcon)
 {
-    if ((mediaContext.pMediaSet && E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
+    if ((mediaContext.pMediaSet && (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
          || E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType
-         || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+         || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType))
         || mediaContext.pMedia || mediaContext.pFile)
     {
         UINT cy = mediaContext.lvRow.rc.height();
