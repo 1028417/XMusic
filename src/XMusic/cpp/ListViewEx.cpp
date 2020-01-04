@@ -145,8 +145,7 @@ void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
         if (m_lstSubSets)
         {
             m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
-                _saveScrollRecord();
-                showMediaSet(mediaSet);
+                _onRowClick(lvRow, me, mediaSet);
             });
         }
         else if (m_lstSubMedias)

@@ -116,7 +116,12 @@ private:
     virtual bool _genRootRowContext(tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) = 0;
 
-    void _onRowClick(tagLVRow&, const QMouseEvent&) override;
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&) override;
+    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet)
+    {
+        _saveScrollRecord();
+        showMediaSet(mediaSet);
+    }
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMedia&){}
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CPath&){}
 

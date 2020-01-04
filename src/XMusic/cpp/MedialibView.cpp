@@ -388,7 +388,9 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 {
     cauto mediaContext = (tagMediaContext&)context;
 
-    if ((mediaContext.pMediaSet && E_MediaSetType::MST_Singer != mediaContext.pMediaSet->m_eType)
+    if ((mediaContext.pMediaSet && E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
+         || E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType
+         || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         || mediaContext.pMedia || mediaContext.pFile)
     {
         UINT cy = rc.height();
@@ -456,6 +458,17 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
 
     painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+}
+
+void CMedialibView::_onRowClick(tagLVRow& context, const QMouseEvent&, CMediaSet& mediaSet)
+{
+    tagMediaContext& mediaContext = (tagMediaContext&)context;
+    if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType
+            || E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType
+            || E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+    {
+
+    }
 }
 
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)

@@ -88,7 +88,7 @@ private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CMediaDir&, WString& strTitle);
 
-    void _onMediaClick(tagLVRow&, const QMouseEvent&, IMedia&);
+    void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet) override;
 
     void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMedia& media) override
     {
@@ -99,6 +99,8 @@ private:
     {
         _onMediaClick(lvRow, me, (CMediaRes&)path);
     }
+
+    void _onMediaClick(tagLVRow&, const QMouseEvent&, IMedia&);
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;
