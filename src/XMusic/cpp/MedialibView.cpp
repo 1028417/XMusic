@@ -479,7 +479,13 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSe
     {
         if (rcPlayIcon.contains(me.x(), me.y()))
         {
-            return;
+            _flashRow(lvRow.uRow);
+
+             TD_MediaList lstMedias;
+             mediaSet.GetAllMedias(lstMedias);
+             m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+
+             return;
         }
     }
 
@@ -488,6 +494,19 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSe
 
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
+    QRect rcPlayIcon;
+    if (_playIconRect(tagMediaContext(lvRow, media), rcPlayIcon))
+    {
+        if (rcPlayIcon.contains(me.x(), me.y()))
+        {
+            _flashRow(lvRow.uRow);
+
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+
+             return;
+        }
+    }
+
     selectRow(lvRow.uRow);
     _flashRow(lvRow.uRow);
 

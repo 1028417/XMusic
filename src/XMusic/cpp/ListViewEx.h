@@ -20,6 +20,18 @@ protected:
         {
         }
 
+        tagMediaContext(tagLVRow& lvRow, IMedia& media) : tagRowContext(lvRow)
+        {
+            if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
+            {
+                pMedia = (CMedia*)&media;
+            }
+            else
+            {
+                pFile = (CMediaRes*)&media;
+            }
+        }
+
         tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
             tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pMediaSet(&MediaSet)
