@@ -105,7 +105,10 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (bSelected)
             {
-                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, __crSelMask);
+                UINT uAlpha = oppTextAlpha(20);
+                QColor cr = g_crText;
+                cr.setAlpha(uAlpha);
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, cr);
             }
 
             _onPaintRow(painter, lvRow);
