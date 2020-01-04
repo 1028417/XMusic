@@ -24,11 +24,11 @@ protected:
         {
             if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
             {
-                pMedia = (CMedia*)&media;
+                pFile = (CMediaRes*)&media;
             }
             else
             {
-                pFile = (CMediaRes*)&media;
+                pMedia = (CMedia*)&media;
             }
         }
 
