@@ -6,6 +6,8 @@
 #define __XMusicDirName L"XMusic"
 #define __OuterDirName L" 本地"
 
+#define __FlashingAlpha 170
+
 #define __RemarkAlpha 170
 
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
@@ -382,7 +384,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
+void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
 {
     cauto mediaContext = (tagMediaContext&)context;
 
@@ -396,9 +398,10 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         int x_icon = rc.right()-margin-cy;
         int y_icon = rc.top()+margin;
 
+        bool bFlashing = (int)context.lvRow.uRow == m_nFlashingRow;
         cauto pixmap = mediaContext.pMediaSet
-                ?(context.lvRow.bFlashing?m_pmPlayAlpha:m_pmPlay)
-               :(context.lvRow.bFlashing?m_pmAddPlayAlpha:m_pmAddPlay);
+                ?(bFlashing?m_pmPlayAlpha:m_pmPlay)
+               :(bFlashing?m_pmAddPlayAlpha:m_pmAddPlay);
         painter.drawPixmap(QRect(x_icon, y_icon, cy, cy), pixmap);
 
         rc.setRight(rc.right()-rc.height());
@@ -444,12 +447,20 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         }
     }
 
-    CListView::_paintText(painter, rc, context);
+    UINT uTextAlpha = 255;
+    UINT uShadowAlpha = __ShadowAlpha;
+    if ((int)context.lvRow.uRow == m_nFlashingRow)
+    {
+        uTextAlpha = __FlashingAlpha;
+        uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+    }
+
+    painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 }
 
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
-    flashRow(lvRow.uRow);
+    _flashRow(lvRow.uRow);
     selectRow(lvRow.uRow);
 
     if (me.x() <= (int)rowHeight())
@@ -527,4 +538,15 @@ bool CMedialibView::event(QEvent *ev)
     }
 
     return bRet;
+}
+
+void CMedialibView::_flashRow(UINT uRow, UINT uMSDelay)
+{
+    m_nFlashingRow = uRow;
+    update();
+
+    CApp::async(uMSDelay, [&](){
+        m_nFlashingRow = -1;
+        update();
+    });
 }

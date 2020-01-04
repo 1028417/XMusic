@@ -10,12 +10,11 @@ protected:
     {
         tagLVRow() {}
 
-        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected, bool t_bFlashing)
+        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
             : uIdx(t_uIdx)
             , uRow(t_uRow)
             , uCol(t_uCol)
             , bSelected(t_bSelected)
-            , bFlashing(t_bFlashing)
         {
         }
 
@@ -24,7 +23,6 @@ protected:
         UINT uCol = 0;
 
         bool bSelected = false;
-        bool bFlashing = false;
 
         QRect rc;
     };
@@ -86,8 +84,6 @@ private:
     int m_nSelectRow = -1;
     int m_nSelectCol = -1;
 
-    int m_nFlashRow = -1;
-
     ulong m_uAutoScrollSeq = 0;
 
     QColor m_crFlashText;
@@ -137,7 +133,7 @@ protected:
 
     void _paintRow(CPainter&, const tagRowContext&);
 
-    virtual void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context);
+    virtual void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 
@@ -192,14 +188,11 @@ public:
         update();
     }
 
-    void flashRow(UINT uRow, UINT uMSDelay=300);
-
-    void reset()
+    virtual void reset()
     {
         m_fScrollPos = 0;
 
         m_nSelectRow = -1;
-        m_nFlashRow = -1;
 
         m_uAutoScrollSeq = 0;
     }

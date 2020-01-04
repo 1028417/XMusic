@@ -42,6 +42,8 @@ private:
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
+    int m_nFlashingRow = -1;
+
 signals:
     void signal_update();
 
@@ -55,6 +57,13 @@ public:
     void clear();
 
     void updateSingerImg();
+
+    void reset() override
+    {
+        m_nFlashingRow = -1;
+
+        CListView::reset();
+    }
 
 private:
     void _onShowRoot() override;
@@ -70,7 +79,7 @@ private:
     bool _genRootRowContext(tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
-    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context) override;
+    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags) override;
 
     bool event(QEvent *ev) override;
 
@@ -93,4 +102,6 @@ private:
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;
+
+    void _flashRow(UINT uRow, UINT uMSDelay=300);
 };

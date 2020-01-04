@@ -3,8 +3,6 @@
 
 #include "app.h"
 
-#define __FlashingAlpha 170
-
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
     size_t uPageRowCount = getPageRowCount();
@@ -30,17 +28,6 @@ void CListView::showRow(UINT uRow, bool bToCenter)
     }
 
     update();
-}
-
-void CListView::flashRow(UINT uRow, UINT uMSDelay)
-{
-    m_nFlashRow = uRow;
-    update();
-
-    CApp::async(uMSDelay, [&](){
-        m_nFlashRow = -1;
-        update();
-    });
 }
 
 void CListView::_onPaint(CPainter& painter, const QRect&)
@@ -97,7 +84,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         painter.setPen(g_crText);
 
         bool bSelected = (int)uRow == m_nSelectRow;
-        tagLVRow lvRow(uIdx, uRow, 0, bSelected, (int)uRow == m_nFlashRow);
+        tagLVRow lvRow(uIdx, uRow, 0, bSelected);
         QRect& rc = lvRow.rc;
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
@@ -187,24 +174,11 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         rc.setRight(x_righttip - nMargin);
     }
 
-    _paintText(painter, rc, context);
-}
-
-void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
-{
     if (context.lvRow.bSelected)
     {
         auto font = painter.font();
         font.setBold(true);
         painter.setFont(font);
-    }
-
-    UINT uTextAlpha = 255;
-    UINT uShadowAlpha = __ShadowAlpha;
-    if (context.lvRow.bFlashing)
-    {
-        uTextAlpha = __FlashingAlpha;
-        uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
     }
 
     QString qsText = strutil::toQstr(context.strText);
@@ -219,7 +193,12 @@ void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& co
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
     }
 
-    painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+    _paintText(painter, rc, context, qsText, flags);
+}
+
+void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
+{
+    painter.drawTextEx(rc, flags, qsText, 1);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
@@ -267,7 +246,7 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
 
     UINT cx_col = width() / getColumnCount();
     UINT uCol = UINT(x/cx_col);
-    lvRow = tagLVRow(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow, (int)uRow == m_nFlashRow);
+    lvRow = tagLVRow(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow);
 
     y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
     lvRow.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);

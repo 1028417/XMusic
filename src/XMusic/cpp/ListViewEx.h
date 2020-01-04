@@ -91,7 +91,7 @@ protected:
 
     void _clear()
     {
-        CListView::reset();
+        reset();
 
         m_pMediaset = NULL;
         m_lstSubSets.clear();
