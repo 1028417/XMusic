@@ -313,13 +313,6 @@ public:
         }
     }
 
-#if 0
-    virtual void update()
-    {
-        TWidget::update();
-    }
-#endif
-
 protected:
     virtual bool event(QEvent *ev) override;
 

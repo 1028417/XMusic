@@ -6,65 +6,7 @@
 #define __XMusicDirName L"XMusic"
 #define __OuterDirName L" 本地"
 
-#define _showButton(context, bMedia)
-
-#if 0
-void CMedialibView::_showButton(tagMediaContext& context, bool bMedia)
-{
-    return;
-
-    context.eStyle |= E_RowStyle::IS_RightButton;
-
-    static map<UINT, class CButton*> m_mapButton;
-    static map<class CButton*, UINT> m_mapButtonIdx;
-
-    CButton*& pButton = m_mapButton[context.lvRow.uIdx];
-    if (NULL == pButton)
-    {
-        pButton = new CButton(this);
-        connect(pButton, &CButton::signal_clicked, [&, pButton]() {
-            _onButton(m_mapButtonIdx[pButton]);
-        });
-        pButton->setVisible(true);
-    }
-    m_mapButtonIdx[pButton] = context.lvRow.uRow;
-
-    pButton->setStyleSheet(bMedia?"border-image: url(:/img/btnAddplay.png);"
-                                : "border-image: url(:/img/btnPlay.png);");
-
-    auto& rc = context.lvRow.rc;
-    int szButton = ui.btnReturn->height()-__size(8);
-    auto margin = (rc.height()-szButton)/2;
-    int x = rc.right()-margin-szButton + __xPlayButtonOffset;
-    QRect rcPos(x, rc.y()+margin, szButton, szButton);
-    pButton->setGeometry(rcPos);
-}
-
-void CMedialibView::_onButton(UINT uRow)
-{
-    CPath *pDir = currentPath();
-    if (pDir)
-    {
-        pDir->get(uRow, [&](XFile& file){
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl((CMediaRes&)file, false));
-        });
-        return;
-    }
-
-    if (currentSubSets().get(uRow, [&](CMediaSet& mediaSet){
-         TD_MediaList lstMedias;
-         mediaSet.GetAllMedias(lstMedias);
-         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
-    }))
-    {
-        return;
-    }
-
-    currentSubMedias().get(uRow, [&](CMedia& media){
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
-    });
-}
-#endif
+#define __RemarkAlpha 170
 
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
@@ -90,6 +32,9 @@ void CMedialibView::init()
     (void)m_pmDir.load(":/img/dir.png");
     (void)m_pmDirLink.load(":/img/dirLink.png");
     (void)m_pmFile.load(":/img/file.png");
+
+    (void)m_pmPlayButton.load(":/img/btnPlay.png");
+    (void)m_pmAddPlayButton.load(":/img/btnAddplay.png");
 
     connect(this, &CMedialibView::signal_update, this, [&](){
         update();
@@ -373,12 +318,9 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pixmap = &m_pmSingerGroup;
-            return;
         default:
             break;
         };
-
-        _showButton(context, false);
     }
     else if (context.pMedia)
     {
@@ -403,47 +345,100 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 }
             }
         }
-
-        _showButton(context, true);
     }
-    else if (context.pDir || context.pFile)
+    else if (context.pDir)
     {
-        CMediaRes& MediaRes = context.pDir? (CMediaRes&)*context.pDir : (CMediaRes&)*context.pFile;
-        if (MediaRes.IsDir())
+        CMediaDir *pMediaDir = (CMediaDir*)context.pDir;
+        context.pixmap = &m_pmDir;
+
+        if (pMediaDir->parent() == NULL)
         {
-            context.pixmap = &m_pmDir;
-
-            if (MediaRes.parent() == NULL)
+            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(pMediaDir);
+            if (pAttachDir)
             {
-                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&MediaRes);
-                if (pAttachDir)
-                {
-                    context.pixmap = &m_pmDirLink;
+                context.pixmap = &m_pmDirLink;
 
-                    /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
-                    {
-                        context.strRemark = L"扩展";
-                    }
-                    else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
-                    {
-                        context.strRemark = L"USB";
-                    }
-                    else
-                    {
-                        context.strRemark = L"內部";
-                    }*/
+                /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+                {
+                    context.strRemark = L"扩展";
                 }
+                else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
+                {
+                    context.strRemark = L"USB";
+                }
+                else
+                {
+                    context.strRemark = L"內部";
+                }*/
             }
         }
-        else
+    }
+    else if (context.pFile)
+    {
+       context.pixmap = &m_pmFile;
+
+       context.strText = ((CMediaRes*)context.pFile)->GetTitle();
+    }
+}
+
+void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
+{
+    cauto mediaContext = (tagMediaContext&)context;
+
+    if ((mediaContext.pMediaSet && E_MediaSetType::MST_Singer != mediaContext.pMediaSet->m_eType)
+        || mediaContext.pMedia || mediaContext.pFile)
+    {
+        UINT cy = rc.height();
+        int margin = cy * context.fIconMargin;
+        cy -= margin*2;
+
+        int x_icon = rc.right()-margin-cy;
+        int y_icon = rc.top()+margin;
+        painter.drawPixmap(QRect(x_icon, y_icon, cy, cy), m_pmAddPlayButton);
+        rc.setRight(rc.right()-rc.height());
+    }
+
+    if (mediaContext.pMediaSet)
+    {
+        QString qsRemark;
+        if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
-           context.pixmap = &m_pmFile;
+            auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%d歌手", pSingerGroup->singers().size());
+        }
+        else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+        {
+            auto pSinger = (CSinger*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%d专辑", pSinger->albums().size());
+        }
+        else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
+        {
+            auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%d曲目", pAlbum->albumItems().size());
+        }
+        else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
+        {
+            auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
+            qsRemark.sprintf("%d曲目", pPlaylist->playItems().size());
+        }
 
-           context.strText = MediaRes.GetTitle();
+        if (!qsRemark.isEmpty())
+        {
+            painter.save();
 
-           _showButton(context, true);
+            painter.adjustFont(0.9f);
+
+            UINT uAlpha = oppTextAlpha(__RemarkAlpha);
+            painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
+                               , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
+
+            painter.restore();
+
+            rc.setRight(rc.right() - 100);
         }
     }
+
+    CListView::_paintText(painter, rc, context);
 }
 
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)

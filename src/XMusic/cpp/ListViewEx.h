@@ -21,26 +21,26 @@ protected:
         }
 
         tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
-            tagRowContext(lvRow, E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
+            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pMediaSet(&MediaSet)
         {
             strText = MediaSet.m_strName;
         }
         tagMediaContext(tagLVRow& lvRow, CMedia& media) :
-            tagRowContext(lvRow, E_RowStyle::IS_BottomLine)
+            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pMedia(&media)
         {
             strText = media.GetTitle();
         }
 
         tagMediaContext(tagLVRow& lvRow, CPath& dir) :
-            tagRowContext(lvRow, E_RowStyle::IS_BottomLine | E_RowStyle::IS_RightTip)
+            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pDir(&dir)
         {
             strText = dir.name();
         }
         tagMediaContext(tagLVRow& lvRow, XFile& file) :
-            tagRowContext(lvRow, E_RowStyle::IS_BottomLine)
+            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pFile(&file)
         {
             strText = file.name();
@@ -112,8 +112,6 @@ private:
     virtual size_t _getRootRowCount() = 0;
 
     void _onPaintRow(CPainter&, tagLVRow&) override;
-
-    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context) override;
 
     virtual bool _genRootRowContext(tagMediaContext&) = 0;
     virtual void _genMediaContext(tagMediaContext&) = 0;

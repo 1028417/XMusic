@@ -174,25 +174,18 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
     }
 
-    if (context.eStyle & E_RowStyle::IS_RightButton)
-    {
-        rc.setRight(rc.right() - cy);
-    }
-    else
+    if (context.eStyle & E_RowStyle::IS_RightTip)
     {
         rc.setRight(rc.right() - nMargin);
 
-        if (context.eStyle & E_RowStyle::IS_RightTip)
-        {
-            int sz_righttip = cy*22/100;
-            int x_righttip = rc.right()-sz_righttip;
-            int y_righttip = rc.center().y()-sz_righttip/2;
-            QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
-            painter.drawPixmap(rcRighttip, m_pmRightTip);
+        int sz_righttip = cy*22/100;
+        int x_righttip = rc.right()-sz_righttip;
+        int y_righttip = rc.center().y()-sz_righttip/2;
+        QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
+        painter.drawPixmap(rcRighttip, m_pmRightTip);
 
-            rc.setRight(x_righttip - nMargin);
-        }
-    }    
+        rc.setRight(x_righttip - nMargin);
+    }
 
     _paintText(painter, rc, context);
 }

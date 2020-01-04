@@ -34,6 +34,9 @@ private:
     QPixmap m_pmDirLink;
     QPixmap m_pmFile;
 
+    QPixmap m_pmPlayButton;
+    QPixmap m_pmAddPlayButton;
+
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
@@ -65,34 +68,9 @@ private:
     bool _genRootRowContext(tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
+    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context) override;
+
     bool event(QEvent *ev) override;
-
-#if 0
-    void update() override
-    {
-        CListViewEx::update();
-
-        /*size_t uPageRowCount = getPageRowCount();
-
-        for (auto itr = m_mapButton.begin(); itr != m_mapButton.end(); )
-        {
-            if (itr->first >= uPageRowCount)
-            {
-                delete itr->second;
-                itr = m_mapButton.erase(itr);
-            }
-            else
-            {
-                itr->second->setVisible(false);
-
-                ++itr;
-            }
-        }*/
-    }
-
-    void _showButton(tagMediaContext& context, bool bMedia);
-    void _onButton(UINT uRow);
-#endif
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 

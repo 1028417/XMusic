@@ -1,8 +1,6 @@
 
 #include "ListViewEx.h"
 
-#define __RemarkAlpha 170
-
 size_t CListViewEx::getRowCount()
 {
     if (m_pMediaset)
@@ -136,53 +134,6 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             _paintRow(painter, context);
         }
     }
-}
-
-void CListViewEx::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context)
-{
-    cauto mediaContext = (tagMediaContext&)context;
-
-    if (mediaContext.pMediaSet)
-    {
-        QString qsRemark;
-        if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
-        {
-            auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%d歌手", pSingerGroup->singers().size());
-        }
-        else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
-        {
-            auto pSinger = (CSinger*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%d专辑", pSinger->albums().size());
-        }
-        else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
-        {
-            auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%d曲目", pAlbum->albumItems().size());
-        }
-        else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
-        {
-            auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%d曲目", pPlaylist->playItems().size());
-        }
-
-        if (!qsRemark.isEmpty())
-        {
-            painter.save();
-
-            painter.adjustFont(0.9f);
-
-            UINT uAlpha = oppTextAlpha(__RemarkAlpha);
-            painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
-                               , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
-
-            painter.restore();
-
-            rc.setRight(rc.right() - 100);
-        }
-    }
-
-    CListView::_paintText(painter, rc, context);
 }
 
 void CListViewEx::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)

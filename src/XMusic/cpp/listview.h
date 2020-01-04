@@ -38,7 +38,6 @@ protected:
 
         , IS_BottomLine     = 0x0004
         , IS_RightTip       = 0x0008
-        , IS_RightButton    = 0x0010
     };
     struct tagRowContext
     {
