@@ -4,8 +4,6 @@
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"
 
-#define __xPlayButtonOffset __size(8)
-
 static Ui::MedialibDlg ui;
 
 CMedialibDlg::CMedialibDlg(class CApp& app)
@@ -105,8 +103,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
-    int x_btnPlay = cx-rcReturn.right() + __xPlayButtonOffset;
-    ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
+    ui.btnPlay->setGeometry(cx-rcReturn.right(), rcReturn.top(), rcReturn.width(), rcReturn.height());
 
     _resizeTitle();
 
