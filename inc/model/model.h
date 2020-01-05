@@ -49,7 +49,7 @@ public:
     virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
 
 	virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) = 0;
-	virtual void onPlayStop(bool bOpenFail) = 0;
+    virtual void onPlayStop(bool bCanceled, bool bOpenFail) = 0;
 	
 	virtual UINT GetSingerImgPos(UINT uSingerID)
 	{
