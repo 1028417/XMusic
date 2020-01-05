@@ -321,7 +321,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <x>130</x>
       <y>200</y>
       <width>140</width>
-      <height>70</height>
+      <height>75</height>
      </rect>
     </property>
     <property name="autoFillBackground">
