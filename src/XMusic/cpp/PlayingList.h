@@ -72,7 +72,7 @@ private:
         }
     }*/
 
-    void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override
+    void _onMouseEvent(E_MouseEventType eType, const QMouseEvent& me) override
     {
         if (0 == m_nActiveTime)
         {
@@ -80,6 +80,8 @@ private:
         }
 
         m_nActiveTime = __ActiveTime;
+
+        CListView::_onMouseEvent(eType, me);
     }
 #endif
 

@@ -851,11 +851,11 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     _relayout();
 }
 
-void MainWindow::onPlayStop(bool bOpenFail)
+void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
 {
     emit signal_playStoped(bOpenFail);
 
-    if (m_app.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
+    if (!bCanceled)
     {
         /*if (bOpenFail)
         {

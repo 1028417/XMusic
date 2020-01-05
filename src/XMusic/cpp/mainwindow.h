@@ -124,7 +124,7 @@ private:
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
-    void onPlayStop(bool bOpenFail) override;
+    void onPlayStop(bool bCanceled, bool bOpenFail) override;
 
     void onSingerImgDownloaded(const wstring& strFile) override
     {

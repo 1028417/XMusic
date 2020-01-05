@@ -51,9 +51,9 @@ void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual
 	m_view.m_PlayCtrl.onPlay(PlayItem);
 }
 
-void CModelObserver::onPlayStop(bool bOpenFail)
+void CModelObserver::onPlayStop(bool bCanceled, bool bOpenFail)
 {
-	if (m_view.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
+	if (!bCanceled)
 	{
 		CMainApp::async([&, bOpenFail]() {
 			m_view.m_PlayCtrl.onPlayFinish(bOpenFail);
