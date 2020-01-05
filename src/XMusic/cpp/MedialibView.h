@@ -79,7 +79,7 @@ private:
     bool _genRootRowContext(tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;
 
-    void _paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags) override;
+    void _paintText(CPainter&, QRect&, const tagRowContext&, const QString&, int flags) override;
 
     bool _playIconRect(const tagMediaContext& mediaContext, QRect& rcPlayIcon);
 

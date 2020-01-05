@@ -196,7 +196,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     _paintText(painter, rc, context, qsText, flags);
 }
 
-void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
+void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext&, const QString& qsText, int flags)
 {
     painter.drawTextEx(rc, flags, qsText, 1);
 }
