@@ -57,8 +57,8 @@
   <widget class="QGroupBox" name="groupBkgColor">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>90</y>
+     <x>10</x>
+     <y>80</y>
      <width>370</width>
      <height>281</height>
     </rect>
@@ -350,8 +350,8 @@ gridline-color: rgb(255, 255, 255);</string>
   <widget class="QGroupBox" name="groupFontColor">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
+     <x>390</x>
+     <y>80</y>
      <width>350</width>
      <height>281</height>
     </rect>
