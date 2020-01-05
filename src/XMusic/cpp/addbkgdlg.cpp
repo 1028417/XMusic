@@ -25,14 +25,11 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
-    //ui.labelTitle->setTextColor(g_crText);
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
 #if __android || __ios
     m_addbkgView.setFont(1.05);
 #endif
-
-    //m_addbkgView.setTextColor(g_crText);
 
     CDialog::show(m_bkgDlg, true);
 

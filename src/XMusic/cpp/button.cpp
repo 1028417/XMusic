@@ -10,12 +10,18 @@ bool CButton::event(QEvent *ev)
         cauto qsText = this->text();
         if (!qsText.isEmpty())
         {
-            CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
-            painter.drawTextEx(rect(), Qt::AlignCenter|Qt::AlignVCenter, qsText, 1);
-
+            cauto rc = rect();
             auto cr = g_crText;
-            cr.setAlpha(170);
+
+            CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
+
+            cr.setAlpha(10);
+            painter.fillRectEx(rc, cr, __size(8));
+
+            cr.setAlpha(160);
             painter.drawRectEx(rect(), 1, cr, Qt::PenStyle::SolidLine, __size(8));
+
+            painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText, 1);
 
             return true;
         }

@@ -452,7 +452,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
             painter.adjustFont(0.9f);
 
-            UINT uAlpha = oppTextAlpha(__RemarkAlpha);
+            UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
             painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
                                , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 

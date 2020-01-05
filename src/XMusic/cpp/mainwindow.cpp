@@ -231,11 +231,6 @@ void MainWindow::_init()
     {
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
-    /*lstLabels.add(ui.labelDuration);
-    for (auto label : lstLabels)
-    {
-        label->setTextColor(g_crText);
-    }*/
 
     connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
@@ -605,15 +600,9 @@ void MainWindow::_relayout()
 
         ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
                                         , cx_SingerImg-__size(15), ui.labelSingerName->height());
-
-        //m_PlayingList.setTextColor(g_crText);
     }
     else
     {
-        /*auto crText = g_crText;
-        crText.setAlpha(160);
-        m_PlayingList.setTextColor(crText);*/
-
         bool bFlag = false;//fCXRateEx > 1;
         if (m_bHScreen)
         {
@@ -1157,8 +1146,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             if (lblLanguage->text().startsWith(__qsCheck))
             {
                 lblLanguage->setText(lblLanguage->text().mid(__qsCheck.length()));
-
-                //lblLanguage->setTextColor(g_crText);
             }
             else
             {

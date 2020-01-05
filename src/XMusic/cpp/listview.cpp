@@ -37,14 +37,6 @@ void CListView::_onPaint(CPainter& painter, const QRect&)
     _onPaint(painter, cx, cy);
 }
 
-#define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crText, g_crTheme)/255.0, f)))
-
-UINT CListView::oppTextAlpha(UINT uMinAlpha, float fPow)
-{
-    UINT uOppAlpha = __OppAlpha(fPow);
-    return MAX(uMinAlpha, uOppAlpha);
-}
-
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
     size_t uPageRowCount = getPageRowCount();
@@ -92,9 +84,8 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
             if (bSelected)
             {
-                UINT uAlpha = oppTextAlpha(20);
                 QColor cr = g_crText;
-                cr.setAlpha(uAlpha);
+                cr.setAlpha(CPainter::oppTextAlpha(20));
                 painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, cr);
             }
 
@@ -155,9 +146,8 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        UINT uAlpha = oppTextAlpha(20);
         QColor cr = g_crText;
-        cr.setAlpha(uAlpha*2);
+        cr.setAlpha(CPainter::oppTextAlpha(20)*2);
         painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
     }
 

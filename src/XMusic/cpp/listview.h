@@ -127,8 +127,6 @@ protected:
 
     bool _hittest(int x, int y, tagLVRow& lvRow);
 
-    UINT oppTextAlpha(UINT uMinAlpha, float fPow=0.1);
-
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 
     void _paintRow(CPainter&, const tagRowContext&);
@@ -196,19 +194,4 @@ public:
 
         m_uAutoScrollSeq = 0;
     }
-
-    /*void setTextColor(const QColor& crText)
-    {
-        CWidget<>::setTextColor(crText);
-    }
-
-    void setTextColor(int r, int g, int b, int a=255)
-    {
-        setTextColor(QColor(r,g,b,a));
-    }
-
-    void setTextColor(const QColor& crText, const QColor& crFlashText)
-    {
-        CWidget<>::setTextColor(crText);
-    }*/
 };

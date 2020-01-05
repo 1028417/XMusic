@@ -5,6 +5,22 @@
 
 static Ui::ColorDlg ui;
 
+class CGroupFrame : public CWidget<QGroupBox>
+{
+    Q_OBJECT
+public:
+    CGroupFrame(QWidget *parent)
+        : CWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
+    {
+    }
+
+private:
+    void _onPaint(CPainter& painter, const QRect&) override
+    {
+        //painter.drawTextEx(rect(), QGroupBox::title();
+    }
+};
+
 CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg)
     : m_app(app),
     m_bkgDlg(bkgDlg)
@@ -235,6 +251,6 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
 
 void CColorDlg::_onClose()
 {
-    m_bkgDlg.update();
-    m_app.mainWnd().update();
+    m_bkgDlg.repaint();
+    m_app.mainWnd().repaint();
 }

@@ -18,6 +18,8 @@ extern QColor g_crText;
     + abs(cr1.blue()-cr2.blue()))
 #define __ColorOffsetAvg(cr1, cr2) (__ColorOffset(cr1, cr2) / 3)
 
+#define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crText, g_crTheme)/255.0, f)))
+
 #define __ShadowColor(alpha) QColor(128, 128, 128, 128*alpha/255)
 
 #define __ShadowAlpha 80
@@ -96,6 +98,12 @@ public:
     }
 
 public:
+    static UINT oppTextAlpha(UINT uMinAlpha, float fPow = 0.1f)
+    {
+        UINT uOppAlpha = __OppAlpha(fPow);
+        return MAX(uMinAlpha, uOppAlpha);
+    }
+
     static void alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst);
     static QPixmap alphaPixmap(const QPixmap& pmSrc, int alpha)
     {
