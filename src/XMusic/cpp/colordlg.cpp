@@ -91,8 +91,8 @@ void CColorDlg::_relayout(int cx, int cy)
 
     ui.btnApplyBkgColor->move((cx_group-ui.btnApplyBkgColor->width())/2, cy_group-__size(30)-ui.btnApplyBkgColor->height());
 
-    int x = __size(40);//ui.btnSubBkgRed->x();
-    int y = cy_group/3.9;
+    int x = __size(40);
+    int y = cy_group/3.94;
 
     int szButton = rcReturn.width()-3;
     ui.btnSubBkgRed->setGeometry(x, y-ui.btnSubBkgRed->height()/2, szButton, szButton);
