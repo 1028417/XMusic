@@ -26,8 +26,6 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
 		return;
 	}
 
-    painter.setPen(textColor());
-
     QString qsText = this->text();
     if (!qsText.isEmpty())
     {
@@ -59,7 +57,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
             qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx, Qt::TextShowMnemonic);
 		}
 
-        painter.drawTextEx(m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth, m_uShadowAlpha);
+        painter.drawTextEx(textColor(), m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth, m_uShadowAlpha);
     }
 }
 
