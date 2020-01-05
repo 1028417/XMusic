@@ -364,9 +364,11 @@ void CBkgDlg::setBkg(size_t uIdx)
             {
                 this->addBkg(strFile);
             }
-#else
-            m_addbkgDlg.show();
+
+            return;
 #endif
+
+            m_addbkgDlg.show();
         }
     }
 }

@@ -41,21 +41,8 @@ void CAddBkgDlg::show()
 
     m_bScaning = true;
     m_thread = std::thread([&](){
-        m_ImgRoot.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-            if (paSubFile)
-            {
-                CImgDir& imgDir = (CImgDir&)dir;
-                if (imgDir.genSnapshot())
-                {
-                    if (m_bScaning)
-                    {
-                        emit signal_founddir(&imgDir);
-                        //mtutil::usleep(10);
-                    }
-                }
-            }
-
-            return m_bScaning;
+        m_ImgRoot.scan(m_bScaning, [&](IImgDir& imgDir) {
+            emit signal_founddir(&imgDir);
         });
     });
 }
@@ -181,11 +168,11 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
     else
     {
-        m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
+        m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
-            context.strText = imgDir.oppPath();
+            context.strText = imgDir.fileName();
             context.pixmap = &imgDir.snapshot();
 
             _paintRow(painter, context);
@@ -209,7 +196,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
     {
         _saveScrollRecord(NULL);
 
-        m_paImgDirs.get(lvRow.uRow, [&](CImgDir& imgDir){
+        m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
             m_pImgDir = &imgDir;          
             update();
 
@@ -251,11 +238,6 @@ bool CAddBkgView::upward()
     return false;
 }
 
-CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
-{
-    return new CImgDir(fileInfo);
-}
-
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"png", L"bmp");
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
@@ -267,6 +249,25 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     }
 
     return NULL;
+}
+
+void CImgDir::scan(bool& bRunFlag, cfn_void_t<IImgDir&> cb)
+{
+    CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
+        if (paSubFile)
+        {
+            auto& imgDir = (CImgDir&)dir;
+            if (imgDir._genSnapshot())
+            {
+                if (bRunFlag)
+                {
+                    cb(imgDir);
+                }
+            }
+        }
+
+        return bRunFlag;
+    });
 }
 
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
@@ -287,7 +288,7 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
     return true;
 }
 
-bool CImgDir::genSnapshot()
+bool CImgDir::_genSnapshot()
 {
     cauto files = CPath::files();
     for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)

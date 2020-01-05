@@ -5,52 +5,26 @@
 
 #include "ListViewEx.h"
 
-class CImgDir : public CPath
+class IImgDir
 {
-public:
+protected:
     using TD_SubImgList = vector<pair<XFile*, QPixmap>>;
 
 public:
-    CImgDir() {}
+    IImgDir(){}
 
-    CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
-    {
-    }
+    virtual ~IImgDir(){}
 
-private:
-    decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
+    virtual const QPixmap& snapshot() const = 0;
 
-protected:
-    QPixmap m_pmSnapshot;
+    virtual wstring fileName() const = 0;
 
-    TD_SubImgList m_lstSubImgs;
+    virtual bool genSubImgs() = 0;
 
-public:
-    QPixmap& snapshot()
-    {
-        return m_pmSnapshot;
-    }
-
-    bool genSnapshot();
-
-    bool genSubImgs();
-
-    const TD_SubImgList& subImgs()
-    {
-        return m_lstSubImgs;
-    }
-
-private:
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
-    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
-
-    void _onClear() override
-    {
-        m_lstSubImgs.clear();
-    }
+    virtual const TD_SubImgList& subImgs() const = 0;
 };
 
-using TD_ImgDirList = PtrArray<CImgDir>;
+using TD_ImgDirList = PtrArray<IImgDir>;
 
 class CAddBkgView : public CListView
 {
@@ -65,7 +39,7 @@ private:
 
     const TD_ImgDirList& m_paImgDirs;
 
-    CImgDir *m_pImgDir = NULL;
+    IImgDir *m_pImgDir = NULL;
 
 private:
     size_t getColumnCount() override;
@@ -90,6 +64,60 @@ public:
     {
         m_pImgDir = NULL;
     }
+};
+
+
+class CImgDir : public CPath, public IImgDir
+{
+public:
+    CImgDir() {}
+
+    CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
+    {
+    }
+
+private:
+    decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
+
+protected:
+    QPixmap m_pmSnapshot;
+
+    TD_SubImgList m_lstSubImgs;
+
+public:
+    void scan(bool& bRunFlag, cfn_void_t<IImgDir&> cb);
+
+    const QPixmap& snapshot() const override
+    {
+        return m_pmSnapshot;
+    }
+
+    wstring fileName() const override
+    {
+        return CPath::oppPath();
+    }
+
+    bool genSubImgs() override;
+
+    const TD_SubImgList& subImgs() const override
+    {
+        return m_lstSubImgs;
+    }
+
+private:
+    void _onClear() override
+    {
+        m_lstSubImgs.clear();
+    }
+
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override
+    {
+        return new CImgDir(fileInfo);
+    }
+
+    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+
+    bool _genSnapshot();
 };
 
 
@@ -119,7 +147,7 @@ signals:
 private slots:
     void slot_founddir(void *pDir)
     {
-        m_paImgDirs.add((CImgDir*)pDir);
+        m_paImgDirs.add((IImgDir*)pDir);
 
         m_addbkgView.update();
     }
