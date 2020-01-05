@@ -12,7 +12,11 @@ bool CButton::event(QEvent *ev)
         {
             CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
             painter.drawTextEx(rect(), Qt::AlignCenter|Qt::AlignVCenter, qsText, 1);
-            painter.drawRectEx(rect(), 1, g_crText, Qt::PenStyle::SolidLine, __size(8));
+
+            auto cr = g_crText;
+            cr.setAlpha(170);
+            painter.drawRectEx(rect(), 1, cr, Qt::PenStyle::SolidLine, __size(8));
+
             return true;
         }
         else
