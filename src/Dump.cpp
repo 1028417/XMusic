@@ -6,6 +6,8 @@
 #pragma comment(lib, "Dbghelp.lib")
 #endif
 
+static wstring g_strDumpFileName;
+
 static inline void CreateMiniDump(PEXCEPTION_POINTERS pep, const wstring& strFileName)
 {
 	HANDLE hFile = CreateFileW(strFileName.c_str(), GENERIC_READ | GENERIC_WRITE,
@@ -46,7 +48,7 @@ static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 	sprintf_s(pszExceptionInfo, "ExceptionCode=%u, ExceptionFlags=%u, ExceptionAddress=%d, NumberParameters=%u"
 		, exceptionRecord.ExceptionCode, exceptionRecord.ExceptionFlags, (int)exceptionRecord.ExceptionAddress, exceptionRecord.NumberParameters);
 	
-	wstring strDumpFile = fsutil::workDir() + tmutil::formatTime64(L"\\pc_crash_%Y%m%d_%H%M%S.dmp");
+    wstring strDumpFile = fsutil::workDir() + L'\\' + g_strDumpFileName + tmutil::formatTime64(L"%Y%m%d_%H%M%S") + L".dmp";
 	CreateMiniDump(pExceptionInfo, strDumpFile);
 	
     //exit(0);
@@ -79,8 +81,10 @@ static void DisableSetUnhandledExceptionFilter()
 	}
 }
 
-void InitMinDump()
+void InitMinDump(const wstring& strDumpFileName)
 {
+    g_strDumpFileName = strDumpFileName;
+
 	//注册异常处理函数
 	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)MyUnhandledExceptionFilter);
 

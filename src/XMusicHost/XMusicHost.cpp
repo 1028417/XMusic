@@ -12,8 +12,8 @@ public:
 		, m_controller(m_view, m_model)
 		, m_model(m_view.getModelObserver(), m_controller.getOption())
 	{
-		extern void InitMinDump();
-		InitMinDump();
+		extern void InitMinDump(const wstring&);
+		InitMinDump(L"xmusichost_dump_");
 	}
 
 	IView& getView() override

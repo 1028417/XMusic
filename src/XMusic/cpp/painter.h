@@ -101,7 +101,7 @@ public:
     {
         QPixmap pmDst(pmSrc.size());
         alphaPixmap(pmSrc, alpha, pmDst);
-        return std::move(pmDst);
+        return pmDst;
     }
 
     static void zoomoutPixmap(QPixmap& pm, UINT size);
