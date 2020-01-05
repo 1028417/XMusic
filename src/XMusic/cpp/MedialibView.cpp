@@ -18,10 +18,6 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
     , m_PlaylistLib(app.getPlaylistMgr())
     , m_MediaLib(app.getMediaLib())
     , m_OuterDir(OuterDir)
-    , m_pmPlay(":/img/btnPlay.png")
-    , m_pmPlayAlpha(CPainter::alphaPixmap(m_pmPlay, 128))
-    , m_pmAddPlay(":/img/btnAddplay.png")
-    , m_pmAddPlayAlpha(CPainter::alphaPixmap(m_pmAddPlay, 128))
 {
 }
 
@@ -38,6 +34,11 @@ void CMedialibView::init()
     (void)m_pmDir.load(":/img/dir.png");
     (void)m_pmDirLink.load(":/img/dirLink.png");
     (void)m_pmFile.load(":/img/file.png");
+
+    (void)m_pmPlay.load(":/img/btnPlay.png");
+    m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
+    (void)m_pmAddPlay.load(":/img/btnAddplay.png");
+    m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
 
     connect(this, &CMedialibView::signal_update, this, [&](){
         update();
@@ -414,8 +415,8 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     {
         bool bFlashing = (int)context.lvRow.uRow == m_nFlashingRow;
         cauto pixmap = mediaContext.pMediaSet
-                ?(bFlashing?m_pmPlayAlpha:m_pmPlay)
-               :(bFlashing?m_pmAddPlayAlpha:m_pmAddPlay);
+                ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
+               :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pixmap);
 
         rc.setRight(rc.right()-rc.height());

@@ -35,9 +35,9 @@ private:
     QPixmap m_pmFile;
 
     QPixmap m_pmPlay;
-    QPixmap m_pmPlayAlpha;
+    QPixmap m_pmPlayOpacity;
     QPixmap m_pmAddPlay;
-    QPixmap m_pmAddPlayAlpha;
+    QPixmap m_pmAddPlayOpacity;
 
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
