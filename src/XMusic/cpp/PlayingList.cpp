@@ -71,8 +71,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 #endif
         painter.setFont(fPlayingFontSize, E_FontWeight::FW_SemiBold);
 
-        painter.drawTextEx(QRect(rc.left(), rc.top() + __size(3), rc.width()
-            , rc.height()), Qt::AlignLeft|Qt::AlignVCenter, "*"
+        QRect rcPos(rc.left(), rc.top() + __size(3), rc.width(), rc.height());
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignVCenter, "*"
                            , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 

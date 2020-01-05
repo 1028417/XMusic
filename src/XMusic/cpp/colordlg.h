@@ -20,6 +20,10 @@ private:
 
     void modifyColor(CColorBar *pBar, int8_t offset);
 
+    void applyBkgColor();
+
+    void _onClose() override;
+
 private slots:
     void slot_buttonClicked(class CButton *pButton);
 

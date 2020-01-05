@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>40</y>
+     <y>10</y>
      <width>90</width>
      <height>90</height>
     </rect>
@@ -45,7 +45,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>55</y>
+     <y>25</y>
      <width>300</width>
      <height>60</height>
     </rect>
@@ -57,10 +57,10 @@
   <widget class="QGroupBox" name="groupBkgColor">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>130</y>
+     <x>380</x>
+     <y>90</y>
      <width>370</width>
-     <height>240</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="title">
@@ -315,14 +315,45 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="CButton" name="btnApplyBkgColor">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>210</y>
+      <width>120</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>应用</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>100</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupFontColor">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>130</y>
+     <x>20</x>
+     <y>90</y>
      <width>350</width>
-     <height>240</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="title">
@@ -581,14 +612,14 @@ gridline-color: rgb(255, 255, 255);</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">button.h</header>
-  </customwidget>
-  <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">button.h</header>
   </customwidget>
   <customwidget>
    <class>CColorBar</class>

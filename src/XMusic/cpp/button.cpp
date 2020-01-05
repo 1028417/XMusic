@@ -5,13 +5,27 @@
 
 bool CButton::event(QEvent *ev)
 {
-    if (!m_bPressing && ev->type() == QEvent::Paint)
+    if (ev->type() == QEvent::Paint)
     {
-        //unsetOpacityEffect();
-        this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
+        cauto qsText = this->text();
+        if (!qsText.isEmpty())
+        {
+            CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
+            painter.drawTextEx(rect(), Qt::AlignCenter|Qt::AlignVCenter, qsText, 1);
+            painter.drawRectEx(rect(), 1, g_crText, Qt::PenStyle::SolidLine, __size(8));
+            return true;
+        }
+        else
+        {
+            if (!m_bPressing)
+            {
+                //unsetOpacityEffect();
+                this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
+            }
+        }
     }
 
-	return CWidget::event(ev);
+    return CWidget::event(ev);
 }
 
 void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)

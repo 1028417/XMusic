@@ -26,8 +26,9 @@ void CColorDlg::init()
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     for (auto pButton : SList<CButton*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
-                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
-                                        , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubFontBlue, ui.btnAddFontBlue}))
+                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnApplyBkgColor
+                                        , ui.btnSubFontRed, ui.btnAddFontRed, ui.btnSubFontGreen, ui.btnAddFontGreen
+                                        , ui.btnSubFontBlue, ui.btnAddFontBlue}))
     {
         connect(pButton, &CButton::signal_clicked, this, &CColorDlg::slot_buttonClicked);
     }
@@ -41,8 +42,8 @@ void CColorDlg::init()
 
 void CColorDlg::show()
 {
-    CDialog::setWidgetTextColor(ui.groupBkgColor, g_crText);
-    CDialog::setWidgetTextColor(ui.groupFontColor, g_crText);
+    setWidgetTextColor(ui.groupBkgColor, g_crText);
+    setWidgetTextColor(ui.groupFontColor, g_crText);
 
     ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
     ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
@@ -51,10 +52,6 @@ void CColorDlg::show()
     ui.barFontRed->setColor(E_BarColor::BC_Red, g_crText.red());
     ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
-
-    m_app.getOption().bUseThemeColor = true;
-
-    m_app.mainWnd().updateBkg();
 
     CDialog::show(m_bkgDlg, true);
 }
@@ -91,6 +88,8 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int cx_group = ui.groupBkgColor->rect().width();
     int cy_group = ui.groupBkgColor->rect().height();
+
+    ui.btnApplyBkgColor->move((cx_group-ui.btnApplyBkgColor->width())/2, cy_group-__size(25)-ui.btnApplyBkgColor->height());
 
     int x = __size(40);//ui.btnSubBkgRed->x();
     int y = cy_group/3.83;
@@ -131,6 +130,15 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.btnSubFontGreen->setGeometry(ui.btnSubBkgGreen->geometry());
     ui.btnAddFontGreen->setGeometry(ui.btnAddBkgGreen->geometry());
     ui.barFontGreen->setGeometry(ui.barBkgGreen->geometry());
+}
+
+void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
+{
+    int value = pBar->value();
+    value += offset;
+    value = MAX(0, value);
+    value = MIN(255, value);
+    pBar->setValue((uint8_t)value);
 }
 
 void CColorDlg::slot_buttonClicked(CButton *pButton)
@@ -183,15 +191,21 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     {
         modifyColor(ui.barFontBlue, 1);
     }
+    else if (ui.btnApplyBkgColor == pButton)
+    {
+        applyBkgColor();
+        this->close();
+    }
 }
 
-void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
+void CColorDlg::applyBkgColor()
 {
-    int value = pBar->value();
-    value += offset;
-    value = MAX(0, value);
-    value = MIN(255, value);
-    pBar->setValue((uint8_t)value);
+    if (!m_app.getOption().bUseThemeColor)
+    {
+        m_app.getOption().bUseThemeColor = true;
+
+        m_app.mainWnd().updateBkg();
+    }
 }
 
 void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
@@ -203,6 +217,8 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
         int crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
         g_crTheme.setRgb(crTheme);
         m_app.getOption().crTheme = (UINT)crTheme;
+
+        applyBkgColor();
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
@@ -215,6 +231,10 @@ void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
     }
 
     this->update();
+}
+
+void CColorDlg::_onClose()
+{
     m_bkgDlg.update();
     m_app.mainWnd().update();
 }
