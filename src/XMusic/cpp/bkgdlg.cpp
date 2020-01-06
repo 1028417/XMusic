@@ -349,6 +349,15 @@ void CBkgDlg::setBkg(size_t uIdx)
         {
             _showAddBkg();
         }
+
+        /*m_thread.start([&](const bool& bRunSignal){
+        });
+
+        m_addbkgDlg.show(&m_olImgDir, [&](){
+            m_thread.cancel();
+
+            m_olImgDir.clear();
+        });*/
     }
 }
 
@@ -381,46 +390,31 @@ void CBkgDlg::_showAddBkg()
     cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
 #endif
 
-    if (0)
-    {
-        m_thread.start([&](const bool& bRunSignal){
+    m_rootImgDir.setDir(strImgDir);
 
-        });
-
-        m_addbkgDlg.show(&m_olImgDir, [&](){
-            m_thread.cancel();
-
-            m_olImgDir.clear();
-        });
-    }
-    else
-    {
-        m_rootImgDir.setDir(strImgDir);
-
-        m_thread.start([&](const bool& bRunSignal){
-            m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-                if (paSubFile)
+    m_thread.start([&](const bool& bRunSignal){
+        m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
+            if (paSubFile)
+            {
+                auto& imgDir = (CImgDir&)dir;
+                if (imgDir.genSnapshot())
                 {
-                    auto& imgDir = (CImgDir&)dir;
-                    if (imgDir.genSnapshot())
+                    if (bRunSignal)
                     {
-                        if (bRunSignal)
-                        {
-                            m_addbkgDlg.addImgDir(imgDir);
-                        }
+                        m_addbkgDlg.addImgDir(imgDir);
                     }
                 }
+            }
 
-                return bRunSignal;
-            });
+            return bRunSignal;
         });
+    });
 
-        m_addbkgDlg.show(NULL, [&](){
-            m_thread.cancel();
+    m_addbkgDlg.show(NULL, [&](){
+        m_thread.cancel();
 
-            m_rootImgDir.clear();
-        });
-    }
+        m_rootImgDir.clear();
+    });
 }
 
 void CBkgDlg::addBkg(const wstring& strFile)
