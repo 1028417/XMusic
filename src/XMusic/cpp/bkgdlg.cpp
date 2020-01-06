@@ -387,7 +387,7 @@ void CBkgDlg::_showAddBkg()
 
         });
 
-        m_addbkgDlg.show(m_olImgDir, false, [&](){
+        m_addbkgDlg.show(&m_olImgDir, [&](){
             m_thread.cancel();
 
             m_olImgDir.clear();
@@ -415,7 +415,7 @@ void CBkgDlg::_showAddBkg()
             });
         });
 
-        m_addbkgDlg.show(m_rootImgDir, true, [&](){
+        m_addbkgDlg.show(NULL, [&](){
             m_thread.cancel();
 
             m_rootImgDir.clear();

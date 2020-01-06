@@ -106,7 +106,7 @@ private:
 public:
     void init();
 
-    void show(IImgDir& imgDir, bool bRoot, cfn_void cbClose = NULL);
+    void show(IImgDir *pImgDir, cfn_void cbClose = NULL);
 
     void relayout()
     {

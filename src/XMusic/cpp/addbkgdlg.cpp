@@ -29,8 +29,13 @@ void CAddBkgDlg::init()
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
 }
 
-void CAddBkgDlg::show(IImgDir& imgDir, bool bRoot, cfn_void cbClose)
+void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
 {
+    if (pImgDir)
+    {
+        m_addbkgView.showImgDir(*pImgDir);
+    }
+
     CDialog::show(m_bkgDlg, true, [=](){
         m_paImgDirs.clear();
 
@@ -212,9 +217,14 @@ bool CAddBkgView::upward()
         m_pImgDir = NULL;
         reset();
 
-        m_addbkgDlg.relayout();
-
         scroll(_scrollRecord(NULL));
+
+        if (!m_paImgDirs)
+        {
+            return false;
+        }
+
+        m_addbkgDlg.relayout();
 
         return true;
     }
