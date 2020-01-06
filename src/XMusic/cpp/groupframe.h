@@ -8,9 +8,9 @@
 enum class E_GroupTitlePos
 {
     GTP_Top = 0,
-    GTP_Bottom = 0,
-    GTP_Left = 0,
-    GTP_Right = 0,
+    GTP_Bottom,
+    GTP_Left,
+    GTP_Right,
 };
 
 class CGroupFrame : public CWidget<QGroupBox>
@@ -92,7 +92,7 @@ private:
         }
 
         auto cr = g_crText;
-        cr.setAlpha(128);
+        cr.setAlpha(100);
         painter.drawRectEx(rc, 1, cr, Qt::SolidLine, __size(8));
 
         painter.fillRect(rcText, g_crTheme);
