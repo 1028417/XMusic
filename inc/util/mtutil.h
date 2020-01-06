@@ -222,10 +222,13 @@ public:
 
         m_thread = thread([&, cb]() {
             m_sgnRuning.set();
+            //mtutil::usleep(1);
 
             cb();
 
+            m_mutex.lock();
             m_sgnRuning.reset();
+	    m_mutex.unlock();
 		});
 
         m_sgnRuning.wait();
