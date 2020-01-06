@@ -15,9 +15,10 @@ class CDialog : public QDialog
 {
 public:
     CDialog(QWidget *parent = NULL, bool bFullScreen = true)
-        : QDialog(parent, __dlgFlags)
+        : QDialog(parent)
         , m_bFullScreen(bFullScreen)
     {
+        this->setWindowFlags(__dlgFlags);
     }
 
     CDialog(QWidget& parent, bool bFullScreen)
