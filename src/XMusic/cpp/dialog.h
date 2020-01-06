@@ -9,18 +9,31 @@
 
 #include "widget.h"
 
+#define __dlgFlags Qt::Dialog | Qt::FramelessWindowHint
+
 class CDialog : public QDialog
 {
 public:
-    CDialog(bool bFullScreen = true, QWidget *parent = NULL)
-        : QDialog(parent)
+    CDialog(QWidget *parent = NULL, bool bFullScreen = true)
+        : QDialog(parent, __dlgFlags)
         , m_bFullScreen(bFullScreen)
     {
-        this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+    }
+
+    CDialog(QWidget& parent, bool bFullScreen)
+        : QDialog(&parent, __dlgFlags)
+        , m_bFullScreen(bFullScreen)
+    {
+    }
+
+    CDialog(CDialog& dlg, bool bFullScreen = true)
+        : QDialog(&dlg, __dlgFlags)
+        , m_bFullScreen(bFullScreen)
+    {
     }
 
 private:
-    bool m_bFullScreen = false;
+    bool m_bFullScreen = true;
 
 private:
     virtual cqcr bkgColor() const
@@ -56,6 +69,6 @@ public:
     }
 #endif
 
-    void show(QWidget& parent, bool bFullScreen=true, cfn_void cbClose = NULL);
     void show(cfn_void cbClose = NULL);
+    void show(QWidget& parent, cfn_void cbClose = NULL);
 };

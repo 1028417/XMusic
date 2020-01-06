@@ -6,9 +6,9 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CApp& app)
-    : m_app(app)
-    , m_MedialibView(app, *this, m_OuterDir)
+CMedialibDlg::CMedialibDlg(class CApp& app) : CDialog(&m_app.mainWnd())
+  , m_app(app)
+  , m_MedialibView(app, *this, m_OuterDir)
 {
 }
 
@@ -61,7 +61,7 @@ void CMedialibDlg::_show()
         _resizeTitle();
     });
 
-    CDialog::show(m_app.mainWnd());
+    CDialog::show();
 }
 
 size_t CMedialibDlg::getPageRowCount()

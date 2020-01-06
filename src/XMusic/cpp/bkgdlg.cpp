@@ -158,8 +158,8 @@ inline UINT CBkgView::margin()
     return __margin/(getColumnCount()-1);
 }
 
-CBkgDlg::CBkgDlg(class CApp& app)
-    : m_app(app),
+CBkgDlg::CBkgDlg(class CApp& app) : CDialog(&m_app.mainWnd())
+    , m_app(app),
     m_colorDlg(app, *this),
     m_addbkgDlg(app, *this),
     m_bkgView(app, *this)
@@ -229,7 +229,7 @@ void CBkgDlg::show()
 {
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    CDialog::show(m_app.mainWnd());
+    CDialog::show();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -389,7 +389,6 @@ void CBkgDlg::_showAddBkg()
 #else
     cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
 #endif
-
     m_rootImgDir.setDir(strImgDir);
 
     m_thread.start([&](const bool& bRunSignal){

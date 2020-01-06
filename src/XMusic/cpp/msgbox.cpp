@@ -6,8 +6,7 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox(QWidget *parent)
-    : CDialog(false, parent)
+CMsgBox::CMsgBox(QWidget *parent) : CDialog(parent, false)
 {
     ui.setupUi(this);
 
@@ -18,13 +17,6 @@ CMsgBox::CMsgBox(QWidget *parent)
     ui.labelClose->setTextColor(crText);
 
     connect(ui.labelClose, &CLabel::signal_click, this, &QDialog::close);
-}
-
-void CMsgBox::show(QWidget& parent, const QString& qsMsg, cfn_void cbClose)
-{
-    ui.labelTip->setText(qsMsg);
-
-    CDialog::show(parent, false, cbClose);
 }
 
 void CMsgBox::show(const QString& qsMsg, cfn_void cbClose)

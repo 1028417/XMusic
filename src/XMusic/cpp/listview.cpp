@@ -141,7 +141,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
         QColor cr = g_crText;
-        cr.setAlpha(CPainter::oppTextAlpha(25));
+        cr.setAlpha(CPainter::oppTextAlpha(20));
         painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1), cr);
     }
 

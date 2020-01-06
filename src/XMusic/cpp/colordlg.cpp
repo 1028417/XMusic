@@ -10,9 +10,9 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg)
-    : m_app(app),
-    m_bkgDlg(bkgDlg)
+CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg) : CDialog(m_bkgDlg)
+  , m_app(app),
+  m_bkgDlg(bkgDlg)
 {
 }
 
@@ -58,7 +58,7 @@ void CColorDlg::show()
     ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
 
-    CDialog::show(m_bkgDlg);
+    CDialog::show();
 }
 
 void CColorDlg::_relayout(int cx, int cy)

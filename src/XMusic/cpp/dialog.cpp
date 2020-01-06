@@ -85,11 +85,9 @@ void CDialog::show(cfn_void cbClose)
 #endif
 }
 
-void CDialog::show(QWidget& parent, bool bFullScreen, cfn_void cbClose)
+void CDialog::show(QWidget& parent, cfn_void cbClose)
 {
     setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
-
-    m_bFullScreen = bFullScreen;
 
     show(cbClose);
 }

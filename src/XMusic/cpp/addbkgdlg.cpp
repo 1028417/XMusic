@@ -7,8 +7,8 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg)
-    : m_app(app),
+CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg) : CDialog(m_bkgDlg)
+    , m_app(app),
     m_bkgDlg(bkgDlg),
     m_addbkgView(app, *this, m_paImgDirs)
 {
@@ -41,7 +41,7 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
         m_addbkgView.showImgDir(*pImgDir);
     }
 
-    CDialog::show(m_bkgDlg, true, [=](){
+    CDialog::show([=](){
         m_paImgDirs.clear();
 
         m_addbkgView.clear();
@@ -187,7 +187,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
 
         m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
             showImgDir(imgDir);
-         });
+        });
 
         m_addbkgDlg.relayout();
     }
