@@ -59,7 +59,7 @@ private:
         QRect rcText;
         painter.drawTextEx(rc, nAlign, title(), &rcText);
 
-        int margin = __size(10);
+        int margin = __size(18);
 
         cauto ptCenter = rcText.center();
         if (E_GroupTitlePos::GTP_Bottom == m_eTitlePos)
@@ -92,8 +92,8 @@ private:
         }
 
         auto cr = g_crText;
-        cr.setAlpha(100);
-        painter.drawRectEx(rc, 1, cr, Qt::SolidLine, __size(8));
+        cr.setAlpha(CPainter::oppTextAlpha(85));
+        painter.drawRectEx(rc, 1, cr, Qt::SolidLine, __szRound);
 
         painter.fillRect(rcText, g_crTheme);
         painter.drawTextEx(rcText, nAlign, title());

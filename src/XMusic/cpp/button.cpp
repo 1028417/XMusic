@@ -15,10 +15,10 @@ bool CButton::event(QEvent *ev)
 
             auto cr = g_crText;
             cr.setAlpha(10);
-            painter.fillRectEx(rc, cr, __size(8));
+            painter.fillRectEx(rc, cr, __szRound);
 
-            cr.setAlpha(160);
-            painter.drawRectEx(rect(), 1, cr, Qt::PenStyle::SolidLine, __size(8));
+            cr.setAlpha(CPainter::oppTextAlpha(128));
+            painter.drawRectEx(rect(), 1, cr, Qt::PenStyle::SolidLine, __szRound);
 
             painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText);
 

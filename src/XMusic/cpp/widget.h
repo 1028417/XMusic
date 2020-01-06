@@ -23,6 +23,8 @@ extern float g_fPixelRatio;
 #define __rect(x) (x)
 #endif
 
+#define __szRound __size(8)
+
 enum class E_MouseEventType
 {
     MET_Move,

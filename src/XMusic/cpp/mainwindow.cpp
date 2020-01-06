@@ -387,7 +387,7 @@ void MainWindow::_relayout()
         m_bUseDefaultBkg = pmBkg.isNull();
     }
 
-    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__size(8));
+    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
 
     UINT uShadowWidth = m_bUseDefaultBkg?0:1;
     ui.labelDemandHK->setShadow(uShadowWidth);
