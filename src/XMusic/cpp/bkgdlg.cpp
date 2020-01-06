@@ -371,7 +371,7 @@ void CBkgDlg::_showAddBkg()
 
     return;*/
 
-    CFolderDlg FolderDlg;
+    static CFolderDlg FolderDlg;
     cauto strImgDir = FolderDlg.Show(hwnd(), NULL, L" 添加背景", L"请选择图片目录");
     if (strImgDir.empty())
     {

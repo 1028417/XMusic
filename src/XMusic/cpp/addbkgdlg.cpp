@@ -24,7 +24,12 @@ void CAddBkgDlg::init()
     m_addbkgView.setFont(1.05);
 #endif
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+    connect(ui.btnReturn, &CButton::signal_clicked, [&](){
+        if (!m_addbkgView.upward())
+        {
+            close();
+        }
+    });
 
     connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
 }
