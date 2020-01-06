@@ -88,6 +88,13 @@ private slots:
     void slot_labelClick(CLabel*, const QPoint&);
 
 public:
+#if __windows
+    HWND hwnd() const
+    {
+        return (HWND)winId();
+    }
+#endif
+
     void showLogo();
 
     void show();

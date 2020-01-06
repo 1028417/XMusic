@@ -20,7 +20,7 @@ protected:
 
 #if !__winvc
 private:
-	thread m_threadPlayCtrl;
+        XThread m_threadPlayCtrl;
         CMtxLock<tagPlayCtrl> m_mtxPlayCtrl;
         //TSignal<tagPlayCtrl> m_sigPlayCtrl;
 #endif

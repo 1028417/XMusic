@@ -61,7 +61,7 @@ void CMedialibDlg::_show()
         _resizeTitle();
     });
 
-    CDialog::show(m_app.mainWnd(), true);
+    CDialog::show(m_app.mainWnd());
 }
 
 size_t CMedialibDlg::getPageRowCount()

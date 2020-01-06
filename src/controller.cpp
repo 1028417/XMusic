@@ -61,35 +61,20 @@ bool CXController::start()
     });
 
 #else
-    m_threadPlayCtrl = thread([&]() {
+    m_threadPlayCtrl.start([&](const bool& bRunSignal) {
         mtutil::usleep(100);
 
         _tryPlay();
 
         auto& PlayMgr = m_model.getPlayMgr();
-        while (true)
+        while (bRunSignal)
         {
             mtutil::usleep(100);
 
             tagPlayCtrl PlayCtrl;
             m_mtxPlayCtrl.lock([&](tagPlayCtrl& t_PlayCtrl){
-                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
-                {
-                    PlayCtrl = t_PlayCtrl;
-
-                    t_PlayCtrl.reset();
-                }
+                t_PlayCtrl.get(PlayCtrl);
             });
-            /*m_sigPlayCtrl.wait([&](tagPlayCtrl& t_PlayCtrl) {
-                if (t_PlayCtrl.ePlayCtrl != E_PlayCtrl::PC_Null)
-                {
-                    PlayCtrl = t_PlayCtrl;
-                    t_PlayCtrl.reset();
-                    return true;
-                }
-
-                return false;
-            });*/
 
             switch (PlayCtrl.ePlayCtrl)
             {
@@ -131,10 +116,6 @@ bool CXController::start()
                 break;
             case E_PlayCtrl::PC_Append:
                 (void)PlayMgr.insert(PlayCtrl.paMedias, false);
-
-                break;
-            case E_PlayCtrl::PC_Quit:
-                return;
 
                 break;
             default:
@@ -194,12 +175,7 @@ void CXController::_tryPlay()
 void CXController::stop()
 {
 #if !__winvc
-    m_mtxPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
-    //m_sigPlayCtrl.set(tagPlayCtrl(E_PlayCtrl::PC_Quit));
-    if (m_threadPlayCtrl.joinable())
-    {
-        m_threadPlayCtrl.join();
-    }
+    m_threadPlayCtrl.cancel();
 #endif
 
     m_model.close();

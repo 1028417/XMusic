@@ -53,6 +53,8 @@ private:
     void _onRowClick(tagLVRow& lvRow, const QMouseEvent&) override;
 
 public:
+    void showImgDir(IImgDir& imgDir);
+
     bool isInRoot() const
     {
         return NULL==m_pImgDir;
@@ -64,60 +66,6 @@ public:
     {
         m_pImgDir = NULL;
     }
-};
-
-
-class CImgDir : public CPath, public IImgDir
-{
-public:
-    CImgDir() {}
-
-    CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
-    {
-    }
-
-private:
-    decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
-
-protected:
-    QPixmap m_pmSnapshot;
-
-    TD_SubImgList m_lstSubImgs;
-
-public:
-    void scan(bool& bRunFlag, cfn_void_t<IImgDir&> cb);
-
-    const QPixmap& snapshot() const override
-    {
-        return m_pmSnapshot;
-    }
-
-    wstring fileName() const override
-    {
-        return CPath::oppPath();
-    }
-
-    bool genSubImgs() override;
-
-    const TD_SubImgList& subImgs() const override
-    {
-        return m_lstSubImgs;
-    }
-
-private:
-    void _onClear() override
-    {
-        m_lstSubImgs.clear();
-    }
-
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override
-    {
-        return new CImgDir(fileInfo);
-    }
-
-    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
-
-    bool _genSnapshot();
 };
 
 
@@ -135,10 +83,6 @@ private:
     CAddBkgView m_addbkgView;
 
 private:
-    CImgDir m_ImgRoot;
-    bool m_bScaning = false;
-    std::thread m_thread;
-
     TD_ImgDirList m_paImgDirs;
 
 signals:
@@ -160,16 +104,19 @@ private:
         return m_addbkgView.upward();
     }
 
-    void _onClose() override;
-
 public:
     void init();
 
-    void show();
+    void show(IImgDir& imgDir, bool bRoot, cfn_void cbClose = NULL);
 
     void relayout()
     {
         _relayout(width(), height());
+    }
+
+    void addImgDir(IImgDir& imgDir)
+    {
+        emit signal_founddir(&imgDir);
     }
 
     void addBkg(const wstring& strFile);

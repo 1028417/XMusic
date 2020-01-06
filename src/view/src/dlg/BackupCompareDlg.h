@@ -25,7 +25,7 @@ private:
 
 	CObjectList m_wndList;
 
-	function<wstring(UINT uItem)> m_cbDblclk;
+	function<wstring(UINT uItem)> m_fnGetPath;
 
 	SArray<tagModifyedMedia> m_arrModifyedMedia;
 	

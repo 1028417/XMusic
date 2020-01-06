@@ -44,6 +44,8 @@ private:
 
     int m_nFlashingRow = -1;
 
+    XThread m_thrAsyncTask;
+
 signals:
     void signal_update();
 

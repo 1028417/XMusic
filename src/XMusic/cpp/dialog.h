@@ -56,6 +56,6 @@ public:
     }
 #endif
 
-    void show(QWidget& parent, bool bFullScreen, const fn_void& cbClose = NULL);
-    void show(const fn_void& cbClose = NULL);
+    void show(QWidget& parent, bool bFullScreen=true, cfn_void cbClose = NULL);
+    void show(cfn_void cbClose = NULL);
 };

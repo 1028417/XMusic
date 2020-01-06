@@ -75,12 +75,12 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	if (m_cbDblclk)
+	if (m_fnGetPath)
 	{
 		int iItem = m_wndList.GetSelItem();
 		if (iItem >= 0)
 		{
-			wstring strMediaPath = m_cbDblclk((UINT)iItem);
+			wstring strMediaPath = m_fnGetPath((UINT)iItem);
 			if (!strMediaPath.empty())
 			{
 				m_view.m_PlayCtrl.addPlayingItem(strMediaPath);
@@ -119,7 +119,7 @@ void CCompareResultPage::fillModifyedMedia(const SArray<tagModifyedMedia>& arrMo
 			, __substr(ModifyedMedia.strNewPath, 1) }, L" ");
 	}
 
-	m_cbDblclk = [&](UINT uItem) {
+	m_fnGetPath = [&](UINT uItem) {
 		wstring strOldPath = m_wndList.GetItemText(uItem, 1).TrimLeft();
 		wstring strNewFile = m_wndList.GetItemText(uItem, 2).TrimLeft();
 
@@ -153,7 +153,7 @@ void CCompareResultPage::fillDeletedMedia(const SArray<tagDeletedPlayItem>& arrD
 			+ DeletedAlbumItem.strAlbumName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
 	}
 
-	m_cbDblclk = [&](UINT uItem) {
+	m_fnGetPath = [&](UINT uItem) {
 		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
 	};
 }
@@ -189,7 +189,7 @@ void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMed
 			, __substr(MovedMedia.strPath, 1), strNewMediaSetName}, L" ");
 	}
 
-	m_cbDblclk = [&](UINT uItem) {
+	m_fnGetPath = [&](UINT uItem) {
 		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
 	};
 }
@@ -218,7 +218,7 @@ void CCompareResultPage::fillNewMedia(const SArray<tagNewPlayItem>& arrNewPlayIt
 			+ NewAlbumItem.strAlbumName, __substr(NewAlbumItem.strPath, 1) }, L" ");
 	}
 
-	m_cbDblclk = [&](UINT uItem) {
+	m_fnGetPath = [&](UINT uItem) {
 		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
 	};
 }

@@ -56,46 +56,45 @@ private:
             nAlign = Qt::AlignTop | Qt::AlignHCenter;
         }
 
-        QRect rcText;
-        painter.drawTextEx(rc, nAlign, title(), &rcText);
+        QRect rcTitle;
+        painter.drawTextEx(rc, nAlign, title(), &rcTitle);
 
-        int margin = __size(18);
-
-        cauto ptCenter = rcText.center();
+        int titleMargin = __size(18);
+        cauto ptCenter = rcTitle.center();
         if (E_GroupTitlePos::GTP_Bottom == m_eTitlePos)
         {
-            rcText.setLeft(rcText.left()-margin);
-            rcText.setRight(rcText.right()+margin);
+            rcTitle.setLeft(rcTitle.left()-titleMargin);
+            rcTitle.setRight(rcTitle.right()+titleMargin);
 
             rc.setBottom(ptCenter.y()-1);
         }
         else if (E_GroupTitlePos::GTP_Left == m_eTitlePos)
         {
-            rcText.setTop(rcText.top()-margin);
-            rcText.setBottom(rcText.bottom()+margin);
+            rcTitle.setTop(rcTitle.top()-titleMargin);
+            rcTitle.setBottom(rcTitle.bottom()+titleMargin);
 
             rc.setLeft(ptCenter.x()+1);
         }
         else if (E_GroupTitlePos::GTP_Right == m_eTitlePos)
         {
-            rcText.setTop(rcText.top()-margin);
-            rcText.setBottom(rcText.bottom()+margin);
+            rcTitle.setTop(rcTitle.top()-titleMargin);
+            rcTitle.setBottom(rcTitle.bottom()+titleMargin);
 
             rc.setRight(ptCenter.x()-1);
         }
         else
         {
-            rcText.setLeft(rcText.left()-margin);
-            rcText.setRight(rcText.right()+margin);
+            rcTitle.setLeft(rcTitle.left()-titleMargin);
+            rcTitle.setRight(rcTitle.right()+titleMargin);
 
             rc.setTop(ptCenter.y()+1);
         }
 
         auto cr = g_crText;
-        cr.setAlpha(CPainter::oppTextAlpha(85));
+        cr.setAlpha(CPainter::oppTextAlpha(100));
         painter.drawRectEx(rc, 1, cr, Qt::SolidLine, __szRound);
 
-        painter.fillRect(rcText, g_crTheme);
-        painter.drawTextEx(rcText, nAlign, title());
+        painter.fillRect(rcTitle, g_crTheme);
+        painter.drawTextEx(rcTitle, nAlign, title());
     }
 };

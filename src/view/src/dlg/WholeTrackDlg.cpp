@@ -46,13 +46,12 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);
 
-	m_bCancel = false;
-	m_thread = thread([&]() {
+	m_thread.start([&](const bool& bRunSignal) {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
 
 		m_view.getMediaLib().scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			mtutil::usleep(1);
-			if (m_bCancel)
+			if (!bRunSignal)
 			{
 				return false;
 			}
@@ -81,7 +80,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 			
 			for (CRCueFile cueFile : subDir.SubCueList())
 			{
-				if (m_bCancel)
+				if (!bRunSignal)
 				{
 					return false;
 				}
@@ -100,6 +99,11 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 			return true;
 		});
+
+		if (!bRunSignal)
+		{
+			return;
+		}
 
 		if (plUnmatchFile)
 		{
@@ -233,12 +237,10 @@ void CWholeTrackDlg::OnBnClickedPlay()
 
 void CWholeTrackDlg::OnCancel()
 {
-	m_bCancel = true;
-
 	if (m_thread.joinable())
 	{
 		CMainApp::GetMainApp()->thread([&]() {
-			m_thread.join();
+			m_thread.cancel();
 		});
 	}
 

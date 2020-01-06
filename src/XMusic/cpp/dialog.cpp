@@ -42,7 +42,7 @@ void CDialog::_setPos()
     }
 }
 
-void CDialog::show(const fn_void& cbClose)
+void CDialog::show(cfn_void cbClose)
 {
     if (!m_bFullScreen)
     {
@@ -85,7 +85,7 @@ void CDialog::show(const fn_void& cbClose)
 #endif
 }
 
-void CDialog::show(QWidget& parent, bool bFullScreen, const fn_void& cbClose)
+void CDialog::show(QWidget& parent, bool bFullScreen, cfn_void cbClose)
 {
     setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
 

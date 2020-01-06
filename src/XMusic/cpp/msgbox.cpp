@@ -20,14 +20,14 @@ CMsgBox::CMsgBox(QWidget *parent)
     connect(ui.labelClose, &CLabel::signal_click, this, &QDialog::close);
 }
 
-void CMsgBox::show(QWidget& parent, const QString& qsMsg, const fn_void& cbClose)
+void CMsgBox::show(QWidget& parent, const QString& qsMsg, cfn_void cbClose)
 {
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(parent, false, cbClose);
 }
 
-void CMsgBox::show(const QString& qsMsg, const fn_void& cbClose)
+void CMsgBox::show(const QString& qsMsg, cfn_void cbClose)
 {
     ui.labelTip->setText(qsMsg);
 

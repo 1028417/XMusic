@@ -92,7 +92,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     else
     {
         size_t uIdx = uItem-1;
-        cauto pm = m_bkgDlg.snapshot(uIdx);
+        cauto pm = m_bkgDlg.pixmap(uIdx);
         if (pm)
         {
             painter.drawPixmapEx(rc, *pm, __szRound);
@@ -229,7 +229,7 @@ void CBkgDlg::show()
 {
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
-    CDialog::show(m_app.mainWnd(), true);
+    CDialog::show(m_app.mainWnd());
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -276,12 +276,12 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
 }
 
-const QPixmap* CBkgDlg::snapshot(size_t uIdx)
+const QPixmap* CBkgDlg::pixmap(size_t uIdx)
 {
-    auto& vecSnapshot = _vecSnapshot();
-    if (uIdx < vecSnapshot.size())
+    auto& vecPixmap = _vecPixmap();
+    if (uIdx < vecPixmap.size())
     {
-        return vecSnapshot[uIdx];
+        return vecPixmap[uIdx];
     }
 
     auto& vecBkgFile = _vecBkgFile();
@@ -289,19 +289,18 @@ const QPixmap* CBkgDlg::snapshot(size_t uIdx)
     {
         return NULL;
     }
-
     cauto strBkgFile = _bkgDir() + vecBkgFile[uIdx];
 
-#define __zoomoutSize 1000
-    m_lstSnapshot.emplace_back(QPixmap());
-    auto pm = &m_lstSnapshot.back();
-    if (pm->load(strBkgFile))
+    m_lstPixmap.emplace_back(QPixmap());
+    auto& pm = m_lstPixmap.back();
+    if (pm.load(strBkgFile))
     {
-        CPainter::zoomoutPixmap(*pm, __zoomoutSize);
+#define __snapshotZoomout 900
+        CPainter::zoomoutPixmap(pm, __snapshotZoomout);
     }
 
-    vecSnapshot.push_back(pm);
-    return pm;
+    vecPixmap.push_back(&pm);
+    return &pm;
 }
 
 void CBkgDlg::_setBkg(const wstring& strFile)
@@ -348,27 +347,64 @@ void CBkgDlg::setBkg(size_t uIdx)
         }
         else
         {
-#if __windows
-#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
-                |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
-            tagFileDlgOpt FileDlgOpt;
-            FileDlgOpt.strTitle = L"选择背景图";
-            FileDlgOpt.strFilter = __MediaFilter;
-            FileDlgOpt.hWndOwner = hwnd();
-            CFileDlg fileDlg(FileDlgOpt);
-
-            wstring strFile = fileDlg.ShowOpenSingle();
-            if (!strFile.empty())
-            {
-                this->addBkg(strFile);
-            }
-
-            return;
-#endif
-
-            m_addbkgDlg.show();
+            _showAddBkg();
         }
     }
+}
+
+void CBkgDlg::_showAddBkg()
+{
+#if __windows
+/*#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+    |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
+            tagFileDlgOpt FileDlgOpt;
+    FileDlgOpt.strTitle = L"选择背景图";
+    FileDlgOpt.strFilter = __MediaFilter;
+    FileDlgOpt.hWndOwner = hwnd();
+    CFileDlg fileDlg(FileDlgOpt);
+
+    wstring strFile = fileDlg.ShowOpenSingle();
+    if (!strFile.empty())
+    {
+        this->addBkg(strFile);
+    }
+
+    return;*/
+
+    CFolderDlg FolderDlg;
+    cauto strImgDir = FolderDlg.Show(hwnd(), NULL, L" 添加背景", L"请选择图片目录");
+    if (strImgDir.empty())
+    {
+        return;
+    }
+#else
+    cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
+#endif
+    m_rootImgDir.setDir(strImgDir);
+
+    m_thread.start([&](const bool& bRunSignal){
+        m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
+            if (paSubFile)
+            {
+                auto& imgDir = (CImgDir&)dir;
+                if (imgDir.genSnapshot())
+                {
+                    if (bRunSignal)
+                    {
+                        m_addbkgDlg.addImgDir(imgDir);
+                    }
+                }
+            }
+
+            return bRunSignal;
+        });
+    });
+
+    m_addbkgDlg.show(m_rootImgDir, true, [&](){
+        m_thread.cancel();
+
+        m_rootImgDir.clear();
+    });
 }
 
 void CBkgDlg::addBkg(const wstring& strFile)
@@ -407,10 +443,20 @@ void CBkgDlg::deleleBkg(size_t uIdx)
         fsutil::removeFile(_bkgDir() + vecBkgFile[uIdx]);
         vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
-        auto& vecSnapshot = _vecSnapshot();
-        if (uIdx < vecSnapshot.size())
+        auto& vecPixmap = _vecPixmap();
+        if (uIdx < vecPixmap.size())
         {
-            vecSnapshot.erase(vecSnapshot.begin()+uIdx);
+            auto pm = vecPixmap[uIdx];
+            vecPixmap.erase(vecPixmap.begin()+uIdx);
+
+            for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); ++itr)
+            {
+                if (&*itr == pm)
+                {
+                    m_lstPixmap.erase(itr);
+                    break;
+                }
+            }
         }
 
         m_bkgView.update();
@@ -419,9 +465,81 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-    m_vecHSnapshot.clear();
-    m_vecVSnapshot.clear();
-    m_lstSnapshot.clear();
+    m_vecHPixmap.clear();
+    m_vecVPixmap.clear();
+    m_lstPixmap.clear();
 
     m_bkgView.reset();
+}
+
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"png", L"bmp");
+
+XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
+{
+    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    if (g_setImgExtName.includes(strExtName))
+    {
+        return new XFile(fileInfo);
+    }
+
+    return NULL;
+}
+
+inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
+{
+    if (!pm.load(strutil::toQstr(subFile.absPath())))
+    {
+        return false;
+    }
+
+#define __filterSize 640
+    if (pm.width()<__filterSize || pm.height()<__filterSize)
+    {
+        return false;
+    }
+
+    CPainter::zoomoutPixmap(pm, uZoomOutSize);
+
+    return true;
+}
+
+bool CImgDir::genSnapshot()
+{
+    cauto files = CPath::files();
+    for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)
+    {
+        auto pSubFile = *m_itrSubFile;
+
+#define __snapshotSize 150
+        if (_loadImg(*pSubFile, m_pmSnapshot, __snapshotSize))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CImgDir::genSubImgs()
+{
+    cauto files = CPath::files();
+    if (files.end() == m_itrSubFile)
+    {
+        return false;
+    }
+
+    auto pSubFile = *m_itrSubFile;
+
+#define __subimgZoomout 500
+    QPixmap pm;
+    if (_loadImg(*pSubFile, pm, __subimgZoomout))
+    {
+        m_lstSubImgs.emplace_back(pSubFile, QPixmap());
+        auto& pr = m_lstSubImgs.back();
+        pr.second.swap(pm);
+    }
+
+    ++m_itrSubFile;
+
+    return true;
 }

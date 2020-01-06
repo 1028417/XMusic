@@ -58,7 +58,7 @@ void CColorDlg::show()
     ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
     ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
 
-    CDialog::show(m_bkgDlg, true);
+    CDialog::show(m_bkgDlg);
 }
 
 void CColorDlg::_relayout(int cx, int cy)

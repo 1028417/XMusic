@@ -18,29 +18,25 @@ void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
-
-    connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
-}
-
-void CAddBkgDlg::show()
-{
     ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
 
 #if __android || __ios
     m_addbkgView.setFont(1.05);
 #endif
 
-    CDialog::show(m_bkgDlg, true);
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    cauto strRootDir = m_app.getMediaLib().GetAbsPath() + L"/..";
-    m_ImgRoot.setDir(strRootDir);
+    connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
+}
 
-    m_bScaning = true;
-    m_thread = std::thread([&](){
-        m_ImgRoot.scan(m_bScaning, [&](IImgDir& imgDir) {
-            emit signal_founddir(&imgDir);
-        });
+void CAddBkgDlg::show(IImgDir& imgDir, bool bRoot, cfn_void cbClose)
+{
+    CDialog::show(m_bkgDlg, true, [=](){
+        m_paImgDirs.clear();
+
+        m_addbkgView.clear();
+
+        cbClose();
     });
 }
 
@@ -63,21 +59,6 @@ void CAddBkgDlg::_relayout(int cx, int cy)
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
     }
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
-}
-
-void CAddBkgDlg::_onClose()
-{
-    m_bScaning = false;
-    if (m_thread.joinable())
-    {
-        m_thread.join();
-    }
-
-    m_ImgRoot.clear();
-
-    m_paImgDirs.clear();
-
-    m_addbkgView.clear();
 }
 
 void CAddBkgDlg::addBkg(const wstring& strFile)
@@ -194,28 +175,33 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
         _saveScrollRecord(NULL);
 
         m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
-            m_pImgDir = &imgDir;          
-            update();
-
-            timerutil::setTimerEx(100, [=](){
-                if (NULL == m_pImgDir)
-                {
-                    return false;
-                }
-
-                if (!m_pImgDir->genSubImgs())
-                {
-                    return false;
-                }
-
-                update();
-
-                return true;
-            });
-        });
+            showImgDir(imgDir);
+         });
 
         m_addbkgDlg.relayout();
     }
+}
+
+void CAddBkgView::showImgDir(IImgDir& imgDir)
+{
+    m_pImgDir = &imgDir;
+    update();
+
+    timerutil::setTimerEx(100, [=](){
+        if (NULL == m_pImgDir)
+        {
+            return false;
+        }
+
+        if (!m_pImgDir->genSubImgs())
+        {
+            return false;
+        }
+
+        update();
+
+        return true;
+    });
 }
 
 bool CAddBkgView::upward()
@@ -233,95 +219,4 @@ bool CAddBkgView::upward()
     }
 
     return false;
-}
-
-static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"png", L"bmp");
-
-XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
-{
-    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
-    if (g_setImgExtName.includes(strExtName))
-    {
-        return new XFile(fileInfo);
-    }
-
-    return NULL;
-}
-
-void CImgDir::scan(bool& bRunFlag, cfn_void_t<IImgDir&> cb)
-{
-    CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
-        if (paSubFile)
-        {
-            auto& imgDir = (CImgDir&)dir;
-            if (imgDir._genSnapshot())
-            {
-                if (bRunFlag)
-                {
-                    cb(imgDir);
-                }
-            }
-        }
-
-        return bRunFlag;
-    });
-}
-
-inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
-{
-    if (!pm.load(strutil::toQstr(subFile.absPath())))
-    {
-        return false;
-    }
-
-#define __filterSize 640
-    if (pm.width()<__filterSize || pm.height()<__filterSize)
-    {
-        return false;
-    }
-
-    CPainter::zoomoutPixmap(pm, uZoomOutSize);
-
-    return true;
-}
-
-bool CImgDir::_genSnapshot()
-{
-    cauto files = CPath::files();
-    for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)
-    {
-        auto pSubFile = *m_itrSubFile;
-
-#define __snapshotSize 150
-        if (_loadImg(*pSubFile, m_pmSnapshot, __snapshotSize))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool CImgDir::genSubImgs()
-{
-    cauto files = CPath::files();
-    if (files.end() == m_itrSubFile)
-    {
-        return false;
-    }
-
-    auto pSubFile = *m_itrSubFile;
-
-#define __zoomoutSize 600
-    QPixmap pm;
-    if (_loadImg(*pSubFile, pm, __zoomoutSize))
-    {
-        m_lstSubImgs.emplace_back(pSubFile, QPixmap());
-        auto& pr = m_lstSubImgs.back();
-        pr.second.swap(pm);
-    }
-
-    ++m_itrSubFile;
-
-    return true;
 }

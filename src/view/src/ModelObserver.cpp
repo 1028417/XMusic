@@ -48,6 +48,7 @@ void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
 	m_view.m_PlayingPage.m_wndList.onPlay(uPlayingItem, bManual);
+
 	m_view.m_PlayCtrl.onPlay(PlayItem);
 }
 
@@ -55,9 +56,7 @@ void CModelObserver::onPlayStop(bool bCanceled, bool bOpenFail)
 {
 	if (!bCanceled)
 	{
-		CMainApp::async([&, bOpenFail]() {
-			m_view.m_PlayCtrl.onPlayFinish(bOpenFail);
-		});
+		m_view.m_PlayCtrl.onPlayFinish(bOpenFail);
 	}
 }
 

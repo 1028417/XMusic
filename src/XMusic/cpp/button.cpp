@@ -17,7 +17,7 @@ bool CButton::event(QEvent *ev)
             cr.setAlpha(10);
             painter.fillRectEx(rc, cr, __szRound);
 
-            cr.setAlpha(CPainter::oppTextAlpha(128));
+            cr.setAlpha(CPainter::oppTextAlpha(150));
             painter.drawRectEx(rect(), 1, cr, Qt::PenStyle::SolidLine, __szRound);
 
             painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText);

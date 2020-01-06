@@ -17,7 +17,7 @@ private:
 
 	CObjectList m_wndList;
 
-	thread m_thread;
+	XThread m_thread;
 
 	bool m_bCancel = false;
 

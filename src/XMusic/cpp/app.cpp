@@ -181,7 +181,7 @@ bool CApp::_resetRootDir(wstring& strRootDir)
         if (strRootDir.empty() || !fsutil::existDir(strRootDir))
         {
             CFolderDlg FolderDlg;
-            strRootDir = FolderDlg.Show((HWND)m_mainWnd.winId(), NULL, L"设定媒体库路径", L"请选择媒体库目录");
+            strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
             if (strRootDir.empty())
             {
                 return false;

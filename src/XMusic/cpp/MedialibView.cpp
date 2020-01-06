@@ -79,8 +79,6 @@ void CMedialibView::_onShowRoot()
     m_medialibDlg.updateHead(L"媒体库", false, false);
 }
 
-static XThread g_thrAsyncTask;
-
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
     WString strTitle;
@@ -94,7 +92,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
-        g_thrAsyncTask.start([&](const bool& bRunSignal){
+        m_thrAsyncTask.start([&](const bool& bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](CPlayItem& playItem){
                 playItem.findRelatedMedia(E_MediaSetType::MST_Album);
 
@@ -288,8 +286,8 @@ const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& st
         QPixmap& pm = m_lstSingerPixmap.back();
         if (pm.load(strutil::toQstr(strSingerImg)))
         {
-#define __zoomoutSize 150
-            CPainter::zoomoutPixmap(pm, __zoomoutSize);
+#define __singerimgZoomout 160
+            CPainter::zoomoutPixmap(pm, __singerimgZoomout);
 
             pSingerPixmap = &pm;
             return pm;
@@ -533,7 +531,7 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
-    g_thrAsyncTask.cancel();
+    m_thrAsyncTask.cancel();
 
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {
@@ -555,7 +553,7 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
 
 void CMedialibView::clear()
 {
-    g_thrAsyncTask.cancel();
+    m_thrAsyncTask.cancel();
 
     m_mapSingerPixmap.clear();
     m_lstSingerPixmap.clear();

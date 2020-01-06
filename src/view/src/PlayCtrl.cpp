@@ -90,41 +90,48 @@ void CPlayCtrl::_handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, s
 	}
 }
 
-static UINT g_uPlaySeq = 0;
+static bool g_bFailRetry = false;
 
 void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
-	g_uPlaySeq++;
+	g_bFailRetry = false;
 	
-	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
-	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
+	int nDuration = PlayItem.duration();
+	if (nDuration > 0)
+	{
+		nDuration++;
+
+		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
+		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
+	}
 
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Last, true);
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
 	
 	m_strPlayingFile = PlayItem.GetTitle();
-	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
-		, PlayItem.duration()+1, 0); // , long(player().GetClock()/__1e6));
+	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), nDuration, 0);
 }
 
 void CPlayCtrl::onPlayFinish(bool bOpenFail)
 {
-	if (bOpenFail)
-	{
-		m_PlaySpirit->clear();
+	CMainApp::async([&, bOpenFail]() {
+		if (bOpenFail)
+		{
+			//m_PlaySpirit->clear();
 
-		auto uPlaySeq = g_uPlaySeq;
-		__async(1000, [&, uPlaySeq]() {
-			if (uPlaySeq == g_uPlaySeq)
-			{
-				(void)m_view.getPlayMgr().playNext(false);
-			}
-		});
-	}
-	else
-	{
-		(void)m_view.getPlayMgr().playNext(false);
-	}
+			g_bFailRetry = true;
+			__async(1000, [&]() {
+				if (g_bFailRetry)
+				{
+					(void)m_view.getPlayMgr().playNext(false);
+				}
+			});
+		}
+		else
+		{
+			(void)m_view.getPlayMgr().playNext(false);
+		}
+	});
 }
 
 void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short para)
@@ -139,12 +146,16 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 
 		break;
 	case ST_PlaySpiritButton::PSB_Pause:
+		g_bFailRetry = false;
+
 		m_PlaySpirit->SetPause(true);
 
 		PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
 
 		break;
 	case ST_PlaySpiritButton::PSB_Stop:
+		g_bFailRetry = false;
+
 		PlayMgr.SetPlayStatus(E_PlayStatus::PS_Stop);
 
 		break;
