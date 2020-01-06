@@ -20,16 +20,8 @@ private:
 signals:
     void signal_clicked(CButton*);
 
-    //void signal_contextMenu(CButton*);
-
 private:
     bool event(QEvent *ev) override;
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent&) override;
-
-    /*bool _onGesture(QGesture&) override
-    {
-        emit signal_contextMenu(this);
-        return true;
-    }*/
 };

@@ -136,7 +136,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         if (uIdx < subImgs.size())
         {
             QRect rcFrame(lvRow.rc);
-            cauto pm = subImgs[uIdx].second;
+            cauto pm = subImgs[uIdx].first;
             painter.drawPixmapEx(rcFrame, pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
@@ -151,7 +151,8 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
             context.strText = imgDir.fileName();
-            context.pixmap = &imgDir.snapshot();
+
+            context.pixmap = imgDir.snapshot();
 
             _paintRow(painter, context);
         });
@@ -167,7 +168,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
-            m_addbkgDlg.addBkg(subImgs[uIdx].first->absPath());
+            m_addbkgDlg.addBkg(subImgs[uIdx].second);
         }
     }
     else

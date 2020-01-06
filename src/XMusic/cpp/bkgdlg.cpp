@@ -380,31 +380,46 @@ void CBkgDlg::_showAddBkg()
 #else
     cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
 #endif
-    m_rootImgDir.setDir(strImgDir);
 
-    m_thread.start([&](const bool& bRunSignal){
-        m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-            if (paSubFile)
-            {
-                auto& imgDir = (CImgDir&)dir;
-                if (imgDir.genSnapshot())
+    if (0)
+    {
+        m_thread.start([&](const bool& bRunSignal){
+        });
+
+        m_addbkgDlg.show(m_olImgDir, false, [&](){
+            m_thread.cancel();
+
+            m_rootImgDir.clear();
+        });
+    }
+    else
+    {
+        m_rootImgDir.setDir(strImgDir);
+
+        m_thread.start([&](const bool& bRunSignal){
+            m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
+                if (paSubFile)
                 {
-                    if (bRunSignal)
+                    auto& imgDir = (CImgDir&)dir;
+                    if (imgDir.genSnapshot())
                     {
-                        m_addbkgDlg.addImgDir(imgDir);
+                        if (bRunSignal)
+                        {
+                            m_addbkgDlg.addImgDir(imgDir);
+                        }
                     }
                 }
-            }
 
-            return bRunSignal;
+                return bRunSignal;
+            });
         });
-    });
 
-    m_addbkgDlg.show(m_rootImgDir, true, [&](){
-        m_thread.cancel();
+        m_addbkgDlg.show(m_rootImgDir, true, [&](){
+            m_thread.cancel();
 
-        m_rootImgDir.clear();
-    });
+            m_rootImgDir.clear();
+        });
+    }
 }
 
 void CBkgDlg::addBkg(const wstring& strFile)
@@ -534,9 +549,8 @@ bool CImgDir::genSubImgs()
     QPixmap pm;
     if (_loadImg(*pSubFile, pm, __subimgZoomout))
     {
-        m_lstSubImgs.emplace_back(pSubFile, QPixmap());
-        auto& pr = m_lstSubImgs.back();
-        pr.second.swap(pm);
+        m_lstSubImgs.emplace_back(QPixmap(), pSubFile->absPath());
+        m_lstSubImgs.back().first.swap(pm);
     }
 
     ++m_itrSubFile;

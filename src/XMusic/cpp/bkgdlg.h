@@ -35,9 +35,33 @@ private:
 public:
     UINT margin();
 };
+
 class COnlineImgDir : public IImgDir
 {
+public:
+    COnlineImgDir()
+    {
+    }
 
+public:
+    void downlaod()
+    {
+
+    }
+
+private:
+    TD_SubImgVector m_vecImgs;
+
+private:
+    bool genSubImgs() override
+    {
+        return false;
+    }
+
+    const TD_SubImgVector& subImgs() const override
+    {
+        return m_vecImgs;
+    }
 };
 
 class CImgDir : public CPath, public IImgDir
@@ -54,14 +78,14 @@ private:
 
     QPixmap m_pmSnapshot;
 
-    TD_SubImgList m_lstSubImgs;
+    TD_SubImgVector m_lstSubImgs;
 
 public:
     bool genSnapshot();
 
-    const QPixmap& snapshot() const override
+    const QPixmap* snapshot() const override
     {
-        return m_pmSnapshot;
+        return &m_pmSnapshot;
     }
 
     wstring fileName() const override
@@ -71,7 +95,7 @@ public:
 
     bool genSubImgs() override;
 
-    const TD_SubImgList& subImgs() const override
+    const TD_SubImgVector& subImgs() const override
     {
         return m_lstSubImgs;
     }
@@ -121,6 +145,7 @@ private:
     bool m_bHScreen = false;
 
     CImgDir m_rootImgDir;
+    COnlineImgDir m_olImgDir;
 
     XThread m_thread;
 
