@@ -29,6 +29,8 @@ private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
         painter.drawTextEx(rect(), m_nAlign, title());
+
+        painter.drawRectEx(rect(), Qt::SolidLine, __size(8));
     }
 };
 
