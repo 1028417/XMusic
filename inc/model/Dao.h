@@ -93,7 +93,7 @@ struct tagModifyedMedia
 
 	wstring strSingerName;
 
-	//wstring strSingerDir;
+	wstring strSingerDir;
 };
 
 typedef struct tagNewPlayItem
@@ -111,7 +111,7 @@ typedef struct tagNewAlbumItem
 
 	wstring strSingerName;
 
-	//wstring strSingerDir;
+	wstring strSingerDir;
 
 	int iSingerID = 0;
 
