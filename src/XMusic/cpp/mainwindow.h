@@ -94,7 +94,7 @@ public:
 
     void updateBkg();
 
-    void drawDefaultBkg(CPainter& painter, const QRect& rc, UINT xround=0, UINT yround=0);
+    void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 
 private:
     void _init();

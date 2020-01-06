@@ -1,11 +1,7 @@
 
 #pragma once
 
-#include <QProgressBar>
-
 #include "widget.h"
-
-#include <QBrush>
 
 enum class E_BarColor
 {
@@ -53,7 +49,7 @@ private:
     UINT m_uMargin = 0;
 
 signals:
-    void signal_valueChanged(CColorBar*, uint8_t uValue);
+    void signal_valueChanged(QWidget*, uint8_t uValue);
 
 public:
     void setMargin(UINT uMargin)
@@ -71,7 +67,7 @@ private:
         return rc;
     }
 
-    void _onPaint(CPainter& painter, const QRect&) override
+    void _onPaint(CPainter& painter, cqrc) override
     {
         //painter.fillRect(this->rect(), g_crTheme);
 

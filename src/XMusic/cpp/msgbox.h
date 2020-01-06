@@ -13,7 +13,7 @@ public:
     void show(const QString& qsMsg, const fn_void& cbClose);
 
 private:
-    const QColor& bkgColor() const override
+    cqcr bkgColor() const override
     {
         static QColor crBkg(200, 230, 255);
         return crBkg;

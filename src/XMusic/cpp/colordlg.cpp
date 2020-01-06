@@ -1,38 +1,14 @@
 #include "app.h"
 
 #include "colordlg.h"
+
+#include "colorbar.h"
+
+#include "groupframe.h"
+
 #include "ui_colordlg.h"
 
 static Ui::ColorDlg ui;
-
-class CGroupFrame : public CWidget<QGroupBox>
-{
-    Q_OBJECT
-public:
-    CGroupFrame(QWidget *parent)
-        : CWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
-    {
-    }
-
-private:
-    int m_nAlign = 0;
-
-public:
-    void setTitle(const QString& qsTitle, int nAlign=0)
-    {
-        QGroupBox::setTitle(qsTitle);
-        m_nAlign = nAlign;
-        update();
-    }
-
-private:
-    void _onPaint(CPainter& painter, const QRect&) override
-    {
-        painter.drawTextEx(rect(), m_nAlign, title());
-
-        painter.drawRectEx(rect(), Qt::SolidLine, __size(8));
-    }
-};
 
 CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg)
     : m_app(app),
@@ -161,7 +137,7 @@ void CColorDlg::_relayout(int cx, int cy)
     ui.barFontGreen->setGeometry(ui.barBkgGreen->geometry());
 }
 
-void CColorDlg::modifyColor(CColorBar *pBar, int8_t offset)
+static void _modifyColor(CColorBar *pBar, int8_t offset)
 {
     int value = pBar->value();
     value += offset;
@@ -174,51 +150,51 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
 {
     if (ui.btnSubBkgRed == pButton)
     {
-        modifyColor(ui.barBkgRed, -1);
+        _modifyColor(ui.barBkgRed, -1);
     }
     else if (ui.btnAddBkgRed == pButton)
     {
-        modifyColor(ui.barBkgRed, 1);
+        _modifyColor(ui.barBkgRed, 1);
     }
     else if (ui.btnSubBkgGreen == pButton)
     {
-        modifyColor(ui.barBkgGreen, -1);
+        _modifyColor(ui.barBkgGreen, -1);
     }
     else if (ui.btnAddBkgGreen == pButton)
     {
-        modifyColor(ui.barBkgGreen, 1);
+        _modifyColor(ui.barBkgGreen, 1);
     }
     else if (ui.btnSubBkgBlue == pButton)
     {
-        modifyColor(ui.barBkgBlue, -1);
+        _modifyColor(ui.barBkgBlue, -1);
     }
     else if (ui.btnAddBkgBlue == pButton)
     {
-        modifyColor(ui.barBkgBlue, 1);
+        _modifyColor(ui.barBkgBlue, 1);
     }
     else if (ui.btnSubFontRed == pButton)
     {
-        modifyColor(ui.barFontRed, -1);
+        _modifyColor(ui.barFontRed, -1);
     }
     else if (ui.btnAddFontRed == pButton)
     {
-        modifyColor(ui.barFontRed, 1);
+        _modifyColor(ui.barFontRed, 1);
     }
     else if (ui.btnSubFontGreen == pButton)
     {
-        modifyColor(ui.barFontGreen, -1);
+        _modifyColor(ui.barFontGreen, -1);
     }
     else if (ui.btnAddFontGreen == pButton)
     {
-        modifyColor(ui.barFontGreen, 1);
+        _modifyColor(ui.barFontGreen, 1);
     }
     else if (ui.btnSubFontBlue == pButton)
     {
-        modifyColor(ui.barFontBlue, -1);
+        _modifyColor(ui.barFontBlue, -1);
     }
     else if (ui.btnAddFontBlue == pButton)
     {
-        modifyColor(ui.barFontBlue, 1);
+        _modifyColor(ui.barFontBlue, 1);
     }
     else if (ui.btnApplyBkgColor == pButton)
     {
@@ -237,7 +213,7 @@ void CColorDlg::applyBkgColor()
     }
 }
 
-void CColorDlg::slot_barValueChanged(CColorBar *pBar, uint8_t uValue)
+void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
 {
     (void)uValue;
 

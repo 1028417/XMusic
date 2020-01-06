@@ -37,6 +37,7 @@ SOURCES += ../controller.cpp \
 
 HEADERS += cpp/app.h \
     cpp/MedialibView.h \
+    cpp/groupframe.h \
     cpp/painter.h \
     cpp/colorbar.h \
     cpp/colordlg.h \

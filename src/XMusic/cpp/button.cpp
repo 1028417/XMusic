@@ -10,11 +10,10 @@ bool CButton::event(QEvent *ev)
         cauto qsText = this->text();
         if (!qsText.isEmpty())
         {
-            cauto rc = rect();
-            auto cr = g_crText;
-
             CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
+            cauto rc = rect();
 
+            auto cr = g_crText;
             cr.setAlpha(10);
             painter.fillRectEx(rc, cr, __size(8));
 

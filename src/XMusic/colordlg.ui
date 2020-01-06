@@ -54,7 +54,7 @@
     <string>设置颜色</string>
    </property>
   </widget>
-  <widget class="QGroupBox" name="groupBkgColor">
+  <widget class="CGroupFrame" name="groupBkgColor">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -347,7 +347,7 @@ gridline-color: rgb(255, 255, 255);</string>
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupFontColor">
+  <widget class="CGroupFrame" name="groupFontColor">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -624,7 +624,13 @@ gridline-color: rgb(255, 255, 255);</string>
   <customwidget>
    <class>CColorBar</class>
    <extends>QWidget</extends>
-   <header location="global">colorbar.h</header>
+   <header>colorbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CGroupFrame</class>
+   <extends>QGroupBox</extends>
+   <header>groupframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

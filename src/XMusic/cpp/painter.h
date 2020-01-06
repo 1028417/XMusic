@@ -24,6 +24,9 @@ extern QColor g_crText;
 
 #define __ShadowAlpha 80
 
+using cqcr = const QColor&;
+using cqrc = const QRect&;
+
 enum class E_FontWeight
 {
     FW_Light = QFont::Weight::Light,
@@ -114,7 +117,7 @@ public:
 
     static void zoomoutPixmap(QPixmap& pm, UINT size);
 
-    static QColor mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha);
+    static QColor mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha);
 
     void setPenColor(int r, int g, int b, int a=255)
     {
@@ -166,43 +169,43 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
-    void drawPixmap(const QRect& rcDst, const QPixmap& pixmap, const QRect& rcSrc, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rcDst, const QPixmap& pixmap, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmapEx(cqrc rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
 
-    void drawRectEx(const QRect& rc, UINT xround=0, UINT yround=0);
+    void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 
-    void drawRectEx(const QRect& rc, UINT uWidth, const QColor& cr,
+    void drawRectEx(cqrc rc, UINT uWidth, cqcr cr,
                    Qt::PenStyle style=Qt::SolidLine, UINT xround=0, UINT yround=0);
 
-    void fillRectEx(const QRect& rc, const QBrush& br, UINT xround=0, UINT yround=0);
+    void fillRectEx(cqrc rc, const QBrush& br, UINT xround=0, UINT yround=0);
 
-    void fillRectEx(const QRect& rc, const QColor& cr, UINT xround=0, UINT yround=0)
+    void fillRectEx(cqrc rc, cqcr cr, UINT xround=0, UINT yround=0)
     {
         QBrush brush(cr);
         fillRectEx(rc, brush, xround, yround);
     }
 
-    void fillRectEx(const QRect& rc, const QColor& crBegin
-                    , const QColor& crEnd, UINT xround=0, UINT yround=0);
+    void fillRectEx(cqrc rc, cqcr crBegin
+                    , cqcr crEnd, UINT xround=0, UINT yround=0);
 
-    void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
-    void drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
+    void drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet, cqcr crText
+                    , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+    void drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet
                             , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
-        drawTextEx(g_crText, rc, flags, qsText, prcRet, uShadowWidth, uShadowAlpha, uTextAlpha);
+        drawTextEx(rc, flags, qsText, prcRet, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
-    void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText
-                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+    void drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
+                    , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
-        drawTextEx(crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
+        drawTextEx(rc, flags, qsText, NULL, crText, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
-    void drawTextEx(const QRect& rc, int flags, const QString& qsText
+    void drawTextEx(cqrc rc, int flags, const QString& qsText
                   , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
-        drawTextEx(g_crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
+        drawTextEx(rc, flags, qsText, NULL, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 };

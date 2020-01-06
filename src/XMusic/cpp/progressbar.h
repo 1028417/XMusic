@@ -34,7 +34,7 @@ public:
         return m_bufferValue;
     }
 
-    void setColor(const QColor& crBackground, const QColor& crBuffer, const QColor& crForeground)
+    void setColor(cqcr crBackground, cqcr crBuffer, cqcr crForeground)
     {
         m_crBackground = crBackground;
         m_crBuffer = crBuffer;
@@ -56,7 +56,7 @@ public:
     }
 
 private:
-    void _onPaint(CPainter& painter, const QRect&) override
+    void _onPaint(CPainter& painter, cqrc) override
     {
         this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
 

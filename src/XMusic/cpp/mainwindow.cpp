@@ -1193,7 +1193,7 @@ void MainWindow::_demand(CButton* btnDemand)
     m_app.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, const QRect& rc, UINT xround, UINT yround)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
 {
     QRect rcSrc = ui.labelBkg->pixmap()->rect();
 

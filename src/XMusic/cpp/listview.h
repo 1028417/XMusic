@@ -104,7 +104,7 @@ private:
 
     virtual size_t getRowCount() = 0;
 
-    void _onPaint(CPainter& painter, const QRect&) override;
+    void _onPaint(CPainter& painter, cqrc) override;
 
     virtual void _onPaintRow(CPainter&, tagLVRow&) = 0;
 

@@ -3,9 +3,13 @@
 
 #include <QWidget>
 
+#include <QGesture>
+
 #include <QGraphicsEffect>
 
-#include <QGesture>
+#include <QMouseEvent>
+
+#include <QTouchEvent>
 
 #include "painter.h"
 
@@ -242,7 +246,7 @@ public:
         }
     }
 
-    void setColorizeEffect(const QColor& cr, float fStength)
+    void setColorizeEffect(cqcr cr, float fStength)
     {
         auto ce = dynamic_cast<QGraphicsColorizeEffect*>(this->graphicsEffect());
         if (NULL == ce)
@@ -285,7 +289,7 @@ public:
     };*/
 
     template <class T = QGraphicsDropShadowEffect>
-    void setDropShadowEffect(const QColor& cr, int dx, int dy, float fBlur=0)
+    void setDropShadowEffect(cqcr cr, int dx, int dy, float fBlur=0)
     {
         auto dse = dynamic_cast<T*>(this->graphicsEffect());
         if (NULL == dse)
@@ -324,7 +328,7 @@ protected:
 private:
     void paintEvent(QPaintEvent *pe) override;
 
-    virtual void _onPaint(CPainter&, const QRect& rc);
+    virtual void _onPaint(CPainter&, cqrc rc);
 
     void _handleTouchBegin(const CTouchEvent&);
     void _handleTouchEnd(CTouchEvent);

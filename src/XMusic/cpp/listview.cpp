@@ -30,7 +30,7 @@ void CListView::showRow(UINT uRow, bool bToCenter)
     update();
 }
 
-void CListView::_onPaint(CPainter& painter, const QRect&)
+void CListView::_onPaint(CPainter& painter, cqrc)
 {
     int cx = width();
     int cy = height();

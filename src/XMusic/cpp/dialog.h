@@ -23,7 +23,7 @@ private:
     bool m_bFullScreen = false;
 
 private:
-    virtual const QColor& bkgColor() const
+    virtual cqcr bkgColor() const
     {
         return g_crTheme;
     }
@@ -40,7 +40,7 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 public:
-    static void setWidgetTextColor(QWidget *widget, const QColor& cr)
+    static void setWidgetTextColor(QWidget *widget, cqcr cr)
     {
         QPalette pe = widget->palette();
         pe.setColor(QPalette::WindowText, cr);

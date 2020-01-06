@@ -1,8 +1,6 @@
 
 #include "widget.h"
 
-#include <QTouchEvent>
-
 static QPaintEvent *g_pe = NULL;
 
 template <class TParent>
@@ -15,7 +13,7 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
 }
 
 template <class TParent>
-void CWidget<TParent>::_onPaint(CPainter&, const QRect&)
+void CWidget<TParent>::_onPaint(CPainter&, cqrc)
 {
     TParent::paintEvent(g_pe);
 }

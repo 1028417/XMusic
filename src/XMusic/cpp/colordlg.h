@@ -3,8 +3,6 @@
 
 #include "dialog.h"
 
-#include "colorbar.h"
-
 class CColorDlg : public CDialog
 {
     Q_OBJECT
@@ -18,8 +16,6 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
-    void modifyColor(CColorBar *pBar, int8_t offset);
-
     void applyBkgColor();
 
     void _onClose() override;
@@ -27,7 +23,7 @@ private:
 private slots:
     void slot_buttonClicked(class CButton *pButton);
 
-    void slot_barValueChanged(CColorBar*, uint8_t uValue);
+    void slot_barValueChanged(QWidget*, uint8_t uValue);
 
 public:
     void init();

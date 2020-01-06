@@ -40,7 +40,7 @@ void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
     }
 }
 
-QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
+QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
 {
     uAlpha = uAlpha * crSrc.alpha()/255 * crDst.alpha()/255;
 
@@ -55,7 +55,7 @@ QColor CPainter::mixColor(const QColor& crSrc, const QColor& crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
+void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -86,8 +86,8 @@ void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap, UINT xround
     }
 }
 
-void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
-                            , const QRect& rcSrc, UINT xround, UINT yround)
+void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
+                            , cqrc rcSrc, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -121,7 +121,7 @@ void CPainter::drawPixmap(const QRect& rcDst, const QPixmap& pixmap
     }
 }
 
-void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
+void CPainter::drawPixmapEx(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
 {
     QRect rcSrc = pixmap.rect();
     int height = rcSrc.height();
@@ -144,7 +144,7 @@ void CPainter::drawPixmapEx(const QRect& rcDst, const QPixmap& pixmap, UINT xrou
     this->drawPixmap(rcDst, pixmap, rcSrc, xround, yround);
 }
 
-void CPainter::drawRectEx(const QRect& rc, UINT xround, UINT yround)
+void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -161,7 +161,7 @@ void CPainter::drawRectEx(const QRect& rc, UINT xround, UINT yround)
     }
 }
 
-void CPainter::drawRectEx(const QRect& rc, UINT uWidth, const QColor& cr,
+void CPainter::drawRectEx(cqrc rc, UINT uWidth, cqcr cr,
                Qt::PenStyle style, UINT xround, UINT yround)
 {
     this->save();
@@ -177,7 +177,7 @@ void CPainter::drawRectEx(const QRect& rc, UINT uWidth, const QColor& cr,
     this->restore();
 }
 
-void CPainter::fillRectEx(const QRect& rc, const QBrush& br, UINT xround, UINT yround)
+void CPainter::fillRectEx(cqrc rc, const QBrush& br, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -201,8 +201,8 @@ void CPainter::fillRectEx(const QRect& rc, const QBrush& br, UINT xround, UINT y
     }
 }
 
-void CPainter::fillRectEx(const QRect& rc, const QColor& crBegin
-                , const QColor& crEnd, UINT xround, UINT yround)
+void CPainter::fillRectEx(cqrc rc, cqcr crBegin
+                , cqcr crEnd, UINT xround, UINT yround)
 {
     QLinearGradient gradient(rc.topLeft(), rc.topRight());
     gradient.setColorAt(0, crBegin);
@@ -212,8 +212,8 @@ void CPainter::fillRectEx(const QRect& rc, const QColor& crBegin
     fillRectEx(rc, brush, xround, yround);
 }
 
-void CPainter::drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                        , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
+void CPainter::drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet
+                        , cqcr crText, UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
 {
     this->save();
 

@@ -1,7 +1,7 @@
 
 #include "label.h"
 
-void CLabel::_onPaint(CPainter& painter, const QRect&)
+void CLabel::_onPaint(CPainter& painter, cqrc)
 {
 	m_rc = this->rect();
 
@@ -57,7 +57,7 @@ void CLabel::_onPaint(CPainter& painter, const QRect&)
             qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx, Qt::TextShowMnemonic);
 		}
 
-        painter.drawTextEx(textColor(), m_rc, this->alignment(), qsText, &m_rc, m_uShadowWidth, m_uShadowAlpha);
+        painter.drawTextEx(m_rc, this->alignment(), qsText, &m_rc, textColor(), m_uShadowWidth, m_uShadowAlpha);
     }
 }
 

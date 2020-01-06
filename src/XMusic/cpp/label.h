@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <QMouseEvent>
-
 #include <QLabel>
 
 #include "widget.h"
@@ -43,11 +41,11 @@ signals:
     void signal_click(CLabel*, const QPoint& pos);
 
 private:
-    void _onPaint(CPainter& painter, const QRect& rc) override;
+    void _onPaint(CPainter& painter, cqrc rc) override;
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
-    virtual const QColor& textColor() const
+    virtual cqcr textColor() const
     {
         if (m_bUseCustomColor)
         {
@@ -76,7 +74,7 @@ public:
         QLabel::setText(qsText);
     }
 
-    void setTextColor(const QColor& crText)
+    void setTextColor(cqcr crText)
     {
         m_bUseCustomColor = true;
         m_crText = crText;
