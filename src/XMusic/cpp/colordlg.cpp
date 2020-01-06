@@ -15,13 +15,12 @@ public:
     }
 
 private:
-    QString m_qsTitle;
     int m_nAlign = 0;
 
 public:
     void setTitle(const QString& qsTitle, int nAlign=0)
     {
-        m_qsTitle = qsTitle;
+        QGroupBox::setTitle(qsTitle);
         m_nAlign = nAlign;
         update();
     }
@@ -29,7 +28,7 @@ public:
 private:
     void _onPaint(CPainter& painter, const QRect&) override
     {
-        //painter.drawTextEx(rect(), m_qsTitle;
+        painter.drawTextEx(rect(), m_nAlign, title());
     }
 };
 

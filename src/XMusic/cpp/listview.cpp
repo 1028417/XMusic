@@ -188,7 +188,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 
 void CListView::_paintText(CPainter& painter, QRect& rc, const tagRowContext&, const QString& qsText, int flags)
 {
-    painter.drawTextEx(rc, flags, qsText, 1);
+    painter.drawTextEx(rc, flags, qsText);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

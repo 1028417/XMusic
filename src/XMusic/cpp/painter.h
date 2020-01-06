@@ -188,20 +188,20 @@ public:
                     , const QColor& crEnd, UINT xround=0, UINT yround=0);
 
     void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
+                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
     void drawTextEx(const QRect& rc, int flags, const QString& qsText, QRect *prcRet
-                            , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+                            , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
         drawTextEx(g_crText, rc, flags, qsText, prcRet, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
     void drawTextEx(const QColor& crText, const QRect& rc, int flags, const QString& qsText
-                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
         drawTextEx(crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
     void drawTextEx(const QRect& rc, int flags, const QString& qsText
-                  , UINT uShadowWidth, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
         drawTextEx(g_crText, rc, flags, qsText, NULL, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
