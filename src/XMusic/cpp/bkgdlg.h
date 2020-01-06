@@ -49,6 +49,11 @@ public:
 
     }
 
+    void clear()
+    {
+        m_vecImgs.clear();
+    }
+
 private:
     TD_SubImgVector m_vecImgs;
 

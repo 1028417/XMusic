@@ -384,12 +384,13 @@ void CBkgDlg::_showAddBkg()
     if (0)
     {
         m_thread.start([&](const bool& bRunSignal){
+
         });
 
         m_addbkgDlg.show(m_olImgDir, false, [&](){
             m_thread.cancel();
 
-            m_rootImgDir.clear();
+            m_olImgDir.clear();
         });
     }
     else
