@@ -23,10 +23,10 @@ public:
     }
 
 private:
-    E_GroupTitlePos m_eTitlePos = E_GroupTitlePos::GTP_Bottom;
+    E_GroupTitlePos m_eTitlePos = E_GroupTitlePos::GTP_Top;
 
 public:
-    void setTitle(const QString& qsTitle, E_GroupTitlePos ePos = E_GroupTitlePos::GTP_Bottom)
+    void setTitle(const QString& qsTitle, E_GroupTitlePos ePos = E_GroupTitlePos::GTP_Top)
     {
         QGroupBox::setTitle(qsTitle);
         m_eTitlePos = ePos;
