@@ -92,7 +92,7 @@ private:
 
         auto cr = g_crText;
         cr.setAlpha(CPainter::oppTextAlpha(100));
-        painter.drawRectEx(rc, 1, cr, Qt::SolidLine, __szRound);
+        painter.drawRectEx(rc, cr, 1, Qt::SolidLine, __szRound);
 
         painter.fillRect(rcTitle, g_crTheme);
         painter.drawTextEx(rcTitle, nAlign, title());

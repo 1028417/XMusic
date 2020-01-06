@@ -161,8 +161,7 @@ void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
     }
 }
 
-void CPainter::drawRectEx(cqrc rc, UINT uWidth, cqcr cr,
-               Qt::PenStyle style, UINT xround, UINT yround)
+void CPainter::drawRectEx(cqrc rc, cqcr cr, UINT uWidth, Qt::PenStyle style, UINT xround, UINT yround)
 {
     this->save();
 

@@ -83,6 +83,6 @@ private:
             painter.fillRectEx(rc, crBegin, m_crForeground, xround);
         }
 
-        painter.drawRectEx(this->rect(), 1, QColor(255,255,255,50), Qt::SolidLine, xround);
+        painter.drawRectEx(this->rect(), QColor(255,255,255,50), 1, Qt::SolidLine, xround);
     }
 };

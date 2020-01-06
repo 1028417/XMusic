@@ -115,8 +115,6 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
             sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
         }
 
-        //nMargin = (cy-sz_icon)/2;
-
         int x_icon = 0;
         if (context.eStyle & E_RowStyle::IS_CenterAlign)
         {
@@ -134,21 +132,17 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         painter.drawPixmapEx(rcPixmap, *context.pixmap, __size(6));
 
         rc.setLeft(x_icon + sz_icon + nMargin);
-
-        //nMargin += __size(3);
     }
     else
     {
-        //nMargin = cy/5;
-
         rc.setLeft(nMargin);
     }
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
         QColor cr = g_crText;
-        cr.setAlpha(CPainter::oppTextAlpha(20)*2);
-        painter.fillRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1, cr);
+        cr.setAlpha(CPainter::oppTextAlpha(25));
+        painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1), cr);
     }
 
     if (context.eStyle & E_RowStyle::IS_RightTip)

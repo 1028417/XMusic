@@ -120,7 +120,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
                 cr.setAlpha(50);
             }
 
-            painter.drawRectEx(rc, 2, cr, Qt::PenStyle::DotLine, __szRound);
+            painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
             cr.setAlpha(128);
 
             int len = MIN(rc.width(), rc.height())/4;
