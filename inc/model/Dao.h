@@ -88,6 +88,7 @@ struct tagModifyedMedia
 	wstring strOldPath;
 
 	wstring strNewPath;
+	wstring strModifyedPath;
 
 	wstring strMediaSetName;
 
