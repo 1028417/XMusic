@@ -18,9 +18,7 @@ enum class E_PlayCtrl
     PC_Append,
     PC_AppendPlay,
 
-    PC_Demand,
-
-    PC_Quit
+    PC_Demand
 };
 
 struct tagPlayCtrl
@@ -56,11 +54,15 @@ struct tagPlayCtrl
         eDemandLanguage = eLanguage;
     }
 
-    void reset()
+    void get(tagPlayCtrl& PlayCtrl)
     {
-        ePlayCtrl = E_PlayCtrl::PC_Null;
+        if (ePlayCtrl != E_PlayCtrl::PC_Null)
+        {
+            PlayCtrl = *this;
 
-        paMedias.clear();
+            ePlayCtrl = E_PlayCtrl::PC_Null;
+            paMedias.clear();
+        }
     }
 
     E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;

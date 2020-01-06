@@ -254,25 +254,10 @@ public:
 		});
 	}
 
-    void cancel(bool bJoin = true)
-    {
-        if (m_thread.joinable())
-        {
-            m_mutex.lock();
-
-            if (m_thread.joinable())
-            {
-                m_sgnRuning.reset();
-
-				if (bJoin)
-				{
-					m_thread.join();
-				}
-            }
-
-            m_mutex.unlock();
-        }
-    }
+	bool joinable() const
+	{
+		return m_thread.joinable();
+	}
 
 	void join()
 	{
@@ -286,6 +271,26 @@ public:
 			}
 
             m_mutex.unlock();
+		}
+	}
+
+	void cancel(bool bJoin = true)
+	{
+		if (m_thread.joinable())
+		{
+			m_mutex.lock();
+
+			if (m_thread.joinable())
+			{
+				m_sgnRuning.reset();
+
+				if (bJoin)
+				{
+					m_thread.join();
+				}
+			}
+
+			m_mutex.unlock();
 		}
 	}
 };
