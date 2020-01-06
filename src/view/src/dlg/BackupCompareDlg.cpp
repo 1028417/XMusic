@@ -31,25 +31,19 @@ BOOL CCompareResultPage::OnInitDialog()
 
 	if (m_arrModifyedMedia)
 	{
-		fillModifyedMedia(m_arrModifyedMedia);
-		m_arrModifyedMedia.clear();
+		_fillModifyedMedia();
 	}
 	else if (m_arrDeletedPlayItem || m_arrDeletedAlbumItem)
 	{
-		fillDeletedMedia(m_arrDeletedPlayItem, m_arrDeletedAlbumItem);
-		m_arrDeletedPlayItem.clear();
-		m_arrDeletedAlbumItem.clear();
+		_fillDeletedMedia();
 	}
 	else if (m_arrMovedMedia)
 	{
-		fillMovedMedia(m_arrMovedMedia);
-		m_arrMovedMedia.clear();
+		_fillMovedMedia();
 	}
 	else if (m_arrNewPlayItem || m_arrNewAlbumItem)
 	{
-		fillNewMedia(m_arrNewPlayItem, m_arrNewAlbumItem);
-		m_arrNewPlayItem.clear();
-		m_arrNewAlbumItem.clear();
+		_fillNewMedia();
 	}
 
 	return TRUE;
@@ -83,7 +77,11 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 			wstring strMediaPath = m_fnGetPath((UINT)iItem);
 			if (!strMediaPath.empty())
 			{
-				m_view.m_PlayCtrl.addPlayingItem(strMediaPath);
+				cauto strAbsPath = m_view.getMediaLib().toAbsPath(strMediaPath);
+				if (fsutil::existFile(strAbsPath))
+				{
+					m_view.m_PlayCtrl.addPlayingItem(strMediaPath);
+				}
 			}
 		}
 	}
@@ -94,20 +92,25 @@ void CCompareResultPage::clear()
 	m_wndList.DeleteAllItems();
 }
 
-void CCompareResultPage::fillModifyedMedia(const SArray<tagModifyedMedia>& arrModifyedMedia)
+void CCompareResultPage::setModifyedMedia(const SArray<tagModifyedMedia>& arrModifyedMedia)
 {
-	_updateTitle(arrModifyedMedia.size());
+	m_arrModifyedMedia.assign(arrModifyedMedia);
+	_fillModifyedMedia();
+}
+
+void CCompareResultPage::_fillModifyedMedia()
+{
+	_updateTitle(m_arrModifyedMedia.size());
 
 	if (!m_wndList)
 	{
-		m_arrModifyedMedia.assign(arrModifyedMedia);
 		return;
 	}
 
 	m_wndList.DeleteAllItems();
 	UINT uItem = 0;
 	wstring strMediaSetName;
-	for (auto& ModifyedMedia : arrModifyedMedia)
+	for (auto& ModifyedMedia : m_arrModifyedMedia)
 	{
 		strMediaSetName = ModifyedMedia.strMediaSetName;
 		if (!ModifyedMedia.strSingerName.empty())
@@ -116,55 +119,63 @@ void CCompareResultPage::fillModifyedMedia(const SArray<tagModifyedMedia>& arrMo
 		}
 
 		m_wndList.InsertItemEx(uItem++, { strMediaSetName, __substr(ModifyedMedia.strOldPath, 1)
-			, __substr(ModifyedMedia.strNewPath, 1) }, L" ");
+			, __substr(ModifyedMedia.strModifyedPath, 1) }, L" ");
 	}
 
 	m_fnGetPath = [&](UINT uItem) {
-		wstring strOldPath = m_wndList.GetItemText(uItem, 1).TrimLeft();
-		wstring strNewFile = m_wndList.GetItemText(uItem, 2).TrimLeft();
+		wstring strPath;
+		m_arrModifyedMedia.get(uItem, [&](tagModifyedMedia& ModifyedMedia) {
+			strPath = ModifyedMedia.strSingerDir +  ModifyedMedia.strNewPath;
+		});
 
-		return fsutil::GetParentDir(strOldPath) + __wcDirSeparator + strNewFile;
+		return strPath;
 	};
 }
 
-void CCompareResultPage::fillDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem)
+void CCompareResultPage::setDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem)
 {
-	_updateTitle(arrDeletedPlayItem.size() + arrDeletedAlbumItem.size());
+	m_arrDeletedPlayItem.assign(arrDeletedPlayItem);
+	m_arrDeletedAlbumItem.assign(arrDeletedAlbumItem);
+	_fillDeletedMedia();
+}
+
+void CCompareResultPage::_fillDeletedMedia()
+{
+	_updateTitle(m_arrDeletedPlayItem.size() + m_arrDeletedAlbumItem.size());
 
 	if (!m_wndList)
 	{
-		m_arrDeletedPlayItem.assign(arrDeletedPlayItem);
-		m_arrDeletedAlbumItem.assign(arrDeletedAlbumItem);
 		return;
 	}
 
 	m_wndList.DeleteAllItems();
 
 	UINT uItem = 0;
-	for (auto& DeletedPlayItem : arrDeletedPlayItem)
+	for (auto& DeletedPlayItem : m_arrDeletedPlayItem)
 	{
 		m_wndList.InsertItemEx(uItem++, { DeletedPlayItem.strPlaylistName
 			, __substr(DeletedPlayItem.strPath, 1) }, L" ");
 	}
 
-	for (auto& DeletedAlbumItem : arrDeletedAlbumItem)
+	for (auto& DeletedAlbumItem : m_arrDeletedAlbumItem)
 	{
 		m_wndList.InsertItemEx(uItem++, {DeletedAlbumItem.strSingerName	+ __CNDot
 			+ DeletedAlbumItem.strAlbumName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
 	}
-
-	m_fnGetPath = [&](UINT uItem) {
-		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
-	};
 }
 
-void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia)
+void CCompareResultPage::setMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia)
 {
-	_updateTitle(arrMovedMedia.size());
+	m_arrMovedMedia.assign(arrMovedMedia);
+	_fillMovedMedia();
+}
+
+void CCompareResultPage::_fillMovedMedia()
+{
+	_updateTitle(m_arrMovedMedia.size());
 
 	if (!m_wndList)
 	{
-		m_arrMovedMedia.assign(arrMovedMedia);
 		return;
 	}
 
@@ -172,7 +183,7 @@ void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMed
 	UINT uItem = 0;
 	wstring strOldMediaSetName;
 	wstring strNewMediaSetName;
-	for (auto& MovedMedia : arrMovedMedia)
+	for (auto& MovedMedia : m_arrMovedMedia)
 	{
 		if (!MovedMedia.strSingerName.empty())
 		{
@@ -190,36 +201,56 @@ void CCompareResultPage::fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMed
 	}
 
 	m_fnGetPath = [&](UINT uItem) {
-		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
+		wstring strPath;
+		m_arrMovedMedia.get(uItem, [&](tagMovedMedia& MovedMedia) {
+			strPath = MovedMedia.strSingerDir + MovedMedia.strPath;
+		});
+		
+		return strPath;
 	};
 }
 
-void CCompareResultPage::fillNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem)
+void CCompareResultPage::setNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem)
 {
-	_updateTitle(arrNewPlayItem.size() + arrNewAlbumItem.size());
+	m_arrNewPlayItem.assign(arrNewPlayItem);
+	m_arrNewAlbumItem.assign(arrNewAlbumItem);
+	_fillNewMedia();
+}
+
+void CCompareResultPage::_fillNewMedia()
+{
+	_updateTitle(m_arrNewPlayItem.size() + m_arrNewAlbumItem.size());
 
 	if (!m_wndList)
 	{
-		m_arrNewPlayItem.assign(arrNewPlayItem);
-		m_arrNewAlbumItem.assign(arrNewAlbumItem);
 		return;
 	}
 
 	m_wndList.DeleteAllItems();
 	UINT uItem = 0;
-	for (auto& NewPlayItem : arrNewPlayItem)
+	for (auto& NewPlayItem : m_arrNewPlayItem)
 	{
 		m_wndList.InsertItemEx(uItem++, { NewPlayItem.strPlaylistName, __substr(NewPlayItem.strPath, 1) }, L" ");
 	}
 
-	for (auto& NewAlbumItem : arrNewAlbumItem)
+	for (auto& NewAlbumItem : m_arrNewAlbumItem)
 	{
 		m_wndList.InsertItemEx(uItem++, {NewAlbumItem.strSingerName + __CNDot
 			+ NewAlbumItem.strAlbumName, __substr(NewAlbumItem.strPath, 1) }, L" ");
 	}
 
 	m_fnGetPath = [&](UINT uItem) {
-		return (wstring)m_wndList.GetItemText(uItem, 1).TrimLeft();
+		wstring strPath;
+		if (!m_arrNewPlayItem.get(uItem, [&](tagNewPlayItem& NewPlayItem) {
+			strPath = NewPlayItem.strPath;
+		}))
+		{
+			m_arrNewAlbumItem.get(uItem, [&](tagNewAlbumItem& NewAlbumItem) {
+				strPath = NewAlbumItem.strSingerDir + NewAlbumItem.strPath;
+			});
+		}
+
+		return strPath;
 	};
 }
 
@@ -385,7 +416,7 @@ void CBackupCompareDlg::_fillResult(const tagCompareBackupResult& result)
 	
 	bool bAutoActive = true;
 
-	m_pageNew.fillNewMedia(result.arrNewPlayItem, result.arrNewAlbumItem);
+	m_pageNew.setNewMedia(result.arrNewPlayItem, result.arrNewAlbumItem);
 	if (bAutoActive)
 	{
 		if (result.arrNewPlayItem || result.arrNewAlbumItem)
@@ -395,7 +426,7 @@ void CBackupCompareDlg::_fillResult(const tagCompareBackupResult& result)
 		}
 	}
 
-	m_pageDeleled.fillDeletedMedia(result.arrDeletedPlayItem, result.arrDeletedAlbumItem);
+	m_pageDeleled.setDeletedMedia(result.arrDeletedPlayItem, result.arrDeletedAlbumItem);
 	if (bAutoActive)
 	{
 		if (result.arrDeletedPlayItem || result.arrDeletedAlbumItem)
@@ -405,7 +436,7 @@ void CBackupCompareDlg::_fillResult(const tagCompareBackupResult& result)
 		}
 	}
 
-	m_pageModifyed.fillModifyedMedia(result.arrModifyedMedia);
+	m_pageModifyed.setModifyedMedia(result.arrModifyedMedia);
 	if (bAutoActive)
 	{
 		if (result.arrModifyedMedia)
@@ -415,7 +446,7 @@ void CBackupCompareDlg::_fillResult(const tagCompareBackupResult& result)
 		}
 	}
 
-	m_pageMoved.fillMovedMedia(result.arrMovedMedia);
+	m_pageMoved.setMovedMedia(result.arrMovedMedia);
 	if (bAutoActive)
 	{
 		if (result.arrMovedMedia)

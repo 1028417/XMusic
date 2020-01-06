@@ -45,7 +45,7 @@ BOOL CBackupDlg::OnInitDialog()
 		.addDynamic(L"ÒÆ¶¯Ïî", 0.25);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
-	ListPara.uItemHeight = 40;
+	ListPara.uItemHeight = 60;
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);

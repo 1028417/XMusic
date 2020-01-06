@@ -44,6 +44,11 @@ private:
 
 	void OnSize(UINT nType, int cx, int cy);
 
+	void _fillModifyedMedia();
+	void _fillDeletedMedia();
+	void _fillMovedMedia();
+	void _fillNewMedia();
+
 	void _updateTitle(size_t uCount);
 
 	void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
@@ -51,10 +56,10 @@ private:
 public:
 	void clear();
 
-	void fillModifyedMedia(const SArray<tagModifyedMedia>& arrModifyedMedia);
-	void fillDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem);
-	void fillMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia);
-	void fillNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem);
+	void setModifyedMedia(const SArray<tagModifyedMedia>& arrModifyedMedia);
+	void setDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem);
+	void setMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia);
+	void setNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem);
 };
 
 class CBackupCompareDlg : public CDialogT<IDD_DLG_BackupCompare>
