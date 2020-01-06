@@ -380,33 +380,36 @@ void CBackupCompareDlg::OnSelChangedSrcCombo()
 
 void CBackupCompareDlg::_compare()
 {
-	CString strSrcTag;
-	int iSelIndex = m_wndSrcCombo.GetCurSel();
-	__Ensure(iSelIndex >= 0);
-	m_wndSrcCombo.GetLBText(iSelIndex, strSrcTag);
-	strSrcTag.TrimLeft();
-
 	CWaitCursor WaitCursor;
 
-	iSelIndex = m_wndDstCombo.GetCurSel();
-	__Ensure(iSelIndex >= 0);
-	if (iSelIndex > 0)
-	{
-		CString strDstTag;
-		m_wndDstCombo.GetLBText(iSelIndex, strDstTag);
-		strDstTag.TrimLeft();
+	CString cstrSrcTag;
+	int nSrcIdx = m_wndSrcCombo.GetCurSel();
+	__Ensure(nSrcIdx >= 0);
+	m_wndSrcCombo.GetLBText(nSrcIdx, cstrSrcTag);
+	cstrSrcTag.TrimLeft();
+	wstring strSrcTag(cstrSrcTag);
 
-		m_BackupMgr.compareBackup((wstring)strSrcTag, (wstring)strDstTag, [&](auto& result) {
+	int nDstIdx = m_wndDstCombo.GetCurSel();
+	__Ensure(nDstIdx >= 0);
+	if (0 == nDstIdx)
+	{
+		tagCompareBackupResult result;
+		__Assert(m_BackupMgr.compareBackup(strSrcTag, result));
+		_fillResult(result);
+	}
+	else
+	{
+		CString cstrDstTag;
+		m_wndDstCombo.GetLBText(nDstIdx, cstrDstTag);
+		cstrDstTag.TrimLeft();
+		wstring strDstTag(cstrDstTag);
+
+		m_BackupMgr.compareBackup(strSrcTag, strDstTag, [=](const tagCompareBackupResult& result) {
+			if (result.strSrcTag == strSrcTag && result.strDstTag == strDstTag)
 			CMainApp::sync([&]() {
 				_fillResult(result);
 			});
 		});
-	}
-	else
-	{
-		tagCompareBackupResult result;
-		__Assert(m_BackupMgr.compareBackup((wstring)strSrcTag, result));
-		_fillResult(result);
 	}
 }
 
