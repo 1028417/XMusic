@@ -6,7 +6,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(class CApp& app) : CDialog(&m_app.mainWnd())
+CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
   , m_MedialibView(app, *this, m_OuterDir)
 {

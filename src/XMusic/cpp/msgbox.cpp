@@ -6,7 +6,7 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox(QWidget *parent) : CDialog(parent, false)
+CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 {
     ui.setupUi(this);
 

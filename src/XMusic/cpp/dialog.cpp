@@ -16,7 +16,7 @@ void CDialog::resetPos()
     {
         lstDlgs.push_front(pDlg);
 
-        pDlg = dynamic_cast<CDialog*>(pDlg->parent());
+        pDlg = dynamic_cast<CDialog*>(&pDlg->m_parent);
     }
 
     for (auto pDlg : lstDlgs)
@@ -33,17 +33,15 @@ void CDialog::_setPos()
     }
     else
     {
-        auto pParent = dynamic_cast<QWidget*>(parent());
-        if (pParent)
-        {
-            cauto ptCenter = pParent->geometry().center();
-            move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
-        }
+        cauto ptCenter = m_parent.geometry().center();
+        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
 }
 
 void CDialog::show(cfn_void cbClose)
 {
+    setParent(&m_parent, Qt::Dialog | Qt::FramelessWindowHint);
+
     if (!m_bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -65,7 +63,7 @@ void CDialog::show(cfn_void cbClose)
 
     g_pFrontDlg = this;
     connect(this, &QDialog::finished, [&, cbClose]() {
-        g_pFrontDlg = dynamic_cast<CDialog*>(parent());
+        g_pFrontDlg = dynamic_cast<CDialog*>(&m_parent);
 
         _onClose();
 
@@ -126,7 +124,7 @@ bool CDialog::event(QEvent *ev)
     {
         CDialog *pDlg = this;
         do {
-            auto pParent = dynamic_cast<QWidget*>(pDlg->parent());
+            auto pParent = dynamic_cast<QWidget*>(&pDlg->m_parent);
 
             ::SetWindowPos((HWND)pParent->winId(), pDlg->hwnd(), 0, 0, 0, 0
                            , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);

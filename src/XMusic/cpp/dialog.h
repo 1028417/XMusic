@@ -9,31 +9,25 @@
 
 #include "widget.h"
 
-#define __dlgFlags Qt::Dialog | Qt::FramelessWindowHint
-
 class CDialog : public QDialog
 {
 public:
-    CDialog(QWidget *parent = NULL, bool bFullScreen = true)
-        : QDialog(parent)
-        , m_bFullScreen(bFullScreen)
-    {
-        this->setWindowFlags(__dlgFlags);
-    }
-
-    CDialog(QWidget& parent, bool bFullScreen)
-        : QDialog(&parent, __dlgFlags)
-        , m_bFullScreen(bFullScreen)
+    CDialog(QWidget& parent, bool bFullScreen = true)
+      : m_parent(parent)
+      , m_bFullScreen(bFullScreen)
     {
     }
 
     CDialog(CDialog& dlg, bool bFullScreen = true)
-        : QDialog(&dlg, __dlgFlags)
-        , m_bFullScreen(bFullScreen)
+      : QDialog(NULL)
+      , m_parent(dlg)
+      , m_bFullScreen(bFullScreen)
     {
     }
 
 private:
+    QWidget& m_parent;
+
     bool m_bFullScreen = true;
 
 private:

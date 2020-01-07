@@ -10,9 +10,9 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(class CApp& app, CBkgDlg& bkgDlg) : CDialog(m_bkgDlg)
-  , m_app(app),
-  m_bkgDlg(bkgDlg)
+CColorDlg::CColorDlg(CBkgDlg& bkgDlg, class CApp& app) : CDialog(bkgDlg)
+  , m_bkgDlg(bkgDlg)
+  , m_app(app)
 {
 }
 

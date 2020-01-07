@@ -158,10 +158,10 @@ inline UINT CBkgView::margin()
     return __margin/(getColumnCount()-1);
 }
 
-CBkgDlg::CBkgDlg(class CApp& app) : CDialog(&m_app.mainWnd())
+CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
-    m_colorDlg(app, *this),
-    m_addbkgDlg(app, *this),
+    m_colorDlg(*this, app),
+    m_addbkgDlg(*this, app),
     m_bkgView(app, *this)
 {
 }

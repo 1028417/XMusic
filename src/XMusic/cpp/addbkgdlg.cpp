@@ -7,9 +7,9 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(class CApp& app, CBkgDlg& bkgDlg) : CDialog(m_bkgDlg)
-    , m_app(app),
-    m_bkgDlg(bkgDlg),
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, class CApp& app) : CDialog(bkgDlg)
+    , m_bkgDlg(bkgDlg),
+    m_app(app),
     m_addbkgView(app, *this, m_paImgDirs)
 {
 }

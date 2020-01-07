@@ -43,8 +43,8 @@ void fixWorkArea(QWidget& wnd)
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
     , m_PlayingList(app)
-    , m_medialibDlg(app)
-    , m_bkgDlg(app)
+    , m_medialibDlg(*this, app)
+    , m_bkgDlg(*this, app)
 {
     ui.setupUi(this);
 

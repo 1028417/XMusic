@@ -6,7 +6,7 @@ class CMsgBox : private CDialog
 {
     Q_OBJECT
  public:
-    CMsgBox(QWidget *parent = NULL);
+    CMsgBox(QWidget& parent);
 
 public:
     void show(const QString& qsMsg, cfn_void cbClose);

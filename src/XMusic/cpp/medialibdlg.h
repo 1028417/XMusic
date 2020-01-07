@@ -82,7 +82,7 @@ class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CMedialibDlg(class CApp& m_app);
+    CMedialibDlg(QWidget& parent, class CApp& m_app);
 
 private:
     class CApp& m_app;

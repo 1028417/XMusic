@@ -32,7 +32,7 @@ public:
         m_ctrl(*this, m_model),
         m_model(m_mainWnd, m_ctrl.getOption()),
         m_mainWnd(*this),
-        m_msgbox(&m_mainWnd)
+        m_msgbox(m_mainWnd)
     {
     }
 

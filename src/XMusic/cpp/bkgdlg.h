@@ -123,7 +123,7 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CBkgDlg(class CApp& app);
+    CBkgDlg(QWidget& parent, class CApp& app);
 
 private:
     class CApp& m_app;

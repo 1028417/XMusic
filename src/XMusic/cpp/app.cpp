@@ -202,7 +202,7 @@ void CApp::slot_run(bool bUpgradeResult)
         return;
     }
 
-    if (true)//!bUpgradeResult)
+    if (!bUpgradeResult)
     {
         m_msgbox.show("更新媒体库失败", [&](){
             this->quit();
