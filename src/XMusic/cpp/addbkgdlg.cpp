@@ -71,13 +71,6 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
 
-void CAddBkgDlg::addBkg(const wstring& strFile)
-{
-    m_bkgDlg.addBkg(strFile);
-    close();
-}
-
-
 CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
     , m_app(app)
@@ -178,7 +171,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
-            m_addbkgDlg.addBkg(subImgs[uIdx].second);
+            m_addbkgDlg.bkgDlg().addBkg(subImgs[uIdx].second);
         }
     }
     else

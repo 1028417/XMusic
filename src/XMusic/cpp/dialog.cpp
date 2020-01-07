@@ -119,22 +119,6 @@ bool CDialog::event(QEvent *ev)
 
         return true;
 #endif
-/*#if __windows
-    case QEvent::WindowActivate:
-    {
-        CDialog *pDlg = this;
-        do {
-            auto pParent = dynamic_cast<QWidget*>(&pDlg->m_parent);
-
-            ::SetWindowPos((HWND)pParent->winId(), pDlg->hwnd(), 0, 0, 0, 0
-                           , SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-
-            pDlg = dynamic_cast<CDialog*>(pParent);
-        } while (pDlg);
-    }
-
-        break;
-#endif*/
 	default:
         break;
 	}

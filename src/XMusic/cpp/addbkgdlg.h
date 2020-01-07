@@ -104,6 +104,11 @@ private:
     }
 
 public:
+    class CBkgDlg& bkgDlg()
+    {
+        return m_bkgDlg;
+    }
+
     void init();
 
     void show(IImgDir *pImgDir, cfn_void cbClose = NULL);
@@ -117,6 +122,4 @@ public:
     {
         emit signal_founddir(&imgDir);
     }
-
-    void addBkg(const wstring& strFile);
 };

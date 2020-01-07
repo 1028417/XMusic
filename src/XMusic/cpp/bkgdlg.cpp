@@ -428,7 +428,12 @@ void CBkgDlg::addBkg(const wstring& strFile)
     m_bkgView.update();
 
     _setBkg(strFileName);
+
+    m_addbkgDlg.close();
+
     close();
+
+    m_app.mainWnd().activateWindow();
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
