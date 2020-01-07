@@ -424,16 +424,10 @@ void CBkgDlg::addBkg(const wstring& strFile)
         return;
     }
 
-    _vecBkgFile().push_back(strFileName);
-    m_bkgView.update();
-
     _setBkg(strFileName);
 
-    m_addbkgDlg.close();
-
-    close();
-
-    m_app.mainWnd().activateWindow();
+    _vecBkgFile().push_back(strFileName);
+    close(); //m_bkgView.update();
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)

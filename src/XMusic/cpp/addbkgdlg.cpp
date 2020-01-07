@@ -171,6 +171,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
         cauto subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
+            m_addbkgDlg.close();
             m_addbkgDlg.bkgDlg().addBkg(subImgs[uIdx].second);
         }
     }
