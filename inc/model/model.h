@@ -73,22 +73,26 @@ public:
 #if !__winvc
 struct __ModelExt tagMedialibConf
 {
-    UINT uCompatibleAppVersion = 0;
+    string strAppVersion;
 
     UINT uMedialibVersion = 0;
 
-    list<string> lstUrl;
+    UINT uCompatibleCode = 0;
+
+    list<string> lstMedialibUrl;
 
     list<string> lstOnlineHBkg;
     list<string> lstOnlineVBkg;
 
     void clear()
     {
-        uCompatibleAppVersion = 0;
+        strAppVersion.clear();
 
         uMedialibVersion = 0;
 
-        lstUrl.clear();
+        uCompatibleCode = 0;
+
+        lstMedialibUrl.clear();
 
         lstOnlineHBkg.clear();
         lstOnlineVBkg.clear();
