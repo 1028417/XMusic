@@ -312,7 +312,7 @@ bool CApp::_upgradeMediaLib()
     tagMedialibConf userMedialibConf;
     if (m_model.readMedialibConf(userMedialibConf))
     {
-        if (userMedialibConf.uCompatibleAppVersion == orgMedialibConf.uCompatibleAppVersion)
+        if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
         {
             g_logger << "MediaLib userVersion: " >> userMedialibConf.uMedialibVersion;
 
