@@ -71,6 +71,54 @@ public:
 };
 
 #if !__winvc
+class CUpgradeUrl
+{
+public:
+    CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
+    {
+    }
+
+private:
+    string m_strBaseUrl;
+
+public:
+    string appUrl() const
+    {
+#if __android
+#define __appFilePostfix "android.apk"
+#elif __windows
+#define __appFilePostfix "win32.zip"
+#elif __mac
+#define __appFilePostfix "macOs.dmg"
+#else
+#define __appFilePostfix ""
+        return "";
+#endif
+
+        return m_strBaseUrl + "/app/XMusic-" __appFilePostfix;
+    }
+
+    string medialibUrl() const
+    {
+        return m_strBaseUrl + "/medialib/medialib";
+    }
+
+    string singerimgUrl() const
+    {
+        return m_strBaseUrl + "/singerimg/";
+    }
+
+    string hbkgUrl() const
+    {
+        return m_strBaseUrl + "/hbkg";
+    }
+
+    string vbkgUrl() const
+    {
+        return m_strBaseUrl + "/vbkg";
+    }
+};
+
 struct __ModelExt tagMedialibConf
 {
     string strAppVersion;
@@ -79,7 +127,7 @@ struct __ModelExt tagMedialibConf
 
     UINT uCompatibleCode = 0;
 
-    list<string> lstMedialibUrl;
+    list<CUpgradeUrl> lstUpgradeUrl;
 
     list<string> lstOnlineHBkg;
     list<string> lstOnlineVBkg;
@@ -92,7 +140,7 @@ struct __ModelExt tagMedialibConf
 
         uCompatibleCode = 0;
 
-        lstMedialibUrl.clear();
+        lstUpgradeUrl.clear();
 
         lstOnlineHBkg.clear();
         lstOnlineVBkg.clear();
@@ -331,6 +379,7 @@ public:
 private:
 #if !__winvc
     bool _upgradeMediaLib(CZipFile& zipFile, const tagMedialibConf& prevMedialibConf);
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
     bool _loadShareLib(CZipFile& zipFile);
 #else
 	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);

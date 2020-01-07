@@ -25,7 +25,7 @@ private:
 #endif
 
 public:
-    void init(const wstring& strDir, const list<string>& lstBaseUrl, const list<wstring>& lstOnlineSingerImg);
+    void init(const wstring& strDir, const list<class CUpgradeUrl>& lstUpgradeUrl, const list<wstring>& lstOnlineSingerImg);
 
 	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
 
