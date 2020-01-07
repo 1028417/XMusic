@@ -306,7 +306,8 @@ bool CApp::_upgradeMediaLib()
     IFBuffer ifbMedialibConf((c_byte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
     __EnsureReturn(m_model.readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
-    g_logger << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
+    g_logger << "appVersion: " >> orgMedialibConf.strAppVersion
+             << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
 
     tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
     tagMedialibConf userMedialibConf;
