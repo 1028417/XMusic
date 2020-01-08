@@ -385,27 +385,25 @@ bool CApp::_upgradeMediaLib()
 
     tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
 
-
-    IFStream ifsMedialibConf;
-    if (!ifsMedialibConf.open(m_model.medialibPath(L"medialib.conf")))
-    {
-        return false;
-    }
-
     tagMedialibConf userMedialibConf;
-    if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
+    IFStream ifsMedialibConf(m_model.medialibPath(L"medialib.conf"));
+    if (ifsMedialibConf)
     {
-        if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
-        {
-            g_logger << "MediaLib userVersion: " >> userMedialibConf.uMedialibVersion;
+         if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
+         {
+             if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
+             {
+                 g_logger << "MediaLib userVersion: " >> userMedialibConf.uMedialibVersion;
 
-            if (userMedialibConf.uMedialibVersion >= orgMedialibConf.uMedialibVersion)
-            {
-                pPrevMedialibConf = &userMedialibConf;
-            }
-        }
+                 if (userMedialibConf.uMedialibVersion >= orgMedialibConf.uMedialibVersion)
+                 {
+                     pPrevMedialibConf = &userMedialibConf;
+                 }
+             }
+         }
+
+         ifsMedialibConf.close();
     }
-    ifsMedialibConf.close();
 
     string strVerInfo;
     int nRet = curlutil::initCurl(strVerInfo);
