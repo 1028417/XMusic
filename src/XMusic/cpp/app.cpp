@@ -305,13 +305,13 @@ bool CApp::_upgradeMediaLib()
     cauto ba = qf.readAll();
     IFBuffer ifbMedialibConf((c_byte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
-    __EnsureReturn(m_model.readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
+    __EnsureReturn(m_model.getMediaLib().readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
     g_logger << "appVersion: " >> orgMedialibConf.strAppVersion
              << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
 
     tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
     tagMedialibConf userMedialibConf;
-    if (m_model.readMedialibConf(userMedialibConf))
+    if (m_model.getMediaLib().readMedialibConf(userMedialibConf))
     {
         if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
         {
@@ -324,7 +324,7 @@ bool CApp::_upgradeMediaLib()
         }
     }
 
-    if (!m_model.upgradeMediaLib(*pPrevMedialibConf, [&](int64_t dltotal, int64_t dlnow){
+    if (!m_model.getMediaLib().upgradeMediaLib(*pPrevMedialibConf, [&](int64_t dltotal, int64_t dlnow){
         (void)dltotal;
         (void)dlnow;
         return m_bRunSignal;
