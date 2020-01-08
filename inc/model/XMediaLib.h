@@ -117,7 +117,7 @@ private:
     list<JValue> m_lstSnapshot;
 
 public:
-    const tagMedialibConf& medialibConf() const
+    tagMedialibConf& medialibConf()
     {
         return m_newMedialibConf;
     }
