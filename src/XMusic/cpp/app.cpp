@@ -480,11 +480,11 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
-        //if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+        if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
         {
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
 
-            //if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+            if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
             {
                 g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
                 _upgradeApp(newMedialibConf);
@@ -585,6 +585,8 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
         CByteBuffer bbfData;
         CDownloader downloader(false);
         int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](int64_t dltotal, int64_t dlnow){
+                (void)dltotal;
+                (void)dlnow;
                 return m_bRunSignal;
         });
         if (nRet != 0)
@@ -614,7 +616,8 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                     continue;
                 }
 
-                OFStream obs(fsutil::getModuleDir() + "/../XMusicStartup.exe", true);
+                cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir());
+                OFStream obs(strParentDir + "/XMusicStartup.exe", true);
                 if (!obs || obs.writex(bbfFile) != bbfFile->size())
                 {
                     g_logger >> "writefile fail: XMusicStartup";
@@ -623,7 +626,22 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
 
                 mapUnzfile.erase(itrUnzfile);
 
+                cauto strTempDir = strParentDir + "/upgrade";
+                if (!fsutil::createDir(strTempDir))
+                {
+                    g_logger << "createDir fail: " >> strTempDir;
+                    return;
+                }
 
+                for (cauto unzdir : zipFile.unzdirList())
+                {
+                    cauto strSubDir = strTempDir + unzdir.strPath;
+                    if (!fsutil::createDir(strSubDir + unzdir.strPath))
+                    {
+                        g_logger << "createDir fail: " >> strSubDir;
+                        return;
+                    }
+                }
             }
         }
 
