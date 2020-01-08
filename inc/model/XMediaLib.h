@@ -136,8 +136,6 @@ public:
     string getShareUrl(const wstring& strFileTitle);
 
 private:
-    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
-
     bool _loadXurl(Instream& ins);
 
     void _insertUrl(const string& strFileName, const string& strUrl);
