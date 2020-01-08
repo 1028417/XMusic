@@ -101,11 +101,11 @@ class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 public:
 	static bool m_bOnlineMediaLib;
 
-    XMediaLib(class IModelObserver& ModelObserver, class CModel& model);
+    XMediaLib(class CModel& model, class IModelObserver& ModelObserver);
 
 private:
-	class IModelObserver& m_ModelObserver;
     class CModel& m_model;
+    class IModelObserver& m_ModelObserver;
 
 #if !__winvc
 private:
@@ -117,14 +117,12 @@ private:
     list<JValue> m_lstSnapshot;
 
 public:
-    bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL);
-
-    bool upgradeMediaLib(const tagMedialibConf& prevMedialibConf, CB_DownloadProgress& cbProgress);
-
     const tagMedialibConf& medialibConf() const
     {
         return m_newMedialibConf;
     }
+
+    bool loadShareLib(CZipFile& zipFile);
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
@@ -138,12 +136,9 @@ public:
     string getShareUrl(const wstring& strFileTitle);
 
 private:
-    bool _upgradeMediaLib(CZipFile& zipFile, const tagMedialibConf& prevMedialibConf);
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
     bool _loadXurl(Instream& ins);
-
-    bool _loadShareLib(CZipFile& zipFile);
 
     void _insertUrl(const string& strFileName, const string& strUrl);
 

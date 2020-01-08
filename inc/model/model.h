@@ -4,7 +4,7 @@
 #include "../MediaLib/MediaDef.h"
 
 #ifdef __ModelPrj
-extern ITxtWriter& m_modelLogger;
+extern ITxtWriter& g_modelLogger;
 
 #define __ModelExt __dllexport
 #else
@@ -116,10 +116,11 @@ struct __ModelExt tagExportOption
 class IModel
 {
 public:
-    virtual bool initMediaLib() = 0;
+    virtual wstring medialibPath(const wstring& strSubPath) = 0;
 
     virtual bool status() const = 0;
 
+    virtual bool initMediaLib() = 0;
 
     virtual CDataMgr& getDataMgr() = 0;
 
@@ -200,7 +201,7 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-    inline wstring medialibPath(const wstring& strSubPath)
+    wstring medialibPath(const wstring& strSubPath) override
     {
 		if (m_Option.strRootDir.empty())
 		{
