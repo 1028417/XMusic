@@ -614,8 +614,8 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                     continue;
                 }
 
-                OBStream obs(fsutil::getModuleDir() + L"/../"XMusicStartup.exe"");
-                if (!obs || obs.writeex(bbfFile) != bbfFile.size())
+                OFStream obs(fsutil::getModuleDir() + "/../XMusicStartup.exe", true);
+                if (!obs || obs.writex(bbfFile) != bbfFile.size())
                 {
                     g_logger >> "writefile fail: XMusicStartup";
                     return;

@@ -4,7 +4,7 @@ class __view;
 
 #define __Color_Text RGB(64, 64, 255)
 
-#define __PlaySpiritSkinDir (fsutil::workDir() + L"/skin/")
+#define __PlaySpiritSkinDir (strutil::toWstr(fsutil::workDir()) + L"/skin/")
 
 #define __AsyncTaskElapse 50
 

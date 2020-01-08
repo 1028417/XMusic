@@ -6,11 +6,11 @@
 #pragma comment(lib, "Dbghelp.lib")
 #endif
 
-static wstring g_strDumpFileName;
+static string g_strDumpFileName;
 
-static inline void CreateMiniDump(PEXCEPTION_POINTERS pep, const wstring& strFileName)
+static inline void CreateMiniDump(PEXCEPTION_POINTERS pep, const string& strFileName)
 {
-	HANDLE hFile = CreateFileW(strFileName.c_str(), GENERIC_READ | GENERIC_WRITE,
+	HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE))
@@ -48,7 +48,7 @@ static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 	sprintf_s(pszExceptionInfo, "ExceptionCode=%u, ExceptionFlags=%u, ExceptionAddress=%d, NumberParameters=%u"
 		, exceptionRecord.ExceptionCode, exceptionRecord.ExceptionFlags, (int)exceptionRecord.ExceptionAddress, exceptionRecord.NumberParameters);
 	
-    wstring strDumpFile = fsutil::workDir() + L'\\' + g_strDumpFileName + tmutil::formatTime64(L"%Y%m%d_%H%M%S") + L".dmp";
+    cauto strDumpFile = fsutil::workDir() + '\\' + g_strDumpFileName + tmutil::formatTime64("%Y%m%d_%H%M%S") + ".dmp";
 	CreateMiniDump(pExceptionInfo, strDumpFile);
 	
     //exit(0);
@@ -81,7 +81,7 @@ static void DisableSetUnhandledExceptionFilter()
 	}
 }
 
-void InitMinDump(const wstring& strDumpFileName)
+void InitMinDump(const string& strDumpFileName)
 {
     g_strDumpFileName = strDumpFileName;
 
