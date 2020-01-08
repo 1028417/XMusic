@@ -405,6 +405,7 @@ bool CApp::_upgradeMediaLib()
             }
         }
     }
+    ifsMedialibConf.close();
 
     string strVerInfo;
     int nRet = curlutil::initCurl(strVerInfo);
@@ -450,7 +451,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
         }
 
         auto mapUnzfileInfo = zipFile.unzfileInfoMap();
-        auto itrMedialibConf = mapUnzfileInfo.find(".conf");
+        auto itrMedialibConf = mapUnzfileInfo.find("medialib.conf");
         if (itrMedialibConf == mapUnzfileInfo.end())
         {
             g_logger >> "medialibConf not found";
@@ -540,13 +541,6 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
 
         mapUnzfileInfo.erase(itrMedialib);
 
-        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
-        if (!ofbMedialibConf || ofbMedialibConf.writex(bbfMedialibConf) != bbfMedialibConf->size())
-        {
-            g_logger >> "write medialibConf fail";
-            return false;
-        }
-
         for (cauto pr : mapUnzfileInfo)
         {
             const tagUnzFileInfo& unzfileInfo = pr.second;
@@ -582,6 +576,13 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
                     //continue;
                 }
             }
+        }
+
+        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
+        if (!ofbMedialibConf || ofbMedialibConf.writex(bbfMedialibConf) != bbfMedialibConf->size())
+        {
+            g_logger >> "write medialibConf fail";
+            //return false;
         }
 
         return true;
