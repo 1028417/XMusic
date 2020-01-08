@@ -186,6 +186,8 @@ public:
 	static bool existFile(const wstring& strFile);
 
     static bool createDir(const wstring& strDir);
+    static bool createDir(const string& strDir);
+
     static bool removeDir(const wstring& strDir);
     static bool removeFile(const wstring& strFile);
 
