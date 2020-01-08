@@ -448,9 +448,9 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
-        auto mapUnzfileInfo = zipFile.unzfileInfoMap();
-        auto itrMedialibConf = mapUnzfileInfo.find("medialib.conf");
-        if (itrMedialibConf == mapUnzfileInfo.end())
+        auto mapUnzfile = zipFile.unzfileMap();
+        auto itrMedialibConf = mapUnzfile.find("medialib.conf");
+        if (itrMedialibConf == mapUnzfile.end())
         {
             g_logger >> "medialibConf not found";
             continue;
@@ -463,7 +463,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
-        mapUnzfileInfo.erase(itrMedialibConf);
+        mapUnzfile.erase(itrMedialibConf);
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
         auto& newMedialibConf = m_model.getMediaLib().medialibConf();
@@ -480,40 +480,21 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
-        if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+        //if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
         {
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
 
-            if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+            //if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
             {
-                for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
-                {
-                    cauto strAppUrl = upgradeUrl.appUrl();
-                    if (strAppUrl.empty())
-                    {
-                        continue;
-                    }
-
-                    g_logger << "dowloadApp: " >> strAppUrl;
-
-                    CByteBuffer bbfZip;
-                    CDownloader downloader(false, 10);
-                    int nRet = downloader.syncDownload(strAppUrl, bbfZip, 1);
-                    if (nRet != 0)
-                    {
-                        g_logger << "download fail: " >> nRet;
-                        continue;
-                    }
-
-                    break;
-                }
+                g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
+                _upgradeApp(newMedialibConf);
             }
 
             return false;
         }
 
-        auto itrMedialib = mapUnzfileInfo.find("medialib");
-        if (itrMedialib == mapUnzfileInfo.end())
+        auto itrMedialib = mapUnzfile.find("medialib");
+        if (itrMedialib == mapUnzfile.end())
         {
             g_logger >> "medialib not found";
             continue;
@@ -537,40 +518,40 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             }
         }
 
-        mapUnzfileInfo.erase(itrMedialib);
+        mapUnzfile.erase(itrMedialib);
 
-        for (cauto pr : mapUnzfileInfo)
+        for (cauto pr : mapUnzfile)
         {
-            const tagUnzFileInfo& unzfileInfo = pr.second;
+            const tagUnzfile& unzfile = pr.second;
             CByteBuffer bbfData;
-            if (zipFile.read(unzfileInfo, bbfData) <= 0)
+            if (zipFile.read(unzfile, bbfData) <= 0)
             {
-                g_logger << "readSnapshot fail: " >> unzfileInfo.strPath;
+                g_logger << "readSnapshot fail: " >> unzfile.strPath;
                 return false;
             }
             IFBuffer ifbData(bbfData);
 
-            if (strutil::endWith(unzfileInfo.strPath, ".share"))
+            if (strutil::endWith(unzfile.strPath, ".share"))
             {
                 if (!m_model.getMediaLib().loadShareUrl(ifbData))
                 {
-                    g_logger << "loadShareUrl fail: " >> unzfileInfo.strPath;
+                    g_logger << "loadShareUrl fail: " >> unzfile.strPath;
                     //continue;
                 }
             }
-            else if (strutil::endWith(unzfileInfo.strPath, ".xurl"))
+            else if (strutil::endWith(unzfile.strPath, ".xurl"))
             {
                 if (!m_model.getMediaLib().loadXurl(ifbData))
                 {
-                    g_logger << "loadXurl fail: " >> unzfileInfo.strPath;
+                    g_logger << "loadXurl fail: " >> unzfile.strPath;
                     //continue;
                 }
             }
-            else if (strutil::endWith(unzfileInfo.strPath, ".snapshot.json"))
+            else if (strutil::endWith(unzfile.strPath, ".snapshot.json"))
             {
                 if (!m_model.getMediaLib().loadSnapshot(ifbData))
                 {
-                    g_logger << "loadSnapshot fail: " >> unzfileInfo.strPath;
+                    g_logger << "loadSnapshot fail: " >> unzfile.strPath;
                     //continue;
                 }
             }
@@ -587,4 +568,66 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
     }
 
     return false;
+}
+
+void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
+{
+    for (cauto upgradeUrl : medialibConf.lstUpgradeUrl)
+    {
+        cauto strAppUrl = upgradeUrl.appUrl();
+        if (strAppUrl.empty())
+        {
+            continue;
+        }
+
+        g_logger << "dowloadApp: " >> strAppUrl;
+
+        CByteBuffer bbfData;
+        CDownloader downloader(false);
+        int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](int64_t dltotal, int64_t dlnow){
+                return m_bRunSignal;
+        });
+        if (nRet != 0)
+        {
+            g_logger << "download fail: " >> nRet;
+            continue;
+        }
+
+#if __windows
+        IFBuffer ifbData(bbfData);
+        CZipFile zipFile(ifbData);
+        if (!zipFile)
+        {
+            g_logger >> "invalid zipfile";
+            continue;
+        }
+
+        auto mapUnzfile = zipFile.unzfileMap();
+        for (auto itrUnzfile = mapUnzfile.begin(); itrUnzfile != mapUnzfile.end(); ++itrUnzfile)
+        {
+            if (strutil::endWith(itrUnzfile->first, "XMusicStartup.exe"))
+            {
+                CByteBuffer bbfFile;
+                if (zipFile.read(itrUnzfile->second, bbfFile) <= 0)
+                {
+                    g_logger >> "readZip fail: medialibConf";
+                    continue;
+                }
+
+                OBStream obs(fsutil::getModuleDir() + L"/../"XMusicStartup.exe"");
+                if (!obs || obs.writeex(bbfFile) != bbfFile.size())
+                {
+                    g_logger >> "writefile fail: XMusicStartup";
+                    return;
+                }
+
+                mapUnzfile.erase(itrUnzfile);
+
+            }
+        }
+
+#else
+        return;
+#endif
+    }
 }

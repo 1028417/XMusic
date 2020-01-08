@@ -66,6 +66,8 @@ private:
     bool _upgradeMediaLib();
     bool _upgradeMedialib(tagMedialibConf& prevMedialibConf);
 
+    void _upgradeApp(const tagMedialibConf& medialibConf);
+
 public:
     static bool checkIPhoneXBangs(int cx, int cy)
     {
