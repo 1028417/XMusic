@@ -449,12 +449,22 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
+        auto mapUnzfileInfo = zipFile.unzfileInfoMap();
+        auto itrMedialibConf = mapUnzfileInfo.find(".conf");
+        if (itrMedialibConf == mapUnzfileInfo.end())
+        {
+            g_logger >> "medialibConf not found";
+            continue;
+        }
+
         CByteBuffer bbfMedialibConf;
-        if (zipFile.read("medialib.conf", bbfMedialibConf) <= 0)
+        if (zipFile.read(itrMedialibConf->second, bbfMedialibConf) <= 0)
         {
             g_logger >> "readZip fail: medialibConf";
             continue;
         }
+
+        mapUnzfileInfo.erase(itrMedialibConf);
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
         auto& newMedialibConf = m_model.getMediaLib().medialibConf();
@@ -503,9 +513,8 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             return false;
         }
 
-        auto mapUnzfileInfo = zipFile.unzfileInfoMap();
-        auto itrUnzfileInfo = mapUnzfileInfo.find("medialib");
-        if (itrUnzfileInfo == mapUnzfileInfo.end())
+        auto itrMedialib = mapUnzfileInfo.find("medialib");
+        if (itrMedialib == mapUnzfileInfo.end())
         {
             g_logger >> "medialib not found";
             continue;
@@ -515,7 +524,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
         if (newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
         {
             CByteBuffer bbfMedialib;
-            if (zipFile.read(itrUnzfileInfo->second, bbfMedialib) <= 0)
+            if (zipFile.read(itrMedialib->second, bbfMedialib) <= 0)
             {
                 g_logger >> "readZip fail: medialib";
                 continue;
@@ -529,7 +538,14 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             }
         }
 
-        mapUnzfileInfo.erase(itrUnzfileInfo);
+        mapUnzfileInfo.erase(itrMedialib);
+
+        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
+        if (!ofbMedialibConf || ofbMedialibConf.writex(bbfMedialibConf) != bbfMedialibConf->size())
+        {
+            g_logger >> "write medialibConf fail";
+            return false;
+        }
 
         for (cauto pr : mapUnzfileInfo)
         {
