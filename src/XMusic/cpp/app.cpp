@@ -595,8 +595,8 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
             continue;
         }
 
-#if __windows
         IFBuffer ifbData(bbfData);
+#if __windows
         CZipFile zipFile(ifbData);
         if (!zipFile)
         {
@@ -604,24 +604,18 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
             continue;
         }
 
+        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir());
+        cauto strStartupFile = strParentDir + "/XMusicStartup.exe";
+
         auto mapUnzfile = zipFile.unzfileMap();
         for (auto itrUnzfile = mapUnzfile.begin(); itrUnzfile != mapUnzfile.end(); ++itrUnzfile)
         {
             if (strutil::endWith(itrUnzfile->first, "XMusicStartup.exe"))
             {
-                CByteBuffer bbfFile;
-                if (zipFile.read(itrUnzfile->second, bbfFile) <= 0)
+                if (zipFile.unzip(itrUnzfile->second, strStartupFile) <= 0)
                 {
-                    g_logger >> "readZip fail: medialibConf";
+                    g_logger >> "unzip fail: XMusicStartup";
                     continue;
-                }
-
-                cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir());
-                OFStream obs(strParentDir + "/XMusicStartup.exe", true);
-                if (!obs || obs.writex(bbfFile) != bbfFile->size())
-                {
-                    g_logger >> "writefile fail: XMusicStartup";
-                    return;
                 }
 
                 mapUnzfile.erase(itrUnzfile);
@@ -639,6 +633,16 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                     if (!fsutil::createDir(strSubDir + unzdir.strPath))
                     {
                         g_logger << "createDir fail: " >> strSubDir;
+                        return;
+                    }
+                }
+
+                for (cauto pr : mapUnzfile)
+                {
+                    cauto strSubFile = strTempDir + pr.first;
+                    if (zipFile.unzip(pr.second, strSubFile) < 0)
+                    {
+                        g_logger << "unzip fail: " >> strSubFile;
                         return;
                     }
                 }
