@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
 #endif
 
 #if __windows
-    extern void InitMinDump(const wstring&);
-    InitMinDump(L"xmusic_dump_");
+    extern void InitMinDump(const string&);
+    InitMinDump("xmusic_dump_");
 #elif __android
     if (!fsutil::createDir(__androidDataDir))
     {

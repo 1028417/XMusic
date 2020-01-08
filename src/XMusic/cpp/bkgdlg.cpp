@@ -179,8 +179,9 @@ void CBkgDlg::init()
 #define __hbkgdir L"/bkg/hbkg/"
 #define __vbkgdir L"/bkg/vbkg/"
 
-    m_strHBkgDir = fsutil::workDir() + __hbkgdir;
-    m_strVBkgDir = fsutil::workDir() + __vbkgdir;
+    cauto strWorkDir = strutil::toWstr(fsutil::workDir());
+    m_strHBkgDir = strWorkDir + __hbkgdir;
+    m_strVBkgDir = strWorkDir + __vbkgdir;
 
     auto strFileName = to_wstring(time(NULL));
 

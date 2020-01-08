@@ -10,7 +10,7 @@
 
 #include "msgbox.h"
 
-#define __androidDataDir L"/sdcard/Android/data/com.musicrossoft.xmusic"
+#define __androidDataDir "/sdcard/Android/data/com.musicrossoft.xmusic"
 
 #define __cyIPhoneXBangs __size(128)
 
