@@ -293,6 +293,80 @@ int CApp::run()
     return nRet;
 }
 
+bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
+{
+    JValue jRoot;
+    if (!jsonutil::loadFile(ins, jRoot))
+    {
+        g_logger >> "loadMedialibConf fail";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["appVersion"], medialibConf.strAppVersion))
+    {
+        g_logger >> "readMedialibConf fail: appVersion";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["medialibVersion"], medialibConf.uMedialibVersion))
+    {
+        g_logger >> "readMedialibConf fail: medialibVersion";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["compatibleCode"], medialibConf.uCompatibleCode))
+    {
+        g_logger >> "readMedialibConf fail: appVersion";
+        return false;
+    }
+
+    const JValue& jMedialibUrl = jRoot["medialibUrl"];
+    if (!jMedialibUrl.isArray())
+    {
+        g_logger >> "readMedialibConf fail: url";
+        return false;
+    }
+
+    string strMedialib;
+    for (UINT uIdx = 0; uIdx < jMedialibUrl.size(); uIdx++)
+    {
+        if (!jsonutil::get(jMedialibUrl[uIdx], strMedialib))
+        {
+            g_logger >> "readMedialibConf fail: url";
+            return false;
+        }
+
+        medialibConf.lstUpgradeUrl.emplace_back(strMedialib);
+    }
+
+    string strBkg;
+    const JValue& jHBkg = jRoot["hbkg"];
+    if (jHBkg.isArray())
+    {
+        for (UINT uIdx = 0; uIdx < jHBkg.size(); uIdx++)
+        {
+            if (jsonutil::get(jHBkg[uIdx], strBkg))
+            {
+                medialibConf.lstOnlineHBkg.push_back(strBkg);
+            }
+        }
+    }
+
+    const JValue& jVBkg = jRoot["vbkg"];
+    if (jVBkg.isArray())
+    {
+        for (UINT uIdx = 0; uIdx < jVBkg.size(); uIdx++)
+        {
+            if (jsonutil::get(jVBkg[uIdx], strBkg))
+            {
+                medialibConf.lstOnlineVBkg.push_back(strBkg);
+            }
+        }
+    }
+
+    return true;
+}
+
 bool CApp::_upgradeMediaLib()
 {
     QFile qf(":/medialib.conf");
@@ -305,13 +379,21 @@ bool CApp::_upgradeMediaLib()
     cauto ba = qf.readAll();
     IFBuffer ifbMedialibConf((c_byte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
-    __EnsureReturn(m_model.getMediaLib().readMedialibConf(orgMedialibConf, &ifbMedialibConf), false);
+    __EnsureReturn(_readMedialibConf(ifbMedialibConf, orgMedialibConf), false);
     g_logger << "appVersion: " >> orgMedialibConf.strAppVersion
              << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
 
     tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
+
+
+    IFStream ifsMedialibConf;
+    if (!ifsMedialibConf.open(m_model.medialibPath(L"medialib.conf")))
+    {
+        return false;
+    }
+
     tagMedialibConf userMedialibConf;
-    if (m_model.getMediaLib().readMedialibConf(userMedialibConf))
+    if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
     {
         if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
         {
@@ -323,16 +405,113 @@ bool CApp::_upgradeMediaLib()
             }
         }
     }
+    tagMedialibConf& prevMedialibConf = *pPrevMedialibConf;
 
-    if (!m_model.getMediaLib().upgradeMediaLib(*pPrevMedialibConf, [&](int64_t dltotal, int64_t dlnow){
+    string strVerInfo;
+    int nRet = curlutil::initCurl(strVerInfo);
+    if (nRet != 0)
+    {
+        g_logger << "initCurl fail: " >> nRet;
+        return false;
+    }
+    g_logger << "CurlVerInfo: \n" >> strVerInfo;
+
+    cauto cbProgress = [&](int64_t dltotal, int64_t dlnow){
         (void)dltotal;
         (void)dlnow;
         return m_bRunSignal;
-    }))
+    };
+
+    for (cauto upgradeUrl : prevMedialibConf.lstUpgradeUrl)
     {
-        g_logger >> "upgradeMediaLib fail";
-        return false;
+        cauto strMedialibUrl = upgradeUrl.medialibUrl();
+        g_logger << "dowloadMediaLib: " >> strMedialibUrl;
+
+        CByteBuffer bbfZip;
+        CDownloader downloader(false, 10);
+        nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, cbProgress);
+        if (nRet != 0)
+        {
+            g_logger << "download fail: " >> nRet;
+            continue;
+        }
+
+        IFBuffer ifbZip(bbfZip);
+        string strPwd;
+        //strPwd.append("medialib").append(".zip");
+        CZipFile zipFile(ifbZip, strPwd);
+        if (!zipFile)
+        {
+            g_logger >> "invalid zipfile";
+            continue;
+        }
+
+
+        CByteBuffer bbfMedialibConf;
+        if (zipFile.read("medialib.conf", bbfMedialibConf) <= 0)
+        {
+            g_logger >> "readZip fail: medialibConf";
+            return false;
+        }
+
+        IFBuffer ifbMedialibConf(bbfMedialibConf);
+        auto& newMedialibConf = m_model.getMediaLib().medialibConf();
+        newMedialibConf.clear();
+        if (!_readMedialibConf(newMedialibConf, &ifbMedialibConf))
+        {
+            return false;
+        }
+
+        if (newMedialibConf.uMedialibVersion < prevMedialibConf.uMedialibVersion)
+        {
+            g_logger << "medialib version invalid: " >> newMedialibConf.uMedialibVersion;
+            return false;
+        }
+
+        /*if (m_newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+            {
+                g_logger << "medialib not compatible: " >> m_newMedialibConf.uCompatibleCode;
+
+                if (m_newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+                {
+                    m_ModelObserver.
+                    (void)_upgradeApp(m_newMedialibConf.lstUpgradeUrl);
+                }
+
+                return false;
+            }*/
+
+        if (!m_model.getMediaLib().loadShareLib(zipFile))
+        {
+            return false;
+        }
+
+        cauto strDBFile = m_model.medialibPath(__medialibFile);
+        if (m_newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
+        {
+            CByteBuffer bbfMedialib;
+            if (zipFile.read("medialib", bbfMedialib) <= 0)
+            {
+                g_logger >> "readZip fail: medialib";
+                return false;
+            }
+
+            OFStream ofsMedialib(strDBFile, true);
+            if (!ofsMedialib)
+            {
+                return false;
+            }
+            (void)ofsMedialib.writex(bbfMedialib);
+        }
+
+        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
+        if (ofbMedialibConf)
+        {
+            (void)ofbMedialibConf.writex(bbfMedialibConf);
+        }
+
+        return true;
     }
 
-    return true;
+    return false;
 }
