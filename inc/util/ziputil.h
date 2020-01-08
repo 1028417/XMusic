@@ -119,8 +119,8 @@ public:
         return read(itr->second, cbfBuff);
     }
 
-    long unzip(const tagUnzfile& unzFile, const wstring& strDstFile);
-    long unzip(const string& strUnzfile, const wstring& strDstFile)
+    long unzip(const tagUnzfile& unzFile, const string& strDstFile);
+    long unzip(const string& strUnzfile, const string& strDstFile)
     {
         auto itr = m_mapUnzfile.find(strUnzfile);
         if (itr == m_mapUnzfile.end())
