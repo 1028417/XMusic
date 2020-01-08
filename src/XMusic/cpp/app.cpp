@@ -623,6 +623,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
 
                 mapUnzfile.erase(itrUnzfile);
 
+
             }
         }
 
