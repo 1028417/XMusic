@@ -202,6 +202,11 @@ private:
 public:
     inline wstring medialibPath(const wstring& strSubPath)
     {
+		if (m_Option.strRootDir.empty())
+		{
+			return L"";
+		}
+
         return m_Option.strRootDir + __medialibPath + strSubPath;
     }
 
