@@ -135,17 +135,17 @@ public:
 	}
 
     template <typename T>
-    size_t writex(TBuffer<T>& buff)
+    size_t writex(const TBuffer<T>& buff)
     {
         return read(buff, sizeof(T), buff.count());
     }
 
-    size_t writex(CByteBuffer& bbfBuff)
+    size_t writex(const CByteBuffer& bbfBuff)
     {
         return write(bbfBuff, 1, bbfBuff->size());
     }
 
-    size_t writex(CCharBuffer& cbfBuff)
+    size_t writex(const CCharBuffer& cbfBuff)
     {
         return write(cbfBuff, 1, cbfBuff->size());
     }

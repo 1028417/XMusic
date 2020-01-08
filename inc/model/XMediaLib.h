@@ -122,7 +122,11 @@ public:
         return m_newMedialibConf;
     }
 
-    bool loadShareLib(CZipFile& zipFile);
+    bool loadShareUrl(Instream& ins);
+
+    bool loadXurl(Instream& ins);
+
+    bool loadSnapshot(Instream& ins);
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
@@ -136,8 +140,6 @@ public:
     string getShareUrl(const wstring& strFileTitle);
 
 private:
-    bool _loadXurl(Instream& ins);
-
     void _insertUrl(const string& strFileName, const string& strUrl);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
