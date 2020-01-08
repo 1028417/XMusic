@@ -457,7 +457,7 @@ bool CApp::_upgradeMediaLib()
         IFBuffer ifbMedialibConf(bbfMedialibConf);
         auto& newMedialibConf = m_model.getMediaLib().medialibConf();
         newMedialibConf.clear();
-        if (!_readMedialibConf(newMedialibConf, &ifbMedialibConf))
+        if (!_readMedialibConf(ifbMedialibConf, newMedialibConf))
         {
             return false;
         }
