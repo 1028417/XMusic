@@ -10,7 +10,7 @@ static string g_strDumpFileName;
 
 static inline void CreateMiniDump(PEXCEPTION_POINTERS pep, const string& strFileName)
 {
-	HANDLE hFile = CreateFile(strFileName.c_str(), GENERIC_READ | GENERIC_WRITE,
+    HANDLE hFile = CreateFileA(strFileName.c_str(), GENERIC_READ | GENERIC_WRITE,
 		FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE))
