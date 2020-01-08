@@ -109,13 +109,21 @@ public:
         return __wcBackSlant == wch || __wcSlant == wch;
     }
 
-	static void trimPathTail(wstring& strPath);
+    static void trimPathTail(wstring& strPath);
 	static wstring trimPathTail_r(const wstring& strPath)
 	{
 		wstring t_strPath(strPath);
 		trimPathTail(t_strPath);
 		return t_strPath;
 	}
+
+    static void trimPathTail(string& strPath);
+    static string trimPathTail_r(const string& strPath)
+    {
+        string t_strPath(strPath);
+        trimPathTail(t_strPath);
+        return t_strPath;
+    }
 
 	static void transFSSlant(wstring& strPath)
 	{
@@ -158,7 +166,9 @@ public:
     static void SplitPath(const string& strPath, string *pstrDir, string *pstrFile);
 
 	static wstring GetRootDir(const wstring& strPath);
-	static wstring GetParentDir(const wstring& strPath);
+
+    static wstring GetParentDir(const wstring& strPath);
+    static string GetParentDir(const string& strPath);
 
 	static wstring GetFileName(const wstring& strPath);
 
@@ -184,11 +194,11 @@ public:
     static long fSeekTell(FILE *pf, long offset, int origin);
     static long long fSeekTell64(FILE *pf, long long offset, int origin);
 
-    static wstring workDir();
-    static bool setWorkDir(const wstring& strWorkDir);
+    static bool setWorkDir(const string& strWorkDir);
+    static string workDir();
 
 #if __windows
-    static wstring getModuleDir(wchar_t *pszModuleName = NULL);
+    static string getModuleDir(char *pszModuleName = NULL);
 #endif
 
 #if !__winvc

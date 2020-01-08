@@ -38,9 +38,9 @@ private:
 
     list<tagUnzfile> m_lstUnzdirInfo;
 
-    map<string, tagUnzfile> m_mapUnzfileInfo;
+    map<string, tagUnzfile> m_mapUnzfile;
 
-    list<pair<bool, tagUnzfile*>> m_lstUnzfileInfo;
+    list<pair<bool, tagUnzfile*>> m_lstUnzfile;
 
 private:
 	bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
@@ -55,7 +55,7 @@ public:
 
     const map<string, tagUnzfile>& unzfileMap() const
     {
-        return m_mapUnzfileInfo;
+        return m_mapUnzfile;
     }
 
     const list<tagUnzfile>& unzdirList() const
@@ -65,7 +65,7 @@ public:
 
     const list<pair<bool, tagUnzfile*>>& unzfileList() const
     {
-        return m_lstUnzfileInfo;
+        return m_lstUnzfile;
     }
 
     bool open(const string& strFile, const string& strPwd = "")
@@ -79,20 +79,20 @@ public:
 
     bool unzip(const wstring& strDstDir) const;
 
-    long read(const tagUnzfile& unzFileInfo, CByteBuffer& bbfBuff) const
+    long read(const tagUnzfile& unzFile, CByteBuffer& bbfBuff) const
     {
-        if (0 == unzFileInfo.uFileSize)
+        if (0 == unzFile.uFileSize)
         {
             return 0;
         }
 
-        auto ptr = bbfBuff.resizeMore(unzFileInfo.uFileSize);
-        return _read(unzFileInfo, ptr, unzFileInfo.uFileSize);
+        auto ptr = bbfBuff.resizeMore(unzFile.uFileSize);
+        return _read(unzFile, ptr, unzFile.uFileSize);
 	}
     long read(const string& strPath, CByteBuffer& bbfBuff) const
     {
-        auto itr = m_mapUnzfileInfo.find(strPath);
-        if (itr == m_mapUnzfileInfo.end())
+        auto itr = m_mapUnzfile.find(strPath);
+        if (itr == m_mapUnzfile.end())
         {
             return -1;
         }
@@ -100,20 +100,20 @@ public:
         return read(itr->second, bbfBuff);
     }
 
-    long read(const tagUnzfile& unzFileInfo, CCharBuffer& cbfBuff) const
+    long read(const tagUnzfile& unzFile, CCharBuffer& cbfBuff) const
     {
-        if (0 == unzFileInfo.uFileSize)
+        if (0 == unzFile.uFileSize)
         {
             return 0;
         }
 
-        auto ptr = cbfBuff.resizeMore(unzFileInfo.uFileSize);
-        return _read(unzFileInfo, ptr, unzFileInfo.uFileSize);
+        auto ptr = cbfBuff.resizeMore(unzFile.uFileSize);
+        return _read(unzFile, ptr, unzFile.uFileSize);
 	}
     long read(const string& strPath, CCharBuffer& cbfBuff) const
     {
-        auto itr = m_mapUnzfileInfo.find(strPath);
-        if (itr == m_mapUnzfileInfo.end())
+        auto itr = m_mapUnzfile.find(strPath);
+        if (itr == m_mapUnzfile.end())
         {
             return -1;
         }
@@ -124,7 +124,7 @@ public:
 	void close();
 	
 private:
-    long _read(const tagUnzfile& unzFileInfo, void *buf, size_t len) const;
+    long _read(const tagUnzfile& unzFile, void *buf, size_t len) const;
 };
 
 class __UtilExt ziputil

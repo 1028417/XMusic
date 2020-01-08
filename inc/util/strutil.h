@@ -146,14 +146,14 @@ public:
         return __WS2Q(str);
     }
 
-    /*static QString toQstr(const char* pStr, int len = -1)
+    static QString toQstr(const char* pStr, int len = -1)
     {
         return __A2Q(pStr, len);
     }
     static QString toQstr(const string& str)
-	{
+    {
         return __S2Q(str);
-    }*/
+    }
 #endif
 
 	template <typename T>

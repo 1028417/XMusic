@@ -31,11 +31,14 @@ public:
 	static void getCurrentTime(int& nHour, int& nMinute);
 
 	static bool timeToTM(time32_t tTime, tagTM& tm);
+
 	static wstring formatTime(const wstring& strFormat, time32_t tTime = -1);
 
 #if __windows
 	static bool time64ToTM(time64_t tTime, tagTM& tm);
+
 	static wstring formatTime64(const wstring& strFormat, time64_t tTime = -1);
+	static string formatTime64(const string& strFormat, time64_t tTime = -1);
 
 	static time64_t transFileTime(unsigned long dwLowDateTime, unsigned long dwHighDateTime);
 #endif

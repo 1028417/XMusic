@@ -24,14 +24,14 @@ public:
 
 		return loadData(strText, jRoot, bStrictRoot);
 	}
-	static bool loadFile(const wstring& strFile, JValue& jRoot, bool bStrictRoot = true)
+	static bool loadFile(const string& strFile, JValue& jRoot, bool bStrictRoot = true)
 	{
 		IFStream ifs(strFile);
 		__EnsureReturn(ifs, false);
 		return loadFile(ifs, jRoot, bStrictRoot);
 	}
 
-	static bool writeFile(const JValue& jRoot, const wstring& strFile, bool bStyled=false)
+	static bool writeFile(const JValue& jRoot, const string& strFile, bool bStyled=false)
 	{
 		CUTF8TxtWriter TxtWriter;
 		if (!TxtWriter.open(strFile, true))
