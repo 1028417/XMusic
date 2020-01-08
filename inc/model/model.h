@@ -200,6 +200,11 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
+    inline wstring medialibPath(const wstring& strSubPath)
+    {
+        return m_Option.strRootDir + __medialibPath + strSubPath;
+    }
+
     bool status() const override
 	{
 		return m_db.GetStatus();
@@ -281,10 +286,11 @@ public:
 
 private:
 #if __winvc
+	wstring _scanXMusicDir();
+	wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
+
 	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
 #endif
-
-    wstring _scanXMusicDir();
 
     bool _initData(const wstring& strDBFile);
 
