@@ -1,6 +1,83 @@
 
 #pragma once
 
+#if !__winvc
+class CUpgradeUrl
+{
+public:
+    CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
+    {
+    }
+
+private:
+    string m_strBaseUrl;
+
+public:
+    string appUrl() const
+    {
+#if __android
+#define __appFilePostfix "android.apk"
+#elif __windows
+#define __appFilePostfix "win32.zip"
+#elif __mac
+#define __appFilePostfix "macOs.dmg"
+#else
+#define __appFilePostfix ""
+        return "";
+#endif
+
+        return m_strBaseUrl + "/app/XMusic-" __appFilePostfix;
+    }
+
+    string medialibUrl() const
+    {
+        return m_strBaseUrl + "/medialib/medialib";
+    }
+
+    string singerimgUrl() const
+    {
+        return m_strBaseUrl + "/singerimg/";
+    }
+
+    string hbkgUrl() const
+    {
+        return m_strBaseUrl + "/hbkg";
+    }
+
+    string vbkgUrl() const
+    {
+        return m_strBaseUrl + "/vbkg";
+    }
+};
+
+struct __ModelExt tagMedialibConf
+{
+    string strAppVersion;
+
+    UINT uMedialibVersion = 0;
+
+    UINT uCompatibleCode = 0;
+
+    list<CUpgradeUrl> lstUpgradeUrl;
+
+    list<string> lstOnlineHBkg;
+    list<string> lstOnlineVBkg;
+
+    void clear()
+    {
+        strAppVersion.clear();
+
+        uMedialibVersion = 0;
+
+        uCompatibleCode = 0;
+
+        lstUpgradeUrl.clear();
+
+        lstOnlineHBkg.clear();
+        lstOnlineVBkg.clear();
+    }
+};
+
 class CSnapshotMediaRes : public CMediaRes
 {
 public:
@@ -17,34 +94,39 @@ private:
         return m_uDuration;
     }
 };
+#endif
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
 	static bool m_bOnlineMediaLib;
 
-	XMediaLib(class IModelObserver& ModelObserver, CPlaylistMgr& PlaylistMgr, CSingerMgr& SingerMgr);
+    XMediaLib(class IModelObserver& ModelObserver, class CModel& model);
 
 private:
 	class IModelObserver& m_ModelObserver;
-
-	CPlaylistMgr& m_PlaylistMgr;
-	CSingerMgr& m_SingerMgr;
+    class CModel& m_model;
 
 #if !__winvc
 private:
+    tagMedialibConf m_newMedialibConf;
+
     unordered_map<string, string> m_mapXurl;
     unordered_map<string, string> m_mapShareUrl;
 
     list<JValue> m_lstSnapshot;
 
 public:
-    void addShareUrl(const unordered_map<string, string>& mapUrl)
+    bool readMedialibConf(tagMedialibConf& medialibConf, Instream *pins = NULL);
+
+    bool upgradeMediaLib(const tagMedialibConf& prevMedialibConf, CB_DownloadProgress& cbProgress);
+
+    const tagMedialibConf& medialibConf() const
     {
-        m_mapShareUrl.insert(mapUrl.begin(), mapUrl.end());
+        return m_newMedialibConf;
     }
 
-    bool loadXurl(Instream& ins);
+    static string genUrl(const string& strUrl, const string& strFileTitle);
 
     bool checkUrl(const string& strFileTitle);
     bool checkUrl(const wstring& strFileTitle)
@@ -55,9 +137,14 @@ public:
     string getXurl(const wstring& strFileTitle);
     string getShareUrl(const wstring& strFileTitle);
 
-    bool loadSnapshot(Instream& ins);
-
 private:
+    bool _upgradeMediaLib(CZipFile& zipFile, const tagMedialibConf& prevMedialibConf);
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
+
+    bool _loadXurl(Instream& ins);
+
+    bool _loadShareLib(CZipFile& zipFile);
+
     void _insertUrl(const string& strFileName, const string& strUrl);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
@@ -66,11 +153,7 @@ private:
 #endif
 
 private:
-    void GetSubSets(TD_MediaSetList& lstSubSets) override
-	{
-		lstSubSets.add(m_PlaylistMgr);
-		lstSubSets.add(m_SingerMgr);
-	}
+    void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
 	CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CMediaSet*& pSinger) override;
 

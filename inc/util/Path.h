@@ -42,7 +42,7 @@ private:
 	tagFileInfo m_fileInfo;
 
 protected:
-	const tagFileInfo& fileinfo = m_fileInfo;
+	const tagFileInfo& m_fi = m_fileInfo;
 
 public:
 	tagFileInfo& fileInfo()

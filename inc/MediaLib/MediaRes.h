@@ -63,7 +63,7 @@ public:
 
 	bool IsDir() const override
 	{
-        return fileinfo.bDir;
+	    return m_fi.bDir;
 	}
 
 	wstring GetName() const override
@@ -73,7 +73,7 @@ public:
 
 	long long fileSize() const override
 	{
-        return fileinfo.uFileSize;
+	    return m_fi.uFileSize;
 	}
 
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
@@ -154,7 +154,7 @@ public:
 private:
 	wstring GetTreeText() const override
 	{
-		return fileinfo.strName;
+	        return m_fi.strName;
 	}
 
 	void GetTreeChilds(TD_TreeObjectList& lstChilds) override
