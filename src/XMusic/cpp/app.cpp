@@ -468,18 +468,37 @@ bool CApp::_upgradeMediaLib()
             return false;
         }
 
-        /*if (m_newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+        if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+        {
+            g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
+
+            if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
             {
-                g_logger << "medialib not compatible: " >> m_newMedialibConf.uCompatibleCode;
-
-                if (m_newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+                for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
                 {
-                    m_ModelObserver.
-                    (void)_upgradeApp(m_newMedialibConf.lstUpgradeUrl);
-                }
+                    cauto strAppUrl = upgradeUrl.appUrl();
+                    if (strAppUrl.empty())
+                    {
+                        continue;
+                    }
 
-                return false;
-            }*/
+                    g_logger << "dowloadApp: " >> strAppUrl;
+
+                    CByteBuffer bbfZip;
+                    CDownloader downloader(false, 10);
+                    int nRet = downloader.syncDownload(strAppUrl, bbfZip, 1);
+                    if (nRet != 0)
+                    {
+                        g_logger << "download fail: " >> nRet;
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+            return false;
+        }
 
         if (!m_model.getMediaLib().loadShareLib(zipFile))
         {
