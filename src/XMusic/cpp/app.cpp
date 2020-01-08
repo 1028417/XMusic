@@ -487,7 +487,7 @@ bool CApp::_upgradeMediaLib()
         }
 
         cauto strDBFile = m_model.medialibPath(__medialibFile);
-        if (m_newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
+        if (newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
         {
             CByteBuffer bbfMedialib;
             if (zipFile.read("medialib", bbfMedialib) <= 0)
