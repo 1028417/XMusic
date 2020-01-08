@@ -367,6 +367,48 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
     return true;
 }
 
+bool CApp::_upgradeMediaLib(CZipFile& zipFile)
+{
+    for (cauto pr : zipFile.unzfileInfoMap())
+    {
+        const tagUnzFileInfo& unzfileInfo = pr.second;
+        CByteBuffer bbfData;
+        if (zipFile.read(unzfileInfo, bbfData) <= 0)
+        {
+            g_logger << "readSnapshot fail: " >> unzfileInfo.strPath;
+            return false;
+        }
+        IFBuffer ifbData(bbfData);
+
+        if (strutil::endWith(unzfileInfo.strPath, ".share"))
+        {
+            if (!m_model.getMediaLib().loadShareUrl(ifbData))
+            {
+                g_logger << "loadShareUrl fail: " >> unzfileInfo.strPath;
+                return false;
+            }
+        }
+        else if (strutil::endWith(unzfileInfo.strPath, ".xurl"))
+        {
+            if (!m_model.getMediaLib().loadXurl(ifbData))
+            {
+                g_logger << "loadXurl fail: " >> unzfileInfo.strPath;
+                return false;
+            }
+        }
+        else if (strutil::endWith(unzfileInfo.strPath, ".snapshot.json"))
+        {
+            if (!m_model.getMediaLib().loadSnapshot(ifbData))
+            {
+                g_logger << "loadSnapshot fail: " >> unzfileInfo.strPath;
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 bool CApp::_upgradeMediaLib()
 {
     QFile qf(":/medialib.conf");
@@ -405,7 +447,6 @@ bool CApp::_upgradeMediaLib()
             }
         }
     }
-    tagMedialibConf& prevMedialibConf = *pPrevMedialibConf;
 
     string strVerInfo;
     int nRet = curlutil::initCurl(strVerInfo);
@@ -416,12 +457,11 @@ bool CApp::_upgradeMediaLib()
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    cauto cbProgress = [&](int64_t dltotal, int64_t dlnow){
-        (void)dltotal;
-        (void)dlnow;
-        return m_bRunSignal;
-    };
+    return _upgradeMedialib(*pPrevMedialibConf);
+}
 
+bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
+{
     for (cauto upgradeUrl : prevMedialibConf.lstUpgradeUrl)
     {
         cauto strMedialibUrl = upgradeUrl.medialibUrl();
@@ -429,7 +469,11 @@ bool CApp::_upgradeMediaLib()
 
         CByteBuffer bbfZip;
         CDownloader downloader(false, 10);
-        nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, cbProgress);
+        int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](int64_t dltotal, int64_t dlnow){
+                (void)dltotal;
+                (void)dlnow;
+                return m_bRunSignal;
+        });
         if (nRet != 0)
         {
             g_logger << "download fail: " >> nRet;
@@ -446,12 +490,11 @@ bool CApp::_upgradeMediaLib()
             continue;
         }
 
-
         CByteBuffer bbfMedialibConf;
         if (zipFile.read("medialib.conf", bbfMedialibConf) <= 0)
         {
             g_logger >> "readZip fail: medialibConf";
-            return false;
+            continue;
         }
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
@@ -459,13 +502,14 @@ bool CApp::_upgradeMediaLib()
         newMedialibConf.clear();
         if (!_readMedialibConf(ifbMedialibConf, newMedialibConf))
         {
-            return false;
+            g_logger >> "readMedialibConf fail";
+            continue;
         }
 
         if (newMedialibConf.uMedialibVersion < prevMedialibConf.uMedialibVersion)
         {
             g_logger << "medialib version invalid: " >> newMedialibConf.uMedialibVersion;
-            return false;
+            continue;
         }
 
         if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
@@ -500,9 +544,9 @@ bool CApp::_upgradeMediaLib()
             return false;
         }
 
-        if (!m_model.getMediaLib().loadShareLib(zipFile))
+        if (!_upgradeMediaLib(zipFile))
         {
-            return false;
+            continue;
         }
 
         cauto strDBFile = m_model.medialibPath(__medialibFile);
@@ -512,7 +556,7 @@ bool CApp::_upgradeMediaLib()
             if (zipFile.read("medialib", bbfMedialib) <= 0)
             {
                 g_logger >> "readZip fail: medialib";
-                return false;
+                continue;
             }
 
             OFStream ofsMedialib(strDBFile, true);

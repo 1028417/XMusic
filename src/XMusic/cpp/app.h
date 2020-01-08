@@ -61,9 +61,11 @@ private:
 
     bool _resetRootDir(wstring& strRootDir);
 
-    bool _upgradeMediaLib();
-
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
+
+    bool _upgradeMediaLib();
+    bool _upgradeMedialib(tagMedialibConf& prevMedialibConf);
+    bool _upgradeMediaLib(CZipFile& zipFile);
 
 public:
     static bool checkIPhoneXBangs(int cx, int cy)
