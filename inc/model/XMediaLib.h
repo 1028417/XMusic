@@ -1,7 +1,6 @@
 
 #pragma once
 
-#if !__winvc
 class CUpgradeUrl
 {
 public:
@@ -50,6 +49,7 @@ public:
     }
 };
 
+#if !__winvc
 struct __ModelExt tagMedialibConf
 {
     string strAppVersion;
