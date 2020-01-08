@@ -77,8 +77,6 @@ public:
 
 	bool open(Instream& ins, const string& strPwd = "");
 
-    bool unzip(const wstring& strDstDir) const;
-
     long read(const tagUnzfile& unzFile, CByteBuffer& bbfBuff) const
     {
         if (0 == unzFile.uFileSize)
@@ -88,10 +86,10 @@ public:
 
         auto ptr = bbfBuff.resizeMore(unzFile.uFileSize);
         return _read(unzFile, ptr, unzFile.uFileSize);
-	}
-    long read(const string& strPath, CByteBuffer& bbfBuff) const
+    }
+    long read(const string& strUnzfile, CByteBuffer& bbfBuff) const
     {
-        auto itr = m_mapUnzfile.find(strPath);
+        auto itr = m_mapUnzfile.find(strUnzfile);
         if (itr == m_mapUnzfile.end())
         {
             return -1;
@@ -109,10 +107,10 @@ public:
 
         auto ptr = cbfBuff.resizeMore(unzFile.uFileSize);
         return _read(unzFile, ptr, unzFile.uFileSize);
-	}
-    long read(const string& strPath, CCharBuffer& cbfBuff) const
+    }
+    long read(const string& strUnzfile, CCharBuffer& cbfBuff) const
     {
-        auto itr = m_mapUnzfile.find(strPath);
+        auto itr = m_mapUnzfile.find(strUnzfile);
         if (itr == m_mapUnzfile.end())
         {
             return -1;
@@ -120,6 +118,20 @@ public:
 
         return read(itr->second, cbfBuff);
     }
+
+    long unzip(const tagUnzfile& unzFile, const wstring& strDstFile);
+    long unzip(const string& strUnzfile, const wstring& strDstFile)
+    {
+        auto itr = m_mapUnzfile.find(strUnzfile);
+        if (itr == m_mapUnzfile.end())
+        {
+            return -1;
+        }
+
+        return unzip(itr->second, strDstFile);
+    }
+
+    bool unzip(const wstring& strDstDir) const;
 
 	void close();
 	
