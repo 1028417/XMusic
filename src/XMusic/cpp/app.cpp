@@ -367,48 +367,6 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
     return true;
 }
 
-bool CApp::_upgradeMediaLib(CZipFile& zipFile)
-{
-    for (cauto pr : zipFile.unzfileInfoMap())
-    {
-        const tagUnzFileInfo& unzfileInfo = pr.second;
-        CByteBuffer bbfData;
-        if (zipFile.read(unzfileInfo, bbfData) <= 0)
-        {
-            g_logger << "readSnapshot fail: " >> unzfileInfo.strPath;
-            return false;
-        }
-        IFBuffer ifbData(bbfData);
-
-        if (strutil::endWith(unzfileInfo.strPath, ".share"))
-        {
-            if (!m_model.getMediaLib().loadShareUrl(ifbData))
-            {
-                g_logger << "loadShareUrl fail: " >> unzfileInfo.strPath;
-                return false;
-            }
-        }
-        else if (strutil::endWith(unzfileInfo.strPath, ".xurl"))
-        {
-            if (!m_model.getMediaLib().loadXurl(ifbData))
-            {
-                g_logger << "loadXurl fail: " >> unzfileInfo.strPath;
-                return false;
-            }
-        }
-        else if (strutil::endWith(unzfileInfo.strPath, ".snapshot.json"))
-        {
-            if (!m_model.getMediaLib().loadSnapshot(ifbData))
-            {
-                g_logger << "loadSnapshot fail: " >> unzfileInfo.strPath;
-                return false;
-            }
-        }
-    }
-
-    return true;
-}
-
 bool CApp::_upgradeMediaLib()
 {
     QFile qf(":/medialib.conf");
@@ -468,6 +426,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
         g_logger << "dowloadMediaLib: " >> strMedialibUrl;
 
         CByteBuffer bbfZip;
+
         CDownloader downloader(false, 10);
         int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](int64_t dltotal, int64_t dlnow){
                 (void)dltotal;
@@ -544,8 +503,11 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             return false;
         }
 
-        if (!_upgradeMediaLib(zipFile))
+        auto mapUnzfileInfo = zipFile.unzfileInfoMap();
+        auto itrUnzfileInfo = mapUnzfileInfo.find("medialib");
+        if (itrUnzfileInfo == mapUnzfileInfo.end())
         {
+            g_logger >> "medialib not found";
             continue;
         }
 
@@ -553,24 +515,57 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
         if (newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
         {
             CByteBuffer bbfMedialib;
-            if (zipFile.read("medialib", bbfMedialib) <= 0)
+            if (zipFile.read(itrUnzfileInfo->second, bbfMedialib) <= 0)
             {
                 g_logger >> "readZip fail: medialib";
                 continue;
             }
 
             OFStream ofsMedialib(strDBFile, true);
-            if (!ofsMedialib)
+            if (!ofsMedialib || ofsMedialib.writex(bbfMedialib) != bbfMedialib->size())
             {
+                g_logger >> "write medialib fail";
                 return false;
             }
-            (void)ofsMedialib.writex(bbfMedialib);
         }
 
-        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
-        if (ofbMedialibConf)
+        mapUnzfileInfo.erase(itrUnzfileInfo);
+
+        for (cauto pr : mapUnzfileInfo)
         {
-            (void)ofbMedialibConf.writex(bbfMedialibConf);
+            const tagUnzFileInfo& unzfileInfo = pr.second;
+            CByteBuffer bbfData;
+            if (zipFile.read(unzfileInfo, bbfData) <= 0)
+            {
+                g_logger << "readSnapshot fail: " >> unzfileInfo.strPath;
+                return false;
+            }
+            IFBuffer ifbData(bbfData);
+
+            if (strutil::endWith(unzfileInfo.strPath, ".share"))
+            {
+                if (!m_model.getMediaLib().loadShareUrl(ifbData))
+                {
+                    g_logger << "loadShareUrl fail: " >> unzfileInfo.strPath;
+                    //continue;
+                }
+            }
+            else if (strutil::endWith(unzfileInfo.strPath, ".xurl"))
+            {
+                if (!m_model.getMediaLib().loadXurl(ifbData))
+                {
+                    g_logger << "loadXurl fail: " >> unzfileInfo.strPath;
+                    //continue;
+                }
+            }
+            else if (strutil::endWith(unzfileInfo.strPath, ".snapshot.json"))
+            {
+                if (!m_model.getMediaLib().loadSnapshot(ifbData))
+                {
+                    g_logger << "loadSnapshot fail: " >> unzfileInfo.strPath;
+                    //continue;
+                }
+            }
         }
 
         return true;
