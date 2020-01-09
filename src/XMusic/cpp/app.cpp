@@ -643,7 +643,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
 
                 mapUnzfile.erase(itrUnzfile);
 
-                cauto strTempDir = strParentDir + "\\upgrade";
+                string strTempDir = strParentDir + "\\upgrade";
                 cauto strCmd = " /C rd /S /Q \"" + strTempDir + "\"";
                 if (cmdShell(strCmd))
                 {
@@ -657,7 +657,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                     return;
                 }
 
-                strTempDir.append('\\');
+                strTempDir.append("\\");
                 for (cauto unzdir : zipFile.unzdirList())
                 {
                     cauto strSubDir = strTempDir + unzdir.strPath;
