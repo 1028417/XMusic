@@ -390,23 +390,10 @@ void CBkgDlg::_showAddBkg()
 #else
     cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
 #endif
-    m_rootImgDir.setDir(strImgDir);
 
-    m_thread.start([&](const bool& bRunSignal){
-        m_rootImgDir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-            if (paSubFile)
-            {
-                auto& imgDir = (CImgDir&)dir;
-                if (imgDir.genSnapshot())
-                {
-                    if (bRunSignal)
-                    {
-                        m_addbkgDlg.addImgDir(imgDir);
-                    }
-                }
-            }
-
-            return bRunSignal;
+    m_thread.start([&, strImgDir](const bool& bRunSignal){
+        m_rootImgDir.scan(strImgDir, bRunSignal, [&](CImgDir& imgDir) {
+            m_addbkgDlg.addImgDir(imgDir);
         });
     });
 
@@ -512,10 +499,29 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
     return true;
 }
 
-bool CImgDir::genSnapshot()
+void CImgDir::scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CImgDir&> cb)
 {
-    cauto files = CPath::files();
-    for (m_itrSubFile = files.begin(); m_itrSubFile != files.end(); ++m_itrSubFile)
+    CPath::setDir(strDir);
+    CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
+        if (paSubFile)
+        {
+            auto& imgDir = (CImgDir&)dir;
+            if (imgDir._genSnapshot(paSubFile))
+            {
+                if (bRunSignal)
+                {
+                    cb(imgDir);
+                }
+            }
+        }
+
+        return bRunSignal;
+    });
+}
+
+bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)
+{
+    for (m_itrSubFile = paSubFile.begin(); m_itrSubFile != paSubFile.end(); ++m_itrSubFile)
     {
         auto pSubFile = *m_itrSubFile;
 

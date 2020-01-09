@@ -86,7 +86,7 @@ private:
     TD_SubImgVector m_lstSubImgs;
 
 public:
-    bool genSnapshot();
+    void scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CImgDir&> cb);
 
     const QPixmap* snapshot() const override
     {
@@ -117,6 +117,8 @@ private:
     }
 
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+
+    bool _genSnapshot(TD_XFileList& paSubFile);
 };
 
 class CBkgDlg : public CDialog
