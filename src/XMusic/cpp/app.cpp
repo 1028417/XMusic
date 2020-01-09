@@ -113,6 +113,8 @@ CAppInit::CAppInit(QApplication& app)
     fFontSize *= fDPIRate;
 #endif
 
+    QString qsFontfamilyName;
+
     SMap<E_FontWeight, QString> mapFontFile {
         { E_FontWeight::FW_Light, "/font/Microsoft-YaHei-Light.ttc" }
         //, { E_FontWeight::FW_Normal, "/font/Microsoft-YaHei-Regular.ttc" }
@@ -125,7 +127,6 @@ CAppInit::CAppInit(QApplication& app)
         qsFontFile = strutil::toQstr(fsutil::workDir()) + qsFontFile;
 #endif
 
-        QString qsFontfamilyName;
         int fontId = QFontDatabase::addApplicationFont(qsFontFile);
         g_logger << "newFontId: " >> fontId;
         if (-1 != fontId)

@@ -67,6 +67,16 @@ private:
     {
         return false;
     }
+
+    const QPixmap* snapshot(int nIdx) const
+    {
+        return NULL;
+    }
+
+    wstring path(int nIdx) const
+    {
+        return L"";
+    }
 };
 
 class CImgDir : public CPath, public IImgDir

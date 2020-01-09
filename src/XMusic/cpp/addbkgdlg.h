@@ -14,9 +14,9 @@ public:
 
     virtual size_t imgCount() const = 0;
 
-    virtual const QPixmap* snapshot(int nIdx=-1) const {return NULL;}
+    virtual const QPixmap* snapshot(int nIdx=-1) = 0;
 
-    virtual wstring path(int nIdx=-1) const {return L"";}
+    virtual wstring path(int nIdx=-1) = 0;
 
     virtual bool genSubImgs() = 0;
 };
