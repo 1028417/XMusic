@@ -596,6 +596,12 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
     }
 
+#if __ios
+
+#endif
+
+    //emit sgnal_appUpgrade();
+
     for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
         cauto strAppUrl = upgradeUrl.appUrl();
@@ -603,7 +609,6 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         {
             continue;
         }
-
         g_logger << "dowloadApp: " >> strAppUrl;
 
         CByteBuffer bbfData;
@@ -611,7 +616,15 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](int64_t dltotal, int64_t dlnow){
                 (void)dltotal;
                 (void)dlnow;
-                return m_bRunSignal;
+
+                if (!m_bRunSignal)
+                {
+                    return false;
+                }
+
+                //emit sgnal_appUpgradeProgress(dltotal, dlnow);
+
+                return true;
         });
         if (nRet != 0)
         {
@@ -619,8 +632,8 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             continue;
         }
 
-        IFBuffer ifbData(bbfData);
 #if __windows
+        IFBuffer ifbData(bbfData);
         CZipFile zipFile(ifbData);
         if (!zipFile)
         {
@@ -688,8 +701,20 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         {
             g_logger >> "shell StartupFile fail";
         }
+
+#elif __android
+        cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
+        OFSream ofs(strApkFile);
+        if (!ofs || ofs.writex(bbfData) != bbfData->size())
+        {
+            g_logger << "saveApk fail:" >> strApkFile;
+            return;
+        }
+
+#elif __mac
+
 #endif
 
-        break;
+        return;
     }
 }
