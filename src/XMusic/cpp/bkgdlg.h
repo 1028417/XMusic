@@ -63,7 +63,7 @@ private:
         return false;
     }
 
-    const TD_SubImgVector& subImgs() const override
+    TD_SubImgVector& subImgs() override
     {
         return m_vecImgs;
     }
@@ -100,7 +100,7 @@ public:
 
     bool genSubImgs() override;
 
-    const TD_SubImgVector& subImgs() const override
+    TD_SubImgVector& subImgs() override
     {
         return m_lstSubImgs;
     }

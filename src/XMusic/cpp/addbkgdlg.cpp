@@ -135,12 +135,12 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        cauto subImgs = m_pImgDir->subImgs();
+        auto& subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
             QRect rcFrame(lvRow.rc);
-            cauto pm = subImgs[uIdx].first;
-            painter.drawPixmapEx(rcFrame, pm);
+            cauto pr = subImgs[uIdx];
+            painter.drawPixmapEx(rcFrame, pr.first);
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
@@ -168,11 +168,13 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        cauto subImgs = m_pImgDir->subImgs();
+        auto& subImgs = m_pImgDir->subImgs();
         if (uIdx < subImgs.size())
         {
             m_addbkgDlg.close();
-            m_addbkgDlg.bkgDlg().addBkg(subImgs[uIdx].second);
+
+            cauto pr = subImgs[uIdx];
+            m_addbkgDlg.bkgDlg().addBkg(pr.second);
         }
     }
     else

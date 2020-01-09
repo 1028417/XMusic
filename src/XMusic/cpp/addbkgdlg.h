@@ -5,7 +5,7 @@
 
 #include "ListViewEx.h"
 
-using TD_SubImgVector = vector<pair<QPixmap, wstring>>;
+using TD_SubImgVector = map<size_t, pair<QPixmap, wstring>>;
 
 class IImgDir
 {
@@ -20,7 +20,7 @@ public:
 
     virtual bool genSubImgs() = 0;
 
-    virtual const TD_SubImgVector& subImgs() const = 0;
+    virtual TD_SubImgVector& subImgs() = 0;
 };
 
 using TD_ImgDirList = PtrArray<IImgDir>;
