@@ -484,11 +484,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
         {
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
 
-            if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
-            {
-                g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
-                _upgradeApp(newMedialibConf);
-            }
+            _tryUpgradeApp(prevMedialibConf.strAppVersion, newMedialibConf);
 
             return false;
         }
@@ -593,9 +589,14 @@ static bool cmdShell(const string& strCmd)
     return true;
 }
 
-void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
+void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
 {
-    for (cauto upgradeUrl : medialibConf.lstUpgradeUrl)
+    if (newMedialibConf.strAppVersion != strPrevVersion)
+    {
+        g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
+    }
+
+    for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
         cauto strAppUrl = upgradeUrl.appUrl();
         if (strAppUrl.empty())
@@ -627,63 +628,68 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
             continue;
         }
 
-        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir());
-        cauto strStartupFile = strParentDir + "\\XMusicStartup.exe";
+        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
 
-        auto mapUnzfile = zipFile.unzfileMap();
-        for (auto itrUnzfile = mapUnzfile.begin(); itrUnzfile != mapUnzfile.end(); ++itrUnzfile)
+        string strTempDir = strParentDir + "upgrade";
+        cauto strCmd = "cmd \"/C rd /S /Q \"" + strTempDir + "\"\"";
+        if (!cmdShell(strCmd))
         {
-            if (strutil::endWith(itrUnzfile->first, "XMusicStartup.exe"))
+            g_logger << "cmdShell fail: " >> strCmd;
+            return;
+        }
+
+        if (!fsutil::createDir(strTempDir))
+        {
+            g_logger << "createDir fail: " >> strTempDir;
+            return;
+        }
+
+        strTempDir.append("\\");
+        for (cauto unzdir : zipFile.unzdirList())
+        {
+            cauto strSubDir = strTempDir + unzdir.strPath;
+            if (!fsutil::createDir(strSubDir))
             {
-                if (zipFile.unzip(itrUnzfile->second, strStartupFile) <= 0)
-                {
-                    g_logger >> "unzip fail: XMusicStartup";
-                    continue;
-                }
-
-                mapUnzfile.erase(itrUnzfile);
-
-                string strTempDir = strParentDir + "\\upgrade";
-                cauto strCmd = " /C rd /S /Q \"" + strTempDir + "\"";
-                if (cmdShell(strCmd))
-                {
-                    g_logger << "cmdShell fail: " >> strCmd;
-                    return;
-                }
-
-                if (!fsutil::createDir(strTempDir))
-                {
-                    g_logger << "createDir fail: " >> strTempDir;
-                    return;
-                }
-
-                strTempDir.append("\\");
-                for (cauto unzdir : zipFile.unzdirList())
-                {
-                    cauto strSubDir = strTempDir + unzdir.strPath;
-                    if (!fsutil::createDir(strSubDir + unzdir.strPath))
-                    {
-                        g_logger << "createDir fail: " >> strSubDir;
-                        return;
-                    }
-                }
-
-                for (cauto pr : mapUnzfile)
-                {
-                    cauto strSubFile = strTempDir + pr.first;
-                    if (zipFile.unzip(pr.second, strSubFile) < 0)
-                    {
-                        g_logger << "unzip fail: " >> strSubFile;
-                        return;
-                    }
-                }
-
-                cmdShell("\"" + strStartupFile + "\"");
+                g_logger << "createDir fail: " >> strSubDir;
+                return;
             }
         }
 
-#else
-        return;
+#define __StartupFile "XMusicStartup.exe"
+        string strStartupFile;
+        for (cauto pr : zipFile.unzfileMap())
+        {
+            cauto strSubFile = strTempDir + pr.first;
+            if (strutil::endWith(strSubFile, __StartupFile))
+            {
+                strStartupFile = strSubFile;
+            }
+
+            if (zipFile.unzip(pr.second, strSubFile) < 0)
+            {
+                g_logger << "unzip fail: " >> strSubFile;
+                return;
+            }
+        }
+
+        if (strStartupFile.empty())
+        {
+            g_logger >> "StartupFile not found";
+            return;
+        }
+
+        if (!fsutil::copyFile(strStartupFile, strParentDir + __StartupFile))
+        {
+            g_logger >> "copy StartupFile fail";
+            return;
+        }
+
+        if (!cmdShell("\"" + strStartupFile + "\" -upg"))
+        {
+            g_logger >> "shell StartupFile fail";
+        }
 #endif
+
+        break;
     }
 }
