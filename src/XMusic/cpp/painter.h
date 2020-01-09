@@ -27,65 +27,89 @@ extern QColor g_crText;
 using cqcr = const QColor&;
 using cqrc = const QRect&;
 
-enum class E_FontWeight
-{
-    FW_Light = QFont::Weight::Light,
-    //FW_Normal = QFont::Weight::Normal,
-    FW_SemiBold = QFont::Weight::DemiBold
-};
-#define __defFontWeight E_FontWeight::FW_Light
+extern list<pair<int, QString>> g_lstFontFamily;
 
-extern map<E_FontWeight, QFont> g_mapFont;
+extern int g_nDefFontWeight;
+
+extern UINT g_uDefFontSize;
 
 class CFont : public QFont
 {
+private:
+    inline QString _getFamily(int nWeight)
+    {
+        for (auto itr = g_lstFontFamily.rbegin(); itr != g_lstFontFamily.rend(); ++itr)
+        {
+            if (itr->first <= nWeight)
+            {
+                return itr->second;
+            }
+        }
+
+        return "";
+    }
+
+    inline void _setFamily()
+    {
+        QFont::setFamily(_getFamily(QFont::weight()));
+    }
+
 public:
+    CFont(const QFont& font)
+        : QFont(font)
+    {
+        _setFamily();
+    }
+
     CFont(const QWidget& widget)
         : QFont(widget.font())
     {
+        _setFamily();
     }
 
     CFont(const QPainter& painter)
         : QFont(painter.font())
     {
+        _setFamily();
     }
 
-    CFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
-        : QFont(g_mapFont[eWeight])
+    CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false)
+        : QFont(_getFamily(nWeight), g_uDefFontSize * fSizeOffset, nWeight)
     {
-        setPointSizeF(pointSizeF() * fSizeOffset);
-        QFont::setWeight((int)eWeight);
         setItalic(bItalic);
+
+        _setFamily();
     }
 
-    void setWeight(E_FontWeight eWeight)
+    void setWeight(int nWeight)
     {
-        setFamily(g_mapFont[eWeight].family());
-        QFont::setWeight((int)eWeight);
+        QFont::setWeight(nWeight);
+        _setFamily();
     }
 
-    E_FontWeight weight() const
+    void setBold(bool bBold)
     {
-        return (E_FontWeight)QFont::weight();
-    }    
+        QFont::setBold(bBold);
+        _setFamily();
+    }
 
     void adjust(float fSizeOffset)
     {
         setPointSizeF(pointSizeF() * fSizeOffset);
     }
 
-    void adjust(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    void adjust(float fSizeOffset, int nWeight, bool bItalic)
     {
-        adjust(fSizeOffset, eWeight);
+        adjust(fSizeOffset, nWeight);
 
         setItalic(bItalic);
     }
 
-    void adjust(float fSizeOffset, E_FontWeight eWeight)
+    void adjust(float fSizeOffset, int nWeight)
     {
         adjust(fSizeOffset);
 
-        setWeight(eWeight);
+        setWeight(nWeight);
     }
 };
 
@@ -124,27 +148,17 @@ public:
         setPen(QColor(r,g,b,a));
     }
 
-    void setFont(const QFont& font)
+    void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
     {
+        CFont font(*this);
+        font.adjust(fSizeOffset, nWeight, bItalic);
         QPainter::setFont(font);
     }
 
-    void setFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
-    {
-        QPainter::setFont(CFont(fSizeOffset, eWeight, bItalic));
-    }
-
-    void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    void adjustFont(float fSizeOffset, int nWeight)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, eWeight, bItalic);
-        QPainter::setFont(font);
-    }
-
-    void adjustFont(float fSizeOffset, E_FontWeight eWeight)
-    {
-        CFont font(*this);
-        font.adjust(fSizeOffset, eWeight);
+        font.adjust(fSizeOffset, nWeight);
         QPainter::setFont(font);
     }
 
@@ -155,10 +169,10 @@ public:
         QPainter::setFont(font);
     }
 
-    void adjustFontWeight(E_FontWeight eWeight)
+    void adjustFontWeight(int nWeight)
     {
         CFont font(*this);
-        font.setWeight(eWeight);
+        font.setWeight(nWeight);
         QPainter::setFont(font);
     }
 

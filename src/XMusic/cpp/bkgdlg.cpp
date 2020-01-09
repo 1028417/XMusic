@@ -228,7 +228,7 @@ void CBkgDlg::init()
 
 void CBkgDlg::show()
 {
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
     CDialog::show();
 }

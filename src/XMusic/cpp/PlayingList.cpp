@@ -65,11 +65,11 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
     if (bPlayingItem)
     {
-        float fPlayingFontSize = 0.95f;
+        float fPlayingFontSize = 1.1f;
 #if __windows || __mac
-        fPlayingFontSize = 1;
+        fPlayingFontSize += 0.1f;
 #endif
-        painter.setFont(fPlayingFontSize, E_FontWeight::FW_SemiBold);
+        painter.adjustFont(fPlayingFontSize, QFont::Weight::DemiBold);
 
         QRect rcPos(rc.left(), rc.top() + __size(3), rc.width(), rc.height());
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignVCenter, "*"

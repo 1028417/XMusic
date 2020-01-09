@@ -68,13 +68,15 @@ private:
         return false;
     }
 
-    const QPixmap* snapshot(int nIdx) const
+    const QPixmap* snapshot(int nIdx) const override
     {
+        (void)nIdx;
         return NULL;
     }
 
-    wstring path(int nIdx) const
+    wstring path(int nIdx) const override
     {
+        (void)nIdx;
         return L"";
     }
 };

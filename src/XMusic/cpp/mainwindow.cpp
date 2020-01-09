@@ -125,7 +125,7 @@ void MainWindow::showLogo()
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
 #endif
 
-    ui.labelLogoTip->setFont(CFont(fFontSizeOffset, E_FontWeight::FW_Light, true));
+    ui.labelLogoTip->setFont(CFont(fFontSizeOffset, g_nDefFontWeight, true));
 
 #if __android || __ios
     fFontSizeOffset = 1;
@@ -209,7 +209,7 @@ void MainWindow::_init()
                 , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1, E_FontWeight::FW_SemiBold);
+        label->setFont(1, QFont::Weight::DemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelProgress);

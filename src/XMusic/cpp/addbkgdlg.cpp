@@ -18,7 +18,7 @@ void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
 #if __android || __ios
     m_addbkgView.setFont(1.05);

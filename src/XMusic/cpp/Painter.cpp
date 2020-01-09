@@ -7,7 +7,11 @@
 QColor g_crTheme(__defThemeColor);
 QColor g_crText(__defTextColor);
 
-map<E_FontWeight, QFont> g_mapFont;
+list<pair<int, QString>> g_lstFontFamily;
+
+int g_nDefFontWeight = QFont::Weight::Light;
+
+UINT g_uDefFontSize = 0;
 
 void CPainter::alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst)
 {

@@ -55,7 +55,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    ui.labelTitle->setFont(1.15, E_FontWeight::FW_SemiBold);
+    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
     CApp::async([&](){
         _resizeTitle();

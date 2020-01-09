@@ -10,7 +10,7 @@ CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 {
     ui.setupUi(this);
 
-    ui.labelTip->setFont(1, E_FontWeight::FW_SemiBold);
+    ui.labelTip->setFont(1, QFont::Weight::DemiBold);
     QColor crText(64, 128, 255);
     ui.labelTip->setTextColor(crText);
 

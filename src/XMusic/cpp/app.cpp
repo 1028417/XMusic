@@ -92,35 +92,32 @@ CAppInit::CAppInit(QApplication& app)
     };*/
 #endif
 
-    float fFontSize = 0;
 #if __android
-    fFontSize = 12;
+    g_uDefFontSize = 12;
 
 #elif __ios
     QSize szScreen = screen->size();
     int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
-    fFontSize = app.font().pointSizeF();
-    fFontSize = fFontSize*nScreenWidth/540;
+    g_uDefFontSize = app.font().pointSize();
+    g_uDefFontSize *= nScreenWidth/540.0f;
 
 #elif __mac
-    fFontSize = 29;
+    g_uDefFontSize = 29;
 
 #elif __windows
-    fFontSize = 22;
+    g_uDefFontSize = 22;
 
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;
-    fFontSize *= fDPIRate;
+    g_uDefFontSize *= fDPIRate;
 #endif
 
-    QString qsFontfamilyName;
-
-    SMap<E_FontWeight, QString> mapFontFile {
-        { E_FontWeight::FW_Light, "/font/Microsoft-YaHei-Light.ttc" }
-        //, { E_FontWeight::FW_Normal, "/font/Microsoft-YaHei-Regular.ttc" }
-        , { E_FontWeight::FW_SemiBold, "/font/Microsoft-YaHei-Semibold.ttc" }
+    SMap<int, QString> mapFontFile {
+        { QFont::Weight::Light, "/font/Microsoft-YaHei-Light.ttc" }
+        //, { QFont::Weight::Normal, "/font/Microsoft-YaHei-Regular.ttc" }
+        , { QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Semibold.ttc" }
     };
-    mapFontFile([&](E_FontWeight eWeight, QString qsFontFile) {
+    mapFontFile([&](int nWeight, QString qsFontFile) {
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
@@ -134,21 +131,33 @@ CAppInit::CAppInit(QApplication& app)
             cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
             if (!qslst.empty())
             {
-                qsFontfamilyName = qslst.at(0);
-                g_logger << "newfamilyName: " >> qsFontfamilyName;
+                cauto qsFamilyName = qslst.at(0);
+                g_logger << "newfamilyName: " >> qsFamilyName;
+
+                g_lstFontFamily.emplace_back(nWeight, qsFamilyName);
             }
         }
-
-        QFont font(qsFontfamilyName);
-        font.setPointSizeF(fFontSize);
-        font.setWeight((int)eWeight);
-        g_mapFont[eWeight] = font;
-
-        if (__defFontWeight == eWeight)
-        {
-            app.setFont(font);
-        }
     });
+
+    QString qsFamilyName;
+    if (g_lstFontFamily.empty())
+    {
+#if __windows
+        qsFamilyName = "微软雅黑";
+#else
+        qsFamilyName = app.font().family();
+#endif
+
+        g_lstFontFamily.emplace_back(g_nDefFontWeight, qsFamilyName);
+    }
+    else
+    {
+        cauto pr = g_lstFontFamily.front();
+        g_nDefFontWeight = pr.first;
+        qsFamilyName = pr.second;
+    }
+
+    app.setFont(CFont());
 }
 
 bool CApp::m_bRunSignal = true;
@@ -567,6 +576,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
     return false;
 }
 
+#if __windows
 static bool cmdShell(const string& strCmd)
 {
     STARTUPINFOA si;
@@ -589,6 +599,7 @@ static bool cmdShell(const string& strCmd)
 
     return true;
 }
+#endif
 
 void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
 {
@@ -635,7 +646,7 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
 
 #if __android
         cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
-        OFSream ofs(strApkFile);
+        OFStream ofs(strApkFile, true);
         if (!ofs || ofs.writex(bbfData) != bbfData->size())
         {
             g_logger << "saveApk fail:" >> strApkFile;

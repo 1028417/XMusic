@@ -128,7 +128,7 @@ public:
         TWidget(parent),
         m_eRenderHints(eRenderHints)
     {
-        setFont(1);
+        //setFont(1);
     }
 
 private:
@@ -158,20 +158,20 @@ public:
         }
     }
 
-    void setFont(const QFont& font)
+    void setFont(const CFont& font)
     {
         TWidget::setFont(font);
     }
 
-    void setFont(float fSizeOffset, E_FontWeight eWeight = __defFontWeight, bool bItalic=false)
+    void setFont(float fSizeOffset, int nWeight = g_nDefFontWeight, bool bItalic=false)
     {
-        TWidget::setFont(CFont(fSizeOffset, eWeight, bItalic));
+        TWidget::setFont(CFont(fSizeOffset, nWeight, bItalic));
     }
 
-    void adjustFont(float fSizeOffset, E_FontWeight eWeight, bool bItalic)
+    void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, eWeight, bItalic);
+        font.adjust(fSizeOffset, nWeight, bItalic);
         TWidget::setFont(font);
     }
 
@@ -182,10 +182,10 @@ public:
         TWidget::setFont(font);
     }
 
-    void adjustFontWeight(E_FontWeight eWeight)
+    void adjustFontWeight(int nWeight)
     {
         CFont font(*this);
-        font.setWeight(eWeight);
+        font.setWeight(nWeight);
         TWidget::setFont(font);
     }
 
