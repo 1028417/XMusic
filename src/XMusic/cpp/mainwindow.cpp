@@ -51,38 +51,23 @@ MainWindow::MainWindow(CApp& app)
     m_PlayingList.setParent(ui.centralWidget);
     m_PlayingList.raise();
 
-    ui.btnExit->raise();
-
     ui.labelBkg->setVisible(false);
 
     ui.btnPause->setVisible(false);
 
-    QWidget* lpTopWidget[] = {
-        ui.frameDemand, ui.btnMore
-
-        , ui.btnDemandSinger, ui.btnDemandAlbum
-        , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
-
-        , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-        , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR
-
-        , ui.btnExit
-    };
-    for (auto pWidget : lpTopWidget)
+    for (auto pWidget : SList<QWidget*>(
+             ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
+             , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
+             , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+             , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR))
     {
         m_mapTopWidgetPos[pWidget] = pWidget->geometry();
     }
 
-    QWidget* lpWidget[] = {
-        ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
-
-        , ui.labelDuration, ui.barProgress, ui.labelProgress
-
-        , ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-
-        , ui.btnSetting, ui.btnOrder, ui.btnRandom
-    };
-    for (auto pWidget : lpWidget)
+    for (auto pWidget : SList<QWidget*>(
+             ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
+             , ui.labelDuration, ui.barProgress, ui.labelProgress, ui.btnPlay, ui.btnPause
+             , ui.btnPlayPrev, ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom))
     {
         m_mapWidgetPos[pWidget] = pWidget->geometry();
     }
@@ -91,6 +76,15 @@ MainWindow::MainWindow(CApp& app)
     ui.labelLogoTip->setParent(this);
     ui.labelLogoCompany->setParent(this);
 
+    ui.btnExit->setParent(this); // ui.btnExit->raise();
+
+    for (auto button : SList<CButton*>(ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
+                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
+                , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
+                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom))
+    {
+        connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
+    }
 
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
         g_bFullScreen = !g_bFullScreen;
@@ -211,14 +205,6 @@ void MainWindow::showLogo()
 
 void MainWindow::_init()
 {
-    for (auto button : SList<CButton*>(ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
-                , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
-                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom))
-    {
-        connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
-    }
-
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)

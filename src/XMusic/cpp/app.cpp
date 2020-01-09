@@ -570,6 +570,29 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
     return false;
 }
 
+static bool cmdShell(const string& strCmd)
+{
+    STARTUPINFOA si;
+    memzero(si);
+    si.cb = sizeof(si);
+    si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);
+    si.wShowWindow = SW_HIDE;
+
+    PROCESS_INFORMATION pi;
+    memzero(pi);
+    if(!CreateProcessA(NULL, (char*)strCmd.c_str(), NULL, NULL, FALSE
+                      , CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
+    {
+        return false;
+    }
+
+    WaitForSingleObject(pi.hProcess,INFINITE);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    return true;
+}
+
 void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
 {
     for (cauto upgradeUrl : medialibConf.lstUpgradeUrl)
@@ -620,7 +643,14 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
 
                 mapUnzfile.erase(itrUnzfile);
 
-                cauto strTempDir = strParentDir + "/upgrade";
+                cauto strTempDir = strParentDir + "\\upgrade";
+                cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
+                if (cmdShell(strCmd))
+                {
+                    g_logger << "cmdShell fail: " >> strCmd;
+                    return;
+                }
+
                 if (!fsutil::createDir(strTempDir))
                 {
                     g_logger << "createDir fail: " >> strTempDir;
