@@ -597,7 +597,7 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
     }
 
 #if __ios
-
+    return;
 #endif
 
     //emit sgnal_appUpgrade();

@@ -135,6 +135,7 @@ public:
     void quit()
     {
         m_bRunSignal = false;
+        m_mainWnd.close();
         QApplication::quit();
     }
 };

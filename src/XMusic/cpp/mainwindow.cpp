@@ -983,7 +983,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnExit)
     {
-        this->close();
+        m_app.quit();
     }
     else if (button == ui.btnPause)
     {
