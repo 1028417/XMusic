@@ -628,7 +628,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
         }
 
         cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir());
-        cauto strStartupFile = strParentDir + "/XMusicStartup.exe";
+        cauto strStartupFile = strParentDir + "\\XMusicStartup.exe";
 
         auto mapUnzfile = zipFile.unzfileMap();
         for (auto itrUnzfile = mapUnzfile.begin(); itrUnzfile != mapUnzfile.end(); ++itrUnzfile)
@@ -644,7 +644,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                 mapUnzfile.erase(itrUnzfile);
 
                 cauto strTempDir = strParentDir + "\\upgrade";
-                cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
+                cauto strCmd = " /C rd /S /Q \"" + strTempDir + "\"";
                 if (cmdShell(strCmd))
                 {
                     g_logger << "cmdShell fail: " >> strCmd;
@@ -657,6 +657,7 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                     return;
                 }
 
+                strTempDir.append('\\');
                 for (cauto unzdir : zipFile.unzdirList())
                 {
                     cauto strSubDir = strTempDir + unzdir.strPath;
@@ -676,6 +677,8 @@ void CApp::_upgradeApp(const tagMedialibConf& medialibConf)
                         return;
                     }
                 }
+
+                cmdShell("\"" + strStartupFile + "\"");
             }
         }
 
