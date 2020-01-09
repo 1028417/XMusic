@@ -632,7 +632,16 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             continue;
         }
 
-#if __windows
+#if __android
+        cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
+        OFSream ofs(strApkFile);
+        if (!ofs || ofs.writex(bbfData) != bbfData->size())
+        {
+            g_logger << "saveApk fail:" >> strApkFile;
+            return;
+        }
+
+#else
         IFBuffer ifbData(bbfData);
         CZipFile zipFile(ifbData);
         if (!zipFile)
@@ -641,6 +650,7 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             continue;
         }
 
+#if __windows
         cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
 
         string strTempDir = strParentDir + "upgrade";
@@ -702,17 +712,9 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             g_logger >> "shell StartupFile fail";
         }
 
-#elif __android
-        cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
-        OFSream ofs(strApkFile);
-        if (!ofs || ofs.writex(bbfData) != bbfData->size())
-        {
-            g_logger << "saveApk fail:" >> strApkFile;
-            return;
-        }
-
 #elif __mac
 
+#endif
 #endif
 
         return;
