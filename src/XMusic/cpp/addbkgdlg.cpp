@@ -83,7 +83,7 @@ size_t CAddBkgView::getColumnCount()
 {
     if (m_pImgDir)
     {
-        if (m_pImgDir->subImgs().size() <= 4)
+        if (m_pImgDir->imgCount() <= 4)
         {
             return 2;
         }
@@ -123,7 +123,7 @@ size_t CAddBkgView::getRowCount()
 {
     if (m_pImgDir)
     {
-        return (UINT)ceil((float)m_pImgDir->subImgs().size()/getColumnCount());
+        return (UINT)ceil((float)m_pImgDir->imgCount()/getColumnCount());
     }
 
     return m_paImgDirs.size();
@@ -135,12 +135,11 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        auto& subImgs = m_pImgDir->subImgs();
-        if (uIdx < subImgs.size())
+        auto pm = m_pImgDir->snapshot(uIdx);
+        if (pm)
         {
             QRect rcFrame(lvRow.rc);
-            cauto pr = subImgs[uIdx];
-            painter.drawPixmapEx(rcFrame, pr.first);
+            painter.drawPixmapEx(rcFrame, *pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
@@ -153,7 +152,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
-            context.strText = imgDir.fileName();
+            context.strText = imgDir.path();
 
             context.pixmap = imgDir.snapshot();
 
@@ -168,13 +167,12 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        auto& subImgs = m_pImgDir->subImgs();
-        if (uIdx < subImgs.size())
+        cauto strFilePath = m_pImgDir->path(uIdx);
+        if (!strFilePath.empty())
         {
             m_addbkgDlg.close();
 
-            cauto pr = subImgs[uIdx];
-            m_addbkgDlg.bkgDlg().addBkg(pr.second);
+            m_addbkgDlg.bkgDlg().addBkg(strFilePath);
         }
     }
     else

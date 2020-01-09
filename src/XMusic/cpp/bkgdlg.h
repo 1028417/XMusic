@@ -55,17 +55,17 @@ public:
     }
 
 private:
-    TD_SubImgVector m_vecImgs;
+    vector<pair<QPixmap, wstring>> m_vecImgs;
 
 private:
+    size_t imgCount() const override
+    {
+        return m_vecImgs.size();
+    }
+
     bool genSubImgs() override
     {
         return false;
-    }
-
-    TD_SubImgVector& subImgs() override
-    {
-        return m_vecImgs;
     }
 };
 
@@ -83,32 +83,27 @@ private:
 
     QPixmap m_pmSnapshot;
 
-    TD_SubImgVector m_lstSubImgs;
+    vector<pair<QPixmap, wstring>> m_vecSubImgs;
 
 public:
     void scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CImgDir&> cb);
 
-    const QPixmap* snapshot() const override
+private:
+    size_t imgCount() const override
     {
-        return &m_pmSnapshot;
+        return m_vecSubImgs.size();
     }
 
-    wstring fileName() const override
-    {
-        return CPath::oppPath();
-    }
+    const QPixmap* snapshot(int nIdx) const override;
+
+    wstring path(int nIdx) const override;
 
     bool genSubImgs() override;
-
-    TD_SubImgVector& subImgs() override
-    {
-        return m_lstSubImgs;
-    }
 
 private:
     void _onClear() override
     {
-        m_lstSubImgs.clear();
+        m_vecSubImgs.clear();
     }
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override

@@ -528,11 +528,42 @@ bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)
 #define __snapshotSize 150
         if (_loadImg(*pSubFile, m_pmSnapshot, __snapshotSize))
         {
+            m_vecSubImgs.reserve(paSubFile.size());
             return true;
         }
     }
 
     return false;
+}
+
+const QPixmap* CImgDir::snapshot(int nIdx) const
+{
+    if (nIdx < 0)
+    {
+        return &m_pmSnapshot;
+    }
+
+    if ((size_t)nIdx < m_vecSubImgs.size())
+    {
+        return &m_vecSubImgs[nIdx].first;
+    }
+
+    return NULL;
+}
+
+wstring CImgDir::path(int nIdx) const
+{
+    if (nIdx < 0)
+    {
+        return CPath::oppPath();
+    }
+
+    if ((size_t)nIdx < m_vecSubImgs.size())
+    {
+        return m_vecSubImgs[nIdx].second;
+    }
+
+    return L"";
 }
 
 bool CImgDir::genSubImgs()
@@ -549,9 +580,8 @@ bool CImgDir::genSubImgs()
     QPixmap pm;
     if (_loadImg(*pSubFile, pm, __subimgZoomout))
     {
-        auto& pr = m_lstSubImgs[m_lstSubImgs.size()];
-        pr.second = pSubFile->absPath();
-        pr.first.swap(pm);
+        m_vecSubImgs.emplace_back(QPixmap(), pSubFile->absPath());
+        m_vecSubImgs.back().first.swap(pm);
     }
 
     ++m_itrSubFile;
