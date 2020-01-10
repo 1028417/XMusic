@@ -179,3 +179,6 @@ RCC_DIR = $$build_dir
 UI_DIR = $$build_dir
 }
 OBJECTS_DIR = $$build_dir
+
+DISTFILES += \
+    medialib.conf

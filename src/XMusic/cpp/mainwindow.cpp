@@ -105,6 +105,17 @@ MainWindow::MainWindow(CApp& app)
     qRegisterMetaType<QVariant>("QVariant");
 }
 
+#if __windows
+inline static void __setForeground(MainWindow *pMainWnd)
+{
+    //::SetForegroundWindow(pMainWnd->hwnd());
+    ::SetWindowPos(pMainWnd->hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+    ::SetWindowPos(pMainWnd->hwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+}
+#else
+#define __setForeground(x)
+#endif
+
 void MainWindow::showLogo()
 {
     for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
@@ -141,6 +152,8 @@ void MainWindow::showLogo()
     g_bFullScreen = m_app.getOption().bFullScreen;
     fixWorkArea(*this);
     this->setVisible(true);
+
+    __setForeground(this);
 
     UINT uDelayTime = 100;
 #if !__android
@@ -255,6 +268,8 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
+    __setForeground(this);
+
     _init();
 
     m_medialibDlg.init();

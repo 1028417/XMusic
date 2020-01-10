@@ -22,6 +22,13 @@ protected:
     CAppInit(QApplication& app);
 };
 
+enum class E_UpgradeErrMsg
+{
+    UEM_None = 0,
+    UEM_AppUpgradeFail,
+    UEM_AppUpgraded
+};
+
 class CApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
@@ -48,10 +55,14 @@ private:
     CMsgBox m_msgbox;
 
 signals:
-    void signal_run(bool bUpgradeResult);
+    void signal_run(bool bUpgradeFail, int nUpgradeErrMsg);
+
+    //void signal_appUpgradeProgress();
 
 private slots:
-    void slot_run(bool bUpgradeResult);
+    void slot_run(bool bUpgradeResult, int nUpgradeErrMsg);
+
+    //void slot_appUpgradeProgress();
 
 private:
     IModelObserver& getModelObserver() override
@@ -63,10 +74,10 @@ private:
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 
-    bool _upgradeMediaLib();
-    bool _upgradeMedialib(tagMedialibConf& prevMedialibConf);
+    bool _upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg);
+    bool _upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
 
-    void _tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf);
+    bool _upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf);
 
 public:
     static bool checkIPhoneXBangs(int cx, int cy)

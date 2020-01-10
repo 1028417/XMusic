@@ -205,18 +205,36 @@ bool CApp::_resetRootDir(wstring& strRootDir)
     return fsutil::createDir(strRootDir + __medialibPath);
 }
 
-void CApp::slot_run(bool bUpgradeResult)
+void CApp::slot_run(bool bUpgradeFail, int nUpgradeErrMsg)
 {
     if (!m_bRunSignal)
     {
         return;
     }
 
-    if (!bUpgradeResult)
+    if (bUpgradeFail)
     {
-        m_msgbox.show("更新媒体库失败", [&](){
+        auto eUpgradeErrMsg = (E_UpgradeErrMsg)nUpgradeErrMsg;
+        if (E_UpgradeErrMsg::UEM_AppUpgraded == eUpgradeErrMsg)
+        {
             this->quit();
-        });
+        }
+        else
+        {
+            QString qsErrMsg;
+            if (E_UpgradeErrMsg::UEM_AppUpgradeFail == eUpgradeErrMsg)
+            {
+                qsErrMsg = "更新App失败";
+            }
+            else
+            {
+                qsErrMsg = "更新媒体库失败";
+            }
+            m_msgbox.show(qsErrMsg, [&](){
+                this->quit();
+            });
+        }
+
         return;
     }
 
@@ -266,10 +284,14 @@ int CApp::run()
         thrUpgrade = std::thread([&]() {
             auto timeBegin = time(NULL);
 
-            bool bUpgradeResult = true;
+            bool bUpgradeFail = false;
+            E_UpgradeErrMsg eUpgradeErrMsg = E_UpgradeErrMsg::UEM_None;
             if (XMediaLib::m_bOnlineMediaLib)
             {
-                bUpgradeResult = _upgradeMediaLib();
+                if (!_upgradeMediaLib(eUpgradeErrMsg))
+                {
+                    bUpgradeFail = true;
+                }
             }
 
             auto timeWait = 6 - (time(NULL) - timeBegin);
@@ -278,7 +300,7 @@ int CApp::run()
                 mtutil::usleep((UINT)timeWait*1000);
             }
 
-            emit signal_run(bUpgradeResult);
+            emit signal_run(bUpgradeFail, (int)eUpgradeErrMsg);
         });
     });
 
@@ -377,7 +399,7 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
     return true;
 }
 
-bool CApp::_upgradeMediaLib()
+bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
 {
     QFile qf(":/medialib.conf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
@@ -424,10 +446,10 @@ bool CApp::_upgradeMediaLib()
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    return _upgradeMedialib(*pPrevMedialibConf);
+    return _upgradeMedialib(*pPrevMedialibConf, eUpgradeErrMsg);
 }
 
-bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
+bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg)
 {
     for (cauto upgradeUrl : prevMedialibConf.lstUpgradeUrl)
     {
@@ -490,12 +512,32 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
             continue;
         }
 
+        bool bUncompatible = false;
         if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
         {
+            bUncompatible = true;
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
+        }
 
-            _tryUpgradeApp(prevMedialibConf.strAppVersion, newMedialibConf);
+        if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+        {
+            g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
 
+            if (bUncompatible)
+            {
+                if (!_upgradeApp(prevMedialibConf.strAppVersion, newMedialibConf))
+                {
+                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgradeFail;
+                }
+                else
+                {
+                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
+                }
+            }
+        }
+
+        if (bUncompatible)
+        {
             return false;
         }
 
@@ -577,23 +619,26 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf)
 }
 
 #if __windows
-static bool cmdShell(const string& strCmd)
+static bool cmdShell(const string& strCmd, bool bBlock = true)
 {
     STARTUPINFOA si;
-    memzero(si);
+    memset(&si, 0, sizeof(si));
     si.cb = sizeof(si);
     si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);
     si.wShowWindow = SW_HIDE;
 
     PROCESS_INFORMATION pi;
-    memzero(pi);
+    memset(&pi, 0, sizeof(pi));
     if(!CreateProcessA(NULL, (char*)strCmd.c_str(), NULL, NULL, FALSE
                       , CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
     {
         return false;
     }
 
-    WaitForSingleObject(pi.hProcess,INFINITE);
+    if (bBlock)
+    {
+        WaitForSingleObject(pi.hProcess,INFINITE);
+    }
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
@@ -601,18 +646,11 @@ static bool cmdShell(const string& strCmd)
 }
 #endif
 
-void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
+bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
 {
-    if (newMedialibConf.strAppVersion != strPrevVersion)
-    {
-        g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
-    }
-
 #if __ios
-    return;
+    return true;
 #endif
-
-    //emit sgnal_appUpgrade();
 
     for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
@@ -650,7 +688,7 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         if (!ofs || ofs.writex(bbfData) != bbfData->size())
         {
             g_logger << "saveApk fail:" >> strApkFile;
-            return;
+            return false;
         }
 
 #else
@@ -666,17 +704,17 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
         cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
 
         string strTempDir = strParentDir + "upgrade";
-        cauto strCmd = "cmd \"/C rd /S /Q \"" + strTempDir + "\"\"";
+        cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
         if (!cmdShell(strCmd))
         {
             g_logger << "cmdShell fail: " >> strCmd;
-            return;
+            return false;
         }
 
         if (!fsutil::createDir(strTempDir))
         {
             g_logger << "createDir fail: " >> strTempDir;
-            return;
+            return false;
         }
 
         strTempDir.append("\\");
@@ -686,7 +724,7 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             if (!fsutil::createDir(strSubDir))
             {
                 g_logger << "createDir fail: " >> strSubDir;
-                return;
+                return false;
             }
         }
 
@@ -703,32 +741,33 @@ void CApp::_tryUpgradeApp(const string& strPrevVersion, const tagMedialibConf& n
             if (zipFile.unzip(pr.second, strSubFile) < 0)
             {
                 g_logger << "unzip fail: " >> strSubFile;
-                return;
+                return false;
             }
         }
 
         if (strStartupFile.empty())
         {
             g_logger >> "StartupFile not found";
-            return;
+            return false;
         }
 
         if (!fsutil::copyFile(strStartupFile, strParentDir + __StartupFile))
         {
             g_logger >> "copy StartupFile fail";
-            return;
+            return false;
         }
 
-        if (!cmdShell("\"" + strStartupFile + "\" -upg"))
+        if (!cmdShell("\"" + strParentDir + __StartupFile "\" -upg", false))
         {
             g_logger >> "shell StartupFile fail";
         }
 
 #elif __mac
-
+        return false;
 #endif
 #endif
-
-        return;
+        return true;
     }
+
+    return false;
 }
