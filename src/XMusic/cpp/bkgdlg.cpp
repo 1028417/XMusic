@@ -189,7 +189,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strHBkgDir))
         {
-            fsutil::copyFile(L"assets:" __hbkgdir L"win10" , m_strHBkgDir + strFileName);
+            //fsutil::copyFile(L"assets:" __hbkgdir L"win10" , m_strHBkgDir + strFileName);
         }
     }
 
@@ -197,7 +197,7 @@ void CBkgDlg::init()
     {
         if (fsutil::createDir(m_strVBkgDir))
         {
-            fsutil::copyFile(L"assets:" __vbkgdir L"win10", m_strVBkgDir + strFileName);
+            //fsutil::copyFile(L"assets:" __vbkgdir L"win10", m_strVBkgDir + strFileName);
         }
     }
 

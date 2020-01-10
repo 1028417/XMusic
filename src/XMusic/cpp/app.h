@@ -18,9 +18,6 @@ class CAppInit
 {
 protected:
     CAppInit(QApplication& app);
-
-protected:
-    string m_strOrgDir;
 };
 
 enum class E_UpgradeErrMsg
@@ -81,11 +78,6 @@ private:
     bool _upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf);
 
 public:
-    const string& orgDir() const
-    {
-        return m_strOrgDir;
-    }
-
     static bool checkIPhoneXBangs(int cx, int cy)
     {
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));

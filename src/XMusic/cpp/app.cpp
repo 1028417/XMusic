@@ -7,6 +7,8 @@
 
 #include <QScreen>
 
+#define __pkgName "com.musicrossoft.xmusic"
+
 #if __android
 #include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
@@ -85,10 +87,9 @@ static const wstring& sdcardPath()
     return g_strSDCardPath;
 }*/
 
-#define __pkgName "com.musicrossoft.xmusic"
-
 #define __sdcardDir "/sdcard/"
 // "/storage/emulated/0/"
+
 #define __androidDataDir __sdcardDir "Android/data/" __pkgName
 #endif
 
@@ -99,19 +100,13 @@ ITxtWriter& g_logger(m_logger);
 
 CAppInit::CAppInit(QApplication& app)
 {
-    string strWorkDir;
-#if __windows
-    fsutil::getHomePath("");
-    m_strOrgDir = fsutil::getModuleDir();
-    fsutil::setWorkDir(m_strOrgDir);
-#elif __android
-    m_strOrgDir = __androidDataDir;
-    (void)fsutil::createDir(m_strOrgDir);
-    fsutil::setWorkDir(m_strOrgDir);
+#if __android
+    string strWorkDir = __androidDataDir;
 #else
-    m_strOrgDir = app.applicationDirPath().toStdString();
-    fsutil::setWorkDir(m_strOrgDir);
+    string strWorkDir = fsutil::getHomePath(__pkgName);
 #endif
+    (void)fsutil::createDir(strWorkDir);
+    fsutil::setWorkDir(strWorkDir);
 
     m_logger.open(L"XMusic.log", true);
 
@@ -180,7 +175,7 @@ CAppInit::CAppInit(QApplication& app)
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
-        qsFontFile = strutil::toQstr(m_strOrgDir) + qsFontFile;
+        qsFontFile = app.applicationDirPath() + qsFontFile;
 #endif
 
         int fontId = QFontDatabase::addApplicationFont(qsFontFile);
