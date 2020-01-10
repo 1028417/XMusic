@@ -10,7 +10,7 @@
 
 #define __RemarkAlpha 170
 
-#define __playIconMagin (__lvRowMargin- __size(6))
+#define __playIconMagin (__lvRowMargin- __size(4))
 
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
