@@ -3,6 +3,8 @@
 
 #include "ListViewEx.h"
 
+#define __playIconMagin (__lvRowMargin- __size(6))
+
 class CMedialibView : public CListViewEx
 {
     Q_OBJECT
