@@ -24,7 +24,7 @@ public:
 public:
 	wstring GetPath() const override
 	{
-        return __wcDirSeparator + GetName();
+        return __wchDirSeparator + GetName();
 	}
 
 	int _getImage() override

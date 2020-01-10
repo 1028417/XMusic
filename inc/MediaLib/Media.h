@@ -53,7 +53,7 @@ public:
 	
 	wstring GetPath() const override
 	{
-		return GetDir() + __wcDirSeparator + m_strName;
+		return GetDir() + __wchDirSeparator + m_strName;
 	}
 
 	wstring GetAbsPath() const override;

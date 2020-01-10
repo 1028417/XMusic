@@ -90,24 +90,29 @@ struct __UtilExt tagFileInfo
 };
 
 
-#define __wcSlant L'/'
-#define __wcBackSlant L'\\'
+#define __chrSlant '/'
+#define __chrBackSlant '\\'
 
 #if __windows
-    #define __wcDirSeparator	__wcBackSlant
+    #define __wchDirSeparator	(wchar_t)__chrBackSlant
 #else
-    #define __wcDirSeparator	__wcSlant
+    #define __wchDirSeparator	(wchar_t)__chrSlant
 #endif
 
-#define __wcDot L'.'
+#define __chrDot '.'
+#define __wchDot (wchar_t)__chrDot
 
 class __UtilExt fsutil
 {
 public:
-    inline static bool checkPathTail(wchar_t wch)
-    {
-        return __wcBackSlant == wch || __wcSlant == wch;
-    }
+	inline static bool checkPathTail(wchar_t wch)
+	{
+		return (wchar_t)__chrBackSlant == wch || (wchar_t)__chrSlant == wch;
+	}
+	inline static bool checkPathTail(char chr)
+	{
+		return __chrBackSlant == chr || __chrSlant == chr;
+	}
 
     static void trimPathTail(wstring& strPath);
 	static wstring trimPathTail_r(const wstring& strPath)
@@ -128,9 +133,9 @@ public:
 	static void transFSSlant(wstring& strPath)
 	{
 #if __windows
-        strutil::replaceChar(strPath, __wcSlant, __wcBackSlant);
+        strutil::replaceChar(strPath, __chrSlant, __chrBackSlant);
 #else
-        strutil::replaceChar(strPath, __wcBackSlant, __wcSlant);
+        strutil::replaceChar(strPath, __chrBackSlant, __chrSlant);
 #endif
 	}
 
@@ -200,7 +205,12 @@ public:
     static string workDir();
 
 #if __windows
-    static string getModuleDir(char *pszModuleName = NULL);
+	static string getModuleDir();
+	static string getModuleDir(const char *pszModuleName);
+	static wstring getModuleDir(const wchar_t *pszModuleName);
+
+	static string getModuleSubPath(const string& strSubPath, const char *pszModuleName = NULL);
+	static wstring getModuleSubPath(const wstring& strSubPath, const wchar_t *pszModuleName = NULL);
 #endif
 
 #if !__winvc
