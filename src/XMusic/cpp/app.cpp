@@ -85,9 +85,11 @@ static const wstring& sdcardPath()
     return g_strSDCardPath;
 }*/
 
+#define __pkgName "com.musicrossoft.xmusic"
+
 #define __sdcardDir "/sdcard/"
 // "/storage/emulated/0/"
-#define __androidDataDir __sdcardDir "Android/data/com.musicrossoft.xmusic"
+#define __androidDataDir __sdcardDir "Android/data/" __pkgName
 #endif
 
 float g_fPixelRatio = 1;
@@ -97,13 +99,18 @@ ITxtWriter& g_logger(m_logger);
 
 CAppInit::CAppInit(QApplication& app)
 {
+    string strWorkDir;
 #if __windows
-    fsutil::setWorkDir(fsutil::getModuleDir());
+    fsutil::getHomePath("");
+    m_strOrgDir = fsutil::getModuleDir();
+    fsutil::setWorkDir(m_strOrgDir);
 #elif __android
-    (void)fsutil::createDir(__androidDataDir);
-    fsutil::setWorkDir(__androidDataDir);
-//#else
-//    fsutil::setWorkDir(app.applicationDirPath().toStdWString());
+    m_strOrgDir = __androidDataDir;
+    (void)fsutil::createDir(m_strOrgDir);
+    fsutil::setWorkDir(m_strOrgDir);
+#else
+    m_strOrgDir = app.applicationDirPath().toStdString();
+    fsutil::setWorkDir(m_strOrgDir);
 #endif
 
     m_logger.open(L"XMusic.log", true);
@@ -144,12 +151,7 @@ CAppInit::CAppInit(QApplication& app)
     default:        // iPadMini
         break;
     };*/
-#endif
 
-#if __android
-    g_uDefFontSize = 12;
-
-#elif __ios
     QSize szScreen = screen->size();
     int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
     g_uDefFontSize = app.font().pointSize();
@@ -164,6 +166,9 @@ CAppInit::CAppInit(QApplication& app)
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;
     g_uDefFontSize *= fDPIRate;
+
+#elif __android
+    g_uDefFontSize = 12;
 #endif
 
     SMap<int, QString> mapFontFile {
@@ -175,7 +180,7 @@ CAppInit::CAppInit(QApplication& app)
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
-        qsFontFile = strutil::toQstr(fsutil::workDir()) + qsFontFile;
+        qsFontFile = strutil::toQstr(m_strOrgDir) + qsFontFile;
 #endif
 
         int fontId = QFontDatabase::addApplicationFont(qsFontFile);
@@ -231,15 +236,11 @@ void CApp::async(UINT uDelayTime, cfn_void cb)
 
 bool CApp::_resetRootDir(wstring& strRootDir)
 {
-    strRootDir = fsutil::getHomeDir() + L"/XMusic";
-
 #if __android
-    strRootDir = strutil::toWstr(__sdcardDir) + L"XMusic";
+    strRootDir = strutil::toWstr(__sdcardDir "XMusic");
 
-//#elif __ios && TARGET_IPHONE_SIMULATOR
-//    strRootDir = L"/Users/lhyuan/XMusic";
-
-#elif __window
+#else
+#if __window
     if (!XMediaLib::m_bOnlineMediaLib)
     {
         if (strRootDir.empty() || !fsutil::existDir(strRootDir))
@@ -254,6 +255,13 @@ bool CApp::_resetRootDir(wstring& strRootDir)
 
         return true;
     }
+#endif
+
+    strRootDir = fsutil::getHomePath(L"/XMusic");
+
+//#if __ios && TARGET_IPHONE_SIMULATOR
+//    strRootDir = L"/Users/lhyuan/XMusic";
+//#endif
 #endif
 
     return fsutil::createDir(strRootDir + __medialibPath);

@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
 #if __windows || __mac
-    QLockFile lf(strutil::toQstr(fsutil::getHomeDir()) + "/xmusic.lock");
+    QLockFile lf(fsutil::getHomeDir() + "/xmusic.lock");
     lf.setStaleLockTime(1);
     if (!lf.tryLock(0))
     {
