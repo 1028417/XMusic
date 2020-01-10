@@ -102,8 +102,8 @@ CAppInit::CAppInit(QApplication& app)
 #elif __android
     (void)fsutil::createDir(__androidDataDir);
     fsutil::setWorkDir(__androidDataDir);
-#else
-    fsutil::setWorkDir(app.applicationDirPath().toStdWString());
+//#else
+//    fsutil::setWorkDir(app.applicationDirPath().toStdWString());
 #endif
 
     m_logger.open(L"XMusic.log", true);
