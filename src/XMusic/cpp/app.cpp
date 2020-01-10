@@ -17,7 +17,7 @@ static void installApk(const QString &qsApkPath)
     QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);
     QAndroidJniObject activity = QtAndroid::androidActivity();
     QAndroidJniObject::callStaticMethod<void>(
-                "my/demo/myJava/mmActivity",
+                "xmusic/XActivity",
                 "installApk",
                 "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
                 jFilePath.object<jstring>(),
@@ -712,6 +712,8 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             return false;
         }
 
+        installApk(strutil::toQstr(strApkFile));
+
 #else
         IFBuffer ifbData(bbfData);
         CZipFile zipFile(ifbData);
@@ -784,7 +786,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         }
 
 #elif __mac
-        return false;
+
 #endif
 #endif
         return true;
