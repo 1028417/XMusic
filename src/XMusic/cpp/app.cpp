@@ -12,6 +12,35 @@
 #include <QAndroidJniEnvironment>
 #include <QtAndroid>
 
+//#include <QtAndroidExtras>
+//#include <jni.h>
+
+static int g_jniVer = 0;
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+{
+    (void)reserved;
+
+    JNIEnv* env = nullptr;
+    if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) == JNI_OK)
+    {
+        return g_jniVer=JNI_VERSION_1_6;
+    }
+    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) == JNI_OK)
+    {
+        return g_jniVer=JNI_VERSION_1_4;
+    }
+    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_2) == JNI_OK)
+    {
+        return g_jniVer=JNI_VERSION_1_2;
+    }
+    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_1) == JNI_OK)
+    {
+        return g_jniVer=JNI_VERSION_1_1;
+    }
+
+    return JNI_ERR;
+}
+
 static void installApk(const QString &qsApkPath)
 {
     QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);
@@ -78,6 +107,10 @@ CAppInit::CAppInit(QApplication& app)
 #endif
 
     m_logger.open(L"XMusic.log", true);
+
+#if __android
+    g_logger << "jniVer: " >> g_jniVer;
+#endif
 
     QScreen *screen = QApplication::primaryScreen();
     float fPixelRatio = screen->devicePixelRatio();
