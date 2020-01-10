@@ -7,19 +7,30 @@
 
 #include <QScreen>
 
-float g_fPixelRatio = 1;
+#if __android
+#include <QAndroidJniObject>
+#include <QAndroidJniEnvironment>
+#include <QtAndroid>
 
-static CUTF8TxtWriter m_logger;
-ITxtWriter& g_logger(m_logger);
+static void installApk(const QString &qsApkPath)
+{
+    QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);
+    QAndroidJniObject activity = QtAndroid::androidActivity();
+    QAndroidJniObject::callStaticMethod<void>(
+                "my/demo/myJava/mmActivity",
+                "installApk",
+                "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
+                jFilePath.object<jstring>(),
+                activity.object<jobject>()
+                );
+}
 
-/*#if __android
-static const wstring g_strSdcardPath;
-
+/*string g_strSDCardPath;
 static const wstring& sdcardPath()
 {
-    if (!g_strSdcardPath.empty())
+    if (!g_strSDCardPath.empty())
     {
-        return g_strSdcardPath;
+        return g_strSDCardPath;
     }
 
     char *pszSdcardPath = getenv("SECONDARY_STORAGE");
@@ -29,28 +40,38 @@ static const wstring& sdcardPath()
     }
     if (pszSdcardPath)
     {
-        return g_strSdcardPath = strutil::fromStr(pszSdcardPath);
+        return g_strSDCardPath = strutil::fromStr(pszSdcardPath);
     }
 
-    g_strSdcardPath = L"/mnt/sdcard";
-    if (!fsutil::existDir(g_strSdcardPath))
+    g_strSDCardPath = L"/mnt/sdcard";
+    if (!fsutil::existDir(g_strSDCardPath))
     {
-        g_strSdcardPath = L"/storage/emulated/0";
-        if (!fsutil::existDir(g_strSdcardPath))
+        g_strSDCardPath = L"/storage/emulated/0";
+        if (!fsutil::existDir(g_strSDCardPath))
         {
-            g_strSdcardPath = L"/sdcard";
+            g_strSDCardPath = L"/sdcard";
         }
     }
 
-    return g_strSdcardPath;
-}
-#endif*/
+    return g_strSDCardPath;
+}*/
+
+#define __sdcardDir "/sdcard/"
+// "/storage/emulated/0/"
+#define __androidDataDir __sdcardDir "Android/data/com.musicrossoft.xmusic"
+#endif
+
+float g_fPixelRatio = 1;
+
+static CUTF8TxtWriter m_logger;
+ITxtWriter& g_logger(m_logger);
 
 CAppInit::CAppInit(QApplication& app)
 {
 #if __windows
     fsutil::setWorkDir(fsutil::getModuleDir());
 #elif __android
+    (void)fsutil::createDir(__androidDataDir);
     fsutil::setWorkDir(__androidDataDir);
 #else
     fsutil::setWorkDir(app.applicationDirPath().toStdWString());
@@ -180,7 +201,7 @@ bool CApp::_resetRootDir(wstring& strRootDir)
     strRootDir = fsutil::getHomeDir() + L"/XMusic";
 
 #if __android
-    strRootDir = L"/sdcard/XMusic";
+    strRootDir = strutil::toWstr(__sdcardDir) + L"XMusic";
 
 //#elif __ios && TARGET_IPHONE_SIMULATOR
 //    strRootDir = L"/Users/lhyuan/XMusic";

@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-#android: QT += androidextras
+android: QT += androidextras
 
 RC_ICONS = "xmusic.ico"
 
@@ -181,4 +181,5 @@ UI_DIR = $$build_dir
 OBJECTS_DIR = $$build_dir
 
 DISTFILES += \
+    android/src/xmusic/XActivity.java \
     medialib.conf

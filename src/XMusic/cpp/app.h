@@ -10,8 +10,6 @@
 
 #include "msgbox.h"
 
-#define __androidDataDir "/sdcard/Android/data/com.musicrossoft.xmusic"
-
 #define __cyIPhoneXBangs __size(128)
 
 extern ITxtWriter& g_logger;

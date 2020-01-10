@@ -55,11 +55,6 @@ int main(int argc, char *argv[])
 #if __windows
     extern void InitMinDump(const string&);
     InitMinDump("xmusic_dump_");
-#elif __android
-    if (!fsutil::createDir(__androidDataDir))
-    {
-        return -1;
-    }
 #endif
 
 //#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
