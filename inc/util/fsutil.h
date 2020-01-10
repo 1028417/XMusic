@@ -186,12 +186,7 @@ public:
 	static bool existFile(const wstring& strFile);
 
     static bool createDir(const wstring& strDir);
-#if !__winvc
-    static bool createDir(const string& strDir)
-    {
-        return QDir().mkpath(__S2Q(strDir));
-    }
-#endif
+	static bool createDir(const string& strDir);
 
     static bool removeDir(const wstring& strDir);
     static bool removeFile(const wstring& strFile);
