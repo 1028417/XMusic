@@ -214,7 +214,10 @@ public:
 #endif
 
 #if !__winvc
-    static wstring getHomeDir();
+    static QString getHomeDir();
+
+    static string getHomePath(const string& strSubDir);
+    static wstring getHomePath(const wstring& strSubDir);
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;
