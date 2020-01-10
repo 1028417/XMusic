@@ -320,6 +320,8 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pixmap = &m_pmSingerGroup;
+
+            context.eStyle |= E_RowStyle::IS_RightTip;
         default:
             break;
         };
