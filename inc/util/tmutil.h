@@ -32,7 +32,8 @@ public:
 
 	static bool timeToTM(time32_t tTime, tagTM& tm);
 
-	static wstring formatTime(const wstring& strFormat, time32_t tTime = -1);
+    static wstring formatTime(const wstring& strFormat, time32_t tTime = -1);
+    static string formatTime(const string& strFormat, time32_t tTime = -1);
 
 #if __windows
 	static bool time64ToTM(time64_t tTime, tagTM& tm);
