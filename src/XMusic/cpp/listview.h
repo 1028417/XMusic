@@ -3,6 +3,8 @@
 
 #include "widget.h"
 
+#define __lvRowMargin __size(40)
+
 class CListView : public CWidget<QWidget>
 {
 protected:

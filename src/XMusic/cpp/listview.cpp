@@ -106,7 +106,6 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     QRect rc = lvRow.rc;
     int cy = rc.height();
 
-    int nMargin = __size(40);
     if (context.pixmap && !context.pixmap->isNull())
     {
         UINT sz_icon = cy;
@@ -120,42 +119,42 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         {
             x_icon = rc.center().x()-sz_icon;
 
-            rc.setLeft(x_icon + sz_icon + nMargin/2);
+            rc.setLeft(x_icon + sz_icon + __lvRowMargin/2);
         }
         else
         {
-            x_icon = rc.left() + nMargin;
+            x_icon = rc.left() + __lvRowMargin;
         }
 
         int y_icon = rc.center().y()-sz_icon/2;
         QRect rcPixmap(x_icon, y_icon, sz_icon, sz_icon);
         painter.drawPixmapEx(rcPixmap, *context.pixmap, __size(6));
 
-        rc.setLeft(x_icon + sz_icon + nMargin);
+        rc.setLeft(x_icon + sz_icon + __lvRowMargin);
     }
     else
     {
-        rc.setLeft(nMargin);
+        rc.setLeft(__lvRowMargin);
     }
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
         QColor cr = g_crText;
         cr.setAlpha(CPainter::oppTextAlpha(20));
-        painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-nMargin, 1), cr);
+        painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-__lvRowMargin, 1), cr);
     }
+
+    rc.setRight(rc.right() - __lvRowMargin);
 
     if (context.eStyle & E_RowStyle::IS_RightTip)
     {
-        rc.setRight(rc.right() - nMargin);
-
         int sz_righttip = cy*22/100;
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
         QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
         painter.drawPixmap(rcRighttip, m_pmRightTip);
 
-        rc.setRight(x_righttip - nMargin);
+        rc.setRight(x_righttip - __lvRowMargin);
     }
 
     if (context.lvRow.bSelected)

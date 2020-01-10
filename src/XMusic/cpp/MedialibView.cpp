@@ -10,6 +10,8 @@
 
 #define __RemarkAlpha 170
 
+#define __playIconMagin (__lvRowMargin- __size(6))
+
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
@@ -393,11 +395,11 @@ inline bool CMedialibView::_playIconRect(const tagMediaContext& mediaContext, QR
         || mediaContext.pMedia || mediaContext.pFile)
     {
         UINT cy = mediaContext.lvRow.rc.height();
-        int margin = cy * mediaContext.fIconMargin*1.5;
-        cy -= margin*2;
+        int yMargin = cy * mediaContext.fIconMargin*1.6;
+        cy -= yMargin*2;
 
-        int x_icon = mediaContext.lvRow.rc.right()-margin-cy;
-        int y_icon = mediaContext.lvRow.rc.top()+margin;
+        int x_icon = mediaContext.lvRow.rc.right()- __playIconMagin - cy;
+        int y_icon = mediaContext.lvRow.rc.top()+yMargin;
         rcPlayIcon.setRect(x_icon, y_icon, cy, cy);
 
         return true;
@@ -419,7 +421,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
                :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pixmap);
 
-        rc.setRight(rc.right()-rc.height());
+        rc.setRight(rcPlayIcon.left() - __playIconMagin);
     }
 
     if (mediaContext.pMediaSet)
@@ -478,9 +480,9 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSe
     QRect rcPlayIcon;
     if (_playIconRect(tagMediaContext(lvRow, mediaSet), rcPlayIcon))
     {
-        if (rcPlayIcon.contains(me.x(), me.y()))
+        if (me.x() >= rcPlayIcon.left()- __playIconMagin)
         {
-            _flashRow(lvRow.uRow);
+            //_flashRow(lvRow.uRow);
 
              TD_MediaList lstMedias;
              mediaSet.GetAllMedias(lstMedias);
@@ -498,9 +500,9 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
     QRect rcPlayIcon;
     if (_playIconRect(tagMediaContext(lvRow, media), rcPlayIcon))
     {
-        if (rcPlayIcon.contains(me.x(), me.y()))
+        if (me.x() >= rcPlayIcon.left()- __playIconMagin)
         {
-            _flashRow(lvRow.uRow);
+            //_flashRow(lvRow.uRow);
 
             m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
 
