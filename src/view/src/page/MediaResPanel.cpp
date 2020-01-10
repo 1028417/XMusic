@@ -351,7 +351,7 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 		size_t uMaxTabTitle = __MaxTabTitle;
 		if (!m_bShowRelatedSinger)
 		{
-			strTitle = __wcDirSeparator;
+			strTitle = __wchDirSeparator;
 			uMaxTabTitle -= 5;
 		}
 		

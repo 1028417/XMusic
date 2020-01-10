@@ -355,7 +355,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 			for (auto& pr : mapMediaList)
 			{
 				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath + __wcDirSeparator + pr.first->GetExportName();
+				ExportMedia.strDstDir = ExportOption.strExportPath + __wchDirSeparator + pr.first->GetExportName();
 				ExportMedia.paMedias.swap(pr.second);
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
@@ -446,7 +446,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	{
 		if (strutil::lowerCase_r(fsutil::GetFileExtName(strFile)) != __snapshotExt)
 		{
-			strFile.append(__wcDot + __snapshotExt);
+			strFile.append(__wchDot + __snapshotExt);
 		}
 		
 		_snapshotDir(dir, strFile);

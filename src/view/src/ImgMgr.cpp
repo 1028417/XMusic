@@ -64,7 +64,7 @@ UINT CImgMgr::getSingerImgPos(UINT uSingerID) const
 
 bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 {
-	m_strImgDir = strutil::toWstr(fsutil::workDir()) + L"/img/";
+	m_strImgDir = fsutil::getModuleSubPath(L"img\\");
 
 	__AssertReturn(m_imglst.Init(__Size(uBigIconSize)), false);
 	__AssertReturn(m_imglstSmall.Init(__Size(uSmallIconSize)), false);
