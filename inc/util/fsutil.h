@@ -186,9 +186,26 @@ public:
 
 	static wstring GetOppPath(const wstring& strPath, const wstring strBaseDir);
 
-	static bool existPath(const wstring& strPath, bool bDir);
-    static bool existDir(const wstring& strDir);
-	static bool existFile(const wstring& strFile);
+    static bool existPath(const wstring& strPath, bool bDir);
+    static bool existPath(const string& strPath, bool bDir);
+
+    static bool existDir(const wstring& strDir)
+    {
+        return existPath(strDir, true);
+    }
+    static bool existDir(const string& strDir)
+    {
+        return existPath(strDir, true);
+    }
+
+    static bool existFile(const wstring& strFile)
+    {
+        return existPath(strFile, false);
+    }
+    static bool existFile(const string& strFile)
+    {
+        return existPath(strFile, false);
+    }
 
     static bool createDir(const wstring& strDir);
 	static bool createDir(const string& strDir);
