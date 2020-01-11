@@ -33,7 +33,7 @@ public:
 
 	static bool writeFile(const JValue& jRoot, const string& strFile, bool bStyled=false)
 	{
-		CUTF8TxtWriter TxtWriter;
+		CUTF8TxtWriter TxtWriter(false);
 		if (!TxtWriter.open(strFile, true))
 		{
 			return false;

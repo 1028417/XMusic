@@ -138,7 +138,7 @@ public:
         }
     }
 
-    inline c_byte_p ptr() const
+    inline cbyte_p ptr() const
 	{
         if (m_vecBuff.empty())
         {
@@ -155,7 +155,7 @@ public:
 		return &m_vecBuff.front();
 	}
 
-	operator c_byte_p() const
+	operator cbyte_p() const
 	{
 		return ptr();
 	}

@@ -26,8 +26,8 @@ public:
 	static const wchar_t wcSpace = L' ';
 
 public:
-    static int collate(const wstring& lhs, const wstring& rhs);
-    static int collate_cn(const wstring& lhs, const wstring& rhs);
+	static int collate(const wstring& lhs, const wstring& rhs);
+	static int collate_cn(const wstring& lhs, const wstring& rhs);
 
 	static wstring substr(const wstring& str, size_t pos, size_t len = wstring::npos);
 	static string substr(const string& str, size_t pos, size_t len = string::npos);
@@ -53,7 +53,7 @@ public:
 	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet, bool bTrim = false);
 	static void split(const string& strText, char wcSplitor, vector<string>& vecRet, bool bTrim = false);
 
-    static bool matchIgnoreCase(const wstring& str1, const wstring& str2, size_t maxlen = 0);
+	static bool matchIgnoreCase(const wstring& str1, const wstring& str2, size_t maxlen = 0);
 
 	static void lowerCase(wstring& str);
 	static void lowerCase(string& str);
@@ -65,20 +65,20 @@ public:
 	static wstring upperCase_r(const wstring& str);
 	static string upperCase_r(const string& str);
 
-    static void replace(wstring& str, const wstring& strFind, const wstring& strReplace=L"");
-    static void replace(string& str, const string& strFind, const string& strReplace="");
-    static wstring replace_r(const wstring& str, const wstring& strFind, const wstring& strReplace=L"")
-    {
-        wstring strRet = str;
-        replace(strRet, strFind, strReplace);
-        return strRet;
-    }
-    static string replace_r(const string& str, const string& strFind, const string& strReplace="")
-    {
-        string strRet = str;
-        replace(strRet, strFind, strReplace);
-        return strRet;
-    }
+	static void replace(wstring& str, const wstring& strFind, const wstring& strReplace = L"");
+	static void replace(string& str, const string& strFind, const string& strReplace = "");
+	static wstring replace_r(const wstring& str, const wstring& strFind, const wstring& strReplace = L"")
+	{
+		wstring strRet = str;
+		replace(strRet, strFind, strReplace);
+		return strRet;
+	}
+	static string replace_r(const string& str, const string& strFind, const string& strReplace = "")
+	{
+		string strRet = str;
+		replace(strRet, strFind, strReplace);
+		return strRet;
+	}
 
 	static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);
@@ -86,11 +86,11 @@ public:
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
 
-    static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
-    static string base64_encode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)
-    {
-        return base64_encode(pStr, (size_t)strlen(pStr), pszBase, chrTail);
-    }
+	static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
+	static string base64_encode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)
+	{
+		return base64_encode(pStr, (size_t)strlen(pStr), pszBase, chrTail);
+	}
 	static string base64_encode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
 		return base64_encode(str.c_str(), str.length(), pszBase, chrTail);
@@ -106,24 +106,36 @@ public:
 		return base64_decode(str.c_str(), str.length(), pszBase, chrTail);
 	}
 
-    static bool checkUtf8(const char *pStr, int len = -1);
+	static bool checkUtf8(const char *pStr, int len = -1);
 	static bool checkUtf8(const string& str)
 	{
 		return checkUtf8(str.c_str(), str.size());
 	}
 
-    static wstring fromUtf8(const char *pStr, int len = -1);
+	static wstring fromUtf8(const char *pStr, int len = -1);
 	static wstring fromUtf8(const string& str)
 	{
 		return fromUtf8(str.c_str(), str.size());
 	}
 
-    static string toUtf8(const wchar_t *pStr, int len = -1);
-    static string toUtf8(const wstring& str)
-    {
-        return toUtf8(str.c_str(), str.size());
-    }
+	static string toUtf8(const wchar_t *pStr, int len = -1);
+	static string toUtf8(const wstring& str)
+	{
+		return toUtf8(str.c_str(), str.size());
+	}
 
+	static wstring& transEndian(wstring& str);
+	static wstring transEndian(const wchar_t *pStr)
+	{
+		wstring str(pStr);
+		return transEndian(str);
+	}
+	static wstring transEndian(const wchar_t *pStr, size_t len)
+	{
+		wstring str(pStr, len);
+		return transEndian(str);
+	}
+		
     static wstring toWstr(const char *pStr, int len = -1);
     static wstring toWstr(const string& str)
     {

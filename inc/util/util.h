@@ -101,7 +101,7 @@ __UtilExt wstring platformVersion();
 
 using byte_t = uint8_t;
 using byte_p = byte_t*;
-using c_byte_p = const byte_t*;
+using cbyte_p = const byte_t*;
 
 #ifndef BOOL
 using BOOL = int;

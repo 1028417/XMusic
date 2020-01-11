@@ -27,37 +27,179 @@ enum class E_TxtEncodeType
 class __UtilExt ITxtWriter
 {
 public:
-	virtual ~ITxtWriter() {}
-
-    ITxtWriter(E_TxtEncodeType eEncodeType)
-        : m_eEncodeType(eEncodeType)
+    ITxtWriter(E_TxtEncodeType eEncodeType) : m_eEncodeType(eEncodeType)
     {
     }
 
+	virtual ~ITxtWriter() {}
+
+private:
+	E_TxtEncodeType m_eEncodeType;
+
 protected:
-    E_TxtEncodeType m_eEncodeType;
+	inline bool _isAsc() const
+	{
+		return E_TxtEncodeType::TET_Asc == m_eEncodeType;
+	}
+
+	inline bool _isUtf8() const
+	{
+		return E_TxtEncodeType::TET_UTF8_NoBom == m_eEncodeType
+			|| E_TxtEncodeType::TET_UTF8_WithBom == m_eEncodeType;
+	}
+	inline bool _isUtf8WithBom() const
+	{
+		return E_TxtEncodeType::TET_UTF8_WithBom == m_eEncodeType;
+	}
+
+	inline bool _isUcsLittleEndian() const
+	{
+		return E_TxtEncodeType::TET_UCS2_LittleEndian == m_eEncodeType;
+	}
+	inline bool _isUcsBigEndian() const
+	{
+		return E_TxtEncodeType::TET_UCS2_BigEndian == m_eEncodeType;
+	}
+
+private:
+	virtual bool _write(const void *ptr, size_t len, bool bEndLine) = 0;
+
+	inline bool _write(const char *pStr, size_t len, bool bEndLine = false)
+	{
+		if (_isAsc() || _isUtf8())
+		{
+			return _write((const void*)pStr, len, bEndLine);
+		}
+		else
+		{
+			wstring str = strutil::toWstr(pStr);
+			if (_isUcsBigEndian())
+			{
+				strutil::transEndian(str);
+			}
+
+			return _write((const void*)str.c_str(), str.size() * 2, bEndLine);
+		}
+	}
+
+	inline bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false)
+	{
+		if (_isAsc())
+		{
+			cauto str = strutil::toStr(pStr, len);
+			return _write((const void*)str.c_str(), str.size(), bEndLine);
+		}
+		else if (_isUtf8())
+		{
+			cauto str = strutil::toUtf8(pStr, len);
+			return _write((const void*)str.c_str(), str.size(), bEndLine);
+		}
+		else if (_isUcsBigEndian())
+		{
+			cauto str = strutil::transEndian(pStr, len);
+			return _write((const void*)str.c_str(), str.size()*2, bEndLine);
+		}
+		else
+		{
+			return _write((const void*)pStr, len*2, bEndLine);
+		}
+	}
+
+#if !__winvc
+	bool _write(const QString& qstr, bool bEndLine = false)
+	{
+		if (_isAsc())
+		{
+			cauto str = qstr.toStdString();
+			return _write((const void*)str.c_str(), str.size(), bEndLine);
+		}
+		else if (_isUtf8())
+		{
+			cauto str = qstr.toUtf8().toStdString();
+			return _write((const void*)str.c_str(), str.size(), bEndLine);
+		}
+		else
+		{
+			wstring str = qstr.toStdWString();
+			if (_isUcsBigEndian())
+			{
+				strutil::transEndian(str);
+			}
+			return _write((const void*)str.c_str(), str.size() * 2, bEndLine);
+		}
+	}
+#endif
 
 public:
-    virtual bool write(const wstring& strText) = 0;
+#if !__winvc
+	inline bool write(const QString& qstr)
+	{
+		return _write(qstr);
+	}
+	inline bool writeln(const QString& qstr)
+	{
+		return _write(qstr, true);
+	}
+#endif
 
-    virtual bool writeln(const wstring& strText) = 0;
+	inline bool write(const char *pStr, size_t len)
+	{
+		return _write(pStr, len);
+	}
+	inline bool writeln(const char *pStr, size_t len)
+	{
+		return _write(pStr, len, true);
+	}
 
-    virtual bool write(const string& strText) = 0;
+	inline bool write(const char *pStr)
+	{
+		return _write(pStr, strlen(pStr));
+	}
+	inline bool writeln(const char *pStr)
+	{
+		return _write(pStr, strlen(pStr), true);
+	}
 
-    virtual bool writeln(const string& strText) = 0;
+	inline bool write(const wchar_t *pStr, size_t len)
+	{
+		return _write(pStr, len);
+	}
+	inline bool writeln(const wchar_t *pStr, size_t len)
+	{
+		return _write(pStr, len, true);
+	}
 
-    virtual bool write(const wchar_t *pStr) = 0;
+	inline bool write(const wchar_t *pStr)
+	{
+		return _write(pStr, wcslen(pStr));
+	}
+	inline bool writeln(const wchar_t *pStr)
+	{
+		return _write(pStr, wcslen(pStr), true);
+	}
 
-    virtual bool writeln(const wchar_t *pStr) = 0;
+	inline bool write(const string& strText)
+	{
+		return _write(strText.c_str(), strText.size());
+	}
+	inline bool writeln(const string& strText)
+	{
+		return _write(strText.c_str(), strText.size(), true);
+	}
 
-    virtual bool write(const char *pStr) = 0;
-
-    virtual bool writeln(const char *pStr) = 0;
+	inline bool write(const wstring& strText)
+	{
+		return _write(strText.c_str(), strText.size());
+	}
+	inline bool writeln(const wstring& strText)
+	{
+		return _write(strText.c_str(), strText.size(), true);
+	}
 
     template <typename T>
     bool write(const T& num)
     {
-            if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
+            if (_isAsc())
             {
                     return write(to_string(num));
             }
@@ -70,7 +212,7 @@ public:
     template <typename T>
     bool writeln(const T& num)
     {
-            if (E_TxtEncodeType::TET_Asc == m_eEncodeType)
+            if (_isAsc())
             {
                     return writeln(to_string(num));
             }
@@ -93,18 +235,6 @@ public:
             (void)writeln(t);
             return *this;
     }
-
-#if !__winvc
-    bool write(const QString& qstr)
-    {
-        return write(qstr.toStdWString());
-    }
-
-    bool writeln(const QString& qstr)
-    {
-        return writeln(qstr.toStdWString());
-    }
-#endif
 };
 
 class __UtilExt CTxtWriter : public ITxtWriter
@@ -137,22 +267,9 @@ private:
 	OFStream m_ofs;
 
 private:
-	inline bool _isUtf8() const
-	{
-		return E_TxtEncodeType::TET_UTF8_NoBom == m_eEncodeType
-			|| E_TxtEncodeType::TET_UTF8_WithBom == m_eEncodeType;
-	}
-
-	inline bool _isUnicode() const
-	{
-		return E_TxtEncodeType::TET_UCS2_LittleEndian == m_eEncodeType
-			|| E_TxtEncodeType::TET_UCS2_BigEndian == m_eEncodeType;
-	}
-
     bool _writeHead();
 
-    bool _write(const char *pStr, size_t len, bool bEndLine = false);
-    bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false);
+	bool _write(const void *ptr, size_t len, bool bEndLine = false) override;
 
     inline bool _writeEndLine();
 
@@ -165,98 +282,43 @@ public:
 	bool open(const wstring& strFile, bool bTrunc);
 	bool open(const string& strFile, bool bTrunc);
 
-    bool write(const wstring& strText) override
-	{
-		return _write(strText.c_str(), strText.size());
-	}
-
-    bool writeln(const wstring& strText) override
-	{
-		return _write(strText.c_str(), strText.size(), true);
-	}
-
-    bool write(const string& strText) override
-	{
-		return _write(strText.c_str(), strText.size());
-	}
-
-    bool writeln(const string& strText) override
-	{
-		return _write(strText.c_str(), strText.size(), true);
-	}
-
-    bool write(const wchar_t *pStr) override
-	{
-		if (NULL == pStr)
-		{
-			return 0;
-		}
-
-		return _write(pStr, wcslen(pStr));
-	}
-
-    bool writeln(const wchar_t *pStr) override
-	{
-		if (NULL == pStr)
-		{
-			return 0;
-		}
-
-		return _write(pStr, wcslen(pStr), true);
-	}
-
-    bool write(const char *pStr) override
-	{
-		if (NULL == pStr)
-		{
-			return 0;
-		}
-
-		return _write(pStr, strlen(pStr));
-    }
-
-    bool writeln(const char *pStr) override
-    {
-        return _write(pStr, pStr?strlen(pStr):0, true);
-    }
-
     void close()
     {
 		m_ofs.close();
     }
 };
 
-enum class E_UnicodeHeadOpt
-{
-	UHO_LittleEndian = 0,
-	UHO_BigEndian,
-};
-
-/*#if __winvc
-#define __DefUTF8BomOpt false
+#if __windows
+#define __DefUTF8BomOpt true
 #else
 #define __DefUTF8BomOpt false
-#endif*/
+#endif
 
 class __UtilExt CUTF8TxtWriter : public CTxtWriter
 {
 public:
 	virtual ~CUTF8TxtWriter() {}
 
-	CUTF8TxtWriter(bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8TxtWriter(bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
 	}
 
-	CUTF8TxtWriter(const string& strFile, bool bTrunc, bool bWithBom = false, E_EOLFlag eEOLFlag = __DefEOL) :
+	CUTF8TxtWriter(const string& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
 	{
 	}
+};
+
+enum class E_UnicodeHeadOpt
+{
+	UHO_LittleEndian = 0,
+	UHO_BigEndian,
 };
 
 class __UtilExt CUCS2TextWriter : public CTxtWriter
