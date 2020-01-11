@@ -108,6 +108,9 @@ CAppInit::CAppInit(QApplication& app)
 
     m_logger.open(L"XMusic.log", true);
 
+    g_logger << "applicationDirPath: " >> QApplication::applicationDirPath();
+    g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
+
 #if __android
     g_logger << "jniVer: " >> g_jniVer;
 #endif
@@ -464,7 +467,7 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     }
 
     cauto ba = qf.readAll();
-    IFBuffer ifbMedialibConf((c_byte_p)ba.data(), ba.size());
+    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
     __EnsureReturn(_readMedialibConf(ifbMedialibConf, orgMedialibConf), false);
     g_logger << "appVersion: " >> orgMedialibConf.strAppVersion
@@ -739,7 +742,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 
 #if __android
         cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
-        if (!OFStream::writefilex(strApkFile, bbfData))
+        if (!OFStream::writefilex(strApkFile, true, bbfData))
         {
             g_logger << "saveApk fail:" >> strApkFile;
             return false;
@@ -747,11 +750,33 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 
         installApk(strutil::toQstr(strApkFile));
 
+        cauto qs = QApplication::applicationDirPath();
 #elif __mac
-        cauto strDmgFile = fsutil::workDir() + "/upgrade.dmg";
-        if (!OFStream::writefilex(strDmgFile, bbfData))
+        cauto strDmgName = "xmusic" + newMedialibConf.strAppVersion;
+        string strDmgFile = fsutil::workDir() + "/" + strDmgName;
+        if (!OFStream::writefilex(strDmgFile, true, bbfData))
         {
             g_logger << "saveDmg fail:" >> strDmgFile;
+            return false;
+        }
+
+        strutil::replace(strDmgFile, " ", "\\ ");
+        if (system("hdiutil attach -noverify -noautofsck -mountpoint "
+                   + strDmgName + " " + strDmgFile))
+        {
+            g_logger >> "attach dmg fail";
+            return false;
+        }
+
+        if (system("cp /Volumes/" + strDmgName))
+        {
+            g_logger >> "copy dmg fail";
+            return false;
+        }
+
+        if (system("cp /Volumes/" + strDmgName))
+        {
+            g_logger >> "copy dmg fail";
             return false;
         }
 
@@ -824,7 +849,6 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         {
             g_logger >> "shell StartupFile fail";
         }
-#endif
 #endif
         return true;
     }

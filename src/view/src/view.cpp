@@ -535,7 +535,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 		if (fnSnapshot(dir, *pJRoot))
 		{
-			CUTF8TxtWriter TxtWriter;
+			CUTF8TxtWriter TxtWriter(false);
 			if (TxtWriter.open(strOutputFile + L".json", true))
 			{
 				string str = Json::FastWriter().write(*pJRoot);
