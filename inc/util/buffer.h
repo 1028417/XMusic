@@ -138,15 +138,6 @@ public:
         }
     }
 
-	operator bool() const
-	{
-		return !m_vecBuff.empty();
-	}
-	bool operator !() const
-	{
-		return m_vecBuff.empty();
-	}
-
     inline c_byte_p ptr() const
 	{
         if (m_vecBuff.empty())
@@ -169,15 +160,6 @@ public:
 		return ptr();
 	}
 	operator byte_p()
-	{
-		return ptr();
-	}
-
-	operator const void*() const
-	{
-		return ptr();
-	}
-	operator void*()
 	{
 		return ptr();
 	}
