@@ -750,7 +750,6 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 
         installApk(strutil::toQstr(strApkFile));
 
-        cauto qs = QApplication::applicationDirPath();
 #elif __mac
         cauto strDmgName = "xmusic" + newMedialibConf.strAppVersion;
         string strDmgFile = fsutil::workDir() + "/" + strDmgName;
@@ -768,17 +767,32 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             return false;
         }
 
-        if (system("cp /Volumes/" + strDmgName))
+        string strMountDir = "/Volumes/" + strDmgName;
+        if (!fsutil::existDir(strMountDir))
+        {
+            g_logger << "check mountDir fail:" >> strMountDir;
+            return false;
+        }
+
+        auto strAppDir = QApplication::applicationDirPath().toStdString();
+        strAppDir = fsutil::GetParentDir(strAppDir);
+        strAppDir = fsutil::GetParentDir(strAppDir);
+        strAppDir = fsutil::GetParentDir(strAppDir);
+        strutil::replace(strAppDir, " ", "\\ ");
+
+        if (system("rm -rf " + strAppDir))
         {
             g_logger >> "copy dmg fail";
             return false;
         }
 
-        if (system("cp /Volumes/" + strDmgName))
+        if (system("cp " + strMountDir + " " + strAppDir))
         {
             g_logger >> "copy dmg fail";
             return false;
         }
+
+        (void)system("cp /Volumes/" + strDmgName);
 
 #elif __windows
         IFBuffer ifbData(bbfData);
