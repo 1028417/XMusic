@@ -339,18 +339,18 @@ private:
 	template <class T>
     void _read(Instream& ins, T& strText)
     {
-            CCharBuffer cbfData;
-            (void)ins.readex(cbfData, (size_t)ins.size());
-            __Ensure(cbfData);
-
-            _readData(cbfData, cbfData->size(), strText);
+		CCharBuffer cbfData;
+		if (ins.read(cbfData)>0)
+		{
+			_readData(cbfData, cbfData->size(), strText);
+		}
 	}
 
 	template <class T>
-        void _read(Instream& ins, cfn_bool_t<const T&> cb)
+	void _read(Instream& ins, cfn_bool_t<const T&> cb)
 	{
 		T strText;
-                _read(ins, strText);
+		_read(ins, strText);
 
 		size_t prePos = 0;
 		size_t pos = 0;

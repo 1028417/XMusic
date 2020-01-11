@@ -1,6 +1,13 @@
 
 #pragma once
 
+#define fsize_t_max ((size_t)-1)
+#if __windows || __android
+#define fsize_t(fsize64) (size_t(MIN((uint64_t)fsize_t_max, fsize64)))
+#else
+#define fsize_t(fsize64) fsize64
+#endif
+
 class __UtilExt FStream
 {
 public:
@@ -69,26 +76,36 @@ class __UtilExt Instream
 public:
 	virtual ~Instream() {}
 
-    virtual size_t read(void *buff, size_t size, size_t count) = 0;
+	virtual size_t read(void *buff, size_t size, size_t count) = 0;
+	inline size_t read(void *buff, size_t size)
+	{
+		return read(buff, 1, size);
+	}
 
-	bool readex(void *buff, size_t size)
+	inline bool readex(void *buff, size_t size)
 	{
 		return read(buff, size, 1) == 1;
 	}
 
 	template <typename T>
-	size_t readex(TBuffer<T>& buff)
+	size_t read(TBuffer<T>& buff)
 	{
-        return read(buff, sizeof(T), buff.count());
+		return read(buff, sizeof(T), buff.count());
+	}
+	template <typename T>
+	bool readex(TBuffer<T>& buff)
+	{
+		return readex(buff, buff.size());
 	}
 
-	size_t readex(CByteBuffer& bbfBuff, size_t uReadSize)
+	size_t read(CByteBuffer& bbfBuff, size_t uReadSize = 0)
 	{
-		return _readex(bbfBuff, uReadSize);
+		return _read(bbfBuff, uReadSize);
 	}
-	size_t readex(CCharBuffer& cbfBuff, size_t uReadSize)
+
+	size_t read(CCharBuffer& cbfBuff, size_t uReadSize = 0)
 	{
-		return _readex(cbfBuff, uReadSize);
+		return _read(cbfBuff, uReadSize);
 	}
 
     virtual bool seek(long long offset, int origin) = 0;
@@ -99,20 +116,27 @@ public:
 
 private:
 	template <class T>
-	size_t _readex(T& buff, size_t uReadSize)
+	size_t _read(T& buff, size_t uReadSize = 0)
 	{
-		uint64_t max = this->size();
-		if (max < (uint64_t)uReadSize)
-		{
-			uReadSize = (size_t)max;
-		}
-		if (0 == uReadSize)
+		long long pos = this->pos();
+		if (pos < 0)
 		{
 			return 0;
 		}
 
+		uint64_t max64 = this->size() - (uint64_t)pos;
+		size_t max = fsize_t(max64);
+		if (0 == uReadSize)
+		{
+			uReadSize = max;
+		}
+		else
+		{
+			uReadSize = MIN(uReadSize, max);
+		}
+		
 		auto ptr = buff.resizeMore(uReadSize);
-		size_t size = read(ptr, 1, uReadSize);
+		size_t size = read(ptr, uReadSize);
 		if (size < uReadSize)
 		{
 			buff.resizeLess(uReadSize - size);
@@ -128,27 +152,6 @@ public:
 	virtual ~Outstream() {}
 
 	virtual size_t write(const void *buff, size_t size, size_t count) = 0;
-
-    bool writex(const void *buff, size_t size)
-	{
-		return write(buff, size, 1) == 1;
-	}
-
-    template <typename T>
-    size_t writex(const TBuffer<T>& buff)
-    {
-        return read(buff, sizeof(T), buff.count());
-    }
-
-    size_t writex(const CByteBuffer& bbfBuff)
-    {
-        return write(bbfBuff, 1, bbfBuff->size());
-    }
-
-    size_t writex(const CCharBuffer& cbfBuff)
-    {
-        return write(cbfBuff, 1, cbfBuff->size());
-    }
 
     virtual void flush() = 0;
 };
@@ -223,6 +226,57 @@ public:
 		FStream::close();
 		m_size = 0;
 	}
+
+	template <class S>
+	inline static size_t readfile(const S& strFile, void *buff, size_t size, size_t count)
+	{
+		IFStream ifs(strFile);
+		__EnsureReturn(ifs, 0);
+
+		return ifs.read(buff, size, count);
+	}
+
+	template <class S>
+	inline static size_t readfile(const S& strFile, void *buff, size_t size)
+	{
+		return readfile(strFile, buff, 1, size);
+	}
+
+	template <class S>
+	inline static bool readfilex(const S& strFile, void *buff, size_t size)
+	{
+		return readfile(strFile, buff, size, 1) == 1;
+	}
+
+	template <class S, typename T>
+	static size_t readfile(const S& strFile, TBuffer<T>& buff)
+	{
+		return readfile(strFile, buff, sizeof(T), buff.count());
+	}
+
+	template <class S, typename T>
+	static bool readfilex(const S& strFile, TBuffer<T>& buff)
+	{
+		return readfilex(strFile, buff, buff.size());
+	}
+
+	template <class S>
+	static size_t readfile(const S& strFile, CByteBuffer& bbfBuff, size_t uReadSize = 0)
+	{
+		IFStream ifs(strFile);
+		__EnsureReturn(ifs, 0);
+
+		return ((Instream&)ifs).read(bbfBuff, uReadSize);
+	}
+
+	template <class S>
+	static size_t readfile(const S& strFile, CCharBuffer& cbfBuff, size_t uReadSize = 0)
+	{
+		IFStream ifs(strFile);
+		__EnsureReturn(ifs, 0);
+
+		return ((Instream&)ifs).read(cbfBuff, uReadSize);
+	}
 };
 
 class __UtilExt OFStream : public FStream, public Outstream
@@ -251,15 +305,110 @@ public:
         return _open(strFile, bTrunc?"wb":"ab");
     }
 
-	virtual size_t write(const void *buff, size_t size, size_t count) override
-	{
-		return fwrite(buff, size, count, m_pf);
-	}
-
     virtual void flush() override
     {
         (void)fflush(m_pf);
     }
+
+	inline virtual size_t write(const void *buff, size_t size, size_t count) override
+	{
+		return fwrite(buff, size, count, m_pf);
+	}
+	inline size_t write(const void *buff, size_t size)
+	{
+		return fwrite(buff, 1, size, m_pf);
+	}
+
+	inline bool writex(const void *buff, size_t size)
+	{
+		return fwrite(buff, size, 1, m_pf) == 1;
+	}
+
+	template <typename T>
+	size_t write(const TBuffer<T>& buff)
+	{
+		return write(buff, sizeof(T), buff.count());
+	}
+	template <typename T>
+	bool writex(const TBuffer<T>& buff)
+	{
+		return writex(buff, buff.size());
+	}
+
+	size_t write(const CByteBuffer& bbfBuff)
+	{
+		return write(bbfBuff, bbfBuff->size());
+	}
+	bool writex(const CByteBuffer& bbfBuff)
+	{
+		return writex(bbfBuff, bbfBuff->size());
+	}
+
+	size_t write(const CCharBuffer& cbfBuff)
+	{
+		return write(cbfBuff, cbfBuff->size());
+	}
+	bool writex(const CCharBuffer& cbfBuff)
+	{
+		return writex(cbfBuff, cbfBuff->size());
+	}
+
+	template <typename S>
+	inline static long writefile(const S& strFile, bool bTrunc, const void *buff, size_t size, size_t count)
+	{
+		OFStream ofs(strFile, bTrunc);
+		__EnsureReturn(ofs, -1);
+
+		return ofs.write(buff, size, count);
+	}
+
+	template <typename S>
+	inline static long writefile(const S& strFile, bool bTrunc, const void *buff, size_t size)
+	{
+		return writefile(strFile, bTrunc, buff, 1, size);
+	}
+
+	template <typename S>
+	inline static bool writefilex(const S& strFile, bool bTrunc, const void *buff, size_t size)
+	{
+		return writefile(strFile, bTrunc, buff, size, 1) == 1;
+	}
+
+	template <typename S, typename T>
+	static long writefile(const S& strFile, bool bTrunc, const TBuffer<T>& buff)
+	{
+		return writefile(strFile, bTrunc, buff, sizeof(T), buff.count());
+	}
+
+	template <typename S, typename T>
+	static bool writefilex(const S& strFile, bool bTrunc, const TBuffer<T>& buff)
+	{
+		return writefilex(strFile, bTrunc, buff, buff.size());
+	}
+
+	template <typename S>
+	static long writefile(const S& strFile, bool bTrunc, CByteBuffer& bbfBuff)
+	{
+		return writefile(strFile, bTrunc, bbfBuff, bbfBuff->size());
+	}
+
+	template <typename S>
+	static bool writefilex(const S& strFile, bool bTrunc, CByteBuffer& bbfBuff)
+	{
+		return writefilex(strFile, bTrunc, bbfBuff, bbfBuff->size());
+	}
+
+	template <typename S>
+	static long writefile(const S& strFile, bool bTrunc, CCharBuffer& cbfBuff)
+	{
+		return writefile(strFile, bTrunc, cbfBuff, cbfBuff->size());
+	}
+
+	template <typename S>
+	static bool writefilex(const S& strFile, bool bTrunc, CCharBuffer& cbfBuff)
+	{
+		return writefilex(strFile, bTrunc, cbfBuff, cbfBuff->size());
+	}
 };
 
 class __UtilExt IFBuffer : public Instream
@@ -298,18 +447,21 @@ public:
 
     virtual size_t read(void *buff, size_t size, size_t count) override
     {
-		uint64_t t_count = (m_size - m_pos) / size;
-		if (t_count < (uint64_t)count)
+		if (NULL == buff || 0 == size || 0 == count)
 		{
-			count = (size_t)t_count;
+			return 0;
 		}
-        if (0 != count)
-        {
-            size *= count;
-            memcpy(buff, m_ptr+m_pos, size);
-            m_pos += size;
-        }
 
+		uint64_t max = (m_size - m_pos) / size;
+		if (max < (uint64_t)count)
+		{
+			count = (size_t)max;
+		}
+
+		size *= count;
+        memcpy(buff, m_ptr+m_pos, size);
+        m_pos += size;
+        
         return count;
     }
 
