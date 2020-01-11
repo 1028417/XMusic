@@ -762,10 +762,13 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         strutil::replace(strDmgFile, " ", "\\ ");
 
 #define system(x) system((x).c_str())
-        if (system("hdiutil attach -noverify -noautofsck -mountpoint "
-                   + strDmgName + " " + strDmgFile))
+        cauto strCmd = "hdiutil attach -noverify -noautofsck -mountpoint "
+                + strDmgName + " " + strDmgFile;
+        //g_logger << "mount: " >> strCmd;
+        nRet = system(strCmd);
+        if (nRet)
         {
-            g_logger >> "attach dmg fail";
+            g_logger << "attach dmg fail: " >> nRet;
             return false;
         }
 
@@ -794,7 +797,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             return false;
         }
 
-        (void)system("cp /Volumes/" + strDmgName);
+        (void)system("hdiutil detach " + strMountDir);
 
 #elif __windows
         IFBuffer ifbData(bbfData);
