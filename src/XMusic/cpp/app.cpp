@@ -760,6 +760,8 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         }
 
         strutil::replace(strDmgFile, " ", "\\ ");
+
+#define system(x) system((x).c_str())
         if (system("hdiutil attach -noverify -noautofsck -mountpoint "
                    + strDmgName + " " + strDmgFile))
         {
