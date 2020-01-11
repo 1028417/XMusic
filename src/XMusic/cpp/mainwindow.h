@@ -133,10 +133,8 @@ private:
 
     void onPlayStop(bool bCanceled, bool bOpenFail) override;
 
-    void onSingerImgDownloaded(const wstring& strFile) override
+    void onSingerImgDownloaded() override
     {
-        (void)strFile;
-
         emit signal_updateSingerImg();
     }
 };

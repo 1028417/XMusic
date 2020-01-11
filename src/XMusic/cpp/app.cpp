@@ -614,8 +614,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
                 continue;
             }
 
-            OFStream ofsMedialib(strDBFile, true);
-            if (!ofsMedialib || ofsMedialib.writex(bbfMedialib) != bbfMedialib->size())
+            if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
             {
                 g_logger >> "write medialib fail";
                 return false;
