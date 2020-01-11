@@ -89,8 +89,6 @@ static const wstring& sdcardPath()
 
 #define __sdcardDir "/sdcard/"
 // "/storage/emulated/0/"
-
-#define __androidDataDir __sdcardDir "Android/data/" __pkgName
 #endif
 
 float g_fPixelRatio = 1;
@@ -101,7 +99,7 @@ ITxtWriter& g_logger(m_logger);
 CAppInit::CAppInit(QApplication& app)
 {
 #if __android
-    string strWorkDir = __androidDataDir;
+    string strWorkDir = __sdcardDir __pkgName;
 #else
     string strWorkDir = fsutil::getHomePath(__pkgName);
 #endif
@@ -582,13 +580,14 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
 
             if (bUncompatible)
             {
-                if (!_upgradeApp(prevMedialibConf.strAppVersion, newMedialibConf))
+                if (_upgradeApp(prevMedialibConf.strAppVersion, newMedialibConf))
                 {
-                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgradeFail;
+                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
+                    return false;
                 }
                 else
                 {
-                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
+                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgradeFail;
                 }
             }
         }
