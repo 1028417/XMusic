@@ -276,15 +276,6 @@ public:
         }
     }
 
-	operator bool() const
-	{
-		return !m_strBuff.empty();
-	}
-	bool operator !() const
-	{
-		return m_strBuff.empty();
-	}
-	
 	inline const char* ptr() const
 	{
 		if (m_strBuff.empty())
@@ -306,27 +297,9 @@ public:
 	{
 		return ptr();
 	}
-    operator char*()
-    {
-        return ptr();
-    }
-
-	operator c_byte_p() const
-	{
-		return (c_byte_p)ptr();
-	}
-	operator byte_p()
-	{
-		return (byte_p)ptr();
-	}
-
-	operator const void*() const
+	operator char*()
 	{
 		return ptr();
-	}
-	operator void*()
-	{
-		return (byte_p)ptr();
 	}
 
 	const string* operator->() const
