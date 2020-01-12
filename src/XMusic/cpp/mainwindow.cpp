@@ -155,9 +155,10 @@ void MainWindow::showLogo()
 
     __setForeground(this);
 
+#if __android
     UINT uDelayTime = 100;
-#if !__android
-    uDelayTime += 800;
+#else
+    UINT uDelayTime = 800;
 #endif
     CApp::async(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
