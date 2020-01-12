@@ -19,7 +19,7 @@ public:
 #elif __windows
 #define __appFilePostfix "win32.zip"
 #elif __mac
-#define __appFilePostfix "macOs.dmg"
+#define __appFilePostfix "macOs.zip"
 #else
 #define __appFilePostfix ""
         return "";

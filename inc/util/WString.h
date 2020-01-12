@@ -93,13 +93,13 @@ public:
 
 	WString& operator<<(wchar_t wc)
 	{
-		m_str.append(1, wc);
+		m_str.push_back(wc);
 		return *this;
 	}
 
 	WString& operator<<(char c)
 	{
-		m_str.append(1, (wchar_t)c);
+		m_str.push_back(c);
 		return *this;
 	}
 

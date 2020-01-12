@@ -131,7 +131,7 @@ public:
         return unzip(itr->second, strDstFile);
     }
 
-    bool unzip(const wstring& strDstDir) const;
+    bool unzip(const string& strDstDir) const;
 
 	void close();
 	
@@ -142,11 +142,11 @@ private:
 class __UtilExt ziputil
 {
 public:
-	static bool unzFile(const string& strZipFile, const wstring& strDstDir, const string& strPwd = "")
+    static bool unzFile(const string& strZipFile, const string& strDstDir, const string& strPwd = "")
 	{
 		return CZipFile(strZipFile, strPwd).unzip(strDstDir);
 	}
-    static bool unzFile(Instream& ins, const wstring& strDstDir, const string& strPwd = "")
+    static bool unzFile(Instream& ins, const string& strDstDir, const string& strPwd = "")
 	{
 		return CZipFile(ins, strPwd).unzip(strDstDir);
 	}
