@@ -60,12 +60,10 @@ private:
 signals:
     void signal_run(bool bUpgradeFail, int nUpgradeErrMsg);
 
-    //void signal_appUpgradeProgress();
+    void sgnal_appUpgradeProgress(unsigned int uProgress);
 
 private slots:
     void slot_run(bool bUpgradeResult, int nUpgradeErrMsg);
-
-    //void slot_appUpgradeProgress();
 
 private:
     IModelObserver& getModelObserver() override

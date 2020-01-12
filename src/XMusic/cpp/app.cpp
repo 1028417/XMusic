@@ -710,6 +710,8 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
     return true;
 #endif
 
+    emit sgnal_appUpgradeProgress(0);
+
     for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
         cauto strAppUrl = upgradeUrl.appUrl();
@@ -718,6 +720,8 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             continue;
         }
         g_logger << "dowloadApp: " >> strAppUrl;
+
+        UINT uProgress = 0;
 
         CByteBuffer bbfData;
         CDownloader downloader(false);
@@ -730,7 +734,12 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
                     return false;
                 }
 
-                //emit sgnal_appUpgradeProgress(dltotal, dlnow);
+                UINT t_uProgress = dlnow/dltotal*100;
+                if (t_uProgress != uProgress)
+                {
+                    uProgress = t_uProgress;
+                    emit sgnal_appUpgradeProgress(uProgress);
+                }
 
                 return true;
         });

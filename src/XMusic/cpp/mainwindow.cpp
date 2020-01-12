@@ -116,6 +116,8 @@ inline static void __setForeground(MainWindow *pMainWnd)
 #define __setForeground(x)
 #endif
 
+static int g_nAppUpgradeProgress = -1;
+
 void MainWindow::showLogo()
 {
     for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
@@ -155,6 +157,8 @@ void MainWindow::showLogo()
 
     __setForeground(this);
 
+    connect(&m_app, &CApp::sgnal_appUpgradeProgress, this, &MainWindow::slot_appUpgradeProgress);
+
 #if __android
     UINT uDelayTime = 100;
 #else
@@ -172,11 +176,18 @@ void MainWindow::showLogo()
 
                 CApp::async(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
+
+                    CApp::async(3000, [labelLogoTip](){
+                        if (-1 == g_nAppUpgradeProgress)
+                        {
+                            labelLogoTip->setText("更新媒体库...");
+                        }
+                    });
                 });
             });
         });
 
-        timerutil::setTimerEx(40, [&](){
+        timerutil::setTimerEx(40, [](){
             auto peCompany = ui.labelLogoCompany->palette();
             auto crCompany = peCompany.color(QPalette::WindowText);
 
@@ -187,7 +198,7 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                timerutil::setTimerEx(500, [&](){
+                timerutil::setTimerEx(500, [](){
                     if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
@@ -215,6 +226,15 @@ void MainWindow::showLogo()
             return true;
         });
     });
+}
+
+void MainWindow::slot_appUpgradeProgress(unsigned int uProgress)
+{
+    g_nAppUpgradeProgress = uProgress;
+
+    QString qsText;
+    qsText.sprintf("升级App: %u%%", (UINT)g_nAppUpgradeProgress);
+    ui.labelLogoTip->setText(qsText);
 }
 
 void MainWindow::_init()

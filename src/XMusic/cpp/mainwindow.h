@@ -74,6 +74,8 @@ signals:
     void signal_updateSingerImg();
 
 private slots:
+    void slot_appUpgradeProgress(unsigned int uProgress);
+
     void slot_updatePlayingList(int nPlayingItem)
     {
         m_PlayingList.updateList(nPlayingItem);
