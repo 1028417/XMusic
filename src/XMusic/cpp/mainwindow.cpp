@@ -116,8 +116,6 @@ inline static void __setForeground(MainWindow *pMainWnd)
 #define __setForeground(x)
 #endif
 
-static int g_nAppUpgradeProgress = -1;
-
 void MainWindow::showLogo()
 {
     for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
@@ -157,7 +155,7 @@ void MainWindow::showLogo()
 
     __setForeground(this);
 
-    connect(&m_app, &CApp::sgnal_appUpgradeProgress, this, &MainWindow::slot_appUpgradeProgress);
+    //connect(&m_app, &CApp::sgnal_appUpgradeProgress, this, &MainWindow::slot_appUpgradeProgress);
 
 #if __android
     UINT uDelayTime = 100;
@@ -177,11 +175,58 @@ void MainWindow::showLogo()
                 CApp::async(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-                    CApp::async(3000, [labelLogoTip](){
+                    CApp::async(3333, [labelLogoTip](){
+#define __logoTip "更新媒体库"
                         if (-1 == g_nAppUpgradeProgress)
                         {
-                            labelLogoTip->setText("更新媒体库...");
+                            labelLogoTip->setText(__logoTip);
                         }
+
+                        timerutil::setTimerEx(333, [labelLogoTip](){
+                            if (!labelLogoTip->isVisible())
+                            {
+                                return false;
+                            }
+
+                            if (g_nAppUpgradeProgress >= 0)
+                            {
+                                QString qsText;
+                                /*if (100 == g_nAppUpgradeProgress)
+                                {
+                                    qsText.append("更新App: 正在安装");
+                                }
+                                else*/
+                                {
+                                    qsText.sprintf("更新App: %u%%", (UINT)g_nAppUpgradeProgress);
+                                }
+                                labelLogoTip->setText(qsText);
+                            }
+                            else
+                            {
+                                static byte_t s_uDotCount = 0;
+                                s_uDotCount++;
+                                if (s_uDotCount > 3)
+                                {
+                                    s_uDotCount = 0;
+                                }
+
+                                QString qsText(__logoTip);
+                                for (byte_t uIdx = 1; uIdx <= 3; uIdx++)
+                                {
+                                    if (s_uDotCount >= uIdx)
+                                    {
+                                        qsText.append('.');
+                                    }
+                                    else
+                                    {
+                                        qsText.append(' ');
+                                    }
+                                }
+                                labelLogoTip->setText(qsText);
+                            }
+
+                            return true;
+                        });
                     });
                 });
             });
@@ -226,15 +271,6 @@ void MainWindow::showLogo()
             return true;
         });
     });
-}
-
-void MainWindow::slot_appUpgradeProgress(unsigned int uProgress)
-{
-    g_nAppUpgradeProgress = uProgress;
-
-    QString qsText;
-    qsText.sprintf("升级App: %u%%", (UINT)g_nAppUpgradeProgress);
-    ui.labelLogoTip->setText(qsText);
 }
 
 void MainWindow::_init()

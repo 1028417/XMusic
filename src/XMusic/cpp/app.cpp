@@ -704,13 +704,16 @@ static bool cmdShell(const string& strCmd, bool bBlock = true)
 }
 #endif
 
+int g_nAppUpgradeProgress = -1;
+
 bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
 {
 #if __ios
     return true;
 #endif
 
-    emit sgnal_appUpgradeProgress(0);
+    g_nAppUpgradeProgress = 0;
+    //emit sgnal_appUpgradeProgress(0);
 
     for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
@@ -734,11 +737,14 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
                     return false;
                 }
 
-                UINT t_uProgress = dlnow/dltotal*100;
-                if (t_uProgress != uProgress)
+                if (dltotal > 0 && dlnow > 0)
                 {
-                    uProgress = t_uProgress;
-                    emit sgnal_appUpgradeProgress(uProgress);
+                    UINT uProgress = UINT(100*dlnow/dltotal);
+                    //if ((int)uProgress > g_nAppUpgradeProgress)
+                    {
+                        g_nAppUpgradeProgress = uProgress;
+                        //emit sgnal_appUpgradeProgress(uProgress);
+                    }
                 }
 
                 return true;

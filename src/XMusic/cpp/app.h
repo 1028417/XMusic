@@ -10,26 +10,21 @@
 
 #include "msgbox.h"
 
+#define __cyIPhoneXBangs __size(128)
+
 #if __windows || __mac
 #include <QLockFile>
 extern QLockFile g_lf;
 #endif
 
-#define __cyIPhoneXBangs __size(128)
-
 extern ITxtWriter& g_logger;
+
+extern int g_nAppUpgradeProgress;
 
 class CAppInit
 {
 protected:
     CAppInit(QApplication& app);
-};
-
-enum class E_UpgradeErrMsg
-{
-    UEM_None = 0,
-    UEM_AppUpgradeFail,
-    UEM_AppUpgraded
 };
 
 class CApp : public QApplication, private CAppInit, private IPlayerView
@@ -60,7 +55,7 @@ private:
 signals:
     void signal_run(bool bUpgradeFail, int nUpgradeErrMsg);
 
-    void sgnal_appUpgradeProgress(unsigned int uProgress);
+    //void sgnal_appUpgradeProgress(unsigned int uProgress);
 
 private slots:
     void slot_run(bool bUpgradeResult, int nUpgradeErrMsg);
@@ -75,6 +70,12 @@ private:
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 
+    enum class E_UpgradeErrMsg
+    {
+        UEM_None = 0,
+        UEM_AppUpgradeFail,
+        UEM_AppUpgraded
+    };
     bool _upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg);
     bool _upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
 
