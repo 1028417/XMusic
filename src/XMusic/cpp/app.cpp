@@ -744,40 +744,54 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
         if (!OFStream::writefilex(strApkFile, true, bbfData))
         {
-            g_logger << "saveApk fail:" >> strApkFile;
+            g_logger << "save appPackage fail: " >> strApkFile;
             return false;
         }
 
         installApk(strutil::toQstr(strApkFile));
 
 #elif __mac
-        IFBuffer ifbData(bbfData);
-        cauto strUpgradeDir = fsutil::workDir() + "/upgrade";
-        if (!ziputil::unzFile(ifbData, strUpgradeDir))
+        cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";
+        if (!OFStream::writefilex(strUpgradeFile, true, bbfData))
         {
-            g_logger >> "prase appPackage fail";
+            g_logger << "save appPackage fail: " >> strUpgradeFile;
             return false;
         }
+
+        cauto strUpgradeDir = fsutil::workDir() + "/XMusic.app";
+
+#define system(x) system((x).c_str())
+        (void)system("rm -rf " + strUpgradeDir);
+
+        nRet = system("tar -xf " + strUpgradeFile);
+        if (nRet)
+        {
+            g_logger << "unpack app fail: " >> nRet;
+            return false;
+        }
+        (void)system("rm -f " + strUpgradeFile);
 
         auto strAppDir = QApplication::applicationDirPath().toStdString();
         strAppDir = fsutil::GetParentDir(strAppDir);
         strAppDir = fsutil::GetParentDir(strAppDir);
         strutil::replace(strAppDir, " ", "\\ ");
 
-#define system(x) system((x).c_str())
-        nRet = system("mv " + strAppDir + " " + strAppDir + ".bak");
+        cauto strBakDir = strAppDir + ".bak";
+        nRet = system("mv " + strAppDir + " " + strBakDir);
         if (nRet)
         {
             g_logger << "backupApp fail: " >> nRet;
             return false;
         }
 
-        nRet = system("cp -r " + strUpgradeDir + "/XMusic.app " + strAppDir);
+        nRet = system("mv " + strUpgradeDir + " " + strAppDir);
         if (nRet)
         {
             g_logger << "upgradeApp fail: " >> nRet;
             return false;
         }
+
+        (void)system("rm -rf " + strBakDir);
 
 #elif __windows
         IFBuffer ifbData(bbfData);
