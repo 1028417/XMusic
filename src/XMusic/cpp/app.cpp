@@ -571,7 +571,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
         }
 
         bool bUncompatible = false;
-        if (newMedialibConf.uCompatibleCode > prevMedialibConf.uCompatibleCode)
+        if (prevMedialibConf.uCompatibleCode < newMedialibConf.uCompatibleCode)
         {
             bUncompatible = true;
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
@@ -724,8 +724,6 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         }
         g_logger << "dowloadApp: " >> strAppUrl;
 
-        UINT uProgress = 0;
-
         CByteBuffer bbfData;
         CDownloader downloader(false);
         int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](int64_t dltotal, int64_t dlnow){
@@ -828,9 +826,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             continue;
         }
 
-        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
-
-        string strTempDir = strParentDir + "upgrade";
+        string strTempDir = fsutil::workDir() + "\\upgrade";
         cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
         if (!cmdShell(strCmd))
         {
@@ -878,6 +874,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             return false;
         }
 
+        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
         if (!fsutil::copyFile(strStartupFile, strParentDir + __StartupFile))
         {
             g_logger >> "copy StartupFile fail";

@@ -166,7 +166,7 @@ void MainWindow::showLogo()
         ui.labelLogo->movie()->start();
 
         auto labelLogoTip = ui.labelLogoTip;
-        CApp::async(500, [labelLogoTip](){
+        CApp::async(100, [labelLogoTip](){
             labelLogoTip->setText("播放器");
 
             CApp::async(500, [labelLogoTip](){
@@ -175,14 +175,14 @@ void MainWindow::showLogo()
                 CApp::async(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-                    CApp::async(3333, [labelLogoTip](){
+                    CApp::async(2500, [labelLogoTip](){
 #define __logoTip "更新媒体库"
                         if (-1 == g_nAppUpgradeProgress)
                         {
                             labelLogoTip->setText(__logoTip);
                         }
 
-                        timerutil::setTimerEx(333, [labelLogoTip](){
+                        timerutil::setTimerEx(300, [labelLogoTip](){
                             if (!labelLogoTip->isVisible())
                             {
                                 return false;
@@ -193,7 +193,7 @@ void MainWindow::showLogo()
                                 QString qsText;
                                 /*if (100 == g_nAppUpgradeProgress)
                                 {
-                                    qsText.append("更新App: 正在安装");
+                                  qsText.append("更新App: 正在安装");
                                 }
                                 else*/
                                 {
@@ -203,17 +203,17 @@ void MainWindow::showLogo()
                             }
                             else
                             {
-                                static byte_t s_uDotCount = 0;
-                                s_uDotCount++;
-                                if (s_uDotCount > 3)
+                                static UINT uDotCount = 0;
+                                uDotCount++;
+                                if (uDotCount > 3)
                                 {
-                                    s_uDotCount = 0;
+                                    uDotCount = 0;
                                 }
 
                                 QString qsText(__logoTip);
                                 for (byte_t uIdx = 1; uIdx <= 3; uIdx++)
                                 {
-                                    if (s_uDotCount >= uIdx)
+                                    if (uDotCount >= uIdx)
                                     {
                                         qsText.append('.');
                                     }
@@ -243,12 +243,20 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                timerutil::setTimerEx(500, [](){
-                    if (!ui.labelLogoCompany->isVisible())
+                //timerutil::setTimerEx(500, [](){
+                    /*if (!ui.labelLogoCompany->isVisible())
                     {
                         return false;
                     }
 
+                    static UINT uTimes = 5;
+                    if (0 == --uTimes)
+                    {
+                        //ui.labelLogoCompany->setText()
+                        return false;
+                    }*/
+
+                CApp::async(500, 6, [](){
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
                     if (crCompany.alpha() < 255)

@@ -88,9 +88,22 @@ public:
     }
 
     static void async(UINT uDelayTime, cfn_void cb);
+
     static void async(cfn_void cb)
     {
         async(0, cb);
+    }
+
+    static void async(UINT uDelayTime, UINT uTimes, cfn_void cb)
+    {
+        async(uDelayTime, [=](){
+            cb();
+
+            if (uTimes > 1)
+            {
+                async(uDelayTime, uTimes-1, cb);
+            }
+        });
     }
 
     tagOption& getOption()
