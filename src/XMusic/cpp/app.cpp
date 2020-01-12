@@ -751,53 +751,33 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         installApk(strutil::toQstr(strApkFile));
 
 #elif __mac
-        cauto strDmgName = "xmusic" + newMedialibConf.strAppVersion;
-        string strDmgFile = fsutil::workDir() + "/" + strDmgName;
-        if (!OFStream::writefilex(strDmgFile, true, bbfData))
+        IFBuffer ifbData(bbfData);
+        cauto strUpgradeDir = fsutil::workDir() + "/upgrade";
+        if (!ziputil::unzFile(ifbData, strUpgradeDir))
         {
-            g_logger << "saveDmg fail:" >> strDmgFile;
-            return false;
-        }
-
-        strutil::replace(strDmgFile, " ", "\\ ");
-
-#define system(x) system((x).c_str())
-        cauto strCmd = "hdiutil attach -noverify -noautofsck -mountpoint "
-                + strDmgName + " " + strDmgFile;
-        //g_logger << "mount: " >> strCmd;
-        nRet = system(strCmd);
-        if (nRet)
-        {
-            g_logger << "attach dmg fail: " >> nRet;
-            return false;
-        }
-
-        string strMountDir = "/Volumes/" + strDmgName;
-        if (!fsutil::existDir(strMountDir))
-        {
-            g_logger << "check mountDir fail:" >> strMountDir;
+            g_logger >> "prase appPackage fail";
             return false;
         }
 
         auto strAppDir = QApplication::applicationDirPath().toStdString();
         strAppDir = fsutil::GetParentDir(strAppDir);
         strAppDir = fsutil::GetParentDir(strAppDir);
-        strAppDir = fsutil::GetParentDir(strAppDir);
         strutil::replace(strAppDir, " ", "\\ ");
 
-        if (system("rm -rf " + strAppDir))
+#define system(x) system((x).c_str())
+        nRet = system("mv " + strAppDir + " " + strAppDir + ".bak");
+        if (nRet)
         {
-            g_logger >> "copy dmg fail";
+            g_logger << "backupApp fail: " >> nRet;
             return false;
         }
 
-        if (system("cp " + strMountDir + " " + strAppDir))
+        nRet = system("cp -r " + strUpgradeDir + "/XMusic.app " + strAppDir);
+        if (nRet)
         {
-            g_logger >> "copy dmg fail";
+            g_logger << "upgradeApp fail: " >> nRet;
             return false;
         }
-
-        (void)system("hdiutil detach " + strMountDir);
 
 #elif __windows
         IFBuffer ifbData(bbfData);
