@@ -777,6 +777,8 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         strutil::replace(strAppDir, " ", "\\ ");
 
         cauto strBakDir = strAppDir + ".bak";
+        (void)system("rm -rf " + strBakDir);
+
         nRet = system("mv " + strAppDir + " " + strBakDir);
         if (nRet)
         {
@@ -792,6 +794,15 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         }
 
         (void)system("rm -rf " + strBakDir);
+
+        g_logger << "appUpgrade success, restart: " >> strAppDir;
+        g_lf.unlock();
+
+        nRet = system("open " + strAppDir);
+        if (nRet)
+        {
+            g_logger << "restartApp fail: " >> nRet;
+        }
 
 #elif __windows
         IFBuffer ifbData(bbfData);

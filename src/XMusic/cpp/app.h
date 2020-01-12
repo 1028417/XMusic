@@ -10,6 +10,11 @@
 
 #include "msgbox.h"
 
+#if __windows || __mac
+#include <QLockFile>
+extern QLockFile g_lf;
+#endif
+
 #define __cyIPhoneXBangs __size(128)
 
 extern ITxtWriter& g_logger;

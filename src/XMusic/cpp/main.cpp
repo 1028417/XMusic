@@ -2,15 +2,14 @@
 #include "app.h"
 
 #if __windows || __mac
-#include <QLockFile>
+QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
 int main(int argc, char *argv[])
 {
 #if __windows || __mac
-    QLockFile lf(fsutil::getHomeDir() + "/xmusic.lock");
-    lf.setStaleLockTime(1);
-    if (!lf.tryLock(0))
+    g_lf.setStaleLockTime(1);
+    if (!g_lf.tryLock(0))
     {
         return -1;
     }
