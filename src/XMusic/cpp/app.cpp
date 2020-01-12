@@ -798,7 +798,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         g_logger << "appUpgrade success, restart: " >> strAppDir;
         g_lf.unlock();
 
-        nRet = system("open " + strAppDir);
+        nRet = system("open -n " + strAppDir);
         if (nRet)
         {
             g_logger << "restartApp fail: " >> nRet;
