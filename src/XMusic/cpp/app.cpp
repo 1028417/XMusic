@@ -826,7 +826,9 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             continue;
         }
 
-        string strTempDir = fsutil::workDir() + "\\upgrade";
+        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
+
+        string strTempDir = strParentDir + "XMusicUpgrade" + newMedialibConf.strAppVersion;
         cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
         if (!cmdShell(strCmd))
         {
@@ -874,7 +876,6 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
             return false;
         }
 
-        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
         if (!fsutil::copyFile(strStartupFile, strParentDir + __StartupFile))
         {
             g_logger >> "copy StartupFile fail";
