@@ -828,7 +828,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 
         cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
 
-        string strTempDir = strParentDir + "XMusicUpgrade" + newMedialibConf.strAppVersion;
+        string strTempDir = strParentDir + "Upgrade";
         cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
         if (!cmdShell(strCmd))
         {
