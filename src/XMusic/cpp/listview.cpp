@@ -86,7 +86,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
             {
                 QColor cr = g_crText;
                 cr.setAlpha(CPainter::oppTextAlpha(20));
-                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight-1, cr);
+                painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight, cr);
             }
 
             _onPaintRow(painter, lvRow);
