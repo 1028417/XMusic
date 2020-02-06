@@ -184,4 +184,5 @@ OBJECTS_DIR = $$build_dir
 
 DISTFILES += \
     android/src/xmusic/XActivity.java \
-    medialib.conf
+    medialib.conf \
+    android/src/xmusic/XActivity.java
