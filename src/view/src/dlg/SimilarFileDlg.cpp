@@ -8,6 +8,8 @@ void CSimilarFileDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 
 	DDX_Control(pDX, IDC_LIST1, m_wndList);
+
+	DDX_Control(pDX, IDC_SLIDER1, m_wndSlider);
 }
 
 BEGIN_MESSAGE_MAP(CSimilarFileDlg, CDialog)
@@ -67,12 +69,11 @@ void CSimilarFileDlg::_genPercent()
 	});
 	m_arrPercent.assign(setPercent);
 
-	CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
-	pSlider->SetPageSize(1);
+	m_wndSlider.SetPageSize(1);
 
 	auto uMax = m_arrPercent.size() - 1;
-	pSlider->SetRange(0, uMax);
-	pSlider->SetPos(uMax);
+	m_wndSlider.SetRange(0, uMax);
+	m_wndSlider.SetPos(uMax);
 }
 
 void CSimilarFileDlg::Refresh(UINT uPos)
@@ -106,6 +107,8 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 	};
 
 	m_uPos = MIN(uPos, m_arrPercent.size()-1);
+
+	m_wndSlider.SetPos(m_uPos);
 
 	m_arrPercent.get(m_uPos, [&](UINT uPercent) {
 		m_arrSimilarFile([&](auto& arrSimilarFile, size_t group) {
@@ -215,9 +218,8 @@ void CSimilarFileDlg::OnBnClickedRemove()
 			return similarGroup.size() <= 1;
 		});
 	}
-
-	CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
-	auto prevPos = pSlider->GetPos();
+	
+	auto prevPos = m_wndSlider.GetPos();
 	_genPercent();
 
 	int iTopItem = m_wndList.GetTopIndex();
@@ -266,8 +268,7 @@ void CSimilarFileDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 	if (SB_ENDSCROLL == nSBCode)
 	{
-		CSliderCtrl* pSlider = (CSliderCtrl*)this->GetDlgItem(IDC_SLIDER1);
-		UINT uPos = pSlider->GetPos();
+		UINT uPos = m_wndSlider.GetPos();
 		if (uPos != m_uPos)
 		{
 			Refresh(uPos);

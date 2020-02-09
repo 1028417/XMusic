@@ -19,6 +19,8 @@ private:
 
 	CObjectList m_wndList;
 
+	CSliderCtrl m_wndSlider;
+
 	SArray<UINT> m_arrPercent;
 
 	TD_SimilarFile& m_arrSimilarFile;
