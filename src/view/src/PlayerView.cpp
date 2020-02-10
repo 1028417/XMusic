@@ -310,7 +310,7 @@ void CPlayerView::_addInMedia()
 	FileDlgOpt.strTitle = L"选择文件合入";
 	FileDlgOpt.strFilter = __MediaFilter;
 	FileDlgOpt.strInitialDir = fsutil::GetParentDir(m_view.getMediaLib().GetAbsPath());
-	CFileDlgEx fileDlg(FileDlgOpt);
+	static CFileDlgEx fileDlg(FileDlgOpt);
 
 	list<wstring> lstFiles;
 	wstring strDir = fileDlg.ShowOpenMulti(lstFiles);		
