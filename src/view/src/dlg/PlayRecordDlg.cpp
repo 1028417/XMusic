@@ -38,6 +38,9 @@ BOOL CPlayRecordDlg::OnInitDialog()
 		.addDynamic(_T("нд╪Ч"), 1.0);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
+
+	ListPara.nHeaderHeight = 0;
+
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	dbtime_t maxTime = 0;
