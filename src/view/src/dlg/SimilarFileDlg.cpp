@@ -42,6 +42,7 @@ BOOL CSimilarFileDlg::OnInitDialog()
 		.addFix(L"Ê±³¤", 70);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
+	ListPara.uItemHeight = 50;
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
