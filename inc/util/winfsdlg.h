@@ -73,7 +73,7 @@ private:
 
 	wstring m_strTitle;
 
-	TCHAR m_lpstrFileName[10240];
+	TCHAR m_lpstrFileName[40960];
 
 protected:
 	void _setOpt(const tagFileDlgOpt& opt);

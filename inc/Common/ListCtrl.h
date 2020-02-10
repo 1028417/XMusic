@@ -245,7 +245,7 @@ public:
 		COLORREF crText = 0;
 		float fFontSize = 0;
 
-		int nHeaderHeight = 0;
+		int nHeaderHeight = -1;
 		float fHeaderFontSize = 0;
 
 		UINT uItemHeight = 0;
