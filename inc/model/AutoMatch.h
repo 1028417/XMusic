@@ -81,7 +81,7 @@ public:
 private:
 	class CSingerMgr& m_SingerMgr;
 
-	SSet<wstring> m_setSingerName;
+	list<wstring> m_lstSingerName;
 
 public:
 	void genSearchMediaInfo(CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
