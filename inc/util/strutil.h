@@ -82,9 +82,11 @@ public:
 
 	static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);
-
 	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
 	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
+
+	static void eraseChar(wstring& str, wchar_t chrFind);
+	static void eraseChars(wstring& str, const wstring& strFindChars);
 
 	static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
 	static string base64_encode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)
