@@ -88,8 +88,6 @@ public:
 
 	inline static wstring transSingerName(const wstring& strSingerName);
 	
-	inline static bool matchSingerName(const wstring& strTitle, const wstring& strSingerName);
-
 	wstring matchSingerName(const wstring& strTitle);
 };
 
