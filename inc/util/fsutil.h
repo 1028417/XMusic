@@ -210,6 +210,8 @@ public:
     static bool createDir(const wstring& strDir);
 	static bool createDir(const string& strDir);
 
+	static bool removeDirTree(const wstring& strDir);
+
     static bool removeDir(const wstring& strDir);
     static bool removeFile(const wstring& strFile);
 
