@@ -183,22 +183,36 @@ void CBkgDlg::init()
     m_strHBkgDir = strWorkDir + __hbkgdir;
     m_strVBkgDir = strWorkDir + __vbkgdir;
 
-    auto strFileName = to_wstring(time(NULL));
-
     if (!fsutil::existDir(m_strHBkgDir))
     {
-        if (fsutil::createDir(m_strHBkgDir))
+        (void)fsutil::createDir(m_strHBkgDir);
+
+#if __android
+        for (UINT uIdx = 1; uIdx < 100; uIdx++)
         {
-            //fsutil::copyFile(L"assets:" __hbkgdir L"win10" , m_strHBkgDir + strFileName);
+            cauto strFile = to_wstring(uIdx);
+            if (!fsutil::copyFile(L"assets:" __hbkgdir + strFile + L".jpg", m_strHBkgDir + strFile))
+            {
+                break;
+            }
         }
+#endif
     }
 
     if (!fsutil::existDir(m_strVBkgDir))
     {
-        if (fsutil::createDir(m_strVBkgDir))
+        (void)fsutil::createDir(m_strVBkgDir);
+
+#if __android
+        for (UINT uIdx = 1; uIdx < 100; uIdx++)
         {
-            //fsutil::copyFile(L"assets:" __vbkgdir L"win10", m_strVBkgDir + strFileName);
+            cauto strFile = to_wstring(uIdx);
+            if (!fsutil::copyFile(L"assets:" __vbkgdir + strFile + L".jpg", m_strVBkgDir + strFile))
+            {
+                break;
+            }
         }
+#endif
     }
 
     fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
@@ -231,6 +245,11 @@ void CBkgDlg::show()
     ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
     CDialog::show();
+
+    m_bkgView.setVisible(false);
+    m_app.async(10, [&](){
+        m_bkgView.setVisible(true);
+    });
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -468,7 +487,7 @@ void CBkgDlg::_onClose()
     m_bkgView.reset();
 }
 
-static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"png", L"bmp");
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {

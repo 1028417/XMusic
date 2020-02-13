@@ -105,7 +105,7 @@ android {
 
     LIBS += -L../../bin -lDbghelp
 
-    platform =win
+    platform = win
     DESTDIR = ../../bin
 }
 
@@ -117,16 +117,16 @@ font.files += ../../bin/font/Microsoft-YaHei-Light.ttc
 #font.files += ../../bin/font/Microsoft-YaHei-Regular.ttc
 font.files += ../../bin/font/Microsoft-YaHei-Semibold.ttc
 
-#hbkg.files += ../../bin/bkg/hbkg/win10
-#vbkg.files += ../../bin/bkg/vbkg/win10
+hbkg.files += ../../release/hbkg/*
+vbkg.files += ../../release/vbkg/*
 
 android {
     #CONFIG += mobility
     #MOBILITY =
 
     font.path = /assets/font
-    #hbkg.path = /assets/bkg/hbkg
-    #vbkg.path = /assets/bkg/vbkg
+    hbkg.path = /assets/bkg/hbkg
+    vbkg.path = /assets/bkg/vbkg
     INSTALLS += font hbkg vbkg
 
     DISTFILES += \
@@ -161,8 +161,8 @@ macx {
     QMAKE_INFO_PLIST += mac.plist
 
     font.path = Contents/MacOS/font
-    #hbkg.path = Contents/MacOS/bkg/hbkg
-    #vbkg.path = Contents/MacOS/bkg/vbkg
+    hbkg.path = Contents/MacOS/bkg/hbkg
+    vbkg.path = Contents/MacOS/bkg/vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 }
 
@@ -172,8 +172,8 @@ ios {
     #QMAKE_INFO_PLIST += iossimulator.plist #ios.plist
 
     font.path = /font
-    #hbkg.path = /bkg/hbkg
-    #vbkg.path = /bkg/vbkg
+    hbkg.path = /bkg/hbkg
+    vbkg.path = /bkg/vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 } else {
 MOC_DIR = $$build_dir
