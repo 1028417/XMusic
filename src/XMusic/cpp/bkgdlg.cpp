@@ -176,17 +176,14 @@ void CBkgDlg::init()
         m_colorDlg.show();
     });
 
-#define __hbkgdir L"/bkg/hbkg/"
-#define __vbkgdir L"/bkg/vbkg/"
-
     cauto strWorkDir = strutil::toWstr(fsutil::workDir());
-    m_strHBkgDir = strWorkDir + __hbkgdir;
-    m_strVBkgDir = strWorkDir + __vbkgdir;
+    m_strHBkgDir = strWorkDir + L"/hbkg/";
+    m_strVBkgDir = strWorkDir + L"/vbkg/";
 
 #if __android
     wstring strBkgSrc = L"assets:";
 #else
-    wstring strBkgSrc = m_app.applicationDirPath();
+    wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
 #endif
 
     if (!fsutil::existDir(m_strHBkgDir))
