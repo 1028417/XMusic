@@ -125,8 +125,8 @@ android {
     #MOBILITY =
 
     font.path = /assets/font
-    hbkg.path = /assets/bkg/hbkg
-    vbkg.path = /assets/bkg/vbkg
+    hbkg.path = /assets/hbkg
+    vbkg.path = /assets/vbkg
     INSTALLS += font hbkg vbkg
 
     DISTFILES += \
@@ -161,8 +161,8 @@ macx {
     QMAKE_INFO_PLIST += mac.plist
 
     font.path = Contents/MacOS/font
-    hbkg.path = Contents/MacOS/bkg/hbkg
-    vbkg.path = Contents/MacOS/bkg/vbkg
+    hbkg.path = Contents/MacOS/hbkg
+    vbkg.path = Contents/MacOS/vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 }
 
@@ -172,8 +172,8 @@ ios {
     #QMAKE_INFO_PLIST += iossimulator.plist #ios.plist
 
     font.path = /font
-    hbkg.path = /bkg/hbkg
-    vbkg.path = /bkg/vbkg
+    hbkg.path = /hbkg
+    vbkg.path = /vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 } else {
 MOC_DIR = $$build_dir

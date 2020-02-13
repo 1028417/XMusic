@@ -183,36 +183,42 @@ void CBkgDlg::init()
     m_strHBkgDir = strWorkDir + __hbkgdir;
     m_strVBkgDir = strWorkDir + __vbkgdir;
 
+#if __android
+    wstring strBkgSrc = L"assets:";
+#else
+    wstring strBkgSrc = m_app.applicationDirPath();
+#endif
+
     if (!fsutil::existDir(m_strHBkgDir))
     {
         (void)fsutil::createDir(m_strHBkgDir);
 
-#if __android
-        for (UINT uIdx = 1; uIdx < 100; uIdx++)
+        for (UINT uIdx = 1; uIdx < 10; uIdx++)
         {
             cauto strFile = to_wstring(uIdx);
-            if (!fsutil::copyFile(L"assets:" __hbkgdir + strFile + L".jpg", m_strHBkgDir + strFile))
+            cauto strBkg = strBkgSrc + L"/hbkg/" + strFile + L".jpg";
+
+            if (!fsutil::copyFile(strBkg, m_strHBkgDir + strFile))
             {
                 break;
             }
         }
-#endif
     }
 
     if (!fsutil::existDir(m_strVBkgDir))
     {
         (void)fsutil::createDir(m_strVBkgDir);
 
-#if __android
-        for (UINT uIdx = 1; uIdx < 100; uIdx++)
+        for (UINT uIdx = 1; uIdx < 10; uIdx++)
         {
             cauto strFile = to_wstring(uIdx);
-            if (!fsutil::copyFile(L"assets:" __vbkgdir + strFile + L".jpg", m_strVBkgDir + strFile))
+            cauto strBkg = strBkgSrc + L"/vbkg/" + strFile + L".jpg";
+
+            if (!fsutil::copyFile(strBkg, m_strVBkgDir + strFile))
             {
                 break;
             }
         }
-#endif
     }
 
     fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
