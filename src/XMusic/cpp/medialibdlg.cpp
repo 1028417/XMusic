@@ -35,7 +35,7 @@ void CMedialibDlg::init()
 {
     ui.setupUi(this);
 
-    _initOuter();
+    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
 #if __android || __ios
     m_MedialibView.setFont(1.05);
@@ -51,12 +51,12 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_MedialibView.play();
     });
+
+    _initOuter();
 }
 
 void CMedialibDlg::_show()
 {
-    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
-
     CApp::async([&](){
         _resizeTitle();
     });

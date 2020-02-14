@@ -36,6 +36,8 @@ private:
         return g_crTheme;
     }
 
+    void _show(cfn_void cbClose);
+
     void _setPos();
 
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}

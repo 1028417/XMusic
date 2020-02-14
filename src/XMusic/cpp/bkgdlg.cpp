@@ -170,6 +170,8 @@ void CBkgDlg::init()
 {
     ui.setupUi(this);
 
+    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
+
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(ui.btnColor, &CButton::signal_clicked, [&]() {
@@ -245,21 +247,12 @@ void CBkgDlg::init()
 
 void CBkgDlg::show()
 {
-    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
-
-    CDialog::show();
-
     m_bkgView.setVisible(false);
-
-#if __android || __ios
-    m_app.async(100, [&](){
+    m_app.async(10, [&](){
         m_bkgView.setVisible(true);
     });
 
-#else
-    m_bkgView.setVisible(true);
-    m_bkgView.repaint();
-#endif
+    CDialog::show();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)

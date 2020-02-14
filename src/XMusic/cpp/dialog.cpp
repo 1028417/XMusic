@@ -42,6 +42,11 @@ void CDialog::show(cfn_void cbClose)
 {
     setParent(&m_parent, Qt::Dialog | Qt::FramelessWindowHint);
 
+    _show(cbClose);
+}
+
+void CDialog::_show(cfn_void cbClose)
+{
     if (!m_bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -87,7 +92,7 @@ void CDialog::show(QWidget& parent, cfn_void cbClose)
 {
     setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
 
-    show(cbClose);
+    _show(cbClose);
 }
 
 bool CDialog::event(QEvent *ev)
