@@ -299,7 +299,7 @@ void CFindDlg::OnBnClickedBtnVerify()
 
 void CFindDlg::OnBnClickedBtnExport()
 {
-	m_view.exportMedia(m_MediaMixer.getMedias(), *this);
+	m_view.exportMedia(m_MediaMixer.getMedias(), this);
 }
 
 void CFindDlg::OnBnClickedBtnExplore()

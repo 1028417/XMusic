@@ -171,8 +171,9 @@ public:
 		, cfn_void_t<const tagVerifyResult&> cb = NULL);
 	void verifyMedia(CMediaSet& MediaSet, CWnd *pWnd = NULL);
 
-	void exportMedia(const TD_MediaList& lstMedias, CWnd& wnd);
 	void exportMediaSet(CMediaSet& MediaSet);
+	void exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd = NULL);
+	void exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd = NULL);
 	void exportDir(CMediaDir& dir);
 	
 	void snapshotDir(CMediaDir& dir);

@@ -322,12 +322,46 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	return IDOK == ProgressDlg.DoModal(strTitle, &wnd);
 }
 
-void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
+void __view::exportMediaSet(CMediaSet& MediaSet)
 {
-	wstring strExportPath;
-	bool bRet = _exportMedia(wnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
-		strExportPath = ExportOption.strExportPath;
+	TD_MediaList lstMedias;
+	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType || E_MediaSetType::MST_Album == MediaSet.m_eType)
+	{
+		MediaSet.GetAllMedias(lstMedias);
+	}
+	else
+	{
+		m_ResModule.ActivateResource();
 
+		TD_MediaSetList lstMediaSets;
+		CExportMediaSetDlg MediaSetDlg(*this, MediaSet, lstMediaSets);
+		if (IDOK != MediaSetDlg.DoModal())
+		{
+			return;
+		}
+
+		lstMediaSets([&](CMediaSet& MediaSet) {
+			MediaSet.GetMedias(lstMedias);
+		});
+	}
+
+	if (!lstMedias)
+	{
+		//CMainApp::showMsg(L"未发现曲目！", L"导出曲目");
+		return;
+	}
+
+	exportMedia(lstMedias);
+}
+
+void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
+{
+	if (NULL == pWnd)
+	{
+		pWnd = &m_MainWnd;
+	}
+
+	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		if (ExportOption.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
@@ -365,36 +399,31 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd& wnd)
 	});
 }
 
-void __view::exportMediaSet(CMediaSet& MediaSet)
+void __view::exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd)
 {
-	TD_MediaList lstMedias;
-	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType || E_MediaSetType::MST_Album == MediaSet.m_eType)
+	if (NULL == pWnd)
 	{
-		MediaSet.GetAllMedias(lstMedias);
+		pWnd = &m_MainWnd;
 	}
-	else
-	{
-		m_ResModule.ActivateResource();
-
-		TD_MediaSetList lstMediaSets;
-		CExportMediaSetDlg MediaSetDlg(*this, MediaSet, lstMediaSets);
-		if (IDOK != MediaSetDlg.DoModal())
-		{
-			return;
-		}
-
-		lstMediaSets([&](CMediaSet& MediaSet) {
-			MediaSet.GetMedias(lstMedias);
+	
+	(void)_exportMedia(*pWnd, L"导出曲目", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+		SMap<wstring, wstring> mapDirs;
+		map<wstring, TD_IMediaList> mapMedias;
+		lstMedias([&](IMedia& media) {
+			auto& strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
+			mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
 		});
-	}
 
-	if (!lstMedias)
-	{
-		//CMainApp::showMsg(L"未发现曲目！", L"导出曲目");
-		return;
-	}
-
-	exportMedia(lstMedias, m_MainWnd);
+		for (auto& pr : mapMedias)
+		{
+			tagExportMedia ExportMedia;
+			ExportMedia.strDstDir = pr.first;
+			ExportMedia.paMedias.swap(pr.second);
+			ExportOption.lstExportMedias.push_back(ExportMedia);
+		}
+		
+		return lstMedias.size();
+	});
 }
 
 void __view::exportDir(CMediaDir& dir)

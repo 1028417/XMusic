@@ -528,6 +528,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			{
 				m_view.exportDir((CMediaDir&)MediaRes);
 			}
+			else
+			{
+				m_view.exportMedia(TD_IMediaList(lstMediaRes));
+			}
 		}))
 		{
 			if (NULL != m_pCurrPath)

@@ -416,6 +416,7 @@ BEGIN
         MENUITEM "播放",                          ID_OPEN
         MENUITEM "查找",                          ID_FIND
         MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM "导出",                          ID_EXPORT
         MENUITEM "查看分轨",                        ID_ViewTrack
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
