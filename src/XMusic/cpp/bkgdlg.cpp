@@ -462,9 +462,6 @@ void CBkgDlg::deleleBkg(size_t uIdx)
             _setBkg(L"");
         }
 
-        fsutil::removeFile(_bkgDir() + pr.first);
-        vecBkgFile.erase(vecBkgFile.begin()+uIdx);
-
         if (pr.second)
         {
             for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); ++itr)
@@ -476,6 +473,9 @@ void CBkgDlg::deleleBkg(size_t uIdx)
                 }
             }
         }
+
+        fsutil::removeFile(_bkgDir() + pr.first);
+        vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
         m_bkgView.update();
     }
