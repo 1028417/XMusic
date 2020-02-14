@@ -66,6 +66,8 @@ public:
 
 	BOOL AddPage(CPage& Page, E_DockViewType eViewType);
 
+	void RemovePage(CPage& Page);
+
 	BOOL ActivePage(CPage& Page);
 
 	void fixWorkArea(bool bFullScreen);

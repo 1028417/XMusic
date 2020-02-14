@@ -175,6 +175,8 @@ public:
 
 	BOOL AddPage(CPage& Page);
 
+	BOOL RemovePage(CPage& Page);
+
 	BOOL SetActivePage(CPage& pPage);
 
 	BOOL SetPageTitle(CPage& Page, const CString& cstrTitle, int iImage = -1);
