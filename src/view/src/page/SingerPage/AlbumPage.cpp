@@ -324,7 +324,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 		m_wndMediaResPanel.ShowPath();
 		(void)m_wndMediaResPanel.ShowWindow(SW_SHOW);
 		
-		// TODO m_view.m_MainWnd.RemvePage(*this);
+		// TODO this->DestryWindow(); m_view.m_MainWnd.RemvePage(*this);
 		this->Invalidate();
 
 		return;
