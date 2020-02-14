@@ -250,10 +250,17 @@ void CBkgDlg::show()
     CDialog::show();
 
     m_bkgView.setVisible(false);
-    this->repaint();
-    //m_app.async([&](){
+
+#if __android || __ios
+    m_app.async(50, [&](){
         m_bkgView.setVisible(true);
-    //});
+    });
+
+#else
+    this->repaint();
+    m_bkgView.setVisible(true);
+    m_bkgView.repaint();
+#endif
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
