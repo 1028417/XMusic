@@ -219,11 +219,11 @@ void CBkgDlg::init()
     }
 
     fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
-        m_vecHBkgFile.push_back(strSubFile);
+        m_vecHBkgFile.insert(m_vecHBkgFile.begin(), {strSubFile,NULL});
     });
 
     fsutil::findSubFile(m_strVBkgDir, [&](const wstring& strSubFile) {
-        m_vecVBkgFile.push_back(strSubFile);
+        m_vecVBkgFile.insert(m_vecVBkgFile.begin(), {strSubFile,NULL});
     });
 
     cauto strHBkg = m_app.getOption().strHBkg;
@@ -250,9 +250,10 @@ void CBkgDlg::show()
     CDialog::show();
 
     m_bkgView.setVisible(false);
-    m_app.async(10, [&](){
+    this->repaint();
+    //m_app.async([&](){
         m_bkgView.setVisible(true);
-    });
+    //});
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -301,18 +302,19 @@ void CBkgDlg::_relayout(int cx, int cy)
 
 const QPixmap* CBkgDlg::pixmap(size_t uIdx)
 {
-    auto& vecPixmap = _vecPixmap();
-    if (uIdx < vecPixmap.size())
-    {
-        return vecPixmap[uIdx];
-    }
-
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx >= vecBkgFile.size())
     {
         return NULL;
     }
-    cauto strBkgFile = _bkgDir() + vecBkgFile[uIdx];
+
+    auto& pr = vecBkgFile[uIdx];
+    if (pr.second)
+    {
+        return pr.second;
+    }
+
+    cauto strBkgFile = _bkgDir() + pr.first;
 
     m_lstPixmap.emplace_back(QPixmap());
     auto& pm = m_lstPixmap.back();
@@ -322,8 +324,7 @@ const QPixmap* CBkgDlg::pixmap(size_t uIdx)
         CPainter::zoomoutPixmap(pm, __snapshotZoomout);
     }
 
-    vecPixmap.push_back(&pm);
-    return &pm;
+    return pr.second = &pm;
 }
 
 void CBkgDlg::_setBkg(const wstring& strFile)
@@ -365,7 +366,7 @@ void CBkgDlg::setBkg(size_t uIdx)
         uIdx--;
         if (uIdx < vecBkgFile.size())
         {
-            _setBkg(vecBkgFile[uIdx]);
+            _setBkg(vecBkgFile[uIdx].first);
             close();
         }
         else
@@ -436,7 +437,9 @@ void CBkgDlg::addBkg(const wstring& strFile)
 
     _setBkg(strFileName);
 
-    _vecBkgFile().push_back(strFileName);
+    auto& vecBkgFile = _vecBkgFile();
+    vecBkgFile.insert(vecBkgFile.begin(), {strFileName,NULL});
+
     close(); //m_bkgView.update();
 }
 
@@ -451,25 +454,22 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx < vecBkgFile.size())
     {
-        auto& strBkg = m_bHScreen ? m_app.getOption().strHBkg
-                                  : m_app.getOption().strVBkg;
-        if (strBkg == *vecBkgFile[uIdx])
+        cauto pr = vecBkgFile[uIdx];
+
+        cauto strBkg = m_bHScreen ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
+        if (strBkg == *pr.first)
         {
             _setBkg(L"");
         }
 
-        fsutil::removeFile(_bkgDir() + vecBkgFile[uIdx]);
+        fsutil::removeFile(_bkgDir() + pr.first);
         vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
-        auto& vecPixmap = _vecPixmap();
-        if (uIdx < vecPixmap.size())
+        if (pr.second)
         {
-            auto pm = vecPixmap[uIdx];
-            vecPixmap.erase(vecPixmap.begin()+uIdx);
-
             for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); ++itr)
             {
-                if (&*itr == pm)
+                if (&*itr == pr.second)
                 {
                     m_lstPixmap.erase(itr);
                     break;
@@ -483,8 +483,15 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-    m_vecHPixmap.clear();
-    m_vecVPixmap.clear();
+    for (auto& pr : m_vecHBkgFile)
+    {
+        pr.second = NULL;
+    }
+    for (auto& pr : m_vecVBkgFile)
+    {
+        pr.second = NULL;
+    }
+
     m_lstPixmap.clear();
 
     m_bkgView.reset();

@@ -146,12 +146,10 @@ private:
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
-    vector<WString> m_vecHBkgFile;
-    vector<WString> m_vecVBkgFile;
+    vector<pair<WString, const QPixmap*>> m_vecHBkgFile;
+    vector<pair<WString, const QPixmap*>> m_vecVBkgFile;
 
     list<QPixmap> m_lstPixmap;
-    vector<const QPixmap*> m_vecHPixmap;
-    vector<const QPixmap*> m_vecVPixmap;
 
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
@@ -169,14 +167,9 @@ private:
         return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     }
 
-    inline vector<WString>& _vecBkgFile()
+    inline vector<pair<WString, const QPixmap*>>& _vecBkgFile()
     {
         return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
-    }
-
-    inline vector<const QPixmap*>& _vecPixmap()
-    {
-        return m_bHScreen?m_vecHPixmap:m_vecVPixmap;
     }
 
     void _relayout(int cx, int cy) override;
