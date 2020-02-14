@@ -244,7 +244,13 @@ namespace NS_SSTL
 			return nRetPos;
 		}
 
-		// TODO insert(uPos)
+        void insert(size_t uPos, __DataConstRef data)
+        {
+            if (uPos <= m_data.size())
+            {
+                m_data.insert(m_data.begin()+uPos, data);
+            }
+        }
 
 		__DataRef add(__DataConstRef data)
 		{
