@@ -190,7 +190,7 @@ void CBkgDlg::init()
     {
         (void)fsutil::createDir(m_strHBkgDir);
 
-        for (UINT uIdx = 1; uIdx < 10; uIdx++)
+        for (UINT uIdx = 1; uIdx < 20; uIdx++)
         {
             cauto strFile = to_wstring(uIdx);
             cauto strBkg = strBkgSrc + L"/hbkg/" + strFile + L".jpg";
@@ -206,7 +206,7 @@ void CBkgDlg::init()
     {
         (void)fsutil::createDir(m_strVBkgDir);
 
-        for (UINT uIdx = 1; uIdx < 10; uIdx++)
+        for (UINT uIdx = 1; uIdx < 20; uIdx++)
         {
             cauto strFile = to_wstring(uIdx);
             cauto strBkg = strBkgSrc + L"/vbkg/" + strFile + L".jpg";
