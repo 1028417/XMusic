@@ -31,7 +31,8 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         super.onCreate(savedInstanceState);
 
         PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "xmusicWakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+            | PowerManager.ACQUIRE_CAUSES_WAKEUP, "xmusicWakelock");
         wakeLock.acquire();
     }
 };
