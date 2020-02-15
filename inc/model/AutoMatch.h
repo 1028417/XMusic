@@ -1,7 +1,5 @@
 #pragma once
 
-#define __eraseChars L" _&.'"
-
 struct __ModelExt tagFileTitle
 {
 	tagFileTitle() {}
