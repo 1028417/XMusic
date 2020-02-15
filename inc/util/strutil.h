@@ -80,13 +80,53 @@ public:
 		return strRet;
 	}
 
-	static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
-	static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);
-	static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace);
-	static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace);
+    static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
+    static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace)
+    {
+        wstring strRet(str);
+        replaceChar(strRet, chrFind, chrReplace);
+        return strRet;
+    }
+
+    static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);
+    static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace)
+    {
+        wstring strRet(str);
+        replaceChars(strRet, strFindChars, chrReplace);
+        return strRet;
+    }
 
 	static void eraseChar(wstring& str, wchar_t chrFind);
-	static void eraseChars(wstring& str, const wstring& strFindChars);
+    static wstring eraseChar_r(const wstring& str, wchar_t chrFind)
+    {
+        wstring strRet(str);
+        eraseChar(strRet, chrFind);
+        return strRet;
+    }
+
+    template <class S>
+    static void eraseChars(S& str, const S& strFindChars)
+    {
+        for (auto itr=str.begin(); itr!=str.end(); )
+        {
+            if (S::npos != strFindChars.find(*itr))
+            {
+                itr = str.erase(itr);
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+    }
+
+    template <class S>
+    static wstring eraseChars_r(const S& str, const S& strFindChars)
+    {
+        S strRet(str);
+        eraseChars(strRet, strFindChars);
+        return strRet;
+    }
 
 	static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
 	static string base64_encode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)

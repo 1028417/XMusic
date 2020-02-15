@@ -130,17 +130,15 @@ public:
 
     static string genUrl(const string& strUrl, const string& strFileTitle);
 
-    bool checkUrl(const string& strFileTitle);
-    bool checkUrl(const wstring& strFileTitle)
-    {
-       return checkUrl(strutil::toUtf8(strFileTitle));
-    }
+    bool checkUrl(const wstring& strFileTitle);
 
     string getXurl(const wstring& strFileTitle);
     string getShareUrl(const wstring& strFileTitle);
 
 private:
-    void _insertUrl(const string& strFileName, const string& strUrl);
+    void _insertUrl(const string& strFileTitle, const string& strUrl);
+
+    bool _checkUrl(const string& strFileTitle);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
