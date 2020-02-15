@@ -121,7 +121,7 @@ public:
     }
 
     template <class S>
-    static wstring eraseChars_r(const S& str, const S& strFindChars)
+    static S eraseChars_r(const S& str, const S& strFindChars)
     {
         S strRet(str);
         eraseChars(strRet, strFindChars);
