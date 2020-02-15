@@ -71,16 +71,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				MessageBoxA(NULL, "Çå³ýÔ­Ä¿Â¼Ê§°Ü£¡", NULL, 0);
 				return -1;
 			}
+			//cmdShell("cmd /C mkdir \"" + strBinDir + "\"");
 
 			string strUpgradeDir = strDir + "\\upgrade";
 			string strUpgradeBinDir = strUpgradeDir + "\\XMusic-win32\\bin";
-			strCmd = "cmd /C xcopy /E /R /y \"" + strUpgradeBinDir + "\" \"" + strBinDir + "\\\"";
+
+			strCmd = "cmd /C move /Y \"" + strUpgradeBinDir + "\" \"" + strDir + "\"";
+			//strCmd = "cmd /C xcopy /E /R /y \"" + strUpgradeBinDir + "\" \"" + strBinDir + "\\\"";
 			if (!cmdShell(strCmd))
 			{
 				MessageBoxA(NULL, "¿½±´ÐÂÄ¿Â¼Ê§°Ü£¡", NULL, 0);
 				return -1;
 			}
-			
+
+			Sleep(3000);
+
 			strCmd = "cmd /C rd /S /Q \"" + strUpgradeDir + "\"";
 			(void)cmdShell(strCmd);
 		}
