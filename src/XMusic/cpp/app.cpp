@@ -708,7 +708,10 @@ int g_nAppUpgradeProgress = -1;
 
 bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
 {
+    (void)strPrevVersion;
+
 #if __ios
+    (void)newMedialibConf;
     return true;
 #endif
 
