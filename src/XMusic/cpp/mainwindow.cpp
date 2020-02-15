@@ -155,8 +155,6 @@ void MainWindow::showLogo()
 
     __setForeground(this);
 
-    //connect(&m_app, &CApp::sgnal_appUpgradeProgress, this, &MainWindow::slot_appUpgradeProgress);
-
 #if __android
     UINT uDelayTime = 100;
 #else

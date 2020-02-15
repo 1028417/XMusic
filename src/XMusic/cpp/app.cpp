@@ -716,7 +716,6 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 #endif
 
     g_nAppUpgradeProgress = 0;
-    //emit sgnal_appUpgradeProgress(0);
 
     for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
     {
@@ -740,11 +739,11 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
 
                 if (dltotal > 0 && dlnow > 0)
                 {
-                    UINT uProgress = UINT(100*dlnow/dltotal);
-                    //if ((int)uProgress > g_nAppUpgradeProgress)
+                    g_nAppUpgradeProgress = 100*dlnow/dltotal;
+
+                    if (100 == g_nAppUpgradeProgress)
                     {
-                        g_nAppUpgradeProgress = uProgress;
-                        //emit sgnal_appUpgradeProgress(uProgress);
+                        g_logger << "------" << dltotal << "    " << dlnow;
                     }
                 }
 
