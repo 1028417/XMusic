@@ -248,7 +248,7 @@ void CBkgDlg::init()
 void CBkgDlg::show()
 {
     m_bkgView.setVisible(false);
-    m_app.async(10, [&](){
+    m_app.async([&](){
         m_bkgView.setVisible(true);
     });
 
