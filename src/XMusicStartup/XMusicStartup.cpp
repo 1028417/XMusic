@@ -74,7 +74,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			string strUpgradeDir = strDir + "\\upgrade";
 			string strUpgradeBinDir = strUpgradeDir + "\\XMusic-win32\\bin";
-			strCmd = "cmd /C xcopy /E /R /y \"" + strUpgradeBinDir + "\" \"" + strBinDir + "\"";
+			strCmd = "cmd /C xcopy /E /R /y \"" + strUpgradeBinDir + "\" \"" + strBinDir + "\\\"";
 			if (!cmdShell(strCmd))
 			{
 				MessageBoxA(NULL, "¿½±´ÐÂÄ¿Â¼Ê§°Ü£¡", NULL, 0);
