@@ -117,12 +117,10 @@ bool CDialog::event(QEvent *ev)
         break;
 #if __android || __ios
 	case QEvent::KeyRelease:
-		if (!_handleReturn())
-		{
-			close();
-		}
-
-        return true;
+        if (_handleReturn())
+        {
+            return false;
+        }
 #endif
 	default:
         break;

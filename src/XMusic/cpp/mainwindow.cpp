@@ -376,6 +376,11 @@ bool MainWindow::event(QEvent *ev)
     }
 
     break;
+/*#if __android || __ios
+    case QEvent::KeyRelease:
+
+        return true;
+#endif*/
     case QEvent::Close:
         m_app.quit();
 
