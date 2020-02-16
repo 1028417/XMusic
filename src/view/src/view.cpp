@@ -233,6 +233,8 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
 		}
 
+		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
+
 		if (!VerifyResult.paInvalidMedia)
 		{
 			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
@@ -249,9 +251,12 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		CResGuard ResGuard(m_ResModule);
 		CVerifyResultDlg dlg(*this, VerifyResult);
 		(void)dlg.DoModal();
-	}
 
-	(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
+		if (VerifyResult.paUpdateMedia)
+		{
+			(void)m_model.getDataMgr().updateMediaSizeDuration(VerifyResult.paUpdateMedia);
+		}
+	}
 
 	if (cb)
 	{
