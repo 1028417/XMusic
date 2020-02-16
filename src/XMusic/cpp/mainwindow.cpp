@@ -376,11 +376,22 @@ bool MainWindow::event(QEvent *ev)
     }
 
     break;
-/*#if __android || __ios
+#if __android || __ios
     case QEvent::KeyRelease:
+    {
+        static time_t prevTime = 0;
 
-        return true;
-#endif*/
+        time_t currTime = time(NULL);
+        if (0 == prevTime || currTime - prevTime > 3)
+        {
+            return false;
+        }
+
+        prevTime = currTime;
+    }
+
+    break;
+#endif
     case QEvent::Close:
         m_app.quit();
 
