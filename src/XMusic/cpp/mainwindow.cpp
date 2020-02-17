@@ -384,6 +384,7 @@ bool MainWindow::event(QEvent *ev)
         time_t currTime = time(NULL);
         if (0 == prevTime || currTime - prevTime > 3)
         {
+            prevTime = currTime;
             return false;
         }
 
