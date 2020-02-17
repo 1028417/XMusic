@@ -379,16 +379,19 @@ bool MainWindow::event(QEvent *ev)
 #if __android || __ios
     case QEvent::KeyRelease:
     {
-        static time_t prevTime = 0;
-
-        time_t currTime = time(NULL);
-        if (0 == prevTime || currTime - prevTime > 3)
+        if (!ui.labelLogo->isVisible())
         {
-            prevTime = currTime;
-            return false;
-        }
+            static time_t prevTime = 0;
 
-        prevTime = currTime;
+            time_t currTime = time(NULL);
+            if (currTime - prevTime > 3)
+            {
+                prevTime = currTime;
+                return true;
+            }
+
+            prevTime = currTime;
+        }
     }
 
     break;
@@ -1078,7 +1081,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnExit)
     {
-        m_app.quit();
+        this->close();
     }
     else if (button == ui.btnPause)
     {
