@@ -72,15 +72,18 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	
 	break;
 	case ID_FIND:
-		arrSelPlayItem.front([&](auto& media) {
+		arrSelPlayItem.front([&](auto& playItem) {
 			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
-			m_view.findMedia(media.GetPath(), false);
+			m_view.findMedia(playItem.GetPath(), false);
 		});
 
 		break;
 	case ID_HITTEST:
-		arrSelPlayItem.front([&](auto& media) {
-			m_view.m_MediaResPage.HittestMediaRes(media, *this);
+		arrSelPlayItem.front([&](auto& playItem) {
+			if (!m_view.hittestRelatedMediaSet(playItem, E_MediaSetType::MST_Singer))
+			{
+				m_view.m_MediaResPage.HittestMediaRes(playItem, *this);
+			}
 		});
 
 		break;
@@ -94,16 +97,16 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 	break;
 	case ID_CopyTitle:
-		arrSelPlayItem.front([&](auto& media) {
-			(void)m_view.copyMediaTitle(media);
+		arrSelPlayItem.front([&](auto& playItem) {
+			(void)m_view.copyMediaTitle(playItem);
 		});
 
 		break;
 	case ID_EXPLORE:
 		__EnsureBreak(1 == arrSelPlayItem.size());
 
-		arrSelPlayItem.front([](auto& media) {
-			media.ShellExplore();
+		arrSelPlayItem.front([](auto& playItem) {
+			playItem.ShellExplore();
 		});
 
 		break;

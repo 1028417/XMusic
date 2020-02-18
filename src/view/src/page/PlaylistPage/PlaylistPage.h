@@ -29,13 +29,13 @@ public:
 	void RefreshList();
 
 private:
-	void OnActive(BOOL bActive);
-
 	BOOL OnInitDialog() override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0);
+	void OnActive(BOOL bActive) override;
+
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 		
 	DROPEFFECT OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext);
 	BOOL OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext);

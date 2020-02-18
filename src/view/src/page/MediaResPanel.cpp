@@ -264,6 +264,14 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 	m_cy = cy;
 }
 
+/*void CMediaResPanel::OnActive(BOOL bActive)
+{
+	if (bActive)
+	{
+		_asyncTask();
+	}
+}*/
+
 void CMediaResPanel::ShowPath(const wstring& strPath)
 {
 	CWaitCursor WaitCursor;

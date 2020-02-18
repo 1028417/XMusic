@@ -44,11 +44,11 @@ private:
 private:
 	BOOL OnInitDialog() override;
 
-	void OnActive(BOOL bActive);
+	void OnActive(BOOL bActive) override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0);
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
 	afx_msg void OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult);

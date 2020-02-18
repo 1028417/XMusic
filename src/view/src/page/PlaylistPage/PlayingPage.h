@@ -22,7 +22,7 @@ private:
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0);
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 	
 	DROPEFFECT OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext);
 	BOOL OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext);

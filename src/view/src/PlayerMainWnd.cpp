@@ -60,6 +60,9 @@ bool CPlayerMainWnd::Create()
 	return true;
 }
 
+//#include <imm.h>
+//#pragma comment(lib, "Imm32.Lib")
+
 void CPlayerMainWnd::show()
 {
 	fixWorkArea(m_view.getOption().bFullScreen);
@@ -67,6 +70,13 @@ void CPlayerMainWnd::show()
 	ShowWindow(SW_SHOW);
 
 	(void)m_wndSysToolBar.ShowWindow(SW_SHOWNOACTIVATE);
+
+	/*auto hImc = ImmGetContext(m_hWnd);
+	if (hImc)
+	{
+		ImmAssociateContext(m_hWnd, NULL);
+		ImmReleaseContext(m_hWnd, hImc);
+	}*/
 }
 
 void CPlayerMainWnd::showMenu(bool bShowMenu)

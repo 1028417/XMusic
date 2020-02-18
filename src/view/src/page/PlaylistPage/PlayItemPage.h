@@ -24,7 +24,7 @@ public:
 
 	void UpdateTitle();
 
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0);
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
 	void HittestMedia(CMedia *pMedia);
 

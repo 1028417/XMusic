@@ -77,7 +77,9 @@ private:
 
 	afx_msg void OnPaint();
 
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0);
+	//void OnActive(BOOL bActive) override;
+
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
 	void OnMenuCommand_Album(UINT uID);
 	void OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey=0);

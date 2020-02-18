@@ -85,9 +85,9 @@ public:
 
 	void attachDir();
 
-private:
-	virtual void _OnInitDialog() {}
+	//void OnActive(BOOL bActive) override;
 
+private:
 	virtual int GetTabImage() override;
 
 	void _showDirMenu(CMediaDir *pSubDir);
@@ -104,12 +104,14 @@ private:
 	void _asyncTask();
 
 private:
+	virtual void _OnInitDialog() {}
+
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	
+	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
 	afx_msg void OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult);
-
-	afx_msg void OnMenuCommand(UINT uID, UINT uVkKey = 0);
 };

@@ -67,7 +67,7 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_imgSinger.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
 
 	__AssertReturn(m_imgSingerDefault.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
-	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.png";	
+	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.png";
 	__AssertReturn(m_imgSingerDefault.LoadEx(strDefaultImg), FALSE);
 
 	(void)m_wndAlbumList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);
@@ -739,6 +739,21 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 		});
 	}
 }
+
+/*void CAlbumPage::OnActive(BOOL bActive)
+{
+	if (bActive)
+	{
+		if (m_pAlbum)
+		{
+			_asyncTask();
+		}
+		else
+		{
+			m_wndMediaResPanel.OnActive(true);
+		}
+	}
+}*/
 
 void CAlbumPage::OnMenuCommand(UINT uID, UINT uVkKey)
 {

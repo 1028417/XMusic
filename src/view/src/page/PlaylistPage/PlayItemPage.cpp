@@ -344,7 +344,10 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_HITTEST:
 		lstPlayItems.front([&](CMedia& media) {
-			m_view.m_MediaResPage.HittestMediaRes(media, *this);
+			if (!m_view.hittestRelatedMediaSet(media, E_MediaSetType::MST_Singer))
+			{
+				m_view.m_MediaResPage.HittestMediaRes(media, *this);
+			}
 		});
 
 		break;
