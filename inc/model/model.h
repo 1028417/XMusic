@@ -46,6 +46,13 @@ public:
 
 	virtual void refreshMedia() {}
 
+	virtual void renameMedia(IMedia& media, const wstring& strNewName)
+	{
+		(void)media;
+		(void)strNewName;
+		return false;
+	}
+
     virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
 
 	virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) = 0;
@@ -58,13 +65,6 @@ public:
 	}
 
     virtual void onSingerImgDownloaded() {}
-
-	virtual bool renameMedia(IMedia& media, const wstring& strNewName)
-	{
-		(void)media;
-		(void)strNewName;
-		return false;
-	}
 };
 
 #if __winvc
