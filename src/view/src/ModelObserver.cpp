@@ -32,11 +32,9 @@ void CModelObserver::refreshMedia()
 
 void CModelObserver::renameMedia(IMedia& media, const wstring& strNewName)
 {
-	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd, true);
 
-	__async(100, [&]() {
-		(void)m_view.getController().renameMedia(media, strNewName);
-	});
+	(void)m_view.getController().renameMedia(media, strNewName);
 }
 
 void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
