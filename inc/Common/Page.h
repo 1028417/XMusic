@@ -5,7 +5,6 @@
 
 #include "App.h"
 
-
 class CModuleApp;
 
 class CMainWnd;
@@ -16,18 +15,16 @@ class __CommonExt CPage: public CPropertyPage
 
 	DECLARE_MESSAGE_MAP()
 
-	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	virtual void DoDataExchange(CDataExchange* pDX);
 	
 public:
 	CPage(CResModule& resModule, UINT uIDDlgRes, const CString& cstrTitle=L"", bool bAutoActive=false);
 
 	virtual ~CPage() {}
 
-	virtual void DoDataExchange(CDataExchange* pDX);
-
+private:
 	CResModule& m_resModule;
 
-private:
 	CString m_cstrTitle;
 
 	bool m_bAutoActive = false;
@@ -50,10 +47,13 @@ public:
 
 	void RegMenuHotkey(CWnd& wndCtrl, UINT uVkKeyCode, UINT uCmd = 0);
 
-protected:
+private:
+	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
 	BOOL OnSetActive() override;
 	BOOL OnKillActive() override;
 
+protected:
 	virtual void OnActive(BOOL bActive) {}
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
