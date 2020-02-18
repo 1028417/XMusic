@@ -48,12 +48,10 @@ private:
 class __CommonExt CRedrawLockGuard
 {
 public:
-	CRedrawLockGuard(CWnd& wnd, bool bFlag = false);
+	CRedrawLockGuard(CWnd& wnd, bool bLockUpdate = false);
 
 	CRedrawLockGuard(CRedrawLockGuard& other);
-
-	CRedrawLockGuard(CRedrawLockGuard&& other);
-
+	
 	~CRedrawLockGuard();
 
 public:
@@ -74,7 +72,7 @@ public:
 private:
 	CWnd& m_wnd;
 
-	bool m_bFlag = false;
+	bool m_bLockUpdate = false;
 
 	bool m_bLocked = false;
 };
