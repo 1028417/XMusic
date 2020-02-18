@@ -17,12 +17,12 @@ private:
 
 	void refreshMedia() override;
 
+	void renameMedia(IMedia& media, const wstring& strNewName) override;
+
 	void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) override;
 
 	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 	void onPlayStop(bool bCanceled, bool bOpenFail) override;
 	
 	UINT GetSingerImgPos(UINT uSingerID) override;
-
-	bool renameMedia(IMedia& media, const wstring& strNewName) override;
 };

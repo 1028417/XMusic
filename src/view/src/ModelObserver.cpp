@@ -30,6 +30,15 @@ void CModelObserver::refreshMedia()
 	m_view.m_PlayingPage.RefreshList();
 }
 
+void CModelObserver::renameMedia(IMedia& media, const wstring& strNewName)
+{
+	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+
+	__async(100, [&]() {
+		(void)m_view.getController().renameMedia(media, strNewName);
+	});
+}
+
 void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
 	if (!m_view.getPlayMgr().getPlayinglist().available())
@@ -63,11 +72,4 @@ void CModelObserver::onPlayStop(bool bCanceled, bool bOpenFail)
 UINT CModelObserver::GetSingerImgPos(UINT uSingerID)
 {
 	return m_view.m_ImgMgr.getSingerImgPos(uSingerID);
-}
-
-bool CModelObserver::renameMedia(IMedia& media, const wstring& strNewName)
-{
-	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
-
-	return m_view.getController().renameMedia(media, strNewName);
 }
