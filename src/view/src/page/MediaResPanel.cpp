@@ -62,9 +62,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	(void)__super::OnInitDialog();
 
 	_OnInitDialog();
-
-	m_wndStatic.SetParent(&m_wndList);
-
+	
 	(void)m_wndList.ModifyStyle(0, LVS_EDITLABELS);
 
 	m_wndList.SetImageList(&m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big)
@@ -168,7 +166,10 @@ BOOL CMediaResPanel::OnInitDialog()
 
 		_asyncTask();
 	});
-	
+
+	m_wndStatic.SetParent(&m_wndList);
+	m_wndStatic.SetFont(m_wndList.GetFont());
+
 	(void)__super::RegDragableCtrl(m_wndList, [&](tagDragData& DragData) {
 		TD_ListObjectList lstObjects;
 		m_wndList.GetSelObjects(lstObjects);
