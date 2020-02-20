@@ -1,5 +1,3 @@
-// FindDlg.cpp : 实现文件
-//
 
 #include "stdafx.h"
 #include "FindDlg.h"
@@ -65,7 +63,7 @@ BOOL CFindDlg::OnInitDialog()
 		{
 			if (m_bQuickHittest)
 			{
-				CDialog::OnCancel();				
+				CDialog::OnCancel();
 				return FALSE;
 			}
 		}
@@ -141,6 +139,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 	if (vecMediaMixtures.size() == 1)
 	{
 		vecMediaMixtures.front([&](CMediaMixture& MediaMixture) {
+			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
 			m_view.hittestMedia(*MediaMixture.GetMedia());
 		});
 	}
@@ -209,6 +208,8 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 
 		m_MediaMixer.getMediaMixture([&](const CMediaMixture& MediaMixture) {
+			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+
 			auto pPlayItem = MediaMixture.GetPlayItem();
 			auto pAlbumItem = MediaMixture.GetAlbumItem();
 			if (2 == iSubItem)
