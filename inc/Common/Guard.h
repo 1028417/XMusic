@@ -211,17 +211,11 @@ using CB_CompatableFont = fn_void_t<LOGFONT&>;
 class __CommonExt CCompatableFont : public CFont
 {
 public:
-	CCompatableFont() {}/*float fFontSizeOffset = 0, bool lfWeight = false, bool bItalic = false, bool bUnderline = false)
-		: m_fFontSizeOffset(fFontSizeOffset)
-		, m_lfWeight(lfWeight)
-		, m_bItalic(bItalic)
-		, m_bUnderline(bUnderline)
-	{
-	}*/
-
+	CCompatableFont() {}
+	
 private:
 	float m_fFontSizeOffset = 0;
-	LONG m_lfWeight = 0;
+	LONG m_lfWeight = -1;
 	bool m_bItalic = false;
 	bool m_bUnderline = false;
 
@@ -235,9 +229,9 @@ private:
 	bool create(CWnd& wnd, const CB_CompatableFont& cb);
 
 public:
-	bool create(CFont& font, float fFontSizeOffset = 0, LONG lfWeight = 0, bool bItalic = false, bool bUnderline = false);
-	bool create(CDC& dc, float fFontSizeOffset = 0, LONG lfWeight = 0, bool bItalic = false, bool bUnderline = false);
-	bool create(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = 0, bool bItalic = false, bool bUnderline = false);
+	bool create(CFont& font, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(CDC& dc, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
 
-	bool setFont(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = 0, bool bItalic = false, bool bUnderline = false);
+	bool setFont(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
 };
