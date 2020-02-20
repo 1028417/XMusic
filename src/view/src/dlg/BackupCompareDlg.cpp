@@ -119,7 +119,7 @@ void CCompareResultPage::_fillModifyedMedia()
 		}
 
 		m_wndList.InsertItemEx(uItem++, { strMediaSetName, __substr(ModifyedMedia.strOldPath, 1)
-			, __substr(ModifyedMedia.strModifyedPath, 1) }, L" ");
+			, ModifyedMedia.strModifyedPath }, L" ");
 	}
 
 	m_fnGetPath = [&](UINT uItem) {

@@ -309,7 +309,7 @@ void CPlayerView::_addInMedia()
 	tagFileDlgOpt FileDlgOpt;
 	FileDlgOpt.strTitle = L"选择文件合入";
 	FileDlgOpt.strFilter = __MediaFilter;
-	FileDlgOpt.strInitialDir = fsutil::GetParentDir(m_view.getMediaLib().GetAbsPath());
+	//FileDlgOpt.strInitialDir = fsutil::GetParentDir(m_view.getMediaLib().GetAbsPath());
 	static CFileDlgEx fileDlg(FileDlgOpt);
 
 	list<wstring> lstFiles;
