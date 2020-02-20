@@ -173,7 +173,7 @@ CAppInit::CAppInit(QApplication& app)
     plFontFile.add(QFont::Weight::Light, "/font/msyhl-6.23.ttc");
     //plFontFile.add(QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc");
 #if __windows
-    //g_mapFontFamily.emplace_back(QFont::Weight::Light, "微软雅黑 Light");
+    //g_mapFontFamily[QFont::Weight::Light] = "微软雅黑 Light";
     g_mapFontFamily[QFont::Weight::DemiBold] = "微软雅黑";
 #else
     plFontFile.add(QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Demibold-11.0.ttc");

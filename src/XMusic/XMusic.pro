@@ -115,7 +115,6 @@ build_dir = ../../../build/XMusic/$$platform
 
 font.files += ../../bin/font/msyhl-6.23.ttc
 #font.files += ../../bin/font/Microsoft-YaHei-Semilight-11.0.ttc
-#font.files += ../../bin/font/Microsoft-YaHei-Regular-11.0.ttc
 font.files += ../../bin/font/Microsoft-YaHei-DemiBold-11.0.ttc
 
 hbkg.files += ../../release/hbkg/*
