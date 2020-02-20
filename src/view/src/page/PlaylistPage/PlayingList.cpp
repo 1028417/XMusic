@@ -69,9 +69,9 @@ BOOL CPlayingList::InitCtrl()
 	auto fBigFontSize = m_view.m_globalSize.m_fMidFontSize;
 	__AssertReturn(m_font.create(*this, fBigFontSize), FALSE);
 
-	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 555), FALSE);
+	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 500), FALSE);
 
-	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize, 0, true), FALSE);
+	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize), FALSE);
 
 	float fSmallFontSize = m_view.m_globalSize.m_fSmallFontSize * .6f;
 	__AssertReturn(m_fontSmall.create(*this, fSmallFontSize), FALSE);
@@ -212,8 +212,9 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
-			nStyle |= ILD_NORMAL;
-			rcSingerImg.SetRect(3, 1, cy, cy-1);
+			//nStyle |= ILD_TRANSPARENT;
+			auto margin = (cy - m_view.m_globalSize.m_uBigIconSize)/2;
+			rcSingerImg.SetRect(margin, margin, cy-margin, cy-margin);
 		}
 		else
 		{

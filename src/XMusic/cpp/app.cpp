@@ -175,9 +175,7 @@ CAppInit::CAppInit(QApplication& app)
         { QFont::Weight::Light, "/font/msyhl-6.23.ttc" }
         //, { QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc" }
         //, { QFont::Weight::Normal, "/font/Microsoft-YaHei-Regular-11.0.ttc" }
-//#if !__windows
         , { QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Demibold-11.0.ttc" }
-//#endif
     };
     mapFontFile([&](int nWeight, QString qsFontFile) {
 #if __android
