@@ -560,7 +560,7 @@ void MainWindow::_relayout()
 
      ui.btnExit->move(-200,-200);
 #else
-    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size10);
+    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
     ui.btnExit->move(x_btnExit, y_btnMore);
 #endif
 

@@ -168,9 +168,10 @@ CAppInit::CAppInit(QApplication& app)
 #endif
 
     SMap<int, QString> mapFontFile {
-        { QFont::Weight::Light, "/font/Microsoft-YaHei-Light.ttc" }
-        //, { QFont::Weight::Normal, "/font/Microsoft-YaHei-Regular.ttc" }
-        , { QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Semibold.ttc" }
+        { QFont::Weight::Light, "/font/msyhl-6.23.ttc" }
+        //, { QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc" }
+        //, { QFont::Weight::Normal, "/font/Microsoft-YaHei-Regular-11.0.ttc" }
+        , { QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Demibold-11.0.ttc" }
     };
     mapFontFile([&](int nWeight, QString qsFontFile) {
 #if __android

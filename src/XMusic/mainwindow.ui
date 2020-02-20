@@ -812,8 +812,8 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnFullScreen">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>30</y>
+      <x>35</x>
+      <y>25</y>
       <width>80</width>
       <height>80</height>
      </rect>
