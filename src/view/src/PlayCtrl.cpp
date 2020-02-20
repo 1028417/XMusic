@@ -120,7 +120,7 @@ void CPlayCtrl::onPlayFinish(bool bOpenFail)
 			//m_PlaySpirit->clear();
 
 			g_bFailRetry = true;
-			__async(1000, [&]() {
+			__async(2000, [&]() {
 				if (g_bFailRetry)
 				{
 					(void)m_view.getPlayMgr().playNext(false);

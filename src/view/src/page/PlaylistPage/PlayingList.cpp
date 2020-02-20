@@ -69,7 +69,7 @@ BOOL CPlayingList::InitCtrl()
 	auto fBigFontSize = m_view.m_globalSize.m_fMidFontSize;
 	__AssertReturn(m_font.create(*this, fBigFontSize), FALSE);
 
-	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 650), FALSE);
+	__AssertReturn(m_fontPlaying.create(*this, fBigFontSize, 555), FALSE);
 
 	__AssertReturn(m_fontPlayed.create(*this, fBigFontSize, 0, true), FALSE);
 
