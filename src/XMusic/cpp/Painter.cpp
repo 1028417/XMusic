@@ -7,7 +7,7 @@
 QColor g_crTheme(__defThemeColor);
 QColor g_crText(__defTextColor);
 
-list<pair<int, QString>> g_lstFontFamily;
+map<int, QString> g_mapFontFamily;
 
 int g_nDefFontWeight = QFont::Weight::Light;
 

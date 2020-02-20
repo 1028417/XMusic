@@ -27,7 +27,7 @@ extern QColor g_crText;
 using cqcr = const QColor&;
 using cqrc = const QRect&;
 
-extern list<pair<int, QString>> g_lstFontFamily;
+extern map<int, QString> g_mapFontFamily;
 
 extern int g_nDefFontWeight;
 
@@ -38,7 +38,7 @@ class CFont : public QFont
 private:
     inline QString _getFamily(int nWeight)
     {
-        for (auto itr = g_lstFontFamily.rbegin(); itr != g_lstFontFamily.rend(); ++itr)
+        for (auto itr = g_mapFontFamily.rbegin(); itr != g_mapFontFamily.rend(); ++itr)
         {
             if (itr->first <= nWeight)
             {
