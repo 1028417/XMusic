@@ -16,8 +16,8 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.
 	L"| Wav文件|*.wav| Dsf文件|*.dsf| Dff文件|*.dff"
 	L"| Wma文件|*.wma| M4A文件|*.m4a| AAC文件|*.aac| AC3文件|*.ac3|";
 
-#define __semilightFont "./font/Microsoft-YaHei-Semilight.ttc"
-#define __lightFont "./font/Microsoft-YaHei-Semilight.ttc"
+#define __semilightFont "./font/Microsoft-YaHei-Semilight-11.0.ttc"
+//#define __lightFont "./font/msyhl-6.23.ttc"
 
 bool __view::init()
 {
@@ -32,7 +32,7 @@ bool __view::init()
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
 	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
-	(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
+	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
 
 	bool bRet = mtutil::thread([&]() {
 		__EnsureReturn(m_MainWnd.Create(), false);
@@ -138,7 +138,7 @@ void __view::quit()
 	(void)CMainApp::GetMainApp()->Quit();
 
 	(void)RemoveFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
-	(void)RemoveFontResourceExA(__lightFont, FR_PRIVATE, NULL);
+	//(void)RemoveFontResourceExA(__lightFont, FR_PRIVATE, NULL);
 }
 
 void __view::foregroundMainWnd()

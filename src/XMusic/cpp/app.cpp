@@ -167,11 +167,17 @@ CAppInit::CAppInit(QApplication& app)
     g_uDefFontSize = 12;
 #endif
 
+#if __windows
+    g_lstFontFamily.emplace_back(QFont::Weight::Light, "微软雅黑 Light");
+    g_lstFontFamily.emplace_back(QFont::Weight::DemiBold, "微软雅黑");
+#else
     SMap<int, QString> mapFontFile {
         { QFont::Weight::Light, "/font/msyhl-6.23.ttc" }
         //, { QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc" }
         //, { QFont::Weight::Normal, "/font/Microsoft-YaHei-Regular-11.0.ttc" }
+//#if !__windows
         , { QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Demibold-11.0.ttc" }
+//#endif
     };
     mapFontFile([&](int nWeight, QString qsFontFile) {
 #if __android
@@ -195,23 +201,13 @@ CAppInit::CAppInit(QApplication& app)
         }
     });
 
-    QString qsFamilyName;
     if (g_lstFontFamily.empty())
     {
-#if __windows
-        qsFamilyName = "微软雅黑";
-#else
-        qsFamilyName = app.font().family();
+        g_lstFontFamily.emplace_back(g_nDefFontWeight, app.font().family());
+    }
 #endif
 
-        g_lstFontFamily.emplace_back(g_nDefFontWeight, qsFamilyName);
-    }
-    else
-    {
-        cauto pr = g_lstFontFamily.front();
-        g_nDefFontWeight = pr.first;
-        qsFamilyName = pr.second;
-    }
+    g_nDefFontWeight = g_lstFontFamily.front().first;
 
     app.setFont(CFont());
 }
