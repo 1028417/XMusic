@@ -212,7 +212,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
-			//nStyle |= ILD_TRANSPARENT;
+			// TODO nStyle |= ILD_TRANSPARENT;
 			auto margin = (cy - m_view.m_globalSize.m_uBigIconSize)/2;
 			rcSingerImg.SetRect(margin, margin, cy-margin, cy-margin);
 		}
