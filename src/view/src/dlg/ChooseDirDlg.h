@@ -1,6 +1,6 @@
 #pragma once
 
-class CChooseDirDlg : public CDialogT<IDD_DLG_ChooseDir, true>
+class CChooseDirDlg : public TDialog<IDD_DLG_ChooseDir, true>
 {
 public:
 	CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot);

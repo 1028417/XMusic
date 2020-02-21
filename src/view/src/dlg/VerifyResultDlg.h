@@ -1,6 +1,6 @@
 #pragma once
 
-class CVerifyResultDlg : public CDialogT<IDD_DLG_VerifyResult>
+class CVerifyResultDlg : public TDialog<IDD_DLG_VerifyResult>
 {
 public:
 	CVerifyResultDlg(__view& view, tagVerifyResult& VerifyResult)

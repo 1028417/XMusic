@@ -23,7 +23,7 @@ public:
 
 // CPlayRecordDlg 对话框
 
-class CPlayRecordDlg : public CDialogT<IDD_DLG_PlayRecord>
+class CPlayRecordDlg : public TDialog<IDD_DLG_PlayRecord>
 {
 public:
 	CPlayRecordDlg(__view& view);   // 标准构造函数

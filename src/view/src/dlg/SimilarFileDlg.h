@@ -1,6 +1,6 @@
 #pragma once
 
-class CSimilarFileDlg : public CDialogT<IDD_DLG_SimilarFile>
+class CSimilarFileDlg : public TDialog<IDD_DLG_SimilarFile>
 {
 public:
 	CSimilarFileDlg(__view& view, TD_SimilarFile& arrSimilarFile)

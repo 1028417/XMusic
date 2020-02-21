@@ -1,6 +1,6 @@
 #pragma once
 
-class CQuickFindDlg : public CDialogT<0, false, false>
+class CQuickFindDlg : public TDialog<0, false, false>
 {
 public:
 	CQuickFindDlg(__view& view)

@@ -62,7 +62,7 @@ public:
 	void setNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem);
 };
 
-class CBackupCompareDlg : public CDialogT<IDD_DLG_BackupCompare>
+class CBackupCompareDlg : public TDialog<IDD_DLG_BackupCompare>
 {
 	DECLARE_MESSAGE_MAP()
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö

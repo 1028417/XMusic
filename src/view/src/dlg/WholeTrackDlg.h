@@ -1,6 +1,6 @@
 #pragma once
 
-class CWholeTrackDlg : public CDialogT<IDD_DLG_WholeTrack>
+class CWholeTrackDlg : public TDialog<IDD_DLG_WholeTrack>
 {
 	DECLARE_MESSAGE_MAP()
 

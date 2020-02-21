@@ -1,6 +1,6 @@
 #pragma once
 
-class CMediaSetDlg : public CDialogT<IDD_DLG_MEDIASET, true>
+class CMediaSetDlg : public TDialog<IDD_DLG_MEDIASET, true>
 {
 public:
 	CMediaSetDlg(__view& view, CMediaSet& MediaSet, TD_MediaSetList& lstRetMediaSets, const wstring& strTitle);

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class CNewSongDlg : public CDialogT<IDD_DLG_NewSong>
+class CNewSongDlg : public TDialog<IDD_DLG_NewSong>
 {
 	DECLARE_MESSAGE_MAP()
 

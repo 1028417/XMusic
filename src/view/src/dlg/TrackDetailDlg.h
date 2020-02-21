@@ -1,6 +1,6 @@
 #pragma once
 
-class CTrackDetailDlg : public CDialogT<IDD_DLG_TrackDetail>
+class CTrackDetailDlg : public TDialog<IDD_DLG_TrackDetail>
 {
 public:
 	CTrackDetailDlg(__view& view, CRCueFile cueFile, CMediaRes *pMediaRes);

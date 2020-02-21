@@ -2,7 +2,7 @@
 
 // CExportOptionDlg ¶Ô»°¿ò
 
-class CExportOptionDlg : public CDialogT<IDD_DLG_ExportOption>
+class CExportOptionDlg : public TDialog<IDD_DLG_ExportOption>
 {
 public:
 	CExportOptionDlg(tagExportOption& ExportOption)

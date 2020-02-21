@@ -1,6 +1,6 @@
 #pragma once
 
-class CBackupDlg : public CDialogT<IDD_DLG_BACKUP>
+class CBackupDlg : public TDialog<IDD_DLG_BACKUP>
 {
 	DECLARE_MESSAGE_MAP()
 

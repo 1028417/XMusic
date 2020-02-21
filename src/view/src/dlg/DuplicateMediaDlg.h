@@ -1,6 +1,6 @@
 #pragma once
 
-class CDuplicateMediaDlg : public CDialogT<IDD_DLG_DuplicateMedia>
+class CDuplicateMediaDlg : public TDialog<IDD_DLG_DuplicateMedia>
 {
 public:
 	CDuplicateMediaDlg(__view& view, SArray<TD_MediaList>& arrDuplicateMedia)

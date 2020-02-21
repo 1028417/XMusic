@@ -6,7 +6,7 @@
 
 // COptionDlg ¶Ô»°¿ò
 
-class COptionDlg : public CDialogT<IDD_DLG_Option>
+class COptionDlg : public TDialog<IDD_DLG_Option>
 {
 public:
 	COptionDlg(__view& view);

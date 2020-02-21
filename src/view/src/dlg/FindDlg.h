@@ -1,6 +1,6 @@
 #pragma once
 
-class CFindDlg : public CDialogT<IDD_DLG_FIND>
+class CFindDlg : public TDialog<IDD_DLG_FIND>
 {
 public:
 	CFindDlg(__view& view)

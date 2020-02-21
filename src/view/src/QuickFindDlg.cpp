@@ -12,7 +12,7 @@ void CQuickFindDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON1, m_Button);
 }
 
-BEGIN_MESSAGE_MAP(CQuickFindDlg, CDialogT)
+BEGIN_MESSAGE_MAP(CQuickFindDlg, TDialog)
 	ON_WM_CTLCOLOR()
 	ON_WM_SIZE()
 	ON_BN_CLICKED(IDC_BUTTON1, &CQuickFindDlg::OnBnClickedButton1)
