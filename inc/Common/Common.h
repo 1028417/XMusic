@@ -80,7 +80,7 @@ using CB_TrackMouseEvent = function<void(E_TrackMouseEvent, const CPoint&)>;
 
 #include "ProgressDlg.h"
 
-#include "DialogT.h"
+#include "TDialog.h"
 
 class __CommonExt CFolderDlgEx : public CFolderDlg
 {

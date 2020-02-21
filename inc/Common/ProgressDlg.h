@@ -1,13 +1,14 @@
 #pragma once
 
+#include "TDialog.h"
+
 #define WM_SetProgress WM_USER+1
 #define WM_SetStatusText WM_USER+2
 #define WM_EndProgress WM_USER+3
 
-
 using FN_Work = fn_void_t<class CProgressDlg&>;
 
-class __CommonExt CProgressDlg : public CDialog, public CThreadGroup
+class __CommonExt CProgressDlg : public TDialog<>, public CThreadGroup
 {
 public:
 	CProgressDlg(const FN_Work& fnWork, UINT uMaxProgress=0)

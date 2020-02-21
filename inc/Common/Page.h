@@ -25,6 +25,8 @@ public:
 private:
 	CResModule& m_resModule;
 
+	CCompatableFont m_font;
+
 	CString m_cstrTitle;
 
 	bool m_bAutoActive = false;
@@ -54,6 +56,13 @@ private:
 	BOOL OnKillActive() override;
 
 protected:
+	virtual void PreSubclassWindow() override
+	{
+		__super::PreSubclassWindow();
+
+		m_font.setFont(*this);
+	}
+
 	virtual void OnActive(BOOL bActive) {}
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
