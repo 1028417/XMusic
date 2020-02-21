@@ -5,6 +5,8 @@
 
 #include "App.h"
 
+#include "Guard.h"
+
 class CModuleApp;
 
 class CMainWnd;
