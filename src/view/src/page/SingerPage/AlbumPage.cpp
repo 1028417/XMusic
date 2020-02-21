@@ -363,7 +363,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	}
 	else if (NULL != pIMedia)
 	{
-		m_wndMediaResPanel.HittestMediaRes(*pIMedia, *this);
+		m_wndMediaResPanel.HittestMedia(*pIMedia, *this);
 		(void)m_wndMediaResPanel.SetFocus();
 	}
 }
@@ -690,12 +690,8 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 	case ID_HITTEST_ALBUMITEM:
 		__AssertBreak(1 == lstAlbumItems.size());
 		
-		(void)m_wndAlbumList.SelectFirstItem();
 		lstAlbumItems.front([&](auto& media) {
-			if (m_wndMediaResPanel.HittestMediaRes(media, *this))
-			{
-				(void)m_wndMediaResPanel.SetFocus();
-			}
+			(void)m_wndMediaResPanel.HittestMedia(media, *this);
 		});
 
 		break;

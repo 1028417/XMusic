@@ -15,3 +15,10 @@ void CSingerMediaResPanel::UpdateTitle(const wstring& strTitle)
 
 	m_wndAlbumPage.UpdateTitle();
 }
+
+void CSingerMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
+{
+	m_wndAlbumPage.m_wndAlbumList.SelectFirstItem();
+	__super::HittestMediaRes(MediaRes);
+	this->SetFocus();
+}

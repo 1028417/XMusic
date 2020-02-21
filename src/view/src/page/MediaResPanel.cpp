@@ -429,7 +429,7 @@ void CMediaResPanel::_showPath()
 	_asyncTask();
 }
 
-BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
+BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
 {
 	CMediaRes *pMediaRes = m_view.getMediaLib().findSubPath(media);
 	if (NULL == pMediaRes)
@@ -441,6 +441,8 @@ BOOL CMediaResPanel::HittestMediaRes(IMedia& media, CWnd& wnd)
 			if (pMediaDir)
 			{
 				pMediaDir->clear();
+				CMediaResPanel::RefreshMediaResPanel();
+
 				pMediaRes = (CMediaRes*)pMediaDir->findSubFile(media.GetName());
 			}
 		}

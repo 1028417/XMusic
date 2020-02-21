@@ -20,4 +20,7 @@ private:
 	void _OnInitDialog() override;
 
 	void UpdateTitle(const wstring& strTitle) override;
+
+public:
+	void HittestMediaRes(CMediaRes& MediaRes) override;
 };

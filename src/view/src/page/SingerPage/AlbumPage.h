@@ -4,6 +4,8 @@
 
 class CAlbumPage : public CBasePage
 {
+	friend class CSingerMediaResPanel;
+
 private:
 	enum E_DropPositionFlag
 	{

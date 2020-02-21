@@ -81,7 +81,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		arrSelPlayItem.front([&](auto& playItem) {
 			if (!m_view.hittestRelatedMediaSet(playItem, E_MediaSetType::MST_Singer))
 			{
-				m_view.m_MediaResPage.HittestMediaRes(playItem, *this);
+				m_view.m_MediaResPage.HittestMedia(playItem, *this);
 			}
 		});
 

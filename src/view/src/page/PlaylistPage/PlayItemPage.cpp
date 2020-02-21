@@ -346,7 +346,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		lstPlayItems.front([&](CMedia& media) {
 			if (!m_view.hittestRelatedMediaSet(media, E_MediaSetType::MST_Singer))
 			{
-				m_view.m_MediaResPage.HittestMediaRes(media, *this);
+				m_view.m_MediaResPage.HittestMedia(media, *this);
 			}
 		});
 

@@ -78,8 +78,9 @@ public:
 
 	void Refresh();
 
-	BOOL HittestMediaRes(IMedia& media, CWnd& wnd);
-	void HittestMediaRes(CMediaRes& MediaRes);
+	BOOL HittestMedia(IMedia& media, CWnd& wnd);
+	
+	virtual void HittestMediaRes(CMediaRes& MediaRes);
 
 	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
 
