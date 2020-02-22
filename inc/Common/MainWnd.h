@@ -31,11 +31,6 @@ struct tagMainWndInfo
 class __CommonExt CMainWnd : public CWnd
 {
 public:
-	static CMainWnd* getMainWnd()
-	{
-		return (CMainWnd*)AfxGetMainWnd();
-	}
-
 	CMainWnd(){}
 
 	DECLARE_MESSAGE_MAP()
@@ -68,7 +63,7 @@ public:
 
 	void RemovePage(CPage& Page);
 
-	BOOL ActivePage(CPage& Page);
+	BOOL ActivePage(CPage& Page, bool bForceFocus = true);
 
 	void fixWorkArea(bool bFullScreen);
 

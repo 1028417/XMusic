@@ -40,8 +40,6 @@ private:
 	bool m_bDragable = false;
 
 public:
-	BOOL Active(bool bForceFocus=true);
-
 	void SetTitle(const CString& cstrTitle, int iImage = -1);
 
 	const CString& GetTitle() const
