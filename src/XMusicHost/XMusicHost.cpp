@@ -86,8 +86,8 @@ bool CController::handleCommand(UINT uID)
 	{
 	case ID_MODIFY_ROOT:
 		(void)CXController::setupRootDir();
-
-	break;
+		
+		break;
 	case ID_REFRESH_ROOT:
 		m_model.refreshMediaLib();
 
