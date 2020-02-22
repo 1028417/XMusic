@@ -465,7 +465,7 @@ void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 
 	if (m_bShowRelatedSinger)
 	{
-		this->Active();
+		(void)m_view.m_MainWnd.ActivePage(*this);
 	}
 }
 

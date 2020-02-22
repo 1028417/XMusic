@@ -18,6 +18,9 @@
 
 #include "dlg/WholeTrackDlg.h"
 
+#define __semilightFont "./font/Microsoft-YaHei-Semilight-11.0.ttc"
+//#define __lightFont "./font/msyhl-6.23.ttc"
+
 __ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 {
 	static CPlayerView inst(controller, model);
@@ -26,12 +29,23 @@ __ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 
 CMainWnd* CPlayerView::show()
 {
+	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
+	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
+
 	if (!m_view.init())
 	{
 		return NULL;
 	}
 
 	return &m_view.m_MainWnd;
+}
+
+void CPlayerView::close()
+{
+	m_view.m_PlayCtrl.close();
+
+	(void)RemoveFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
+	//(void)RemoveFontResourceExA(__lightFont, FR_PRIVATE, NULL);
 }
 
 bool CPlayerView::handleCommand(UINT uID)
@@ -43,7 +57,7 @@ bool CPlayerView::handleCommand(UINT uID)
 
 		break;
 	case ID_QUIT:
-		m_view.quit();
+		CMainApp::GetMainApp()->Quit();
 
 		break;
 	case ID_AttachDir:

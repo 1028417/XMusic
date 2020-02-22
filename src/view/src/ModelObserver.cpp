@@ -48,7 +48,7 @@ void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 
 	if (bSetActive)
 	{
-		m_view.m_PlayingPage.Active(false);
+		(void)m_view.m_MainWnd.ActivePage(m_view.m_PlayingPage, false);
 	}
 }
 

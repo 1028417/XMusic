@@ -27,7 +27,7 @@ bool CXController::start()
                     m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
                 }
 
-                return;//
+                return;
             }
 		}
 
@@ -51,6 +51,7 @@ bool CXController::start()
 		{
 			if (!setupRootDir())
 			{
+				CMainApp::GetMainApp()->Quit();
 				return;
 			}
 		}

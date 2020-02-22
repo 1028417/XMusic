@@ -182,11 +182,11 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 		m_view.m_ResModule.ActivateResource();
 		__Assert(m_view.m_MainWnd.AddPage(*this, E_DockViewType::DVT_DockCenter));
-		__Assert(__super::Active());
+		__Assert(m_view.m_MainWnd.ActivePage(*this));
 	}
 	else if (bSetActive)
 	{
-		__Assert(__super::Active());
+		__Assert(m_view.m_MainWnd.ActivePage(*this));
 	}
 
 	bool bChanged = (pPlaylist != m_pPlaylist);
@@ -505,6 +505,5 @@ void CPlayItemPage::HittestMedia(CMedia *pMedia)
 	m_wndList.DeselectAll();
 	m_wndList.SelectObject(pMedia);
 
-	(void)Active();
-	//(void)SetFocus();
+	m_view.m_MainWnd.ActivePage(*this);
 }

@@ -35,7 +35,7 @@ void CPlaylistPage::OnActive(BOOL bActive)
 {
 	if (bActive && m_PlayItemPage)
 	{
-		(void)m_PlayItemPage.Active();
+		(void)m_view.m_MainWnd.ActivePage(m_PlayItemPage);
 	}
 }
 

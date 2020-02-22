@@ -16,9 +16,6 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.
 	L"| Wav文件|*.wav| Dsf文件|*.dsf| Dff文件|*.dff"
 	L"| Wma文件|*.wma| M4A文件|*.m4a| AAC文件|*.aac| AC3文件|*.ac3|";
 
-#define __semilightFont "./font/Microsoft-YaHei-Semilight-11.0.ttc"
-//#define __lightFont "./font/msyhl-6.23.ttc"
-
 bool __view::init()
 {
 	if (!m_PlayCtrl.init())
@@ -30,9 +27,6 @@ bool __view::init()
 	m_globalSize.init();
 
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
-
-	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
-	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
 
 	bool bRet = mtutil::thread([&]() {
 		__EnsureReturn(m_MainWnd.Create(), false);
@@ -95,9 +89,9 @@ void __view::initView()
 	}
 
 	m_PlayingPage.RefreshList();
-	//(void)m_PlayingPage.Active();
+	//(void)m_view.m_MainWnd.ActivePage(m_PlayingPage, false);
 
-	//m_MediaResPage.Active();
+	//(void)m_view.m_MainWnd.ActivePage(m_MediaResPage);
 }
 
 void __view::clearView()
@@ -126,19 +120,9 @@ void __view::clearView()
 	}
 
 	m_PlayingPage.RefreshList();
-	//(void)m_PlayingPage.Active();
+	//(void)m_view.m_MainWnd.ActivePage(m_PlayingPage, false);
 
-	//m_MediaResPage.Active();
-}
-
-void __view::quit()
-{
-	m_PlayCtrl.close();
-
-	(void)CMainApp::GetMainApp()->Quit();
-
-	(void)RemoveFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
-	//(void)RemoveFontResourceExA(__lightFont, FR_PRIVATE, NULL);
+	//(void)m_view.m_MainWnd.ActivePage(m_MediaResPage);
 }
 
 void __view::foregroundMainWnd()
@@ -751,7 +735,7 @@ void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMed
 	{
 		if (!m_PlaylistPage)
 		{
-			(void)m_PlaylistPage.Active();
+			(void)m_MainWnd.ActivePage(m_PlaylistPage);
 		}
 		m_PlaylistPage.m_wndList.SelectObject(&MediaSet);
 
@@ -774,7 +758,7 @@ void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMed
 
 		(void)m_SingerPage.Active(*pSinger);
 		m_AlbumPage.ShowSinger(pSinger, pMedia, pIMedia);
-		(void)m_AlbumPage.Active();
+		(void)m_MainWnd.ActivePage(m_AlbumPage);
 	}
 }
 

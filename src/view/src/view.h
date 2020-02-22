@@ -157,8 +157,6 @@ public:
 	void initView();
 	void clearView();
 
-	void quit();
-
 	void foregroundMainWnd();
 	
 	CMediaDir* showChooseDirDlg(const wstring& strTitle, bool bShowRoot = true);

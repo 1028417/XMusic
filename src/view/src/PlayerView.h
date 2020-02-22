@@ -35,6 +35,8 @@ private:
 
 	CMainWnd* show() override;
 
+	void close() override;
+
 	bool handleHotkey(const tagHotkeyInfo& HotkeyInfo) override;
 
 	bool handleCommand(UINT uID) override;
