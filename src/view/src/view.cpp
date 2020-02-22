@@ -221,13 +221,13 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			return true;
 		});
 
+		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
+
 		for (cauto prInvalidMedia : vecVerifyResult)
 		{
 			VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
 		}
-
-		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
-
+		
 		if (!VerifyResult.paInvalidMedia)
 		{
 			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
