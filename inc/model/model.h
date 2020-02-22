@@ -112,8 +112,6 @@ struct __ModelExt tagExportOption
 class IModel
 {
 public:
-    virtual wstring medialibPath(const wstring& strSubPath) = 0;
-
     virtual bool status() const = 0;
 
     virtual bool initMediaLib() = 0;
@@ -197,7 +195,7 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-    wstring medialibPath(const wstring& strSubPath) override
+    wstring medialibPath(const wstring& strSubPath = L"")
     {
 		if (m_Option.strRootDir.empty())
 		{
