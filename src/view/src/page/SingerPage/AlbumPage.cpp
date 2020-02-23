@@ -144,7 +144,7 @@ BOOL CAlbumPage::OnInitDialog()
 			return;
 		}
 
-		if (pAlbumItem->duration() == 0)
+		if (pAlbumItem->fileSize() == -1)
 		{
 			lvcd.setTextAlpha(128);
 		}

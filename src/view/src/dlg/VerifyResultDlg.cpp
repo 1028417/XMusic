@@ -69,7 +69,7 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	{
 		cstrStatus.Append(_T("不存在"));
 	}
-	else if (media.duration() <= 0)
+	else if (media.duration() == 0)
 	{
 		cstrStatus.Append(_T("不可播放"));
 	}
@@ -137,7 +137,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 	__Ensure(pDir);
 
 	TD_MediaList paInvalidMedia = m_VerifyResult.paInvalidMedia.filter([](CMedia& media) {
-		return media.duration() <= 0;
+		return media.duration() == 0;
 	});
 
 	map<CMedia*, wstring> mapUpdateMedias;

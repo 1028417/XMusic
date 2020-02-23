@@ -96,10 +96,10 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 {
 	g_bFailRetry = false;
 	
-	int nDuration = PlayItem.duration();
-	if (nDuration > 0)
+	UINT uDuration = PlayItem.duration();
+	if (uDuration > 0)
 	{
-		nDuration++;
+		uDuration++;
 
 		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
 		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
@@ -109,7 +109,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
 	
 	m_strPlayingFile = PlayItem.GetTitle();
-	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), nDuration, 0);
+	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), uDuration, 0);
 }
 
 void CPlayCtrl::onPlayFinish(bool bOpenFail)

@@ -76,7 +76,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		}
 
 		BYTE uTextAlpha = 0;
-		if (pPlayItem->duration() == 0)
+		if (pPlayItem->fileSize() == -1)
 		{
 			uTextAlpha = 128;
 		}
