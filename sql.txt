@@ -1,13 +1,13 @@
 select A.file_size, A.duration, substr(A.path, 5) from tbl_playitem A join tbl_playlist b on b.id = A.playlist_id
-where A.path like '\HK\%' and A.path not like '\HK\网络\%' and b.name not like '%男歌手%' order by A.file_size/A.duration
+where A.path like '\HK\%'
+order by A.file_size/A.duration
 
 select A.file_size, A.duration, c.name, A.path || " " || b.name from tbl_albumitem A
 join tbl_album c on c.id = A.album_id
- join tbl_singer b on b.id = c.singer_id
+join tbl_singer b on b.id = c.singer_id
 left join tbl_playitem e on e.path = b.path || a.path
-where (b.path like '\HK\女歌手%'  or b.path like '\HK\无线%' or  b.path like '\HK\组合%' )
-and e.id isnull
- order by A.file_size/A.duration
+where b.path like '\HK\女歌手%' and e.id isnull
+order by A.file_size/A.duration
 
 
 select * from tbl_singer A left join tbl_playitem B ON B.path like '%' || A.name || '%'
