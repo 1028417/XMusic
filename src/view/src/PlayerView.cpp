@@ -330,7 +330,7 @@ void CPlayerView::_addInMedia()
 	wstring strDir = fileDlg.ShowOpenMulti(lstFiles);		
 	__Ensure(!strDir.empty());
 
-	wstring strRootDir = m_view.getMediaLib().GetAbsPath();
+	cauto strRootDir = m_view.getMediaLib().GetAbsPath();
 	if (strutil::matchIgnoreCase(strDir, strRootDir)
 		|| fsutil::CheckSubPath(strRootDir, strDir))
 	{

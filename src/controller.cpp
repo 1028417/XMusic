@@ -130,7 +130,7 @@ bool CXController::start()
 }
 
 #if __winvc
-bool CXController::setupMediaLib(bool bAutoCreate)
+bool CXController::setupMediaLib()
 {
 	static CFolderDlgEx FolderDlg;
     wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
@@ -143,8 +143,8 @@ bool CXController::setupMediaLib(bool bAutoCreate)
 	{
 		return false;
 	}
-
-	if (!m_model.setupMediaLib(strRootDir, bAutoCreate))
+	
+	if (!m_model.setupMediaLib(strRootDir))
 	{
 		return false;
 	}
