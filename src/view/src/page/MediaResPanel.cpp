@@ -1029,10 +1029,9 @@ void CMediaResPanel::_asyncTask()
 			if (!mediaRes.IsDir())
 			{
 				mediaRes.AsyncTask();
-				return true;
 			}
 
-			return false;
+			return true;
 		});
 	}
 }
