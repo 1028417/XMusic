@@ -287,7 +287,7 @@ private:
 
 	CString m_cstrRenameText;
 
-	vector<BOOL> m_vecAsyncTaskFlag;
+	vector<int> m_vecAsyncTaskResult;
 	CWinTimer m_AsyncTaskTimer;
 
 protected:
@@ -393,7 +393,17 @@ public:
 
 	void AsyncTask(UINT uElapse, cfn_bool_t<UINT> cb);
 	void AsyncTask(UINT uElapse, cfn_bool_t<CListObject&> cb);
-	
+
+	int getAsyncTaskResult(UINT uItem)
+	{
+		if (uItem >= m_vecAsyncTaskResult.size())
+		{
+			return -1;
+		}
+		
+		return m_vecAsyncTaskResult[uItem];
+	}
+
 	void AsyncLButtondown(cfn_void cb);
 
 protected:

@@ -194,17 +194,18 @@ private:
 
 	CPlayMgr m_PlayMgr;
 
-public:
-    wstring medialibPath(const wstring& strSubPath = L"")
-    {
+private:
+	wstring medialibPath(const wstring& strSubPath = L"")
+	{
 		if (m_Option.strRootDir.empty())
 		{
 			return L"";
 		}
 
-        return m_Option.strRootDir + __medialibPath + strSubPath;
-    }
+		return m_Option.strRootDir + __medialibPath + strSubPath;
+	}
 
+public:
     bool status() const override
 	{
 		return m_db.GetStatus();
