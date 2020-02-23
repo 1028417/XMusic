@@ -37,6 +37,7 @@ protected:
 	
 	CMediaTime m_addTime;
 
+private:
 	long long m_nFileSize = 0;
 
 	UINT m_uDuration = 0;
@@ -91,9 +92,10 @@ public:
 		m_uDuration = uDuration;
 	}
 
-	UINT checkDuration();
-	bool verifyMedia();
+	void SetDuration(UINT uDuration, long long nFileSize);
 
+	UINT checkDuration();
+	
 	CMediaSet *GetMediaSet() override
 	{
 		return m_pParent;

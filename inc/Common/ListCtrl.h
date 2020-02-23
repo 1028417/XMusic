@@ -287,7 +287,7 @@ private:
 
 	CString m_cstrRenameText;
 
-	vector<int> m_vecAsyncTaskResult;
+	vector<BOOL> m_vecAsyncTaskStatus;
 	CWinTimer m_AsyncTaskTimer;
 
 protected:
@@ -335,6 +335,8 @@ public:
 	{
 		m_cbTrackMouseEvent = cb;
 	}
+
+	void _AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
 
 public:
 	int InsertItemEx(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
@@ -391,17 +393,17 @@ public:
 
 	const LVHITTESTINFO& hittest(const POINT& ptPos) const;
 
-	void AsyncTask(UINT uElapse, cfn_bool_t<UINT> cb);
-	void AsyncTask(UINT uElapse, cfn_bool_t<CListObject&> cb);
+	void AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
+	void AsyncTask(UINT uElapse, cfn_void_t<CListObject&> cb);
 
-	int getAsyncTaskResult(UINT uItem)
+	int getAsyncTaskStatus(UINT uItem)
 	{
-		if (uItem >= m_vecAsyncTaskResult.size())
+		if (uItem >= m_vecAsyncTaskStatus.size())
 		{
 			return -1;
 		}
 		
-		return m_vecAsyncTaskResult[uItem];
+		return m_vecAsyncTaskStatus[uItem];
 	}
 
 	void AsyncLButtondown(cfn_void cb);
