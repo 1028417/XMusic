@@ -49,7 +49,7 @@ bool CXController::start()
 	__async([&]() {
 		if (!m_model.status() && m_model.getMediaLib().empty())
 		{
-			if (!setupRootDir())
+			if (!setupMediaLib())
 			{
 				CMainApp::GetMainApp()->Quit();
 				return;
@@ -130,7 +130,7 @@ bool CXController::start()
 }
 
 #if __winvc
-bool CXController::setupRootDir()
+bool CXController::setupMediaLib()
 {
 	static CFolderDlgEx FolderDlg;
     wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");

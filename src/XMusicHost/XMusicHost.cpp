@@ -85,7 +85,7 @@ bool CController::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_MODIFY_ROOT:
-		(void)CXController::setupRootDir();
+		(void)CXController::setupMediaLib();
 		
 		break;
 	case ID_REFRESH_ROOT:

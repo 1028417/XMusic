@@ -30,7 +30,7 @@ private:
 
 #if __winvc
 protected:
-	bool setupRootDir();
+	bool setupMediaLib();
 #endif
 
 public:
