@@ -129,7 +129,10 @@ public:
 	virtual CSingerMgr& getSingerMgr() = 0;
 	virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
+#if __winvc
 	virtual bool setupMediaLib(const wstring& strRootDir, bool bAutoCreate) = 0;
+#endif
+
 	virtual void refreshMediaLib() = 0;
 		
 	virtual CMediaDir* attachDir(const wstring& strDir) = 0;
@@ -243,7 +246,10 @@ public:
 
     bool initMediaLib() override;
 
+#if __winvc
 	bool setupMediaLib(const wstring& strRootDir, bool bAutoCreate) override;
+#endif
+
 	void refreshMediaLib() override;
 
 	CMediaDir* attachDir(const wstring& strDir) override;
