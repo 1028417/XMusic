@@ -249,7 +249,7 @@ bool CApp::_resetRootDir(wstring& strRootDir)
 //#endif
 #endif
 
-    return fsutil::createDir(strRootDir + __medialibPath);
+    return fsutil::createDir(strRootDir + L"/" __medialibDir);
 }
 
 void CApp::slot_run(bool bUpgradeFail, int nUpgradeErrMsg)
@@ -599,7 +599,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
             continue;
         }
 
-        cauto strDBFile = m_model.medialibPath(__medialibFile);
+        cauto strDBFile = m_model.medialibPath(__DBFile);
         if (newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
         {
             CByteBuffer bbfMedialib;
