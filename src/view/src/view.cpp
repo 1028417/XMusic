@@ -205,8 +205,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			long long nFileSize = 0;
 			UINT uDuration = prGroup.first.checkFileDuration(prTask.first, nFileSize);
 			prTask.second([&](CMedia& media) {
-				media.SetFileSize(nFileSize);
-				media.SetDuration(uDuration);
+				media.SetDuration(uDuration, nFileSize);
 				if (0 == uDuration)
 				{
 					prGroup.second.add(media);
@@ -227,14 +226,13 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		}
 
 		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
-				
-		if (!vecVerifyResult.empty())
-		{
-			for (cauto prInvalidMedia : vecVerifyResult)
-			{
-				VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
-			}
 
+		for (cauto prInvalidMedia : vecVerifyResult)
+		{
+			VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
+		}
+		if (VerifyResult.paInvalidMedia)
+		{
 			ProgressDlg.Close();
 		}
 		else

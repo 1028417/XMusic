@@ -214,10 +214,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 	this->UpdateHead();
 
 	m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-		auto& PlayItem = ((CPlayItem&)object);
-		(void)PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
-
-		return PlayItem.verifyMedia();
+		((CPlayItem&)object).PlayItem.AsyncTask();
 	});
 }
 

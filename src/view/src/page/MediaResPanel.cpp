@@ -1030,8 +1030,6 @@ void CMediaResPanel::_asyncTask()
 			{
 				mediaRes.AsyncTask();
 			}
-
-			return true;
 		});
 	}
 }

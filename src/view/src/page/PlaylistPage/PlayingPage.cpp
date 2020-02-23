@@ -150,8 +150,6 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 		lstPlayingItems.get(uItem, [&](CPlayItem& PlayItem) {
 			(void)PlayItem.AsyncTask();
 		});
-
-		return true;
 	});
 }
 

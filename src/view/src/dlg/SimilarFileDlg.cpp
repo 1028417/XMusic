@@ -150,8 +150,6 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 					});
 				});
 			});
-
-			return true;
 		});
 
 		return true;

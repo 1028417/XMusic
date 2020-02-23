@@ -127,8 +127,6 @@ void CVerifyResultDlg::OnBnClickedVerify()
 			(void)media.checkDuration();
 			UpdateItem(uItem, media);
 		});
-
-		return true;
 	});
 }
 

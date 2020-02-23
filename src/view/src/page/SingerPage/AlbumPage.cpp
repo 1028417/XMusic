@@ -1282,10 +1282,7 @@ void CAlbumPage::_asyncTask()
 	if (m_wndAlbumItemList.isReportView())
 	{
 		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-			auto& AlbumItem = ((CAlbumItem&)object);
-			(void)AlbumItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
-
-			return AlbumItem.verifyMedia();
+			((CAlbumItem&)object).AsyncTask();
 		});
 	}
 }
