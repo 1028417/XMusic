@@ -12,7 +12,7 @@ extern ITxtWriter& g_modelLogger;
 #endif
 
 #define __medialibPath L"/" __medialibDir L"/"
-#define __medialibFile L"medialib"
+#define __DBFile L"medialib"
 
 #include "Dao.h"
 
@@ -130,7 +130,7 @@ public:
 	virtual CSingerMgr& getSingerMgr() = 0;
 	virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
-	virtual bool setupMediaLib(const wstring& strRootDir) = 0;
+	virtual bool setupMediaLib(const wstring& strRootDir, bool bAutoCreate) = 0;
 	virtual void refreshMediaLib() = 0;
 		
 	virtual CMediaDir* attachDir(const wstring& strDir) = 0;
@@ -195,7 +195,9 @@ private:
 	CPlayMgr m_PlayMgr;
 
 private:
-	wstring medialibPath(const wstring& strSubPath = L"")
+	wstring _checkDBFile();
+
+	wstring _medialibPath(const wstring& strSubPath = L"")
 	{
 		if (m_Option.strRootDir.empty())
 		{
@@ -250,7 +252,7 @@ public:
 
     bool initMediaLib() override;
 
-	bool setupMediaLib(const wstring& strRootDir) override;
+	bool setupMediaLib(const wstring& strRootDir, bool bAutoCreate) override;
 	void refreshMediaLib() override;
 
 	CMediaDir* attachDir(const wstring& strDir) override;
