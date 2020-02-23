@@ -145,10 +145,7 @@ void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMedi
 
 	if (NULL != pMediaRes)
 	{
-		vecText.add(pMediaRes->GetName());
-
-		//(void)pMediaRes->AsyncTask();
-		vecText.add(pMediaRes->GetFileSizeString());
+		vecText.add(pMediaRes->GetName(), pMediaRes->GetFileSizeString());
 	}
 
 	m_wndList.InsertItemEx(m_plCueFile.size()-1, vecText, L" ");
@@ -156,19 +153,19 @@ void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMedi
 
 void CWholeTrackDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	int iItem = m_wndList.GetSelItem();
+	int nItem = m_wndList.GetSelItem();
 	
-	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(iItem >= 0);
+	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(nItem >= 0);
 
 	BOOL bPlayable = FALSE;
 	UINT uTrackCount = 0;
-	if (iItem >= 0)
+	if (nItem >= 0)
 	{
-		m_plCueFile.getFirst((UINT)iItem, [&](LPCCueFile pCueFile) {
+		m_plCueFile.getFirst((UINT)nItem, [&](LPCCueFile pCueFile) {
 			uTrackCount = pCueFile->m_alTrackInfo.size();
 		});
 
-		m_plCueFile.getSecond((UINT)iItem, [&](CMediaRes *pMediaRes) {
+		m_plCueFile.getSecond((UINT)nItem, [&](CMediaRes *pMediaRes) {
 			if (NULL != pMediaRes)
 			{
 				m_view.m_MediaResPage.HittestMediaRes(*pMediaRes);
@@ -193,14 +190,14 @@ void CWholeTrackDlg::OnNMDbclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CWholeTrackDlg::OnBnClickedViewDetail()
 {
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
-	m_plCueFile.getFirst((UINT)iItem, [&](LPCCueFile pCueFile) {
+	m_plCueFile.getFirst((UINT)nItem, [&](LPCCueFile pCueFile) {
 		CRCueFile CueFile = *pCueFile;
 		if (CueFile)
 		{
-			m_plCueFile.getSecond((UINT)iItem, [&](CMediaRes *pMediaRes) {
+			m_plCueFile.getSecond((UINT)nItem, [&](CMediaRes *pMediaRes) {
 				(void)CTrackDetailDlg(m_view, CueFile, pMediaRes).DoModal();
 			});
 		}
@@ -209,10 +206,10 @@ void CWholeTrackDlg::OnBnClickedViewDetail()
 
 void CWholeTrackDlg::OnBnClickedBtnExplore()
 {
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
-	m_plCueFile.get((UINT)iItem, [&](cauto pr) {
+	m_plCueFile.get((UINT)nItem, [&](cauto pr) {
 		if (NULL != pr.second)
 		{
 			pr.second->ShellExplore();
@@ -226,8 +223,8 @@ void CWholeTrackDlg::OnBnClickedBtnExplore()
 
 void CWholeTrackDlg::OnBnClickedPlay()
 {
-	int iItem = m_wndList.GetSelItem();
-	m_plCueFile.getSecond(iItem, [&](auto pMediaRes) {
+	int nItem = m_wndList.GetSelItem();
+	m_plCueFile.getSecond(nItem, [&](auto pMediaRes) {
 		if (pMediaRes)
 		{
 			m_view.m_PlayCtrl.addPlayingItem(pMediaRes->GetPath());

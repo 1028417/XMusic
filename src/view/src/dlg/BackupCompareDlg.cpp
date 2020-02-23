@@ -71,10 +71,10 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (m_fnGetPath)
 	{
-		int iItem = m_wndList.GetSelItem();
-		if (iItem >= 0)
+		int nItem = m_wndList.GetSelItem();
+		if (nItem >= 0)
 		{
-			wstring strMediaPath = m_fnGetPath((UINT)iItem);
+			wstring strMediaPath = m_fnGetPath((UINT)nItem);
 			if (!strMediaPath.empty())
 			{
 				cauto strAbsPath = m_view.getMediaLib().toAbsPath(strMediaPath);

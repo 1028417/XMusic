@@ -210,7 +210,7 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring&
 
 	__EnsureReturn(m_model.getDataMgr().updateMediaSetName(MediaSet, strNewName), E_RenameRetCode::RRC_Failure);
 	
-	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, E_MediaSetChanged::MSC_Rename, MediaSet.m_uID);
+	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, MediaSet.m_uID, E_MediaSetChanged::MSC_Rename);
 	MediaSetChanged.strNewName = strNewName;
 	m_view.updateMediaRelated(MediaSetChanged);
 	
@@ -219,7 +219,7 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring&
 
 bool CXController::removeMediaSet(CMediaSet& MediaSet)
 {
-	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, E_MediaSetChanged::MSC_Remove, MediaSet.m_uID);
+	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, MediaSet.m_uID, E_MediaSetChanged::MSC_Remove);
 
 	UINT uID = MediaSet.m_uID;
 	switch (MediaSet.m_eType)

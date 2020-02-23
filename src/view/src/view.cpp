@@ -244,7 +244,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 	};
 
 	CProgressDlg ProgressDlg(fnVerify, mapMedias.size());
-	__EnsureReturn(IDOK == ProgressDlg.DoModal(L"¼ì²âÇúÄ¿", pWnd));
+	__Ensure(IDOK == ProgressDlg.DoModal(L"¼ì²âÇúÄ¿", pWnd));
 	
 	if (VerifyResult.paInvalidMedia)
 	{
@@ -811,7 +811,7 @@ bool __view::addSingerImage(CSinger& Singer, const list<wstring>& lstFiles)
 {
 	__EnsureReturn(m_ImgMgr.addSingerImg(Singer.m_uID, Singer.m_strName, lstFiles), false);
 
-	tagMediaSetChanged MediaSetChanged(E_MediaSetType::MST_Singer, E_MediaSetChanged::MSC_SingerImgChanged, Singer.m_uID);
+	tagMediaSetChanged MediaSetChanged(E_MediaSetType::MST_Singer, Singer.m_uID, E_MediaSetChanged::MSC_SingerImgChanged);
 	MediaSetChanged.uSingerImgPos = m_ImgMgr.getSingerImgPos(Singer.m_uID);
 	updateMediaRelated(MediaSetChanged);
 

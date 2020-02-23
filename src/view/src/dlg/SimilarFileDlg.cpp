@@ -150,7 +150,11 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 					});
 				});
 			});
+
+			return true;
 		});
+
+		return true;
 	});
 
 	wstring strTitle(L"ÏàËÆÎÄ¼þ");
@@ -253,10 +257,10 @@ void CSimilarFileDlg::OnBnClickedPlay()
 
 void CSimilarFileDlg::OnBnClickedExplore()
 {
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
-	m_arrSimilarFileInfo.get((UINT)iItem, [&](auto& pr) {
+	m_arrSimilarFileInfo.get((UINT)nItem, [&](auto& pr) {
 		m_arrSimilarFile.get(pr.first, [&](auto& arrSimilarFile) {
 			arrSimilarFile.get(pr.second, [&](auto& pr) {
 				pr.first->ShellExplore();

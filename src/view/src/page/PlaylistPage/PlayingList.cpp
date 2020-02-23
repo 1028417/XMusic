@@ -545,11 +545,11 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		(void)m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Singer);
 		break;
 	case E_ItemLinkType::ILT_SingerAlbum:
+		(void)PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
+		//this->UpdateItem(uItem, &PlayItem);
+
 		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);
-
-		PlayItem.AsyncTask();
-		this->UpdateItem(uItem, &PlayItem);
 
 		if (!m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Album))
 		{

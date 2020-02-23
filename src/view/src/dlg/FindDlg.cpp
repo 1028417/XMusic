@@ -305,11 +305,11 @@ void CFindDlg::OnBnClickedBtnExport()
 
 void CFindDlg::OnBnClickedBtnExplore()
 {
-	int iItem = m_wndList.GetSelItem();
-	if (iItem >= 0)
+	int nItem = m_wndList.GetSelItem();
+	if (nItem >= 0)
 	{
 		m_MediaMixer.getMedia([&](CMedia& media) {
 			media.ShellExplore();
-		}, (UINT)iItem);
+		}, (UINT)nItem);
 	}
 }

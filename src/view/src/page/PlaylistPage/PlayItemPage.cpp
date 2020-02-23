@@ -214,8 +214,10 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 	this->UpdateHead();
 
 	m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-		((CPlayItem&)object).AsyncTask();
-		return true;
+		auto& PlayItem = ((CPlayItem&)object);
+		(void)PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
+
+		return PlayItem.verifyMedia();
 	});
 }
 
@@ -470,7 +472,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_wndList.AsyncLButtondown([=]() {
 			CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
 			__Ensure(pPlayItem);
-			pPlayItem->AsyncTask();
+			(void)pPlayItem->findRelatedMedia(E_MediaSetType::MST_Album);
 			m_wndList.UpdateItem(iItem, pPlayItem);
 
 			if (__Column_SingerAlbum == iSubItem)

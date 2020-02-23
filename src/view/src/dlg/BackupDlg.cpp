@@ -173,10 +173,10 @@ void CBackupDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
-	wstring strTag = m_wndList.GetItemText(iItem, 0);
+	wstring strTag = m_wndList.GetItemText(nItem, 0);
 	strutil::ltrim(strTag);
 
 	CBackupCompareDlg CompareDlg(m_view, strTag, false);
@@ -185,12 +185,12 @@ void CBackupDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CBackupDlg::OnBnClickedRestore()
 {
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
 	__Ensure(CMainApp::showConfirmMsg(L"确认使用选中的备份来恢复曲目库？", this));
 
-	wstring strTag = m_wndList.GetItemText(iItem, 0);
+	wstring strTag = m_wndList.GetItemText(nItem, 0);
 	strutil::ltrim(strTag);
 
 	this->OnCancel();
@@ -200,12 +200,12 @@ void CBackupDlg::OnBnClickedRestore()
 
 void CBackupDlg::OnBnClickedCompare()
 {
-	int iItem = m_wndList.GetSelItem();
+	int nItem = m_wndList.GetSelItem();
 
 	wstring strTag;
-	if (iItem >= 0)
+	if (nItem >= 0)
 	{
-		strTag = m_wndList.GetItemText(iItem, 0);
+		strTag = m_wndList.GetItemText(nItem, 0);
 		strutil::ltrim(strTag);
 	}
 
@@ -215,26 +215,26 @@ void CBackupDlg::OnBnClickedCompare()
 
 void CBackupDlg::OnBnClickedDel()
 {
-	int iItem = m_wndList.GetSelItem();
-	__Ensure(iItem >= 0);
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
 
 	__Ensure(CMainApp::showConfirmMsg(L"确认删除选中的备份？", this));
 
-	wstring strTag = m_wndList.GetItemText(iItem, 0);
+	wstring strTag = m_wndList.GetItemText(nItem, 0);
 	strutil::ltrim(strTag);
 
 	m_BackupMgr.removeBackup(strTag);
 
-	m_wndList.DeleteItem(iItem);
+	m_wndList.DeleteItem(nItem);
 
-	if (iItem > 0)
+	if (nItem > 0)
 	{
-		wstring strNextTag = m_wndList.GetItemText(iItem - 1, 0);
-		if (iItem < m_wndList.GetItemCount())
+		wstring strNextTag = m_wndList.GetItemText(nItem - 1, 0);
+		if (nItem < m_wndList.GetItemCount())
 		{
 			strutil::ltrim(strNextTag);
 
-			wstring strPrevTag = m_wndList.GetItemText(iItem, 0);
+			wstring strPrevTag = m_wndList.GetItemText(nItem, 0);
 			strutil::ltrim(strPrevTag);
 
 			m_BackupMgr.compareBackup(strPrevTag, strNextTag);
@@ -245,7 +245,7 @@ void CBackupDlg::OnBnClickedDel()
 		}
 		else
 		{
-			m_wndList.SetItemTexts(iItem - 1, { strNextTag, L"-", L"-" , L"-", L"-" });
+			m_wndList.SetItemTexts(nItem - 1, { strNextTag, L"-", L"-" , L"-", L"-" });
 		}
 	}
 }

@@ -99,10 +99,10 @@ void CTrackDetailDlg::OnBnClickedPlay()
 		m_view.getPlayMgr().clear();
 		m_view.m_PlayCtrl.addPlayingItem(m_pMediaRes->GetPath());
 
-		int iItem = m_wndList.GetSelItem();
-		if (iItem >= 1)
+		int nItem = m_wndList.GetSelItem();
+		if (nItem >= 1)
 		{
-			m_cueFile.m_alTrackInfo.get((UINT)iItem, [&](CRTrackInfo trackInfo) {
+			m_cueFile.m_alTrackInfo.get((UINT)nItem, [&](CRTrackInfo trackInfo) {
 				m_view.m_PlayCtrl.seek(trackInfo.uMsBegin / 1000);
 			});
 		}

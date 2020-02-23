@@ -1241,7 +1241,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 		m_wndAlbumItemList.AsyncLButtondown([=]() {
 			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);
-			pAlbumItem->AsyncTask();
+			(void)pAlbumItem->findRelatedMedia(E_MediaSetType::MST_Playlist);
 			m_wndAlbumItemList.UpdateItem(iItem, pAlbumItem);
 
 			if (__Column_Playlist == iSubItem)
@@ -1282,8 +1282,10 @@ void CAlbumPage::_asyncTask()
 	if (m_wndAlbumItemList.isReportView())
 	{
 		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-			((CAlbumItem&)object).AsyncTask();
-			return true;
+			auto& AlbumItem = ((CAlbumItem&)object);
+			(void)AlbumItem.findRelatedMedia(E_MediaSetType::MST_Playlist);
+
+			return AlbumItem.verifyMedia();
 		});
 	}
 }
