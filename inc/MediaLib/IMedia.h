@@ -128,9 +128,7 @@ public:
 	void SetRelatedMediaSet(CMedia& media);
 
 	void ClearRelatedMediaSet(E_MediaSetType eMediaSetType);
-
-	virtual void AsyncTask() {}
-
+	
 	void ShellExplore(bool bSel=true);
 
 	CMedia *findRelatedMedia(E_MediaSetType eMediaSetType);

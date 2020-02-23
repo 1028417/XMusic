@@ -103,18 +103,17 @@ enum class E_MediaSetChanged
 
 struct tagMediaSetChanged
 {
-	tagMediaSetChanged(E_MediaSetType t_eMediaSetType, E_MediaSetChanged t_eChangedType, UINT t_uMediaSetID)
+	tagMediaSetChanged(E_MediaSetType t_eMediaSetType, UINT t_uMediaSetID, E_MediaSetChanged t_eChangedType)
 		: eMediaSetType(t_eMediaSetType)
-		, eChangedType(t_eChangedType)
 		, uMediaSetID(t_uMediaSetID)
+		, eChangedType(t_eChangedType)
 	{
 	}
 
 	E_MediaSetType eMediaSetType;
+	UINT uMediaSetID;
 
 	E_MediaSetChanged eChangedType;
-
-	UINT uMediaSetID;
 
 	wstring strNewName;
 

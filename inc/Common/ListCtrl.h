@@ -391,9 +391,8 @@ public:
 
 	const LVHITTESTINFO& hittest(const POINT& ptPos) const;
 
-	void AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
-
-	void AsyncTask(UINT uElapse, const function<bool(CListObject& object)>& cb);
+	void AsyncTask(UINT uElapse, cfn_bool_t<UINT> cb);
+	void AsyncTask(UINT uElapse, cfn_bool_t<CListObject&> cb);
 	
 	void AsyncLButtondown(cfn_void cb);
 
@@ -416,7 +415,9 @@ private:
 	template <bool _clear_other>
 	void _SetItemTexts(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
 
-	virtual void OnListItemRename(UINT uItem, const CString& cstrNewText) {}
-
 	void handleCustomDraw(NMLVCUSTOMDRAW& lvnmcd, LRESULT* pResult);
+
+	void _AsyncTask(UINT uElapse, cfn_bool_t<UINT> cb);
+
+	virtual void OnListItemRename(UINT uItem, const CString& cstrNewText) {}
 };

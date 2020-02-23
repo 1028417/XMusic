@@ -80,7 +80,7 @@ public:
 
     void genMediaResListItem(bool bReportView, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 
-    void AsyncTask() override;
+    void AsyncTask();
 };
 
 class __MediaLibExt CMediaDir : public CMediaRes, public CTreeObject

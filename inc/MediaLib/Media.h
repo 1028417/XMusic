@@ -91,7 +91,8 @@ public:
 		m_uDuration = uDuration;
 	}
 
-    UINT checkDuration();
+	UINT checkDuration();
+	bool verifyMedia();
 
 	CMediaSet *GetMediaSet() override
 	{
@@ -104,6 +105,8 @@ public:
 	}
 	
 	void UpdatePath(const wstring& strPath);
+	
+	virtual void AsyncTask() {}
 
 #if __winvc
 	CRCueFile getCueFile() const;
