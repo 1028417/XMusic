@@ -11,8 +11,7 @@ extern ITxtWriter& g_modelLogger;
 #define __ModelExt __dllimport
 #endif
 
-#define __medialibDir L"/" __medialibDir L"/"
-#define __DBFile L"medialib"
+#define __DBFile L"/medialib"
 
 #include "Dao.h"
 
@@ -195,18 +194,10 @@ private:
 	CPlayMgr m_PlayMgr;
 
 private:
+	wstring _medialibPath(const wstring& strSubPath = L"");
+
 	wstring _checkDBFile();
-
-	wstring _medialibPath(const wstring& strSubPath = L"")
-	{
-		if (m_Option.strRootDir.empty())
-		{
-			return L"";
-		}
-
-		return m_Option.strRootDir + __medialibDir + strSubPath;
-	}
-
+	
 public:
     bool status() const override
 	{
