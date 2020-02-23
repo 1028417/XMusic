@@ -11,7 +11,7 @@ extern ITxtWriter& g_modelLogger;
 #define __ModelExt __dllimport
 #endif
 
-#define __medialibPath L"/" __medialibDir L"/"
+#define __medialibDir L"/" __medialibDir L"/"
 #define __DBFile L"medialib"
 
 #include "Dao.h"
@@ -204,7 +204,7 @@ private:
 			return L"";
 		}
 
-		return m_Option.strRootDir + __medialibPath + strSubPath;
+		return m_Option.strRootDir + __medialibDir + strSubPath;
 	}
 
 public:
