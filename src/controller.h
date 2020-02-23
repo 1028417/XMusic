@@ -30,7 +30,7 @@ private:
 
 #if __winvc
 protected:
-	bool setupMediaLib();
+	bool setupMediaLib(bool bAutoCreate = true);
 #endif
 
 public:
