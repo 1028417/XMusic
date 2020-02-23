@@ -197,11 +197,11 @@ private:
 	CPlayMgr m_PlayMgr;
 
 private:
-	wstring _medialibPath(const wstring& strSubPath = L"");
-
 	wstring _checkDBFile();
 	
 public:
+	wstring medialibPath(const wstring& strSubPath = L"");
+
     bool status() const override
 	{
 		return m_db.GetStatus();
