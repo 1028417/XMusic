@@ -221,25 +221,32 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			return true;
 		});
 
-		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
-
-		for (cauto prInvalidMedia : vecVerifyResult)
+		if (ProgressDlg.checkCancel())
 		{
-			VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
+			return;
 		}
-		
-		if (!VerifyResult.paInvalidMedia)
+
+		(void)m_model.getDataMgr().updateMediaSizeDuration(lstMedias);
+				
+		if (!vecVerifyResult.empty())
 		{
-			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
+			for (cauto prInvalidMedia : vecVerifyResult)
+			{
+				VerifyResult.paInvalidMedia.add(prInvalidMedia.second);
+			}
+
+			ProgressDlg.Close();
 		}
 		else
 		{
-			ProgressDlg.Close();
+			ProgressDlg.SetStatusText(L"检测完成，未发现异常曲目");
 		}
 	};
 
 	CProgressDlg ProgressDlg(fnVerify, mapMedias.size());
-	if (IDOK == ProgressDlg.DoModal(L"检测曲目", pWnd) && VerifyResult.paInvalidMedia)
+	__EnsureReturn(IDOK == ProgressDlg.DoModal(L"检测曲目", pWnd));
+	
+	if (VerifyResult.paInvalidMedia)
 	{
 		CResGuard ResGuard(m_ResModule);
 		CVerifyResultDlg dlg(*this, VerifyResult);
