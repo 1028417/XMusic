@@ -162,16 +162,16 @@ struct __DalExt tagAddPlayItem
 	{
 	}
 
-	tagAddPlayItem(const wstring& t_strPath, long long t_nFileSize, int t_nDuration)
+	tagAddPlayItem(const wstring& t_strPath, long long t_nFileSize, UINT t_uDuration)
 		: strPath(t_strPath)
 		, nFileSize(t_nFileSize)
-		, nDuration(t_nDuration)
+		, uDuration(t_uDuration)
 	{
 	}
 
 	wstring strPath;
-	long long nFileSize = -1;
-	int nDuration = -1;
+	long long nFileSize = 0;
+	UINT uDuration = 0;
 };
 
 class __DalExt CDao
@@ -268,7 +268,7 @@ public:
 	bool deletePlayItem(UINT uPlaylistID);
 
     bool updatePlayItem(UINT uPlayItemID, const wstring& strPath);
-    bool updatePlayItem(UINT uPlayItemID, long long nFileSize, int nDuration);
+    bool updatePlayItem(UINT uPlayItemID, long long nFileSize, UINT uDuration);
 
 	bool setbackPlayItem(UINT uPlaylistID, const list<UINT>& lstIDs);
 
@@ -305,7 +305,7 @@ public:
     bool addAlbumItem(const list<wstring>& lstPaths, UINT uAlbumID, const CB_addAlbumItem& cb);
 
     bool updateAlbumItem(UINT uAlbumItemID, const wstring& strPath);
-    bool updateAlbumItem(UINT uAlbumItemID, long long nFileSize, int nDuration);
+    bool updateAlbumItem(UINT uAlbumItemID, long long nFileSize, UINT uDuration);
 
 	bool deleteAlbumItem(UINT uAlbumItem);
 	bool deleteAlbumItem(const list<UINT>& lstAlbumItemIDs);

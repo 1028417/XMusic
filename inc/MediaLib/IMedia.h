@@ -87,9 +87,9 @@ public:
 		return -1;
 	}
 
-	virtual int duration() const
+	virtual UINT duration() const
 	{
-		return -1;
+		return 0;
 	}
 
 	virtual CMediaSet *GetMediaSet()

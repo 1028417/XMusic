@@ -89,7 +89,7 @@ public:
     UINT m_uDuration = 0;
 
 private:
-    int duration() const override
+    UINT duration() const override
     {
         return m_uDuration;
     }

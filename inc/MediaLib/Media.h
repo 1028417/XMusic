@@ -39,7 +39,7 @@ protected:
 
 	long long m_nFileSize = 0;
 
-	int m_nDuration = -1;
+	UINT m_uDuration = 0;
 
 public:
 	int index() const;
@@ -78,9 +78,9 @@ public:
 		return m_nFileSize;
 	}
 	
-	int duration() const override
+	UINT duration() const override
 	{
-		return m_nDuration;
+		return m_uDuration;
 	}
 
 	static wstring GetDurationString(int nDuration);
@@ -88,7 +88,7 @@ public:
 	
 	void SetDuration(UINT uDuration)
 	{
-		m_nDuration = uDuration;
+		m_uDuration = uDuration;
 	}
 
     UINT checkDuration();
