@@ -196,9 +196,6 @@ private:
 
 	CPlayMgr m_PlayMgr;
 
-private:
-	wstring _checkDBFile();
-	
 public:
 	wstring medialibPath(const wstring& strSubPath = L"");
 

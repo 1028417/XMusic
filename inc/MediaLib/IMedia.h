@@ -75,11 +75,11 @@ public:
 
 	wstring GetTitle() const;
 
-	static wstring GetFileSizeString(long long nFileSize, bool bIgnoreByte=true);
+	static wstring genFileSizeString(long long nFileSize, bool bIgnoreByte=true);
 
-	wstring GetFileSizeString(bool bIgnoreByte = true)
+	wstring fileSizeString(bool bIgnoreByte = true)
 	{
-		return GetFileSizeString(fileSize(), bIgnoreByte);
+		return genFileSizeString(fileSize(), bIgnoreByte);
 	}
 
 	virtual long long fileSize() const

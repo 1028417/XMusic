@@ -38,9 +38,13 @@ protected:
 	CMediaTime m_addTime;
 
 private:
-	long long m_nFileSize = 0;
-
 	UINT m_uDuration = 0;
+	long long m_nFileSize = 0;
+	
+#if __winvc
+	UINT m_uDisplayDuration = 0;
+	long long m_nDisplayFileSize = 0;
+#endif
 
 public:
 	int index() const;
@@ -69,24 +73,8 @@ public:
 		return m_addTime;
 	}
 
-	void SetFileSize(long long nFileSize)
-	{
-		m_nFileSize = nFileSize;
-	}
+	UINT checkDuration();
 
-	long long fileSize() const override
-	{
-		return m_nFileSize;
-	}
-	
-	UINT duration() const override
-	{
-		return m_uDuration;
-	}
-
-	static wstring GetDurationString(int nDuration);
-	wstring GetDurationString() const;
-	
 	void SetDuration(UINT uDuration)
 	{
 		m_uDuration = uDuration;
@@ -94,8 +82,36 @@ public:
 
 	void SetDuration(UINT uDuration, long long nFileSize);
 
-	UINT checkDuration();
-	
+	UINT duration() const override
+	{
+		return m_uDuration;
+	}
+
+	static wstring genDurationString(int nDuration);
+	wstring durationString() const;
+
+#if __winvc
+	wstring displayDurationString()
+	{
+		return genDurationString(m_uDisplayDuration);
+	}
+
+	long long displayFileSize()
+	{
+		return m_nDisplayFileSize;
+	}
+#endif
+
+	long long fileSize() const override
+	{
+		return m_nFileSize;
+	}
+
+	void SetFileSize(long long nFileSize)
+	{
+		m_nFileSize = nFileSize;
+	}
+
 	CMediaSet *GetMediaSet() override
 	{
 		return m_pParent;
