@@ -822,12 +822,13 @@ bool __view::copyMediaTitle(IMedia& media)
 	{
 		return false;
 	}
-		
-	HANDLE hClip = GlobalAlloc(GMEM_MOVEABLE, (MAX_PATH+1)*2);
-	wchar_t *lpBuff = (wchar_t*)GlobalLock(hClip);
 
 	cauto strTitle = media.GetTitle();
-	memcpy(lpBuff, strTitle.c_str(), (strTitle.size()+1)*2);
+	auto len = (strTitle.size() + 1) * 2;
+
+	HANDLE hClip = GlobalAlloc(GMEM_MOVEABLE, len);
+	wchar_t *lpBuff = (wchar_t*)GlobalLock(hClip);
+	memcpy(lpBuff, strTitle.c_str(), len);
 	GlobalUnlock(hClip);
 
 	EmptyClipboard();
