@@ -918,7 +918,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     ui.barProgress->setValue(0);
     ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
-    QString qsDuration = strutil::toQstr(CMedia::GetDurationString(m_PlayingInfo.nDuration));
+    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
 
     _relayout();

@@ -109,11 +109,12 @@ BOOL CPlayItemPage::OnInitDialog()
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
 			rcText.bottom = (rcText.bottom + rcText.top) / 2 +6;
-			dc.DrawText(pPlayItem->fileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pPlayItem->displayFileSizeString().c_str()
+				, &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
-			dc.DrawText(pPlayItem->durationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pPlayItem->displayDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}
 
 		lvcd.bSkipDefault = true;
