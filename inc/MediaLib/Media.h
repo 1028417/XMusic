@@ -96,9 +96,9 @@ public:
 		return genDurationString(m_uDisplayDuration);
 	}
 
-	long long displayFileSize()
+	wstring displayFileSizeString()
 	{
-		return m_nDisplayFileSize;
+		return genFileSizeString(m_nDisplayFileSize);
 	}
 #endif
 
