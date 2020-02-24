@@ -118,7 +118,7 @@ void CCompareResultPage::_fillModifyedMedia()
 			strMediaSetName = ModifyedMedia.strSingerName + __CNDot + strMediaSetName;
 		}
 
-		m_wndList.InsertItemEx(uItem++, { strMediaSetName, __substr(ModifyedMedia.strOldPath, 1)
+		m_wndList.InsertItemEx(uItem++, { strMediaSetName, __substr(ModifyedMedia.strPath, 1)
 			, ModifyedMedia.strModifyedPath }, L" ");
 	}
 
@@ -132,7 +132,7 @@ void CCompareResultPage::_fillModifyedMedia()
 	};
 }
 
-void CCompareResultPage::setDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem)
+void CCompareResultPage::setDeletedMedia(const SArray<tagDiffMedia>& arrDeletedPlayItem, const SArray<tagDiffMedia>& arrDeletedAlbumItem)
 {
 	m_arrDeletedPlayItem.assign(arrDeletedPlayItem);
 	m_arrDeletedAlbumItem.assign(arrDeletedAlbumItem);
@@ -153,14 +153,14 @@ void CCompareResultPage::_fillDeletedMedia()
 	UINT uItem = 0;
 	for (auto& DeletedPlayItem : m_arrDeletedPlayItem)
 	{
-		m_wndList.InsertItemEx(uItem++, { DeletedPlayItem.strPlaylistName
+		m_wndList.InsertItemEx(uItem++, { DeletedPlayItem.strMediaSetName
 			, __substr(DeletedPlayItem.strPath, 1) }, L" ");
 	}
 
 	for (auto& DeletedAlbumItem : m_arrDeletedAlbumItem)
 	{
 		m_wndList.InsertItemEx(uItem++, {DeletedAlbumItem.strSingerName	+ __CNDot
-			+ DeletedAlbumItem.strAlbumName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
+			+ DeletedAlbumItem.strMediaSetName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
 	}
 }
 
@@ -187,12 +187,12 @@ void CCompareResultPage::_fillMovedMedia()
 	{
 		if (!MovedMedia.strSingerName.empty())
 		{
-			strOldMediaSetName = MovedMedia.strSingerName + __CNDot + MovedMedia.strOldMediaSetName;
+			strOldMediaSetName = MovedMedia.strSingerName + __CNDot + MovedMedia.strMediaSetName;
 			strNewMediaSetName = MovedMedia.strSingerName + __CNDot + MovedMedia.strNewMediaSetName;
 		}
 		else
 		{
-			strOldMediaSetName = MovedMedia.strOldMediaSetName;
+			strOldMediaSetName = MovedMedia.strMediaSetName;
 			strNewMediaSetName = MovedMedia.strNewMediaSetName;
 		}
 
@@ -210,7 +210,7 @@ void CCompareResultPage::_fillMovedMedia()
 	};
 }
 
-void CCompareResultPage::setNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem)
+void CCompareResultPage::setNewMedia(const SArray<tagDiffMedia>& arrNewPlayItem, const SArray<tagDiffMedia>& arrNewAlbumItem)
 {
 	m_arrNewPlayItem.assign(arrNewPlayItem);
 	m_arrNewAlbumItem.assign(arrNewAlbumItem);
@@ -230,22 +230,22 @@ void CCompareResultPage::_fillNewMedia()
 	UINT uItem = 0;
 	for (auto& NewPlayItem : m_arrNewPlayItem)
 	{
-		m_wndList.InsertItemEx(uItem++, { NewPlayItem.strPlaylistName, __substr(NewPlayItem.strPath, 1) }, L" ");
+		m_wndList.InsertItemEx(uItem++, { NewPlayItem.strMediaSetName, __substr(NewPlayItem.strPath, 1) }, L" ");
 	}
 
 	for (auto& NewAlbumItem : m_arrNewAlbumItem)
 	{
 		m_wndList.InsertItemEx(uItem++, {NewAlbumItem.strSingerName + __CNDot
-			+ NewAlbumItem.strAlbumName, __substr(NewAlbumItem.strPath, 1) }, L" ");
+			+ NewAlbumItem.strMediaSetName, __substr(NewAlbumItem.strPath, 1) }, L" ");
 	}
 
 	m_fnGetPath = [&](UINT uItem) {
 		wstring strPath;
-		if (!m_arrNewPlayItem.get(uItem, [&](tagNewPlayItem& NewPlayItem) {
+		if (!m_arrNewPlayItem.get(uItem, [&](tagDiffMedia& NewPlayItem) {
 			strPath = NewPlayItem.strPath;
 		}))
 		{
-			m_arrNewAlbumItem.get(uItem, [&](tagNewAlbumItem& NewAlbumItem) {
+			m_arrNewAlbumItem.get(uItem, [&](tagDiffMedia& NewAlbumItem) {
 				strPath = NewAlbumItem.strSingerDir + NewAlbumItem.strPath;
 			});
 		}

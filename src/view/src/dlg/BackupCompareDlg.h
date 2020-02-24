@@ -29,13 +29,13 @@ private:
 
 	SArray<tagModifyedMedia> m_arrModifyedMedia;
 	
-	SArray<tagDeletedPlayItem> m_arrDeletedPlayItem;
-	SArray<tagDeletedAlbumItem> m_arrDeletedAlbumItem;
+	SArray<tagDiffMedia> m_arrDeletedPlayItem;
+	SArray<tagDiffMedia> m_arrDeletedAlbumItem;
 	
 	SArray<tagMovedMedia> m_arrMovedMedia;
 	
-	SArray<tagNewPlayItem> m_arrNewPlayItem;
-	SArray<tagNewAlbumItem> m_arrNewAlbumItem;
+	SArray<tagDiffMedia> m_arrNewPlayItem;
+	SArray<tagDiffMedia> m_arrNewAlbumItem;
 
 private:
 	void DoDataExchange(CDataExchange* pDX);
@@ -57,9 +57,9 @@ public:
 	void clear();
 
 	void setModifyedMedia(const SArray<tagModifyedMedia>& arrModifyedMedia);
-	void setDeletedMedia(const SArray<tagDeletedPlayItem>& arrDeletedPlayItem, const SArray<tagDeletedAlbumItem>& arrDeletedAlbumItem);
+	void setDeletedMedia(const SArray<tagDiffMedia>& arrDeletedPlayItem, const SArray<tagDiffMedia>& arrDeletedAlbumItem);
 	void setMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia);
-	void setNewMedia(const SArray<tagNewPlayItem>& arrNewPlayItem, const SArray<tagNewAlbumItem>& arrNewAlbumItem);
+	void setNewMedia(const SArray<tagDiffMedia>& arrNewPlayItem, const SArray<tagDiffMedia>& arrNewAlbumItem);
 };
 
 class CBackupCompareDlg : public TDialog<IDD_DLG_BackupCompare>
