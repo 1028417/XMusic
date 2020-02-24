@@ -124,7 +124,7 @@ using UINT = unsigned int;
 
 #define __1e6 ((UINT)1e6)
 
-#define __srand srand((UINT)_time32(NULL));
+#define __srand srand((UINT)tmutil::time32());
 #define __rand(uMax) ((UINT)(rand()%(uMax+1)))
 
 #define __Ensure(x) \

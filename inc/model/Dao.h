@@ -189,8 +189,6 @@ private:
 private:
 	wstring _getNextName(const wstring& strTableName, const wstring& strColumnName, const wstring& strBaseName);
 
-	bool _getMaxValue(const string& strTableName, const string& strColumnName, int& nRet);
-
 	bool _getMaxID(const string& strTableName, int& nRet);
 
 	int _queryMaxAlbumItemPos(int nAlbumID);

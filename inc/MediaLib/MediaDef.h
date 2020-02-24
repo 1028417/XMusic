@@ -63,13 +63,13 @@ enum class E_MediaSetType
 
 #define __MeidaTimeFormat L"%y-%m-%d\n %H:%M"
 
-using mediatime_t = int32_t;
+using mediatime_t = dbtime_t;
 
 class __MediaLibExt CMediaTime
 {
 public:
 	CMediaTime()
-		: m_tAddTime((mediatime_t)time(0))
+		: m_tAddTime(tmutil::time32())
 	{
 	}
 

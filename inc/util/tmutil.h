@@ -1,13 +1,6 @@
 
 #pragma once
 
-#if !__windows
-#define _time32 time
-#endif
-
-using time32_t = long;
-using time64_t = int64_t;
-
 struct tagTM : tm
 {
 	tagTM()
@@ -25,9 +18,15 @@ struct tagTM : tm
 	}
 };
 
+using time32_t = long;
+using time64_t = int64_t;
+
 class __UtilExt tmutil
 {
 public:
+	static time32_t time32();
+	static time64_t time64();
+
 	static void getCurrentTime(int& nHour, int& nMinute);
 
 	static bool timeToTM(time32_t tTime, tagTM& tm);
