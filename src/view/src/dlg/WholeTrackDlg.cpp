@@ -145,7 +145,7 @@ void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMedi
 
 	if (NULL != pMediaRes)
 	{
-		vecText.add(pMediaRes->GetName(), pMediaRes->GetFileSizeString());
+		vecText.add(pMediaRes->GetName(), pMediaRes->fileSizeString());
 	}
 
 	m_wndList.InsertItemEx(m_plCueFile.size()-1, vecText, L" ");

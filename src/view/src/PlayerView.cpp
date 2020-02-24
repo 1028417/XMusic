@@ -349,11 +349,11 @@ void CPlayerView::_addInMedia()
 		{
 			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
 				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
-				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+				+ CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
 				+ L"\n大小: " + SearchMediaInfo.GetFileSize() + L"字节\n时长: "
-				+ CMedia::GetDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+				+ CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
 				+ L"\n目录: " + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
 				+ L"\n\n关联: ";
 

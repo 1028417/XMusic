@@ -101,7 +101,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 			strDir = pParent->GetPath();
 		}
 
-		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.GetFileSizeString(false) }, L" ");
+		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.genFileSizeString(false) }, L" ");
 		m_arrSimilarFileInfo.add({ group, idx });
 
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);
@@ -145,7 +145,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 
 				m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
 					arrSimilarFile.get(index, [&](auto& pr) {
-						auto& strDuration = CMedia::GetDurationString(CMediaOpaque::checkDuration(*pr.first));
+						auto& strDuration = CMedia::genDurationString(CMediaOpaque::checkDuration(*pr.first));
 						m_wndList.SetItemText(uItem, 3, (L" " + strDuration).c_str());
 					});
 				});

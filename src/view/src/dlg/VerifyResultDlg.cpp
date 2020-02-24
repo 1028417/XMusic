@@ -153,7 +153,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
 				+ L"\n目录: " + fsutil::GetParentDir(MediaResInfo.strPath)
 				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
-				+ CMedia::GetDurationString(MediaResInfo.nDuration)
+				+ CMedia::genDurationString(MediaResInfo.nDuration)
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
 				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))

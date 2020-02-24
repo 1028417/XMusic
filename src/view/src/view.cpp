@@ -526,7 +526,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 				JValue& jFiles = jRoot["files"];
 
 				paSubFile([&](XFile& subFile) {
-					auto& strFileSize = ((CMediaRes&)subFile).GetFileSizeString(false);
+					auto& strFileSize = ((CMediaRes&)subFile).genFileSizeString(false);
 
 					JValue jFile;
 					jFile["name"] = strutil::toUtf8(subFile.name());

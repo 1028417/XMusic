@@ -49,6 +49,7 @@ bool CXController::start()
 	__async([&]() {
 		if (!m_model.status() && m_model.getMediaLib().empty())
 		{
+			m_OptionMgr.getOption().strRootDir.clear();
 			if (!setupMediaLib())
 			{
 				CMainApp::GetMainApp()->Quit();

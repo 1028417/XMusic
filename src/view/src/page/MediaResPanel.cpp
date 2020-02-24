@@ -136,7 +136,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
-			dc.DrawText(pMediaRes->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pMediaRes->fileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}
 
 		lvcd.bSkipDefault = true;

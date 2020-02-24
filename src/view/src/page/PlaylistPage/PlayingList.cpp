@@ -212,7 +212,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
-			// TODO nStyle |= ILD_TRANSPARENT;
+			// TODO png透明绘制 nStyle |= ILD_TRANSPARENT不行;
 			auto margin = (cy - m_view.m_globalSize.m_uBigIconSize)/2;
 			rcSingerImg.SetRect(margin, margin, cy-margin, cy-margin);
 		}
@@ -235,7 +235,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 	cx -= 7;
 
 	int iXPosDuration = cx;
-	auto& strDuration = PlayItem.GetDurationString();
+	auto& strDuration = PlayItem.durationString();
 	if (!strDuration.empty())
 	{
 		(void)dc.SelectObject(m_fontSmall);

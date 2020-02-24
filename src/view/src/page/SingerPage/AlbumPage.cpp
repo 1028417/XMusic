@@ -167,11 +167,11 @@ BOOL CAlbumPage::OnInitDialog()
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
 			rcText.bottom = (rcText.bottom + rcText.top)/2 +6;
-			dc.DrawText(pAlbumItem->GetFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pAlbumItem->fileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
-			dc.DrawText(pAlbumItem->GetDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pAlbumItem->durationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}
 
 		lvcd.bSkipDefault = true;
