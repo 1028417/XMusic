@@ -83,53 +83,27 @@ struct tagSingerGroupInfo
 	SArray<tagSingerInfo> arrSingerInfo;
 };
 
-struct tagModifyedMedia
+struct tagDiffMedia
 {
-	wstring strOldPath;
+	wstring strPath;
 
-	wstring strNewPath;
-	wstring strModifyedPath;
-
+	UINT uMediaSetID;
 	wstring strMediaSetName;
 
+	UINT uSingerID = 0;
 	wstring strSingerName;
-
 	wstring strSingerDir;
 };
 
-typedef struct tagNewPlayItem
+struct tagModifyedMedia : tagDiffMedia
 {
-	wstring strPath;
+	wstring strNewPath;
+	wstring strModifyedPath;
+};
 
-	wstring strPlaylistID;// TODO
-	wstring strPlaylistName;
-} tagDeletedPlayItem;
-
-typedef struct tagNewAlbumItem
+struct tagMovedMedia : tagDiffMedia
 {
-	wstring strPath;
-
-	wstring strAlbumID;// TODO
-	wstring strAlbumName;
-
-	wstring strSingerName;
-
-	wstring strSingerDir;
-
-	int iSingerID = 0;
-
-} tagDeletedAlbumItem;
-
-struct tagMovedMedia
-{
-	wstring strPath;
-
-	wstring strOldMediaSetName;
 	wstring strNewMediaSetName;
-
-	wstring strSingerName;
-
-	wstring strSingerDir;
 };
 
 struct tagCompareBackupResult
@@ -145,11 +119,11 @@ struct tagCompareBackupResult
 	wstring strSrcTag;
 	wstring strDstTag;
 
-	SArray<tagNewPlayItem> arrNewPlayItem;
-	SArray<tagNewAlbumItem> arrNewAlbumItem;
+	SArray<tagDiffMedia> arrNewPlayItem;
+	SArray<tagDiffMedia> arrNewAlbumItem;
 
-	SArray<tagDeletedPlayItem> arrDeletedPlayItem;
-	SArray<tagDeletedAlbumItem> arrDeletedAlbumItem;
+	SArray<tagDiffMedia> arrDeletedPlayItem;
+	SArray<tagDiffMedia> arrDeletedAlbumItem;
 
 	SArray<tagModifyedMedia> arrModifyedMedia;
 
