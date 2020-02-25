@@ -58,11 +58,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		.addDynamic(_T("目录"), 0.37)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
-	CObjectList::tagListPara ListPara(ColumnGuard);
-
-	ListPara.nHeaderHeight = 0; //globalSize.m_uHeadHeight;
-	//ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
-
+	CObjectList::tagListPara ListPara(ColumnGuard, 0); //globalSize.m_uHeadHeight, globalSize.m_fBigFontSize);
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;
 
