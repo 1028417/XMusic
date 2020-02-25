@@ -232,9 +232,11 @@ public:
 		{
 		}
 
-		tagListPara(const TD_ListColumn& t_lstColumns)
+		tagListPara(const TD_ListColumn& t_lstColumns, int t_nHeaderHeight = -1, float t_fHeaderFontSize = 0)
 			: eViewType(E_ListViewType::LVT_Report)
 			, lstColumns(t_lstColumns)
+			, nHeaderHeight(t_nHeaderHeight)
+			, fHeaderFontSize(t_fHeaderFontSize)
 		{
 		}
 
@@ -242,11 +244,11 @@ public:
 
 		TD_ListColumn lstColumns;
 
-		COLORREF crText = 0;
-		float fFontSize = 0;
-
 		int nHeaderHeight = -1;
 		float fHeaderFontSize = 0;
+
+		COLORREF crText = 0;
+		float fFontSize = 0;
 
 		UINT uItemHeight = 0;
 
