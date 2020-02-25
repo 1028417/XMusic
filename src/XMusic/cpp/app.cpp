@@ -421,7 +421,7 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
         medialibConf.lstUpgradeUrl.emplace_back(strMedialib);
     }
 
-    string strBkg;
+    /*string strBkg;
     const JValue& jHBkg = jRoot["hbkg"];
     if (jHBkg.isArray())
     {
@@ -444,7 +444,7 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
                 medialibConf.lstOnlineVBkg.push_back(strBkg);
             }
         }
-    }
+    }*/
 
     return true;
 }
@@ -570,13 +570,18 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
             g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
         }
 
-        if (newMedialibConf.strAppVersion != prevMedialibConf.strAppVersion)
+        if (newMedialibConf.strAppVersion > prevMedialibConf.strAppVersion)
         {
-            g_logger << "upgradeApp: " >> newMedialibConf.strAppVersion;
+            g_logger << "newAppVersion: " >> newMedialibConf.strAppVersion;
 
             if (bUncompatible)
             {
-                if (_upgradeApp(prevMedialibConf.strAppVersion, newMedialibConf))
+#if __ios
+                return false;
+#endif
+
+                g_logger >> "upgradeApp";
+                if (_upgradeApp(newMedialibConf.lstUpgradeUrl))
                 {
                     eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
                     return false;
@@ -699,25 +704,23 @@ static bool cmdShell(const string& strCmd, bool bBlock = true)
 
 int g_nAppUpgradeProgress = -1;
 
-bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf)
+bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 {
-    (void)strPrevVersion;
-
-#if __ios
-    (void)newMedialibConf;
-    return true;
-#endif
-
-    g_nAppUpgradeProgress = 0;
-
-    for (cauto upgradeUrl : newMedialibConf.lstUpgradeUrl)
+    for (cauto upgradeUrl : lstUpgradeUrl)
     {
+        if (!m_bRunSignal)
+        {
+             return false;
+        }
+
         cauto strAppUrl = upgradeUrl.appUrl();
         if (strAppUrl.empty())
         {
             continue;
         }
         g_logger << "dowloadApp: " >> strAppUrl;
+
+        g_nAppUpgradeProgress = 0;
 
         CByteBuffer bbfData;
         CDownloader downloader;
@@ -726,15 +729,12 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
                 (void)dltotal;
                 (void)dlnow;
 
-                if (dltotal > 0 && dlnow > 0)
+                if (dltotal < 10000)
                 {
-                    g_nAppUpgradeProgress = 100*dlnow/dltotal;
-
-                    if (100 == g_nAppUpgradeProgress)
-                    {
-                        g_logger << "------" << dltotal << "    " << dlnow;
-                    }
+                    return false;
                 }
+
+                g_nAppUpgradeProgress = 100*dlnow/dltotal;
 
                 return m_bRunSignal;
         });

@@ -77,7 +77,7 @@ private:
     bool _upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg);
     bool _upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
 
-    bool _upgradeApp(const string& strPrevVersion, const tagMedialibConf& newMedialibConf);
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
 public:
     static bool checkIPhoneXBangs(int cx, int cy)
