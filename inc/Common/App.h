@@ -5,6 +5,9 @@
 
 using CB_Sync = fn_void;
 
+#define __appSync CMainApp::sync
+#define __appAsync CMainApp::async
+
 class IView
 {
 public:
@@ -122,17 +125,13 @@ public:
 	static bool removeMsg(UINT uMsg);
 
 	static void sync(const CB_Sync& cb);
-	static void sync(UINT uDelayTime, const CB_Sync& cb);
 
+	static void async(UINT uDelayTime, const CB_Sync& cb);
 	static void async(const CB_Sync& cb)
 	{
-		sync(0, cb);
+		async(0, cb);
 	}
-	static void async(UINT uDelayTime, const CB_Sync& cb)
-	{
-		sync(uDelayTime, cb);
-	}
-	
+
 	void thread(cfn_void cb);
 
 	E_DoEventsResult DoEvents(bool bOnce=false);

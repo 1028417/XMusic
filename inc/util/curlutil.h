@@ -14,8 +14,8 @@ struct __UtilExt tagCurlOpt
 
     unsigned long maxRedirect = 1;
 
-    unsigned long timeout = 0;
     unsigned long connectTimeout = 0;
+    unsigned long timeout = 0;
 
     unsigned long lowSpeedLimit = 0;
     unsigned long lowSpeedLimitTime = 0;
@@ -46,19 +46,19 @@ public:
 };
 
 //using CB_DownloadRecv = const function<bool(char *ptr, size_t size)>&;
-using CB_DownloadProgress = const function<bool(int64_t dltotal, int64_t dlnow)>&;
+using CB_DownloadProgress = const function<bool(time_t beginTime, int64_t dltotal, int64_t dlnow)>&;
 
 class __UtilExt CCurlDownload
 {
 public:
     virtual ~CCurlDownload() {}
 
-    CCurlDownload(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
-            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
-            , unsigned long maxSpeedLimit = 0) : m_curlOpt(bShare)
+    CCurlDownload(bool bShare = false, unsigned long connectTimeout = 3, unsigned long timeout = 0
+            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0, unsigned long maxSpeedLimit = 0)
+        : m_curlOpt(bShare)
     {
-        m_curlOpt.timeout = timeout;
         m_curlOpt.connectTimeout = connectTimeout;
+        m_curlOpt.timeout = timeout;
 
         m_curlOpt.lowSpeedLimit = lowSpeedLimit; // 单位字节
         m_curlOpt.lowSpeedLimitTime = lowSpeedLimitTime;
@@ -70,15 +70,14 @@ public:
     {
     }
 
-protected:
+private:
     tagCurlOpt m_curlOpt;
 
-    time_t m_beginTime = 0;
-
-private:
     XThread m_thread;
 
     bool m_bStatus = false;
+
+    time_t m_beginTime = 0;
 
     uint64_t m_uSumSize = 0;
 
@@ -108,14 +107,17 @@ public:
 class __UtilExt CDownloader : public CCurlDownload
 {
 public:
-    CDownloader(bool bShare = false, unsigned long timeout = 0, unsigned long connectTimeout = 3
-            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0
-            , unsigned long maxSpeedLimit = 0)
-        : CCurlDownload(bShare, timeout, connectTimeout, lowSpeedLimit, lowSpeedLimitTime, maxSpeedLimit)
+    CDownloader() : CCurlDownload(false)
     {
     }
 
     CDownloader(const tagCurlOpt& curlOpt) : CCurlDownload(curlOpt)
+    {
+    }
+
+    CDownloader(unsigned long connectTimeout, unsigned long timeout = 0
+            , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0, unsigned long maxSpeedLimit = 0)
+        : CCurlDownload(false, connectTimeout, timeout, lowSpeedLimit, lowSpeedLimitTime, maxSpeedLimit)
     {
     }
 

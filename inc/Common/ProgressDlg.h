@@ -2,10 +2,6 @@
 
 #include "TDialog.h"
 
-#define WM_SetProgress WM_USER+1
-#define WM_SetStatusText WM_USER+2
-#define WM_EndProgress WM_USER+3
-
 using FN_Work = fn_void_t<class CProgressDlg&>;
 
 class __CommonExt CProgressDlg : public TDialog<>, public CThreadGroup
@@ -45,7 +41,11 @@ public:
 	
 	int showMsgBox(const wstring& strText, const wstring& strTitle, UINT uType = 0)
 	{
-		return MessageBoxW(strText.c_str(), strTitle.c_str(), uType);
+		int nRet = 0;
+		__appSync([&]() {
+			nRet = CMainApp::showMsg(strText.c_str(), strTitle.c_str(), uType, this);
+		});
+		return nRet;
 	}
 
 	int showMsgBox(const wstring& strText, UINT uType = 0)
@@ -69,8 +69,6 @@ private:
 	LRESULT OnSetStatusText(WPARAM wParam, LPARAM lParam);
 
 	LRESULT OnSetProgress(WPARAM wParam, LPARAM lParam);
-
-	LRESULT OnEndProgress(WPARAM wParam, LPARAM lParam);
 
 	virtual void OnCancel();
 

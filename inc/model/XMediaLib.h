@@ -1,6 +1,23 @@
 
 #pragma once
 
+#if !__winvc
+class CFileUrlMap
+{
+public:
+    CFileUrlMap(){}
+
+private:
+    unordered_map<string, pair<string, string>> m_map;
+
+public:
+    void add(const string& strFileTitle, const string& strUrl);
+
+    bool check(const wstring& strFileTitle);
+
+    string get(const wstring& strFileTitle);
+};
+
 class CUpgradeUrl
 {
 public:
@@ -49,7 +66,6 @@ public:
     }
 };
 
-#if !__winvc
 struct __ModelExt tagMedialibConf
 {
     string strAppVersion;
@@ -114,6 +130,9 @@ private:
     unordered_map<string, string> m_mapXurl;
     unordered_map<string, string> m_mapShareUrl;
 
+    CFileUrlMap m_xurlMap;
+    CFileUrlMap m_shareUrlMap;
+
     list<JValue> m_lstSnapshot;
 
 public:
@@ -127,8 +146,6 @@ public:
     bool loadXurl(Instream& ins);
 
     bool loadSnapshot(Instream& ins);
-
-    static string genUrl(const string& strUrl, const string& strFileTitle);
 
     bool checkUrl(const wstring& strFileTitle);
 
