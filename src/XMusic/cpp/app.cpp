@@ -508,7 +508,7 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
 
         CByteBuffer bbfZip;
 
-        CDownloader downloader(3, 0, 1, 3);
+        CDownloader downloader(3, 30, 1, 3);
         int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
                 (void)beginTime;
                 (void)dltotal;
