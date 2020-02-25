@@ -26,6 +26,6 @@ int main(int argc, char *argv[])
 
     auto app = new CApp(argc, argv);
     int nRet = app->run();
-    delete app;
+    //delete app;
     return nRet;
 }

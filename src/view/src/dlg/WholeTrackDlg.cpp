@@ -92,7 +92,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 					pMediaRes = itr->second;
 				}
 
-				CMainApp::sync([&]() {
+				__appSync([&]() {
 					showCueInfo(subDir.GetPath(), cueFile, pMediaRes);
 				});
 			}
@@ -107,7 +107,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 		if (plUnmatchFile)
 		{
-			CMainApp::sync([&]() {
+			__appSync([&]() {
 				plUnmatchFile([&](CMediaRes *pMediaRes, const wstring& strDir) {
 					showCueInfo(strDir, CCueFile::NoCue, pMediaRes);
 				});

@@ -508,8 +508,9 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
 
         CByteBuffer bbfZip;
 
-        CDownloader downloader(false, 10);
-        int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](int64_t dltotal, int64_t dlnow){
+        CDownloader downloader(3, 0, 1, 3);
+        int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
+                (void)beginTime;
                 (void)dltotal;
                 (void)dlnow;
                 return m_bRunSignal;
@@ -719,15 +720,11 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
         g_logger << "dowloadApp: " >> strAppUrl;
 
         CByteBuffer bbfData;
-        CDownloader downloader(false);
-        int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](int64_t dltotal, int64_t dlnow){
+        CDownloader downloader;
+        int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
+                (void)beginTime;
                 (void)dltotal;
                 (void)dlnow;
-
-                if (!m_bRunSignal)
-                {
-                    return false;
-                }
 
                 if (dltotal > 0 && dlnow > 0)
                 {
@@ -739,7 +736,7 @@ bool CApp::_upgradeApp(const string& strPrevVersion, const tagMedialibConf& newM
                     }
                 }
 
-                return true;
+                return m_bRunSignal;
         });
         if (nRet != 0)
         {

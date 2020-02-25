@@ -163,13 +163,15 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				strText.append(L"\n" + media.m_pParent->GetLogicPath());
 			});
 
-			int iRet = ProgressDlg.showMsgBox(strText.c_str(), L"匹配到新文件", MB_YESNOCANCEL);
-			if (IDCANCEL == iRet)
+			int nRet = ProgressDlg.showMsgBox(strText.c_str(), L"匹配到新文件", MB_YESNOCANCEL);
+			if (IDCANCEL == nRet)
 			{
 				return E_MatchResult::MR_Ignore;
 			}
-
-			__EnsureReturn(IDYES == iRet, E_MatchResult::MR_No);
+			else if (IDNO == nRet)
+			{
+				return E_MatchResult::MR_No;
+			}
 
 			ProgressDlg.ForwardProgress();
 

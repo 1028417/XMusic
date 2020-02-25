@@ -553,7 +553,7 @@ UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMedia
 
 	SMap<wstring, wstring> mapUpdateFiles;
 	map<CMedia*, wstring> mapUpdatedMedias;
-	for (auto& pr : lstMatchResult)
+	for (auto& pr : lstMatchResult) // TODO 从头显示进度
 	{
 		wstring& strSrcAbsPath = pr.first;
 		CSearchMediaInfo& SearchMediaInfo = pr.second;

@@ -537,14 +537,14 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			fileDlg.ShowOpenMulti(lstFiles);
 			__Ensure(!lstFiles.empty());
 
-			int iRet = m_view.getController().addAlbumItems(lstFiles, *pAlbum);
-			if (iRet > 0)
+			int nRet = m_view.getController().addAlbumItems(lstFiles, *pAlbum);
+			if (nRet > 0)
 			{
 				m_wndAlbumList.SelectObject(pAlbum);
 
 				this->_showAlbum(pAlbum);
 
-				UINT uSelectCount = (UINT)iRet;
+				UINT uSelectCount = (UINT)nRet;
 				m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount() - uSelectCount, uSelectCount);
 			}
 		}

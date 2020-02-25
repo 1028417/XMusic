@@ -114,7 +114,7 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 
 void CPlayCtrl::onPlayFinish(bool bOpenFail)
 {
-	CMainApp::async([&, bOpenFail]() {
+	__appAsync([&, bOpenFail]() {
 		if (bOpenFail)
 		{
 			//m_PlaySpirit->clear();

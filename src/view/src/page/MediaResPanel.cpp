@@ -363,6 +363,10 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 			strTitle = __wchDirSeparator;
 			uMaxTabTitle -= 5;
 		}
+		else
+		{
+			strTitle.append(L"...\\");
+		}
 		
 		wstring strDirName = fsutil::getFileTitle(strOppPath);
 		if (strDirName.size() > uMaxTabTitle)

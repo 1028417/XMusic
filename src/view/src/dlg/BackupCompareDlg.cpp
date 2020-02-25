@@ -406,7 +406,7 @@ void CBackupCompareDlg::_compare()
 
 		m_BackupMgr.compareBackup(strSrcTag, strDstTag, [=](const tagCompareBackupResult& result) {
 			if (result.strSrcTag == strSrcTag && result.strDstTag == strDstTag)
-			CMainApp::sync([&]() {
+			__appSync([&]() {
 				_fillResult(result);
 			});
 		});

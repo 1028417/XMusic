@@ -101,7 +101,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 		}
 
 		bool bChecked = false;
-		CMainApp::sync([&]() {
+		__appSync([&]() {
 			bChecked = CS_Unchecked != m_wndTree.GetCheckState(*pSubSets);
 		});
 		if (bChecked)
@@ -114,7 +114,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 
 	if (0 != uSumSize)
 	{
-		CMainApp::sync([&]() {
+		__appSync([&]() {
 			uint64_t uMB = uSumSize / __1e6;
 
 			m_mapSumSize[&MediaSet] = uSumSize;
