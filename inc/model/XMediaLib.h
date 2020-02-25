@@ -76,8 +76,8 @@ struct __ModelExt tagMedialibConf
 
     list<CUpgradeUrl> lstUpgradeUrl;
 
-    list<string> lstOnlineHBkg;
-    list<string> lstOnlineVBkg;
+    //list<string> lstOnlineHBkg;
+    //list<string> lstOnlineVBkg;
 
     void clear()
     {
@@ -89,8 +89,8 @@ struct __ModelExt tagMedialibConf
 
         lstUpgradeUrl.clear();
 
-        lstOnlineHBkg.clear();
-        lstOnlineVBkg.clear();
+        //lstOnlineHBkg.clear();
+        //lstOnlineVBkg.clear();
     }
 };
 
