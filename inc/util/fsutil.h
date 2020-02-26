@@ -114,30 +114,43 @@ public:
 		return __chrBackSlant == chr || __chrSlant == chr;
 	}
 
-    static void trimPathTail(wstring& strPath);
-	static wstring trimPathTail_r(const wstring& strPath)
+    template <class S>
+    static void trimPathTail(S& strPath)
+    {
+        if (!strPath.empty())
+        {
+            if (checkPathTail(strPath.back()))
+            {
+                strPath.pop_back();
+            }
+        }
+    }
+
+    template <class S>
+    static S trimPathTail_r(const S& strPath)
 	{
-		wstring t_strPath(strPath);
+        auto t_strPath = strPath;
 		trimPathTail(t_strPath);
 		return t_strPath;
 	}
 
-    static void trimPathTail(string& strPath);
-    static string trimPathTail_r(const string& strPath)
+    template <class S>
+    static void transFSSlant(S& strPath)
     {
-        string t_strPath(strPath);
-        trimPathTail(t_strPath);
-        return t_strPath;
-    }
-
-	static void transFSSlant(wstring& strPath)
-	{
 #if __windows
         strutil::replaceChar(strPath, __chrSlant, __chrBackSlant);
 #else
         strutil::replaceChar(strPath, __chrBackSlant, __chrSlant);
 #endif
-	}
+    }
+
+    template <class S>
+    static S transFSSlant_r(const S& strPath)
+    {
+        auto t_strPath = strPath;
+        transFSSlant(t_strPath);
+        return t_strPath;
+    }
 
     static FILE* fopen(const wstring& strFile, const string& strMode);
 	static FILE* fopen(const string& strFile, const string& strMode);
