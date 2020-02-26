@@ -339,7 +339,7 @@ void CPlayerView::_addInMedia()
 	}
 
 	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
-		_addInMedia(lstFiles, ProgressDlg);
+		m_view.addInMedia(lstFiles, ProgressDlg);
 	}, lstFiles.size());
 	(void)ProgressDlg.DoModal(L"合入外部文件");
 }
