@@ -645,9 +645,9 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
             }
             else if (strutil::endWith(unzfile.strPath, ".xurl"))
             {
-                if (!m_model.getMediaLib().loadXurl(ifbData))
+                if (!m_model.getMediaLib().loadXUrl(ifbData))
                 {
-                    g_logger << "loadXurl fail: " >> unzfile.strPath;
+                    g_logger << "loadXUrl fail: " >> unzfile.strPath;
                     //continue;
                 }
             }

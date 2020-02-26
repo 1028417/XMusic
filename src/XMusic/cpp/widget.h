@@ -128,7 +128,6 @@ public:
         TWidget(parent),
         m_eRenderHints(eRenderHints)
     {
-        //setFont(1);
     }
 
 private:

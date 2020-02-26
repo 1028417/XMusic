@@ -37,9 +37,9 @@ void CMedialibDlg::init()
 
     ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
-#if __android || __ios
+/*#if __android || __ios
     m_MedialibView.setFont(1.05);
-#endif
+#endif*/
     m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);

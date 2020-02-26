@@ -309,9 +309,9 @@ void MainWindow::_init()
     ui.labelSingerImg->setVisible(false);
     ui.labelSingerImg->setShadow(2);
 
-    ui.labelSingerName->setFont(1);
+    ui.labelSingerName->setFont(0.95);
 
-    ui.labelPlayingfile->setFont(1);
+    ui.labelPlayingfile->setFont(0.95);
 
     ui.labelDuration->setFont(0.8);
 
@@ -998,7 +998,7 @@ void MainWindow::_showAlbumName()
     labelAlbumName.setVisible(true);
     labelAlbumName.setText(strMediaSet);
 
-    labelAlbumName.setFont(1);
+    labelAlbumName.setFont(0.95);
 
     if (m_bUseDefaultBkg)
     {
@@ -1006,7 +1006,7 @@ void MainWindow::_showAlbumName()
         labelAlbumName.adjustSize();
         if (labelAlbumName.width() > rcAlbumNamePrev.width())
         {
-            labelAlbumName.adjustFont(0.95f);
+            labelAlbumName.adjustFont(0.9);
             labelAlbumName.adjustSize();
 
             if (labelAlbumName.width() < rcAlbumNamePrev.width())
