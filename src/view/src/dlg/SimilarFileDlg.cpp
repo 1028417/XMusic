@@ -204,7 +204,7 @@ void CSimilarFileDlg::OnBnClickedRemove()
 
 	__Ensure(!setDelFile.empty());
 	
-	__Ensure(CMainApp::showConfirmMsg(L"确认删除所选曲目?", this));
+	__Ensure(CMainApp::confirmBox(L"确认删除所选曲目?", this));
 
 	CWaitCursor WaitCursor;
 

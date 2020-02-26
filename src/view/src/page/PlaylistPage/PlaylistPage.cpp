@@ -223,7 +223,7 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		__Assert(pPlaylist);
 		__EnsureBreak(nItem >= 0);
 
-		__EnsureBreak(CMainApp::showConfirmMsg(L"确认删除所选列表?", *this));
+		__EnsureBreak(CMainApp::confirmBox(L"确认删除所选列表?", *this));
 
 		(void)m_wndList.DeleteItem(nItem);
 
@@ -386,11 +386,11 @@ void CPlaylistPage::OnLvnEndlabeleditList(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		if (E_RenameRetCode::RRC_InvalidName == eRetCode)
 		{
-			CMainApp::showMsg(L"名称含特殊字符！", *this);
+			CMainApp::msgBox(L"名称含特殊字符！", *this);
 		}
 		else if (E_RenameRetCode::RRC_NameExists == eRetCode)
 		{
-			CMainApp::showMsg(L"重命名失败，存在同名列表！", *this);
+			CMainApp::msgBox(L"重命名失败，存在同名列表！", *this);
 		}
 
 		return;

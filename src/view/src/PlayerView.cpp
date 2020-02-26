@@ -304,13 +304,13 @@ void CPlayerView::_checkSimilarFile()
 		wstring strDstDir = pDstDir->GetPath();
 		if (strutil::matchIgnoreCase(strSrcDir, strDstDir))
 		{
-			CMainApp::showMsg(L"请选择不同的目录！");
+			CMainApp::msgBox(L"请选择不同的目录！");
 			return;
 		}
 		else if (fsutil::CheckSubPath(strSrcDir, strDstDir)
 			|| fsutil::CheckSubPath(strDstDir, strSrcDir))
 		{
-			CMainApp::showMsg(L"请选择没有从属关系的目录！");
+			CMainApp::msgBox(L"请选择没有从属关系的目录！");
 			return;
 		}
 		
@@ -334,64 +334,25 @@ void CPlayerView::_addInMedia()
 	if (strutil::matchIgnoreCase(strDir, strRootDir)
 		|| fsutil::CheckSubPath(strRootDir, strDir))
 	{
-		CMainApp::showMsg(L"请选择 " + strRootDir + L" 以外的文件！");
+		CMainApp::msgBox(L"请选择 " + strRootDir + L" 以外的文件！");
 		return;
 	}
 
-	auto cbAddInMedia = [&](CProgressDlg& ProgressDlg) {
-		auto cbProgress = [&](const wstring& strFile) {
-			ProgressDlg.SetStatusText(strFile.c_str(), 1);
-
-			return !ProgressDlg.checkCancel();
-		};
-
-		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
-		{
-			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
-				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
-				+ CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-				+ L"\n\n是否更新以下曲目？\n"
-				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-				+ L"\n大小: " + SearchMediaInfo.GetFileSize() + L"字节\n时长: "
-				+ CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-				+ L"\n目录: " + m_view.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
-				+ L"\n\n关联: ";
-
-			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
-				strText.append(L"\n" + media.m_pParent->GetLogicPath());
-			});
-
-			int nRet = ProgressDlg.showMsgBox(strText, L"匹配到文件", MB_YESNOCANCEL);
-			if (IDCANCEL == nRet)
-			{
-				return E_MatchResult::MR_Ignore;
-			}
-			else if (IDNO == nRet)
-			{
-				return E_MatchResult::MR_No;
-			}
-
-			return E_MatchResult::MR_Yes;
-		};
-
-		UINT uRet = m_view.getController().addInMedia(lstFiles, cbProgress, cbConfirm);
-
-		ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(uRet) + L"个曲目").c_str());
-	};
-	
-	CProgressDlg ProgressDlg(cbAddInMedia, lstFiles.size());
+	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
+		_addInMedia(lstFiles, ProgressDlg);
+	}, lstFiles.size());
 	(void)ProgressDlg.DoModal(L"合入外部文件");
 }
 
-bool CPlayerView::showMsgBox(const wstring& strMsg, bool bWarning)
+bool CPlayerView::msgBox(const wstring& strMsg, bool bWarning)
 {
 	if (bWarning)
 	{
-		return CMainApp::showConfirmMsg(strMsg);
+		return CMainApp::confirmBox(strMsg);
 	}
 	else
 	{
-		CMainApp::showMsg(strMsg);
+		CMainApp::msgBox(strMsg);
 		return true;
 	}
 }

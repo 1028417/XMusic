@@ -20,7 +20,7 @@ bool __view::init()
 {
 	if (!m_PlayCtrl.init())
 	{
-		CMainApp::showMsg(L"请先执行安装");
+		CMainApp::msgBox(L"请先执行安装");
 		return false;
 	}
 
@@ -269,6 +269,131 @@ void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 	verifyMedia(lstMedias, pWnd);
 }
 
+void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg)
+{
+	auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
+	{
+		wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
+			+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
+			+ CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+			+ L"\n\n是否更新以下曲目？\n"
+			+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
+			+ L"\n大小: " + SearchMediaInfo.GetFileSize() + L"字节\n时长: "
+			+ CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+			+ L"\n目录: " + m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+			+ L"\n\n关联: ";
+
+		SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+			strText.append(L"\n" + media.m_pParent->GetLogicPath());
+		});
+
+		int nRet = ProgressDlg.msgBox(strText, L"匹配到文件", MB_YESNOCANCEL);
+		if (IDCANCEL == nRet)
+		{
+			return E_MatchResult::MR_Ignore;
+		}
+		else if (IDNO == nRet)
+		{
+			return E_MatchResult::MR_No;
+		}
+
+		return E_MatchResult::MR_Yes;
+	};
+
+	ProgressDlg.SetStatusText(L"正在分析曲目...");
+
+	TD_MediaList lstMedias;
+	m_model.getMediaLib().GetAllMedias(lstMedias);
+	__Ensure(lstMedias);
+
+	CSearchMediaInfoGuard SearchMediaInfoGuard(m_model.getSingerMgr());
+	TD_SearchMediaInfoMap mapSearchMedias;
+	lstMedias([&](CMedia& media) {
+		SearchMediaInfoGuard.genSearchMediaInfo(media, mapSearchMedias);
+	});
+
+	ProgressDlg.SetStatusText(L"正在比对文件...");
+
+	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
+	for (auto& strFile : lstFiles)
+	{
+		ProgressDlg.SetStatusText(strFile.c_str(), 1);
+		__Ensure(ProgressDlg.checkCancel());
+
+		tagMediaResInfo MediaResInfo(strFile);
+		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
+		{
+			CSearchMediaInfo& SearchMediaInfo = itr->second;
+
+			if (SearchMediaInfo.matchMediaRes(MediaResInfo))
+			{
+				E_MatchResult eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
+				if (E_MatchResult::MR_Ignore == eRet)
+				{
+					itr = mapSearchMedias.erase(itr);
+					continue;
+				}
+
+				if (E_MatchResult::MR_Yes == eRet)
+				{
+					lstMatchResult.emplace_back(MediaResInfo.strPath, SearchMediaInfo);
+
+					(void)mapSearchMedias.erase(itr);
+
+					break;
+				}
+			}
+
+			++itr;
+		}
+	}
+
+	ProgressDlg.SetStatusText(L"正在合入文件...");
+	ProgressDlg.SetProgress(0, lstMatchResult.size());
+
+	SMap<wstring, wstring> mapUpdateFiles;
+	map<CMedia*, wstring> mapUpdatedMedias;
+	for (auto& pr : lstMatchResult)
+	{
+		wstring& strSrcAbsPath = pr.first;
+		ProgressDlg.SetStatusText(strSrcAbsPath.c_str(), 1);
+		__Ensure(ProgressDlg.checkCancel());
+
+		CSearchMediaInfo& SearchMediaInfo = pr.second;
+		wstring strDstAbsPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
+			+ __wchDirSeparator + fsutil::GetFileName(strSrcAbsPath);
+
+		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstAbsPath, [&]() {
+			(void)fsutil::removeFile(SearchMediaInfo.m_strAbsPath);
+
+			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			{
+				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strDstAbsPath);
+				return false;
+			}
+
+			wstring strDstOppPath = m_model.getMediaLib().toOppPath(strDstAbsPath);
+			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strDstOppPath);
+
+			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+				mapUpdatedMedias[&media] = strDstOppPath;
+			});
+
+			return true;
+		});
+	}
+
+	__Ensure(!mapUpdatedMedias.empty());
+
+	__Ensure(m_model.updateMediaPath(mapUpdatedMedias));
+
+	__Ensure(m_model.updateFile(mapUpdateFiles));
+
+	m_model.refreshMediaLib();
+
+	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
+}
+
 bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport)
 {
@@ -277,7 +402,7 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	__EnsureReturn(!strExportPath.empty(), false);
 	if (!getMediaLib().checkIndependentDir(strExportPath, true))
 	{
-		CMainApp::showMsg(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
+		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
 		return false;
 	}
 
@@ -350,7 +475,7 @@ void __view::exportMediaSet(CMediaSet& MediaSet)
 
 	if (!lstMedias)
 	{
-		//CMainApp::showMsg(L"未发现曲目！", L"导出曲目");
+		//CMainApp::msgBox(L"未发现曲目！", L"导出曲目");
 		return;
 	}
 

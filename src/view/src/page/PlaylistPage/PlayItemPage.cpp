@@ -374,7 +374,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_REMOVE:
 		__EnsureBreak(lstPlayItems);
 
-		__EnsureBreak(CMainApp::showConfirmMsg(L"确认移除选中的曲目?", *this));
+		__EnsureBreak(CMainApp::confirmBox(L"确认移除选中的曲目?", *this));
 
 		__EnsureBreak(m_view.getModel().removeMedia(lstPlayItems));
 

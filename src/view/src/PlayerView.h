@@ -26,7 +26,7 @@ private:
 	void _checkSimilarFile();
 
 	void _addInMedia();
-	
+
 private:
 	IModelObserver& getModelObserver() override
 	{
@@ -42,7 +42,7 @@ private:
 	bool handleCommand(UINT uID) override;
 
 private:
-	bool showMsgBox(const wstring& strMsg, bool bWarning = false) override;
+	bool msgBox(const wstring& strMsg, bool bWarning = false) override;
 
 	void updateMediaRelated(const tagMediaSetChanged& MediaSetChanged) override
 	{

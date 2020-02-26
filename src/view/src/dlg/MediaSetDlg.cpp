@@ -39,7 +39,7 @@ void CMediaSetDlg::OnOK()
 	m_wndTree.GetAllObjects(lstCheckedObjects, CS_Checked);
 	if (!lstCheckedObjects)
 	{
-		CMainApp::showMsg(L"Çë" + m_strTitle, this);
+		CMainApp::msgBox(L"Çë" + m_strTitle, this);
 		return;
 	}
 

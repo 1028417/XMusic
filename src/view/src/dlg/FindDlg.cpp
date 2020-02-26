@@ -56,7 +56,7 @@ BOOL CFindDlg::OnInitDialog()
 		if (!vecMediaMixtures)
 		{
 			CDialog::OnCancel();
-			//CMainApp::showMsg(L"未查找到曲目！", L"查找");
+			//CMainApp::msgBox(L"未查找到曲目！", L"查找");
 			return FALSE;
 		}
 		if (vecMediaMixtures.size() == 1)

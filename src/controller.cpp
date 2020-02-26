@@ -23,7 +23,7 @@ bool CXController::start()
 
                 if (m_model.getPlayMgr().playAlarm(strAlarmmedia))
                 {
-                    (void)m_view.showMsgBox(L"点击确定停止闹铃！");
+                    (void)m_view.msgBox(L"点击确定停止闹铃！");
                     m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
                 }
 
@@ -256,13 +256,13 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 {
 	if (strDir.size() <= 3)
 	{
-		m_view.showMsgBox(L"不支持挂载驱动器，请选择具体目录");
+		m_view.msgBox(L"不支持挂载驱动器，请选择具体目录");
 		return NULL;
 	}
 
 	if (!m_model.getMediaLib().checkIndependentDir(strDir, false))
 	{
-		m_view.showMsgBox(L"请选择与根目录不相关的目录");
+		m_view.msgBox(L"请选择与根目录不相关的目录");
 		return NULL;
 	}
 
@@ -271,7 +271,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
     });
 	if (bExist)
 	{
-		m_view.showMsgBox(L"所选目录已被挂载，请选择其它目录");
+		m_view.msgBox(L"所选目录已被挂载，请选择其它目录");
 		return NULL;
 	}
 
@@ -282,7 +282,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 {
 	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaName))
 	{
-		m_view.showMsgBox(L"名称含特殊字符！");
+		m_view.msgBox(L"名称含特殊字符！");
 		return false;
 	}
 
@@ -304,7 +304,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
         m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]() {
 			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath))
 			{
-                m_view.showMsgBox(L"重命名失败: \n\n\t" + media.GetAbsPath());
+                m_view.msgBox(L"重命名失败: \n\n\t" + media.GetAbsPath());
 				return false;
 			}
 
@@ -320,7 +320,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 	}
 	else
 	{
-		if (!m_view.showMsgBox(L"文件不存在，是否继续重命名？", true))
+		if (!m_view.msgBox(L"文件不存在，是否继续重命名？", true))
 		{
 			return false;
 		}
@@ -346,7 +346,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 		}
 	});
 	__Ensure(lstSrcMedias);
-	__Ensure(m_view.showMsgBox(L"确认移动选中的文件?", true));
+	__Ensure(m_view.msgBox(L"确认移动选中的文件?", true));
 
 	SMap<wstring, wstring> mapMovedFiles;
 
@@ -370,7 +370,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 
         if (fsutil::existFile(strDstAbsPath))
 		{
-            if (!m_view.showMsgBox(L"确认替换文件: \n\n\t" + strDstAbsPath, true))
+            if (!m_view.msgBox(L"确认替换文件: \n\n\t" + strDstAbsPath, true))
 			{
 				return;
 			}
@@ -380,7 +380,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			(void)fsutil::removeFile(strDstAbsPath);
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
-                m_view.showMsgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
+                m_view.msgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
 				return false;
 			}
 
@@ -412,7 +412,7 @@ bool CXController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 		}
 		else
 		{
-            m_view.showMsgBox(L"删除文件失败: \n\n\t" + MediaRes.GetAbsPath());
+            m_view.msgBox(L"删除文件失败: \n\n\t" + MediaRes.GetAbsPath());
 		}
 	});
 
@@ -430,7 +430,7 @@ int CXController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 		strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (strOppPath.empty())
 		{
-            m_view.showMsgBox((L"添加曲目失败，请选择以下目录中的文件: \n\n\t"
+            m_view.msgBox((L"添加曲目失败，请选择以下目录中的文件: \n\n\t"
 				+ m_model.getMediaLib().GetAbsPath()).c_str());
 			return 0;
 		}
@@ -453,7 +453,7 @@ int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 		wstring strOppPath = m_model.getMediaLib().toOppPath(strFile);
 		if (!fsutil::CheckSubPath(strSingerOppPath, strOppPath))
 		{
-            m_view.showMsgBox((L"添加专辑曲目失败，请选择以下目录中的文件: \n\n\t" + strSingerOppPath).c_str());
+            m_view.msgBox((L"添加专辑曲目失败，请选择以下目录中的文件: \n\n\t" + strSingerOppPath).c_str());
 			return 0;
 		}
 
@@ -504,91 +504,5 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 	}
 
 	return true;
-}
-
-UINT CXController::addInMedia(const list<wstring>& lstFiles, const CB_AddInMediaProgress& cbProgress, const CB_AddInConfirm& cbAddInConfirm)
-{
-	TD_MediaList lstMedias;
-	m_model.getMediaLib().GetAllMedias(lstMedias);
-	__EnsureReturn(lstMedias, 0);
-
-	CSearchMediaInfoGuard SearchMediaInfoGuard(m_model.getSingerMgr());
-	TD_SearchMediaInfoMap mapSearchMedias;
-	lstMedias([&](CMedia& media) {
-		SearchMediaInfoGuard.genSearchMediaInfo(media, mapSearchMedias);
-	});
-
-	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
-	for (auto& strFile : lstFiles)
-	{
-		__EnsureReturn(cbProgress(strFile), 0);
-		
-		tagMediaResInfo MediaResInfo(strFile);		
-		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
-		{
-			CSearchMediaInfo& SearchMediaInfo = itr->second;
-
-			if (SearchMediaInfo.matchMediaRes(MediaResInfo))
-			{
-				E_MatchResult eRet = cbAddInConfirm(SearchMediaInfo, MediaResInfo);
-				if (E_MatchResult::MR_Ignore == eRet)
-				{
-					itr = mapSearchMedias.erase(itr);
-					continue;
-				}
-
-				if (E_MatchResult::MR_Yes == eRet)
-				{
-					lstMatchResult.emplace_back( MediaResInfo.strPath, SearchMediaInfo );
-				
-					(void)mapSearchMedias.erase(itr);
-
-					break;
-				}
-			}
-
-			++itr;
-		}
-	}
-
-	SMap<wstring, wstring> mapUpdateFiles;
-	map<CMedia*, wstring> mapUpdatedMedias;
-	for (auto& pr : lstMatchResult) // TODO 从头显示进度
-	{
-		wstring& strSrcAbsPath = pr.first;
-		CSearchMediaInfo& SearchMediaInfo = pr.second;
-
-		wstring strDstAbsPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
-            + __wchDirSeparator + fsutil::GetFileName(strSrcAbsPath);
-
-		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstAbsPath, [&]() {
-            (void)fsutil::removeFile(SearchMediaInfo.m_strAbsPath);
-			
-			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
-			{
-                m_view.showMsgBox(L"复制文件失败: \n\n\t" + strDstAbsPath);
-				return false;
-			}
-
-			wstring strDstOppPath = m_model.getMediaLib().toOppPath(strDstAbsPath);
-			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strDstOppPath);
-
-			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
-				mapUpdatedMedias[&media] = strDstOppPath;
-			});
-
-			return true;
-		});
-	}
-
-	__EnsureReturn(!mapUpdatedMedias.empty(), 0);
-	
-	__EnsureReturn(m_model.updateMediaPath(mapUpdatedMedias), -1);
-	
-	__EnsureReturn(m_model.updateFile(mapUpdateFiles), -1);
-
-	m_model.refreshMediaLib();
-
-	return mapUpdatedMedias.size();
 }
 #endif
