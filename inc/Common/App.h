@@ -148,6 +148,13 @@ public:
 		msgBox(strMsg, L"Ã· æ", pWnd);
 	}
 
+	static void msgBox(const wstring& strMsg, CWnd& wnd)
+	{
+		CString cstrTitle;
+		wnd.GetWindowText(cstrTitle);
+		msgBox(strMsg, (wstring)cstrTitle, &wnd);
+	}
+
 	static void msgBox(const wstring& strMsg, class CPage& wndPage);
 
 	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
@@ -159,9 +166,16 @@ public:
 	{
 		return confirmBox(strMsg, L"æØ∏Ê", pWnd);
 	}
+	
+	static bool confirmBox(const wstring& strMsg, CWnd& wnd)
+	{
+		CString cstrTitle;
+		wnd.GetWindowText(cstrTitle);
+		return confirmBox(strMsg, (wstring)cstrTitle, &wnd);
+	}
 
 	static bool confirmBox(const wstring& strMsg, class CPage& wndPage);
-		
+
 	static bool getKeyState(UINT uKey)
 	{
 		return ::GetKeyState(uKey) < 0;
