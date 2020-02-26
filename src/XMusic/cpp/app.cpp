@@ -462,10 +462,9 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
     __EnsureReturn(_readMedialibConf(ifbMedialibConf, orgMedialibConf), false);
-    g_logger << "appVersion: " >> orgMedialibConf.strAppVersion
-             << "MediaLib orgVersion: " >> orgMedialibConf.uMedialibVersion;
-
-    tagMedialibConf *pPrevMedialibConf = &orgMedialibConf;
+    g_logger << "orgMedialibConf AppVersion: " >> orgMedialibConf.strAppVersion
+             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
 
     tagMedialibConf userMedialibConf;
     IFStream ifsMedialibConf(m_model.medialibPath(L"medialib.conf"));
@@ -473,15 +472,9 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     {
          if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
          {
-             if (userMedialibConf.uCompatibleCode == orgMedialibConf.uCompatibleCode)
-             {
-                 g_logger << "MediaLib userVersion: " >> userMedialibConf.uMedialibVersion;
-
-                 if (userMedialibConf.uMedialibVersion >= orgMedialibConf.uMedialibVersion)
-                 {
-                     pPrevMedialibConf = &userMedialibConf;
-                 }
-             }
+             g_logger << "userMedialibConf AppVersion: " >> userMedialibConf.strAppVersion
+                      << " CompatibleCode: " >> userMedialibConf.uCompatibleCode
+                      << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
          }
 
          ifsMedialibConf.close();
@@ -496,12 +489,16 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    return _upgradeMedialib(*pPrevMedialibConf, eUpgradeErrMsg);
+    return _upgradeMedialib(orgMedialibConf, userMedialibConf, eUpgradeErrMsg);
 }
 
-bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg)
+bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
+                            , const tagMedialibConf& userMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg)
 {
-    for (cauto upgradeUrl : prevMedialibConf.lstUpgradeUrl)
+    const list<CUpgradeUrl>& lstUpgradeUrl = (userMedialibConf.strAppVersion >= orgMedialibConf.strAppVersion ||
+            userMedialibConf.uCompatibleCode >= orgMedialibConf.uCompatibleCode)
+            ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;
+    for (cauto upgradeUrl : lstUpgradeUrl)
     {
         cauto strMedialibUrl = upgradeUrl.medialibUrl();
         g_logger << "dowloadMediaLib: " >> strMedialibUrl;
@@ -557,44 +554,46 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
             continue;
         }
 
-        if (newMedialibConf.uMedialibVersion < prevMedialibConf.uMedialibVersion)
+        g_logger << "neeMedialibConf AppVersion: " >> userMedialibConf.strAppVersion
+                 << " CompatibleCode: " >> userMedialibConf.uCompatibleCode
+                 << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
+
+        if (newMedialibConf.strAppVersion < MAX(orgMedialibConf.strAppVersion, userMedialibConf.strAppVersion))
         {
-            g_logger << "medialib version invalid: " >> newMedialibConf.uMedialibVersion;
+            g_logger << "AppVersion invalid: " >> newMedialibConf.strAppVersion;
             continue;
         }
 
-        bool bUncompatible = false;
-        if (prevMedialibConf.uCompatibleCode < newMedialibConf.uCompatibleCode)
+        if (newMedialibConf.uCompatibleCode < MAX(orgMedialibConf.uCompatibleCode, userMedialibConf.uCompatibleCode))
         {
-            bUncompatible = true;
-            g_logger << "medialib not compatible: " >> newMedialibConf.uCompatibleCode;
+            g_logger << "CompatibleCode invalid: " >> newMedialibConf.uCompatibleCode;
+            continue;
         }
 
-        if (newMedialibConf.strAppVersion > prevMedialibConf.strAppVersion)
+        if (newMedialibConf.uMedialibVersion < MAX(orgMedialibConf.uMedialibVersion, userMedialibConf.uMedialibVersion))
         {
-            g_logger << "newAppVersion: " >> newMedialibConf.strAppVersion;
+            g_logger << "MedialibVersion invalid: " >> newMedialibConf.uMedialibVersion;
+            continue;
+        }
 
-            if (bUncompatible)
+        if (newMedialibConf.uCompatibleCode > orgMedialibConf.uCompatibleCode)
+        {
+            g_logger >> "medialib Uncompatible";
+            eUpgradeErrMsg = E_UpgradeErrMsg::UEM_MedialibUncompatible;
+
+#if !__ios
+            if (newMedialibConf.strAppVersion > orgMedialibConf.strAppVersion)
             {
-#if __ios
-                return false;
-#endif
-
-                g_logger >> "upgradeApp";
                 if (_upgradeApp(newMedialibConf.lstUpgradeUrl))
                 {
                     eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
-                    return false;
                 }
                 else
                 {
                     eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgradeFail;
                 }
             }
-        }
-
-        if (bUncompatible)
-        {
+#endif
             return false;
         }
 
@@ -606,7 +605,8 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
         }
 
         cauto strDBFile = m_model.medialibPath(__DBFile);
-        if (newMedialibConf.uMedialibVersion > prevMedialibConf.uMedialibVersion || !fsutil::existFile(strDBFile))
+        bool bExistDB = fsutil::existFile(strDBFile);
+        if (!bExistDB || newMedialibConf.uMedialibVersion > orgMedialibConf.uMedialibVersion)
         {
             CByteBuffer bbfMedialib;
             if (zipFile.read(itrMedialib->second, bbfMedialib) <= 0)
@@ -614,6 +614,12 @@ bool CApp::_upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& 
                 g_logger >> "readZip fail: medialib";
                 continue;
             }
+
+            /*// TODO 合入正在播放列表
+            if (bExistDB)
+            {
+                (void)fsutil::moveFile(strDBFile, strDBFile + L".bak");
+            }*/
 
             if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
             {

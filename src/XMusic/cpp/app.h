@@ -71,11 +71,13 @@ private:
     enum class E_UpgradeErrMsg
     {
         UEM_None = 0,
+        UEM_MedialibUncompatible,
         UEM_AppUpgradeFail,
         UEM_AppUpgraded
     };
     bool _upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg);
-    bool _upgradeMedialib(tagMedialibConf& prevMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
+    bool _upgradeMedialib(const tagMedialibConf& orgMedialibConf
+                          , const tagMedialibConf& userMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
