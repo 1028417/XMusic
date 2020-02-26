@@ -91,7 +91,7 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	{
 		strMediaInfo << L"¸èµ¥" << __CNDot << ((CPlayItem&)media).GetPlaylistName();
 	}
-	strMediaInfo << __CNDot << media.GetName();
+	strMediaInfo << L" | "  << media.GetName();
 
 	(void)m_wndList.SetItemText(nItem, 1, strMediaInfo->c_str());
 	(void)m_wndList.SetItemText(nItem, 2, fsutil::GetParentDir(media.GetPath()).c_str());
