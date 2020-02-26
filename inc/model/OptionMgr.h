@@ -44,7 +44,7 @@ struct __ModelExt tagOption
     bool bRandomPlay = false;
 	bool bForce48KHz = false;
 
-    bool bFullScreen = !__winvc;
+    bool bFullScreen = false;
 
 #if __winvc
     bool bHideMenuBar = false;
