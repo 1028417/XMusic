@@ -2,21 +2,7 @@
 #pragma once
 
 #if !__winvc
-class CFileUrlMap
-{
-public:
-    CFileUrlMap(){}
-
-private:
-    unordered_map<string, pair<string, string>> m_map;
-
-public:
-    void add(const string& strFileTitle, const string& strUrl);
-
-    bool check(const wstring& strFileTitle);
-
-    string get(const wstring& strFileTitle);
-};
+#include "XUrlMap.h"
 
 class CUpgradeUrl
 {
@@ -127,11 +113,7 @@ private:
 private:
     tagMedialibConf m_newMedialibConf;
 
-    unordered_map<string, string> m_mapXurl;
-    unordered_map<string, string> m_mapShareUrl;
-
-    CFileUrlMap m_xurlMap;
-    CFileUrlMap m_shareUrlMap;
+    XUrlMap m_xurlMap;
 
     list<JValue> m_lstSnapshot;
 
@@ -143,18 +125,18 @@ public:
 
     bool loadShareUrl(Instream& ins);
 
-    bool loadXurl(Instream& ins);
+    bool loadXUrl(Instream& ins);
 
     bool loadSnapshot(Instream& ins);
 
     bool checkUrl(const wstring& strFileTitle);
 
-    string getXurl(const wstring& strFileTitle);
-    string getShareUrl(const wstring& strFileTitle);
+    string getXUrl(const wstring& strFileTitle)
+    {
+        return m_xurlMap.get(strutil::toUtf8(strFileTitle));
+    }
 
 private:
-    void _insertUrl(const string& strFileTitle, const string& strUrl);
-
     bool _checkUrl(const string& strFileTitle);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
