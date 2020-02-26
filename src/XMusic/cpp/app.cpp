@@ -731,6 +731,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 
                 if (dltotal < 10000)
                 {
+                    g_logger << "invalid appBundleSize: " >> dltotal;
                     return false;
                 }
 
