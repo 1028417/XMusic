@@ -127,9 +127,9 @@ public:
 
     bool loadXUrl(Instream& ins);
 
-    bool loadSnapshot(Instream& ins);
+    bool loadXSnapshot(Instream& ins);
 
-    bool checkUrl(const wstring& strFileTitle);
+    bool checkXUrl(const wstring& strFileTitle);
 
     string getXUrl(const wstring& strFileTitle)
     {
@@ -137,7 +137,7 @@ public:
     }
 
 private:
-    bool _checkUrl(const string& strFileTitle);
+    bool _checkXUrl(const string& strFileTitle);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
