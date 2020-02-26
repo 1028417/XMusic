@@ -726,16 +726,16 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
         CDownloader downloader;
         int nRet = downloader.syncDownload(strAppUrl, bbfData, 0, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
                 (void)beginTime;
-                (void)dltotal;
-                (void)dlnow;
 
-                if (dltotal < 10000)
+                if (dltotal > 10000)
+                {
+                    g_nAppUpgradeProgress = 100*dlnow/dltotal;
+                }
+                /*else if (dltotal > 0)
                 {
                     g_logger << "invalid appBundleSize: " >> dltotal;
                     return false;
-                }
-
-                g_nAppUpgradeProgress = 100*dlnow/dltotal;
+                }*/
 
                 return m_bRunSignal;
         });
