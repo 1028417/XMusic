@@ -14,7 +14,7 @@ class IPlayerView
 public:
 	virtual IModelObserver& getModelObserver() = 0;
 
-	virtual bool showMsgBox(const wstring& strMsg, bool bWarning = false)
+	virtual bool msgBox(const wstring& strMsg, bool bWarning = false)
 	{
 		(void)strMsg;
 		(void)bWarning;

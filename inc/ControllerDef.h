@@ -102,9 +102,5 @@ public:
 #if __winvc
     virtual bool autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
             , const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias) = 0;
-
-	using CB_AddInConfirm = function<E_MatchResult(CSearchMediaInfo&, tagMediaResInfo&)>;
-    using CB_AddInMediaProgress = function<bool(const wstring& strFile)>;
-    virtual UINT addInMedia(const list<wstring>& lstFiles, const CB_AddInMediaProgress& cbProgress, const CB_AddInConfirm& cbAddInConfirm) = 0;
 #endif
 };

@@ -136,31 +136,31 @@ public:
 
 	E_DoEventsResult DoEvents(bool bOnce=false);
 
-	static int showMsg(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd);
+	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd);
 	
-	static void showMsg(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	static void msgBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
 	{
-		(void)showMsg(strMsg, strTitle, MB_OK, pWnd);
+		(void)msgBox(strMsg, strTitle, MB_OK, pWnd);
 	}
 
-	static void showMsg(const wstring& strMsg, CWnd *pWnd = NULL)
+	static void msgBox(const wstring& strMsg, CWnd *pWnd = NULL)
 	{
-		showMsg(strMsg, L"提示", pWnd);
+		msgBox(strMsg, L"提示", pWnd);
 	}
 
-	static void showMsg(const wstring& strMsg, class CPage& wndPage);
+	static void msgBox(const wstring& strMsg, class CPage& wndPage);
 
-	static bool showConfirmMsg(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
 	{
-		return IDYES == showMsg(strMsg, strTitle, MB_YESNO, pWnd);
+		return IDYES == msgBox(strMsg, strTitle, MB_YESNO, pWnd);
 	}
 
-	static bool showConfirmMsg(const wstring& strMsg, CWnd *pWnd = NULL)
+	static bool confirmBox(const wstring& strMsg, CWnd *pWnd = NULL)
 	{
-		return showConfirmMsg(strMsg, L"警告", pWnd);
+		return confirmBox(strMsg, L"警告", pWnd);
 	}
 
-	static bool showConfirmMsg(const wstring& strMsg, class CPage& wndPage);
+	static bool confirmBox(const wstring& strMsg, class CPage& wndPage);
 		
 	static bool getKeyState(UINT uKey)
 	{

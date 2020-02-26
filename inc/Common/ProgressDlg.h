@@ -39,18 +39,18 @@ private:
 public:
 	virtual INT_PTR DoModal(const wstring& strTitle, CWnd *pWndParent=NULL);
 	
-	int showMsgBox(const wstring& strText, const wstring& strTitle, UINT uType = 0)
+	int msgBox(const wstring& strText, const wstring& strTitle, UINT uType = 0)
 	{
 		int nRet = 0;
 		__appSync([&]() {
-			nRet = CMainApp::showMsg(strText.c_str(), strTitle.c_str(), uType, this);
+			nRet = CMainApp::msgBox(strText.c_str(), strTitle.c_str(), uType, this);
 		});
 		return nRet;
 	}
 
-	int showMsgBox(const wstring& strText, UINT uType = 0)
+	int msgBox(const wstring& strText, UINT uType = 0)
 	{
-		return showMsgBox(strText, m_strTitle, uType);
+		return msgBox(strText, m_strTitle, uType);
 	}
 
 	void SetStatusText(const CString& cstrStatusText);
