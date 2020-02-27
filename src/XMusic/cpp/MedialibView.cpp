@@ -94,7 +94,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         m_thrAsyncTask.start([&](const bool& bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
-                playItem.findRelatedMedia(E_MediaSetType::MST_Album);
+                ((CPlayItem&)playItem).findRelatedMedia(E_MediaSetType::MST_Album);
 
                 mtutil::usleep(10);
 

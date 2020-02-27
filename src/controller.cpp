@@ -278,7 +278,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 	return m_model.attachDir(strDir);
 }
 
-bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
+bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 {
 	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaName))
 	{
@@ -286,7 +286,7 @@ bool CXController::renameMedia(IMedia& media, const wstring& strNewName)
 		return false;
 	}
 
-	wstring strOldOppPath = media.GetPath();
+	cauto strOldOppPath = media.GetPath();
 
 	wstring strExtName = media.GetFileTypeString();
 	if (!strExtName.empty())

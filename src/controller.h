@@ -58,7 +58,7 @@ public:
 
 	CMediaDir* attachDir(const wstring& strDir) override;
 
-	bool renameMedia(IMedia& media, const wstring& strNewName) override;
+	bool renameMedia(const IMedia& media, const wstring& strNewName) override;
 
 	void moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir) override;
 

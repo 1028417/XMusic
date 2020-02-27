@@ -95,7 +95,7 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
-	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
+	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
 #define __xOffset 1
 		int cx = (rc.right- __xOffset) - rc.left + 1;
 		int cy = rc.bottom - rc.top + 1;
@@ -110,7 +110,7 @@ void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 	});
 }
 
-void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& PlayItem)
+void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem& PlayItem)
 {
 	bool bPlayingItem = (nItem == m_nPlayingItem);
 	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
@@ -170,7 +170,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 	}
 	else
 	{
-		auto& strAlbumName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
+		cauto strAlbumName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
 
 		iImage = PlayItem.getSingerImg();
 		if (iImage < 0)
@@ -409,7 +409,7 @@ bool CPlayingList::GetRenameText(UINT uItem, wstring& strRenameText)
 
 void CPlayingList::OnListItemRename(UINT uItem, const CString& cstrNewText)
 {
-	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
+	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
 		m_view.getController().renameMedia(PlayItem, (wstring)cstrNewText);
 	});
 }

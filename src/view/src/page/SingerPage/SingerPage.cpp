@@ -109,9 +109,9 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 		if (E_MediaSetType::MST_SingerGroup == SubSet.m_eType)
 		{
 			CSingerGroup& group = (CSingerGroup&)SubSet;
-			for (CSinger& singer : group.singers())
+			for (cauto singer : group.singers())
 			{
-				m_wndTree.InsertObject(singer, &group);
+				m_wndTree.InsertObject((CTreeObject&)singer, &group);
 			}
 
 			if (m_setExpandedGroupIDs.find(group.m_uID) != m_setExpandedGroupIDs.end())
