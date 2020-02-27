@@ -38,7 +38,9 @@ public:
 protected:
 	tagMainWndInfo m_WndInfo;
 
-private:	
+private:
+	CCompatableFont m_font;
+
 	vector<int> m_vctStatusPartWidth;
 	CStatusBarCtrl m_ctlStatusBar;
 	UINT m_uStatusBarHeight = 0;
@@ -86,6 +88,13 @@ private:
 	void OnDestroy();
 
 protected:
+	virtual void PreSubclassWindow() override
+	{
+		__super::PreSubclassWindow();
+
+		m_font.setFont(*this);
+	}
+
 	virtual void _fixWorkArea(CRect& rcWorkArea, bool bFullScreen);
 
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;

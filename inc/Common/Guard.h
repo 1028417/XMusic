@@ -222,9 +222,20 @@ private:
 	inline bool _create(CDC& dc, const CB_CompatableFont& cb = NULL);
 	inline bool _create(CWnd& wnd, const CB_CompatableFont& cb = NULL);
 
-	bool create(CFont& font, const CB_CompatableFont& cb);
-	bool create(CDC& dc, const CB_CompatableFont& cb);
-	bool create(CWnd& wnd, const CB_CompatableFont& cb);
+	/*bool create(CFont& font, const CB_CompatableFont& cb)
+	{
+		return _create(font, cb);
+	}
+
+	bool create(CDC& dc, const CB_CompatableFont& cb)
+	{
+		return _create(dc, cb);
+	}
+
+	bool create(CWnd& wnd, const CB_CompatableFont& cb)
+	{
+		return _create(wnd, cb);
+	}*/
 
 public:
 	bool create(CFont& font, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
@@ -232,4 +243,31 @@ public:
 	bool create(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
 
 	bool setFont(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+};
+
+class CDCFontGuard
+{
+public:
+	CDCFontGuard(CDC& dc, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false)
+		: m_dc(dc)
+	{
+		if (m_font.create(dc, fFontSizeOffset, lfWeight, bItalic, bUnderline))
+		{
+			m_prevFont = dc.SelectObject(&m_font);
+		}
+	}
+
+	~CDCFontGuard()
+	{
+		if (m_prevFont)
+		{
+			(void)m_dc.SelectObject(m_prevFont);
+		}
+	}
+
+private:
+	CDC& m_dc;
+	CCompatableFont m_font;
+
+	CFont *m_prevFont = NULL;
 };
