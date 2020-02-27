@@ -39,7 +39,7 @@ public:
 
 	BOOL Init();
 
-	void GetSubSets(TD_MediaSetList& lstSubSets) override;
+	void GetSubSets(TD_MediaSetList& lstSubSets) const override;
 
 	CPlaylist *AddPlaylist(UINT uPos);
 
