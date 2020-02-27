@@ -88,13 +88,6 @@ private:
 	void OnDestroy();
 
 protected:
-	virtual void PreSubclassWindow() override
-	{
-		__super::PreSubclassWindow();
-
-		m_font.setFont(*this);
-	}
-
 	virtual void _fixWorkArea(CRect& rcWorkArea, bool bFullScreen);
 
 	virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult) override;

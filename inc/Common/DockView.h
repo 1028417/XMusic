@@ -184,15 +184,7 @@ public:
 	BOOL SetPageTitle(CPage& Page, const CString& cstrTitle, int iImage = -1);
 
 	void Resize(CRect& rcViewArea, bool bManual=false);
-
-protected:
-	virtual void PreSubclassWindow() override
-	{
-		__super::PreSubclassWindow();
-
-		m_font.setFont(*this);
-	}
-
+	
 private:
 	BOOL Create();
 	
