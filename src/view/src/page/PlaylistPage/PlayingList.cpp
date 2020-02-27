@@ -423,7 +423,7 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 	for (auto uItem : lstSelItems)
 	{
 		lstPlayingItems.get(uItem, [&](cauto PlayItem) {
-			arrSelPlayItem.add(PlayItem);
+			arrSelPlayItem.add((CPlayItem&)PlayItem);
 		});
 	}
 }
