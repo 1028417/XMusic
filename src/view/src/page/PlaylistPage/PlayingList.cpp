@@ -422,7 +422,7 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 	auto& lstPlayingItems = m_view.getPlayMgr().getPlayingItems();
 	for (auto uItem : lstSelItems)
 	{
-		lstPlayingItems.get(uItem, [&](CPlayItem& PlayItem) {
+		lstPlayingItems.get(uItem, [&](cauto PlayItem) {
 			arrSelPlayItem.add(PlayItem);
 		});
 	}
@@ -484,8 +484,8 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 				if (E_ItemLinkType::ILT_None != eLinkType)
 				{
 					__super::AsyncLButtondown([=]() {
-						m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
-							handleLinkClick(uItem, PlayItem, m_vecItemLinks[uItem], eLinkType);
+						m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
+							handleLinkClick(uItem, (CPlayItem&)PlayItem, m_vecItemLinks[uItem], eLinkType);
 						});
 					});
 
