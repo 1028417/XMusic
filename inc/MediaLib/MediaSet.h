@@ -174,7 +174,7 @@ public:
 
     virtual void GetSubSets(TD_MediaSetList& lstSubSets) {(void)lstSubSets;}
 
-	virtual bool available();
+    virtual bool available() const;
 
 	void GetAllMediaSets(E_MediaSetType eType, TD_MediaSetList& arrMediaSets);
 	void GetAllMediaSets(TD_MediaSetList& arrMediaSets);

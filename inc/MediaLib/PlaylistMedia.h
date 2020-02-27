@@ -78,7 +78,7 @@ public:
         m_alPlayItems.clear();
     }
 
-	bool available() override
+    bool available() const override
 	{
         return !m_alPlayItems.empty();
 	}

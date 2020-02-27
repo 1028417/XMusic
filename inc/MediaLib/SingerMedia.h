@@ -62,7 +62,7 @@ public:
         return m_alAlbumItems.erase(itr);
     }
 
-    bool available() override
+    bool available() const override
 	{
         return !m_alAlbumItems.empty();
 	}
