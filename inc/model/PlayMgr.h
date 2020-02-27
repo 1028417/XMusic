@@ -35,7 +35,7 @@ private:
 
 	CPlaylistMgr& m_PlaylistMgr;
 
-    const CPlaylist& m_Playinglist;
+    CPlaylist& m_Playinglist;
 	
 	UINT& m_uPlayingItem;
 	
@@ -62,7 +62,7 @@ private:
 
     void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
 
-	bool _checkDemandableSinger(CSinger& singer, E_LanguageType eLanguageType);
+    bool _checkDemandableSinger(const CSinger& singer, E_LanguageType eLanguageType);
 
     void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
     void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
@@ -109,7 +109,7 @@ public:
 
 	int move(const TD_PlayItemList& lstPlayItems, UINT uPos);
 	
-	bool remove(const TD_PlayItemList& lstPlayItems);
+    bool remove(const PtrArray<const CPlayItem>& paPlayItems);
 	bool remove(const set<wstring>& setFiles);
 
 	bool checkPlayedID(UINT uID);

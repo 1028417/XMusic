@@ -85,7 +85,7 @@ public:
 
     virtual CMediaDir* attachDir(const wstring& strDir) = 0;
 
-    virtual bool renameMedia(IMedia& media, const wstring& strNewName) = 0;
+    virtual bool renameMedia(const IMedia& media, const wstring& strNewName) = 0;
 
     virtual void moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir) = 0;
 

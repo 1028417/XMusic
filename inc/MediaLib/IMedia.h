@@ -116,7 +116,7 @@ public:
 		return _getRelatedMediaSet(eMediaSetType).uMediaSetID;
 	}
 
-	const wstring& GetRelatedMediaSetName(E_MediaSetType eMediaSetType)
+	const wstring& GetRelatedMediaSetName(E_MediaSetType eMediaSetType) const
 	{
 		return _getRelatedMediaSet(eMediaSetType).strMediaSetName;
 	}

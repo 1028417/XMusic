@@ -50,7 +50,7 @@ public:
 	BOOL AddPlayItems(const SArray<wstring>& arrOppPaths, CPlaylist& Playlist, int nPos);
 	BOOL AddPlayItems(const TD_IMediaList& lstMedias, CPlaylist& Playlist, int nPos);
 
-	BOOL RemovePlayItems(const TD_PlayItemList& arrPlayItems);
+    BOOL RemovePlayItems(const PtrArray<const CPlayItem>& paPlayItems);
 	BOOL RemoveAllPlayItems(CPlaylist& Playlist);
 
 	int RepositPlayItem(CPlaylist& Playlist, const TD_IMediaList& lstMedias, UINT uTargetPos);
