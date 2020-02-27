@@ -172,7 +172,7 @@ public:
 
     virtual void GetMedias(TD_MediaList& lstMedias) {(void)lstMedias;}
 
-    virtual void GetSubSets(TD_MediaSetList& lstSubSets) const {(void)lstSubSets;}
+    virtual void GetSubSets(TD_MediaSetList& lstSubSets) {(void)lstSubSets;}
 
     virtual bool available() const;
 
