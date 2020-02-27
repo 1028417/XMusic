@@ -47,21 +47,40 @@ public:
 	CPlaylist(CPlaylist&& other);
 
 private:
-	ArrList<CPlayItem> m_lstPlayItems;
+    ArrList<CPlayItem> m_alPlayItems;
 	
 public:
-	ArrList<CPlayItem>& playItems()
-	{
-		return m_lstPlayItems;
-	}
+    size_t size() const
+    {
+        return m_alPlayItems.size();
+    }
+
 	const ArrList<CPlayItem>& playItems() const
 	{
-		return m_lstPlayItems;
+        return m_alPlayItems;
 	}
+
+    CPlayItem& add(const CPlayItem& PlayItem)
+    {
+        auto& t_PlayItem = m_alPlayItems.add(PlayItem);
+        t_PlayItem.m_pParent = this;
+        return t_PlayItem;
+    }
+
+    template <class ITR>
+    ITR erase(const ITR& itr)
+    {
+        return m_alPlayItems.erase(itr);
+    }
+
+    void clear()
+    {
+        m_alPlayItems.clear();
+    }
 
 	bool available() override
 	{
-		return !m_lstPlayItems.empty();
+        return !m_alPlayItems.empty();
 	}
 
 	wstring GetDisplayName();
@@ -69,14 +88,14 @@ public:
 private:
 	int indexOf(const CMedia& media) const override
 	{
-		return m_lstPlayItems.find([&](const CPlayItem& PlayItem) {
+        return m_alPlayItems.find([&](const CPlayItem& PlayItem) {
 			return &PlayItem == &media;
 		});
 	}
 
 	void GetMedias(TD_MediaList& lstMedias) override
 	{
-		lstMedias.add(m_lstPlayItems);
+        lstMedias.add(m_alPlayItems);
 	}
 
     void GenListItem(bool, vector<wstring>& vecText, int& iImage) override

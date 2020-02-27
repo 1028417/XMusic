@@ -21,23 +21,21 @@ private:
 	BOOL _AddPlayItems(const list<tagAddPlayItem>& lstPlayItem, CPlaylist& Playlist, int nPos);
 
 public:
-	CPlaylist& playinglist()
-	{
-		return m_Playinglist;
-	}
 	const CPlaylist& playinglist() const
 	{
 		return m_Playinglist;
 	}
 
-	list<CPlaylist>& playlists()
-	{
-		return m_lstPlaylists;
-	}
 	const list<CPlaylist>& playlists() const
 	{
 		return m_lstPlaylists;
 	}
+
+    void clear()
+    {
+        m_Playinglist.clear();
+        m_lstPlaylists.clear();
+    }
 
 	BOOL Init();
 
@@ -57,5 +55,5 @@ public:
 
 	int RepositPlayItem(CPlaylist& Playlist, const TD_IMediaList& lstMedias, UINT uTargetPos);
 
-	BOOL SetBackPlayItems(CPlaylist& Playlist, const TD_MediaList& lstPlayItems);
+    BOOL SetBackPlayItems(CPlaylist& Playlist, const PtrArray<const CPlayItem>& paPlayItems);
 };

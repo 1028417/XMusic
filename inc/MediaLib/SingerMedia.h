@@ -39,38 +39,45 @@ public:
 	CAlbum(CAlbum&& other);
 
 private:
-	ArrList<CAlbumItem> m_lstAlbumItems;
+    ArrList<CAlbumItem> m_alAlbumItems;
 
 public:
 	class CSinger& GetSinger() const;
 
-	ArrList<CAlbumItem>& albumItems()
-	{
-		return m_lstAlbumItems;
-	}
 	const ArrList<CAlbumItem>& albumItems() const
 	{
-		 return m_lstAlbumItems;
+         return m_alAlbumItems;
 	}
 
-	void addAlbumItem(const CAlbumItem& AlbumItem);
+    CAlbumItem& add(const CAlbumItem& AlbumItem)
+    {
+        auto& t_AlbumItem = m_alAlbumItems.add(AlbumItem);
+        t_AlbumItem.m_pParent = this;
+        return t_AlbumItem;
+    }
 
-	bool available() override
+    template <class ITR>
+    ITR erase(const ITR& itr)
+    {
+        return m_alAlbumItems.erase(itr);
+    }
+
+    bool available() override
 	{
-		return !m_lstAlbumItems.empty();
+        return !m_alAlbumItems.empty();
 	}
 
 private:
 	int indexOf(const CMedia& media) const override
 	{
-		return m_lstAlbumItems.find([&](const CAlbumItem& PlayItem) {
+        return m_alAlbumItems.find([&](const CAlbumItem& PlayItem) {
 			return &PlayItem == &media;
 		});
 	}
 
 	void GetMedias(TD_MediaList& lstMedias) override
 	{
-		lstMedias.add(m_lstAlbumItems);
+        lstMedias.add(m_alAlbumItems);
 	}
 
 	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;
@@ -102,14 +109,30 @@ private:
 	list<CAlbum> m_lstAlbums;
 
 public:
-	list<CAlbum>& albums()
-	{
-		return m_lstAlbums;
-	}
-	const list<CAlbum>& albums() const
-	{
-		return m_lstAlbums;
-	}
+    const list<CAlbum>& albums() const
+    {
+        return m_lstAlbums;
+    }
+
+    CAlbum& add(const CAlbum& album)
+    {
+        m_lstAlbums.push_back(album);
+        auto& t_album = m_lstAlbums.back();
+        t_album.m_pParent = this;
+        return t_album;
+    }
+
+    template <class ITR>
+    CAlbum& add(const CAlbum& album, const ITR& itr)
+    {
+        return *m_lstAlbums.insert(itr, album);
+    }
+
+    template <class ITR>
+    ITR erase(const ITR& itr)
+    {
+        return m_lstAlbums.erase(itr);
+    }
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override
 	{
@@ -143,14 +166,23 @@ private:
 	list<CSinger> m_lstSingers;
 
 public:
-	list<CSinger>& singers()
-	{
-		return m_lstSingers;
-	}
-	const list<CSinger>& singers() const
-	{
-		return m_lstSingers;
-	}
+    size_t size() const
+    {
+        return m_lstSingers.size();
+    }
+
+    const list<CSinger>& singers() const
+    {
+        return m_lstSingers;
+    }
+
+    CSinger& add(const CSinger& singer)
+    {
+        m_lstSingers.push_back(singer);
+        auto& t_singer = m_lstSingers.back();
+        t_singer.m_pParent = this;
+        return t_singer;
+    }
 
 private:
 	void GetSubSets(TD_MediaSetList& lstSubSets) override

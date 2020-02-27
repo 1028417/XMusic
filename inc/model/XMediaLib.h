@@ -129,7 +129,7 @@ public:
 
     bool loadXSnapshot(Instream& ins);
 
-    bool checkXUrl(const wstring& strFileTitle);
+    bool checkXUrl(const wstring& strPath);
 
     string getXUrl(const wstring& strFileTitle)
     {

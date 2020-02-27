@@ -35,7 +35,7 @@ private:
 
 	CPlaylistMgr& m_PlaylistMgr;
 
-    CPlaylist& m_Playinglist;
+    const CPlaylist& m_Playinglist;
 	
 	UINT& m_uPlayingItem;
 	
@@ -78,12 +78,7 @@ public:
         return m_eDemandMode;
     }
 
-    CMediaSet& getPlayinglist()
-    {
-        return m_Playinglist;
-    }
-
-	ArrList<CPlayItem>& getPlayingItems()
+    const ArrList<CPlayItem>& getPlayingItems() const
     {
         return m_Playinglist.playItems();
 	}

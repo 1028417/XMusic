@@ -15,23 +15,21 @@ private:
 	list<CSinger> m_lstRootSingers;
 
 public:
-	list<CSingerGroup>& groups()
-	{
-		return m_lstGroups;
-	}
 	const list<CSingerGroup>& groups() const
 	{
 		return m_lstGroups;
 	}
 
-	list<CSinger>& rootSingers()
-	{
-		return m_lstRootSingers;
-	}
 	const list<CSinger>& rootSingers() const
 	{
 		return m_lstRootSingers;
 	}
+
+    void clear()
+    {
+        m_lstGroups.clear();
+        m_lstRootSingers.clear();
+    }
 
 	BOOL Init();
 
@@ -70,9 +68,9 @@ public:
 
 	BOOL RemoveAlbumItems(const TD_AlbumItemList& lstAlbumItems);
 
-	BOOL SetBackAlbumItems(const TD_MediaList& lstAlbumItem);
+    BOOL SetBackAlbumItems(const PtrArray<const CAlbumItem>& paAlbumItem);
 
 	CSinger* RepositSinger(CSinger& Singer, CMediaSet& Target, bool bDropPositionFlag);
 
-	int RepositAlbumItem(CAlbum& Album, const TD_IMediaList& lstMedias, UINT uTargetPos);
+    int RepositAlbumItem(CAlbum& Album, const TD_IMediaList& lstMedias, UINT uTargetPos);
 };
