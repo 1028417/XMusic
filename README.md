@@ -1,4 +1,6 @@
 # **XMusic介绍**
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/logo.gif)
+
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusicHost.jpg)
 
 ## **创作背景**
@@ -8,7 +10,7 @@
   
 18年采用ffmpeg4解码，SDL2播放，支持更多音频格式。优化媒体库模型和用户界面，开发一系列实用功能。
 
-19年做跨平台适配，用Qt开新的UI。
+19年做跨平台适配，用Qt开新的UI，开始产品化。
 
 ## **系统功能**
 ### 文件系统
@@ -65,7 +67,6 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 完成ios版本编译和iPhone/iPad各机型适配，app待上架
 
 产品链接：www.xmusic.ltd
-
 
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_V.jpg)
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_H.jpg)
