@@ -462,7 +462,7 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
     __EnsureReturn(_readMedialibConf(ifbMedialibConf, orgMedialibConf), false);
-    g_logger << "orgMedialibConf AppVersion: " >> orgMedialibConf.strAppVersion
+    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
              << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
              << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
 
@@ -472,8 +472,8 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     {
          if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
          {
-             g_logger << "userMedialibConf AppVersion: " >> userMedialibConf.strAppVersion
-                      << " CompatibleCode: " >> userMedialibConf.uCompatibleCode
+             g_logger << "userMedialibConf AppVersion: " << userMedialibConf.strAppVersion
+                      << " CompatibleCode: " << userMedialibConf.uCompatibleCode
                       << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
          }
 
@@ -554,8 +554,8 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
             continue;
         }
 
-        g_logger << "neeMedialibConf AppVersion: " >> userMedialibConf.strAppVersion
-                 << " CompatibleCode: " >> userMedialibConf.uCompatibleCode
+        g_logger << "newMedialibConf AppVersion: " << userMedialibConf.strAppVersion
+                 << " CompatibleCode: " << userMedialibConf.uCompatibleCode
                  << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
 
         if (newMedialibConf.strAppVersion < MAX(orgMedialibConf.strAppVersion, userMedialibConf.strAppVersion))
@@ -659,7 +659,7 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
             }
             else if (strutil::endWith(unzfile.strPath, ".snapshot.json"))
             {
-                if (!m_model.getMediaLib().loadSnapshot(ifbData))
+                if (!m_model.getMediaLib().loadXSnapshot(ifbData))
                 {
                     g_logger << "loadSnapshot fail: " >> unzfile.strPath;
                     //continue;
@@ -668,7 +668,7 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
         }
 
         OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
-        if (!ofbMedialibConf || ofbMedialibConf.writex(bbfMedialibConf) != bbfMedialibConf->size())
+        if (!ofbMedialibConf || !ofbMedialibConf.writex(bbfMedialibConf))
         {
             g_logger >> "write medialibConf fail";
             //return false;
