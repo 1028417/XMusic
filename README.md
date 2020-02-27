@@ -1,6 +1,8 @@
 # **XMusic介绍**
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusicHost.jpg)
 
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic0.jpg)
+
 ## **创作背景**
 07年用VB开发一个迷你播放器，只支持Mp3、Wma、Wav格式播放。  
 
