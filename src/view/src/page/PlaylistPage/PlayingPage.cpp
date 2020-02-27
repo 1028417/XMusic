@@ -119,7 +119,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		auto ePrevPlayStatus = PlayMgr.GetPlayStatus();
 
-		(void)PlayMgr.remove(arrSelPlayItem);
+		(void)PlayMgr.remove((PtrArray<const CPlayItem>&)arrSelPlayItem);
 
 		if (ePrevPlayStatus != E_PlayStatus::PS_Stop && PlayMgr.GetPlayStatus() == E_PlayStatus::PS_Stop)
 		{
@@ -147,8 +147,8 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 
 	auto& lstPlayingItems = m_view.getPlayMgr().getPlayingItems();
 	m_wndList.AsyncTask(__AsyncTaskElapse, [&](UINT uItem) {
-		lstPlayingItems.get(uItem, [&](CPlayItem& PlayItem) {
-			(void)PlayItem.AsyncTask();
+		lstPlayingItems.get(uItem, [&](cauto PlayItem) {
+			((CPlayItem&)PlayItem).AsyncTask();
 		});
 	});
 }
