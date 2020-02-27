@@ -6,9 +6,9 @@
 
 09年用VC开发媒体库模型和配套界面。  
   
-18年采用ffmpeg4解码，SDL2播放，支持更多音频格式。优化媒体库模型和用户界面，并开发一系列实用功能。
+18年采用ffmpeg4解码，SDL2播放，支持更多音频格式。优化媒体库模型和用户界面，开发一系列实用功能。
 
-19年做跨平台适配，并用Qt开发跨平台点播App。
+19年做跨平台适配，用Qt开新的UI。
 
 ## **系统功能**
 ### 文件系统
@@ -57,12 +57,15 @@
 * 支持Win10平板触屏操作
 
 ### 跨平台点播APP
-使用Qt开发的跨平台UI，其他模块复用。
+Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
 已编译出Windows、macOs版本和android安装包，安卓采用OpenSL ES播放音频流。
 完成ios版本编译和iPhone/iPad各机型适配，app待上架
+
+产品链接：www.xmusic.ltd
+
 
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_V.jpg)
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_H.jpg)
