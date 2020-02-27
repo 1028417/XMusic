@@ -97,8 +97,8 @@ void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
 	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](CPlayItem& PlayItem) {
 #define __xOffset 1
-		int cx = rc.right - rc.left - __xOffset;
-		int cy = rc.bottom - rc.top;
+		int cx = (rc.right- __xOffset) - rc.left + 1;
+		int cy = rc.bottom - rc.top + 1;
 
 		CCompDC CompDC;
 		(void)CompDC.create(cx, cy, hDC);
@@ -208,6 +208,8 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 	int x = 0;
 	if (iImage >= 0)
 	{
+		x = cy;
+
 #define __Margin 0
 		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
@@ -223,15 +225,13 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 		}
 		auto& imgList = m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big);
 		imgList.DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
-
-		x = cy-__Margin;
 	}
 	else
 	{
 		memzero(rcSingerImg);
 	}
+
 	x += 7;
-	
 	cx -= 7;
 
 	int iXPosDuration = cx;
@@ -240,7 +240,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 	{
 		(void)dc.SelectObject(m_fontSmall);
 
-		iXPosDuration -= 43 + int(strDuration.size() - 4) * 12;
+		iXPosDuration -= 40 + int(strDuration.size() - 4) * 12;
 		RECT rcPos = { iXPosDuration, iYMiddlePos, cx, cy };
 		dc.DrawText(strDuration.c_str(), &rcPos, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	}
