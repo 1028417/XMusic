@@ -1,6 +1,4 @@
 # **XMusic介绍**
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/logo.gif)
-
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusicHost.jpg)
 
 ## **创作背景**
@@ -68,5 +66,12 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 产品链接：www.xmusic.ltd
 
-![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_V.jpg)
-![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/md/XMusic_H.jpg)
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic1.jpg)
+
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic2.jpg)
+
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic3.jpg)
+
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic4.jpg)
+
+![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
