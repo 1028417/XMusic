@@ -25,14 +25,11 @@ BOOL CQuickFindDlg::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	static CCompatableFont font1;
-	(void)font1.setFont(m_Edit, m_view.m_globalSize.m_fMidFontSize);
-
-	//static CCompatableFont font2;
-	//(void)font2.setFont(m_Button, m_view.m_globalSize.m_fBigFontSize);
+	static CCompatableFont font;
+	(void)font.setFont(m_Edit, m_view.m_globalSize.m_fMidFontSize);
 
 	auto pDC = m_Edit.GetDC();
-	pDC->SelectObject(font1);
+	pDC->SelectObject(font);
 	CSize sz = pDC->GetTextExtent(L"Œ“");
 	m_uTextHeight = UINT(sz.cy*1.1);
 	m_Edit.ReleaseDC(pDC);
