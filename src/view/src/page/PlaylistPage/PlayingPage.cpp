@@ -167,7 +167,7 @@ DROPEFFECT CPlayingPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& l
 {
 	__AssertReturn(pwndCtrl == &m_wndList && lstMedias, DROPEFFECT_NONE);
 
-	if (!m_view.getPlayMgr().getPlayinglist().available())
+	if (!m_view.getPlaylistMgr().playinglist().available())
 	{
 		return DROPEFFECT_COPY;
 	}
@@ -176,7 +176,7 @@ DROPEFFECT CPlayingPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& l
 
 	DROPEFFECT dwRet = DROPEFFECT_COPY;
 	lstMedias.front([&](IMedia& media) {
-		if (media.GetMediaSet() == &m_view.getPlayMgr().getPlayinglist())
+		if (media.GetMediaSet() == &m_view.getPlaylistMgr().playinglist())
 		{
 			dwRet = DROPEFFECT_MOVE;
 		}
@@ -197,7 +197,7 @@ BOOL CPlayingPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, 
 		pSrcMediaSet = media.GetMediaSet();
 	});
 
-	if (pSrcMediaSet == &m_view.getPlayMgr().getPlayinglist())
+	if (pSrcMediaSet == &m_view.getPlaylistMgr().playinglist())
 	{
 		TD_PlayItemList lstPlayItems(lstMedias);
 		nNewPos = m_view.getPlayMgr().move(lstPlayItems, uDropPos);
@@ -239,8 +239,8 @@ BOOL CPlayingPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragCon
 void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
-
-	if (!m_view.getPlayMgr().getPlayinglist().available())
+	
+	if (!m_view.getPlaylistMgr().playinglist().available())
 	{
 		return;
 	}

@@ -93,7 +93,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
         m_thrAsyncTask.start([&](const bool& bRunSignal){
-            ((CPlaylist&)MediaSet).playItems()([&](CPlayItem& playItem){
+            ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
                 playItem.findRelatedMedia(E_MediaSetType::MST_Album);
 
                 mtutil::usleep(10);
@@ -428,7 +428,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
             auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u歌手", (UINT)pSingerGroup->singers().size());
+            qsRemark.sprintf("%u歌手", (UINT)pSingerGroup->size());
         }
         else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         {
@@ -443,7 +443,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
         {
             auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
-            qsRemark.sprintf("%u曲目", (UINT)pPlaylist->playItems().size());
+            qsRemark.sprintf("%u曲目", (UINT)pPlaylist->size());
         }
 
         if (!qsRemark.isEmpty())
