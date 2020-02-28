@@ -60,12 +60,10 @@ enum class E_MediaSetType
 	, MST_SingerGroup
 };
 
-
-#define __MeidaTimeFormat L"%y-%m-%d\n %H:%M"
-
 using mediatime_t = time32_t;
-
 #define __mediatime ((mediatime_t)time(0))
+
+#define __mediaTimeFormat(t) tmutil::formatTime(L"%y-%m-%d\n %H:%M", t)
 
 class __MediaLibExt CMediaTime
 {
@@ -91,7 +89,7 @@ public:
 
 	wstring GetText() const
 	{
-		return tmutil::formatTime(__MeidaTimeFormat, m_tAddTime);
+		return __mediaTimeFormat(m_tAddTime);
 	}
 };
 

@@ -13,19 +13,25 @@ struct __ModelExt tagFileTitle
 struct __ModelExt tagMediaResInfo
 {
     tagMediaResInfo(){}
-
-	tagMediaResInfo(const wstring& t_strPath, const wstring& t_strFileSize)
+	
+	tagMediaResInfo(const wstring& t_strPath, const wstring& t_strFileSize = L"")
 		: strPath(t_strPath)
 		, FileTitle(fsutil::getFileTitle(strPath))
-		, strFileSize(t_strFileSize)
 	{
-	}
+		if (t_strFileSize.empty())
+		{
+			strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false);
+		}
+		else
+		{
+			strFileSize = t_strFileSize;
+		}
 
-	tagMediaResInfo(const wstring& t_strPath)
-		: strPath(t_strPath)
-		, FileTitle(fsutil::getFileTitle(strPath))
-		, strFileSize(IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false))
-	{
+		auto fileTime = fsutil::GetFileModifyTime64(strPath);
+		if (-1 != fileTime)
+		{
+			strFileTime = __mediaTimeFormat(fileTime);
+		}
 	}
 
     bool operator==(const tagMediaResInfo& other) const
@@ -38,6 +44,7 @@ struct __ModelExt tagMediaResInfo
 	tagFileTitle FileTitle;
 
 	wstring strFileSize;
+	wstring strFileTime;
 
 	int nDuration = -1;
 };
@@ -48,6 +55,7 @@ private:
 	tagFileTitle m_FileTitle;
 
 	wstring m_strFileSize;
+	wstring m_strFileTime;
 
 	wstring m_strSingerName;
 
@@ -62,6 +70,7 @@ public:
 	CSearchMediaInfo(class CSearchMediaInfoGuard& SearchMediaInfoGuard, CMedia& media, CSinger *pSinger);
 
 	wstring GetFileSize();
+	wstring GetFileTime();
 
 	bool matchMediaRes(tagMediaResInfo& MediaResInfo);
 
