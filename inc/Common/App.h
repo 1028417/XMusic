@@ -125,11 +125,17 @@ public:
 	static bool removeMsg(UINT uMsg);
 
 	static void sync(const CB_Sync& cb);
+	
+	static void async(UINT uDelayTime, const CB_Sync& cb)
+	{
+		_sync([=]() {
+			__async(uDelayTime, cb);
+		});
+	}
 
-	static void async(UINT uDelayTime, const CB_Sync& cb);
 	static void async(const CB_Sync& cb)
 	{
-		async(0, cb);
+		_sync(cb);
 	}
 
 	void thread(cfn_void cb);

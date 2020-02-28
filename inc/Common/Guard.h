@@ -43,25 +43,25 @@ private:
 	HINSTANCE m_hPreInstance = NULL;
 };
 
-class __CommonExt CRedrawLockGuard
+class __CommonExt CRedrawLock
 {
 public:
-	CRedrawLockGuard(CWnd& wnd, bool bLockUpdate = false);
+	CRedrawLock(CWnd& wnd, bool bLockUpdate = false);
 
-	CRedrawLockGuard(CRedrawLockGuard& other);
+	CRedrawLock(CRedrawLock& other);
 	
-	~CRedrawLockGuard();
+	~CRedrawLock();
 
 public:
-	CRedrawLockGuard& operator =(CRedrawLockGuard& other)
+	CRedrawLock& operator =(CRedrawLock& other)
 	{
-		CRedrawLockGuard::CRedrawLockGuard(other);
+		CRedrawLock::CRedrawLock(other);
 		return *this;
 	}
 
-	CRedrawLockGuard& operator =(CRedrawLockGuard&& other)
+	CRedrawLock& operator =(CRedrawLock&& other)
 	{
-		CRedrawLockGuard::CRedrawLockGuard(other);
+		CRedrawLock::CRedrawLock(other);
 		return *this;
 	}
 
