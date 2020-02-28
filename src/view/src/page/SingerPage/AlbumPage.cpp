@@ -332,7 +332,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	{
 		UpdateSingerImage();
 
-		(void)m_wndAlbumList.SetObjects(TD_ListObjectList(m_pSinger->albums()));
+		(void)m_wndAlbumList.SetObjects(TD_ListObjectList((list<CAlbum>&)m_pSinger->albums()));
 
 		(void)m_wndAlbumList.InsertItem(0, L"", (int)E_GlobalImage::GI_Dir);
 
@@ -795,7 +795,7 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 
 	this->UpdateTitle();
 
-	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList(m_pAlbum->albumItems()));
+	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 
 	if (bChanged)
 	{
@@ -1258,11 +1258,10 @@ void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 	{
 		m_wndMediaResPanel.UpdateRelated(MediaSetChanged);
 
-		if (NULL != m_pAlbum)
+		if (m_pAlbum)
 		{
-			size_t uIdx = 0;
-			for (CAlbumItem& AlbumItem : m_pAlbum->albumItems())
-			{
+			m_pAlbum->albumItems()([&](cauto t_AlbumItem, size_t uIdx) {
+				auto& AlbumItem = (CAlbumItem&)t_AlbumItem;
 				if (AlbumItem.UpdateRelatedMediaSet(MediaSetChanged))
 				{
 					m_wndAlbumItemList.UpdateItem(uIdx, &AlbumItem);

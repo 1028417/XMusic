@@ -201,7 +201,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		return;
 	}
 
-	(void)m_wndList.SetObjects(TD_ListObjectList(m_pPlaylist->playItems()));
+	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
 	
 	if (bChanged)
 	{
@@ -261,7 +261,8 @@ void CPlayItemPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 {
 	__Ensure(m_pPlaylist);
 
-	m_pPlaylist->playItems()([&](CPlayItem& PlayItem, size_t uIdx){
+	m_pPlaylist->playItems()([&](cauto t_PlayItem, size_t uIdx){
+		auto& PlayItem = (CPlayItem&)t_PlayItem;
 		if (PlayItem.UpdateRelatedMediaSet(MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &PlayItem);

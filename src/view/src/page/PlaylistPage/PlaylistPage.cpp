@@ -127,7 +127,7 @@ void CPlaylistPage::RefreshList()
 {
 	__Ensure(m_hWnd);
 
-	(void)m_wndList.SetObjects(TD_ListObjectList(m_view.getPlaylistMgr().playlists()));
+	(void)m_wndList.SetObjects(TD_ListObjectList((list<CPlaylist>&)m_view.getPlaylistMgr().playlists()));
 	
 	if (m_view.m_PlayItemPage)
 	{
@@ -497,7 +497,7 @@ BOOL CPlaylistPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 	if (DROPEFFECT_MOVE == DragContext.nDropEffect && pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->m_eType)
 	{
 		TD_PlayItemList lstPlayItems(lstMedias);
-		__EnsureReturn(m_view.getPlaylistMgr().RemovePlayItems(lstPlayItems), FALSE);
+		__EnsureReturn(m_view.getPlaylistMgr().RemovePlayItems((PtrArray<const CPlayItem>&)lstPlayItems), FALSE);
 	}
 		
 	int	nSelectCount = (int)lstMedias.size();
