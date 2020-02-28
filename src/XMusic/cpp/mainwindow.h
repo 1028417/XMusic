@@ -97,6 +97,11 @@ public:
     }
 #endif
 
+    bool isHScreen() const
+    {
+        return m_bHScreen;
+    }
+
     void showLogo();
 
     void show();

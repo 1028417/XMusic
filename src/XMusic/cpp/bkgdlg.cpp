@@ -247,10 +247,32 @@ void CBkgDlg::init()
 
 void CBkgDlg::show()
 {
-    m_bkgView.setVisible(false);
-    __appAsync([&](){
-        m_bkgView.setVisible(true);
-    });
+    do {
+        if (m_app.mainWnd().isHScreen())
+        {
+            if (m_vecHBkgFile.empty())
+            {
+                break;
+            }
+        }
+        else
+        {
+            if (m_vecVBkgFile.empty())
+            {
+                break;
+            }
+        }
+
+        if (!m_lstPixmap.empty())
+        {
+            break;
+        }
+
+        m_bkgView.setVisible(false);
+        __appAsync([&](){
+            m_bkgView.setVisible(true);
+        });
+    } while(0);
 
     CDialog::show();
 }
@@ -482,7 +504,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-#define __retainSnapshot 7
+#define __retainSnapshot 8
     set<const QPixmap*> setDelelePixmap;
     if (m_vecHBkgFile.size() > __retainSnapshot)
     {
