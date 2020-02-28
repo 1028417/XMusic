@@ -12,6 +12,8 @@
 
 #define __cyIPhoneXBangs __size(128)
 
+#define __appAsync CApp::async
+
 #if __windows || __mac
 #include <QLockFile>
 extern QLockFile g_lf;

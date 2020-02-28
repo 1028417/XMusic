@@ -256,7 +256,6 @@ void CApp::slot_run(int nUpgradeResult)
         return;
     }
 
-
     auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
     if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
     {
