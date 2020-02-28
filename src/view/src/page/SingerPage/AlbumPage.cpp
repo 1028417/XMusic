@@ -1267,7 +1267,7 @@ void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 					m_wndAlbumItemList.UpdateItem(uIdx, &AlbumItem);
 				}
 				uIdx++;
-			}
+			});
 		}
 	}
 }

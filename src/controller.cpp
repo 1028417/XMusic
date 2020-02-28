@@ -156,13 +156,12 @@ bool CXController::setupMediaLib()
 
 void CXController::_tryPlay()
 {
-    if (!XMediaLib::m_bOnlineMediaLib)
+#if !__OnlineMediaLib
+    if (m_model.getMediaLib().empty())
     {
-        if (m_model.getMediaLib().empty())
-        {
-            return;
-        }
+        return;
     }
+#endif
 
     if (m_model.getPlayMgr().getPlayingItems())
     {

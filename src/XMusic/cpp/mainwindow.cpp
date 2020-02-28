@@ -298,7 +298,7 @@ void MainWindow::_init()
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
-    //if (XMediaLib::m_bOnlineMediaLib)
+//#if __OnlineMediaLib
     connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
         if (m_medialibDlg.isVisible())
         {
@@ -819,27 +819,23 @@ void MainWindow::_updateProgress()
     E_DecodeStatus eDecodeStatus = m_app.getPlayMgr().mediaOpaque().decodeStatus();
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
-        if (XMediaLib::m_bOnlineMediaLib)
+#if __OnlineMediaLib
+        if (eDecodeStatus != E_DecodeStatus::DS_Paused)
         {
-            if (eDecodeStatus != E_DecodeStatus::DS_Paused)
-            {
-                return;
-            }
+            return;
         }
-        else
-        {
-             return;
-        }
+#else
+        return;
+#endif
     }
 
     int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
     if (nProgress <= ui.barProgress->maximum())
     {
         UINT bufferValue = 0;
-        if (XMediaLib::m_bOnlineMediaLib)
-        {
-            bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().size()/1000);
-        }
+#if __OnlineMediaLib
+        bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().size()/1000);
+#endif
         ui.barProgress->setValue(nProgress, bufferValue);
     }
 }
@@ -858,17 +854,16 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.nDuration = PlayItem.duration();
 
     PlayingInfo.uStreamSize = 0;
-    if (XMediaLib::m_bOnlineMediaLib)
+#if __OnlineMediaLib
+    if (m_app.getPlayMgr().mediaOpaque().isOnline())
     {
-        if (m_app.getPlayMgr().mediaOpaque().isOnline())
+        auto nStreamSize = PlayItem.fileSize()/1000;
+        if (nStreamSize > 0)
         {
-            auto nStreamSize = PlayItem.fileSize()/1000;
-            if (nStreamSize > 0)
-            {
-                PlayingInfo.uStreamSize = (UINT)nStreamSize;
-            }
+            PlayingInfo.uStreamSize = (UINT)nStreamSize;
         }
     }
+#endif
 
     PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
     PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);

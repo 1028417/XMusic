@@ -158,10 +158,5 @@ public:
 
     int run();
 
-    void quit()
-    {
-        m_bRunSignal = false;
-
-        QApplication::quit();
-    }
+    void quit();
 };

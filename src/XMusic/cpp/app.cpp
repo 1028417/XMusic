@@ -225,21 +225,18 @@ bool CApp::_resetRootDir(wstring& strRootDir)
     strRootDir = strutil::toWstr(__sdcardDir "XMusic");
 
 #else
-#if __window
-    if (!XMediaLib::m_bOnlineMediaLib)
+#if __window &&__OnlineMediaLib
+    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
-        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+        CFolderDlg FolderDlg;
+        strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
+        if (strRootDir.empty())
         {
-            CFolderDlg FolderDlg;
-            strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
-            if (strRootDir.empty())
-            {
-                return false;
-            }
+            return false;
         }
-
-        return true;
     }
+
+    return true;
 #endif
 
     strRootDir = fsutil::getHomePath(L"/XMusic");
@@ -333,13 +330,12 @@ int CApp::run()
 
             bool bUpgradeFail = false;
             E_UpgradeErrMsg eUpgradeErrMsg = E_UpgradeErrMsg::UEM_None;
-            if (XMediaLib::m_bOnlineMediaLib)
+#if __OnlineMediaLib
+            if (!_upgradeMediaLib(eUpgradeErrMsg))
             {
-                if (!_upgradeMediaLib(eUpgradeErrMsg))
-                {
-                    bUpgradeFail = true;
-                }
+                bUpgradeFail = true;
             }
+#endif
 
             auto timeWait = 6 - (time(NULL) - timeBegin);
             if (timeWait > 0)
@@ -447,6 +443,17 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
     }*/
 
     return true;
+}
+
+void CApp::quit()
+{
+    m_bRunSignal = false;
+
+    m_mainWnd.setVisible(false);
+
+    async([](){
+        QApplication::quit();
+    });
 }
 
 bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
