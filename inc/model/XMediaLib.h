@@ -96,13 +96,15 @@ private:
         return m_uDuration;
     }
 };
+
+#define __OnlineMediaLib 1
+#else
+#define __OnlineMediaLib 0
 #endif
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
-	static bool m_bOnlineMediaLib;
-
     XMediaLib(class CModel& model, class IModelObserver& ModelObserver);
 
 private:
