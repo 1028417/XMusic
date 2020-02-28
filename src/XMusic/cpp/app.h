@@ -72,12 +72,12 @@ private:
 
     enum class E_UpgradeResult
     {
-        UE_None = 0,
-        UE_Success,
-        UE_Fail,
-        UE_MedialibUncompatible,
-        UE_AppUpgradeFail,
-        UE_AppUpgraded
+        UR_None = 0,
+        UR_Success,
+        UR_Fail,
+        UR_MedialibUncompatible,
+        UR_AppUpgradeFail,
+        UR_AppUpgraded
     };
     E_UpgradeResult _upgradeMediaLib();
     E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf
