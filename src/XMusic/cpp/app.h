@@ -53,10 +53,10 @@ private:
     CMsgBox m_msgbox;
 
 signals:
-    void signal_run(bool bUpgradeFail, int nUpgradeErrMsg);
+    void signal_run(int nUpgradeResult);
 
 private slots:
-    void slot_run(bool bUpgradeResult, int nUpgradeErrMsg);
+    void slot_run(int nUpgradeResult);
 
 private:
     IModelObserver& getModelObserver() override
@@ -68,16 +68,18 @@ private:
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 
-    enum class E_UpgradeErrMsg
+    enum class E_UpgradeResult
     {
-        UEM_None = 0,
-        UEM_MedialibUncompatible,
-        UEM_AppUpgradeFail,
-        UEM_AppUpgraded
+        UE_None = 0,
+        UE_Success,
+        UE_Fail,
+        UE_MedialibUncompatible,
+        UE_AppUpgradeFail,
+        UE_AppUpgraded
     };
-    bool _upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg);
-    bool _upgradeMedialib(const tagMedialibConf& orgMedialibConf
-                          , const tagMedialibConf& userMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg);
+    E_UpgradeResult _upgradeMediaLib();
+    E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf
+                          , const tagMedialibConf& userMedialibConf);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 

@@ -249,24 +249,25 @@ bool CApp::_resetRootDir(wstring& strRootDir)
     return fsutil::createDir(strRootDir + L"/" __medialibDir);
 }
 
-void CApp::slot_run(bool bUpgradeFail, int nUpgradeErrMsg)
+void CApp::slot_run(int nUpgradeResult)
 {
     if (!m_bRunSignal)
     {
         return;
     }
 
-    if (bUpgradeFail)
+
+    auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
+    if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
     {
-        auto eUpgradeErrMsg = (E_UpgradeErrMsg)nUpgradeErrMsg;
-        if (E_UpgradeErrMsg::UEM_AppUpgraded == eUpgradeErrMsg)
+        if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
         {
             this->quit();
         }
         else
         {
             QString qsErrMsg;
-            if (E_UpgradeErrMsg::UEM_AppUpgradeFail == eUpgradeErrMsg)
+            if (E_UpgradeResult::UR_AppUpgradeFail == eUpgradeResult)
             {
                 qsErrMsg = "更新App失败";
             }
@@ -328,13 +329,9 @@ int CApp::run()
         thrUpgrade = std::thread([&]() {
             auto timeBegin = time(NULL);
 
-            bool bUpgradeFail = false;
-            E_UpgradeErrMsg eUpgradeErrMsg = E_UpgradeErrMsg::UEM_None;
+            E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
 #if __OnlineMediaLib
-            if (!_upgradeMediaLib(eUpgradeErrMsg))
-            {
-                bUpgradeFail = true;
-            }
+            eUpgradeResult = _upgradeMediaLib();
 #endif
 
             auto timeWait = 6 - (time(NULL) - timeBegin);
@@ -343,7 +340,7 @@ int CApp::run()
                 mtutil::usleep((UINT)timeWait*1000);
             }
 
-            emit signal_run(bUpgradeFail, (int)eUpgradeErrMsg);
+            emit signal_run((int)eUpgradeResult);
         });
     });
 
@@ -456,19 +453,23 @@ void CApp::quit()
     });
 }
 
-bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
+E_UpgradeResult CApp::_upgradeMediaLib()
 {
     QFile qf(":/medialib.conf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
         g_logger >> "loadMedialibConfResource fail";
-        return false;
+        return E_UpgradeResult::UR_Fail;
     }
 
     cauto ba = qf.readAll();
     IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
     tagMedialibConf orgMedialibConf;
-    __EnsureReturn(_readMedialibConf(ifbMedialibConf, orgMedialibConf), false);
+    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+    {
+        g_logger >> "readMedialibConfResource fail";
+        return E_UpgradeResult::UR_Fail;
+    }
     g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
              << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
              << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
@@ -492,15 +493,14 @@ bool CApp::_upgradeMediaLib(E_UpgradeErrMsg& eUpgradeErrMsg)
     if (nRet != 0)
     {
         g_logger << "initCurl fail: " >> nRet;
-        return false;
+        return E_UpgradeResult::UR_Fail;
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    return _upgradeMedialib(orgMedialibConf, userMedialibConf, eUpgradeErrMsg);
+    return _upgradeMedialib(orgMedialibConf, userMedialibConf, eUpgradeResult);
 }
 
-bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
-                            , const tagMedialibConf& userMedialibConf, E_UpgradeErrMsg& eUpgradeErrMsg)
+E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf, const tagMedialibConf& userMedialibConf)
 {
     const list<CUpgradeUrl>& lstUpgradeUrl = (userMedialibConf.strAppVersion >= orgMedialibConf.strAppVersion ||
             userMedialibConf.uCompatibleCode >= orgMedialibConf.uCompatibleCode)
@@ -586,22 +586,21 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
         if (newMedialibConf.uCompatibleCode > orgMedialibConf.uCompatibleCode)
         {
             g_logger >> "medialib Uncompatible";
-            eUpgradeErrMsg = E_UpgradeErrMsg::UEM_MedialibUncompatible;
 
 #if !__ios
             if (newMedialibConf.strAppVersion > orgMedialibConf.strAppVersion)
             {
                 if (_upgradeApp(newMedialibConf.lstUpgradeUrl))
                 {
-                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgraded;
+                    return E_UpgradeResult::UR_AppUpgraded;
                 }
                 else
                 {
-                    eUpgradeErrMsg = E_UpgradeErrMsg::UEM_AppUpgradeFail;
+                    return E_UpgradeResult::UR_AppUpgradeFail;
                 }
             }
 #endif
-            return false;
+            return E_UpgradeResult::UR_MedialibUncompatible;
         }
 
         auto itrMedialib = mapUnzfile.find("medialib");
@@ -631,7 +630,7 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
             if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
             {
                 g_logger >> "write medialib fail";
-                return false;
+                return E_UpgradeResult::UR_Fail;
             }
         }
 
@@ -644,7 +643,7 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
             if (zipFile.read(unzfile, bbfData) <= 0)
             {
                 g_logger << "readSnapshot fail: " >> unzfile.strPath;
-                return false;
+                return E_UpgradeResult::UR_Fail;
             }
             IFBuffer ifbData(bbfData);
 
@@ -678,13 +677,13 @@ bool CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf
         if (!ofbMedialibConf || !ofbMedialibConf.writex(bbfMedialibConf))
         {
             g_logger >> "write medialibConf fail";
-            //return false;
+            //return E_UpgradeResult::UR_Fail;
         }
 
-        return true;
+        return E_UpgradeResult::UR_Success;
     }
 
-    return false;
+    return E_UpgradeResult::UR_Fail;
 }
 
 #if __windows
