@@ -29,6 +29,16 @@ protected:
     CAppInit(QApplication& app);
 };
 
+enum class E_UpgradeResult
+{
+    UR_None = 0,
+    UR_Success,
+    UR_Fail,
+    UR_MedialibUncompatible,
+    UR_AppUpgradeFail,
+    UR_AppUpgraded
+};
+
 class CApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
@@ -70,15 +80,6 @@ private:
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 
-    enum class E_UpgradeResult
-    {
-        UR_None = 0,
-        UR_Success,
-        UR_Fail,
-        UR_MedialibUncompatible,
-        UR_AppUpgradeFail,
-        UR_AppUpgraded
-    };
     E_UpgradeResult _upgradeMediaLib();
     E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf
                           , const tagMedialibConf& userMedialibConf);
