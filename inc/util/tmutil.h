@@ -21,22 +21,19 @@ struct tagTM : tm
 using time32_t = long;
 using time64_t = int64_t;
 
+#define __time time(0)
+
 class __UtilExt tmutil
 {
 public:
-	static time32_t time32();
-	static time64_t time64();
-
 	static void getCurrentTime(int& nHour, int& nMinute);
 
-	static bool timeToTM(time32_t tTime, tagTM& tm);
+	static bool timeToTM(time_t tTime, tagTM& tm);
 
     static wstring formatTime(const wstring& strFormat, time32_t tTime);
     static string formatTime(const string& strFormat, time32_t tTime);
 
 #if __windows
-	static bool timeToTM(time64_t tTime, tagTM& tm);
-
 	static wstring formatTime(const wstring& strFormat, time64_t tTime);
 	static string formatTime(const string& strFormat, time64_t tTime);
 
