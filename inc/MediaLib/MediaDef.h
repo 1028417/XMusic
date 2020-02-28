@@ -65,11 +65,13 @@ enum class E_MediaSetType
 
 using mediatime_t = time32_t;
 
+#define __mediatime ((mediatime_t)time(0))
+
 class __MediaLibExt CMediaTime
 {
 public:
 	CMediaTime()
-        : m_tAddTime((mediatime_t)time(0))
+        : m_tAddTime(__mediatime)
 	{
 	}
 
