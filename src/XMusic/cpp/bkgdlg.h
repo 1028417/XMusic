@@ -46,7 +46,6 @@ public:
 public:
     void downlaod()
     {
-
     }
 
     void clear()
@@ -157,7 +156,7 @@ private:
     bool m_bHScreen = false;
 
     CImgDir m_rootImgDir;
-    COnlineImgDir m_olImgDir;
+    //COnlineImgDir m_olImgDir;
 
     XThread m_thread;
 

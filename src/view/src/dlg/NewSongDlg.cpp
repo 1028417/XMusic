@@ -72,7 +72,7 @@ BOOL CNewSongDlg::OnInitDialog()
 	});
 	if (0 == maxTime)
 	{
-		maxTime = tmutil::time32();
+		maxTime = __mediatime;
 	}
 
 	tagTM tm;

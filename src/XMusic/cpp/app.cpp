@@ -326,14 +326,14 @@ int CApp::run()
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
-            auto timeBegin = time(NULL);
+            auto timeBegin = __time;
 
             E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
 #if __OnlineMediaLib
             eUpgradeResult = _upgradeMediaLib();
 #endif
 
-            auto timeWait = 6 - (time(NULL) - timeBegin);
+            auto timeWait = 6 - (__time - timeBegin);
             if (timeWait > 0)
             {
                 mtutil::usleep((UINT)timeWait*1000);
