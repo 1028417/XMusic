@@ -119,7 +119,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		auto ePrevPlayStatus = PlayMgr.GetPlayStatus();
 
-		(void)PlayMgr.remove((PtrArray<const CPlayItem>&)arrSelPlayItem);
+		(void)PlayMgr.remove((ConstPtrArray<CPlayItem>&)arrSelPlayItem);
 
 		if (ePrevPlayStatus != E_PlayStatus::PS_Stop && PlayMgr.GetPlayStatus() == E_PlayStatus::PS_Stop)
 		{

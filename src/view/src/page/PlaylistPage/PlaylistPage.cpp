@@ -497,7 +497,7 @@ BOOL CPlaylistPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 	if (DROPEFFECT_MOVE == DragContext.nDropEffect && pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->m_eType)
 	{
 		TD_PlayItemList lstPlayItems(lstMedias);
-		__EnsureReturn(m_view.getPlaylistMgr().RemovePlayItems((PtrArray<const CPlayItem>&)lstPlayItems), FALSE);
+		__EnsureReturn(m_view.getPlaylistMgr().RemovePlayItems((ConstPtrArray<CPlayItem>&)lstPlayItems), FALSE);
 	}
 		
 	int	nSelectCount = (int)lstMedias.size();
