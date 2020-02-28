@@ -186,14 +186,11 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		__Assert(m_view.m_MainWnd.ActivePage(*this));
 	}
 
-	bool bChanged = (pPlaylist != m_pPlaylist);
-
-	m_pPlaylist = pPlaylist;
-
-	this->UpdateTitle();
-
-	if (!m_pPlaylist)
+	if (NULL == pPlaylist)
 	{
+		m_pPlaylist = NULL;
+		this->UpdateTitle();
+
 		(void)m_wndList.DeleteAllItems();
 
 		this->UpdateHead();
@@ -201,12 +198,15 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		return;
 	}
 
-	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
-	
-	if (bChanged)
+	if (pPlaylist == m_pPlaylist)
 	{
-		m_wndList.EnsureVisible(0, FALSE);
+		return;
 	}
+	m_pPlaylist = pPlaylist;
+	this->UpdateTitle();
+
+	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
+	m_wndList.EnsureVisible(0, FALSE);
 
 	this->UpdateHead();
 

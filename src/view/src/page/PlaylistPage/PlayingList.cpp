@@ -97,8 +97,8 @@ void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
 	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
 #define __xOffset 1
-		int cx = (rc.right- __xOffset) - rc.left + 1;
-		int cy = rc.bottom - rc.top + 1;
+		int cx = (rc.right- __xOffset) - rc.left;
+		int cy = rc.bottom - rc.top;
 
 		CCompDC CompDC;
 		(void)CompDC.create(cx, cy, hDC);

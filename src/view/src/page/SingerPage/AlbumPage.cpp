@@ -777,11 +777,9 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 {
 	__Ensure(m_hWnd);
 
-	bool bChanged = pAlbum != m_pAlbum;
-
-	m_pAlbum = pAlbum;
-	if (NULL == m_pAlbum)
+	if (NULL == pAlbum)
 	{
+		m_pAlbum = NULL;
 		this->UpdateTitle();
 
 		m_wndMediaResPanel.Refresh();
@@ -793,15 +791,16 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 		return;
 	}
 
+	if (pAlbum == m_pAlbum)
+	{
+		return;
+	}
+	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
 	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
-
-	if (bChanged)
-	{
-		m_wndAlbumItemList.EnsureVisible(0, FALSE);
-	}
-	
+	m_wndAlbumItemList.EnsureVisible(0, FALSE);
+		
 	(void)m_wndAlbumItemList.ShowWindow(SW_SHOW);
 	(void)m_wndMediaResPanel.ShowWindow(SW_HIDE);
 	
