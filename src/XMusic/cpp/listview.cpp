@@ -312,7 +312,7 @@ bool CListView::_scroll(int dy)
 
 void CListView::_autoScroll(ulong uSeq, int dy, UINT dt, UINT total)
 {
-    CApp::async(dt, [=]() {
+    __appAsync(dt, [=]() {
         if (uSeq != m_uAutoScrollSeq)
         {
             return;

@@ -206,7 +206,7 @@ CAppInit::CAppInit(QApplication& app)
 
 bool CApp::m_bRunSignal = true;
 
-void CApp::async(UINT uDelayTime, cfn_void cb)
+void __appAsync(UINT uDelayTime, cfn_void cb)
 {
     __async(uDelayTime, [&, cb](){
         if (!m_bRunSignal)
@@ -315,7 +315,7 @@ int CApp::run()
 
     std::thread thrUpgrade;
 
-    CApp::async(100, [&](){
+    __appAsync(100, [&](){
         if (!_resetRootDir(option.strRootDir))
         {
             this->quit();

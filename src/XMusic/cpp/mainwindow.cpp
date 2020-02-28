@@ -160,20 +160,20 @@ void MainWindow::showLogo()
 #else
     UINT uDelayTime = 800;
 #endif
-    CApp::async(uDelayTime, [&](){
+    __appAsync(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
 
         auto labelLogoTip = ui.labelLogoTip;
-        CApp::async(100, [labelLogoTip](){
+        __appAsync(100, [labelLogoTip](){
             labelLogoTip->setText("播放器");
 
-            CApp::async(500, [labelLogoTip](){
+            __appAsync(500, [labelLogoTip](){
                 labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
 
-                CApp::async(500, [labelLogoTip](){
+                __appAsync(500, [labelLogoTip](){
                     labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-                    CApp::async(2500, [labelLogoTip](){
+                    __appAsync(2500, [labelLogoTip](){
 #define __logoTip "更新媒体库"
                         if (-1 == g_nAppUpgradeProgress)
                         {
@@ -254,7 +254,7 @@ void MainWindow::showLogo()
                         return false;
                     }*/
 
-                CApp::async(500, 6, [](){
+                __appAsync(500, 6, [](){
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
                     if (crCompany.alpha() < 255)
@@ -331,8 +331,6 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
-    __setForeground(this);
-
     _init();
 
     m_medialibDlg.init();
@@ -354,6 +352,10 @@ void MainWindow::show()
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
 
     (void)startTimer(1000);
+
+    __appAsync([](){
+        __setForeground(this);
+    });
 }
 
 bool MainWindow::event(QEvent *ev)
@@ -945,7 +947,7 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     else
     {
         auto uPlaySeq = m_uPlaySeq;
-        CApp::async(2000, [&, uPlaySeq]() {
+        __appAsync(2000, [&, uPlaySeq]() {
             if (uPlaySeq == m_uPlaySeq)
             {
                 _updatePlayPauseButton(false);
@@ -1082,7 +1084,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
-        CApp::async(100, [&](){
+        __appAsync(100, [&](){
             if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(false);
@@ -1093,7 +1095,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
-        CApp::async(100, [&](){
+        __appAsync(100, [&](){
             if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
             {
                 _updatePlayPauseButton(true);
@@ -1204,7 +1206,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 
             m_app.getPlayMgr().player().Seek(uSeekPos);
 
-            CApp::async(100, [&](){
+            __appAsync(100, [&](){
                 _updateProgress();
             });
         }

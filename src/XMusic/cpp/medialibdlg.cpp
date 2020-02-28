@@ -57,7 +57,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    CApp::async([&](){
+    __appAsync([&](){
         _resizeTitle();
     });
 
