@@ -377,15 +377,6 @@ void CBkgDlg::setBkg(size_t uIdx)
         {
             _showAddBkg();
         }
-
-        /*m_thread.start([&](const bool& bRunSignal){
-        });
-
-        m_addbkgDlg.show(&m_olImgDir, [&](){
-            m_thread.cancel();
-
-            m_olImgDir.clear();
-        });*/
     }
 }
 
