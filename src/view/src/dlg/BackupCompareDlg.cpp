@@ -415,7 +415,7 @@ void CBackupCompareDlg::_compare()
 
 void CBackupCompareDlg::_fillResult(const tagCompareBackupResult& result)
 {
-	CRedrawLockGuard RedrawLockGuard(*this);
+	CRedrawLock RedrawLock(*this);
 	
 	bool bAutoActive = true;
 

@@ -32,7 +32,7 @@ void CModelObserver::refreshMedia()
 
 void CModelObserver::renameMedia(IMedia& media, const wstring& strNewName)
 {
-	CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd, true);
+	CRedrawLock RedrawLock(m_view.m_MainWnd, true);
 
 	(void)m_view.getController().renameMedia(media, strNewName);
 }

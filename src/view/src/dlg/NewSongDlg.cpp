@@ -111,7 +111,7 @@ void CNewSongDlg::Refresh()
 			m_MediaMixer.add(media);
 		});
 
-		CRedrawLockGuard RedrawGuard(m_wndList);
+		CRedrawLock RedrawGuard(m_wndList);
 		(void)m_wndList.DeleteAllItems();
 
 		UINT uIndex = 0;

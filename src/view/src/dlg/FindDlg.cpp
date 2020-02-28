@@ -139,7 +139,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 	if (vecMediaMixtures.size() == 1)
 	{
 		vecMediaMixtures.front([&](CMediaMixture& MediaMixture) {
-			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+			CRedrawLock RedrawLock(m_view.m_MainWnd);
 			m_view.hittestMedia(*MediaMixture.GetMedia());
 		});
 	}
@@ -151,7 +151,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 
 void CFindDlg::Refresh()
 {
-	CRedrawLockGuard RedrawGuard(m_wndList);
+	CRedrawLock RedrawGuard(m_wndList);
 	(void)m_wndList.DeleteAllItems();
 
 	UINT uItem = 0;
@@ -208,7 +208,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 
 		m_MediaMixer.getMediaMixture([&](const CMediaMixture& MediaMixture) {
-			CRedrawLockGuard RedrawLockGuard(m_view.m_MainWnd);
+			CRedrawLock RedrawLock(m_view.m_MainWnd);
 
 			auto pPlayItem = MediaMixture.GetPlayItem();
 			auto pAlbumItem = MediaMixture.GetAlbumItem();

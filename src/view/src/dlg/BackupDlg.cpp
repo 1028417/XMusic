@@ -194,7 +194,8 @@ void CBackupDlg::OnBnClickedRestore()
 	strutil::ltrim(strTag);
 
 	this->OnCancel();
-
+	
+	CRedrawLock RedrawLock(m_view.m_MainWnd);
 	m_view.getModel().restoreDB(strTag);
 }
 

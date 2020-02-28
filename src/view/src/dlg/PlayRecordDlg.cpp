@@ -76,7 +76,7 @@ BOOL CPlayRecordDlg::Refresh()
 
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 
-	CRedrawLockGuard RedrawGuard(m_wndList);
+	CRedrawLock RedrawGuard(m_wndList);
 	(void)m_wndList.DeleteAllItems();
 
 	m_vctPlayRecord.clear();

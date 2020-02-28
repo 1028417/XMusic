@@ -79,7 +79,7 @@ void CSimilarFileDlg::_genPercent()
 
 void CSimilarFileDlg::Refresh(UINT uPos)
 {
-	CRedrawLockGuard RedrawLockGuard(m_wndList);
+	CRedrawLock RedrawLock(m_wndList);
 
 	GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(FALSE);
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);

@@ -482,16 +482,37 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-    for (auto& pr : m_vecHBkgFile)
+#define __retainSnapshot 7
+    set<const QPixmap*> setDelelePixmap;
+    if (m_vecHBkgFile.size() > __retainSnapshot)
     {
-        pr.second = NULL;
-    }
-    for (auto& pr : m_vecVBkgFile)
-    {
-        pr.second = NULL;
+        for (auto itr = m_vecHBkgFile.begin()+__retainSnapshot; itr != m_vecHBkgFile.end(); ++itr)
+        {
+            setDelelePixmap.insert(itr->second);
+            itr->second = NULL;
+        }
     }
 
-    m_lstPixmap.clear();
+    if (m_vecVBkgFile.size() > __retainSnapshot)
+    {
+        for (auto itr = m_vecVBkgFile.begin()+__retainSnapshot; itr != m_vecVBkgFile.end(); ++itr)
+        {
+            setDelelePixmap.insert(itr->second);
+            itr->second = NULL;
+        }
+    }
+
+    for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); )
+    {
+        if (setDelelePixmap.find(&*itr) != setDelelePixmap.end())
+        {
+           itr = m_lstPixmap.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
 
     m_bkgView.reset();
 }

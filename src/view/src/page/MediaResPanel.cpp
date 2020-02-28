@@ -403,7 +403,7 @@ void CMediaResPanel::_showPath()
 {
 	CWaitCursor WaitCursor;
 
-	CRedrawLockGuard RedrawLockGuard(m_wndList);
+	CRedrawLock RedrawLock(m_wndList);
 	
 	m_wndList.SetPath(*m_pCurrPath);
 		

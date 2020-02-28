@@ -496,7 +496,7 @@ E_UpgradeResult CApp::_upgradeMediaLib()
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    return _upgradeMedialib(orgMedialibConf, userMedialibConf, eUpgradeResult);
+    return _upgradeMedialib(orgMedialibConf, userMedialibConf);
 }
 
 E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf, const tagMedialibConf& userMedialibConf)

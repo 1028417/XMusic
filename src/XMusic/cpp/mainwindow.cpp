@@ -353,7 +353,7 @@ void MainWindow::show()
 
     (void)startTimer(1000);
 
-    __appAsync([](){
+    __appAsync([&](){
         __setForeground(this);
     });
 }

@@ -91,7 +91,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 	CWaitCursor WaitCursor;
 	m_AlbumPage.ShowSinger(NULL);
 
-	CRedrawLockGuard RedrawLockGuard(m_wndTree);
+	CRedrawLock RedrawLock(m_wndTree);
 	
 	m_bRefreshing = true;
 	(void)m_wndTree.DeleteAllItems();
@@ -141,7 +141,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 		}
 	}
 
-	RedrawLockGuard.Unlock();
+	RedrawLock.Unlock();
 	
 	if (pSingerObject)
 	{
