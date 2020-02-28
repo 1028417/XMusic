@@ -45,11 +45,6 @@ protected:
 	const tagFileInfo& m_fi = m_fileInfo;
 
 public:
-	tagFileInfo& fileInfo()
-	{
-		return m_fileInfo;
-	}
-
 	const tagFileInfo& fileInfo() const
 	{
 		return m_fileInfo;
