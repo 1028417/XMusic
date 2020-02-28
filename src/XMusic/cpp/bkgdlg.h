@@ -36,50 +36,6 @@ public:
     UINT margin();
 };
 
-class COnlineImgDir : public IImgDir
-{
-public:
-    COnlineImgDir()
-    {
-    }
-
-public:
-    void downlaod()
-    {
-    }
-
-    void clear()
-    {
-        m_vecImgs.clear();
-    }
-
-private:
-    vector<pair<QPixmap, wstring>> m_vecImgs;
-
-private:
-    size_t imgCount() const override
-    {
-        return m_vecImgs.size();
-    }
-
-    bool genSubImgs() override
-    {
-        return false;
-    }
-
-    const QPixmap* snapshot(int nIdx) const override
-    {
-        (void)nIdx;
-        return NULL;
-    }
-
-    wstring path(int nIdx) const override
-    {
-        (void)nIdx;
-        return L"";
-    }
-};
-
 class CImgDir : public CPath, public IImgDir
 {
 public:
@@ -116,6 +72,8 @@ private:
     {
         m_vecSubImgs.clear();
     }
+
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
@@ -156,7 +114,6 @@ private:
     bool m_bHScreen = false;
 
     CImgDir m_rootImgDir;
-    //COnlineImgDir m_olImgDir;
 
     XThread m_thread;
 
@@ -179,7 +136,7 @@ private:
 
     void _showAddBkg();
 
-    void _onClose() override;
+    void _onClosed() override;
 
 public:
     void init();

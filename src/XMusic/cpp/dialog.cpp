@@ -70,7 +70,7 @@ void CDialog::_show(cfn_void cbClose)
     connect(this, &QDialog::finished, [&, cbClose]() {
         g_pFrontDlg = dynamic_cast<CDialog*>(&m_parent);
 
-        _onClose();
+        _onClosed();
 
         if (cbClose)
         {

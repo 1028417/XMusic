@@ -238,7 +238,7 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
     this->update();
 }
 
-void CColorDlg::_onClose()
+void CColorDlg::_onClosed()
 {
     m_bkgDlg.repaint();
     m_app.mainWnd().repaint();

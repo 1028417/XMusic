@@ -447,7 +447,7 @@ void CApp::quit()
 
     m_mainWnd.setVisible(false);
 
-    async([](){
+    async(100, [](){
         QApplication::quit();
     });
 }

@@ -18,7 +18,7 @@ private:
 
     void applyBkgColor();
 
-    void _onClose() override;
+    void _onClosed() override;
 
 private slots:
     void slot_buttonClicked(class CButton *pButton);

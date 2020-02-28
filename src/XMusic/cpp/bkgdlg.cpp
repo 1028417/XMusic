@@ -476,7 +476,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     }
 }
 
-void CBkgDlg::_onClose()
+void CBkgDlg::_onClosed()
 {
     set<const QPixmap*> setDelelePixmap;
     if (m_vecHBkgFile.size() > __retainSnapshot)
@@ -561,6 +561,39 @@ void CImgDir::scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CIm
 
         return bRunSignal;
     });
+}
+
+/*class CResImgDir : public CPath, public IImgDir
+{
+public:
+    CResImgDir(){}
+
+private:
+    virtual size_t imgCount() const
+    {
+        return 0;
+    }
+
+    virtual const QPixmap* snapshot(int nIdx=-1) const
+    {
+        return NULL;
+    }
+
+    virtual wstring path(int nIdx=-1) const
+    {
+        return L"";
+    }
+
+    virtual bool genSubImgs()
+    {
+        return false;
+    }
+};*/
+
+void CImgDir::_onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile)
+{
+    //paSubDir.add(new CResImgDir);
+    CPath::_onFindFile(paSubDir,  paSubFile);
 }
 
 bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)

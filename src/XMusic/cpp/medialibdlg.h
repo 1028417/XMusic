@@ -158,5 +158,5 @@ private:
         return m_MedialibView.upward();
     }
 
-    void _onClose() override;
+    void _onClosed() override;
 };

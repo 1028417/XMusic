@@ -44,7 +44,7 @@ private:
 
     virtual bool _handleReturn() {return false;}
 
-    virtual void _onClose(){}
+    virtual void _onClosed(){}
 
 protected:
     virtual bool event(QEvent *ev) override;

@@ -37,9 +37,7 @@ void CMedialibDlg::init()
 
     ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
 
-/*#if __android || __ios
-    m_MedialibView.setFont(1.05);
-#endif*/
+    m_MedialibView.setFont(1.03, QFont::Weight::Normal);
     m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
@@ -144,7 +142,7 @@ void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, boo
     _resizeTitle();
 }
 
-void CMedialibDlg::_onClose()
+void CMedialibDlg::_onClosed()
 {
     m_MedialibView.clear();
 

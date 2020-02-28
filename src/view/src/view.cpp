@@ -273,15 +273,18 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 {
 	auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 	{
-		wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
-			+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
-			+ CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-			+ L"\n\n是否更新以下曲目？\n"
-			+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-			+ L"\n大小: " + SearchMediaInfo.GetFileSize() + L"字节\n时长: "
-			+ CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-			+ L"\n目录: " + m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
-			+ L"\n\n关联: ";
+		WString strText;
+		strText << fsutil::GetFileName(MediaResInfo.strPath)
+			<< L"\n时长: " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+			<< L"    大小: " << MediaResInfo.strFileSize << L"字节"
+			<< L"\n日期: " << MediaResInfo.strFileTime
+			<< L"\n\n\n是否更新以下曲目？\n"
+			<< fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
+			<< L"\n时长: " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+			<< L"    大小: " << SearchMediaInfo.GetFileSize() << L"字节"
+			<< L"\n日期: " << SearchMediaInfo.GetFileTime()
+			<< L"\n目录: " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+			<< L"\n\n\n关联: ";
 
 		SearchMediaInfo.m_lstMedias([&](CMedia& media) {
 			strText.append(L"\n" + media.m_pParent->GetLogicPath());
@@ -318,7 +321,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	for (auto& strFile : lstFiles)
 	{
 		ProgressDlg.SetStatusText(strFile.c_str(), 1);
-		__Ensure(ProgressDlg.checkCancel());
+		if (ProgressDlg.checkCancel())
+		{
+			return;
+		}
 
 		tagMediaResInfo MediaResInfo(strFile);
 		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
@@ -348,35 +354,37 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 	}
 
-	ProgressDlg.SetStatusText(L"正在合入文件...");
 	ProgressDlg.SetProgress(0, lstMatchResult.size());
 
 	SMap<wstring, wstring> mapUpdateFiles;
 	map<CMedia*, wstring> mapUpdatedMedias;
 	for (auto& pr : lstMatchResult)
 	{
-		wstring& strSrcAbsPath = pr.first;
-		ProgressDlg.SetStatusText(strSrcAbsPath.c_str(), 1);
-		__Ensure(ProgressDlg.checkCancel());
+		wstring& strSrcPath = pr.first;
+		ProgressDlg.SetStatusText((L"正在合入: " + fsutil::GetFileName(strSrcPath)).c_str(), 1);
+		if (ProgressDlg.checkCancel())
+		{
+			return;
+		}
 
 		CSearchMediaInfo& SearchMediaInfo = pr.second;
-		wstring strDstAbsPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
-			+ __wchDirSeparator + fsutil::GetFileName(strSrcAbsPath);
+		wstring strDstPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
+			+ __wchDirSeparator + fsutil::GetFileName(strSrcPath);
 
-		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstAbsPath, [&]() {
+		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstPath, [&]() {
 			(void)fsutil::removeFile(SearchMediaInfo.m_strAbsPath);
 
-			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			if (!fsutil::moveFile(strSrcPath, strDstPath))
 			{
-				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strDstAbsPath);
+				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strDstPath);
 				return false;
 			}
 
-			wstring strDstOppPath = m_model.getMediaLib().toOppPath(strDstAbsPath);
-			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strDstOppPath);
+			wstring strOppPath = m_model.getMediaLib().toOppPath(strDstPath);
+			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strOppPath);
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
-				mapUpdatedMedias[&media] = strDstOppPath;
+				mapUpdatedMedias[&media] = strOppPath;
 			});
 
 			return true;

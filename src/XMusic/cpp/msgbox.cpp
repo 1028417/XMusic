@@ -16,7 +16,7 @@ CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 
     ui.labelClose->setTextColor(crText);
 
-    connect(ui.labelClose, &CLabel::signal_click, this, &QDialog::close);
+    connect(ui.btnClose, &CButton::signal_clicked, this, &QDialog::close);
 }
 
 void CMsgBox::show(const QString& qsMsg, cfn_void cbClose)

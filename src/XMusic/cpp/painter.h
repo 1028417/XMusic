@@ -38,11 +38,11 @@ class CFont : public QFont
 private:
     inline QString _getFamily(int nWeight)
     {
-        for (auto itr = g_mapFontFamily.rbegin(); itr != g_mapFontFamily.rend(); ++itr)
+        for (cauto pr : g_mapFontFamily)
         {
-            if (itr->first <= nWeight)
+            if (pr.first >= nWeight)
             {
-                return itr->second;
+                return pr.second;
             }
         }
 
