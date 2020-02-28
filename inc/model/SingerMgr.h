@@ -68,7 +68,7 @@ public:
 
 	BOOL RemoveAlbumItems(const TD_AlbumItemList& lstAlbumItems);
 
-    BOOL SetBackAlbumItems(const PtrArray<const CAlbumItem>& paAlbumItem);
+    BOOL SetBackAlbumItems(const ConstPtrArray<CAlbumItem>& paAlbumItem);
 
 	CSinger* RepositSinger(CSinger& Singer, CMediaSet& Target, bool bDropPositionFlag);
 

@@ -109,7 +109,7 @@ public:
 
 	int move(const TD_PlayItemList& lstPlayItems, UINT uPos);
 	
-    bool remove(const PtrArray<const CPlayItem>& paPlayItems);
+    bool remove(const ConstPtrArray<CPlayItem>& paPlayItems);
 	bool remove(const set<wstring>& setFiles);
 
 	bool checkPlayedID(UINT uID);
