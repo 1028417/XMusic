@@ -64,13 +64,12 @@ enum class E_MediaSetType
 #define __MeidaTimeFormat L"%y-%m-%d\n %H:%M"
 
 using mediatime_t = time32_t;
-#define __mediatime ((mediatime_t)__time)
 
 class __MediaLibExt CMediaTime
 {
 public:
 	CMediaTime()
-        : m_tAddTime(__mediatime)
+        : m_tAddTime((mediatime_t)time(0))
 	{
 	}
 

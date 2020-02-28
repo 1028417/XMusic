@@ -21,8 +21,6 @@ struct tagTM : tm
 using time32_t = long;
 using time64_t = int64_t;
 
-#define __time time(0)
-
 class __UtilExt tmutil
 {
 public:
