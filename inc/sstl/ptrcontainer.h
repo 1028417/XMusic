@@ -84,17 +84,26 @@ namespace NS_SSTL
 		}
 
 	private:
-		bool _add(int nPos, __PtrType ptr)
+		inline bool __add(int nPos, __PtrType ptr)
 		{
 			if (NULL == ptr)
 			{
 				return false;
 			}
 
-			return _add(nPos, *ptr);
+			if (nPos < 0 || nPos >= (int)__Super::size())
+			{
+				__Super::push_back(ptr);
+			}
+			else
+			{
+				__Super::insert(__Super::begin() + nPos, ptr);
+			}
+
+			return true;
 		}
 
-		bool _add(int nPos, __RefType ref)
+		inline bool __add(int nPos, __RefType ref)
 		{
 			if (nPos < 0 || nPos >= (int)__Super::size())
 			{
@@ -108,14 +117,24 @@ namespace NS_SSTL
 			return true;
 		}
 
-		template <typename T, typename = checkClass_t<T, __Type>>
-		inline bool _add(int nPos, T* ptr, ...)
+		bool _add(int nPos, __PtrType ptr)
 		{
-			return _add(nPos, dynamic_cast<__PtrType>(ptr));
+			return __add(nPos, ptr);
+		}
+
+		bool _add(int nPos, __RefType ref)
+		{
+			return __add(nPos, &ref);
 		}
 
 		template <typename T, typename = checkClass_t<T, __Type>>
-		inline bool _add(int nPos, T& ref, ...)
+		inline bool _add(int nPos, T* ptr)
+		{
+			return __add(nPos, dynamic_cast<__PtrType>(ptr));
+		}
+
+		template <typename T, typename = checkClass_t<T, __Type>>
+		inline bool _add(int nPos, T& ref)
 		{
 			return _add(nPos, &ref);
 		}
