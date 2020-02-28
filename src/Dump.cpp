@@ -48,7 +48,7 @@ static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 	sprintf_s(pszExceptionInfo, "ExceptionCode=%u, ExceptionFlags=%u, ExceptionAddress=%d, NumberParameters=%u"
 		, exceptionRecord.ExceptionCode, exceptionRecord.ExceptionFlags, (int)exceptionRecord.ExceptionAddress, exceptionRecord.NumberParameters);
 	
-    cauto strDumpFile = g_strDumpFileName + tmutil::formatTime("%Y%m%d_%H%M%S") + ".dmp";
+    cauto strDumpFile = g_strDumpFileName + tmutil::formatTime("%Y%m%d_%H%M%S", time(0)) + ".dmp";
 	CreateMiniDump(pExceptionInfo, fsutil::getModuleSubPath(strDumpFile));
 	
     //exit(0);
