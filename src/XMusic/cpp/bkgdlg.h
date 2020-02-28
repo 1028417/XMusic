@@ -167,6 +167,8 @@ private:
         return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
     }
 
+    const QPixmap* _loadPixmap(const WString& strBkgFile);
+
     inline vector<pair<WString, const QPixmap*>>& _vecBkgFile()
     {
         return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
@@ -182,8 +184,6 @@ private:
 
 public:
     void init();
-
-    void show();
 
     const QPixmap& hbkg() const
     {

@@ -10,7 +10,7 @@ class CProgressBar : public CWidget<QProgressBar>
 public:
     CProgressBar(QWidget *parent) : CWidget(parent)
         , m_crBackground(255,255,255)
-        , m_crBuffer(195,255,240)
+        , m_crBuffer(190,255,240)
         , m_crForeground(155,210,255)
     {
         setAttribute(Qt::WA_TranslucentBackground);

@@ -126,7 +126,7 @@ void MainWindow::showLogo()
 
     float fFontSizeOffset = 1.0f;
 #if __android || __ios
-    fFontSizeOffset = 0.9;
+    fFontSizeOffset = 0.95;
 
     cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
@@ -137,10 +137,6 @@ void MainWindow::showLogo()
 #endif
 
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, g_nDefFontWeight, true));
-
-#if __android || __ios
-    fFontSizeOffset = 1;
-#endif
     ui.labelLogoCompany->setFont(CFont(fFontSizeOffset));
 
     CDialog::setWidgetTextColor(ui.labelLogoTip, QColor(64, 128, 255));

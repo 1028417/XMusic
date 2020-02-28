@@ -3,6 +3,8 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
+#define __retainSnapshot 8
+
 static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
@@ -221,11 +223,19 @@ void CBkgDlg::init()
     }
 
     fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
-        m_vecHBkgFile.insert(m_vecHBkgFile.begin(), {strSubFile,NULL});
+        cauto itr = m_vecHBkgFile.insert(m_vecHBkgFile.begin(), {strSubFile, NULL});
+        if (m_vecHBkgFile.size() <= __retainSnapshot)
+        {
+            itr->second = _loadPixmap(m_strHBkgDir+strSubFile);
+        }
     });
 
     fsutil::findSubFile(m_strVBkgDir, [&](const wstring& strSubFile) {
-        m_vecVBkgFile.insert(m_vecVBkgFile.begin(), {strSubFile,NULL});
+        cauto itr = m_vecVBkgFile.insert(m_vecVBkgFile.begin(), {strSubFile, NULL});
+        if (m_vecVBkgFile.size() <= __retainSnapshot)
+        {
+            itr->second = _loadPixmap(m_strVBkgDir+strSubFile);
+        }
     });
 
     cauto strHBkg = m_app.getOption().strHBkg;
@@ -243,38 +253,6 @@ void CBkgDlg::init()
     m_colorDlg.init();
 
     m_addbkgDlg.init();
-}
-
-void CBkgDlg::show()
-{
-    do {
-        if (m_app.mainWnd().isHScreen())
-        {
-            if (m_vecHBkgFile.empty())
-            {
-                break;
-            }
-        }
-        else
-        {
-            if (m_vecVBkgFile.empty())
-            {
-                break;
-            }
-        }
-
-        if (!m_lstPixmap.empty())
-        {
-            break;
-        }
-
-        m_bkgView.setVisible(false);
-        __appAsync([&](){
-            m_bkgView.setVisible(true);
-        });
-    } while(0);
-
-    CDialog::show();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -321,6 +299,19 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
 }
 
+const QPixmap* CBkgDlg::_loadPixmap(const WString& strBkgFile)
+{
+    m_lstPixmap.emplace_back(QPixmap());
+    auto& pm = m_lstPixmap.back();
+    if (pm.load(strBkgFile))
+    {
+#define __snapshotZoomout 900
+        CPainter::zoomoutPixmap(pm, __snapshotZoomout);
+    }
+
+    return &pm;
+}
+
 const QPixmap* CBkgDlg::pixmap(size_t uIdx)
 {
     auto& vecBkgFile = _vecBkgFile();
@@ -337,15 +328,7 @@ const QPixmap* CBkgDlg::pixmap(size_t uIdx)
 
     cauto strBkgFile = _bkgDir() + pr.first;
 
-    m_lstPixmap.emplace_back(QPixmap());
-    auto& pm = m_lstPixmap.back();
-    if (pm.load(strBkgFile))
-    {
-#define __snapshotZoomout 900
-        CPainter::zoomoutPixmap(pm, __snapshotZoomout);
-    }
-
-    return pr.second = &pm;
+    return pr.second = _loadPixmap(strBkgFile);
 }
 
 void CBkgDlg::_setBkg(const wstring& strFile)
@@ -504,7 +487,6 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClose()
 {
-#define __retainSnapshot 8
     set<const QPixmap*> setDelelePixmap;
     if (m_vecHBkgFile.size() > __retainSnapshot)
     {
