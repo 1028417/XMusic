@@ -275,15 +275,15 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	{
 		WString strText;
 		strText << fsutil::GetFileName(MediaResInfo.strPath)
-			<< L"\n时长: " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-			<< L"    大小: " << MediaResInfo.strFileSize << L"字节"
-			<< L"\n日期: " << MediaResInfo.strFileTime
+			<< L"\n时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+			<< L"    大小:  " << MediaResInfo.strFileSize << L"字节"
+			<< L"\n日期:  " << MediaResInfo.strFileTime
 			<< L"\n\n\n是否更新以下曲目？\n"
 			<< fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-			<< L"\n时长: " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-			<< L"    大小: " << SearchMediaInfo.GetFileSize() << L"字节"
-			<< L"\n日期: " << SearchMediaInfo.GetFileTime()
-			<< L"\n目录: " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+			<< L"\n时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+			<< L"    大小:  " << SearchMediaInfo.GetFileSize() << L"字节"
+			<< L"\n日期:  " << SearchMediaInfo.GetFileTime()
+			<< L"\n目录:  " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
 			<< L"\n\n\n关联: ";
 
 		SearchMediaInfo.m_lstMedias([&](CMedia& media) {
@@ -303,7 +303,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		return E_MatchResult::MR_Yes;
 	};
 
-	ProgressDlg.SetStatusText(L"正在分析曲目...");
+	ProgressDlg.SetStatusText(L"分析曲目...");
 
 	TD_MediaList lstMedias;
 	m_model.getMediaLib().GetAllMedias(lstMedias);
@@ -314,13 +314,11 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	lstMedias([&](CMedia& media) {
 		SearchMediaInfoGuard.genSearchMediaInfo(media, mapSearchMedias);
 	});
-
-	ProgressDlg.SetStatusText(L"正在比对文件...");
-
+	
 	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
 	for (auto& strFile : lstFiles)
 	{
-		ProgressDlg.SetStatusText(strFile.c_str(), 1);
+		ProgressDlg.SetStatusText((L"比对文件: " + strFile).c_str(), 1);
 		if (ProgressDlg.checkCancel())
 		{
 			return;
@@ -361,7 +359,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	for (auto& pr : lstMatchResult)
 	{
 		wstring& strSrcPath = pr.first;
-		ProgressDlg.SetStatusText((L"正在合入: " + fsutil::GetFileName(strSrcPath)).c_str(), 1);
+		ProgressDlg.SetStatusText((L"合入文件: " + fsutil::GetFileName(strSrcPath)).c_str(), 1);
 		if (ProgressDlg.checkCancel())
 		{
 			return;
