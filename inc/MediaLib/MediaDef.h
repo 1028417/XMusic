@@ -63,7 +63,8 @@ enum class E_MediaSetType
 using mediatime_t = time32_t;
 #define __mediatime ((mediatime_t)time(0))
 
-#define __mediaTimeFormat(t) tmutil::formatTime(L"%y-%m-%d\n %H:%M", t)
+#define __mediaTimeFormat(t) tmutil::formatTime(L"%y-%m-%d %H:%M", t)
+#define __mediaTimeFormatEx(t) tmutil::formatTime(L"%y-%m-%d\n %H:%M", t)
 
 class __MediaLibExt CMediaTime
 {
