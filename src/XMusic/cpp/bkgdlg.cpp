@@ -424,7 +424,7 @@ void CBkgDlg::_showAddBkg()
 
 void CBkgDlg::addBkg(const wstring& strFile)
 {
-    wstring strFileName = to_wstring(__time);
+    wstring strFileName = to_wstring(time(0));
     if (!fsutil::copyFile(strFile, _bkgDir() + strFileName))
     {
         return;

@@ -381,7 +381,7 @@ bool MainWindow::event(QEvent *ev)
         {
             static time_t prevTime = 0;
 
-            time_t currTime = __time
+            time_t currTime = time(0)
             if (currTime - prevTime > 3)
             {
                 prevTime = currTime;
