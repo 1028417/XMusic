@@ -45,16 +45,6 @@ private:
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
-    virtual cqcr textColor() const
-    {
-        if (m_bUseCustomColor)
-        {
-            return m_crText;
-        }
-
-        return g_crText;
-    }
-
 public:
     void setPixmapRound(UINT szRound)
     {
@@ -70,30 +60,13 @@ public:
     void setText(const QString &qsText, E_LabelTextOption eTextOption = E_LabelTextOption::LTO_AutoFit)
     {        
         m_eTextOption = eTextOption;
-
         QLabel::setText(qsText);
-    }
-
-    void setTextColor(cqcr crText)
-    {
-        m_bUseCustomColor = true;
-        m_crText = crText;
-
-        QPalette pe = QLabel::palette();
-        pe.setColor(QPalette::WindowText, crText);
-        QLabel::setPalette(pe);
-    }
-
-    void setTextColor(int r, int g, int b, int a=255)
-    {
-        setTextColor(QColor(r,g,b,a));
     }
 
     void setShadow(UINT uWidth, UINT uAlpha=__ShadowAlpha)
     {
         m_uShadowWidth = uWidth;
         m_uShadowAlpha = uAlpha;
-
         update();
     }
 };

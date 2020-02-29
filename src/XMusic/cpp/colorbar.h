@@ -69,8 +69,6 @@ private:
 
     void _onPaint(CPainter& painter, cqrc) override
     {
-        //painter.fillRect(this->rect(), g_crTheme);
-
         QRect rc = _rect();
         auto cy = rc.height();
 

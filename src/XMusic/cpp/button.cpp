@@ -13,14 +13,27 @@ bool CButton::event(QEvent *ev)
             CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
             cauto rc = rect();
 
-            auto cr = g_crText;
-            cr.setAlpha(10);
-            painter.fillRectEx(rc, cr, __szRound);
+            QColor cr;
+            if (m_bSetForeColor)
+            {
+                cr = foreColor();
+                cr.setAlpha(10);
+                painter.fillRectEx(rc, cr, __szRound);
 
-            cr.setAlpha(CPainter::oppTextAlpha(150));
-            painter.drawRectEx(rect(), cr, 1, Qt::PenStyle::SolidLine, __szRound);
+                cr.setAlpha(128);
+                painter.drawRectEx(rect(), cr, 1, Qt::PenStyle::SolidLine, __szRound);
+            }
+            else
+            {
+                cr = g_crText;
+                cr.setAlpha(10);
+                painter.fillRectEx(rc, cr, __szRound);
 
-            painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText);
+                cr.setAlpha(CPainter::oppTextAlpha(150));
+                painter.drawRectEx(rect(), cr, 1, Qt::PenStyle::SolidLine, __szRound);
+            }
+
+            painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText, cr);
 
             return true;
         }

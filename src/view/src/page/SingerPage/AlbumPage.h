@@ -64,8 +64,6 @@ public:
 private:
 	int GetTabImage() override;
 
-	void _showAlbum(CAlbum *pAlbum);
-
 	void _asyncTask();
 
 	BOOL _checkMediasDropable(const TD_IMediaList& lstMedias);

@@ -1229,10 +1229,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 if (lblLanguage == label)
                 {
                     m_eDemandLanguage = eLanguage;
-
                     lblLanguage->setText(__qsCheck + lblLanguage->text());
-
-                    //lblLanguage->setTextColor(210,255,220);
                 }
             }
         });
