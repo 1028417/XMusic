@@ -198,15 +198,15 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		return;
 	}
 
-	if (pPlaylist == m_pPlaylist)
-	{
-		return;
-	}
+	bool bChanged = pPlaylist != m_pPlaylist;
 	m_pPlaylist = pPlaylist;
 	this->UpdateTitle();
 
 	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
-	m_wndList.EnsureVisible(0, FALSE);
+	if (bChanged)
+	{
+		m_wndList.EnsureVisible(0, FALSE);
+	}
 
 	this->UpdateHead();
 

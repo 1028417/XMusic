@@ -545,7 +545,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			int nRet = m_view.getController().addAlbumItems(lstFiles, *pAlbum);
 			if (nRet > 0)
 			{
-				RefreshAlbum();
+				this->_showAlbum(pAlbum);
 
 				UINT uSelectCount = (UINT)nRet;
 				m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount() - uSelectCount, uSelectCount);
@@ -772,6 +772,13 @@ void CAlbumPage::OnLvnItemchangedListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	__Ensure(pNMLV->uNewState & LVIS_SELECTED);
 
 	CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(pNMLV->iItem);
+	_showAlbum(pAlbum);
+}
+
+void CAlbumPage::_showAlbum(CAlbum *pAlbum)
+{
+	__Ensure(m_hWnd);
+
 	if (NULL == pAlbum)
 	{
 		m_pAlbum = NULL;
@@ -786,18 +793,16 @@ void CAlbumPage::OnLvnItemchangedListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		return;
 	}
 
-	if (pAlbum == m_pAlbum)
-	{
-		RefreshAlbum();
-		return;
-	}
-
+	bool bChanged = pAlbum != m_pAlbum;
 	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
 	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
-	m_wndAlbumItemList.EnsureVisible(0, FALSE);
-		
+	if (bChanged)
+	{
+		m_wndAlbumItemList.EnsureVisible(0, FALSE);
+	}
+
 	(void)m_wndAlbumItemList.ShowWindow(SW_SHOW);
 	(void)m_wndMediaResPanel.ShowWindow(SW_HIDE);
 	
@@ -808,9 +813,7 @@ void CAlbumPage::RefreshAlbum()
 {
 	if (m_pAlbum)
 	{
-		(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
-		
-		_asyncTask();
+		_showAlbum(m_pAlbum);
 	}
 }
 
@@ -1009,7 +1012,7 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 		__EnsureReturn(nNewPos >= 0, FALSE);
 	}
 
-	RefreshAlbum();
+	_showAlbum(m_pAlbum);
 	m_wndAlbumItemList.SelectItems(nNewPos, lstMedias.size());
 
 	return TRUE;
@@ -1100,14 +1103,9 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstMedias, *pTargetAlbum), FALSE);
 	}
 
-	if (pTargetAlbum == m_pAlbum)
-	{
-		RefreshAlbum();
-	}
-	else
-	{
-		m_wndAlbumList.SelectObject(pTargetAlbum);
-	}
+	m_wndAlbumList.SelectObject(pTargetAlbum);
+
+	_showAlbum(pTargetAlbum);
 
 	int nSelectCount = (int)lstMedias.size();
 	m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount()-nSelectCount, nSelectCount);
