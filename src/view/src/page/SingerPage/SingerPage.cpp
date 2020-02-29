@@ -407,7 +407,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (m_AlbumPage)
 	{
-		m_AlbumPage.UpdateSingerName(strNewName);
+		m_AlbumPage.UpdateSingerName();
 	}
 }
 

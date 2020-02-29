@@ -412,26 +412,33 @@ void CAlbumPage::UpdateSingerImage()
 
 void CAlbumPage::UpdateTitle()
 {
-	m_strBaseTitle = L" ¸èÊÖ";
-	if (NULL != m_pSinger)
+	m_strBaseTitle = L" ";
+	if (m_pSinger)
 	{
-		m_strBaseTitle.append(__CNDot + m_pSinger->m_strName);
-	}
+		m_strBaseTitle.append(m_pSinger->m_pParent->m_strName);
 
-	if (NULL != m_pAlbum)
-	{
-		SetTitle(__CNDot + m_pAlbum->m_strName + L" ");
+		m_strBaseTitle.append(__CNDot + m_pSinger->m_strName);
+
+		if (m_pAlbum)
+		{
+			SetTitle(__CNDot + m_pAlbum->m_strName + L" ");
+		}
+		else
+		{
+			SetTitle(wstring(m_wndMediaResPanel.GetTitle()) + L" ");
+		}
 	}
 	else
 	{
-		SetTitle(wstring(m_wndMediaResPanel.GetTitle()) + L" ");
+		m_strBaseTitle.append(L"¸èÊÖ");
 	}
 }
 
-void CAlbumPage::UpdateSingerName(const wstring& strSingerName)
+void CAlbumPage::UpdateSingerName()
 {
-	m_wndAlbumList.SetItemText(0, 0, (L" " + strSingerName).c_str());
-
+	m_wndAlbumList.Update(0);
+	//if (m_pSinger) m_wndAlbumList.SetItemText(0, 0, (L" " + m_pSinger->m_strName).c_str());
+	
 	UpdateTitle();
 }
 

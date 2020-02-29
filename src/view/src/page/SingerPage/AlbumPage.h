@@ -51,7 +51,7 @@ public:
 
 	void ShowSinger(CSinger *pSinger, CMedia *pAlbumItem=NULL, IMedia *pIMedia=NULL);
 
-	void UpdateSingerName(const wstring& strSingerName);
+	void UpdateSingerName();
 
 	void UpdateSingerImage();
 
