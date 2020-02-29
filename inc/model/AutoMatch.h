@@ -60,7 +60,7 @@ private:
 	wstring m_strSingerName;
 
 public:
-	wstring m_strAbsPath;
+	wstring m_strPath;
 
 	TD_MediaList m_lstMedias;
 

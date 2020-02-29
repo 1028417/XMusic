@@ -3,6 +3,13 @@
 
 #if __winvc
 #include "CueFile.h"
+
+struct tagMediaTag
+{
+	wstring strTitle;
+	wstring strArtist;
+	wstring strAlbum;
+};
 #endif
 
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
@@ -29,12 +36,7 @@ private:
 	wstring m_strCreateTime;
 	wstring m_strModifyTime;
 
-	struct tagMediaTag
-	{
-		wstring strTitle;
-		wstring strArtist;
-		wstring strAlbum;
-	} m_MediaTag;
+	tagMediaTag m_MediaTag;
 
 	LPCCueFile m_pCueFile = NULL;
 #endif
