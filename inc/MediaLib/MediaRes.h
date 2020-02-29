@@ -26,9 +26,6 @@ public:
 
 #if __winvc
 private:
-    LPCCueFile m_pCueFile = NULL;
-
-private:
 	wstring m_strCreateTime;
 	wstring m_strModifyTime;
 
@@ -39,8 +36,7 @@ private:
 		wstring strAlbum;
 	} m_MediaTag;
 
-    void ReadMP3Tag(FILE *pf);
-    bool ReadFlacTag();
+	LPCCueFile m_pCueFile = NULL;
 #endif
 
 private:
@@ -52,7 +48,11 @@ private:
 
 public:
 #if __winvc
-    CRCueFile getCueFile();
+    static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
+
+	static bool ReadFlacTag(const wstring& strFile, tagMediaTag& MediaTag);
+
+	CRCueFile getCueFile();
 #endif
 
     class CMediaDir* parent() const;
