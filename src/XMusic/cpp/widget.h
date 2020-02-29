@@ -145,8 +145,6 @@ private:
     bool m_bMousePressed = false;
 
 protected:
-    bool m_bSetBkgColor = false;
-    QColor m_crBkg;
     bool m_bSetForeColor = false;
     QColor m_crFore;
 
@@ -160,17 +158,6 @@ public:
         {
             this->grabGesture(gestureType);
         }
-    }
-
-    void setBkgColor(cqcr crBkg)
-    {
-        m_bSetBkgColor = true;
-        m_crBkg = crBkg;
-        TWidget::update();
-    }
-    void setBkgColor(int r, int g, int b, int a=255)
-    {
-        setBkgColor(QColor(r,g,b,a));
     }
 
     void setForeColor(cqcr crFore)
@@ -351,16 +338,6 @@ protected:
     bool isHLayout() const
     {
         return TWidget::width()>TWidget::height();
-    }
-
-    virtual cqcr bkgColor() const
-    {
-        if (m_bSetBkgColor)
-        {
-            return m_crBkg;
-        }
-
-        return g_crTheme;
     }
 
     virtual cqcr foreColor() const

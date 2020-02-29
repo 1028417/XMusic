@@ -35,9 +35,9 @@ void CMedialibDlg::init()
 {
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
 
-    m_MedialibView.setFont(1.03, QFont::Weight::Normal);
+    m_MedialibView.setFont(1.05, QFont::Weight::Normal);
     m_MedialibView.init();
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);

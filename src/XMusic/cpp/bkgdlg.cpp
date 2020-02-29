@@ -172,7 +172,7 @@ void CBkgDlg::init()
 {
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(1.15, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
