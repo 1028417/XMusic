@@ -341,7 +341,9 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 		
 	if (pAlbumItem)
 	{
-		m_wndAlbumList.SelectObject((CAlbum*)pAlbumItem->m_pParent);
+		auto pAlbum = (CAlbum*)pAlbumItem->m_pParent;
+		m_wndAlbumList.SelectObject(pAlbum);
+		m_pAlbum = pAlbum;
 
 		m_wndAlbumItemList.DeselectAll();
 		m_wndAlbumItemList.SelectObject(pAlbumItem);

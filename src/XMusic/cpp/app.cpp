@@ -348,15 +348,14 @@ int CApp::run()
     m_mainWnd.showLogo();
 
     int nRet = exec();
-
     m_bRunSignal = false;
 
-    //g_logger >> "stop controller";
+    g_logger >> "stop controller";
     m_ctrl.stop();
 
     CPlayer::QuitSDK();
 
-    //g_logger >> "quit";
+    g_logger >> "quit";
     m_logger.close();
 
 #if !__android // TODO 规避5.6.1退出的bug

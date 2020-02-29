@@ -94,7 +94,8 @@ void CColorDlg::_relayout(int cx, int cy)
     int cx_group = ui.groupBkgColor->rect().width();
     int cy_group = ui.groupBkgColor->rect().height();
 
-    ui.btnApplyBkgColor->move((cx_group-ui.btnApplyBkgColor->width())/2, cy_group-__size(30)-ui.btnApplyBkgColor->height());
+    ui.btnApplyBkgColor->move((cx_group-ui.btnApplyBkgColor->width())/2
+                              , cy_group-__size(40)-ui.btnApplyBkgColor->height());
 
     int x = __size(40);
     int y = cy_group/3.94;
