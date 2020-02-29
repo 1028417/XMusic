@@ -32,10 +32,10 @@
   <widget class="CButton" name="btnClose">
    <property name="geometry">
     <rect>
-     <x>630</x>
-     <y>200</y>
-     <width>120</width>
-     <height>60</height>
+     <x>650</x>
+     <y>210</y>
+     <width>100</width>
+     <height>50</height>
     </rect>
    </property>
    <property name="autoFillBackground">

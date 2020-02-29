@@ -169,17 +169,19 @@ CAppInit::CAppInit(QApplication& app)
 
     g_mapFontFamily[g_nDefFontWeight] = app.font().family();
 
-    PairList<int, QString> plFontFile;
-    plFontFile.add(QFont::Weight::Light, "/font/msyhl-6.23.ttc");
-    //plFontFile.add(QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc");
 #if __windows
     //g_mapFontFamily[QFont::Weight::Light] = "微软雅黑 Light";
     g_mapFontFamily[QFont::Weight::DemiBold] = "微软雅黑";
-#else
-    plFontFile.add(QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Semibold-11.0.ttc");
 #endif
 
-    plFontFile([&](int nWeight, QString qsFontFile) {
+    list<pair<int, QString>> plFontFile {
+        {QFont::Weight::Light, "/font/msyhl-6.23.ttc"}
+        //, {QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc"}
+        , {QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Semibold-11.0.ttc"}
+    };
+    for (auto& pr : plFontFile)
+    {
+        auto& qsFontFile = pr.second;
 #if __android
         qsFontFile = "assets:" +  qsFontFile;
 #else
@@ -187,19 +189,19 @@ CAppInit::CAppInit(QApplication& app)
 #endif
 
         int fontId = QFontDatabase::addApplicationFont(qsFontFile);
-        g_logger << "newFontId: " >> fontId;
-        if (-1 != fontId)
+        if (-1 == fontId)
         {
-            cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
-            if (!qslst.empty())
-            {
-                cauto qsFamilyName = qslst.at(0);
-                g_logger << "newfamilyName: " >> qsFamilyName;
-
-                g_mapFontFamily[nWeight] = qsFamilyName;
-            }
+            g_logger << "addFont fail: " >> qsFontFile;
+            continue;
         }
-    });
+
+        cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
+        if (!qslst.empty())
+        {
+            g_logger << "newfamilyName: " >> qslst.front();
+            g_mapFontFamily[pr.first] = qslst.front();
+        }
+    }
 
     app.setFont(CFont());
 }
