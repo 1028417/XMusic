@@ -155,8 +155,8 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
 				+ CMedia::genDurationString(MediaResInfo.nDuration)
 				+ L"\n\n是否更新以下曲目？\n"
-				+ fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath))
+				+ fsutil::GetFileName(SearchMediaInfo.m_strPath)
+				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strPath))
 				+ L"\n\n关联: ";
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& media) {

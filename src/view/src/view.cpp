@@ -271,19 +271,44 @@ void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 
 void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg)
 {
-	auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
+	cauto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 	{
 		WString strText;
 		strText << fsutil::GetFileName(MediaResInfo.strPath)
 			<< L"\n日期:  " << MediaResInfo.strFileTime
-			<< L"    时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-			<< L"    大小:  " << MediaResInfo.strFileSize << L"字节"
-			<< L"\n\n\n是否更新以下曲目？\n"
-			<< fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
+			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+			<< L"      大小:  " << MediaResInfo.strFileSize << L"字节";
+
+		cauto fnGenTag = [&](const wstring& strPath) {
+			auto eFileType = IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
+			if (E_MediaFileType::MFT_MP3 == eFileType || E_MediaFileType::MFT_FLAC == eFileType)
+			{
+				tagMediaTag MediaTag;
+				if (E_MediaFileType::MFT_MP3 == eFileType)
+				{
+					CMediaRes::ReadMP3Tag(strPath, MediaTag);
+				}
+				else
+				{
+					CMediaRes::ReadFlacTag(strPath, MediaTag);
+				}
+
+				strText << L"\n标题:  " << MediaTag.strTitle
+					<< L"\n艺术家:  " << MediaTag.strArtist
+					<< L"\n唱片集:  " << MediaTag.strAlbum;
+			}
+		};
+		fnGenTag(MediaResInfo.strPath);
+		
+		strText << L"\n\n\n是否更新以下曲目？\n"
+			<< fsutil::GetFileName(SearchMediaInfo.m_strPath)
 			<< L"\n日期:  " << SearchMediaInfo.GetFileTime()
-			<< L"    时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-			<< L"    大小:  " << SearchMediaInfo.GetFileSize() << L"字节"
-			<< L"\n\n目录:  " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strPath))
+			<< L"      大小:  " << SearchMediaInfo.GetFileSize() << L"字节";
+
+		fnGenTag(SearchMediaInfo.m_strPath);
+
+		strText << L"\n\n目录:  " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strPath))
 			<< L"\n关联:  ";
 
 		SearchMediaInfo.m_lstMedias([&](CMedia& media) {
@@ -334,8 +359,9 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 				E_MatchResult eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
 				if (E_MatchResult::MR_Ignore == eRet)
 				{
-					itr = mapSearchMedias.erase(itr);
-					continue;
+					//itr = mapSearchMedias.erase(itr);
+					//continue;
+					break;
 				}
 
 				if (E_MatchResult::MR_Yes == eRet)
@@ -366,11 +392,11 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 
 		CSearchMediaInfo& SearchMediaInfo = pr.second;
-		wstring strDstPath = fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath)
+		wstring strDstPath = fsutil::GetParentDir(SearchMediaInfo.m_strPath)
 			+ __wchDirSeparator + fsutil::GetFileName(strSrcPath);
 
-		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strAbsPath, strDstPath, [&]() {
-			(void)fsutil::removeFile(SearchMediaInfo.m_strAbsPath);
+		m_model.getPlayMgr().moveFile(SearchMediaInfo.m_strPath, strDstPath, [&]() {
+			(void)fsutil::removeFile(SearchMediaInfo.m_strPath);
 
 			if (!fsutil::moveFile(strSrcPath, strDstPath))
 			{
@@ -379,7 +405,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			}
 
 			wstring strOppPath = m_model.getMediaLib().toOppPath(strDstPath);
-			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strAbsPath), strOppPath);
+			mapUpdateFiles.set(m_model.getMediaLib().toOppPath(SearchMediaInfo.m_strPath), strOppPath);
 
 			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
 				mapUpdatedMedias[&media] = strOppPath;
