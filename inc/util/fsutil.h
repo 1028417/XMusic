@@ -93,10 +93,13 @@ struct __UtilExt tagFileInfo
 #define __chrSlant '/'
 #define __chrBackSlant '\\'
 
+#define __wchSlant ((wchar_t)__chrSlant)
+#define __wchBackSlant ((wchar_t)__chrBackSlant)
+
 #if __windows
-    #define __wchDirSeparator	(wchar_t)__chrBackSlant
+    #define __wchDirSeparator	__wchBackSlant
 #else
-    #define __wchDirSeparator	(wchar_t)__chrSlant
+    #define __wchDirSeparator	__wchSlant
 #endif
 
 #define __chrDot '.'
