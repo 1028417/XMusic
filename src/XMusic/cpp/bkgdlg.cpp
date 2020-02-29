@@ -237,7 +237,7 @@ void CBkgDlg::_initBkg(bool bHBkg)
     });
 
     fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
-        vecBkgFile.insert(vecBkgFile.begin(), {strAppVersion + __wchSlant + strSubFile, NULL});
+        vecBkgFile.push_back({strAppVersion + __wchSlant + strSubFile, NULL});
     });
 
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
