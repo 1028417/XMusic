@@ -275,22 +275,22 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	{
 		WString strText;
 		strText << fsutil::GetFileName(MediaResInfo.strPath)
-			<< L"\n时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-			<< L"    大小:  " << MediaResInfo.strFileSize << L"字节"
 			<< L"\n日期:  " << MediaResInfo.strFileTime
+			<< L"    时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
+			<< L"    大小:  " << MediaResInfo.strFileSize << L"字节"
 			<< L"\n\n\n是否更新以下曲目？\n"
 			<< fsutil::GetFileName(SearchMediaInfo.m_strAbsPath)
-			<< L"\n时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
-			<< L"    大小:  " << SearchMediaInfo.GetFileSize() << L"字节"
 			<< L"\n日期:  " << SearchMediaInfo.GetFileTime()
-			<< L"\n目录:  " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
-			<< L"\n\n\n关联: ";
+			<< L"    时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(SearchMediaInfo.m_strAbsPath))
+			<< L"    大小:  " << SearchMediaInfo.GetFileSize() << L"字节"
+			<< L"\n\n目录:  " << m_model.getMediaLib().toOppPath(fsutil::GetParentDir(SearchMediaInfo.m_strAbsPath))
+			<< L"\n关联:  ";
 
 		SearchMediaInfo.m_lstMedias([&](CMedia& media) {
-			strText.append(L"\n" + media.m_pParent->GetLogicPath());
+			strText.append(media.m_pParent->GetLogicPath() + L"\n     ");
 		});
 
-		int nRet = ProgressDlg.msgBox(strText, L"匹配到文件", MB_YESNOCANCEL);
+		int nRet = ProgressDlg.msgBox(strText, L"匹配到曲目", MB_YESNOCANCEL);
 		if (IDCANCEL == nRet)
 		{
 			return E_MatchResult::MR_Ignore;
@@ -389,13 +389,13 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		});
 	}
 
-	__Ensure(!mapUpdatedMedias.empty());
+	if (!mapUpdatedMedias.empty())
+	{
+		__Ensure(m_model.updateMediaPath(mapUpdatedMedias));
+		__Ensure(m_model.updateFile(mapUpdateFiles));
 
-	__Ensure(m_model.updateMediaPath(mapUpdatedMedias));
-
-	__Ensure(m_model.updateFile(mapUpdateFiles));
-
-	m_model.refreshMediaLib();
+		m_model.refreshMediaLib();
+	}
 
 	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
 }

@@ -55,11 +55,11 @@ BOOL CNewSongDlg::OnInitDialog()
 
 	auto& globalSize = m_view.m_globalSize;
 	ColumnGuard.addDynamic(_T("曲目"), 0.35)
-		.addFix(_T("类型"), globalSize.m_ColWidth_Type*2)
+		.addFix(_T("类型"), globalSize.m_ColWidth_Type*2, true)
 		.addDynamic(_T("目录"), 0.3)
 		.addDynamic(_T("所属歌单"), 0.15)
 		.addDynamic(_T("所属专辑"), 0.2)
-		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.2));
+		.addFix(_T("加入时间"), UINT(globalSize.m_ColWidth_AddTime*1.2), true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);

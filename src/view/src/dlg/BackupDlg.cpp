@@ -39,10 +39,10 @@ BOOL CBackupDlg::OnInitDialog()
 
 	CListColumnGuard ColumnGuard(rcClient.Width() - m_view.m_globalSize.m_uScrollbarWidth);
 	ColumnGuard.addFix(L"时间", 250)
-		.addDynamic(L"新增项", 0.25)
-		.addDynamic(L"删除项", 0.25)
-		.addDynamic(L"修改项", 0.25)
-		.addDynamic(L"移动项", 0.25);
+		.addDynamic(L"新增项", 0.25, true)
+		.addDynamic(L"删除项", 0.25, true)
+		.addDynamic(L"修改项", 0.25, true)
+		.addDynamic(L"移动项", 0.25, true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	ListPara.uItemHeight = 60;

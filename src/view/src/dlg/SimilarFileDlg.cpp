@@ -39,8 +39,8 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	ColumnGuard.addDynamic(L"目录", 0.48)
 		.addDynamic(L"文件", 0.52)
 		.addFix(L"大小", 120)
-		.addFix(L"时长", 70)
-		.addFix(L"日期", 100);
+		.addFix(L"时长", 80, true)
+		.addFix(L"日期", 100, true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	ListPara.uItemHeight = 50;
@@ -103,7 +103,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 		}
 
 		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.fileSizeString(false)
-			, L" ", __mediaTimeFormat(mediaRes.fileInfo().tModifyTime) });
+			, L" ", __mediaTimeFormatEx(mediaRes.fileInfo().tModifyTime) });
 		m_arrSimilarFileInfo.add({ group, idx });
 
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);

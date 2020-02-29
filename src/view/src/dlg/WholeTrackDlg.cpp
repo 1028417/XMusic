@@ -35,10 +35,10 @@ BOOL CWholeTrackDlg::OnInitDialog()
 	ColumnGuard.addDynamic(L"Cue", 0.3)
 		.addDynamic(L"标题", 0.2)
 		.addFix(L"艺术家", 90)
-		.addFix(L"音轨数", 70)
+		.addFix(L"音轨数", 70, true)
 		.addDynamic(L"目录", 0.2)
 		.addDynamic(L"文件", 0.3)
-		.addFix(L"大小", 80);
+		.addFix(L"大小", 80, true);
 
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	ListPara.uItemHeight = 50;
