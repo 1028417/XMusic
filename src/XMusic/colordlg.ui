@@ -318,9 +318,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnApplyBkgColor">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>120</x>
       <y>200</y>
-      <width>140</width>
+      <width>150</width>
       <height>75</height>
      </rect>
     </property>

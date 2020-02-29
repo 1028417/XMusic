@@ -359,12 +359,12 @@ int CApp::run()
     //g_logger >> "quit";
     m_logger.close();
 
-/*#if !__android // TODO 规避5.6.1退出的bug
+#if !__android // TODO 规避5.6.1退出的bug
     if (thrUpgrade.joinable())
     {
         thrUpgrade.join();
     }
-#endif*/
+#endif
 
     return nRet;
 }
@@ -447,11 +447,16 @@ void CApp::quit()
 {
     m_bRunSignal = false;
 
+#if __android
     m_mainWnd.setVisible(false);
 
-    async(100, [](){
+    async(50, [](){
         QApplication::quit();
     });
+#else
+
+    QApplication::quit();
+#endif
 }
 
 E_UpgradeResult CApp::_upgradeMediaLib()
