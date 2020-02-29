@@ -64,6 +64,8 @@ private:
 
     CMsgBox m_msgbox;
 
+    wstring m_strAppVersion;
+
 signals:
     void signal_run(int nUpgradeResult);
 
@@ -80,9 +82,7 @@ private:
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 
-    E_UpgradeResult _upgradeMediaLib();
-    E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf
-                          , const tagMedialibConf& userMedialibConf);
+    E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
@@ -159,6 +159,11 @@ public:
     CSingerImgMgr& getSingerImgMgr()
     {
         return m_model.getSingerImgMgr();
+    }
+
+    wstring appVersion() const
+    {
+        return m_strAppVersion;
     }
 
     int run();

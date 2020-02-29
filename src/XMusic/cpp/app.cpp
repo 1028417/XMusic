@@ -327,12 +327,32 @@ int CApp::run()
 
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
-        thrUpgrade = std::thread([&]() {
+        QFile qf(":/medialib.conf");
+        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            g_logger >> "loadMedialibConfResource fail";
+            return;
+        }
+
+        cauto ba = qf.readAll();
+        IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
+        tagMedialibConf orgMedialibConf;
+        if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+        {
+            g_logger >> "readMedialibConfResource fail";
+            return;
+        }
+        g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
+                 << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+                 << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+        m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
+
+        thrUpgrade = std::thread([=]() {
             auto timeBegin = time(0);
 
             E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
 #if __OnlineMediaLib
-            eUpgradeResult = _upgradeMediaLib();
+            eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
 #endif
 
             auto timeWait = 6 - (time(0) - timeBegin);
@@ -458,26 +478,16 @@ void CApp::quit()
 #endif
 }
 
-E_UpgradeResult CApp::_upgradeMediaLib()
+E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 {
-    QFile qf(":/medialib.conf");
-    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+    string strVerInfo;
+    int nRet = curlutil::initCurl(strVerInfo);
+    if (nRet != 0)
     {
-        g_logger >> "loadMedialibConfResource fail";
+        g_logger << "initCurl fail: " >> nRet;
         return E_UpgradeResult::UR_Fail;
     }
-
-    cauto ba = qf.readAll();
-    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-    tagMedialibConf orgMedialibConf;
-    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
-    {
-        g_logger >> "readMedialibConfResource fail";
-        return E_UpgradeResult::UR_Fail;
-    }
-    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+    g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
     tagMedialibConf userMedialibConf;
     IFStream ifsMedialibConf(m_model.medialibPath(L"medialib.conf"));
@@ -493,20 +503,6 @@ E_UpgradeResult CApp::_upgradeMediaLib()
          ifsMedialibConf.close();
     }
 
-    string strVerInfo;
-    int nRet = curlutil::initCurl(strVerInfo);
-    if (nRet != 0)
-    {
-        g_logger << "initCurl fail: " >> nRet;
-        return E_UpgradeResult::UR_Fail;
-    }
-    g_logger << "CurlVerInfo: \n" >> strVerInfo;
-
-    return _upgradeMedialib(orgMedialibConf, userMedialibConf);
-}
-
-E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf, const tagMedialibConf& userMedialibConf)
-{
     const list<CUpgradeUrl>& lstUpgradeUrl = (userMedialibConf.strAppVersion >= orgMedialibConf.strAppVersion ||
             userMedialibConf.uCompatibleCode >= orgMedialibConf.uCompatibleCode)
             ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;

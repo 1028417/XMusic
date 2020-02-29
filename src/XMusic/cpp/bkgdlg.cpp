@@ -180,63 +180,71 @@ void CBkgDlg::init()
         m_colorDlg.show();
     });
 
+    m_colorDlg.init();
+
+    m_addbkgDlg.init();
+
+    _initBkg(true);
+    _initBkg(false);
+}
+
+void CBkgDlg::_initBkg(bool bHBkg)
+{
     cauto strWorkDir = strutil::toWstr(fsutil::workDir());
-    m_strHBkgDir = strWorkDir + L"/hbkg/";
-    m_strVBkgDir = strWorkDir + L"/vbkg/";
+    cauto strBkgDir = bHBkg?(m_strHBkgDir = strWorkDir + L"/hbkg/")
+                          :(m_strVBkgDir = strWorkDir + L"/vbkg/");
+    (void)fsutil::createDir(strBkgDir);
 
 #if __android
     wstring strBkgSrc = L"assets:";
 #else
     wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
 #endif
+    strBkgSrc.append(bHBkg?L"/hbkg/":L"/vbkg/");
 
-    if (!fsutil::existDir(m_strHBkgDir))
+    cauto strAppVersion = m_app.appVersion();
+    auto strAppBkgDir = strBkgDir + strAppVersion;
+    if (!fsutil::existDir(strAppBkgDir))
     {
-        (void)fsutil::createDir(m_strHBkgDir);
+        (void)fsutil::createDir(strAppBkgDir);
 
         for (UINT uIdx = 1; uIdx < 20; uIdx++)
         {
             cauto strFile = to_wstring(uIdx);
-            cauto strBkg = strBkgSrc + L"/hbkg/" + strFile + L".jpg";
+            cauto strBkg = strBkgSrc + strFile + L".jpg";
 
-            if (!fsutil::copyFile(strBkg, m_strHBkgDir + strFile))
+            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wchDirSeparator + strFile))
             {
                 break;
             }
         }
     }
 
-    if (!fsutil::existDir(m_strVBkgDir))
-    {
-        (void)fsutil::createDir(m_strVBkgDir);
-
-        for (UINT uIdx = 1; uIdx < 20; uIdx++)
+    auto& vecBkgFile = bHBkg?m_vecHBkgFile:m_vecVBkgFile;
+    fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
+        cauto strPath = strBkgDir+fileInfo.strName;
+        if (fileInfo.bDir)
         {
-            cauto strFile = to_wstring(uIdx);
-            cauto strBkg = strBkgSrc + L"/vbkg/" + strFile + L".jpg";
-
-            if (!fsutil::copyFile(strBkg, m_strVBkgDir + strFile))
+            if (fileInfo.strName != m_app.appVersion())
             {
-                break;
+                (void)fsutil::removeDirTree(strPath);
             }
         }
+        else
+        {
+            vecBkgFile.insert(vecBkgFile.begin(), {fileInfo.strName, NULL});
+        }
+    });
+
+    fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
+        vecBkgFile.insert(vecBkgFile.begin(), {strAppVersion + __wchSlant + strSubFile, NULL});
+    });
+
+    for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
+         && itr-vecBkgFile.begin() < __retainSnapshot; ++itr)
+    {
+        itr->second = _loadPixmap(strBkgDir + itr->first);
     }
-
-    fsutil::findSubFile(m_strHBkgDir, [&](const wstring& strSubFile) {
-        cauto itr = m_vecHBkgFile.insert(m_vecHBkgFile.begin(), {strSubFile, NULL});
-        if (m_vecHBkgFile.size() <= __retainSnapshot)
-        {
-            itr->second = _loadPixmap(m_strHBkgDir+strSubFile);
-        }
-    });
-
-    fsutil::findSubFile(m_strVBkgDir, [&](const wstring& strSubFile) {
-        cauto itr = m_vecVBkgFile.insert(m_vecVBkgFile.begin(), {strSubFile, NULL});
-        if (m_vecVBkgFile.size() <= __retainSnapshot)
-        {
-            itr->second = _loadPixmap(m_strVBkgDir+strSubFile);
-        }
-    });
 
     cauto strHBkg = m_app.getOption().strHBkg;
     if (!strHBkg.empty())
@@ -250,9 +258,6 @@ void CBkgDlg::init()
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
     }
 
-    m_colorDlg.init();
-
-    m_addbkgDlg.init();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
