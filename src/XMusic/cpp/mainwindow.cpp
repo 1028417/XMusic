@@ -171,7 +171,7 @@ void MainWindow::showLogo()
 
                     __appAsync(2500, [labelLogoTip](){
 #define __logoTip "更新媒体库"
-                        if (-1 == g_nAppUpgradeProgress)
+                        if (-1 == g_nAppDownloadProgress)
                         {
                             labelLogoTip->setText(__logoTip);
                         }
@@ -182,16 +182,20 @@ void MainWindow::showLogo()
                                 return false;
                             }
 
-                            if (g_nAppUpgradeProgress >= 0)
+                            if (g_nAppDownloadProgress >= 0)
                             {
                                 QString qsText;
-                                /*if (100 == g_nAppUpgradeProgress)
+                                if (0 == g_nAppDownloadProgress)
                                 {
-                                  qsText.append("更新App: 正在安装");
+                                    qsText.append("下载更新包...");
                                 }
-                                else*/
+                                else if (100 == g_nAppDownloadProgress)
                                 {
-                                    qsText.sprintf("更新App: %u%%", (UINT)g_nAppUpgradeProgress);
+                                    qsText.append("准备安装...");
+                                }
+                                else
+                                {
+                                    qsText.sprintf("下载更新包: %u%%", (UINT)g_nAppDownloadProgress);
                                 }
                                 labelLogoTip->setText(qsText);
                             }

@@ -713,7 +713,7 @@ static bool cmdShell(const string& strCmd, bool bBlock = true)
 }
 #endif
 
-int g_nAppUpgradeProgress = -1;
+int g_nAppDownloadProgress = -1;
 
 bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 {
@@ -731,7 +731,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
         }
         g_logger << "dowloadApp: " >> strAppUrl;
 
-        g_nAppUpgradeProgress = 0;
+        g_nAppDownloadProgress = 0;
 
         CByteBuffer bbfData;
         CDownloader downloader;
@@ -740,7 +740,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 
                 if (dltotal > 10000)
                 {
-                    g_nAppUpgradeProgress = 100*dlnow/dltotal;
+                    g_nAppDownloadProgress = 100*dlnow/dltotal;
                 }
                 /*else if (dltotal > 0)
                 {

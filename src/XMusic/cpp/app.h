@@ -21,7 +21,7 @@ extern QLockFile g_lf;
 
 extern ITxtWriter& g_logger;
 
-extern int g_nAppUpgradeProgress;
+extern int g_nAppDownloadProgress;
 
 class CAppInit
 {

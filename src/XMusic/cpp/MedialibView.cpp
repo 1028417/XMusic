@@ -4,7 +4,7 @@
 #include "MedialibView.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName L" 本地"
+#define __OuterDirName  L"  本地"
 
 #define __FlashingAlpha 170
 
@@ -242,14 +242,14 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
         context.pixmap = &m_pmSingerGroup;
-        context.strText = L" 歌手";
+        context.strText = L"  歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
         context.pixmap = &m_pmPlaylist;
-        context.strText = L" 歌单";
+        context.strText = L"  歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
@@ -450,7 +450,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         {
             painter.save();
 
-            painter.adjustFont(0.85f);
+            painter.adjustFont(0.9, QFont::Weight::Light);
 
             UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
             painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
