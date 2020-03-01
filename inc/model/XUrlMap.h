@@ -3,6 +3,8 @@
 
 struct tagXUrl
 {
+    tagXUrl(){}
+
     tagXUrl(const string& strUtf8Title, const string& strUrl, const wstring& strFileTitle)
         : m_strUtf8Title(strUtf8Title)
         , m_strUrl(strUrl)
@@ -27,7 +29,7 @@ private:
     unordered_map<wstring, tagXUrl> m_mapXUrl;
 
 public:
-    void add(const string& strFileTitle, const string& strUrl);
+    void add(const string& strUtf8Title, const string& strUrl);
 
     bool check(const wstring& strFileTitle);
 
