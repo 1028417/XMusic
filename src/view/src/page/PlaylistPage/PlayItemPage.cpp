@@ -510,8 +510,8 @@ void CPlayItemPage::OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	if (m_pPlaylist)
-	{
-		m_view.m_PlaylistPage.m_wndList.SelectObject(m_pPlaylist);
-	}
+	//if (m_pPlaylist)
+	//{
+		//m_view.m_PlaylistPage.m_wndList.SelectObject(m_pPlaylist);
+	//}
 }

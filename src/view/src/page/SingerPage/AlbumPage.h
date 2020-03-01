@@ -23,7 +23,7 @@ public:
 private:
 	CSinger *m_pSinger = NULL;
 
-	CSingerMediaResPanel m_wndMediaResPanel;
+	class CSingerMediaResPanel m_wndMediaResPanel;
 
 	CObjectList m_wndAlbumList;
 

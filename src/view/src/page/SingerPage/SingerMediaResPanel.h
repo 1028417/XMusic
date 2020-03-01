@@ -6,6 +6,8 @@
 
 class CSingerMediaResPanel : public CMediaResPanel
 {
+	DECLARE_MESSAGE_MAP()
+
 public:
 	CSingerMediaResPanel(__view& view, class CAlbumPage& wndAlbumPage)
 		: CMediaResPanel(view, false)
@@ -21,6 +23,8 @@ private:
 
 	void UpdateTitle(const wstring& strTitle) override;
 
+	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
+	
 public:
 	void HittestMediaRes(CMediaRes& MediaRes) override;
 };
