@@ -135,12 +135,10 @@ public:
 
     string getXUrl(const wstring& strFileTitle)
     {
-        return m_xurlMap.get(strutil::toUtf8(strFileTitle));
+        return m_xurlMap.get(strFileTitle);
     }
 
 private:
-    bool _checkXUrl(const string& strFileTitle);
-
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
     CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);

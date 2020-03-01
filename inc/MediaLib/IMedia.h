@@ -20,9 +20,8 @@ struct __MediaLibExt tagFileTitle
 {
 	static const wstring g_strEraseChars;
 
-	inline static wstring transTitle(const wstring& t_strFileTitle)
-	{
-		auto strFileTitle = t_strFileTitle;
+    inline static void transTitle(wstring& strFileTitle)
+    {
 		strutil::eraseChars(strFileTitle, g_strEraseChars);
 
 		for (auto pstr : { L"mqms2", L"-163" })
@@ -32,14 +31,19 @@ struct __MediaLibExt tagFileTitle
 
 		strutil::trim(strFileTitle);
 		strutil::lowerCase(strFileTitle);
-
-		return strFileTitle;
 	}
-	
+
+    static wstring transTitle_r(const wstring& strFileTitle)
+    {
+        auto strRet = strFileTitle;
+        transTitle(strRet);
+        return strRet;
+    }
+
 	tagFileTitle() {}
 
 	tagFileTitle(const wstring& t_strFileTitle)
-		: strFileTitle(transTitle(t_strFileTitle))
+        : strFileTitle(transTitle_r(t_strFileTitle))
 	{
 		vector<wstring> vecFileTitle;
 		strutil::split(strFileTitle, L'-', vecFileTitle, true);

@@ -3,15 +3,19 @@
 
 struct tagXUrl
 {
-    tagXUrl(const string& t_strFileTitle, const string& t_strUrl)
-        : strFileTitle(t_strFileTitle)
-        , strUrl(t_strUrl)
+    tagXUrl(const string& strUtf8Title, const string& strUrl, const wstring& strFileTitle)
+        : m_strUtf8Title(strUtf8Title)
+        , m_strUrl(strUrl)
+        , m_strFileTitle(strFileTitle)
     {
     }
 
-    string strFileTitle;
-    string strUrl;
+    string m_strUtf8Title;
+    string m_strUrl;
+    wstring m_strFileTitle;
     bool bUsed = false;
+
+    string genUrl();
 };
 
 class XUrlMap
@@ -20,14 +24,14 @@ public:
     XUrlMap(){}
 
 private:
-    unordered_map<string, tagXUrl> m_mapXUrl;
+    unordered_map<wstring, tagXUrl> m_mapXUrl;
 
 public:
     void add(const string& strFileTitle, const string& strUrl);
 
-    bool check(const string& strFileTitle);
+    bool check(const wstring& strFileTitle);
 
     void checkRedundant();
 
-    string get(const string& strFileTitle);
+    string get(const wstring& strFileTitle);
 };
