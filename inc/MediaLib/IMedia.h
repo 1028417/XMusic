@@ -16,6 +16,39 @@ enum class E_MediaFileType
 	
 	MFT_MP4, MFT_MKV
 };
+struct __MediaLibExt tagFileTitle
+{
+	static const wstring g_strEraseChars;
+
+	inline static wstring transTitle(const wstring& t_strFileTitle)
+	{
+		auto strFileTitle = t_strFileTitle;
+		strutil::eraseChars(strFileTitle, g_strEraseChars);
+
+		for (auto pstr : { L"mqms2", L"-163" })
+		{
+			strutil::replace(strFileTitle, pstr);
+		}
+
+		strutil::trim(strFileTitle);
+		strutil::lowerCase(strFileTitle);
+
+		return strFileTitle;
+	}
+	
+	tagFileTitle() {}
+
+	tagFileTitle(const wstring& t_strFileTitle)
+		: strFileTitle(transTitle(t_strFileTitle))
+	{
+		vector<wstring> vecFileTitle;
+		strutil::split(strFileTitle, L'-', vecFileTitle, true);
+		setFileTitle.add(vecFileTitle);
+	}
+
+	wstring strFileTitle;
+	SSet<wstring> setFileTitle;
+};
 
 class __MediaLibExt IMedia
 {

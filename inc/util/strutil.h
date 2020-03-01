@@ -65,21 +65,28 @@ public:
 	static wstring upperCase_r(const wstring& str);
 	static string upperCase_r(const string& str);
 
-	static void replace(wstring& str, const wstring& strFind, const wstring& strReplace = L"");
-	static void replace(string& str, const string& strFind, const string& strReplace = "");
-	static wstring replace_r(const wstring& str, const wstring& strFind, const wstring& strReplace = L"")
+	static void replace(wstring& str, const wstring& strFind, const wchar_t *pszReplace = NULL);
+	static void replace(string& str, const string& strFind, const char *pszReplace = NULL);
+
+	static void replace(wstring& str, const wstring& strFind, const wstring& strReplace);
+	static void replace(string& str, const string& strFind, const string& strReplace);
+
+	template <class S, typename T = decltype(S().c_str())>
+	static S replace_r(const S& str, const S& strFind, T pszReplace = NULL)
 	{
-		wstring strRet = str;
-		replace(strRet, strFind, strReplace);
-		return strRet;
-	}
-	static string replace_r(const string& str, const string& strFind, const string& strReplace = "")
-	{
-		string strRet = str;
-		replace(strRet, strFind, strReplace);
+		auto strRet = str;
+		replace(strRet, strFind, pszReplace);
 		return strRet;
 	}
 
+	template <class S>
+	static S replace_r(const S& str, const S& strFind, const S& strReplace)
+	{
+		auto strRet = str;
+		replace(strRet, strFind, strReplace);
+		return strRet;
+	}
+	
     static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
     static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace)
     {

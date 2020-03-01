@@ -1,15 +1,5 @@
 #pragma once
 
-struct __ModelExt tagFileTitle
-{
-	tagFileTitle() {}
-
-	tagFileTitle(const wstring& t_strFileTitle);
-
-	wstring strFileTitle;
-	SSet<wstring> setFileTitle;
-};
-
 struct __ModelExt tagMediaResInfo
 {
     tagMediaResInfo(){}
