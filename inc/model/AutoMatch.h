@@ -11,41 +11,49 @@ private:
 	list<pair<wstring, wstring>> m_lstSingerInfo;
 
 public:
-	wstring matchSinger(const wstring& strPath);
+	wstring matchSinger(IMedia& media);
 };
 
 struct __ModelExt tagFileTitle
 {
 	tagFileTitle() {}
 
-	tagFileTitle(const wstring& t_strFileTitle)
-		: m_strFileTitle(IMedia::transTitle(t_strFileTitle))
+	tagFileTitle(const wstring& strFileTitle, const wstring& strSingerName=L"")
+		: m_strFileTitle(IMedia::transTitle(strFileTitle))
+		, m_strSingerName(strSingerName)
 	{
+		if (!m_strSingerName.empty())
+		{
+			strutil::replace(m_strFileTitle, m_strSingerName);
+		}
+
 		vector<wstring> vecFileTitle;
 		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
 		m_setFileTitle.add(vecFileTitle);
 	}
 
 	wstring m_strFileTitle;
+	wstring m_strSingerName;
 	SSet<wstring> m_setFileTitle;
 };
 
 struct __ModelExt tagMediaResInfo
 {
-    tagMediaResInfo(){}
-	
-	tagMediaResInfo(const wstring& strPath, const wstring& strFileSize = L"")
+	tagMediaResInfo() {}
+
+	tagMediaResInfo(CMediaRes& MediaRes, const wstring& strSingerName)
+		: m_strPath(MediaRes.GetPath())
+		, m_FileTitle(MediaRes.GetTitle(), strSingerName)
+		, m_strFileSize(MediaRes.fileSizeString())
+		, m_strFileTime(__mediaTimeFormat(MediaRes.fileInfo().tModifyTime))
+	{
+	}
+
+	tagMediaResInfo(const wstring& strPath)
 		: m_strPath(strPath)
 		, m_FileTitle(fsutil::getFileTitle(m_strPath))
 	{
-		if (strFileSize.empty())
-		{
-			m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(m_strPath), false);
-		}
-		else
-		{
-			m_strFileSize = strFileSize;
-		}
+		m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(m_strPath), false);
 
 		auto fileTime = fsutil::GetFileModifyTime64(m_strPath);
 		if (-1 != fileTime)
@@ -78,16 +86,19 @@ public:
 
 	CSearchMediaInfo() {}
 
-	CSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media);
+	CSearchMediaInfo(CMedia& media, const wstring& strSingerName)
+		: m_FileTitle(media.GetTitle(), strSingerName)
+		, m_strPath(media.GetAbsPath())
+	{
+		m_lstMedias.add(media);
+	}
 
 private:
 	tagFileTitle m_FileTitle;
-
+	
 	wstring m_strFileSize;
 	wstring m_strFileTime;
-
-	wstring m_strSingerName;
-
+	
 public:
 	wstring m_strPath;
 
@@ -141,7 +152,7 @@ private:
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths
 		, list<wstring>& lstPaths, list<wstring>& lstNewSubPaths);
 
-	void enumMediaRes(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
+	void enumMediaRes(CSingerNameGuard& SingerNameGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
 
     void matchMedia(tagMediaResInfo& MediaResInfo, TD_SearchMediaInfoMap& mapSearchMedias);
 };
