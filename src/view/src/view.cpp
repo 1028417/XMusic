@@ -378,7 +378,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 	}
 
-	ProgressDlg.SetProgress(0, lstMatchResult.size());
+	if (!lstMatchResult.empty())
+	{
+		ProgressDlg.SetProgress(0, lstMatchResult.size());
+	}
 
 	SMap<wstring, wstring> mapUpdateFiles;
 	map<CMedia*, wstring> mapUpdatedMedias;
