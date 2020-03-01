@@ -23,7 +23,7 @@ BEGIN_MESSAGE_MAP(CPlaylistPage, CBasePage)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, CPlaylistPage::OnNMDclickList)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, CPlaylistPage::OnNMRclickList)
 
-	ON_NOTIFY(NM_SETFOCUS, IDC_LIST1, &CPlaylistPage::OnNMSetFocusList)
+	//ON_NOTIFY(NM_SETFOCUS, IDC_LIST1, &CPlaylistPage::OnNMSetFocusList)
 END_MESSAGE_MAP()
 
 void CPlaylistPage::DoDataExchange(CDataExchange* pDX)
@@ -518,9 +518,12 @@ void CPlaylistPage::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)
 
 	__Ensure(pNMLV->uNewState & LVIS_SELECTED)
 
-	CPlaylist *pPlaylist = (CPlaylist*)m_wndList.GetItemObject(pNMLV->iItem);
-	m_PlayItemPage.ShowPlaylist(pPlaylist);
-	(void)this->SetFocus();
+	auto pPlaylist = (CPlaylist*)m_wndList.GetItemObject(pNMLV->iItem);
+	if (pPlaylist != m_PlayItemPage.m_pPlaylist)
+	{
+		m_PlayItemPage.ShowPlaylist(pPlaylist);
+		(void)this->SetFocus();
+	}
 }
 
 void CPlaylistPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)

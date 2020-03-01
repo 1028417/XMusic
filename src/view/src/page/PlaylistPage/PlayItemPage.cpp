@@ -26,7 +26,7 @@ BEGIN_MESSAGE_MAP(CPlayItemPage, CBasePage)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CPlayItemPage::OnNMRclickList)
 	ON_NOTIFY(NM_CLICK, IDC_LIST1, &CPlayItemPage::OnNMClickList)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CPlayItemPage::OnNMDblclkList)
-	ON_NOTIFY(NM_SETFOCUS, IDC_LIST1, &CPlayItemPage::OnNMSetFocusList)
+	//ON_NOTIFY(NM_SETFOCUS, IDC_LIST1, &CPlayItemPage::OnNMSetFocusList)
 END_MESSAGE_MAP()
 
 void CPlayItemPage::DoDataExchange(CDataExchange* pDX)
@@ -203,9 +203,9 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 	m_pPlaylist = pPlaylist;
 	this->UpdateTitle();
 
+	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
 	if (bChanged)
 	{
-		(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
 		m_wndList.EnsureVisible(0, FALSE);
 	}
 
@@ -510,8 +510,8 @@ void CPlayItemPage::OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	//if (m_pPlaylist)
-	//{
-		//m_view.m_PlaylistPage.m_wndList.SelectObject(m_pPlaylist);
-	//}
+	if (m_pPlaylist)
+	{
+		m_view.m_PlaylistPage.m_wndList.SelectObject(m_pPlaylist);
+	}
 }

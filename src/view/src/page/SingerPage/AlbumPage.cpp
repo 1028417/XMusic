@@ -776,8 +776,11 @@ void CAlbumPage::OnLvnItemchangedListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	__Ensure(pNMLV->uChanged & LVIF_STATE)
 	__Ensure(pNMLV->uNewState & LVIS_SELECTED);
 
-	CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(pNMLV->iItem);
-	_showAlbum(pAlbum);
+	auto pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(pNMLV->iItem);
+	if (pAlbum != m_pAlbum)
+	{
+		_showAlbum(pAlbum);
+	}
 }
 
 void CAlbumPage::_showAlbum(CAlbum *pAlbum)
@@ -802,9 +805,9 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
+	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 	if (bChanged)
 	{
-		(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 		m_wndAlbumItemList.EnsureVisible(0, FALSE);
 	}
 
