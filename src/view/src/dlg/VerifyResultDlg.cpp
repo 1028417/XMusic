@@ -150,10 +150,10 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 
 		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 		{
-			wstring strText = fsutil::GetFileName(MediaResInfo.strPath)
-				+ L"\n目录: " + fsutil::GetParentDir(MediaResInfo.strPath)
-				+ L"\n大小: " + MediaResInfo.strFileSize + L"字节\n时长: "
-				+ CMedia::genDurationString(MediaResInfo.nDuration)
+			wstring strText = fsutil::GetFileName(MediaResInfo.m_strPath)
+				+ L"\n目录: " + fsutil::GetParentDir(MediaResInfo.m_strPath)
+				+ L"\n大小: " + MediaResInfo.m_strFileSize + L"字节\n时长: "
+				+ CMedia::genDurationString(MediaResInfo.m_nDuration)
 				+ L"\n\n是否更新以下曲目？\n"
 				+ fsutil::GetFileName(SearchMediaInfo.m_strPath)
 				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strPath))

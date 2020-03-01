@@ -274,10 +274,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	cauto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
 	{
 		WString strText;
-		strText << fsutil::GetFileName(MediaResInfo.strPath)
-			<< L"\n日期:  " << MediaResInfo.strFileTime
-			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.strPath))
-			<< L"      大小:  " << MediaResInfo.strFileSize << L"字节";
+		strText << fsutil::GetFileName(MediaResInfo.m_strPath)
+			<< L"\n日期:  " << MediaResInfo.m_strFileTime
+			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo.m_strPath))
+			<< L"      大小:  " << MediaResInfo.m_strFileSize << L"字节";
 
 		cauto fnGenTag = [&](const wstring& strPath) {
 			auto eFileType = IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
@@ -298,7 +298,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 					<< L"\n唱片集:  " << MediaTag.strAlbum;
 			}
 		};
-		fnGenTag(MediaResInfo.strPath);
+		fnGenTag(MediaResInfo.m_strPath);
 		
 		strText << L"\n\n\n是否更新以下曲目？\n"
 			<< fsutil::GetFileName(SearchMediaInfo.m_strPath)
@@ -334,10 +334,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	m_model.getMediaLib().GetAllMedias(lstMedias);
 	__Ensure(lstMedias);
 
-	CSearchMediaInfoGuard SearchMediaInfoGuard(m_model.getSingerMgr());
+	CSingerNameGuard SingerNameGuard(m_model.getSingerMgr());
 	TD_SearchMediaInfoMap mapSearchMedias;
 	lstMedias([&](CMedia& media) {
-		SearchMediaInfoGuard.genSearchMediaInfo(media, mapSearchMedias);
+		CSearchMediaInfo::genSearchMediaInfo(SingerNameGuard, media, mapSearchMedias);
 	});
 	
 	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
@@ -366,7 +366,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 				if (E_MatchResult::MR_Yes == eRet)
 				{
-					lstMatchResult.emplace_back(MediaResInfo.strPath, SearchMediaInfo);
+					lstMatchResult.emplace_back(MediaResInfo.m_strPath, SearchMediaInfo);
 
 					(void)mapSearchMedias.erase(itr);
 

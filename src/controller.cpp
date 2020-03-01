@@ -490,7 +490,7 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 		}
 
 		SearchMediaInfo.m_lstMedias([&](CMedia& media){
-			mapUpdatedMedias[&media] = MediaResInfo.strPath;
+			mapUpdatedMedias[&media] = MediaResInfo.m_strPath;
 		});
 
 		return E_MatchResult::MR_Yes;
