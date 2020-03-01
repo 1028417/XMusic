@@ -85,7 +85,13 @@ bool CController::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_MODIFY_ROOT:
-		(void)CXController::setupMediaLib();
+		if (CXController::setupMediaLib())
+		{
+			if (m_model.getPlayMgr().getPlayingItems())
+			{
+				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
+			}
+		}
 		
 		break;
 	case ID_REFRESH_ROOT:
