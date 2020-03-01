@@ -201,6 +201,7 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     {
         applyBkgColor();
         this->close();
+        m_bkgDlg.close();
     }
 }
 

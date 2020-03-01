@@ -34,6 +34,8 @@ private:
 		return (int)E_GlobalImage::GI_Playlist;
 	}
 
+	void UpdateHead();
+
 	BOOL OnInitDialog() override;
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -47,5 +49,5 @@ private:
 	
 	afx_msg void OnNMDblclkList(NMHDR *pNMHDR, LRESULT *pResult);
 
-	void UpdateHead();
+	afx_msg void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 };

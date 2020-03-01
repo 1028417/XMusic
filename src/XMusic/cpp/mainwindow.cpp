@@ -958,10 +958,12 @@ void MainWindow::slot_playStoped(bool bOpenFail)
 
 void MainWindow::_showAlbumName()
 {
-    auto eDemandMode = m_app.getPlayMgr().demandMode();
-
     WString strMediaSet;
-    if (E_DemandMode::DM_DemandPlayItem == eDemandMode || m_PlayingInfo.strAlbum.empty())
+
+    auto eDemandMode = m_app.getPlayMgr().demandMode();
+    if (E_DemandMode::DM_DemandPlayItem == eDemandMode
+            || E_DemandMode::DM_DemandPlaylist == eDemandMode
+            || m_PlayingInfo.strAlbum.empty())
     {
         if (!m_PlayingInfo.strPlaylist.empty())
         {

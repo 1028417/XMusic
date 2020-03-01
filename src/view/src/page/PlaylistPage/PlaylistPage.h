@@ -49,4 +49,6 @@ private:
 	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMDclickList(NMHDR *pNMHDR, LRESULT *pResult);
+
+	afx_msg void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 };

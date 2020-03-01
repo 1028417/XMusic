@@ -109,4 +109,28 @@ private:
 	afx_msg void OnNMDblclkListExplore(NMHDR *pNMHDR, LRESULT *pResult);
 
 	afx_msg void OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult);
+
+	afx_msg void OnNMSetFocusListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
+	{
+		*pResult = 0;
+		_select();
+	}
+
+	afx_msg void OnNMSetFocusListExplore(NMHDR *pNMHDR, LRESULT *pResult)
+	{
+		*pResult = 0;
+		_select();
+	}
+
+	void _select()
+	{
+		if (m_pAlbum)
+		{
+			m_wndAlbumList.SelectObject(m_pAlbum);
+		}
+		else
+		{
+			m_wndAlbumList.SelectItem(0);
+		}
+	}
 };

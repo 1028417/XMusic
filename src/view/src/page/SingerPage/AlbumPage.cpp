@@ -41,6 +41,9 @@ BEGIN_MESSAGE_MAP(CAlbumPage, CBasePage)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_BROWSE, &CAlbumPage::OnNMRclickListBrowse)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_BROWSE, &CAlbumPage::OnNMDblclkListBrowse)
 
+	ON_NOTIFY(NM_SETFOCUS, IDC_LIST_BROWSE, &CAlbumPage::OnNMSetFocusListBrowse)
+	ON_NOTIFY(NM_SETFOCUS, IDC_LIST_EXPLORE, &CAlbumPage::OnNMSetFocusListExplore)
+	
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_EXPLORE, &CAlbumPage::OnNMRclickListExplore)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_EXPLORE, &CAlbumPage::OnNMDblclkListExplore)
 
@@ -799,9 +802,9 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
-	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 	if (bChanged)
 	{
+		(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 		m_wndAlbumItemList.EnsureVisible(0, FALSE);
 	}
 

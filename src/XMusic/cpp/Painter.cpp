@@ -1,7 +1,7 @@
 
 #include "painter.h"
 
-#define __defThemeColor QRGB(160, 210, 255)
+#define __defThemeColor QRGB(128, 192, 255)
 #define __defTextColor QRGB(255, 255, 230)
 
 QColor g_crTheme(__defThemeColor);

@@ -22,6 +22,8 @@ BEGIN_MESSAGE_MAP(CPlaylistPage, CBasePage)
 	ON_NOTIFY(NM_CLICK, IDC_LIST1, CPlaylistPage::OnNMClickList)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, CPlaylistPage::OnNMDclickList)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, CPlaylistPage::OnNMRclickList)
+
+	ON_NOTIFY(NM_SETFOCUS, IDC_LIST1, &CPlaylistPage::OnNMSetFocusList)
 END_MESSAGE_MAP()
 
 void CPlaylistPage::DoDataExchange(CDataExchange* pDX)
@@ -540,4 +542,14 @@ void CPlaylistPage::OnNMDclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 
 	this->OnMenuCommand(ID_PLAY);
+}
+
+void CPlaylistPage::OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = 0;
+
+	if (m_view.m_PlayItemPage.m_pPlaylist)
+	{
+		m_wndList.SelectObject(m_view.m_PlayItemPage.m_pPlaylist);
+	}
 }
