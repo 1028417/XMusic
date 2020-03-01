@@ -16,6 +16,7 @@ enum class E_MediaFileType
 	
 	MFT_MP4, MFT_MKV
 };
+
 struct __MediaLibExt tagFileTitle
 {
 	static const wstring g_strEraseChars;
@@ -43,15 +44,15 @@ struct __MediaLibExt tagFileTitle
 	tagFileTitle() {}
 
 	tagFileTitle(const wstring& t_strFileTitle)
-        : strFileTitle(transTitle_r(t_strFileTitle))
+		: m_strFileTitle(transTitle_r(t_strFileTitle))
 	{
 		vector<wstring> vecFileTitle;
-		strutil::split(strFileTitle, L'-', vecFileTitle, true);
-		setFileTitle.add(vecFileTitle);
+		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
+		m_setFileTitle.add(vecFileTitle);
 	}
 
-	wstring strFileTitle;
-	SSet<wstring> setFileTitle;
+	wstring m_strFileTitle;
+	SSet<wstring> m_setFileTitle;
 };
 
 class __MediaLibExt IMedia

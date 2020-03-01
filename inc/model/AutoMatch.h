@@ -1,26 +1,40 @@
 #pragma once
 
+class __ModelExt CSingerNameGuard
+{
+public:
+	CSingerNameGuard(class CSingerMgr& SingerMgr);
+
+private:
+	class CSingerMgr& m_SingerMgr;
+
+	list<wstring> m_lstSingerName;
+
+public:
+	wstring matchSingerName(const wstring& strTitle);
+};
+
 struct __ModelExt tagMediaResInfo
 {
     tagMediaResInfo(){}
 	
-	tagMediaResInfo(const wstring& t_strPath, const wstring& t_strFileSize = L"")
-		: strPath(t_strPath)
-		, FileTitle(fsutil::getFileTitle(strPath))
+	tagMediaResInfo(const wstring& strPath, const wstring& strFileSize = L"")
+		: m_strPath(strPath)
+		, m_FileTitle(fsutil::getFileTitle(m_strPath))
 	{
-		if (t_strFileSize.empty())
+		if (strFileSize.empty())
 		{
-			strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false);
+			m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(m_strPath), false);
 		}
 		else
 		{
-			strFileSize = t_strFileSize;
+			m_strFileSize = strFileSize;
 		}
 
-		auto fileTime = fsutil::GetFileModifyTime64(strPath);
+		auto fileTime = fsutil::GetFileModifyTime64(m_strPath);
 		if (-1 != fileTime)
 		{
-			strFileTime = __mediaTimeFormat(fileTime);
+			m_strFileTime = __mediaTimeFormat(fileTime);
 		}
 	}
 
@@ -29,18 +43,23 @@ struct __ModelExt tagMediaResInfo
         return &other == this;
     }
 
-	wstring strPath;
+	wstring m_strPath;
 
-	tagFileTitle FileTitle;
+	tagFileTitle m_FileTitle;
 
-	wstring strFileSize;
-	wstring strFileTime;
+	wstring m_strFileSize;
+	wstring m_strFileTime;
 
-	int nDuration = -1;
+	int m_nDuration = -1;
 };
 
 class __ModelExt CSearchMediaInfo
 {
+public:
+	CSearchMediaInfo() {}
+
+	CSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, CSinger *pSinger);
+
 private:
 	tagFileTitle m_FileTitle;
 
@@ -55,10 +74,6 @@ public:
 	TD_MediaList m_lstMedias;
 
 public:
-	CSearchMediaInfo() {}
-
-	CSearchMediaInfo(class CSearchMediaInfoGuard& SearchMediaInfoGuard, CMedia& media, CSinger *pSinger);
-
 	wstring GetFileSize();
 	wstring GetFileTime();
 
@@ -71,24 +86,6 @@ private:
 };
 
 typedef map<wstring, CSearchMediaInfo> TD_SearchMediaInfoMap;
-
-class __ModelExt CSearchMediaInfoGuard
-{
-public:
-	CSearchMediaInfoGuard(class CSingerMgr& SingerMgr);
-
-private:
-	class CSingerMgr& m_SingerMgr;
-
-	list<wstring> m_lstSingerName;
-
-public:
-	void genSearchMediaInfo(CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
-
-	inline static wstring transSingerName(const wstring& strSingerName);
-	
-	wstring matchSingerName(const wstring& strTitle);
-};
 
 enum class E_MatchResult
 {
@@ -123,6 +120,8 @@ public:
 	void autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias);
 
 private:
+	void genSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
+
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths
 		, list<wstring>& lstPaths, list<wstring>& lstNewSubPaths);
 
