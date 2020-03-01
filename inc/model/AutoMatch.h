@@ -8,10 +8,10 @@ public:
 	class CSingerMgr& m_SingerMgr;
 
 private:
-	list<wstring> m_lstSingerName;
+	list<pair<wstring, wstring>> m_lstSingerInfo;
 
 public:
-	wstring matchSingerName(const wstring& strTitle);
+	wstring matchSinger(const wstring& strPath);
 };
 
 struct __ModelExt tagFileTitle
@@ -78,7 +78,7 @@ public:
 
 	CSearchMediaInfo() {}
 
-	CSearchMediaInfo(CMedia& media, CSingerNameGuard& SingerNameGuard, CSinger *pSinger);
+	CSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media);
 
 private:
 	tagFileTitle m_FileTitle;

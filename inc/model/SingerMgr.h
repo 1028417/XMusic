@@ -37,8 +37,6 @@ public:
 
 	void GetSinger(const wstring& strDir, map<wstring, pair<UINT, wstring>>& mapSingerInfo);
 
-	CSinger* GetSinger(const wstring& strMediaPath);
-
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
 	CMediaSet* GetLastObject()
