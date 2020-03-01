@@ -17,12 +17,13 @@ enum class E_MediaFileType
 	MFT_MP4, MFT_MKV
 };
 
-struct __MediaLibExt tagFileTitle
+class __MediaLibExt IMedia
 {
 	static const wstring g_strEraseChars;
-
-    inline static void transTitle(wstring& strFileTitle)
-    {
+public:
+    static wstring transTitle(const wstring& t_strFileTitle)
+	{
+        auto strFileTitle = t_strFileTitle;
 		strutil::eraseChars(strFileTitle, g_strEraseChars);
 
 		for (auto pstr : { L"mqms2", L"-163" })
@@ -32,34 +33,12 @@ struct __MediaLibExt tagFileTitle
 
 		strutil::trim(strFileTitle);
 		strutil::lowerCase(strFileTitle);
-	}
 
-    static wstring transTitle_r(const wstring& strFileTitle)
-    {
-        auto strRet = strFileTitle;
-        transTitle(strRet);
-        return strRet;
+        return strFileTitle;
     }
 
-	tagFileTitle() {}
-
-	tagFileTitle(const wstring& t_strFileTitle)
-		: m_strFileTitle(transTitle_r(t_strFileTitle))
-	{
-		vector<wstring> vecFileTitle;
-		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
-		m_setFileTitle.add(vecFileTitle);
-	}
-
-	wstring m_strFileTitle;
-	SSet<wstring> m_setFileTitle;
-};
-
-class __MediaLibExt IMedia
-{
-public:
-    static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
-    static E_MediaFileType GetMediaFileType(const wstring& strExtName);
+	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
+	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
 
 public:
 	IMedia(E_MediaFileType eFileType = E_MediaFileType::MFT_Null);

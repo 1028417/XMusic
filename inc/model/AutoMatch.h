@@ -5,13 +5,29 @@ class __ModelExt CSingerNameGuard
 public:
 	CSingerNameGuard(class CSingerMgr& SingerMgr);
 
-private:
 	class CSingerMgr& m_SingerMgr;
 
+private:
 	list<wstring> m_lstSingerName;
 
 public:
 	wstring matchSingerName(const wstring& strTitle);
+};
+
+struct __ModelExt tagFileTitle
+{
+	tagFileTitle() {}
+
+	tagFileTitle(const wstring& t_strFileTitle)
+		: m_strFileTitle(IMedia::transTitle(t_strFileTitle))
+	{
+		vector<wstring> vecFileTitle;
+		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
+		m_setFileTitle.add(vecFileTitle);
+	}
+
+	wstring m_strFileTitle;
+	SSet<wstring> m_setFileTitle;
 };
 
 struct __ModelExt tagMediaResInfo
@@ -53,12 +69,16 @@ struct __ModelExt tagMediaResInfo
 	int m_nDuration = -1;
 };
 
+typedef map<wstring, class CSearchMediaInfo> TD_SearchMediaInfoMap;
+
 class __ModelExt CSearchMediaInfo
 {
 public:
+	static void genSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
+
 	CSearchMediaInfo() {}
 
-	CSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, CSinger *pSinger);
+	CSearchMediaInfo(CMedia& media, CSingerNameGuard& SingerNameGuard, CSinger *pSinger);
 
 private:
 	tagFileTitle m_FileTitle;
@@ -84,8 +104,6 @@ private:
 	UINT matchTitle(const SSet<wstring>& setFileTitle1, const SSet<wstring>& setFileTitle2);
 	UINT matchTitle(const wstring& strFileTitle1, const SSet<wstring>& setFileTitle2);
 };
-
-typedef map<wstring, CSearchMediaInfo> TD_SearchMediaInfoMap;
 
 enum class E_MatchResult
 {
@@ -120,8 +138,6 @@ public:
 	void autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias);
 
 private:
-	void genSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
-
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths
 		, list<wstring>& lstPaths, list<wstring>& lstNewSubPaths);
 
