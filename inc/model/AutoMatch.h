@@ -20,15 +20,12 @@ class __ModelExt CFileTitle
 private:
 	inline void _parseTitle()
 	{
-		if (!m_strSingerName.empty())
-		{
-			strutil::replace(m_strFileTitle, m_strSingerName);
-		}
-
 		IMedia::transTitle(m_strFileTitle);
 
+		cauto strFileTitle = m_strSingerName.empty()? m_strFileTitle:strutil::replace_r(m_strFileTitle, m_strSingerName);
+
 		vector<wstring> vecFileTitle;
-		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
+		strutil::split(strFileTitle, L'-', vecFileTitle, true);
 		m_setFileTitle.add(vecFileTitle);
 	}
 
@@ -162,8 +159,8 @@ public:
 
 private:
 	bool matchTitle(const wstring& strTitle1, const wstring& strTitle2);
-	UINT matchTitle(const SSet<wstring>& setFileTitle1, const SSet<wstring>& setFileTitle2);
-	UINT matchTitle(const wstring& strFileTitle1, const SSet<wstring>& setFileTitle2);
+	UINT matchTitle(const SSet<wstring>& setTitle1, const SSet<wstring>& setTitle2);
+	UINT matchTitle(const wstring& strTitle1, const SSet<wstring>& setTitle2);
 };
 
 enum class E_MatchResult
