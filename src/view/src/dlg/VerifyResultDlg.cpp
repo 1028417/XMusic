@@ -153,8 +153,8 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 			WString strText;
 			strText << fsutil::GetFileName(MediaResInfo->m_strPath)
 				<< L"\n目录: " << fsutil::GetParentDir(MediaResInfo->m_strPath)
-				<< L"\n大小: " << MediaResInfo.fileSizeString() + L"字节\n时长: "
-				<< CMedia::genDurationString(MediaResInfo.m_uDuration)
+				<< L"\n大小: " << MediaResInfo.fileSizeString()
+				<< L"\n时长: " << CMedia::genDurationString(MediaResInfo.m_uDuration)
 				<< L"\n\n是否更新以下曲目？\n" << SearchMediaInfo->fileName()
 				<< L"\n原目录: " << SearchMediaInfo->dir()
 				+ L"\n\n关联: ";

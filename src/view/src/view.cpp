@@ -277,7 +277,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		strText << fsutil::GetFileName(MediaResInfo->m_strPath)
 			<< L"\n日期:  " << MediaResInfo.fileTimeString()
 			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo->m_strPath))
-			<< L"      大小:  " << MediaResInfo.fileSizeString() << L"字节";
+			<< L"      大小:  " << MediaResInfo.fileSizeString();
 
 		cauto fnGenTag = [&](const wstring& strPath) {
 			auto eFileType = IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
@@ -305,7 +305,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		strText << L"\n\n\n是否更新以下曲目？\n" << SearchMediaInfo->fileName()
 			<< L"\n日期:  " << SearchMediaInfo.fileTimeString()
 			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(strMediaPath))
-			<< L"      大小:  " << SearchMediaInfo.fileSizeString() << L"字节";
+			<< L"      大小:  " << SearchMediaInfo.fileSizeString();
 
 		fnGenTag(strMediaPath);
 
