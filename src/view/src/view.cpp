@@ -350,7 +350,8 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			return;
 		}
 
-		CMediaResInfo MediaResInfo(strFile);
+		cauto strSingerName = SingerNameGuard.matchSinger(fsutil::getFileTitle(strFile));
+		CMediaResInfo MediaResInfo(strFile, strSingerName);
 		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
 		{
 			CSearchMediaInfo& SearchMediaInfo = itr->second;

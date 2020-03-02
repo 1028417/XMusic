@@ -106,7 +106,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
 			rcText.bottom = (rcText.bottom + rcText.top) / 2 +6;
-			dc.DrawText(pPlayItem->displayFileSizeString().c_str()
+			dc.DrawText(pPlayItem->displayFileSizeString(true).c_str()
 				, &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			
 			rcText.top = rcText.bottom -9;

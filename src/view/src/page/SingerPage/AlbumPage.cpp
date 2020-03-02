@@ -166,7 +166,7 @@ BOOL CAlbumPage::OnInitDialog()
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
 			rcText.bottom = (rcText.bottom + rcText.top)/2 +6;
-			dc.DrawText(pAlbumItem->displayFileSizeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pAlbumItem->displayFileSizeString(true).c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
@@ -353,6 +353,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	}
 	else
 	{
+		_showAlbum(NULL);
 		(void)m_wndAlbumList.SelectFirstItem();
 	}
 
