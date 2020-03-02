@@ -1053,6 +1053,7 @@ void MainWindow::_playSingerImg(bool bReset)
     cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSinger, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
+        g_logger<<"---------" << m_PlayingInfo.strSinger >> strSingerImg;
         QPixmap pm;
         if (pm.load(strutil::toQstr(strSingerImg)))
         {
