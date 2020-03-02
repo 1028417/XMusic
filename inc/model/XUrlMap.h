@@ -15,7 +15,7 @@ struct tagXUrl
     string m_strUtf8Title;
     string m_strUrl;
     wstring m_strFileTitle;
-    bool bUsed = false;
+    bool bUsing = false;
 
     string genUrl();
 };
