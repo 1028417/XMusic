@@ -133,9 +133,9 @@ public:
 
     bool checkXUrl(const wstring& strPath);
 
-    string getXUrl(const wstring& strFileTitle)
+    string getXUrl(const wstring& strPath)
     {
-        return m_xurlMap.get(strFileTitle);
+        return m_xurlMap.get(strPath);
     }
 
 private:

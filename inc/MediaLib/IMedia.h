@@ -21,9 +21,8 @@ class __MediaLibExt IMedia
 {
 	static const wstring g_strEraseChars;
 public:
-    static wstring transTitle(const wstring& t_strFileTitle)
-	{
-        auto strFileTitle = t_strFileTitle;
+    static void transTitle(wstring& strFileTitle)
+    {
 		strutil::eraseChars(strFileTitle, g_strEraseChars);
 
 		for (auto pstr : { L"mqms2", L"-163" })
@@ -33,8 +32,6 @@ public:
 
 		strutil::trim(strFileTitle);
 		strutil::lowerCase(strFileTitle);
-
-        return strFileTitle;
     }
 
 	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);

@@ -31,9 +31,9 @@ private:
 public:
     void add(const string& strUtf8Title, const string& strUrl);
 
-    bool check(const wstring& strFileTitle);
+    bool check(const wstring& strPath);
 
     void checkRedundant();
 
-    string get(const wstring& strFileTitle);
+    string get(const wstring& strPath);
 };

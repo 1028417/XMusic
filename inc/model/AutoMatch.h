@@ -8,7 +8,7 @@ public:
 	class CSingerMgr& m_SingerMgr;
 
 private:
-	list<pair<wstring, wstring>> m_lstSingerInfo;
+	list<pair<wstring, CSinger*>> m_lstSingerInfo;
 
 public:
 	wstring matchSinger(IMedia& media);
@@ -18,14 +18,14 @@ public:
 class __ModelExt CFileTitle
 {
 private:
-	inline void _parseTitle(const wstring& strFileTitle)
+	inline void _parseTitle()
 	{
-		m_strFileTitle = IMedia::transTitle(strFileTitle);
-
 		if (!m_strSingerName.empty())
 		{
 			strutil::replace(m_strFileTitle, m_strSingerName);
 		}
+
+		IMedia::transTitle(m_strFileTitle);
 
 		vector<wstring> vecFileTitle;
 		strutil::split(m_strFileTitle, L'-', vecFileTitle, true);
@@ -33,38 +33,35 @@ private:
 	}
 
 public:
+	CFileTitle() {}
+
 	CFileTitle(const wstring& strPath, const wstring& strSingerName)
 		: m_strPath(strPath)
+		, m_strFileTitle(fsutil::getFileTitle(m_strPath))
 		, m_strSingerName(strSingerName)
 	{
-		_parseTitle(fsutil::getFileTitle(m_strPath));
+		_parseTitle();
 	}
 
 	CFileTitle(IMedia& media, const wstring& strSingerName)
 		: m_strPath(media.GetPath())
+		, m_strFileTitle(media.GetTitle())
 		, m_strSingerName(strSingerName)
 	{
-		_parseTitle(media.GetTitle());
+		_parseTitle();
 	}
 
-	CFileTitle() {}
-
-private:
+public:
 	wstring m_strPath;
 
-public:
 	wstring m_strFileTitle;
+
 	SSet<wstring> m_setFileTitle;
 
 	wstring m_strSingerName;
 
 public:
-	wstring path() const
-	{
-		return m_strPath;
-	}
-
-	wstring dir() const
+	const wstring& dir() const
 	{
 		return fsutil::GetParentDir(m_strPath);
 	}
