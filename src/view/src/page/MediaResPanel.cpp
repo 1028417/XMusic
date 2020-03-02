@@ -265,14 +265,6 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 	m_cy = cy;
 }
 
-/*void CMediaResPanel::OnActive(BOOL bActive)
-{
-	if (bActive)
-	{
-		_asyncTask();
-	}
-}*/
-
 void CMediaResPanel::ShowPath(const wstring& strPath)
 {
 	CWaitCursor WaitCursor;
@@ -301,23 +293,6 @@ void CMediaResPanel::Refresh()
 	}
 
 	_showPath(pRootPath, pCurrPath);
-
-	/*if (nPrevTopItem > 0)
-	{
-		auto eViewType = m_wndList.GetView();
-		if (E_ListViewType::LVT_Report == eViewType)
-		{
-			CRect rcItem;
-			m_wndList.GetItemRect(nPrevTopItem, rcItem, 0);
-			//m_wndList.Scroll({ 0, nPrevTopItem * rcItem.Height() });
-		}
-		else if (E_ListViewType::LVT_List == eViewType)
-		{
-			CPoint ptItem;
-			m_wndList.GetItemPosition(nPrevTopItem, &ptItem);
-			//m_wndList.Scroll({ ptItem.x, 0 });
-		}
-	}*/
 }
 
 void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMediaRes *pHitestItem)
@@ -410,9 +385,18 @@ void CMediaResPanel::_showPath()
 	cauto paSubDir = m_pCurrPath->dirs();
 	if (m_bShowRelatedSinger && paSubDir)
 	{
+		TD_MediaSetList lstSinger;
+		m_view.getSingerMgr().GetAllSinger(lstSinger);
+
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
-		m_view.getSingerMgr().GetSinger(m_pCurrPath->GetPath(), mapSingerInfo);
-		
+		lstSinger([&](CMediaSet& Singer) {
+			cauto strSingerDir = Singer.GetBaseDir();
+			if (m_strCurrPath == fsutil::GetParentDir(strSingerDir))
+			{
+				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { Singer.m_uID, Singer.m_strName };
+			}
+		});
+				
 		paSubDir([&](CPath& subDir, size_t uIdx) {
 			auto itr = mapSingerInfo.find(subDir.name());
 
@@ -596,7 +580,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		{
 			if (NULL != m_pCurrPath)
 			{
-				m_view.findMedia(m_pCurrPath->GetPath(), true);
+				m_view.findMedia(m_strCurrPath, true);
 			}
 		}
 
