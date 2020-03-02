@@ -274,9 +274,9 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	cauto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo)
 	{
 		WString strText;
-		strText << fsutil::GetFileName(MediaResInfo->path())
+		strText << fsutil::GetFileName(MediaResInfo->m_strPath)
 			<< L"\n日期:  " << MediaResInfo.fileTimeString()
-			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo->path()))
+			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo->m_strPath))
 			<< L"      大小:  " << MediaResInfo.fileSizeString() << L"字节";
 
 		cauto fnGenTag = [&](const wstring& strPath) {
@@ -298,9 +298,9 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 					<< L"\n唱片集:  " << MediaTag.strAlbum;
 			}
 		};
-		fnGenTag(MediaResInfo->path());
+		fnGenTag(MediaResInfo->m_strPath);
 
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->path());
+		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->m_strPath);
 		
 		strText << L"\n\n\n是否更新以下曲目？\n" << SearchMediaInfo->fileName()
 			<< L"\n日期:  " << SearchMediaInfo.fileTimeString()
@@ -309,7 +309,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 		fnGenTag(strMediaPath);
 
-		strText << L"\n\n目录:  " << SearchMediaInfo->path()
+		strText << L"\n\n目录:  " << SearchMediaInfo->m_strPath
 			<< L"\n关联:  ";
 
 		SearchMediaInfo.medias()([&](CMedia& media) {
@@ -368,7 +368,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 				if (E_MatchResult::MR_Yes == eRet)
 				{
-					lstMatchResult.emplace_back(MediaResInfo->path(), SearchMediaInfo);
+					lstMatchResult.emplace_back(MediaResInfo->m_strPath, SearchMediaInfo);
 
 					(void)mapSearchMedias.erase(itr);
 
@@ -397,7 +397,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 
 		CSearchMediaInfo& SearchMediaInfo = pr.second;
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->path());
+		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->m_strPath);
 		wstring strDstPath = fsutil::GetParentDir(strMediaPath)
 			+ __wchDirSeparator + fsutil::GetFileName(strSrcPath);
 
@@ -411,7 +411,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			}
 
 			wstring strOppPath = m_model.getMediaLib().toOppPath(strDstPath);
-			mapUpdateFiles.set(SearchMediaInfo->path(), strOppPath);
+			mapUpdateFiles.set(SearchMediaInfo->m_strPath, strOppPath);
 
 			SearchMediaInfo.medias()([&](CMedia& media) {
 				mapUpdatedMedias[&media] = strOppPath;

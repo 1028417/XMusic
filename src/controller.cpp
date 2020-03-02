@@ -473,7 +473,7 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 	map<wstring, bool> mapMatchRecoed;
 
 	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo) {
-		auto& bMatchRecord = mapMatchRecoed[SearchMediaInfo->path()];
+		auto& bMatchRecord = mapMatchRecoed[SearchMediaInfo->m_strPath];
 		if (bMatchRecord)
 		{
 			return E_MatchResult::MR_No;
@@ -485,7 +485,7 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 		bMatchRecord = true;
 
 		SearchMediaInfo.medias()([&](CMedia& media){
-			mapUpdatedMedias[&media] = MediaResInfo->path();
+			mapUpdatedMedias[&media] = MediaResInfo->m_strPath;
 		});
 
 		return E_MatchResult::MR_Yes;
