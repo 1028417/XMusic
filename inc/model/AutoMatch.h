@@ -18,35 +18,12 @@ public:
 class __ModelExt CFileTitle
 {
 private:
-	inline void _parseTitle()
-	{
-		IMedia::transTitle(m_strFileTitle);
-
-		cauto strFileTitle = m_strSingerName.empty()? m_strFileTitle:strutil::replace_r(m_strFileTitle, m_strSingerName);
-
-		vector<wstring> vecFileTitle;
-		strutil::split(strFileTitle, L'-', vecFileTitle, true);
-		m_setFileTitle.add(vecFileTitle);
-	}
+	void _parseTitle();
 
 public:
 	CFileTitle() {}
-
-	CFileTitle(const wstring& strPath, const wstring& strSingerName)
-		: m_strPath(strPath)
-		, m_strFileTitle(fsutil::getFileTitle(m_strPath))
-		, m_strSingerName(strSingerName)
-	{
-		_parseTitle();
-	}
-
-	CFileTitle(IMedia& media, const wstring& strSingerName)
-		: m_strPath(media.GetPath())
-		, m_strFileTitle(media.GetTitle())
-		, m_strSingerName(strSingerName)
-	{
-		_parseTitle();
-	}
+	CFileTitle(const wstring& strPath, const wstring& strSingerName);
+	CFileTitle(IMedia& media, const wstring& strSingerName);
 
 public:
 	wstring m_strPath;

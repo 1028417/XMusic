@@ -32,41 +32,140 @@ public:
 	static int collate(const wstring& lhs, const wstring& rhs);
 	static int collate_cn(const wstring& lhs, const wstring& rhs);
 
-	static wstring substr(const wstring& str, size_t pos, size_t len = __wnpos);
-	static string substr(const string& str, size_t pos, size_t len = __npos);
+	template <class S>
+	static S substr(const S& str, size_t pos, size_t len = -1)
+	{
+		if (str.length() < pos)
+		{
+			return S();
+		}
 
-	static bool endWith(const wstring& str, const wstring& strEnd);
-	static bool endWith(const string& str, const string& strEnd);
+		return str.substr(pos, len);
+	}
 
-	static void trim(wstring& strText, wchar_t chr = ' ');
-	static void trim(string& strText, char chr = ' ');
-	static wstring trim_r(const wstring& strText, wchar_t chr = ' ');
-	static string trim_r(const string& strText, char chr = ' ');
+	template <class S>
+	static bool endWith(const S& str, const S& strEnd)
+	{
+		int pos = (int)str.length() - strEnd.length();
+		if (pos < 0)
+		{
+			return false;
+		}
 
-	static void ltrim(wstring& strText, wchar_t chr = ' ');
-	static void ltrim(string& strText, char chr = ' ');
-	static wstring ltrim_r(const wstring& strText, wchar_t chr = ' ');
-	static string ltrim_r(const string& strText, char chr = ' ');
+		return substr(str, pos) == strEnd;
+	}
 
-	static void rtrim(wstring& strText, wchar_t chr = ' ');
-	static void rtrim(string& strText, char chr = ' ');
-	static wstring rtrim_r(const wstring& strText, wchar_t chr = ' ');
-	static string rtrim_r(const string& strText, char chr = ' ');
+	template <class S, typename T = decltype(*S().c_str())>
+	inline static void ltrim(S& str, T t = ' ')
+	{
+		auto pos = str.find_first_not_of(t);
+		str.erase(0, pos);
+	}
+
+	template <class S, typename T = decltype(*S().c_str())>
+	static S ltrim_r(const S& str, T t = ' ')
+	{
+		auto pos = str.find_first_not_of(t);
+		if (S::npos == pos)
+		{
+			return S();
+		}
+		
+		if (pos > 0)
+		{
+			return str.substr(pos);
+		}
+		
+		return str;
+	}
+
+	template <class S, typename T = decltype(*S().c_str())>
+	inline static void rtrim(S& str, T t = ' ')
+	{
+		auto pos = str.find_last_not_of(t);
+		str.erase(pos+1);
+	}
+	template <class S, typename T = decltype(*S().c_str())>
+	static S rtrim_r(const S& str, T t = ' ')
+	{
+		auto pos = str.find_last_not_of(t);
+		return str.substr(0, pos+1);
+	}
+
+	template <class S>
+	static void trim(S& str, const S& t)
+	{
+		ltrim(str, t);
+		rtrim(str, t);
+	}
+
+	template <class S, typename T = decltype(*S().c_str())>
+	static void trim(S& str, T t = ' ')
+	{
+		ltrim(str, t);
+		rtrim(str, t);
+	}
+
+	template <class S, typename T = decltype(*S().c_str())>
+	static S trim_r(const S& str, T t = ' ')
+	{
+		auto strRet = ltrim_r(str, t);
+		rtrim(strRet, t);
+		return strRet;
+	}
 
 	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet, bool bTrim = false);
 	static void split(const string& strText, char wcSplitor, vector<string>& vecRet, bool bTrim = false);
 
 	static bool matchIgnoreCase(const wstring& str1, const wstring& str2, size_t maxlen = 0);
 
-	static void lowerCase(wstring& str);
-	static void lowerCase(string& str);
-	static wstring lowerCase_r(const wstring& str);
-	static string lowerCase_r(const string& str);
+	static void lowerCase(wstring& str)
+	{
+		for (auto& chr : str)
+		{
+			chr = ::towlower(chr);
+		}
+	}
 
-	static void upperCase(wstring& str);
-	static void upperCase(string& str);
-	static wstring upperCase_r(const wstring& str);
-	static string upperCase_r(const string& str);
+	static void lowerCase(string& str)
+	{
+		for (auto& chr : str)
+		{
+			chr = ::tolower(chr);
+		}
+	}
+
+	template <class S>
+	static S lowerCase_r(const S& str)
+	{
+		auto strRet = str;
+		lowerCase(strRet);
+		return strRet;
+	}
+
+	static void upperCase(wstring& str)
+	{
+		for (auto& chr : str)
+		{
+			chr = ::towupper(chr);
+		}
+	}
+
+	static void upperCase(string& str)
+	{
+		for (auto& chr : str)
+		{
+			chr = ::toupper(chr);
+		}
+	}
+
+	template <class S>
+	static S upperCase_r(const S& str)
+	{
+		auto strRet = str;
+		upperCase(strRet);
+		return strRet;
+	}
 
 	static void replace(wstring& str, const wstring& strFind, const wchar_t *pszReplace = NULL);
 	static void replace(string& str, const string& strFind, const char *pszReplace = NULL);
@@ -90,26 +189,63 @@ public:
 		return strRet;
 	}
 	
-    static void replaceChar(wstring& str, wchar_t chrFind, wchar_t chrReplace);
-    static wstring replaceChar_r(const wstring& str, wchar_t chrFind, wchar_t chrReplace)
+	template <class S, typename T=decltype(S()[0])>
+    static void replaceChar(S& str, T chrFind, T chrReplace)
+	{
+		for (auto& chr : str)
+		{
+			if (chrFind == chr)
+			{
+				chr = chrReplace;
+			}
+		}
+	}
+	template <class S, typename T = decltype(S()[0])>
+    static S replaceChar_r(const S& str, T chrFind, T chrReplace)
     {
-        wstring strRet(str);
+        auto strRet = str;
         replaceChar(strRet, chrFind, chrReplace);
         return strRet;
     }
 
-    static void replaceChars(wstring& str, const wstring& strFindChars, wchar_t chrReplace);
-    static wstring replaceChars_r(const wstring& str, const wstring& strFindChars, wchar_t chrReplace)
+	template <class S, typename T = decltype(S()[0])>
+    static void replaceChars(S& str, const S& strFindChars, T chrReplace)
+	{
+		for (auto& chr : str)
+		{
+			if (S::npos != strFindChars.find(chr))
+			{
+				chr = chrReplace;
+			}
+		}
+	}
+	template <class S, typename T = decltype(S()[0])>
+    static S replaceChars_r(const S& str, const S& strFindChars, T chrReplace)
     {
-        wstring strRet(str);
+        auto strRet = str;
         replaceChars(strRet, strFindChars, chrReplace);
         return strRet;
     }
 
-	static void eraseChar(wstring& str, wchar_t chrFind);
-    static wstring eraseChar_r(const wstring& str, wchar_t chrFind)
+	template <class S, typename T = decltype(S()[0])>
+	static void eraseChar(S& str, T chrFind)
+	{
+		for (auto itr = str.begin(); itr != str.end(); )
+		{
+			if (*itr == chrFind)
+			{
+				itr = str.erase(itr);
+			}
+			else
+			{
+				++itr;
+			}
+		}
+	}
+	template <class S, typename T = decltype(S()[0])>
+    static S eraseChar_r(const S& str, T chrFind)
     {
-        wstring strRet(str);
+        auto strRet = str;
         eraseChar(strRet, chrFind);
         return strRet;
     }
@@ -129,11 +265,10 @@ public:
             }
         }
     }
-
     template <class S>
     static S eraseChars_r(const S& str, const S& strFindChars)
     {
-        S strRet(str);
+        auto strRet = str;
         eraseChars(strRet, strFindChars);
         return strRet;
     }
