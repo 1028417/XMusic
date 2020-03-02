@@ -12,6 +12,7 @@ private:
 
 public:
 	wstring matchSinger(IMedia& media);
+	wstring matchSinger(const wstring& strFileTitle);
 };
 
 class __ModelExt CFileTitle
@@ -32,8 +33,9 @@ private:
 	}
 
 public:
-	CFileTitle(const wstring& strPath)
+	CFileTitle(const wstring& strPath, const wstring& strSingerName)
 		: m_strPath(strPath)
+		, m_strSingerName(strSingerName)
 	{
 		_parseTitle(fsutil::getFileTitle(m_strPath));
 	}
@@ -85,7 +87,8 @@ public:
 	{
 	}
 
-	CMediaResInfo(const wstring& strPath) : m_FileTitle(strPath)
+	CMediaResInfo(const wstring& strPath, const wstring& strSingerName)
+		: m_FileTitle(strPath, strSingerName)
 	{
 		m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false);		
 		m_strFileTime = CMediaTime::genFileTimeString(fsutil::GetFileModifyTime64(strPath), false);
