@@ -201,7 +201,5 @@ struct tagFindMediaResult
 
 	TD_MediaList lstRetMedias;
 
-	CMediaSet *pRetSinger = NULL;
-
 	map<UINT, wstring> mapSingerDirChanged;
 };
