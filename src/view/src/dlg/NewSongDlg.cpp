@@ -66,13 +66,13 @@ BOOL CNewSongDlg::OnInitDialog()
 
 	m_view.getMediaLib().GetAllMedias(m_lstSrcMedias);
 	
-	mediatime_t maxTime = 0;
+	filetime_t maxTime = 0;
 	m_lstSrcMedias([&](CMedia& media) {
 		maxTime = MAX(maxTime, media.GetAddTime().m_tAddTime);
 	});
 	if (0 == maxTime)
 	{
-		maxTime = __mediatime;
+		maxTime = __filetime;
 	}
 
 	tagTM tm;
@@ -121,7 +121,7 @@ void CNewSongDlg::Refresh()
 				, MediaMixture.GetDir().c_str()
 				, MediaMixture.GetPlaylistName()
 				, MediaMixture.GetSingerAlbumString()
-				, MediaMixture.GetMediaTime().GetText()
+				, MediaMixture.GetAddTime().GetText(false)
 			}, L" ");
 			
 			uIndex++;

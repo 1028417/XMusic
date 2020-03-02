@@ -103,7 +103,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 		}
 
 		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.fileSizeString(false)
-			, L" ", __mediaTimeFormatEx(mediaRes.fileInfo().tModifyTime) });
+			, L" ", mediaRes.fileTimeString(true) });
 		m_arrSimilarFileInfo.add({ group, idx });
 
 		m_vecRowFlag.push_back(uGroupCount % 2 != 0);

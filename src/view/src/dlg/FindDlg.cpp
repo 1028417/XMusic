@@ -162,7 +162,7 @@ void CFindDlg::Refresh()
 			, MediaMixture.GetDir().c_str()
 			, MediaMixture.GetPlaylistName()
 			, MediaMixture.GetSingerAlbumString()
-			, MediaMixture.GetMediaTime().GetText()
+			, MediaMixture.GetAddTime().GetText(false)
 		}, L" ");
 	});
 

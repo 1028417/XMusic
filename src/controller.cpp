@@ -186,7 +186,7 @@ void CXController::stop()
 
 E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
 {
-	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaSetName))
+	if (__wnpos != strNewName.find_first_of(g_strInvalidMediaSetName))
 	{
 		return E_RenameRetCode::RRC_InvalidName;
 	}
@@ -279,7 +279,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 
 bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 {
-	if (wstring::npos != strNewName.find_first_of(g_strInvalidMediaName))
+	if (__wnpos != strNewName.find_first_of(g_strInvalidMediaName))
 	{
 		m_view.msgBox(L"名称含特殊字符！");
 		return false;
@@ -470,27 +470,22 @@ bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMed
 {
 	list<pair<CMedia*, wstring>> lstResult;
 	
-	map<wstring, tagMediaResInfo*> mapMatchInfo;
+	map<wstring, bool> mapMatchRecoed;
 
-	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo) {
-		auto itr = mapMatchInfo.find(SearchMediaInfo.m_strPath);
-		if (itr != mapMatchInfo.end())
+	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo) {
+		auto& bMatchRecord = mapMatchRecoed[SearchMediaInfo->path()];
+		if (bMatchRecord)
 		{
-			if (itr->second != &MediaResInfo)
-			{
-				return E_MatchResult::MR_No;
-			}
+			return E_MatchResult::MR_No;
 		}
-		else
-		{
-			auto eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
-			__EnsureReturn(E_MatchResult::MR_Yes == eRet, eRet);
+		
+		auto eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
+		__EnsureReturn(E_MatchResult::MR_Yes == eRet, eRet);
+		
+		bMatchRecord = true;
 
-			mapMatchInfo[SearchMediaInfo.m_strPath] = &MediaResInfo;
-		}
-
-		SearchMediaInfo.m_lstMedias([&](CMedia& media){
-			mapUpdatedMedias[&media] = MediaResInfo.m_strPath;
+		SearchMediaInfo.medias()([&](CMedia& media){
+			mapUpdatedMedias[&media] = MediaResInfo->path();
 		});
 
 		return E_MatchResult::MR_Yes;

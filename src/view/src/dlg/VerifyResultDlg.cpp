@@ -148,22 +148,22 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 			return !ProgressDlg.checkCancel();
 		};
 
-		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, tagMediaResInfo& MediaResInfo)
+		auto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo)
 		{
-			wstring strText = fsutil::GetFileName(MediaResInfo.m_strPath)
-				+ L"\n目录: " + fsutil::GetParentDir(MediaResInfo.m_strPath)
-				+ L"\n大小: " + MediaResInfo.m_strFileSize + L"字节\n时长: "
-				+ CMedia::genDurationString(MediaResInfo.m_nDuration)
-				+ L"\n\n是否更新以下曲目？\n"
-				+ fsutil::GetFileName(SearchMediaInfo.m_strPath)
-				+ L"\n原目录: " + fsutil::GetParentDir(m_view.getMediaLib().toOppPath(SearchMediaInfo.m_strPath))
+			WString strText;
+			strText << fsutil::GetFileName(MediaResInfo.m_strPath)
+				<< L"\n目录: " << fsutil::GetParentDir(MediaResInfo.m_strPath)
+				<< L"\n大小: " << MediaResInfo.m_strFileSize + L"字节\n时长: "
+				<< CMedia::genDurationString(MediaResInfo.m_nDuration)
+				<< L"\n\n是否更新以下曲目？\n" << SearchMediaInfo.fileName()
+				<< L"\n原目录: " << SearchMediaInfo.dir()
 				+ L"\n\n关联: ";
 
-			SearchMediaInfo.m_lstMedias([&](CMedia& media) {
+			SearchMediaInfo.medias()([&](CMedia& media) {
 				strText.append(L"\n" + media.m_pParent->GetLogicPath());
 			});
 
-			int nRet = ProgressDlg.msgBox(strText.c_str(), L"匹配到新文件", MB_YESNOCANCEL);
+			int nRet = ProgressDlg.msgBox(strText->c_str(), L"匹配到新文件", MB_YESNOCANCEL);
 			if (IDCANCEL == nRet)
 			{
 				return E_MatchResult::MR_Ignore;

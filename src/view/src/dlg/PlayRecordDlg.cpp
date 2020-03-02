@@ -47,7 +47,7 @@ BOOL CPlayRecordDlg::OnInitDialog()
 	__EnsureReturn(m_view.getDataMgr().queryPlayRecordMaxTime(maxTime), FALSE);
 	if (0 == maxTime)
 	{
-		maxTime = __mediatime;
+		maxTime = __filetime;
 	}
 
 	tagTM tm;
