@@ -192,11 +192,32 @@ public:
     static string GetParentDir(const string& strPath);
 
 	static wstring GetFileName(const wstring& strPath);
+	static string GetFileName(const string& strPath);
 
-    static wstring getFileTitle(const wstring& strPath);
-    static string getFileTitle(const string& strPath);
+	template <class S>
+	static S getFileTitle(const S& strPath)
+	{
+		cauto strFileName = GetFileName(strPath);
+		auto pos = strFileName.rfind(__chrDot);
+		if (pos != strFileName.npos)
+		{
+			return strFileName.substr(0, pos);
+		}
 
-	static wstring GetFileExtName(const wstring& strPath);
+		return strFileName;
+	}
+
+	template <class S>
+	static S GetFileExtName(const S& strFile)
+	{
+		auto pos = strFile.rfind(__chrDot);
+		if (pos != S::npos)
+		{
+			return strFile.substr(pos+1);
+		}
+
+		return S();
+	}
 
 	static bool CheckSubPath(const wstring& strDir, const wstring& strSubPath);
 

@@ -5,7 +5,7 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() {}
 
-	CAlbumItem(int nID, const wstring& strPath, mediatime_t time, class CAlbum& Album);
+	CAlbumItem(int nID, const wstring& strPath, filetime_t time, class CAlbum& Album);
 
 private:
 	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;

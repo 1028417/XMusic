@@ -18,6 +18,9 @@
 #define sscanf_s sscanf
 #endif
 
+#define __npos string::npos
+#define __wnpos wstring::npos
+
 #define __substr strutil::substr
 
 class __UtilExt strutil
@@ -29,8 +32,8 @@ public:
 	static int collate(const wstring& lhs, const wstring& rhs);
 	static int collate_cn(const wstring& lhs, const wstring& rhs);
 
-	static wstring substr(const wstring& str, size_t pos, size_t len = wstring::npos);
-	static string substr(const string& str, size_t pos, size_t len = string::npos);
+	static wstring substr(const wstring& str, size_t pos, size_t len = __wnpos);
+	static string substr(const string& str, size_t pos, size_t len = __npos);
 
 	static bool endWith(const wstring& str, const wstring& strEnd);
 	static bool endWith(const string& str, const string& strEnd);

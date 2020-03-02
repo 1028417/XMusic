@@ -60,37 +60,46 @@ enum class E_MediaSetType
 	, MST_SingerGroup
 };
 
-using mediatime_t = time32_t;
-#define __mediatime ((mediatime_t)time(0))
-
-#define __mediaTimeFormat(t) tmutil::formatTime(L"%y-%m-%d %H:%M", t)
-#define __mediaTimeFormatEx(t) tmutil::formatTime(L"%y-%m-%d\n %H:%M", t)
+using filetime_t = time32_t;
+#define __filetime ((filetime_t)time(0))
 
 class __MediaLibExt CMediaTime
 {
 public:
-	CMediaTime()
-        : m_tAddTime(__mediatime)
+	template <typename T>
+	static wstring genFileTimeString(T time, bool bNewLine)
+	{
+		if (time <= 0)
+		{
+			return L"";
+		}
+
+		return bNewLine ? tmutil::formatTime(L"%y-%m-%d\n %H:%M", time)
+			: tmutil::formatTime(L"%y-%m-%d %H:%M", time);
+	}
+
+public:
+	CMediaTime() : m_time(__filetime)
 	{
 	}
 
-	CMediaTime(mediatime_t tAddTime)
-		: m_tAddTime(tAddTime)
+	CMediaTime(filetime_t tAddTime)
+		: m_time(tAddTime)
 	{
 	}
 
 public:
-	mediatime_t m_tAddTime;
+	filetime_t m_time;
 
 public:
 	bool operator <(CMediaTime time) const
 	{
-		return m_tAddTime < time.m_tAddTime;
+		return m_time < time.m_time;
 	}
 
-	wstring GetText() const
+	wstring GetText(bool bNewLine) const
 	{
-		return __mediaTimeFormat(m_tAddTime);
+		return CMediaTime::genFileTimeString(m_time, bNewLine);
 	}
 };
 

@@ -92,22 +92,29 @@ public:
 
 	wstring GetTitle() const;
 
-	static wstring genFileSizeString(long long nFileSize, bool bIgnoreByte=true);
-
-	wstring fileSizeString(bool bIgnoreByte = true)
-	{
-		return genFileSizeString(fileSize(), bIgnoreByte);
-	}
-
 	virtual long long fileSize() const
 	{
 		return -1;
 	}
 
+	wstring fileSizeString(bool bIgnoreByte)
+	{
+		return genFileSizeString(fileSize(), bIgnoreByte);
+	}
+
+	static wstring genFileSizeString(long long nFileSize, bool bIgnoreByte);
+
 	virtual UINT duration() const
 	{
 		return 0;
 	}
+
+	wstring durationString() const
+	{
+		return genDurationString(duration());
+	}
+
+	static wstring genDurationString(int nDuration);
 
 	virtual CMediaSet *GetMediaSet()
 	{

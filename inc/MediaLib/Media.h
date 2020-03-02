@@ -20,7 +20,7 @@ struct __MediaLibExt tagMediaInfo
 class __MediaLibExt CMedia : public IMedia, public tagMediaInfo, public CListObject
 {
 public:
-	CMedia(CMediaSet *pParent = NULL, int nID = 0, const wstring& strPath = L"", mediatime_t tTime = 0)
+	CMedia(CMediaSet *pParent = NULL, int nID = 0, const wstring& strPath = L"", filetime_t tTime = 0)
 		: IMedia(strPath)
 		, tagMediaInfo(pParent, L"", nID)
 		, m_addTime(tTime)
@@ -87,18 +87,15 @@ public:
 		return m_uDuration;
 	}
 
-	static wstring genDurationString(int nDuration);
-	wstring durationString() const;
-
 #if __winvc
 	wstring displayDurationString()
 	{
 		return genDurationString(m_uDisplayDuration);
 	}
 
-	wstring displayFileSizeString()
+	wstring displayFileSizeString(bool bIgnoreByte)
 	{
-		return genFileSizeString(m_nDisplayFileSize);
+		return genFileSizeString(m_nDisplayFileSize, bIgnoreByte);
 	}
 #endif
 

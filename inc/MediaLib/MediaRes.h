@@ -19,11 +19,11 @@ public:
 
 	CMediaRes() {}
 
-    CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
-        : IMedia(eFileType)
-        , CPathObject(fileInfo)
-    {
-    }
+	CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
+		: IMedia(eFileType)
+		, CPathObject(fileInfo)
+	{
+	}
 
 	CMediaRes(E_MediaFileType eFileType, bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
 		: IMedia(eFileType)
@@ -45,19 +45,19 @@ private:
 	bool GetRenameText(wstring& stRenameText) const override;
 
 	void OnListItemRename(const wstring& strNewName) override;
-	
+
 	virtual int _getImage();
 
 public:
 #if __winvc
-    static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
+	static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
 
 	static bool ReadFlacTag(const wstring& strFile, tagMediaTag& MediaTag);
 
 	CRCueFile getCueFile();
 #endif
 
-    class CMediaDir* parent() const;
+	class CMediaDir* parent() const;
 
 	virtual wstring GetPath() const override;
 
@@ -65,7 +65,7 @@ public:
 
 	bool IsDir() const override
 	{
-	    return m_fi.bDir;
+		return m_fi.bDir;
 	}
 
 	wstring GetName() const override
@@ -75,7 +75,12 @@ public:
 
 	long long fileSize() const override
 	{
-	    return m_fi.uFileSize;
+		return m_fi.uFileSize;
+	}
+
+	wstring fileTimeString(bool bNewLine) const
+	{
+		return CMediaTime::genFileTimeString(m_fi.tModifyTime, bNewLine);
 	}
 
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);

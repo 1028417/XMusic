@@ -21,7 +21,7 @@ public:
 private:
 	wstring m_strTitle;
 
-	CMediaTime m_MediaTime;
+	CMediaTime m_addTime;
 
 	CPlayItem *m_pPlayItem = NULL;
 	wstring m_strPlaylistName;
@@ -43,9 +43,9 @@ public:
 		return m_strTitle;
 	}
 
-	const CMediaTime& GetMediaTime() const
+	const CMediaTime& GetAddTime() const
 	{
-		return m_MediaTime;
+		return m_addTime;
 	}
 
 	CPlayItem* GetPlayItem() const
