@@ -68,7 +68,7 @@ BOOL CNewSongDlg::OnInitDialog()
 	
 	filetime_t maxTime = 0;
 	m_lstSrcMedias([&](CMedia& media) {
-		maxTime = MAX(maxTime, media.GetAddTime().m_tAddTime);
+		maxTime = MAX(maxTime, media.GetAddTime().m_time);
 	});
 	if (0 == maxTime)
 	{
@@ -106,7 +106,7 @@ void CNewSongDlg::Refresh()
 		m_MediaMixer.clear();
 
 		m_lstSrcMedias([&](CMedia& media) {
-			__Ensure(media.GetAddTime().m_tAddTime >= tFilterTime);
+			__Ensure(media.GetAddTime().m_time >= tFilterTime);
 
 			m_MediaMixer.add(media);
 		});
