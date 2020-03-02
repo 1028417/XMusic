@@ -177,7 +177,7 @@ void CMedialibView::_getTitle(CMediaDir& MediaDir, WString& strTitle)
     }
     else if (&MediaDir == &m_OuterDir)
     {
-        strTitle << strutil::trim_r(__OuterDirName);
+        strTitle << strutil::trim_r(wstring(__OuterDirName));
     }
     else
     {

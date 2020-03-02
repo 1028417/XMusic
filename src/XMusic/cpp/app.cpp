@@ -648,7 +648,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             IFBuffer ifbData(bbfData);
 
-            if (strutil::endWith(unzfile.strPath, ".share"))
+            if (strutil::endWith(unzfile.strPath, string(".share")))
             {
                 if (!m_model.getMediaLib().loadShareUrl(ifbData))
                 {
@@ -656,7 +656,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                     //continue;
                 }
             }
-            else if (strutil::endWith(unzfile.strPath, ".xurl"))
+            else if (strutil::endWith(unzfile.strPath, string(".xurl")))
             {
                 if (!m_model.getMediaLib().loadXUrl(ifbData))
                 {
@@ -664,7 +664,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                     //continue;
                 }
             }
-            else if (strutil::endWith(unzfile.strPath, ".snapshot.json"))
+            else if (strutil::endWith(unzfile.strPath, string(".snapshot.json")))
             {
                 if (!m_model.getMediaLib().loadXSnapshot(ifbData))
                 {

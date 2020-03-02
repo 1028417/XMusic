@@ -867,7 +867,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
-    PlayingInfo.strSinger = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+    PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
     PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
     PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
     PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Album);
@@ -889,7 +889,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 {
     m_uPlaySeq++;
 
-    auto strPrevSinger = m_PlayingInfo.strSinger;
+    auto strPrevSinger = m_PlayingInfo.strSingerName;
     m_PlayingInfo = var.value<tagPlayingInfo>(); //m_mtxPlayingInfo.get(m_PlayingInfo);
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -898,9 +898,9 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
-    if (m_PlayingInfo.strSinger != strPrevSinger)
+    if (m_PlayingInfo.strSingerName != strPrevSinger)
     {
-        ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSinger));
+        ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
 
         ui.labelSingerImg->setPixmap(QPixmap());
 
@@ -1025,7 +1025,7 @@ void MainWindow::_showAlbumName()
 
 void MainWindow::_playSingerImg(bool bReset)
 {
-    if (m_PlayingInfo.strSinger.empty())
+    if (m_PlayingInfo.strSingerName.empty())
     {
         return;
     }
@@ -1050,10 +1050,9 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSinger, uSingerImgIdx);
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
-        g_logger<<"---------" << m_PlayingInfo.strSinger >> strSingerImg;
         QPixmap pm;
         if (pm.load(strutil::toQstr(strSingerImg)))
         {

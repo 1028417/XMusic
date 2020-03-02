@@ -30,7 +30,7 @@ CGlobalSize::CGlobalSize()
 	m_uTileHeight = 79;
 	m_uIconSpace = 64;
 	
-	m_uPlayingItemHeight = 43;
+	m_uPlayingItemHeight = 40;
 
 	m_ColWidth_Name = 255;
 	m_ColWidth_Time = 85;
