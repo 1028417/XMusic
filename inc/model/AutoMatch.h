@@ -35,7 +35,7 @@ public:
 	wstring m_strSingerName;
 
 public:
-	wstring& dir() const
+	wstring dir() const
 	{
 		return fsutil::GetParentDir(m_strPath);
 	}
