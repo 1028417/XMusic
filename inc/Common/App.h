@@ -3,6 +3,8 @@
 
 #include "ModuleApp.h"
 
+#define __waitCursor CWaitCursor WaitCursor
+
 using CB_Sync = fn_void;
 
 #define __appSync CMainApp::sync

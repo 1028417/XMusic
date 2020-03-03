@@ -100,7 +100,7 @@ public:
 	
 			if (TVE_EXPAND == pNMTreeView->action)
 			{
-				CWaitCursor WaitCursor;
+				__waitCursor;
 
 				CTreeObject* pTreeObject = __super::GetItemObject(pNMTreeView->itemNew.hItem);
 				__AssertReturn(pTreeObject, FALSE);
