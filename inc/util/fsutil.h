@@ -65,8 +65,7 @@ struct __UtilExt tagFileInfo
 	tagFileInfo() {}
 
 	tagFileInfo(const wstring& strDirPath)
-		: bDir(true)
-		, strName(strDirPath)
+        : strName(strDirPath)
 	{
 	}
 
@@ -79,7 +78,7 @@ struct __UtilExt tagFileInfo
 
     class CPath *pParent = NULL;
 
-	bool bDir = false;
+    bool bDir = true;
 
 	wstring strName;
 
