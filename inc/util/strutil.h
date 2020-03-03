@@ -43,17 +43,8 @@ public:
 		return str.substr(pos, len);
 	}
 
-	template <class S>
-	static bool endWith(const S& str, const S& strEnd)
-	{
-		int pos = (int)str.length() - strEnd.length();
-		if (pos < 0)
-		{
-			return false;
-		}
-
-		return substr(str, pos) == strEnd;
-	}
+        static bool endWith(const wstring& str, const wstring& strEnd);
+        static bool endWith(const string& str, const string& strEnd);
 
 	template <class S, typename T = decltype(*S().c_str())>
 	inline static void ltrim(S& str, T t = ' ')

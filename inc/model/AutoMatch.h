@@ -8,7 +8,7 @@ public:
 	class CSingerMgr& m_SingerMgr;
 
 private:
-	list<pair<wstring, CSinger*>> m_lstSingerInfo;
+	list<pair<wstring, wstring>> m_lstSingerInfo;
 
 public:
 	wstring matchSinger(IMedia& media);
