@@ -298,7 +298,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	break;
 	case ID_FIND:
 	{
-		wstring strSingerDir = ((CSinger*)pSingerObject)->GetBaseDir() + __wchDirSeparator;
+		wstring strSingerDir = ((CSinger*)pSingerObject)->GetBaseDir() + __wchPathSeparator;
 		m_view.findMedia(strSingerDir, true, pSingerObject->m_strName);
 	}
 	

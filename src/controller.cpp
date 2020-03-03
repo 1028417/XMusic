@@ -294,7 +294,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 	}
 
 	cauto strOldAbsPath = media.GetAbsPath();
-	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wchDirSeparator + strNewName + strExtName;
+	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wchPathSeparator + strNewName + strExtName;
 	
 	bool bDir = media.IsDir();
     if (fsutil::existPath(strOldAbsPath, bDir))
@@ -331,7 +331,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
         pMediaRes->setName(strNewName + strExtName);
 	}
 
-	cauto strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wchDirSeparator + strNewName + strExtName;
+	cauto strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wchPathSeparator + strNewName + strExtName;
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
@@ -356,7 +356,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			return;
 		}
 
-        cauto strDstPath = strDir + __wchDirSeparator + media.GetName();
+        cauto strDstPath = strDir + __wchPathSeparator + media.GetName();
 
         cauto strSrcAbsPath = media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))

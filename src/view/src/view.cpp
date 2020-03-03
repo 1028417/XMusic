@@ -399,7 +399,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		CSearchMediaInfo& SearchMediaInfo = pr.second;
 		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->m_strPath);
 		wstring strDstPath = fsutil::GetParentDir(strMediaPath)
-			+ __wchDirSeparator + fsutil::GetFileName(strSrcPath);
+			+ __wchPathSeparator + fsutil::GetFileName(strSrcPath);
 
 		m_model.getPlayMgr().moveFile(strMediaPath, strDstPath, [&]() {
 			(void)fsutil::removeFile(strMediaPath);
@@ -555,7 +555,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 			for (auto& pr : mapMediaList)
 			{
 				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath + __wchDirSeparator + pr.first->GetExportName();
+				ExportMedia.strDstDir = ExportOption.strExportPath + __wchPathSeparator + pr.first->GetExportName();
 				ExportMedia.paMedias.swap(pr.second);
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
