@@ -37,6 +37,8 @@ BOOL CVerifyResultDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	CObjectList::tagListPara ListPara({ { _T("结果"), 80 },{ _T("曲目"), 550 },{ _T("目录"), 380 } });
+	ListPara.uItemHeight = 40;
+
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);
