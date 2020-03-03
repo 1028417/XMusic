@@ -34,6 +34,10 @@ enum class E_UpgradeResult
     UR_None = 0,
     UR_Success,
     UR_Fail,
+
+    UR_DownloadFail,
+    UR_MedialibInvalid,
+
     UR_MedialibUncompatible,
     UR_AppUpgradeFail,
     UR_AppUpgraded

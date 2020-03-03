@@ -261,14 +261,28 @@ void CApp::slot_run(int nUpgradeResult)
     auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
     if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
     {
-        if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
+        /*if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
         {
             this->quit();
         }
-        else
+        else*/
         {
             QString qsErrMsg;
-            if (E_UpgradeResult::UR_AppUpgradeFail == eUpgradeResult)
+            if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败: 网络异常";
+            }
+            else if (E_UpgradeResult::UR_MedialibInvalid == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败: 媒体库异常";
+            }
+            else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败，媒体库不兼容";
+//#if __ios
+//#endif
+            }
+            else if (E_UpgradeResult::UR_AppUpgradeFail == eUpgradeResult)
             {
                 qsErrMsg = "更新App失败";
             }
@@ -503,6 +517,9 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
          ifsMedialibConf.close();
     }
 
+
+    E_UpgradeResult eRet = E_UpgradeResult::UR_Fail;
+
     const list<CUpgradeUrl>& lstUpgradeUrl = (userMedialibConf.strAppVersion >= orgMedialibConf.strAppVersion ||
             userMedialibConf.uCompatibleCode >= orgMedialibConf.uCompatibleCode)
             ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;
@@ -523,6 +540,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (nRet != 0)
         {
             g_logger << "download fail: " >> nRet;
+            eRet = E_UpgradeResult::UR_DownloadFail;
             continue;
         }
 
@@ -533,6 +551,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (!zipFile)
         {
             g_logger >> "invalid zipfile";
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
@@ -541,16 +560,16 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (itrMedialibConf == mapUnzfile.end())
         {
             g_logger >> "medialibConf not found";
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
-
         CByteBuffer bbfMedialibConf;
         if (zipFile.read(itrMedialibConf->second, bbfMedialibConf) <= 0)
         {
             g_logger >> "readZip fail: medialibConf";
+            eRet = E_UpgradeResult::UR_Fail;
             continue;
         }
-
         mapUnzfile.erase(itrMedialibConf);
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
@@ -559,6 +578,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (!_readMedialibConf(ifbMedialibConf, newMedialibConf))
         {
             g_logger >> "readMedialibConf fail";
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
@@ -569,18 +589,21 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (newMedialibConf.strAppVersion < MAX(orgMedialibConf.strAppVersion, userMedialibConf.strAppVersion))
         {
             g_logger << "AppVersion invalid: " >> newMedialibConf.strAppVersion;
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
         if (newMedialibConf.uCompatibleCode < MAX(orgMedialibConf.uCompatibleCode, userMedialibConf.uCompatibleCode))
         {
             g_logger << "CompatibleCode invalid: " >> newMedialibConf.uCompatibleCode;
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
         if (newMedialibConf.uMedialibVersion < MAX(orgMedialibConf.uMedialibVersion, userMedialibConf.uMedialibVersion))
         {
             g_logger << "MedialibVersion invalid: " >> newMedialibConf.uMedialibVersion;
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
@@ -608,6 +631,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (itrMedialib == mapUnzfile.end())
         {
             g_logger >> "medialib not found";
+            eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
@@ -619,6 +643,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             if (zipFile.read(itrMedialib->second, bbfMedialib) <= 0)
             {
                 g_logger >> "readZip fail: medialib";
+                eRet = E_UpgradeResult::UR_Fail;
                 continue;
             }
 
@@ -684,7 +709,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         return E_UpgradeResult::UR_Success;
     }
 
-    return E_UpgradeResult::UR_Fail;
+    return eRet;
 }
 
 #if __windows
