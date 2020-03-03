@@ -34,7 +34,7 @@ public:
 	}
 
 	XFile(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
-		: m_fileInfo(t_pParent, t_bDir, t_strName)
+		: m_fileInfo(t_bDir, t_strName, t_pParent)
 	{
 	}
 

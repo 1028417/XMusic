@@ -250,6 +250,11 @@ public:
 		});
 	}
 
+    const bool& runSignal() const
+    {
+        return m_sgnRuning.value();
+    }
+
 	bool usleepex(UINT uMs)
 	{
         return !((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {

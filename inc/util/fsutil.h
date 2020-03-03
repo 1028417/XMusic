@@ -64,22 +64,22 @@ struct __UtilExt tagFileInfo
 {
 	tagFileInfo() {}
 
-	tagFileInfo(class CPath *t_pParent, bool t_bDir, const wstring& t_strName)
+	tagFileInfo(const wstring& strDirPath)
+		: bDir(true)
+		, strName(strDirPath)
+	{
+	}
+
+	tagFileInfo(bool t_bDir, const wstring& t_strName, class CPath *t_pParent=NULL)
 		: pParent(t_pParent)
 		, bDir(t_bDir)
 		, strName(t_strName)
 	{
 	}
 
-	tagFileInfo(bool t_bDir, const wstring& t_strName)
-		: bDir(t_bDir)
-		, strName(t_strName)
-	{
-	}
-
     class CPath *pParent = NULL;
 
-	bool bDir = true;
+	bool bDir = false;
 
 	wstring strName;
 

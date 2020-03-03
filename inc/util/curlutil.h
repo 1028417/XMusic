@@ -132,6 +132,17 @@ private:
     void _clear() override;
 
     template <class T>
+    inline int _syncDownload(const string& strUrl, T& retData, UINT uRetryTime, CB_DownloadProgress cbProgress)
+    {
+        int nRet = CCurlDownload::syncDownload(strUrl, uRetryTime, cbProgress);
+        if (0 == nRet)
+        {
+            (void)_getAllData(retData);
+        }
+        return nRet;
+    }
+
+    template <class T>
     size_t _getAllData(T& buff)
     {
         size_t uReadSize = m_uDataSize;
@@ -152,9 +163,36 @@ private:
 
 public:
     int syncDownload(const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0
-            , CB_DownloadProgress cbProgress = NULL);
+            , CB_DownloadProgress cbProgress = NULL)
+    {
+        return _syncDownload(strUrl, bbfData, uRetryTime, cbProgress);
+    }
+
+    int syncDownload(const bool& bRunSiganl, const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0)
+    {
+        return _syncDownload(strUrl, bbfData, uRetryTime, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
+            (void)beginTime;
+            (void)dltotal;
+            (void)dlnow;
+            return bRunSiganl;
+        });
+    }
+
     int syncDownload(const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0
-            , CB_DownloadProgress cbProgress = NULL);
+            , CB_DownloadProgress cbProgress = NULL)
+    {
+        return _syncDownload(strUrl, cbfData, uRetryTime, cbProgress);
+    }
+
+    int syncDownload(const bool& bRunSiganl, const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0)
+    {
+        return _syncDownload(strUrl, cbfData, uRetryTime, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
+            (void)beginTime;
+            (void)dltotal;
+            (void)dlnow;
+            return bRunSiganl;
+        });
+    }
 
     size_t dataSize() const
     {
