@@ -298,6 +298,7 @@ void CApp::slot_run(int nUpgradeResult)
         return;
     }
 
+    g_logger >> "initMediaLib";
     if (!m_model.initMediaLib())
     {
         g_logger >> "initMediaLib fail";
@@ -305,13 +306,15 @@ void CApp::slot_run(int nUpgradeResult)
         return;
     }
 
+    g_logger >> "start controller";
     if (!m_ctrl.start())
     {
         g_logger >> "start controller fail";
         this->quit();
         return;
     }
-    g_logger >> "start controller success, app running";
+
+    g_logger >> "app running";
 
     if (m_ctrl.getOption().crTheme >= 0)
     {
@@ -329,7 +332,7 @@ int CApp::run()
 {
     auto& option = m_ctrl.initOption();
 
-    std::thread thrUpgrade;
+    std::thread *thrUpgrade = NULL;
 
     __appAsync(100, [&](){
         if (!_resetRootDir(option.strRootDir))
@@ -361,7 +364,7 @@ int CApp::run()
                  << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
         m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
 
-        thrUpgrade = std::thread([=]() {
+        thrUpgrade = new std::thread([=]() {
             auto timeBegin = time(0);
 
             E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
@@ -387,17 +390,22 @@ int CApp::run()
     g_logger >> "stop controller";
     m_ctrl.stop();
 
+    g_logger >> "quit playSdk";
     CPlayer::QuitSDK();
 
-    g_logger >> "quit";
-    m_logger.close();
-
-#if !__android // TODO 规避5.6.1退出的bug
-    if (thrUpgrade.joinable())
+//#if !__android // TODO 规避5.6.1退出的bug
+    if (thrUpgrade)
     {
-        thrUpgrade.join();
+        if (thrUpgrade->joinable())
+        {
+            thrUpgrade->join();
+        }
+        //delete thrUpgrade;
     }
-#endif
+//#endif
+
+    g_logger >> "app quit";
+    m_logger.close();
 
     return nRet;
 }
@@ -531,12 +539,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         CByteBuffer bbfZip;
 
         CDownloader downloader(3, 30, 1, 3);
-        int nRet = downloader.syncDownload(strMedialibUrl, bbfZip, 1, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
-                (void)beginTime;
-                (void)dltotal;
-                (void)dlnow;
-                return m_bRunSignal;
-        });
+        int nRet = downloader.syncDownload(m_bRunSignal, strMedialibUrl, bbfZip, 1);
         if (nRet != 0)
         {
             g_logger << "download fail: " >> nRet;

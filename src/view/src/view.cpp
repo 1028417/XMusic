@@ -689,10 +689,8 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 				JValue& jFiles = jRoot["files"];
 
 				paSubFile([&](XFile& subFile) {
-					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString(false);
-
 					JValue jFile;
-					jFile["name"] = strutil::toUtf8(subFile.name());
+					jFile["name"] = strutil::toUtf8(fsutil::getFileTitle(subFile.name()));
 					jFile["size"] = ((CMediaRes&)subFile).fileSize();
 					if (bGenDuration)
 					{
@@ -700,6 +698,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 					}
 					jFiles.append(jFile);
 
+					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString(false);
 					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
 					return TxtWriter.writeln(strFileInfo);
 				});
@@ -727,7 +726,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 		};
 
 		JValue *pJRoot = new JValue;
-
+		(*pJRoot)["type"] = ".xmsc";
 		if (fnSnapshot(dir, *pJRoot))
 		{
 			CUTF8TxtWriter TxtWriter(false);

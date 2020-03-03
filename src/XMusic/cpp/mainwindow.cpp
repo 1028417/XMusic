@@ -195,7 +195,7 @@ void MainWindow::showLogo()
                                 }
                                 else
                                 {
-                                    qsText.sprintf("下载更新包: %u%%", (UINT)g_nAppDownloadProgress);
+                                    qsText.sprintf("下载更新包:  %u%%", (UINT)g_nAppDownloadProgress);
                                 }
                                 labelLogoTip->setText(qsText);
                             }
@@ -969,7 +969,7 @@ void MainWindow::_showAlbumName()
         {
             if (!m_bUseDefaultBkg)
             {
-                strMediaSet << L"歌单: ";
+                strMediaSet << L"歌单:  ";
             }
             strMediaSet << m_PlayingInfo.strPlaylist;
 
@@ -980,7 +980,7 @@ void MainWindow::_showAlbumName()
     {
         if (!m_bUseDefaultBkg)
         {
-            strMediaSet << L"专辑: ";
+            strMediaSet << L"专辑:  ";
         }
         strMediaSet << m_PlayingInfo.strAlbum;
 
