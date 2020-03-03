@@ -19,7 +19,7 @@ void CMedialibDlg::_initOuter()
 #if __windows
     for (cauto wch : strMediaLibDir)
     {
-        if (fsutil::checkPathTail(wch))
+        if (fsutil::checkSeparator(wch))
         {
             strOuterDir.append(L"/..");
         }
