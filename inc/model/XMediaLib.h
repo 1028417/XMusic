@@ -141,7 +141,7 @@ public:
 private:
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
-    CMediaDir* _genSnapshotDir(CMediaDir& parent, const JValue& jRoot);
+    CMediaDir* _genSnapshotDir(const wstring& strFileType, const JValue& jRoot, CMediaDir *pParent);
 #endif
 
 private:

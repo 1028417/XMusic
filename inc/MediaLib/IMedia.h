@@ -34,6 +34,13 @@ public:
 		strutil::lowerCase(strFileTitle);
     }
 
+    static wstring transTitle_r(const wstring& strFileTitle)
+    {
+        auto strRet = strFileTitle;
+        transTitle(strRet);
+        return strRet;
+    }
+
 	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
 	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
 
