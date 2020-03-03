@@ -213,7 +213,7 @@ void CBkgDlg::_initBkg(bool bHBkg)
             cauto strFile = to_wstring(uIdx);
             cauto strBkg = strBkgSrc + strFile + L".jpg";
 
-            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wchDirSeparator + strFile))
+            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wchPathSeparator + strFile))
             {
                 break;
             }
