@@ -158,11 +158,11 @@ public:
 		return strRet;
 	}
 
-	static void replace(wstring& str, const wstring& strFind, const wchar_t *pszReplace = NULL);
-	static void replace(string& str, const string& strFind, const char *pszReplace = NULL);
+	static UINT replace(wstring& str, const wstring& strFind, const wchar_t *pszReplace = NULL);
+	static UINT replace(string& str, const string& strFind, const char *pszReplace = NULL);
 
-	static void replace(wstring& str, const wstring& strFind, const wstring& strReplace);
-	static void replace(string& str, const string& strFind, const string& strReplace);
+	static UINT replace(wstring& str, const wstring& strFind, const wstring& strReplace);
+	static UINT replace(string& str, const string& strFind, const string& strReplace);
 
 	template <class S, typename T = decltype(S().c_str())>
 	static S replace_r(const S& str, const S& strFind, T pszReplace = NULL)
@@ -181,15 +181,19 @@ public:
 	}
 	
 	template <class S, typename T=decltype(S()[0])>
-    static void replaceChar(S& str, T chrFind, T chrReplace)
+    static UINT replaceChar(S& str, T chrFind, T chrReplace)
 	{
+		UINT uRet = 0;
 		for (auto& chr : str)
 		{
 			if (chrFind == chr)
 			{
 				chr = chrReplace;
+				uRet++;
 			}
 		}
+
+		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
     static S replaceChar_r(const S& str, T chrFind, T chrReplace)
@@ -200,15 +204,19 @@ public:
     }
 
 	template <class S, typename T = decltype(S()[0])>
-    static void replaceChars(S& str, const S& strFindChars, T chrReplace)
+    static UINT replaceChars(S& str, const S& strFindChars, T chrReplace)
 	{
+		UINT uRet = 0;
 		for (auto& chr : str)
 		{
 			if (S::npos != strFindChars.find(chr))
 			{
 				chr = chrReplace;
+				uRet++;
 			}
 		}
+
+		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
     static S replaceChars_r(const S& str, const S& strFindChars, T chrReplace)
@@ -219,19 +227,23 @@ public:
     }
 
 	template <class S, typename T = decltype(S()[0])>
-	static void eraseChar(S& str, T chrFind)
+	static UINT eraseChar(S& str, T chrFind)
 	{
+		UINT uRet = 0;
 		for (auto itr = str.begin(); itr != str.end(); )
 		{
 			if (*itr == chrFind)
 			{
 				itr = str.erase(itr);
+				uRet++;
 			}
 			else
 			{
 				++itr;
 			}
 		}
+
+		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
     static S eraseChar_r(const S& str, T chrFind)
@@ -242,19 +254,23 @@ public:
     }
 
     template <class S>
-    static void eraseChars(S& str, const S& strFindChars)
+    static UINT eraseChars(S& str, const S& strFindChars)
     {
+		UINT uRet = 0;
         for (auto itr=str.begin(); itr!=str.end(); )
         {
             if (S::npos != strFindChars.find(*itr))
             {
                 itr = str.erase(itr);
+				uRet++;
             }
             else
             {
                 ++itr;
             }
         }
+
+		return uRet;
     }
     template <class S>
     static S eraseChars_r(const S& str, const S& strFindChars)
