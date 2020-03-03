@@ -261,11 +261,11 @@ void CApp::slot_run(int nUpgradeResult)
     auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
     if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
     {
-        /*if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
+        if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
         {
             this->quit();
         }
-        else*/
+        else
         {
             QString qsErrMsg;
             if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
@@ -540,7 +540,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (nRet != 0)
         {
             g_logger << "download fail: " >> nRet;
-            eRet = E_UpgradeResult::UR_DownloadFail;
+            if (E_UpgradeResult::UR_Fail == eRet)
+            {
+                eRet = E_UpgradeResult::UR_DownloadFail;
+            }
             continue;
         }
 
@@ -589,21 +592,21 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (newMedialibConf.strAppVersion < MAX(orgMedialibConf.strAppVersion, userMedialibConf.strAppVersion))
         {
             g_logger << "AppVersion invalid: " >> newMedialibConf.strAppVersion;
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
+            eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
         if (newMedialibConf.uCompatibleCode < MAX(orgMedialibConf.uCompatibleCode, userMedialibConf.uCompatibleCode))
         {
             g_logger << "CompatibleCode invalid: " >> newMedialibConf.uCompatibleCode;
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
+            eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
         if (newMedialibConf.uMedialibVersion < MAX(orgMedialibConf.uMedialibVersion, userMedialibConf.uMedialibVersion))
         {
             g_logger << "MedialibVersion invalid: " >> newMedialibConf.uMedialibVersion;
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
+            eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
