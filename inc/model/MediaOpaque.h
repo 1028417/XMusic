@@ -45,7 +45,7 @@ public:
 
 	bool seekable() const override;
 
-    void openUrl(const string& strUrl, UINT uByteRate = 0);
+    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 #endif
 
     long long openFile(const wstring& strFile, bool bXmsc)

@@ -15,9 +15,11 @@ extern ITxtWriter& g_modelLogger;
 
 #include "Dao.h"
 
-#include "OptionMgr.h"
+#include "XMediaLib.h"
 
 #include "DataMgr.h"
+
+#include "OptionMgr.h"
 
 #if __winvc
 #include "BackupMgr.h"
@@ -34,8 +36,6 @@ extern ITxtWriter& g_modelLogger;
 #include "SingerMgr.h"
 
 #include "SingerImgMgr.h"
-
-#include "XMediaLib.h"
 
 class IModelObserver
 {

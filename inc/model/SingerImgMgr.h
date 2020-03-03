@@ -18,13 +18,19 @@ private:
 
 	map<wstring, vector<wstring>> m_mapFile;
 
-#if !__winvc
+#if __OnlineMediaLib
     list<wstring> m_lstOnlineImgFile;
     mutex m_mutex;
     XThread m_thrDownload;
 
 private:
     void _download(const string& strBaseUrl);
+
+public:
+    void quitDownload()
+    {
+        m_thrDownload.cancel();
+    }
 #endif
 
 public:
