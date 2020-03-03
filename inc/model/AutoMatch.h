@@ -33,6 +33,7 @@ public:
 	SSet<wstring> m_setFileTitle;
 
 	wstring m_strSingerName;
+	bool m_bContainsSingerName = false;
 
 public:
 	wstring dir() const
