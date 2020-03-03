@@ -6,10 +6,10 @@
 #if !__winvc
 #include <QString>
 
-#define __A2Q QString::fromUtf8
+#define __A2Q(str, len) QString::fromUtf8(str, len)
 #define __S2Q(s) __A2Q(s.c_str(), s.size())
 
-#define __W2Q QString::fromWCharArray
+#define __W2Q(str, len) QString::fromWCharArray(str, len)
 #define __WS2Q(ws) __W2Q(ws.c_str(), ws.size())
 
 #define to_string(x) QString::number(x).toStdString()
