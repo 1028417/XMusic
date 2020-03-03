@@ -427,7 +427,7 @@ private:
 			auto strSub = strText.substr(prePos, pos - prePos);
 			if (!strSub.empty())
 			{
-				if ('\r' == *strText.rbegin())
+				if ('\r' == strText.back())
 				{
 					strSub.pop_back();
 				}

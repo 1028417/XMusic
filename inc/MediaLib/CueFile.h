@@ -90,7 +90,7 @@ public:
 public:
 	wstring filePath() const
 	{
-		return m_strDir + __wchDirSeparator + m_strFileName;
+		return m_strDir + __wchPathSeparator + m_strFileName;
 	}
 	
 	bool load(const wstring& strFile);

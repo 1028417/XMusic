@@ -97,9 +97,9 @@ struct __UtilExt tagFileInfo
 #define __wchBackSlant ((wchar_t)__chrBackSlant)
 
 #if __windows
-    #define __wchDirSeparator	__wchBackSlant
+    #define __wchPathSeparator	__wchBackSlant
 #else
-    #define __wchDirSeparator	__wchSlant
+	#define __wchPathSeparator	__wchSlant
 #endif
 
 #define __chrDot '.'
@@ -108,37 +108,48 @@ struct __UtilExt tagFileInfo
 class __UtilExt fsutil
 {
 public:
-	inline static bool checkPathTail(wchar_t wch)
+	inline static bool checkSeparator(wchar_t wch)
 	{
 		return (wchar_t)__chrBackSlant == wch || (wchar_t)__chrSlant == wch;
 	}
-	inline static bool checkPathTail(char chr)
+	inline static bool checkSeparator(char chr)
 	{
 		return __chrBackSlant == chr || __chrSlant == chr;
 	}
 
+	template <class S>
+	inline static bool checkPathTail(const S& strPath)
+	{
+		if (strPath.empty())
+		{
+			return false;
+		}
+
+		return checkSeparator(strPath.back());
+	}
+
     template <class S>
-    static void trimPathTail(S& strPath)
+    inline static void trimPathTail(S& strPath)
     {
-        if (!strPath.empty())
-        {
-            if (checkPathTail(strPath.back()))
-            {
-                strPath.pop_back();
-            }
+		if (checkPathTail(strPath))
+		{
+            strPath.pop_back();
         }
     }
 
     template <class S>
-    static S trimPathTail_r(const S& strPath)
+    inline static S trimPathTail_r(const S& strPath)
 	{
-        auto t_strPath = strPath;
-		trimPathTail(t_strPath);
-		return t_strPath;
-	}
+		if (checkPathTail(strPath))
+		{
+			return strPath.substr(0, strPath.size()-1);
+		}
 
+		return strPath;
+	}
+	
     template <class S>
-    static void transFSSlant(S& strPath)
+    inline static void transSeparator(S& strPath)
     {
 #if __windows
         strutil::replaceChar(strPath, __chrSlant, __chrBackSlant);
@@ -148,10 +159,10 @@ public:
     }
 
     template <class S>
-    static S transFSSlant_r(const S& strPath)
+	inline static S transSeparator_r(const S& strPath)
     {
         auto t_strPath = strPath;
-        transFSSlant(t_strPath);
+        transSeparator(t_strPath);
         return t_strPath;
     }
 
