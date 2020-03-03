@@ -4,10 +4,10 @@ class __ModelExt CSingerNameGuard
 {
 public:
 	CSingerNameGuard(class CSingerMgr& SingerMgr);
-
+	
+private:
 	class CSingerMgr& m_SingerMgr;
 
-private:
 	list<pair<wstring, wstring>> m_lstSingerInfo;
 
 public:
