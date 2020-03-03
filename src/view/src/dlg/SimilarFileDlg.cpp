@@ -208,7 +208,7 @@ void CSimilarFileDlg::OnBnClickedRemove()
 	
 	__Ensure(CMainApp::confirmBox(L"确认删除所选曲目?", this));
 
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	TD_MediaResList arrDelFile(setDelFile);
 	__Ensure(m_view.getController().removeMediaRes(arrDelFile));

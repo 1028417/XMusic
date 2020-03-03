@@ -101,7 +101,7 @@ void CNewSongDlg::Refresh()
 		m_tFilterTime = tFilterTime;
 		m_nSortType = iSortType;
 
-		CWaitCursor WaitCursor;
+		__waitCursor;
 
 		m_MediaMixer.clear();
 

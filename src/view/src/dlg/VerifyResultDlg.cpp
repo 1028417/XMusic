@@ -44,7 +44,7 @@ BOOL CVerifyResultDlg::OnInitDialog()
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);
 
 
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	CString strRet;
 	m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {

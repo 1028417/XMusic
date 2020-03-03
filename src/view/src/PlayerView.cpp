@@ -56,10 +56,6 @@ bool CPlayerView::handleCommand(UINT uID)
 		m_view.foregroundMainWnd();
 
 		break;
-	case ID_QUIT:
-		CMainApp::GetMainApp()->Quit();
-
-		break;
 	case ID_AttachDir:
 		m_view.m_MediaResPage.attachDir();
 

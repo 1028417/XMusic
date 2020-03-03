@@ -939,7 +939,7 @@ void __view::hittestMedia(CMedia& media)
 
 bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	int nRelatedMediaID = media.GetRelatedMediaID(eMediaSetType);
 	if (nRelatedMediaID > 0)

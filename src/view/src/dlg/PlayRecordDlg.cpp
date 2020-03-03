@@ -64,7 +64,7 @@ BOOL CPlayRecordDlg::OnInitDialog()
 
 BOOL CPlayRecordDlg::Refresh()
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	CTime time;
 	(void)m_wndDateTimeCtrl.GetTime(time);

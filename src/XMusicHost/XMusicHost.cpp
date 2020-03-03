@@ -33,7 +33,7 @@ public:
 	
 	CModel m_model;
 };
-CPlayerApp theApp;
+static CPlayerApp theApp;
 
 bool CController::init()
 {
@@ -84,7 +84,13 @@ bool CController::handleCommand(UINT uID)
 {
 	switch (uID)
 	{
+	case ID_QUIT:
+		theApp.Quit();
+
+		break;
 	case ID_MODIFY_ROOT:
+	{
+		CWaitCursor();
 		if (CXController::setupMediaLib())
 		{
 			if (m_model.getPlayMgr().getPlayingItems())
@@ -92,12 +98,17 @@ bool CController::handleCommand(UINT uID)
 				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
 			}
 		}
-		
-		break;
+	}
+	
+	break;
 	case ID_REFRESH_ROOT:
-		m_model.refreshMediaLib();
+	{
+		__waitCursor;
 
-		break;
+		m_model.refreshMediaLib();
+	}
+	
+	break;
 	default:
 	{
 		E_DemandMode eDemandMode = (E_DemandMode)0;

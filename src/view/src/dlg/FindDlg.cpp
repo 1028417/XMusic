@@ -108,7 +108,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 
 	if (!strFindText.empty())
 	{
-		CWaitCursor WaitCursor;
+		__waitCursor;
 
 		wstring t_strFindText(strFindText);
 		if (E_FindMediaMode::FMM_MatchText == eFindMediaMode)

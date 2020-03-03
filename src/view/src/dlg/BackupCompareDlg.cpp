@@ -380,7 +380,7 @@ void CBackupCompareDlg::OnSelChangedSrcCombo()
 
 void CBackupCompareDlg::_compare()
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	CString cstrSrcTag;
 	int nSrcIdx = m_wndSrcCombo.GetCurSel();

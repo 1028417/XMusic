@@ -88,7 +88,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 {
 	__EnsureReturn(m_hWnd, FALSE);
 
-	CWaitCursor WaitCursor;
+	__waitCursor;
 	m_AlbumPage.ShowSinger(NULL);
 
 	CRedrawLock RedrawLock(m_wndTree);
@@ -184,7 +184,7 @@ void CSingerPage::_addSinger(CSingerGroup *pGroup)
 
 	BOOL bInitAlbum = CMainApp::confirmBox(L"是否生成专辑歌单?", this);
 
-	CWaitCursor WaitCursor;
+	__waitCursor;
 	
 	CSinger *pSinger = m_view.getSingerMgr().AddSinger(*pSrcPath, pGroup, bInitAlbum);
 	__Ensure(pSinger);
@@ -525,7 +525,7 @@ BOOL CSingerPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragCont
 
 	__AssertReturn(pMediaSet && E_MediaSetType::MST_Singer == pMediaSet->m_eType, FALSE);
 
-	CWaitCursor WaitCursor;
+	__waitCursor;
 	CSinger *pSinger = m_view.getSingerMgr().RepositSinger(*(CSinger*)pMediaSet, *pTarget, DPF_DOWN == m_eDropPositionFlag);
 	__EnsureReturn(pSinger, FALSE);
 	(void)this->RefreshTree(pSinger);

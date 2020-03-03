@@ -267,7 +267,7 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 
 void CMediaResPanel::ShowPath(const wstring& strPath)
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	m_strRootPath = strPath;
 
@@ -376,7 +376,7 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 
 void CMediaResPanel::_showPath()
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	CRedrawLock RedrawLock(m_wndList);
 	
@@ -622,7 +622,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			{
 				__Ensure(CMainApp::confirmBox(L"确认删除所选文件?", this));
 
-				CWaitCursor WaitCursor;
+				__waitCursor;
 				(void)m_view.getController().removeMediaRes(lstMediaRes);
 			}
 		});
@@ -985,7 +985,7 @@ DROPEFFECT CMediaResPanel::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList&
 
 BOOL CMediaResPanel::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	CWaitCursor WaitCursor;
+	__waitCursor;
 
 	CMediaRes *pDstDir = (CMediaRes*)DragContext.pTargetObj;
 	__AssertReturn(pDstDir, FALSE);
