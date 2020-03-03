@@ -39,7 +39,7 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
 #if __windows
-        wstring strSubDir = this->absPath() + __wchDirSeparator + fileInfo.strName;
+        wstring strSubDir = this->absPath() + __wchPathSeparator + fileInfo.strName;
         QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
         strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
         if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
