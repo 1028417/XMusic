@@ -278,7 +278,7 @@ void CApp::slot_run(int nUpgradeResult)
             }
             else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
             {
-                qsErrMsg = "更新媒体库失败，媒体库不兼容";
+                qsErrMsg = "更新媒体库失败: 媒体库不兼容";
 //#if __ios
 //#endif
             }
