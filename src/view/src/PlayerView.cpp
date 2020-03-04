@@ -171,7 +171,7 @@ bool CPlayerView::handleHotkey(const tagHotkeyInfo& HotkeyInfo)
 	switch (HotkeyInfo.uKey)
 	{
 	case 'P':
-		if (E_PlayStatus::PS_Play == m_view.getPlayMgr().GetPlayStatus())
+		if (E_PlayStatus::PS_Play == m_view.getPlayMgr().playStatus())
 		{
 			m_view.m_PlayCtrl.handlePlaySpiritButtonClick(ST_PlaySpiritButton::PSB_Pause);
 		}

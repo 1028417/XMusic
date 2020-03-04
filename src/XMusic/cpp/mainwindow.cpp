@@ -1087,7 +1087,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
 
         __appAsync(100, [&](){
-            if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().GetPlayStatus())
+            if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
             {
                 _updatePlayPauseButton(false);
             }
@@ -1098,7 +1098,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
 
         __appAsync(100, [&](){
-            if (E_PlayStatus::PS_Play == m_app.getPlayMgr().GetPlayStatus())
+            if (E_PlayStatus::PS_Play == m_app.getPlayMgr().playStatus())
             {
                 _updatePlayPauseButton(true);
             }
@@ -1197,7 +1197,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
 
         auto barProgress = ui.barProgress;
-        if (barProgress->maximum() > 0 && m_app.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Play)
+        if (barProgress->maximum() > 0 && m_app.getPlayMgr().playStatus() == E_PlayStatus::PS_Play)
         {
             UINT uSeekPos = pos.x() * barProgress->maximum() / barProgress->width();
             /*if (barProgress->maxBuffer() > 0)

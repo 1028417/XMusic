@@ -502,9 +502,14 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
         {
             _flashRow(lvRow.uRow);
 
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, false));
+            bool bPlay = false;
+            if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+            {
+                bPlay = true;
+            }
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, bPlay));
 
-             return;
+            return;
         }
     }
 

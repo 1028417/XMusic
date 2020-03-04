@@ -232,7 +232,7 @@ bool CPlayCtrl::addPlayingItem(const SArray<wstring>& arrOppPaths, int nPos)
 
 	if (nPos >= 0 || CMainApp::getKeyState(VK_CONTROL))
 	{
-		bool bNeedPlay = (m_view.getPlayMgr().GetPlayStatus() == E_PlayStatus::PS_Stop);
+		bool bNeedPlay = (m_view.getPlayMgr().playStatus() == E_PlayStatus::PS_Stop);
 		return m_view.getPlayMgr().insert(arrOppPaths, bNeedPlay, nPos);
 	}
 	else

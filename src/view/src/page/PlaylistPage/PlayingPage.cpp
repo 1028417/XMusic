@@ -117,11 +117,11 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	{
 		__EnsureBreak(!arrSelPlayItem.empty());
 
-		auto ePrevPlayStatus = PlayMgr.GetPlayStatus();
+		auto ePrevPlayStatus = PlayMgr.playStatus();
 
 		(void)PlayMgr.remove((ConstPtrArray<CPlayItem>&)arrSelPlayItem);
 
-		if (ePrevPlayStatus != E_PlayStatus::PS_Stop && PlayMgr.GetPlayStatus() == E_PlayStatus::PS_Stop)
+		if (ePrevPlayStatus != E_PlayStatus::PS_Stop && PlayMgr.playStatus() == E_PlayStatus::PS_Stop)
 		{
 			m_view.m_PlayCtrl.getPlaySpirit()->clear();
 		}
