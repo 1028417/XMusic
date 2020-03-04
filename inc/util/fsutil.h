@@ -151,9 +151,9 @@ public:
     inline static void transSeparator(S& strPath)
     {
 #if __windows
-        strutil::replace(strPath, __chrSlant, __chrBackSlant);
+        strutil::replaceChar(strPath, __chrSlant, __chrBackSlant);
 #else
-        strutil::replace(strPath, __chrBackSlant, __chrSlant);
+        strutil::replaceChar(strPath, __chrBackSlant, __chrSlant);
 #endif
     }
 
