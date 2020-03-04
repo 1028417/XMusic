@@ -335,10 +335,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	m_model.getMediaLib().GetAllMedias(lstMedias);
 	__Ensure(lstMedias);
 
-	CSingerNameGuard SingerNameGuard(m_model.getSingerMgr());
+	CFileTitleGuard FileTitleGuard(m_model.getSingerMgr());
 	TD_SearchMediaInfoMap mapSearchMedias;
 	lstMedias([&](CMedia& media) {
-		CSearchMediaInfo::genSearchMediaInfo(SingerNameGuard, media, mapSearchMedias);
+		CSearchMediaInfo::genSearchMediaInfo(FileTitleGuard, media, mapSearchMedias);
 	});
 	
 	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
@@ -350,7 +350,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			return;
 		}
 
-		cauto strSingerName = SingerNameGuard.matchSinger(fsutil::getFileTitle(strFile));
+		cauto strSingerName = FileTitleGuard.matchSinger(fsutil::getFileTitle(strFile));
 		CMediaResInfo MediaResInfo(strFile, strSingerName);
 		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
 		{
