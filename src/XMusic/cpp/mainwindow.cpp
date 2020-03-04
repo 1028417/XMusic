@@ -728,19 +728,20 @@ void MainWindow::_relayout()
     UINT uRowCount = 0;
     if (m_bHScreen)
     {
-        int x_PlayingList = ui.barProgress->geometry().right();
-        if (cx >= __size(1920))
-        {
-            x_PlayingList += __size(100) * fCXRate;
-        }
-        else
-        {
-            x_PlayingList += __size(80);
-        }
-
         UINT uMargin = __size(45);
-        int cy_PlayingList = cx - x_PlayingList - uMargin * fCXRate;
-        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cy_PlayingList, cy-uMargin*2);
+        UINT xOffset = uMargin;
+        if (cx > __size(1920))
+        {
+            xOffset += __size(120) * fCXRate;
+        }
+        else if (cx > __size(1800))
+        {
+            xOffset += __size(80) * fCXRate;
+        }
+        int x_PlayingList = ui.barProgress->geometry().right() + xOffset;
+
+        int cx_PlayingList = cx - x_PlayingList - uMargin * fCXRate;
+        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
         uRowCount = MAX(uRowCount,7);
