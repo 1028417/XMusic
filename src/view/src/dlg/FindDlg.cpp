@@ -3,8 +3,6 @@
 #include "FindDlg.h"
 #include "VerifyResultDlg.h"
 
-// CFindDlg ¶Ô»°¿ò
-
 void CFindDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -214,11 +212,14 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 			auto pAlbumItem = MediaMixture.GetAlbumItem();
 			if (2 == iSubItem)
 			{
-				if (NULL != pPlayItem)
+				if (pPlayItem)
 				{
-					m_view.m_MediaResPage.HittestMedia(*pPlayItem, *this);
+					if (!m_view.hittestRelatedMediaSet(*pPlayItem, E_MediaSetType::MST_Singer))
+					{
+						m_view.m_MediaResPage.HittestMedia(*pPlayItem, *this);
+					}
 				}
-				else if (NULL != pAlbumItem)
+				else if (pAlbumItem)
 				{
 					m_view.m_MediaResPage.HittestMedia(*pAlbumItem, *this);
 				}
@@ -236,7 +237,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 				}
 			}
 
-			if (NULL != pPlayItem)
+			if (pPlayItem)
 			{
 				m_view.hittestMedia(*pPlayItem);
 			}

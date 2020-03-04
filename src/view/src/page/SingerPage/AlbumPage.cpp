@@ -143,11 +143,12 @@ BOOL CAlbumPage::OnInitDialog()
 			return;
 		}
 
+		BYTE uTextAlpha = 0;
 		if (pAlbumItem->fileSize() == -1)
 		{
-			lvcd.setTextAlpha(128);
+			uTextAlpha = 128;
 		}
-		
+
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Info:
@@ -187,12 +188,18 @@ BOOL CAlbumPage::OnInitDialog()
 
 			break;
 		case __Column_AddTime:
+			uTextAlpha = 128;
 			lvcd.fFontSizeOffset = -.2f;
 
 			break;
 		default:
 			break;
 		};
+
+		if (uTextAlpha != 0)
+		{
+			lvcd.setTextAlpha(uTextAlpha);
+		}
 	});
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {
@@ -361,7 +368,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 	{
 		(void)m_wndAlbumItemList.SetFocus();
 	}
-	else if (NULL != pIMedia)
+	else if (pIMedia)
 	{
 		m_wndMediaResPanel.HittestMedia(*pIMedia, *this);
 		(void)m_wndMediaResPanel.SetFocus();

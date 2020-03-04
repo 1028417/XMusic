@@ -931,7 +931,7 @@ void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMed
 
 void __view::hittestMedia(CMedia& media)
 {
-	if (NULL != media.m_pParent)
+	if (media.m_pParent)
 	{
 		this->_hittestMediaSet(*media.m_pParent, &media);
 	}
@@ -945,10 +945,9 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 	if (nRelatedMediaID > 0)
 	{
 		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
-		if (NULL != pRelatedMedia && NULL != pRelatedMedia->m_pParent)
+		if (pRelatedMedia)
 		{
-			_hittestMediaSet(*pRelatedMedia->m_pParent, pRelatedMedia);
-
+			hittestMedia(*pRelatedMedia);
 			return true;
 		}
 	}
