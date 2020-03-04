@@ -125,8 +125,6 @@ public:
         return m_newMedialibConf;
     }
 
-    bool loadShareUrl(Instream& ins);
-
     bool loadXUrl(Instream& ins);
 
     bool loadXSnapshot(Instream& ins);

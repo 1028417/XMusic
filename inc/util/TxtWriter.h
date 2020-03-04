@@ -2,12 +2,12 @@
 #pragma once
 
 #if __windows
-#define __DefEOL E_EOLFlag::eol_rn
+#define __DefEOL E_EOLType::eol_rn
 #else
-#define __DefEOL E_EOLFlag::eol_n
+#define __DefEOL E_EOLType::eol_n
 #endif
 
-enum class E_EOLFlag
+enum class E_EOLType
 {
 	eol_n = 0,
 	eol_rn
@@ -242,27 +242,27 @@ class __UtilExt CTxtWriter : public ITxtWriter
 public:
 	virtual ~CTxtWriter() {}
 
-	CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
+    CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
 		ITxtWriter(eEncodeType),
-		m_eEOLFlag(eEOLFlag)
+        m_eEOLFlag(eEOLType)
 	{
 	}
 
-    CTxtWriter(const wstring& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
+    CTxtWriter(const wstring& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
         ITxtWriter(eEncodeType),
-        m_eEOLFlag(eEOLFlag)
+        m_eEOLFlag(eEOLType)
     {
         (void)open(strFile, bTrunc);
     }
-    CTxtWriter(const string& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLFlag eEOLFlag = __DefEOL) :
+    CTxtWriter(const string& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
         ITxtWriter(eEncodeType),
-        m_eEOLFlag(eEOLFlag)
+        m_eEOLFlag(eEOLType)
     {
         (void)open(strFile, bTrunc);
     }
 
 private:
-	E_EOLFlag m_eEOLFlag;
+    E_EOLType m_eEOLFlag;
 
 	OFStream m_ofs;
 
@@ -299,18 +299,18 @@ class __UtilExt CUTF8TxtWriter : public CTxtWriter
 public:
 	virtual ~CUTF8TxtWriter() {}
 
-	CUTF8TxtWriter(bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
+    CUTF8TxtWriter(bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
+        CTxtWriter(bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLType)
 	{
 	}
 
-	CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
+    CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
+        CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLType)
 	{
 	}
 
-	CUTF8TxtWriter(const string& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLFlag eEOLFlag = __DefEOL) :
-		CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLFlag)
+    CUTF8TxtWriter(const string& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
+        CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLType)
 	{
 	}
 };
@@ -326,21 +326,21 @@ class __UtilExt CUCS2TextWriter : public CTxtWriter
 public:
 	virtual ~CUCS2TextWriter() {}
 
-	CUCS2TextWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+    CUCS2TextWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
 		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
-			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+            : E_TxtEncodeType::TET_UCS2_BigEndian, eEOLType)
 	{
 	}
 
-	CUCS2TextWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+    CUCS2TextWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
-			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+            : E_TxtEncodeType::TET_UCS2_BigEndian, eEOLType)
 	{
 	}
 
-	CUCS2TextWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLFlag eEOLFlag = __DefEOL) :
+    CUCS2TextWriter(const string& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
-			: E_TxtEncodeType::TET_UCS2_BigEndian, eEOLFlag)
+            : E_TxtEncodeType::TET_UCS2_BigEndian, eEOLType)
 	{
 	}
 };
@@ -434,8 +434,8 @@ private:
 			}
 
 			if (!cb(strSub))
-			{
-                                return;
+            {
+                return;
 			}
 
 			prePos = pos + 1;
@@ -443,7 +443,7 @@ private:
 
 		if (prePos < strText.size())
 		{
-			cb(strText.substr(prePos));
-                }
+            cb(strText.substr(prePos));
+        }
 	}
 };

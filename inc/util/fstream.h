@@ -151,7 +151,7 @@ class __UtilExt Outstream
 public:
 	virtual ~Outstream() {}
 
-	virtual size_t write(const void *buff, size_t size, size_t count) = 0;
+    virtual size_t write(const void *pData, size_t size, size_t count) = 0;
 
     virtual void flush() = 0;
 };
@@ -310,19 +310,32 @@ public:
         (void)fflush(m_pf);
     }
 
-	inline virtual size_t write(const void *buff, size_t size, size_t count) override
+    inline virtual size_t write(const void *pData, size_t size, size_t count) override
 	{
-		return fwrite(buff, size, count, m_pf);
-	}
-	inline size_t write(const void *buff, size_t size)
-	{
-		return fwrite(buff, 1, size, m_pf);
+        return fwrite(pData, size, count, m_pf);
 	}
 
-	inline bool writex(const void *buff, size_t size)
+    inline size_t write(const void *pData, size_t size)
 	{
-		return fwrite(buff, size, 1, m_pf) == 1;
+        return write(pData, 1, size);
 	}
+
+    inline bool writex(const void *pData, size_t size)
+	{
+        return write(pData, size, 1) == 1;
+	}
+
+    template <typename T>
+    bool writex(const T& data)
+    {
+        return writex(&data, sizeof(data));
+    }
+
+    template <typename T>
+    size_t write(const T* pData, size_t count)
+    {
+        return write(pData, sizeof(T), count);
+    }
 
 	template <typename T>
 	size_t write(const TBuffer<T>& buff)
@@ -335,43 +348,43 @@ public:
 		return writex(buff, buff.size());
 	}
 
-	size_t write(const CByteBuffer& bbfBuff)
+    size_t write(const CByteBuffer& bbfData)
 	{
-		return write(bbfBuff, bbfBuff->size());
+        return write(bbfData, bbfData->size());
 	}
-	bool writex(const CByteBuffer& bbfBuff)
+    bool writex(const CByteBuffer& bbfData)
 	{
-		return writex(bbfBuff, bbfBuff->size());
+        return writex(bbfData, bbfData->size());
 	}
 
-	size_t write(const CCharBuffer& cbfBuff)
+    size_t write(const CCharBuffer& cbfData)
 	{
-		return write(cbfBuff, cbfBuff->size());
+        return write(cbfData, cbfData->size());
 	}
-	bool writex(const CCharBuffer& cbfBuff)
+    bool writex(const CCharBuffer& cbfData)
 	{
-		return writex(cbfBuff, cbfBuff->size());
+        return writex(cbfData, cbfData->size());
 	}
 
 	template <typename S>
-	inline static long writefile(const S& strFile, bool bTrunc, const void *buff, size_t size, size_t count)
+    inline static long writefile(const S& strFile, bool bTrunc, const void *pData, size_t size, size_t count)
 	{
 		OFStream ofs(strFile, bTrunc);
 		__EnsureReturn(ofs, -1);
 
-		return ofs.write(buff, size, count);
+        return ofs.write(pData, size, count);
 	}
 
 	template <typename S>
-	inline static long writefile(const S& strFile, bool bTrunc, const void *buff, size_t size)
+    inline static long writefile(const S& strFile, bool bTrunc, const void *pData, size_t size)
 	{
-		return writefile(strFile, bTrunc, buff, 1, size);
+        return writefile(strFile, bTrunc, pData, 1, size);
 	}
 
 	template <typename S>
-	inline static bool writefilex(const S& strFile, bool bTrunc, const void *buff, size_t size)
+    inline static bool writefilex(const S& strFile, bool bTrunc, const void *pData, size_t size)
 	{
-		return writefile(strFile, bTrunc, buff, size, 1) == 1;
+        return writefile(strFile, bTrunc, pData, size, 1) == 1;
 	}
 
 	template <typename S, typename T>
@@ -387,27 +400,27 @@ public:
 	}
 
 	template <typename S>
-	static long writefile(const S& strFile, bool bTrunc, CByteBuffer& bbfBuff)
+    static long writefile(const S& strFile, bool bTrunc, CByteBuffer& bbfData)
 	{
-		return writefile(strFile, bTrunc, bbfBuff, bbfBuff->size());
+        return writefile(strFile, bTrunc, bbfData, bbfData->size());
 	}
 
 	template <typename S>
-	static bool writefilex(const S& strFile, bool bTrunc, CByteBuffer& bbfBuff)
+    static bool writefilex(const S& strFile, bool bTrunc, CByteBuffer& bbfData)
 	{
-		return writefilex(strFile, bTrunc, bbfBuff, bbfBuff->size());
+        return writefilex(strFile, bTrunc, bbfData, bbfData->size());
 	}
 
 	template <typename S>
-	static long writefile(const S& strFile, bool bTrunc, CCharBuffer& cbfBuff)
+    static long writefile(const S& strFile, bool bTrunc, CCharBuffer& cbfData)
 	{
-		return writefile(strFile, bTrunc, cbfBuff, cbfBuff->size());
+        return writefile(strFile, bTrunc, cbfData, cbfData->size());
 	}
 
 	template <typename S>
-	static bool writefilex(const S& strFile, bool bTrunc, CCharBuffer& cbfBuff)
+    static bool writefilex(const S& strFile, bool bTrunc, CCharBuffer& cbfData)
 	{
-		return writefilex(strFile, bTrunc, cbfBuff, cbfBuff->size());
+        return writefilex(strFile, bTrunc, cbfData, cbfData->size());
 	}
 };
 
