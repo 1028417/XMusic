@@ -529,14 +529,14 @@ namespace NS_SSTL
 		void qsortFirst()
 		{
 			tagTrySort<__FirstType> trySort;
-            __Super::sort([&](__PairRef pr1, __PairRef pr2) {
+            __Super::qsort([&](__PairConstRef pr1, __PairConstRef pr2) {
                 return trySort(pr1.first, pr2.first);
 			});
 		}
 
 		void qsortFirst(__CB_Sort_T<__FirstType> cb)
 		{
-            __Super::sort([&](__PairRef pr1, __PairRef pr2) {
+            __Super::qsort([&](__PairConstRef pr1, __PairConstRef pr2) {
                 return cb(pr1.first, pr2.first);
 			});
 		}
@@ -544,14 +544,14 @@ namespace NS_SSTL
 		void qsortSecond()
 		{
 			tagTrySort<__SecondType> trySort;
-            __Super::qsort([&](__PairRef pr1, __PairRef pr2) {
+            __Super::qsort([&](__PairConstRef pr1, __PairConstRef pr2) {
                 return trySort(pr1.second, pr2.second);
 			});
 		}
 
 		void qsortSecond(__CB_Sort_T<__SecondType> cb)
 		{
-			__Super::qsort([&](__PairRef pr1, __PairRef pr2) {
+			__Super::qsort([&](__PairConstRef pr1, __PairConstRef pr2) {
 				return cb(pr1.second, pr2.second);
 			});
 		}

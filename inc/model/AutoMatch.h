@@ -8,11 +8,14 @@ public:
 private:
 	class CSingerMgr& m_SingerMgr;
 
-	list<pair<wstring, wstring>> m_lstSingerInfo;
+	PairList<wstring, wstring> m_plSingerInfo;
+
+private:
+	wstring _matchSinger(const wstring& strFileTitle);
 
 public:
-	wstring matchSinger(IMedia& media);
 	wstring matchSinger(const wstring& strFileTitle);
+	wstring matchSinger(IMedia& media);
 };
 
 class __ModelExt CFileTitle

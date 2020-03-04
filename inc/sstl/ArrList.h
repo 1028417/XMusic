@@ -260,27 +260,23 @@ namespace NS_SSTL
 			return __Super::popBack(data);
 		}
 
-		ArrListT& qsort()
-		{
-			tagTrySort<__DataType> trySort;
-			return qsort([&](__DataType& lhs, __DataType& rhs) {
-				return trySort(lhs, rhs);
-			});
-		}
-
 		void qsort(__CB_Sort_T<__DataType> cb)
 		{
-			//__Super::sort(cb);
-			//m_ptrArray.assign(m_data);
-
 			m_ptrArray.qsort([&](__DataType& lhs, __DataType& rhs) {
 				if (cb(lhs, rhs))
 				{
 					std::swap(lhs, rhs);
-					return true;
 				}
 
 				return false;
+			});
+		}
+
+		ArrListT& qsort()
+		{
+			tagTrySort<__DataType> trySort;
+			return qsort([&](__DataConstRef lhs, __DataConstRef rhs) {
+				return trySort(lhs, rhs);
 			});
 		}
 

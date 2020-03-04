@@ -943,7 +943,7 @@ namespace NS_SSTL
             __Super::splice(pos, nRemove, __InitList());
 		}
 
-		void qsort(__CB_Sort_T<__DataType> cb)
+		void qsort(const function<bool(__RefType lhs, __RefType rhs)>& cb)
 		{
 			__Super::qsort([&](__PtrType lhs, __PtrType rhs) {
                 if (NULL != lhs && NULL != rhs)
