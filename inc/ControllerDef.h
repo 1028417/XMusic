@@ -36,15 +36,15 @@ struct tagPlayCtrl
         uPlayIdx = uIdx;
     }
 
-    tagPlayCtrl(IMedia& media, bool bInsertPlay)
-    {
-        ePlayCtrl = bInsertPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
-        paMedias.assign(media);
-    }
     tagPlayCtrl(const TD_IMediaList& t_paMedias)
     {
         ePlayCtrl = E_PlayCtrl::PC_Assign;
         paMedias.assign(t_paMedias);
+    }
+    tagPlayCtrl(IMedia& media, bool bPlay)
+    {
+        ePlayCtrl = bPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
+        paMedias.assign(media);
     }
 
     tagPlayCtrl(E_DemandMode eMode, E_LanguageType eLanguage = E_LanguageType::LT_None)

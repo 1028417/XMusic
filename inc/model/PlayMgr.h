@@ -95,7 +95,7 @@ public:
         return m_Player;
 	}
 
-	E_PlayStatus GetPlayStatus();
+    E_PlayStatus playStatus() const;
 
 	void SetPlayStatus(E_PlayStatus ePlayStatus);
 	
