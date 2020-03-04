@@ -1,23 +1,5 @@
 #pragma once
 
-class __ModelExt CSingerNameGuard
-{
-public:
-	CSingerNameGuard(class CSingerMgr& SingerMgr);
-	
-private:
-	class CSingerMgr& m_SingerMgr;
-
-	PairList<wstring, wstring> m_plSingerInfo;
-
-private:
-	wstring _matchSinger(const wstring& strFileTitle);
-
-public:
-	wstring matchSinger(const wstring& strFileTitle);
-	wstring matchSinger(IMedia& media);
-};
-
 class __ModelExt CFileTitle
 {
 private:
@@ -104,7 +86,7 @@ typedef map<wstring, class CSearchMediaInfo> TD_SearchMediaInfoMap;
 class __ModelExt CSearchMediaInfo
 {
 public:
-	static void genSearchMediaInfo(CSingerNameGuard& SingerNameGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
+	static void genSearchMediaInfo(CFileTitleGuard& FileTitleGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
 
 	CSearchMediaInfo() {}
 
@@ -180,7 +162,7 @@ private:
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths
 		, list<wstring>& lstPaths, list<wstring>& lstNewSubPaths);
 
-	void enumMediaRes(CSingerNameGuard& SingerNameGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
+	void enumMediaRes(class CFileTitleGuard& FileTitleGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
 
     void matchMedia(CMediaResInfo& MediaResInfo, TD_SearchMediaInfoMap& mapSearchMedias);
 };

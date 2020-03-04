@@ -83,13 +83,6 @@ public:
 		return str.substr(0, pos+1);
 	}
 
-	template <class S>
-	static void trim(S& str, const S& t)
-	{
-		ltrim(str, t);
-		rtrim(str, t);
-	}
-
 	template <class S, typename T = decltype(*S().c_str())>
 	static void trim(S& str, T t = ' ')
 	{

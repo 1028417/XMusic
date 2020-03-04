@@ -19,28 +19,7 @@ enum class E_MediaFileType
 
 class __MediaLibExt IMedia
 {
-	static const wstring g_strEraseChars;
 public:
-    static void transTitle(wstring& strFileTitle)
-    {
-		strutil::eraseChars(strFileTitle, g_strEraseChars);
-
-		for (auto pstr : { L"mqms2", L"-163" })
-		{
-			strutil::replace(strFileTitle, pstr);
-		}
-
-		strutil::trim(strFileTitle);
-		strutil::lowerCase(strFileTitle);
-    }
-
-    static wstring transTitle_r(const wstring& strFileTitle)
-    {
-        auto strRet = strFileTitle;
-        transTitle(strRet);
-        return strRet;
-    }
-
 	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
 	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
 

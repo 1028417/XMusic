@@ -21,12 +21,14 @@ extern ITxtWriter& g_modelLogger;
 
 #include "OptionMgr.h"
 
-#if __winvc
-#include "BackupMgr.h"
+#include "FileTitleGuard.h"
 
+#if __winvc
 #include "AutoMatch.h"
 
 #include "MediaMixer.h"
+
+#include "BackupMgr.h"
 #endif
 
 #include "PlaylistMgr.h"
