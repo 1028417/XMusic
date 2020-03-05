@@ -1031,5 +1031,5 @@ UINT __view::genBiteRateAlpha(CMedia& media)
 		}
 	}
 
-	return 0;
+	return 255;
 }

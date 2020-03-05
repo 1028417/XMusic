@@ -80,18 +80,16 @@ BOOL CPlayItemPage::OnInitDialog()
 			cauto rc = lvcd.rc;
 			dc.FillSolidRect(&rc, lvcd.crBkg);
 
-			dc.SetTextColor(lvcd.crText);
 			m_wndList.SetCustomFont(dc, -.2f, false);
 			RECT rcText = rc;
 			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
+			UINT uAlpha = m_view.genBiteRateAlpha(*pPlayItem);
+			dc.SetTextColor(lvcd.getTextColor(uAlpha));
+			
 			dc.DrawText(pPlayItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			UINT uAlpha = m_view.genBiteRateAlpha(*pPlayItem);
-			if (uAlpha > 0)
-			{
-				dc.SetTextColor(lvcd.getTextColor(uAlpha));
-			}
+			dc.SetTextColor(lvcd.crText);
 
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
