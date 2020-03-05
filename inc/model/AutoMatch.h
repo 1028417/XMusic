@@ -81,19 +81,22 @@ public:
 	}
 };
 
-typedef map<wstring, class CSearchMediaInfo> TD_SearchMediaInfoMap;
 
-class __ModelExt CSearchMediaInfo
+class __ModelExt CMatchMediaInfo
 {
 public:
-	static void genSearchMediaInfo(CFileTitleGuard& FileTitleGuard, CMedia& media, TD_SearchMediaInfoMap& mapSearchMediaInfo);
+	CMatchMediaInfo() {}
 
-	CSearchMediaInfo() {}
-
-	CSearchMediaInfo(CMedia& media, const wstring& strSingerName)
-		: m_FileTitle(media, strSingerName)
+	CMatchMediaInfo(const wstring& strPath, CMedia& media, const wstring& strSingerName)
+		: m_FileTitle(strPath, strSingerName)
+		, m_lstMedias(media)
 	{
-		m_lstMedias.add(media);
+	}
+
+	CMatchMediaInfo(const wstring& strPath, TD_MediaList& lstMedias, const wstring& strSingerName)
+		: m_FileTitle(strPath, strSingerName)
+		, m_lstMedias(lstMedias)
+	{
 	}
 
 	const CFileTitle* operator->() const
@@ -133,7 +136,7 @@ enum class E_MatchResult
 	, MR_Ignore
 };
 
-using CB_AutoMatchConfirm = function<E_MatchResult(CSearchMediaInfo&, CMediaResInfo&)>;
+using CB_AutoMatchConfirm = function<E_MatchResult(CMatchMediaInfo&, CMediaResInfo&)>;
 
 using CB_AutoMatchProgress = function<bool(const wstring& strDir)>;
 
@@ -153,7 +156,7 @@ private:
 	CB_AutoMatchProgress m_cbProgress;
 	CB_AutoMatchConfirm m_cbConfirm;
 
-	map<wstring, TD_SearchMediaInfoMap> m_mapSearchMedia;
+	map<wstring, list<CMatchMediaInfo>> m_mapMatchMedia;
 	
 public:
 	void autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias);
@@ -164,5 +167,5 @@ private:
 
 	void enumMediaRes(class CFileTitleGuard& FileTitleGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
 
-    void matchMedia(CMediaResInfo& MediaResInfo, TD_SearchMediaInfoMap& mapSearchMedias);
+    void matchMedia(CMediaResInfo& MediaResInfo, list<CMatchMediaInfo>& lstMatchMedias);
 };

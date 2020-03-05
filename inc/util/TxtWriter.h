@@ -373,17 +373,13 @@ public:
 	}
 
     E_TxtHeadType read(Instream& ins, string& strText)
-	{
-		string t_strText;
-        _read(ins, t_strText);
-        strText.append(t_strText);
+    {
+        _read(ins, strText);
         return m_eHeadType;
 	}
     E_TxtHeadType read(Instream& ins, wstring& strText)
-	{
-		wstring t_strText;
-		_read(ins, t_strText);
-		strText.append(t_strText);
+    {
+        _read(ins, strText);
         return m_eHeadType;
 	}
 	

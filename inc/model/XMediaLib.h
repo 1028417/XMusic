@@ -127,8 +127,6 @@ public:
 
     bool loadXUrl(Instream& ins);
 
-    bool loadXSnapshot(Instream& ins);
-
     bool checkXUrl(const wstring& strPath);
 
     string getXUrl(const wstring& strPath)
@@ -136,7 +134,11 @@ public:
         return m_xurlMap.get(strPath);
     }
 
+    bool loadXSnapshot(Instream& ins);
+
 private:
+    bool _loadXUrl(const string& strText);
+
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
     CMediaDir* _genSnapshotDir(const wstring& strFileType, const JValue& jRoot, CMediaDir *pParent);
