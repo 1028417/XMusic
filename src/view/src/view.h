@@ -6,7 +6,7 @@ class __view;
 
 #define __PlaySpiritSkinDir (fsutil::getModuleSubPath(L"skin\\"))
 
-#define __AsyncTaskElapse 50
+#define __AsyncTaskElapse (std::thread::hardware_concurrency()>4?:50:100)
 
 #include "viewdef.h"
 
@@ -190,4 +190,6 @@ public:
 	void updateMediaRelated(const tagMediaSetChanged& MediaSetChanged);
 
 	bool copyMediaTitle(IMedia& media);
+
+	UINT genBiteRateAlpha(CMedia& media);
 };

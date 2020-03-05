@@ -467,24 +467,22 @@ int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 #if __winvc
 bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
 	, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias)
-{
-	list<pair<CMedia*, wstring>> lstResult;
-	
+{	
 	map<wstring, bool> mapMatchRecoed;
 
-	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo) {
-		auto& bMatchRecord = mapMatchRecoed[SearchMediaInfo->m_strPath];
+	CAutoMatch AutoMatch((CModel&)m_model, cbProgress, [&](CMatchMediaInfo& MatchMediaInfo, CMediaResInfo& MediaResInfo) {
+		auto& bMatchRecord = mapMatchRecoed[MatchMediaInfo->m_strPath];
 		if (bMatchRecord)
 		{
 			return E_MatchResult::MR_No;
 		}
 		
-		auto eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
+		auto eRet = cbConfirm(MatchMediaInfo, MediaResInfo);
 		__EnsureReturn(E_MatchResult::MR_Yes == eRet, eRet);
 		
 		bMatchRecord = true;
 
-		SearchMediaInfo.medias()([&](CMedia& media){
+		MatchMediaInfo.medias()([&](CMedia& media){
 			mapUpdatedMedias[&media] = MediaResInfo->m_strPath;
 		});
 

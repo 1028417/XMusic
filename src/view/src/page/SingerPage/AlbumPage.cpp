@@ -143,12 +143,6 @@ BOOL CAlbumPage::OnInitDialog()
 			return;
 		}
 
-		BYTE uTextAlpha = 0;
-		if (pAlbumItem->fileSize() == -1)
-		{
-			uTextAlpha = 128;
-		}
-
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Info:
@@ -163,6 +157,12 @@ BOOL CAlbumPage::OnInitDialog()
 			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
 			dc.DrawText(pAlbumItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			UINT uAlpha = m_view.genBiteRateAlpha(*pAlbumItem);
+			if (uAlpha > 0)
+			{
+				dc.SetTextColor(lvcd.getTextColor(uAlpha));
+			}
 
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
@@ -186,20 +186,21 @@ BOOL CAlbumPage::OnInitDialog()
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;
 
+			if (pAlbumItem->fileSize() == -1)
+			{
+				lvcd.setTextAlpha(128);
+			}
+
 			break;
 		case __Column_AddTime:
-			uTextAlpha = 128;
 			lvcd.fFontSizeOffset = -.2f;
+
+			lvcd.setTextAlpha(128);
 
 			break;
 		default:
 			break;
 		};
-
-		if (uTextAlpha != 0)
-		{
-			lvcd.setTextAlpha(uTextAlpha);
-		}
 	});
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {

@@ -271,7 +271,7 @@ void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 
 void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg)
 {
-	cauto cbConfirm = [&](CSearchMediaInfo& SearchMediaInfo, CMediaResInfo& MediaResInfo)
+	cauto cbConfirm = [&](CMatchMediaInfo& MatchMediaInfo, CMediaResInfo& MediaResInfo)
 	{
 		WString strText;
 		strText << fsutil::GetFileName(MediaResInfo->m_strPath)
@@ -300,20 +300,20 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		};
 		fnGenTag(MediaResInfo->m_strPath);
 
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->m_strPath);
+		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
 		
-		strText << L"\n\n\n是否更新以下曲目？\n" << SearchMediaInfo->fileName()
-			<< L"\n日期:  " << SearchMediaInfo.fileTimeString()
+		strText << L"\n\n\n是否更新以下曲目？\n" << MatchMediaInfo->fileName()
+			<< L"\n日期:  " << MatchMediaInfo.fileTimeString()
 			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(strMediaPath))
-			<< L"      大小:  " << SearchMediaInfo.fileSizeString();
+			<< L"      大小:  " << MatchMediaInfo.fileSizeString();
 
 		fnGenTag(strMediaPath);
 
-		strText << L"\n\n目录:  " << SearchMediaInfo->m_strPath
-			<< L"\n关联:  ";
+		strText << L"\n\n目录:  " << MatchMediaInfo->m_strPath
+			<< L"\n关联曲目:";
 
-		SearchMediaInfo.medias()([&](CMedia& media) {
-			strText.append(media.m_pParent->GetLogicPath() + L"\n     ");
+		MatchMediaInfo.medias()([&](CMedia& media) {
+			strText.append(media.m_pParent->GetLogicPath() + L"\n         ");
 		});
 
 		int nRet = ProgressDlg.msgBox(strText, L"匹配到曲目", MB_YESNOCANCEL);
@@ -336,12 +336,33 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	__Ensure(lstMedias);
 
 	CFileTitleGuard FileTitleGuard(m_model.getSingerMgr());
-	TD_SearchMediaInfoMap mapSearchMedias;
+	map<wstring, CMatchMediaInfo> mapMatchMediaInfo;
 	lstMedias([&](CMedia& media) {
-		CSearchMediaInfo::genSearchMediaInfo(FileTitleGuard, media, mapSearchMedias);
+		cauto strMediaPath = media.GetPath();
+		//strutil::lowerCase_r(strMediaPath);
+
+		cauto itr = mapMatchMediaInfo.find(strMediaPath);
+		if (itr != mapMatchMediaInfo.end())
+		{
+			itr->second.medias().add(media);
+		}
+		else
+		{
+			wstring strSingerName;
+			if (E_MediaSetType::MST_Album == media.GetMediaSetType())
+			{
+				strSingerName = CFileTitleGuard::transSingerName(((CAlbumItem&)media).GetSingerName());
+			}
+			else
+			{
+				strSingerName = FileTitleGuard.matchSinger(media);
+			}
+
+			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, media, strSingerName);
+		}
 	});
-	
-	list<pair<wstring, CSearchMediaInfo>> lstMatchResult;
+
+	list<pair<wstring, CMatchMediaInfo>> lstMatchResult;
 	for (auto& strFile : lstFiles)
 	{
 		ProgressDlg.SetStatusText((L"比对文件: " + strFile).c_str(), 1);
@@ -352,25 +373,25 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 		cauto strSingerName = FileTitleGuard.matchSinger(fsutil::getFileTitle(strFile));
 		CMediaResInfo MediaResInfo(strFile, strSingerName);
-		for (auto itr = mapSearchMedias.begin(); itr != mapSearchMedias.end(); )
+		for (auto itr = mapMatchMediaInfo.begin(); itr != mapMatchMediaInfo.end(); )
 		{
-			CSearchMediaInfo& SearchMediaInfo = itr->second;
+			CMatchMediaInfo& MatchMediaInfo = itr->second;
 
-			if (SearchMediaInfo.matchMediaRes(MediaResInfo))
+			if (MatchMediaInfo.matchMediaRes(MediaResInfo))
 			{
-				E_MatchResult eRet = cbConfirm(SearchMediaInfo, MediaResInfo);
+				E_MatchResult eRet = cbConfirm(MatchMediaInfo, MediaResInfo);
 				if (E_MatchResult::MR_Ignore == eRet)
 				{
-					//itr = mapSearchMedias.erase(itr);
+					//itr = mapMatchMediaInfo.erase(itr);
 					//continue;
 					break;
 				}
 
 				if (E_MatchResult::MR_Yes == eRet)
 				{
-					lstMatchResult.emplace_back(MediaResInfo->m_strPath, SearchMediaInfo);
+					lstMatchResult.emplace_back(MediaResInfo->m_strPath, MatchMediaInfo);
 
-					(void)mapSearchMedias.erase(itr);
+					(void)mapMatchMediaInfo.erase(itr);
 
 					break;
 				}
@@ -396,8 +417,8 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			return;
 		}
 
-		CSearchMediaInfo& SearchMediaInfo = pr.second;
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(SearchMediaInfo->m_strPath);
+		CMatchMediaInfo& MatchMediaInfo = pr.second;
+		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
 		wstring strDstPath = fsutil::GetParentDir(strMediaPath)
 			+ __wchPathSeparator + fsutil::GetFileName(strSrcPath);
 
@@ -411,9 +432,9 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			}
 
 			wstring strOppPath = m_model.getMediaLib().toOppPath(strDstPath);
-			mapUpdateFiles.set(SearchMediaInfo->m_strPath, strOppPath);
+			mapUpdateFiles.set(MatchMediaInfo->m_strPath, strOppPath);
 
-			SearchMediaInfo.medias()([&](CMedia& media) {
+			MatchMediaInfo.medias()([&](CMedia& media) {
 				mapUpdatedMedias[&media] = strOppPath;
 			});
 
@@ -997,4 +1018,18 @@ bool __view::copyMediaTitle(IMedia& media)
 	CloseClipboard();
 
 	return true;
+}
+
+UINT __view::genBiteRateAlpha(CMedia& media)
+{
+	if (media.duration() > 0)
+	{
+		UINT bitRate = UINT(media.fileSize() / media.duration());
+		if (bitRate < 2e5)
+		{
+			return BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2));
+		}
+	}
+
+	return 0;
 }

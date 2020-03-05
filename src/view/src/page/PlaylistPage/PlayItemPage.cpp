@@ -72,12 +72,6 @@ BOOL CPlayItemPage::OnInitDialog()
 			return;
 		}
 
-		BYTE uTextAlpha = 0;
-		if (pPlayItem->fileSize() == -1)
-		{
-			uTextAlpha = 128;
-		}
-
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Info:
@@ -86,21 +80,17 @@ BOOL CPlayItemPage::OnInitDialog()
 			cauto rc = lvcd.rc;
 			dc.FillSolidRect(&rc, lvcd.crBkg);
 
-			dc.SetTextColor(lvcd.getTextColor(uTextAlpha));
-
+			dc.SetTextColor(lvcd.crText);
 			m_wndList.SetCustomFont(dc, -.2f, false);
 			RECT rcText = rc;
 			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
 			dc.DrawText(pPlayItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			if (pPlayItem->duration() > 0)
+			UINT uAlpha = m_view.genBiteRateAlpha(*pPlayItem);
+			if (uAlpha > 0)
 			{
-				UINT bitRate = UINT(pPlayItem->fileSize() / pPlayItem->duration());
-				if (bitRate < 2e5)
-				{
-					dc.SetTextColor(lvcd.getTextColor(BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2))));
-				}
+				dc.SetTextColor(lvcd.getTextColor(uAlpha));
 			}
 
 			rcText.left = rcText.right;
@@ -108,7 +98,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			rcText.bottom = (rcText.bottom + rcText.top) / 2 +6;
 			dc.DrawText(pPlayItem->displayFileSizeString(true).c_str()
 				, &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			
+
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
 			dc.DrawText(pPlayItem->displayDurationString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
@@ -128,17 +118,13 @@ BOOL CPlayItemPage::OnInitDialog()
 			
 			break;
 		case __Column_AddTime:
-			uTextAlpha = 128;
 			lvcd.fFontSizeOffset = -.2f;
+
+			lvcd.setTextAlpha(128);
 
 			break;
 		default:
 			break;
-		}
-
-		if (uTextAlpha != 0)
-		{
-			lvcd.setTextAlpha(uTextAlpha);
 		}
 	});
 
