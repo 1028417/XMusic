@@ -372,26 +372,30 @@ public:
 		return E_TxtHeadType::THT_UTF8Bom == m_eHeadType;
 	}
 
-	void read(Instream& ins, string& strText)
+    E_TxtHeadType read(Instream& ins, string& strText)
 	{
 		string t_strText;
         _read(ins, t_strText);
         strText.append(t_strText);
+        return m_eHeadType;
 	}
-    void read(Instream& ins, wstring& strText)
+    E_TxtHeadType read(Instream& ins, wstring& strText)
 	{
 		wstring t_strText;
 		_read(ins, t_strText);
 		strText.append(t_strText);
+        return m_eHeadType;
 	}
 	
-	void read(Instream& ins, cfn_bool_t<const string&> cb)
+    E_TxtHeadType read(Instream& ins, cfn_bool_t<const string&> cb)
 	{
 		_read(ins, cb);
+        return m_eHeadType;
 	}
-	void read(Instream& ins, cfn_bool_t<const wstring&> cb)
+    E_TxtHeadType read(Instream& ins, cfn_bool_t<const wstring&> cb)
 	{
 		_read(ins, cb);
+        return m_eHeadType;
 	}
 
 private:
