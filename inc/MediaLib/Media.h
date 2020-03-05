@@ -88,12 +88,20 @@ public:
 	}
 
 #if __winvc
-	wstring displayDurationString()
+	UINT displayDuration() const
+	{
+		return m_uDisplayDuration;
+	}
+	wstring displayDurationString() const
 	{
 		return genDurationString(m_uDisplayDuration);
 	}
 
-	wstring displayFileSizeString(bool bIgnoreByte)
+	long long displayFileSize() const
+	{
+		return m_nDisplayFileSize;
+	}
+	wstring displayFileSizeString(bool bIgnoreByte) const
 	{
 		return genFileSizeString(m_nDisplayFileSize, bIgnoreByte);
 	}
