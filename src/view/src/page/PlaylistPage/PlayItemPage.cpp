@@ -74,6 +74,13 @@ BOOL CPlayItemPage::OnInitDialog()
 
 		switch (lvcd.nSubItem)
 		{
+		case __Column_Name:
+			if (pPlayItem->fileSize() == -1)
+			{
+				lvcd.setTextAlpha(128);
+			}
+
+			break;
 		case __Column_Info:
 		{
 			CDC& dc = lvcd.dc;

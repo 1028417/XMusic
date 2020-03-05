@@ -917,7 +917,7 @@ void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
 	m_PlayingPage.RefreshList();
 }
 
-void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia)
+void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia)
 {
 	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
 	{
@@ -927,7 +927,7 @@ void __view::_hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMed
 		}
 		m_PlaylistPage.m_wndList.SelectObject(&MediaSet);
 
-		if (NULL != pMedia)
+		if (pMedia)
 		{
 			m_PlayItemPage.HittestMedia(pMedia);
 		}
@@ -954,7 +954,7 @@ void __view::hittestMedia(CMedia& media)
 {
 	if (media.m_pParent)
 	{
-		this->_hittestMediaSet(*media.m_pParent, &media);
+		this->hittestMediaSet(*media.m_pParent, &media);
 	}
 }
 
@@ -979,7 +979,7 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 		CMediaSet *pMediaSet = getMediaLib().FindSubSet(eMediaSetType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
-		_hittestMediaSet(*pMediaSet, NULL, &media);
+		this->hittestMediaSet(*pMediaSet, NULL, &media);
 
 		return true;
 	}
@@ -1022,14 +1022,14 @@ bool __view::copyMediaTitle(IMedia& media)
 
 UINT __view::genBiteRateAlpha(CMedia& media)
 {
-	if (media.duration() > 0)
+	if (media.displayFileSize() > 0 && media.displayDuration() > 0)
 	{
-		UINT bitRate = UINT(media.fileSize() / media.duration());
+		UINT bitRate = UINT(media.displayFileSize() / media.displayDuration());
 		if (bitRate < 2e5)
 		{
 			return BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2));
 		}
 	}
 
-	return 255;
+	return 0;
 }

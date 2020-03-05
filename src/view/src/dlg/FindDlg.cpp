@@ -137,7 +137,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 	if (vecMediaMixtures.size() == 1)
 	{
 		vecMediaMixtures.front([&](CMediaMixture& MediaMixture) {
-			CRedrawLock RedrawLock(m_view.m_MainWnd);
+			CRedrawLock RedrawLock(m_view.m_MainWnd, true);
 			m_view.hittestMedia(*MediaMixture.GetMedia());
 		});
 	}
@@ -206,38 +206,39 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 
 		m_MediaMixer.getMediaMixture([&](const CMediaMixture& MediaMixture) {
-			CRedrawLock RedrawLock(m_view.m_MainWnd);
+			CRedrawLock RedrawLock(m_view.m_MainWnd, true);
 
 			auto pPlayItem = MediaMixture.GetPlayItem();
 			auto pAlbumItem = MediaMixture.GetAlbumItem();
-			if (2 == iSubItem)
-			{
-				if (pPlayItem)
-				{
-					if (!m_view.hittestRelatedMediaSet(*pPlayItem, E_MediaSetType::MST_Singer))
-					{
-						m_view.m_MediaResPage.HittestMedia(*pPlayItem, *this);
-					}
-				}
-				else if (pAlbumItem)
-				{
-					m_view.m_MediaResPage.HittestMedia(*pAlbumItem, *this);
-				}
-				
-				return;
-			}
 
-			if (4 == iSubItem || NULL == pPlayItem)
+			if (2 == iSubItem)
 			{
 				if (pAlbumItem)
 				{
-					m_view.hittestMedia(*pAlbumItem);
-				
+					m_view.hittestMediaSet(*pAlbumItem->GetSinger(), NULL, pAlbumItem);
+				}
+				else if (pPlayItem)
+				{
+					m_view.m_MediaResPage.HittestMedia(*pPlayItem, *this);
+				}
+
+				return;
+			}
+			
+			if (3 == iSubItem)
+			{
+				if (pPlayItem)
+				{
+					m_view.hittestMedia(*pPlayItem);
 					return;
 				}
 			}
-
-			if (pPlayItem)
+			
+			if (pAlbumItem)
+			{
+				m_view.hittestMedia(*pAlbumItem);
+			}
+			else if (pPlayItem)
 			{
 				m_view.hittestMedia(*pPlayItem);
 			}

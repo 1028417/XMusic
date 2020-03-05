@@ -142,8 +142,6 @@ public:
 	CPlayCtrl m_PlayCtrl;
 
 private:
-	void _hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia = NULL, IMedia *pIMedia = NULL);
-
 	bool _exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
@@ -182,6 +180,8 @@ public:
 	void checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2);
 
 	void hittestMedia(CMedia& media);
+
+	void hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia = NULL);
 
 	bool hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType);
 

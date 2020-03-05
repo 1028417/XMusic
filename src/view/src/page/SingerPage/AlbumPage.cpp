@@ -145,6 +145,13 @@ BOOL CAlbumPage::OnInitDialog()
 
 		switch (lvcd.nSubItem)
 		{
+		case __Column_Name:
+			if (pAlbumItem->fileSize() == -1)
+			{
+				lvcd.setTextAlpha(128);
+			}
+
+			break;
 		case __Column_Info:
 		{
 			CDC& dc = lvcd.dc;
@@ -183,11 +190,6 @@ BOOL CAlbumPage::OnInitDialog()
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;
-
-			if (pAlbumItem->fileSize() == -1)
-			{
-				lvcd.setTextAlpha(128);
-			}
 
 			break;
 		case __Column_AddTime:
