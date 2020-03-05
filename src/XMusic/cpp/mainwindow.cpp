@@ -732,11 +732,11 @@ void MainWindow::_relayout()
         UINT xOffset = uMargin;
         if (cx > __size(1920))
         {
-            xOffset += __size(120) * fCXRate;
+            xOffset = __size(90) * fCXRate;
         }
         else if (cx > __size(1800))
         {
-            xOffset += __size(80) * fCXRate;
+            xOffset = __size(60) * fCXRate;
         }
         int x_PlayingList = ui.barProgress->geometry().right() + xOffset;
 
