@@ -1020,14 +1020,15 @@ bool __view::copyMediaTitle(IMedia& media)
 	return true;
 }
 
-UINT __view::genBiteRateAlpha(CMedia& media)
+BYTE __view::genBitRateAlpha(CMedia& media)
 {
 	if (media.displayFileSize() > 0 && media.displayDuration() > 0)
 	{
 		UINT bitRate = UINT(media.displayFileSize() / media.displayDuration());
-		if (bitRate < 2e5)
+		if (bitRate < 1e5)
 		{
-			return BYTE(255 * pow(1.0f - (float)bitRate / 2e5, 2));
+			auto uAlpha = BYTE(255 * pow(1.0f - (float)bitRate/1e5, 1));
+			return uAlpha;
 		}
 	}
 
