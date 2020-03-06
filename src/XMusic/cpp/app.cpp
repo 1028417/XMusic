@@ -330,41 +330,43 @@ void CApp::slot_run(int nUpgradeResult)
 
 int CApp::run()
 {
-    auto& option = m_ctrl.initOption();
-
     std::thread *thrUpgrade = NULL;
 
     __appAsync(100, [&](){
-        if (!_resetRootDir(option.strRootDir))
-        {
-            this->quit();
-            return;
-        }
-        g_logger << "RootDir: " >> option.strRootDir;
-
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
-        QFile qf(":/medialib.conf");
-        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-        {
-            g_logger >> "loadMedialibConfResource fail";
-            return;
-        }
-
-        cauto ba = qf.readAll();
-        IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-        tagMedialibConf orgMedialibConf;
-        if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
-        {
-            g_logger >> "readMedialibConfResource fail";
-            return;
-        }
-        g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-                 << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-                 << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-        m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
-
         thrUpgrade = new std::thread([=]() {
+            auto& option = m_ctrl.initOption();
+            if (!_resetRootDir(option.strRootDir))
+            {
+                this->quit();
+                return;
+            }
+            g_logger << "RootDir: " >> option.strRootDir;
+
+            QFile qf(":/medialib.conf");
+            if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+            {
+                g_logger >> "loadMedialibConfResource fail";
+                this->quit();
+                return;
+            }
+
+            cauto ba = qf.readAll();
+            IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
+            tagMedialibConf orgMedialibConf;
+            if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+            {
+                g_logger >> "readMedialibConfResource fail";
+
+                this->quit();
+                return;
+            }
+            g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
+                     << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+                     << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+            m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
+
             auto timeBegin = time(0);
 
             E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
