@@ -230,7 +230,7 @@ void MainWindow::showLogo()
             });
         });
 
-        timerutil::setTimerEx(40, [](){
+        timerutil::setTimerEx(40, [&](){
             auto peCompany = ui.labelLogoCompany->palette();
             auto crCompany = peCompany.color(QPalette::WindowText);
 
@@ -241,20 +241,11 @@ void MainWindow::showLogo()
 
             if (alpha >= 255)
             {
-                //timerutil::setTimerEx(500, [](){
-                    /*if (!ui.labelLogoCompany->isVisible())
-                    {
-                        return false;
-                    }
+                __appAsync(1000, [&](){
+                    ui.labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
+                });
 
-                    static UINT uTimes = 5;
-                    if (0 == --uTimes)
-                    {
-                        //ui.labelLogoCompany->setText()
-                        return false;
-                    }*/
-
-                __appAsync(500, 6, [](){
+                /*__appAsync(500, 6, [&](){
                     auto peCompany = ui.labelLogoCompany->palette();
                     auto crCompany = peCompany.color(QPalette::WindowText);
                     if (crCompany.alpha() < 255)
@@ -269,7 +260,7 @@ void MainWindow::showLogo()
                     ui.labelLogoCompany->setPalette(peCompany);
 
                     return true;
-                });
+                });*/
 
                 return false;
             }
