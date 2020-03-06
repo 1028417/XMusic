@@ -253,8 +253,8 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     auto labelLogoCompany = ui.labelLogoCompany;
     auto peCompany = labelLogoCompany->palette();
     auto crCompany = peCompany.color(QPalette::WindowText);
+    auto nAlpha = crCompany.alpha();
 
-    int nAlpha = 0;
     timerutil::setTimerEx(40, [=]()mutable{
         nAlpha += nAlphaOffset;
         if (nAlpha < 0 || nAlpha > 255)
