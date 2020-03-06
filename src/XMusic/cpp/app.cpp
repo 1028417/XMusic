@@ -564,21 +564,21 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         }
 
         auto mapUnzfile = zipFile.unzfileMap();
-        auto itrMedialibConf = mapUnzfile.find("medialib.conf");
-        if (itrMedialibConf == mapUnzfile.end())
+        auto itrUnzfile = mapUnzfile.find("medialib.conf");
+        if (itrUnzfile == mapUnzfile.end())
         {
             g_logger >> "medialibConf not found";
             eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
         CByteBuffer bbfMedialibConf;
-        if (zipFile.read(itrMedialibConf->second, bbfMedialibConf) <= 0)
+        if (zipFile.read(itrUnzfile->second, bbfMedialibConf) <= 0)
         {
             g_logger >> "readZip fail: medialibConf";
-            eRet = E_UpgradeResult::UR_Fail;
+            eRet = E_UpgradeResult::UR_ReadMedialibFail;
             continue;
         }
-        mapUnzfile.erase(itrMedialibConf);
+        mapUnzfile.erase(itrUnzfile);
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
         auto& newMedialibConf = m_model.getMediaLib().medialibConf();
@@ -635,8 +635,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             return E_UpgradeResult::UR_MedialibUncompatible;
         }
 
-        auto itrMedialib = mapUnzfile.find("medialib");
-        if (itrMedialib == mapUnzfile.end())
+        itrUnzfile = mapUnzfile.find("medialib");
+        if (itrUnzfile == mapUnzfile.end())
         {
             g_logger >> "medialib not found";
             eRet = E_UpgradeResult::UR_MedialibInvalid;
@@ -648,10 +648,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         if (!bExistDB || newMedialibConf.uMedialibVersion > orgMedialibConf.uMedialibVersion)
         {
             CByteBuffer bbfMedialib;
-            if (zipFile.read(itrMedialib->second, bbfMedialib) <= 0)
+            if (zipFile.read(itrUnzfile->second, bbfMedialib) <= 0)
             {
                 g_logger >> "readZip fail: medialib";
-                eRet = E_UpgradeResult::UR_Fail;
+                eRet = E_UpgradeResult::UR_ReadMedialibFail;
                 continue;
             }
 
@@ -668,7 +668,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
         }
 
-        mapUnzfile.erase(itrMedialib);
+        mapUnzfile.erase(itrUnzfile);
 
         for (cauto pr : mapUnzfile)
         {
@@ -676,8 +676,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             CByteBuffer bbfData;
             if (zipFile.read(unzfile, bbfData) <= 0)
             {
-                g_logger << "readSnapshot fail: " >> unzfile.strPath;
-                return E_UpgradeResult::UR_Fail;
+                g_logger << "readZip fail: " >> unzfile.strPath;
+                continue; // E_UpgradeResult::UR_ReadMedialibFail;
             }
             IFBuffer ifbData(bbfData);
 
@@ -689,14 +689,6 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                     //continue;
                 }
             }
-            /*else if (strutil::endWith(unzfile.strPath, string(".share")))
-            {
-                if (!m_model.getMediaLib().loadShareUrl(ifbData))
-                {
-                    g_logger << "loadShareUrl fail: " >> unzfile.strPath;
-                    //continue;
-                }
-            }*/
             else if (strutil::endWith(unzfile.strPath, string(".snapshot.json")))
             {
                 if (!m_model.getMediaLib().loadXSnapshot(ifbData))

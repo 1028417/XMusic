@@ -37,6 +37,7 @@ enum class E_UpgradeResult
 
     UR_DownloadFail,
     UR_MedialibInvalid,
+    UR_ReadMedialibFail,
 
     UR_MedialibUncompatible,
     UR_AppUpgradeFail,
