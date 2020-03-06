@@ -119,6 +119,12 @@ private:
 
     void _relayout();
 
+    void _updateLogoTip();
+
+    void _updateLogoCompany();
+
+    void _showUpgradeProgress();
+
     void _updateProgress();
 
     void _showAlbumName();

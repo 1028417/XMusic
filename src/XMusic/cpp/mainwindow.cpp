@@ -151,122 +151,145 @@ void MainWindow::showLogo()
 
     __setForeground(this);
 
-#if __android
     UINT uDelayTime = 100;
-#else
-    UINT uDelayTime = 600;
+#if !__android
+    uDelayTime += 500;
 #endif
     __appAsync(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
 
-        auto labelLogoTip = ui.labelLogoTip;
-        __appAsync(100, [labelLogoTip](){
-            labelLogoTip->setText("播放器");
+        __appAsync(100, [&](){
+            _updateLogoTip();
+        });
 
-            __appAsync(500, [labelLogoTip](){
-                labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
+        _updateLogoCompany();
+    });
+}
 
-                __appAsync(500, [labelLogoTip](){
-                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
+void MainWindow::_updateLogoTip()
+{
+    auto labelLogoTip = ui.labelLogoTip;
+    labelLogoTip->setText("播放器");
 
-                    __appAsync(2500, [labelLogoTip](){
+    __appAsync(500, [=](){
+        labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
+
+        __appAsync(500, [=](){
+            labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
+
+            __appAsync(2500, [=](){
 #define __logoTip "更新媒体库"
-                        if (-1 == g_nAppDownloadProgress)
-                        {
-                            labelLogoTip->setText(__logoTip);
-                        }
+                if (-1 == g_nAppDownloadProgress)
+                {
+                    labelLogoTip->setText(__logoTip);
+                }
 
-                        timerutil::setTimerEx(300, [labelLogoTip](){
-                            if (!labelLogoTip->isVisible())
-                            {
-                                return false;
-                            }
+                timerutil::setTimerEx(300, [=](){
+                    if (!labelLogoTip->isVisible())
+                    {
+                        return false;
+                    }
 
-                            if (g_nAppDownloadProgress >= 0)
-                            {
-                                QString qsText;
-                                if (0 == g_nAppDownloadProgress)
-                                {
-                                    qsText.append("下载更新包...");
-                                }
-                                else if (100 == g_nAppDownloadProgress)
-                                {
-                                    qsText.append("准备安装...");
-                                }
-                                else
-                                {
-                                    qsText.sprintf("下载更新包:  %u%%", (UINT)g_nAppDownloadProgress);
-                                }
-                                labelLogoTip->setText(qsText);
-                            }
-                            else
-                            {
-                                static UINT uDotCount = 0;
-                                uDotCount++;
-                                if (uDotCount > 3)
-                                {
-                                    uDotCount = 0;
-                                }
+                    _showUpgradeProgress();
 
-                                QString qsText(__logoTip);
-                                for (byte_t uIdx = 1; uIdx <= 3; uIdx++)
-                                {
-                                    if (uDotCount >= uIdx)
-                                    {
-                                        qsText.append('.');
-                                    }
-                                    else
-                                    {
-                                        qsText.append(' ');
-                                    }
-                                }
-                                labelLogoTip->setText(qsText);
-                            }
-
-                            return true;
-                        });
-                    });
+                    return true;
                 });
             });
         });
+    });
+}
 
-        timerutil::setTimerEx(40, [&](){
-            auto peCompany = ui.labelLogoCompany->palette();
-            auto crCompany = peCompany.color(QPalette::WindowText);
+void MainWindow::_showUpgradeProgress()
+{
+    if (g_nAppDownloadProgress >= 0)
+    {
+        QString qsText;
+        if (0 == g_nAppDownloadProgress)
+        {
+            qsText.append("下载更新包...");
+        }
+        else if (100 == g_nAppDownloadProgress)
+        {
+            qsText.append("准备安装...");
+        }
+        else
+        {
+            qsText.sprintf("下载更新包:  %u%%", (UINT)g_nAppDownloadProgress);
+        }
+        ui.labelLogoTip->setText(qsText);
+    }
+    else
+    {
+        static UINT uDotCount = 0;
+        uDotCount++;
+        if (uDotCount > 3)
+        {
+            uDotCount = 0;
+        }
 
-            auto alpha = crCompany.alpha() + 5;
+        QString qsText(__logoTip);
+        for (byte_t uIdx = 1; uIdx <= 3; uIdx++)
+        {
+            if (uDotCount >= uIdx)
+            {
+                qsText.append('.');
+            }
+            else
+            {
+                qsText.append(' ');
+            }
+        }
+        ui.labelLogoTip->setText(qsText);
+    }
+}
+
+void MainWindow::_updateLogoCompany()
+{
+    auto labelLogoCompany = ui.labelLogoCompany;
+    auto peCompany = labelLogoCompany->palette();
+    auto crCompany = peCompany.color(QPalette::WindowText);
+
+    timerutil::setTimerEx(50, [=]()mutable{
+        auto alpha = crCompany.alpha() + 5;
+        if (alpha <= 255)
+        {
             crCompany.setAlpha(alpha);
             peCompany.setColor(QPalette::WindowText, crCompany);
-            ui.labelLogoCompany->setPalette(peCompany);
+            labelLogoCompany->setPalette(peCompany);
+            return true;
+        }
 
-            if (alpha >= 255)
+        timerutil::setTimerEx(100, [=]()mutable{
+            auto alpha = crCompany.alpha() - 5;
+            if (0 == alpha)
             {
-                __appAsync(1000, [&](){
-                    ui.labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
-                });
-
-                /*__appAsync(500, 6, [&](){
-                    auto peCompany = ui.labelLogoCompany->palette();
-                    auto crCompany = peCompany.color(QPalette::WindowText);
-                    if (crCompany.alpha() < 255)
-                    {
-                        crCompany.setAlpha(255);
-                    }
-                    else
-                    {
-                        crCompany.setAlpha(170);
-                    }
-                    peCompany.setColor(QPalette::WindowText, crCompany);
-                    ui.labelLogoCompany->setPalette(peCompany);
-
-                    return true;
-                });*/
+                labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
 
                 return false;
             }
 
+            crCompany.setAlpha(alpha);
+            peCompany.setColor(QPalette::WindowText, crCompany);
+            labelLogoCompany->setPalette(peCompany);
             return true;
         });
+
+        /*__appAsync(500, 6, [=]()mutable{
+            if (crCompany.alpha() < 255)
+            {
+                crCompany.setAlpha(255);
+            }
+            else
+            {
+                crCompany.setAlpha(170);
+            }
+            peCompany.setColor(QPalette::WindowText, crCompany);
+            labelLogoCompany->setPalette(peCompany);
+
+            return true;
+        });*/
+
+        return false;
     });
 }
 
