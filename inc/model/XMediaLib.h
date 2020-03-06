@@ -111,7 +111,7 @@ private:
     class CModel& m_model;
     class IModelObserver& m_ModelObserver;
 
-#if !__winvc
+#if __OnlineMediaLib
 private:
     tagMedialibConf m_newMedialibConf;
 
@@ -145,6 +145,8 @@ private:
 #endif
 
 private:
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
+
     void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
 	CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CSinger*& pRelatedSinger) override;

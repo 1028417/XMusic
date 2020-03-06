@@ -1,7 +1,5 @@
 #pragma once
 
-#define __medialibDir L".xmusic"
-
 enum class E_AttachDirType
 {
     ADT_Internal
@@ -55,26 +53,17 @@ private:
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
 private:
-	void _onFindFile(TD_PathList& lstSubDir, TD_XFileList& lstSubFile) override;
+    virtual void _onFindFile(TD_PathList& lstSubDir, TD_XFileList& lstSubFile) override;
 
-	int _sort(const XFile& lhs, const XFile& rhs) const override;
+    virtual int _sort(const XFile& lhs, const XFile& rhs) const override;
 
-	void _onClear() override
+    virtual void _onClear() override
 	{
                 m_mapAttachDir.clear();
 	}
 
+private:
 	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
-
-	CPath* _newSubDir(const tagFileInfo& fileInfo) override
-	{
-		if (fileInfo.strName == __medialibDir)
-		{
-			return NULL;
-		}
-
-		return CMediaDir::_newSubDir(fileInfo);
-	}
 
 public:
 	void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);

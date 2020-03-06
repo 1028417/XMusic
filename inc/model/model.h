@@ -11,6 +11,7 @@ extern ITxtWriter& g_modelLogger;
 #define __ModelExt __dllimport
 #endif
 
+#define __medialibDir L".xmusic"
 #define __DBFile L"/medialib"
 
 #include "Dao.h"
