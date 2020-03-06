@@ -298,13 +298,14 @@ void CApp::slot_run(int nUpgradeResult)
         return;
     }
 
-    g_logger >> "initMediaLib";
+    auto time0 = time(0);
     if (!m_model.initMediaLib())
     {
         g_logger >> "initMediaLib fail";
         this->quit();
         return;
-    }
+    }    
+    g_logger << "initMediaLib success " >> (time(0)-time0);
 
     g_logger >> "start controller";
     if (!m_ctrl.start())
@@ -330,12 +331,12 @@ void CApp::slot_run(int nUpgradeResult)
 
 int CApp::run()
 {
-    std::thread *thrUpgrade = NULL;
+    std::thread thrUpgrade;
 
     __appAsync(100, [&](){
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
-        thrUpgrade = new std::thread([=]() {
+        thrUpgrade = std::thread([=]() {
             auto& option = m_ctrl.initOption();
             if (!_resetRootDir(option.strRootDir))
             {
@@ -392,19 +393,12 @@ int CApp::run()
     g_logger >> "stop controller";
     m_ctrl.stop();
 
-    g_logger >> "quit playSdk";
-    CPlayer::QuitSDK();
-
-//#if !__android // TODO 规避5.6.1退出的bug
-    if (thrUpgrade)
+#if !__android // TODO 规避5.6.1退出的bug
+    if (thrUpgrade.joinable())
     {
-        if (thrUpgrade->joinable())
-        {
-            thrUpgrade->join();
-        }
-        //delete thrUpgrade;
+        thrUpgrade.join();
     }
-//#endif
+#endif
 
     g_logger >> "app quit";
     m_logger.close();
@@ -551,6 +545,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             continue;
         }
+
+        auto time0 = time(0);
 
         IFBuffer ifbZip(bbfZip);
         string strPwd;
@@ -705,6 +701,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             g_logger >> "write medialibConf fail";
             //return E_UpgradeResult::UR_Fail;
         }
+
+        g_logger << "upgradeMedialib success " >> (time(0)-time0);
 
         return E_UpgradeResult::UR_Success;
     }
