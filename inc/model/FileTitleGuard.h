@@ -22,6 +22,6 @@ public:
 	static void genCollateTitle(wstring& strFileTitle);
 	static wstring genCollateTitle_r(const wstring& strFileTitle);
 
-	static void genDisplayTitle(wstring& strFileTitle);
+	static void genDisplayTitle(wstring& strPath);
 	static wstring genDisplayTitle_r(const wstring& strFileTitle);
 };
