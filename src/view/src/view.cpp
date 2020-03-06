@@ -351,7 +351,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			wstring strSingerName;
 			if (E_MediaSetType::MST_Album == media.GetMediaSetType())
 			{
-				strSingerName = CFileTitleGuard::transSingerName(((CAlbumItem&)media).GetSingerName());
+				strSingerName = CFileTitleGuard::genCollateSingerName(((CAlbumItem&)media).GetSingerName());
 			}
 			else
 			{
