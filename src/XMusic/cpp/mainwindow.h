@@ -120,12 +120,10 @@ private:
     void _relayout();
 
     void _updateLogoTip();
-
-    void _updateLogoCompany();
-
     void _showUpgradeProgress();
-
     void _updateProgress();
+
+    void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
 
     void _showAlbumName();
 

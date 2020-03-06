@@ -162,7 +162,12 @@ void MainWindow::showLogo()
             _updateLogoTip();
         });
 
-        _updateLogoCompany();
+        _updateLogoCompany(5, [&](){
+            _updateLogoCompany(-5, [&](){
+                ui.labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
+                _updateLogoCompany(5);
+            });
+        });
     });
 }
 
@@ -243,53 +248,29 @@ void MainWindow::_showUpgradeProgress()
     }
 }
 
-void MainWindow::_updateLogoCompany()
+void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 {
     auto labelLogoCompany = ui.labelLogoCompany;
     auto peCompany = labelLogoCompany->palette();
     auto crCompany = peCompany.color(QPalette::WindowText);
 
-    timerutil::setTimerEx(50, [=]()mutable{
-        auto alpha = crCompany.alpha() + 5;
-        if (alpha <= 255)
+    int nAlpha = 0;
+    timerutil::setTimerEx(40, [=]()mutable{
+        nAlpha += nAlphaOffset;
+        if (nAlpha < 0 || nAlpha > 255)
         {
-            crCompany.setAlpha(alpha);
-            peCompany.setColor(QPalette::WindowText, crCompany);
-            labelLogoCompany->setPalette(peCompany);
-            return true;
+            if (cb)
+            {
+                cb();
+            }
+            return false;
         }
 
-        timerutil::setTimerEx(100, [=]()mutable{
-            auto alpha = crCompany.alpha() - 5;
-            if (0 == alpha)
-            {
-                labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
+        crCompany.setAlpha(nAlpha);
+        peCompany.setColor(QPalette::WindowText, crCompany);
+        labelLogoCompany->setPalette(peCompany);
 
-                return false;
-            }
-
-            crCompany.setAlpha(alpha);
-            peCompany.setColor(QPalette::WindowText, crCompany);
-            labelLogoCompany->setPalette(peCompany);
-            return true;
-        });
-
-        /*__appAsync(500, 6, [=]()mutable{
-            if (crCompany.alpha() < 255)
-            {
-                crCompany.setAlpha(255);
-            }
-            else
-            {
-                crCompany.setAlpha(170);
-            }
-            peCompany.setColor(QPalette::WindowText, crCompany);
-            labelLogoCompany->setPalette(peCompany);
-
-            return true;
-        });*/
-
-        return false;
+        return true;
     });
 }
 
