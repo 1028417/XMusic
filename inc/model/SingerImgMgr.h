@@ -27,10 +27,7 @@ private:
     void _download(const string& strBaseUrl);
 
 public:
-    void quitDownload()
-    {
-        m_thrDownload.cancel();
-    }
+    void quitDownload();
 #endif
 
 public:
