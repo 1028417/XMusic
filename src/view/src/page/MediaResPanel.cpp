@@ -320,27 +320,18 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 		m_strCurrPath = pCurrPath->GetPath();
 	}
 
-	wstring strTitle;
+	wstring	strTitle;
 	
 	wstring strOppPath = fsutil::GetOppPath(m_strCurrPath, m_strRootPath);
-	if (strOppPath.empty())
+	if (!strOppPath.empty())
 	{
-		if (m_bShowRelatedSinger)
-		{
-			strTitle = L"Γ½ΜεΏβ";
-		}
-	}
-	else
-	{
+		strOppPath.erase(0,1);
+
 		size_t uMaxTabTitle = __MaxTabTitle;
 		if (!m_bShowRelatedSinger)
 		{
 			strTitle = __wchPathSeparator;
 			uMaxTabTitle -= 5;
-		}
-		else
-		{
-			strTitle.append(L"...\\");
 		}
 		
 		wstring strDirName = fsutil::getFileTitle(strOppPath);
@@ -354,6 +345,11 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 
 	if (m_bShowRelatedSinger)
 	{
+		if (strTitle.empty())
+		{
+			strTitle.append(L"Γ½ΜεΏβ");
+		}
+
 		strTitle.append(2, ' ');
 	}
 
@@ -398,7 +394,7 @@ void CMediaResPanel::_showPath()
 		});
 				
 		paSubDir([&](CPath& subDir, size_t uIdx) {
-			auto itr = mapSingerInfo.find(subDir.name());
+			auto itr = mapSingerInfo.find(subDir.fileName());
 
 			auto& MediaRes = ((CMediaRes&)subDir);
 			if (itr != mapSingerInfo.end())

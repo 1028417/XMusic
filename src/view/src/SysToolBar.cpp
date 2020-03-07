@@ -51,6 +51,8 @@ bool CSysToolBar::Create(CWnd& wndParent)
 
 void CSysToolBar::move()
 {
+	__Ensure(m_hWnd);
+	
 	CRect rcMainWnd;
 	m_view.m_MainWnd.GetWindowRect(rcMainWnd);
 	rcMainWnd.right -= 2;

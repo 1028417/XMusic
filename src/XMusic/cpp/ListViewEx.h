@@ -49,13 +49,13 @@ protected:
             tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pDir(&dir)
         {
-            strText = dir.name();
+            strText = dir.fileName();
         }
         tagMediaContext(tagLVRow& lvRow, XFile& file) :
             tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
             , pFile(&file)
         {
-            strText = file.name();
+            strText = file.fileName();
         }
     };
 

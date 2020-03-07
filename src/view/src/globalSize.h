@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define __MaxTabTitle 15
+#define __MaxTabTitle 20
 
 class CGlobalSize
 {

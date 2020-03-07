@@ -689,9 +689,9 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 				return false;
 			}
 
-			jRoot["name"] = strutil::toUtf8(dir.name());
+			jRoot["name"] = strutil::toUtf8(dir.fileName());
 
-			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.name();
+			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.fileName();
 			if (!TxtWriter.writeln(strDirInfo))
 			{
 				return false;
@@ -711,7 +711,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 				paSubFile([&](XFile& subFile) {
 					JValue jFile;
-					jFile["name"] = strutil::toUtf8(fsutil::getFileTitle(subFile.name()));
+					jFile["name"] = strutil::toUtf8(fsutil::getFileTitle(subFile.fileName()));
 					jFile["size"] = ((CMediaRes&)subFile).fileSize();
 					if (bGenDuration)
 					{
@@ -720,7 +720,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 					jFiles.append(jFile);
 
 					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString(false);
-					auto& strFileInfo = strPrfix + subFile.name() + L'\t' + strFileSize;
+					auto& strFileInfo = strPrfix + subFile.fileName() + L'\t' + strFileSize;
 					return TxtWriter.writeln(strFileInfo);
 				});
 			}

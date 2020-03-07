@@ -17,7 +17,7 @@ enum E_PlayItemColumn
 #define __ColumnText_Name CString(_T("¸èµ¥ÇúÄ¿"))
 
 CPlayItemPage::CPlayItemPage(__view& view)
-	: CBasePage(view, IDD_PAGE_PLAYITEM, L" ¸èµ¥", IDR_MENU_PLAYITEM, true)
+	: CBasePage(view, IDD_PAGE_PLAYITEM, L" ", IDR_MENU_PLAYITEM, true)
 {
 }
 
