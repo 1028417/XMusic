@@ -136,6 +136,11 @@ protected:
 #endif
 
 public:
+    virtual wstring GetTitle() const override
+    {
+        return m_fi.strName;//CPath::name();
+    }
+
 	void subMediaRes(cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get([&](XFile& subObj) {

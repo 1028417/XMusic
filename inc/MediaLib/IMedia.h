@@ -73,7 +73,7 @@ public:
 
     const wstring& GetFileTypeString() const;
 
-	wstring GetTitle() const;
+    virtual wstring GetTitle() const;
 
 	virtual long long fileSize() const
 	{
