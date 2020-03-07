@@ -70,7 +70,7 @@ public:
 
 	wstring GetName() const override
 	{
-		return CPath::name();
+		return XFile::fileName();
 	}
 
 	long long fileSize() const override
@@ -138,7 +138,7 @@ protected:
 public:
     virtual wstring GetTitle() const override
     {
-        return m_fi.strName;//CPath::name();
+        return XFile::fileName();
     }
 
 	void subMediaRes(cfn_void_t<CMediaRes&> cb)
@@ -166,7 +166,7 @@ public:
 private:
 	wstring GetTreeText() const override
 	{
-	        return m_fi.strName;
+	        return GetTitle();
 	}
 
 	void GetTreeChilds(TD_TreeObjectList& lstChilds) override

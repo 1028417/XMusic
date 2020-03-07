@@ -22,7 +22,12 @@ public:
 public:
 	wstring GetPath() const override
 	{
-        return __wchPathSeparator + GetName();
+        return __wchPathSeparator + XFile::fileName();
+	}
+
+	wstring GetTitle() const override
+	{
+		return XFile::fileName() + L" | " + XFile::parentDir();
 	}
 
 	int _getImage() override

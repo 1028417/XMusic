@@ -55,7 +55,9 @@ public:
 		m_fileInfo.strName = strNewName;
 	}
 
-    wstring name() const;
+	wstring fileName() const;
+
+	wstring parentDir() const;
 
 	wstring absPath() const;
 
@@ -304,7 +306,7 @@ protected:
 public:
 	wstring GetTreeText() const override
 	{
-        return CPath::name();
+        return XFile::fileName();
 	}
 
     void GetTreeChilds(TD_TreeObjectList& lstChilds) override
