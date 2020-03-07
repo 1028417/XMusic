@@ -18,7 +18,7 @@ BEGIN_MESSAGE_MAP(CDuplicateMediaDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_PLAY, &CDuplicateMediaDlg::OnBnClickedPlay)
 END_MESSAGE_MAP()
 
-#define __Color_Flag RGB(240, 250, 255)
+#define __Color_Flag RGB(243, 251, 255)
 
 BOOL CDuplicateMediaDlg::OnInitDialog()
 {

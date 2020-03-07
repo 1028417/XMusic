@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 
-static CPen g_pen(PS_SOLID, 1, RGB(160, 160, 255));
+static CPen g_pen(PS_SOLID, 1, RGB(170, 170, 255));
 
 bool CDragContext::AttachCtrl(CWnd& wndCtrl, HICON hDragIcon)
 {

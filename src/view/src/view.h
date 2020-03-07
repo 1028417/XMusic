@@ -2,7 +2,7 @@
 
 class __view;
 
-#define __Color_Text RGB(64, 64, 255)
+#define __Color_Text RGB(85, 85, 255)
 
 #define __PlaySpiritSkinDir (fsutil::getModuleSubPath(L"skin\\"))
 

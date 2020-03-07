@@ -141,7 +141,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 
 		if (m_view.getPlayMgr().checkPlayedID(PlayItem.m_uID))
 		{
-			crTextColor = RGB(85, 26, 139);
+			crTextColor = RGB(85, 32, 139);
 			pFont = &m_fontPlayed;
 		}
 	}
