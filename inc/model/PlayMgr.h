@@ -114,7 +114,7 @@ public:
 
 	bool checkPlayedID(UINT uID);
 
-    bool playAlarm(const wstring& strFile);
+    bool play(const wstring& strFile, uint64_t uStartPos = 0);
 
 	bool play(UINT uItem, bool bManual=true);
 
@@ -124,6 +124,8 @@ public:
 	void renameFile(bool bDir, const wstring& strPath, const wstring& strNewPath, cfn_bool cb);
 	void moveFile(const wstring& strPath, const wstring& strNewPath, cfn_bool cb);
 
+	void replay();
+	
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
     int demand(const TD_MediaList& lstMedias, UINT uDemandCount = __DemandCount);
 };
