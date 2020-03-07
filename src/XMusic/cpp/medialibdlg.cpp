@@ -41,7 +41,7 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
 #endif
 }
 
-CMediaRes* COuterDir::findSubFile(const wstring& strSubFile) override
+CMediaRes* COuterDir::findSubFile(const wstring& strSubFile)
 {
     if (__substr(strSubFile, 1, 2) != L"..")
     {
