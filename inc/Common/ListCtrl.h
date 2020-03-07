@@ -13,7 +13,7 @@ public:
 	CListHeader(){}
 	
 private:
-	UINT m_uHeight = 0;
+	int m_nHeight = 0;
 
 	CCompatableFont m_font;
 
@@ -21,7 +21,7 @@ private:
 	LRESULT OnLayout(WPARAM wParam, LPARAM lParam);
 
 public:
-	BOOL Init(UINT uHeight, float fFontSizeOffset = 0);
+	BOOL Init(int nHeight, float fFontSizeOffset = 0);
 };
 
 enum class E_ListViewType
