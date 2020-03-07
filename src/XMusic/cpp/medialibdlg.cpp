@@ -6,6 +6,54 @@
 
 static Ui::MedialibDlg ui;
 
+void COuterDir::setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
+{
+    m_strOuterDir = strOuterDir;
+    CPath::setDir(strMediaLibDir + strOuterDir);
+
+#if __windows
+    m_strMediaLibDir = strMediaLibDir;
+#else
+    m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
+#endif
+}
+
+CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
+{// TODO 忽略空目录
+#if __windows
+    wstring strSubDir = this->absPath() + __wchPathSeparator + fileInfo.strName;
+    QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
+    strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
+    if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
+    {
+        return NULL;
+    }
+
+    return new COuterDir(fileInfo, m_strMediaLibDir);
+
+#else
+    if (fileInfo.strName == m_strMediaLibDir)
+    {
+        return NULL;
+    }
+
+    return new CMediaDir(fileInfo);
+#endif
+}
+
+CMediaRes* COuterDir::findSubFile(const wstring& strSubFile) override
+{
+    if (__substr(strSubFile, 1, 2) != L"..")
+    {
+        return NULL;
+    }
+
+    cauto t_strSubFile = __substr(strSubFile, m_strOuterDir.size());
+    //strutil::replace_r(strutil::replace_r(strSubFile, L"/.."), L"\\..");
+
+    return CMediaDir::findSubFile(t_strSubFile);
+}
+
 CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
   , m_MedialibView(app, *this, m_OuterDir)

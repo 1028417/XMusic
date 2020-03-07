@@ -1025,9 +1025,9 @@ BYTE __view::genBitRateAlpha(CMedia& media)
 	if (media.displayFileSize() > 0 && media.displayDuration() > 0)
 	{
 		UINT bitRate = UINT(media.displayFileSize() / media.displayDuration());
-		if (bitRate < 1e5)
+		if (bitRate < 60000) //Êµ¼Ê39kb
 		{
-			auto uAlpha = BYTE(255 * pow(1.0f - (float)bitRate/1e5, 1));
+			auto uAlpha = BYTE(255 - 255*pow((float)bitRate/60000, 2));
 			return uAlpha;
 		}
 	}

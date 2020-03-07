@@ -22,60 +22,17 @@ private:
     wstring m_strOuterDir;
 
 public:
-    void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
-    {
-#if __windows
-        m_strMediaLibDir = strMediaLibDir;
-#else
-        m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
-#endif
-
-        m_strOuterDir = strOuterDir;
-
-        CPath::setDir(strMediaLibDir + strOuterDir);
-    }
+    void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir);
 
 private:
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override
-    {
-#if __windows
-        wstring strSubDir = this->absPath() + __wchPathSeparator + fileInfo.strName;
-        QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
-        strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
-        if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
-        {
-            return NULL;
-        }
-
-        return new COuterDir(fileInfo, m_strMediaLibDir);
-
-#else
-        if (fileInfo.strName == m_strMediaLibDir)
-        {
-            return NULL;
-        }
-
-        return new CMediaDir(fileInfo);
-#endif
-    }
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 
     wstring GetPath() const override
     {
         return m_strOuterDir + CMediaDir::GetPath();
     }
 
-    CMediaRes* findSubFile(const wstring& strSubFile) override
-    {
-        if (__substr(strSubFile, 1, 2) != L"..")
-        {
-            return NULL;
-        }
-
-        cauto t_strSubFile = __substr(strSubFile, m_strOuterDir.size());
-        //strutil::replace_r(strutil::replace_r(strSubFile, L"/.."), L"\\..");
-
-        return CMediaDir::findSubFile(t_strSubFile);
-    }
+    CMediaRes* findSubFile(const wstring& strSubFile) override;
 };
 
 class CMedialibDlg : public CDialog
