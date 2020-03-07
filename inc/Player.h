@@ -27,7 +27,7 @@ public:
 
     virtual wstring localFilePath() const = 0;
 
-    virtual bool seekable() const { return true; }
+    virtual bool seekable() const = 0;
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
@@ -63,7 +63,7 @@ public:
 
     long long open(const wstring& strFile);
 
-    UINT checkDuration();
+	UINT checkDuration();
 
     E_DecodeStatus decodeStatus() const;
 
@@ -84,7 +84,12 @@ protected:
         return m_nFileSize;
     }
 
-    virtual int64_t seek(int64_t offset, int origin) override;
+    virtual bool seekable() const override
+    {
+        return NULL!=m_pf;
+    }
+
+	virtual int64_t seek(int64_t offset, int origin) override;
 
     virtual size_t read(byte_p buf, size_t size) override;
 
@@ -122,6 +127,9 @@ public:
 	
 	uint32_t GetDuration();
 	uint64_t GetClock();
+
+	int audioSampleRate() const;
+	int devSampleRate() const;
 
 	void Seek(UINT uPos);
 

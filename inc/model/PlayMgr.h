@@ -58,7 +58,7 @@ private:
 
     BOOL _play(CPlayItem& PlayItem);
 
-	bool _play(uint64_t uStartPos);
+	bool _play(uint64_t uStartPos = 0);
 
     void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
 
