@@ -1,6 +1,6 @@
 #pragma once
 
-#define BkgColor_Select RGB(215, 240, 255)
+#define BkgColor_Select RGB(220, 240, 255)
 #define BkgColor_Hit RGB(230, 245, 255)
 
 template <class T>
