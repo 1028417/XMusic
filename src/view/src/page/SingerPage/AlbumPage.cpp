@@ -162,7 +162,7 @@ BOOL CAlbumPage::OnInitDialog()
 			RECT rcText = rc;
 			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
-			BYTE uAlpha = m_view.genBitRateAlpha(*pAlbumItem);
+			BYTE uAlpha = m_view.genByteRateAlpha(*pAlbumItem);
 			dc.SetTextColor(lvcd.getTextColor(uAlpha));
 			
 			dc.DrawText(pAlbumItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);

@@ -191,5 +191,5 @@ public:
 
 	bool copyMediaTitle(IMedia& media);
 
-	BYTE genBitRateAlpha(CMedia& media);
+	BYTE genByteRateAlpha(CMedia& media);
 };

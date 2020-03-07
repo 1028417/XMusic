@@ -1020,7 +1020,7 @@ bool __view::copyMediaTitle(IMedia& media)
 	return true;
 }
 
-BYTE __view::genBitRateAlpha(CMedia& media)
+BYTE __view::genByteRateAlpha(CMedia& media)
 {
 	if (media.displayFileSize() > 0 && media.displayDuration() > 0)
 	{
