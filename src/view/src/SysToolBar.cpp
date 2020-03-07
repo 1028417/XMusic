@@ -121,6 +121,8 @@ void CSysToolBar::_onNMClick(UINT uID)
 		bForce48KHz = !bForce48KHz;
 
 		GetToolBarCtrl().SetState(ID_Force48KHz, bForce48KHz ? TBSTATE_PRESSED : TBSTATE_ENABLED);
+
+		m_view.getPlayMgr().replay();
 	}
 	
 	break;

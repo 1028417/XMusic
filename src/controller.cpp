@@ -21,7 +21,7 @@ bool CXController::start()
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
                 strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
 
-                if (m_model.getPlayMgr().playAlarm(strAlarmmedia))
+                if (m_model.getPlayMgr().play(strAlarmmedia))
                 {
                     (void)m_view.msgBox(L"点击确定停止闹铃！");
                     m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
