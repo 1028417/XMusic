@@ -210,17 +210,20 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 void CPlayItemPage::UpdateTitle()
 {
 	wstring strTitle;
-	if (NULL != m_pPlaylist)
+	if (m_pPlaylist)
 	{
-		wstring strPlaylistName = m_pPlaylist->m_strName;
-		if (strPlaylistName.size() > __MaxTabTitle)
+		if (m_pPlaylist->m_strName.size() > __MaxTabTitle)
 		{
-			strPlaylistName = strPlaylistName.substr(0, __MaxTabTitle) + L"...";
+			strTitle.append(m_pPlaylist->m_strName.substr(0, __MaxTabTitle));
+			strTitle.append(L"...");
 		}
-
-		strTitle = __CNDot + strPlaylistName + L" ";
+		else
+		{
+			strTitle.append(m_pPlaylist->m_strName);
+		}
 	}
-	(void)this->SetTitle(strTitle);
+
+	(void)this->SetTitle(strTitle + L' ');
 }
 
 void CPlayItemPage::UpdateHead()

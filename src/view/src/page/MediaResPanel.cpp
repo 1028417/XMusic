@@ -327,17 +327,16 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 	{
 		strOppPath.erase(0,1);
 
-		size_t uMaxTabTitle = __MaxTabTitle;
 		if (!m_bShowRelatedSinger)
 		{
-			strTitle = __wchPathSeparator;
-			uMaxTabTitle -= 5;
+			strTitle.append(L" | ");
 		}
 		
-		wstring strDirName = fsutil::getFileTitle(strOppPath);
-		if (strDirName.size() > uMaxTabTitle)
+		wstring strDirName = fsutil::GetFileName(strOppPath);
+		if  (strDirName.size() > __MaxTabTitle)
 		{
-			strDirName = strDirName.substr(0, uMaxTabTitle) + L"...";
+			strDirName.erase(__MaxTabTitle);
+			strDirName.append(L"...");
 		}
 
 		strTitle.append(strDirName);
@@ -993,9 +992,9 @@ BOOL CMediaResPanel::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias
 
 int CMediaResPanel::GetTabImage()
 {
-	if (NULL != m_pCurrPath && m_pCurrPath != &m_view.getMediaLib())
+	if (m_pCurrPath)
 	{
-		if (m_pCurrPath->parent() == NULL)
+		if (m_pCurrPath->rootDir() != &m_view.getMediaLib())
 		{
 			return (int)E_GlobalImage::GI_DirLink;
 		}
