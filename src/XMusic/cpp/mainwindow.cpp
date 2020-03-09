@@ -138,9 +138,9 @@ void MainWindow::showLogo()
     fixWorkArea(*this);
     this->setVisible(true);
 
-#if __windows
+/*#if __windows
     m_app.setForeground();
-#endif
+#endif*/
 
     UINT uDelayTime = 100;
 #if !__android
@@ -339,9 +339,11 @@ void MainWindow::show()
 
     (void)startTimer(1000);
 
+#if __windows
     __appAsync([&](){
-        g_lpExtName(this);
+        m_app.setForeground();
     });
+#endif
 }
 
 bool MainWindow::event(QEvent *ev)
