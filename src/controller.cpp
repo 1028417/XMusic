@@ -357,6 +357,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 		}
 
         cauto strDstPath = strDir + __wchPathSeparator + media.GetName();
+		cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDir) + __wchPathSeparator + media.GetName();
 
         cauto strSrcAbsPath = media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))
@@ -364,9 +365,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			mapMovedFiles.insert(strSrcPath, strDstPath);
 			return;
 		}
-
-        cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDstPath);
-
+		
         if (fsutil::existFile(strDstAbsPath))
 		{
             if (!m_view.msgBox(L"确认替换文件: \n\n\t" + strDstAbsPath, true))

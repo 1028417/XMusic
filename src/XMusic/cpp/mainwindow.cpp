@@ -814,7 +814,8 @@ void MainWindow::_onPaint(CPainter& painter)
 
 void MainWindow::_updateProgress()
 {
-    E_DecodeStatus eDecodeStatus = m_app.getPlayMgr().mediaOpaque().decodeStatus();
+    auto& playMgr = m_app.getPlayMgr();
+    E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
 #if __OnlineMediaLib
@@ -827,12 +828,22 @@ void MainWindow::_updateProgress()
 #endif
     }
 
-    int nProgress = int(m_app.getPlayMgr().player().GetClock()/__1e6);
+    int nProgress = int(playMgr.player().GetClock()/__1e6);
     if (nProgress <= ui.barProgress->maximum())
     {
         UINT bufferValue = 0;
 #if __OnlineMediaLib
         bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().size()/1000);
+
+        if (playMgr.mediaOpaque().waitingFlag() && playMgr.player().packetQueueEmpty())
+        {
+            ui.labelDuration->setText("正在缓冲");
+        }
+        else
+        {
+            QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+            ui.labelDuration->setText(qsDuration);
+        }
 #endif
         ui.barProgress->setValue(nProgress, bufferValue);
     }
@@ -876,8 +887,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     QVariant var;
     var.setValue(PlayingInfo);
 
-    //m_mtxPlayingInfo.set(PlayingInfo);
-
     emit signal_showPlaying(uPlayingItem, bManual, var);
 }
 
@@ -886,11 +895,9 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     m_uPlaySeq++;
 
     auto strPrevSinger = m_PlayingInfo.strSingerName;
-    m_PlayingInfo = var.value<tagPlayingInfo>(); //m_mtxPlayingInfo.get(m_PlayingInfo);
+    m_PlayingInfo = var.value<tagPlayingInfo>();
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
-    //_relayout(); //_showAlbumName();
 
     ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
@@ -902,8 +909,6 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
         ui.labelSingerImg->setVisible(false);
         _playSingerImg(true);
-
-        //_relayout();
     }
 
     _updatePlayPauseButton(true);
@@ -911,8 +916,12 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     ui.barProgress->setValue(0);
     ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
-    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+#if __OnlineMediaLib
+    ui.labelDuration->clear();
+#else
+    cauto qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
+#endif
 
     _relayout();
 }
