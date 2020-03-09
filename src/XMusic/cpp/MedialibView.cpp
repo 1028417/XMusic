@@ -422,9 +422,9 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         rc.setRight(rcPlayIcon.left() - __playIconMagin);
     }
 
+    QString qsRemark;
     if (mediaContext.pMediaSet)
     {
-        QString qsRemark;
         if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
             auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
@@ -445,21 +445,25 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
             qsRemark.sprintf("%u曲目", (UINT)pPlaylist->size());
         }
+    }
+    else if (mediaContext.pMedia)
+    {
+        qsRemark.append(strutil::toQstr(mediaContext.pMedia->quality());
+    }
 
-        if (!qsRemark.isEmpty())
-        {
-            painter.save();
+    if (!qsRemark.isEmpty())
+    {
+        painter.save();
 
-            painter.adjustFont(0.9, QFont::Weight::Light);
+        painter.adjustFont(0.9, QFont::Weight::Light);
 
-            UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
-            painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
-                               , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
+        UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
+        painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
+                           , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 
-            painter.restore();
+        painter.restore();
 
-            rc.setRight(rc.right() - 100);
-        }
+        rc.setRight(rc.right() - 100);
     }
 
     UINT uTextAlpha = 255;
