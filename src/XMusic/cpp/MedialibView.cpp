@@ -448,7 +448,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
     else if (mediaContext.pMedia)
     {
-        qsRemark.append(strutil::toQstr(mediaContext.pMedia->quality());
+        qsRemark.append(strutil::toQstr(mediaContext.pMedia->qualityString()));
     }
 
     if (!qsRemark.isEmpty())
