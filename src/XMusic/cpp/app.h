@@ -178,7 +178,7 @@ public:
 #if __windows
     void setForeground()
     {
-        //::SetForegroundWindow(m_mainWnd.hwnd());
+        ::SetForegroundWindow(m_mainWnd.hwnd());
         ::SetWindowPos(m_mainWnd.hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
         ::SetWindowPos(m_mainWnd.hwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
     }
