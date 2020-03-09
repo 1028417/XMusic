@@ -446,9 +446,13 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             qsRemark.sprintf("%u曲目", (UINT)pPlaylist->size());
         }
     }
-    else if (mediaContext.pMedia)
+    else
     {
-        qsRemark.append(strutil::toQstr(mediaContext.pMedia->qualityString()));
+        IMedia* pMedia = mediaContext.pMedia?mediaContext.pMedia:(CMediaRes*)mediaContext.pFile;
+        if (pMedia)
+        {
+            qsRemark.append(strutil::toQstr(mediaContext.pMedia->qualityString()));
+        }
     }
 
     if (!qsRemark.isEmpty())
