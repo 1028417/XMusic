@@ -138,15 +138,15 @@ void MainWindow::showLogo()
     fixWorkArea(*this);
     this->setVisible(true);
 
-/*#if __windows
-    m_app.setForeground();
-#endif*/
-
     UINT uDelayTime = 100;
 #if !__android
     uDelayTime += 500;
 #endif
     __appAsync(uDelayTime, [&](){
+        /*#if __windows
+            m_app.setForeground();
+        #endif*/
+
         ui.labelLogo->movie()->start();
 
         __appAsync(100, [&](){
@@ -340,7 +340,7 @@ void MainWindow::show()
     (void)startTimer(1000);
 
 #if __windows
-    __appAsync([&](){
+    __appAsync(100, [&](){
         m_app.setForeground();
     });
 #endif
