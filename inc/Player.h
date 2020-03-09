@@ -125,8 +125,8 @@ public:
 	void Stop();
     bool Play(uint64_t uStartPos, bool bForce48KHz, CB_PlayStop cbStop);
 	
-	uint32_t GetDuration();
-	uint64_t GetClock();
+    uint32_t GetDuration();
+    uint64_t GetClock();
 
 	int audioSampleRate() const;
 	int devSampleRate() const;
@@ -137,4 +137,6 @@ public:
 	void Resume();
 	
 	void SetVolume(UINT uVolume);
+
+    bool packetQueueEmpty() const;
 };

@@ -17,6 +17,15 @@ enum class E_MediaFileType
 	MFT_MP4, MFT_MKV
 };
 
+enum class E_MediaQuality
+{
+    MQ_None,
+    MQ_LQ,
+    MQ_HQ,
+    MQ_SQ,
+    MQ_HiRes
+};
+
 class __MediaLibExt IMedia
 {
 public:
@@ -98,6 +107,8 @@ public:
 	}
 
 	static wstring genDurationString(int nDuration);
+
+    E_MediaQuality quality() const;
 
 	virtual CMediaSet *GetMediaSet()
 	{
