@@ -655,16 +655,31 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 continue;
             }
 
-            /*// TODO 合入正在播放列表
             if (bExistDB)
             {
-                (void)fsutil::moveFile(strDBFile, strDBFile + L".bak");
-            }*/
+                fsutil::moveFile(strDBFile, strDBFile+L".bak");
+            }
 
             if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
             {
                 g_logger >> "write medialib fail";
                 return E_UpgradeResult::UR_Fail;
+            }
+
+            if (bExistDB)
+            {
+                CSQLiteDB db(strDBFile);
+                if (db.Connect())
+                {
+
+                    if (db.Execute(L"attach \"" + strDBFile + L".bak\" as prev"))
+                    {
+                        (void)db.Execute("INSERT INTO tbl_playitem SELECT * from prev.tbl_playitem where playlist_id = 0");
+                    }
+                    db.Disconnect();
+                }
+
+                fsutil::removeFile(strDBFile + L".bak");
             }
         }
 
