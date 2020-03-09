@@ -290,6 +290,10 @@ void CApp::slot_run(int nUpgradeResult)
             {
                 qsErrMsg = "更新媒体库失败";
             }
+
+#if __windows
+            setForeground();
+#endif
             m_msgbox.show(qsErrMsg, [&](){
                 this->quit();
             });

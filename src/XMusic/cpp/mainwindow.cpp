@@ -105,17 +105,6 @@ MainWindow::MainWindow(CApp& app)
     qRegisterMetaType<QVariant>("QVariant");
 }
 
-#if __windows
-inline static void __setForeground(MainWindow *pMainWnd)
-{
-    //::SetForegroundWindow(pMainWnd->hwnd());
-    ::SetWindowPos(pMainWnd->hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-    ::SetWindowPos(pMainWnd->hwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-}
-#else
-#define __setForeground(x)
-#endif
-
 void MainWindow::showLogo()
 {
     for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
@@ -149,7 +138,9 @@ void MainWindow::showLogo()
     fixWorkArea(*this);
     this->setVisible(true);
 
-    __setForeground(this);
+#if __windows
+    m_app.setForeground();
+#endif
 
     UINT uDelayTime = 100;
 #if !__android
@@ -349,7 +340,7 @@ void MainWindow::show()
     (void)startTimer(1000);
 
     __appAsync([&](){
-        __setForeground(this);
+        g_lpExtName(this);
     });
 }
 
