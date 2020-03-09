@@ -3,10 +3,7 @@
 
 enum class E_MediaFileType
 {
-	MFT_Null = 0,
-#if !__winvc
-	MFT_XMSC,
-#endif
+    MFT_Null = 0,
 	MFT_FLAC, MFT_MP3, MFT_WAV,
 #if __winvc
 	MFT_DSF, MFT_DFF,
@@ -19,10 +16,11 @@ enum class E_MediaFileType
 
 enum class E_MediaQuality
 {
-    MQ_None,
+    MQ_None = 0,
     MQ_LQ,
     MQ_HQ,
     MQ_SQ,
+    MQ_CD,
     MQ_HiRes
 };
 
@@ -66,18 +64,18 @@ public:
 
 	virtual wstring GetName() const = 0;
 
+    bool isXmsc() const
+    {
+#if __winvc
+        return false;
+#else
+        return E_MediaFileType::MFT_Null == m_eFileType;
+#endif
+    }
+
 	E_MediaFileType GetFileType() const
 	{
 		return m_eFileType;
-	}
-
-	bool isXmsc() const
-	{
-#if __winvc
-		return false;
-#else
-		return E_MediaFileType::MFT_XMSC == m_eFileType;
-#endif
 	}
 
     const wstring& GetFileTypeString() const;
@@ -109,6 +107,7 @@ public:
 	static wstring genDurationString(int nDuration);
 
     E_MediaQuality quality() const;
+    wstring qualityString() const;
 
 	virtual CMediaSet *GetMediaSet()
 	{
