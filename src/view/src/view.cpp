@@ -125,21 +125,6 @@ void __view::clearView()
 	//(void)m_view.m_MainWnd.ActivePage(m_MediaResPage);
 }
 
-void __view::foregroundMainWnd()
-{
-	if (m_MainWnd.IsIconic())
-	{
-		(void)m_MainWnd.ShowWindow(SW_RESTORE);
-	}
-	else
-	{
-		::SetWindowPos(m_MainWnd.m_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-		::SetWindowPos(m_MainWnd.m_hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-	}
-
-	//m_MainWnd.OnFocus(TRUE);
-}
-
 CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
 {
 	//CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_view.getOption().plAttachDir);

@@ -75,12 +75,12 @@ void CPlayCtrl::_handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, s
 		}
 		else
 		{
-			m_view.foregroundMainWnd();
+			m_view.m_MainWnd.setForeground();
 		}
 		
 		break;
 	case E_PlaySpiritEvent::PSE_DblClick:
-		m_view.foregroundMainWnd();
+		m_view.m_MainWnd.setForeground();
 
 		break;
 	case E_PlaySpiritEvent::PSE_ButtonClick:

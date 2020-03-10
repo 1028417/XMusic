@@ -53,7 +53,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_SHOW:
-		m_view.foregroundMainWnd();
+		m_view.m_MainWnd.setForeground();
 
 		break;
 	case ID_AttachDir:
@@ -153,7 +153,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	
 		break;
 	case ID_ViewNewSong:
-		m_view.foregroundMainWnd();
+		m_view.m_MainWnd.setForeground();
 
 		m_view.m_ResModule.ActivateResource();
 		CNewSongDlg(m_view).DoModal();

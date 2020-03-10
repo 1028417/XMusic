@@ -69,16 +69,17 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     UINT uTextAlpha = 255*fAlpha;
     UINT uShadowAlpha = __ShadowAlpha* pow(fAlpha,2.5);
 
-    auto nElidedWidth = rc.width();
+    auto nMaxRight = rc.width();
+    int nElidedWidth = nMaxRight;
     if (bPlayingItem)
     {
-        nElidedWidth -= __size(60);
 #if __windows || __mac
         if (0 == uIdx)
         {
-            nElidedWidth -= __size(60);
+            nMaxRight -= __size(100);
         }
 #endif
+        nElidedWidth = nMaxRight-__size(50);
 
         float fPlayingFontSize = 1.1f;
 #if __windows || __mac
@@ -113,9 +114,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
         auto len = __size(20)*(qsQuality.size());
 
         rcPos.setRight(rcPos.right() + len);
-        if (rcPos.right() > rc.right())
+        if (rcPos.right() > nMaxRight)
         {
-            rcPos.setRight(rc.right());
+            rcPos.setRight(nMaxRight);
             rcPos.setTop(rcPos.top() - __size(10));
         }
         else
