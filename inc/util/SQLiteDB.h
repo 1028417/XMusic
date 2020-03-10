@@ -62,7 +62,12 @@ public:
 class __UtilExt CSQLiteDB : public IDB
 {
 public:
-	CSQLiteDB(const wstring& strFile=L"");
+    CSQLiteDB(){}
+
+    CSQLiteDB(const wstring& strFile)
+    {
+        (void)Connect(strFile);
+    }
 
     ~CSQLiteDB()
     {
@@ -100,7 +105,7 @@ public:
         return (NULL != m_hDB);
     }
 
-	bool Connect(const wstring& strPara=L"") override;
+    bool Connect(const wstring& strPara) override;
 
 	bool Disconnect() override;
 
