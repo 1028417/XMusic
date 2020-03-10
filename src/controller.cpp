@@ -11,10 +11,9 @@ static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 bool CXController::start()
 {
     static auto& PlayMgr = m_model.getPlayMgr();
-    static auto& mediaLib = m_model.getMediaLib();
     static cauto fnTryPlay = [&](){
 #if !__OnlineMediaLib
-        if (mediaLib.empty())
+        if (m_model.getMediaLib().empty())
         {
             return;
         }
@@ -39,7 +38,7 @@ bool CXController::start()
             {
                 __srand
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
-                strAlarmmedia = mediaLib.toAbsPath(strAlarmmedia);
+                strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
 
                 if (m_model.getPlayMgr().play(strAlarmmedia))
                 {
@@ -67,7 +66,7 @@ bool CXController::start()
 	});
 
     __async([&]() {
-        if (!m_model.status() && mediaLib.empty())
+        if (!m_model.status() && m_model.getMediaLib().empty())
 		{
 			m_OptionMgr.getOption().strRootDir.clear();
 			if (!setupMediaLib())
