@@ -76,7 +76,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 #if __windows || __mac
         if (0 == uIdx)
         {
-            nMaxRight -= __size(100);
+            nMaxRight -= __size(80);
         }
 #endif
         nElidedWidth = nMaxRight-__size(50);
