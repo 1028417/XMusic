@@ -162,7 +162,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     {
         if (MediaSet.m_pParent)
         {
-            strTitle << m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
+            strTitle << MediaSet.m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
             strTitle << __CNDot;
         }
 
