@@ -201,4 +201,6 @@ public:
 	{
 		BroadcastModuleMessage(uMsg, (WPARAM)para1, (LPARAM)para2);
 	}
+
+	static void foregroundWnd(HWND hWnd);
 };

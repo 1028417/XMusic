@@ -69,6 +69,11 @@ public:
 
 	void fixWorkArea(bool bFullScreen);
 
+	void setForeground()
+	{
+		CMainApp::foregroundWnd(m_hWnd);
+	}
+
 private:
 	void resizeView(bool bManual=false);
 
