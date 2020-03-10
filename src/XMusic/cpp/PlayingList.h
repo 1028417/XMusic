@@ -55,7 +55,8 @@ private:
     }
 
     void _onPaintRow(CPainter&, tagLVRow&) override;
-
+    void _onPaintRow(CPainter& painter, QRect& rc, const tagPlayingItem& playingItem, bool bPlayingItem);
+;
     void _onRowDblClick(tagLVRow&, const QMouseEvent&) override;
 
 #if __windows || __mac
