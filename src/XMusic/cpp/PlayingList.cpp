@@ -37,11 +37,12 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 {
     m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
         bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
-        _onPaintRow(painter, lvRow.rc, playingItem, bPlayingItem);
+        _onPaintRow(painter, lvRow.rc, playingItem, bPlayingItem, lvRow.uIdx);
     });
 }
 
-void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagPlayingItem& playingItem, bool bPlayingItem)
+void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
+                               , const tagPlayingItem& playingItem, bool bPlayingItem, UINT uIdx)
 {
     int cy = height();
 
@@ -71,7 +72,13 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagPlayingIte
     auto nElidedWidth = rc.width();
     if (bPlayingItem)
     {
-        nElidedWidth -= __size(20);
+        nElidedWidth -= __size(60);
+#if __windows || __mac
+        if (0 == uIdx)
+        {
+            nElidedWidth -= __size(60);
+        }
+#endif
 
         float fPlayingFontSize = 1.1f;
 #if __windows || __mac
@@ -79,23 +86,22 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagPlayingIte
 #endif
         painter.adjustFont(fPlayingFontSize, QFont::Weight::Normal);
 
-        QRect rcPos(rc.left(), rc.top(), rc.width(), rc.height());
+        QRect rcPos(0, rc.top(), rc.width(), rc.height());
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignVCenter, "▶"
                            , m_uShadowWidth, uShadowAlpha, uTextAlpha);
-        /*QPoint ptPos[]{{rc.left(),rcPos.top()}, {rc.left(),rcPos.bottom()}
-           , {rc.left()+rc.height(), rcPos.center().y()} };
-        painter.drawPolygon(ptPos, 3);*/
     }
 
-    rc.setLeft(rc.left() + __size(35));
+    rc.setLeft(__size(35));
 
     if (!bPlayingItem && m_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
     }
 
+    auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic;
+    // | Qt::TextShowMnemonic);
     QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
-            , Qt::ElideRight, nElidedWidth, Qt::TextSingleLine | Qt::TextShowMnemonic);
+            , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
 
@@ -103,12 +109,21 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc, const tagPlayingIte
     {
         CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
-        rcPos.setLeft(rcPos.right() + __size(20));
-        rcPos.setTop(rcPos.top() - __size(8));
-        rcPos.setRight(rc.right());
-
         cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
+        auto len = __size(20)*(qsQuality.size());
+
+        rcPos.setRight(rcPos.right() + len);
+        if (rcPos.right() > rc.right())
+        {
+            rcPos.setRight(rc.right());
+            rcPos.setTop(rcPos.top() - __size(10));
+        }
+        else
+        {
+            rcPos.setTop(rcPos.top() - __size(8));
+        }
+
+        painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
     }
 }
 

@@ -55,7 +55,7 @@ private:
     }
 
     void _onPaintRow(CPainter&, tagLVRow&) override;
-    void _onPaintRow(CPainter& painter, QRect& rc, const tagPlayingItem& playingItem, bool bPlayingItem);
+    void _onPaintRow(CPainter& painter, QRect& rc, const tagPlayingItem& playingItem, bool bPlayingItem, UINT uIdx);
 ;
     void _onRowDblClick(tagLVRow&, const QMouseEvent&) override;
 
