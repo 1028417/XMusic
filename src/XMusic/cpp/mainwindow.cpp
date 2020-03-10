@@ -867,6 +867,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
+    PlayingInfo.strQuality = PlayItem.qualityString();
+
     PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
     PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
     PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);

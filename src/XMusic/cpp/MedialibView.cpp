@@ -478,13 +478,13 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
     if (pMedia)
     {
-        CPainterFontGuard fontGuard(painter, 0.85, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.75, QFont::Weight::Thin);
 
-        cauto qsQuality = strutil::toQstr(pMedia->qualityString());
         rcPos.setLeft(rcPos.right() + __size(20));
+        rcPos.setTop(rcPos.top() - __size(6));
         rcPos.setRight(rc.right());
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop
-                           , qsQuality, 1, __ShadowAlpha, uTextAlpha);
+        cauto qsQuality = strutil::toQstr(pMedia->qualityString());
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
     }
 }
 

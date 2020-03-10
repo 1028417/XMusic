@@ -20,6 +20,8 @@ struct tagPlayingInfo
     int nDuration = -1;
     UINT uStreamSize = 0;
 
+    wstring strQuality;
+
     wstring strSingerName;
     UINT uSingerID = 0;
 
@@ -54,7 +56,7 @@ private:
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
     UINT m_uPlaySeq = 0;
-    tagPlayingInfo m_PlayingInfo; //CMtxLock<tagPlayingInfo> m_mtxPlayingInfo;
+    tagPlayingInfo m_PlayingInfo;
 
     bool m_bHScreen = false;
 
@@ -109,6 +111,11 @@ public:
     void updateBkg();
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
+
+    const tagPlayingInfo& playingInfo() const
+    {
+        return m_PlayingInfo;
+    }
 
 private:
     void _init();
