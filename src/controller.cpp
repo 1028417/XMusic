@@ -10,8 +10,28 @@ static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wchDot
 
 bool CXController::start()
 {
+    static auto& PlayMgr = m_model.getPlayMgr();
+    static cauto mediaLib = m_model.getMediaLib();
+    static cauto fnTryPlay = [&](){
+#if !__OnlineMediaLib
+        if (mediaLib.empty())
+        {
+            return;
+        }
+#endif
+
+        if (PlayMgr.getPlayingItems())
+        {
+            PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
+        }
+        else
+        {
+            (void)PlayMgr.demand(E_DemandMode::DM_DemandAlbum);
+        }
+    };
+
 #if __winvc
-	(void)timerutil::setTimer(60000, [&]() {
+    (void)timerutil::setTimer(60000, [&]() {
         if (m_OptionMgr.checkAlarm())
         {
             cauto vctAlarmmedia = m_model.getDataMgr().alarmmedias();
@@ -19,7 +39,7 @@ bool CXController::start()
             {
                 __srand
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
-                strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
+                strAlarmmedia = mediaLib.toAbsPath(strAlarmmedia);
 
                 if (m_model.getPlayMgr().play(strAlarmmedia))
                 {
@@ -46,8 +66,8 @@ bool CXController::start()
 		}
 	});
 
-	__async([&]() {
-		if (!m_model.status() && m_model.getMediaLib().empty())
+    __async([&]() {
+        if (!m_model.status() && mediaLib.empty())
 		{
 			m_OptionMgr.getOption().strRootDir.clear();
 			if (!setupMediaLib())
@@ -57,18 +77,18 @@ bool CXController::start()
 			}
 		}
 		
-		CMainApp::GetMainApp()->DoEvents();
-
-        _tryPlay();
+        //CMainApp::GetMainApp()->DoEvents();
+        __async([&]() {
+            fnTryPlay();
+        });
     });
 
 #else
-    m_threadPlayCtrl.start([&](const bool& bRunSignal) {
+    m_threadPlayCtrl.start([&](const bool& bRunSignal)mutable {
         mtutil::usleep(100);
 
-        _tryPlay();
+        fnTryPlay();
 
-        auto& PlayMgr = m_model.getPlayMgr();
         while (bRunSignal)
         {
             mtutil::usleep(100);
@@ -153,25 +173,6 @@ bool CXController::setupMediaLib()
 	return true;
 }
 #endif
-
-void CXController::_tryPlay()
-{
-#if !__OnlineMediaLib
-    if (m_model.getMediaLib().empty())
-    {
-        return;
-    }
-#endif
-
-    if (m_model.getPlayMgr().getPlayingItems())
-    {
-        m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
-    }
-    else
-    {
-        (void)m_model.getPlayMgr().demand(E_DemandMode::DM_DemandAlbum);
-    }
-}
 
 void CXController::stop()
 {

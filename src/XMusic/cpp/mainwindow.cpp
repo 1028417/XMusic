@@ -167,13 +167,13 @@ void MainWindow::_updateLogoTip()
     auto labelLogoTip = ui.labelLogoTip;
     labelLogoTip->setText("播放器");
 
-    __appAsync(500, [=](){
+    __appAsync(600, [=](){
         labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
 
-        __appAsync(500, [=](){
+        __appAsync(600, [=](){
             labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-            __appAsync(2500, [=](){
+            __appAsync(2700, [=](){
 #define __logoTip "更新媒体库"
                 if (-1 == g_nAppDownloadProgress)
                 {

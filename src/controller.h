@@ -24,9 +24,6 @@ private:
         CMtxLock<tagPlayCtrl> m_mtxPlayCtrl;
 #endif
 
-private:
-	void _tryPlay();
-
 #if __winvc
 protected:
 	bool setupMediaLib();
