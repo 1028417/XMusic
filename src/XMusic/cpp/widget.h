@@ -23,7 +23,7 @@ extern float g_fPixelRatio;
 #define __rect(x) (x)
 #endif
 
-#define __szRound __size(8)
+#define __szRound __size(10)
 
 enum class E_MouseEventType
 {
@@ -195,14 +195,14 @@ public:
         TWidget::setFont(font);
     }
 
-    void adjustFontWeight(int nWeight)
+    void adjustFont(int nWeight)
     {
         CFont font(*this);
         font.setWeight(nWeight);
         TWidget::setFont(font);
     }
 
-    void adjustFontItalic(bool bItalic)
+    void adjustFont(bool bItalic)
     {
         CFont font(*this);
         font.setItalic(bItalic);

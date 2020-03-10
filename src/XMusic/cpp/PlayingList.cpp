@@ -81,7 +81,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
         if (!bPlayingItem && m_app.getPlayMgr().checkPlayedID(playingItem.uID))
         {
-            painter.adjustFontItalic(true);
+            painter.adjustFont(true);
         }
 
         QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle

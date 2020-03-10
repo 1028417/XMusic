@@ -159,7 +159,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
 
     if (context.lvRow.bSelected)
     {
-        painter.adjustFontWeight(QFont::Weight::DemiBold);
+        painter.adjustFont(QFont::Weight::DemiBold);
     }
 
     QString qsText = strutil::toQstr(context.strText);

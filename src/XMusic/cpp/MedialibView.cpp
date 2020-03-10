@@ -423,7 +423,15 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
 
     QString qsRemark;
-    if (mediaContext.pMediaSet)
+    IMedia* pMedia = mediaContext.pMedia?(IMedia*)mediaContext.pMedia:(CMediaRes*)mediaContext.pFile;
+    if (pMedia)
+    {
+        if (pMedia->duration() > 600)
+        {
+            qsRemark.append(strutil::toQstr(pMedia->durationString()));
+        }
+    }
+    else if (mediaContext.pMediaSet)
     {
         if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
@@ -446,28 +454,16 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             qsRemark.sprintf("%u曲目", (UINT)pPlaylist->size());
         }
     }
-    else
-    {
-        IMedia* pMedia = mediaContext.pMedia?(IMedia*)mediaContext.pMedia:(CMediaRes*)mediaContext.pFile;
-        if (pMedia)
-        {
-            qsRemark.append(strutil::toQstr(pMedia->qualityString()));
-        }
-    }
 
     if (!qsRemark.isEmpty())
     {
-        painter.save();
-
-        painter.adjustFont(0.9, QFont::Weight::Light);
+        CPainterFontGuard fontGuard(painter, 0.9, QFont::Weight::ExtraLight);
 
         UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
                            , qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 
-        painter.restore();
-
-        rc.setRight(rc.right() - 100);
+        rc.setRight(rc.right() - __size(100));
     }
 
     UINT uTextAlpha = 255;
@@ -478,7 +474,18 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
     }
 
-    painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+    auto rcPos = painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+
+    if (pMedia)
+    {
+        CPainterFontGuard fontGuard(painter, 0.85, QFont::Weight::ExtraLight);
+
+        cauto qsQuality = strutil::toQstr(pMedia->qualityString());
+        rcPos.setLeft(rcPos.right() + __size(20));
+        rcPos.setRight(rc.right());
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop
+                           , qsQuality, 1, __ShadowAlpha, uTextAlpha);
+    }
 }
 
 void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)

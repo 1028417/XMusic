@@ -645,7 +645,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
         cauto strDBFile = m_model.medialibPath(__DBFile);
         bool bExistDB = fsutil::existFile(strDBFile);
-        if (!bExistDB || newMedialibConf.uMedialibVersion > orgMedialibConf.uMedialibVersion)
+        if (!bExistDB || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
         {
             CByteBuffer bbfMedialib;
             if (zipFile.read(itrUnzfile->second, bbfMedialib) <= 0)
@@ -655,9 +655,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 continue;
             }
 
+            cauto strDBFileBak = strDBFile+L".bak";
             if (bExistDB)
             {
-                fsutil::moveFile(strDBFile, strDBFile+L".bak");
+                fsutil::moveFile(strDBFile, strDBFileBak);
             }
 
             if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
@@ -668,18 +669,17 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
             if (bExistDB)
             {
-                CSQLiteDB db(strDBFile);
-                if (db.Connect())
+                CSQLiteDB db;
+                if (db.Connect(strDBFile))
                 {
-
-                    if (db.Execute(L"attach \"" + strDBFile + L".bak\" as prev"))
+                    if (db.Execute(L"attach \"" + strDBFileBak + L"\" as bak"))
                     {
-                        (void)db.Execute("INSERT INTO tbl_playitem SELECT * from prev.tbl_playitem where playlist_id = 0");
+                        (void)db.Execute("INSERT INTO tbl_playitem SELECT * from bak.tbl_playitem where playlist_id = 0");
                     }
                     db.Disconnect();
                 }
 
-                fsutil::removeFile(strDBFile + L".bak");
+                fsutil::removeFile(strDBFileBak);
             }
         }
 

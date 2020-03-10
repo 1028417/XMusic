@@ -169,14 +169,14 @@ public:
         QPainter::setFont(font);
     }
 
-    void adjustFontWeight(int nWeight)
+    void adjustFont(int nWeight)
     {
         CFont font(*this);
         font.setWeight(nWeight);
         QPainter::setFont(font);
     }
 
-    void adjustFontItalic(bool bItalic)
+    void adjustFont(bool bItalic)
     {
         CFont font(*this);
         font.setItalic(bItalic);
@@ -204,22 +204,63 @@ public:
     void fillRectEx(cqrc rc, cqcr crBegin
                     , cqcr crEnd, UINT xround=0, UINT yround=0);
 
-    void drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet, cqcr crText
+    cqrc drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
-    void drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet
-                            , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
-    {
-        drawTextEx(rc, flags, qsText, prcRet, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
-    }
-
-    void drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
+    cqrc drawTextEx(cqrc rc, int flags, const QString& qsText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
-        drawTextEx(rc, flags, qsText, NULL, crText, uShadowWidth, uShadowAlpha, uTextAlpha);
+        return drawTextEx(rc, flags, qsText, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
-    void drawTextEx(cqrc rc, int flags, const QString& qsText
-                  , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
+};
+
+class CPainterFontGuard
+{
+private:
+    QPainter& m_painter;
+
+public:
+    ~CPainterFontGuard()
     {
-        drawTextEx(rc, flags, qsText, NULL, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
+        m_painter.restore();
+    }
+
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight, bool bItalic)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(fSizeOffset, nWeight, bItalic);
+    }
+
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(fSizeOffset, nWeight);
+    }
+
+    CPainterFontGuard(CPainter& painter, float fSizeOffset)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(fSizeOffset);
+    }
+
+    CPainterFontGuard(CPainter& painter, int nWeight)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(nWeight);
+    }
+
+    CPainterFontGuard(CPainter& painter, bool bItalic)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(bItalic);
     }
 };

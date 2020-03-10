@@ -215,8 +215,10 @@ void CPainter::fillRectEx(cqrc rc, cqcr crBegin
     fillRectEx(rc, brush, xround, yround);
 }
 
-void CPainter::drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcRet
-                        , cqcr crText, UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
+static QRect g_rcDrawTextRet;
+
+cqrc CPainter::drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
+                          , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
 {
     this->save();
 
@@ -244,7 +246,9 @@ void CPainter::drawTextEx(cqrc rc, int flags, const QString& qsText, QRect *prcR
     QColor t_crText = crText;
     t_crText.setAlpha(uTextAlpha);
     this->setPen(t_crText);
-    QPainter::drawText(rc, flags, qsText, prcRet);
+    QPainter::drawText(rc, flags, qsText, &g_rcDrawTextRet);
 
     this->restore();
+
+    return g_rcDrawTextRet;
 }

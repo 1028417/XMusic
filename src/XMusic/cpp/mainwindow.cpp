@@ -1003,7 +1003,7 @@ void MainWindow::_showAlbumName()
         labelAlbumName.adjustSize();
         if (labelAlbumName.width() > rcAlbumNamePrev.width())
         {
-            labelAlbumName.adjustFont(0.9);
+            labelAlbumName.adjustFont(0.9f);
             labelAlbumName.adjustSize();
 
             if (labelAlbumName.width() < rcAlbumNamePrev.width())

@@ -56,8 +56,7 @@ private:
             nAlign = Qt::AlignTop | Qt::AlignHCenter;
         }
 
-        QRect rcTitle;
-        painter.drawTextEx(rc, nAlign, title(), &rcTitle);
+        auto rcTitle = painter.drawTextEx(rc, nAlign, title());
 
         int titleMargin = __size(18);
         cauto ptCenter = rcTitle.center();
