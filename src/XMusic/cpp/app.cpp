@@ -879,7 +879,9 @@ void CApp::slot_run(int nUpgradeResult)
             setForeground();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
-                this->quit();
+                __appAsync([&](){
+                    this->quit();
+                });
             });
         }
 
@@ -921,14 +923,15 @@ void CApp::quit()
 {
     m_bRunSignal = false;
 
-#if __android
+/*#if __android
     m_mainWnd.setVisible(false);
 
     async(50, [](){
         QApplication::quit();
     });
-#else
+
+    return;
+#endif*/
 
     QApplication::quit();
-#endif
 }
