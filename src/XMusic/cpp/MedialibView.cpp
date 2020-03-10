@@ -162,10 +162,11 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     {
         if (MediaSet.m_pParent)
         {
-            _getTitle(*MediaSet.m_pParent, strTitle);
+            strTitle << m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
+            strTitle << __CNDot;
         }
 
-        strTitle << __CNDot << MediaSet.m_strName;
+        strTitle << MediaSet.m_strName;
     }
 }
 
@@ -478,7 +479,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
     if (pMedia)
     {
-        CPainterFontGuard fontGuard(painter, 0.75, QFont::Weight::Thin);
+        CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(8));

@@ -44,6 +44,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
                                , const tagPlayingItem& playingItem, bool bPlayingItem, UINT uIdx)
 {
+    (void)uIdx;
+
     int cy = height();
 
     float fAlpha = 1;
@@ -69,6 +71,15 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     UINT uTextAlpha = 255*fAlpha;
     UINT uShadowAlpha = __ShadowAlpha* pow(fAlpha,2.5);
 
+    if (bPlayingItem)
+    {
+#if __android || __ios
+        CPainterFontGuard fontGuard(painter, 0.6f, QFont::Weight::Thin);
+#endif
+        painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+    }
+
     auto nMaxRight = rc.width();
     int nElidedWidth = nMaxRight;
     if (bPlayingItem)
@@ -76,31 +87,21 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 #if __windows || __mac
         if (0 == uIdx)
         {
-            nMaxRight -= __size(80);
+            nMaxRight -= __size(90);
         }
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        float fPlayingFontSize = 1.1f;
-#if __windows || __mac
-        fPlayingFontSize += 0.1f;
-#endif
-        painter.adjustFont(fPlayingFontSize, QFont::Weight::Normal);
-
-        QRect rcPos(0, rc.top(), rc.width(), rc.height());
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignVCenter, "▶"
-                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+        painter.adjustFont(1.1f, QFont::Weight::Normal);
     }
-
-    rc.setLeft(__size(35));
-
-    if (!bPlayingItem && m_app.getPlayMgr().checkPlayedID(playingItem.uID))
+    else if (m_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
     }
 
-    auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic;
-    // | Qt::TextShowMnemonic);
+    rc.setLeft(__size(35));
+
+    auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
     QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
@@ -108,7 +109,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 
     if (bPlayingItem)
     {
-        CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
+        painter.adjustFont(0.65, QFont::Weight::Thin);
 
         cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
         auto len = __size(20)*(qsQuality.size());
@@ -124,7 +125,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
             rcPos.setTop(rcPos.top() - __size(8));
         }
 
-        painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
+        painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);
     }
 }
 
