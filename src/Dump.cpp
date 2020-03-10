@@ -142,15 +142,8 @@ BOOL PreventSetUnhandledExceptionFilter()
 
 LONG WINAPI UnhandledExceptionFilterEx(struct _EXCEPTION_POINTERS *pException)
 {
-	char szMbsFile[MAX_PATH] = { 0 };
-	::GetModuleFileNameA(NULL, szMbsFile, MAX_PATH);
-	char* pFind = strrchr(szMbsFile, '\\');
-	if (pFind)
-	{
-		*(pFind + 1) = 0;
-		strcat_s(szMbsFile, "CrashDumpFile.dmp");
-		CreateDumpFile(szMbsFile, pException);
-	}
+    cauto strDumpFile = sutil::getModoulePath("CrashDumpFile.dmp");
+    CreateDumpFile(strDumpFile.c_str(), pException);
 
 	FatalAppExitA(-1, "Fatal Error");
 	return EXCEPTION_CONTINUE_SEARCH;

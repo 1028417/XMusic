@@ -6,12 +6,12 @@
 #include "controller.h"
 
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
-static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wchDot;
+static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
 bool CXController::start()
 {
     static auto& PlayMgr = m_model.getPlayMgr();
-    static cauto mediaLib = m_model.getMediaLib();
+    static auto& mediaLib = m_model.getMediaLib();
     static cauto fnTryPlay = [&](){
 #if !__OnlineMediaLib
         if (mediaLib.empty())
@@ -295,7 +295,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 	}
 
 	cauto strOldAbsPath = media.GetAbsPath();
-	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wchPathSeparator + strNewName + strExtName;
+	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wcPathSeparator + strNewName + strExtName;
 	
 	bool bDir = media.IsDir();
     if (fsutil::existPath(strOldAbsPath, bDir))
@@ -332,7 +332,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
         pMediaRes->setName(strNewName + strExtName);
 	}
 
-	cauto strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wchPathSeparator + strNewName + strExtName;
+	cauto strNewOppPath = fsutil::GetParentDir(strOldOppPath) + __wcPathSeparator + strNewName + strExtName;
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
@@ -357,8 +357,8 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 			return;
 		}
 
-        cauto strDstPath = strDir + __wchPathSeparator + media.GetName();
-		cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDir) + __wchPathSeparator + media.GetName();
+        cauto strDstPath = strDir + __wcPathSeparator + media.GetName();
+		cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDir) + __wcPathSeparator + media.GetName();
 
         cauto strSrcAbsPath = media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))

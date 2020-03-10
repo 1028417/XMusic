@@ -220,119 +220,6 @@ void __appAsync(UINT uDelayTime, cfn_void cb)
     });
 }
 
-
-bool CApp::_resetRootDir(wstring& strRootDir)
-{
-#if __android
-    strRootDir = strutil::toWstr(__sdcardDir "XMusic");
-
-#else
-#if __window &&__OnlineMediaLib
-    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
-    {
-        CFolderDlg FolderDlg;
-        strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
-        if (strRootDir.empty())
-        {
-            return false;
-        }
-    }
-
-    return true;
-#endif
-
-    strRootDir = fsutil::getHomePath(L"/XMusic");
-
-//#if __ios && TARGET_IPHONE_SIMULATOR
-//    strRootDir = L"/Users/lhyuan/XMusic";
-//#endif
-#endif
-
-    return fsutil::createDir(strRootDir + L"/" __medialibDir);
-}
-
-void CApp::slot_run(int nUpgradeResult)
-{
-    if (!m_bRunSignal)
-    {
-        return;
-    }
-
-    auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
-    if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
-    {
-        if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
-        {
-            this->quit();
-        }
-        else
-        {
-            QString qsErrMsg;
-            if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
-            {
-                qsErrMsg = "更新媒体库失败: 网络异常";
-            }
-            else if (E_UpgradeResult::UR_MedialibInvalid == eUpgradeResult)
-            {
-                qsErrMsg = "更新媒体库失败: 媒体库异常";
-            }
-            else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
-            {
-                qsErrMsg = "更新媒体库失败: 媒体库不兼容";
-//#if __ios
-//#endif
-            }
-            else if (E_UpgradeResult::UR_AppUpgradeFail == eUpgradeResult)
-            {
-                qsErrMsg = "更新App失败";
-            }
-            else
-            {
-                qsErrMsg = "更新媒体库失败";
-            }
-
-#if __windows
-            setForeground();
-#endif
-            m_msgbox.show(qsErrMsg, [&](){
-                this->quit();
-            });
-        }
-
-        return;
-    }
-
-    auto time0 = time(0);
-    if (!m_model.initMediaLib())
-    {
-        g_logger >> "initMediaLib fail";
-        this->quit();
-        return;
-    }    
-    g_logger << "initMediaLib success " >> (time(0)-time0);
-
-    g_logger >> "start controller";
-    if (!m_ctrl.start())
-    {
-        g_logger >> "start controller fail";
-        this->quit();
-        return;
-    }
-
-    g_logger >> "app running";
-
-    if (m_ctrl.getOption().crTheme >= 0)
-    {
-        g_crTheme.setRgb((int)m_ctrl.getOption().crTheme);
-    }
-    if (m_ctrl.getOption().crText >= 0)
-    {
-        g_crText.setRgb((int)m_ctrl.getOption().crText);
-    }
-
-    m_mainWnd.show();
-}
-
 int CApp::run()
 {
     std::thread thrUpgrade;
@@ -340,52 +227,8 @@ int CApp::run()
     __appAsync(100, [&](){
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
-        thrUpgrade = std::thread([=]() {
-            auto& option = m_ctrl.initOption();
-            if (!_resetRootDir(option.strRootDir))
-            {
-                this->quit();
-                return;
-            }
-            g_logger << "RootDir: " >> option.strRootDir;
-
-            QFile qf(":/medialib.conf");
-            if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-            {
-                g_logger >> "loadMedialibConfResource fail";
-                this->quit();
-                return;
-            }
-
-            cauto ba = qf.readAll();
-            IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-            tagMedialibConf orgMedialibConf;
-            if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
-            {
-                g_logger >> "readMedialibConfResource fail";
-
-                this->quit();
-                return;
-            }
-            g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-                     << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-                     << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-            m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
-
-            auto timeBegin = time(0);
-
-            E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
-#if __OnlineMediaLib
-            eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
-#endif
-
-            auto timeWait = 6 - (time(0) - timeBegin);
-            if (timeWait > 0)
-            {
-                mtutil::usleep((UINT)timeWait*1000);
-            }
-
-            emit signal_run((int)eUpgradeResult);
+        thrUpgrade = std::thread([&]() {
+            _run();
         });
     });
 
@@ -408,6 +251,87 @@ int CApp::run()
     m_logger.close();
 
     return nRet;
+}
+
+void CApp::_run()
+{
+    auto& option = m_ctrl.initOption();
+    if (!_initRootDir(option.strRootDir))
+    {
+        this->quit();
+        return;
+    }
+    g_logger << "RootDir: " >> option.strRootDir;
+
+    QFile qf(":/medialib.conf");
+    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        g_logger >> "loadMedialibConfResource fail";
+        this->quit();
+        return;
+    }
+
+    cauto ba = qf.readAll();
+    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
+    tagMedialibConf orgMedialibConf;
+    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+    {
+        g_logger >> "readMedialibConfResource fail";
+
+        this->quit();
+        return;
+    }
+    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
+             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+    m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
+
+    auto timeBegin = time(0);
+
+    E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
+#if __OnlineMediaLib
+    eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
+#endif
+
+    auto timeWait = 6 - (time(0) - timeBegin);
+    if (timeWait > 0)
+    {
+        mtutil::usleep((UINT)timeWait*1000);
+    }
+
+    emit signal_run((int)eUpgradeResult);
+}
+
+bool CApp::_initRootDir(wstring& strRootDir)
+{
+#if __OnlineMediaLib
+    strRootDir = QDir::currentPath().toStdWString();
+    return fsutil::createDir(m_model.medialibPath());
+#endif
+
+#if __window
+    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+    {
+        CFolderDlg FolderDlg;
+        strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
+        if (strRootDir.empty())
+        {
+            return false;
+        }
+    }
+
+#elif __android
+    strRootDir = strutil::toWstr(__sdcardDir "XMusic");
+
+#else
+    strRootDir = fsutil::getHomePath(L"/XMusic");
+
+//#if __ios && TARGET_IPHONE_SIMULATOR
+//    strRootDir = L"/Users/lhyuan/XMusic";
+//#endif
+#endif
+
+    return true;
 }
 
 bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
@@ -467,37 +391,9 @@ bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
                 medialibConf.lstOnlineHBkg.push_back(strBkg);
             }
         }
-    }
-
-    const JValue& jVBkg = jRoot["vbkg"];
-    if (jVBkg.isArray())
-    {
-        for (UINT uIdx = 0; uIdx < jVBkg.size(); uIdx++)
-        {
-            if (jsonutil::get(jVBkg[uIdx], strBkg))
-            {
-                medialibConf.lstOnlineVBkg.push_back(strBkg);
-            }
-        }
     }*/
 
     return true;
-}
-
-void CApp::quit()
-{
-    m_bRunSignal = false;
-
-#if __android
-    m_mainWnd.setVisible(false);
-
-    async(50, [](){
-        QApplication::quit();
-    });
-#else
-
-    QApplication::quit();
-#endif
 }
 
 E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
@@ -524,7 +420,6 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
          ifsMedialibConf.close();
     }
-
 
     E_UpgradeResult eRet = E_UpgradeResult::UR_Fail;
 
@@ -873,7 +768,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
             continue;
         }
 
-        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + "\\";
+        cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + __cPathSeparator;
 
         string strTempDir = strParentDir + "Upgrade";
         cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
@@ -889,7 +784,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
             return false;
         }
 
-        strTempDir.append("\\");
+        strTempDir.push_back(__cPathSeparator);
         for (cauto unzdir : zipFile.unzdirList())
         {
             cauto strSubDir = strTempDir + unzdir.strPath;
@@ -938,4 +833,102 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
     }
 
     return false;
+}
+
+void CApp::slot_run(int nUpgradeResult)
+{
+    if (!m_bRunSignal)
+    {
+        return;
+    }
+
+    auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
+    if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
+    {
+        if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
+        {
+            this->quit();
+        }
+        else
+        {
+            QString qsErrMsg;
+            if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败: 网络异常";
+            }
+            else if (E_UpgradeResult::UR_MedialibInvalid == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败: 媒体库异常";
+            }
+            else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败: 媒体库不兼容";
+//#if __ios
+//#endif
+            }
+            else if (E_UpgradeResult::UR_AppUpgradeFail == eUpgradeResult)
+            {
+                qsErrMsg = "更新App失败";
+            }
+            else
+            {
+                qsErrMsg = "更新媒体库失败";
+            }
+
+#if __windows
+            setForeground();
+#endif
+            m_msgbox.show(qsErrMsg, [&](){
+                this->quit();
+            });
+        }
+
+        return;
+    }
+
+    auto time0 = time(0);
+    if (!m_model.initMediaLib())
+    {
+        g_logger >> "initMediaLib fail";
+        this->quit();
+        return;
+    }
+    g_logger << "initMediaLib success " >> (time(0)-time0);
+
+    g_logger >> "start controller";
+    if (!m_ctrl.start())
+    {
+        g_logger >> "start controller fail";
+        this->quit();
+        return;
+    }
+
+    g_logger >> "app running";
+
+    if (m_ctrl.getOption().crTheme >= 0)
+    {
+        g_crTheme.setRgb((int)m_ctrl.getOption().crTheme);
+    }
+    if (m_ctrl.getOption().crText >= 0)
+    {
+        g_crText.setRgb((int)m_ctrl.getOption().crText);
+    }
+
+    m_mainWnd.show();
+}
+
+void CApp::quit()
+{
+    m_bRunSignal = false;
+
+#if __android
+    m_mainWnd.setVisible(false);
+
+    async(50, [](){
+        QApplication::quit();
+    });
+#else
+
+    QApplication::quit();
+#endif
 }

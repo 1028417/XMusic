@@ -61,7 +61,7 @@ void CExportMediaSetDlg::_sumCheckedSize()
 		uint64_t uMB = ulCheckedSize / __1e6;
 		if (0 != uMB)
 		{
-			strTitle << L'/' << uMB << L"MB";
+			strTitle << L" / " << uMB << L"MB";
 		}
 	}
 
@@ -125,7 +125,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 
 			if (!lstMedias.empty())
 			{
-				strText << L'/' << lstMedias.size() << L"个文件";
+				strText << L" / " << lstMedias.size() << L"个文件";
 			}
 
 			m_wndTree.SetItemText(hTreeItem, strText);

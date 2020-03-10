@@ -21,7 +21,7 @@ void COuterDir::setDir(const wstring& strMediaLibDir, const wstring& strOuterDir
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
 {// TODO 忽略空目录
 #if __windows
-    wstring strSubDir = this->absPath() + __wchPathSeparator + fileInfo.strName;
+    wstring strSubDir = this->absPath() + __wcPathSeparator + fileInfo.strName;
     QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
     strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
     if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))

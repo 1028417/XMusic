@@ -213,7 +213,7 @@ void CBkgDlg::_initBkg(bool bHBkg)
             cauto strFile = to_wstring(uIdx);
             cauto strBkg = strBkgSrc + strFile + L".jpg";
 
-            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wchPathSeparator + strFile))
+            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + strFile))
             {
                 break;
             }
@@ -237,7 +237,7 @@ void CBkgDlg::_initBkg(bool bHBkg)
     });
 
     fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
-        vecBkgFile.push_back({strAppVersion + __wchSlant + strSubFile, NULL});
+        vecBkgFile.push_back({strAppVersion + __wcPathSeparator + strSubFile, NULL});
     });
 
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()

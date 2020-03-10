@@ -83,7 +83,9 @@ private:
         return m_mainWnd;
     }
 
-    bool _resetRootDir(wstring& strRootDir);
+    void _run();
+
+    bool _initRootDir(wstring& strRootDir);
 
     bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
 

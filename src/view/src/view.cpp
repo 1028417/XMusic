@@ -405,7 +405,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		CMatchMediaInfo& MatchMediaInfo = pr.second;
 		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
 		wstring strDstPath = fsutil::GetParentDir(strMediaPath)
-			+ __wchPathSeparator + fsutil::GetFileName(strSrcPath);
+			+ __wcPathSeparator + fsutil::GetFileName(strSrcPath);
 
 		m_model.getPlayMgr().moveFile(strMediaPath, strDstPath, [&]() {
 			(void)fsutil::removeFile(strMediaPath);
@@ -561,7 +561,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 			for (auto& pr : mapMediaList)
 			{
 				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath + __wchPathSeparator + pr.first->GetExportName();
+				ExportMedia.strDstDir = ExportOption.strExportPath + __wcPathSeparator + pr.first->GetExportName();
 				ExportMedia.paMedias.swap(pr.second);
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 			}
@@ -647,7 +647,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	{
 		if (strutil::lowerCase_r(fsutil::GetFileExtName(strFile)) != __snapshotExt)
 		{
-			strFile.append(__wchDot + __snapshotExt);
+			strFile.append(__wcDot + __snapshotExt);
 		}
 		
 		_snapshotDir(dir, strFile);
