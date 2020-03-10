@@ -89,31 +89,29 @@ struct __UtilExt tagFileInfo
 };
 
 
-#define __chrSlant '/'
-#define __chrBackSlant '\\'
-
-#define __wchSlant ((wchar_t)__chrSlant)
-#define __wchBackSlant ((wchar_t)__chrBackSlant)
+#define __cSlant '/'
+#define __cBackSlant '\\'
 
 #if __windows
-    #define __wchPathSeparator	__wchBackSlant
+    #define __cPathSeparator	__cBackSlant
 #else
-	#define __wchPathSeparator	__wchSlant
+    #define __cPathSeparator	__cSlant
 #endif
+#define     __wcPathSeparator	((wchar_t)__cPathSeparator)
 
-#define __chrDot '.'
-#define __wchDot (wchar_t)__chrDot
+#define __cDot '.'
+#define __wcDot (wchar_t)__cDot
 
 class __UtilExt fsutil
 {
 public:
 	inline static bool checkSeparator(wchar_t wch)
 	{
-		return (wchar_t)__chrBackSlant == wch || (wchar_t)__chrSlant == wch;
+        return (wchar_t)__cBackSlant == wch || (wchar_t)__cSlant == wch;
 	}
 	inline static bool checkSeparator(char chr)
 	{
-		return __chrBackSlant == chr || __chrSlant == chr;
+        return __cBackSlant == chr || __cSlant == chr;
 	}
 
 	template <class S>
@@ -151,9 +149,9 @@ public:
     inline static void transSeparator(S& strPath)
     {
 #if __windows
-        strutil::replaceChar(strPath, __chrSlant, __chrBackSlant);
+        strutil::replaceChar(strPath, __cSlant, __cBackSlant);
 #else
-        strutil::replaceChar(strPath, __chrBackSlant, __chrSlant);
+        strutil::replaceChar(strPath, __cBackSlant, __cSlant);
 #endif
     }
 
@@ -208,7 +206,7 @@ public:
 	static S getFileTitle(const S& strPath)
 	{
 		cauto strFileName = GetFileName(strPath);
-		auto pos = strFileName.rfind(__chrDot);
+        auto pos = strFileName.rfind(__cDot);
 		if (pos != strFileName.npos)
 		{
 			return strFileName.substr(0, pos);
@@ -220,7 +218,7 @@ public:
 	template <class S>
 	static S GetFileExtName(const S& strFile)
 	{
-		auto pos = strFile.rfind(__chrDot);
+        auto pos = strFile.rfind(__cDot);
 		if (pos != S::npos)
 		{
 			return strFile.substr(pos+1);

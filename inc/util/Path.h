@@ -86,7 +86,7 @@ public:
 	}
 	
 	CPath(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
-		: XFile(t_bDir, t_bDir? strutil::rtrim_r(t_strName, __wchPathSeparator) : t_strName, t_pParent)
+		: XFile(t_bDir, t_bDir? strutil::rtrim_r(t_strName, __wcPathSeparator) : t_strName, t_pParent)
 	{
 	}
 
@@ -135,7 +135,7 @@ public:
 	{
         clear();
 
-        XFile::setName(strutil::rtrim_r(strDir, __wchPathSeparator));
+        XFile::setName(strutil::rtrim_r(strDir, __wcPathSeparator));
 	}
 
 	void assign(const TD_PathList& paSubDir, const TD_XFileList& paSubFile)

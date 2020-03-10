@@ -22,7 +22,7 @@ public:
 public:
 	wstring GetPath() const override
 	{
-        return __wchPathSeparator + XFile::fileName();
+        return __wcPathSeparator + XFile::fileName();
 	}
 
 	wstring GetTitle() const override
