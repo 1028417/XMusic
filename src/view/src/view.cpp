@@ -295,10 +295,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		fnGenTag(strMediaPath);
 
 		strText << L"\n\n目录:  " << MatchMediaInfo->m_strPath
-			<< L"\n关联曲目:";
+			<< L"\n关联曲目:  ";
 
 		MatchMediaInfo.medias()([&](CMedia& media) {
-			strText.append(media.m_pParent->GetLogicPath() + L"\n         ");
+			strText.append(media.m_pParent->GetLogicPath() + L"\n           ");
 		});
 
 		int nRet = ProgressDlg.msgBox(strText, L"匹配到曲目", MB_YESNOCANCEL);

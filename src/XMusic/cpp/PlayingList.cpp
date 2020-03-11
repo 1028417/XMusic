@@ -118,12 +118,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
         if (rcPos.right() > nMaxRight)
         {
             rcPos.setRight(nMaxRight);
-            rcPos.setTop(rcPos.top() - __size(10));
         }
-        else
-        {
-            rcPos.setTop(rcPos.top() - __size(8));
-        }
+        rcPos.setTop(rcPos.top() - __size(8));
 
         painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);
     }

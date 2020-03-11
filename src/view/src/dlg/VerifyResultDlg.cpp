@@ -158,10 +158,10 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				<< L"\n大小:  " << MediaResInfo.fileSizeString() << L"      时长:  " << CMedia::genDurationString(MediaResInfo.m_uDuration)
 				<< L"\n\n是否更新以下曲目？\n" << MatchMediaInfo->fileName()
 				<< L"\n原目录:  " << MatchMediaInfo->dir()
-				+ L"\n\n关联曲目:";
+				+ L"\n\n关联曲目:  ";
 
 			MatchMediaInfo.medias()([&](CMedia& media) {
-				strText.append(media.m_pParent->GetLogicPath() + L"\n         ");
+				strText.append(media.m_pParent->GetLogicPath() + L"\n           ");
 			});
 
 			int nRet = ProgressDlg.msgBox(strText->c_str(), L"匹配到新文件", MB_YESNOCANCEL);

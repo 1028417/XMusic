@@ -482,7 +482,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
         rcPos.setLeft(rcPos.right() + __size(20));
-        rcPos.setTop(rcPos.top() - __size(8));
+        rcPos.setTop(rcPos.top() - __size(9));
         rcPos.setRight(rc.right());
         cauto qsQuality = strutil::toQstr(pMedia->qualityString());
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
