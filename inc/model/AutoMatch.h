@@ -122,11 +122,6 @@ public:
 	wstring fileTimeString();
 
 	bool matchMediaRes(CMediaResInfo& MediaResInfo);
-
-private:
-	bool matchTitle(const wstring& strTitle1, const wstring& strTitle2);
-	UINT matchTitle(const SSet<wstring>& setTitle1, const SSet<wstring>& setTitle2);
-	UINT matchTitle(const wstring& strTitle1, const SSet<wstring>& setTitle2);
 };
 
 enum class E_MatchResult
