@@ -4,14 +4,9 @@
 class __ModelExt CDataMgr
 {
 public:
-    CDataMgr(CDao& dao)
-        : m_dao(dao)
-	{
-	}
+    CDataMgr() {}
 
 private:
-	CDao& m_dao;
-
     vector<wstring> m_vctAlarmmedia;
 
 public:

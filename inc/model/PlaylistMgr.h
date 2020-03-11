@@ -5,12 +5,10 @@
 class __ModelExt CPlaylistMgr : public CMediaSet
 {
 public:
-	CPlaylistMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver);
+    CPlaylistMgr(CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
 
 private:
-	CDao& m_dao;
-	
-	class IModelObserver& m_ModelObserver;
+    class IModelObserver& m_ModelObserver;
 
 	CPlaylist m_Playinglist;
 	list<CPlaylist> m_lstPlaylists;
@@ -18,7 +16,7 @@ private:
 private:
 	int _indexOf(const CMediaSet&) const override;
 
-	BOOL _AddPlayItems(const list<tagAddPlayItem>& lstPlayItem, CPlaylist& Playlist, int nPos);
+    BOOL _AddPlayItems(const list<struct tagAddPlayItem>& lstPlayItem, CPlaylist& Playlist, int nPos);
 
 public:
 	const CPlaylist& playinglist() const

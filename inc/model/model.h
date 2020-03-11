@@ -1,7 +1,7 @@
 ﻿
 #pragma once
 
-#include "../MediaLib/MediaDef.h"
+#include "modelDef.h"
 
 #ifdef __ModelPrj
 extern ITxtWriter& g_modelLogger;
@@ -11,10 +11,14 @@ extern ITxtWriter& g_modelLogger;
 #define __ModelExt __dllimport
 #endif
 
+#if !__winvc
+#define __OnlineMediaLib 1
+#endif
+
 #define __medialibDir L".xmusic"
 #define __DBFile L"/medialib"
 
-#include "Dao.h"
+#include "modelDef.h"
 
 #include "XMediaLib.h"
 
@@ -68,49 +72,6 @@ public:
     virtual void onSingerImgDownloaded() {}
 };
 
-#if __winvc
-enum class E_CheckDuplicateMode
-{
-    CDM_SamePath
-    , CDM_SameName
-    , CDM_SameTitle
-};
-
-using CB_checkDuplicateMedia = cfn_bool_t<CMedia&>;
-
-using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
-
-using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
-using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
-
-struct __ModelExt tagExportMedia
-{
-	wstring strDstDir;
-
-	TD_IMediaList paMedias;
-
-	ArrList<CCueFile> alCueFiles;
-};
-
-struct __ModelExt tagExportOption
-{
-	bool bActualMode = false;
-
-	bool bExportXmsc = false;
-
-	bool bCompareFileSize = false;
-	bool bCompareFileTime = false;
-
-	bool bDeleteOther = true;
-
-	bool bExportDB = false;
-
-	wstring strExportPath;
-
-	list<tagExportMedia> lstExportMedias;
-};
-#endif
-
 class IModel
 {
 public:
@@ -118,40 +79,40 @@ public:
 
     virtual bool initMediaLib() = 0;
 
+    virtual XMediaLib& getMediaLib() = 0;
+
     virtual CDataMgr& getDataMgr() = 0;
 
 #if __winvc
     virtual CBackupMgr& getBackupMgr() = 0;
 #endif
 
-	virtual XMediaLib& getMediaLib() = 0;
-	
-	virtual CPlaylistMgr& getPlaylistMgr() = 0;
-	virtual CPlayMgr& getPlayMgr() = 0;
-	
-	virtual CSingerMgr& getSingerMgr() = 0;
-	virtual CSingerImgMgr& getSingerImgMgr() = 0;
+    virtual CPlaylistMgr& getPlaylistMgr() = 0;
+    virtual CPlayMgr& getPlayMgr() = 0;
+
+    virtual CSingerMgr& getSingerMgr() = 0;
+    virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
 #if __winvc
-	virtual bool setupMediaLib(const wstring& strRootDir) = 0;
+    virtual bool setupMediaLib(const wstring& strRootDir) = 0;
 #endif
 
-	virtual void refreshMediaLib() = 0;
-		
-	virtual CMediaDir* attachDir(const wstring& strDir) = 0;
-	virtual void detachDir(const wstring& strDir) = 0;
+    virtual void refreshMediaLib() = 0;
 
-	virtual bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) = 0;
+    virtual CMediaDir* attachDir(const wstring& strDir) = 0;
+    virtual void detachDir(const wstring& strDir) = 0;
 
-	virtual bool removeMedia(const TD_MediaList& lstMedias) = 0;
+    virtual bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) = 0;
 
-	virtual bool moveFiles(const wstring& strDir, const SMap<wstring, wstring>& mapUpdateFiles) = 0;
+    virtual bool removeMedia(const TD_MediaList& lstMedias) = 0;
 
-	virtual bool removeFiles(const std::set<wstring>& setFiles) = 0;
+    virtual bool moveFiles(const wstring& strDir, const SMap<wstring, wstring>& mapUpdateFiles) = 0;
 
-	virtual bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) = 0;
+    virtual bool removeFiles(const std::set<wstring>& setFiles) = 0;
 
-	virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
+    virtual bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) = 0;
+
+    virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
 
     virtual bool clearData() = 0;
 
@@ -167,8 +128,8 @@ public:
     using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
     virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
-	virtual wstring backupDB() = 0;
-	virtual bool restoreDB(const wstring& strTag) = 0;
+    virtual wstring backupDB() = 0;
+    virtual bool restoreDB(const wstring& strTag) = 0;
 #endif
 };
 
@@ -181,16 +142,13 @@ private:
 	IModelObserver& m_ModelObserver;
 	tagOption& m_Option;
 
-	CSQLiteDB m_db;
-	CDao m_dao;
+    XMediaLib m_MediaLib;
 	
 	CDataMgr m_DataMgr;
 
 #if __winvc
     CBackupMgr m_BackupMgr;
 #endif
-
-	XMediaLib m_MediaLib;
 
 	CPlaylistMgr m_PlaylistMgr;
 
@@ -200,12 +158,14 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
+    bool status() const override;
+
 	wstring medialibPath(const wstring& strSubPath = L"");
 
-    bool status() const override
-	{
-		return m_db.GetStatus();
-	}
+    XMediaLib& getMediaLib() override
+    {
+        return m_MediaLib;
+    }
 
         CDataMgr& getDataMgr() override
         {
@@ -218,11 +178,6 @@ public:
 			return m_BackupMgr;
 		}
 #endif
-
-	XMediaLib& getMediaLib() override
-	{
-		return m_MediaLib;
-	}
 
 	CPlaylistMgr& getPlaylistMgr() override
 	{

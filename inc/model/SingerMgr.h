@@ -3,11 +3,9 @@
 class __ModelExt CSingerMgr : public CMediaSet
 {
 public:
-	CSingerMgr(CMediaSet& RootMediaSet, CDao& dao, class IModelObserver& ModelObserver);
+    CSingerMgr(CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
 
 private:
-	CDao& m_dao;
-
 	class IModelObserver& m_ModelObserver;
 
 	list<CSingerGroup> m_lstGroups;

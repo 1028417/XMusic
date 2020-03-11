@@ -2,8 +2,6 @@
 #pragma once
 
 #if !__winvc
-#include "XUrlMap.h"
-
 class CUpgradeUrl
 {
 public:
@@ -96,10 +94,6 @@ private:
         return m_uDuration;
     }
 };
-
-#define __OnlineMediaLib 1
-#else
-#define __OnlineMediaLib 0
 #endif
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
@@ -115,8 +109,6 @@ private:
 private:
     tagMedialibConf m_newMedialibConf;
 
-    XUrlMap m_xurlMap;
-
     list<JValue> m_lstSnapshot;
 
 public:
@@ -129,10 +121,7 @@ public:
 
     bool checkXUrl(const wstring& strPath);
 
-    string getXUrl(const wstring& strPath)
-    {
-        return m_xurlMap.get(strPath);
-    }
+    string getXUrl(const wstring& strPath) const;
 
     bool loadXSnapshot(Instream& ins);
 

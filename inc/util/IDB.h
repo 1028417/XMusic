@@ -65,18 +65,6 @@ public:
 		}
 	}
 
-	CDBTransGuard(IDB *pDB, bool bAutoCommit = true)
-	{
-		if (NULL != pDB && pDB->BeginTrans())
-		{
-			m_pDB = pDB;
-
-			m_bInTrans = true;
-
-			m_bAutoCommit = bAutoCommit;
-		}
-	}
-
 	~CDBTransGuard()
 	{
 		if (m_bInTrans)
