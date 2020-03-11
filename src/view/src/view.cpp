@@ -278,6 +278,10 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 					CMediaRes::ReadFlacTag(strPath, MediaTag);
 				}
 
+				strutil::eraseChar(MediaTag.strTitle, '\0');
+				strutil::eraseChar(MediaTag.strArtist, '\0');
+				strutil::eraseChar(MediaTag.strAlbum, '\0');
+
 				strText << L"\n标题:  " << MediaTag.strTitle
 					<< L"\n艺术家:  " << MediaTag.strArtist
 					<< L"\n唱片集:  " << MediaTag.strAlbum;
