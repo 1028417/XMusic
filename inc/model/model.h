@@ -26,7 +26,7 @@ extern ITxtWriter& g_modelLogger;
 
 #include "OptionMgr.h"
 
-#include "FileTitleGuard.h"
+#include "FileTitle.h"
 
 #if __winvc
 #include "AutoMatch.h"

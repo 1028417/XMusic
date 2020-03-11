@@ -1,37 +1,5 @@
 #pragma once
 
-class __ModelExt CFileTitle
-{
-private:
-	void _parseTitle();
-
-public:
-	CFileTitle() {}
-	CFileTitle(const wstring& strPath, const wstring& strSingerName);
-	CFileTitle(IMedia& media, const wstring& strSingerName);
-
-public:
-	wstring m_strPath;
-
-	wstring m_strFileTitle;
-
-	SSet<wstring> m_setFileTitle;
-
-	wstring m_strSingerName;
-	bool m_bContainsSingerName = false;
-
-public:
-	wstring dir() const
-	{
-		return fsutil::GetParentDir(m_strPath);
-	}
-
-	wstring fileName() const
-	{
-		return fsutil::GetFileName(m_strPath);
-	}
-};
-
 class __ModelExt CMediaResInfo
 {
 public:
@@ -70,6 +38,11 @@ private:
 	wstring m_strFileTime;
 
 public:
+	const CFileTitle& fileTitle() const
+	{
+		return m_FileTitle;
+	}
+
 	wstring fileSizeString() const
 	{
 		return m_strFileSize;
@@ -80,7 +53,6 @@ public:
 		return m_strFileTime;
 	}
 };
-
 
 class __ModelExt CMatchMediaInfo
 {
@@ -113,6 +85,11 @@ private:
 	wstring m_strFileTime;
 
 public:
+	const CFileTitle& fileTitle() const
+	{
+		return m_FileTitle;
+	}
+
 	TD_MediaList& medias()
 	{
 		return m_lstMedias;
@@ -120,8 +97,6 @@ public:
 
 	wstring fileSizeString();
 	wstring fileTimeString();
-
-	bool matchMediaRes(CMediaResInfo& MediaResInfo);
 };
 
 enum class E_MatchResult

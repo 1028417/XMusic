@@ -25,3 +25,39 @@ public:
 	wstring matchSinger(const wstring& strFileTitle);
 	wstring matchSinger(IMedia& media);
 };
+
+
+class __ModelExt CFileTitle
+{
+private:
+	void _parseTitle();
+
+public:
+	CFileTitle() {}
+	CFileTitle(const wstring& strPath, const wstring& strSingerName);
+	CFileTitle(IMedia& media, const wstring& strSingerName);
+
+public:
+	wstring m_strPath;
+
+	wstring m_strTitle;
+
+	SSet<wstring> m_setTitle;
+
+	wstring m_strSingerName;
+	bool m_bContainsSingerName = false;
+
+public:
+	wstring dir() const
+	{
+		return fsutil::GetParentDir(m_strPath);
+	}
+
+	wstring fileName() const
+	{
+		return fsutil::GetFileName(m_strPath);
+	}
+
+	bool match(const CFileTitle& other) const;
+	UINT compare(const CFileTitle& other) const;
+};
