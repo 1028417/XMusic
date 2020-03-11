@@ -366,7 +366,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		{
 			CMatchMediaInfo& MatchMediaInfo = itr->second;
 
-			if (MatchMediaInfo.matchMediaRes(MediaResInfo))
+			if (MatchMediaInfo->match(MediaResInfo.fileTitle()))
 			{
 				E_MatchResult eRet = cbConfirm(MatchMediaInfo, MediaResInfo);
 				if (E_MatchResult::MR_Ignore == eRet)
