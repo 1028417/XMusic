@@ -186,7 +186,7 @@ void CXController::stop()
 
 E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
 {
-	if (__wnpos != strNewName.find_first_of(g_strInvalidMediaSetName))
+	if (strNewName.find_first_of(g_strInvalidMediaSetName) != __wnpos)
 	{
 		return E_RenameRetCode::RRC_InvalidName;
 	}
@@ -279,7 +279,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 
 bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 {
-	if (__wnpos != strNewName.find_first_of(g_strInvalidMediaName))
+	if (strNewName.find_first_of(g_strInvalidMediaName) != __wnpos)
 	{
 		m_view.msgBox(L"名称含特殊字符！");
 		return false;
