@@ -700,7 +700,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 
 				paSubFile([&](XFile& subFile) {
 					JValue jFile;
-					jFile["name"] = strutil::toUtf8(fsutil::getFileTitle(subFile.fileName()));
+					jFile["name"] = strutil::toUtf8(fsutil::getFileTitle(__fileTitle_r(subFile.fileName())));
 					jFile["size"] = ((CMediaRes&)subFile).fileSize();
 					if (bGenDuration)
 					{

@@ -290,7 +290,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 	wstring strExtName = media.GetFileTypeString();
 	if (!strExtName.empty())
 	{
-		strExtName = L"." + strExtName;
+        strExtName = __wcDot + strExtName;
 	}
 
 	cauto strOldAbsPath = media.GetAbsPath();
