@@ -53,6 +53,9 @@ using tagFileStat64 = struct stat;
 #define ftell64 ftello
 #endif
 
+#define __fileTitle(fileName) fileName.erase(fileName.rfind(__cDot))
+#define __fileTitle_r(fileName) fileName.substr(0, fileName.rfind(__cDot))
+
 enum class E_FindFindFilter
 {
 	FFP_None
@@ -203,28 +206,22 @@ public:
 	static string GetFileName(const string& strPath);
 
 	template <class S>
-	static S getFileTitle(const S& strPath)
-	{
-		cauto strFileName = GetFileName(strPath);
-        auto pos = strFileName.rfind(__cDot);
-		if (pos != strFileName.npos)
-		{
-			return strFileName.substr(0, pos);
-		}
-
-		return strFileName;
-	}
-
-	template <class S>
 	static S GetFileExtName(const S& strFile)
 	{
-        auto pos = strFile.rfind(__cDot);
+		auto pos = strFile.rfind(__cDot);
 		if (pos != S::npos)
 		{
-			return strFile.substr(pos+1);
+			return strFile.substr(pos + 1);
 		}
 
 		return S();
+	}
+
+	template <class S>
+	static S getFileTitle(const S& strPath)
+	{
+		cauto strFileName = GetFileName(strPath);
+		return __fileTitle_r(strFileName);
 	}
 
 	static bool CheckSubPath(const wstring& strDir, const wstring& strSubPath);

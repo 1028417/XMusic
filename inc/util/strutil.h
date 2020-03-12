@@ -98,8 +98,8 @@ public:
 		return strRet;
 	}
 
-	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet, bool bTrim = false);
-	static void split(const string& strText, char wcSplitor, vector<string>& vecRet, bool bTrim = false);
+	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet);
+	static void split(const string& strText, char wcSplitor, vector<string>& vecRet);
 
 	static bool matchIgnoreCase(const wstring& str1, const wstring& str2, size_t maxlen = 0);
 
