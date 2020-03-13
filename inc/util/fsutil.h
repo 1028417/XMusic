@@ -196,9 +196,7 @@ public:
 
     static void SplitPath(const wstring& strPath, wstring *pstrDir, wstring *pstrFile);
     static void SplitPath(const string& strPath, string *pstrDir, string *pstrFile);
-
-	static wstring GetRootDir(const wstring& strPath);
-
+	
     static wstring GetParentDir(const wstring& strPath);
     static string GetParentDir(const string& strPath);
 
