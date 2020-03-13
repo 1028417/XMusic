@@ -213,16 +213,21 @@ void CVerifyResultDlg::OnBnClickedLink()
 
 void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 {
-	wstring strInitialDir = m_view.getMediaLib().toAbsPath(media.GetBaseDir(), true);
-
-	wstring strDir = media.GetAbsPath();
-	while (!strDir.empty())
+	wstring strInitialDir;
+	
+	wstring strDir = m_view.getMediaLib().toAbsPath(media.GetDir());
+	while (true)
 	{
-		strDir = fsutil::GetParentDir(strDir);
-
 		if (fsutil::existDir(strDir))
 		{
 			strInitialDir = strDir;
+			break;
+		}
+
+		strDir = fsutil::GetParentDir(strDir);
+		if (strDir.empty())
+		{
+			strInitialDir = m_view.getMediaLib().toAbsPath(media.GetBaseDir(), true);
 			break;
 		}
 	}
