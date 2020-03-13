@@ -94,7 +94,7 @@ public:
         return true;
     }
 
-    void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton);
+    void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton, bool bAutoFitText=true);
 
     void updateSingerImg()
     {

@@ -117,7 +117,7 @@ void CMedialibView::_onShowPath(CPath& path)
         _getTitle((CMediaDir&)path, strTitle);
 
         bool bPlayable = path.files();
-        m_medialibDlg.updateHead(strTitle, bPlayable, true);
+        m_medialibDlg.updateHead(strTitle, bPlayable, true, false);
     }
 }
 

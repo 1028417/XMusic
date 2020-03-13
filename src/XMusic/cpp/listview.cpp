@@ -170,8 +170,8 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     }
     else
     {
-        int nTextFlag = Qt::TextShowMnemonic | Qt::TextSingleLine;
-        qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width(), nTextFlag);
+        qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
+                                                  , Qt::TextSingleLine | Qt::TextShowMnemonic);
     }
 
     _paintText(painter, rc, context, qsText, flags);

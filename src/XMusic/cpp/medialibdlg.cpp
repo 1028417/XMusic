@@ -19,7 +19,7 @@ void COuterDir::setDir(const wstring& strMediaLibDir, const wstring& strOuterDir
 }
 
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
-{// TODO 忽略空目录
+{
 #if __windows
     wstring strSubDir = this->absPath() + __wcPathSeparator + fileInfo.strName;
     QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
@@ -37,7 +37,14 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
         return NULL;
     }
 
-    return new CMediaDir(fileInfo);
+    auto pSubDir = new CMediaDir(fileInfo);
+#if __android
+    if (pSubDir->dirs().empty() && pSubDir->files().empty())
+    {
+        delete pSubDir;
+    }
+#endif
+    return pSubDir;
 #endif
 }
 
@@ -176,9 +183,10 @@ void CMedialibDlg::_resizeTitle() const
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
 }
 
-void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton)
+void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton, bool bAutoFitText)
 {
-    ui.labelTitle->setText(strutil::toQstr(strTitle));
+    ui.labelTitle->setText(strutil::toQstr(strTitle), bAutoFitText?
+                               E_LabelTextOption::LTO_AutoFit:E_LabelTextOption::LtO_Elided);
 
     ui.btnPlay->setVisible(bShowPlayButton);
 

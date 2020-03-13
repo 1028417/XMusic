@@ -54,7 +54,8 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 		}
 		else
 		{
-            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx, Qt::TextShowMnemonic);
+            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx
+                                                      , Qt::TextSingleLine | Qt::TextShowMnemonic);
 		}
 
         m_rc = painter.drawTextEx(m_rc, this->alignment(), qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
