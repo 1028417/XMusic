@@ -182,7 +182,7 @@ void CSingerPage::_addSinger(CSingerGroup *pGroup)
 	CMediaRes *pSrcPath = m_view.showChooseDirDlg(L"选择歌手目录", false);
 	__Ensure(pSrcPath);
 
-	BOOL bInitAlbum = CMainApp::confirmBox(L"是否生成专辑歌单?", this);
+	BOOL bInitAlbum = confirmBox(L"是否生成专辑歌单?");
 
 	__waitCursor;
 	
@@ -257,8 +257,8 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_REMOVE:
 		__EnsureBreak(pSingerObject);
 		
-		__EnsureBreak(CMainApp::confirmBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
-				L"确认删除所选歌手?": L"确认删除选中的组?", this));
+		__EnsureBreak(confirmBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
+				L"确认删除所选歌手?": L"确认删除选中的组?"));
 
 		m_AlbumPage.ShowSinger(NULL);
 
@@ -390,12 +390,12 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		if (E_RenameRetCode::RRC_InvalidName == eRetCode)
 		{
-			CMainApp::msgBox(L"名称含特殊字符！", this);
+			msgBox(L"名称含特殊字符！");
 		}
 		else if (E_RenameRetCode::RRC_NameExists == eRetCode)
 		{
-			CMainApp::msgBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
-				L"重命名失败，存在同名歌手！" : L"重命名失败，存在同名组！", this);
+			msgBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
+				L"重命名失败，存在同名歌手！" : L"重命名失败，存在同名组！");
 		}
 
 		return;

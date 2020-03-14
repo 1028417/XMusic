@@ -124,7 +124,7 @@ void CDuplicateMediaDlg::OnBnClickedRemove()
 	}
 	__Ensure(arrDelMedia);
 
-	__Ensure(CMainApp::confirmBox(L"确认删除所选曲目?", this));
+	__Ensure(confirmBox(L"确认删除所选曲目?"));
 
 	__Assert(m_view.getModel().removeMedia(arrDelMedia));
 

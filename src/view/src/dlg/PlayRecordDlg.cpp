@@ -150,7 +150,7 @@ void CPlayRecordDlg::OnBnClickedPlay()
 
 void CPlayRecordDlg::OnBnClickedClear()
 {
-	__Ensure(CMainApp::confirmBox(L"确认清空所有播放记录?", L"播放记录", this));
+	__Ensure(confirmBox(L"确认清空所有播放记录?", L"播放记录"));
 
 	__Ensure(m_view.getDataMgr().clearPlayRecord());
 

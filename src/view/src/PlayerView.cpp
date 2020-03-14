@@ -342,13 +342,5 @@ void CPlayerView::_addInMedia()
 
 bool CPlayerView::msgBox(const wstring& strMsg, bool bWarning)
 {
-	if (bWarning)
-	{
-		return CMainApp::confirmBox(strMsg);
-	}
-	else
-	{
-		CMainApp::msgBox(strMsg);
-		return true;
-	}
+	return CMainApp::msgBox(strMsg, bWarning);
 }

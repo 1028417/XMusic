@@ -251,7 +251,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		strNewOppPath = m_view.getMediaLib().toOppPath(strNewPath);
 		if (strNewOppPath.empty())
 		{
-			CMainApp::msgBox(L"请选择根目录范围内的文件", __Title, this);
+			msgBox(L"请选择根目录范围内的文件", __Title);
 			continue;
 		}
 
@@ -259,14 +259,14 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		{
 			if (!fsutil::CheckSubPath(strBaseDir, strNewOppPath))
 			{
-				CMainApp::msgBox(L"请选择以下目录中的文件: \n\n\t" + strBaseDir, __Title, this);
+				msgBox(L"请选择以下目录中的文件: \n\n\t" + strBaseDir, __Title);
 				continue;
 			}
 		}
 
 		if (!fsutil::existFile(strNewPath))
 		{
-			CMainApp::confirmBox(L"文件不存在，请重新选择！", __Title, this);
+			confirmBox(L"文件不存在，请重新选择！", __Title);
 			continue;
 		}
 
@@ -274,7 +274,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		{
 			if (media.checkDuration() == 0)
 			{
-				CMainApp::msgBox(L"请选择新的文件！", __Title, this);
+				msgBox(L"请选择新的文件！", __Title);
 				continue;
 			}
 		}
@@ -296,7 +296,7 @@ void CVerifyResultDlg::OnBnClickedRemove()
 	__Assert(nItem >= 0);
 
 	m_VerifyResult.paInvalidMedia.get((UINT)nItem, [&](CMedia& media) {
-		__Ensure(CMainApp::confirmBox(L"确认删除所选曲目?", __Title, this));
+		__Ensure(confirmBox(L"确认删除所选曲目?", __Title));
 
 		m_VerifyResult.paInvalidMedia.erase(m_VerifyResult.paInvalidMedia.begin() + nItem);
 		m_VerifyResult.paRemoveMedia.add(media);

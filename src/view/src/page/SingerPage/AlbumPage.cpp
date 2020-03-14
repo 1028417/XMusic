@@ -545,11 +545,18 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 	case ID_ADD_ALBUMITEM:
 		{
 			__Ensure(pAlbum);
-			
+
+			cauto strBaseDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
+			if (!fsutil::existDir(strBaseDir))
+			{
+				msgBox(L"歌手目录不存在！");
+				return;
+			}
+
 			tagFileDlgOpt FileDlgOpt;
 			FileDlgOpt.strTitle = L"添加专辑曲目";
 			FileDlgOpt.strFilter = __MediaFilter;
-			FileDlgOpt.strInitialDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
+			FileDlgOpt.strInitialDir = strBaseDir;
 			CFileDlgEx fileDlg(FileDlgOpt);
 
 			list<wstring> lstFiles;
@@ -587,7 +594,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 	case ID_REMOVE_ALBUM:
 		__AssertBreak(pAlbum);
 
-		__EnsureBreak(CMainApp::confirmBox(L"确认删除所选专辑?", this));
+		__EnsureBreak(confirmBox(L"确认删除所选专辑?"));
 
 		(void)m_wndAlbumList.DeleteItem(nItem);
 		(void)m_wndAlbumList.SetItemState(0, LVIS_SELECTED, LVIS_SELECTED);
@@ -735,7 +742,7 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 	case ID_REMOVE_ALBUMITEM:
 		__EnsureBreak(lstAlbumItems);
 
-		__EnsureBreak(CMainApp::confirmBox(L"确认移除选中的曲目?", this));
+		__EnsureBreak(confirmBox(L"确认移除选中的曲目?"));
 
 		__EnsureBreak(m_view.getModel().removeMedia(lstAlbumItems));
 
@@ -866,11 +873,11 @@ void CAlbumPage::OnLvnEndlabeleditListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	{
 		if (E_RenameRetCode::RRC_InvalidName == eRetCode)
 		{
-			CMainApp::msgBox(L"名称含特殊字符！", this);
+			msgBox(L"名称含特殊字符！");
 		}
 		else if (E_RenameRetCode::RRC_NameExists == eRetCode)
 		{
-			CMainApp::msgBox(L"重命名失败，存在同名专辑！", this);
+			msgBox(L"重命名失败，存在同名专辑！");
 		}
 		return;
 	}

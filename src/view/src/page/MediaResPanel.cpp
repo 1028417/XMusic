@@ -615,7 +615,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (!MediaRes.IsDir())
 			{
-				__Ensure(CMainApp::confirmBox(L"确认删除所选文件?", this));
+				__Ensure(confirmBox(L"确认删除所选文件?"));
 
 				__waitCursor;
 				(void)m_view.getController().removeMediaRes(lstMediaRes);

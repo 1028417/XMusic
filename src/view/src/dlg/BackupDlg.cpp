@@ -188,7 +188,7 @@ void CBackupDlg::OnBnClickedRestore()
 	int nItem = m_wndList.GetSelItem();
 	__Ensure(nItem >= 0);
 
-	__Ensure(CMainApp::confirmBox(L"确认使用选中的备份来恢复曲目库？", this));
+	__Ensure(confirmBox(L"确认使用选中的备份来恢复曲目库？"));
 
 	wstring strTag = m_wndList.GetItemText(nItem, 0);
 	strutil::ltrim(strTag);
@@ -219,7 +219,7 @@ void CBackupDlg::OnBnClickedDel()
 	int nItem = m_wndList.GetSelItem();
 	__Ensure(nItem >= 0);
 
-	__Ensure(CMainApp::confirmBox(L"确认删除选中的备份？", this));
+	__Ensure(confirmBox(L"确认删除选中的备份？"));
 
 	wstring strTag = m_wndList.GetItemText(nItem, 0);
 	strutil::ltrim(strTag);
@@ -274,7 +274,7 @@ void CBackupDlg::OnBnClickedBackup()
 
 void CBackupDlg::OnBnClickedClearAllMedia()
 {
-	__Ensure(CMainApp::confirmBox(L"确认清空所有歌单、歌手、专辑？",  this));
+	__Ensure(confirmBox(L"确认清空所有歌单、歌手、专辑？"));
 
 	__Ensure(m_view.getModel().clearData());
 }
