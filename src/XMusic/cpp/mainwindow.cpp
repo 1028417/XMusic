@@ -318,9 +318,7 @@ void MainWindow::_init()
 void MainWindow::show()
 {
     _init();
-
     m_medialibDlg.init();
-
     m_bkgDlg.init();
 
     ui.labelLogo->movie()->stop();
@@ -334,7 +332,6 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
 
     _relayout();
-
     //update();
 
     (void)startTimer(1000);
