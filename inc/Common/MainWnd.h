@@ -74,6 +74,32 @@ public:
 		CMainApp::foregroundWnd(m_hWnd);
 	}
 
+	int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType)
+	{
+		return CMainApp::msgBox(strMsg, strTitle, nType);
+	}
+	void msgBox(const wstring& strMsg, const wstring& strTitle)
+	{
+		CMainApp::msgBox(strMsg, strTitle);
+	}
+	void msgBox(const wstring& strMsg)
+	{
+		CMainApp::msgBox(strMsg);
+	}
+	bool msgBox(const wstring& strMsg, bool bWarning)
+	{
+		return CMainApp::msgBox(strMsg, bWarning);
+	}
+
+	bool confirmBox(const wstring& strMsg, const wstring& strTitle)
+	{
+		return CMainApp::confirmBox(strMsg, strTitle);
+	}
+	bool confirmBox(const wstring& strMsg)
+	{
+		return CMainApp::confirmBox(strMsg);
+	}
+
 private:
 	void resizeView(bool bManual=false);
 

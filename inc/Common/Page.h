@@ -49,6 +49,32 @@ public:
 
 	void RegMenuHotkey(CWnd& wndCtrl, UINT uVkKeyCode, UINT uCmd = 0);
 
+	int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType)
+	{
+		return CMainApp::msgBox(strMsg, strTitle, nType, this);
+	}
+	void msgBox(const wstring& strMsg, const wstring& strTitle)
+	{
+		CMainApp::msgBox(strMsg, strTitle, this);
+	}
+	void msgBox(const wstring& strMsg)
+	{
+		CMainApp::msgBox(strMsg, this);
+	}
+	bool msgBox(const wstring& strMsg, bool bWarning)
+	{
+		return CMainApp::msgBox(strMsg, bWarning, this);
+	}
+
+	bool confirmBox(const wstring& strMsg, const wstring& strTitle)
+	{
+		return CMainApp::confirmBox(strMsg, strTitle, this);
+	}
+	bool confirmBox(const wstring& strMsg)
+	{
+		return CMainApp::confirmBox(strMsg, this);
+	}
+
 private:
 	HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 

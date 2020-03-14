@@ -144,23 +144,32 @@ public:
 
 	E_DoEventsResult DoEvents(bool bOnce=false);
 
-	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd);
-	
+	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd = NULL);
 	static void msgBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
 	{
 		(void)msgBox(strMsg, strTitle, MB_OK, pWnd);
 	}
-
 	static void msgBox(const wstring& strMsg, CWnd *pWnd = NULL)
 	{
 		msgBox(strMsg, L"Ã· æ", pWnd);
+	}
+	static bool msgBox(const wstring& strMsg, bool bWarning, CWnd *pWnd = NULL)
+	{
+		if (bWarning)
+		{
+			return confirmBox(strMsg, pWnd);
+		}
+		else
+		{
+			msgBox(strMsg, pWnd);
+			return true;
+		}
 	}
 
 	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
 	{
 		return IDYES == msgBox(strMsg, strTitle, MB_YESNO, pWnd);
 	}
-
 	static bool confirmBox(const wstring& strMsg, CWnd *pWnd = NULL)
 	{
 		return confirmBox(strMsg, L"æØ∏Ê", pWnd);
