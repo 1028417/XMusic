@@ -213,22 +213,25 @@ void CVerifyResultDlg::OnBnClickedLink()
 
 void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 {
-	wstring strInitialDir;
-	
-	wstring strDir = m_view.getMediaLib().toAbsPath(media.GetDir());
-	while (true)
-	{
-		if (fsutil::existDir(strDir))
-		{
-			strInitialDir = strDir;
-			break;
-		}
+	cauto strBaseDir = media.GetBaseDir();
 
-		strDir = fsutil::GetParentDir(strDir);
-		if (strDir.empty())
+	wstring strInitialDir = m_view.getMediaLib().toAbsPath(media.GetDir());
+	if (!fsutil::existDir(strInitialDir))
+	{
+		if (!strBaseDir.empty())
 		{
-			strInitialDir = m_view.getMediaLib().toAbsPath(media.GetBaseDir(), true);
-			break;
+			cauto strBaseAbsDir = m_view.getMediaLib().toAbsPath(strBaseDir, true);
+			if (!fsutil::existDir(strBaseAbsDir))
+			{
+				msgBox(L"歌手目录不存在！");
+				return;
+			}
+
+			strInitialDir = strBaseAbsDir;
+		}
+		else
+		{
+			strInitialDir = m_view.getMediaLib().absPath();
 		}
 	}
 
@@ -240,9 +243,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 	FileDlgOpt.hWndOwner = m_hWnd;
 	CFileDlgEx fileDlg(FileDlgOpt);
 
-	wstring strBaseDir = media.GetBaseDir();
 	wstring strNewOppPath;
-
 	while (true)
 	{
 		wstring strNewPath = fileDlg.ShowOpenSingle();
