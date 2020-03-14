@@ -153,18 +153,6 @@ public:
 	{
 		msgBox(strMsg, L"ÌבÊ¾", pWnd);
 	}
-	static bool msgBox(const wstring& strMsg, bool bWarning, CWnd *pWnd = NULL)
-	{
-		if (bWarning)
-		{
-			return confirmBox(strMsg, pWnd);
-		}
-		else
-		{
-			msgBox(strMsg, pWnd);
-			return true;
-		}
-	}
 
 	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
 	{

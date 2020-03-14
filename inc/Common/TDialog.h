@@ -61,10 +61,6 @@ public:
 	{
 		CMainApp::msgBox(strMsg, this);
 	}
-	bool msgBox(const wstring& strMsg, bool bWarning)
-	{
-		return CMainApp::msgBox(strMsg, bWarning, this);
-	}
 
 	bool confirmBox(const wstring& strMsg, const wstring& strTitle)
 	{
