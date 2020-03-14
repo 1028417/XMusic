@@ -8,7 +8,7 @@
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
-bool CXController::start()
+void CXController::start()
 {
     static auto& PlayMgr = m_model.getPlayMgr();
     static cauto fnTryPlay = [&](){
@@ -76,8 +76,7 @@ bool CXController::start()
 			}
 		}
 		
-        //CMainApp::GetMainApp()->DoEvents();
-        __async([&]() {
+        __async(100, [&]() {
             fnTryPlay();
         });
     });
@@ -145,8 +144,6 @@ bool CXController::start()
         }
     });
 #endif
-
-    return true;
 }
 
 #if __winvc

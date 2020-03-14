@@ -329,13 +329,13 @@ void MainWindow::show()
     ui.labelLogoCompany->setVisible(false);
     ui.btnFullScreen->setVisible(false);
 
-    ui.centralWidget->setVisible(true);
+    m_PlayingList.updateList(m_app.getOption().uPlayingItem);
 
-    update();
+    ui.centralWidget->setVisible(true);
 
     _relayout();
 
-    m_PlayingList.updateList(m_app.getOption().uPlayingItem);
+    //update();
 
     (void)startTimer(1000);
 

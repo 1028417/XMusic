@@ -38,7 +38,7 @@ static CPlayerApp theApp;
 bool CController::init()
 {
 	initOption();
-	
+
 	(void)m_model.initMediaLib();
 
 	return true;
@@ -71,8 +71,10 @@ bool CController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Control, true));
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_UP, E_HotkeyFlag::HKF_Alt, true));
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Alt, true));
+	
+	CXController::start();
 
-	return CXController::start();
+	return true;
 }
 
 void CController::stop()

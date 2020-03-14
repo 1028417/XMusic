@@ -40,7 +40,7 @@ public:
 		return m_OptionMgr.getOption();
 	}
 
-	bool start();
+        void start();
 
         void stop();
 

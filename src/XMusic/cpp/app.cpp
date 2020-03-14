@@ -912,16 +912,6 @@ void CApp::slot_run(int nUpgradeResult)
     }
     g_logger << "initMediaLib success " >> (time(0)-time0);
 
-    g_logger >> "start controller";
-    if (!m_ctrl.start())
-    {
-        g_logger >> "start controller fail";
-        this->quit();
-        return;
-    }
-
-    g_logger >> "app running";
-
     if (m_ctrl.getOption().crTheme >= 0)
     {
         g_crTheme.setRgb((int)m_ctrl.getOption().crTheme);
@@ -932,6 +922,10 @@ void CApp::slot_run(int nUpgradeResult)
     }
 
     m_mainWnd.show();
+
+    g_logger >> "start controller";
+    m_ctrl.start();
+    g_logger >> "app running";
 }
 
 void CApp::quit()
