@@ -382,7 +382,8 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     {
        context.pixmap = &m_pmFile;
 
-       context.strText = ((CMediaRes*)context.pFile)->GetTitle();
+       auto pMediaRes = ((CMediaRes*)context.pFile);
+       context.strText = pMediaRes->isXmsc() ? pMediaRes->GetTitle() : pMediaRes->fileName();
     }
 }
 

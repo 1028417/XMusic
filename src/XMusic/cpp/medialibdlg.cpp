@@ -29,7 +29,7 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
         return NULL;
     }
 
-    return new COuterDir(fileInfo, m_strMediaLibDir);
+    auto pSubDir = new COuterDir(fileInfo, m_strMediaLibDir);
 
 #else
     if (fileInfo.strName == m_strMediaLibDir)
@@ -38,14 +38,23 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
     }
 
     auto pSubDir = new CMediaDir(fileInfo);
-#if __android
-    if (pSubDir->dirs().empty() && pSubDir->files().empty())
+#endif
+
+    if (NULL == m_fi.pParent)
     {
-        delete pSubDir;
+        if (!pSubDir->files())
+        {
+            if (!pSubDir->dirs().any([](CPath& childDir){
+                return childDir.files() || childDir.dirs();
+            }))
+            {
+                delete pSubDir;
+                return NULL;
+            }
+        }
     }
-#endif
+
     return pSubDir;
-#endif
 }
 
 CMediaRes* COuterDir::findSubFile(const wstring& strSubFile)

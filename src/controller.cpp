@@ -194,15 +194,13 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring&
 	TD_MediaSetList arrMediaSets;
 	MediaSet.m_pParent->GetAllMediaSets(MediaSet.m_eType, arrMediaSets);
 
-	if (!arrMediaSets.every([&](CMediaSet& SubSet) {
-		if (&SubSet != &MediaSet)
+	if (arrMediaSets.any([&](CMediaSet& SubSet) {
+		if (&SubSet == &MediaSet)
 		{
-			if (strutil::matchIgnoreCase(SubSet.m_strName, strNewName))
-			{
-				return false;
-			}
+			return false;
 		}
-		return true;
+		
+		return strutil::matchIgnoreCase(SubSet.m_strName, strNewName);
 	}))
 	{
 		return E_RenameRetCode::RRC_NameExists;
