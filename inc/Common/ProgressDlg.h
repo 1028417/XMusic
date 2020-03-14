@@ -43,7 +43,7 @@ public:
 	{
 		int nRet = 0;
 		__appSync([&]() {
-			nRet = msgBox(strText.c_str(), strTitle.c_str(), uType);
+			nRet = TDialog::msgBox(strText.c_str(), strTitle.c_str(), uType);
 		});
 		return nRet;
 	}
