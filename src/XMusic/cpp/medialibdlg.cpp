@@ -40,6 +40,8 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
     auto pSubDir = new CMediaDir(fileInfo);
 #endif
 
+    mtutil::usleep(1);
+
     if (NULL == m_fi.pParent)
     {
         if (!pSubDir->files())
