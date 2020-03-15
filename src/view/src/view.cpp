@@ -408,7 +408,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 		CMatchMediaInfo& MatchMediaInfo = pr.second;
 		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
-		wstring strDstPath = fsutil::GetParentDir(strMediaPath)
+		wstring strDstPath = m_model.getMediaLib().toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
 			+ __wcPathSeparator + fsutil::GetFileName(strSrcPath);
 
 		m_model.getPlayMgr().moveFile(strMediaPath, strDstPath, [&]() {
