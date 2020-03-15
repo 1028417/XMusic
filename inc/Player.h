@@ -65,7 +65,7 @@ public:
 
 	UINT checkDuration();
 
-    E_DecodeStatus decodeStatus() const;
+    const E_DecodeStatus& decodeStatus() const;
 
 private:
 	virtual bool isOnline() const override

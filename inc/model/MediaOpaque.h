@@ -17,7 +17,7 @@ private:
 
     //uint64_t m_uPos = 0;
 
-    bool m_bWaitFlag = false;
+    size_t m_uWaitSize = 0;
 
 private:
     long long _openFile(const wstring& strFile, bool bXmsc);
@@ -45,7 +45,7 @@ public:
 
     bool waitingFlag() const
     {
-        return m_bWaitFlag;
+        return m_uWaitSize > 0;
     }
 
     int64_t size() const override;

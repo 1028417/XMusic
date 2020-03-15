@@ -87,12 +87,12 @@ private:
     virtual void _clear() {}
 
 public:
-    bool status() const
+    const bool& status() const
     {
         return m_bStatus;
     }
 
-    uint64_t sumSize() const
+    const uint64_t& sumSize() const
     {
         return m_uSumSize;
     }
