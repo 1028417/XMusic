@@ -430,7 +430,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     {
         if (pMedia->duration() > 600)
         {
-            strRemark << pMedia->durationString();
+            strRemark << L"整轨 " << pMedia->durationString();
         }
     }
     else if (mediaContext.pMediaSet)
@@ -444,7 +444,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             {
                 uAlbumCount += singer.albums().size();
             }
-            strRemark << lstSingers.size() << L"歌手\n" << uAlbumCount << L"专辑";
+            strRemark << lstSingers.size() << L" 歌手\n" << uAlbumCount << L" 专辑";
         }
         else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         {
@@ -454,23 +454,23 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             {
                 uAlbumItemCount += album.albumItems().size();
             }
-            strRemark << lstAlbum.size() << L"专辑\n" << uAlbumItemCount << L"曲目";
+            strRemark << lstAlbum.size() << L" 专辑\n" << uAlbumItemCount << L" 曲目";
         }
         else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
         {
             auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
-            strRemark << pAlbum->albumItems().size() << L"曲目";
+            strRemark << pAlbum->albumItems().size() << L" 曲目";
         }
         else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
         {
             auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
-            strRemark << pPlaylist->size() << L"曲目";
+            strRemark << pPlaylist->size() << L" 曲目";
         }
     }
 
     if (!strRemark->empty())
     {
-        CPainterFontGuard fontGuard(painter, 0.85, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
 
         UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
