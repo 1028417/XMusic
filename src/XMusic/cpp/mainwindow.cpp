@@ -315,6 +315,12 @@ void MainWindow::_init()
     }
 }
 
+void MainWindow::initBkg()
+{
+    m_bkgDlg.initBkg(true);
+    m_bkgDlg.initBkg(false);
+}
+
 void MainWindow::show()
 {
     _init();
@@ -327,12 +333,12 @@ void MainWindow::show()
     ui.labelLogoCompany->setVisible(false);
     ui.btnFullScreen->setVisible(false);
 
+    ui.centralWidget->setVisible(true);
+    _relayout();
+
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
 
-    ui.centralWidget->setVisible(true);
-
-    _relayout();
-    //update();
+    update();
 
     (void)startTimer(1000);
 

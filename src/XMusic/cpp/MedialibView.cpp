@@ -470,7 +470,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
     if (!strRemark->empty())
     {
-        CPainterFontGuard fontGuard(painter, 0.9, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.85, QFont::Weight::ExtraLight);
 
         UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter

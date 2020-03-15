@@ -118,8 +118,6 @@ private:
     XThread m_thread;
 
 private:
-    void _initBkg(bool bHBkg);
-
     inline WString& _bkgDir()
     {
         return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
@@ -141,6 +139,8 @@ private:
     void _onClosed() override;
 
 public:
+    void initBkg(bool bHBkg);
+
     void init();
 
     const QPixmap& hbkg() const

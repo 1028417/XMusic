@@ -168,27 +168,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 {
 }
 
-void CBkgDlg::init()
-{
-    ui.setupUi(this);
-
-    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
-
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
-
-    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
-        m_colorDlg.show();
-    });
-
-    m_colorDlg.init();
-
-    m_addbkgDlg.init();
-
-    _initBkg(true);
-    _initBkg(false);
-}
-
-void CBkgDlg::_initBkg(bool bHBkg)
+void CBkgDlg::initBkg(bool bHBkg)
 {
     cauto strWorkDir = strutil::toWstr(fsutil::workDir());
     cauto strBkgDir = bHBkg?(m_strHBkgDir = strWorkDir + L"/hbkg/")
@@ -257,7 +237,23 @@ void CBkgDlg::_initBkg(bool bHBkg)
     {
         (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
     }
+}
 
+void CBkgDlg::init()
+{
+    ui.setupUi(this);
+
+    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
+
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
+        m_colorDlg.show();
+    });
+
+    m_colorDlg.init();
+
+    m_addbkgDlg.init();
 }
 
 void CBkgDlg::_relayout(int cx, int cy)

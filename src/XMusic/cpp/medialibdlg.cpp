@@ -115,8 +115,6 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_MedialibView.play();
     });
-
-    _initOuter();
 }
 
 void CMedialibDlg::_show()

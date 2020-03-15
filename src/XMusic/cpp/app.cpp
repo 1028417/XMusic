@@ -228,7 +228,39 @@ int CApp::run()
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
-            _run();
+            auto& option = m_ctrl.initOption();
+            if (!_initRootDir(option.strRootDir))
+            {
+                this->quit();
+                return;
+            }
+            g_logger << "RootDir: " >> option.strRootDir;
+
+            QFile qf(":/medialib.conf");
+            if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+            {
+                g_logger >> "loadMedialibConfResource fail";
+                this->quit();
+                return;
+            }
+
+            cauto ba = qf.readAll();
+            IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
+            tagMedialibConf orgMedialibConf;
+            if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+            {
+                g_logger >> "readMedialibConfResource fail";
+
+                this->quit();
+                return;
+            }
+            g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
+                     << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+                     << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+            m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
+
+            E_UpgradeResult eUpgradeResult = _run(orgMedialibConf);
+            emit signal_run((int)eUpgradeResult);
         });
     });
 
@@ -253,45 +285,27 @@ int CApp::run()
     return nRet;
 }
 
-void CApp::_run()
+E_UpgradeResult CApp::_run(const tagMedialibConf& orgMedialibConf)
 {
-    auto& option = m_ctrl.initOption();
-    if (!_initRootDir(option.strRootDir))
-    {
-        this->quit();
-        return;
-    }
-    g_logger << "RootDir: " >> option.strRootDir;
-
-    QFile qf(":/medialib.conf");
-    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-    {
-        g_logger >> "loadMedialibConfResource fail";
-        this->quit();
-        return;
-    }
-
-    cauto ba = qf.readAll();
-    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-    tagMedialibConf orgMedialibConf;
-    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
-    {
-        g_logger >> "readMedialibConfResource fail";
-
-        this->quit();
-        return;
-    }
-    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-    m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
-
     auto timeBegin = time(0);
 
-    E_UpgradeResult eUpgradeResult = E_UpgradeResult::UR_None;
 #if __OnlineMediaLib
-    eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
+    E_UpgradeResult eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
+    if (E_UpgradeResult::UR_Success != eUpgradeResult)
+    {
+        return eUpgradeResult;
+    }
 #endif
+
+    auto time0 = time(0);
+    if (!m_model.initMediaLib())
+    {
+        g_logger >> "initMediaLib fail";
+        return E_UpgradeResult::UR_Fail;
+    }
+    g_logger << "initMediaLib success " >> (time(0)-time0);
+
+    m_mainWnd.initBkg();
 
     auto timeWait = 6 - (time(0) - timeBegin);
     if (timeWait > 0)
@@ -299,7 +313,7 @@ void CApp::_run()
         mtutil::usleep((UINT)timeWait*1000);
     }
 
-    emit signal_run((int)eUpgradeResult);
+    return E_UpgradeResult::UR_Success;
 }
 
 bool CApp::_initRootDir(wstring& strRootDir)
@@ -858,7 +872,7 @@ void CApp::slot_run(int nUpgradeResult)
     }
 
     auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
-    if (E_UpgradeResult::UR_None != eUpgradeResult && E_UpgradeResult::UR_Success != eUpgradeResult)
+    if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
         {
@@ -902,15 +916,6 @@ void CApp::slot_run(int nUpgradeResult)
 
         return;
     }
-
-    auto time0 = time(0);
-    if (!m_model.initMediaLib())
-    {
-        g_logger >> "initMediaLib fail";
-        this->quit();
-        return;
-    }
-    g_logger << "initMediaLib success " >> (time(0)-time0);
 
     if (m_ctrl.getOption().crTheme >= 0)
     {

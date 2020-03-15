@@ -31,7 +31,6 @@ protected:
 
 enum class E_UpgradeResult
 {
-    UR_None = 0,
     UR_Success,
     UR_Fail,
 
@@ -83,7 +82,7 @@ private:
         return m_mainWnd;
     }
 
-    void _run();
+    E_UpgradeResult _run(const tagMedialibConf& orgMedialibConf);
 
     bool _initRootDir(wstring& strRootDir);
 
