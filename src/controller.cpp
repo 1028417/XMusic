@@ -82,11 +82,9 @@ void CXController::start()
     });
 
 #else
+    fnTryPlay();
+
     m_threadPlayCtrl.start([&](const bool& bRunSignal)mutable {
-        mtutil::usleep(100);
-
-        fnTryPlay();
-
         while (bRunSignal)
         {
             mtutil::usleep(100);

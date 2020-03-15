@@ -112,9 +112,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
         painter.adjustFont(0.65, QFont::Weight::Thin);
 
         cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
-        auto len = __size(20)*(qsQuality.size());
+        auto len = __size(10)*(qsQuality.size());
 
-        rcPos.setRight(rcPos.right() + len);
+        rcPos.setRight(rcPos.right() + __size(20) + len);
         if (rcPos.right() > nMaxRight)
         {
             rcPos.setRight(nMaxRight);
