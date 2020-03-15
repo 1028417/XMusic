@@ -118,7 +118,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		case __Column_Info:
 		{
 			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
-			if (NULL == pMediaRes)
+			if (NULL == pMediaRes || pMediaRes->IsDir())
 			{
 				return;
 			}

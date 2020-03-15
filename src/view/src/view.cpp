@@ -453,9 +453,17 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
 		return false;
 	}
+	if (bActualMode)
+	{
+		strExportPath.append(L"/XMusic");
+	}
+	else
+	{
+		strExportPath.append(L"/媒体库");
+	}
 
 	tagExportOption ExportOption;
-	ExportOption.strExportPath = strExportPath + L"/XMusic";
+	ExportOption.strExportPath = strExportPath;
 	ExportOption.bActualMode = bActualMode;
 
 	m_ResModule.ActivateResource();
