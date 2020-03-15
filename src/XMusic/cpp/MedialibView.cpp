@@ -430,7 +430,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     {
         if (pMedia->duration() > 600)
         {
-            strRemark << L"整轨 " << pMedia->durationString();
+            strRemark << L"整轨\n" << pMedia->durationString();
         }
     }
     else if (mediaContext.pMediaSet)

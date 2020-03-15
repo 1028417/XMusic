@@ -162,6 +162,25 @@ void CCompareResultPage::_fillDeletedMedia()
 		m_wndList.InsertItemEx(uItem++, {DeletedAlbumItem.strSingerName	+ __CNDot
 			+ DeletedAlbumItem.strMediaSetName, __substr(DeletedAlbumItem.strPath, 1) }, L" ");
 	}
+
+	m_fnGetPath = [&](UINT uItem) {
+		wstring strPath;
+		if (!m_arrDeletedPlayItem.get(uItem, [&](tagDiffMedia& DeletedPlayItem) {
+			strPath = DeletedPlayItem.strPath;
+		}))
+		{
+			m_arrDeletedAlbumItem.get(uItem, [&](tagDiffMedia& DeletedAlbumItem) {
+				strPath = DeletedAlbumItem.strSingerDir + DeletedAlbumItem.strPath;
+			});
+		}
+
+		if (!fsutil::existFile(strPath))
+		{
+			strPath.clear();
+		}
+
+		return strPath;
+	};
 }
 
 void CCompareResultPage::setMovedMedia(const SArray<tagMovedMedia>& arrMovedMedia)

@@ -399,28 +399,29 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	map<CMedia*, wstring> mapUpdatedMedias;
 	for (auto& pr : lstMatchResult)
 	{
-		wstring& strSrcPath = pr.first;
-		ProgressDlg.SetStatusText((L"合入文件: " + fsutil::GetFileName(strSrcPath)).c_str(), 1);
+		cauto strSrcPath = pr.first;
+		cauto strSrcFileName = fsutil::GetFileName(strSrcPath);
+		ProgressDlg.SetStatusText((L"合入文件: " + strSrcFileName).c_str(), 1);
 		if (ProgressDlg.checkCancel())
 		{
 			return;
 		}
 
 		CMatchMediaInfo& MatchMediaInfo = pr.second;
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
-		wstring strDstPath = m_model.getMediaLib().toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
-			+ __wcPathSeparator + fsutil::GetFileName(strSrcPath);
+		cauto srcMediaDir = m_model.getMediaLib().toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
+		cauto strOldPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
+		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
 
-		m_model.getPlayMgr().moveFile(strMediaPath, strDstPath, [&]() {
-			(void)fsutil::removeFile(strMediaPath);
+		m_model.getPlayMgr().moveFile(strOldPath, strNewPath, [&]() {
+			(void)fsutil::removeFile(strOldPath);
 
-			if (!fsutil::moveFile(strSrcPath, strDstPath))
+			if (!fsutil::moveFile(strSrcPath, strNewPath))
 			{
-				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strDstPath);
+				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strNewPath);
 				return false;
 			}
 
-			wstring strOppPath = m_model.getMediaLib().toOppPath(strDstPath);
+			wstring strOppPath = m_model.getMediaLib().toOppPath(strNewPath);
 			mapUpdateFiles.set(MatchMediaInfo->m_strPath, strOppPath);
 
 			MatchMediaInfo.medias()([&](CMedia& media) {
