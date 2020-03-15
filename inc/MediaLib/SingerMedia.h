@@ -166,11 +166,6 @@ private:
 	list<CSinger> m_lstSingers;
 
 public:
-    size_t size() const
-    {
-        return m_lstSingers.size();
-    }
-
     const list<CSinger>& singers() const
     {
         return m_lstSingers;
