@@ -453,7 +453,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
         cauto pr = vecBkgFile[uIdx];
 
         cauto strBkg = m_bHScreen ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
-        if (strBkg == *pr.first)
+        if (strBkg == pr.first)
         {
             _setBkg(L"");
         }
