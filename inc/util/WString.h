@@ -7,62 +7,56 @@ private:
 	wstring m_str;
 
 public:
-    WString() {}
-
-    template <typename T>
-    WString(const T& t)
-    {
-        *this << t;
-    }
-
-    WString(const WString& other)
-        : m_str(other.m_str)
-    {
-    }
-	WString& operator=(const WString& other)
-	{
-		m_str.assign(other.m_str);
-		return *this;
-	}
+	WString() = default;
 
 	WString(const wstring& str)
 		: m_str(str)
 	{
 	}
-	WString& operator=(const wstring& str)
+
+	WString(const wchar_t *pStr)
+		: m_str(pStr ? pStr : L"")
 	{
-		m_str.assign(str);
-		return *this;
 	}
 
-    WString(WString&& other)
-    {
+	WString(WString&& other)
+	{
 		m_str.swap(other.m_str);
-    }
+	}
+
+	WString(wstring&& str)
+	{
+		m_str.swap(str);
+	}
+
 	WString& operator=(WString&& other)
 	{
 		m_str.swap(other.m_str);
 		return *this;
 	}
 
-    WString(wstring&& str)
-    {
+	WString& operator=(wstring&& str)
+	{
 		m_str.swap(str);
-    }
-    WString& operator=(wstring&& str)
-    {
-		m_str.swap(str);
-        return *this;
-    }
+		return *this;
+	}
 
-    template <typename T>
-    WString& operator=(const T& t)
-    {
+	WString& operator=(const wstring& str)
+	{
+		m_str.assign(str);
+		return *this;
+	}
+
+	WString& operator=(const wchar_t *pStr)
+	{
 		m_str.clear();
-        *this << t;
-        return *this;
-    }
-	
+		if (pStr)
+		{
+			m_str.append(pStr);
+		}
+		return *this;
+	}
+
 public:
 #if !__winvc
     operator QString() const
@@ -141,11 +135,50 @@ public:
         return *this;
     }
 
-    template <typename T>
-    WString operator +(const T& t) const
-    {
-        WString ret(*this);
-        ret << t;
-        return ret;
-    }
+	template <typename T>
+	WString operator +(const T& t) const
+	{
+		WString ret(*this);
+		ret << t;
+		return ret;
+	}
+
+	friend WString operator +(const wstring& lhs, const WString& rhs)
+	{
+		WString ret(lhs);
+		ret << rhs;
+		return ret;
+	}
+
+	friend WString operator +(const wchar_t *lhs, const WString& rhs)
+	{
+		WString ret(lhs);
+		ret << rhs;
+		return ret;
+	}
+
+	bool operator ==(const wstring& str) const
+	{
+		return m_str == str;
+	}
+
+	bool operator ==(const wchar_t *pStr) const
+	{
+		if (NULL == pStr)
+		{
+			return m_str.empty();
+		}
+
+		return m_str.compare(pStr);
+	}
+
+	friend bool operator ==(const wstring& lhs, const WString& rhs)
+	{
+		return rhs == lhs;
+	}
+
+	friend bool operator ==(const wchar_t *lhs, const WString& rhs)
+	{
+		return rhs == lhs;
+	}
 };
