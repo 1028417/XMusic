@@ -75,7 +75,25 @@ public:
         return strutil::toQstr(m_str);
     }
 #endif
-	
+
+	operator const wstring&() const
+	{
+		return m_str;
+	}
+	operator wstring&()
+	{
+		return m_str;
+	}
+
+	const wstring* operator->() const
+	{
+		return &m_str;
+	}
+	wstring* operator->()
+	{
+		return &m_str;
+	}
+
     WString& operator<<(const WString& other)
     {
 		m_str.append(other.m_str);
@@ -130,36 +148,4 @@ public:
         ret << t;
         return ret;
     }
-
-	const wstring* operator->() const
-	{
-		return &m_str;
-	}
-	wstring* operator->()
-	{
-		return &m_str;
-	}
-
-	const wstring& operator*() const
-	{
-		return m_str;
-	}
-	wstring& operator*()
-	{
-		return m_str;
-	}
-
-	operator const wstring&() const
-	{
-		return m_str;
-	}
-	operator wstring&()
-	{
-		return m_str;
-	}
-
-	operator const wchar_t*() const
-	{
-		return m_str.c_str();
-	}
 };
