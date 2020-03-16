@@ -101,6 +101,10 @@ protected:
 
     virtual bool eof() const override
     {
+		if (NULL == m_pf)
+		{
+			return true;
+		}
         return feof(m_pf);
     }
 
