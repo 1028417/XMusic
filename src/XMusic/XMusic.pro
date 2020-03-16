@@ -111,13 +111,12 @@ android {
 
 LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
 
-build_dir = TARGET
-
 #CONFIG += debug_and_release
 CONFIG(debug, debug|release) {
-    build_dir = $$join($$build_dir,,,d)
+build_dir = XMusicd
+} else {
+build_dir = XMusic
 }
-
 build_dir = ../../../build/$$build_dir/$$platform
 
 font.files += ../../bin/font/msyhl-6.23.ttc
