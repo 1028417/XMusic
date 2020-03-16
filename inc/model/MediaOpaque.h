@@ -2,6 +2,8 @@
 
 #include "Player.h"
 
+#define __ReadStreamWaitTime 6
+
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
 public:

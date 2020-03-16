@@ -69,7 +69,7 @@ public:
 
     const E_DecodeStatus& decodeStatus() const;
 
-    bool decoderOpened() const;
+    bool isDecoding() const;
 
 private:
 	virtual bool isOnline() const override
