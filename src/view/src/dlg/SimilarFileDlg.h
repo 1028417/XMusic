@@ -44,6 +44,9 @@ public:
 	void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 
 	void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
+
+	void OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+
 	void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 
 	void OnBnClickedRemove();

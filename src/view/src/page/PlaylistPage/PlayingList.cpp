@@ -483,11 +483,14 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 
 				if (E_ItemLinkType::ILT_None != eLinkType)
 				{
-					__super::AsyncLButtondown([=]() {
-						m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
-							handleLinkClick(uItem, (CPlayItem&)PlayItem, m_vecItemLinks[uItem], eLinkType);
+					if (1 == GetSelectedCount() && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL))
+					{
+						__super::AsyncLButtondown([=]() {
+							m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
+								handleLinkClick(uItem, (CPlayItem&)PlayItem, m_vecItemLinks[uItem], eLinkType);
+							});
 						});
-					});
+					}
 
 					return TRUE;
 				}

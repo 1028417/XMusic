@@ -111,7 +111,14 @@ android {
 
 LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
 
-build_dir = ../../../build/XMusic/$$platform
+build_dir = TARGET
+
+#CONFIG += debug_and_release
+CONFIG(debug, debug|release) {
+    build_dir = $$join($$build_dir,,,d)
+}
+
+build_dir = ../../../build/$$build_dir/$$platform
 
 font.files += ../../bin/font/msyhl-6.23.ttc
 #font.files += ../../bin/font/Microsoft-YaHei-Semilight-11.0.ttc

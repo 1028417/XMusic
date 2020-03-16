@@ -854,11 +854,12 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
 	int iSubItem = lpNMList->iSubItem;
-
 	if (__Column_Playlist == iSubItem || __Column_SingerAlbum == iSubItem)
 	{
-		int iItem = lpNMList->iItem;
+		__Ensure(1 == m_wndList.GetSelectedCount());
+		__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
+		int iItem = lpNMList->iItem;
 		m_wndList.AsyncLButtondown([=]() {
 			CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
 			__Ensure(pMediaRes);

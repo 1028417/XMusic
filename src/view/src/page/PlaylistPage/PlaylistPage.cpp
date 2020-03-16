@@ -535,14 +535,17 @@ void CPlaylistPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 
 		CPlaylist *pPlaylist = (CPlaylist*)m_wndList.GetItemObject(pNMItemActivate->iItem);
-		m_PlayItemPage.ShowPlaylist(pPlaylist);
-		(void)this->SetFocus();
+		if (pPlaylist)
+		{
+			m_PlayItemPage.ShowPlaylist(pPlaylist);
+			(void)this->SetFocus();
+		}
 	}
 }
 
 void CPlaylistPage::OnNMDclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	*pResult = 0;
+	OnNMClickList(pNMHDR, pResult);
 
 	this->OnMenuCommand(ID_PLAY);
 }

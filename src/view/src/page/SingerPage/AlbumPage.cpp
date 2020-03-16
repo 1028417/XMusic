@@ -1254,11 +1254,12 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 	LPNMITEMACTIVATE lpNMList = (LPNMITEMACTIVATE)pNMHDR;
 	int iSubItem = lpNMList->iSubItem;
-
 	if (__Column_Playlist == iSubItem || __Column_Path == iSubItem)
 	{
-		int iItem = lpNMList->iItem;
+		__Ensure(1 == m_wndAlbumItemList.GetSelectedCount());
+		__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
+		int iItem = lpNMList->iItem;
 		m_wndAlbumItemList.AsyncLButtondown([=]() {
 			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);

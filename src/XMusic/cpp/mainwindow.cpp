@@ -1214,19 +1214,19 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return;
         }
 
-        UINT uSeekPos = pos.x() * nMax / barProgress->width();
+        auto nSeekPos = pos.x() * nMax / barProgress->width();
         auto nCurrent = barProgress->value();
-        if (uSeekPos > nCurrent)
+        if (nSeekPos > nCurrent)
         {
             if (barProgress->maxBuffer() > 0)
             {
                 int nPlayablePos = nMax*barProgress->bufferValue()/barProgress->maxBuffer() - __ReadStreamWaitTime;
-                UINT uPlayablePos = MAX(nPlayablePos, nCurrent);
-                uSeekPos = MAX(uSeekPos, uPlayablePos);
+                nPlayablePos = MAX(nPlayablePos, nCurrent);
+                nSeekPos = MIN(nSeekPos, nPlayablePos);
             }
         }
 
-        m_app.getPlayMgr().player().Seek(uSeekPos);
+        m_app.getPlayMgr().player().Seek(nSeekPos);
 
         __appAsync(100, [&](){
             _updateProgress();

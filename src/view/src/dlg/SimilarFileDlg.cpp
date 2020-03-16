@@ -16,6 +16,7 @@ BEGIN_MESSAGE_MAP(CSimilarFileDlg, CDialog)
 	ON_WM_HSCROLL()
 
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CSimilarFileDlg::OnLvnItemchangedList1)
+	ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSimilarFileDlg::OnNMClickList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSimilarFileDlg::OnNMDblclkList1)
 
 	ON_BN_CLICKED(IDC_BTN_REMOVE, &CSimilarFileDlg::OnBnClickedRemove)
@@ -51,6 +52,11 @@ BOOL CSimilarFileDlg::OnInitDialog()
 		if (m_vecRowFlag[lvcd.uItem])
 		{
 			lvcd.crBkg = __Color_Flag;
+		}
+
+		if (0 == lvcd.nSubItem)
+		{
+			lvcd.bSetUnderline = true;
 		}
 	});
 
@@ -169,6 +175,22 @@ void CSimilarFileDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 	(void)this->GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(m_wndList.GetSelectedCount() > 0);
 	(void)this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(m_wndList.GetSelectedCount() > 0);
 	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(m_wndList.GetSelectedCount() == 1);
+}
+
+void CSimilarFileDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = 0;
+
+	__Ensure(1 == m_wndList.GetSelectedCount());
+	__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
+
+	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
+	if (0 == lpNMList->iSubItem)
+	{
+		m_wndList.AsyncLButtondown([=]() {
+			OnBnClickedExplore();
+		});
+	}
 }
 
 void CSimilarFileDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)

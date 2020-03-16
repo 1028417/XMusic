@@ -198,13 +198,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 
-	HWND hWndList = m_wndList.m_hWnd;
 	m_wndList.AsyncLButtondown([=]() {
-		if (!::IsWindow(hWndList))
-		{
-			return;
-		}
-
 		m_MediaMixer.getMediaMixture([&](const CMediaMixture& MediaMixture) {
 			CRedrawLock RedrawLock(m_view.m_MainWnd, true);
 
