@@ -92,7 +92,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        painter.adjustFont(1.1f, QFont::Weight::Normal);
+        painter.adjustFont(1.05f, QFont::Weight::Normal);
     }
     else if (m_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
@@ -112,9 +112,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
         painter.adjustFont(0.65, QFont::Weight::Thin);
 
         cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
-        auto len = __size(8)*(qsQuality.size());
+        auto xOffset = __size(30) + __size(4)*(qsQuality.size());
 
-        rcPos.setRight(rcPos.right() + __size(20) + len);
+        rcPos.setRight(rcPos.right() + xOffset);
         if (rcPos.right() > nMaxRight)
         {
             rcPos.setRight(nMaxRight);
