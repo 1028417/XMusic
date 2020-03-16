@@ -43,6 +43,24 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 
+void vibrate()
+{
+    QAndroidJniEnvironment env;
+    QAndroidJniObject activity = QtAndroid::androidActivity();
+    QAndroidJniObject name = QAndroidJniObject::getStaticObjectField(
+                "android/content/Context",
+                "VIBRATOR_SERVICE",
+                "Ljava/lang/String;"
+                );
+
+    QAndroidJniObject vibrateService = activity.callObjectMethod(
+                "getSystemService",
+                "(Ljava/lang/String;)Ljava/lang/Object;",
+                name.object<jstring>());
+    jlong duration = 200;
+    vibrateService.callMethod<void>("vibrate", "(J)V", duration);
+}
+
 static void installApk(const QString &qsApkPath)
 {
     QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);

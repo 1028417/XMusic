@@ -115,7 +115,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
         auto xOffset = __size(35);
         if (qsQuality.size() > 2)
         {
-            xOffset += __size(15);
+            xOffset += __size(20);
         }
 
         rcPos.setRight(rcPos.right() + xOffset);
