@@ -143,7 +143,7 @@ private:
 
 	size_t _readStream(byte_p buf, size_t bufSize);
 
-    bool eof() const override;
+    bool streamEof() const override;
 #endif
 
     size_t read(byte_p buf, size_t bufSize) override;

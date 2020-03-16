@@ -35,7 +35,7 @@ public:
 
     virtual size_t read(byte_p buf, size_t size) = 0;
 
-    virtual bool eof() const = 0;
+    virtual bool streamEof() const = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -99,13 +99,9 @@ protected:
 
     bool seekingFlag() const;
 
-    virtual bool eof() const override
+    virtual bool streamEof() const override
     {
-		if (NULL == m_pf)
-		{
-			return true;
-		}
-        return feof(m_pf);
+		return false;
     }
 
     UINT byteRate() const;
