@@ -9,6 +9,11 @@ private:
 public:
 	WString() = default;
 
+	WString(const WString& ws)
+		: m_str(ws.m_str)
+	{
+	}
+
 	WString(const wstring& str)
 		: m_str(str)
 	{
@@ -38,6 +43,12 @@ public:
 	WString& operator=(wstring&& str)
 	{
 		m_str.swap(str);
+		return *this;
+	}
+
+	WString& operator=(const WString& ws)
+	{
+		m_str.assign(ws.m_str);
 		return *this;
 	}
 
