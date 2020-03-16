@@ -1220,7 +1220,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         {
             if (barProgress->maxBuffer() > 0)
             {
-                int nPlayablePos = nMax*barProgress->bufferValue()/barProgress->maxBuffer()-5;
+                int nPlayablePos = nMax*barProgress->bufferValue()/barProgress->maxBuffer() - __ReadStreamWaitTime;
                 UINT uPlayablePos = MAX(nPlayablePos, nCurrent);
                 uSeekPos = MAX(uSeekPos, uPlayablePos);
             }
