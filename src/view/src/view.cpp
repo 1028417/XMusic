@@ -449,20 +449,21 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 	static CFolderDlgEx FolderDlg;
 	WString strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
 	__EnsureReturn(!strExportPath->empty(), false);
-	/*if (!getMediaLib().checkIndependentDir(strExportPath, true))
-	{
-		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
-		return false;
-	}*/
+
 	if (bActualMode)
 	{
 		strExportPath.append(L"/XMusic");
+
+		if (!getMediaLib().checkIndependentDir(strExportPath, true))
+		{
+			CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
+			return false;
+		}
 	}
 	else
 	{
 		strExportPath.append(L"/媒体库");
 	}
-	strExportPath << time(0);
 
 	tagExportOption ExportOption;
 	ExportOption.strExportPath = strExportPath;

@@ -65,7 +65,7 @@ void CExportMediaSetDlg::_sumCheckedSize()
 		}
 	}
 
-	this->SetWindowText(strTitle);
+	this->SetWindowText(strTitle->c_str());
 }
 
 uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
@@ -128,7 +128,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 				strText << L" / " << lstMedias.size() << L"¸öÎÄ¼þ";
 			}
 
-			m_wndTree.SetItemText(hTreeItem, strText);
+			m_wndTree.SetItemText(hTreeItem, strText->c_str());
 
 			_sumCheckedSize();
 		});
