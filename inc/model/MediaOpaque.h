@@ -140,6 +140,8 @@ private:
 	int64_t seek(int64_t offset, int origin) override;
 
 	size_t _readStream(byte_p buf, size_t bufSize);
+
+    bool eof() const override;
 #endif
 
     size_t read(byte_p buf, size_t bufSize) override;

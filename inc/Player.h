@@ -27,13 +27,15 @@ public:
 
     virtual wstring localFilePath() const = 0;
 
+    virtual int64_t size() const = 0;
+
     virtual bool seekable() const = 0;
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
     virtual size_t read(byte_p buf, size_t size) = 0;
 
-    virtual int64_t size() const = 0;
+    virtual bool eof() const = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : public IAudioOpaque
@@ -79,6 +81,8 @@ private:
 	}
 
 protected:
+    bool decoderOpened() const;
+
     virtual int64_t size() const override
     {
         return m_nFileSize;
@@ -92,6 +96,13 @@ protected:
 	virtual int64_t seek(int64_t offset, int origin) override;
 
     virtual size_t read(byte_p buf, size_t size) override;
+
+    bool seekingFlag() const;
+
+    virtual bool eof() const override
+    {
+        return feof(m_pf);
+    }
 
     UINT byteRate() const;
 };
