@@ -69,6 +69,8 @@ public:
 
     const E_DecodeStatus& decodeStatus() const;
 
+    bool decoderOpened() const;
+
 private:
 	virtual bool isOnline() const override
 	{
@@ -81,8 +83,6 @@ private:
 	}
 
 protected:
-    bool decoderOpened() const;
-
     virtual int64_t size() const override
     {
         return m_nFileSize;
