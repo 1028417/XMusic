@@ -1197,25 +1197,37 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         if (!m_app.getPlayMgr().mediaOpaque().seekable())
         {
             return;
+        }        
+        if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+        {
+            return;
         }
 
         auto barProgress = ui.barProgress;
-        if (barProgress->maximum() > 0 && m_app.getPlayMgr().playStatus() == E_PlayStatus::PS_Play)
+        auto nMax = barProgress->maximum();
+        if (nMax <= 0)
         {
-            UINT uSeekPos = pos.x() * barProgress->maximum() / barProgress->width();
-            if (barProgress->maxBuffer() > 0)
-            {
-                UINT uPlayablePos = barProgress->maximum()*barProgress->bufferValue()/barProgress->maxBuffer()-10;
-                uPlayablePos -= 3;
-                uSeekPos = MIN(uSeekPos, uPlayablePos);
-            }
-
-            m_app.getPlayMgr().player().Seek(uSeekPos);
-
-            __appAsync(100, [&](){
-                _updateProgress();
-            });
+            return;
         }
+
+        UINT uSeekPos = pos.x() * nMax / barProgress->width();
+        if (barProgress->maxBuffer() > 0)
+        {
+            UINT uPlayablePos = nMax*barProgress->bufferValue()/barProgress->maxBuffer();
+            if (uPlayablePos <= 5)
+            {
+                return;
+            }
+            uPlayablePos -= 5;
+
+            uSeekPos = MIN(uSeekPos, uPlayablePos);
+        }
+
+        m_app.getPlayMgr().player().Seek(uSeekPos);
+
+        __appAsync(100, [&](){
+            _updateProgress();
+        });
     }
     else
     {
