@@ -191,5 +191,8 @@ public:
             ::SetForegroundWindow(hwnd);
         }
     }
+
+#elif __android
+    void vibrate(UINT duration=100);
 #endif
 };

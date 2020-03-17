@@ -113,6 +113,9 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 
         cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
         auto xOffset = __size(35);
+#if __android || __ios
+        xOffset += __size(10);
+#endif
         if (qsQuality.size() > 2)
         {
             xOffset += __size(20);

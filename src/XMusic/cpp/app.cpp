@@ -43,7 +43,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 
-void vibrate()
+void CApp::vibrate(UINT duration)
 {
     QAndroidJniEnvironment env;
     QAndroidJniObject activity = QtAndroid::androidActivity();
@@ -57,8 +57,8 @@ void vibrate()
                 "getSystemService",
                 "(Ljava/lang/String;)Ljava/lang/Object;",
                 name.object<jstring>());
-    jlong duration = 200;
-    vibrateService.callMethod<void>("vibrate", "(J)V", duration);
+
+    vibrateService.callMethod<void>("vibrate", "(J)V", jlong(duration));
 }
 
 static void installApk(const QString &qsApkPath)
@@ -924,6 +924,8 @@ void CApp::slot_run(int nUpgradeResult)
 
 #if __windows
             setForeground();
+#elif __android
+            vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
                 __appAsync([&](){
