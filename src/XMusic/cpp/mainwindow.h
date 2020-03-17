@@ -31,6 +31,8 @@ struct tagPlayingInfo
     wstring strPlaylist;
     UINT uRelatedPlayItemID = 0;
 
+    CMedia *pRelatedMedia = NULL;
+
     wstring strPath;
 };
 Q_DECLARE_METATYPE(tagPlayingInfo);

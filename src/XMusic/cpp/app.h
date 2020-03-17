@@ -86,8 +86,6 @@ private:
 
     bool _initRootDir(wstring& strRootDir);
 
-    bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf);
-
     E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);

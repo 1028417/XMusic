@@ -226,7 +226,7 @@ CAppInit::CAppInit(QApplication& app)
 
 bool CApp::m_bRunSignal = true;
 
-void __appAsync(UINT uDelayTime, cfn_void cb)
+void CApp::async(UINT uDelayTime, cfn_void cb)
 {
     __async(uDelayTime, [&, cb](){
         if (!m_bRunSignal)
@@ -236,6 +236,68 @@ void __appAsync(UINT uDelayTime, cfn_void cb)
 
         cb();
     });
+}
+
+static bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
+{
+    JValue jRoot;
+    if (!jsonutil::loadFile(ins, jRoot))
+    {
+        g_logger >> "loadMedialibConf fail";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["appVersion"], medialibConf.strAppVersion))
+    {
+        g_logger >> "readMedialibConf fail: appVersion";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["medialibVersion"], medialibConf.uMedialibVersion))
+    {
+        g_logger >> "readMedialibConf fail: medialibVersion";
+        return false;
+    }
+
+    if (!jsonutil::get(jRoot["compatibleCode"], medialibConf.uCompatibleCode))
+    {
+        g_logger >> "readMedialibConf fail: appVersion";
+        return false;
+    }
+
+    const JValue& jMedialibUrl = jRoot["medialibUrl"];
+    if (!jMedialibUrl.isArray())
+    {
+        g_logger >> "readMedialibConf fail: url";
+        return false;
+    }
+
+    string strMedialib;
+    for (UINT uIdx = 0; uIdx < jMedialibUrl.size(); uIdx++)
+    {
+        if (!jsonutil::get(jMedialibUrl[uIdx], strMedialib))
+        {
+            g_logger >> "readMedialibConf fail: url";
+            return false;
+        }
+
+        medialibConf.lstUpgradeUrl.emplace_back(strMedialib);
+    }
+
+    /*string strBkg;
+    const JValue& jHBkg = jRoot["hbkg"];
+    if (jHBkg.isArray())
+    {
+        for (UINT uIdx = 0; uIdx < jHBkg.size(); uIdx++)
+        {
+            if (jsonutil::get(jHBkg[uIdx], strBkg))
+            {
+                medialibConf.lstOnlineHBkg.push_back(strBkg);
+            }
+        }
+    }*/
+
+    return true;
 }
 
 int CApp::run()
@@ -369,66 +431,34 @@ bool CApp::_initRootDir(wstring& strRootDir)
     return true;
 }
 
-bool CApp::_readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
+static void _importPlayingList(const wstring& strDBFileBak, const wstring& strDBFile)
 {
-    JValue jRoot;
-    if (!jsonutil::loadFile(ins, jRoot))
+    CSQLiteDB db;
+    if (!db.Connect(strDBFile))
     {
-        g_logger >> "loadMedialibConf fail";
-        return false;
+        return;
     }
 
-    if (!jsonutil::get(jRoot["appVersion"], medialibConf.strAppVersion))
+    if (!db.Execute(L"attach \"" + strDBFileBak + L"\" as bak"))
     {
-        g_logger >> "readMedialibConf fail: appVersion";
-        return false;
+        return;
     }
 
-    if (!jsonutil::get(jRoot["medialibVersion"], medialibConf.uMedialibVersion))
+    /* TODO for (auto itr = PlaylistInfo.arrPlayItemInfo.begin(); itr != PlaylistInfo.arrPlayItemInfo.end(); )
     {
-        g_logger >> "readMedialibConf fail: medialibVersion";
-        return false;
-    }
-
-    if (!jsonutil::get(jRoot["compatibleCode"], medialibConf.uCompatibleCode))
-    {
-        g_logger >> "readMedialibConf fail: appVersion";
-        return false;
-    }
-
-    const JValue& jMedialibUrl = jRoot["medialibUrl"];
-    if (!jMedialibUrl.isArray())
-    {
-        g_logger >> "readMedialibConf fail: url";
-        return false;
-    }
-
-    string strMedialib;
-    for (UINT uIdx = 0; uIdx < jMedialibUrl.size(); uIdx++)
-    {
-        if (!jsonutil::get(jMedialibUrl[uIdx], strMedialib))
+        if (itr->strPath.front() == __cBackSlant) // 本地文件
         {
-            g_logger >> "readMedialibConf fail: url";
-            return false;
-        }
-
-        medialibConf.lstUpgradeUrl.emplace_back(strMedialib);
-    }
-
-    /*string strBkg;
-    const JValue& jHBkg = jRoot["hbkg"];
-    if (jHBkg.isArray())
-    {
-        for (UINT uIdx = 0; uIdx < jHBkg.size(); uIdx++)
-        {
-            if (jsonutil::get(jHBkg[uIdx], strBkg))
+            if (!medialib.checkXUrl(itr->strPath))
             {
-                medialibConf.lstOnlineHBkg.push_back(strBkg);
+                itr = PlaylistInfo.arrPlayItemInfo.erase(itr);
+                continue;
             }
         }
+
+        ++itr;
     }*/
 
-    return true;
+    (void)db.Execute("INSERT INTO tbl_playitem SELECT * from bak.tbl_playitem where playlist_id = 0");
 }
 
 E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
@@ -599,30 +629,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
             if (bExistDB)
             {
-                CSQLiteDB db;
-                if (db.Connect(strDBFile))
-                {
-                    if (db.Execute(L"attach \"" + strDBFileBak + L"\" as bak"))
-                    {
-                        /* TODO for (auto itr = PlaylistInfo.arrPlayItemInfo.begin(); itr != PlaylistInfo.arrPlayItemInfo.end(); )
-                        {
-                            if (itr->strPath.front() == __cBackSlant) // 本地文件
-                            {
-                                if (!medialib.checkXUrl(itr->strPath))
-                                {
-                                    itr = PlaylistInfo.arrPlayItemInfo.erase(itr);
-                                    continue;
-                                }
-                            }
-
-                            ++itr;
-                        }*/
-
-                        (void)db.Execute("INSERT INTO tbl_playitem SELECT * from bak.tbl_playitem where playlist_id = 0");
-
-                    }
-                    db.Disconnect();
-                }
+                _importPlayingList(strDBFileBak, strDBFile);
 
                 fsutil::removeFile(strDBFileBak);
             }
