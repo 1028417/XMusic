@@ -119,11 +119,61 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    __appAsync([&](){
-        _resizeTitle();
-    });
+    /*this->setGeometry(m_app.mainWnd().geometry());
+    _resizeTitle();
+
+    //__appAsync([&](){
+    //    _resizeTitle();
+    //});*/
 
     CDialog::show();
+}
+
+void CMedialibDlg::show()
+{
+    m_MedialibView.showRoot();
+
+    _show();
+
+    __appAsync([&](){
+        _initOuter();
+    });
+}
+
+void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
+{
+    m_MedialibView.showMediaSet(MediaSet);
+
+    _show();
+
+    __appAsync([&](){
+        _initOuter();
+    });
+}
+
+void CMedialibDlg::showMedia(CMedia& media)
+{
+    m_MedialibView.showMedia(media);
+
+    _show();
+
+    __appAsync([&](){
+        _initOuter();
+    });
+}
+
+bool CMedialibDlg::showFile(const wstring& strPath)
+{
+    _initOuter();
+
+    if (!m_MedialibView.showFile(strPath))
+    {
+        return false;
+    }
+
+    _show();
+
+    return true;
 }
 
 size_t CMedialibDlg::getPageRowCount()

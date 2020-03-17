@@ -323,12 +323,15 @@ E_UpgradeResult CApp::_run(const tagMedialibConf& orgMedialibConf)
     }
     g_logger << "initMediaLib success " >> (time(0)-time0);
 
+    time0 = time(0);
     m_mainWnd.initBkg();
+    g_logger << "initBkg: " >> (time(0)-time0);
 
-    auto timeWait = 6 - (time(0) - timeBegin);
-    if (timeWait > 0)
+    auto timeDiff = 6 - (time(0) - timeBegin);
+    g_logger << "timeDiff: " >> timeDiff;
+    if (timeDiff > 0)
     {
-        mtutil::usleep((UINT)timeWait*1000);
+        mtutil::usleep((UINT)timeDiff*1000);
     }
 
     return E_UpgradeResult::UR_Success;

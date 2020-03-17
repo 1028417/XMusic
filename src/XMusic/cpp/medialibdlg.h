@@ -53,46 +53,10 @@ public:
 
     void init();
 
-    void show()
-    {
-        _initOuter();
-
-        m_MedialibView.showRoot();
-
-        _show();
-    }
-
-    void showMediaSet(CMediaSet& MediaSet)
-    {
-        _initOuter();
-
-        m_MedialibView.showMediaSet(MediaSet);
-
-        _show();
-    }
-
-    void showMedia(CMedia& media)
-    {
-        _initOuter();
-
-        m_MedialibView.showMedia(media);
-
-        _show();
-    }
-
-    bool showFile(const wstring& strPath)
-    {
-        _initOuter();
-
-        if (!m_MedialibView.showFile(strPath))
-        {
-            return false;
-        }
-
-        _show();
-
-        return true;
-    }
+    void show();
+    void showMediaSet(CMediaSet& MediaSet);
+    void showMedia(CMedia& media);
+    bool showFile(const wstring& strPath);
 
     void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton, bool bAutoFitText=true);
 
