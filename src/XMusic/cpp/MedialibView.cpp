@@ -128,21 +128,19 @@ bool CMedialibView::showFile(const wstring& strFile)
     {
         pMediaRes = m_MediaLib.findSubFile(strFile);
     }
+    if(NULL ==pMediaRes)
+    {
+        cauto strOuterRoot = m_OuterDir.GetAbsPath();
+        if (fsutil::CheckSubPath(strOuterRoot, strFile))
+        {
+            pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strFile.substr(strOuterRoot.size()));
+        }
+    }
+
     if (pMediaRes)
     {
         showPath(*pMediaRes);
         return true;
-    }
-
-    cauto strOuterRoot = m_OuterDir.GetAbsPath();
-    if (fsutil::CheckSubPath(strOuterRoot, strFile))
-    {
-        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strFile.substr(strOuterRoot.size()));
-        if (pMediaRes)
-        {
-            showPath(*pMediaRes);
-            return true;
-        }
     }
 
     return false;

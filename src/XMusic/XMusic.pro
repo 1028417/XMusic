@@ -65,19 +65,23 @@ FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui \
 
 INCLUDEPATH += ../../inc  cpp
 
+BuildDir = ../../../build
+
+BinDir = ../../bin
+
 android {
     LIBS += -L../../libs/armeabi-v7a
 
     platform = android
-    DESTDIR = ../../../build/XMusic
+    DESTDIR = $$BuildDir/XMusic
 } else: macx {
-    LIBS += -L../../bin/mac
+    LIBS += -L$$BinDir/mac
 
     platform = mac
-    DESTDIR = ../../bin/mac
+    DESTDIR = $$BinDir/mac
 
     libDir = $$PWD/../../../PlaySDK/bin/mac
-    macDir = $$PWD/../../bin/mac
+    macDir = $$PWD/$$BinDir/mac
     frameworkDir = $$macDir/XMusic.app/Contents/Frameworks
     QMAKE_POST_LINK += \
         rm -f $$macDir/XMusic.dmg \
@@ -96,32 +100,31 @@ android {
             -framework CoreMedia  -framework VideoToolbox  -framework AVFoundation \
             -framework CoreVideo  -framework Security  -liconv  #-lbz2  -lz
 
-    LIBS += -L../../../build/ioslib
+    LIBS += -L$$BuildDir/ioslib
 
     platform = ios
-    DESTDIR = ../../../build/XMusic
+    DESTDIR = $$BuildDir/XMusic
 } else {
     SOURCES += ../Dump.cpp
 
-    LIBS += -L../../bin -lDbghelp
+    LIBS += -L$$BinDir -lDbghelp
 
     platform = win
-    DESTDIR = ../../bin
+    DESTDIR = $$BinDir
 }
 
 LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
 
 #CONFIG += debug_and_release
 CONFIG(debug, debug|release) {
-build_dir = XMusicd
+BuildDir = $$BuildDir/XMusicd/$$platform
 } else {
-build_dir = XMusic
+BuildDir = $$BuildDir/XMusic/$$platform
 }
-build_dir = ../../../build/$$build_dir/$$platform
 
-font.files += ../../bin/font/msyhl-6.23.ttc
-#font.files += ../../bin/font/Microsoft-YaHei-Semilight-11.0.ttc
-font.files += ../../bin/font/Microsoft-YaHei-SemiBold-11.0.ttc
+font.files += $$BinDir/font/msyhl-6.23.ttc
+#font.files += $$BinDir/font/Microsoft-YaHei-Semilight-11.0.ttc
+font.files += $$BinDir/font/Microsoft-YaHei-SemiBold-11.0.ttc
 
 hbkg.files += ../../release/hbkg/*
 vbkg.files += ../../release/vbkg/*
@@ -146,18 +149,20 @@ android {
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
+    v7aLibDir = $$PWD/../../libs/armeabi-v7a
+    ffmpegLibDir= $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg
     contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         ANDROID_EXTRA_LIBS = \
-            $$PWD/../../libs/armeabi-v7a/libxutil.so \
-            $$PWD/../../libs/armeabi-v7a/libxMediaLib.so \
-            $$PWD/../../libs/armeabi-v7a/libxModel.so \
-            $$PWD/../../libs/armeabi-v7a/libssl.so \
-            $$PWD/../../libs/armeabi-v7a/libcrypto.so \
-            $$PWD/../../libs/armeabi-v7a/libxPlaySDK.so \
-            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavcodec.so \
-            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavformat.so \
-            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libavutil.so \
-            $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg/libswresample.so
+            $$v7aLibDir/libxutil.so \
+            $$v7aLibDir/libxMediaLib.so \
+            $$v7aLibDir/libxModel.so \
+            $$v7aLibDir/libssl.so \
+            $$v7aLibDir/libcrypto.so \
+            $$v7aLibDir/libxPlaySDK.so \
+            $$ffmpegLibDir/libavcodec.so \
+            $$ffmpegLibDir/libavformat.so \
+            $$ffmpegLibDir/libavutil.so \
+            $$ffmpegLibDir/libswresample.so
     }
 }
 
@@ -182,12 +187,10 @@ ios {
     vbkg.path = /vbkg
     QMAKE_BUNDLE_DATA  += font hbkg vbkg
 } else {
-MOC_DIR = $$build_dir
-RCC_DIR = $$build_dir
-UI_DIR = $$build_dir
+MOC_DIR = $$BuildDir
+RCC_DIR = $$BuildDir
+UI_DIR = $$BuildDir
 }
-OBJECTS_DIR = $$build_dir
+OBJECTS_DIR = $$BuildDir
 
-DISTFILES += \
-    android/src/xmusic/XActivity.java \
-    android/src/xmusic/XActivity.java
+DISTFILES += android/src/xmusic/XActivity.java

@@ -883,15 +883,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Playlist);
     PlayingInfo.uRelatedPlayItemID = PlayItem.GetRelatedMediaID(E_MediaSetType::MST_Playlist);
 
-    if (m_PlayingInfo.uRelatedAlbumItemID != 0)
+    if (PlayingInfo.uRelatedAlbumItemID != 0)
     {
         PlayingInfo.pRelatedMedia = m_app.getSingerMgr().FindMedia(
-                                E_MediaSetType::MST_Album, m_PlayingInfo.uRelatedAlbumItemID);
+                                E_MediaSetType::MST_Album, PlayingInfo.uRelatedAlbumItemID);
     }
-    else if (m_PlayingInfo.uRelatedPlayItemID != 0)
+    else if (PlayingInfo.uRelatedPlayItemID != 0)
     {
         PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().FindMedia(
-                                E_MediaSetType::MST_Playlist, m_PlayingInfo.uRelatedPlayItemID);
+                                E_MediaSetType::MST_Playlist, PlayingInfo.uRelatedPlayItemID);
     }
     else
     {
