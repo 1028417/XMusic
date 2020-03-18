@@ -81,8 +81,7 @@ public:
 	virtual tagOption& initOption() = 0;
 	virtual tagOption& getOption() = 0;
 
-    virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;
-
+#if __winvc
     virtual CMediaDir* attachDir(const wstring& strDir) = 0;
 
     virtual bool renameMedia(const IMedia& media, const wstring& strNewName) = 0;
@@ -99,8 +98,10 @@ public:
 
     virtual bool removeMediaSet(CMediaSet& MediaSet) = 0;
 
-#if __winvc
     virtual bool autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
             , const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias) = 0;
+
+#else
+    virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;
 #endif
 };
