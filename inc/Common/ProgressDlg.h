@@ -41,11 +41,9 @@ public:
 	
 	int msgBox(const wstring& strText, const wstring& strTitle, UINT uType = 0)
 	{
-		int nRet = 0;
-		__appSync([&]() {
-			nRet = TDialog::msgBox(strText.c_str(), strTitle.c_str(), uType);
+		return __appSync([&]() {
+			return TDialog::msgBox(strText.c_str(), strTitle.c_str(), uType);
 		});
-		return nRet;
 	}
 
 	int msgBox(const wstring& strText, UINT uType = 0)

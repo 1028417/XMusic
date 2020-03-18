@@ -95,12 +95,10 @@ public:
 			hWndOwner = CMainApp::GetMainApp()->GetMainWnd()->GetSafeHwnd();
 		}
 
-		wstring strRet;
-		CMainApp::GetMainApp()->thread([&]() {
-			strRet = CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
+		return CMainApp::GetMainApp()->concurrence([&]() {
+			return CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
 				, lpszOKButton, lpszCancelButton, uWidth, uHeight);
 		});
-		return strRet;
 	}
 
 	wstring Show(const wstring& strTitle, const wstring& strTip = L"", HWND hWndOwner = NULL)
@@ -123,28 +121,22 @@ public:
 
 	wstring ShowSave()
 	{
-		wstring strRet;
-		CMainApp::GetMainApp()->thread([&]() {
-			strRet = CFileDlg::ShowSave();
+		return CMainApp::GetMainApp()->concurrence([&]() {
+			return CFileDlg::ShowSave();
 		});
-		return strRet;
 	}
 
 	wstring ShowOpenSingle()
 	{
-		wstring strRet;
-		CMainApp::GetMainApp()->thread([&]() {
-			strRet = CFileDlg::ShowOpenSingle();
+		return CMainApp::GetMainApp()->concurrence([&]() {
+			return CFileDlg::ShowOpenSingle();
 		});
-		return strRet;
 	}
 
 	wstring ShowOpenMulti(list<wstring>& lstFiles)
 	{
-		wstring strRet;
-		CMainApp::GetMainApp()->thread([&]() {
-			strRet = CFileDlg::ShowOpenMulti(lstFiles);
+		return CMainApp::GetMainApp()->concurrence([&]() {
+			return CFileDlg::ShowOpenMulti(lstFiles);
 		});
-		return strRet;
 	}
 };

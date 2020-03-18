@@ -248,12 +248,7 @@ private:
 #endif
 
     bool _initData(const wstring& strDBFile);
-
-	inline void _refreshMediaLib()
-    {
-        m_MediaLib.setDir(m_Option.strRootDir, m_Option.plAttachDir);
-	}
-
+	
 	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
 
 	void _clear();

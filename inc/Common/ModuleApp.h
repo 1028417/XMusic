@@ -108,7 +108,7 @@ protected:
 	virtual BOOL InitInstance() override;
 
 protected:
-	virtual BOOL OnReady(CMainWnd& MainWnd) { return TRUE; }
+	virtual void OnReady(CMainWnd& MainWnd) {}
 
 	virtual BOOL HandleCommand(UINT uID) { return FALSE; }
 
@@ -116,5 +116,5 @@ protected:
 
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) { return 0; }
 
-	virtual BOOL OnQuit() { return TRUE; }
+	virtual void OnQuit() {}
 };

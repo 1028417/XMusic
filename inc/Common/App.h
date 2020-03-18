@@ -5,10 +5,7 @@
 
 #define __waitCursor CWaitCursor WaitCursor
 
-using CB_Sync = fn_void;
-
-#define __appSync CMainApp::sync
-#define __appAsync CMainApp::async
+#define __appSync CMainApp::GetMainApp()->sync
 
 class IView
 {
@@ -18,7 +15,9 @@ public:
 	virtual ~IView() {}
 
 public:
-	virtual CMainWnd* show() = 0;
+	virtual CMainWnd* init() = 0;
+	
+	virtual void show() {}
 
 	virtual bool handleCommand(UINT uID)
 	{
@@ -44,11 +43,8 @@ public:
 		return true;
 	}
 
-	virtual bool start()
-	{
-		return true;
-	}
-
+	virtual void start() {}
+	
 	virtual bool handleCommand(UINT uID)
 	{
 		return false;
@@ -64,9 +60,7 @@ public:
 		return 0;
 	}
 
-	virtual void stop()
-	{
-	}
+	virtual void stop() {}
 };
 
 enum class E_DoEventsResult
@@ -97,10 +91,6 @@ public:
 		return *this;
 	}
 	
-private:
-	typedef vector<CModuleApp*> ModuleVector;
-	ModuleVector m_vctModules;
-
 protected:
 	virtual BOOL InitInstance() override;
 	
@@ -108,7 +98,6 @@ protected:
 
 private:
 	void _run();
-	void _run(class CMainWnd& MainWnd);
 
 	static BOOL _RegGlobalHotkey(HWND hWnd, const tagHotkeyInfo &HotkeyInfo);
 	
@@ -117,52 +106,95 @@ private:
 
 	BOOL OnCommand(UINT uID);
 
-	static void _sync(const CB_Sync& cb);
+	void _sync(const fn_void& fn);
 
 public:
 	void Quit();
-
-	static BOOL AddModule(CModuleApp& Module);
-
-	static bool removeMsg(UINT uMsg);
-
-	static void sync(const CB_Sync& cb);
 	
-	static void async(UINT uDelayTime, const CB_Sync& cb)
+	BOOL DoEvent(bool bBlock, UINT& uMsg);
+	BOOL DoEvent(bool bBlock)
 	{
+		UINT uMsg = 0;
+		return DoEvent(bBlock, uMsg);
+	}
+
+	E_DoEventsResult DoEvents(bool bOnce = false);
+
+	static UINT removeMsg(UINT uMsg);
+
+	template <typename FN, typename = checkCBVoid_t<FN>>
+	void sync(const FN& fn, bool bBlock=true)
+	{
+		DWORD dwThreadID = ::GetCurrentThreadId();
+		if (bBlock)
+		{
+			if (dwThreadID == GetMainApp()->m_nThreadID)
+			{
+				fn();
+				return;
+			}
+		}
+
 		_sync([=]() {
-			__async(uDelayTime, cb);
+			fn();
+
+			if (bBlock)
+			{
+				mtutil::apcWakeup(dwThreadID);
+			}
 		});
+
+		if (bBlock)
+		{
+			::SleepEx(-1, TRUE);
+		}
 	}
 
-	static void async(const CB_Sync& cb)
+	template <typename FN, typename = checkCBNotVoid_t<FN>, typename RET = decltype(declval<FN>()())>
+	RET sync(const FN& fn, bool bBlock=true)
 	{
-		_sync(cb);
+		RET ret;
+		sync([&]() {
+			ret = fn();
+		}, bBlock);
+
+		return ret;
 	}
 
-	void thread(cfn_void cb);
-
-	E_DoEventsResult DoEvents(bool bOnce=false);
-
-	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd = NULL);
-	static void msgBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	template <typename FN, typename = checkCBVoid_t<FN>>
+	void concurrence(const FN& fn)
 	{
-		(void)msgBox(strMsg, strTitle, MB_OK, pWnd);
-	}
-	static void msgBox(const wstring& strMsg, CWnd *pWnd = NULL)
-	{
-		msgBox(strMsg, L"提示", pWnd);
+		bool bExit = false;
+		std::thread thr([&]() {
+			fn();
+
+			bExit = true;
+
+			this->PostThreadMessage(WM_NULL, 0, 0);
+		});
+
+		while (!bExit)
+		{
+			if (!DoEvent(true))
+			{
+				break;
+			}
+		}
+
+		thr.join();
 	}
 
-	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	template <typename FN, typename = checkCBNotVoid_t<FN>, typename RET = decltype(declval<FN>()())>
+	RET concurrence(const FN& fn)
 	{
-		return IDYES == msgBox(strMsg, strTitle, MB_YESNO, pWnd);
-	}
-	static bool confirmBox(const wstring& strMsg, CWnd *pWnd = NULL)
-	{
-		return confirmBox(strMsg, L"警告", pWnd);
-	}
+		RET ret;
+		concurrence([&]() {
+			ret = fn();
+		});
 
+		return ret;
+	}
+	
 	static bool getKeyState(UINT uKey)
 	{
 		return ::GetKeyState(uKey) < 0;
@@ -200,4 +232,23 @@ public:
 	}
 
 	static void foregroundWnd(HWND hWnd);
+
+	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd = NULL);
+	static void msgBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	{
+		(void)msgBox(strMsg, strTitle, MB_OK, pWnd);
+	}
+	static void msgBox(const wstring& strMsg, CWnd *pWnd = NULL)
+	{
+		msgBox(strMsg, L"提示", pWnd);
+	}
+
+	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	{
+		return IDYES == msgBox(strMsg, strTitle, MB_YESNO, pWnd);
+	}
+	static bool confirmBox(const wstring& strMsg, CWnd *pWnd = NULL)
+	{
+		return confirmBox(strMsg, L"警告", pWnd);
+	}
 };

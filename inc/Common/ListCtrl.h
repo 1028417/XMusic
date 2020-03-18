@@ -55,7 +55,7 @@ public:
 	{
 		m_uTotalWidth = uTotalWidth;
 
-		for (auto& column : m_lstColumn)
+		for (cauto column : m_lstColumn)
 		{
 			m_uFixWidth += column.uWidth;
 		}
@@ -106,7 +106,7 @@ public:
 			if (m_uFixWidth < uTotalWidth)
 			{
 				UINT uRamainWidth = uTotalWidth - m_uFixWidth;
-				for (auto& pr : m_lstDblWidth)
+				for (cauto pr : m_lstDblWidth)
 				{
 					pr.first->uWidth = UINT(uRamainWidth*pr.second);
 				}

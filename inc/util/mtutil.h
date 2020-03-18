@@ -53,7 +53,7 @@ public:
 	}
 
 	template <typename FN, typename CB, typename = checkCBVoid_t<FN>, typename = checkCBVoid_t<CB>>
-	static void thread(const FN& fn, const CB& cbThread)
+	static void concurrence(const FN& fn, const CB& cbThread)
 	{
 		std::thread thr(cbThread);
 
@@ -62,7 +62,7 @@ public:
 	}
 
 	template <typename FN, typename CB, typename RET=decltype(declval<FN>()()), typename = checkCBVoid_t<CB>>
-	static RET thread(const FN& fn, const CB& cbThread)
+	static RET concurrence(const FN& fn, const CB& cbThread)
 	{
 		std::thread thr(cbThread);
 		
@@ -73,7 +73,7 @@ public:
 	}
 
     template <typename FN, typename CB, typename RET = decltype(declval<CB>()()), typename = checkCBVoid_t<FN>, typename=void>
-	static RET thread(const FN& fn, const CB& cbThread)
+	static RET concurrence(const FN& fn, const CB& cbThread)
 	{
 		RET ret;
 		std::thread thr([&]() {

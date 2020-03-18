@@ -49,6 +49,9 @@ namespace NS_SSTL
 	using checkCBVoid_t = checkSameType_t<decltype(declval<CB>()(declval<Paras>()...)), void>;
 
 	template <typename CB, typename... Paras>
+	using checkCBNotVoid_t = checkNotSameType_t<decltype(declval<CB>()(declval<Paras>()...)), void>;
+	
+	template <typename CB, typename... Paras>
 	using checkCBBool_t = checkSameType_t<decltype(declval<CB>()(declval<Paras>()...)), bool>;
 
 	template <typename T1, typename T2>
