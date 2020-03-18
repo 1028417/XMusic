@@ -66,9 +66,10 @@ void CXController::start()
 	});
 
     __async(100, [&]() {
-        if (m_model.getMediaLib().empty())
+		auto& strRootDir = m_OptionMgr.getOption().strRootDir;
+        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
 		{
-			m_OptionMgr.getOption().strRootDir.clear();
+			strRootDir.clear();
 			if (!setupMediaLib())
 			{
 				CMainApp::GetMainApp()->Quit();
