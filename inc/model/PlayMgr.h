@@ -28,17 +28,14 @@ public:
 	
 private:
     class CModel& m_model;
-
 	IModelObserver& m_ModelObserver;
 
-	tagOption& m_Option;
-
 	CPlaylistMgr& m_PlaylistMgr;
-
     CPlaylist& m_Playinglist;
-	
+
+	tagOption& m_Option;
 	UINT& m_uPlayingItem;
-	
+
     set<UINT> m_setPlayedIDs;
 
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
@@ -128,4 +125,6 @@ public:
 	
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
     int demand(const TD_MediaList& lstMedias, UINT uDemandCount = __DemandCount);
+
+	void tryPlay();
 };
