@@ -44,7 +44,7 @@ bool CController::init()
 	return true;
 }
 
-bool CController::start()
+void CController::start()
 {
 	CMainApp::RegHotkey(tagHotkeyInfo('B', E_HotkeyFlag::HKF_Control, ID_Backup));
 
@@ -73,8 +73,6 @@ bool CController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Alt, true));
 	
 	CXController::start();
-
-	return true;
 }
 
 void CController::stop()

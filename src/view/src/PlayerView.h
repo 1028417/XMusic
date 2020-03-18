@@ -33,7 +33,9 @@ private:
 		return m_ModelObserver;
 	}
 
-	CMainWnd* show() override;
+	CMainWnd* init() override;
+
+	void show() override;
 
 	void close() override;
 

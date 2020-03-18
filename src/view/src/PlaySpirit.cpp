@@ -5,26 +5,9 @@
 
 static CComModule g_ComModule;
 
-BOOL CPlaySpirit::Create(const CB_PlaySpiritEvent& cb, int nPosX, int nPosY)
+BOOL CPlaySpirit::Create()
 {
-	m_cb = cb;
-
-	if (!_create(nPosX, nPosY))
-	{
-		if (*this)
-		{
-			this->Destroy();
-		}
-
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-BOOL CPlaySpirit::_create(int nPosX, int nPosY)
-{
-	(void)CoInitialize(NULL);
+	//(void)CoInitialize(NULL);
 
 	HRESULT hResult = __super::CreateInstance(__PlaySpirit_clsid);
 	if (S_OK != hResult)
@@ -32,22 +15,31 @@ BOOL CPlaySpirit::_create(int nPosX, int nPosY)
 		return FALSE;
 	}
 
-	m_hWndPlaySpirit = (HWND)(LONG_PTR)(*this)->Show(-1000, -1000);
-	if (NULL == m_hWndPlaySpirit)
+	return TRUE;
+}
+
+BOOL CPlaySpirit::Show(const CB_PlaySpiritEvent& cb, HWND hWndOwner, int nPosX, int nPosY)
+{
+	//必须
+	HRESULT hResult = this->DispEventAdvise(*this);
+	if (S_OK != hResult)
 	{
+		if (*this)
+		{
+			this->Destroy();
+		}
 		return FALSE;
 	}
 
+	m_cb = cb;
+
+	m_hWndPlaySpirit = (HWND)(LONG_PTR)(*this)->Show(-1000, -1000);
 	m_hWndShadow = (HWND)(*this)->GetShadowHandle();
 
 	(void)::SetWindowPos(m_hWndPlaySpirit, NULL, nPosX, nPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
-	//必须
-	hResult = this->DispEventAdvise(*this);
-	if (S_OK != hResult)
-	{
-		return FALSE;
-	}
+	m_hWndOwner = hWndOwner;
+	Dock();
 
 	return TRUE;
 }
@@ -73,7 +65,7 @@ void CPlaySpirit::Dock(bool bDock)
 	{
 		if (m_bDocked)
 		{
-			(void)::SetWindowLong(hwnd, GWLP_HWNDPARENT, (LONG)m_MainWnd.m_wndSysToolBar.m_hWnd);
+			(void)::SetWindowLong(hwnd, GWLP_HWNDPARENT, (LONG)m_hWndOwner);
 			(void)::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
 		}
 		else

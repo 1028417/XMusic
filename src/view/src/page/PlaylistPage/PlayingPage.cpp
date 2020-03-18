@@ -123,7 +123,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		if (ePrevPlayStatus != E_PlayStatus::PS_Stop && PlayMgr.playStatus() == E_PlayStatus::PS_Stop)
 		{
-			m_view.m_PlayCtrl.getPlaySpirit()->clear();
+			CPlaySpirit::inst()->clear();
 		}
 	}
 	

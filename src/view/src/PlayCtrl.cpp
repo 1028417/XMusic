@@ -4,7 +4,6 @@
 
 CPlayCtrl::CPlayCtrl(class __view& view)
 	: m_view(view)
-	, m_PlaySpirit(view.m_MainWnd)
 {
 }
 
@@ -13,7 +12,7 @@ CPlayer& CPlayCtrl::player()
 	return m_view.getPlayMgr().player();
 }
 
-bool CPlayCtrl::init()
+BOOL CPlayCtrl::showPlaySpirit()
 {
 	auto& PlaySpiritOption = m_view.getOption().PlaySpiritOption;
 	
@@ -29,27 +28,18 @@ bool CPlayCtrl::init()
 	PlaySpiritOption.nPosX = MIN(PlaySpiritOption.nPosX, rtWorkArea.right - 400);
 	PlaySpiritOption.nPosY = MIN(PlaySpiritOption.nPosY, rtWorkArea.bottom - 100);
 
-	__EnsureReturn(_initPlaySpirit(PlaySpiritOption.nPosX
-		, PlaySpiritOption.nPosY, strSkinPath, PlaySpiritOption.uVolume), false);
+	CPlaySpirit::inst()->LoadSkin(bstr_t(strSkinPath.c_str()));
+	CPlaySpirit::inst()->SetShadowLevel(1);
 
-	return true;
-}
+	CPlaySpirit::inst()->PutVolum(PlaySpiritOption.uVolume);
 
-bool CPlayCtrl::_initPlaySpirit(int nPosX, int nPosY, const wstring& strSkin, UINT uVolume)
-{
-	if (!m_PlaySpirit.Create([&](E_PlaySpiritEvent eEvent, UINT uButton, short para) {
+	if (!CPlaySpirit::inst().Show([&](E_PlaySpiritEvent eEvent, UINT uButton, short para) {
 		this->_handlePlaySpiritEvent(eEvent, uButton, para);
-	}, nPosX, nPosY))
+	}, m_view.m_MainWnd.m_wndSysToolBar, PlaySpiritOption.nPosX, PlaySpiritOption.nPosY))
 	{
 		return false;
 	}
-
-	m_PlaySpirit->PutVolum(uVolume);
-
-	m_PlaySpirit->SetShadowLevel(1);
 	
-	m_PlaySpirit.SetSkin(strSkin);
-
 	return true;
 }
 
@@ -101,23 +91,23 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	{
 		uDuration++;
 
-		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
-		m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
+		CPlaySpirit::inst()->EnableButton(ST_PlaySpiritButton::PSB_Play, false);
+		CPlaySpirit::inst()->EnableButton(ST_PlaySpiritButton::PSB_Stop, true);
 	}
 
-	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Last, true);
-	m_PlaySpirit->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
+	CPlaySpirit::inst()->EnableButton(ST_PlaySpiritButton::PSB_Last, true);
+	CPlaySpirit::inst()->EnableButton(ST_PlaySpiritButton::PSB_Next, true);
 	
 	m_strPlayingFile = PlayItem.GetTitle();
-	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), uDuration, 0);
+	CPlaySpirit::inst()->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), uDuration, 0);
 }
 
 void CPlayCtrl::onPlayFinish(bool bOpenFail)
 {
-	__appAsync([&, bOpenFail]() {
+	__appSync([&, bOpenFail]() {
 		if (bOpenFail)
 		{
-			//m_PlaySpirit->clear();
+			//CPlaySpirit::inst()->clear();
 
 			g_bFailRetry = true;
 			__async(2000, [&]() {
@@ -131,7 +121,7 @@ void CPlayCtrl::onPlayFinish(bool bOpenFail)
 		{
 			(void)m_view.getPlayMgr().playNext(false);
 		}
-	});
+	}, false);
 }
 
 void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short para)
@@ -140,7 +130,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 	switch (eButton)
 	{
 	case ST_PlaySpiritButton::PSB_Play:
-		m_PlaySpirit->SetPause(false);
+		CPlaySpirit::inst()->SetPause(false);
 
 		PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
 
@@ -148,7 +138,7 @@ void CPlayCtrl::handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short p
 	case ST_PlaySpiritButton::PSB_Pause:
 		g_bFailRetry = false;
 
-		m_PlaySpirit->SetPause(true);
+		CPlaySpirit::inst()->SetPause(true);
 
 		PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
 
@@ -201,28 +191,28 @@ void CPlayCtrl::setVolume(int offset)
 	uVolume = (UINT)nVolume;
 	player().SetVolume(uVolume);
 	
-	m_PlaySpirit->PutVolum(uVolume);
+	CPlaySpirit::inst()->PutVolum(uVolume);
 }
 
 void CPlayCtrl::seek(UINT uPos)
 {
 	player().Seek(uPos);
-	m_PlaySpirit->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
+	CPlaySpirit::inst()->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
 		, (long)player().GetDuration() + 1, uPos);
 }
 
 void CPlayCtrl::close()
 {
-	if (m_PlaySpirit)
+	if (CPlaySpirit::inst())
 	{
 		tagPlaySpiritOption& PlaySpiritOption = m_view.getOption().PlaySpiritOption;
-		PlaySpiritOption.uVolume = (UINT)m_PlaySpirit->GetVolum();
+		PlaySpiritOption.uVolume = (UINT)CPlaySpirit::inst()->GetVolum();
 
-		cauto rcPos = m_PlaySpirit.rect();
+		cauto rcPos = CPlaySpirit::inst().rect();
 		PlaySpiritOption.nPosX = rcPos.left;
 		PlaySpiritOption.nPosY = rcPos.top;
 
-		m_PlaySpirit.Destroy();
+		CPlaySpirit::inst().Destroy();
 	}
 }
 

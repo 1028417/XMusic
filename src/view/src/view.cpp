@@ -18,17 +18,11 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.
 
 bool __view::init()
 {
-	if (!m_PlayCtrl.init())
-	{
-		CMainApp::msgBox(L"请先执行安装");
-		return false;
-	}
-
 	m_globalSize.init();
 
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
-	bool bRet = mtutil::thread([&]() {
+	bool bRet = mtutil::concurrence([&]() {
 		__EnsureReturn(m_MainWnd.Create(), false);
 
 		m_MainWnd.ModifyStyle(WS_BORDER, 0);
@@ -64,11 +58,18 @@ bool __view::init()
 		return false;
 	}
 
+	m_MainWnd.show();
+	
+	return true;
+}
+
+void __view::show()
+{
 	m_MediaResPage.ShowPath();
 
-	m_MainWnd.show();
-
-	return true;
+	__async([&]() {
+		m_PlayCtrl.showPlaySpirit();
+	});
 }
 
 void __view::initView()
@@ -96,7 +97,7 @@ void __view::initView()
 
 void __view::clearView()
 {
-	m_PlayCtrl.getPlaySpirit()->clear();
+	CPlaySpirit::inst()->clear();
 
 	m_PlayItemPage.m_pPlaylist = NULL;
 

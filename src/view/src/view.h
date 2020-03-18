@@ -152,6 +152,8 @@ private:
 public:
 	bool init();
 
+	void show();
+
 	void initView();
 	void clearView();
 

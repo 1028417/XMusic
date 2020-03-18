@@ -32,9 +32,10 @@ class CPlaySpirit : public _PlaySpiritPtr
 	, public IDispEventImpl<0, CPlaySpirit, &DIID___PlaySpirit, &LIBID_PlaySpiritPrj, 1, 0>
 {
 public:
-	CPlaySpirit(CPlayerMainWnd& MainWnd)
-		: m_MainWnd(MainWnd)
+	static CPlaySpirit& inst()
 	{
+		static CPlaySpirit inst;
+		return inst;
 	}
 
 	BEGIN_SINK_MAP(CPlaySpirit)
@@ -44,9 +45,9 @@ public:
 	END_SINK_MAP()
 
 private:
-	CPlayerMainWnd& m_MainWnd;
-
 	CB_PlaySpiritEvent m_cb;
+
+	HWND m_hWndOwner = NULL;
 
 	bool m_bDocked = false;
 
@@ -73,7 +74,8 @@ public:
 		return rcPos;
 	}
 
-	BOOL Create(const CB_PlaySpiritEvent& cb, int nPosX, int nPosY);
+	BOOL Create();
+	BOOL Show(const CB_PlaySpiritEvent& cb, HWND hWndOwner, int nPosX, int nPosY);
 	
 	void Destroy();
 

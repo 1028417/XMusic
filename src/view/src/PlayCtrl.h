@@ -11,17 +11,10 @@ public:
 private:
 	__view& m_view;
 
-	CPlaySpirit m_PlaySpirit;
-	
 	wstring m_strPlayingFile;
 
 public:
-	inline CPlaySpirit& getPlaySpirit()
-	{
-		return m_PlaySpirit;
-	}
-
-	bool init();
+	BOOL showPlaySpirit();
 
 	void onPlay(CPlayItem& PlayItem);
 	void onPlayFinish(bool bOpenFail);

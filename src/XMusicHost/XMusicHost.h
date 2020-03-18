@@ -14,7 +14,7 @@ public:
 public:
 	bool init() override;
 
-	bool start() override;
+	void start() override;
 
 	void stop() override;
 

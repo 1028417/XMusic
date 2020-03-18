@@ -77,7 +77,7 @@ void COptionDlg::OnCbnSelchangeComboSkin()
 
 	m_view.getOption().PlaySpiritOption.strSkinName = strSkinName;
 
-	m_view.m_PlayCtrl.getPlaySpirit().SetSkin(strSkinPath);
+	CPlaySpirit::inst().SetSkin(strSkinPath);
 }
 
 void COptionDlg::OnBnClickedHideMenubar()

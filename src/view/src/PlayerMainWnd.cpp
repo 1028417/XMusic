@@ -92,9 +92,9 @@ void CPlayerMainWnd::OnWindowPosChanged(WINDOWPOS *pWndPos)
 	{
 		m_wndSysToolBar.GetToolBar().move();
 
-		cauto rcPos = m_view.m_PlayCtrl.getPlaySpirit().rect();
-		m_view.m_PlayCtrl.getPlaySpirit().move(rcPos.left - 1, rcPos.top - 1);
-		m_view.m_PlayCtrl.getPlaySpirit().move(rcPos.left, rcPos.top);
+		cauto rcPos = CPlaySpirit::inst().rect();
+		CPlaySpirit::inst().move(rcPos.left - 1, rcPos.top - 1);
+		CPlaySpirit::inst().move(rcPos.left, rcPos.top);
 	}
 
 	__super::OnWindowPosChanged(pWndPos);

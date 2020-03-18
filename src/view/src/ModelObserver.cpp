@@ -41,7 +41,7 @@ void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
 	if (!m_view.getPlaylistMgr().playinglist().available())
 	{
-		m_view.m_PlayCtrl.getPlaySpirit()->clear();
+		CPlaySpirit::inst()->clear();
 	}
 
 	m_view.m_PlayingPage.RefreshList(nPlayingItem);

@@ -65,8 +65,8 @@ void CXController::start()
 		}
 	});
 
-    __async([&]() {
-        if (!m_model.status() && m_model.getMediaLib().empty())
+    __async(100, [&]() {
+        if (m_model.getMediaLib().empty())
 		{
 			m_OptionMgr.getOption().strRootDir.clear();
 			if (!setupMediaLib())
