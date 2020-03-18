@@ -126,30 +126,6 @@ void CXController::start()
 #endif
 }
 
-#if __winvc
-bool CXController::setupMediaLib()
-{
-	static CFolderDlgEx FolderDlg;
-    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
-	if (strRootDir.empty())
-	{
-		return false;
-	}
-
-    if (strutil::matchIgnoreCase(strRootDir, m_OptionMgr.getOption().strRootDir))
-	{
-		return false;
-	}
-	
-	if (!m_model.setupMediaLib(strRootDir))
-	{
-		return false;
-	}
-
-	return true;
-}
-#endif
-
 void CXController::stop()
 {
 #if !__winvc
@@ -159,6 +135,29 @@ void CXController::stop()
     m_model.close();
 
 	m_OptionMgr.saveOption();
+}
+
+#if __winvc
+bool CXController::setupMediaLib()
+{
+    static CFolderDlgEx FolderDlg;
+    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
+    if (strRootDir.empty())
+    {
+        return false;
+    }
+
+    if (strutil::matchIgnoreCase(strRootDir, m_OptionMgr.getOption().strRootDir))
+    {
+        return false;
+    }
+
+    if (!m_model.setupMediaLib(strRootDir))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
@@ -438,7 +437,6 @@ int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
 	return lstOppPaths.size();
 }
 
-#if __winvc
 bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
 	, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias)
 {	

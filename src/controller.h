@@ -44,14 +44,7 @@ public:
 
         void stop();
 
-        void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override
-        {
-#if !__winvc
-            m_mtxPlayCtrl.set(PlayCtrl);
-            //m_sigPlayCtrl.set(PlayCtrl);
-#endif
-        }
-
+#if __winvc
 	CMediaDir* attachDir(const wstring& strDir) override;
 
 	bool renameMedia(const IMedia& media, const wstring& strNewName) override;
@@ -68,8 +61,13 @@ public:
 
 	bool removeMediaSet(CMediaSet& MediaSet) override;
 
-#if __winvc
 	bool autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
 		, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedia) override;
+
+#else
+        void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override
+        {
+            m_mtxPlayCtrl.set(PlayCtrl); //m_sigPlayCtrl.set(PlayCtrl);
+        }
 #endif
 };
