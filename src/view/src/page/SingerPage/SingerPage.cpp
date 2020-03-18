@@ -628,7 +628,7 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_MenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
-		bAvalible = pSingerObject->available();
+		bAvalible = pSingerObject->playable();
 	}
 
 	m_MenuGuard.EnableItem(ID_PLAY, bSinger && bAvalible);

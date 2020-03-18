@@ -267,7 +267,7 @@ void CPlayItemPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 
 void CPlayItemPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	m_MenuGuard.EnableItem(ID_PLAY, (m_pPlaylist && m_pPlaylist->available()));
+	m_MenuGuard.EnableItem(ID_PLAY, (m_pPlaylist && m_pPlaylist->playable()));
 
 	int nCount = m_wndList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND, (1 == nCount));

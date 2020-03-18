@@ -380,7 +380,7 @@ bool MainWindow::event(QEvent *ev)
             if (currTime - prevTime > 3)
             {
 #if __android
-                m_app.vibrate(50);
+                m_app.vibrate(80);
 #endif
                 prevTime = currTime;
                 return true;

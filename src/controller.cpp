@@ -13,7 +13,7 @@ void CXController::start()
     static auto& PlayMgr = m_model.getPlayMgr();
     static cauto fnTryPlay = [&](){
 #if !__OnlineMediaLib
-        if (m_model.getMediaLib().empty())
+        if (m_model.getMediaLib().available())
         {
             return;
         }

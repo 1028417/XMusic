@@ -8,14 +8,16 @@ static Ui::MedialibDlg ui;
 
 void COuterDir::setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
 {
-    m_strOuterDir = strOuterDir;
-    CPath::setDir(strMediaLibDir + strOuterDir);
-
 #if __windows
     m_strMediaLibDir = strMediaLibDir;
 #else
     m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
 #endif
+
+    m_strOuterDir = strOuterDir;
+
+    CPath::setDir(strMediaLibDir + strOuterDir);
+    CPath::_findFile();
 }
 
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
@@ -164,7 +166,7 @@ void CMedialibDlg::showMedia(CMedia& media)
 
 bool CMedialibDlg::showFile(const wstring& strPath)
 {
-    _initOuter();
+    //_initOuter();
 
     if (!m_MedialibView.showFile(strPath))
     {
