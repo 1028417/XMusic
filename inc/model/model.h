@@ -81,10 +81,6 @@ public:
 
     virtual CDataMgr& getDataMgr() = 0;
 
-#if __winvc
-    virtual CBackupMgr& getBackupMgr() = 0;
-#endif
-
     virtual CPlaylistMgr& getPlaylistMgr() = 0;
     virtual CPlayMgr& getPlayMgr() = 0;
 
@@ -92,8 +88,8 @@ public:
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
 #if __winvc
+    virtual CBackupMgr& getBackupMgr() = 0;\
     virtual bool setupMediaLib(const wstring& strRootDir) = 0;
-#endif
 
     virtual void refreshMediaLib() = 0;
 
@@ -112,11 +108,6 @@ public:
 
     virtual bool updateFile(const map<wstring, wstring>& mapUpdateFiles) = 0;
 
-    virtual bool clearData() = 0;
-
-    virtual void close() = 0;
-
-#if __winvc
     virtual void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
         , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) = 0;
 
@@ -129,6 +120,10 @@ public:
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(const wstring& strTag) = 0;
 #endif
+
+    virtual bool clearData() = 0;
+
+    virtual void close() = 0;
 };
 
 class __ModelExt CModel : public IModel
@@ -168,13 +163,6 @@ public:
                 return m_DataMgr;
         }
 
-#if __winvc
-		CBackupMgr& getBackupMgr() override
-		{
-			return m_BackupMgr;
-		}
-#endif
-
 	CPlaylistMgr& getPlaylistMgr() override
 	{
 		return m_PlaylistMgr;
@@ -198,8 +186,12 @@ public:
     bool initMediaLib() override;
 
 #if __winvc
-	bool setupMediaLib(const wstring& strRootDir) override;
-#endif
+    CBackupMgr& getBackupMgr() override
+    {
+        return m_BackupMgr;
+    }
+
+    bool setupMediaLib(const wstring& strRootDir) override;
 
 	void refreshMediaLib() override;
 
@@ -218,11 +210,6 @@ public:
 	
 	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
-	bool clearData() override;
-
-	void close() override;
-
-#if __winvc
     void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
         , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
 
@@ -234,6 +221,10 @@ public:
     wstring backupDB() override;
 	bool restoreDB(const wstring& strTag) override;
 #endif
+
+    bool clearData() override;
+
+    void close() override;
 
 private:
 #if __winvc
