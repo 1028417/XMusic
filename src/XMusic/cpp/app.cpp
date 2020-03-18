@@ -444,20 +444,6 @@ static void _importPlayingList(const wstring& strDBFileBak, const wstring& strDB
         return;
     }
 
-    /* TODO for (auto itr = PlaylistInfo.arrPlayItemInfo.begin(); itr != PlaylistInfo.arrPlayItemInfo.end(); )
-    {
-        if (itr->strPath.front() == __cBackSlant) // 本地文件
-        {
-            if (!medialib.checkXUrl(itr->strPath))
-            {
-                itr = PlaylistInfo.arrPlayItemInfo.erase(itr);
-                continue;
-            }
-        }
-
-        ++itr;
-    }*/
-
     (void)db.Execute("INSERT INTO tbl_playitem SELECT * from bak.tbl_playitem where playlist_id = 0");
 }
 

@@ -48,22 +48,20 @@ void CXController::start()
 		}
 	});
 
-    __async(100, [&]() {
-		auto& strRootDir = m_OptionMgr.getOption().strRootDir;
-        if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+	auto& strRootDir = m_OptionMgr.getOption().strRootDir;
+    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+	{
+		strRootDir.clear();
+		if (!setupMediaLib())
 		{
-			strRootDir.clear();
-			if (!setupMediaLib())
-			{
-				CMainApp::GetMainApp()->Quit();
-				return;
-			}
+			CMainApp::GetMainApp()->Quit();
+			return;
 		}
-		
-        __async(100, [&]() {
-			PlayMgr.tryPlay();
-        });
-    });
+	}
+
+	__async(100, [&]() {
+		PlayMgr.tryPlay();
+	});
 
 #else
 	PlayMgr.tryPlay();
