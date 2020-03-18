@@ -10,24 +10,7 @@ static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
 void CXController::start()
 {
-    static auto& PlayMgr = m_model.getPlayMgr();
-    static cauto fnTryPlay = [&](){
-#if !__OnlineMediaLib
-        if (m_model.getMediaLib().available())
-        {
-            return;
-        }
-#endif
-
-        if (PlayMgr.getPlayingItems())
-        {
-            PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
-        }
-        else
-        {
-            (void)PlayMgr.demand(E_DemandMode::DM_DemandAlbum);
-        }
-    };
+	static auto& PlayMgr = m_model.getPlayMgr();
 
 #if __winvc
     (void)timerutil::setTimer(60000, [&]() {
@@ -40,10 +23,10 @@ void CXController::start()
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
                 strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
 
-                if (m_model.getPlayMgr().play(strAlarmmedia))
+                if (PlayMgr.play(strAlarmmedia))
                 {
                     (void)m_view.msgBox(L"点击确定停止闹铃！");
-                    m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
+					PlayMgr.SetPlayStatus(E_PlayStatus::PS_Stop);
                 }
 
                 return;
@@ -53,7 +36,7 @@ void CXController::start()
         E_TimerOperate eTimerOperate = m_OptionMgr.checkTimerOperate();
 		if (TO_StopPlay == eTimerOperate)
 		{
-			m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Stop);
+			PlayMgr.SetPlayStatus(E_PlayStatus::PS_Stop);
 		}
 		else if (TO_Shutdown == eTimerOperate)
 		{
@@ -78,12 +61,12 @@ void CXController::start()
 		}
 		
         __async(100, [&]() {
-            fnTryPlay();
+			PlayMgr.tryPlay();
         });
     });
 
 #else
-    fnTryPlay();
+	PlayMgr.tryPlay();
 
     m_threadPlayCtrl.start([&](const bool& bRunSignal)mutable {
         while (bRunSignal)
