@@ -22,7 +22,12 @@ private:
     wstring m_strOuterDir;
 
 public:
-    void setDir(const wstring& strMediaLibDir, const wstring& strOuterDir);
+    wstring init(const wstring& strMediaLibDir);
+
+    void findFile()
+    {
+        CPath::_findFile();
+    }
 
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
@@ -31,8 +36,6 @@ private:
     {
         return m_strOuterDir + CMediaDir::GetPath();
     }
-
-    CMediaRes* findSubFile(const wstring& strSubFile) override;
 };
 
 class CMedialibDlg : public CDialog
@@ -66,10 +69,6 @@ public:
     }
 
 private:
-    void _initOuter();
-
-    void _show();
-
     void _relayout(int cx, int cy) override;
 
     void _resizeTitle() const;

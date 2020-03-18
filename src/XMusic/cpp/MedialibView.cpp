@@ -121,31 +121,6 @@ void CMedialibView::_onShowPath(CPath& path)
     }
 }
 
-bool CMedialibView::showFile(const wstring& strFile)
-{    
-    CMediaRes *pMediaRes = m_OuterDir.findSubFile(strFile);
-    if (NULL == pMediaRes)
-    {
-        pMediaRes = m_MediaLib.findSubFile(strFile);
-    }
-    if(NULL ==pMediaRes)
-    {
-        cauto strOuterRoot = m_OuterDir.GetAbsPath();
-        if (fsutil::CheckSubPath(strOuterRoot, strFile))
-        {
-            pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strFile.substr(strOuterRoot.size()));
-        }
-    }
-
-    if (pMediaRes)
-    {
-        showPath(*pMediaRes);
-        return true;
-    }
-
-    return false;
-}
-
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
 {
     if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)

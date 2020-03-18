@@ -54,8 +54,6 @@ signals:
 public:
     void init();
 
-    bool showFile(const wstring& strFile);
-
     void play();
 
     void clear();

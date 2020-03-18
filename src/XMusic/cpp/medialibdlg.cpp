@@ -6,18 +6,27 @@
 
 static Ui::MedialibDlg ui;
 
-void COuterDir::setDir(const wstring& strMediaLibDir, const wstring& strOuterDir)
-{
+wstring COuterDir::init(const wstring& strMediaLibDir)
+{    
 #if __windows
+    for (cauto wch : strMediaLibDir)
+    {
+        if (fsutil::checkSeparator(wch))
+        {
+            m_strOuterDir.append(L"/..");
+        }
+    }
+
     m_strMediaLibDir = strMediaLibDir;
 #else
     m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
+
+    m_strOuterDir = L"/..";
 #endif
 
-    m_strOuterDir = strOuterDir;
-
-    CPath::setDir(strMediaLibDir + strOuterDir);
-    CPath::_findFile();
+    cauto strAbsPath = strMediaLibDir + m_strOuterDir;
+    CPath::setDir(strAbsPath);
+    return strAbsPath;
 }
 
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
@@ -61,42 +70,10 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
     return pSubDir;
 }
 
-CMediaRes* COuterDir::findSubFile(const wstring& strSubFile)
-{
-    if (__substr(strSubFile, 1, 2) != L"..")
-    {
-        return NULL;
-    }
-
-    cauto t_strSubFile = __substr(strSubFile, m_strOuterDir.size());
-    //strutil::replace_r(strutil::replace_r(strSubFile, L"/.."), L"\\..");
-
-    return CMediaDir::findSubFile(t_strSubFile);
-}
-
 CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
   , m_MedialibView(app, *this, m_OuterDir)
 {
-}
-
-void CMedialibDlg::_initOuter()
-{
-    cauto strMediaLibDir = m_app.getMediaLib().GetAbsPath();
-    wstring strOuterDir;
-#if __windows
-    for (cauto wch : strMediaLibDir)
-    {
-        if (fsutil::checkSeparator(wch))
-        {
-            strOuterDir.append(L"/..");
-        }
-    }
-
-#else
-    strOuterDir = L"/..";
-#endif
-    m_OuterDir.setDir(strMediaLibDir, strOuterDir);
 }
 
 void CMedialibDlg::init()
@@ -119,61 +96,70 @@ void CMedialibDlg::init()
     });
 }
 
-void CMedialibDlg::_show()
-{
-    /*this->setGeometry(m_app.mainWnd().geometry());
-    _resizeTitle();
+/*this->setGeometry(m_app.mainWnd().geometry());
+_resizeTitle();
 
-    //__appAsync([&](){
-    //    _resizeTitle();
-    //});*/
-
-    CDialog::show();
-}
+//__appAsync([&](){
+//    _resizeTitle();
+//});*/
 
 void CMedialibDlg::show()
 {
     m_MedialibView.showRoot();
 
-    _show();
-
+    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
     __appAsync([&](){
-        _initOuter();
+        m_OuterDir.findFile();
     });
+
+    CDialog::show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_MedialibView.showMediaSet(MediaSet);
 
-    _show();
+    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
 
-    __appAsync([&](){
-        _initOuter();
-    });
+    CDialog::show();
 }
 
 void CMedialibDlg::showMedia(CMedia& media)
 {
     m_MedialibView.showMedia(media);
 
-    _show();
+    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
 
-    __appAsync([&](){
-        _initOuter();
-    });
+    CDialog::show();
 }
 
 bool CMedialibDlg::showFile(const wstring& strPath)
 {
-    //_initOuter();
-
-    if (!m_MedialibView.showFile(strPath))
+    CMediaRes *pMediaRes = m_app.getMediaLib().findSubFile(strPath);
+    if (NULL == pMediaRes)
     {
-        return false;
+        auto strOuterDir = m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
+        strOuterDir = fsutil::GetOppPath(strOuterDir, m_app.getMediaLib().absPath());
+        if (!fsutil::CheckSubPath(strOuterDir, strPath))
+        {
+            return false;
+        }
+
+        cauto t_strPath = __substr(strPath, strOuterDir.size());
+        pMediaRes = m_OuterDir.findSubFile(t_strPath);
+        if(NULL == pMediaRes)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
     }
 
-    _show();
+    m_MedialibView.showPath(*pMediaRes);
+
+    CDialog::show();
 
     return true;
 }

@@ -173,8 +173,6 @@ BOOL CDropTargetEx::OnDrop(CWnd *pWnd, LPVOID pDragData, DROPEFFECT dropEffect, 
 
 	m_DragContext.Erase();
 
-	(void)CMainApp::GetMainApp()->DoEvents();
-	
 	m_DragContext.x = point.x;
 	m_DragContext.y = point.y;
 
