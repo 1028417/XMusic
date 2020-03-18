@@ -26,11 +26,13 @@ public:
 		, m_addTime(tTime)
 	{
 		_UpdatePath(strPath);
+
+#if !__windows
+        fsutil::transSeparator(m_strParentDir);
+#endif
 	}
 
-	virtual ~CMedia()
-	{
-	}
+    virtual ~CMedia() {}
 
 protected:
 	wstring m_strParentDir;
@@ -126,17 +128,20 @@ public:
 	{
 		return GetTitle();
 	}
-	
-	void UpdatePath(const wstring& strPath);
-	
-	virtual void AsyncTask() {}
+
+    virtual void AsyncTask() {}
 
 #if __winvc
-	CRCueFile getCueFile() const;
+    CRCueFile getCueFile() const;
+
+    void UpdatePath(const wstring& strPath);
 #endif
 
 private:
-	void _UpdatePath(const wstring& strPath);
+    inline void _UpdatePath(const wstring& strPath)
+    {
+        fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
+    }
 
 	bool GetRenameText(wstring& stRenameText) const override
 	{
