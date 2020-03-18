@@ -78,9 +78,9 @@ public:
         m_alPlayItems.clear();
     }
 
-    bool available() const override
+    bool playable() const override
 	{
-        return !m_alPlayItems.empty();
+        return m_alPlayItems;
 	}
 
 	wstring GetDisplayName();

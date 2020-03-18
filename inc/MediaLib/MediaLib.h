@@ -71,13 +71,10 @@ private:
 	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
 
 public:
+	bool available();
+	
 	void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
-
-	bool empty() const
-	{
-		return CPath::count() == 0;
-	}
-
+	
 	wstring toAbsPath(const wstring& strSubPath, bool bDir = false);
 
 	wstring toOppPath(const wstring& strAbsPath) const;

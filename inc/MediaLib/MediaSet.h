@@ -138,7 +138,7 @@ private:
 
 	bool hasCheckState() override
 	{
-		return available();
+		return playable();
 	}
 
 	bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
@@ -174,7 +174,7 @@ public:
 
     virtual void GetSubSets(TD_MediaSetList& lstSubSets) {(void)lstSubSets;}
 
-    virtual bool available() const;
+    virtual bool playable() const;
 
 	void GetAllMediaSets(E_MediaSetType eType, TD_MediaSetList& arrMediaSets);
 	void GetAllMediaSets(TD_MediaSetList& arrMediaSets);

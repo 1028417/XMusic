@@ -62,9 +62,9 @@ public:
         return m_alAlbumItems.erase(itr);
     }
 
-    bool available() const override
+    bool playable() const override
 	{
-        return !m_alAlbumItems.empty();
+        return m_alAlbumItems;
 	}
 
 private:
