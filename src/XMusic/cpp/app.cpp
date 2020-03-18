@@ -897,15 +897,15 @@ void CApp::slot_run(int nUpgradeResult)
             QString qsErrMsg;
             if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
             {
-                qsErrMsg = "更新媒体库失败: 网络异常";
+                qsErrMsg = "更新媒体库失败:  网络异常";
             }
             else if (E_UpgradeResult::UR_MedialibInvalid == eUpgradeResult)
             {
-                qsErrMsg = "更新媒体库失败: 媒体库异常";
+                qsErrMsg = "更新媒体库失败:  媒体库异常";
             }
             else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
             {
-                qsErrMsg = "更新媒体库失败: 媒体库不兼容";
+                qsErrMsg = "更新媒体库失败:  媒体库不兼容";
 //#if __ios
 //#endif
             }

@@ -380,7 +380,7 @@ bool MainWindow::event(QEvent *ev)
             if (currTime - prevTime > 3)
             {
 #if __android
-                m_app.vibrate(80);
+                m_app.vibrate(90);
 #endif
                 prevTime = currTime;
                 return true;
@@ -1106,24 +1106,15 @@ void MainWindow::slot_buttonClicked(CButton* button)
     else if (button == ui.btnPause)
     {
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
-
-        __appAsync(100, [&](){
-            if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
-            {
-                _updatePlayPauseButton(false);
-            }
-        });
+        _updatePlayPauseButton(false);
     }
     else if (button == ui.btnPlay)
     {
+        if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
+        {
+            _updatePlayPauseButton(true);
+        }
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
-
-        __appAsync(100, [&](){
-            if (E_PlayStatus::PS_Play == m_app.getPlayMgr().playStatus())
-            {
-                _updatePlayPauseButton(true);
-            }
-        });
     }
     else if (button == ui.btnPlayPrev)
     {
