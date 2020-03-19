@@ -51,7 +51,7 @@ BOOL CPlaylistPage::OnInitDialog()
 
 	m_wndList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
 
-	CObjectList::tagListPara ListPara({ { _T(""), 0 } });
+	CObjectList::tagListPara ListPara(0);
 	
 	ListPara.fFontSize = m_view.m_globalSize.m_fMidFontSize;
 	ListPara.crText = __Color_Text;

@@ -37,10 +37,8 @@ BOOL CPlayRecordDlg::OnInitDialog()
 	ColumnGuard.addFix(_T("时间"), 160, true)
 		.addDynamic(_T("文件"), 1.0);
 
-	CObjectList::tagListPara ListPara(ColumnGuard);
-
-	ListPara.nHeaderHeight = 0;
-
+	CObjectList::tagListPara ListPara(ColumnGuard, 0);
+	
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	dbtime_t maxTime = 0;

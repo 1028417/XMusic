@@ -99,11 +99,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		,{ _T("创建时间"), globalSize.m_ColWidth_Time, true }
 	});
 
-	CObjectList::tagListPara ListPara;
-	ListPara.lstColumns = lstColumns;
-	
-	ListPara.nHeaderHeight = globalSize.m_uHeadHeight;
-	ListPara.fHeaderFontSize = globalSize.m_fBigFontSize;
+	CObjectList::tagListPara ListPara(lstColumns, globalSize.m_uHeadHeight, globalSize.m_fBigFontSize);
 
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;
@@ -856,8 +852,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int iSubItem = lpNMList->iSubItem;
 	if (__Column_Playlist == iSubItem || __Column_SingerAlbum == iSubItem)
 	{
-		__Ensure(1 == m_wndList.GetSelectedCount());
-		__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
+		__Ensure(m_wndList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
 		m_wndList.AsyncLButtondown([=]() {

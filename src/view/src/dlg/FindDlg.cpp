@@ -190,8 +190,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	__Ensure(1 == m_wndList.GetSelectedCount());
-	__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
+	__Ensure(m_wndList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
 

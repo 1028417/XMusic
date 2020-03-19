@@ -456,8 +456,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int iSubItem = lpNMList->iSubItem;
 	if (__Column_SingerAlbum == iSubItem || __Column_Path == iSubItem)
 	{
-		__Ensure(1 == m_wndList.GetSelectedCount());
-		__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
+		__Ensure(m_wndList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
 		m_wndList.AsyncLButtondown([=]() {

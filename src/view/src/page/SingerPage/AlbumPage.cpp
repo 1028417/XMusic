@@ -77,7 +77,7 @@ BOOL CAlbumPage::OnInitDialog()
 	
 	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
 
-	CObjectList::tagListPara ListPara({ { _T(""), globalSize.m_uAlbumDockWidth } });
+	CObjectList::tagListPara ListPara(globalSize.m_uAlbumDockWidth);
 
 	ListPara.fFontSize = m_view.m_globalSize.m_fMidFontSize;
 	ListPara.crText = __Color_Text;
@@ -126,12 +126,12 @@ BOOL CAlbumPage::OnInitDialog()
 		.addDynamic(_T("目录"), 0.37)
 		.addFix(_T("加入时间"), globalSize.m_ColWidth_AddTime, true);
 
-	ListPara = CObjectList::tagListPara(ColumnGuard, 0); //globalSize.m_uHeadHeight, globalSize.m_fBigFontSize);
+	ListPara = CObjectList::tagListPara(ColumnGuard, 0);
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;
 
 	width -= m_view.m_globalSize.m_uScrollbarWidth;
-	ListPara.uTileWidth = width / 4-1;
+	ListPara.uTileWidth = width/4-1;
 	ListPara.uTileHeight = globalSize.m_uTileHeight;
 
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
@@ -1256,8 +1256,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	int iSubItem = lpNMList->iSubItem;
 	if (__Column_Playlist == iSubItem || __Column_Path == iSubItem)
 	{
-		__Ensure(1 == m_wndAlbumItemList.GetSelectedCount());
-		__Ensure(!CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
+		__Ensure(m_wndAlbumItemList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
 		m_wndAlbumItemList.AsyncLButtondown([=]() {

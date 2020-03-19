@@ -22,7 +22,7 @@ void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
 	RECT rcClient{ 0,0,0,0 };
 	GetClientRect(&rcClient);
-	float cy = UINT(rcClient.bottom - rcClient.top);
+	double cy = rcClient.bottom - rcClient.top;
 
 	UINT uRowCount = (UINT)round(cy/m_view.m_globalSize.m_uPlayingItemHeight);
 	lpMeasureItemStruct->itemHeight = (UINT)round(cy/uRowCount);
@@ -42,13 +42,10 @@ BOOL CPlayingList::InitCtrl()
 		, LVS_NOCOLUMNHEADER | LVS_EDITLABELS);
 	(void)this->ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 
-	tagListPara ListPara({ { _T(""), 0 } });
-	//ListPara.uItemHeight = m_view.m_globalSize.m_uPlayingItemHeight;
-	__super::InitCtrl(ListPara);
+	__super::InitCtrl(tagListPara(0));
 
 	/*__super::SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		_drawItem(lvcd.dc, lvcd.rc, lvcd.uItem);
-
 		lvcd.bSkipDefault = true;
 	});*/
 
@@ -481,7 +478,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 
 				if (E_ItemLinkType::ILT_None != eLinkType)
 				{
-					if (1 == GetSelectedCount() && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL))
+					if (GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL))
 					{
 						__super::AsyncLButtondown([=]() {
 							m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
