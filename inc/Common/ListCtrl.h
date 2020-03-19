@@ -13,15 +13,13 @@ public:
 	CListHeader(){}
 	
 private:
-	int m_nHeight = 0;
-
-	CCompatableFont m_font;
+	UINT m_uHeight = 0;
 
 private:
 	LRESULT OnLayout(WPARAM wParam, LPARAM lParam);
 
 public:
-	BOOL Init(int nHeight, float fFontSizeOffset = 0);
+	BOOL Init(HWND hWnd, int nHeight);
 };
 
 enum class E_ListViewType
@@ -228,15 +226,20 @@ public:
 
 	struct tagListPara
 	{
-		tagListPara()
-		{
-		}
-
+		tagListPara() = default;
+		
 		tagListPara(const TD_ListColumn& t_lstColumns, int t_nHeaderHeight = -1, float t_fHeaderFontSize = 0)
 			: eViewType(E_ListViewType::LVT_Report)
 			, lstColumns(t_lstColumns)
 			, nHeaderHeight(t_nHeaderHeight)
 			, fHeaderFontSize(t_fHeaderFontSize)
+		{
+		}
+
+		tagListPara(UINT uColumnWidth)
+			: eViewType(E_ListViewType::LVT_Report)
+			, lstColumns({ { L"", uColumnWidth } })
+			, nHeaderHeight(0)
 		{
 		}
 
@@ -282,6 +285,7 @@ private:
 	CCompatableFont m_fontUnderline;
 
 	CListHeader m_wndHeader;
+	CCompatableFont m_fontHeader;
 
 	UINT m_uColumnCount = 1;
 
@@ -293,9 +297,11 @@ private:
 	CWinTimer m_AsyncTaskTimer;
 
 protected:
-	void InitColumn(const TD_ListColumn& lstColumns);
-	
 	BOOL InitFont(COLORREF crText, float fFontSizeOffset = 0);
+
+	void InitColumn(const TD_ListColumn& lstColumns);
+
+	BOOL SetHeaderHeight(int nHeaderHeight);
 
 	BOOL SetItemHeight(UINT uItemHeight);
 

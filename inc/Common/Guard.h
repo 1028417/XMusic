@@ -210,39 +210,31 @@ class __CommonExt CCompatableFont : public CFont
 {
 public:
 	CCompatableFont() {}
-	
+
 private:
 	float m_fFontSizeOffset = 0;
 	LONG m_lfWeight = -1;
 	bool m_bItalic = false;
 	bool m_bUnderline = false;
-
-private:
-	inline bool _create(CFont& font, const CB_CompatableFont& cb = NULL);
-	inline bool _create(CDC& dc, const CB_CompatableFont& cb = NULL);
-	inline bool _create(CWnd& wnd, const CB_CompatableFont& cb = NULL);
-
-	/*bool create(CFont& font, const CB_CompatableFont& cb)
-	{
-		return _create(font, cb);
-	}
-
-	bool create(CDC& dc, const CB_CompatableFont& cb)
-	{
-		return _create(dc, cb);
-	}
-
-	bool create(CWnd& wnd, const CB_CompatableFont& cb)
-	{
-		return _create(wnd, cb);
-	}*/
-
+		
 public:
-	bool create(CFont& font, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
-	bool create(CDC& dc, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
-	bool create(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(HFONT hFont, const CB_CompatableFont& cb);
 
-	bool setFont(CWnd& wnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(HDC hDC, const CB_CompatableFont& cb)
+	{
+		return create((HFONT)GetCurrentObject(hDC, OBJ_FONT), cb);
+	}
+
+	bool create(HWND hWnd, const CB_CompatableFont& cb)
+	{
+		return create((HFONT)SendMessage(hWnd, WM_GETFONT, 0, 0), cb);
+	}
+
+	bool create(HFONT hFont, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(HDC hDC, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+	bool create(HWND hWnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
+
+	bool setFont(HWND hWnd, float fFontSizeOffset = 0, LONG lfWeight = -1, bool bItalic = false, bool bUnderline = false);
 };
 
 class CDCFontGuard
