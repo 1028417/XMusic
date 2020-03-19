@@ -294,9 +294,7 @@ private:
 
 protected:
 	void InitColumn(const TD_ListColumn& lstColumns);
-
-	BOOL InitHeader(UINT uHeaderHeight, float fHeaderFontSize = 0);
-
+	
 	BOOL InitFont(COLORREF crText, float fFontSizeOffset = 0);
 
 	BOOL SetItemHeight(UINT uItemHeight);
