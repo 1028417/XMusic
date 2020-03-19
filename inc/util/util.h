@@ -58,7 +58,6 @@ using namespace NS_SSTL;
     #define __dllimport __declspec(dllimport)
 
     #include <stddef.h>
-    #include <stdint.h>
 #else
     #include <sys/types.h>
     #include <unistd.h>
