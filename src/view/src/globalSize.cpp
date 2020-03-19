@@ -30,7 +30,7 @@ CGlobalSize::CGlobalSize()
 	m_uTileHeight = 79;
 	m_uIconSpace = 64;
 	
-	m_uPlayingItemHeight = 40;
+	m_uPlayingItemHeight = 55;
 
 	m_ColWidth_Name = 255;
 	m_ColWidth_Time = 85;
@@ -40,7 +40,7 @@ CGlobalSize::CGlobalSize()
 
 	m_ColWidth_Type = 30;
 	m_ColWidth_FileSize = 60;
-	m_ColWidth_RelatedPlaylist = 120;
+	//m_ColWidth_RelatedPlaylist = 120;
 	m_ColWidth_RelatedSingerAlbum = 175;
 	m_ColWidth_AddTime = 82;
 }
@@ -91,7 +91,7 @@ void CGlobalSize::init()
 	m_uTileHeight = uintRound(m_uTileHeight*fHRate);
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
 
-	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fWRate*fHRate);
+	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fHRate);
 	
 	float fDPIRate = getDPIRate();
 	m_fSmallFontSize = float((pow(fWRate, (2-fDPIRate))-1.1)*pow(fDPIRate,2.5));
