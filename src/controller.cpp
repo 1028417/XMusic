@@ -69,7 +69,7 @@ void CXController::start()
     m_threadPlayCtrl.start([&](const bool& bRunSignal)mutable {
         while (bRunSignal)
         {
-            mtutil::usleep(100);
+            mtutil::usleep(50);
 
             tagPlayCtrl PlayCtrl;
             m_mtxPlayCtrl.lock([&](tagPlayCtrl& t_PlayCtrl){
