@@ -1001,16 +1001,18 @@ int CMediaResPanel::GetTabImage()
 
 void CMediaResPanel::_asyncTask()
 {
-	if (m_wndList.isReportView())
+	if (!m_wndList.isReportView())
 	{
-		m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-			CMediaRes& mediaRes = (CMediaRes&)object;
-			if (!mediaRes.IsDir())
-			{
-				mediaRes.AsyncTask();
-			}
-		});
+		return;
 	}
+
+	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [](CListObject& object) {
+		CMediaRes& mediaRes = (CMediaRes&)object;
+		if (!mediaRes.IsDir())
+		{
+			mediaRes.AsyncTask();
+		}
+	});
 }
 
 void CMediaResPanel::attachDir()

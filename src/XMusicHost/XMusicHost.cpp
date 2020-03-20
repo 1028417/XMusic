@@ -93,7 +93,7 @@ bool CController::handleCommand(UINT uID)
 		CWaitCursor();
 		if (CXController::setupMediaLib())
 		{
-			if (m_model.getPlayMgr().getPlayingItems())
+			if (m_model.getPlayMgr().playingItems())
 			{
 				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
 			}

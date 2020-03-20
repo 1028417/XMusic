@@ -202,7 +202,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	m_wndList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
+	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [](CListObject& object) {
 		((CPlayItem&)object).AsyncTask();
 	});
 }

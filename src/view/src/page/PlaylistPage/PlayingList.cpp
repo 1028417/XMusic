@@ -90,7 +90,7 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
-	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
+	m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
 #define __xOffset 1
 		int cx = (rc.right- __xOffset) - rc.left;
 		int cy = rc.bottom - rc.top;
@@ -354,7 +354,7 @@ void CPlayingList::refresh(int nPlayingItem)
 		m_nPlayingItem = nPlayingItem;
 	}
 
-	auto uItemCount = m_view.getPlayMgr().getPlayingItems().size();
+	auto uItemCount = m_view.getPlayMgr().playingItems().size();
 	m_vecItemLinks.resize(uItemCount);
 
 	vector<vector<wstring>> vecTexts(uItemCount, { L"" });
@@ -395,7 +395,7 @@ bool CPlayingList::GetRenameText(UINT uItem, wstring& strRenameText)
 	m_nRenameItem = uItem;
 	(void)Update(m_nRenameItem);
 	
-	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](auto& PlayItem) {
+	m_view.getPlayMgr().playingItems().get(uItem, [&](auto& PlayItem) {
 		strRenameText = PlayItem.GetTitle();
 	});
 
@@ -404,7 +404,7 @@ bool CPlayingList::GetRenameText(UINT uItem, wstring& strRenameText)
 
 void CPlayingList::OnListItemRename(UINT uItem, const CString& cstrNewText)
 {
-	m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
+	m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
 		m_view.getController().renameMedia(PlayItem, (wstring)cstrNewText);
 	});
 }
@@ -414,7 +414,7 @@ void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)
 	list<UINT> lstSelItems;
 	__super::GetSelItems(lstSelItems);
 
-	auto& lstPlayingItems = m_view.getPlayMgr().getPlayingItems();
+	cauto lstPlayingItems = m_view.getPlayMgr().playingItems();
 	for (auto uItem : lstSelItems)
 	{
 		lstPlayingItems.get(uItem, [&](cauto PlayItem) {
@@ -481,7 +481,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 					if (GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL))
 					{
 						__super::AsyncLButtondown([=]() {
-							m_view.getPlayMgr().getPlayingItems().get(uItem, [&](cauto PlayItem) {
+							m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
 								handleLinkClick(uItem, (CPlayItem&)PlayItem, m_vecItemLinks[uItem], eLinkType);
 							});
 						});
