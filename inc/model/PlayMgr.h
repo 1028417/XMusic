@@ -75,7 +75,7 @@ public:
         return m_eDemandMode;
     }
 
-    const ArrList<CPlayItem>& getPlayingItems() const
+    const ArrList<CPlayItem>& playingItems() const
     {
         return m_Playinglist.playItems();
 	}

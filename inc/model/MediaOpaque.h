@@ -141,10 +141,8 @@ private:
 #if !__winvc
 	int64_t seek(int64_t offset, int origin) override;
 
-	size_t _readStream(byte_p buf, size_t bufSize);
-
-    bool streamEof() const override;
+    bool _readStream(byte_p buf, UINT& usize);
 #endif
 
-    size_t read(byte_p buf, size_t bufSize) override;
+    bool read(byte_p buf, UINT& size) override;
 };
