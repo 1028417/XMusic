@@ -125,7 +125,7 @@ void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMedi
 	SVector<wstring> vecText;
 	if (cueFile)
 	{
-		vecText.add(cueFile.m_strFileName, cueFile.m_strTitle, cueFile.m_strPerformer);
+		vecText.add(cueFile.m_strCueName, cueFile.m_strTitle, cueFile.m_strPerformer);
 	}
 	else
 	{

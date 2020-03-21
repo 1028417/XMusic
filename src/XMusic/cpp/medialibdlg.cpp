@@ -98,39 +98,37 @@ void CMedialibDlg::init()
 
 /*this->setGeometry(m_app.mainWnd().geometry());
 _resizeTitle();
-
 //__appAsync([&](){
 //    _resizeTitle();
 //});*/
+
+#define __show() \
+    m_OuterDir.init(m_app.getMediaLib().GetAbsPath()); \
+    CDialog::show();
 
 void CMedialibDlg::show()
 {
     m_MedialibView.showRoot();
 
-    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
     __appAsync([&](){
         m_OuterDir.findFile();
     });
 
-    CDialog::show();
+    __show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_MedialibView.showMediaSet(MediaSet);
 
-    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
-
-    CDialog::show();
+    __show();
 }
 
 void CMedialibDlg::showMedia(CMedia& media)
 {
-    m_MedialibView.showMedia(media);
+    m_MedialibView.hittestMedia(media);
 
-    m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
-
-    CDialog::show();
+    __show();
 }
 
 bool CMedialibDlg::showFile(const wstring& strPath)
@@ -146,7 +144,7 @@ bool CMedialibDlg::showFile(const wstring& strPath)
         }
 
         cauto t_strPath = __substr(strPath, strOuterDir.size());
-        pMediaRes = m_OuterDir.findSubFile(t_strPath);
+        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(t_strPath);
         if(NULL == pMediaRes)
         {
             return false;
@@ -157,7 +155,7 @@ bool CMedialibDlg::showFile(const wstring& strPath)
         m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
     }
 
-    m_MedialibView.showPath(*pMediaRes);
+    m_MedialibView.hittestFile(*pMediaRes);
 
     CDialog::show();
 

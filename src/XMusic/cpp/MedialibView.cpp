@@ -109,16 +109,13 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     }
 }
 
-void CMedialibView::_onShowPath(CPath& path)
+void CMedialibView::_onShowDir(CPath& dir)
 {
-    if (path.isDir())
-    {
-        WString strTitle;
-        _getTitle((CMediaDir&)path, strTitle);
+    WString strTitle;
+    _getTitle(dir, strTitle);
 
-        bool bPlayable = path.files();
-        m_medialibDlg.updateHead(strTitle, bPlayable, true, false);
-    }
+    bool bPlayable = dir.files();
+    m_medialibDlg.updateHead(strTitle, bPlayable, true, false);
 }
 
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
@@ -143,21 +140,21 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
     }
 }
 
-void CMedialibView::_getTitle(CMediaDir& MediaDir, WString& strTitle)
+void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
 {
-    if (&MediaDir == &m_MediaLib)
+    if (&dir == &m_MediaLib)
     {
         strTitle << __XMusicDirName;
     }
-    else if (&MediaDir == &m_OuterDir)
+    else if (&dir == &m_OuterDir)
     {
         strTitle << strutil::trim_r(wstring(__OuterDirName));
     }
     else
     {
-        strTitle << MediaDir.GetName();
+        strTitle << dir.fileName();
 
-        /*auto pParent = MediaDir.parent();
+        /*auto pParent = dir.parent();
         if (NULL == pParent)
         {
             pParent = &m_MediaLib;
@@ -165,7 +162,7 @@ void CMedialibView::_getTitle(CMediaDir& MediaDir, WString& strTitle)
 
         _getTitle(*pParent, strTitle);
 
-        strTitle << __wcDirSeparator << MediaDir.GetName();*/
+        strTitle << __wcDirSeparator << dir.GetName();*/
     }
 }
 

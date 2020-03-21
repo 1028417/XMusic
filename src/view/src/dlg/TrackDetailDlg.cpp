@@ -28,7 +28,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 {
 	__super::OnInitDialog();
 
-	wstring strTitle = L"Õû¹ì - " + m_cueFile.m_strFileName + L" - ";
+	wstring strTitle = L"Õû¹ì - " + m_cueFile.m_strCueName + L" - ";
 	if (NULL != m_pMediaRes)
 	{
 		strTitle.append(m_pMediaRes->GetName());

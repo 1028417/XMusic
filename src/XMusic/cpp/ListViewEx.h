@@ -69,7 +69,7 @@ private:
     TD_MediaSetList m_lstSubSets;
     TD_MediaList m_lstSubMedias;
 
-    CPath *m_pPath = NULL;
+    CPath *m_pDir = NULL;
     TD_PathList m_paSubDirs;
     TD_XFileList m_paSubFiles;
 
@@ -82,7 +82,7 @@ protected:
         m_lstSubSets.clear();
         m_lstSubMedias.clear();
 
-        m_pPath = NULL;
+        m_pDir = NULL;
         m_paSubDirs.clear();
         m_paSubFiles.clear();
     }
@@ -102,7 +102,7 @@ protected:
 
     CPath* currentPath() const
     {
-        return m_pPath;
+        return m_pDir;
     }
 
     virtual CMediaSet* _onUpward(CMediaSet& currentMediaSet)
@@ -123,7 +123,7 @@ protected:
 private:
     virtual void _onShowRoot() {}
     virtual void _onShowMediaSet(CMediaSet&) {}
-    virtual void _onShowPath(CPath&) {}
+    virtual void _onShowDir(CPath&) {}
 
     size_t getRowCount() override;
 
@@ -144,7 +144,7 @@ private:
         void *p = m_pMediaset;
         if (NULL == p)
         {
-            p = m_pPath;
+            p = m_pDir;
         }
         return p;
     }
@@ -158,13 +158,15 @@ public:
     void showRoot();
 
     void showMediaSet(CMediaSet& MediaSet);
-    void showMedia(CMedia& media);
+    void hittestMedia(CMedia& media);
 
-    void showPath(CPath& path);
+    void showDir(CPath& dir);
+
+    void hittestFile(XFile& file);
 
     bool isInRoot() const
     {
-        return NULL==m_pMediaset && NULL==m_pPath;
+        return NULL==m_pMediaset && NULL==m_pDir;
     }
 
     bool upward();

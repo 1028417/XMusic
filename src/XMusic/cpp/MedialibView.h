@@ -69,8 +69,8 @@ public:
 
 private:
     void _onShowRoot() override;
-    void _onShowMediaSet(CMediaSet& MediaSet) override;
-    void _onShowPath(CPath& path) override;
+    void _onShowMediaSet(CMediaSet&) override;
+    void _onShowDir(CPath&) override;
 
     size_t getPageRowCount() override;
 
@@ -90,7 +90,7 @@ private:
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
 
     void _getTitle(CMediaSet&, WString& strTitle);
-    void _getTitle(CMediaDir&, WString& strTitle);
+    void _getTitle(CPath&, WString& strTitle);
 
     void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet) override;
 
