@@ -544,7 +544,6 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		break;
 	case E_ItemLinkType::ILT_SingerAlbum:
 		(void)PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
-		//this->UpdateItem(uItem, &PlayItem);
 
 		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);
@@ -572,11 +571,22 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 	{
 		this->Update(uItem);
 
-		auto& PlayMgr = m_view.getPlayMgr();
-		CRCueFile cueFile = PlayItem.getCueFile();
-		CRTrackInfo trackInfo = cueFile.getTrack(UINT(PlayMgr.player().GetClock() / 1000));
+		auto& playMgr = m_view.getPlayMgr();
+		if (playMgr.playStatus() == E_PlayStatus::PS_Stop)
+		{
+			(void)playMgr.play(uItem);
+			return;
+		}
 
-		UINT uTrackIndex = trackInfo.uIndex;
+		CRCueFile cueFile = PlayItem.getCueFile();
+
+		UINT uTrackIndex = 0;
+		auto uClock = UINT(playMgr.player().GetClock() / 1000);
+		if (uClock > 0)
+		{
+			uTrackIndex = cueFile.getTrack(uClock).uIndex;
+		}
+
 		if (E_ItemLinkType::ILT_PrevTrack == eLinkType)
 		{
 			if (0 == uTrackIndex)
@@ -599,7 +609,6 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 
 		cueFile.m_alTrackInfo.get(uTrackIndex, [&](auto& trackInfo) {
 			m_view.m_PlayCtrl.seek(trackInfo.uMsBegin / 1000);
-			m_view.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
 		});
 	}
 
