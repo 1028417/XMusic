@@ -75,7 +75,7 @@ public:
 
 	wstring m_strDir;
 	
-	SVector<string> m_vecLineData;
+	//SVector<wstring> m_vecLineData;
 
 	wstring m_strPerformer;
 	
@@ -88,6 +88,13 @@ public:
 	ArrList<tagTrackInfo> m_alTrackInfo;
 
 public:
+	/*bool CCueFile::updateTitle(const wstring& strTitle)
+	{
+		m_strTitle = strTitle;
+		m_vecLineData.set(m_uLineTitle, L"TITLE " + strTitle);
+		return true;
+	}*/
+
 	wstring filePath() const
 	{
 		return m_strDir + __wcPathSeparator + m_strFileName;

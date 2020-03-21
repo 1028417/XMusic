@@ -366,12 +366,7 @@ public:
 	{
 		return m_eHeadType;
 	}
-
-	bool hasUTF8Bom() const
-	{
-		return E_TxtHeadType::THT_UTF8Bom == m_eHeadType;
-	}
-
+	
     E_TxtHeadType read(Instream& ins, string& strText)
     {
         _read(ins, strText);
@@ -427,7 +422,7 @@ private:
 			auto strSub = strText.substr(prePos, pos - prePos);
 			if (!strSub.empty())
 			{
-				if ('\r' == strText.back())
+				if ('\r' == strSub.back())
 				{
 					strSub.pop_back();
 				}
