@@ -226,8 +226,8 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 		memzero(rcSingerImg);
 	}
 
-	x += 7;
-	cx -= 7;
+	x += 6;
+	cx -= 6;
 
 	int iXPosDuration = cx;
 	auto& strDuration = PlayItem.durationString();
@@ -235,7 +235,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 	{
 		(void)dc.SelectObject(m_fontSmall);
 
-		iXPosDuration -= 40 + int(strDuration.size() - 4) * 12;
+		iXPosDuration -= 37 + int(strDuration.size() - 4) * 8;
 		RECT rcPos = { iXPosDuration, iYMiddlePos, cx, cy };
 		dc.DrawText(strDuration.c_str(), &rcPos, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	}
