@@ -258,7 +258,7 @@ void CBkgDlg::init()
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = cy>cx ? cy/11.1 : cy/6.1;
+    int sz = MAX(cx, cy)/11;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
