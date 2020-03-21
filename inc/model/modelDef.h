@@ -166,7 +166,7 @@ struct tagExportMedia
 
 	TD_IMediaList paMedias;
 
-	ArrList<CCueFile> alCueFiles;
+	list<wstring> lstCueFiles;
 };
 
 struct tagExportOption

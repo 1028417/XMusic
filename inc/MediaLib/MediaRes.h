@@ -104,17 +104,17 @@ public:
 	
 #if __winvc
 private:
-	ArrList<CCueFile> m_alSubCueFile;
-	SHashMap<wstring, UINT> m_mapSubCueFile;
+	list<CCueFile> m_lstSubCueFile;
+	unordered_map<wstring, CCueFile*> m_mapSubCueFile;
 
 	bool _loadCue(const wstring& strFileName);
 
 public:
 	CRCueFile getSubCueFile(CMediaRes& MediaRes);
 
-	const ArrList<CCueFile>& SubCueList()
+	const list<CCueFile>& SubCueList()
 	{
-		return m_alSubCueFile;
+		return m_lstSubCueFile;
 	}
 #endif
 
@@ -126,7 +126,7 @@ protected:
     virtual void _onClear() override
     {
         m_mapSubCueFile.clear();
-        m_alSubCueFile.clear();
+        m_lstSubCueFile.clear();
     }
 #endif
 
