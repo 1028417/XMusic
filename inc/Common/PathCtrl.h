@@ -144,7 +144,7 @@ public:
 
 	BOOL InitCtrl(COLORREF crText, float fFontSize, const CSize& szImglst, const CSize *pszSmallImglst = NULL, const TD_IconVec& vecIcons = {});
 
-	void SetPath(CPathObject& dir);
+	void ShowDir(CPathObject& dir);
 
 	BOOL IsFileItem(int nItem);
 	

@@ -120,7 +120,7 @@ private:
 	
     mutex m_mutex;
 
-	XThread m_thread;
+    thread m_thread;
 	
 public:
     static int InitSDK();

@@ -81,11 +81,13 @@ struct __ModelExt tagMedialibConf
 class CSnapshotMediaRes : public CMediaRes
 {
 public:
-    CSnapshotMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
-        : CMediaRes(eFileType, fileInfo)
+    CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
+        : CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
+        , m_uDuration(uDuration)
     {
     }
 
+private:
     UINT m_uDuration = 0;
 
 private:

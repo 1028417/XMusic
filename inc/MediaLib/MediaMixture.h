@@ -85,7 +85,7 @@ public:
 
 	E_MediaFileType GetFileType() const;
 
-	wstring GetFileTypeString() const;
+	wstring GetExtName() const;
 
 	wstring GetSingerAlbumString() const;
 };

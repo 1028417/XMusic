@@ -66,10 +66,7 @@ private:
 	{
                 m_mapAttachDir.clear();
 	}
-
-private:
-	CMediaRes* _findSubPath(const wstring& strSubPath, bool bDir);
-
+	
 public:
 	bool available();
 	
@@ -81,19 +78,21 @@ public:
 
 	bool checkIndependentDir(const wstring& strAbsDir, bool bCheckAttachDir);
 
-	CMediaDir* findSubDir(const wstring& strSubDir) override
+	CMediaRes* findSubPath(const wstring& strSubPath, bool bDir);
+
+	CMediaDir* findSubDir(const wstring& strSubDir)
 	{
-		return (CMediaDir*)_findSubPath(strSubDir, true);
-	}
-	CMediaRes* findSubFile(const wstring& strSubFile) override
-	{
-		return _findSubPath(strSubFile, false);
+		return (CMediaDir*)findSubPath(strSubDir, true);
 	}
 
-	CMediaRes* findSubFile(const CMedia& media);
-	CMediaRes* findSubPath(const IMedia& media)
+	CMediaRes* findSubFile(const wstring& strSubFile)
 	{
-		return _findSubPath(media.GetPath(), media.IsDir());
+		return findSubPath(strSubFile, false);
+	}
+
+	CMediaRes* findSubFile(const CMedia& media)
+	{
+		return findSubPath(media.GetPath(), false);
 	}
 };
 

@@ -57,30 +57,25 @@ public:
 	virtual wstring GetPath() const = 0;
 	virtual wstring GetAbsPath() const = 0;
 
-	virtual bool IsDir() const
-	{
-		return false;
-	}
-
 	virtual wstring GetName() const = 0;
 
-    bool isXmsc() const
-    {
+    virtual wstring GetTitle() const;
+
+	bool isXmsc() const
+	{
 #if __winvc
-        return false;
+		return false;
 #else
-        return E_MediaFileType::MFT_Null == m_eFileType;
+		return E_MediaFileType::MFT_Null == m_eFileType;
 #endif
-    }
+	}
 
 	E_MediaFileType GetFileType() const
 	{
 		return m_eFileType;
 	}
 
-    const wstring& GetFileTypeString() const;
-
-    virtual wstring GetTitle() const;
+	const wstring& GetExtName() const;
 
 	virtual long long fileSize() const
 	{
@@ -146,8 +141,6 @@ public:
 
 	void ClearRelatedMediaSet(E_MediaSetType eMediaSetType);
 	
-	void ShellExplore(bool bSel=true);
-
 	CMedia *findRelatedMedia(E_MediaSetType eMediaSetType);
 
 protected:

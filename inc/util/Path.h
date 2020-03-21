@@ -45,9 +45,14 @@ protected:
 	const tagFileInfo& m_fi = m_fileInfo;
 
 public:
-	const tagFileInfo& fileInfo() const
+	CPath* parent() const
 	{
-		return m_fileInfo;
+		return m_fileInfo.pParent;
+	}
+
+	bool isDir() const
+	{
+		return m_fileInfo.bDir;
 	}
 
     void setName(const wstring& strNewName)
@@ -190,11 +195,11 @@ public:
 	}
 
     XFile* findSubPath(wstring strSubPath, bool bDir);
-    XFile* findSubFile(wstring strSubFile)
+    XFile* findSubFile(const wstring& strSubFile)
     {
         return findSubPath(strSubFile, false);
     }
-    CPath* findSubDir(wstring strSubDir)
+    CPath* findSubDir(const wstring& strSubDir)
     {
         return (CPath*)findSubPath(strSubDir, true);
     }

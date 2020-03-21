@@ -12,7 +12,7 @@ private:
 
 	wstring GetExportFileName() override
 	{
-        return _GetDisplayName(true) + __wcDot + GetFileTypeString();
+        return _GetDisplayName(true) + __wcDot + GetExtName();
 	}
 
 	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;

@@ -63,11 +63,6 @@ public:
 
 	wstring GetAbsPath() const override;
 
-	bool IsDir() const override
-	{
-		return m_fi.bDir;
-	}
-
 	wstring GetName() const override
 	{
 		return XFile::fileName();
@@ -153,15 +148,6 @@ public:
 			cb((CMediaRes&)subObj);
 		});
 	}
-
-    virtual CMediaDir* findSubDir(const wstring& strSubDir)
-    {
-        return (CMediaDir*)CPath::findSubDir(strSubDir);
-    }
-    virtual CMediaRes* findSubFile(const wstring& strSubFile)
-    {
-        return (CMediaRes*)CPath::findSubFile(strSubFile);
-    }
 
 private:
 	wstring GetTreeText() const override
