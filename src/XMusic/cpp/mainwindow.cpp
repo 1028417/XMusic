@@ -115,7 +115,7 @@ void MainWindow::showLogo()
 
     float fFontSizeOffset = 1.0f;
 #if __android || __ios
-    fFontSizeOffset = 0.95;
+    fFontSizeOffset = 0.94;
 
     cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
@@ -380,7 +380,7 @@ bool MainWindow::event(QEvent *ev)
             if (currTime - prevTime > 3)
             {
 #if __android
-                m_app.vibrate(90);
+                m_app.vibrate();
 #endif
                 prevTime = currTime;
                 return true;
@@ -388,6 +388,8 @@ bool MainWindow::event(QEvent *ev)
 
             prevTime = currTime;
         }
+
+        this->setVisible(false);
     }
 
     break;

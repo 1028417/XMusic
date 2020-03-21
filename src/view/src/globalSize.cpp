@@ -22,16 +22,14 @@ CGlobalSize::CGlobalSize()
 	m_uLeftDockWidth = 285;
 	m_uAlbumDockWidth = 215;
 
-	m_uSmallIconSize = 44;
-	m_uBigIconSize = 61;
+	m_uSmallIconSize = 40;
+	m_uBigIconSize = 50;
 
 	m_uHeadHeight = m_uTabHeight = m_uMenuItemHeight = 24;
 
 	m_uTileHeight = 79;
 	m_uIconSpace = 64;
 	
-	m_uPlayingItemHeight = 55;
-
 	m_ColWidth_Name = 255;
 	m_ColWidth_Time = 85;
 	m_ColWidth_MediaTag_Title = 150;
@@ -61,21 +59,18 @@ void CGlobalSize::init()
 	if (m_uScreenWidth > 1280)
 	{
 		fWRate = (float)m_uScreenWidth / 1280;
+	}
+	
+	m_uLeftDockWidth = uintRound(m_uLeftDockWidth*fWRate);
 
-		m_uSmallIconSize = uintRound(m_uSmallIconSize*fWRate);
-		m_uBigIconSize = uintRound(m_uBigIconSize*fWRate);
+	m_uAlbumDockWidth = uintRound(m_uAlbumDockWidth*fWRate);
 
-		m_uLeftDockWidth = uintRound(m_uLeftDockWidth*fWRate);
-
-		m_uAlbumDockWidth = uintRound(m_uAlbumDockWidth*fWRate);
-
-		for (auto p : { &m_ColWidth_Name, &m_ColWidth_MediaTag_Title, &m_ColWidth_Name
-			, &m_ColWidth_MediaTag_Title, &m_ColWidth_MediaTag_Artist, &m_ColWidth_MediaTag_Album
-			, &m_ColWidth_Type, &m_ColWidth_FileSize, &m_ColWidth_RelatedPlaylist
-			, &m_ColWidth_AddTime, &m_ColWidth_RelatedSingerAlbum, &m_ColWidth_Time })
-		{
-			*p = uintRound(*p*fWRate);
-		}
+	for (auto p : { &m_ColWidth_Name, &m_ColWidth_MediaTag_Title, &m_ColWidth_Name
+		, &m_ColWidth_MediaTag_Title, &m_ColWidth_MediaTag_Artist, &m_ColWidth_MediaTag_Album
+		, &m_ColWidth_Type, &m_ColWidth_FileSize, &m_ColWidth_RelatedPlaylist
+		, &m_ColWidth_AddTime, &m_ColWidth_RelatedSingerAlbum, &m_ColWidth_Time })
+	{
+		*p = uintRound(*p*fWRate);
 	}
 
 	float fHRate = 1;
@@ -84,15 +79,16 @@ void CGlobalSize::init()
 		fHRate = (float)MIN(1080, m_uScreenHeight) / 720;
 	}
 
+	m_uSmallIconSize = uintRound(m_uSmallIconSize*fHRate);
+	m_uBigIconSize = uintRound(m_uBigIconSize*fHRate);
+	
 	m_uMenuItemHeight = uintRound(m_uMenuItemHeight*fHRate*fHRate);
 	m_uTabHeight = uintRound(m_uTabHeight*fHRate*fHRate);
 	m_uHeadHeight = uintRound(m_uHeadHeight*fHRate*fHRate);
 	
 	m_uTileHeight = uintRound(m_uTileHeight*fHRate);
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
-
-	m_uPlayingItemHeight = uintRound(m_uPlayingItemHeight*fHRate);
-	
+		
 	float fDPIRate = getDPIRate();
 	m_fSmallFontSize = float((pow(fWRate, (2-fDPIRate))-1.1)*pow(fDPIRate,2.5));
 

@@ -31,8 +31,6 @@ public:
 	UINT m_uTileHeight = 0;
 	UINT m_uIconSpace = 0;
 
-	UINT m_uPlayingItemHeight = 0;
-
 	float m_fSmallFontSize = 0;
 	float m_fBigFontSize = 0;
 	

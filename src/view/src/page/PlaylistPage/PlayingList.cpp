@@ -22,10 +22,10 @@ void CPlayingList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
 	RECT rcClient{ 0,0,0,0 };
 	GetClientRect(&rcClient);
-	double cy = rcClient.bottom - rcClient.top;
+	UINT cy = rcClient.bottom - rcClient.top;
 
-	UINT uRowCount = (UINT)round(cy/m_view.m_globalSize.m_uPlayingItemHeight);
-	lpMeasureItemStruct->itemHeight = (UINT)round(cy/uRowCount);
+	UINT uRowCount = cy/m_view.m_globalSize.m_uBigIconSize;
+	lpMeasureItemStruct->itemHeight = (UINT)round(float(cy)/uRowCount);
 }
 
 void CPlayingList::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
