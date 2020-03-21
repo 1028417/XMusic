@@ -635,8 +635,12 @@ void __view::exportDir(CMediaDir& dir)
 				tagExportMedia ExportMedia;
 				ExportMedia.strDstDir = ExportOption.strExportPath + ((CMediaRes&)dir).GetPath();
 				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
-				ExportMedia.alCueFiles.add(((CMediaDir&)dir).SubCueList());
 				ExportOption.lstExportMedias.push_back(ExportMedia);
+
+				for (cauto cueFile : ((CMediaDir&)dir).SubCueList())
+				{
+					ExportMedia.lstCueFiles.push_back(cueFile.filePath());
+				}
 			}
 
 			return true;
