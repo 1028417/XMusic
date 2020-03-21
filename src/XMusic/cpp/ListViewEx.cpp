@@ -56,9 +56,9 @@ void CListViewEx::showMedia(CMedia& media)
 
 void CListViewEx::showPath(CPath& path)
 {
-    if (!path.fileInfo().bDir)
+    if (!path.isDir())
     {
-        auto pParent = path.fileInfo().pParent;
+        auto pParent = path.parent();
         if (pParent)
         {
             showPath(*pParent);

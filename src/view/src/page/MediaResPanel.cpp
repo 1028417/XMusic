@@ -114,7 +114,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		case __Column_Info:
 		{
 			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
-			if (NULL == pMediaRes || pMediaRes->IsDir())
+			if (NULL == pMediaRes || pMediaRes->isDir())
 			{
 				return;
 			}
@@ -128,7 +128,7 @@ BOOL CMediaResPanel::OnInitDialog()
 			RECT rcText = rc;
 			rcText.bottom = (rcText.bottom + rcText.top)/2 +6;
 
-			dc.DrawText(pMediaRes->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pMediaRes->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
@@ -172,7 +172,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 		bool bRet = false;
 		lstObjects.front([&](CListObject& ListObject) {
-			__Ensure(!((CMediaRes&)ListObject).IsDir());
+			__Ensure(!((CMediaRes&)ListObject).isDir());
 
 			DragData.lstMedias.add(lstObjects);
 
@@ -261,45 +261,45 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 	m_cy = cy;
 }
 
-void CMediaResPanel::ShowPath(const wstring& strPath)
+void CMediaResPanel::ShowDir(const wstring& strPath)
 {
 	__waitCursor;
 
-	m_strRootPath = strPath;
+	m_strRootDir = strPath;
 
-	CMediaDir *pRootPath = NULL;
+	CMediaDir *pRootDir = NULL;
 	if (!strPath.empty())
 	{
-		pRootPath = m_view.getMediaLib().findSubDir(strPath);
+		pRootDir = m_view.getMediaLib().findSubDir(strPath);
 	}
 	else
 	{
-		pRootPath = &m_view.getMediaLib();
+		pRootDir = &m_view.getMediaLib();
 	}
-	_showPath(pRootPath);
+	_showDir(pRootDir);
 }
 
 void CMediaResPanel::Refresh()
 {
-	CMediaDir *pRootPath = m_view.getMediaLib().findSubDir(m_strRootPath);
-	CMediaDir *pCurrPath = m_view.getMediaLib().findSubDir(m_strCurrPath);
-	if (NULL == pCurrPath)
+	CMediaDir *pRootDir = m_view.getMediaLib().findSubDir(m_strRootDir);
+	CMediaDir *pCurrDir = m_view.getMediaLib().findSubDir(m_strCurrDir);
+	if (NULL == pCurrDir)
 	{
-		pCurrPath = pRootPath;
+		pCurrDir = pRootDir;
 	}
 
-	_showPath(pRootPath, pCurrPath);
+	_showDir(pRootDir, pCurrDir);
 }
 
-void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMediaRes *pHitestItem)
+void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRes *pHitestItem)
 {
 	__Ensure(m_hWnd);
 
-	wstring strPrevCurrPath = m_strCurrPath;
+	wstring strPrevCurrDir = m_strCurrDir;
 	
-	m_pCurrPath = m_pRootPath = pRootPath;
-	m_strCurrPath = m_strRootPath;
-	if (NULL == m_pCurrPath)
+	m_pCurrDir = m_pRootDir = pRootDir;
+	m_strCurrDir = m_strRootDir;
+	if (NULL == m_pCurrDir)
 	{
 		(void)m_wndStatic.ShowWindow(SW_SHOW);
 
@@ -310,15 +310,15 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 
 	(void)m_wndStatic.ShowWindow(SW_HIDE);
 
-	if (pCurrPath)
+	if (pCurrDir)
 	{
-		m_pCurrPath = pCurrPath;
-		m_strCurrPath = pCurrPath->GetPath();
+		m_pCurrDir = pCurrDir;
+		m_strCurrDir = pCurrDir->GetPath();
 	}
 
 	wstring	strTitle;
 	
-	wstring strOppPath = fsutil::GetOppPath(m_strCurrPath, m_strRootPath);
+	wstring strOppPath = fsutil::GetOppPath(m_strCurrDir, m_strRootDir);
 	if (!strOppPath.empty())
 	{
 		strOppPath.erase(0,1);
@@ -350,7 +350,7 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 
 	UpdateTitle(strTitle);
 	
-	_showPath();
+	_showDir();
 
 	if (NULL != pHitestItem)
 	{
@@ -358,22 +358,22 @@ void CMediaResPanel::_showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath, CMedi
 	}
 	else
 	{
-		if (m_strCurrPath != strPrevCurrPath)
+		if (m_strCurrDir != strPrevCurrDir)
 		{
 			m_wndList.EnsureVisible(0, FALSE);
 		}
 	}
 }
 
-void CMediaResPanel::_showPath()
+void CMediaResPanel::_showDir()
 {
 	__waitCursor;
 
 	CRedrawLock RedrawLock(m_wndList);
 	
-	m_wndList.SetPath(*m_pCurrPath);
+	m_wndList.ShowDir(*m_pCurrDir);
 		
-	cauto paSubDir = m_pCurrPath->dirs();
+	cauto paSubDir = m_pCurrDir->dirs();
 	if (m_bShowRelatedSinger && paSubDir)
 	{
 		TD_MediaSetList lstSinger;
@@ -382,7 +382,7 @@ void CMediaResPanel::_showPath()
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
 		lstSinger([&](CMediaSet& Singer) {
 			cauto strSingerDir = Singer.GetBaseDir();
-			if (m_strCurrPath == fsutil::GetParentDir(strSingerDir))
+			if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
 			{
 				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { Singer.m_uID, Singer.m_strName };
 			}
@@ -410,7 +410,7 @@ void CMediaResPanel::_showPath()
 
 BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
 {
-	CMediaRes *pMediaRes = m_view.getMediaLib().findSubPath(media);
+	CMediaRes *pMediaRes = m_view.getMediaLib().findSubFile(media.GetPath());
 	if (NULL == pMediaRes)
 	{
 		cauto strDir = fsutil::GetParentDir(media.GetPath());
@@ -440,7 +440,7 @@ BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
 
 void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 {
-	_showPath(m_pRootPath, MediaRes.parent(), &MediaRes);
+	_showDir(m_pRootDir, MediaRes.parent(), &MediaRes);
 
 	if (m_bShowRelatedSinger)
 	{
@@ -450,18 +450,18 @@ void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 
 void CMediaResPanel::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 {
-	__Ensure(m_pCurrPath);
+	__Ensure(m_pCurrDir);
 
 	if (m_bShowRelatedSinger)
 	{
 		if (E_MediaSetType::MST_Singer == MediaSetChanged.eMediaSetType)
 		{
-			(void)m_pCurrPath->UpdateRelatedMediaSet(MediaSetChanged);
+			(void)m_pCurrDir->UpdateRelatedMediaSet(MediaSetChanged);
 		}
 	}
 	
 	UINT uIdx = 0;
-	m_pCurrPath->subMediaRes([&](CMediaRes& MediaRes){
+	m_pCurrDir->subMediaRes([&](CMediaRes& MediaRes){
 		if (MediaRes.UpdateRelatedMediaSet(MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &MediaRes);
@@ -481,9 +481,9 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	switch (uID)
 	{
 	case ID_Upward:
-		__Ensure(m_pCurrPath && m_pCurrPath != m_pRootPath);
+		__Ensure(m_pCurrDir && m_pCurrDir != m_pRootDir);
 	
-		_showPath(m_pRootPath, m_pCurrPath->parent(), m_pCurrPath);
+		_showDir(m_pRootDir, m_pCurrDir->parent(), m_pCurrDir);
 		
 		break;
 	case ID_OPEN:
@@ -493,7 +493,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			m_wndList.GetAllObjects(lstAllObject);
 			TD_MediaResList lsAllMediaRes(lstAllObject);
 			lsAllMediaRes([&](CMediaRes& MediaRes){
-				if (!MediaRes.IsDir())
+				if (!MediaRes.isDir())
 				{
 					lstMediaRes.add(MediaRes);
 				}
@@ -501,9 +501,9 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
-				_showPath(m_pRootPath, (CMediaDir*)&MediaRes);
+				_showDir(m_pRootDir, (CMediaDir*)&MediaRes);
 			}
 			else
 			{
@@ -514,7 +514,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_EXPORT:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
 				m_view.exportDir((CMediaDir&)MediaRes);
 			}
@@ -524,23 +524,23 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			}
 		}))
 		{
-			if (NULL != m_pCurrPath)
+			if (NULL != m_pCurrDir)
 			{
-				m_view.exportDir(*m_pCurrPath);
+				m_view.exportDir(*m_pCurrDir);
 	}	}
 
 		break;
 	case ID_Snapshot:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
 				m_view.snapshotDir((CMediaDir&)MediaRes);
 			}
 		}))
 		{
-			if (NULL != m_pCurrPath)
+			if (NULL != m_pCurrDir)
 			{
-				m_view.snapshotDir(*m_pCurrPath);
+				m_view.snapshotDir(*m_pCurrDir);
 			}
 		}
 
@@ -555,30 +555,30 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		if (lstMediaRes.size()==1)
 		{
 			lstMediaRes.front([&](CMediaRes& MediaRes) {
-				MediaRes.ShellExplore(); 
+				m_view.exploreMedia(MediaRes);
 			});
 		}
-		else if (NULL != m_pCurrPath)
+		else if (NULL != m_pCurrDir)
 		{
-			m_pCurrPath->ShellExplore(false);
+			m_view.exploreMedia(*m_pCurrDir, false);
 		}
 
 		break;
 	case ID_FIND:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			m_view.findMedia(MediaRes.GetPath(), MediaRes.IsDir());
+			m_view.findMedia(MediaRes.GetPath(), MediaRes.isDir());
 		}))
 		{
-			if (NULL != m_pCurrPath)
+			if (NULL != m_pCurrDir)
 			{
-				m_view.findMedia(m_strCurrPath, true);
+				m_view.findMedia(m_strCurrDir, true);
 			}
 		}
 
 		break;
 	case ID_CheckSimilar:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
 				MediaRes.clear();
 				CMediaResPanel::RefreshMediaResPanel();
@@ -587,12 +587,12 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			}
 		}))
 		{
-			if (NULL != m_pCurrPath)
+			if (NULL != m_pCurrDir)
 			{
-				m_pCurrPath->clear();
+				m_pCurrDir->clear();
 				CMediaResPanel::RefreshMediaResPanel();
 
-				m_view.checkSimilarFile(*m_pCurrPath);
+				m_view.checkSimilarFile(*m_pCurrDir);
 			}
 		}
 
@@ -606,10 +606,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		
 		break;
 	case ID_DELETE:
-		__Ensure(m_pCurrPath);
+		__Ensure(m_pCurrDir);
 
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (!MediaRes.IsDir())
+			if (!MediaRes.isDir())
 			{
 				__Ensure(confirmBox(L"确认删除所选文件?"));
 
@@ -621,7 +621,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_Detach:
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
 				if (MediaRes.parent() == NULL)
 				{
@@ -653,9 +653,9 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_REFRESH:
-		if (NULL != m_pCurrPath)
+		if (NULL != m_pCurrDir)
 		{
-			m_pCurrPath->clear();
+			m_pCurrDir->clear();
 			CMediaResPanel::RefreshMediaResPanel();
 		}
 		else
@@ -669,31 +669,31 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)
 //{
-//	CMediaRes *pTargetPath = m_pCurrPath;
+//	CMediaRes *pTargetPath = m_pCurrDir;
 //	while(TRUE)
 //	{
-//		if (m_pCurrPath == &dir || fsutil::CheckSubPath(dir.GetPath(), m_strCurrPath))
+//		if (m_pCurrDir == &dir || fsutil::CheckSubPath(dir.GetPath(), m_strCurrDir))
 //		{
-//			if (pTargetPath == m_pRootPath)
+//			if (pTargetPath == m_pRootDir)
 //			{
 //				break;
 //			}
 //			
-//			pTargetPath = m_pRootPath;
+//			pTargetPath = m_pRootDir;
 //			continue;
 //		}
 //
 //		return;
 //	}
 //
-//	ShowPath(NULL);
+//	ShowDir(NULL);
 //}
 
 void CMediaResPanel::OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	if (NULL == m_pCurrPath)
+	if (NULL == m_pCurrDir)
 	{
 		return;
 	}
@@ -744,7 +744,7 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 		
 		TD_MediaResList lstMediaRes(lstObjects);
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.IsDir())
+			if (MediaRes.isDir())
 			{
 				_showDirMenu((CMediaDir*)&MediaRes);
 			}
@@ -791,27 +791,27 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 	{
 		m_MenuGuard.SetItemText(ID_OPEN, _T("播放"));
 
-		if (m_pCurrPath)
+		if (m_pCurrDir)
 		{
-			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrPath->files());
+			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrDir->files());
 		}
 
-		m_MenuGuard.EnableItem(ID_FIND, m_pCurrPath && m_pCurrPath != &m_view.getMediaLib());
+		m_MenuGuard.EnableItem(ID_FIND, m_pCurrDir && m_pCurrDir != &m_view.getMediaLib());
 
 		bool bFlag = m_wndList.GetItemCount()>0;
-		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrPath && bFlag);
-		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrPath && bFlag);
-		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrPath && bFlag);
+		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrDir && bFlag);
+		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
+		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
 
-		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrPath);
+		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrDir);
 		
-		if (&m_view.getMediaLib() == m_pCurrPath)
+		if (&m_view.getMediaLib() == m_pCurrDir)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
 	}
 
-	m_MenuGuard.EnableItem(ID_Upward, m_pCurrPath&& m_pCurrPath != m_pRootPath);
+	m_MenuGuard.EnableItem(ID_Upward, m_pCurrDir&& m_pCurrDir != m_pRootDir);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
@@ -840,7 +840,7 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 		m_FileMenuGuard.EnableItem(ID_RENAME, TRUE);
 	}
 
-	m_FileMenuGuard.EnableItem(ID_Upward, m_pCurrPath != m_pRootPath);
+	m_FileMenuGuard.EnableItem(ID_Upward, m_pCurrDir != m_pRootDir);
 	
 	(void)m_FileMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
@@ -859,7 +859,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 			CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
 			__Ensure(pMediaRes);
 
-			if (!pMediaRes->IsDir())
+			if (!pMediaRes->isDir())
 			{
 				pMediaRes->AsyncTask();
 				m_wndList.UpdateItem(iItem, pMediaRes);
@@ -900,7 +900,7 @@ void CMediaResPanel::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)
 		bool bHasFile = false;
 		for (auto& pr : mapObjects)
 		{
-			if (!((CMediaRes*)pr.second)->IsDir())
+			if (!((CMediaRes*)pr.second)->isDir())
 			{
 				bHasFile = true;
 				break;
@@ -911,7 +911,7 @@ void CMediaResPanel::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)
 		{
 			for (auto& pr : mapObjects)
 			{
-				if (((CMediaRes*)pr.second)->IsDir())
+				if (((CMediaRes*)pr.second)->isDir())
 				{
 					(void)m_wndList.SetItemState(pr.first, 0, LVIS_SELECTED | LVIS_FOCUSED);
 				}
@@ -935,7 +935,7 @@ void CMediaResPanel::OnLvnItemchangedList(NMHDR *pNMHDR, LRESULT *pResult)
 
 DROPEFFECT CMediaResPanel::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	__EnsureReturn(m_pCurrPath && lstMedias, DROPEFFECT_NONE);
+	__EnsureReturn(m_pCurrDir && lstMedias, DROPEFFECT_NONE);
 
 	bool bScroll = DragScroll(m_wndList, DragContext.x, DragContext.y);
 
@@ -950,13 +950,13 @@ DROPEFFECT CMediaResPanel::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList&
 		}
 	});
 
-	DragContext.pTargetObj = m_pCurrPath;
+	DragContext.pTargetObj = m_pCurrDir;
 
 	int nItem = m_wndList.HitTest(CPoint(DragContext.x, DragContext.y));
 	if (nItem >= 0)
 	{
 		CMediaRes *pDragOverPath = (CMediaRes*)m_wndList.GetItemObject(nItem);
-		if (pDragOverPath && pDragOverPath->IsDir())
+		if (pDragOverPath && pDragOverPath->isDir())
 		{
 			if (!bScroll)
 			{
@@ -988,9 +988,9 @@ BOOL CMediaResPanel::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias
 
 int CMediaResPanel::GetTabImage()
 {
-	if (m_pCurrPath)
+	if (m_pCurrDir)
 	{
-		if (m_pCurrPath->rootDir() != &m_view.getMediaLib())
+		if (m_pCurrDir->rootDir() != &m_view.getMediaLib())
 		{
 			return (int)E_GlobalImage::GI_DirLink;
 		}
@@ -1008,7 +1008,7 @@ void CMediaResPanel::_asyncTask()
 
 	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [](CListObject& object) {
 		CMediaRes& mediaRes = (CMediaRes&)object;
-		if (!mediaRes.IsDir())
+		if (!mediaRes.isDir())
 		{
 			mediaRes.AsyncTask();
 		}

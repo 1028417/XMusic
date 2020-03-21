@@ -165,7 +165,7 @@ BOOL CAlbumPage::OnInitDialog()
 			BYTE uAlpha = m_view.genByteRateAlpha(*pAlbumItem);
 			dc.SetTextColor(lvcd.getTextColor(uAlpha));
 			
-			dc.DrawText(pAlbumItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pAlbumItem->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			dc.SetTextColor(lvcd.crText);
 
@@ -328,7 +328,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 		(void)m_wndAlbumItemList.ShowWindow(SW_HIDE);
 		(void)m_wndAlbumItemList.DeleteAllItems();
 
-		m_wndMediaResPanel.ShowPath();
+		m_wndMediaResPanel.ShowDir();
 		(void)m_wndMediaResPanel.ShowWindow(SW_SHOW);
 		
 		// TODO this->DestryWindow(); m_view.m_MainWnd.RemvePage(*this);
@@ -347,7 +347,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.InsertItem(0, L"", (int)E_GlobalImage::GI_Dir);
 
-		m_wndMediaResPanel.ShowPath(m_pSinger->GetBaseDir());
+		m_wndMediaResPanel.ShowDir(m_pSinger->GetBaseDir());
 	}
 		
 	if (pAlbumItem)
@@ -733,8 +733,8 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 	case ID_EXPLORE_ALBUMITEM:
 		if (lstAlbumItems.size() == 1)
 		{
-			lstAlbumItems.front([](CMedia& media) {
-				media.ShellExplore();
+			lstAlbumItems.front([&](CMedia& media) {
+				m_view.exploreMedia(media);
 			});
 		}
 

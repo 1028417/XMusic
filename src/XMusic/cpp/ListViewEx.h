@@ -111,7 +111,7 @@ protected:
     }
     virtual CPath* _onUpward(CPath& currentDir)
     {
-        return (CPath*)currentDir.fileInfo().pParent;
+        return (CPath*)currentDir.parent();
     }
 
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet)

@@ -284,7 +284,7 @@ void CSimilarFileDlg::OnBnClickedExplore()
 	m_arrSimilarFileInfo.get((UINT)nItem, [&](auto& pr) {
 		m_arrSimilarFile.get(pr.first, [&](auto& arrSimilarFile) {
 			arrSimilarFile.get(pr.second, [&](auto& pr) {
-				pr.first->ShellExplore();
+				m_view.exploreMedia(*pr.first);
 			});
 		});
 	});

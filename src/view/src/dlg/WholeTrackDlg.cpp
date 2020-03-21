@@ -212,7 +212,7 @@ void CWholeTrackDlg::OnBnClickedBtnExplore()
 	m_plCueFile.get((UINT)nItem, [&](cauto pr) {
 		if (NULL != pr.second)
 		{
-			pr.second->ShellExplore();
+			m_view.exploreMedia(*pr.second);
 		}
 		else
 		{

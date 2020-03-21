@@ -261,16 +261,16 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 
 	cauto strOldOppPath = media.GetPath();
 
-	wstring strExtName = media.GetFileTypeString();
-	if (!strExtName.empty())
+	bool bDir = dynamic_cast<const CMediaDir*>(&media) != NULL;
+
+	wstring strExtName;
+	if (!bDir)
 	{
-        strExtName = __wcDot + strExtName;
+		strExtName = __wcDot + media.GetExtName();
 	}
 
 	cauto strOldAbsPath = media.GetAbsPath();
 	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wcPathSeparator + strNewName + strExtName;
-	
-	bool bDir = media.IsDir();
     if (fsutil::existPath(strOldAbsPath, bDir))
 	{
 		bool bRet = false;

@@ -111,7 +111,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
 void CMedialibView::_onShowPath(CPath& path)
 {
-    if (path.fileInfo().bDir)
+    if (path.isDir())
     {
         WString strTitle;
         _getTitle((CMediaDir&)path, strTitle);
@@ -551,7 +551,7 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 
 CPath* CMedialibView::_onUpward(CPath& currentDir)
 {
-    if (NULL == currentDir.fileInfo().pParent && dynamic_cast<CAttachDir*>(&currentDir))
+    if (NULL == currentDir.parent() && dynamic_cast<CAttachDir*>(&currentDir))
     {
         return &m_MediaLib;
     }

@@ -65,7 +65,7 @@ bool __view::init()
 
 void __view::show()
 {
-	m_MediaResPage.ShowPath();
+	m_MediaResPage.ShowDir();
 
 	__async([&]() {
 		m_PlayCtrl.showPlaySpirit();
@@ -1034,4 +1034,17 @@ BYTE __view::genByteRateAlpha(CMedia& media)
 	}
 
 	return 0;
+}
+
+void __view::exploreMedia(IMedia& media, bool bSel)
+{
+	bool bDir = dynamic_cast<CMediaDir*>(&media) != NULL;
+	if (bSel || !bDir)
+	{
+		winfsutil::exploreFile(media.GetAbsPath());
+	}
+	else
+	{
+		winfsutil::exploreDir(media.GetAbsPath());
+	}
 }

@@ -117,7 +117,7 @@ void CNewSongDlg::Refresh()
 		UINT uIndex = 0;
 		_GetMediaMixture()([&](auto& MediaMixture){
 			m_wndList.InsertItemEx(uIndex, { MediaMixture.GetTitle()
-				, MediaMixture.GetFileTypeString()
+				, MediaMixture.GetExtName()
 				, MediaMixture.GetDir().c_str()
 				, MediaMixture.GetPlaylistName()
 				, MediaMixture.GetSingerAlbumString()

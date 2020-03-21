@@ -43,11 +43,11 @@ private:
 
 	CWnd m_wndStatic;
 
-	CMediaDir *m_pRootPath = NULL;
-	wstring m_strRootPath;
+	CMediaDir *m_pRootDir = NULL;
+	wstring m_strRootDir;
 
-	CMediaDir *m_pCurrPath = NULL;
-	wstring m_strCurrPath;
+	CMediaDir *m_pCurrDir = NULL;
+	wstring m_strCurrDir;
 	
 	UINT m_Column_ID3 = 0;
 	
@@ -74,7 +74,7 @@ protected:
 public:
 	BOOL Create(CBasePage& wndPage);
 
-	void ShowPath(const wstring& strPath=L"");
+	void ShowDir(const wstring& strPath=L"");
 
 	void Refresh();
 
@@ -99,8 +99,8 @@ private:
 
 	//void OnDeleteDir(CMediaDir& dir);
 
-	void _showPath(CMediaDir *pRootPath, CMediaDir *pCurrPath = NULL, CMediaRes *pHitestItem = NULL);
-	void _showPath();
+	void _showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir = NULL, CMediaRes *pHitestItem = NULL);
+	void _showDir();
 
 	void _asyncTask();
 

@@ -194,4 +194,6 @@ public:
 	bool copyMediaTitle(IMedia& media);
 
 	BYTE genByteRateAlpha(CMedia& media);
+
+	void exploreMedia(IMedia& media, bool bSel = true);
 };

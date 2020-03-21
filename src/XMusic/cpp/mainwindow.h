@@ -129,13 +129,14 @@ private:
 
     void _updateLogoTip();
     void _showUpgradeProgress();
-    void _updateProgress();
 
     void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
 
-    void _showAlbumName();
-
     void _updatePlayPauseButton(bool bPlaying);
+
+    void _updateProgress();
+
+    void _showAlbumName();
 
     void _playSingerImg(bool bReset);
 

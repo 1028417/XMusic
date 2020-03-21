@@ -104,8 +104,8 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_EXPLORE:
 		__EnsureBreak(1 == arrSelPlayItem.size());
 
-		arrSelPlayItem.front([](auto& playItem) {
-			playItem.ShellExplore();
+		arrSelPlayItem.front([&](auto& playItem) {
+			m_view.exploreMedia(playItem);
 		});
 
 		break;

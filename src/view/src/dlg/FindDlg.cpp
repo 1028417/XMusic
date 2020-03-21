@@ -156,7 +156,7 @@ void CFindDlg::Refresh()
 	const TD_MediaMixtureVector& arrMediaMixture = m_MediaMixer.get();
 	arrMediaMixture([&](CMediaMixture& MediaMixture) {
 		m_wndList.InsertItemEx(uItem++, { MediaMixture.GetTitle()
-			, MediaMixture.GetFileTypeString()
+			, MediaMixture.GetExtName()
 			, MediaMixture.GetDir().c_str()
 			, MediaMixture.GetPlaylistName()
 			, MediaMixture.GetSingerAlbumString()
@@ -304,7 +304,7 @@ void CFindDlg::OnBnClickedBtnExplore()
 	if (nItem >= 0)
 	{
 		m_MediaMixer.getMedia([&](CMedia& media) {
-			media.ShellExplore();
+			m_view.exploreMedia(media);
 		}, (UINT)nItem);
 	}
 }

@@ -817,6 +817,8 @@ void MainWindow::_updateProgress()
 {
     auto& playMgr = m_app.getPlayMgr();
     E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
+    _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus);
+
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
 #if __OnlineMediaLib
@@ -1228,10 +1230,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
 
         m_app.getPlayMgr().player().Seek(nSeekPos);
-
-        __appAsync(100, [&](){
-            _updateProgress();
-        });
+        //__appAsync(100, [&](){
+        //  _updateProgress();
+        //});
     }
     else
     {

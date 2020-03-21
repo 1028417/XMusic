@@ -94,7 +94,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			BYTE uAlpha = m_view.genByteRateAlpha(*pPlayItem);
 			dc.SetTextColor(lvcd.getTextColor(uAlpha));
 			
-			dc.DrawText(pPlayItem->GetFileTypeString().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pPlayItem->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			dc.SetTextColor(lvcd.crText);
 
@@ -361,8 +361,8 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_EXPLORE:
 		if (lstPlayItems.size() == 1)
 		{
-			lstPlayItems.front([](CMedia& media) {
-				media.ShellExplore();
+			lstPlayItems.front([&](CMedia& media) {
+				m_view.exploreMedia(media);
 			});
 		}
 
