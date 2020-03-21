@@ -45,7 +45,7 @@ public:
 	CCueFile() {}
 
 	CCueFile(wstring strFileName, const wstring& strDir)
-		: m_strFileName(strFileName)
+		: m_strCueName(strFileName)
 		, m_strDir(strDir)
 	{
 	}
@@ -71,40 +71,28 @@ public:
 	}
 
 public:
-	wstring m_strFileName;
-
+	wstring m_strCueName;
 	wstring m_strDir;
 	
-	//SVector<wstring> m_vecLineData;
-
 	wstring m_strPerformer;
 	
 	wstring m_strTitle;
 	UINT m_uLineTitle = 0;
 
-	wstring m_strMediaFileName;
-	UINT m_uLineMediaFileName = 0;
+	wstring m_strMediaFile;
+	UINT m_uLineMediaFile = 0;
 
 	ArrList<tagTrackInfo> m_alTrackInfo;
 
 public:
-	/*bool CCueFile::updateTitle(const wstring& strTitle)
-	{
-		m_strTitle = strTitle;
-		m_vecLineData.set(m_uLineTitle, L"TITLE " + strTitle);
-		return true;
-	}*/
-
 	wstring filePath() const
 	{
-		return m_strDir + __wcPathSeparator + m_strFileName;
+		return m_strDir + __wcPathSeparator + m_strCueName;
 	}
 	
 	bool load(const wstring& strFile);
 
 	CRTrackInfo getTrack(UINT uMs) const;
 	
-	bool updateTitle(const wstring& strTitle);
-
 	bool updateMediaFileName(const wstring& strMediaFileName);
 };
