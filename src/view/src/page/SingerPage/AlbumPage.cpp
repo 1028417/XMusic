@@ -427,25 +427,28 @@ void CAlbumPage::UpdateSingerImage()
 void CAlbumPage::UpdateTitle()
 {
 	m_strBaseTitle = L" ";
+
+	wstring strTitle;
 	if (m_pSinger)
 	{
 		m_strBaseTitle.append(m_pSinger->m_pParent->m_strName);
-
 		m_strBaseTitle.append(__CNDot + m_pSinger->m_strName);
 
 		if (m_pAlbum)
 		{
-			SetTitle(__CNDot + m_pAlbum->m_strName + L" ");
+			strTitle = __CNDot + m_pAlbum->m_strName;
 		}
 		else
 		{
-			SetTitle(wstring(m_wndMediaResPanel.GetTitle()) + L" ");
+			strTitle = m_wndMediaResPanel.GetTitle();
 		}
 	}
 	else
 	{
 		m_strBaseTitle.append(L"∏Ë ÷");
 	}
+
+	SetTitle(strTitle + L" ");
 }
 
 void CAlbumPage::UpdateSingerName()
