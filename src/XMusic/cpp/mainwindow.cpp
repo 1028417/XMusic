@@ -818,7 +818,7 @@ void MainWindow::_updateProgress()
 {
     auto& playMgr = m_app.getPlayMgr();
     E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
-    _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus);
+    //_updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus);
 
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
@@ -1110,16 +1110,26 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
-        _updatePlayPauseButton(false);
+        //if (m_app.getPlayMgr().mediaOpaque().decoderOpened())
+        //{
+        //    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
+        if (m_app.getPlayMgr().player().Pause())
+        {
+            _updatePlayPauseButton(false);
+        }
     }
     else if (button == ui.btnPlay)
     {
-        if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
+        /*if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
         {
             _updatePlayPauseButton(true);
         }
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));*/
+
+        if (m_app.getPlayMgr().player().Resume())
+        {
+            _updatePlayPauseButton(true);
+        }
     }
     else if (button == ui.btnPlayPrev)
     {
@@ -1201,7 +1211,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
-        if (!m_app.getPlayMgr().mediaOpaque().seekable())
+        /*if (!m_app.getPlayMgr().mediaOpaque().seekable())
         {
             return;
         }
@@ -1212,7 +1222,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         if (!m_app.getPlayMgr().mediaOpaque().decoderOpened())
         {
             return;
-        }
+        }*/
 
         cauto barProgress = *ui.barProgress;
         auto nMax = barProgress.maximum();
@@ -1230,10 +1240,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             nSeekPos = MIN(nSeekPos, nPlayablePos);
         }
 
-        m_app.getPlayMgr().player().Seek(nSeekPos);
-        //__appAsync(100, [&](){
-        //  _updateProgress();
-        //});
+        if (m_app.getPlayMgr().player().Seek(nSeekPos))
+        {
+            __appAsync(100, [&](){
+              _updateProgress();
+            });
+        }
     }
     else
     {
