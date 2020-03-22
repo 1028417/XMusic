@@ -233,7 +233,7 @@ bool CPlayCtrl::addPlayingItem(const SArray<wstring>& arrOppPaths, int nPos)
 
 bool CPlayCtrl::addPlayingItem(const TD_IMediaList& lstMedias, int nPos)
 {
-	SArray<wstring> arrOppPaths = lstMedias.map([](const IMedia& media) {
+	cauto arrOppPaths = lstMedias.map([](const IMedia& media) {
 		return media.GetPath();
 	});
 

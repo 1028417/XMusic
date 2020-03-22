@@ -29,6 +29,9 @@ protected:
 	bool setupMediaLib();
 #endif
 
+private:
+	void _moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir);
+
 public:
         tagOption& initOption() override
         {
@@ -53,10 +56,11 @@ public:
 
 	bool removeMediaRes(const TD_MediaResList& lstMediaRes) override;
 
-	int addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) override;
+	int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) override;
 	
-	int addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album) override;
-	
+	int AddAlbumItems(const list<wstring>& lstAbsPaths, CAlbum& Album, int nPos = -1) override;
+	int AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos = -1) override;
+		
 	E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName) override;
 
 	bool removeMediaSet(CMediaSet& MediaSet) override;

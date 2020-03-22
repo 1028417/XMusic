@@ -566,14 +566,13 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			fileDlg.ShowOpenMulti(lstFiles);
 			__Ensure(!lstFiles.empty());
 
-			int nRet = m_view.getController().addAlbumItems(lstFiles, *pAlbum);
-			if (nRet > 0)
-			{
-				this->_showAlbum(pAlbum);
+			int nRet = m_view.getController().AddAlbumItems(lstFiles, *pAlbum);
+			__Ensure(nRet > 0);
 
-				UINT uSelectCount = (UINT)nRet;
-				m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount() - uSelectCount, uSelectCount);
-			}
+			this->_showAlbum(pAlbum);
+
+			UINT uSelectCount = (UINT)nRet;
+			m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount() - uSelectCount, uSelectCount);
 		}
 
 		break;
@@ -1015,9 +1014,13 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 	lstMedias.front([&](IMedia& media) {
 		pSrcMediaSet = media.GetMediaSet();
 	});
+
+	UINT uCount = 0;
 	if (pSrcMediaSet != m_pAlbum)
 	{
-		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstMedias, *m_pAlbum, uTargetPos), FALSE);
+		int nRet = m_view.getController().AddAlbumItems(lstMedias, *m_pAlbum, uTargetPos);
+		__EnsureReturn(nRet > 0, FALSE);
+		uCount = (UINT)nRet;
 
 		nNewPos = uTargetPos;
 	}
@@ -1037,10 +1040,12 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 
 		nNewPos = m_view.getSingerMgr().RepositAlbumItem(*m_pAlbum, lstMedias, uTargetPos);
 		__EnsureReturn(nNewPos >= 0, FALSE);
+
+		uCount = lstMedias.size();
 	}
 
 	_showAlbum(m_pAlbum);
-	m_wndAlbumItemList.SelectItems(nNewPos, lstMedias.size());
+	m_wndAlbumItemList.SelectItems(nNewPos, uCount);
 
 	return TRUE;
 }
@@ -1113,29 +1118,37 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 	lstMedias.front([&](IMedia& media) {
 		pSrcMediaSet = media.GetMediaSet();
 	});
+
+	UINT uCount = 0;
 	if (pSrcMediaSet && E_MediaSetType::MST_Album == pSrcMediaSet->m_eType)
 	{
 		__EnsureReturn(pTargetAlbum != pSrcMediaSet, FALSE);
-		
-		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstMedias, *pTargetAlbum), FALSE);
+
+		TD_AlbumItemList lstAlbumItems(lstMedias);
+		cauto lstOppPath = lstAlbumItems.map([](const CAlbumItem& AlbumItem) {
+			return AlbumItem.GetPath();
+		});
+		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstOppPath, *pTargetAlbum), FALSE);
+		uCount = lstAlbumItems.size();
 
 		if (DROPEFFECT_MOVE == nDropEffect)
 		{
-			TD_AlbumItemList lstAlbumItems(lstMedias);
 			__EnsureReturn(m_view.getSingerMgr().RemoveAlbumItems(lstAlbumItems), FALSE);
 		}
 	}
 	else
 	{
-		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstMedias, *pTargetAlbum), FALSE);
+		int nRet = m_view.getController().AddAlbumItems(lstMedias, *pTargetAlbum);
+		__EnsureReturn(nRet > 0, FALSE);
+		
+		uCount = (UINT)nRet;
 	}
 
 	m_wndAlbumList.SelectObject(pTargetAlbum);
 
 	_showAlbum(pTargetAlbum);
 
-	int nSelectCount = (int)lstMedias.size();
-	m_wndAlbumItemList.SelectItems(m_wndAlbumItemList.GetItemCount()-nSelectCount, nSelectCount);
+	m_wndAlbumItemList.SelectItems((UINT)m_wndAlbumItemList.GetItemCount()-uCount, uCount);
 
 	(void)m_wndAlbumItemList.SetFocus();
 

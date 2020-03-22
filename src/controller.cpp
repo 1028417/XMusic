@@ -277,7 +277,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
         m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]() {
 			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath))
 			{
-                m_view.msgBox(L"重命名失败: \n\n\t" + media.GetAbsPath());
+                m_view.msgBox(L"重命名失败: \n\n\t" + strOldAbsPath);
 				return false;
 			}
 
@@ -311,19 +311,20 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 
 void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
 {
-	TD_IMediaList lstSrcMedias;
-	lstMedias([&](IMedia& media){
-		if (!strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strDir))
-		{
-			lstSrcMedias.add(media);
-		}
+	cauto t_lstMedias = lstMedias.filter([&](IMedia& media) {
+		return !strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strDir);
 	});
-	__Ensure(lstSrcMedias);
+	__Ensure(t_lstMedias);
 	__Ensure(m_view.msgBox(L"确认移动选中的文件?", true));
 
+	moveMediaFile(t_lstMedias, strDir);
+}
+
+void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
+{
 	SMap<wstring, wstring> mapMovedFiles;
 
-	lstSrcMedias([&](IMedia& media){
+	lstMedias([&](IMedia& media){
         cauto strSrcPath = media.GetPath();
 		if (mapMovedFiles.includes(strSrcPath))
 		{
@@ -393,7 +394,7 @@ bool CXController::removeMediaRes(const TD_MediaResList& lstMediaRes)
 	return true;
 }
 
-int CXController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist)
+int CXController::AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist)
 {
 	wstring strOppPath;
 	SArray<wstring> arrOppPaths;
@@ -415,26 +416,36 @@ int CXController::addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 	return arrOppPaths.size();
 }
 
-int CXController::addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album)
+int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& Album, int nPos)
 {
-	wstring strSingerOppPath = Album.GetBaseDir();
+	wstring strBaseDir = Album.GetBaseDir();
 
-	list<wstring> lstOppPaths;
-	for (cauto strFile : lstFiles)
+	SArray<wstring> lstOppPaths;
+	for (cauto strFile : lstAbsPath)
 	{
 		wstring strOppPath = m_model.getMediaLib().toOppPath(strFile);
-		if (!fsutil::CheckSubPath(strSingerOppPath, strOppPath))
+		if (!fsutil::CheckSubPath(strBaseDir, strOppPath))
 		{
-            m_view.msgBox((L"添加专辑曲目失败，请选择以下目录中的文件: \n\n\t" + strSingerOppPath).c_str());
+            m_view.msgBox((L"添加专辑曲目失败，请选择以下目录中的文件: \n\n\t" + strBaseDir).c_str());
 			return 0;
 		}
 
-		lstOppPaths.push_back(strOppPath);
+		lstOppPaths.add(strOppPath);
 	}
 
-	__EnsureReturn(m_model.getSingerMgr().AddAlbumItems(lstOppPaths, Album), -1);
+	__EnsureReturn(m_model.getSingerMgr().AddAlbumItems(lstOppPaths, Album, nPos), -1);
 
 	return lstOppPaths.size();
+}
+
+int CXController::AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos)
+{
+	list<wstring> lstAbsPath;
+	paMedias([&](IMedia& media) {
+		lstAbsPath.push_back(media.GetAbsPath());
+	});
+	
+	return AddAlbumItems(lstAbsPath, album, nPos);
 }
 
 bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress

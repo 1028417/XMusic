@@ -305,7 +305,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		wstring strDir = fileDlg.ShowOpenMulti(lstFiles);		
 		__Ensure(!lstFiles.empty());
 
-		int nRet = m_view.getController().addPlayItems(lstFiles, *m_pPlaylist);
+		int nRet = m_view.getController().AddPlayItems(lstFiles, *m_pPlaylist);
 		if (nRet > 0)
 		{
 			m_wndList.SelectItems(0, (UINT)nRet);
