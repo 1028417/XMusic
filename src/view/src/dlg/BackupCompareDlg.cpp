@@ -365,9 +365,10 @@ BOOL CBackupCompareDlg::OnInitDialog()
 
 	m_wndSrcCombo.SetCurSel(uIdxSrc);
 
-	__async(50, [&]() {
+	async(50, [&]() {
 		_compare();
 	});
+
 	return TRUE;
 }
 

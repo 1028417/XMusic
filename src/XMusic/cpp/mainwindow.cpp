@@ -390,6 +390,7 @@ bool MainWindow::event(QEvent *ev)
         }
 
         this->setVisible(false);
+        this->repaint();
     }
 
     break;

@@ -53,7 +53,7 @@ BOOL CBackupDlg::OnInitDialog()
 	auto& arrBackupTag = m_BackupMgr.getBackupTags();
 	if (arrBackupTag)
 	{
-		__async([&]() {
+		async([&]() {
 			m_wndList.SelectItem(0);
 			m_wndList.SetFocus();
 

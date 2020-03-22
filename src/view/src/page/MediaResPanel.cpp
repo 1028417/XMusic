@@ -99,7 +99,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		,{ _T("创建时间"), globalSize.m_ColWidth_Time, true }
 	});
 
-	CObjectList::tagListPara ListPara(lstColumns, globalSize.m_uHeadHeight, globalSize.m_fBigFontSize);
+	CObjectList::tagListPara ListPara(lstColumns, globalSize.m_uHeadHeight, globalSize.m_fMidFontSize);
 
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;

@@ -90,9 +90,9 @@ void CGlobalSize::init()
 	m_uIconSpace = uintRound(m_uIconSpace*fHRate);
 		
 	float fDPIRate = getDPIRate();
-	m_fSmallFontSize = float((pow(fWRate, (2-fDPIRate))-1.1)*pow(fDPIRate,2.5));
+	m_fSmallFontSize = float((pow(fWRate, (2-fDPIRate))-1.1)*pow(fDPIRate,3.3));
 
-	m_fBigFontSize = m_fSmallFontSize * (float)pow(fWRate,3.5) * fDPIRate;
+	m_fBigFontSize = m_fSmallFontSize * (float)pow(fWRate,4.4) * fDPIRate;
 
 	m_fMidFontSize = (m_fBigFontSize + m_fSmallFontSize)/2;
 
