@@ -36,6 +36,8 @@ protected:
     template <typename T>
     bool _open(const T& file, const string& strMode)
     {
+		close();
+
         m_pf = fsutil::fopen(file, strMode);
 		return NULL != m_pf;
     }
