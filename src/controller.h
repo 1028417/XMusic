@@ -30,7 +30,7 @@ protected:
 #endif
 
 private:
-	void _moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir);
+	void _moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir);
 
 public:
         tagOption& initOption() override
@@ -52,13 +52,13 @@ public:
 
 	bool renameMedia(const IMedia& media, const wstring& strNewName) override;
 
-	void moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir) override;
+	void moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir) override;
 
 	bool removeMediaRes(const TD_MediaResList& lstMediaRes) override;
 
 	int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) override;
 	
-	int AddAlbumItems(const list<wstring>& lstAbsPaths, CAlbum& Album, int nPos = -1) override;
+	int AddAlbumItems(const list<wstring>& lstAbsPaths, CAlbum& album, int nPos = -1) override;
 	int AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos = -1) override;
 		
 	E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName) override;

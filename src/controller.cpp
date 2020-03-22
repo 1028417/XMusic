@@ -309,19 +309,21 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
-void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
+void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
 {
 	cauto t_lstMedias = lstMedias.filter([&](IMedia& media) {
-		return !strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strDir);
+		return !strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strOppDir);
 	});
 	__Ensure(t_lstMedias);
 	__Ensure(m_view.msgBox(L"确认移动选中的文件?", true));
 
-	moveMediaFile(t_lstMedias, strDir);
+	moveMediaFile(t_lstMedias, strOppDir);
 }
 
-void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir)
+void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
 {
+	cauto strDstAbsDir = m_model.getMediaLib().toAbsPath(strOppDir);
+
 	SMap<wstring, wstring> mapMovedFiles;
 
 	lstMedias([&](IMedia& media){
@@ -331,8 +333,8 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring&
 			return;
 		}
 
-        cauto strDstPath = strDir + __wcPathSeparator + media.GetName();
-		cauto strDstAbsPath = m_model.getMediaLib().toAbsPath(strDir) + __wcPathSeparator + media.GetName();
+        cauto strDstPath = strOppDir + __wcPathSeparator + media.GetName();
+		cauto strDstAbsPath = strDstAbsDir + __wcPathSeparator + media.GetName();
 
         cauto strSrcAbsPath = media.GetAbsPath();
         if (!fsutil::existFile(strSrcAbsPath))
@@ -365,7 +367,7 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring&
 
 	__Ensure(!mapMovedFiles.empty());
 
-	(void)m_model.moveFiles(strDir, mapMovedFiles);
+	(void)m_model.moveFiles(strOppDir, mapMovedFiles);
 
 	m_model.refreshMediaLib();
 }
@@ -416,9 +418,9 @@ int CXController::AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 	return arrOppPaths.size();
 }
 
-int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& Album, int nPos)
+int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& album, int nPos)
 {
-	wstring strBaseDir = Album.GetBaseDir();
+	wstring strBaseDir = album.GetBaseDir();
 
 	SArray<wstring> lstOppPaths;
 	for (cauto strFile : lstAbsPath)
@@ -433,19 +435,42 @@ int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& Album, 
 		lstOppPaths.add(strOppPath);
 	}
 
-	__EnsureReturn(m_model.getSingerMgr().AddAlbumItems(lstOppPaths, Album, nPos), -1);
+	__EnsureReturn(m_model.getSingerMgr().AddAlbumItems(lstOppPaths, album, nPos), -1);
 
 	return lstOppPaths.size();
 }
 
 int CXController::AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos)
 {
-	list<wstring> lstAbsPath;
+	wstring strBaseDir = album.GetBaseDir();
+	
+	TD_IMediaList paMoveMedias;
+
+	SArray <wstring> lstOppPaths;
 	paMedias([&](IMedia& media) {
-		lstAbsPath.push_back(media.GetAbsPath());
+		auto strOppPath = media.GetPath();
+		if (!fsutil::CheckSubPath(strBaseDir, strOppPath))
+		{
+			if (!m_view.msgBox(L"确认移动文件" + strOppPath + L"到歌手目录？", true))
+			{
+				return;
+			}
+
+			paMoveMedias.add(media);
+			strOppPath = strBaseDir + __wcPathSeparator + media.GetName();
+		}
+
+		lstOppPaths.add(strOppPath);
 	});
 	
-	return AddAlbumItems(lstAbsPath, album, nPos);
+	if (paMoveMedias)
+	{
+		_moveMediaFile(paMoveMedias, strBaseDir);
+	}
+
+	__EnsureReturn(m_model.getSingerMgr().AddAlbumItems(lstOppPaths, album, nPos), -1);
+
+	return lstOppPaths.size();
 }
 
 bool CXController::autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress
