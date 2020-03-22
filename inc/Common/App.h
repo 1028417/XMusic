@@ -15,10 +15,8 @@ public:
 	virtual ~IView() {}
 
 public:
-	virtual CMainWnd* init() = 0;
+	virtual CMainWnd* show() = 0;
 	
-	virtual void show() {}
-
 	virtual bool handleCommand(UINT uID)
 	{
 		return false;
@@ -38,11 +36,6 @@ public:
 	IController(){}
 
 public:
-	virtual bool init()
-	{
-		return true;
-	}
-
 	virtual void start() {}
 	
 	virtual bool handleCommand(UINT uID)
@@ -109,6 +102,8 @@ private:
 	void _sync(const fn_void& fn);
 
 public:
+	static bool checkRuning();
+
 	void Quit();
 	
 	BOOL DoEvent(bool bBlock, UINT& uMsg);
