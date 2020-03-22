@@ -90,9 +90,10 @@ public:
 
     virtual bool removeMediaRes(const TD_MediaResList& lstMediaRes) = 0;
 
-    virtual int addPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) = 0;
+    virtual int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) = 0;
 
-    virtual int addAlbumItems(const list<wstring>& lstFiles, CAlbum& Album) = 0;
+	virtual int AddAlbumItems(const list<wstring>& lstAbsPaths, CAlbum& Album, int nPos = -1) = 0;
+	virtual int AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos = -1) = 0;
 
     virtual E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName) = 0;
 

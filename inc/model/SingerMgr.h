@@ -51,14 +51,13 @@ public:
 	BOOL UpdateSingerPos(UINT uSingerID, int nPos, int nDstGroupID);
 
 
-	CAlbum *AddAlbum(CSinger& Singer, wstring strName=L"", const TD_IMediaList *plstAlbumItem = NULL);
+	CAlbum *AddAlbum(CSinger& Singer, wstring strName=L"", const SArray<wstring> *plstAlbumItem = NULL);
 
 	BOOL RemoveAlbum(UINT uID);
 
 	CAlbum *RepositAlbum(CAlbum& Album, int nNewPos);
 
-	BOOL AddAlbumItems(const list<wstring>& lstMediaPaths, CAlbum& Album, int nPos=-1);
-	BOOL AddAlbumItems(const TD_IMediaList& lstMedias, CAlbum& Album, int nPos = -1);
+	BOOL AddAlbumItems(const SArray<wstring>& lstOppPaths, CAlbum& Album, int nPos=-1);
 
 	BOOL RemoveAlbumItems(const TD_AlbumItemList& lstAlbumItems);
 
