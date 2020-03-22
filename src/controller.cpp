@@ -66,11 +66,9 @@ void CXController::start()
 #else
 	PlayMgr.tryPlay();
 
-    m_threadPlayCtrl.start([&](const bool& bRunSignal)mutable {
-        while (bRunSignal)
+    m_threadPlayCtrl.start([&]()mutable {
+        while (m_threadPlayCtrl.usleepex(100))
         {
-            mtutil::usleep(50);
-
             tagPlayCtrl PlayCtrl;
             m_mtxPlayCtrl.lock([&](tagPlayCtrl& t_PlayCtrl){
                 t_PlayCtrl.get(PlayCtrl);
@@ -92,12 +90,16 @@ void CXController::start()
 
             case E_PlayCtrl::PC_PlayNext:
                 (void)PlayMgr.playNext();
+
                 break;
             case E_PlayCtrl::PC_AutoPlayNext:
-                mtutil::usleep(1000);
+                if (!m_threadPlayCtrl.usleepex(1000))
+                {
+                    return;
+                }
                 (void)PlayMgr.playNext(false);
-                break;
 
+                break;
             case E_PlayCtrl::PC_PlayIndex:
                 (void)PlayMgr.play(PlayCtrl.uPlayIdx);
 
@@ -134,7 +136,7 @@ void CXController::stop()
 
     m_model.close();
 
-	m_OptionMgr.saveOption();
+    m_OptionMgr.saveOption();
 }
 
 #if __winvc
