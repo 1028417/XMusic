@@ -135,11 +135,11 @@ public:
 	int audioSampleRate() const;
 	int devSampleRate() const;
 
-	void Seek(UINT uPos);
+    bool Pause();
+    bool Resume();
 
-    void Pause();
-	void Resume();
-	
+    bool Seek(UINT uPos);
+
 	void SetVolume(UINT uVolume);
 
     bool packetQueueEmpty() const;
