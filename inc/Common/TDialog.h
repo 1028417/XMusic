@@ -48,6 +48,23 @@ protected:
 		}
 	}
 
+	void async(UINT uDelayTime, cfn_void cb)
+	{
+		auto hWnd = m_hWnd;
+		__async(uDelayTime, [=]() {
+			if (::IsWindow(hWnd))
+			{
+				cb();
+			}
+		});
+	}
+	
+	void async(cfn_void cb)
+	{
+		async(0, cb);
+	}
+
+
 public:
 	int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType)
 	{
