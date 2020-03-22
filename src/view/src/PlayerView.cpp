@@ -27,28 +27,17 @@ __ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 	return inst;
 }
 
-CMainWnd* CPlayerView::init()
+CMainWnd* CPlayerView::show()
 {
-	if (!CPlaySpirit::inst().Create())
-	{
-		CMainApp::msgBox(L"请先执行安装");
-		return false;
-	}
-
 	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
 	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
 
-	if (!m_view.init())
+	if (!m_view.show())
 	{
 		return NULL;
 	}
 
 	return &m_view.m_MainWnd;
-}
-
-void CPlayerView::show()
-{
-	return m_view.show();
 }
 
 void CPlayerView::close()

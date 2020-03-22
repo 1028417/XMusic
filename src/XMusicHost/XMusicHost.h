@@ -8,12 +8,10 @@ public:
 	CController(IPlayerView& view, IModel& model)
 		: CXController(view, model)
 	{
-		fsutil::setWorkDir(fsutil::getModuleDir());
+		initOption();
 	}
 
 public:
-	bool init() override;
-
 	void start() override;
 
 	void stop() override;

@@ -142,6 +142,8 @@ public:
 	CPlayCtrl m_PlayCtrl;
 
 private:
+	bool _create();
+
 	bool _exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
 		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
@@ -150,9 +152,7 @@ private:
 	void _checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult)>& fnWork);
 
 public:
-	bool init();
-
-	void show();
+	bool show();
 
 	void initView();
 	void clearView();

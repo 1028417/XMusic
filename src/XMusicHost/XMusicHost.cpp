@@ -4,16 +4,44 @@
 
 #include "../view/resource.h"
 
-class CPlayerApp : public CMainApp
+class CStartup
 {
 public:
-	CPlayerApp()
+	CStartup()
+	{
+		if (CMainApp::checkRuning())
+		{
+			exit(0);
+			return;
+		}
+
+		fsutil::setWorkDir(fsutil::getModuleDir());
+
+		extern void InitMinDump(const string&);
+		InitMinDump("xmusichost_dump_");
+
+		//m_app = new CPlayerApp;
+	}
+
+	/*~CStartup()
+	{
+		if (m_app)
+		{
+			delete m_app;
+		}
+	}
+
+	CPlayerApp* m_app = NULL;*/
+};
+
+class CApp : public CMainApp, private CStartup
+{
+public:
+	CApp()
 		: m_view(genView(m_controller, m_model))
 		, m_controller(m_view, m_model)
 		, m_model(m_view.getModelObserver(), m_controller.getOption())
 	{
-		extern void InitMinDump(const string&);
-		InitMinDump("xmusichost_dump_");
 	}
 
 	IView& getView() override
@@ -25,7 +53,7 @@ public:
 	{
 		return m_controller;
 	}
-
+	
 public:
 	IPlayerView& m_view;
 
@@ -33,16 +61,7 @@ public:
 	
 	CModel m_model;
 };
-static CPlayerApp theApp;
-
-bool CController::init()
-{
-	initOption();
-
-	(void)m_model.initMediaLib();
-
-	return true;
-}
+static CApp g_app;
 
 void CController::start()
 {
@@ -85,7 +104,7 @@ bool CController::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_QUIT:
-		theApp.Quit();
+		CMainApp::GetMainApp()->Quit();
 
 		break;
 	case ID_MODIFY_ROOT:

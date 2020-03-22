@@ -16,60 +16,72 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.ape;*.wav;*.
 	L"| Wav文件|*.wav| Dsf文件|*.dsf| Dff文件|*.dff"
 	L"| Wma文件|*.wma| M4A文件|*.m4a| AAC文件|*.aac| AC3文件|*.ac3|";
 
-bool __view::init()
+bool __view::show()
 {
-	m_globalSize.init();
-
-	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
-
 	bool bRet = mtutil::concurrence([&]() {
-		__EnsureReturn(m_MainWnd.Create(), false);
+		if (!CPlaySpirit::inst().Create())
+		{
+			CMainApp::msgBox(L"请先执行安装");
+			return false;
+		}
 
-		m_MainWnd.ModifyStyle(WS_BORDER, 0);
+		m_globalSize.init();
 
-		tagViewStyle leftViewStyle(E_DockViewType::DVT_DockLeft);
-		leftViewStyle.uDockSize = m_globalSize.m_uLeftDockWidth;
-		leftViewStyle.uMaxDockSize = UINT(m_globalSize.m_uLeftDockWidth*1.5);
-		leftViewStyle.uStartPos = m_globalSize.m_uHeadHeight;
-		leftViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
-		leftViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-		leftViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
+		__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
-		CDockView *pDockView = m_MainWnd.CreateView(m_PlayingPage, leftViewStyle);
-		__AssertReturn(pDockView, false);
-		__AssertReturn(m_MainWnd.AddPage(m_PlaylistPage, E_DockViewType::DVT_DockLeft), false);
-		__AssertReturn(m_MainWnd.AddPage(m_SingerPage, E_DockViewType::DVT_DockLeft), false);
+		__EnsureReturn(_create(), false);
 
-		tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
-		centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
-		centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-		centerViewStyle.TabStyle.pImglst = &m_ImgMgr.getImglst(E_GlobalImglst::GIL_Tiny);
-		centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
-		pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
-		__AssertReturn(pDockView, false);
+		m_PlayCtrl.showPlaySpirit();
 
 		return true;
 	}, [&]() {
-		m_ImgMgr.initSingerImg();
+		if (m_model.initMediaLib())
+		{
+			m_ImgMgr.initSingerImg();
+		}
 	});
-
 	if (!bRet)
 	{
 		return false;
 	}
 
 	m_MainWnd.show();
-	
+
+	__async([&]() {
+		m_MediaResPage.ShowDir();
+	});
+
 	return true;
 }
 
-void __view::show()
+bool __view::_create()
 {
-	m_MediaResPage.ShowDir();
+	__EnsureReturn(m_MainWnd.Create(), false);
 
-	__async([&]() {
-		m_PlayCtrl.showPlaySpirit();
-	});
+	m_MainWnd.ModifyStyle(WS_BORDER, 0);
+
+	tagViewStyle leftViewStyle(E_DockViewType::DVT_DockLeft);
+	leftViewStyle.uDockSize = m_globalSize.m_uLeftDockWidth;
+	leftViewStyle.uMaxDockSize = UINT(m_globalSize.m_uLeftDockWidth*1.5);
+	leftViewStyle.uStartPos = m_globalSize.m_uHeadHeight;
+	leftViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
+	leftViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
+	leftViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
+
+	CDockView *pDockView = m_MainWnd.CreateView(m_PlayingPage, leftViewStyle);
+	__AssertReturn(pDockView, false);
+	__AssertReturn(m_MainWnd.AddPage(m_PlaylistPage, E_DockViewType::DVT_DockLeft), false);
+	__AssertReturn(m_MainWnd.AddPage(m_SingerPage, E_DockViewType::DVT_DockLeft), false);
+
+	tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
+	centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
+	centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
+	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.getImglst(E_GlobalImglst::GIL_Tiny);
+	centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
+	pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
+	__AssertReturn(pDockView, false);
+	
+	return true;
 }
 
 void __view::initView()
