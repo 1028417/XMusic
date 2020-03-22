@@ -257,9 +257,16 @@ public:
 
 	bool usleepex(UINT uMs)
 	{
-        return !((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {
-			return false==bValue;
+		if (!m_sgnRuning.value())
+		{
+			return false;
+		}
+        
+		(void)((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {
+			return false == bValue;
 		});
+
+		return m_sgnRuning.value();
 	}
 
 	bool joinable() const
