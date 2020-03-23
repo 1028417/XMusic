@@ -389,8 +389,7 @@ bool MainWindow::event(QEvent *ev)
             prevTime = currTime;
         }
 
-        this->setVisible(false);
-        this->repaint();
+        //this->setVisible(false);
     }
 
     break;
@@ -818,7 +817,7 @@ void MainWindow::_updateProgress()
 {
     auto& playMgr = m_app.getPlayMgr();
     E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
-    //_updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus);
+    _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for seek
 
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
@@ -1211,11 +1210,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
-        /*if (!m_app.getPlayMgr().mediaOpaque().seekable())
-        {
-            return;
-        }
-        if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+        /*if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
             return;
         }

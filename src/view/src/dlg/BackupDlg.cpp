@@ -275,7 +275,10 @@ void CBackupDlg::OnBnClickedBackup()
 void CBackupDlg::OnBnClickedClearAllMedia()
 {
 	__Ensure(confirmBox(L"确认清空所有歌单、歌手、专辑？"));
+	
+	this->OnCancel();
 
+	CRedrawLock RedrawLock(m_view.m_MainWnd);
 	__Ensure(m_view.getModel().clearData());
 }
 

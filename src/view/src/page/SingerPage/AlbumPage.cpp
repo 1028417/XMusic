@@ -549,8 +549,8 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 		{
 			__Ensure(pAlbum);
 
-			cauto strBaseDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
-			if (!fsutil::existDir(strBaseDir))
+			cauto strSingerDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
+			if (!fsutil::existDir(strSingerDir))
 			{
 				msgBox(L"歌手目录不存在！");
 				return;
@@ -559,7 +559,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			tagFileDlgOpt FileDlgOpt;
 			FileDlgOpt.strTitle = L"添加专辑曲目";
 			FileDlgOpt.strFilter = __MediaFilter;
-			FileDlgOpt.strInitialDir = strBaseDir;
+			FileDlgOpt.strInitialDir = strSingerDir;
 			CFileDlgEx fileDlg(FileDlgOpt);
 
 			list<wstring> lstFiles;
@@ -891,7 +891,7 @@ void CAlbumPage::OnLvnEndlabeleditListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 
 DROPEFFECT CAlbumPage::OnMediasDragOverExploreList(const TD_IMediaList& lstMedias, CDragContext& DragContext)
 {
-	__EnsureReturn(_checkMediasDropable(lstMedias), DROPEFFECT_NONE);
+	//__EnsureReturn(_checkMediasDropable(lstMedias), DROPEFFECT_NONE);
 
 	DROPEFFECT dwRet = 0;
 	lstMedias.front([&](IMedia& media) {
@@ -1053,13 +1053,14 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 BOOL CAlbumPage::_checkMediasDropable(const TD_IMediaList& lstMedias)
 {
 	__EnsureReturn(m_pSinger, FALSE);
-	
+	cauto strSingerDir = m_pSinger->GetBaseDir();
+
 	BOOL bRet = TRUE;
 	lstMedias.front([&](IMedia& media) {
 		if (E_MediaSetType::MST_Album != media.GetMediaSetType())
 		{
 			lstMedias([&](IMedia& media) {
-				if (!fsutil::CheckSubPath(m_pSinger->GetBaseDir(), media.GetPath()))
+				if (!fsutil::CheckSubPath(strSingerDir, media.GetPath()))
 				{
 					bRet = FALSE;
 					return false;
@@ -1077,7 +1078,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverBrowseList(const TD_IMediaList& lstMedias
 {
 	bool bScroll = DragScroll(m_wndAlbumList, DragContext.x, DragContext.y);
 
-	__EnsureReturn(_checkMediasDropable(lstMedias), DROPEFFECT_NONE);
+	//__EnsureReturn(_checkMediasDropable(lstMedias), DROPEFFECT_NONE);
 
 	int nItem = m_wndAlbumList.HitTest(CPoint(5, DragContext.y));
 	__EnsureReturn(1 <= nItem, DROPEFFECT_NONE);	

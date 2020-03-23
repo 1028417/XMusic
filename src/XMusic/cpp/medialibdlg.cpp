@@ -137,7 +137,7 @@ bool CMedialibDlg::showFile(const wstring& strPath)
     if (NULL == pMediaRes)
     {
         auto strOuterDir = m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
-        strOuterDir = fsutil::GetOppPath(strOuterDir, m_app.getMediaLib().absPath());
+        strOuterDir = fsutil::GetOppPath(m_app.getMediaLib().absPath(), strOuterDir);
         if (!fsutil::CheckSubPath(strOuterDir, strPath))
         {
             return false;

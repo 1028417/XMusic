@@ -410,8 +410,8 @@ void CBkgDlg::_showAddBkg()
     cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
 #endif
 
-    m_thread.start([&, strImgDir](const bool& bRunSignal){
-        m_rootImgDir.scan(strImgDir, bRunSignal, [&](CImgDir& imgDir) {
+    m_thread.start([&, strImgDir](){
+        m_rootImgDir.scan(strImgDir, m_thread.runSignal(), [&](CImgDir& imgDir) {
             m_addbkgDlg.addImgDir(imgDir);
         });
     });

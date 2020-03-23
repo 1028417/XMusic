@@ -73,7 +73,7 @@ android {
     LIBS += -L../../libs/armeabi-v7a
 
     platform = android
-    DESTDIR = $$BuildDir/XMusic
+    DESTDIR = ../../libs/armeabi-v7a
 } else: macx {
     LIBS += -L$$BinDir/mac
 

@@ -318,7 +318,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 
 	wstring	strTitle;
 	
-	wstring strOppPath = fsutil::GetOppPath(m_strCurrDir, m_strRootDir);
+	wstring strOppPath = fsutil::GetOppPath(m_strRootDir, m_strCurrDir);
 	if (!strOppPath.empty())
 	{
 		strOppPath.erase(0,1);
