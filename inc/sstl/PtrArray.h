@@ -286,11 +286,6 @@ namespace NS_SSTL
 			return m_data;
 		}
 
-		__CItrType erase(const __CItrType& itr)
-		{
-			return m_data.erase((const __ItrType&)itr);
-		}
-
 		__CItrType begin() const
 		{
 			return m_data.cbegin();

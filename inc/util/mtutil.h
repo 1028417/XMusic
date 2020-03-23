@@ -269,6 +269,16 @@ public:
 		return m_sgnRuning.value();
 	}
 
+	void detach()
+	{
+		if (m_thread.joinable())
+		{
+			m_mutex.lock();
+			m_thread.detach();
+			m_mutex.unlock();
+		}
+	}
+
 	bool joinable() const
 	{
 		return m_thread.joinable();
@@ -279,12 +289,10 @@ public:
 		if (m_thread.joinable())
         {
             m_mutex.lock();
-
 			if (m_thread.joinable())
 			{
 				m_thread.join();
 			}
-
             m_mutex.unlock();
 		}
 	}

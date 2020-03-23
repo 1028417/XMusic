@@ -124,6 +124,12 @@ namespace NS_SSTL
 		}
 
 	public:
+		__ItrType erase(const __CItrType& itr) override
+		{
+			m_ptrArray.del(&*itr);
+			return __Super::erase(itr);
+		}
+
 		void clear() override
 		{
 			m_ptrArray.clear();
@@ -244,20 +250,35 @@ namespace NS_SSTL
 
 		bool popBack()
 		{
-			(void)m_ptrArray.popBack();
-			return __Super::popBack();
+			if (__Super::popBack())
+			{
+				(void)m_ptrArray.popBack();
+				return true;
+			}
+
+			return false;
 		}
 
 		bool popBack(__CB_Ref_void cb)
 		{
-			(void)m_ptrArray.popBack();
-			return __Super::popBack(cb);
+			if (__Super::popBack(cb))
+			{
+				(void)m_ptrArray.popBack();
+				return true;
+			}
+
+			return false;
 		}
 
 		bool popBack(__DataRef data)
 		{
-			(void)m_ptrArray.popBack();
-			return __Super::popBack(data);
+			if (__Super::popBack(data))
+			{
+				(void)m_ptrArray.popBack();
+				return true;
+			}
+
+			return false;
 		}
 
 		void qsort(__CB_Sort_T<__DataType> cb)
@@ -308,11 +329,6 @@ namespace NS_SSTL
 			}
 		}
 
-		void _onErase(const __CItrType& itr) override
-		{
-			m_ptrArray.del(&*itr);
-		}
-
 		void _add(__DataConstRef data) override
 		{
 			m_data.push_back(data);
@@ -321,21 +337,24 @@ namespace NS_SSTL
 
 		bool _popFront(__CB_Ref_void cb) override
 		{
-			(void)m_ptrArray.popFront();
-			return __Super::_popFront(cb);
+			if (__Super::_popFront(cb))
+			{
+				(void)m_ptrArray.popFront();
+				return true;
+			}
+
+			return false;
 		}
 
 		size_t _del(__DataConstRef data, CB_Del cb) override
 		{
 			size_t uRet = 0;
 
-			auto itrPtr = m_ptrArray.begin();
-			for (auto itr = m_data.begin(); itr != m_data.end() && itrPtr != m_ptrArray.end(); )
+			for (auto itr = m_data.begin(); itr != m_data.end(); )
 			{
 				if (!tagTryCompare<__DataConstRef>::compare(*itr, data))
 				{
 					++itr;
-					++itrPtr;
 					continue;
 				}
 
@@ -347,13 +366,11 @@ namespace NS_SSTL
 				else if (E_DelConfirm::DC_No == eRet)
 				{
 					++itr;
-					++itrPtr;
 					continue;
 				}
 				else
 				{
 					itr = __Super::erase(itr);
-					itrPtr = m_ptrArray.erase(itrPtr);
 					uRet++;
 
 					if (E_DelConfirm::DC_YesAbort == eRet)

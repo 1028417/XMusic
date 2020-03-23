@@ -29,14 +29,17 @@ public:
 
     virtual int64_t size() const = 0;
 
-    virtual bool seekable() const = 0;
+	virtual bool seekable() const
+	{
+		return true;
+	}
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
     virtual bool read(byte_p buf, UINT& size) = 0;
 };
 
-class __PlaySDKExt CAudioOpaque : public IAudioOpaque
+class __PlaySDKExt CAudioOpaque : private IAudioOpaque
 {
 public:
     CAudioOpaque();
@@ -84,11 +87,6 @@ protected:
     virtual int64_t size() const override
     {
         return m_nFileSize;
-    }
-
-    virtual bool seekable() const override
-    {
-        return NULL!=m_pf;
     }
 
 	virtual int64_t seek(int64_t offset, int origin) override;

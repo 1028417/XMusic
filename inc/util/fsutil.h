@@ -223,8 +223,7 @@ public:
 	}
 
 	static bool CheckSubPath(const wstring& strDir, const wstring& strSubPath);
-
-	static wstring GetOppPath(const wstring& strPath, const wstring strBaseDir);
+	static wstring GetOppPath(const wstring strBaseDir, const wstring& strSubPath);
 
     static bool existPath(const wstring& strPath, bool bDir);
     static bool existPath(const string& strPath, bool bDir);

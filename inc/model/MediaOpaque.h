@@ -40,20 +40,11 @@ public:
     }
 
 #if !__winvc
-    bool isOnline() const override
-    {
-        return m_strFile.empty();
-    }
-
     bool waitingFlag() const
     {
         return m_uWaitSize > 0;
     }
-
-    int64_t size() const override;
-
-	bool seekable() const override;
-
+	
     void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 #endif
 
@@ -138,11 +129,21 @@ private:
 		return m_strFile;
 	}
 
-#if !__winvc
-	int64_t seek(int64_t offset, int origin) override;
+        bool read(byte_p buf, UINT& size) override;
 
-    bool _readStream(byte_p buf, UINT& usize);
+#if !__winvc        
+        bool seekable() const override;
+
+        int64_t seek(int64_t offset, int origin) override;
+
+        bool _readStream(byte_p buf, UINT& usize);
+
+public:
+	bool isOnline() const override
+	{
+		return m_strFile.empty();
+	}
+
+        int64_t size() const override;
 #endif
-
-    bool read(byte_p buf, UINT& size) override;
 };

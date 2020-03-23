@@ -259,9 +259,8 @@ namespace NS_SSTL
 			m_data.clear();
         }
 
-		__ItrType erase(const __CItrType& itr)
+		virtual __ItrType erase(const __CItrType& itr)
 		{
-			_onErase(itr);
 			return m_data.erase((const __ItrType&)itr);
 		}
 
@@ -430,7 +429,7 @@ namespace NS_SSTL
 
 		bool popFront()
 		{
-			return _popFront([](__DataRef) {});
+			return _popFront(NULL);
 		}
 
 		bool popFront(__CB_Ref_void cb)
@@ -761,9 +760,7 @@ namespace NS_SSTL
 		{
 			m_data.swap(container);
 		}
-
-        virtual void _onErase(const __CItrType&) {}
-
+		
 		virtual void _add(__DataConstRef data)
 		{
 			m_data.insert(m_data.end(), data);
