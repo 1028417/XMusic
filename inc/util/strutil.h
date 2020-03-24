@@ -311,17 +311,18 @@ public:
 		return toUtf8(str.c_str(), str.size());
 	}
 
-	static wstring& transEndian(wstring& str);
-	static wstring transEndian(const wchar_t *pStr)
+    inline static wchar_t transEndian(wchar_t wch)
+    {
+        return (wch << 8) | (wch >> 8);
+    }
+
+    static void transEndian(wstring& str);
+    static wstring transEndian(const wchar_t *pStr, int len=-1)
 	{
-		wstring str(pStr);
-		return transEndian(str);
-	}
-	static wstring transEndian(const wchar_t *pStr, size_t len)
-	{
-		wstring str(pStr, len);
-		return transEndian(str);
-	}
+        wstring str(pStr, len);
+        transEndian(str);
+        return str;
+    }
 		
     static wstring toWstr(const char *pStr, int len = -1);
     static wstring toWstr(const string& str)

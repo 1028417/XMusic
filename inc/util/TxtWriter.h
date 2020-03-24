@@ -82,6 +82,24 @@ private:
 		}
 	}
 
+    inline bool _write(char ch, bool bEndLine = false)
+    {
+        if (_isAsc() || _isUtf8())
+        {
+            return _write(&ch, 1, bEndLine);
+        }
+        else
+        {
+            wchar_t wch = ch;
+            if (_isUcsBigEndian())
+            {
+                wch = strutil::transEndian(wch);
+            }
+
+            return _write(&wch, 2, bEndLine);
+        }
+    }
+
 	inline bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false)
 	{
 		if (_isAsc())
@@ -103,7 +121,30 @@ private:
 		{
 			return _write((const void*)pStr, len*2, bEndLine);
 		}
-	}
+    }
+
+    inline bool _write(wchar_t wch, bool bEndLine = false)
+    {
+        if (_isAsc())
+        {
+            cauto str = strutil::toStr(&wch, 1);
+            return _write((const void*)str.c_str(), str.size(), bEndLine);
+        }
+        else if (_isUtf8())
+        {
+            cauto str = strutil::toUtf8(&wch, 1);
+            return _write((const void*)str.c_str(), str.size(), bEndLine);
+        }
+        else
+        {
+            if (_isUcsBigEndian())
+            {
+                wch = strutil::transEndian(wch);
+            }
+
+            return _write(&wch, 2, bEndLine);
+        }
+    }
 
 #if !__winvc
 	bool _write(const QString& qstr, bool bEndLine = false)
@@ -178,7 +219,25 @@ public:
 		return _write(pStr, wcslen(pStr), true);
 	}
 
-	inline bool write(const string& strText)
+    inline bool write(char ch)
+    {
+        return _write(ch);
+    }
+    inline bool writeln(char ch)
+    {
+        return _write(ch, true);
+    }
+
+    inline bool write(wchar_t wch)
+    {
+        return _write(wch);
+    }
+    inline bool writeln(wchar_t wch)
+    {
+        return _write(wch, true);
+    }
+
+    inline bool write(const string& strText)
 	{
 		return _write(strText.c_str(), strText.size());
 	}
