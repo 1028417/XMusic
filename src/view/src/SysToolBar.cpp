@@ -30,7 +30,7 @@ bool CSysToolBar::Create(CWnd& wndParent)
 		return false;
 	}
 	
-	POINT lpPoint[] = { {16,0 },{ 1000,0 },{ 1000, 100 },{ 0, 100 } };
+	POINT lpPoint[] { {16,0 },{ 1000,0 },{ 1000, 100 },{ 0, 100 } };
 	m_hRgn = ::CreatePolygonRgn(lpPoint, 4, ALTERNATE);
 	wndParent.SetWindowRgn(m_hRgn, FALSE);
 

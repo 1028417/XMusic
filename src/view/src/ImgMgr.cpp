@@ -7,7 +7,7 @@
 
 #define __SingerImgStartPos (sizeof g_lpImgFile / sizeof *g_lpImgFile)
 
-static const wstring g_lpImgFile[] = {
+static const wstring g_lpImgFile[] {
 	L"dir.png"
 	, L"dirLink.png"
 	, L"file.png"

@@ -45,6 +45,7 @@ bool __view::show()
 		return false;
 	}
 
+	m_PlayingPage.RefreshList();
 	m_MainWnd.show();
 
 	__async([&]() {

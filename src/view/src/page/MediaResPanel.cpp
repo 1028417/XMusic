@@ -818,7 +818,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 {
-	UINT lpIDMenuItem[] = { ID_FIND, ID_ViewTrack, ID_CopyTitle, ID_RENAME };
+	UINT lpIDMenuItem[] { ID_FIND, ID_ViewTrack, ID_CopyTitle, ID_RENAME };
 	for (UINT uIndex = 0; uIndex < sizeof(lpIDMenuItem) / sizeof(lpIDMenuItem[0]); uIndex++)
 	{
 		m_FileMenuGuard.EnableItem(lpIDMenuItem[uIndex], FALSE);
