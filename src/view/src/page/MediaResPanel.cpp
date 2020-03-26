@@ -72,7 +72,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	
 	UINT uColWidth_FileName = globalSize.m_ColWidth_Name;
 
-	TD_ListColumn lstColumns = {
+	TD_ListColumn lstColumns {
 		{ _T("文件名称"), uColWidth_FileName }
 		,{ _T("类型"), globalSize.m_ColWidth_FileSize, true }
 		,{ _T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true }

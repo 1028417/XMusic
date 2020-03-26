@@ -941,7 +941,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverExploreList(const TD_IMediaList& lstMedia
 	{
 #define __Margin 10
 
-		tagPOINT lpPoint[4] = {
+		tagPOINT lpPoint[4] {
 			{DragContext.x - __Margin, DragContext.y - __Margin}
 			, {DragContext.x + __Margin, DragContext.y - __Margin}
 			, {DragContext.x - __Margin, DragContext.y + __Margin}

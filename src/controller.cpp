@@ -319,7 +319,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 	__Ensure(t_lstMedias);
 	__Ensure(m_view.msgBox(L"确认移动选中的文件?", true));
 
-	moveMediaFile(t_lstMedias, strOppDir);
+	_moveMediaFile(t_lstMedias, strOppDir);
 }
 
 void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)

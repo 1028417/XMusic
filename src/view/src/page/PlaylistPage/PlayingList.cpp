@@ -236,7 +236,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 		(void)dc.SelectObject(m_fontSmall);
 
 		iXPosDuration -= 37 + int(strDuration.size() - 4) * 8;
-		RECT rcPos = { iXPosDuration, iYMiddlePos, cx, cy };
+		RECT rcPos { iXPosDuration, iYMiddlePos, cx, cy };
 		dc.DrawText(strDuration.c_str(), &rcPos, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 	}
 
