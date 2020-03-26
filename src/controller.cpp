@@ -454,7 +454,7 @@ int CXController::AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, in
 		auto strOppPath = fsutil::GetOppPath(strSingerDir, media.GetPath());
 		if (strOppPath.empty())
 		{
-			if (!m_view.msgBox(L"确认移动文件" + media.GetAbsPath() + L"到歌手目录？", true))
+			if (!m_view.msgBox(L"确认移动以下文件到歌手目录？\n\n  " + media.GetAbsPath(), true))
 			{
 				return;
 			}
