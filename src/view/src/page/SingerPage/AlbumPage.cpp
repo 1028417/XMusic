@@ -1125,9 +1125,12 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 	{
 		__EnsureReturn(pTargetAlbum != pSrcMediaSet, FALSE);
 
+		auto len = pTargetAlbum->GetBaseDir().size();
 		TD_AlbumItemList lstAlbumItems(lstMedias);
-		cauto lstOppPath = lstAlbumItems.map([](const CAlbumItem& AlbumItem) {
-			return AlbumItem.GetPath();
+		cauto lstOppPath = lstAlbumItems.map([&](const CAlbumItem& AlbumItem) {
+			auto strPath = AlbumItem.GetPath();
+			strPath.erase(0, len);
+			return strPath;
 		});
 		__EnsureReturn(m_view.getSingerMgr().AddAlbumItems(lstOppPath, *pTargetAlbum), FALSE);
 		uCount = lstAlbumItems.size();

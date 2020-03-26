@@ -460,7 +460,7 @@ int CXController::AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, in
 			}
 
 			paMoveMedias.add(media);
-			strOppPath = media.GetName();
+			strOppPath = L'\\' + media.GetName();
 		}
 
 		lstOppPaths.add(strOppPath);
