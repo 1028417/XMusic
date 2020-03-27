@@ -224,7 +224,7 @@ void MainWindow::_showUpgradeProgress()
         }
 
         QString qsText(__logoTip);
-        for (byte_t uIdx = 1; uIdx <= 3; uIdx++)
+        for (UINT uIdx = 1; uIdx <= 3; uIdx++)
         {
             if (uDotCount >= uIdx)
             {
@@ -831,7 +831,7 @@ void MainWindow::_updateProgress()
 #endif
     }
 
-    int nProgress = int(playMgr.player().GetClock()/__1e6);
+    int nProgress = int(playMgr.mediaOpaque().clock()/__1e6);
     if (nProgress <= ui.barProgress->maximum())
     {
         UINT bufferValue = 0;
@@ -877,14 +877,13 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
-    auto byteRate = m_app.getPlayMgr().mediaOpaque().byteRate();
-    if (byteRate) // TODO本地文件改为按audioByteRate()判断
+    if (m_app.getPlayMgr().mediaOpaque().isOnline())
     {
-        PlayingInfo.qsQuality.clear();
+        PlayingInfo.qsQuality = PlayItem.qualityString();
     }
     else
     {
-        PlayingInfo.qsQuality = PlayItem.qualityString();
+        PlayingInfo.qsQuality.clear();
     }
 
     PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);

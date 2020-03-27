@@ -74,13 +74,13 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 		int nItem = m_wndList.GetSelItem();
 		if (nItem >= 0)
 		{
-			wstring strMediaPath = m_fnGetPath((UINT)nItem);
-			if (!strMediaPath.empty())
+			cauto strOppPath = m_fnGetPath((UINT)nItem);
+			if (!strOppPath.empty())
 			{
-				cauto strAbsPath = m_view.getMediaLib().toAbsPath(strMediaPath);
+				cauto strAbsPath = m_view.getMediaLib().toAbsPath(strOppPath);
 				if (fsutil::existFile(strAbsPath))
 				{
-					m_view.m_PlayCtrl.addPlayingItem(strMediaPath);
+					m_view.m_PlayCtrl.addPlayingItem(strOppPath);
 				}
 			}
 		}
@@ -173,12 +173,7 @@ void CCompareResultPage::_fillDeletedMedia()
 				strPath = DeletedAlbumItem.strSingerDir + DeletedAlbumItem.strPath;
 			});
 		}
-
-		if (!fsutil::existFile(strPath))
-		{
-			strPath.clear();
-		}
-
+		
 		return strPath;
 	};
 }

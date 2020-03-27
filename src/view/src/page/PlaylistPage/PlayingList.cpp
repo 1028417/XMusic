@@ -581,7 +581,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		CRCueFile cueFile = PlayItem.getCueFile();
 
 		UINT uTrackIndex = 0;
-		auto uClock = UINT(playMgr.player().GetClock() / 1000);
+		auto uClock = UINT(playMgr.mediaOpaque().clock() / 1000);
 		if (uClock > 0)
 		{
 			uTrackIndex = cueFile.getTrack(uClock).uIndex;

@@ -198,7 +198,7 @@ void CPlayCtrl::seek(UINT uPos)
 {
 	player().Seek(uPos);
 	CPlaySpirit::inst()->SetPlayState(_bstr_t(m_strPlayingFile.c_str())
-		, (long)player().GetDuration() + 1, uPos);
+		, (long)m_view.getPlayMgr().mediaOpaque().duration() + 1, uPos);
 }
 
 void CPlayCtrl::close()

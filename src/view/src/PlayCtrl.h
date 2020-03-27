@@ -39,7 +39,5 @@ public:
 private:
 	inline CPlayer& player();
 
-	bool _initPlaySpirit(int nPosX, int nPosY, const wstring& strSkin, UINT uVolume);
-
 	void _handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, short para);
 };
