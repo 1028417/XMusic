@@ -877,7 +877,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
-    PlayingInfo.strQuality = PlayItem.qualityString();
+    auto byteRate = m_app.getPlayMgr().mediaOpaque().byteRate();
+    if (byteRate) // TODO本地文件改为按audioByteRate()判断
+    {
+        PlayingInfo.qsQuality.clear();
+    }
+    else
+    {
+        PlayingInfo.qsQuality = PlayItem.qualityString();
+    }
 
     PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
     PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
@@ -1109,7 +1117,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        //if (m_app.getPlayMgr().mediaOpaque().decoderOpened())
+        //if (m_app.getPlayMgr().mediaOpaque().byteRate())
         //{
         //    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
         if (m_app.getPlayMgr().player().Pause())
@@ -1214,7 +1222,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         {
             return;
         }
-        if (!m_app.getPlayMgr().mediaOpaque().decoderOpened())
+        if (!m_app.getPlayMgr().mediaOpaque().byteRate())
         {
             return;
         }*/

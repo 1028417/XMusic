@@ -111,7 +111,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     {
         painter.adjustFont(0.65, QFont::Weight::Thin);
 
-        cauto qsQuality = strutil::toQstr(m_app.mainWnd().playingInfo().strQuality);
+        cauto qsQuality = m_app.mainWnd().playingInfo().qsQuality;
         auto xOffset = __size(35);
 #if __android || __ios
         xOffset += __size(10);
