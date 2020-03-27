@@ -53,35 +53,36 @@ private:
 
 protected:
     long long m_nFileSize = -1;
-
-private:
-    friend class CPlayer;
+	
+public:
 	void* decoder()
 	{
-        return m_pDecoder;
+		return m_pDecoder;
 	}
 
-public:
     virtual void close();
 
     long long open(const wstring& strFile);
 
-	UINT checkDuration();
+	uint32_t checkDuration();
 
     const E_DecodeStatus& decodeStatus() const;
 
-    UINT byteRate() const;
-
-private:
 	virtual bool isOnline() const override
 	{
 		return false;
 	}
 
+	uint32_t duration() const;
+	uint64_t clock() const;
+
+	int devSampleRate() const;
+
+private:
 	virtual wstring localFilePath() const override
 	{
 		return L"";
-        }
+	}
 
 protected:
     virtual int64_t size() const override
@@ -125,12 +126,6 @@ public:
 	void Stop();
     bool Play(uint64_t uStartPos, bool bForce48KHz, CB_PlayStop cbStop);
 	
-    uint32_t GetDuration();
-    uint64_t GetClock();
-
-	int audioSampleRate() const;
-	int devSampleRate() const;
-
     bool Pause();
     bool Resume();
 
