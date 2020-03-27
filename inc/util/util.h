@@ -98,7 +98,7 @@ __UtilExt wstring platformVersion();
 
 #define cauto const auto&
 
-using byte_t = uint8_t;
+using byte_t = unsigned char;
 using byte_p = byte_t*;
 using cbyte_p = const byte_t*;
 
