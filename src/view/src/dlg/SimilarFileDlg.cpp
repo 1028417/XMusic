@@ -236,12 +236,12 @@ void CSimilarFileDlg::OnBnClickedRemove()
 	
 	for (CMediaRes *pMediaRes : setDelFile)
 	{
-		m_arrSimilarFile.del([&](auto& similarGroup) {
-			similarGroup.del([&](auto& pr) {
+		m_arrSimilarFile.del([&](auto& arrSimilarFile) {
+			arrSimilarFile.del([&](auto& pr) {
 				return pr.first == pMediaRes;
 			});
 
-			return similarGroup.size() <= 1;
+			return arrSimilarFile.size() <= 1;
 		});
 	}
 	

@@ -1055,13 +1055,20 @@ BYTE __view::genByteRateAlpha(CMedia& media)
 
 void __view::exploreMedia(IMedia& media, bool bSel)
 {
+	cauto strPath = media.GetAbsPath();
+	if (!fsutil::existFile(strPath))
+	{
+		AfxMessageBox(L"文件不存在！");
+		return;
+	}
+
 	bool bDir = dynamic_cast<CMediaDir*>(&media) != NULL;
 	if (bSel || !bDir)
 	{
-		winfsutil::exploreFile(media.GetAbsPath());
+		winfsutil::exploreFile(strPath);
 	}
 	else
 	{
-		winfsutil::exploreDir(media.GetAbsPath());
+		winfsutil::exploreDir(strPath);
 	}
 }
