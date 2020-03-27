@@ -102,7 +102,7 @@ public:
 	static wstring genDurationString(int nDuration);
 
     E_MediaQuality quality() const;
-    wstring qualityString() const;
+    const WString& qualityString() const;
 
 	virtual CMediaSet *GetMediaSet()
 	{

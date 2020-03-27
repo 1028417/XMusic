@@ -70,7 +70,7 @@ public:
 
     const E_DecodeStatus& decodeStatus() const;
 
-    bool decoderOpened() const;
+    UINT byteRate() const;
 
 private:
 	virtual bool isOnline() const override
@@ -81,7 +81,7 @@ private:
 	virtual wstring localFilePath() const override
 	{
 		return L"";
-	}
+        }
 
 protected:
     virtual int64_t size() const override
@@ -94,8 +94,6 @@ protected:
     virtual bool read(byte_p buf, UINT& size) override;
 
     bool seekingFlag() const;
-
-    UINT byteRate() const;
 };
 
 using CB_PlayStop = cfn_void_t<bool>;
