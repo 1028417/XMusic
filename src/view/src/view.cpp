@@ -632,7 +632,7 @@ void __view::exportDir(CMediaDir& dir)
 	dir.clear();
 	CMediaResPanel::RefreshMediaResPanel();
 
-	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	_exportMedia(m_MainWnd, L"导出目录", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 
 		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
@@ -646,7 +646,11 @@ void __view::exportDir(CMediaDir& dir)
 				uCount += paSubFile.size();
 
 				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath + ((CMediaRes&)dir).GetPath();
+				ExportMedia.strDstDir = ExportOption.strExportPath;
+				if (ExportOption.bActualMode)
+				{
+					ExportMedia.strDstDir.append(((CMediaRes&)dir).GetPath());
+				}
 				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 

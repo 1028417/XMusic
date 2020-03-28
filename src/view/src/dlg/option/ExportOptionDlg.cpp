@@ -6,7 +6,7 @@
 BEGIN_MESSAGE_MAP(CExportOptionDlg, CDialog)
 	ON_BN_CLICKED(IDOK, &CExportOptionDlg::OnBnClickedOK)
 
-	ON_BN_CLICKED(IDC_ActualMode, &CExportOptionDlg::OnBnClickedActualMode)
+	//ON_BN_CLICKED(IDC_ActualMode, &CExportOptionDlg::OnBnClickedActualMode)
 
 	ON_BN_CLICKED(IDC_ExportXmsc, &CExportOptionDlg::OnBnClickedExportXmsc)
 
@@ -33,7 +33,7 @@ BOOL CExportOptionDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CExportOptionDlg::OnBnClickedActualMode()
+/*void CExportOptionDlg::OnBnClickedActualMode()
 {
 	BOOL bFlag = ((CButton*)GetDlgItem(IDC_ActualMode))->GetCheck();
 
@@ -43,7 +43,7 @@ void CExportOptionDlg::OnBnClickedActualMode()
 	{
 		pbtnCheck->SetCheck(FALSE);
 	}
-}
+}*/
 
 void CExportOptionDlg::OnBnClickedExportXmsc()
 {

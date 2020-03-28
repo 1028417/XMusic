@@ -17,8 +17,6 @@ private:
 
 	virtual BOOL OnInitDialog() override;
 	
-	void OnBnClickedActualMode();
-	
 	void OnBnClickedExportXmsc();
 
 	void OnBnClickedCompareFileSize();
