@@ -5,8 +5,6 @@
 
 using dbtime_t = int32_t;
 
-#define __ID_GROUP_ROOT 0
-
 struct tagPlayItemInfo
 {
 	int nID = 0;

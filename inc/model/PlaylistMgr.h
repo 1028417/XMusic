@@ -1,7 +1,5 @@
 #pragma once
 
-#define ID_PLAYLIST_NULL 0
-
 class __ModelExt CPlaylistMgr : public CMediaSet
 {
 public:
