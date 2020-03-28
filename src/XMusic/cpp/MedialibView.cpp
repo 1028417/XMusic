@@ -518,7 +518,7 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
     {
         if (media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
         {
-            UINT uSingerID = media.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+            /*UINT uSingerID = media.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
             if (uSingerID > 0)
             {
                 auto pSinger = m_SingerLib.FindSubSet(E_MediaSetType::MST_Singer, uSingerID);
@@ -527,6 +527,13 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
                     showMediaSet(*pSinger);
                     return;
                 }
+            }*/
+
+            auto pAlbumItem = media.findRelatedMedia(E_MediaSetType::MST_Album);
+            if (pAlbumItem)
+            {
+                hittestMedia(*pAlbumItem);
+                return;
             }
         }
     }
