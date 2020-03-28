@@ -419,11 +419,14 @@ void CBackupCompareDlg::_compare()
 		cstrDstTag.TrimLeft();
 		wstring strDstTag(cstrDstTag);
 
+		auto hWnd = m_hWnd;
 		m_BackupMgr.compareBackup(strSrcTag, strDstTag, [=](const tagCompareBackupResult& result) {
-			if (result.strSrcTag == strSrcTag && result.strDstTag == strDstTag)
-			__appSync([&]() {
-				_fillResult(result);
-			});
+			if (result.strSrcTag == strSrcTag && result.strDstTag == strDstTag && ::IsWindow(hWnd))
+			{
+				__appSync([&]() {
+					_fillResult(result);
+				});
+			}
 		});
 	}
 }
