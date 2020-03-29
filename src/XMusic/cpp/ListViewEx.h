@@ -16,8 +16,6 @@ protected:
         CPath *pDir = NULL;
         XFile *pFile = NULL;
 
-        WString strRemark;
-
         tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
         {
         }
@@ -58,6 +56,19 @@ protected:
             , pFile(&file)
         {
             strText = file.fileName();
+        }
+
+        IMedia* media() const
+        {
+            if (pMedia)
+            {
+                return pMedia;
+            }
+
+            if (pFile)
+            {
+                return (CMediaRes*)pFile;
+            }
         }
     };
 
