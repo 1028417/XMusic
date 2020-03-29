@@ -382,7 +382,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
        context.strText = pMediaRes->isXmsc() ? pMediaRes->GetTitle() : pMediaRes->fileName();
     }
 
-    IMedia* pMedia = mediaContext.media();
+    IMedia* pMedia = ((tagMediaContext&)context).media();
     if (pMedia)
     {
         if (pMedia->duration() > 600)
@@ -445,11 +445,11 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             strRemark << L"整轨\n" << pMedia->durationString();
         }
     }
-    else if (context.pMediaSet)
+    else if (mediaContext.pMediaSet)
     {
-        if (E_MediaSetType::MST_SingerGroup == context.pMediaSet->m_eType)
+        if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
         {
-            auto pSingerGroup = (CSingerGroup*)context.pMediaSet;
+            auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
             size_t uAlbumCount = 0;
             cauto lstSingers = pSingerGroup->singers();
             for (cauto singer : lstSingers)
@@ -458,9 +458,9 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             }
             strRemark << lstSingers.size() << L" 歌手\n" << uAlbumCount << L" 专辑";
         }
-        else if (E_MediaSetType::MST_Singer == context.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
         {
-            cauto lstAlbum = ((CSinger*)context.pMediaSet)->albums();
+            cauto lstAlbum = ((CSinger*)mediaContext.pMediaSet)->albums();
             size_t uAlbumItemCount = 0;
             for (cauto album : lstAlbum)
             {
@@ -468,14 +468,14 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
             }
             strRemark << lstAlbum.size() << L" 专辑\n" << uAlbumItemCount << L" 曲目";
         }
-        else if (E_MediaSetType::MST_Album == context.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
         {
-            auto pAlbum = (CAlbum*)context.pMediaSet;
+            auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
             strRemark << pAlbum->albumItems().size() << L" 曲目";
         }
-        else if (E_MediaSetType::MST_Playlist == context.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
         {
-            auto pPlaylist = (CPlaylist*)context.pMediaSet;
+            auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
             strRemark << pPlaylist->size() << L" 曲目";
         }
     }

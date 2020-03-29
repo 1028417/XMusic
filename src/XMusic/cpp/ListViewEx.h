@@ -69,6 +69,8 @@ protected:
             {
                 return (CMediaRes*)pFile;
             }
+
+            return NULL;
         }
     };
 
