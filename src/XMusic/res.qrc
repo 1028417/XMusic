@@ -1,14 +1,10 @@
 <RCC>
     <qresource prefix="/">
+    <file>medialib.conf</file>
         <file>img/btnPlayNext.png</file>
         <file>img/btnPause.png</file>
         <file>img/btnPlay.png</file>
         <file>img/btnPlayPrev.png</file>
-        <file>img/singerdefault.png</file>
-        <file>img/album.png</file>
-        <file>img/playitem.png</file>
-        <file>img/albumitem.png</file>
-        <file>img/playlist.png</file>
         <file>img/bkg.jpg</file>
         <file>img/btnRandom.png</file>
         <file>img/btnOrder.png</file>
@@ -18,17 +14,28 @@
         <file>img/btnMore.png</file>
         <file>img/btnReturn.png</file>
         <file>img/btnUpward.png</file>
-        <file>img/dir.png</file>
-        <file>img/dirLink.png</file>
-        <file>img/singergroup.png</file>
-        <file>img/file.png</file>
         <file>img/righttip.png</file>
         <file>img/btnFullScreen.png</file>
         <file>img/btnX.png</file>
-        <file>medialib.conf</file>
         <file>img/btnAddplay.png</file>
         <file>img/btnColor.png</file>
         <file>img/btnAdd.png</file>
         <file>img/btnSub.png</file>
+        <file>img/medialib/demandPlayitem.png</file>
+        <file>img/medialib/singergroup.png</file>
+        <file>img/medialib/singerdefault.png</file>
+        <file>img/medialib/album.png</file>
+        <file>img/medialib/media.png</file>
+        <file>img/medialib/playlistset.png</file>
+        <file>img/medialib/playlist.png</file>
+        <file>img/medialib/xmusicdir.png</file>
+        <file>img/medialib/hires.jpg</file>
+        <file>img/medialib/dsd.jpg</file>
+        <file>img/medialib/ssdir.png</file>
+        <file>img/medialib/hddisk.png</file>
+        <file>img/medialib/lldisk.png</file>
+        <file>img/medialib/dir.png</file>
+        <file>img/medialib/attachdir.png</file>
+        <file>img/medialib/file.png</file>
     </qresource>
 </RCC>

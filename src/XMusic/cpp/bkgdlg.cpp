@@ -567,7 +567,7 @@ void CImgDir::scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CIm
 /*class CResImgDir : public CPath, public IImgDir
 {
 public:
-    CResImgDir(){}
+    CResImgDir() = default;
 
 private:
     virtual size_t imgCount() const

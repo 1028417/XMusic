@@ -70,7 +70,7 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_imgSinger.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
 
 	__AssertReturn(m_imgSingerDefault.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
-	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.png";
+	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.jpg";
 	__AssertReturn(m_imgSingerDefault.LoadEx(strDefaultImg), FALSE);
 
 	(void)m_wndAlbumList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);

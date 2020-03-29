@@ -10,7 +10,7 @@ class CListView : public CWidget<QWidget>
 protected:
     struct tagLVRow
     {
-        tagLVRow() {}
+        tagLVRow() = default;
 
         tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
             : uIdx(t_uIdx)

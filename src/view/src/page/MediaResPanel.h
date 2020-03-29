@@ -32,7 +32,7 @@ public:
 public:
 	CMediaResPanel(__view& view, bool bShowRelatedSinger=true);
 
-	virtual ~CMediaResPanel(){}
+	virtual ~CMediaResPanel() = default;
 
 private:
 	CMenuGuard m_FileMenuGuard;

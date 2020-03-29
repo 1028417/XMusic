@@ -366,7 +366,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/album.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/album.png);</string>
      </property>
      <property name="text">
       <string/>
@@ -401,7 +401,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/albumitem.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/media.png);</string>
      </property>
      <property name="text">
       <string/>
@@ -436,7 +436,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/playlist.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/playlistset.png);</string>
      </property>
      <property name="text">
       <string/>
@@ -471,7 +471,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/singerdefault.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/singerdefault.png);</string>
      </property>
      <property name="text">
       <string/>
@@ -506,7 +506,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/playitem.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/demandPlayitem.png);</string>
      </property>
      <property name="text">
       <string/>

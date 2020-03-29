@@ -39,7 +39,7 @@ public:
 class CImgDir : public CPath, public IImgDir
 {
 public:
-    CImgDir() {}
+    CImgDir() = default;
 
     CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
     {

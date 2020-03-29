@@ -44,7 +44,7 @@ enum class E_TouchEventType
 class CTouchEvent
 {
 public:
-    CTouchEvent(){}
+    CTouchEvent() = default;
 
     CTouchEvent(const QMouseEvent& me)
         : m_ulTimestamp(me.timestamp())

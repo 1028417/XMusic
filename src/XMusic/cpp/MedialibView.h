@@ -29,8 +29,16 @@ private:
     QPixmap m_pmAlbum;
     QPixmap m_pmAlbumItem;
 
+    QPixmap m_pmPlaylistSet;
     QPixmap m_pmPlaylist;
     QPixmap m_pmPlayItem;
+
+    QPixmap m_pmXMusicDir;
+    QPixmap m_pmHires;
+    QPixmap m_pmDSD;
+    QPixmap m_pmSSDir;
+    QPixmap m_pmHDDisk;
+    QPixmap m_pmLLDisk;
 
     QPixmap m_pmDir;
     QPixmap m_pmDirLink;

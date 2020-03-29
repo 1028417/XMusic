@@ -9,15 +9,15 @@
 
 static const wstring g_lpImgFile[] {
 	L"dir.png"
-	, L"dirLink.png"
-	, L"file.png"
+	, L"attachdir.png"
+	, L"file.jpg"
 	, L"wholeTrack.png"
 
 	, L"playlist.png"
-	, L"playitem.png"
+	, L"playitem.jpg"
 
-	, L"singergroup.png"
-	, L"singerdefault.png"
+	, L"singergroup.jpg"
+	, L"singerdefault.jpg"
 	, L"album.png"
 	, L"albumitem.png"
 };

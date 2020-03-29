@@ -8,7 +8,7 @@
 class IImgDir
 {
 public:
-    IImgDir(){}
+    IImgDir() = default;
 
     virtual ~IImgDir(){}
 

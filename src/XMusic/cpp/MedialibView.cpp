@@ -21,19 +21,29 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
 {
 }
 
+#define __imgResBase ":/img/medialib/"
+
 void CMedialibView::init()
 {
-    (void)m_pmSingerGroup.load(":/img/singergroup.png");
-    (void)m_pmDefaultSinger.load(":/img/singerdefault.png");
-    (void)m_pmAlbum.load(":/img/album.png");
-    (void)m_pmAlbumItem.load(":/img/albumitem.png");
+    (void)m_pmSingerGroup.load(__imgResBase "singergroup.png");
+    (void)m_pmDefaultSinger.load(__imgResBase "singerdefault.png");
+    (void)m_pmAlbum.load(__imgResBase "album.png");
+    (void)m_pmAlbumItem.load(__imgResBase "media.png");
 
-    (void)m_pmPlaylist.load(":/img/playlist.png");
-    (void)m_pmPlayItem.load(":/img/playitem.png");
+    (void)m_pmPlaylistSet.load(__imgResBase "playlistset.png");
+    (void)m_pmPlaylist.load(__imgResBase "playlist.png");
+    m_pmPlayItem = m_pmAlbumItem;
 
-    (void)m_pmDir.load(":/img/dir.png");
-    (void)m_pmDirLink.load(":/img/dirLink.png");
-    (void)m_pmFile.load(":/img/file.png");
+    (void)m_pmXMusicDir.load(__imgResBase "xmusicdir.png");
+    (void)m_pmHires.load(__imgResBase "hires.jpg");
+    (void)m_pmDSD.load(__imgResBase "dsd.jpg");
+    (void)m_pmSSDir.load(__imgResBase "ssdir.png");
+    (void)m_pmHDDisk.load(__imgResBase "hddisk.png");
+    (void)m_pmLLDisk.load(__imgResBase "lldisk.png");
+
+    (void)m_pmDir.load(__imgResBase "dir.png");
+    (void)m_pmDirLink.load(__imgResBase "dirLink.png");
+    (void)m_pmFile.load(__imgResBase "file.png");
 
     (void)m_pmPlay.load(":/img/btnPlay.png");
     m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
@@ -219,14 +229,14 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
-        context.pixmap = &m_pmPlaylist;
+        context.pixmap = &m_pmPlaylistSet;
         context.strText = L"  歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
     {
-        context.pixmap = &m_pmDir;
+        context.pixmap = &m_pmXMusicDir;
         context.strText = __XMusicDirName;
         context.pDir = &m_MediaLib;
         return true;
@@ -323,28 +333,34 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
     else if (context.pDir)
     {
-        CMediaDir *pMediaDir = (CMediaDir*)context.pDir;
-        context.pixmap = &m_pmDir;
-
-        if (pMediaDir->parent() == NULL)
+        if (context.pDir->rootDir() == &m_MediaLib)
         {
-            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(pMediaDir);
-            if (pAttachDir)
-            {
-                context.pixmap = &m_pmDirLink;
+            context.pixmap = &m_pmXMusicDir;
+        }
+        else
+        {
+            context.pixmap = &m_pmDir;
 
-                /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+            if (context.pDir->parent() == NULL)
+            {
+                CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
+                if (pAttachDir)
                 {
-                    context.strRemark = L"扩展";
+                    context.pixmap = &m_pmDirLink;
+
+                    /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
+                    {
+                        context.strRemark = L"扩展";
+                    }
+                    else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
+                    {
+                        context.strRemark = L"USB";
+                    }
+                    else
+                    {
+                        context.strRemark = L"內部";
+                    }*/
                 }
-                else if (E_AttachDirType::ADT_USB == pAttachDir->m_eType)
-                {
-                    context.strRemark = L"USB";
-                }
-                else
-                {
-                    context.strRemark = L"內部";
-                }*/
             }
         }
     }
@@ -555,7 +571,7 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 
 CPath* CMedialibView::_onUpward(CPath& currentDir)
 {
-    if (NULL == currentDir.parent() && dynamic_cast<CAttachDir*>(&currentDir))
+    if (NULL == currentDir.parent() && ((CMediaDir&)currentDir).dirType() == E_MediaDirType::MDT_Attach)
     {
         return &m_MediaLib;
     }

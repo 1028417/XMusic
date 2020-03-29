@@ -8,7 +8,7 @@
 class COuterDir : public CMediaDir
 {
 public:
-    COuterDir() {}
+    COuterDir() = default;
 
     COuterDir(const tagFileInfo& fileInfo, const wstring& strMediaLibDir)
         : CMediaDir(fileInfo)
