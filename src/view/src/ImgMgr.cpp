@@ -18,8 +18,8 @@ static const wstring g_lpImgFile[] {
 
 	, L"singergroup.jpg"
 	, L"singerdefault.jpg"
-	, L"album.png"
-	, L"albumitem.png"
+	, L"album.jpg"
+	, L"albumitem.jpg"
 };
 
 static const RECT g_rcMargin{ 0, 1, 0, 1 };
