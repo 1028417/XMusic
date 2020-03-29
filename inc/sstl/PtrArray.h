@@ -28,9 +28,9 @@ namespace NS_SSTL
         using __CB_RefType_bool = cfn_bool_t<__RefType>;
 				
 	public:
-		virtual ~PtrArrayT() {} // 解决qt-mac clang告警
+        virtual ~PtrArrayT() = default; // 解决qt-mac clang告警
 
-		PtrArrayT() {}
+        PtrArrayT() = default;
 
 		template <typename T, typename... args, typename = checkNotSameType_t<T, __DataType>>
 		explicit PtrArrayT(T* ptr, args... others)

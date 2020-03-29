@@ -51,7 +51,7 @@ using CB_DownloadProgress = const function<bool(time_t beginTime, int64_t dltota
 class __UtilExt CCurlDownload
 {
 public:
-    virtual ~CCurlDownload() {}
+    virtual ~CCurlDownload() = default;
 
     CCurlDownload(bool bShare = false, unsigned long connectTimeout = 3, unsigned long timeout = 0
             , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0, unsigned long maxSpeedLimit = 0)

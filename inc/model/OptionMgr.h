@@ -69,7 +69,7 @@ struct __ModelExt tagOption
 class __ModelExt COptionMgr
 {
 public:
-	COptionMgr() {}
+    COptionMgr() = default;
 
 private:
 	tagOption m_Option;

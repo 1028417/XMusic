@@ -18,7 +18,7 @@ namespace NS_SSTL
 		typedef decltype(declval<const __ContainerType&>().rbegin()) __CRItrType;
 
 	public:
-		virtual ~SArrayT() {} // 解决qt-mac clang告警
+        virtual ~SArrayT() = default; // 解决qt-mac clang告警
 
 		SArrayT() = default;
 

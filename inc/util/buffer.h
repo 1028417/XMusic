@@ -69,7 +69,7 @@ private:
 	TD_ByteVector m_vecBuff;
 
 public:
-    CByteBuffer() {}
+    CByteBuffer() = default;
 
     CByteBuffer(size_t size, byte_t val = 0)
         : m_vecBuff(size, val)
@@ -207,7 +207,7 @@ private:
 	string m_strBuff;
 
 public:
-    CCharBuffer() {}
+    CCharBuffer() = default;
 
     CCharBuffer(size_t size, char val = '\0')
         : m_strBuff(size, val)

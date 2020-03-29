@@ -85,7 +85,7 @@ using CB_TrackMouseEvent = function<void(E_TrackMouseEvent, const CPoint&)>;
 class __CommonExt CFolderDlgEx : public CFolderDlg
 {
 public:
-	CFolderDlgEx(){}
+	CFolderDlgEx() = default;
 
 	wstring Show(HWND hWndOwner, LPCWSTR lpszInitialDir = NULL, LPCWSTR lpszTitle = NULL, LPCWSTR lpszTip = NULL
 		, LPCWSTR lpszOKButton = NULL, LPCWSTR lpszCancelButton = NULL, UINT uWidth = 0, UINT uHeight = 0)

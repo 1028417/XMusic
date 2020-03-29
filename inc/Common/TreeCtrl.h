@@ -119,7 +119,7 @@ public:
 	using CB_TVDrawItem = fn_void_t<tagTVDrawItem&>;
 
 public:
-	CObjectTree() {}
+	CObjectTree() = default;
 
 private:
 	map<const CTreeObject*, HTREEITEM> m_mapTreeObject;

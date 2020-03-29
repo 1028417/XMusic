@@ -3,7 +3,7 @@
 class __ModelExt CMediaResInfo
 {
 public:
-	CMediaResInfo() {}
+	CMediaResInfo() = default;
 
 	CMediaResInfo(CMediaRes& MediaRes, const wstring& strSingerName)
 		: m_FileTitle(MediaRes, strSingerName)
@@ -57,7 +57,7 @@ public:
 class __ModelExt CMatchMediaInfo
 {
 public:
-	CMatchMediaInfo() {}
+	CMatchMediaInfo() = default;
 
 	CMatchMediaInfo(const wstring& strPath, CMedia& media, const wstring& strSingerName)
 		: m_FileTitle(strPath, strSingerName)

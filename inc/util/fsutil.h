@@ -65,7 +65,7 @@ enum class E_FindFindFilter
 
 struct __UtilExt tagFileInfo
 {
-	tagFileInfo() {}
+    tagFileInfo() = default;
 
 	tagFileInfo(const wstring& strDirPath)
         : strName(strDirPath)

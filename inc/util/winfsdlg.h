@@ -6,7 +6,7 @@
 class __UtilExt CFolderDlg
 {
 public:
-	CFolderDlg() {}
+    CFolderDlg() = default;
 
 private:
 	wstring m_strInitialDir;
@@ -57,7 +57,7 @@ struct tagFileDlgOpt
 class __UtilExt CFileDlg
 {
 public:
-	CFileDlg() {}
+    CFileDlg() = default;
 
 	CFileDlg(const tagFileDlgOpt& opt)
 	{

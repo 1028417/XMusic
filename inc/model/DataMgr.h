@@ -4,7 +4,7 @@
 class __ModelExt CDataMgr
 {
 public:
-    CDataMgr() {}
+    CDataMgr() = default;
 
 private:
     vector<wstring> m_vctAlarmmedia;

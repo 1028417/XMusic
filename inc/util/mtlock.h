@@ -11,7 +11,7 @@ template <typename T>
 class CMtxLock : public mutex
 {
 public:
-    CMtxLock() {}
+    CMtxLock() = default;
 
     T m_data;
 
@@ -55,7 +55,7 @@ template <typename T>
 class TSignal
 {
 public:
-    TSignal() {}
+    TSignal() = default;
 
     TSignal(const T& value) :
         m_value(value)

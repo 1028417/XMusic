@@ -95,9 +95,9 @@ class __CommonExt CModuleApp: public CWinApp, public CResModule
 friend class CMainApp;
 
 public:
-	CModuleApp() {}
+	CModuleApp() = default;
 
-	virtual ~CModuleApp() {}
+	virtual ~CModuleApp() = default;
 
 	HINSTANCE GetHInstance() override
 	{

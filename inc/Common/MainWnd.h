@@ -31,7 +31,7 @@ struct tagMainWndInfo
 class __CommonExt CMainWnd : public CWnd
 {
 public:
-	CMainWnd(){}
+	CMainWnd() = default;
 
 	DECLARE_MESSAGE_MAP()
 

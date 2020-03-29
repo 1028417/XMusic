@@ -10,9 +10,9 @@
 class IView
 {
 public:
-	IView() {}
+	IView() = default;
 
-	virtual ~IView() {}
+	virtual ~IView() = default;
 
 public:
 	virtual CMainWnd* show() = 0;
@@ -33,7 +33,7 @@ public:
 class IController
 {
 public:
-	IController(){}
+	IController() = default;
 
 public:
 	virtual void start() {}

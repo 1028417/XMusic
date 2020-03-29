@@ -17,7 +17,7 @@ public:
 	}
 
 protected:
-	FStream() {}
+    FStream() = default;
 	
 	FStream(const wstring& strFile, const string& strMode)
 	{
@@ -76,7 +76,7 @@ public:
 class __UtilExt Instream
 {
 public:
-	virtual ~Instream() {}
+    virtual ~Instream() = default;
 
 	virtual size_t read(void *buff, size_t size, size_t count) = 0;
 	inline size_t read(void *buff, size_t size)
@@ -151,7 +151,7 @@ private:
 class __UtilExt Outstream
 {
 public:
-	virtual ~Outstream() {}
+    virtual ~Outstream() = default;
 
     virtual size_t write(const void *pData, size_t size, size_t count) = 0;
 
@@ -161,9 +161,9 @@ public:
 class __UtilExt IFStream : public FStream, public Instream
 {
 public:
-	virtual ~IFStream() {}
+    virtual ~IFStream() = default;
 
-	IFStream() {}
+    IFStream() = default;
 
     IFStream(const wstring& strFile)
     {
@@ -284,9 +284,9 @@ public:
 class __UtilExt OFStream : public FStream, public Outstream
 {
 public:
-	virtual ~OFStream() {}
+    virtual ~OFStream() = default;
 
-	OFStream() {}
+    OFStream() = default;
 
     OFStream(const wstring& strFile, bool bTrunc)
     {
@@ -429,7 +429,7 @@ public:
 class __UtilExt IFBuffer : public Instream
 {
 public:
-    virtual ~IFBuffer(){}
+    virtual ~IFBuffer() = default;
 
     IFBuffer(cbyte_p ptr, size_t size)
         : m_ptr(ptr)

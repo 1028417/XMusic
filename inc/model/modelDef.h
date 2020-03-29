@@ -101,7 +101,7 @@ struct tagMovedMedia : tagDiffMedia
 
 struct tagCompareBackupResult
 {
-	tagCompareBackupResult() {}
+    tagCompareBackupResult() = default;
 
 	tagCompareBackupResult(const wstring t_strSrcTag, const wstring t_strDstTag=L"")
 		: strSrcTag(t_strSrcTag)
@@ -125,7 +125,7 @@ struct tagCompareBackupResult
 
 struct tagAddPlayItem
 {
-	tagAddPlayItem() {}
+    tagAddPlayItem() = default;
 
 	tagAddPlayItem(const wstring& t_strPath) : strPath(t_strPath)
 	{

@@ -23,7 +23,7 @@ enum class E_PlayCtrl
 
 struct tagPlayCtrl
 {
-    tagPlayCtrl() {}
+    tagPlayCtrl() = default;
 
     tagPlayCtrl(E_PlayCtrl t_ePlayCtrl)
     {

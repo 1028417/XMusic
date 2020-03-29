@@ -170,7 +170,7 @@ template <typename T, typename R=BOOL>
 class CMultiTask
 {
 public:
-	CMultiTask() {}
+    CMultiTask() = default;
 
 private:
 	vector<R> m_vecResult;

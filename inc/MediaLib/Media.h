@@ -3,7 +3,7 @@
 
 struct __MediaLibExt tagMediaInfo
 {
-	tagMediaInfo() {}
+    tagMediaInfo() = default;
 
 	tagMediaInfo(CMediaSet *pParent, const wstring& strName, int nID = 0)
 		: m_pParent(pParent)
@@ -32,7 +32,7 @@ public:
 #endif
 	}
 
-    virtual ~CMedia() {}
+    virtual ~CMedia() = default;
 
 protected:
 	wstring m_strParentDir;

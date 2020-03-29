@@ -3,7 +3,7 @@
 class __UtilExt IDBResult
 {
 public:
-	virtual ~IDBResult(){}
+	virtual ~IDBResult() = default;
 
 	virtual const UINT& GetColumnCount() = 0;
 	virtual const UINT& GetRowCount() = 0;

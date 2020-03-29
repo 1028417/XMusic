@@ -42,7 +42,7 @@ class __MediaLibExt CCueFile
 public:
 	static const CCueFile NoCue;
 
-	CCueFile() {}
+	CCueFile() = default;
 
 	CCueFile(wstring strFileName, const wstring& strDir)
 		: m_strCueName(strFileName)

@@ -7,7 +7,7 @@
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
 public:
-	CMediaOpaque() {}
+    CMediaOpaque() = default;
 
 private:
 	wstring m_strFile;

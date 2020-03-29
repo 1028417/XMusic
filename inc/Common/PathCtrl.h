@@ -16,9 +16,9 @@ class CDirTreeT : public T
 	};*/
 	
 public:
-	CDirTreeT() {}
+	CDirTreeT() = default;
 
-	virtual	~CDirTreeT() {}
+	virtual	~CDirTreeT() = default;
 
 private:
 	void InsertChildsEx(CDirObject& DirObject)
@@ -129,7 +129,7 @@ using CDirCheckTree = CDirTreeT<CObjectCheckTree>;
 class __CommonExt CPathList: public CObjectList
 {
 public:
-	CPathList(){}
+	CPathList() = default;
 		
 private:
 	virtual void PreSubclassWindow() override;

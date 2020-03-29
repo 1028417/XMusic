@@ -24,9 +24,9 @@ using TD_DirObjectList = PtrArray<CDirObject>;
 class __UtilExt XFile
 {
 public:
-	virtual ~XFile() {}
+    virtual ~XFile() = default;
 
-	XFile() {}
+    XFile() = default;
 
 	XFile(const tagFileInfo& fileInfo)
 		: m_fileInfo(fileInfo)
@@ -83,7 +83,7 @@ public:
         clear();
 	}
 
-	CPath() {}
+    CPath() = default;
 
     CPath(const tagFileInfo& fileInfo)
         : XFile(fileInfo)
@@ -239,7 +239,7 @@ public:
 class __UtilExt CTreeObject
 {
 public:
-	CTreeObject() {}
+    CTreeObject() = default;
 
 public:
 	virtual wstring GetTreeText() const	{ return L""; }
@@ -254,9 +254,9 @@ public:
 class __UtilExt CPathObject : public CPath, public CListObject
 {
 public:
-	virtual ~CPathObject() {}
+    virtual ~CPathObject() = default;
 	
-	CPathObject() {}
+    CPathObject() = default;
 
     CPathObject(const tagFileInfo& fileInfo)
         : CPath(fileInfo)
@@ -283,9 +283,9 @@ protected:
 class __UtilExt CDirObject : public CPathObject, public CTreeObject
 {
 public:
-	virtual ~CDirObject() {}
+    virtual ~CDirObject() = default;
 
-	CDirObject() {}
+    CDirObject() = default;
 
     CDirObject(const tagFileInfo& fileInfo)
         : CPathObject(fileInfo)

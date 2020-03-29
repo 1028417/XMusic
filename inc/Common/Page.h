@@ -22,7 +22,7 @@ class __CommonExt CPage: public CPropertyPage
 public:
 	CPage(CResModule& resModule, UINT uIDDlgRes, const CString& cstrTitle=L"", bool bAutoActive=false);
 
-	virtual ~CPage() {}
+	virtual ~CPage() = default;
 
 private:
 	CResModule& m_resModule;

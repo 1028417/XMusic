@@ -7,7 +7,7 @@ template <class T>
 class CTouchWnd : public T
 {
 public:
-	CTouchWnd() {}
+	CTouchWnd() = default;
 
 protected:
 	virtual ULONG GetGestureStatus(CPoint ptTouch) override { return 0; }
@@ -209,7 +209,7 @@ using CB_CompatableFont = fn_void_t<LOGFONT&>;
 class __CommonExt CCompatableFont : public CFont
 {
 public:
-	CCompatableFont() {}
+	CCompatableFont() = default;
 
 private:
 	float m_fFontSizeOffset = 0;

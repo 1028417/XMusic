@@ -10,7 +10,7 @@ class CListHeader : public CHeaderCtrl
 	DECLARE_MESSAGE_MAP()
 
 public:
-	CListHeader(){}
+	CListHeader() = default;
 	
 private:
 	UINT m_uHeight = 0;
@@ -259,7 +259,7 @@ public:
 		UINT uTileHeight = 0;
 	};
 
-	CObjectList() {}
+	CObjectList() = default;
 
 	virtual ~CObjectList()
 	{

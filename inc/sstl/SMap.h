@@ -23,7 +23,7 @@ namespace NS_SSTL
 			|| is_same<__ContainerType, std::unordered_multimap<__KeyType, __ValueType>>::value;
 
 	public:
-		virtual ~SMapT() {} // 解决qt-mac clang告警
+        virtual ~SMapT() = default; // 解决qt-mac clang告警
 
 		SMapT() = default;
 

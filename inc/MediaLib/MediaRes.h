@@ -15,9 +15,9 @@ struct tagMediaTag
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
-	virtual ~CMediaRes() {}
+    virtual ~CMediaRes() = default;
 
-	CMediaRes() {}
+    CMediaRes() = default;
 
 	CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
 		: IMedia(eFileType)
@@ -85,12 +85,21 @@ public:
     void AsyncTask();
 };
 
+enum class E_MediaDirType
+{
+	MDT_Local
+	, MDT_Attach
+#if !__winvc
+	, MDT_Online
+#endif
+};
+
 class __MediaLibExt CMediaDir : public CMediaRes, public CTreeObject
 {
 public:
-	virtual ~CMediaDir() {}
+    virtual ~CMediaDir() = default;
 
-	CMediaDir() {}
+    CMediaDir() = default;
 
 	CMediaDir(const tagFileInfo& fileInfo)
 		: CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
@@ -131,6 +140,11 @@ protected:
 #endif
 
 public:
+	virtual E_MediaDirType dirType()
+	{
+		return E_MediaDirType::MDT_Local;
+	}
+
     virtual wstring GetTitle() const override
     {
         return XFile::fileName();

@@ -3,7 +3,7 @@
 class __MediaLibExt CPlayItem : public CMedia
 {
 public:
-    CPlayItem() {}
+    CPlayItem() = default;
 
     CPlayItem(int nID, const wstring& strPath, filetime_t time, class CPlaylist& Playlist);
 
@@ -35,9 +35,9 @@ public:
 class __MediaLibExt CPlaylist : public CMediaSet
 {
 public:
-    virtual ~CPlaylist() {} // 解决qt-mac clang告警
+    virtual ~CPlaylist() = default; // 解决qt-mac clang告警
 
-	CPlaylist() {}
+    CPlaylist() = default;
 
     CPlaylist(CMediaSet& parent, int nID, const wstring& strName
               , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);

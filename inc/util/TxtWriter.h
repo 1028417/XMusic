@@ -31,7 +31,7 @@ public:
     {
     }
 
-	virtual ~ITxtWriter() {}
+    virtual ~ITxtWriter() = default;
 
 private:
 	E_TxtEncodeType m_eEncodeType;
@@ -299,7 +299,7 @@ public:
 class __UtilExt CTxtWriter : public ITxtWriter
 {
 public:
-	virtual ~CTxtWriter() {}
+    virtual ~CTxtWriter() = default;
 
     CTxtWriter(E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
 		ITxtWriter(eEncodeType),
@@ -356,7 +356,7 @@ public:
 class __UtilExt CUTF8TxtWriter : public CTxtWriter
 {
 public:
-	virtual ~CUTF8TxtWriter() {}
+    virtual ~CUTF8TxtWriter() = default;
 
     CUTF8TxtWriter(bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
         CTxtWriter(bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLType)
@@ -383,7 +383,7 @@ enum class E_UnicodeHeadOpt
 class __UtilExt CUCS2TextWriter : public CTxtWriter
 {
 public:
-	virtual ~CUCS2TextWriter() {}
+    virtual ~CUCS2TextWriter() = default;
 
     CUCS2TextWriter(E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
 		CTxtWriter(E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
@@ -415,7 +415,7 @@ enum class E_TxtHeadType
 class __UtilExt CTxtReader
 {
 public:
-	CTxtReader() {}
+    CTxtReader() = default;
 
 private:
 	E_TxtHeadType m_eHeadType = E_TxtHeadType::THT_None;

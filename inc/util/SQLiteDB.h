@@ -62,7 +62,7 @@ public:
 class __UtilExt CSQLiteDB : public IDB
 {
 public:
-    CSQLiteDB(){}
+    CSQLiteDB() = default;
 
     CSQLiteDB(const wstring& strFile)
     {

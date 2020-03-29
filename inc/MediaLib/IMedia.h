@@ -35,7 +35,7 @@ public:
 
 	IMedia(const wstring& strPath);
 
-	virtual ~IMedia() {}
+    virtual ~IMedia() = default;
 
 protected:
 	E_MediaFileType m_eFileType = E_MediaFileType::MFT_Null;

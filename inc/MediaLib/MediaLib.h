@@ -20,6 +20,11 @@ public:
 	E_AttachDirType m_eType;
 
 public:
+    E_MediaDirType dirType() override
+	{
+		return E_MediaDirType::MDT_Attach;
+	}
+
 	wstring GetPath() const override
 	{
         return __wcPathSeparator + XFile::fileName();
@@ -44,9 +49,9 @@ public:
 class __MediaLibExt CRootMediaDir : public CMediaDir
 {
 public:
-	virtual ~CRootMediaDir() {}
+    virtual ~CRootMediaDir() = default;
 	
-	CRootMediaDir() {}
+    CRootMediaDir() = default;
 
 	CRootMediaDir(const wstring& strPath, const PairList<wstring, E_AttachDirType>& plAttachDir)
 	{

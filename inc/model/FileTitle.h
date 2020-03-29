@@ -33,7 +33,7 @@ private:
 	void _parseTitle();
 
 public:
-	CFileTitle() {}
+    CFileTitle() = default;
 	CFileTitle(const wstring& strPath, const wstring& strSingerName);
 	CFileTitle(IMedia& media, const wstring& strSingerName);
 

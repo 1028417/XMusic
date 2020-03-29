@@ -6,7 +6,7 @@
 class __CommonExt CCompDC
 {
 public:
-	CCompDC() {}
+	CCompDC() = default;
 
 	~CCompDC()
 	{
@@ -121,7 +121,7 @@ enum class E_ImglstType
 class __CommonExt CImglst : public CImageList
 {
 public:
-	CImglst() {}
+	CImglst() = default;
 
 private:
 	UINT m_cx = 0;

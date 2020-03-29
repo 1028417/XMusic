@@ -141,7 +141,7 @@ public:
 	
 	CDockView(CWnd& wndParent, const tagViewStyle& ViewStyle);
 
-	virtual ~CDockView() {}
+	virtual ~CDockView() = default;
 
 	DECLARE_MESSAGE_MAP()
 

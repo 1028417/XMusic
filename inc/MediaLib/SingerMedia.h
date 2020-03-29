@@ -3,7 +3,7 @@
 class __MediaLibExt CAlbumItem : public CMedia
 {
 public:
-    CAlbumItem() {}
+    CAlbumItem() = default;
 
 	CAlbumItem(int nID, const wstring& strPath, filetime_t time, class CAlbum& Album);
 
@@ -25,7 +25,7 @@ public:
 class __MediaLibExt CAlbum : public CMediaSet
 {
 public:
-	virtual ~CAlbum() {} // 解决qt-mac clang告警
+    virtual ~CAlbum() = default; // 解决qt-mac clang告警
 
 	CAlbum(int nID = 0, const wstring& strName = L"", class CSinger *pSinger = NULL
 		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false)
@@ -92,7 +92,7 @@ private:
 class __MediaLibExt CSinger : public CMediaSet
 {
 public:
-	virtual ~CSinger() {} // 解决qt-mac clang告警
+    virtual ~CSinger() = default; // 解决qt-mac clang告警
 
     CSinger(CMediaSet& parent, int nID = 0, const wstring& strName = L"", const wstring& strDir = L""
             , int nPos = 0, UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
@@ -153,7 +153,7 @@ private:
 class __MediaLibExt CSingerGroup : public CMediaSet
 {
 public:
-    virtual ~CSingerGroup() {} // 解决qt-mac clang告警
+    virtual ~CSingerGroup() = default; // 解决qt-mac clang告警
 
     CSingerGroup(CMediaSet& parent, int nID=0, const wstring& strName = L""
             , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);

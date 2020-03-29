@@ -78,6 +78,22 @@ struct __ModelExt tagMedialibConf
     }
 };
 
+class CSnapshotDir : public CMediaDir
+{
+public:
+    CSnapshotDir() = default;
+
+    CSnapshotDir(const wstring& strPath, class CPath *t_pParent = NULL)
+        : CMediaDir(strPath, t_pParent)
+    {
+    }
+
+    E_MediaDirType dirType() override
+    {
+        return E_MediaDirType::MDT_Online;
+    }
+};
+
 class CSnapshotMediaRes : public CMediaRes
 {
 public:

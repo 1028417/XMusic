@@ -14,7 +14,7 @@ struct __UtilExt tagUnzfile
 class __UtilExt CZipFile
 {
 public:
-	CZipFile() {}
+    CZipFile() = default;
 
 	CZipFile(const string& strFile, const string& strPwd = "")
 	{
