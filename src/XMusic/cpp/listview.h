@@ -59,7 +59,7 @@ protected:
         const QPixmap *pixmap = NULL;
         float fIconMargin = 0.18f;
 
-        wstring strText;
+        WString strText;
     };
 
 public:

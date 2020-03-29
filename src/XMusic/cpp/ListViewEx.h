@@ -16,6 +16,8 @@ protected:
         CPath *pDir = NULL;
         XFile *pFile = NULL;
 
+        WString strRemark;
+
         tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
         {
         }

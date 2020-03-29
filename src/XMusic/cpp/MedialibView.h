@@ -27,16 +27,18 @@ private:
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
     QPixmap m_pmAlbum;
-    QPixmap m_pmAlbumItem;
+    //QPixmap m_pmAlbumItem;
 
     QPixmap m_pmPlaylistSet;
     QPixmap m_pmPlaylist;
     QPixmap m_pmPlayItem;
 
-    QPixmap m_pmXMusicDir;
+    QPixmap m_pmXmusicDir;
+    QPixmap m_pmSSDir;
+
     QPixmap m_pmHires;
     QPixmap m_pmDSD;
-    QPixmap m_pmSSDir;
+
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;
 
@@ -91,7 +93,7 @@ private:
 
     void _paintText(CPainter&, QRect&, const tagRowContext&, const QString&, int flags) override;
 
-    bool _playIconRect(const tagMediaContext& mediaContext, QRect& rcPlayIcon);
+    bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIcon);
 
     bool event(QEvent *ev) override;
 
