@@ -335,7 +335,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     {
         if (context.pDir->rootDir() == &m_MediaLib)
         {
-            context.pixmap = &m_pmXMusicDir;
+            context.pixmap = &m_pmSSDir;
         }
         else
         {

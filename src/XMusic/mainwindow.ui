@@ -366,7 +366,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/medialib/album.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/demandalbum.png);</string>
      </property>
      <property name="text">
       <string/>
