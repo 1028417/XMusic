@@ -51,14 +51,8 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     float fAlpha = 1;
     if (0 == m_nActiveTime)
     {
-        if (m_app.getOption().bUseThemeColor)
-        {
-            fAlpha = 0.5f;
-        }
-        else
-        {
-            fAlpha = 0.3f;
-        }
+        fAlpha = 0.4f;
+        //if (m_app.getOption().bUseThemeColor) fAlpha += 0.1f;
     }
     if (rc.top() < 0)
     {

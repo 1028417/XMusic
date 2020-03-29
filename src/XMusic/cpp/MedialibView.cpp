@@ -10,6 +10,8 @@
 
 #define __RemarkAlpha 170
 
+#define __wholeTrackDuration 600
+
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
@@ -385,7 +387,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     IMedia* pMedia = ((tagMediaContext&)context).media();
     if (pMedia)
     {
-        if (pMedia->duration() > 600)
+        if (pMedia->duration() > __wholeTrackDuration)
         {
             if (pMedia->quality() >= E_MediaQuality::MQ_CD)
             {
@@ -440,7 +442,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     IMedia* pMedia = mediaContext.media();
     if (pMedia)
     {
-        if (pMedia->duration() > 600)
+        if (pMedia->duration() > __wholeTrackDuration)
         {
             strRemark << L"整轨\n" << pMedia->durationString();
         }
