@@ -195,11 +195,13 @@ struct tagLVDrawSubItem : tagLVNMCustomDraw
 		{
 			crText = getTextColor(uTextAlpha);
 		}
+		dc.SetTextColor(crText);
 	}
 	
 	void setTextAlpha(BYTE uTextAlpha)
 	{
 		crText = getTextColor(uTextAlpha);
+		dc.SetTextColor(crText);
 	}
 
 	const int nSubItem;

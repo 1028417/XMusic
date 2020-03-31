@@ -1,7 +1,8 @@
 #pragma once
 
-#define BkgColor_Select RGB(220, 240, 255)
-#define BkgColor_Hit RGB(230, 245, 255)
+#define __crSelect RGB(220, 240, 255)
+
+#define __crHit RGB(238, 248, 255)
 
 template <class T>
 class CTouchWnd : public T

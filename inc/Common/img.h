@@ -3,6 +3,8 @@
 
 #include <atlimage.h>
 
+#define __crWhite RGB(255, 255, 255)
+
 class __CommonExt CCompDC
 {
 public:
@@ -51,9 +53,6 @@ public:
 	void destroy();
 };
 
-#define __Color_White RGB(255, 255, 255)
-#define __Color_Black ((COLORREF)0)
-
 using TD_IconVec = vector<HICON>;
 
 enum class E_ImgFixMode
@@ -67,48 +66,14 @@ enum class E_ImgFixMode
 class __CommonExt CImg : public CImage
 {
 public:
-	CImg(COLORREF crBkgrd= __Color_White)
-		: m_crBkgrd(crBkgrd)
-	{
-	}
-
-	~CImg();
-
-private:
-	COLORREF m_crBkgrd = 0;
-
-	E_ImgFixMode m_eFixMode = E_ImgFixMode::IFM_Inner;
+	CImg() = default;
 	
-	bool m_bHalfToneMode = false;
-
-	UINT m_cx = 0;
-	UINT m_cy = 0;
-	CRect m_rcDst;
-
-	CCompDC m_CompDC;
-
 public:
-	CDC *GetDC()
-	{
-		return CDC::FromHandle(__super::GetDC());
-	}
-
-	CDC& GetCompDC()
-	{
-		return m_CompDC.getDC();
-	}
-
-	BOOL InitCompDC(E_ImgFixMode eFixMode, bool bHalfToneMode, UINT cx, UINT cy, LPCRECT prcMargin=NULL);
-
 	BOOL Load(const wstring& strFile);
 
-	BOOL LoadEx(const wstring& strFile, const function<E_ImgFixMode(UINT uWidth, UINT uHeight)>& cb=NULL);
-	
-	BOOL StretchBltFix(E_ImgFixMode eFixMode, CDC& dcTarget, const CRect& rcTarget, bool bHalfToneMode, LPCRECT prcMargin = NULL);
-
-	BOOL StretchBltEx(CDC& dcTarget, const CRect& rcTarget);
-
-	BOOL StretchBltEx(CImg& imgTarget);
+	BOOL DrawEx(HDC hDC, const RECT& rc);
+	BOOL DrawEx(HDC hDC, const RECT& rc, bool bHalfToneMode);
+	BOOL DrawEx(HDC hDC, const RECT& rc, E_ImgFixMode eFixMode, bool bHalfToneMode);
 };
 
 enum class E_ImglstType
@@ -147,7 +112,7 @@ public:
 
 	BOOL SetFile(const wstring& strFile, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
 
-	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin, int nPosReplace);
+	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
 	
 	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
 
