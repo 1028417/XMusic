@@ -22,7 +22,7 @@ static const wstring g_lpImg[]{
 
 #define __SingerImgStartPos (sizeof g_lpImg / sizeof *g_lpImg)
 
-static const RECT g_rcMargin{ 1, 1, 1, 1 };
+static const RECT g_rcMargin{ 2, 2, 2, 2 };
 
 //HBITMAP CImgMgr::getBitmap(E_GlobalImglst eImglstType, UINT uImgPos)
 //{
@@ -82,8 +82,8 @@ bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
 	CImg img;
 	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
 
-	m_bigImglst.SetImg(img, bHalfToneMode, &g_rcMargin);
-	m_smallImglst.SetImg(img, bHalfToneMode, &g_rcMargin);
+	m_bigImglst.SetImg(img, false, &g_rcMargin);
+	m_smallImglst.SetImg(img, false, &g_rcMargin);
 	m_tabImglst.SetImg(img, false, &g_rcMargin);
 
 	return true;
@@ -94,9 +94,9 @@ bool CImgMgr::_setSingerImg(const wstring& strFile)
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
 
-	m_bigImglst.SetImg(img, true);
-	m_smallImglst.SetImg(img, true);
-	m_tabImglst.SetImg(img, true);
+	m_bigImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
+	m_smallImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
+	m_tabImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
 
 	return true;
 }
