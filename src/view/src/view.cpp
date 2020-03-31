@@ -77,7 +77,7 @@ bool __view::_create()
 	tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
 	centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
 	centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.getImglst(E_GlobalImglst::GIL_Tiny);
+	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.tabImglst();
 	centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
 	pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
 	__AssertReturn(pDockView, false);
@@ -457,37 +457,28 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
 }
 
-bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle, bool bActualMode
+bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle
 	, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport)
 {
+	m_ResModule.ActivateResource();
+
+	tagExportOption ExportOption;
+	CExportOptionDlg ExportOptionDlg(ExportOption);
+	__EnsureReturn(IDOK == ExportOptionDlg.DoModal(), false);
+
 	static CFolderDlgEx FolderDlg;
 	WString strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
 	__EnsureReturn(!strExportPath->empty(), false);
 
-	if (bActualMode)
+	strExportPath << (ExportOption.bActualMode ? L"/XMusicMirror" : L"/XMusicExport");
+	if (!getMediaLib().checkIndependentDir(strExportPath, true))
 	{
-		strExportPath.append(L"/XMusic");
-
-		if (!getMediaLib().checkIndependentDir(strExportPath, true))
-		{
-			CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
-			return false;
-		}
+		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
+		return false;
 	}
-	else
-	{
-		strExportPath.append(L"/媒体库");
-	}
-
-	tagExportOption ExportOption;
-	ExportOption.strExportPath = strExportPath;
-	ExportOption.bActualMode = bActualMode;
-
-	m_ResModule.ActivateResource();
-
-	CExportOptionDlg ExportOptionDlg(ExportOption);
-	__EnsureReturn(IDOK == ExportOptionDlg.DoModal(), false);
 	
+	ExportOption.strExportPath = strExportPath;
+
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		UINT uCount = fnExport(ProgressDlg, ExportOption);
 		if (0 == uCount || ExportOption.lstExportMedias.empty())
@@ -562,13 +553,13 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 		pWnd = &m_MainWnd;
 	}
 
-	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	(void)_exportMedia(*pWnd, L"导出曲目", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		if (ExportOption.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
 			map<wstring, TD_IMediaList> mapMedias;
 			lstMedias([&](CMedia& media) {
-				auto& strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
+				auto strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
 				mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
 			});
 
@@ -607,11 +598,15 @@ void __view::exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd)
 		pWnd = &m_MainWnd;
 	}
 	
-	(void)_exportMedia(*pWnd, L"导出曲目", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	(void)_exportMedia(*pWnd, L"导出曲目", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		SMap<wstring, wstring> mapDirs;
 		map<wstring, TD_IMediaList> mapMedias;
 		lstMedias([&](IMedia& media) {
-			auto& strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
+			auto strDstDir = ExportOption.strExportPath;
+			if (ExportOption.bActualMode)
+			{
+				strDstDir.append(fsutil::GetParentDir(media.GetPath()));
+			}
 			mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
 		});
 
@@ -632,7 +627,7 @@ void __view::exportDir(CMediaDir& dir)
 	dir.clear();
 	CMediaResPanel::RefreshMediaResPanel();
 
-	_exportMedia(m_MainWnd, L"导出目录", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	_exportMedia(m_MainWnd, L"导出目录", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 
 		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {

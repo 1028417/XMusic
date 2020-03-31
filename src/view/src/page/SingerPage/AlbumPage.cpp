@@ -67,22 +67,20 @@ BOOL CAlbumPage::OnInitDialog()
 	auto nSigngerImgWidth = globalSize.m_uAlbumDockWidth - g_rcSingerImgMargin.left - g_rcSingerImgMargin.right;
 	auto nSigngerImgHeight = __BrowseTop - g_rcSingerImgMargin.top - g_rcSingerImgMargin.bottom;
 
-	__AssertReturn(m_imgSinger.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
+	__AssertReturn(m_imgSingerDefault.Load(m_view.m_ImgMgr.getImgPath(__singerDefImg)), FALSE);
 
-	__AssertReturn(m_imgSingerDefault.InitCompDC(E_ImgFixMode::IFM_Outer, true, nSigngerImgWidth, nSigngerImgHeight), FALSE);
-	wstring strDefaultImg = m_view.m_ImgMgr.getImgDir() + L"singerdefault.jpg";
-	__AssertReturn(m_imgSingerDefault.LoadEx(strDefaultImg), FALSE);
-
+	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.bigImglst());
+	
 	(void)m_wndAlbumList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);
 	
-	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
-
 	CObjectList::tagListPara ListPara(globalSize.m_uAlbumDockWidth);
 
 	ListPara.fFontSize = m_view.m_globalSize.m_fMidFontSize;
 	ListPara.crText = __Color_Text;
 
 	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
+
+	auto pImgLst = &m_view.m_ImgMgr.bigImglst();
 
 	m_wndAlbumList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
@@ -97,11 +95,23 @@ BOOL CAlbumPage::OnInitDialog()
 				lvcd.setTextAlpha(128);
 			}
 		}
-	}, [&](tagLVDrawSubItem& lvcd) {
-		if (0 == lvcd.uItem && m_pSinger)
+	}, [=](tagLVDrawSubItem& lvcd){
+		__Ensure(m_pSinger);
+
+		CDC& dc = lvcd.dc;
+		auto& rc = lvcd.rc;
+		
+		/*CImg& img = (0 == lvcd.uItem) ? imgDir : imgAlbum;
+		int sz = rc.bottom - rc.top + 1;
+		//img.DrawEx(dc, CRect(rc.left, rc.top, rc.left+sz, rc.top+sz), false);*/
+
+		E_GlobalImage eImg = (0 == lvcd.uItem) ? E_GlobalImage::GI_Dir : E_GlobalImage::GI_Album;
+		auto sz = rc.bottom-rc.top+1;
+		POINT pt { rc.left + (sz - (int)pImgLst->imgWidth()) / 2, rc.top + (sz - (int)pImgLst->imgHeight()) / 2 };
+		pImgLst->Draw(&dc, (UINT)eImg, pt, ILD_TRANSPARENT | ILD_IMAGE);
+
+		if (0 == lvcd.uItem)
 		{
-			CDC& dc = lvcd.dc;
-			auto& rc = lvcd.rc;
 			rc.left = rc.bottom - 10;
 
 			dc.SetTextColor(lvcd.crText);
@@ -112,8 +122,8 @@ BOOL CAlbumPage::OnInitDialog()
 	(void)m_wndAlbumItemList.ModifyStyle(WS_VISIBLE | LVS_ALIGNLEFT
 		, LVS_AUTOARRANGE | LVS_EDITLABELS | LVS_NOCOLUMNHEADER);
 
-	m_wndAlbumItemList.SetImageList(&m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big)
-		, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Small));
+	m_wndAlbumItemList.SetImageList(&m_view.m_ImgMgr.bigImglst()
+		, &m_view.m_ImgMgr.smallImglst());
 
 	CRect rcClient;
 	m_view.m_MainWnd.GetClientRect(rcClient);
@@ -263,13 +273,15 @@ void CAlbumPage::OnPaint()
 	CPaintDC dc(this);
 
 	CRect rcSingerImg(__SingerImgRect);
-	dc.FillSolidRect(rcSingerImg, __Color_White);
+	dc.FillSolidRect(rcSingerImg, __crWhite);
 
 	rcSingerImg.left += g_rcSingerImgMargin.left;
 	rcSingerImg.top += g_rcSingerImgMargin.top;
 	rcSingerImg.right -= g_rcSingerImgMargin.right;
 	rcSingerImg.bottom -= g_rcSingerImgMargin.bottom;
-	m_imgSinger.StretchBltEx(dc, rcSingerImg);
+
+	auto& img = m_imgSinger.IsNull()?m_imgSingerDefault:m_imgSinger;
+	img.DrawEx(dc, rcSingerImg, E_ImgFixMode::IFM_Outer, true);
 }
 
 #define __XOffset 6
@@ -345,7 +357,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.SetObjects(TD_ListObjectList((list<CAlbum>&)m_pSinger->albums()));
 
-		(void)m_wndAlbumList.InsertItem(0, L"", (int)E_GlobalImage::GI_Dir);
+		(void)m_wndAlbumList.InsertItem(0, L"", -1);// , (int)E_GlobalImage::GI_Dir);
 
 		m_wndMediaResPanel.ShowDir(m_pSinger->GetBaseDir());
 	}
@@ -389,7 +401,7 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 	cauto strSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx);
 	if (!strSingerImg.empty())
 	{
-		(void)m_imgSinger.LoadEx(strSingerImg);
+		(void)m_imgSinger.Load(strSingerImg);
 		this->InvalidateRect(__SingerImgRect);
 
 		uSingerImgIdx++;
@@ -419,7 +431,7 @@ void CAlbumPage::UpdateSingerImage()
 	{
 		s_timer.kill();
 
-		m_imgSingerDefault.StretchBltEx(m_imgSinger);
+		m_imgSinger.Destroy();
 		this->InvalidateRect(__SingerImgRect);
 	}
 }

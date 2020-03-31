@@ -65,8 +65,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	
 	(void)m_wndList.ModifyStyle(0, LVS_EDITLABELS);
 
-	m_wndList.SetImageList(&m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big)
-		, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Small));
+	m_wndList.SetImageList(&m_view.m_ImgMgr.bigImglst(), &m_view.m_ImgMgr.smallImglst());
 
 	auto& globalSize = m_view.m_globalSize;
 	

@@ -43,7 +43,7 @@ BOOL CSingerPage::OnInitDialog()
 
 	m_wndTree.SetFontSize(m_view.m_globalSize.m_fMidFontSize);
 
-	m_wndTree.SetImageList(m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
+	m_wndTree.SetImageList(m_view.m_ImgMgr.bigImglst());
 
 	m_wndTree.SetIndent(m_wndTree.GetIndent() - 10);
 

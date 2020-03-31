@@ -127,11 +127,11 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 	{
 		if (this->GetItemState(nItem, LVIS_SELECTED))
 		{
-			crBkColor = BkgColor_Select;
+			crBkColor = __crSelect;
 		}
 		else if (bMouseMoveItem)
 		{
-			crBkColor = BkgColor_Hit;
+			crBkColor = __crHit;
 		}
 
 		if (m_view.getPlayMgr().checkPlayedID(PlayItem.m_uID))
@@ -218,8 +218,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 			nStyle |= ILD_SCALE;
 			rcSingerImg.SetRect(__Margin, __Margin, cy - __Margin, cy - __Margin);
 		}
-		auto& imgList = m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big);
-		imgList.DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
+		m_view.m_ImgMgr.bigImglst().DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
 	}
 	else
 	{

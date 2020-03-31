@@ -49,7 +49,7 @@ BOOL CPlaylistPage::OnInitDialog()
 		, LVS_NOCOLUMNHEADER | LVS_EDITLABELS | LVS_SINGLESEL);
 	m_wndList.ModifyStyleEx(0, WS_EX_LEFTSCROLLBAR);
 
-	m_wndList.SetImageList(NULL, &m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big));
+	m_wndList.SetImageList(NULL, &m_view.m_ImgMgr.bigImglst());
 
 	CObjectList::tagListPara ListPara(0);
 	

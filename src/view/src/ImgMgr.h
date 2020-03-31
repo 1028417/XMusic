@@ -1,12 +1,7 @@
 
 #pragma once
 
-enum class E_GlobalImglst
-{
-	GIL_Big
-	, GIL_Small
-	, GIL_Tiny
-};
+#define __singerDefImg L"singerdefault"
 
 class CImgMgr
 {
@@ -21,27 +16,39 @@ private:
 	
 	wstring m_strImgDir;
 
-	CImglst m_imglst;
-	CImglst m_imglstSmall;
-	CImglst m_imglstTiny;
+	CImglst m_bigImglst;
+	CImglst m_smallImglst;
+	CImglst m_tabImglst;
 
 	vector<UINT> m_vctSingerID;
 
 private:
-	bool _setImg(const wstring& strFile, bool bSinger = false, int nPosReplace = -1);
+	bool _setImg(const wstring& strImg, bool bHalfToneMode=false);
+	bool _setSingerImg(const wstring& strFile);
 
 	bool _initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile);
 	
 	int _getSingerImgPos(UINT uSingerID) const;
 
 public:
-	const wstring& getImgDir() const
+	wstring getImgPath(const wstring& strImgFile) const
 	{
-		return m_strImgDir;
+		return m_strImgDir + strImgFile + L".png";
 	}
 
-	CImglst& getImglst(E_GlobalImglst eImglstType);
-
+	CImglst& bigImglst()
+	{
+		return m_bigImglst;
+	}
+	CImglst& smallImglst()
+	{
+		return m_smallImglst;
+	}
+	CImglst& tabImglst()
+	{
+		return m_tabImglst;
+	}
+	
 	UINT getSingerImgPos(UINT uSingerID) const;
 
 	bool init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize);

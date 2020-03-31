@@ -63,7 +63,7 @@ BOOL CBasePage::GetCtrlDragData(HWND hwndCtrl, const CPoint& point, LPVOID& pDra
 
 	if (g_DragData.iImage >= 0)
 	{
-		g_DragData.hIcon = m_view.m_ImgMgr.getImglst(E_GlobalImglst::GIL_Big).ExtractIcon(g_DragData.iImage);
+		g_DragData.hIcon = m_view.m_ImgMgr.bigImglst().ExtractIcon(g_DragData.iImage);
 	}
 
 	pDragData = &g_DragData;

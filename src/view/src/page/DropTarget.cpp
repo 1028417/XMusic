@@ -65,6 +65,7 @@ void CDragContext::DrawDragOverIcon(long nXPos, long nYPos)
 			rcDragOverIcon.OffsetRect(10-m_CompDC.m_cx, 10-m_CompDC.m_cy);
 			(void)pdcCtrl->AlphaBlend(rcDragOverIcon.left, rcDragOverIcon.top, rcDragOverIcon.Width(), rcDragOverIcon.Height()
 				, &CompDC, 0, 0, m_CompDC.m_cx, m_CompDC.m_cy, bf);
+			// TODO CImageList::BeginDrag
 		}
 	}
 }

@@ -5,40 +5,37 @@
 
 #define __Size(size) CSize(size, size)
 
-#define __SingerImgStartPos (sizeof g_lpImgFile / sizeof *g_lpImgFile)
+static const wstring g_lpImg[]{
+	L"dir"
+	, L"attachdir"
+	, L"file"
+	, L"wholeTrack"
 
-static const wstring g_lpImgFile[] {
-	L"dir.png"
-	, L"attachdir.png"
-	, L"file.jpg"
-	, L"wholeTrack.png"
+	, L"playlist"
+	, L"playitem"
 
-	, L"playlist.png"
-	, L"playitem.jpg"
-
-	, L"singergroup.jpg"
-	, L"singerdefault.jpg"
-	, L"album.jpg"
-	, L"albumitem.jpg"
+	, L"singergroup"
+	, __singerDefImg
+	, L"album"
+	, L"media"
 };
 
-static const RECT g_rcMargin{ 0, 1, 0, 1 };
+#define __SingerImgStartPos (sizeof g_lpImg / sizeof *g_lpImg)
 
-CImglst& CImgMgr::getImglst(E_GlobalImglst eImglstType)
-{
-	if (E_GlobalImglst::GIL_Small == eImglstType)
-	{
-		return m_imglstSmall;
-	}
-	else if (E_GlobalImglst::GIL_Tiny == eImglstType)
-	{
-		return m_imglstTiny;
-	}
-	else
-	{
-		return m_imglst;
-	}
-}
+static const RECT g_rcMargin{ 1, 1, 1, 1 };
+
+//HBITMAP CImgMgr::getBitmap(E_GlobalImglst eImglstType, UINT uImgPos)
+//{
+//	IMAGEINFO ImageInfo;
+//	memzero(ImageInfo);
+//
+//	if (!GetImglst(eImglstType).GetImageInfo(uImgPos, &ImageInfo))
+//	{
+//		return NULL;
+//	}
+//
+//	return ImageInfo.hbmImage;
+//}
 
 int CImgMgr::_getSingerImgPos(UINT uSingerID) const
 {
@@ -66,26 +63,40 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 {
 	m_strImgDir = fsutil::getModuleSubPath(L"img\\");
 
-	__AssertReturn(m_imglst.Init(__Size(uBigIconSize)), false);
-	__AssertReturn(m_imglstSmall.Init(__Size(uSmallIconSize)), false);
-	__AssertReturn(m_imglstTiny.Init(__Size(uTinyIconSize)), false);
+	CPngImage png;
+
+	__AssertReturn(m_bigImglst.Init(__Size(uBigIconSize)), false);
+	__AssertReturn(m_smallImglst.Init(__Size(uSmallIconSize)), false);
+	__AssertReturn(m_tabImglst.Init(__Size(uTinyIconSize)), false);
 	
-	for (cauto strImgFile : g_lpImgFile)
+	for (cauto strImg : g_lpImg)
 	{
-		__AssertReturn(_setImg(m_strImgDir + strImgFile), false);
+		__EnsureReturn(_setImg(strImg), false);
 	}
 
 	return true;
 }
 
-bool CImgMgr::_setImg(const wstring& strFile, bool bSinger, int nPosReplace)
+bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
+{	
+	CImg img;
+	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
+
+	m_bigImglst.SetImg(img, bHalfToneMode, &g_rcMargin);
+	m_smallImglst.SetImg(img, bHalfToneMode, &g_rcMargin);
+	m_tabImglst.SetImg(img, false, &g_rcMargin);
+
+	return true;
+}
+
+bool CImgMgr::_setSingerImg(const wstring& strFile)
 {
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
 
-	m_imglst.SetImg(img, true, &g_rcMargin, nPosReplace);
-	m_imglstSmall.SetImg(img, true, &g_rcMargin, nPosReplace);
-	m_imglstTiny.SetImg(img, bSinger, &g_rcMargin, nPosReplace);
+	m_bigImglst.SetImg(img, true);
+	m_smallImglst.SetImg(img, true);
+	m_tabImglst.SetImg(img, true);
 
 	return true;
 }
@@ -105,7 +116,7 @@ void CImgMgr::initSingerImg()
 
 bool CImgMgr::_initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile)
 {
-	__EnsureReturn(_setImg(strFile, true), false);
+	__EnsureReturn(_setSingerImg(strFile), false);
 	
 	m_vctSingerID.push_back(uSingerID);
 
@@ -139,9 +150,9 @@ void CImgMgr::removeSingerImg(UINT uSingerID, const wstring& strSingerName)
 
 	m_vctSingerID.erase(itr);
 
-	m_imglst.Remove(uImgPos);
-	m_imglstSmall.Remove(uImgPos);
-	m_imglstTiny.Remove(uImgPos);
+	m_bigImglst.Remove(uImgPos);
+	m_smallImglst.Remove(uImgPos);
+	m_tabImglst.Remove(uImgPos);
 
 	m_model.getSingerImgMgr().removeSingerImg(strSingerName);
 }
@@ -150,28 +161,10 @@ void CImgMgr::clearSingerImg()
 {
 	for (UINT uIdx = 0; uIdx < m_vctSingerID.size(); uIdx++)
 	{
-		m_imglst.Remove(__SingerImgStartPos);
-		m_imglstSmall.Remove(__SingerImgStartPos);
-		m_imglstTiny.Remove(__SingerImgStartPos);
+		m_bigImglst.Remove(__SingerImgStartPos);
+		m_smallImglst.Remove(__SingerImgStartPos);
+		m_tabImglst.Remove(__SingerImgStartPos);
 	}
 
 	m_vctSingerID.clear();
 }
-
-//HBITMAP CImgMgr::getBitmap(UINT uImgPos, E_GlobalImglst eImglstType)
-//{
-//	IMAGEINFO ImageInfo;
-//	memzero(ImageInfo);
-//
-//	if (!GetImglst(eImglstType).GetImageInfo(uImgPos, &ImageInfo))
-//	{
-//		return NULL;
-//	}
-//
-//	return ImageInfo.hbmImage;
-//}
-//
-//HICON CImgMgr::GetIcon(UINT uImgPos, E_GlobalImglst eImglstType)
-//{
-//	return GetImglst(eImglstType).ExtractIcon(uImgPos);
-//}
