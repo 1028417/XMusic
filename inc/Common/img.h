@@ -19,8 +19,8 @@ public:
 	UINT m_cy = 0;
 
 private:
-	CDC m_CompDC;
-	CBitmap m_CompBitmap;
+	CDC m_dc;
+	CBitmap m_Bitmap;
 
 	HBITMAP m_hbmpPrev = NULL;
 
@@ -34,12 +34,12 @@ private:
 public:
 	CDC* operator ->()
 	{
-		return &m_CompDC;
+		return &m_dc;
 	}
 
 	CDC& getDC()
 	{
-		return m_CompDC;
+		return m_dc;
 	}
 
 	void getBitmap(cfn_void_t<CBitmap&> cb);
@@ -72,8 +72,8 @@ public:
 	BOOL Load(const wstring& strFile);
 
 	BOOL DrawEx(HDC hDC, const RECT& rc);
-	BOOL DrawEx(HDC hDC, const RECT& rc, bool bHalfToneMode);
-	BOOL DrawEx(HDC hDC, const RECT& rc, E_ImgFixMode eFixMode, bool bHalfToneMode);
+	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode);
+	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode, E_ImgFixMode eFixMode);
 };
 
 enum class E_ImglstType
@@ -86,9 +86,14 @@ enum class E_ImglstType
 class __CommonExt CImglst : public CImageList
 {
 public:
-	CImglst() = default;
+	CImglst(COLORREF crBkg = CLR_NONE)
+		: m_crBkg(crBkg)
+	{
+	}
 
 private:
+	COLORREF m_crBkg = CLR_NONE;
+
 	UINT m_cx = 0;
 	UINT m_cy = 0;
 
@@ -110,14 +115,14 @@ public:
 
 	BOOL Init(CBitmap& bitmap);
 
-	BOOL SetFile(const wstring& strFile, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-
-	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-	
-	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
-
 	void SetIcon(HICON hIcon, int nPosReplace = -1);
 
+	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
+	
+	void SetImg(CImg& img, LPCRECT prcMargin = NULL, int nPosReplace = -1);
+	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
+	void SetImg(CImg& img, bool bHalfToneMode, E_ImgFixMode eFixMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
+	
 	void SetToListCtrl(CListCtrl &wndListCtrl, E_ImglstType eImglstType);
 
 	void SetToTreeCtrl(CTreeCtrl &wndTreeCtrl)

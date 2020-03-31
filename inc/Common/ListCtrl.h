@@ -266,7 +266,7 @@ public:
 	virtual ~CObjectList()
 	{
 		(void)m_Imglst.DeleteImageList();
-		(void)m_ImglstSmall.DeleteImageList();
+		(void)m_smallImglst.DeleteImageList();
 	}
 
 private:
@@ -281,7 +281,7 @@ private:
 	fn_void	m_cbLButtondown;
 
 	CImglst m_Imglst;
-	CImglst m_ImglstSmall;
+	CImglst m_smallImglst;
 
 	CCompatableFont m_font;
 	CCompatableFont m_fontUnderline;
