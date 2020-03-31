@@ -58,16 +58,13 @@ void CAlbumPage::DoDataExchange(CDataExchange* pDX)
 	CPage::DoDataExchange(pDX);
 }
 
+#include <gdiplus.h>
+
 BOOL CAlbumPage::OnInitDialog()
 {
 	(void)CPage::OnInitDialog();
 
 	auto& globalSize = m_view.m_globalSize;
-
-	auto nSigngerImgWidth = globalSize.m_uAlbumDockWidth - g_rcSingerImgMargin.left - g_rcSingerImgMargin.right;
-	auto nSigngerImgHeight = __BrowseTop - g_rcSingerImgMargin.top - g_rcSingerImgMargin.bottom;
-
-	__AssertReturn(m_imgSingerDefault.Load(m_view.m_ImgMgr.getImgPath(__singerDefImg)), FALSE);
 
 	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.bigImglst());
 	
@@ -79,8 +76,14 @@ BOOL CAlbumPage::OnInitDialog()
 	ListPara.crText = __Color_Text;
 
 	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
+	
+	cauto strSingerImg = m_view.m_ImgMgr.getImgPath(L"singerdefault");
+	__AssertReturn(m_imgSingerDefault.Load(strSingerImg), FALSE);
 
-	auto pImgLst = &m_view.m_ImgMgr.bigImglst();
+	/*cauto strAlbumImg = m_view.m_ImgMgr.getImgPath(L"album");
+	cauto strDirImg = m_view.m_ImgMgr.getImgPath(L"dir");
+	static Gdiplus::Image imgDir(strDirImg.c_str());
+	static Gdiplus::Image imgAlbum(strAlbumImg.c_str());*/
 
 	m_wndAlbumList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
@@ -101,14 +104,18 @@ BOOL CAlbumPage::OnInitDialog()
 		CDC& dc = lvcd.dc;
 		auto& rc = lvcd.rc;
 		
-		/*CImg& img = (0 == lvcd.uItem) ? imgDir : imgAlbum;
-		int sz = rc.bottom - rc.top + 1;
-		//img.DrawEx(dc, CRect(rc.left, rc.top, rc.left+sz, rc.top+sz), false);*/
+#define __margin 5
+		//auto sz = rc.bottom - rc.top + 1 - __margin * 2; \
+		RECT rcImg{ rc.left + __margin, rc.top + __margin, rc.left+__margin+sz, rc.top+__margin+sz}; \
+		\
+		auto& img = (0 == lvcd.uItem) ? imgDir : imgAlbum; \
+		Gdiplus::Graphics graphics(dc); \
+		graphics.SetInterpolationMode(Gdiplus::InterpolationModeHighQuality); \
+		graphics.DrawImage(&img, rcImg.left, rcImg.top, sz, sz);
 
-		E_GlobalImage eImg = (0 == lvcd.uItem) ? E_GlobalImage::GI_Dir : E_GlobalImage::GI_Album;
-		auto sz = rc.bottom-rc.top+1;
-		POINT pt { rc.left + (sz - (int)pImgLst->imgWidth()) / 2, rc.top + (sz - (int)pImgLst->imgHeight()) / 2 };
-		pImgLst->Draw(&dc, (UINT)eImg, pt, ILD_TRANSPARENT | ILD_IMAGE);
+		auto iImage = (0 == lvcd.uItem) ? (int)E_GlobalImage::GI_Dir : (int)E_GlobalImage::GI_Album; \
+				auto offset = (rc.bottom - rc.top + 1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2; \
+			m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { rc.left + offset, rc.top + offset }, 0);
 
 		if (0 == lvcd.uItem)
 		{

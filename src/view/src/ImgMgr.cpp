@@ -78,13 +78,15 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 }
 
 bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
-{	
-	CImg img;
-	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
+{
+	//CImg img;
+	//__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
 
-	m_bigImglst.SetImg(img, false, &g_rcMargin);
-	m_smallImglst.SetImg(img, false, &g_rcMargin);
-	m_tabImglst.SetImg(img, false, &g_rcMargin);
+	Gdiplus::Image img(getImgPath(strImg).c_str());
+
+	m_bigImglst.SetImg(img, &g_rcMargin);
+	m_smallImglst.SetImg(img, &g_rcMargin);
+	m_tabImglst.SetImg(img, &g_rcMargin);
 
 	return true;
 }

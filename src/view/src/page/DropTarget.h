@@ -31,7 +31,7 @@ private:
 	CRect rcCtrl;
 
 	CDC *pdcCtrl = NULL;
-	CCompDC m_CompDC;
+	CCompDC m_dcDragIcon;
 
 	CRect rcDragOverIcon;
 

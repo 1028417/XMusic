@@ -203,22 +203,21 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 	int x = 0;
 	if (iImage >= 0)
 	{
-		x = cy;
-
-#define __Margin 0
-		UINT nStyle = ILD_IMAGE;
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
-			// TODO png透明绘制 nStyle |= ILD_TRANSPARENT不行;
-			auto margin = (cy - m_view.m_globalSize.m_uBigIconSize)/2;
-			rcSingerImg.SetRect(margin, margin, cy-margin, cy-margin);
+			auto offset = (cy - (int)m_view.m_globalSize.m_uBigIconSize)/2;
+			m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { offset, offset }, ILD_NORMAL);
 		}
 		else
 		{
-			nStyle |= ILD_SCALE;
-			rcSingerImg.SetRect(__Margin, __Margin, cy - __Margin, cy - __Margin);
+#define __Margin 0
+			m_view.m_ImgMgr.bigImglst().DrawEx(&dc, iImage, { __Margin, __Margin }
+				, { cy - __Margin * 2, cy - __Margin * 2 }, CLR_NONE, CLR_NONE, ILD_SCALE);
+
+			rcSingerImg.SetRect(0, 0, cy, cy);
 		}
-		m_view.m_ImgMgr.bigImglst().DrawEx(&dc, iImage, rcSingerImg.TopLeft(), rcSingerImg.Size(), CLR_NONE, CLR_NONE, nStyle);
+
+		x = cy;
 	}
 	else
 	{

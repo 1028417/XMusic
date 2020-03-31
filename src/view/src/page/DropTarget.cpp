@@ -11,7 +11,7 @@ bool CDragContext::AttachCtrl(CWnd& wndCtrl, HICON hDragIcon)
 	uTargetPos = 0;
 	pTargetObj = NULL;
 
-	(void)m_CompDC.destroy();
+	(void)m_dcDragIcon.destroy();
 
 	pdcCtrl = wndCtrl.GetDC();
 	if (NULL == pdcCtrl)
@@ -24,7 +24,7 @@ bool CDragContext::AttachCtrl(CWnd& wndCtrl, HICON hDragIcon)
 
 	if (NULL != hDragIcon)
 	{
-		if (!m_CompDC.create(hDragIcon))
+		if (!m_dcDragIcon.create(hDragIcon))
 		{
 			return false;
 		}
@@ -54,17 +54,17 @@ void CDragContext::DrawDragOverIcon(long nXPos, long nYPos)
 {
 	if (NULL != pdcCtrl)
 	{
-		CDC& CompDC = m_CompDC.getDC();
-		if (CompDC)
+		CDC& dc = m_dcDragIcon.getDC();
+		if (dc)
 		{
 			BLENDFUNCTION bf;
 			memzero(bf);
 			bf.SourceConstantAlpha = 0xff/4;
 
-			rcDragOverIcon.SetRect(nXPos, nYPos, nXPos + m_CompDC.m_cx, nYPos + m_CompDC.m_cy);
-			rcDragOverIcon.OffsetRect(10-m_CompDC.m_cx, 10-m_CompDC.m_cy);
+			rcDragOverIcon.SetRect(nXPos, nYPos, nXPos + m_dcDragIcon.m_cx, nYPos + m_dcDragIcon.m_cy);
+			rcDragOverIcon.OffsetRect(10-m_dcDragIcon.m_cx, 10-m_dcDragIcon.m_cy);
 			(void)pdcCtrl->AlphaBlend(rcDragOverIcon.left, rcDragOverIcon.top, rcDragOverIcon.Width(), rcDragOverIcon.Height()
-				, &CompDC, 0, 0, m_CompDC.m_cx, m_CompDC.m_cy, bf);
+				, &dc, 0, 0, m_dcDragIcon.m_cx, m_dcDragIcon.m_cy, bf);
 			// TODO CImageList::BeginDrag
 		}
 	}

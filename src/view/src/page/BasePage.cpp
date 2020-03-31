@@ -57,6 +57,10 @@ BOOL CBasePage::GetCtrlDragData(HWND hwndCtrl, const CPoint& point, LPVOID& pDra
 		return FALSE;
 	}
 
+	if (NULL != g_DragData.hIcon)
+	{
+		DestroyIcon(g_DragData.hIcon);
+	}
 	g_DragData = tagDragData();
 
 	__EnsureReturn(itr->second(g_DragData), FALSE);
