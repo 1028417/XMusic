@@ -1,8 +1,6 @@
 
 #pragma once
 
-#define __singerDefImg L"singerdefault"
-
 class CImgMgr
 {
 public:

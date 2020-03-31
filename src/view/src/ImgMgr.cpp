@@ -15,7 +15,7 @@ static const wstring g_lpImg[]{
 	, L"playitem"
 
 	, L"singergroup"
-	, __singerDefImg
+	, L"singerdefault"
 	, L"album"
 	, L"media"
 };
