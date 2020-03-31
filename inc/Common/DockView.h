@@ -74,7 +74,7 @@ private:
 
 	void OnPaint();
 
-	void _drawItem(CDC& dc, Gdiplus::Graphics& graphics, int nItem, CRect& rcItem);
+	void _drawItem(CDC& dc, int nItem, CRect& rcItem);
 };
 
 enum class E_DockViewType

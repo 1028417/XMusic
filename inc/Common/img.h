@@ -3,6 +3,8 @@
 
 #include <atlimage.h>
 
+#include <gdiplus.h>
+
 #define __crWhite RGB(255, 255, 255)
 
 class __CommonExt CCompDC
@@ -71,7 +73,6 @@ public:
 public:
 	BOOL Load(const wstring& strFile);
 
-	BOOL DrawEx(HDC hDC, const RECT& rc);
 	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode);
 	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode, E_ImgFixMode eFixMode);
 };
@@ -97,7 +98,11 @@ private:
 	UINT m_cx = 0;
 	UINT m_cy = 0;
 
-	CCompDC m_CompDC;
+	CCompDC m_adpDC;
+	CRect m_rcAdpDC;
+
+private:
+	void _SetImg(LPCRECT prcMargin, int nPosReplace, cfn_void cb);
 
 public:
 	UINT imgWidth() const
@@ -118,17 +123,10 @@ public:
 	void SetIcon(HICON hIcon, int nPosReplace = -1);
 
 	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
-	
+
+	void SetImg(Gdiplus::Image& img, LPCRECT prcMargin = NULL, int nPosReplace = -1);
+
 	void SetImg(CImg& img, LPCRECT prcMargin = NULL, int nPosReplace = -1);
 	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
 	void SetImg(CImg& img, bool bHalfToneMode, E_ImgFixMode eFixMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-	
-	void SetToListCtrl(CListCtrl &wndListCtrl, E_ImglstType eImglstType);
-
-	void SetToTreeCtrl(CTreeCtrl &wndTreeCtrl)
-	{
-		(void)wndTreeCtrl.SetImageList(this, TVSIL_NORMAL);
-	}
-
-	HBITMAP GetBitmap(UINT uPos, cfn_void_t<CDC&> cb=NULL);
 };
