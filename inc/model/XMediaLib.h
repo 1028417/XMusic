@@ -90,7 +90,7 @@ public:
 
     E_MediaDirType dirType() override
     {
-        return E_MediaDirType::MDT_Online;
+        return E_MediaDirType::MDT_Snapshot;
     }
 };
 

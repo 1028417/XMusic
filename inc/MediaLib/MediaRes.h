@@ -90,7 +90,7 @@ enum class E_MediaDirType
 	MDT_Local
 	, MDT_Attach
 #if !__winvc
-	, MDT_Online
+    , MDT_Snapshot
 #endif
 };
 
