@@ -506,7 +506,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/img/medialib/demandplayitem.png);</string>
+      <string notr="true">border-image: url(:/img/medialib/demandplayitem0.png);</string>
      </property>
      <property name="text">
       <string/>

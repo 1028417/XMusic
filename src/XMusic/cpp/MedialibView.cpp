@@ -450,11 +450,9 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     IMedia* pMedia = mediaContext.media();
     if (pMedia)
     {
-        strRemark << pMedia->qualityString();
-
         if (pMedia->duration() > __wholeTrackDuration)
         {
-            strRemark << L"\n" << pMedia->durationString();
+            strRemark << pMedia->durationString();
         }
     }
     else if (mediaContext.pMediaSet)
@@ -501,6 +499,13 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
         rc.setRight(rc.right() - __size(100));
     }
+    else
+    {
+        if (pMedia)
+        {
+            rc.setRight(rc.right() - __size(100));
+        }
+    }
 
     UINT uTextAlpha = 255;
     UINT uShadowAlpha = __ShadowAlpha;
@@ -511,8 +516,8 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
 
     auto rcPos = painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
-    (void)rcPos;
-    /*if (pMedia)
+
+    if (pMedia)
     {
         CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
@@ -521,7 +526,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         rcPos.setRight(rc.right());
         cauto qsQuality = strutil::toQstr(pMedia->qualityString());
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
-    }*/
+    }
 }
 
 void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)

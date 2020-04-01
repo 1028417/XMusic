@@ -26,7 +26,7 @@ BEGIN_MESSAGE_MAP(CSimilarFileDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_EXPLORE, &CSimilarFileDlg::OnBnClickedExplore)	
 END_MESSAGE_MAP()
 
-#define __Color_Flag RGB(243, 251, 255)
+#define __crFlag RGB(245, 252, 255)
 
 BOOL CSimilarFileDlg::OnInitDialog()
 {
@@ -51,7 +51,7 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		if (m_vecRowFlag[lvcd.uItem])
 		{
-			lvcd.crBkg = __Color_Flag;
+			lvcd.crBkg = __crFlag;
 		}
 
 		if (0 == lvcd.nSubItem)

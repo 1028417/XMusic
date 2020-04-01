@@ -52,14 +52,14 @@ void CDragContext::DettachCtrl()
 
 void CDragContext::DrawDragOverIcon(long nXPos, long nYPos)
 {
-	if (NULL != pdcCtrl)
+	if (pdcCtrl)
 	{
 		CDC& dc = m_dcDragIcon.getDC();
 		if (dc)
 		{
 			BLENDFUNCTION bf;
 			memzero(bf);
-			bf.SourceConstantAlpha = 0xff/4;
+			bf.SourceConstantAlpha = 0xff/10;
 
 			rcDragOverIcon.SetRect(nXPos, nYPos, nXPos + m_dcDragIcon.m_cx, nYPos + m_dcDragIcon.m_cy);
 			rcDragOverIcon.OffsetRect(10-m_dcDragIcon.m_cx, 10-m_dcDragIcon.m_cy);

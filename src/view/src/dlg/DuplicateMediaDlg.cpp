@@ -18,7 +18,7 @@ BEGIN_MESSAGE_MAP(CDuplicateMediaDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_PLAY, &CDuplicateMediaDlg::OnBnClickedPlay)
 END_MESSAGE_MAP()
 
-#define __Color_Flag RGB(243, 251, 255)
+#define __crFlag RGB(245, 252, 255)
 
 BOOL CDuplicateMediaDlg::OnInitDialog()
 {
@@ -41,7 +41,7 @@ BOOL CDuplicateMediaDlg::OnInitDialog()
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		if (m_vecRowFlag[lvcd.uItem])
 		{
-			lvcd.crBkg = __Color_Flag;
+			lvcd.crBkg = __crFlag;
 		}
 	});
 

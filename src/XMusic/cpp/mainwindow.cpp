@@ -12,6 +12,8 @@
 
 #define __size10 __size(10)
 
+#define __demandplayitemPngCount 5
+
 static Ui::MainWindow ui;
 
 static bool g_bFullScreen = true;
@@ -403,7 +405,7 @@ bool MainWindow::event(QEvent *ev)
 
         _updateProgress();
 
-    break;
+        break;
     default:
         break;
     }
@@ -1296,6 +1298,17 @@ void MainWindow::_demand(CButton* btnDemand)
     else if (btnDemand == ui.btnDemandPlayItem)
     {
         eDemandMode = E_DemandMode::DM_DemandPlayItem;
+
+        static UINT uIdx = 0;
+        uIdx++;
+        if (uIdx >= __demandplayitemPngCount)
+        {
+            uIdx = 0;
+        }
+        WString strStyle;
+        strStyle << L"border-image: url(:/img/medialib/demandplayitem" << uIdx << L".png)";
+
+        ui.btnDemandPlayItem->setStyleSheet(strStyle);
     }
     else if (btnDemand == ui.btnDemandPlaylist)
     {
