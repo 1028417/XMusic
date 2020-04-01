@@ -22,7 +22,7 @@ public:
 		DettachCtrl();
 	}
 
-	bool AttachCtrl(CWnd& wndCtrl, HICON hDragIcon);
+	bool AttachCtrl(CWnd& wndCtrl, const tagDragData& DragData);
 
 	void DettachCtrl();
 

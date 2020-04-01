@@ -3,7 +3,7 @@
 
 static CPen g_pen(PS_SOLID, 1, RGB(170, 170, 255));
 
-bool CDragContext::AttachCtrl(CWnd& wndCtrl, HICON hDragIcon)
+bool CDragContext::AttachCtrl(CWnd& wndCtrl, const tagDragData& DragData)
 {
 	pwndCtrl = &wndCtrl;
 	wndCtrl.GetClientRect(rcCtrl);
@@ -22,9 +22,9 @@ bool CDragContext::AttachCtrl(CWnd& wndCtrl, HICON hDragIcon)
 	(void)pdcCtrl->SelectObject(g_pen);
 	(void)pdcCtrl->SelectStockObject(NULL_BRUSH);
 
-	if (NULL != hDragIcon)
+	if (DragData.hIcon)
 	{
-		if (!m_dcDragIcon.create(hDragIcon))
+		if (!m_dcDragIcon.create(DragData.hIcon))
 		{
 			return false;
 		}
@@ -138,7 +138,7 @@ DROPEFFECT CDropTargetEx::OnDragOver(CWnd *pWnd, LPVOID pDragData, DWORD dwKeySt
 
 	if (bFirstEnter)
 	{
-		m_DragContext.AttachCtrl(*pWnd, DragData.hIcon);
+		m_DragContext.AttachCtrl(*pWnd, DragData);
 	}
 	else
 	{
