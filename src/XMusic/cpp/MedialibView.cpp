@@ -452,7 +452,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     {
         if (pMedia->duration() > __wholeTrackDuration)
         {
-            strRemark << pMedia->durationString();
+            strRemark << '\n' << pMedia->durationString();
         }
     }
     else if (mediaContext.pMediaSet)
@@ -523,7 +523,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(9));
-        rcPos.setRight(rc.right());
+        rcPos.setRight(10000);
         cauto qsQuality = strutil::toQstr(pMedia->qualityString());
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsQuality, 1, __ShadowAlpha, uTextAlpha);
     }

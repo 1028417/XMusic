@@ -12,7 +12,7 @@
 
 #define __size10 __size(10)
 
-#define __demandplayitemPngCount 5
+#define __demandplayitemPngCount 4
 
 static Ui::MainWindow ui;
 

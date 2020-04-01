@@ -57,7 +57,7 @@ protected:
         UINT eStyle = E_RowStyle::IS_None;
 
         const QPixmap *pixmap = NULL;
-        float fIconMargin = 0.18f;
+        float fIconMargin = 0.2f;
 
         WString strText;
     };
