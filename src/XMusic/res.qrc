@@ -22,19 +22,18 @@
         <file>img/btnAdd.png</file>
         <file>img/btnSub.png</file>
         <file>img/medialib/demandalbum.png</file>
-        <file>img/medialib/demandAlbumItem.png</file>
-        <file>img/medialib/demandPlayitem.png</file>
+        <file>img/medialib/media.png</file>
+        <file>img/medialib/demandplayitem.png</file>
         <file>img/medialib/singergroup.png</file>
         <file>img/medialib/singerdefault.png</file>
         <file>img/medialib/album.png</file>
-        <file>img/medialib/media.png</file>
         <file>img/medialib/playlistset.png</file>
         <file>img/medialib/playlist.png</file>
-        <file>img/medialib/playlist.png</file>
-        <file>img/medialib/playItem.png</file>
+        <file>img/medialib/playitem.png</file>
+        <file>img/medialib/xmusicdir.png</file>
+        <file>img/medialib/ssdir.png</file>
         <file>img/medialib/hires.png</file>
         <file>img/medialib/dsd.png</file>
-        <file>img/medialib/ssdir.png</file>
         <file>img/medialib/hddisk.png</file>
         <file>img/medialib/lldisk.png</file>
         <file>img/medialib/dir.png</file>

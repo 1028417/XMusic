@@ -27,17 +27,18 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
 
 void CMedialibView::init()
 {
+    (void)m_pmSSFile.load(__mediaPng(media));
+
     (void)m_pmSingerGroup.load(__mediaPng(singergroup));
     (void)m_pmDefaultSinger.load(__mediaPng(singerdefault));
     (void)m_pmAlbum.load(__mediaPng(album));
 
     (void)m_pmPlaylistSet.load(__mediaPng(playlistset));
     (void)m_pmPlaylist.load(__mediaPng(playlist));
-    (void)m_pmPlayItem.load(__mediaPng(playItem));
+    (void)m_pmPlayItem.load(__mediaPng(playitem));
 
     (void)m_pmXmusicDir.load(__mediaPng(xmusicdir));
     (void)m_pmSSDir.load(__mediaPng(ssdir));
-    (void)m_pmSSFile.load(__mediaPng(media));
 
     (void)m_pmHires.load(__mediaPng(hires));
     (void)m_pmDSD.load(__mediaPng(dsd));
