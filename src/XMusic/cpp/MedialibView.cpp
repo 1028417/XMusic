@@ -30,14 +30,14 @@ void CMedialibView::init()
     (void)m_pmSingerGroup.load(__mediaPng(singergroup));
     (void)m_pmDefaultSinger.load(__mediaPng(singerdefault));
     (void)m_pmAlbum.load(__mediaPng(album));
-    //(void)m_pmAlbumItem.load(__mediaPng(media));
 
     (void)m_pmPlaylistSet.load(__mediaPng(playlistset));
     (void)m_pmPlaylist.load(__mediaPng(playlist));
-    (void)m_pmPlayItem.load(__mediaPng(media));
+    (void)m_pmPlayItem.load(__mediaPng(playItem));
 
     (void)m_pmXmusicDir.load(__mediaPng(xmusicdir));
     (void)m_pmSSDir.load(__mediaPng(ssdir));
+    (void)m_pmSSFile.load(__mediaPng(media));
 
     (void)m_pmHires.load(__mediaPng(hires));
     (void)m_pmDSD.load(__mediaPng(dsd));
@@ -378,10 +378,17 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
     else if (context.pFile)
     {
-       context.pixmap = &m_pmFile;
-
-       auto pMediaRes = ((CMediaRes*)context.pFile);
-       context.strText = pMediaRes->isXmsc() ? pMediaRes->GetTitle() : pMediaRes->fileName();
+        auto pMediaRes = ((CMediaRes*)context.pFile);
+        if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        {
+            context.pixmap = &m_pmSSFile;
+            context.strText = pMediaRes->GetTitle();
+        }
+        else
+        {
+            context.pixmap = &m_pmFile;
+            context.strText = pMediaRes->fileName();
+        }
     }
 
     IMedia* pMedia = ((tagMediaContext&)context).media();

@@ -27,7 +27,6 @@ private:
     QPixmap m_pmSingerGroup;
     QPixmap m_pmDefaultSinger;
     QPixmap m_pmAlbum;
-    //QPixmap m_pmAlbumItem;
 
     QPixmap m_pmPlaylistSet;
     QPixmap m_pmPlaylist;
@@ -35,6 +34,7 @@ private:
 
     QPixmap m_pmXmusicDir;
     QPixmap m_pmSSDir;
+    QPixmap m_pmSSFile;
 
     QPixmap m_pmHires;
     QPixmap m_pmDSD;

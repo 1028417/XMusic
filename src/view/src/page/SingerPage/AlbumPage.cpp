@@ -64,8 +64,10 @@ BOOL CAlbumPage::OnInitDialog()
 {
 	(void)CPage::OnInitDialog();
 
-	auto& globalSize = m_view.m_globalSize;
+	cauto strSingerImg = m_view.m_ImgMgr.getImgPath(L"singerdefault");
+	__AssertReturn(m_imgSingerDefault.Load(strSingerImg), FALSE);
 
+	auto& globalSize = m_view.m_globalSize;
 	m_wndAlbumList.SetImageList(NULL, &m_view.m_ImgMgr.bigImglst());
 	
 	(void)m_wndAlbumList.ModifyStyle(0, LVS_NOCOLUMNHEADER | LVS_SINGLESEL | LVS_EDITLABELS);
@@ -77,14 +79,6 @@ BOOL CAlbumPage::OnInitDialog()
 
 	__AssertReturn(m_wndAlbumList.InitCtrl(ListPara), FALSE);
 	
-	cauto strSingerImg = m_view.m_ImgMgr.getImgPath(L"singerdefault");
-	__AssertReturn(m_imgSingerDefault.Load(strSingerImg), FALSE);
-
-	/*cauto strAlbumImg = m_view.m_ImgMgr.getImgPath(L"album");
-	cauto strDirImg = m_view.m_ImgMgr.getImgPath(L"dir");
-	static Gdiplus::Image imgDir(strDirImg.c_str());
-	static Gdiplus::Image imgAlbum(strAlbumImg.c_str());*/
-
 	m_wndAlbumList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
 		if (pAlbum)
@@ -103,19 +97,10 @@ BOOL CAlbumPage::OnInitDialog()
 
 		CDC& dc = lvcd.dc;
 		auto& rc = lvcd.rc;
-		
-#define __margin 5
-		//auto sz = rc.bottom - rc.top + 1 - __margin * 2; \
-		RECT rcImg{ rc.left + __margin, rc.top + __margin, rc.left+__margin+sz, rc.top+__margin+sz}; \
-		\
-		auto& img = (0 == lvcd.uItem) ? imgDir : imgAlbum; \
-		Gdiplus::Graphics graphics(dc); \
-		graphics.SetInterpolationMode(Gdiplus::InterpolationModeHighQuality); \
-		graphics.DrawImage(&img, rcImg.left, rcImg.top, sz, sz);
-
-		auto iImage = (0 == lvcd.uItem) ? (int)E_GlobalImage::GI_Dir : (int)E_GlobalImage::GI_Album; \
-				auto offset = (rc.bottom - rc.top + 1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2; \
-			m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { rc.left + offset, rc.top + offset }, 0);
+	
+		auto iImage = (0 == lvcd.uItem) ? (int)E_GlobalImage::GI_Dir : (int)E_GlobalImage::GI_Album;
+				auto offset = (rc.bottom - rc.top + 1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
+		m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { rc.left + offset, rc.top + offset }, 0);
 
 		if (0 == lvcd.uItem)
 		{
