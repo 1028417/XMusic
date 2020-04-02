@@ -417,7 +417,7 @@ inline bool CMedialibView::_playIconRect(const tagMediaContext& context, QRect& 
         || context.pMedia || context.pFile)
     {
         UINT cy = context.lvRow.rc.height();
-        int yMargin = cy * context.fIconMargin*1.6;
+        int yMargin = cy * context.fIconMargin*1.3;
         cy -= yMargin*2;
 
         int x_icon = context.lvRow.rc.right()- __playIconMagin - cy;
@@ -456,6 +456,11 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         if (pMedia->duration() > __wholeTrackDuration)
         {
             strRemark << '\n' << pMedia->durationString();
+        }
+
+        if (pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
+        {
+            rc.setLeft(rc.left() + __size(10));
         }
     }
     else if (mediaContext.pMediaSet)
