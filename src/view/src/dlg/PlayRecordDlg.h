@@ -13,7 +13,7 @@ public:
 	}
 
 public:
-	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override
+	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override
 	{
 		vecText.push_back(m_addTime.GetText(false));
 		vecText.push_back(GetPath());

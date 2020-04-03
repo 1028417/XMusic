@@ -201,7 +201,8 @@ BOOL CAlbumPage::OnInitDialog()
 			break;
 		};
 	}, [&](tagLVDrawSubItem& lvcd) {
-		if (m_wndAlbumItemList.GetView() == E_ListViewType::LVT_Report)
+		auto eViewType = m_wndAlbumItemList.GetView();
+		if (E_ListViewType::LVT_Report == eViewType || E_ListViewType::LVT_List == eViewType)
 		{
 			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
 			__Ensure(pAlbumItem);

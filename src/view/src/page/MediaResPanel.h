@@ -14,9 +14,9 @@ private:
 	bool m_bShowRelatedSinger = true;
 
 private:
-	void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage) override
+	void GenListItem(CListObject& Object, E_ListViewType eViewType, vector<wstring>& vecText, TD_ListImgIdx& iImage) override
 	{
-		((CMediaRes&)Object).genMediaResListItem(bReportView, vecText, iImage, m_bShowRelatedSinger);
+		((CMediaRes&)Object).genMediaResListItem(eViewType, vecText, iImage, m_bShowRelatedSinger);
 	}
 };
 
