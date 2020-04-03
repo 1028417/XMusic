@@ -7,8 +7,10 @@ public:
 
 	CAlbumItem(int nID, const wstring& strPath, filetime_t time, class CAlbum& Album);
 
+#if __winvc
 private:
 	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;
+#endif
 
 public:
 	class CAlbum* GetAlbum() const;

@@ -35,7 +35,7 @@ public:
 		return XFile::fileName() + L" | " + XFile::parentDir();
 	}
 
-	int _getImage() override
+	int getImage() override
 	{
 		return (int)E_GlobalImage::GI_DirLink;
 	}

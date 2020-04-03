@@ -45,10 +45,10 @@ private:
 	bool GetRenameText(wstring& stRenameText) const override;
 
 	void OnListItemRename(const wstring& strNewName) override;
-
-	virtual int _getImage();
-
+	
 public:
+	virtual int getImage();
+
 #if __winvc
 	static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
 
