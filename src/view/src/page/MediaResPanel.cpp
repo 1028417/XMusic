@@ -151,6 +151,16 @@ BOOL CMediaResPanel::OnInitDialog()
 
 			break;
 		};
+	}, [&](tagLVDrawSubItem& lvcd) {
+		if (m_wndList.GetView() == E_ListViewType::LVT_Report)
+		{
+			auto pMediaRes = (CMediaRes*)lvcd.pObject;
+			__Ensure(pMediaRes);
+
+			auto& rc = lvcd.rc;
+			auto offset = (rc.bottom - rc.top - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
+			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, pMediaRes->getImage(), { offset, rc.top + offset }, 0);
+		}
 	});
 
 	m_wndList.SetViewAutoChange([&](E_ListViewType eViewType) {

@@ -99,8 +99,8 @@ BOOL CAlbumPage::OnInitDialog()
 		auto& rc = lvcd.rc;
 	
 		auto iImage = (0 == lvcd.uItem) ? (int)E_GlobalImage::GI_Dir : (int)E_GlobalImage::GI_Album;
-				auto offset = (rc.bottom - rc.top + 1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
-		m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { rc.left + offset, rc.top + offset }, 0);
+		auto offset = (rc.bottom - rc.top - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
+		m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { offset, rc.top + offset }, 0);
 
 		if (0 == lvcd.uItem)
 		{
@@ -140,10 +140,7 @@ BOOL CAlbumPage::OnInitDialog()
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
-		if (NULL == pAlbumItem)
-		{
-			return;
-		}
+		__Ensure(pAlbumItem);
 
 		switch (lvcd.nSubItem)
 		{
@@ -203,6 +200,18 @@ BOOL CAlbumPage::OnInitDialog()
 		default:
 			break;
 		};
+	}, [&](tagLVDrawSubItem& lvcd) {
+		if (m_wndAlbumItemList.GetView() == E_ListViewType::LVT_Report)
+		{
+			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
+			__Ensure(pAlbumItem);
+
+			auto iImage = pAlbumItem->getCueFile() ? (int)E_GlobalImage::GI_WholeTrack : (int)E_GlobalImage::GI_AlbumItem;
+
+			auto& rc = lvcd.rc;
+			auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
+			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { offset, rc.top + offset }, 0);
+		}
 	});
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {

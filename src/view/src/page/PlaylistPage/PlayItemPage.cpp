@@ -67,10 +67,7 @@ BOOL CPlayItemPage::OnInitDialog()
 
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
 		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
-		if (NULL == pPlayItem)
-		{
-			return;
-		}
+		__Ensure(pPlayItem);
 
 		switch (lvcd.nSubItem)
 		{
@@ -131,6 +128,27 @@ BOOL CPlayItemPage::OnInitDialog()
 		default:
 			break;
 		}
+	}, [&](tagLVDrawSubItem& lvcd) {
+		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
+		__Ensure(pPlayItem);
+
+		int iImage = 0;
+		if (pPlayItem->getCueFile())
+		{
+			iImage = (int)E_GlobalImage::GI_WholeTrack;
+		}
+		else
+		{
+			iImage = pPlayItem->getSingerImg();
+			if (iImage < 0)
+			{
+				iImage = (int)E_GlobalImage::GI_PlayItem;
+			}
+		}
+
+		auto& rc = lvcd.rc;
+		auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
+		m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { offset, rc.top + offset }, 0);
 	});
 
 	(void)__super::RegDragDropCtrl(m_wndList, [&](tagDragData& DragData) {

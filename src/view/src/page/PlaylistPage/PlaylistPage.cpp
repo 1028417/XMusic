@@ -82,8 +82,8 @@ BOOL CPlaylistPage::OnInitDialog()
 
 			RECT rc(lvcd.rc);
 
-			auto offset = (rc.bottom - rc.top + 1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
-			m_view.m_ImgMgr.bigImglst().Draw(&lvcd.dc, (int)E_GlobalImage::GI_Playlist, { rc.left + offset, rc.top + offset }, 0);
+			auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
+			m_view.m_ImgMgr.bigImglst().Draw(&lvcd.dc, (int)E_GlobalImage::GI_Playlist, { offset, rc.top + offset }, 0);
 
 			rc.left += 100;
 			rc.top -= 22;
