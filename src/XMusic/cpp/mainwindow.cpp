@@ -117,7 +117,7 @@ void MainWindow::showLogo()
 
     float fFontSizeOffset = 1.0f;
 #if __android || __ios
-    fFontSizeOffset = 0.92;
+    fFontSizeOffset = 0.918;
 
     cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
