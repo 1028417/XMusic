@@ -15,7 +15,9 @@ private:
         return _GetDisplayName(true) + __wcDot + GetExtName();
 	}
 
+#if __winvc
 	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+#endif
 
 public:
 	class CPlaylist* GetPlaylist() const;

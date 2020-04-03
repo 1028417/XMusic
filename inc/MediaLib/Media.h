@@ -146,11 +146,13 @@ private:
         fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
     }
 
-	bool GetRenameText(wstring& stRenameText) const override
+#if __winvc
+    bool GetRenameText(wstring& stRenameText) const override
 	{
 		stRenameText = GetTitle();
 		return true;
 	}
 
 	void OnListItemRename(const wstring& strNewName) override;
+#endif
 };

@@ -39,7 +39,6 @@ private:
 	tagMediaTag m_MediaTag;
 
 	LPCCueFile m_pCueFile = NULL;
-#endif
 
 private:
 	bool GetRenameText(wstring& stRenameText) const override;
@@ -49,7 +48,6 @@ private:
 public:
 	virtual int getImage();
 
-#if __winvc
 	static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
 
 	static bool ReadFlacTag(const wstring& strFile, tagMediaTag& MediaTag);
@@ -80,9 +78,11 @@ public:
 
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
 
-    void genMediaResListItem(E_ListViewType eViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
-
     void AsyncTask();
+
+#if __winvc
+    void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
+#endif
 };
 
 enum class E_MediaDirType
@@ -166,6 +166,7 @@ public:
 		});
 	}
 
+#if __winvc
 private:
 	wstring GetTreeText() const override
 	{
@@ -176,4 +177,5 @@ private:
 	{
 		lstChilds.add(TD_MediaDirList(this->dirs()));
 	}
+#endif
 };

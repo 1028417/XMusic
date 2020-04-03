@@ -35,6 +35,7 @@ public:
 		return XFile::fileName() + L" | " + XFile::parentDir();
 	}
 
+#if __winvc
 	int getImage() override
 	{
 		return (int)E_GlobalImage::GI_DirLink;
@@ -44,6 +45,7 @@ public:
 	{
 		return false;
     }
+#endif
 };
 
 class __MediaLibExt CRootMediaDir : public CMediaDir

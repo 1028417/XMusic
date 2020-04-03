@@ -82,12 +82,14 @@ private:
         lstMedias.add(m_alAlbumItems);
 	}
 
-	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
-
 	wstring GetExportName() override
 	{
         return (m_pParent->m_strName + L"专辑") + __CNDot + m_strName;
-	}
+    }
+
+#if __winvc
+    void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+#endif
 };
 
 
@@ -147,9 +149,11 @@ public:
 	}
 
 private:
-	int GetTreeImage() override;
-	
 	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) override;
+
+#if __winvc
+    int GetTreeImage() override;
+#endif
 };
 
 class __MediaLibExt CSingerGroup : public CMediaSet
@@ -187,8 +191,10 @@ private:
 		lstSubSets.add(m_lstSingers);
 	}
 
+#if __winvc
 	int GetTreeImage() override
 	{
 		return (int)E_GlobalImage::GI_SingerGroup;
 	}
+#endif
 };

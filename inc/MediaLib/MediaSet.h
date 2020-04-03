@@ -126,6 +126,9 @@ private:
 private:
 	virtual int _indexOf(const CMediaSet&) const { return -1; }
 
+    bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
+
+#if __winvc
 	bool GetRenameText(wstring& stRenameText) const override
 	{
 		stRenameText = m_strName;
@@ -143,8 +146,7 @@ private:
 	{
 		return playable();
 	}
-
-	bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
+#endif
 
 public:
 	const CMediasetProperty& property() const
