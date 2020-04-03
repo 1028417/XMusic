@@ -106,12 +106,12 @@ void CColorDlg::_relayout(int cx, int cy)
 
     int x_bar = 2*x + szButton;
     int cx_bar = cx_group-x_bar*2+1;
-    int cy_bar = __size(40);
+    int cy_bar = __size(41);
 
     for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
                                        , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
     {
-        pBar->setMargin((cy_bar-__size(11))/2);
+        pBar->setMargin((cy_bar-__size(10))/2);
     }
 
     ui.barBkgRed->setGeometry(x_bar, y-cy_bar/2, cx_bar, cy_bar);

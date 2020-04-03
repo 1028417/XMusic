@@ -72,19 +72,19 @@ private:
         QRect rc = _rect();
         auto cy = rc.height();
 
-        QColor crBegin(0,0,0);
+        QColor crBegin(32,32,32,170);
         UINT xround = cy/2;
         if (E_BarColor::BC_Red == m_eColor)
         {
-            painter.fillRectEx(rc, crBegin, QColor(255,0,0), xround);
+            painter.fillRectEx(rc, crBegin, QColor(255,0,0, 170), xround);
         }
         else if (E_BarColor::BC_Green == m_eColor)
         {
-            painter.fillRectEx(rc, crBegin, QColor(0,255,0), xround);
+            painter.fillRectEx(rc, crBegin, QColor(0,255,0, 170), xround);
         }
         else if (E_BarColor::BC_Blue == m_eColor)
         {
-            painter.fillRectEx(rc, crBegin, QColor(0,0,255), xround);
+            painter.fillRectEx(rc, crBegin, QColor(0,0,255, 170), xround);
         }
 
         auto margin = cy/4+1;
