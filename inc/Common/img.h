@@ -59,7 +59,8 @@ using TD_IconVec = vector<HICON>;
 
 enum class E_ImgFixMode
 {
-	IFM_Inner
+	IFM_None
+	, IFM_Inner
 	, IFM_Outer
 	, IFM_Width
 	, IFM_Height
@@ -73,8 +74,7 @@ public:
 public:
 	BOOL Load(const wstring& strFile);
 
-	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode);
-	BOOL StretchBltEx(HDC hDC, const RECT& rc, bool bHalfToneMode, E_ImgFixMode eFixMode);
+	BOOL StretchBltEx(HDC hDC, const RECT& rc, E_ImgFixMode eFixMode);
 };
 
 enum class E_ImglstType
@@ -99,10 +99,6 @@ private:
 	UINT m_cy = 0;
 
 	CCompDC m_adpDC;
-	CRect m_rcAdpDC;
-
-private:
-	void _SetImg(LPCRECT prcMargin, int nPosReplace, cfn_void cb);
 
 public:
 	UINT imgWidth() const
@@ -124,9 +120,7 @@ public:
 
 	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
 
-	void SetImg(Gdiplus::Image& img, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-
-	void SetImg(CImg& img, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-	void SetImg(CImg& img, bool bHalfToneMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
-	void SetImg(CImg& img, bool bHalfToneMode, E_ImgFixMode eFixMode, LPCRECT prcMargin = NULL, int nPosReplace = -1);
+	void CImglst::SetImg(Gdiplus::Image& img, LPCRECT prcMargin, int nPosReplace = -1);
+	
+	void SetImg(CImg& img, E_ImgFixMode eFixMode, int nPosReplace = -1);
 };

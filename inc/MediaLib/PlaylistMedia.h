@@ -97,13 +97,7 @@ private:
 	{
         lstMedias.add(m_alPlayItems);
 	}
-
-    void GenListItem(bool, vector<wstring>& vecText, int& iImage) override
-	{
-		iImage = (int)E_GlobalImage::GI_Playlist;
-        (void)vecText;//vecText.push_back(GetDisplayName().c_str());
-	}
-
+	
 	wstring GetExportName() override
 	{
 		return L"歌单" + GetDisplayName();
