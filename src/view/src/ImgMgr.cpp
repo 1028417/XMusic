@@ -79,14 +79,19 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 
 bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
 {
-	//CImg img;
-	//__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
+	Gdiplus::Bitmap img(getImgPath(strImg).c_str());
+	HICON hIcon = NULL;
+	(void)img.GetHICON(&hIcon);
 
-	Gdiplus::Image img(getImgPath(strImg).c_str());
-
-	m_bigImglst.SetImg(img, &g_rcMargin);
-	m_smallImglst.SetImg(img, &g_rcMargin);
-	m_tabImglst.SetImg(img, &g_rcMargin);
+	m_bigImglst.SetIcon(hIcon);
+	m_smallImglst.SetIcon(hIcon);
+	m_tabImglst.SetIcon(hIcon);
+	
+	/*CImg img;
+	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
+	m_bigImglst.SetBitmap(img, E_ImgFixMode::IFM_None);
+	m_smallImglst.SetBitmap(img, E_ImgFixMode::IFM_None);
+	m_tabImglst.SetBitmap(img, E_ImgFixMode::IFM_None);*/
 
 	return true;
 }
@@ -96,9 +101,9 @@ bool CImgMgr::_setSingerImg(const wstring& strFile)
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
 
-	m_bigImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
-	m_smallImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
-	m_tabImglst.SetImg(img, true, E_ImgFixMode::IFM_Inner);
+	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
 
 	return true;
 }

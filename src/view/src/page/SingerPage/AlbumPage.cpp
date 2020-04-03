@@ -273,7 +273,7 @@ void CAlbumPage::OnPaint()
 	rcSingerImg.bottom -= g_rcSingerImgMargin.bottom;
 
 	auto& img = m_imgSinger.IsNull()?m_imgSingerDefault:m_imgSinger;
-	img.StretchBltEx(dc, rcSingerImg, true, E_ImgFixMode::IFM_Outer);
+	img.StretchBltEx(dc, rcSingerImg, E_ImgFixMode::IFM_Outer);
 }
 
 #define __XOffset 6
