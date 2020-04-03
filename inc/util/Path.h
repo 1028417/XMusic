@@ -214,14 +214,30 @@ public:
 	void clear();
 };
 
+#if __winvc
+#define LV_VIEW_ICON            0x0000
+#define LV_VIEW_DETAILS         0x0001
+#define LV_VIEW_SMALLICON       0x0002
+#define LV_VIEW_LIST            0x0003
+#define LV_VIEW_TILE            0x0004
+
+enum class E_ListViewType
+{
+	LVT_Icon = LV_VIEW_ICON,
+	LVT_Report = LV_VIEW_DETAILS,
+	LVT_SmallIcon = LV_VIEW_SMALLICON,
+	LVT_List = LV_VIEW_LIST,
+	LVT_Tile = LV_VIEW_TILE,
+};
+
+using TD_ListImgIdx = int;
+
 class __UtilExt CListObject
 {
 public:
-    virtual void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage)
+    virtual void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&)
 	{
-        (void)bReportView;
         (void)vecText;
-        (void)iImage;
     }
 
 	virtual bool GetRenameText(wstring& strRenameText) const
@@ -250,8 +266,12 @@ public:
 
 	virtual void GetTreeChilds(TD_TreeObjectList&) {}
 };
+#endif
 
-class __UtilExt CPathObject : public CPath, public CListObject
+class __UtilExt CPathObject : public CPath
+#if __winvc
+	, public CListObject
+#endif
 {
 public:
     virtual ~CPathObject() = default;
@@ -280,7 +300,10 @@ protected:
 	}
 };
 
-class __UtilExt CDirObject : public CPathObject, public CTreeObject
+class __UtilExt CDirObject : public CPathObject
+#if __winvc
+	, public CTreeObject
+#endif
 {
 public:
     virtual ~CDirObject() = default;
@@ -308,6 +331,7 @@ protected:
 		return NULL;
 	}
 
+#if __winvc
 public:
 	wstring GetTreeText() const override
 	{
@@ -318,4 +342,5 @@ public:
 	{
 		lstChilds.add(TD_DirObjectList(this->dirs()));
 	}
+#endif
 };

@@ -9,7 +9,7 @@ public:
 
 #if __winvc
 private:
-	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;
+	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 #endif
 
 public:
@@ -82,7 +82,7 @@ private:
         lstMedias.add(m_alAlbumItems);
 	}
 
-	void GenListItem(bool bReportView, vector<wstring>& vecText, int& iImage) override;
+	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 
 	wstring GetExportName() override
 	{

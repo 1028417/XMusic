@@ -102,7 +102,10 @@ public:
 	}
 };
 
-class __MediaLibExt CMediaSet : public tagMediaInfo, public CListObject, public CTreeObject
+class __MediaLibExt CMediaSet : public tagMediaInfo
+#if __winvc
+	, public CListObject, public CTreeObject
+#endif
 {
 public:
     CMediaSet(const wstring& strName = L"", CMediaSet *pParent = NULL, int nID = 0

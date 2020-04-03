@@ -80,7 +80,7 @@ public:
 
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
 
-    void genMediaResListItem(bool bReportView, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
+    void genMediaResListItem(E_ListViewType eViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 
     void AsyncTask();
 };
@@ -94,7 +94,10 @@ enum class E_MediaDirType
 #endif
 };
 
-class __MediaLibExt CMediaDir : public CMediaRes, public CTreeObject
+class __MediaLibExt CMediaDir : public CMediaRes
+#if __winvc
+	, public CTreeObject
+#endif
 {
 public:
     virtual ~CMediaDir() = default;

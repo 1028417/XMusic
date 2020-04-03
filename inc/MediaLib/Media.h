@@ -17,7 +17,10 @@ struct __MediaLibExt tagMediaInfo
 	UINT m_uID = 0;
 };
 
-class __MediaLibExt CMedia : public IMedia, public tagMediaInfo, public CListObject
+class __MediaLibExt CMedia : public IMedia, public tagMediaInfo
+#if __winvc
+	, public CListObject
+#endif
 {
 public:
 	CMedia(CMediaSet *pParent = NULL, int nID = 0, const wstring& strPath = L"", filetime_t tTime = 0)

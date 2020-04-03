@@ -22,16 +22,6 @@ public:
 	BOOL Init(HWND hWnd, int nHeight);
 };
 
-enum class E_ListViewType
-{
-	LVT_Icon = LV_VIEW_ICON,
-	LVT_Report = LV_VIEW_DETAILS,
-	LVT_SmallIcon = LV_VIEW_SMALLICON,
-	LVT_List = LV_VIEW_LIST,
-	LVT_Tile = LV_VIEW_TILE,
-};
-
-// CObjectList
 
 struct __CommonExt tagListColumn
 {
@@ -417,7 +407,7 @@ public:
 	void AsyncLButtondown(cfn_void cb);
 
 protected:
-	virtual void GenListItem(CListObject& Object, bool bReportView, vector<wstring>& vecText, int& iImage);
+	virtual void GenListItem(CListObject&, E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&);
 
 	virtual void PreSubclassWindow() override;
 
