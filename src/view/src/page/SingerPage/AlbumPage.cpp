@@ -211,7 +211,8 @@ BOOL CAlbumPage::OnInitDialog()
 
 			auto& rc = lvcd.rc;
 			auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
-			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { offset, rc.top + offset }, 0);
+			int x = E_ListViewType::LVT_Report == eViewType ? 0 : rc.left;
+			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { x + offset, rc.top + offset }, 0);
 		}
 	});
 

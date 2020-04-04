@@ -974,7 +974,11 @@ void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.barProgress->setMaximum(0);
 
-    if (bOpenFail)
+    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+    ui.labelDuration->setText(qsDuration);
+
+    (void)bOpenFail;
+    /*if (bOpenFail)
     {
         _updatePlayPauseButton(false);
     }
@@ -987,7 +991,7 @@ void MainWindow::slot_playStoped(bool bOpenFail)
                 _updatePlayPauseButton(false);
             }
         });
-    }
+    }*/
 }
 
 void MainWindow::_showAlbumName()
