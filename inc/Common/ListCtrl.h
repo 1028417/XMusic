@@ -308,12 +308,7 @@ public:
 
 	void SetView(E_ListViewType eViewType, bool bArrange = false);
 	E_ListViewType GetView();
-
-	bool isReportView()
-	{
-		return GetView() == E_ListViewType::LVT_Report;
-	}
-
+	
 	void SetTileSize(ULONG cx, ULONG cy);
 
 	void SetCustomDraw(const CB_LVDrawSubItem& cbDrawSubItem, const CB_LVPostDraw& cbPostDraw = NULL)
