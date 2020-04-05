@@ -215,12 +215,12 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 {
 	cauto strBaseDir = media.GetBaseDir();
 
-	wstring strInitialDir = m_view.getMediaLib().toAbsPath(media.GetDir());
+	wstring strInitialDir = __xmedialib.toAbsPath(media.GetDir());
 	if (!fsutil::existDir(strInitialDir))
 	{
 		if (!strBaseDir.empty())
 		{
-			cauto strBaseAbsDir = m_view.getMediaLib().toAbsPath(strBaseDir, true);
+			cauto strBaseAbsDir = __xmedialib.toAbsPath(strBaseDir, true);
 			if (!fsutil::existDir(strBaseAbsDir))
 			{
 				msgBox(L"歌手目录不存在！");
@@ -231,7 +231,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		}
 		else
 		{
-			strInitialDir = m_view.getMediaLib().absPath();
+			strInitialDir = __medialib.path();
 		}
 	}
 
@@ -249,7 +249,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 		wstring strNewPath = fileDlg.ShowOpenSingle();
 		__Ensure(!strNewPath.empty());
 
-		strNewOppPath = m_view.getMediaLib().toOppPath(strNewPath);
+		strNewOppPath = __xmedialib.toOppPath(strNewPath);
 		if (strNewOppPath.empty())
 		{
 			msgBox(L"请选择根目录范围内的文件", __Title);

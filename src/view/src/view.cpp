@@ -141,10 +141,10 @@ void __view::clearView()
 
 CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
 {
-	//CRootMediaDir RootDir(getMediaLib().GetAbsPath(), m_view.getOption().plAttachDir);
+	//CRootMediaDir RootDir(__medialib.path(), m_view.getOption().plAttachDir);
 
 	CResGuard ResGuard(m_ResModule);
-	CChooseDirDlg ChooseDirDlg(strTitle, getMediaLib(), bShowRoot);
+	CChooseDirDlg ChooseDirDlg(strTitle, __medialib, bShowRoot);
 	return ChooseDirDlg.show();
 }
 
@@ -303,7 +303,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		};
 		fnGenTag(MediaResInfo->m_strPath);
 
-		cauto strMediaPath = m_model.getMediaLib().toAbsPath(MatchMediaInfo->m_strPath);
+		cauto strMediaPath = __xmedialib.toAbsPath(MatchMediaInfo->m_strPath);
 		
 		strText << L"\n\n\n是否更新以下曲目？\n" << MatchMediaInfo->fileName()
 			<< L"\n日期:  " << MatchMediaInfo.fileTimeString()
@@ -335,7 +335,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	ProgressDlg.SetStatusText(L"分析曲目...");
 
 	TD_MediaList lstMedias;
-	m_model.getMediaLib().GetAllMedias(lstMedias);
+	__xmedialib.GetAllMedias(lstMedias);
 	__Ensure(lstMedias);
 
 	CFileTitleGuard FileTitleGuard(m_model.getSingerMgr());
@@ -422,7 +422,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 
 		CMatchMediaInfo& MatchMediaInfo = pr.second;
-		cauto srcMediaDir = m_model.getMediaLib().toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
+		cauto srcMediaDir = __xmedialib.toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
 		cauto strOldPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
 		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
 
@@ -435,7 +435,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 				return false;
 			}
 
-			wstring strOppPath = m_model.getMediaLib().toOppPath(strNewPath);
+			wstring strOppPath = __xmedialib.toOppPath(strNewPath);
 			mapUpdateFiles.set(MatchMediaInfo->m_strPath, strOppPath);
 
 			MatchMediaInfo.medias()([&](CMedia& media) {
@@ -471,7 +471,7 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle
 	__EnsureReturn(!strExportPath->empty(), false);
 
 	strExportPath << (ExportOption.bActualMode ? L"/XMusicMirror" : L"/XMusicExport");
-	if (!getMediaLib().checkIndependentDir(strExportPath, true))
+	if (!__xmedialib.checkIndependentDir(strExportPath, true))
 	{
 		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);
 		return false;
@@ -694,7 +694,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 		return;
 	}
 
-	bool bGenDuration = &dir != &m_model.getMediaLib();
+	bool bGenDuration = &dir != &__medialib;
 
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		wstring strPrfix;
@@ -719,7 +719,7 @@ void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
 			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
-			ProgressDlg.SetStatusText((L"正在生成目录快照: " + dir.absPath()).c_str());
+			ProgressDlg.SetStatusText((L"正在生成目录快照: " + dir.path()).c_str());
 
 			cauto paSubFile = dir.files();
 			if (paSubFile)
@@ -982,7 +982,7 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 	int nRelatedMediaID = media.GetRelatedMediaID(eMediaSetType);
 	if (nRelatedMediaID > 0)
 	{
-		CMedia *pRelatedMedia = getMediaLib().FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
+		CMedia *pRelatedMedia = __xmedialib.FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
 		if (pRelatedMedia)
 		{
 			hittestMedia(*pRelatedMedia);
@@ -993,7 +993,7 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eMediaSetType);
 	if (uRelatedMediaSetID > 0)
 	{
-		CMediaSet *pMediaSet = getMediaLib().FindSubSet(eMediaSetType, uRelatedMediaSetID);
+		CMediaSet *pMediaSet = __xmedialib.FindSubSet(eMediaSetType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
 		this->hittestMediaSet(*pMediaSet, NULL, &media);

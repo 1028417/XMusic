@@ -129,7 +129,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 			FindPara.strDir = fsutil::GetParentDir(strFindText);
 		}
 
-		m_view.getMediaLib().FindMedia(FindPara, FindResult);
+		__xmedialib.FindMedia(FindPara, FindResult);
 	}
 
 	m_MediaMixer.clear();

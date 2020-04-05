@@ -407,7 +407,7 @@ void CBkgDlg::_showAddBkg()
         return;
     }
 #else
-    cauto strImgDir = m_app.getMediaLib().GetAbsPath() + L"/..";
+    cauto strImgDir = __medialib.path() + L"/..";
 #endif
 
     m_thread.start([&, strImgDir](){
@@ -528,7 +528,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
-    if (!pm.load(strutil::toQstr(subFile.absPath())))
+    if (!pm.load(strutil::toQstr(subFile.path())))
     {
         return false;
     }
@@ -633,7 +633,7 @@ wstring CImgDir::path(int nIdx) const
 {
     if (nIdx < 0)
     {
-        return CPath::oppPath();
+        return CPath::path();
     }
 
     if ((size_t)nIdx < m_vecSubImgs.size())
@@ -658,7 +658,7 @@ bool CImgDir::genSubImgs()
     QPixmap pm;
     if (_loadImg(*pSubFile, pm, __subimgZoomout))
     {
-        m_vecSubImgs.emplace_back(QPixmap(), pSubFile->absPath());
+        m_vecSubImgs.emplace_back(QPixmap(), pSubFile->path());
         m_vecSubImgs.back().first.swap(pm);
     }
 

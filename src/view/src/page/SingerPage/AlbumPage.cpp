@@ -564,7 +564,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 		{
 			__Ensure(pAlbum);
 
-			cauto strSingerDir = m_view.getMediaLib().toAbsPath(m_pSinger->GetBaseDir(), true);
+			cauto strSingerDir = __xmedialib.toAbsPath(m_pSinger->GetBaseDir(), true);
 			if (!fsutil::existDir(strSingerDir))
 			{
 				msgBox(L"歌手目录不存在！");

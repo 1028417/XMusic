@@ -316,7 +316,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		tagFileDlgOpt FileDlgOpt;
 		FileDlgOpt.strTitle = L"Ìí¼Ó¸èµ¥ÇúÄ¿";
 		FileDlgOpt.strFilter = __MediaFilter;
-		FileDlgOpt.strInitialDir = m_view.getMediaLib().GetAbsPath();
+		FileDlgOpt.strInitialDir = __xmedialib.GetAbsPath();
 		CFileDlgEx fileDlg(FileDlgOpt);
 
 		list<wstring> lstFiles;

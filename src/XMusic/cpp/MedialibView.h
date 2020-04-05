@@ -20,8 +20,6 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    XMediaLib& m_MediaLib;
-
     CMediaDir &m_OuterDir;
 
     QPixmap m_pmSingerGroup;

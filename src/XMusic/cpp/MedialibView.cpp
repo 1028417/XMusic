@@ -18,7 +18,6 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(app.getSingerMgr())
     , m_PlaylistLib(app.getPlaylistMgr())
-    , m_MediaLib(app.getMediaLib())
     , m_OuterDir(OuterDir)
 {
 }
@@ -157,7 +156,7 @@ void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
 
 void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
 {
-    if (&dir == &m_MediaLib)
+    if (&dir == &__medialib)
     {
         strTitle << __XMusicDirName;
     }
@@ -243,7 +242,7 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     {
         context.pixmap = &m_pmXmusicDir;
         context.strText = __XMusicDirName;
-        context.pDir = &m_MediaLib;
+        context.pDir = &__medialib;
         return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
@@ -332,11 +331,11 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
     else if (context.pDir)
     {
-        if (context.pDir->rootDir() == &m_MediaLib)
+        if (context.pDir->rootDir() == &__medialib)
         {
             context.pixmap = &m_pmSSDir;
 
-            if (context.pDir->parent() == &m_MediaLib)
+            if (context.pDir->parent() == &__medialib)
             {
                 auto strDirName = context.pDir->fileName();
                 strutil::lowerCase(strDirName);
@@ -622,7 +621,7 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
 {
     if (NULL == currentDir.parent() && ((CMediaDir&)currentDir).dirType() == E_MediaDirType::MDT_Attach)
     {
-        return &m_MediaLib;
+        return &__medialib;
     }
 
     return CListViewEx::_onUpward(currentDir);

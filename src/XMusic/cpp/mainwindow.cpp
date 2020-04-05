@@ -1138,6 +1138,12 @@ void MainWindow::slot_buttonClicked(CButton* button)
         }
         m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));*/
 
+        if (E_PlayStatus::PS_Stop == m_app.getPlayMgr().playStatus())
+        {
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(m_app.getCtrl().getOption().uPlayingItem));
+            return;
+        }
+
         if (m_app.getPlayMgr().player().Resume())
         {
             _updatePlayPauseButton(true);

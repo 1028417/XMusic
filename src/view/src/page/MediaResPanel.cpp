@@ -281,19 +281,19 @@ void CMediaResPanel::ShowDir(const wstring& strPath)
 	CMediaDir *pRootDir = NULL;
 	if (!strPath.empty())
 	{
-		pRootDir = m_view.getMediaLib().findSubDir(strPath);
+		pRootDir = __medialib.findSubDir(strPath);
 	}
 	else
 	{
-		pRootDir = &m_view.getMediaLib();
+		pRootDir = &__medialib;
 	}
 	_showDir(pRootDir);
 }
 
 void CMediaResPanel::Refresh()
 {
-	CMediaDir *pRootDir = m_view.getMediaLib().findSubDir(m_strRootDir);
-	CMediaDir *pCurrDir = m_view.getMediaLib().findSubDir(m_strCurrDir);
+	CMediaDir *pRootDir = __medialib.findSubDir(m_strRootDir);
+	CMediaDir *pCurrDir = __medialib.findSubDir(m_strCurrDir);
 	if (NULL == pCurrDir)
 	{
 		pCurrDir = pRootDir;
@@ -421,13 +421,13 @@ void CMediaResPanel::_showDir()
 
 BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
 {
-	CMediaRes *pMediaRes = m_view.getMediaLib().findSubFile(media.GetPath());
+	CMediaRes *pMediaRes = __medialib.findSubFile(media.GetPath());
 	if (NULL == pMediaRes)
 	{
 		cauto strDir = fsutil::GetParentDir(media.GetPath());
 		if (!strDir.empty())
 		{
-			CMediaDir *pMediaDir = m_view.getMediaLib().findSubDir(strDir);
+			CMediaDir *pMediaDir = __medialib.findSubDir(strDir);
 			if (pMediaDir)
 			{
 				pMediaDir->clear();
@@ -807,7 +807,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrDir->files());
 		}
 
-		m_MenuGuard.EnableItem(ID_FIND, m_pCurrDir && m_pCurrDir != &m_view.getMediaLib());
+		m_MenuGuard.EnableItem(ID_FIND, m_pCurrDir && m_pCurrDir != &__medialib);
 
 		bool bFlag = m_wndList.GetItemCount()>0;
 		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrDir && bFlag);
@@ -816,7 +816,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrDir);
 		
-		if (&m_view.getMediaLib() == m_pCurrDir)
+		if (m_pCurrDir == &__medialib)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
@@ -1001,7 +1001,7 @@ int CMediaResPanel::GetTabImage()
 {
 	if (m_pCurrDir)
 	{
-		if (m_pCurrDir->rootDir() != &m_view.getMediaLib())
+		if (m_pCurrDir->rootDir() != &__medialib)
 		{
 			return (int)E_GlobalImage::GI_DirLink;
 		}

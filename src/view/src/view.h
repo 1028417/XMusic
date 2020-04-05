@@ -98,11 +98,6 @@ public:
 		return m_model.getBackupMgr();
 	}
 
-	XMediaLib& getMediaLib()
-	{
-		return m_model.getMediaLib();
-	}
-
 	CPlaylistMgr& getPlaylistMgr()
 	{
 		return m_model.getPlaylistMgr();

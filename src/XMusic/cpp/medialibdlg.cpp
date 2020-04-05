@@ -26,13 +26,13 @@ wstring COuterDir::init(const wstring& strMediaLibDir)
 
     cauto strAbsPath = strMediaLibDir + m_strOuterDir;
     CPath::setDir(strAbsPath);
-    return strAbsPath;
+    return m_strOuterDir;
 }
 
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
 {
 #if __windows
-    wstring strSubDir = this->absPath() + __wcPathSeparator + fileInfo.strName;
+    wstring strSubDir = this->path() + __wcPathSeparator + fileInfo.strName;
     QString qsSubDir = QDir(strutil::toQstr(strSubDir)).absolutePath();
     strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
     if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
@@ -103,7 +103,7 @@ _resizeTitle();
 //});*/
 
 #define __show() \
-    m_OuterDir.init(m_app.getMediaLib().GetAbsPath()); \
+    m_OuterDir.init(__medialib.path()); \
     CDialog::show();
 
 void CMedialibDlg::show()
@@ -133,11 +133,11 @@ void CMedialibDlg::showMedia(CMedia& media)
 
 bool CMedialibDlg::showFile(const wstring& strPath)
 {
-    CMediaRes *pMediaRes = m_app.getMediaLib().findSubFile(strPath);
+    CMediaRes *pMediaRes = __medialib.findSubFile(strPath);
+    cauto strOuterDir = m_OuterDir.init(__medialib.path());
+    (void)strOuterDir;
     if (NULL == pMediaRes)
     {
-        auto strOuterDir = m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
-        strOuterDir = fsutil::GetOppPath(m_app.getMediaLib().absPath(), strOuterDir);
         if (!fsutil::CheckSubPath(strOuterDir, strPath))
         {
             return false;
@@ -149,10 +149,6 @@ bool CMedialibDlg::showFile(const wstring& strPath)
         {
             return false;
         }
-    }
-    else
-    {
-        m_OuterDir.init(m_app.getMediaLib().GetAbsPath());
     }
 
     m_MedialibView.hittestFile(*pMediaRes);

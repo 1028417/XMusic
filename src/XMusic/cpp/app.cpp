@@ -527,7 +527,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         mapUnzfile.erase(itrUnzfile);
 
         IFBuffer ifbMedialibConf(bbfMedialibConf);
-        auto& newMedialibConf = m_model.getMediaLib().medialibConf();
+        auto& newMedialibConf = __xmedialib.medialibConf();
         newMedialibConf.clear();
         if (!_readMedialibConf(ifbMedialibConf, newMedialibConf))
         {
@@ -636,7 +636,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
             if (strutil::endWith(unzfile.strPath, string(".xurl")))
             {
-                if (!m_model.getMediaLib().loadXUrl(ifbData))
+                if (!__xmedialib.loadXUrl(ifbData))
                 {
                     g_logger << "loadXUrl fail: " >> unzfile.strPath;
                     //continue;
@@ -644,7 +644,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             else if (strutil::endWith(unzfile.strPath, string(".snapshot.json")))
             {
-                if (!m_model.getMediaLib().loadXSnapshot(ifbData))
+                if (!__xmedialib.loadXSnapshot(ifbData))
                 {
                     g_logger << "loadSnapshot fail: " >> unzfile.strPath;
                     //continue;

@@ -64,7 +64,7 @@ BOOL CNewSongDlg::OnInitDialog()
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	m_view.getMediaLib().GetAllMedias(m_lstSrcMedias);
+	__xmedialib.GetAllMedias(m_lstSrcMedias);
 	
 	filetime_t maxTime = 0;
 	m_lstSrcMedias([&](CMedia& media) {

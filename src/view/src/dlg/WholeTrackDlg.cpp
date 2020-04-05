@@ -49,7 +49,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 	m_thread.start([&](const bool& bRunSignal) {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
 
-		m_view.getMediaLib().scan([&](CPath& dir, TD_XFileList& paSubFile) {
+		__medialib.scan([&](CPath& dir, TD_XFileList& paSubFile) {
 			mtutil::usleep(1);
 			if (!bRunSignal)
 			{

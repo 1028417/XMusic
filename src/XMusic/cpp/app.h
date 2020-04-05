@@ -140,11 +140,6 @@ public:
         return m_model.getDataMgr();
     }
 
-    XMediaLib& getMediaLib()
-    {
-        return m_model.getMediaLib();
-    }
-
     CPlaylistMgr& getPlaylistMgr()
     {
         return m_model.getPlaylistMgr();

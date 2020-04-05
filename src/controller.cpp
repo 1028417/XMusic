@@ -21,7 +21,7 @@ void CXController::start()
             {
                 __srand
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
-                strAlarmmedia = m_model.getMediaLib().toAbsPath(strAlarmmedia);
+                strAlarmmedia = __xmedialib.toAbsPath(strAlarmmedia);
 
                 if (PlayMgr.play(strAlarmmedia))
                 {
@@ -76,14 +76,10 @@ void CXController::start()
 
             switch (PlayCtrl.ePlayCtrl)
             {
-            case E_PlayCtrl::PC_Pause:
-                PlayMgr.SetPlayStatus(E_PlayStatus::PS_Pause);
-                break;
+            case E_PlayCtrl::PC_PlayIndex:
+                (void)PlayMgr.play(PlayCtrl.uPlayIdx);
 
-            case E_PlayCtrl::PC_Play:
-                PlayMgr.SetPlayStatus(E_PlayStatus::PS_Play);
                 break;
-
             case E_PlayCtrl::PC_PlayPrev:
                 PlayMgr.playPrev();
                 break;
@@ -103,10 +99,6 @@ void CXController::start()
                 __EnsureBreak(PlayMgr.playStatus() == E_PlayStatus::PS_Stop);
 
                 (void)PlayMgr.playNext(false);
-
-                break;
-            case E_PlayCtrl::PC_PlayIndex:
-                (void)PlayMgr.play(PlayCtrl.uPlayIdx);
 
                 break;
             case E_PlayCtrl::PC_Demand:
@@ -240,7 +232,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-	if (!m_model.getMediaLib().checkIndependentDir(strDir, false))
+	if (!__xmedialib.checkIndependentDir(strDir, false))
 	{
 		m_view.msgBox(L"请选择与根目录不相关的目录");
 		return NULL;
@@ -306,7 +298,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 		}
 	}
 
-	CMediaRes *pMediaRes = m_model.getMediaLib().findSubPath(strOldOppPath, bDir);
+	CMediaRes *pMediaRes = __medialib.findSubPath(strOldOppPath, bDir);
 	if (pMediaRes)
 	{
         pMediaRes->setName(strNewName + strExtName);
@@ -329,7 +321,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 
 void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
 {
-	cauto strDstAbsDir = m_model.getMediaLib().toAbsPath(strOppDir);
+	cauto strDstAbsDir = __xmedialib.toAbsPath(strOppDir);
 
 	SMap<wstring, wstring> mapMovedFiles;
 
@@ -409,11 +401,11 @@ int CXController::AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 	SArray<wstring> arrOppPaths;
 	for (cauto strFile : lstFiles)
 	{
-		strOppPath = m_model.getMediaLib().toOppPath(strFile);
+		strOppPath = __xmedialib.toOppPath(strFile);
 		if (strOppPath.empty())
 		{
             m_view.msgBox((L"添加曲目失败，请选择以下目录中的文件: \n\n\t"
-				+ m_model.getMediaLib().GetAbsPath()).c_str());
+                + __medialib.path()).c_str());
 			return 0;
 		}
 
@@ -432,7 +424,7 @@ int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& album, 
 	SArray<wstring> lstOppPaths;
 	for (cauto strFile : lstAbsPath)
 	{
-		wstring strOppPath = m_model.getMediaLib().toOppPath(strFile);
+		wstring strOppPath = __xmedialib.toOppPath(strFile);
 		strOppPath = fsutil::GetOppPath(strSingerDir, strOppPath);
 		if (strOppPath.empty())
 		{
