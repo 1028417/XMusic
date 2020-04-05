@@ -158,10 +158,18 @@ BOOL CMediaResPanel::OnInitDialog()
 			auto pMediaRes = (CMediaRes*)lvcd.pObject;
 			__Ensure(pMediaRes);
 
-			cauto rc = lvcd.rc;
-			auto offset = (rc.bottom - rc.top - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
-			int x = E_ListViewType::LVT_Report == eViewType?0:rc.left;
-			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, pMediaRes->getImage(), { x + offset, rc.top + offset }, 0);
+			POINT pt;
+			if (E_ListViewType::LVT_Report == eViewType)
+			{
+				m_wndList.GetItemPosition(lvcd.uItem, &pt);
+			}
+			else
+			{
+				pt.x = lvcd.rc.left;
+				pt.y = lvcd.rc.top;
+			}
+
+			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, pMediaRes->getImage(), pt, 0);
 		}
 	});
 
@@ -1012,10 +1020,7 @@ int CMediaResPanel::GetTabImage()
 
 void CMediaResPanel::_asyncTask()
 {
-	if (!m_wndList.isReportView())
-	{
-		return;
-	}
+	__Ensure(m_wndList.GetView() == E_ListViewType::LVT_Report);
 
 	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [](CListObject& object) {
 		CMediaRes& mediaRes = (CMediaRes&)object;

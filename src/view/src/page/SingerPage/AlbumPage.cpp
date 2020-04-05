@@ -209,10 +209,18 @@ BOOL CAlbumPage::OnInitDialog()
 
 			auto iImage = pAlbumItem->getCueFile() ? (int)E_GlobalImage::GI_WholeTrack : (int)E_GlobalImage::GI_AlbumItem;
 
-			auto& rc = lvcd.rc;
-			auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
-			int x = E_ListViewType::LVT_Report == eViewType ? 0 : rc.left;
-			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { x + offset, rc.top + offset }, 0);
+			POINT pt;
+			if (E_ListViewType::LVT_Report == eViewType)
+			{
+				m_wndAlbumItemList.GetItemPosition(lvcd.uItem, &pt);
+			}
+			else
+			{
+				pt.x = lvcd.rc.left;
+				pt.y = lvcd.rc.top;
+			}
+
+			m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, pt, 0);
 		}
 	});
 
@@ -1334,10 +1342,9 @@ void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
 
 void CAlbumPage::_asyncTask()
 {
-	if (m_wndAlbumItemList.isReportView())
-	{
-		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-			((CAlbumItem&)object).AsyncTask();
-		});
-	}
+	__Ensure(m_wndAlbumItemList.GetView() == E_ListViewType::LVT_Report);
+	
+	m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
+		((CAlbumItem&)object).AsyncTask();
+	});
 }

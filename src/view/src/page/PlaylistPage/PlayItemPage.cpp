@@ -146,9 +146,9 @@ BOOL CPlayItemPage::OnInitDialog()
 			}
 		}
 
-		auto& rc = lvcd.rc;
-		auto offset = (rc.bottom - rc.top +1 - (int)m_view.m_globalSize.m_uSmallIconSize) / 2;
-		m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, { offset, rc.top + offset }, 0);
+		POINT pt;
+		m_wndList.GetItemPosition(lvcd.uItem, &pt);
+		m_view.m_ImgMgr.smallImglst().Draw(&lvcd.dc, iImage, pt, 0);
 	});
 
 	(void)__super::RegDragDropCtrl(m_wndList, [&](tagDragData& DragData) {
