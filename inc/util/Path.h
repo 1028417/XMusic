@@ -64,10 +64,8 @@ public:
 
 	wstring parentDir() const;
 
-	wstring absPath() const;
-
-	wstring oppPath() const;
-
+	wstring path() const;
+	
 	const CPath* rootDir() const;
 
     void remove();

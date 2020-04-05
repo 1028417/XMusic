@@ -76,9 +76,7 @@ class IModel
 {
 public:
     virtual bool initMediaLib() = 0;
-
-    virtual XMediaLib& getMediaLib() = 0;
-
+	
     virtual CDataMgr& getDataMgr() = 0;
 
     virtual CPlaylistMgr& getPlaylistMgr() = 0;
@@ -153,15 +151,10 @@ private:
 public:
 	wstring medialibPath(const wstring& strSubPath = L"");
 
-    XMediaLib& getMediaLib() override
+    CDataMgr& getDataMgr() override
     {
-        return m_MediaLib;
+            return m_DataMgr;
     }
-
-        CDataMgr& getDataMgr() override
-        {
-                return m_DataMgr;
-        }
 
 	CPlaylistMgr& getPlaylistMgr() override
 	{

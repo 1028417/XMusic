@@ -129,7 +129,7 @@ public:
 
 	virtual wstring GetExportFileName() override
 	{
-		return GetTitle();
+		return GetName();
 	}
 
     virtual void AsyncTask() {}

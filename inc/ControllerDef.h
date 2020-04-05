@@ -6,13 +6,11 @@ enum class E_PlayCtrl
 {
     PC_Null = 0,
 
-    PC_Pause,
-    PC_Play,
+    PC_PlayIndex,
+
     PC_PlayPrev,
     PC_PlayNext,
     PC_AutoPlayNext,
-
-    PC_PlayIndex,
 
     PC_Assign,
     PC_Append,

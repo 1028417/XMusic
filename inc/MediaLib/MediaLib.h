@@ -103,6 +103,8 @@ public:
 	}
 };
 
+#define __medialib CMediaLib::inst()
+
 class __MediaLibExt CMediaLib : public CRootMediaDir
 {
 private:

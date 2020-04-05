@@ -114,6 +114,8 @@ private:
 };
 #endif
 
+#define __xmedialib ((XMediaLib&)CMediaLib::inst())
+
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
