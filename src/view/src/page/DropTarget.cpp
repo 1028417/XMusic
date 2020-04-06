@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 
-static CPen g_pen(PS_SOLID, 1, RGB(170, 170, 255));
+static const CPen g_pen(PS_DOT, 1, RGB(128, 192, 255));
 
 bool CDragContext::AttachCtrl(CWnd& wndCtrl, const tagDragData& DragData)
 {
@@ -35,9 +35,9 @@ bool CDragContext::AttachCtrl(CWnd& wndCtrl, const tagDragData& DragData)
 
 void CDragContext::DettachCtrl()
 {
-	if (NULL != pwndCtrl)
+	if (pwndCtrl)
 	{
-		if (NULL != pdcCtrl)
+		if (pdcCtrl)
 		{
 			pwndCtrl->ReleaseDC(pdcCtrl);
 			pdcCtrl = NULL;
@@ -77,12 +77,12 @@ void CDragContext::DrawDragOverHLine(long nYPos)
 		nYPos = 1;
 	}
 
-	DrawDragOverRect(nYPos - 1, nYPos + 1);
+	DrawDragOverRect(nYPos, nYPos);
 }
 
 void CDragContext::DrawDragOverVLine(long nXPos, long nYPos1, long nYPos2)
 {
-	CRect rcPos(x-1, nYPos1, x+1, nYPos2);
+	CRect rcPos(x, nYPos1, x, nYPos2);
 	DrawDragOverRect(rcPos);
 }
 
@@ -92,14 +92,21 @@ void CDragContext::DrawDragOverRect(long nYPos1, long nYPos2)
 	DrawDragOverRect(rcPos);
 }
 
-void CDragContext::DrawDragOverRect(const CRect& rcPos)
+void CDragContext::DrawDragOverRect(const CRect& rc)
 {
-	if (NULL != pdcCtrl)
+	if (pdcCtrl)
 	{
-		(void)pdcCtrl->Rectangle(&rcPos);
-		(void)pdcCtrl->Rectangle(rcPos.left + 1, rcPos.top + 1, rcPos.right - 1, rcPos.bottom - 1);
+		if (rc.left == rc.right || rc.top == rc.bottom)
+		{
+			pdcCtrl->MoveTo(rc.left, rc.top);
+			pdcCtrl->LineTo(rc.right, rc.bottom);
+		}
+		else
+		{
+			(void)pdcCtrl->Rectangle(&rc);
+		}
 
-		rcDragOverFocus = rcPos;
+		rcDragOverFocus.SetRect(rc.left-1, rc.top-1, rc.right+1, rc.bottom+1);
 	}
 }
 

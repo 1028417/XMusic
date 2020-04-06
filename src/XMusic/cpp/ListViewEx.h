@@ -115,7 +115,7 @@ protected:
         return m_lstSubMedias;
     }
 
-    CPath* currentPath() const
+    CPath* currentDir() const
     {
         return m_pDir;
     }

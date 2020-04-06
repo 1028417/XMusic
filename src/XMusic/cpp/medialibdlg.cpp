@@ -196,6 +196,8 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
+    ui.frameFilterLanguage->setGeometry(cx-ui.frameFilterLanguage->width(), rcReturn.top());
+
     int x_btnPlay = cx - __playIconMagin - rcReturn.width();
     ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
@@ -224,10 +226,40 @@ void CMedialibDlg::_resizeTitle() const
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
 }
 
-void CMedialibDlg::updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton, bool bAutoFitText)
+void CMedialibDlg::updateHead(const WString& strTitle)
 {
-    ui.labelTitle->setText(strutil::toQstr(strTitle), bAutoFitText?
-                               E_LabelTextOption::LTO_AutoFit:E_LabelTextOption::LtO_Elided);
+    E_LabelTextOption lto = E_LabelTextOption::LTO_AutoFit;
+    bool bShowFilterLanguage =  false;
+    bool bShowUpwardButton = false;
+    bool bShowPlayButton = false;
+
+    auto pDir = m_MedialibView.currentDir();
+    if (pDir)
+    {
+        lto = E_LabelTextOption::LtO_Elided;
+        bShowUpwardButton = true;
+        bShowPlayButton = dir.files();
+    }
+    else
+    {
+        auto pMediaSet = currentMediaSet();
+        if (pMediaSet)
+        {
+            bShowUpwardButton = true;
+            bShowPlayButton = E_MediaSetType::MST_Singer==MediaSet.m_eType
+                    || E_MediaSetType::MST_Album==MediaSet.m_eType
+                    || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
+
+            if (&m_app.getPlaylistMgr() == pMediaSet)
+            {
+                bShowFilterLanguage = true;
+            }
+        }
+    }
+
+    ui.labelTitle->setText(strTitle, lto);
+
+    ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
 
     ui.btnPlay->setVisible(bShowPlayButton);
 

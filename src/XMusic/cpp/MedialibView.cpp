@@ -73,7 +73,7 @@ void CMedialibView::play()
     }
     else
     {
-        CPath *pDir = currentPath();
+        CPath *pDir = currentDir();
         if (pDir)
         {
             pDir->files()([&](XFile& file){
@@ -90,19 +90,14 @@ void CMedialibView::play()
 
 void CMedialibView::_onShowRoot()
 {
-    m_medialibDlg.updateHead(L"媒体库", false, false);
+    m_medialibDlg.updateHead(L"媒体库");
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
     WString strTitle;
     _getTitle(MediaSet, strTitle);
-
-    bool bPlayable = E_MediaSetType::MST_Singer==MediaSet.m_eType
-            || E_MediaSetType::MST_Album==MediaSet.m_eType
-            || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
-
-    m_medialibDlg.updateHead(strTitle, bPlayable, true);
+    m_medialibDlg.updateHead(strTitle);
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
@@ -127,9 +122,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 {
     WString strTitle;
     _getTitle(dir, strTitle);
-
-    bool bPlayable = dir.files();
-    m_medialibDlg.updateHead(strTitle, bPlayable, true, false);
+    m_medialibDlg.updateHead(strTitle);
 }
 
 void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)

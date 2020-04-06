@@ -61,7 +61,7 @@ public:
     void showMedia(CMedia& media);
     bool showFile(const wstring& strPath);
 
-    void updateHead(const wstring& strTitle, bool bShowPlayButton, bool bShowUpwardButton, bool bAutoFitText=true);
+    void updateHead(const WString& strTitle);
 
     void updateSingerImg()
     {

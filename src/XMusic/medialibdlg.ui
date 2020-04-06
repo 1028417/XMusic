@@ -113,6 +113,162 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QFrame" name="frameFilterLanguage">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>50</y>
+     <width>820</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="CLabel" name="labelDemandCN">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>国语</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandHK">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>粤语</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandKR">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>韩语</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandJP">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>日语</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandTAI">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>泰语</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandEN">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>0</y>
+      <width>110</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>欧美</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="CLabel" name="labelDemandEUR">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>0</y>
+      <width>140</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>小语种</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>labelDemandHK</zorder>
+   <zorder>labelDemandKR</zorder>
+   <zorder>labelDemandJP</zorder>
+   <zorder>labelDemandTAI</zorder>
+   <zorder>labelDemandEN</zorder>
+   <zorder>labelDemandEUR</zorder>
+   <zorder>labelDemandCN</zorder>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
