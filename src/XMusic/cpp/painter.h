@@ -113,7 +113,8 @@ public:
     }
 };
 
-#define __defRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform)
+#define __defRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing \
+    | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing)
 
 class CPainter : public QPainter
 {

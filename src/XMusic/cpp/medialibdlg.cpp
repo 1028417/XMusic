@@ -196,7 +196,10 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
-    ui.frameFilterLanguage->move(cx-ui.frameFilterLanguage->width(), rcReturn.top());
+    auto& frameFilterLanguage = *ui.frameFilterLanguage;
+    frameFilterLanguage.setGeometry(cx-frameFilterLanguage.width()-xMargin
+                                    , rcReturn.center().y()-frameFilterLanguage.height()/2
+                                    , frameFilterLanguage.width(), frameFilterLanguage.height());
 
     int x_btnPlay = cx - __playIconMagin - rcReturn.width();
     ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
@@ -238,17 +241,17 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     {
         lto = E_LabelTextOption::LtO_Elided;
         bShowUpwardButton = true;
-        bShowPlayButton = dir.files();
+        bShowPlayButton = pDir->files();
     }
     else
     {
-        auto pMediaSet = currentMediaSet();
+        auto pMediaSet = m_MedialibView.currentMediaSet();
         if (pMediaSet)
         {
             bShowUpwardButton = true;
-            bShowPlayButton = E_MediaSetType::MST_Singer==MediaSet.m_eType
-                    || E_MediaSetType::MST_Album==MediaSet.m_eType
-                    || E_MediaSetType::MST_Playlist==MediaSet.m_eType;
+            bShowPlayButton = E_MediaSetType::MST_Singer==pMediaSet->m_eType
+                    || E_MediaSetType::MST_Album==pMediaSet->m_eType
+                    || E_MediaSetType::MST_Playlist==pMediaSet->m_eType;
 
             if (&m_app.getPlaylistMgr() == pMediaSet)
             {

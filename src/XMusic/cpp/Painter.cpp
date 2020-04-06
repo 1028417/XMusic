@@ -68,11 +68,12 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT y
             yround = xround;
         }
 
-        QBrush brush(pixmap);
         QTransform transform;
-        transform.translate(rcDst.left(), rcDst.top());
         auto scaleRate = (double)rcDst.width()/pixmap.width();
         transform.scale(scaleRate, scaleRate);
+        transform.translate(rcDst.left(), rcDst.top());
+
+        QBrush brush(pixmap);
         brush.setTransform(transform);
 
         this->save();
@@ -95,19 +96,18 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
 {
     if (xround > 0)
     {
-        //this->drawPixmap(rcDst, pixmap.copy(rcSrc), xround, yround);
-
         if (0 == yround)
         {
             yround = xround;
         }
 
-        QBrush brush(pixmap);
         QTransform transform;
-        auto scaleRate = (double)rcDst.width()/rcSrc.width();
+        auto scaleRate = (float)rcDst.width()/rcSrc.width();
+        transform.scale(scaleRate, scaleRate);
         transform.translate(rcDst.left()-rcSrc.left()*scaleRate
                             , rcDst.top()-rcSrc.top()*scaleRate);
-        transform.scale(scaleRate, scaleRate);
+
+        QBrush brush(pixmap);
         brush.setTransform(transform);
 
         this->save();
