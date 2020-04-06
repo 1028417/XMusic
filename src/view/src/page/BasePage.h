@@ -43,5 +43,7 @@ protected:
 	bool DragScroll(CObjectList& wndList, LONG x, LONG y);
 
 public:
+	void Active(bool bForceFocus = true);
+	
 	void SetTitle(const wstring& strTitle);
 };

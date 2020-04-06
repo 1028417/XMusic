@@ -154,7 +154,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 
 void CSingerPage::Active(CSinger& Singer)
 {
-	(void)m_view.m_MainWnd.ActivePage(*this);
+	__super::Active();
 
 	(void)m_wndTree.SelectObject(Singer);
 	(void)m_wndTree.EnsureVisible(Singer);
@@ -164,7 +164,7 @@ void CSingerPage::OnActive(BOOL bActive)
 {
 	if (bActive && m_AlbumPage)
 	{
-		(void)m_view.m_MainWnd.ActivePage(m_AlbumPage);
+		m_AlbumPage.Active();
 	}
 }
 
@@ -550,7 +550,7 @@ void CSingerPage::OnTvnSelchangedTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 	m_AlbumPage.ShowSinger((CSinger*)pSingerObject);
 
-	(void)m_view.m_MainWnd.ActivePage(m_AlbumPage, false);	
+	m_AlbumPage.Active(false);
 	(void)this->SetFocus();
 }
 
@@ -571,7 +571,7 @@ CMediaSet* CSingerPage::_trySelectObject()
 	{
 		if (!::IsWindowVisible(m_AlbumPage))
 		{
-			(void)m_view.m_MainWnd.ActivePage(m_AlbumPage, false);
+			m_AlbumPage.Active(false);
 			(void)this->SetFocus();
 		}
 	}

@@ -103,9 +103,9 @@ void __view::initView()
 	}
 
 	m_PlayingPage.RefreshList();
-	//(void)m_view.m_MainWnd.ActivePage(m_PlayingPage, false);
+	//m_PlayingPage.Active(false);
 
-	//(void)m_view.m_MainWnd.ActivePage(m_MediaResPage);
+	//m_MediaResPage.Active();
 }
 
 void __view::clearView()
@@ -134,9 +134,9 @@ void __view::clearView()
 	}
 
 	m_PlayingPage.RefreshList();
-	//(void)m_view.m_MainWnd.ActivePage(m_PlayingPage, false);
+	//m_PlayingPage.Active(false);
 
-	//(void)m_view.m_MainWnd.ActivePage(m_MediaResPage);
+	//m_MediaResPage.Active();
 }
 
 CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
@@ -940,7 +940,7 @@ void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedi
 	{
 		if (!m_PlaylistPage)
 		{
-			(void)m_MainWnd.ActivePage(m_PlaylistPage);
+			m_PlaylistPage.Active();
 		}
 		m_PlaylistPage.m_wndList.SelectObject(&MediaSet);
 
@@ -963,7 +963,7 @@ void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedi
 
 		(void)m_SingerPage.Active(*pSinger);
 		m_AlbumPage.ShowSinger(pSinger, pMedia, pIMedia);
-		(void)m_MainWnd.ActivePage(m_AlbumPage);
+		m_AlbumPage.Active();
 	}
 }
 

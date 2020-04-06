@@ -334,7 +334,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		m_view.m_ResModule.ActivateResource();
 		__Assert(m_view.m_MainWnd.AddPage(*this, E_DockViewType::DVT_DockCenter));
-		__Assert(m_view.m_MainWnd.ActivePage(*this));
+		this->Active();
 	}
 
 	m_pAlbum = NULL;

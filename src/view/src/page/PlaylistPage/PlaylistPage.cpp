@@ -37,7 +37,7 @@ void CPlaylistPage::OnActive(BOOL bActive)
 {
 	if (bActive && m_PlayItemPage)
 	{
-		(void)m_view.m_MainWnd.ActivePage(m_PlayItemPage);
+		m_PlayItemPage.Active();
 	}
 }
 
@@ -508,7 +508,7 @@ BOOL CPlaylistPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 		
 	int	nSelectCount = (int)lstMedias.size();
 	m_PlayItemPage.m_wndList.SelectItems(0, nSelectCount);
-	m_PlayItemPage.SetFocus();
+	m_PlayItemPage.Active();
 
 	return TRUE;
 }

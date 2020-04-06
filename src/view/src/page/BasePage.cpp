@@ -11,6 +11,11 @@ CBasePage::CBasePage(__view& view, UINT uIDDlgRes, const wstring& strBaseTitle, 
 {
 }
 
+void CBasePage::Active(bool bForceFocus)
+{
+	m_view.m_MainWnd.ActivePage(*this, bForceFocus);
+}
+
 void CBasePage::SetTitle(const wstring& strTitle)
 {
 	int iImage = GetTabImage();
