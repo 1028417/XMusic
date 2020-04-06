@@ -69,9 +69,9 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT y
         }
 
         QTransform transform;
+        transform.translate(rcDst.left(), rcDst.top());
         auto scaleRate = (double)rcDst.width()/pixmap.width();
         transform.scale(scaleRate, scaleRate);
-        transform.translate(rcDst.left(), rcDst.top());
 
         QBrush brush(pixmap);
         brush.setTransform(transform);
@@ -103,9 +103,9 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
 
         QTransform transform;
         auto scaleRate = (float)rcDst.width()/rcSrc.width();
-        transform.scale(scaleRate, scaleRate);
         transform.translate(rcDst.left()-rcSrc.left()*scaleRate
                             , rcDst.top()-rcSrc.top()*scaleRate);
+        transform.scale(scaleRate, scaleRate);
 
         QBrush brush(pixmap);
         brush.setTransform(transform);
