@@ -102,24 +102,6 @@ protected:
         m_paSubFiles.clear();
     }
 
-    CMediaSet* currentMediaSet() const
-    {
-        return m_pMediaset;
-    }
-    const TD_MediaSetList& currentSubSets() const
-    {
-        return m_lstSubSets;
-    }
-    const TD_MediaList& currentSubMedias() const
-    {
-        return m_lstSubMedias;
-    }
-
-    CPath* currentDir() const
-    {
-        return m_pDir;
-    }
-
     virtual CMediaSet* _onUpward(CMediaSet& currentMediaSet)
     {
         return currentMediaSet.m_pParent;
@@ -170,6 +152,29 @@ private:
     }
 
 public:
+    CMediaSet* currentMediaSet() const
+    {
+        return m_pMediaset;
+    }
+    const TD_MediaSetList& currentSubSets() const
+    {
+        return m_lstSubSets;
+    }
+    const TD_MediaList& currentSubMedias() const
+    {
+        return m_lstSubMedias;
+    }
+
+    CPath* currentDir() const
+    {
+        return m_pDir;
+    }
+
+    bool isInRoot() const
+    {
+        return NULL==m_pMediaset && NULL==m_pDir;
+    }
+
     void showRoot();
 
     void showMediaSet(CMediaSet& MediaSet);
@@ -178,11 +183,6 @@ public:
     void showDir(CPath& dir);
 
     void hittestFile(XFile& file);
-
-    bool isInRoot() const
-    {
-        return NULL==m_pMediaset && NULL==m_pDir;
-    }
 
     bool upward();
 };

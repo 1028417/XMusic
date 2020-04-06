@@ -196,7 +196,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
-    ui.frameFilterLanguage->setGeometry(cx-ui.frameFilterLanguage->width(), rcReturn.top());
+    ui.frameFilterLanguage->move(cx-ui.frameFilterLanguage->width(), rcReturn.top());
 
     int x_btnPlay = cx - __playIconMagin - rcReturn.width();
     ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
