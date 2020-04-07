@@ -1265,25 +1265,25 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         m_eDemandLanguage = E_LanguageType::LT_None;
 
-        PairList<E_LanguageType, CLabel*> plLabels {
-            {E_LanguageType::LT_CN, ui.labelDemandCN}
-            , {E_LanguageType::LT_HK, ui.labelDemandHK}
-            , {E_LanguageType::LT_KR, ui.labelDemandKR}
-            , {E_LanguageType::LT_JP, ui.labelDemandJP}
-            , {E_LanguageType::LT_TAI, ui.labelDemandTAI}
-            , {E_LanguageType::LT_EN, ui.labelDemandEN}
-            , {E_LanguageType::LT_EUR, ui.labelDemandEUR}};
-        plLabels([&](E_LanguageType eLanguage, CLabel* lblLanguage) {
-            if (lblLanguage->text().startsWith(__qsCheck))
+        PairList<CLabel*, E_LanguageType> plLabels {
+            {ui.labelDemandCN, E_LanguageType::LT_CN}
+            , {ui.labelDemandHK, E_LanguageType::LT_HK}
+            , {ui.labelDemandKR, E_LanguageType::LT_KR}
+            , {ui.labelDemandJP, E_LanguageType::LT_JP}
+            , {ui.labelDemandTAI, E_LanguageType::LT_TAI}
+            , {ui.labelDemandEN, E_LanguageType::LT_EN}
+            , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
+        plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {
+            if (lbl->text().startsWith(__qsCheck))
             {
-                lblLanguage->setText(lblLanguage->text().mid(__qsCheck.length()));
+                lbl->setText(lbl->text().mid(__qsCheck.length()));
             }
             else
             {
-                if (lblLanguage == label)
+                if (lbl == label)
                 {
                     m_eDemandLanguage = eLanguage;
-                    lblLanguage->setText(__qsCheck + lblLanguage->text());
+                    lbl->setText(__qsCheck + lbl->text());
                 }
             }
         });

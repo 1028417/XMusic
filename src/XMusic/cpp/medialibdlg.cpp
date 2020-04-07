@@ -82,10 +82,19 @@ void CMedialibDlg::init()
 
     ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
 
-    ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
-
     m_MedialibView.setFont(1.05, QFont::Weight::Normal);
     m_MedialibView.init();
+
+    ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
+
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+                , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
+    for (auto label : lstLabels)
+    {
+        label->setFont(1.05, QFont::Weight::DemiBold);
+
+        connect(label, &CLabel::signal_click, this, &CMedialibDlg::slot_labelClick);
+    }
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
@@ -281,4 +290,30 @@ void CMedialibDlg::_onClosed()
     m_MedialibView.clear();
 
     m_OuterDir.clear();
+}
+
+void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
+{
+    map<CLabel*, E_LanguageType> mapLabels {
+        {ui.labelDemandCN, E_LanguageType::LT_CN}
+        , {ui.labelDemandHK, E_LanguageType::LT_HK}
+        , {ui.labelDemandKR, E_LanguageType::LT_KR}
+        , {ui.labelDemandJP, E_LanguageType::LT_JP}
+        , {ui.labelDemandTAI, E_LanguageType::LT_TAI}
+        , {ui.labelDemandEN, E_LanguageType::LT_EN}
+        , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
+    auto uLanguage = (UINT)mapLabels[label];
+
+    cauto paMediaSet = m_MedialibView.currentSubSets();
+    //paMediaSet.get((UINT)m_MedialibView.scrollPos(), [&](const CMediaSet& MediaSet){
+    //    if (MediaSet.property().language() != uLanguage) {
+            int nRow = paMediaSet.find([&](const CMediaSet& MediaSet){
+                return MediaSet.property().language() == uLanguage;
+            });
+            if (nRow >= 0)
+            {
+                m_MedialibView.scroll(nRow);
+            }
+    //    }
+    //});
 }

@@ -67,7 +67,7 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 
 	__AssertReturn(m_bigImglst.Init(__Size(uBigIconSize)), false);
 	__AssertReturn(m_smallImglst.Init(__Size(uSmallIconSize)), false);
-	__AssertReturn(m_tabImglst.Init(__Size(uTinyIconSize)), false);
+	//__AssertReturn(m_tabImglst.Init(__Size(uTinyIconSize)), false);
 	
 	for (cauto strImg : g_lpImg)
 	{
@@ -82,16 +82,20 @@ bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
 	Gdiplus::Bitmap img(getImgPath(strImg).c_str());
 	HICON hIcon = NULL;
 	(void)img.GetHICON(&hIcon);
+	if (NULL == hIcon)
+	{
+		return false;
+	}
 
 	m_bigImglst.SetIcon(hIcon);
 	m_smallImglst.SetIcon(hIcon);
-	m_tabImglst.SetIcon(hIcon);
-	
+	//m_tabImglst.SetIcon(hIcon);
+
 	/*CImg img;
 	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
-	m_bigImglst.SetBitmap(img, E_ImgFixMode::IFM_None);
-	m_smallImglst.SetBitmap(img, E_ImgFixMode::IFM_None);
-	m_tabImglst.SetBitmap(img, E_ImgFixMode::IFM_None);*/
+	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_None);
+	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_None);
+	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_None);*/
 
 	return true;
 }
@@ -103,7 +107,7 @@ bool CImgMgr::_setSingerImg(const wstring& strFile)
 
 	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
 	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
-	m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
 
 	return true;
 }
@@ -159,7 +163,7 @@ void CImgMgr::removeSingerImg(UINT uSingerID, const wstring& strSingerName)
 
 	m_bigImglst.Remove(uImgPos);
 	m_smallImglst.Remove(uImgPos);
-	m_tabImglst.Remove(uImgPos);
+	//m_tabImglst.Remove(uImgPos);
 
 	m_model.getSingerImgMgr().removeSingerImg(strSingerName);
 }
@@ -170,7 +174,7 @@ void CImgMgr::clearSingerImg()
 	{
 		m_bigImglst.Remove(__SingerImgStartPos);
 		m_smallImglst.Remove(__SingerImgStartPos);
-		m_tabImglst.Remove(__SingerImgStartPos);
+		//m_tabImglst.Remove(__SingerImgStartPos);
 	}
 
 	m_vctSingerID.clear();

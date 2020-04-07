@@ -16,7 +16,6 @@ private:
 
 	CImglst m_bigImglst;
 	CImglst m_smallImglst;
-	CImglst m_tabImglst;
 
 	vector<UINT> m_vctSingerID;
 
@@ -41,10 +40,6 @@ public:
 	CImglst& smallImglst()
 	{
 		return m_smallImglst;
-	}
-	CImglst& tabImglst()
-	{
-		return m_tabImglst;
 	}
 	
 	UINT getSingerImgPos(UINT uSingerID) const;

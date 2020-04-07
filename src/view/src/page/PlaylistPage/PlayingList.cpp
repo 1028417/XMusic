@@ -206,7 +206,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 		if ((int)E_GlobalImage::GI_WholeTrack == iImage)
 		{
 			auto offset = (cy - (int)m_view.m_globalSize.m_uBigIconSize)/2;
-			m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { offset, offset }, ILD_NORMAL);
+			m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { offset, offset }, 0);
 		}
 		else
 		{

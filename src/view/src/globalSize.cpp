@@ -22,7 +22,7 @@ CGlobalSize::CGlobalSize()
 	m_uLeftDockWidth = 285;
 	m_uAlbumDockWidth = 215;
 
-	m_uSmallIconSize = 40;
+	m_uSmallIconSize = 38;
 	m_uBigIconSize = 52;
 
 	m_uHeadHeight = m_uTabHeight = m_uMenuItemHeight = 24;

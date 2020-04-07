@@ -28,22 +28,21 @@ bool __view::show()
 		m_globalSize.init();
 
 		__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
-
+		
 		__EnsureReturn(_create(), false);
 
 		m_PlayCtrl.showPlaySpirit();
 
 		return true;
 	}, [&]() {
-		if (m_model.initMediaLib())
-		{
-			m_ImgMgr.initSingerImg();
-		}
+		m_model.initMediaLib();
 	});
 	if (!bRet)
 	{
 		return false;
 	}
+
+	m_ImgMgr.initSingerImg();
 
 	m_PlayingPage.RefreshList();
 	m_MainWnd.show();
@@ -77,7 +76,7 @@ bool __view::_create()
 	tagViewStyle centerViewStyle(E_DockViewType::DVT_DockCenter);
 	centerViewStyle.TabStyle.eTabStyle = E_TabStyle::TS_Bottom;
 	centerViewStyle.TabStyle.fTabFontSize = m_globalSize.m_fBigFontSize;
-	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.tabImglst();
+	centerViewStyle.TabStyle.pImglst = &m_ImgMgr.smallImglst();
 	centerViewStyle.TabStyle.uTabHeight = m_globalSize.m_uTabHeight;
 	pDockView = m_MainWnd.CreateView(m_MediaResPage, centerViewStyle);
 	__AssertReturn(pDockView, false);
