@@ -120,7 +120,7 @@ public:
 
 	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
 
-	void CImglst::SetImg(Gdiplus::Image& img, LPCRECT prcMargin, int nPosReplace = -1);
+	void SetImg(Gdiplus::Image& img, int nPosReplace = -1);
 	
 	void SetImg(CImg& img, E_ImgFixMode eFixMode, int nPosReplace = -1);
 };
