@@ -82,6 +82,8 @@ void CMedialibDlg::init()
 
     ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
 
+    ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
+
     m_MedialibView.setFont(1.05, QFont::Weight::Normal);
     m_MedialibView.init();
 
