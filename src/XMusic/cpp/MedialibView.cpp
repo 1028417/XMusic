@@ -155,7 +155,7 @@ void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
     }
     else if (&dir == &m_OuterDir)
     {
-        strTitle << strutil::trim_r(wstring(__OuterDirName));
+        strTitle << __OuterDirName;
     }
     else
     {
@@ -241,7 +241,7 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
     {
         context.pixmap = &m_pmDir;
-        context.strText = __OuterDirName;
+        context.strText << ' ' << __OuterDirName;
         context.pDir = &m_OuterDir;
         return true;
     }

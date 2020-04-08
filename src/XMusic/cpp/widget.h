@@ -176,15 +176,29 @@ public:
         TWidget::setFont(font);
     }
 
-    void setFont(float fSizeOffset, int nWeight = g_nDefFontWeight, bool bItalic=false)
+    void setFont(float fSizeOffset, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
     {
-        TWidget::setFont(CFont(fSizeOffset, nWeight, bItalic));
+        TWidget::setFont(CFont(fSizeOffset, nWeight, bItalic, bUnderline));
+    }
+
+    void adjustFont(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    {
+        CFont font(*this);
+        font.adjust(fSizeOffset, nWeight, bItalic, bUnderline);
+        TWidget::setFont(font);
     }
 
     void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
     {
         CFont font(*this);
         font.adjust(fSizeOffset, nWeight, bItalic);
+        TWidget::setFont(font);
+    }
+
+    void adjustFont(float fSizeOffset, int nWeight)
+    {
+        CFont font(*this);
+        font.adjust(fSizeOffset, nWeight);
         TWidget::setFont(font);
     }
 
@@ -206,6 +220,14 @@ public:
     {
         CFont font(*this);
         font.setItalic(bItalic);
+        TWidget::setFont(font);
+    }
+
+    void adjustFont(bool bItalic, bool bUnderline)
+    {
+        CFont font(*this);
+        font.setItalic(bItalic);
+        font.setUnderline(bUnderline);
         TWidget::setFont(font);
     }
 

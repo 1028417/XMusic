@@ -641,7 +641,7 @@ gridline-color: rgb(255, 255, 255);</string>
        </rect>
       </property>
       <property name="text">
-       <string>欧美</string>
+       <string>英文</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>

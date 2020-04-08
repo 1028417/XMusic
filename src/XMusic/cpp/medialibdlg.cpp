@@ -87,8 +87,8 @@ void CMedialibDlg::init()
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
-    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK
+                , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
         label->setFont(1.05, QFont::Weight::DemiBold);
@@ -298,9 +298,8 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
         {ui.labelDemandCN, E_LanguageType::LT_CN}
         , {ui.labelDemandHK, E_LanguageType::LT_HK}
         , {ui.labelDemandKR, E_LanguageType::LT_KR}
-        , {ui.labelDemandJP, E_LanguageType::LT_JP}
-        , {ui.labelDemandEUR, E_LanguageType::LT_EUR}
         , {ui.labelDemandEN, E_LanguageType::LT_EN}
+        , {ui.labelDemandEUR, E_LanguageType::LT_EUR}
     };
     auto uLanguage = (UINT)mapLabels[label];
 
@@ -308,7 +307,7 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
     //paMediaSet.get((UINT)m_MedialibView.scrollPos(), [&](const CMediaSet& MediaSet){
     //    if (MediaSet.property().language() != uLanguage) {
             int nRow = paMediaSet.find([&](const CMediaSet& MediaSet){
-                return MediaSet.property().language() == uLanguage;
+                return MediaSet.property().language() & uLanguage;
             });
             if (nRow >= 0)
             {

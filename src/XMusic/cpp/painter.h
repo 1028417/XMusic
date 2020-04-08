@@ -73,43 +73,52 @@ public:
         _setFamily();
     }
 
-    CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false)
+    CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
         : QFont(_getFamily(nWeight), g_uDefFontSize * fSizeOffset, nWeight)
     {
+        _setFamily();
+
         setItalic(bItalic);
 
-        _setFamily();
+        setUnderline(bUnderline);
     }
 
-    void setWeight(int nWeight)
+    inline void setWeight(int nWeight)
     {
         QFont::setWeight(nWeight);
         _setFamily();
     }
 
-    void setBold(bool bBold)
+    inline void setBold(bool bBold)
     {
         QFont::setBold(bBold);
         _setFamily();
     }
 
-    void adjust(float fSizeOffset)
+    inline void adjust(float fSizeOffset)
     {
         setPointSizeF(pointSizeF() * fSizeOffset);
     }
 
-    void adjust(float fSizeOffset, int nWeight, bool bItalic)
+    inline void adjust(float fSizeOffset, int nWeight)
+    {
+        adjust(fSizeOffset);
+
+        setWeight(nWeight);
+    }
+
+    inline void adjust(float fSizeOffset, int nWeight, bool bItalic)
     {
         adjust(fSizeOffset, nWeight);
 
         setItalic(bItalic);
     }
 
-    void adjust(float fSizeOffset, int nWeight)
+    void adjust(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
     {
-        adjust(fSizeOffset);
+        adjust(fSizeOffset, nWeight, bItalic);
 
-        setWeight(nWeight);
+        setUnderline(bUnderline);
     }
 };
 
@@ -149,6 +158,13 @@ public:
         setPen(QColor(r,g,b,a));
     }
 
+    void adjustFont(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    {
+        CFont font(*this);
+        font.adjust(fSizeOffset, nWeight, bItalic, bUnderline);
+        QPainter::setFont(font);
+    }
+
     void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
     {
         CFont font(*this);
@@ -181,6 +197,14 @@ public:
     {
         CFont font(*this);
         font.setItalic(bItalic);
+        QPainter::setFont(font);
+    }
+
+    void adjustFont(bool bItalic, bool bUnderline)
+    {
+        CFont font(*this);
+        font.setItalic(bItalic);
+        font.setUnderline(bUnderline);
         QPainter::setFont(font);
     }
 
@@ -225,6 +249,14 @@ public:
         m_painter.restore();
     }
 
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(fSizeOffset, nWeight, bItalic, bUnderline);
+    }
+
     CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight, bool bItalic)
         : m_painter(painter)
     {
@@ -263,5 +295,13 @@ public:
         painter.save();
 
         painter.adjustFont(bItalic);
+    }
+
+    CPainterFontGuard(CPainter& painter, bool bItalic, bool bUnderline)
+        : m_painter(painter)
+    {
+        painter.save();
+
+        painter.adjustFont(bItalic, bUnderline);
     }
 };
