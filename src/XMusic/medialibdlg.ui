@@ -207,7 +207,7 @@
    <widget class="CLabel" name="labelDemandEUR">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>445</x>
       <y>0</y>
       <width>130</width>
       <height>60</height>

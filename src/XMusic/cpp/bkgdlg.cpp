@@ -201,6 +201,10 @@ void CBkgDlg::initBkg(bool bHBkg)
     }
 
     auto& vecBkgFile = bHBkg?m_vecHBkgFile:m_vecVBkgFile;
+    fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
+        vecBkgFile.push_back({strAppVersion + __wcPathSeparator + strSubFile, NULL});
+    });
+
     fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
         cauto strPath = strBkgDir+fileInfo.strName;
         if (fileInfo.bDir)
@@ -214,10 +218,6 @@ void CBkgDlg::initBkg(bool bHBkg)
         {
             vecBkgFile.insert(vecBkgFile.begin(), {fileInfo.strName, NULL});
         }
-    });
-
-    fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
-        vecBkgFile.push_back({strAppVersion + __wcPathSeparator + strSubFile, NULL});
     });
 
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()

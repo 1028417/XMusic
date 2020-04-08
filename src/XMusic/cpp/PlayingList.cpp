@@ -86,7 +86,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        painter.adjustFont(1.05f, QFont::Weight::Normal, false, true);
+        painter.adjustFont(1.05f, QFont::Weight::Normal);
     }
     else if (m_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
