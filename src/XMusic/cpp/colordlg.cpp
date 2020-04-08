@@ -20,7 +20,7 @@ void CColorDlg::init()
 {
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     CFont font(1.05);
     ui.groupBkgColor->setFont(font);

@@ -80,9 +80,9 @@ void CMedialibDlg::init()
 {
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(1.18, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
-    m_MedialibView.setFont(1.05, QFont::Weight::Normal);
+    m_MedialibView.setFont(1.04, QFont::Weight::Normal);
     m_MedialibView.init();
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
@@ -91,7 +91,7 @@ void CMedialibDlg::init()
                 , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1.05, QFont::Weight::DemiBold, false, true);
+        label->setFont(1.06, QFont::Weight::Normal, false, true);
 
         connect(label, &CLabel::signal_click, this, &CMedialibDlg::slot_labelClick);
     }

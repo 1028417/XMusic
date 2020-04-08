@@ -9,6 +9,8 @@
 
 #include "widget.h"
 
+#define __titleFontSize 1.17f
+
 class CDialog : public QDialog
 {
 public:
