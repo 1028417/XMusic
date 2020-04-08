@@ -167,6 +167,7 @@ public:
     void scroll(float fScrollPos)
     {
         m_fScrollPos = fScrollPos;
+        m_uAutoScrollSeq = 0;
 
         update();
     }

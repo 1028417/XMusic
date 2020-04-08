@@ -182,7 +182,7 @@ void CSingerPage::_addSinger(CSingerGroup *pGroup)
 	CMediaRes *pSrcPath = m_view.showChooseDirDlg(L"选择歌手目录", false);
 	__Ensure(pSrcPath);
 
-	BOOL bInitAlbum = confirmBox(L"是否生成专辑歌单?");
+	BOOL bInitAlbum = confirmBox(L"是否生成专辑列表?");
 
 	__waitCursor;
 	

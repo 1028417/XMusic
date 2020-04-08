@@ -133,7 +133,7 @@ void CPlaylistPage::RefreshList()
 {
 	__Ensure(m_hWnd);
 
-	(void)m_wndList.SetObjects(TD_ListObjectList((list<CPlaylist>&)m_view.getPlaylistMgr().playlists()));
+	(void)m_wndList.SetObjects(TD_ListObjectList((SList<CPlaylist>&)m_view.getPlaylistMgr().playlists()));
 	
 	if (m_view.m_PlayItemPage)
 	{

@@ -104,7 +104,7 @@ BOOL CAlbumPage::OnInitDialog()
 
 		if (0 == lvcd.uItem)
 		{
-			rc.left = rc.bottom - 10;
+			rc.left = rc.bottom - 20;
 
 			dc.SetTextColor(lvcd.crText);
 			dc.DrawText(m_pSinger->m_strName.c_str(), &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);

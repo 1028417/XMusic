@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1069</width>
+    <width>1000</width>
     <height>500</height>
    </rect>
   </property>
@@ -88,8 +88,8 @@
   <widget class="CButton" name="btnPlay">
    <property name="geometry">
     <rect>
-     <x>950</x>
-     <y>50</y>
+     <x>890</x>
+     <y>40</y>
      <width>90</width>
      <height>90</height>
     </rect>
@@ -118,7 +118,7 @@
     <rect>
      <x>280</x>
      <y>60</y>
-     <width>660</width>
+     <width>570</width>
      <height>60</height>
     </rect>
    </property>
@@ -204,29 +204,10 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelDemandTAI">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>0</y>
-      <width>90</width>
-      <height>60</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>泰语</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="wordWrap">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="CLabel" name="labelDemandEN">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>360</x>
       <y>0</y>
       <width>90</width>
       <height>60</height>
@@ -245,7 +226,7 @@
    <widget class="CLabel" name="labelDemandEUR">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>450</x>
       <y>0</y>
       <width>120</width>
       <height>60</height>
@@ -264,11 +245,9 @@
    <zorder>labelDemandHK</zorder>
    <zorder>labelDemandKR</zorder>
    <zorder>labelDemandJP</zorder>
-   <zorder>labelDemandTAI</zorder>
    <zorder>labelDemandEN</zorder>
    <zorder>labelDemandEUR</zorder>
    <zorder>labelDemandCN</zorder>
-   <zorder>btnPlay</zorder>
   </widget>
  </widget>
  <customwidgets>
