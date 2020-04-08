@@ -136,6 +136,20 @@ namespace NS_SSTL
 			m_data.clear();
 		}
 
+		__ItrType insert(const __CItrType& itr, __DataConstRef data) override
+        {
+            int pos = -1;
+            if (itr != m_data.end())
+            {
+				pos = m_ptrArray.indexOf(&*itr);
+            }
+
+            auto itrRet = m_data.insert(itr, data);
+            m_ptrArray.insert(pos, *itrRet);
+
+            return itrRet;
+        }
+
 		const __ContainerType& operator->()
 		{
 			return m_data;

@@ -9,7 +9,7 @@ private:
     class IModelObserver& m_ModelObserver;
 
 	CPlaylist m_Playinglist;
-	list<CPlaylist> m_lstPlaylists;
+    SList<CPlaylist> m_lstPlaylists;
 
 private:
 	int _indexOf(const CMediaSet&) const override;
@@ -22,7 +22,7 @@ public:
 		return m_Playinglist;
 	}
 
-	const list<CPlaylist>& playlists() const
+    const SList<CPlaylist>& playlists() const
 	{
 		return m_lstPlaylists;
 	}

@@ -130,6 +130,11 @@ namespace NS_SSTL
 			return -1;
 		}
 
+        virtual __ItrType insert(const __CItrType& itr, __DataConstRef data)
+        {
+            return m_data.insert(itr, data);
+        }
+
 		__DataRef add(__DataConstRef data)
 		{
 			_add(data);
@@ -179,7 +184,7 @@ namespace NS_SSTL
 		__DataRef addFront(__DataConstRef data)
 		{
 			m_data.push_front(data);
-			return m_data.frnt();
+			return m_data.front();
 		}
 
 		bool popBack()

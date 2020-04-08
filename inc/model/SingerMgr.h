@@ -8,12 +8,12 @@ public:
 private:
 	class IModelObserver& m_ModelObserver;
 
-	list<CSingerGroup> m_lstGroups;
+    SList<CSingerGroup> m_lstGroups;
 
 	list<CSinger> m_lstRootSingers;
 
 public:
-	const list<CSingerGroup>& groups() const
+    const SList<CSingerGroup>& groups() const
 	{
 		return m_lstGroups;
 	}
