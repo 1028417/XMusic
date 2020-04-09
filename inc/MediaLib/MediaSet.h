@@ -5,7 +5,6 @@
 #define __HKLanguage		0x02
 #define __KRLanguage		0x04
 #define __JPLanguage		0x08
-#define __TAILanguage	    0x10
 #define __ENLanguage		0x20
 #define __EURLanguage	    0x40
 
@@ -15,8 +14,7 @@ enum class E_LanguageType
 	LT_CN = __CNLanguage,
 	LT_HK = __HKLanguage,
 	LT_KR = __KRLanguage,
-	LT_JP = __JPLanguage,
-	LT_TAI = __TAILanguage,
+    LT_JP = __JPLanguage,
 	LT_EN = __ENLanguage,
 	LT_EUR = __EURLanguage,
 };
@@ -65,7 +63,7 @@ public:
 	void unsetLanguage(E_LanguageType eLanguageType)
 	{
 		m_uLanguage &= ~(UINT)eLanguageType;
-    }
+	}
 
 	bool isCNLanguage() const
 	{
