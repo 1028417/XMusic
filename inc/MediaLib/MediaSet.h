@@ -65,12 +65,7 @@ public:
 	void unsetLanguage(E_LanguageType eLanguageType)
 	{
 		m_uLanguage &= ~(UINT)eLanguageType;
-	}
-
-	bool checkLanguage(E_LanguageType eLanguageType) const
-	{
-		return m_uLanguage & (UINT)eLanguageType;
-	}
+    }
 
 	bool isCNLanguage() const
 	{
@@ -158,8 +153,6 @@ public:
 	{
 		m_property = property;
 	}
-
-	bool checkLanguage(E_LanguageType eLanguageType) const;
 
 	int index() const
 	{

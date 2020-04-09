@@ -59,8 +59,6 @@ private:
 
     void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
 
-    bool _checkDemandableSinger(const CSinger& singer, E_LanguageType eLanguageType);
-
     void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
     void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
     void _genDemandablePlaylist(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
