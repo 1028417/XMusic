@@ -359,7 +359,6 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.CheckItem(ID_HKLanguage, property.isHKLanguage());
 		m_MenuGuard.CheckItem(ID_KRLanguage, property.isKRLanguage());
 		m_MenuGuard.CheckItem(ID_JPLanguage, property.isJPLanguage());
-		m_MenuGuard.CheckItem(ID_TAILanguage, property.isTAILanguage());
 		m_MenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_MenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 

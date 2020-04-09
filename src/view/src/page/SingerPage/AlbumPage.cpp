@@ -530,7 +530,6 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_HKLanguage, property.isHKLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_KRLanguage, property.isKRLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_JPLanguage, property.isJPLanguage());
-		m_AlbumMenuGuard.CheckItem(ID_TAILanguage, property.isTAILanguage());
 		m_AlbumMenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
