@@ -81,10 +81,6 @@ public:
 	{
 		return m_uLanguage & __JPLanguage;
 	}
-	bool isTAILanguage() const
-	{
-		return m_uLanguage & __TAILanguage;
-	}
 	bool isENLanguage() const
 	{
 		return m_uLanguage & __ENLanguage;
