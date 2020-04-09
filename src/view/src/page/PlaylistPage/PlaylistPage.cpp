@@ -311,7 +311,7 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 				return;
 			};
 
-			if (property.checkLanguage(eLanguage))
+			if (property.language() & (UINT)eLanguage)
 			{
 				property.unsetLanguage(eLanguage);
 			}

@@ -153,10 +153,6 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandSinger;
 			eLanguageType = E_LanguageType::LT_JP;
 			break;
-		case ID_DemandSinger_TAI:
-			eDemandMode = E_DemandMode::DM_DemandSinger;
-			eLanguageType = E_LanguageType::LT_TAI;
-			break;
 		case ID_DemandSinger_EN:
 			eDemandMode = E_DemandMode::DM_DemandSinger;
 			eLanguageType = E_LanguageType::LT_EN;
@@ -184,10 +180,6 @@ bool CController::handleCommand(UINT uID)
 		case ID_DemandAlbum_JP:
 			eDemandMode = E_DemandMode::DM_DemandAlbum;
 			eLanguageType = E_LanguageType::LT_JP;
-			break;
-		case ID_DemandAlbum_TAI:
-			eDemandMode = E_DemandMode::DM_DemandAlbum;
-			eLanguageType = E_LanguageType::LT_TAI;
 			break;
 		case ID_DemandAlbum_EN:
 			eDemandMode = E_DemandMode::DM_DemandAlbum;
@@ -217,10 +209,6 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandAlbumItem;
 			eLanguageType = E_LanguageType::LT_JP;
 			break;
-		case ID_DemandAlbumItem_TAI:
-			eDemandMode = E_DemandMode::DM_DemandAlbumItem;
-			eLanguageType = E_LanguageType::LT_TAI;
-			break;
 		case ID_DemandAlbumItem_EN:
 			eDemandMode = E_DemandMode::DM_DemandAlbumItem;
 			eLanguageType = E_LanguageType::LT_EN;
@@ -249,10 +237,6 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandPlaylist;
 			eLanguageType = E_LanguageType::LT_JP;
 			break;
-		case ID_DemandPlaylist_TAI:
-			eDemandMode = E_DemandMode::DM_DemandPlaylist;
-			eLanguageType = E_LanguageType::LT_TAI;
-			break;
 		case ID_DemandPlaylist_EN:
 			eDemandMode = E_DemandMode::DM_DemandPlaylist;
 			eLanguageType = E_LanguageType::LT_EN;
@@ -280,10 +264,6 @@ bool CController::handleCommand(UINT uID)
 		case ID_DemandPlayItem_JP:
 			eDemandMode = E_DemandMode::DM_DemandPlayItem;
 			eLanguageType = E_LanguageType::LT_JP;
-			break;
-		case ID_DemandPlayItem_TAI:
-			eDemandMode = E_DemandMode::DM_DemandPlayItem;
-			eLanguageType = E_LanguageType::LT_TAI;
 			break;
 		case ID_DemandPlayItem_EN:
 			eDemandMode = E_DemandMode::DM_DemandPlayItem;

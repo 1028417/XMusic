@@ -61,7 +61,7 @@ MainWindow::MainWindow(CApp& app)
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
              , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-             , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR))
+             , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR))
     {
         m_mapTopWidgetPos[pWidget] = pWidget->geometry();
     }
@@ -270,7 +270,7 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 void MainWindow::_init()
 {
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-                , ui.labelDemandJP, ui.labelDemandTAI, ui.labelDemandEN, ui.labelDemandEUR};
+                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
         label->setFont(1, QFont::Weight::DemiBold);
@@ -478,7 +478,6 @@ void MainWindow::_relayout()
     ui.labelDemandCN->setShadow(uShadowWidth);
     ui.labelDemandKR->setShadow(uShadowWidth);
     ui.labelDemandJP->setShadow(uShadowWidth);
-    ui.labelDemandTAI->setShadow(uShadowWidth);
     ui.labelDemandEN->setShadow(uShadowWidth);
     ui.labelDemandEUR->setShadow(uShadowWidth);
 
@@ -1270,7 +1269,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {ui.labelDemandHK, E_LanguageType::LT_HK}
             , {ui.labelDemandKR, E_LanguageType::LT_KR}
             , {ui.labelDemandJP, E_LanguageType::LT_JP}
-            , {ui.labelDemandTAI, E_LanguageType::LT_TAI}
             , {ui.labelDemandEN, E_LanguageType::LT_EN}
             , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
         plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {

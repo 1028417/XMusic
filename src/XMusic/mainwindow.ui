@@ -526,7 +526,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <rect>
        <x>20</x>
        <y>120</y>
-       <width>820</width>
+       <width>780</width>
        <height>60</height>
       </rect>
      </property>
@@ -560,7 +560,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <rect>
         <x>100</x>
         <y>0</y>
-        <width>110</width>
+        <width>130</width>
         <height>60</height>
        </rect>
       </property>
@@ -577,9 +577,9 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandKR">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>230</x>
         <y>0</y>
-        <width>110</width>
+        <width>130</width>
         <height>60</height>
        </rect>
       </property>
@@ -596,9 +596,9 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandJP">
       <property name="geometry">
        <rect>
-        <x>320</x>
+        <x>360</x>
         <y>0</y>
-        <width>110</width>
+        <width>130</width>
         <height>60</height>
        </rect>
       </property>
@@ -612,31 +612,12 @@ gridline-color: rgb(255, 255, 255);</string>
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="CLabel" name="labelDemandTAI">
-      <property name="geometry">
-       <rect>
-        <x>430</x>
-        <y>0</y>
-        <width>110</width>
-        <height>60</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>泰语</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="CLabel" name="labelDemandEN">
       <property name="geometry">
        <rect>
-        <x>540</x>
+        <x>490</x>
         <y>0</y>
-        <width>110</width>
+        <width>130</width>
         <height>60</height>
        </rect>
       </property>
@@ -653,9 +634,9 @@ gridline-color: rgb(255, 255, 255);</string>
      <widget class="CLabel" name="labelDemandEUR">
       <property name="geometry">
        <rect>
-        <x>650</x>
+        <x>620</x>
         <y>0</y>
-        <width>140</width>
+        <width>160</width>
         <height>60</height>
        </rect>
       </property>
@@ -672,7 +653,6 @@ gridline-color: rgb(255, 255, 255);</string>
      <zorder>labelDemandHK</zorder>
      <zorder>labelDemandKR</zorder>
      <zorder>labelDemandJP</zorder>
-     <zorder>labelDemandTAI</zorder>
      <zorder>labelDemandEN</zorder>
      <zorder>labelDemandEUR</zorder>
      <zorder>labelDemandCN</zorder>

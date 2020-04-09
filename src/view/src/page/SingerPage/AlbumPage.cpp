@@ -681,7 +681,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 				return;
 			};
 
-			if (property.checkLanguage(eLanguage))
+			if (property.language() & (UINT)eLanguage)
 			{
 				property.unsetLanguage(eLanguage);
 			}

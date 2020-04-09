@@ -91,7 +91,7 @@ void CMedialibDlg::init()
                 , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1.06, QFont::Weight::Normal, false, true);
+        label->setFont(1.055, QFont::Weight::Normal, false, true);
 
         connect(label, &CLabel::signal_click, this, &CMedialibDlg::slot_labelClick);
     }

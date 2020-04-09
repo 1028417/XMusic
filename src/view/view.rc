@@ -138,14 +138,6 @@ BEGIN
             MENUITEM "歌单曲目",                        ID_DemandPlayItem_JP
             MENUITEM "歌单",                          ID_DemandPlaylist_JP
         END
-        POPUP "泰语"
-        BEGIN
-            MENUITEM "歌手",                          ID_DemandSinger_TAI
-            MENUITEM "专辑",                          ID_DemandAlbum_TAI
-            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_TAI
-            MENUITEM "歌单曲目",                        ID_DemandPlayItem_TAI
-            MENUITEM "歌单",                          ID_DemandPlaylist_TAI
-        END
         POPUP "英文"
         BEGIN
             MENUITEM "歌手",                          ID_DemandSinger_EN
@@ -283,16 +275,14 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
-            POPUP "语种"
-            BEGIN
-                MENUITEM "国语",                          ID_CNLanguage
-                MENUITEM "粤语",                          ID_HKLanguage
-                MENUITEM "韩语",                          ID_KRLanguage
-                MENUITEM "日语",                          ID_JPLanguage
-                MENUITEM "泰语",                          ID_TAILanguage
-                MENUITEM "英文",                          ID_ENLanguage
-                MENUITEM "小语种",                         ID_EURLanguage
-            END
+            MENUITEM "国语",                          ID_CNLanguage
+            MENUITEM "粤语",                          ID_HKLanguage
+            MENUITEM "韩语",                          ID_KRLanguage
+            MENUITEM "日语",                          ID_JPLanguage
+            MENUITEM "泰语",                          ID_TAILanguage
+            MENUITEM "英文",                          ID_ENLanguage
+            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
         END
@@ -330,16 +320,14 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
-            POPUP "语种"
-            BEGIN
-                MENUITEM "国语",                          ID_CNLanguage
-                MENUITEM "粤语",                          ID_HKLanguage
-                MENUITEM "韩语",                          ID_KRLanguage
-                MENUITEM "日语",                          ID_JPLanguage
-                MENUITEM "泰语",                          ID_TAILanguage
-                MENUITEM "英文",                          ID_ENLanguage
-                MENUITEM "小语种",                         ID_EURLanguage
-            END
+            MENUITEM "国语",                          ID_CNLanguage
+            MENUITEM "粤语",                          ID_HKLanguage
+            MENUITEM "韩语",                          ID_KRLanguage
+            MENUITEM "日语",                          ID_JPLanguage
+            MENUITEM "泰语",                          ID_TAILanguage
+            MENUITEM "英文",                          ID_ENLanguage
+            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
         END
@@ -361,16 +349,14 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
-            POPUP "语种"
-            BEGIN
-                MENUITEM "国语",                          ID_CNLanguage
-                MENUITEM "粤语",                          ID_HKLanguage
-                MENUITEM "韩语",                          ID_KRLanguage
-                MENUITEM "日语",                          ID_JPLanguage
-                MENUITEM "泰语",                          ID_TAILanguage
-                MENUITEM "英文",                          ID_ENLanguage
-                MENUITEM "小语种",                         ID_EURLanguage
-            END
+            MENUITEM "国语",                          ID_CNLanguage
+            MENUITEM "粤语",                          ID_HKLanguage
+            MENUITEM "韩语",                          ID_KRLanguage
+            MENUITEM "日语",                          ID_JPLanguage
+            MENUITEM "泰语",                          ID_TAILanguage
+            MENUITEM "英文",                          ID_ENLanguage
+            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
         END
