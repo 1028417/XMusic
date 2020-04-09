@@ -279,7 +279,6 @@ BEGIN
             MENUITEM "‘¡”Ô",                          ID_HKLanguage
             MENUITEM "∫´”Ô",                          ID_KRLanguage
             MENUITEM "»’”Ô",                          ID_JPLanguage
-            MENUITEM "Ã©”Ô",                          ID_TAILanguage
             MENUITEM "”¢Œƒ",                          ID_ENLanguage
             MENUITEM "–°”Ô÷÷",                         ID_EURLanguage
             MENUITEM SEPARATOR
@@ -324,7 +323,6 @@ BEGIN
             MENUITEM "‘¡”Ô",                          ID_HKLanguage
             MENUITEM "∫´”Ô",                          ID_KRLanguage
             MENUITEM "»’”Ô",                          ID_JPLanguage
-            MENUITEM "Ã©”Ô",                          ID_TAILanguage
             MENUITEM "”¢Œƒ",                          ID_ENLanguage
             MENUITEM "–°”Ô÷÷",                         ID_EURLanguage
             MENUITEM SEPARATOR
@@ -353,7 +351,6 @@ BEGIN
             MENUITEM "‘¡”Ô",                          ID_HKLanguage
             MENUITEM "∫´”Ô",                          ID_KRLanguage
             MENUITEM "»’”Ô",                          ID_JPLanguage
-            MENUITEM "Ã©”Ô",                          ID_TAILanguage
             MENUITEM "”¢Œƒ",                          ID_ENLanguage
             MENUITEM "–°”Ô÷÷",                         ID_EURLanguage
             MENUITEM SEPARATOR

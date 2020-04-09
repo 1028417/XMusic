@@ -668,9 +668,6 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			case ID_JPLanguage:
 				eLanguage = E_LanguageType::LT_JP;
 				break;
-			case ID_TAILanguage:
-				eLanguage = E_LanguageType::LT_TAI;
-				break;
 			case ID_ENLanguage:
 				eLanguage = E_LanguageType::LT_EN;
 				break;
