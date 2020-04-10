@@ -650,7 +650,16 @@ void MainWindow::_relayout()
         }
 
         int cy_SingerImg = y_labelAlbumName-y_SingerImg;
-        int cx_SingerImg = cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
+
+        int cx_SingerImg = 0;
+        cauto pPixmap = ui.labelSingerImg->pixmap();
+        if (pPixmap && !pPixmap->isNull())
+        {
+            //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
+
+            cx_SingerImg = cy_SingerImg * pPixmap->width() / pPixmap->height();
+            cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.25);
+        }
 
         int x_SingerImg = x;
         if (!bZoomoutSingerImg)
@@ -715,11 +724,11 @@ void MainWindow::_relayout()
         }
     }
 
-//    auto pPixmap = ui.labelSingerImg->pixmap();
-//    if (pPixmap && !pPixmap->isNull())
-//    {
-//        ui.labelSingerImg->setPixmap(*pPixmap);
-//    }
+    /*auto pPixmap = ui.labelSingerImg->pixmap();
+    if (pPixmap && !pPixmap->isNull())
+    {
+        ui.labelSingerImg->setPixmap(*pPixmap);
+    }*/
 
 #define __CyPlayItem __size(115)
     UINT uRowCount = 0;
