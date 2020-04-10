@@ -5,10 +5,10 @@
 
 #include "widget.h"
 
-class CProgressBar : public CWidget<QProgressBar>
+class CProgressBar : public TWidget<QProgressBar>
 {
 public:
-    CProgressBar(QWidget *parent) : CWidget(parent)
+    CProgressBar(QWidget *parent) : TWidget(parent)
         , m_crBackground(255,255,255)
         , m_crBuffer(210,255,230)
         , m_crForeground(155,210,255)

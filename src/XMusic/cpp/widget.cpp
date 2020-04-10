@@ -4,7 +4,7 @@
 static QPaintEvent *g_pe = NULL;
 
 template <class TParent>
-void CWidget<TParent>::paintEvent(QPaintEvent *pe)
+void TWidget<TParent>::paintEvent(QPaintEvent *pe)
 {
     g_pe = pe;
 
@@ -13,13 +13,13 @@ void CWidget<TParent>::paintEvent(QPaintEvent *pe)
 }
 
 template <class TParent>
-void CWidget<TParent>::_onPaint(CPainter&, cqrc)
+void TWidget<TParent>::_onPaint(CPainter&, cqrc)
 {
     TParent::paintEvent(g_pe);
 }
 
 template <class TParent>
-bool CWidget<TParent>::event(QEvent *ev)
+bool TWidget<TParent>::event(QEvent *ev)
 {
     bool bRet = TParent::event(ev);
 
@@ -103,7 +103,7 @@ bool CWidget<TParent>::event(QEvent *ev)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
     if (E_MouseEventType::MET_Press == type)
     {
@@ -154,7 +154,7 @@ void CWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& te)
+void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchBegin == type)
     {
@@ -184,7 +184,7 @@ void CWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEven
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
+void TWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
 {
     m_teBegin = te;
 
@@ -195,7 +195,7 @@ void CWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchEnd(CTouchEvent te)
+void TWidget<TParent>::_handleTouchEnd(CTouchEvent te)
 {
     te.setDt(te.timestamp() - m_teBegin.timestamp());
     te.setDx(te.x() - m_teBegin.x());
@@ -205,7 +205,7 @@ void CWidget<TParent>::_handleTouchEnd(CTouchEvent te)
 }
 
 template <class TParent>
-void CWidget<TParent>::_handleTouchMove(CTouchEvent te)
+void TWidget<TParent>::_handleTouchMove(CTouchEvent te)
 {
     int dx = te.x()-m_xTouch;
     int dy = te.y()-m_yTouch;
@@ -224,4 +224,9 @@ void CWidget<TParent>::_handleTouchMove(CTouchEvent te)
         m_xTouch = te.x();
         m_yTouch = te.y();
     }
+}
+
+void CWidget::_onTouchEvent(E_TouchEventType, const CTouchEvent&)
+{
+
 }

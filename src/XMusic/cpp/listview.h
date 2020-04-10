@@ -5,7 +5,7 @@
 
 #define __lvRowMargin __size(40)
 
-class CListView : public CWidget<QWidget>
+class CListView : public TWidget<QWidget>
 {
 protected:
     struct tagLVRow
@@ -63,7 +63,7 @@ protected:
     };
 
 public:
-    CListView(QWidget *parent) : CWidget(parent)
+    CListView(QWidget *parent) : TWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 

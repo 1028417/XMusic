@@ -13,12 +13,12 @@ enum class E_GroupTitlePos
     GTP_Right,
 };
 
-class CGroupFrame : public CWidget<QGroupBox>
+class CGroupFrame : public TWidget<QGroupBox>
 {
     Q_OBJECT
 public:
     CGroupFrame(QWidget *parent)
-        : CWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
+        : TWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
     {
     }
 

@@ -120,12 +120,12 @@ public:
     }
 };
 
-template <class TWidget = QWidget>
-class CWidget : public TWidget
+template <class T = QWidget>
+class TWidget : public T
 {
 public:
-    CWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints) :
-        TWidget(parent),
+    TWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints) :
+        T(parent),
         m_eRenderHints(eRenderHints)
     {
     }
@@ -164,7 +164,7 @@ public:
     {
         m_bSetForeColor = true;
         m_crFore = crFore;
-        TWidget::update();
+        T::update();
     }
     void setForeColor(int r, int g, int b, int a=255)
     {
@@ -173,54 +173,54 @@ public:
 
     void setFont(const CFont& font)
     {
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void setFont(float fSizeOffset, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
     {
-        TWidget::setFont(CFont(fSizeOffset, nWeight, bItalic, bUnderline));
+        T::setFont(CFont(fSizeOffset, nWeight, bItalic, bUnderline));
     }
 
     void adjustFont(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
     {
         CFont font(*this);
         font.adjust(fSizeOffset, nWeight, bItalic, bUnderline);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
     {
         CFont font(*this);
         font.adjust(fSizeOffset, nWeight, bItalic);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(float fSizeOffset, int nWeight)
     {
         CFont font(*this);
         font.adjust(fSizeOffset, nWeight);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(float fSizeOffset)
     {
         CFont font(*this);
         font.adjust(fSizeOffset);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(int nWeight)
     {
         CFont font(*this);
         font.setWeight(nWeight);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(bool bItalic)
     {
         CFont font(*this);
         font.setItalic(bItalic);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void adjustFont(bool bItalic, bool bUnderline)
@@ -228,7 +228,7 @@ public:
         CFont font(*this);
         font.setItalic(bItalic);
         font.setUnderline(bUnderline);
-        TWidget::setFont(font);
+        T::setFont(font);
     }
 
     void setOpacityEffect(float fValue)
@@ -359,7 +359,7 @@ protected:
 
     bool isHLayout() const
     {
-        return TWidget::width()>TWidget::height();
+        return T::width()>T::height();
     }
 
     virtual cqcr foreColor() const
@@ -393,4 +393,16 @@ private:
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) {}
 
     virtual bool _onGesture(QGesture&) {return false;}
+};
+
+
+class CWidget : public TWidget<QWidget>
+{
+public:
+    CWidget(QWidget *parent) : TWidget(parent)
+    {
+        setAttribute(Qt::WA_TranslucentBackground);
+    }
+
+    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&);
 };

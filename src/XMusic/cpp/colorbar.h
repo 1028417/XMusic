@@ -10,11 +10,11 @@ enum class E_BarColor
     BC_Blue,
 };
 
-class CColorBar : public CWidget<QWidget>
+class CColorBar : public TWidget<QWidget>
 {
     Q_OBJECT
 public:
-    CColorBar(QWidget *parent) : CWidget(parent)
+    CColorBar(QWidget *parent) : TWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }

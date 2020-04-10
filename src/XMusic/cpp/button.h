@@ -5,11 +5,11 @@
 
 #include "widget.h"
 
-class CButton : public CWidget<QPushButton>
+class CButton : public TWidget<QPushButton>
 {
     Q_OBJECT
 public:
-    CButton(QWidget *parent) : CWidget(parent)
+    CButton(QWidget *parent) : TWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 

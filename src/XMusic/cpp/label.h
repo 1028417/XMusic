@@ -13,11 +13,11 @@ enum class E_LabelTextOption
     LtO_Elided
 };
 
-class CLabel : public CWidget<QLabel>
+class CLabel : public TWidget<QLabel>
 {
     Q_OBJECT
 public:
-    CLabel(QWidget *parent) : CWidget(parent, QPainter::TextAntialiasing)
+    CLabel(QWidget *parent) : TWidget(parent, QPainter::TextAntialiasing)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }

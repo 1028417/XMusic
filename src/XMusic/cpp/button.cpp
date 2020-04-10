@@ -48,7 +48,7 @@ bool CButton::event(QEvent *ev)
         }
     }
 
-    return CWidget::event(ev);
+    return TWidget::event(ev);
 }
 
 void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
