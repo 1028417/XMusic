@@ -68,7 +68,7 @@ MainWindow::MainWindow(CApp& app)
 
     for (auto pWidget : SList<QWidget*>(
              ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
-             , ui.labelDuration, ui.barProgress, ui.labelProgress, ui.btnPlay, ui.btnPause
+             , ui.labelDuration, ui.progressbar, ui.labelProgress, ui.btnPlay, ui.btnPause
              , ui.btnPlayPrev, ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom))
     {
         m_mapWidgetPos[pWidget] = pWidget->geometry();
@@ -538,8 +538,8 @@ void MainWindow::_relayout()
     int x_frameDemand = 0;
     if (m_bHScreen)
     {
-        x_frameDemand = (ui.barProgress->geometry().right()
-            + ui.barProgress->x() - ui.frameDemand->width())/2;
+        x_frameDemand = (ui.progressbar->geometry().right()
+            + ui.progressbar->x() - ui.frameDemand->width())/2;
     }
     else
     {
@@ -574,7 +574,7 @@ void MainWindow::_relayout()
 #define __offset __size(10.0f)
             yOffset = (int)round(__offset/fCXRate);
 
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.barProgress, ui.labelProgress}))
+            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
             }
@@ -607,13 +607,13 @@ void MainWindow::_relayout()
 
     if (!m_bUseDefaultBkg)
     {
-        int x = ui.barProgress->x();
+        int x = ui.progressbar->x();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile - __size(2);
         ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x() - x, cy_Playingfile);
 
-        int cx_barProgress = ui.barProgress->width();
+        int cx_progressbar = ui.progressbar->width();
 
         int y_labelAlbumName = 0;
         if (ui.labelAlbumName->isVisible())
@@ -621,7 +621,7 @@ void MainWindow::_relayout()
 #define __cylabelAlbumName __size(80)
             y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
 
-            ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_barProgress, __cylabelAlbumName);
+            ui.labelAlbumName->setGeometry(x, y_labelAlbumName, cx_progressbar, __cylabelAlbumName);
         }
         else
         {
@@ -659,12 +659,13 @@ void MainWindow::_relayout()
 
             cx_SingerImg = cy_SingerImg * pPixmap->width() / pPixmap->height();
             cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.25);
+            cx_SingerImg = MIN(cx_SingerImg, ui.progressbar->width());
         }
 
         int x_SingerImg = x;
         if (!bZoomoutSingerImg)
         {
-            x_SingerImg += (cx_barProgress-cx_SingerImg)/2;
+            x_SingerImg += (cx_progressbar-cx_SingerImg)/2;
         }
 
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
@@ -744,7 +745,7 @@ void MainWindow::_relayout()
         {
             xOffset = __size(60) * fCXRate;
         }
-        int x_PlayingList = ui.barProgress->geometry().right() + xOffset;
+        int x_PlayingList = ui.progressbar->geometry().right() + xOffset;
 
         int cx_PlayingList = cx - x_PlayingList - uMargin * fCXRate;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
@@ -842,7 +843,7 @@ void MainWindow::_updateProgress()
     }
 
     int nProgress = int(playMgr.mediaOpaque().clock()/__1e6);
-    if (nProgress <= ui.barProgress->maximum())
+    if (nProgress <= ui.progressbar->maximum())
     {
         UINT bufferValue = 0;
 #if __OnlineMediaLib
@@ -858,7 +859,7 @@ void MainWindow::_updateProgress()
             ui.labelDuration->setText(qsDuration);
         }
 #endif
-        ui.barProgress->setValue(nProgress, bufferValue);
+        ui.progressbar->setValue(nProgress, bufferValue);
     }
 }
 
@@ -950,8 +951,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     _updatePlayPauseButton(true);
 
-    ui.barProgress->setValue(0);
-    ui.barProgress->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
+    ui.progressbar->setValue(0);
+    ui.progressbar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
 
 #if __OnlineMediaLib
     ui.labelDuration->clear();
@@ -980,7 +981,7 @@ void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
 
 void MainWindow::slot_playStoped(bool bOpenFail)
 {
-    ui.barProgress->setMaximum(0);
+    ui.progressbar->setMaximum(0);
 
     QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
     ui.labelDuration->setText(qsDuration);
@@ -1260,18 +1261,18 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return;
         }*/
 
-        cauto barProgress = *ui.barProgress;
-        auto nMax = barProgress.maximum();
+        cauto progressbar = *ui.progressbar;
+        auto nMax = progressbar.maximum();
         if (nMax <= 0)
         {
             return;
         }
 
-        auto nSeekPos = pos.x() * nMax / barProgress.width();
-        auto nCurrent = barProgress.value();
-        if (nSeekPos > nCurrent && barProgress.bufferValue() < barProgress.maxBuffer())
+        auto nSeekPos = pos.x() * nMax / progressbar.width();
+        auto nCurrent = progressbar.value();
+        if (nSeekPos > nCurrent && progressbar.bufferValue() < progressbar.maxBuffer())
         {
-            int nPlayablePos = nMax*barProgress.bufferValue()/barProgress.maxBuffer() - __ReadStreamWaitTime;
+            int nPlayablePos = nMax*progressbar.bufferValue()/progressbar.maxBuffer() - __ReadStreamWaitTime;
             nPlayablePos = MAX(nPlayablePos, nCurrent);
             nSeekPos = MIN(nSeekPos, nPlayablePos);
         }

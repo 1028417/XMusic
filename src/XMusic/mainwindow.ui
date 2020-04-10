@@ -39,7 +39,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="CProgressBar" name="barProgress" native="true">
+   <widget class="CProgressBar" name="progressbar" native="true">
     <property name="geometry">
      <rect>
       <x>40</x>
@@ -851,7 +851,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <zorder>labelLogo</zorder>
    <zorder>labelLogoCompany</zorder>
    <zorder>labelLogoTip</zorder>
-   <zorder>barProgress</zorder>
+   <zorder>progressbar</zorder>
    <zorder>btnMore</zorder>
    <zorder>btnExit</zorder>
    <zorder>btnFullScreen</zorder>
