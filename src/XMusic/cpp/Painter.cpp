@@ -127,25 +127,30 @@ void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap
 
 inline static QRect _genSrcRect(cqrc rcDst, const QPixmap& pixmap)
 {
-    int width = pixmap.width();
-    int height = pixmap.height();
+    QRect rcSrc = pixmap.rect();
+    int width = rcSrc.width();
+    int height = rcSrc.height();
 
     float fHWRate = (float)rcDst.height()/rcDst.width();
     if ((float)height/width > fHWRate)
     {
-        int yoffset = (height - width*fHWRate)/2;
-        return {0, yoffset, width-1, height-1-yoffset};
+        int dy = (height - width*fHWRate)/2;
+        rcSrc.setTop(rcSrc.top()+dy);
+        rcSrc.setBottom(rcSrc.bottom()-dy);
     }
     else
     {
-        int xoffset = (width - height/fHWRate)/2;
-        return {xoffset, 0, width-1-xoffset, height-1};
+        int dx = (width - height/fHWRate)/2;
+        rcSrc.setLeft(rcSrc.left()+dx);
+        rcSrc.setRight(rcSrc.right()-dx);
     }
+
+    return rcSrc;
 }
 
 void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, UINT xround, UINT yround)
 {
-    cauto rcSrc = _genSrcRect(rc, pixmap);
+    QRect rcSrc = _genSrcRect(rc, pixmap);
     this->drawPixmap(rc, pixmap, rcSrc, xround, yround);
 }
 
