@@ -208,10 +208,12 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
-    void drawPixmap(cqrc rcDst, const QPixmap& pixmap, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, const QPixmap& pixmap, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmapEx(cqrc rcDst, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmapEx(cqrc rc, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+
+    void drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy);
 
     void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 

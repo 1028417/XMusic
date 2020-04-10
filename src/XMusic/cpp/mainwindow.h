@@ -64,6 +64,9 @@ private:
 
     bool m_bUseDefaultBkg = false;
 
+    int m_dxbkg = 0;
+    int m_dybkg = 0;
+
     bool m_bZoomoutSingerImg = false;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
@@ -110,6 +113,8 @@ public:
     void show();
 
     void updateBkg();
+
+    void handleTouchMove(const CTouchEvent& te);
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 

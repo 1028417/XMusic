@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QWidget" name="centralWidget">
+  <widget class="CCentralWidget" name="centralWidget">
    <widget class="QLabel" name="labelBkg">
     <property name="enabled">
      <bool>true</bool>
@@ -881,6 +881,12 @@ gridline-color: rgb(255, 255, 255);</string>
    <class>CProgressBar</class>
    <extends>QWidget</extends>
    <header location="global">progressbar.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CCentralWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">centralwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

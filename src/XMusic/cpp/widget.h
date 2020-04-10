@@ -325,13 +325,13 @@ public:
         }
     };*/
 
-    template <class T = QGraphicsDropShadowEffect>
+    template <class E = QGraphicsDropShadowEffect>
     void setDropShadowEffect(cqcr cr, int dx, int dy, float fBlur=0)
     {
-        auto dse = dynamic_cast<T*>(this->graphicsEffect());
+        auto dse = dynamic_cast<E*>(this->graphicsEffect());
         if (NULL == dse)
         {
-            dse = new T(this);
+            dse = new E(this);
         }
         else
         {
@@ -393,16 +393,4 @@ private:
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) {}
 
     virtual bool _onGesture(QGesture&) {return false;}
-};
-
-
-class CWidget : public TWidget<QWidget>
-{
-public:
-    CWidget(QWidget *parent) : TWidget(parent)
-    {
-        setAttribute(Qt::WA_TranslucentBackground);
-    }
-
-    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&);
 };

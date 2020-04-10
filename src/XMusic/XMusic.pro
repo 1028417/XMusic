@@ -55,7 +55,8 @@ HEADERS += cpp/app.h \
     cpp/ListViewEx.h \
     ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
-    cpp/msgbox.h
+    cpp/msgbox.h \
+    cpp/centralwidget.h
 
 RESOURCES += res.qrc
 

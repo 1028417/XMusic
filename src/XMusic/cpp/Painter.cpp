@@ -59,7 +59,7 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
+void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -69,8 +69,8 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT y
         }
 
         QTransform transform;
-        transform.translate(rcDst.left(), rcDst.top());
-        auto scaleRate = (double)rcDst.width()/pixmap.width();
+        transform.translate(rc.left(), rc.top());
+        auto scaleRate = (double)rc.width()/pixmap.width();
         transform.scale(scaleRate, scaleRate);
 
         QBrush brush(pixmap);
@@ -81,17 +81,17 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT y
         this->setBrush(brush);
         this->setPen(Qt::transparent);
 
-        this->drawRoundedRect(rcDst,xround,yround);
+        this->drawRoundedRect(rc,xround,yround);
 
         this->restore();
     }
     else
     {
-        QPainter::drawPixmap(rcDst, pixmap);
+        QPainter::drawPixmap(rc, pixmap);
     }
 }
 
-void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
+void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap
                             , cqrc rcSrc, UINT xround, UINT yround)
 {
     if (xround > 0)
@@ -102,9 +102,9 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
         }
 
         QTransform transform;
-        auto scaleRate = (float)rcDst.width()/rcSrc.width();
-        transform.translate(rcDst.left()-rcSrc.left()*scaleRate
-                            , rcDst.top()-rcSrc.top()*scaleRate);
+        auto scaleRate = (float)rc.width()/rcSrc.width();
+        transform.translate(rc.left()-rcSrc.left()*scaleRate
+                            , rc.top()-rcSrc.top()*scaleRate);
         transform.scale(scaleRate, scaleRate);
 
         QBrush brush(pixmap);
@@ -115,37 +115,73 @@ void CPainter::drawPixmap(cqrc rcDst, const QPixmap& pixmap
         this->setBrush(brush);
         this->setPen(Qt::transparent);
 
-        this->drawRoundedRect(rcDst,xround,yround);
+        this->drawRoundedRect(rc,xround,yround);
 
         this->restore();
     }
     else
     {
-        QPainter::drawPixmap(rcDst, pixmap, rcSrc);
+        QPainter::drawPixmap(rc, pixmap, rcSrc);
     }
 }
 
-void CPainter::drawPixmapEx(cqrc rcDst, const QPixmap& pixmap, UINT xround, UINT yround)
+inline static QRect _genSrcRect(cqrc rcDst, const QPixmap& pixmap)
 {
-    QRect rcSrc = pixmap.rect();
-    int height = rcSrc.height();
-    int width = rcSrc.width();
+    int width = pixmap.width();
+    int height = pixmap.height();
 
     float fHWRate = (float)rcDst.height()/rcDst.width();
     if ((float)height/width > fHWRate)
     {
-        int dy = (height - width*fHWRate)/2;
-        rcSrc.setTop(rcSrc.top()+dy);
-        rcSrc.setBottom(rcSrc.bottom()-dy);
+        int yoffset = (height - width*fHWRate)/2;
+        return {0, yoffset, width-1, height-1-yoffset};
     }
     else
     {
-        int dx = (width - height/fHWRate)/2;
+        int xoffset = (width - height/fHWRate)/2;
+        return {xoffset, 0, width-1-xoffset, height-1};
+    }
+}
+
+void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, UINT xround, UINT yround)
+{
+    cauto rcSrc = _genSrcRect(rc, pixmap);
+    this->drawPixmap(rc, pixmap, rcSrc, xround, yround);
+}
+
+void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
+{
+    QRect rcSrc = _genSrcRect(rc, pixmap);
+
+    if (dx != 0)
+    {
+        if (dx < 0)
+        {
+            dx = -MIN(-dx, rcSrc.left());
+        }
+        else
+        {
+            dx = MIN(dx, pixmap.width()-1-rcSrc.right());
+        }
         rcSrc.setLeft(rcSrc.left()+dx);
-        rcSrc.setRight(rcSrc.right()-dx);
+        rcSrc.setRight(rcSrc.right()+dx);
     }
 
-    this->drawPixmap(rcDst, pixmap, rcSrc, xround, yround);
+    if (dy != 0)
+    {
+        if (dy < 0)
+        {
+            dy = -MIN(-dy, rcSrc.top());
+        }
+        else
+        {
+            dy = MIN(dy, pixmap.height()-1-rcSrc.bottom());
+        }
+        rcSrc.setTop(rcSrc.top()+dy);
+        rcSrc.setBottom(rcSrc.bottom()+dy);
+    }
+
+    this->drawPixmap(rc, pixmap, rcSrc);
 }
 
 void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)

@@ -50,8 +50,8 @@ MainWindow::MainWindow(CApp& app)
 {
     ui.setupUi(this);
 
+    //m_PlayingList.raise();
     m_PlayingList.setParent(ui.centralWidget);
-    m_PlayingList.raise();
 
     ui.labelBkg->setVisible(false);
 
@@ -806,7 +806,7 @@ void MainWindow::_onPaint(CPainter& painter)
     cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
     if (!pmBkg.isNull())
     {
-       painter.drawPixmapEx(rc, pmBkg);
+       painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
     }
     else
     {
@@ -1182,6 +1182,20 @@ void MainWindow::updateBkg()
 {
     _relayout();
 
+    m_dxbkg = 0;
+    m_dybkg = 0;
+    update();
+}
+
+void MainWindow::handleTouchMove(const CTouchEvent& te)
+{
+    if (m_PlayingList.geometry().contains(te.x(), te.y()))
+    {
+        return;
+    }
+
+    m_dxbkg -= te.dx();
+    m_dybkg -= te.dy();
     update();
 }
 

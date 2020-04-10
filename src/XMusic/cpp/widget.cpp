@@ -225,8 +225,3 @@ void TWidget<TParent>::_handleTouchMove(CTouchEvent te)
         m_yTouch = te.y();
     }
 }
-
-void CWidget::_onTouchEvent(E_TouchEventType, const CTouchEvent&)
-{
-
-}
