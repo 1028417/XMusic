@@ -5,7 +5,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 {
 	m_rc = this->rect();
 
-	auto pm = pixmap();
+    auto pm = QLabel::pixmap();
 	if (pm && !pm->isNull())
     {
         QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);

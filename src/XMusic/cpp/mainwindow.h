@@ -67,7 +67,14 @@ private:
     int m_dxbkg = 0;
     int m_dybkg = 0;
 
-    bool m_bZoomoutSingerImg = false;
+    enum E_SingerImgPos
+    {
+        SIP_Float = 1,
+        SIP_Dock,
+        SIP_Zoomout
+    };
+
+    E_SingerImgPos m_eSingerImgPos = SIP_Float;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
@@ -141,7 +148,7 @@ private:
 
     void _updateProgress();
 
-    void _showAlbumName();
+    WString _genAlbumName();
 
     void _playSingerImg(bool bReset);
 

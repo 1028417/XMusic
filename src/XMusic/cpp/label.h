@@ -51,10 +51,22 @@ public:
         m_szRound = szRound;
     }
 
-    void setPixmap(const QPixmap & pm, bool bCut=true)
+    void setPixmap(const QPixmap &pm, bool bCut=true)
     {
         m_bCutPixmap = bCut;
         QLabel::setPixmap(pm);
+    }
+
+    const QPixmap& pixmap() const
+    {
+        auto pixmap = QLabel::pixmap();
+        if (pixmap)
+        {
+            return *pixmap;
+        }
+
+        static QPixmap s_pixmap;
+        return s_pixmap;
     }
 
     void setText(const QString &qsText, E_LabelTextOption eTextOption = E_LabelTextOption::LTO_AutoFit)
