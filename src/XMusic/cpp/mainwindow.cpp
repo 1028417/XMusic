@@ -1214,17 +1214,6 @@ void MainWindow::updateBkg()
 
 void MainWindow::handleTouchMove(const CTouchEvent& te)
 {
-    if (m_PlayingList.geometry().contains(te.x(), te.y()))
-    {
-        if (abs(te.dy()) >= abs(te.dx()))
-        {
-            if (m_PlayingList.scrollable())
-            {
-                return;
-            }
-        }
-    }
-
     m_dxbkg -= te.dx();
     m_dybkg -= te.dy();
     update();

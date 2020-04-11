@@ -175,7 +175,15 @@ void CPlayingList::_onRowDblClick(tagLVRow& lvRow, const QMouseEvent&)
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    if (E_TouchEventType::TET_TouchBegin == type)
+    if (E_TouchEventType::TET_TouchMove == type)
+    {
+        if (abs(te.dy()) < abs(te.dx()) || getRowCount() <= getPageRowCount())
+        {
+            ((MainWindow*)parent())->handleTouchMove(te);
+            return;
+        }
+    }
+    else if (E_TouchEventType::TET_TouchBegin == type)
     {
         _updateActive(-1);
     }

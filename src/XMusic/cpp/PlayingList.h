@@ -46,11 +46,6 @@ public:
         m_uPageRowCount = uPageRowCount;
     }
 
-    bool scrollable()
-    {
-        return getRowCount() > getPageRowCount();
-    }
-
 private:
     size_t getPageRowCount() const override;
 
