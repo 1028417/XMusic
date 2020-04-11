@@ -1,7 +1,7 @@
 
 #include "ListViewEx.h"
 
-size_t CListViewEx::getRowCount()
+size_t CListViewEx::getRowCount() const
 {
     if (m_pMediaset)
     {

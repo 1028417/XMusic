@@ -99,12 +99,12 @@ protected:
     }
 
 private:
-    virtual size_t getColumnCount()
+    virtual size_t getColumnCount() const
     {
         return 1;
     }
 
-    virtual size_t getRowCount() = 0;
+    virtual size_t getRowCount() const = 0;
 
     void _onPaint(CPainter& painter, cqrc) override;
 
@@ -120,7 +120,7 @@ private:
     virtual void _onAutoScrollEnd() {}
 
 protected:
-    virtual size_t getPageRowCount() = 0;
+    virtual size_t getPageRowCount() const = 0;
 
     bool isAutoScrolling() const
     {

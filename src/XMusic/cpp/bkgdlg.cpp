@@ -17,7 +17,7 @@ CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
     (void)m_pmX.load(":/img/btnX.png");
 }
 
-size_t CBkgView::getPageRowCount()
+size_t CBkgView::getPageRowCount() const
 {
     if (m_bkgDlg.bkgCount() <= 3)
     {
@@ -29,7 +29,7 @@ size_t CBkgView::getPageRowCount()
     }
 }
 
-inline size_t CBkgView::getColumnCount()
+inline size_t CBkgView::getColumnCount() const
 {
     if (m_bkgDlg.bkgCount() <= 3)
     {
@@ -41,7 +41,7 @@ inline size_t CBkgView::getColumnCount()
     }
 }
 
-size_t CBkgView::getRowCount()
+size_t CBkgView::getRowCount() const
 {
     return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }

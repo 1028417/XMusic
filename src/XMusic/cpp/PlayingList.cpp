@@ -14,7 +14,7 @@ CPlayingList::CPlayingList(class CApp& app)
     this->startTimer(1000);
 }
 
-size_t CPlayingList::getPageRowCount()
+size_t CPlayingList::getPageRowCount() const
 {
     size_t uPageRowCount = m_uPageRowCount;
     size_t uRowCount = getRowCount();

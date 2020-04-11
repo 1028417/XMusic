@@ -173,7 +173,7 @@ void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
     }
 }
 
-size_t CMedialibView::getPageRowCount()
+size_t CMedialibView::getPageRowCount() const
 {
     if (isInRoot())
     {
@@ -183,7 +183,7 @@ size_t CMedialibView::getPageRowCount()
     return m_medialibDlg.getPageRowCount();
 }
 
-size_t CMedialibView::getColumnCount()
+size_t CMedialibView::getColumnCount() const
 {
     if (isInRoot() && isHLayout())
     {
@@ -193,7 +193,7 @@ size_t CMedialibView::getColumnCount()
     return 1;
 }
 
-size_t CMedialibView::_getRootRowCount()
+size_t CMedialibView::_getRootRowCount() const
 {
     if (isHLayout())
     {

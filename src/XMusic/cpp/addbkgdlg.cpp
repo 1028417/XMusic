@@ -75,7 +75,7 @@ CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDir
 {
 }
 
-size_t CAddBkgView::getColumnCount()
+size_t CAddBkgView::getColumnCount() const
 {
     if (m_pImgDir)
     {
@@ -90,7 +90,7 @@ size_t CAddBkgView::getColumnCount()
     return 1;
 }
 
-size_t CAddBkgView::getPageRowCount()
+size_t CAddBkgView::getPageRowCount() const
 {
     if (m_pImgDir)
     {
@@ -115,7 +115,7 @@ size_t CAddBkgView::getPageRowCount()
     return uRet;
 }
 
-size_t CAddBkgView::getRowCount()
+size_t CAddBkgView::getRowCount() const
 {
     if (m_pImgDir)
     {

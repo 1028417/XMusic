@@ -80,11 +80,11 @@ private:
     void _onShowMediaSet(CMediaSet&) override;
     void _onShowDir(CPath&) override;
 
-    size_t getPageRowCount() override;
+    size_t getPageRowCount() const override;
 
-    size_t getColumnCount() override;
+    size_t getColumnCount() const override;
 
-    size_t _getRootRowCount() override;
+    size_t _getRootRowCount() const override;
 
     bool _genRootRowContext(tagMediaContext&) override;
     void _genMediaContext(tagMediaContext&) override;

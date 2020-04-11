@@ -46,10 +46,15 @@ public:
         m_uPageRowCount = uPageRowCount;
     }
 
-private:
-    size_t getPageRowCount() override;
+    bool scrollable()
+    {
+        return getRowCount() > getPageRowCount();
+    }
 
-    size_t getRowCount() override
+private:
+    size_t getPageRowCount() const override;
+
+    size_t getRowCount() const override
     {
         return m_alPlayingItems.size();
     }

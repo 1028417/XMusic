@@ -122,9 +122,9 @@ private:
     virtual void _onShowMediaSet(CMediaSet&) {}
     virtual void _onShowDir(CPath&) {}
 
-    size_t getRowCount() override;
+    size_t getRowCount() const override;
 
-    virtual size_t _getRootRowCount() = 0;
+    virtual size_t _getRootRowCount() const = 0;
 
     void _onPaintRow(CPainter&, tagLVRow&) override;
 

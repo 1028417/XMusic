@@ -239,7 +239,10 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        _scroll(te.dy());
+        if (abs(te.dy()) >= abs(te.dx()))
+        {
+            _scroll(te.dy());
+        }
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {

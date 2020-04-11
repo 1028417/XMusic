@@ -662,7 +662,7 @@ void MainWindow::_relayout()
             ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
             labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            auto dx = cx_SingerImg + x;
+            auto dx = cx_SingerImg + __size(30);
             x += dx;
 
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar-dx, __cylabelAlbumName);
@@ -1211,7 +1211,13 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
 {
     if (m_PlayingList.geometry().contains(te.x(), te.y()))
     {
-        return;
+        if (abs(te.dy()) >= abs(te.dx()))
+        {
+            if (m_PlayingList.scrollable())
+            {
+                return;
+            }
+        }
     }
 
     m_dxbkg -= te.dx();

@@ -169,7 +169,7 @@ bool CMedialibDlg::showFile(const wstring& strPath)
     return true;
 }
 
-size_t CMedialibDlg::getPageRowCount()
+size_t CMedialibDlg::getPageRowCount() const
 {
     UINT uRet = 10;
     int cy = height();
