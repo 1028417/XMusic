@@ -44,14 +44,14 @@ void fixWorkArea(QWidget& wnd)
 
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
-    , m_PlayingList(app)
+    , m_PlayingList(app, this)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
     ui.setupUi(this);
 
-    //m_PlayingList.raise();
-    m_PlayingList.setParent(ui.centralWidget);
+    m_PlayingList.raise();
+    //m_PlayingList.setParent(ui.centralWidget);
 
     ui.labelBkg->setVisible(false);
 

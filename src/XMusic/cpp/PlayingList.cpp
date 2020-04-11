@@ -3,8 +3,8 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CApp& app)
-    : CListView(NULL)
+CPlayingList::CPlayingList(class CApp& app, QWidget *parent)
+    : CListView(parent)
     , m_app(app)
 {
 #if __windows || __mac
