@@ -188,15 +188,10 @@ void CBkgDlg::initBkg(bool bHBkg)
     {
         (void)fsutil::createDir(strAppBkgDir);
 
-        for (UINT uIdx = 1; uIdx < 20; uIdx++)
+        for (char c = 'a'; c <= 'z'; c++)
         {
-            cauto strFile = to_wstring(uIdx);
-            cauto strBkg = strBkgSrc + strFile + L".jpg";
-
-            if (!fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + strFile))
-            {
-                break;
-            }
+            cauto strBkg = strBkgSrc + (wchar_t)c + L".jpg";
+            (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + (wchar_t)c);
         }
     }
 

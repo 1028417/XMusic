@@ -662,7 +662,7 @@ void MainWindow::_relayout()
             ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
             labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            auto dx = cx_SingerImg + __size(30);
+            auto dx = cx_SingerImg + __size(25);
             x += dx;
 
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar-dx, __cylabelAlbumName);
