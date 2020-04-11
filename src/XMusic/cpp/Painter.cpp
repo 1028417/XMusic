@@ -158,32 +158,68 @@ void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
 {
     QRect rcSrc = _genSrcRect(rc, pixmap);
 
-    if (dx != 0)
+    if (dx != 0 || dy != 0)
     {
-        if (dx < 0)
+        auto fZoomRate = (float)rcSrc.width()/rc.width();
+        if (dx != 0)
         {
-            dx = -MIN(-dx, rcSrc.left());
-        }
-        else
-        {
-            dx = MIN(dx, pixmap.width()-1-rcSrc.right());
-        }
-        rcSrc.setLeft(rcSrc.left()+dx);
-        rcSrc.setRight(rcSrc.right()+dx);
-    }
+            auto offset = dx*fZoomRate;
+            auto lpos = rcSrc.left()+offset;
+            if (lpos < 0)
+            {
+                dx = -rcSrc.left()/fZoomRate;
 
-    if (dy != 0)
-    {
-        if (dy < 0)
-        {
-            dy = -MIN(-dy, rcSrc.top());
+                rcSrc.setRight(rcSrc.right()-rcSrc.left());
+                rcSrc.setLeft(0);
+            }
+            else
+            {
+                auto rpos = rcSrc.right()+offset;
+                auto cx = pixmap.width();
+                if (rpos >= cx)
+                {
+                    dx = (cx-1-rcSrc.right())/fZoomRate;
+
+                    rcSrc.setLeft(cx-rcSrc.width());
+                    rcSrc.setRight(cx-1);
+                }
+                else
+                {
+                    rcSrc.setLeft(lpos);
+                    rcSrc.setRight(rpos);
+                }
+            }
         }
-        else
+
+        if (dy != 0)
         {
-            dy = MIN(dy, pixmap.height()-1-rcSrc.bottom());
+            auto offset = dy*fZoomRate;
+            auto tpos = rcSrc.top()+offset;
+            if (tpos < 0)
+            {
+                dy = -rcSrc.top()/fZoomRate;
+
+                rcSrc.setBottom(rcSrc.bottom()-rcSrc.top());
+                rcSrc.setTop(0);
+            }
+            else
+            {
+                auto bpos = rcSrc.bottom()+offset;
+                auto cy = pixmap.height();
+                if (bpos >= cy)
+                {
+                    dy = (cy-1-rcSrc.bottom())/fZoomRate;
+
+                    rcSrc.setTop(cy-rcSrc.height());
+                    rcSrc.setBottom(cy-1);
+                }
+                else
+                {
+                    rcSrc.setTop(tpos);
+                    rcSrc.setBottom(bpos);
+                }
+            }
         }
-        rcSrc.setTop(rcSrc.top()+dy);
-        rcSrc.setBottom(rcSrc.bottom()+dy);
     }
 
     this->drawPixmap(rc, pixmap, rcSrc);
