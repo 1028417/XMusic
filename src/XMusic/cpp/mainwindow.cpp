@@ -636,7 +636,7 @@ void MainWindow::_relayout()
         int cy_Playingfile = ui.labelPlayingfile->height();
         int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile - __size(2);
 
-#define __cylabelAlbumName __size(80)
+#define __cylabelAlbumName __size(70)
         int y_labelAlbumName = 0;
         if (labelAlbumName.isVisible())
         {
@@ -684,7 +684,7 @@ void MainWindow::_relayout()
                     y_SingerImg = cy/2+__size(150);
                 }
 
-                cy_SingerImg = y_labelAlbumName-y_SingerImg;
+                cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
 
                 if (!pmSingerImg.isNull())
                 {
@@ -718,13 +718,14 @@ void MainWindow::_relayout()
             {
                 if (!ui.labelSingerName->text().isEmpty())
                 {
-                    y_labelSingerName += __size(10);
+                    y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
                 }
                 else
                 {
                     y_PlayingListMax = y_labelAlbumName;
                 }
+                y_PlayingListMax += __size10;
             }
 
             ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
@@ -818,7 +819,11 @@ void MainWindow::_relayout()
             uRowCount = 10;
             y_Margin += __size10;
 
-            if (SIP_Float != eSingerImgPos)
+            if (pmSingerImg.isNull() || SIP_Zoomout == eSingerImgPos)
+            {
+                y_Margin += __size10*2;
+            }
+            else if (SIP_Dock == eSingerImgPos)
             {
                 y_Margin += __size10;
             }
