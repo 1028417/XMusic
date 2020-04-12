@@ -19,7 +19,7 @@ CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
 
 size_t CBkgView::getPageRowCount() const
 {
-    if (m_bkgDlg.bkgCount() <= 3)
+    if (m_bkgDlg.bkgCount() <= 2)
     {
         return 2;
     }
@@ -31,7 +31,7 @@ size_t CBkgView::getPageRowCount() const
 
 inline size_t CBkgView::getColumnCount() const
 {
-    if (m_bkgDlg.bkgCount() <= 3)
+    if (m_bkgDlg.bkgCount() <= 2)
     {
         return 2;
     }
@@ -43,7 +43,7 @@ inline size_t CBkgView::getColumnCount() const
 
 size_t CBkgView::getRowCount() const
 {
-    return (UINT)ceil((1.0+m_bkgDlg.bkgCount())/ getColumnCount());
+    return (UINT)ceil((2.0+m_bkgDlg.bkgCount())/ getColumnCount());
 }
 
 void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
@@ -93,65 +93,81 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
     else
     {
-        size_t uIdx = uItem-1;
-        cauto pm = m_bkgDlg.pixmap(uIdx);
-        if (pm)
+        if (uItem >= 2)
         {
-            painter.drawPixmapEx(rc, *pm, __szRound);
+            auto pm = m_bkgDlg.pixmap(uItem-2);
+            if (pm)
+            {
+                painter.drawPixmapEx(rc, *pm, __szRound);
 
-            QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
-            painter.drawPixmap(rcX, m_pmX);
+                QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
+                painter.drawPixmap(rcX, m_pmX);
+                return;
+            }
+
+            if (uItem < 9)
+            {
+                return;
+            }
+        }
+
+        rc.setLeft(rc.left()+2);
+        rc.setRight(rc.right()-1);
+
+        int r = g_crTheme.red();
+        int g = g_crTheme.green();
+        int b = g_crTheme.blue();
+        QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
+
+        int d = abs(cr.red()+cr.green()+cr.blue()-g_crTheme.red()-g_crTheme.green()-g_crTheme.blue());
+        if (abs(d) == 128)
+        {
+            cr.setAlpha(100);
         }
         else
         {
-            rc.setLeft(rc.left()+2);
-            rc.setRight(rc.right()-1);
-
-            int r = g_crTheme.red();
-            int g = g_crTheme.green();
-            int b = g_crTheme.blue();
-            QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
-
-            int d = abs(cr.red()+cr.green()+cr.blue()-g_crTheme.red()-g_crTheme.green()-g_crTheme.blue());
-            if (abs(d) == 128)
-            {
-                cr.setAlpha(100);
-            }
-            else
-            {
-                cr.setAlpha(50);
-            }
-
-            painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
-            cr.setAlpha(128);
-
-            int len = MIN(rc.width(), rc.height())/4;
-#define __szAdd __size(4)
-            cauto pt = rc.center();
-            rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
-            painter.fillRectEx(rc, cr, __szAdd/2);
-
-            rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
-            painter.fillRect(rc, g_crTheme);
-            painter.fillRectEx(rc, cr, __szAdd/2);
+            cr.setAlpha(50);
         }
+
+        painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
+        cr.setAlpha(128);
+
+        int len = MIN(rc.width(), rc.height())/4;
+#define __szAdd __size(4)
+        cauto pt = rc.center();
+        rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
+        painter.fillRectEx(rc, cr, __szAdd/2);
+
+        rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
+        painter.fillRect(rc, g_crTheme);
+        painter.fillRectEx(rc, cr, __szAdd/2);
     }
 }
 
 void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
 {
-    size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
-
-    if (uIdx != 0 && uIdx < m_bkgDlg.bkgCount())
+    size_t uItem = lvRow.uRow * getColumnCount() + lvRow.uCol;
+    if (uItem >= 2)
     {
-        if (me.pos().x() >= lvRow.rc.right()-g_xsize && me.pos().y() <= lvRow.rc.top()+g_xsize)
+        auto uIdx = uItem-2;
+        if (uIdx < m_bkgDlg.bkgCount())
         {
-            m_bkgDlg.deleleBkg(uIdx);
-            return;
+            if (me.pos().x() >= lvRow.rc.right()-g_xsize && me.pos().y() <= lvRow.rc.top()+g_xsize)
+            {
+                m_bkgDlg.deleleBkg(uIdx);
+                return;
+            }
+        }
+        else
+        {
+            if (uItem<9)
+            {
+                return;
+            }
         }
     }
 
-    m_bkgDlg.setBkg(uIdx);
+    m_bkgDlg.setBkg(uItem);
 }
 
 inline UINT CBkgView::margin()
@@ -353,20 +369,24 @@ void CBkgDlg::_setBkg(const wstring& strFile)
     m_app.mainWnd().updateBkg();
 }
 
-void CBkgDlg::setBkg(size_t uIdx)
+void CBkgDlg::setBkg(size_t uItem)
 {
     auto& vecBkgFile = _vecBkgFile();
-    if (0 == uIdx)
+    if (0 == uItem)
     {
         _setBkg(L"");
         close();
     }
+    else if (1 == uItem)
+    {
+        _showAddBkg();
+    }
     else
     {
-        uIdx--;
-        if (uIdx < vecBkgFile.size())
+        uItem-=2;
+        if (uItem < vecBkgFile.size())
         {
-            _setBkg(vecBkgFile[uIdx].first);
+            _setBkg(vecBkgFile[uItem].first);
             close();
         }
         else
@@ -436,12 +456,6 @@ void CBkgDlg::addBkg(const wstring& strFile)
 
 void CBkgDlg::deleleBkg(size_t uIdx)
 {
-    if (0 == uIdx)
-    {
-        return;
-    }
-    uIdx--;
-
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx < vecBkgFile.size())
     {

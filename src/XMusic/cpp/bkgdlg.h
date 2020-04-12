@@ -154,12 +154,12 @@ public:
 
     size_t bkgCount() const
     {
-        return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size()+1;
+        return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size();
     }
 
     const QPixmap* pixmap(size_t uIdx);
 
-    void setBkg(size_t uIdx);
+    void setBkg(size_t uItem);
 
     void addBkg(const wstring& strFile);
 
