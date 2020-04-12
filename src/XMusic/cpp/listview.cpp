@@ -114,16 +114,10 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
             sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
         }
 
-        int x_icon = 0;
+        auto x_icon = __lvRowMargin;
         if (context.eStyle & E_RowStyle::IS_CenterAlign)
         {
-            x_icon = rc.center().x()-sz_icon;
-
-            rc.setLeft(x_icon + sz_icon + __lvRowMargin/2);
-        }
-        else
-        {
-            x_icon = rc.left() + __lvRowMargin;
+            x_icon = rc.center().x()-sz_icon-__lvRowMargin;
         }
 
         int y_icon = rc.center().y()-sz_icon/2;
