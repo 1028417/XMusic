@@ -100,8 +100,5 @@ private:
         lstMedias.add(m_alPlayItems);
 	}
 	
-	wstring GetExportName() override
-	{
-		return L"歌单" + GetDisplayName();
-	}
+	wstring GetExportName() override;
 };
