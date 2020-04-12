@@ -280,7 +280,12 @@ void CBkgDlg::_relayout(int cx, int cy)
 
     g_xsize = rcReturn.width()-__size(5);
 
-    m_bHScreen = cx>cy;
+    bool bHScreen = cx>cy;
+    if (bHScreen != m_bHScreen)
+    {
+        m_bkgView.scroll(0);
+        m_bHScreen = bHScreen;
+    }
     if (m_bHScreen)
     {
         ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()

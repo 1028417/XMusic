@@ -1226,7 +1226,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     if (label == ui.labelSingerImg)
     {
         if (!m_bUseDefaultBkg)
-        {            
+        {
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
             if (m_eSingerImgPos > SIP_Zoomout)
             {
