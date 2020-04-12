@@ -38,11 +38,11 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
     }
 
     CDialog::show([=](){
+        cbClose();
+
         m_paImgDirs.clear();
 
         m_addbkgView.clear();
-
-        cbClose();
     });
 }
 
@@ -148,7 +148,8 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
-            context.strText = imgDir.path();
+            QDir dir(strutil::toQstr(imgDir.path()));
+            context.strText = dir.absolutePath().toStdWString();
 
             context.pixmap = imgDir.snapshot();
 
