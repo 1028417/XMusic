@@ -1,7 +1,7 @@
 
 #pragma once
 
-#if !__winvc
+#if __OnlineMediaLib
 class CUpgradeUrl
 {
 public:
@@ -77,44 +77,9 @@ struct __ModelExt tagMedialibConf
         //lstOnlineVBkg.clear();
     }
 };
-
-class CSnapshotDir : public CMediaDir
-{
-public:
-    CSnapshotDir() = default;
-
-    CSnapshotDir(const wstring& strPath, class CPath *t_pParent = NULL)
-        : CMediaDir(strPath, t_pParent)
-    {
-    }
-
-    E_MediaDirType dirType() override
-    {
-        return E_MediaDirType::MDT_Snapshot;
-    }
-};
-
-class CSnapshotMediaRes : public CMediaRes
-{
-public:
-    CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
-        : CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
-        , m_uDuration(uDuration)
-    {
-    }
-
-private:
-    UINT m_uDuration = 0;
-
-private:
-    UINT duration() const override
-    {
-        return m_uDuration;
-    }
-};
 #endif
 
-#define __xmedialib ((XMediaLib&)CMediaLib::inst())
+#define __xmedialib ((XMediaLib&)__medialib)
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
@@ -178,3 +143,53 @@ private:
 
 	UINT getSingerImgPos(UINT uSingerID) override;
 };
+
+#if __OnlineMediaLib
+class CSnapshotMediaRes : public CMediaRes
+{
+public:
+    CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
+        : CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
+        , m_uDuration(uDuration)
+    {
+    }
+
+private:
+    UINT m_uDuration = 0;
+
+    LPCCueFile m_pCueFile = NULL;
+
+private:
+    UINT duration() const override
+    {
+        return m_uDuration;
+    }
+
+public:
+    CRCueFile getCueFile()
+    {
+        if (NULL == m_pCueFile)
+        {
+            m_pCueFile = __xmedialib.cuelist().find(GetTitle());
+        }
+
+        return *m_pCueFile;
+    }
+};
+
+class CSnapshotDir : public CMediaDir
+{
+public:
+    CSnapshotDir() = default;
+
+    CSnapshotDir(const wstring& strPath, class CPath *t_pParent = NULL)
+        : CMediaDir(strPath, t_pParent)
+    {
+    }
+
+    E_MediaDirType dirType() override
+    {
+        return E_MediaDirType::MDT_Snapshot;
+    }
+};
+#endif
