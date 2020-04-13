@@ -650,7 +650,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             else if (strutil::endWith(unzfile.strPath, string(".cue")))
             {
-                if (!__xmedialib.loadXCue(ifbData, fsutil::GetFileName(unzfile.strPath)))
+                cauto strFileTitle = strutil::toWstr(fsutil::getFileTitle(unzfile.strPath));
+                if (!__xmedialib.loadXCue(ifbData, strFileTitle))
                 {
                     g_logger << "loadCue fail: " >> unzfile.strPath;
                 }
