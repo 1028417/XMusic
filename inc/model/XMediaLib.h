@@ -152,6 +152,11 @@ public:
         return m_cuelist.load(ins, strFileTitle);
     }
 
+    const CCueList& cuelist() const
+    {
+        return m_cuelist;
+    }
+
 private:
     bool _loadXUrl(const string& strText);
 
