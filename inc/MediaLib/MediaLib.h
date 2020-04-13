@@ -71,7 +71,9 @@ private:
 
     virtual void _onClear() override
 	{
-                m_mapAttachDir.clear();
+		CMediaDir::_onClear();
+
+		m_mapAttachDir.clear();
 	}
 	
 public:

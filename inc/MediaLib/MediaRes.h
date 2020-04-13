@@ -1,7 +1,6 @@
 
 #pragma once
 
-#if __winvc
 #include "CueFile.h"
 
 struct tagMediaTag
@@ -10,7 +9,6 @@ struct tagMediaTag
 	wstring strArtist;
 	wstring strAlbum;
 };
-#endif
 
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
@@ -38,7 +36,7 @@ private:
 
 	tagMediaTag m_MediaTag;
 
-	LPCCueFile m_pCueFile = NULL;
+    LPCCueFile m_pCueFile = NULL;
 
 private:
 	bool GetRenameText(wstring& stRenameText) const override;
@@ -46,13 +44,15 @@ private:
 	void OnListItemRename(const wstring& strNewName) override;
 	
 public:
-	virtual int getImage();
-
 	static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
 
 	static bool ReadFlacTag(const wstring& strFile, tagMediaTag& MediaTag);
 
-	CRCueFile getCueFile();
+    CRCueFile getCueFile();
+
+    virtual int getImage();
+
+    void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 #endif
 
 	class CMediaDir* parent() const;
@@ -79,10 +79,6 @@ public:
 	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
 
     void AsyncTask();
-
-#if __winvc
-    void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
-#endif
 };
 
 enum class E_MediaDirType
@@ -92,6 +88,35 @@ enum class E_MediaDirType
 #if !__winvc
     , MDT_Snapshot
 #endif
+};
+
+class __MediaLibExt CCueList
+{
+public:
+	CCueList() = default;
+
+private:
+        list<CCueFile> m_lstCueFile;
+
+        unordered_map<wstring, CCueFile*> m_mapCueFile;
+
+public:
+	const list<CCueFile>& cues() const
+	{
+                return m_lstCueFile;
+	}
+
+	bool load(const wstring& strDir, const wstring& strFileName);
+
+    bool load(Instream& ins, const wstring& strFileName);
+
+    CRCueFile find(const wstring& strTitle) const;
+
+	void clear()
+	{
+                m_lstCueFile.clear();
+                m_mapCueFile.clear();
+	}
 };
 
 class __MediaLibExt CMediaDir : public CMediaRes
@@ -116,17 +141,12 @@ public:
 	
 #if __winvc
 private:
-	list<CCueFile> m_lstSubCueFile;
-	unordered_map<wstring, CCueFile*> m_mapSubCueFile;
-
-	bool _loadCue(const wstring& strFileName);
+	CCueList m_cuelist;
 
 public:
-	CRCueFile getSubCueFile(CMediaRes& MediaRes);
-
-	const list<CCueFile>& SubCueList()
+	const CCueList& cuelist() const
 	{
-		return m_lstSubCueFile;
+		return m_cuelist;
 	}
 #endif
 
@@ -137,8 +157,7 @@ protected:
 #if __winvc
     virtual void _onClear() override
     {
-        m_mapSubCueFile.clear();
-        m_lstSubCueFile.clear();
+		m_cuelist.clear();
     }
 #endif
 

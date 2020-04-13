@@ -90,7 +90,7 @@ public:
 		return m_strDir + __wcPathSeparator + m_strCueName;
 	}
 	
-	bool load(const wstring& strFile);
+    bool load(Instream& ins);
 
 	CRTrackInfo getTrack(UINT uMs) const;
 	

@@ -131,19 +131,26 @@ private:
 
     list<JValue> m_lstSnapshot;
 
+    CCueList m_cuelist;
+
 public:
     tagMedialibConf& medialibConf()
     {
         return m_newMedialibConf;
     }
 
-    bool loadXUrl(Instream& ins);
-
     bool checkXUrl(const wstring& strPath);
 
     string getXUrl(const wstring& strPath) const;
 
+    bool loadXUrl(Instream& ins);
+
     bool loadXSnapshot(Instream& ins);
+
+    bool loadXCue(Instream& ins, const wstring& strFileName)
+    {
+        return m_cuelist.load(ins, strFileName);
+    }
 
 private:
     bool _loadXUrl(const string& strText);

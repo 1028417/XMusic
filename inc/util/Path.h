@@ -119,9 +119,9 @@ private:
 	using CB_PathScan = function<bool(CPath& dir, TD_XFileList& paSubFile)>;
 	bool _scan(const CB_PathScan& cb);
 
-    virtual void _onClear() {}
-
 protected:
+        virtual void _onClear() {}
+
 	void _findFile();
 
 	virtual void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile);
