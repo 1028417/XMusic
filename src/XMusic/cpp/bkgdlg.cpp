@@ -179,7 +179,7 @@ inline UINT CBkgView::margin()
 CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
     m_colorDlg(*this, app),
-    m_addbkgDlg(*this, app),
+    m_addbkgDlg(*this, m_paImgDirs),
     m_bkgView(app, *this)
 {
 }
@@ -265,6 +265,8 @@ void CBkgDlg::init()
     m_colorDlg.init();
 
     m_addbkgDlg.init();
+
+    connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -426,21 +428,25 @@ void CBkgDlg::_showAddBkg()
     {
         return;
     }
-#else
-    cauto strImgDir = __medialib.path() + L"/..";
-#endif
 
-    m_thread.start([&, strImgDir](){
-        m_rootImgDir.scan(strImgDir, m_thread.runSignal(), [&](CImgDir& imgDir) {
-            m_addbkgDlg.addImgDir(imgDir);
-        });
+    m_rootImgDir.scan(strImgDir, [&](CImgDir& imgDir) {
+        _addImgDir(imgDir);
     });
 
     m_addbkgDlg.show(NULL, [&](){
-        m_thread.cancel();
-
         m_rootImgDir.clear();
+        m_paImgDirs.clear();
     });
+#else
+
+    cauto strImgDir = __medialib.path() + L"/..";
+
+    m_rootImgDir.scan(strImgDir, [&](CImgDir& imgDir) {
+        _addImgDir(imgDir);
+    });
+
+    m_addbkgDlg.show();
+#endif
 }
 
 void CBkgDlg::addBkg(const wstring& strFile)
@@ -558,24 +564,39 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
     return true;
 }
 
-void CImgDir::scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CImgDir&> cb)
+void CImgDir::scan(const wstring& strDir, cfn_void_t<CImgDir&> cb)
 {
+    if (m_thread.joinable())
+    {
+        return;
+    }
+
     CPath::setDir(strDir);
-    CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
-        if (paSubFile)
-        {
-            auto& imgDir = (CImgDir&)dir;
-            if (imgDir._genSnapshot(paSubFile))
+
+    m_thread.start([&, cb](const bool& bRunSignal){
+        CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
+            if (paSubFile)
             {
-                if (bRunSignal)
+                auto& imgDir = (CImgDir&)dir;
+                if (imgDir._genSnapshot(paSubFile))
                 {
-                    cb(imgDir);
+                    if (bRunSignal)
+                    {
+                        cb(imgDir);
+                    }
                 }
             }
-        }
 
-        return bRunSignal;
+            return bRunSignal;
+        });
     });
+}
+
+void CImgDir::_onClear()
+{
+    m_thread.cancel();
+
+    m_vecSubImgs.clear();
 }
 
 /*class CResImgDir : public CPath, public IImgDir

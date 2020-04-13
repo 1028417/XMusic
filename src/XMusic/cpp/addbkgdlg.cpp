@@ -7,10 +7,10 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, class CApp& app) : CDialog(bkgDlg)
-    , m_bkgDlg(bkgDlg),
-    m_app(app),
-    m_addbkgView(app, *this, m_paImgDirs)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDirs)
+    : CDialog(bkgDlg)
+    , m_bkgDlg(bkgDlg)
+    , m_addbkgView(*this, paImgDirs)
 {
 }
 
@@ -26,8 +26,6 @@ void CAddBkgDlg::init()
             close();
         }
     });
-
-    connect(this, &CAddBkgDlg::signal_founddir, this, &CAddBkgDlg::slot_founddir);
 }
 
 void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
@@ -38,9 +36,10 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
     }
 
     CDialog::show([=](){
-        cbClose();
-
-        m_paImgDirs.clear();
+        if (cbClose)
+        {
+            cbClose();
+        }
 
         m_addbkgView.clear();
     });
@@ -67,9 +66,8 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 }
 
-CAddBkgView::CAddBkgView(class CApp& app, CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg)
-    , m_app(app)
     , m_addbkgDlg(addbkgDlg)
     , m_paImgDirs(paImgDir)
 {

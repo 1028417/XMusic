@@ -46,6 +46,8 @@ public:
     }
 
 private:
+    XThread m_thread;
+
     decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
 
     QPixmap m_pmSnapshot;
@@ -53,7 +55,7 @@ private:
     vector<pair<QPixmap, wstring>> m_vecSubImgs;
 
 public:
-    void scan(const wstring& strDir, const bool& bRunSignal, cfn_void_t<CImgDir&> cb);
+    void scan(const wstring& strDir, cfn_void_t<CImgDir&> cb);
 
 private:
     size_t imgCount() const override
@@ -68,10 +70,7 @@ private:
     bool genSubImgs() override;
 
 private:
-    void _onClear() override
-    {
-        m_vecSubImgs.clear();
-    }
+    void _onClear() override;
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
@@ -96,6 +95,8 @@ private:
 
     CColorDlg m_colorDlg;
 
+    TD_ImgDirList m_paImgDirs;
+
     CAddBkgDlg m_addbkgDlg;
 
     CBkgView m_bkgView;
@@ -115,9 +116,23 @@ private:
 
     CImgDir m_rootImgDir;
 
-    XThread m_thread;
+signals:
+    void signal_founddir(void* pDir);
+
+private slots:
+    void slot_founddir(void *pDir)
+    {
+        m_paImgDirs.add((IImgDir*)pDir);
+
+        m_addbkgDlg.update();
+    }
 
 private:
+    void _addImgDir(IImgDir& imgDir)
+    {
+        emit signal_founddir(&imgDir);
+    }
+
     inline WString& _bkgDir()
     {
         return m_bHScreen?m_strHBkgDir:m_strVBkgDir;

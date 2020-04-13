@@ -27,11 +27,9 @@ class CAddBkgView : public CListView
 {
     Q_OBJECT
 public:
-    CAddBkgView(class CApp& app, class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
-    class CApp& m_app;
-
     class CAddBkgDlg& m_addbkgDlg;
 
     const TD_ImgDirList& m_paImgDirs;
@@ -70,28 +68,12 @@ class CAddBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CAddBkgDlg(class CBkgDlg& bkgDlg, class CApp& app);
+    CAddBkgDlg(class CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
     class CBkgDlg& m_bkgDlg;
 
-    class CApp& m_app;
-
     CAddBkgView m_addbkgView;
-
-private:
-    TD_ImgDirList m_paImgDirs;
-
-signals:
-    void signal_founddir(void* pDir);
-
-private slots:
-    void slot_founddir(void *pDir)
-    {
-        m_paImgDirs.add((IImgDir*)pDir);
-
-        m_addbkgView.update();
-    }
 
 private:
     void _relayout(int cx, int cy) override;
@@ -109,15 +91,10 @@ public:
 
     void init();
 
-    void show(IImgDir *pImgDir, cfn_void cbClose = NULL);
+    void show(IImgDir *pImgDir = NULL, cfn_void cbClose = NULL);
 
     void relayout()
     {
         _relayout(width(), height());
-    }
-
-    void addImgDir(IImgDir& imgDir)
-    {
-        emit signal_founddir(&imgDir);
     }
 };
