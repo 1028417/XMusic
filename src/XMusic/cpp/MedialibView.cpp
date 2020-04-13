@@ -340,9 +340,13 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 {
                     context.pixmap = &m_pmDSD;
                 }
-                /*else if (strDirName.find(L"整轨") != __wnpos)
+                /*else if (strDirName.find(L"CD整轨") != __wnpos)
                 {
-                    context.pixmap = &m_pmDiskdir;
+                    context.pixmap = &m_pmCdDiskdir;
+                }
+                else if (strDirName.find(L"无损整轨") != __wnpos)
+                {
+                    context.pixmap = &m_pmllDiskdir;
                 }*/
             }
         }
@@ -374,29 +378,28 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         auto pMediaRes = ((CMediaRes*)context.pFile);
         if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
-            context.pixmap = &m_pmSSFile;
+            if (pMediaRes->duration() > __wholeTrackDuration)
+            {
+                if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
+                {
+                    context.pixmap = &m_pmHDDisk;
+                }
+                else
+                {
+                    context.pixmap = &m_pmLLDisk;
+                }
+            }
+            else
+            {
+                context.pixmap = &m_pmSSFile;
+            }
+
             context.strText = pMediaRes->GetTitle();
         }
         else
         {
             context.pixmap = &m_pmFile;
             context.strText = pMediaRes->fileName();
-        }
-    }
-
-    IMedia* pMedia = ((tagMediaContext&)context).media();
-    if (pMedia)
-    {
-        if (pMedia->duration() > __wholeTrackDuration)
-        {
-            if (pMedia->quality() >= E_MediaQuality::MQ_CD)
-            {
-                context.pixmap = &m_pmHDDisk;
-            }
-            else
-            {
-                context.pixmap = &m_pmLLDisk;
-            }
         }
     }
 }
@@ -440,7 +443,12 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
     WString strMediaQuality;
     WString strRemark;
-    IMedia* pMedia = mediaContext.media();
+
+    IMedia *pMedia = mediaContext.pMedia;
+    if (NULL == pMedia)
+    {
+        pMedia = (CMediaRes*)mediaContext.pFile;
+    }
     if (pMedia)
     {
         strMediaQuality = pMedia->qualityString();

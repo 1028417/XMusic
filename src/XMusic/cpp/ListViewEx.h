@@ -57,21 +57,6 @@ protected:
         {
             strText = file.fileName();
         }
-
-        IMedia* media() const
-        {
-            if (pMedia)
-            {
-                return pMedia;
-            }
-
-            if (pFile)
-            {
-                return (CMediaRes*)pFile;
-            }
-
-            return NULL;
-        }
     };
 
 public:
