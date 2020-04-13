@@ -108,7 +108,7 @@ public:
 
 	bool load(const wstring& strDir, const wstring& strFileName);
 
-    bool load(Instream& ins, const wstring& strFileName);
+    bool load(Instream& ins, const wstring& strFileTitle);
 
     CRCueFile find(const wstring& strTitle) const;
 

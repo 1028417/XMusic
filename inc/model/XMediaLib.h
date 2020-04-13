@@ -147,9 +147,9 @@ public:
 
     bool loadXSnapshot(Instream& ins);
 
-    bool loadXCue(Instream& ins, const wstring& strFileName)
+    bool loadXCue(Instream& ins, const wstring& strFileTitle)
     {
-        return m_cuelist.load(ins, strFileName);
+        return m_cuelist.load(ins, strFileTitle);
     }
 
 private:
