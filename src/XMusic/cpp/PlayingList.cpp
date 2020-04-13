@@ -177,7 +177,10 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (abs(te.dy()) < abs(te.dx()) || getRowCount() <= getPageRowCount())
+        if (abs(te.dy()) < abs(te.dx())
+                //|| (te.dy() > 0 && scrollPos() == 0)
+                //|| (te.dy() < 0 && scrollPos() + getPageRowCount() == getRowCount())
+                || getRowCount() <= getPageRowCount())
         {
             ((MainWindow*)parent())->handleTouchMove(te);
             return;
