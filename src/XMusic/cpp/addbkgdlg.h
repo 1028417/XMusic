@@ -37,6 +37,11 @@ private:
     IImgDir *m_pImgDir = NULL;
 
 private:
+    void _reset() override
+    {
+        m_pImgDir = NULL;
+    }
+
     size_t getColumnCount() const override;
 
     size_t getPageRowCount() const override;
@@ -56,11 +61,6 @@ public:
     }
 
     bool upward();
-
-    void clear()
-    {
-        m_pImgDir = NULL;
-    }
 };
 
 

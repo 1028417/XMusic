@@ -84,6 +84,21 @@ private:
     bool _genSnapshot(TD_XFileList& paSubFile);
 };
 
+struct tagBkgFile
+{
+    tagBkgFile() = default;
+
+    tagBkgFile(bool bInner, const wstring& strPath)
+        : bInner(bInner)
+        , strPath(strPath)
+    {
+    }
+
+    bool bInner = false;
+    WString strPath;
+    const QPixmap* pm = NULL;
+};
+
 class CBkgDlg : public CDialog
 {
     Q_OBJECT
@@ -104,8 +119,8 @@ private:
     WString m_strHBkgDir;
     WString m_strVBkgDir;
 
-    vector<pair<WString, const QPixmap*>> m_vecHBkgFile;
-    vector<pair<WString, const QPixmap*>> m_vecVBkgFile;
+    vector<tagBkgFile> m_vecHBkgFile;
+    vector<tagBkgFile> m_vecVBkgFile;
 
     list<QPixmap> m_lstPixmap;
 
@@ -140,7 +155,7 @@ private:
 
     const QPixmap* _loadPixmap(const WString& strBkgFile);
 
-    inline vector<pair<WString, const QPixmap*>>& _vecBkgFile()
+    inline vector<tagBkgFile>& _vecBkgFile()
     {
         return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
     }

@@ -41,7 +41,7 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
             cbClose();
         }
 
-        m_addbkgView.clear();
+        m_addbkgView.reset();
     });
 }
 

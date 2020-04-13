@@ -99,6 +99,8 @@ protected:
     }
 
 private:
+    virtual void _reset() {}
+
     virtual size_t getColumnCount() const
     {
         return 1;
@@ -191,6 +193,8 @@ public:
 
     virtual void reset()
     {
+        _reset();
+
         m_fScrollPos = 0;
 
         m_nSelectRow = -1;
