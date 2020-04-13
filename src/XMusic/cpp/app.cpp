@@ -639,7 +639,6 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 if (!__xmedialib.loadXUrl(ifbData))
                 {
                     g_logger << "loadXUrl fail: " >> unzfile.strPath;
-                    //continue;
                 }
             }
             else if (strutil::endWith(unzfile.strPath, string(".snapshot.json")))
@@ -647,7 +646,13 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 if (!__xmedialib.loadXSnapshot(ifbData))
                 {
                     g_logger << "loadSnapshot fail: " >> unzfile.strPath;
-                    //continue;
+                }
+            }
+            else if (strutil::endWith(unzfile.strPath, string(".cue")))
+            {
+                if (!__xmedialib.loadXCue(ifbData, fsutil::GetFileName(unzfile.strPath)))
+                {
+                    g_logger << "loadCue fail: " >> unzfile.strPath;
                 }
             }
         }

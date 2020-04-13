@@ -78,7 +78,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 				}
 			}
 			
-			for (CRCueFile cueFile : subDir.SubCueList())
+			for (CRCueFile cueFile : subDir.cuelist().cues())
 			{
 				if (!bRunSignal)
 				{

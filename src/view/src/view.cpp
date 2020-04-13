@@ -648,7 +648,7 @@ void __view::exportDir(CMediaDir& dir)
 				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
 				ExportOption.lstExportMedias.push_back(ExportMedia);
 
-				for (cauto cueFile : ((CMediaDir&)dir).SubCueList())
+				for (cauto cueFile : ((CMediaDir&)dir).cuelist().cues())
 				{
 					ExportMedia.lstCueFiles.push_back(cueFile.filePath());
 				}
