@@ -6,10 +6,11 @@
 
 static Ui::MedialibDlg ui;
 
-wstring COuterDir::init(const wstring& strMediaLibDir)
-{    
+wstring COuterDir::init()
+{
+     cauto strMediaLibDir = __medialib.path();
 #if __windows
-    for (cauto wch : strMediaLibDir)
+    for (auto wch : strMediaLibDir)
     {
         if (fsutil::checkSeparator(wch))
         {
@@ -113,10 +114,6 @@ _resizeTitle();
 //    _resizeTitle();
 //});*/
 
-#define __show() \
-    m_OuterDir.init(__medialib.path()); \
-    CDialog::show();
-
 void CMedialibDlg::show()
 {
     m_MedialibView.showRoot();
@@ -125,28 +122,31 @@ void CMedialibDlg::show()
         m_OuterDir.findFile();
     });
 
-    __show();
+    m_OuterDir.init();
+    CDialog::show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_MedialibView.showMediaSet(MediaSet);
 
-    __show();
+    m_OuterDir.init();
+    CDialog::show();
 }
 
 void CMedialibDlg::showMedia(CMedia& media)
 {
     m_MedialibView.hittestMedia(media);
 
-    __show();
+    m_OuterDir.init();
+    CDialog::show();
 }
 
 bool CMedialibDlg::showFile(const wstring& strPath)
 {
+    cauto strOuterDir = m_OuterDir.init();
+
     CMediaRes *pMediaRes = __medialib.findSubFile(strPath);
-    cauto strOuterDir = m_OuterDir.init(__medialib.path());
-    (void)strOuterDir;
     if (NULL == pMediaRes)
     {
         if (!fsutil::CheckSubPath(strOuterDir, strPath))

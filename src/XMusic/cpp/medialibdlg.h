@@ -22,7 +22,7 @@ private:
     wstring m_strOuterDir;
 
 public:
-    wstring init(const wstring& strMediaLibDir);
+    wstring init();
 
     void findFile()
     {

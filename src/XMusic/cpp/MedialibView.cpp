@@ -10,8 +10,6 @@
 
 #define __RemarkAlpha 170
 
-#define __wholeTrackDuration 600
-
 CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
     , m_app(app)
@@ -21,8 +19,6 @@ CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaD
     , m_OuterDir(OuterDir)
 {
 }
-
-#define __mediaPng(f) ":/img/medialib/" #f ".png"
 
 void CMedialibView::init()
 {
@@ -441,7 +437,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         rc.setRight(rcPlayIcon.left() - __playIconMagin);
     }
 
-    WString strMediaQuality;
+    QString qsMediaQuality;
     WString strRemark;
 
     IMedia *pMedia = mediaContext.pMedia;
@@ -451,7 +447,7 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
     if (pMedia)
     {
-        strMediaQuality = pMedia->qualityString();
+        qsMediaQuality = mediaQualityString(pMedia->quality());
 
         if (pMedia->duration() > __wholeTrackDuration)
         {
@@ -509,9 +505,9 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
     else
     {
-        if (!strMediaQuality->empty())
+        if (!qsMediaQuality.isEmpty())
         {
-            rc.setRight(rc.right() - __size(20) - __size(10)*strMediaQuality->size());
+            rc.setRight(rc.right() - __size(20) - __size(10)*qsMediaQuality.length());
         }
     }
 
@@ -525,14 +521,14 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
 
     auto rcPos = painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 
-    if (!strMediaQuality->empty())
+    if (!qsMediaQuality.isEmpty())
     {
         CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(9));
         rcPos.setRight(10000);
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, strMediaQuality, 1, __ShadowAlpha, uTextAlpha);
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsMediaQuality, 1, __ShadowAlpha, uTextAlpha);
     }
 }
 
@@ -565,7 +561,7 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& p
     {
         if (mediaRes.parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
-            if (((CSnapshotMediaRes&)mediaRes).getCueFile())
+            if (((CSnapshotMediaRes&)mediaRes).cueFile())
             {
                 return;
             }

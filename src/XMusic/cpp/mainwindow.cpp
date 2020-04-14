@@ -325,6 +325,9 @@ void MainWindow::initBkg()
 
 void MainWindow::show()
 {
+    (void)m_pmHDDisk.load(__mediaPng(hddisk));
+    (void)m_pmLLDisk.load(__mediaPng(lldisk));
+
     _init();
     m_medialibDlg.init();
     m_bkgDlg.init();
@@ -401,9 +404,9 @@ bool MainWindow::event(QEvent *ev)
 
         break;
     case QEvent::Timer:
-        _playSingerImg(false);
-
         _updateProgress();
+
+        _playSingerImg(false);
 
         break;
     default:
@@ -903,7 +906,7 @@ void MainWindow::_updateProgress()
         }
         else
         {
-            QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+            QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
             ui.labelDuration->setText(qsDuration);
         }
 #endif
@@ -922,7 +925,17 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     tagPlayingInfo PlayingInfo;
     PlayingInfo.strTitle = PlayItem.GetTitle();
 
-    PlayingInfo.nDuration = PlayItem.duration();
+    PlayingInfo.strPath = PlayItem.GetPath();
+
+    PlayingInfo.uDuration = PlayItem.duration();
+    if (PlayingInfo.uDuration > __wholeTrackDuration)
+    {
+        CMediaRes *pMediaRes = __medialib.findSubFile(m_PlayingInfo.strPath);
+        if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        {
+            PlayingInfo.bWholeTrack = true;
+        }
+    }
 
     PlayingInfo.uStreamSize = 0;
 #if __OnlineMediaLib
@@ -938,11 +951,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     if (m_app.getPlayMgr().mediaOpaque().isOnline())
     {
-        PlayingInfo.qsQuality = PlayItem.qualityString();
-    }
-    else
-    {
-        PlayingInfo.qsQuality.clear();
+        PlayingInfo.eQuality = PlayItem.quality();
+        PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
     }
 
     PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
@@ -968,8 +978,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.pRelatedMedia = NULL;
     }
 
-    PlayingInfo.strPath = PlayItem.GetPath();
-
     QVariant var;
     var.setValue(PlayingInfo);
 
@@ -983,31 +991,37 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     auto strPrevSinger = m_PlayingInfo.strSingerName;
     m_PlayingInfo = var.value<tagPlayingInfo>();
 
-    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
-    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
-
     if (m_PlayingInfo.strSingerName != strPrevSinger)
     {
         ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
 
          ui.labelSingerImg->clear(); //ui.labelSingerImg->setPixmap(QPixmap());
-        //ui.labelSingerImg->setVisible(false);
+         //ui.labelSingerImg->setVisible(false);
 
          _playSingerImg(true);
     }
 
-    _updatePlayPauseButton(true);
+    if (m_PlayingInfo.bWholeTrack)
+    {
+        auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ?m_pmHDDisk:m_pmLLDisk;
+        ui.labelSingerImg->setPixmap(pm);
+    }
+
+    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
     ui.progressbar->setValue(0);
-    ui.progressbar->setMaximum(m_PlayingInfo.nDuration, m_PlayingInfo.uStreamSize);
+    ui.progressbar->setMaximum(m_PlayingInfo.uDuration, m_PlayingInfo.uStreamSize);
 
 #if __OnlineMediaLib
     ui.labelDuration->clear();
 #else
-    cauto qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+    cauto qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
     ui.labelDuration->setText(qsDuration);
 #endif
+
+    _updatePlayPauseButton(true);
+
+    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
 
     _relayout();
 }
@@ -1031,7 +1045,7 @@ void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.progressbar->setMaximum(0);
 
-    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.nDuration));
+    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
     ui.labelDuration->setText(qsDuration);
 
     (void)bOpenFail;

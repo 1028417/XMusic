@@ -339,7 +339,12 @@ int CApp::run()
                      << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
             m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
 
-            E_UpgradeResult eUpgradeResult = _run(orgMedialibConf);
+            E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
+                return _initMediaLib(orgMedialibConf);
+            }, [&](){
+                m_mainWnd.initBkg();
+            });
+
             emit signal_run((int)eUpgradeResult);
         });
     });
@@ -365,7 +370,7 @@ int CApp::run()
     return nRet;
 }
 
-E_UpgradeResult CApp::_run(const tagMedialibConf& orgMedialibConf)
+E_UpgradeResult CApp::_initMediaLib(const tagMedialibConf& orgMedialibConf)
 {
     auto timeBegin = time(0);
 
@@ -377,20 +382,16 @@ E_UpgradeResult CApp::_run(const tagMedialibConf& orgMedialibConf)
     }
 #endif
 
-    auto time0 = time(0);
+    //auto time0 = time(0);
     if (!m_model.initMediaLib())
     {
         g_logger >> "initMediaLib fail";
         return E_UpgradeResult::UR_Fail;
     }
-    g_logger << "initMediaLib success " >> (time(0)-time0);
-
-    time0 = time(0);
-    m_mainWnd.initBkg();
-    g_logger << "initBkg: " >> (time(0)-time0);
+    //g_logger << "initMediaLib success " >> (time(0)-time0);
 
     auto timeDiff = 6 - (time(0) - timeBegin);
-    g_logger << "timeDiff: " >> timeDiff;
+    //g_logger << "timeDiff: " >> timeDiff;
     if (timeDiff > 0)
     {
         mtutil::usleep((UINT)timeDiff*1000);
@@ -970,4 +971,13 @@ void CApp::quit()
 #endif*/
 
     QApplication::quit();
+}
+
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+
+const WString& mediaQualityString(E_MediaQuality eQuality)
+{
+    return g_lpQuality[(UINT)eQuality];
 }

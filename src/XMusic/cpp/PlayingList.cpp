@@ -110,7 +110,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
 #if __android || __ios
         xOffset += __size(10);
 #endif
-        if (qsQuality.size() > 2)
+        if (qsQuality.length() > 2)
         {
             xOffset += __size(20);
         }

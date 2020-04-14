@@ -82,7 +82,7 @@ private:
         return m_mainWnd;
     }
 
-    E_UpgradeResult _run(const tagMedialibConf& orgMedialibConf);
+    E_UpgradeResult _initMediaLib(const tagMedialibConf& orgMedialibConf);
 
     bool _initRootDir(wstring& strRootDir);
 
@@ -189,3 +189,7 @@ public:
     void vibrate(UINT duration=100);
 #endif
 };
+
+extern const WString& mediaQualityString(E_MediaQuality eQuality);
+
+#define __mediaPng(f) ":/img/medialib/" #f ".png"

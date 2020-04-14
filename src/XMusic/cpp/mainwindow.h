@@ -17,9 +17,14 @@ struct tagPlayingInfo
 {
     wstring strTitle;
 
-    int nDuration = -1;
+    wstring strPath;
+
+    UINT uDuration = 0;
+    bool bWholeTrack = false;
+
     UINT uStreamSize = 0;
 
+    E_MediaQuality eQuality = E_MediaQuality::MQ_None;
     QString qsQuality;
 
     wstring strSingerName;
@@ -32,8 +37,6 @@ struct tagPlayingInfo
     UINT uRelatedPlayItemID = 0;
 
     CMedia *pRelatedMedia = NULL;
-
-    wstring strPath;
 };
 Q_DECLARE_METATYPE(tagPlayingInfo);
 
@@ -45,6 +48,9 @@ public:
 
 private:
     class CApp& m_app;
+
+    QPixmap m_pmHDDisk;
+    QPixmap m_pmLLDisk;
 
     class CPlayingList m_PlayingList;
 
