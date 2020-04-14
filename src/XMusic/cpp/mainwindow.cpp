@@ -611,37 +611,25 @@ void MainWindow::_relayout()
 
     ui.labelPlayingfile->setShadow(uShadowWidth);
 
+    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
+
     //TODO auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD?m_pmHDDisk:m_pmLLDisk;
     //ui.labelSingerImg->setPixmap(pm);
 
     E_SingerImgPos eSingerImgPos = SIP_Float;
     cauto pmSingerImg = ui.labelSingerImg->pixmap();
-    if (m_PlayingInfo.bWholeTrack)
+
+    if (!pmSingerImg.isNull())
     {
-        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
+        eSingerImgPos = m_eSingerImgPos;
 
-        ui.labelSingerImg->setPixmapRound(0);
+        ui.labelSingerImg->setShadow(2);
 
-        ui.labelSingerImg->setShadow(0);
-
-        ui.labelSingerName->setShadow(uShadowWidth);
+        ui.labelSingerName->setShadow(2);
     }
     else
     {
-        ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
-
-        if (!pmSingerImg.isNull())
-        {
-            eSingerImgPos = m_eSingerImgPos;
-
-            ui.labelSingerImg->setShadow(2);
-
-            ui.labelSingerName->setShadow(2);
-        }
-        else
-        {
-            ui.labelSingerName->setShadow(uShadowWidth);
-        }
+        ui.labelSingerName->setShadow(uShadowWidth);
     }
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
@@ -944,14 +932,14 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.strPath = PlayItem.GetPath();
 
     PlayingInfo.uDuration = PlayItem.duration();
-    if (PlayingInfo.uDuration > __wholeTrackDuration)
+    /*if (PlayingInfo.uDuration > __wholeTrackDuration)
     {
         CMediaRes *pMediaRes = __medialib.findSubFile(PlayingInfo.strPath);
         if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
             PlayingInfo.bWholeTrack = true;
         }
-    }
+    }*/
 
     PlayingInfo.uStreamSize = 0;
 #if __OnlineMediaLib
@@ -1251,7 +1239,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
     {
-        if (!m_bUseDefaultBkg && !m_PlayingInfo.bWholeTrack)
+        if (!m_bUseDefaultBkg)
         {
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
             if (m_eSingerImgPos > SIP_Zoomout)
