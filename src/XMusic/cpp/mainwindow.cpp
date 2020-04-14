@@ -295,7 +295,6 @@ void MainWindow::_init()
     });
 
     //ui.labelSingerImg->setVisible(false);
-    ui.labelSingerImg->setShadow(2);
 
     ui.labelSingerName->setFont(0.95);
 
@@ -474,8 +473,6 @@ void MainWindow::_relayout()
         m_bUseDefaultBkg = pmBkg.isNull();
     }
 
-    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
-
     UINT uShadowWidth = m_bUseDefaultBkg?0:1;
     ui.labelDemandHK->setShadow(uShadowWidth);
     ui.labelDemandCN->setShadow(uShadowWidth);
@@ -620,20 +617,27 @@ void MainWindow::_relayout()
     {
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
 
-        ui.labelPlayingfile->setShadow(uShadowWidth);
+        ui.labelSingerImg->setPixmapRound(0);
+
+        ui.labelSingerImg->setShadow(0);
+
+        ui.labelSingerName->setShadow(uShadowWidth);
     }
     else
     {
+        ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
+
         if (!pmSingerImg.isNull())
         {
             eSingerImgPos = m_eSingerImgPos;
 
+            ui.labelSingerImg->setShadow(2);
+
             ui.labelSingerName->setShadow(2);
-            //ui.labelSingerImg->setPixmap(*pPixmap);
         }
         else
         {
-            ui.labelPlayingfile->setShadow(uShadowWidth);
+            ui.labelSingerName->setShadow(uShadowWidth);
         }
     }
 
@@ -939,7 +943,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.uDuration = PlayItem.duration();
     if (PlayingInfo.uDuration > __wholeTrackDuration)
     {
-        CMediaRes *pMediaRes = __medialib.findSubFile(m_PlayingInfo.strPath);
+        CMediaRes *pMediaRes = __medialib.findSubFile(PlayingInfo.strPath);
         if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
             PlayingInfo.bWholeTrack = true;
@@ -1004,18 +1008,8 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     if (m_PlayingInfo.bWholeTrack || m_PlayingInfo.strSingerName.empty() || m_PlayingInfo.strSingerName != strPrevSinger)
     {
-         ui.labelSingerImg->clear(); //ui.labelSingerImg->setPixmap(QPixmap());
-         //ui.labelSingerImg->setVisible(false);
-     }
-
-    if (m_PlayingInfo.bWholeTrack)
-    {
-        auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ?m_pmHDDisk:m_pmLLDisk;
-        ui.labelSingerImg->setPixmap(pm);
-    }
-    else if (m_PlayingInfo.strSingerName != strPrevSinger)
-    {
-        _playSingerImg(true);
+        ui.labelSingerImg->clear(); //ui.labelSingerImg->setPixmap(QPixmap());
+        //ui.labelSingerImg->setVisible(false);
     }
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -1034,7 +1028,22 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
 
-    _relayout();
+    if (m_PlayingInfo.bWholeTrack)
+    {
+        _relayout();
+
+        auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ?m_pmHDDisk:m_pmLLDisk;
+        ui.labelSingerImg->setPixmap(pm);
+    }
+    else
+    {
+        if (m_PlayingInfo.strSingerName != strPrevSinger)
+        {
+            _playSingerImg(true);
+        }
+
+        _relayout();
+    }
 }
 
 void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
