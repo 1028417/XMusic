@@ -267,6 +267,10 @@ void CBkgDlg::init()
     m_addbkgDlg.init();
 
     connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
+
+#if __windows
+    CFolderDlg::preInit();
+#endif
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
