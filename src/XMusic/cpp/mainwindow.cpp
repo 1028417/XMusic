@@ -611,6 +611,9 @@ void MainWindow::_relayout()
 
     ui.labelPlayingfile->setShadow(uShadowWidth);
 
+    //TODO auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD?m_pmHDDisk:m_pmLLDisk;
+    //ui.labelSingerImg->setPixmap(pm);
+
     E_SingerImgPos eSingerImgPos = SIP_Float;
     cauto pmSingerImg = ui.labelSingerImg->pixmap();
     if (m_PlayingInfo.bWholeTrack)
@@ -1004,15 +1007,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     auto strPrevSinger = m_PlayingInfo.strSingerName;
     m_PlayingInfo = var.value<tagPlayingInfo>();
 
-    ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
-
-    if (m_PlayingInfo.bWholeTrack || m_PlayingInfo.strSingerName.empty() || m_PlayingInfo.strSingerName != strPrevSinger)
-    {
-        ui.labelSingerImg->clear(); //ui.labelSingerImg->setPixmap(QPixmap());
-        //ui.labelSingerImg->setVisible(false);
-    }
-
-    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
+    ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
 
     ui.progressbar->setValue(0);
     ui.progressbar->setMaximum(m_PlayingInfo.uDuration, m_PlayingInfo.uStreamSize);
@@ -1026,24 +1021,21 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     _updatePlayPauseButton(true);
 
-    ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
+    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    if (m_PlayingInfo.bWholeTrack)
+    ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
+
+    if (m_PlayingInfo.strSingerName.empty())
     {
-        _relayout();
-
-        auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ?m_pmHDDisk:m_pmLLDisk;
-        ui.labelSingerImg->setPixmap(pm);
+        ui.labelSingerImg->clear();
     }
-    else
+    else if (m_PlayingInfo.strSingerName != strPrevSinger)
     {
-        if (m_PlayingInfo.strSingerName != strPrevSinger)
-        {
-            _playSingerImg(true);
-        }
-
-        _relayout();
+        ui.labelSingerImg->clear();
+        _playSingerImg(true);
     }
+
+    _relayout();
 }
 
 void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
