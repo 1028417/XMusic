@@ -923,7 +923,7 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    PlayingInfo.strTitle = PlayItem.GetTitle();
+    PlayingInfo.qsTitle = strutil::toQstr(PlayItem.GetTitle());
 
     PlayingInfo.strPath = PlayItem.GetPath();
 
@@ -991,20 +991,22 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     auto strPrevSinger = m_PlayingInfo.strSingerName;
     m_PlayingInfo = var.value<tagPlayingInfo>();
 
-    if (m_PlayingInfo.strSingerName != strPrevSinger)
-    {
-        ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
+    ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
 
+    if (m_PlayingInfo.bWholeTrack || m_PlayingInfo.strSingerName.empty() || m_PlayingInfo.strSingerName != strPrevSinger)
+    {
          ui.labelSingerImg->clear(); //ui.labelSingerImg->setPixmap(QPixmap());
          //ui.labelSingerImg->setVisible(false);
-
-         _playSingerImg(true);
-    }
+     }
 
     if (m_PlayingInfo.bWholeTrack)
     {
         auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ?m_pmHDDisk:m_pmLLDisk;
         ui.labelSingerImg->setPixmap(pm);
+    }
+    else if (m_PlayingInfo.strSingerName != strPrevSinger)
+    {
+        _playSingerImg(true);
     }
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
@@ -1021,7 +1023,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 
     _updatePlayPauseButton(true);
 
-    ui.labelPlayingfile->setText(strutil::toQstr(m_PlayingInfo.strTitle));
+    ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
 
     _relayout();
 }
@@ -1128,11 +1130,11 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
-    if (!strSingerImg.empty())
+    WString strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
+    if (!strSingerImg->empty())
     {
         QPixmap pm;
-        if (pm.load(strutil::toQstr(strSingerImg)))
+        if (pm.load(strSingerImg))
         {
             ui.labelSingerImg->setPixmap(pm);
 
@@ -1233,7 +1235,7 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
     update();
 }
 
-static const QString __qsCheck = strutil::toQstr(L"√");
+static const QString __qsCheck(QChar(L'√'));
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {

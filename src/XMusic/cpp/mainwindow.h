@@ -15,7 +15,7 @@
 
 struct tagPlayingInfo
 {
-    wstring strTitle;
+    QString qsTitle;
 
     wstring strPath;
 
