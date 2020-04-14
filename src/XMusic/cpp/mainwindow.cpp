@@ -616,16 +616,25 @@ void MainWindow::_relayout()
 
     E_SingerImgPos eSingerImgPos = SIP_Float;
     cauto pmSingerImg = ui.labelSingerImg->pixmap();
-    if (!pmSingerImg.isNull())
+    if (m_PlayingInfo.bWholeTrack)
     {
-        eSingerImgPos = m_eSingerImgPos;
+        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
 
-        ui.labelSingerName->setShadow(2);
-        //ui.labelSingerImg->setPixmap(*pPixmap);
+        ui.labelPlayingfile->setShadow(uShadowWidth);
     }
     else
     {
-        ui.labelSingerName->setShadow(1);
+        if (!pmSingerImg.isNull())
+        {
+            eSingerImgPos = m_eSingerImgPos;
+
+            ui.labelSingerName->setShadow(2);
+            //ui.labelSingerImg->setPixmap(*pPixmap);
+        }
+        else
+        {
+            ui.labelPlayingfile->setShadow(uShadowWidth);
+        }
     }
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
@@ -1241,7 +1250,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
     {
-        if (!m_bUseDefaultBkg)
+        if (!m_bUseDefaultBkg && !m_PlayingInfo.bWholeTrack)
         {
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
             if (m_eSingerImgPos > SIP_Zoomout)
