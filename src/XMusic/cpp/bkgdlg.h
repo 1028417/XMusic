@@ -72,8 +72,6 @@ private:
 private:
     void _onClear() override;
 
-    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
-
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
         return new CImgDir(fileInfo);

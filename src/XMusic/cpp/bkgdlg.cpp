@@ -599,39 +599,6 @@ void CImgDir::_onClear()
     m_vecSubImgs.clear();
 }
 
-/*class CResImgDir : public CPath, public IImgDir
-{
-public:
-    CResImgDir() = default;
-
-private:
-    virtual size_t imgCount() const
-    {
-        return 0;
-    }
-
-    virtual const QPixmap* snapshot(int nIdx=-1) const
-    {
-        return NULL;
-    }
-
-    virtual wstring path(int nIdx=-1) const
-    {
-        return L"";
-    }
-
-    virtual bool genSubImgs()
-    {
-        return false;
-    }
-};*/
-
-void CImgDir::_onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile)
-{
-    //paSubDir.add(new CResImgDir);
-    CPath::_onFindFile(paSubDir,  paSubFile);
-}
-
 bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)
 {
     for (m_itrSubFile = paSubFile.begin(); m_itrSubFile != paSubFile.end(); ++m_itrSubFile)
@@ -701,3 +668,30 @@ bool CImgDir::genSubImgs()
 
     return true;
 }
+
+/*class CResImgDir : public CPath, public IImgDir
+{
+public:
+    CResImgDir() = default;
+
+private:
+    virtual size_t imgCount() const
+    {
+        return 0;
+    }
+
+    virtual const QPixmap* snapshot(int nIdx=-1) const
+    {
+        return NULL;
+    }
+
+    virtual wstring path(int nIdx=-1) const
+    {
+        return L"";
+    }
+
+    virtual bool genSubImgs()
+    {
+        return false;
+    }
+};*/

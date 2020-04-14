@@ -10,7 +10,7 @@ class IImgDir
 public:
     IImgDir() = default;
 
-    virtual ~IImgDir(){}
+    virtual ~IImgDir() = default;
 
     virtual size_t imgCount() const = 0;
 
