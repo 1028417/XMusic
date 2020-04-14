@@ -27,11 +27,13 @@ private:
 	RECT m_rcPreClient{0,0,0,0};
 
 public:
+    static void preInit();
+
 	wstring Show(HWND hWndOwner, LPCWSTR lpszInitialDir=NULL, LPCWSTR lpszTitle=NULL, LPCWSTR lpszTip=NULL
 		, LPCWSTR lpszOKButton=NULL, LPCWSTR lpszCancelButton=NULL, UINT uWidth=0, UINT uHeight=0);
 
 private:
-	static int __stdcall BrowseFolderCallBack(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpParam);
+    static int __stdcall _handleCallBack(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpParam);
 
 	void _handleCallBack(HWND hWnd, UINT uMsg, LPARAM lParam);
 	void _initDlg();
