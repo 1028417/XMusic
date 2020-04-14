@@ -144,6 +144,8 @@ private:
 	UINT getSingerImgPos(UINT uSingerID) override;
 };
 
+#define __wholeTrackDuration 600
+
 #if __OnlineMediaLib
 class CSnapshotMediaRes : public CMediaRes
 {
@@ -151,29 +153,24 @@ public:
     CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
         : CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
         , m_uDuration(uDuration)
+        , m_CueFile(uDuration > __wholeTrackDuration ? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
     {
     }
 
 private:
     UINT m_uDuration = 0;
 
-    LPCCueFile m_pCueFile = NULL;
+    CRCueFile m_CueFile;
 
-private:
+public:
     UINT duration() const override
     {
         return m_uDuration;
     }
 
-public:
-    CRCueFile getCueFile()
+    CRCueFile cueFile()
     {
-        if (NULL == m_pCueFile)
-        {
-            m_pCueFile = __xmedialib.cuelist().find(GetTitle());
-        }
-
-        return *m_pCueFile;
+        return m_CueFile;
     }
 };
 
