@@ -68,6 +68,61 @@ public:
 		return *this;
 	}
 
+        bool operator ==(const WString& other) const
+        {
+                return m_str == other.m_str;
+        }
+        bool operator !=(const WString& other) const
+        {
+                return m_str != other.m_str;
+        }
+
+        inline bool operator ==(const wstring& str) const
+        {
+                return m_str == str;
+        }
+        inline bool operator !=(const wstring& str) const
+        {
+                return m_str != str;
+        }
+
+        inline bool operator ==(const wchar_t *pStr) const
+        {
+                if (NULL == pStr)
+                {
+                        return m_str.empty();
+                }
+
+                return 0==m_str.compare(pStr);
+        }
+        inline bool operator !=(const wchar_t *pStr) const
+        {
+                if (NULL == pStr)
+                {
+                        return !m_str.empty();
+                }
+
+                return 0!=m_str.compare(pStr);
+        }
+
+        friend bool operator ==(const wstring& lhs, const WString& rhs)
+        {
+                return rhs == lhs;
+        }
+        friend bool operator !=(const wstring& lhs, const WString& rhs)
+        {
+                return rhs != lhs;
+        }
+
+        friend bool operator ==(const wchar_t *lhs, const WString& rhs)
+        {
+                return rhs == lhs;
+        }
+        friend bool operator !=(const wchar_t *lhs, const WString& rhs)
+        {
+                return rhs != lhs;
+        }
+
 public:
 #if !__winvc
     operator QString() const
@@ -166,30 +221,5 @@ public:
 		WString ret(lhs);
 		ret << rhs;
 		return ret;
-	}
-
-	bool operator ==(const wstring& str) const
-	{
-		return m_str == str;
-	}
-
-	bool operator ==(const wchar_t *pStr) const
-	{
-		if (NULL == pStr)
-		{
-			return m_str.empty();
-		}
-
-		return m_str.compare(pStr);
-	}
-
-	friend bool operator ==(const wstring& lhs, const WString& rhs)
-	{
-		return rhs == lhs;
-	}
-
-	friend bool operator ==(const wchar_t *lhs, const WString& rhs)
-	{
-		return rhs == lhs;
 	}
 };
