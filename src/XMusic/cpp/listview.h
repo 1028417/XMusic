@@ -5,63 +5,62 @@
 
 #define __lvRowMargin __size(40)
 
+struct tagLVRow
+{
+    tagLVRow() = default;
+
+    tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
+        : uIdx(t_uIdx)
+        , uRow(t_uRow)
+        , uCol(t_uCol)
+        , bSelected(t_bSelected)
+    {
+    }
+
+    UINT uIdx = 0;
+    UINT uRow = 0;
+    UINT uCol = 0;
+
+    bool bSelected = false;
+
+    QRect rc;
+};
+
+enum E_RowStyle
+{
+    IS_None = 0
+
+    , IS_CenterAlign    = 0x0001
+    , IS_MultiLine      = 0x0002
+
+    , IS_BottomLine     = 0x0004
+    , IS_RightTip       = 0x0008
+};
+struct tagRowContext
+{
+    tagRowContext(tagLVRow& t_lvRow, UINT t_eStyle = E_RowStyle::IS_None)
+        : lvRow(t_lvRow), eStyle(t_eStyle)
+    {
+    }
+
+    void setPixmap(const QPixmap *t_pixmap, float t_fIconMargin)
+    {
+        pixmap = t_pixmap;
+        fIconMargin = t_fIconMargin;
+    }
+
+    tagLVRow& lvRow;
+
+    UINT eStyle = E_RowStyle::IS_None;
+
+    const QPixmap *pixmap = NULL;
+    float fIconMargin = 0.21f;
+
+    WString strText;
+};
+
 class CListView : public TWidget<QWidget>
 {
-protected:
-    struct tagLVRow
-    {
-        tagLVRow() = default;
-
-        tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
-            : uIdx(t_uIdx)
-            , uRow(t_uRow)
-            , uCol(t_uCol)
-            , bSelected(t_bSelected)
-        {
-        }
-
-        UINT uIdx = 0;
-        UINT uRow = 0;
-        UINT uCol = 0;
-
-        bool bSelected = false;
-
-        QRect rc;
-    };
-
-    enum E_RowStyle
-    {
-        IS_None = 0
-
-        , IS_CenterAlign    = 0x0001
-        , IS_MultiLine      = 0x0002
-
-        , IS_BottomLine     = 0x0004
-        , IS_RightTip       = 0x0008
-    };
-    struct tagRowContext
-    {
-        tagRowContext(tagLVRow& t_lvRow, UINT t_eStyle = E_RowStyle::IS_None)
-            : lvRow(t_lvRow), eStyle(t_eStyle)
-        {
-        }
-
-        void setPixmap(const QPixmap *t_pixmap, float t_fIconMargin)
-        {
-            pixmap = t_pixmap;
-            fIconMargin = t_fIconMargin;
-        }
-
-        tagLVRow& lvRow;
-
-        UINT eStyle = E_RowStyle::IS_None;
-
-        const QPixmap *pixmap = NULL;
-        float fIconMargin = 0.21f;
-
-        WString strText;
-    };
-
 public:
     CListView(QWidget *parent) : TWidget(parent)
     {

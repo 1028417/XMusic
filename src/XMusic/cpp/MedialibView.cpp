@@ -404,7 +404,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-inline bool CMedialibView::_playIconRect(const tagMediaContext& context, QRect& rcPlayIcon)
+inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIcon)
 {
     if ((context.pMediaSet && (E_MediaSetType::MST_Playlist == context.pMediaSet->m_eType
          || E_MediaSetType::MST_Album == context.pMediaSet->m_eType
@@ -536,44 +536,59 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
     }
 }
 
-void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)
+inline static bool _hittestPlayIcon(const tagMediaContext& context, int x)
 {
     QRect rcPlayIcon;
-    if (_playIconRect(tagMediaContext(lvRow, mediaSet), rcPlayIcon))
+    return _playIconRect(context, rcPlayIcon) && x >= rcPlayIcon.left()- __playIconMagin;
+}
+
+void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)
+{
+    if (_hittestPlayIcon(tagMediaContext(lvRow, mediaSet), me.x()))
     {
-        if (me.x() >= rcPlayIcon.left()- __playIconMagin)
-        {
-            _flashRow(lvRow.uRow);
+        _flashRow(lvRow.uRow);
 
-            TD_MediaList lstMedias;
-            mediaSet.GetAllMedias(lstMedias);
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
+        TD_MediaList lstMedias;
+        mediaSet.GetAllMedias(lstMedias);
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(lstMedias)));
 
-            return;
-        }
+        return;
     }
 
     CListViewEx::_onRowClick(lvRow, me, mediaSet);
 }
 
+void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path)
+{
+    auto& mediaRes = (CMediaRes&)path;
+    if (!_hittestPlayIcon(tagMediaContext(lvRow, (IMedia&)mediaRes), me.x()))
+    {
+        if (mediaRes.parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        {
+            if (((CSnapshotMediaRes&)mediaRes).getCueFile())
+            {
+                return;
+            }
+        }
+    }
+
+    _onMediaClick(lvRow, me, mediaRes);
+}
+
 void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
 {
-    QRect rcPlayIcon;
-    if (_playIconRect(tagMediaContext(lvRow, media), rcPlayIcon))
+    if (_hittestPlayIcon(tagMediaContext(lvRow, media), me.x()))
     {
-        if (me.x() >= rcPlayIcon.left()- __playIconMagin)
+        _flashRow(lvRow.uRow);
+
+        bool bPlay = false;
+        if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
-            _flashRow(lvRow.uRow);
-
-            bool bPlay = false;
-            if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
-            {
-                bPlay = true;
-            }
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, bPlay));
-
-            return;
+            bPlay = true;
         }
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(media, bPlay));
+
+        return;
     }
 
     selectRow(lvRow.uRow);

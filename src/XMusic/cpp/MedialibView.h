@@ -91,8 +91,6 @@ private:
 
     void _paintText(CPainter&, QRect&, const tagRowContext&, const QString&, int flags) override;
 
-    bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIcon);
-
     bool event(QEvent *ev) override;
 
     const QPixmap& _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
@@ -107,10 +105,7 @@ private:
         _onMediaClick(lvRow, me, media);
     }
 
-    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override
-    {
-        _onMediaClick(lvRow, me, (CMediaRes&)path);
-    }
+    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override;
 
     void _onMediaClick(tagLVRow&, const QMouseEvent&, IMedia&);
 

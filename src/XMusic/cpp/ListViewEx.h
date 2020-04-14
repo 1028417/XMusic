@@ -5,60 +5,59 @@
 
 #include "listview.h"
 
+struct tagMediaContext : public tagRowContext
+{
+    CMediaSet *pMediaSet = NULL;
+    CMedia *pMedia = NULL;
+
+    CPath *pDir = NULL;
+    XFile *pFile = NULL;
+
+    tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
+    {
+    }
+
+    tagMediaContext(tagLVRow& lvRow, IMedia& media) : tagRowContext(lvRow)
+    {
+        if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
+        {
+            pFile = (CMediaRes*)&media;
+        }
+        else
+        {
+            pMedia = (CMedia*)&media;
+        }
+    }
+
+    tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
+        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+        , pMediaSet(&MediaSet)
+    {
+        strText = MediaSet.m_strName;
+    }
+    tagMediaContext(tagLVRow& lvRow, CMedia& media) :
+        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+        , pMedia(&media)
+    {
+        strText = media.GetTitle();
+    }
+
+    tagMediaContext(tagLVRow& lvRow, CPath& dir) :
+        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+        , pDir(&dir)
+    {
+        strText = dir.fileName();
+    }
+    tagMediaContext(tagLVRow& lvRow, XFile& file) :
+        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+        , pFile(&file)
+    {
+        strText = file.fileName();
+    }
+};
+
 class CListViewEx : public CListView
 {
-protected:
-    struct tagMediaContext : public tagRowContext
-    {
-        CMediaSet *pMediaSet = NULL;
-        CMedia *pMedia = NULL;
-
-        CPath *pDir = NULL;
-        XFile *pFile = NULL;
-
-        tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
-        {
-        }
-
-        tagMediaContext(tagLVRow& lvRow, IMedia& media) : tagRowContext(lvRow)
-        {
-            if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
-            {
-                pFile = (CMediaRes*)&media;
-            }
-            else
-            {
-                pMedia = (CMedia*)&media;
-            }
-        }
-
-        tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
-            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
-            , pMediaSet(&MediaSet)
-        {
-            strText = MediaSet.m_strName;
-        }
-        tagMediaContext(tagLVRow& lvRow, CMedia& media) :
-            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
-            , pMedia(&media)
-        {
-            strText = media.GetTitle();
-        }
-
-        tagMediaContext(tagLVRow& lvRow, CPath& dir) :
-            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
-            , pDir(&dir)
-        {
-            strText = dir.fileName();
-        }
-        tagMediaContext(tagLVRow& lvRow, XFile& file) :
-            tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
-            , pFile(&file)
-        {
-            strText = file.fileName();
-        }
-    };
-
 public:
     CListViewEx(QWidget *parent) : CListView(parent)
     {
