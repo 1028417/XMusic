@@ -300,14 +300,22 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    g_xsize = rcReturn.width()-__size(5);
+    g_xsize = rcReturn.width()-__size(5);  
 
-    bool bHScreen = cx>cy;
+    static bool bHScreen = false;
     if (bHScreen != m_bHScreen)
     {
+        bHScreen = m_bHScreen;
         m_bkgView.scroll(0);
-        m_bHScreen = bHScreen;
+
+#if !__windows
+        m_bkgView.setVisible(false);
+        __appAsync([&](){
+            m_bkgView.setVisible(true);
+        });
+#endif
     }
+
     if (m_bHScreen)
     {
         ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()
@@ -338,6 +346,16 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
 }
 
+inline WString& CBkgDlg::_bkgDir()
+{
+    return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+}
+
+inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
+{
+    return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
+}
+
 const QPixmap* CBkgDlg::_loadPixmap(const WString& strBkgFile)
 {
     m_lstPixmap.emplace_back(QPixmap());
@@ -349,6 +367,11 @@ const QPixmap* CBkgDlg::_loadPixmap(const WString& strBkgFile)
     }
 
     return &pm;
+}
+
+size_t CBkgDlg::bkgCount() const
+{
+    return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size();
 }
 
 const QPixmap* CBkgDlg::pixmap(size_t uIdx)

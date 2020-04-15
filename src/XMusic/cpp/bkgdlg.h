@@ -125,8 +125,6 @@ private:
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
-    bool m_bHScreen = false;
-
     CImgDir m_rootImgDir;
 
 signals:
@@ -146,17 +144,11 @@ private:
         emit signal_founddir(&imgDir);
     }
 
-    inline WString& _bkgDir()
-    {
-        return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
-    }
+    WString& _bkgDir();
+
+    vector<tagBkgFile>& _vecBkgFile();
 
     const QPixmap* _loadPixmap(const WString& strBkgFile);
-
-    inline vector<tagBkgFile>& _vecBkgFile()
-    {
-        return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
-    }
 
     void _relayout(int cx, int cy) override;
 
@@ -180,10 +172,7 @@ public:
         return m_pmVBkg;
     }
 
-    size_t bkgCount() const
-    {
-        return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size();
-    }
+    size_t bkgCount() const;
 
     const QPixmap* pixmap(size_t uIdx);
 

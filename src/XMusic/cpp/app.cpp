@@ -304,7 +304,7 @@ int CApp::run()
 {
     std::thread thrUpgrade;
 
-    __appAsync(100, [&](){
+    __appAsync([&](){
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
@@ -350,7 +350,6 @@ int CApp::run()
     });
 
     m_mainWnd.showLogo();
-
     int nRet = exec();
     m_bRunSignal = false;
 

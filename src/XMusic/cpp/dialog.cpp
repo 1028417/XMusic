@@ -101,11 +101,14 @@ bool CDialog::event(QEvent *ev)
     {
     case QEvent::Move:
     case QEvent::Resize:
-        _relayout(width(), height());
-
-        break;
     case QEvent::Show:
-        _relayout(width(), height());
+    {
+        auto cx = width();
+        auto cy = height();
+        m_bHScreen = cx > cy;
+
+        _relayout(cx, cy);
+    }
 
         break;
     case QEvent::Paint:

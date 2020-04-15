@@ -64,6 +64,17 @@ void CAddBkgDlg::_relayout(int cx, int cy)
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
     }
     m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
+
+#if !__windows
+    static bool bHScreen = false;
+    if (bHScreen != m_bHScreen)
+    {
+        m_addbkgView.setVisible(false);
+        __appAsync([&](){
+            m_addbkgView.setVisible(true);
+        });
+    }
+#endif
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :

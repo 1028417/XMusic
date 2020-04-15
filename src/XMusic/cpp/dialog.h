@@ -32,6 +32,9 @@ private:
 
     bool m_bFullScreen = true;
 
+protected:
+    bool m_bHScreen = false;
+
 private:
     virtual cqcr bkgColor() const
     {

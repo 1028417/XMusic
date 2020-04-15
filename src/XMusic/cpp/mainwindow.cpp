@@ -145,13 +145,13 @@ void MainWindow::showLogo()
     uDelayTime += 500;
 #endif
     __appAsync(uDelayTime, [&](){
-        /*#if __windows
-            m_app.setForeground();
-        #endif*/
+        this->repaint();
 
         ui.labelLogo->movie()->start();
 
         __appAsync(100, [&](){
+            this->repaint();
+
             _updateLogoTip();
         });
 
