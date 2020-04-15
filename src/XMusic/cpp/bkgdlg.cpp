@@ -17,7 +17,7 @@ CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
     (void)m_pmX.load(":/img/btnX.png");
 }
 
-size_t CBkgView::getPageRowCount() const
+inline size_t CBkgView::getPageRowCount() const
 {
     if (m_bkgDlg.bkgCount() <= 2)
     {
@@ -31,19 +31,24 @@ size_t CBkgView::getPageRowCount() const
 
 inline size_t CBkgView::getColumnCount() const
 {
-    if (m_bkgDlg.bkgCount() <= 2)
-    {
-        return 2;
-    }
-    else
-    {
-        return 3;
-    }
+    return getPageRowCount();
 }
 
 size_t CBkgView::getRowCount() const
 {
-    return (UINT)ceil((2.0+m_bkgDlg.bkgCount())/ getColumnCount());
+    auto uItemCount = 2+m_bkgDlg.bkgCount();
+    auto uColCount = getColumnCount();
+
+    auto uRowCount = (UINT)ceil((float)uItemCount/uColCount);
+    if (uRowCount > 3)
+    {
+        if (uItemCount % uColCount == 0)
+        {
+            uRowCount++;
+        }
+    }
+
+    return uRowCount;
 }
 
 void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
@@ -87,7 +92,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
 
     size_t uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
-    if (0 == uItem)
+    if (1 == uItem)
     {
         m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
@@ -385,12 +390,12 @@ void CBkgDlg::setBkg(size_t uItem)
     auto& vecBkgFile = _vecBkgFile();
     if (0 == uItem)
     {
-        _setBkg(L"");
-        close();
+        _showAddBkg();
     }
     else if (1 == uItem)
     {
-        _showAddBkg();
+        _setBkg(L"");
+        close();
     }
     else
     {

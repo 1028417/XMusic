@@ -1219,10 +1219,11 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    _relayout();
-
     m_dxbkg = 0;
     m_dybkg = 0;
+
+    _relayout();
+
     update();
 }
 
