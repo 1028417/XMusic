@@ -189,70 +189,81 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 {
 }
 
-void CBkgDlg::initBkg(bool bHBkg)
+void CBkgDlg::initBkg()
 {
     cauto strWorkDir = strutil::toWstr(fsutil::workDir());
-    cauto strBkgDir = bHBkg?(m_strHBkgDir = strWorkDir + L"/hbkg/")
-                          :(m_strVBkgDir = strWorkDir + L"/vbkg/");
-    (void)fsutil::createDir(strBkgDir);
+    cauto strAppVersion = m_app.appVersion();
+
+    cauto fn = [&](bool bHBkg)
+    {
+        cauto strBkgDir = bHBkg?(m_strHBkgDir = strWorkDir + L"/hbkg/")
+                              :(m_strVBkgDir = strWorkDir + L"/vbkg/");
+        (void)fsutil::createDir(strBkgDir);
 
 #if __android
-    wstring strBkgSrc = L"assets:";
+        wstring strBkgSrc = L"assets:";
 #else
-    wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
+        wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
 #endif
-    strBkgSrc.append(bHBkg?L"/hbkg/":L"/vbkg/");
-
-    cauto strAppVersion = m_app.appVersion();
-    auto strAppBkgDir = strBkgDir + strAppVersion;
-    if (!fsutil::existDir(strAppBkgDir))
-    {
-        (void)fsutil::createDir(strAppBkgDir);
-
-        for (char c = 'a'; c <= 'z'; c++)
+        wstring strAppBkgDir = strBkgDir + strAppVersion;
+        if (!fsutil::existDir(strAppBkgDir))
         {
-            cauto strBkg = strBkgSrc + (wchar_t)c + L".jpg";
-            (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + (wchar_t)c);
-        }
-    }
+            (void)fsutil::createDir(strAppBkgDir);
 
-    auto& vecBkgFile = bHBkg?m_vecHBkgFile:m_vecVBkgFile;
-    fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
-        vecBkgFile.emplace_back(false, strAppVersion + __wcPathSeparator + strSubFile);
-    });
-
-    fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
-        cauto strPath = strBkgDir+fileInfo.strName;
-        if (fileInfo.bDir)
-        {
-            if (fileInfo.strName != m_app.appVersion())
+            for (wchar_t wch = L'0'; wch <= L'9'; wch++)
             {
-                (void)fsutil::removeDirTree(strPath);
+                cauto strBkg = strBkgSrc + L"/bkg/" + wch + L".jpg";
+                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + wch);
+            }
+
+            for (wchar_t wch = L'a'; wch <= L'z'; wch++)
+            {
+                cauto strBkg = strBkgSrc + (bHBkg?L"/hbkg/":L"/vbkg/") + wch + L".jpg";
+                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + wch);
             }
         }
-        else
+
+        auto& vecBkgFile = bHBkg?m_vecHBkgFile:m_vecVBkgFile;
+        fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
+            vecBkgFile.emplace_back(false, strAppVersion + __wcPathSeparator + strSubFile);
+        });
+
+        fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
+            cauto strPath = strBkgDir+fileInfo.strName;
+            if (fileInfo.bDir)
+            {
+                if (fileInfo.strName != m_app.appVersion())
+                {
+                    (void)fsutil::removeDirTree(strPath);
+                }
+            }
+            else
+            {
+                vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, fileInfo.strName));
+            }
+        });
+
+        for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
+             && itr-vecBkgFile.begin() < __retainSnapshot; ++itr)
         {
-            vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, fileInfo.strName));
+            itr->pm = _loadPixmap(strBkgDir + itr->strPath);
         }
-    });
 
-    for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
-         && itr-vecBkgFile.begin() < __retainSnapshot; ++itr)
-    {
-        itr->pm = _loadPixmap(strBkgDir + itr->strPath);
-    }
+        cauto strHBkg = m_app.getOption().strHBkg;
+        if (!strHBkg.empty())
+        {
+            (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
+        }
 
-    cauto strHBkg = m_app.getOption().strHBkg;
-    if (!strHBkg.empty())
-    {
-        (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
-    }
+        cauto strVBkg = m_app.getOption().strVBkg;
+        if (!strVBkg.empty())
+        {
+            (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
+        }
+    };
 
-    cauto strVBkg = m_app.getOption().strVBkg;
-    if (!strVBkg.empty())
-    {
-        (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
-    }
+    fn(true);
+    fn(false);
 }
 
 void CBkgDlg::init()

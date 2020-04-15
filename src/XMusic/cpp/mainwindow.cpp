@@ -316,12 +316,6 @@ void MainWindow::_init()
     }
 }
 
-void MainWindow::initBkg()
-{
-    m_bkgDlg.initBkg(true);
-    m_bkgDlg.initBkg(false);
-}
-
 void MainWindow::show()
 {
     (void)m_pmHDDisk.load(__mediaPng(hddisk));
@@ -1224,7 +1218,8 @@ void MainWindow::updateBkg()
 
     _relayout();
 
-    update();
+    //update();
+    this->repaint();
 }
 
 void MainWindow::handleTouchMove(const CTouchEvent& te)

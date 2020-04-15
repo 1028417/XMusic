@@ -115,14 +115,13 @@ public:
     }
 #endif
 
-    bool isHScreen() const
+    CBkgDlg& bkgDlg()
     {
-        return m_bHScreen;
+        return m_bkgDlg;
     }
 
     void showLogo();
 
-    void initBkg();
     void show();
 
     void updateBkg();

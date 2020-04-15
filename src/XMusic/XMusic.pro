@@ -127,6 +127,7 @@ font.files += $$BinDir/font/msyhl-6.23.ttc
 #font.files += $$BinDir/font/Microsoft-YaHei-Semilight-11.0.ttc
 font.files += $$BinDir/font/Microsoft-YaHei-SemiBold-11.0.ttc
 
+bkg.files += ../../release/bkg/*
 hbkg.files += ../../release/hbkg/*
 vbkg.files += ../../release/vbkg/*
 
@@ -135,9 +136,10 @@ android {
     #MOBILITY =
 
     font.path = /assets/font
+    bkg.path = /assets/bkg
     hbkg.path = /assets/hbkg
     vbkg.path = /assets/vbkg
-    INSTALLS += font hbkg vbkg
+    INSTALLS += font bkg hbkg vbkg
 
     DISTFILES += \
         android/AndroidManifest.xml \
@@ -173,9 +175,10 @@ macx {
     QMAKE_INFO_PLIST += mac.plist
 
     font.path = Contents/MacOS/font
+    bkg.path = Contents/MacOS/bkg
     hbkg.path = Contents/MacOS/hbkg
     vbkg.path = Contents/MacOS/vbkg
-    QMAKE_BUNDLE_DATA  += font hbkg vbkg
+    QMAKE_BUNDLE_DATA  += font bkg hbkg vbkg
 }
 
 ios {
@@ -184,9 +187,10 @@ ios {
     #QMAKE_INFO_PLIST += iossimulator.plist #ios.plist
 
     font.path = /font
+    bkg.path = /bkg
     hbkg.path = /hbkg
     vbkg.path = /vbkg
-    QMAKE_BUNDLE_DATA  += font hbkg vbkg
+    QMAKE_BUNDLE_DATA  += font bkg hbkg vbkg
 } else {
 MOC_DIR = $$BuildDir
 RCC_DIR = $$BuildDir

@@ -167,7 +167,7 @@ private:
     void _onClosed() override;
 
 public:
-    void initBkg(bool bHBkg);
+    void initBkg();
 
     void init();
 

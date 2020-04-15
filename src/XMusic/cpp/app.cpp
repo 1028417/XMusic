@@ -342,7 +342,7 @@ int CApp::run()
             E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
                 return _initMediaLib(orgMedialibConf);
             }, [&](){
-                m_mainWnd.initBkg();
+                m_mainWnd.bkgDlg().initBkg();
             });
 
             emit signal_run((int)eUpgradeResult);
