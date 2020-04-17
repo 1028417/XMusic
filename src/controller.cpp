@@ -91,7 +91,7 @@ void CXController::start()
             case E_PlayCtrl::PC_AutoPlayNext:
                 __EnsureBreak(PlayMgr.playStatus() == E_PlayStatus::PS_Stop);
 
-                if (!m_threadPlayCtrl.usleepex(1000))
+                if (!m_threadPlayCtrl.usleepex(1500))
                 {
                     return;
                 }

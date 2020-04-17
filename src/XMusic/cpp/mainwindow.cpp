@@ -620,7 +620,7 @@ void MainWindow::_relayout()
     ui.labelPlayingfile->setShadow(uShadowWidth);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
-    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ? ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_SQ ? m_pmHDDisk:m_pmLLDisk)
+    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ? ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ? m_pmHDDisk:m_pmLLDisk)
         : ui.labelSingerImg->pixmap();
     if (m_PlayingInfo.bWholeTrack)
     {
@@ -761,7 +761,7 @@ void MainWindow::_relayout()
         if (m_PlayingInfo.bWholeTrack)
         {
             auto pm = pmSingerImg;
-            CPainter::zoomoutPixmap(pm, MAX(rcSingerImg.width(), rcSingerImg.height()));
+            CPainter::zoomoutPixmap(pm, rcSingerImg.width());
             ui.labelSingerImg->setPixmap(pm);
         }
     }
@@ -1271,6 +1271,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (!m_bUseDefaultBkg)
         {
+            if (m_PlayingInfo.bWholeTrack)
+            {
+                slot_labelClick(ui.labelPlayingfile, pos);
+                return;
+            }
+
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
             if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
@@ -1293,7 +1299,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelAlbumName)
     {
-
         if (m_PlayingInfo.pRelatedMedia)
         {
             m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);

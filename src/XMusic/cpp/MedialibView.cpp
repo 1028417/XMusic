@@ -213,6 +213,8 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
         context.fIconMargin /= 1.3;
     }
 
+    context.uIconRound = 0;
+
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
         context.pixmap = &m_pmSingerGroup;
@@ -376,6 +378,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         {
             if (pMediaRes->duration() > __wholeTrackDuration)
             {
+                context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
                     context.pixmap = &m_pmHDDisk;

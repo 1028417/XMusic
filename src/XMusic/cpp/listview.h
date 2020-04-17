@@ -55,6 +55,7 @@ struct tagRowContext
 
     const QPixmap *pixmap = NULL;
     float fIconMargin = 0.21f;
+    UINT uIconRound = __size(6);
 
     WString strText;
 };
