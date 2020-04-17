@@ -84,6 +84,8 @@ public:
 
 	ArrList<tagTrackInfo> m_alTrackInfo;
 
+    bool m_bMatched = false;
+
 public:
 	wstring filePath() const
 	{
