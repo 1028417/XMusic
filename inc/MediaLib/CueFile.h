@@ -44,11 +44,16 @@ public:
 
 	CCueFile() = default;
 
-	CCueFile(wstring strFileName, const wstring& strDir)
-		: m_strCueName(strFileName)
-		, m_strDir(strDir)
-	{
-	}
+    CCueFile(wstring strFileTitle, const wstring& strDir)
+        : m_strCueName(strFileTitle)
+        , m_strDir(strDir)
+    {
+    }
+
+    CCueFile(wstring strFileTitle)
+        : m_strCueName(strFileTitle)
+    {
+    }
 
 	bool operator ==(CRCueFile cueFile) const
 	{
@@ -89,7 +94,7 @@ public:
 public:
 	wstring filePath() const
 	{
-		return m_strDir + __wcPathSeparator + m_strCueName;
+        return m_strDir + __wcPathSeparator + m_strCueName + L".cue";
 	}
 	
     bool load(Instream& ins);

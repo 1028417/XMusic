@@ -101,7 +101,7 @@ private:
         unordered_map<wstring, CCueFile*> m_mapCueFile;
 
 private:
-        void _tomap(const wstring& strFileTitle, CCueFile& cueFile);
+        void _tomap(CCueFile& cueFile);
 
 public:
 	const list<CCueFile>& cues() const
