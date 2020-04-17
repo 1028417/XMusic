@@ -12,6 +12,8 @@
 
 #define __size10 __size(10)
 
+#define __round(f) (int)roundf(f)
+
 #define __demandplayitemPngCount 4
 
 static Ui::MainWindow ui;
@@ -460,7 +462,7 @@ void MainWindow::_relayout()
     }
     fCXRateEx = fCXRate * g_fPixelRatio;
 
-    int cy_bkg = fCXRate * ui.labelBkg->pixmap()->height();
+    int cy_bkg = __round(fCXRate * ui.labelBkg->pixmap()->height());
     int dy_bkg = cy - cy_bkg;
 
     m_bUseDefaultBkg = false;
@@ -498,14 +500,23 @@ void MainWindow::_relayout()
 
         int width = pos.width();
         int height = pos.height();
-        if (fCXRate <= 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
+        if (fCXRate < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
         {
-            width = int(width * fCXRate);
-            height = int(height * fCXRate);
+            width = __round(width * fCXRate);
+            height =__round(height * fCXRate);
         }
 
-        newPos.setRect(fCXRate*pos.center().x() - width/2
-                       , fCXRate*pos.center().y() - height/2 + dy_bkg, width, height);
+        /*if (width%2==1)
+        {
+            width++;
+        }
+        if (height%2==1)
+        {
+            height++;
+        }*/
+
+        newPos.setRect(__round(fCXRate*pos.center().x()) - width/2
+                       , __round(fCXRate*pos.center().y()) - height/2 + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
     }
 
@@ -567,7 +578,7 @@ void MainWindow::_relayout()
         if (fCXRate <= 1)
         {
 #define __offset __size(10.0f)
-            yOffset = (int)round(__offset/fCXRate);
+            yOffset = __round(__offset/fCXRate);
 
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
@@ -576,7 +587,7 @@ void MainWindow::_relayout()
         }
 
 #define __dy __size(4)
-        int dy = (int)round(fCXRate*__dy);
+        int dy =  __round(fCXRate*__dy);
         for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
         {

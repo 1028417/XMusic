@@ -102,7 +102,7 @@ void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap
         }
 
         QTransform transform;
-        auto scaleRate = (float)rc.width()/rcSrc.width();
+        auto scaleRate = (1.0f+rc.width())/rcSrc.width();
         transform.translate(rc.left()-rcSrc.left()*scaleRate
                             , rc.top()-rcSrc.top()*scaleRate);
         transform.scale(scaleRate, scaleRate);
