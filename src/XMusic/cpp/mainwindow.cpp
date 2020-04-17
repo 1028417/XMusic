@@ -91,7 +91,6 @@ MainWindow::MainWindow(CApp& app)
     connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
         g_bFullScreen = !g_bFullScreen;
         m_app.getOption().bFullScreen = g_bFullScreen;
-
         fixWorkArea(*this);
     });
 
@@ -367,9 +366,9 @@ bool MainWindow::event(QEvent *ev)
     }
 
     break;
-#if __android || __ios
     case QEvent::KeyRelease:
     {
+#if __android || __ios
         if (!ui.labelLogo->isVisible())
         {
             static time_t prevTime = 0;
@@ -386,12 +385,16 @@ bool MainWindow::event(QEvent *ev)
 
             prevTime = currTime;
         }
-
-        //this->setVisible(false);
-    }
-
-    break;
+#else
+        if (((QKeyEvent*)ev)->nativeVirtualKey() == 13)
+        {
+            g_bFullScreen = !g_bFullScreen;
+            m_app.getOption().bFullScreen = g_bFullScreen;
+            fixWorkArea(*this);
+        }
 #endif
+    }
+    break;
     case QEvent::Close:
         m_app.quit();
 

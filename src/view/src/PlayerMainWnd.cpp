@@ -118,6 +118,15 @@ void CPlayerMainWnd::OnSysCommand(UINT nID, LPARAM lParam)
 		return;
 	}
 	
+	if (SC_MINIMIZE == nID)
+	{
+		CPlaySpirit::inst().Dock(false);
+	}
+	else if (SC_RESTORE == nID)
+	{
+		CPlaySpirit::inst().Dock(true);
+	}
+
 	__super::OnSysCommand(nID, lParam);
 }
 
