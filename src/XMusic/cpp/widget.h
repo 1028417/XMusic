@@ -120,7 +120,7 @@ public:
     }
 };
 
-template <class T = QWidget>
+template <class T>
 class TWidget : public T
 {
 public:
