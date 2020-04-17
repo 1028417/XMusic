@@ -7,15 +7,17 @@ class CWholeTrackDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CWholeTrackDlg(CDialog& parent, class CApp& app)
-        : CDialog(parent)
-        , m_app(app)
-	{
-	}
+    CWholeTrackDlg(class CMedialibDlg& medialibDlg, class CApp& app);
 
 private:
+    class CMedialibDlg& m_medialibDlg;
+
     class CApp& m_app;
-	
-private:
-    void _relayout(int cx, int cy) override;
+
+    class CMediaRes *m_pMediaRes;
+
+public:
+    void relayout(cqrc rcBtnReturn, cqrc rcBtnPlay);
+
+    bool tryShow(class CMediaRes& mediaRes);
 };

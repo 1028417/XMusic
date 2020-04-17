@@ -10,10 +10,10 @@
 
 #define __RemarkAlpha 170
 
-CMedialibView::CMedialibView(class CApp& app, CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
+CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
-    , m_app(app)
     , m_medialibDlg(medialibDlg)
+    , m_app(app)
     , m_SingerLib(app.getSingerMgr())
     , m_PlaylistLib(app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
@@ -559,12 +559,9 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& p
     auto& mediaRes = (CMediaRes&)path;
     if (!_hittestPlayIcon(tagMediaContext(lvRow, (IMedia&)mediaRes), me.x()))
     {
-        if (mediaRes.parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        if (m_medialibDlg.tryShowWholeTrack(mediaRes))
         {
-            if (((CSnapshotMediaRes&)mediaRes).cueFile())
-            {
-                return;
-            }
+            return;
         }
     }
 

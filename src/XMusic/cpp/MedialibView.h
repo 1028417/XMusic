@@ -9,12 +9,12 @@ class CMedialibView : public CListViewEx
 {
     Q_OBJECT
 public:
-    CMedialibView(class CApp& app, class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
+    CMedialibView(class CMedialibDlg& medialibDlg, class CApp& app, CMediaDir& OuterDir);
 
 private:
-    class CApp& m_app;
-
     class CMedialibDlg& m_medialibDlg;
+
+    class CApp& m_app;
 
     CMediaSet& m_SingerLib;
 

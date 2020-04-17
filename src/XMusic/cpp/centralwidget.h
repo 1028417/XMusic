@@ -3,6 +3,8 @@
 
 #include "widget.h"
 
+#include "app.h"
+
 #include "mainwindow.h"
 
 class CCentralWidget : public TWidget<QWidget>

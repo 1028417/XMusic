@@ -5,6 +5,8 @@
 
 #include "MedialibView.h"
 
+#include "wholeTrackDlg.h"
+
 class COuterDir : public CMediaDir
 {
 public:
@@ -51,6 +53,8 @@ private:
 
     CMedialibView m_MedialibView;
 
+    CWholeTrackDlg m_wholeTrackDlg;
+
 private slots:
     void slot_labelClick(class CLabel*, const QPoint&);
 
@@ -62,13 +66,18 @@ public:
     void show();
     void showMediaSet(CMediaSet& MediaSet);
     void showMedia(CMedia& media);
-    bool showFile(const wstring& strPath);
+    bool showMediaRes(const wstring& strPath);
 
     void updateHead(const WString& strTitle);
 
     void updateSingerImg()
     {
         m_MedialibView.updateSingerImg();
+    }
+
+    bool tryShowWholeTrack(CMediaRes& mediaRes)
+    {
+        return m_wholeTrackDlg.tryShow(mediaRes);
     }
 
 private:

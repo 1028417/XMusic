@@ -64,7 +64,8 @@ RESOURCES += res.qrc
 
 FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui \
     colordlg.ui \
-    msgbox.ui
+    msgbox.ui \
+    wholeTrackDlg.ui
 
 INCLUDEPATH += ../../inc  cpp
 

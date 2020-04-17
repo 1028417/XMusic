@@ -1,4 +1,6 @@
 ﻿
+#include "app.h"
+
 #include "widget.cpp"
 
 #include "mainwindow.h"
@@ -7,8 +9,6 @@
 #include <QMovie>
 
 #include <QScreen>
-
-#include "app.h"
 
 #define __size10 __size(10)
 
@@ -1293,6 +1293,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelAlbumName)
     {
+
         if (m_PlayingInfo.pRelatedMedia)
         {
             m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);
@@ -1306,7 +1307,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
         else
         {
-            (void)m_medialibDlg.showFile(m_PlayingInfo.strPath);
+            m_medialibDlg.showMediaRes(m_PlayingInfo.strPath);
         }
     }
     else if (label == ui.labelProgress)

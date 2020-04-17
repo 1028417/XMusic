@@ -73,7 +73,8 @@ CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
 
 CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
-  , m_MedialibView(app, *this, m_OuterDir)
+  , m_MedialibView(*this, app, m_OuterDir)
+  , m_wholeTrackDlg(*this, app)
 {
 }
 
@@ -142,7 +143,7 @@ void CMedialibDlg::showMedia(CMedia& media)
     CDialog::show();
 }
 
-bool CMedialibDlg::showFile(const wstring& strPath)
+bool CMedialibDlg::showMediaRes(const wstring& strPath)
 {
     cauto strOuterDir = m_OuterDir.init();
 
@@ -161,8 +162,11 @@ bool CMedialibDlg::showFile(const wstring& strPath)
             return false;
         }
     }
-
     m_MedialibView.hittestFile(*pMediaRes);
+
+    __appAsync([=]() {
+        tryShowWholeTrack(*pMediaRes);
+    });
 
     CDialog::show();
 
@@ -219,6 +223,8 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     int y_MedialibView = rcReturn.bottom() + rcReturn.top();
     m_MedialibView.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
+
+    m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnPlay->geometry());
 }
 
 void CMedialibDlg::_resizeTitle() const
