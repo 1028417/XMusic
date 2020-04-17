@@ -823,7 +823,7 @@ gridline-color: rgb(255, 255, 255);</string>
       <x>38</x>
       <y>1570</y>
       <width>633</width>
-      <height>573</height>
+      <height>574</height>
      </rect>
     </property>
     <property name="text">
@@ -868,14 +868,14 @@ gridline-color: rgb(255, 255, 255);</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>CButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">button.h</header>
-  </customwidget>
-  <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">button.h</header>
   </customwidget>
   <customwidget>
    <class>CProgressBar</class>

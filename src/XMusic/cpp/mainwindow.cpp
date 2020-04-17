@@ -746,9 +746,21 @@ void MainWindow::_relayout()
 
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
         ui.labelSingerImg->setGeometry(rcSingerImg);
+
+        if (m_PlayingInfo.bWholeTrack)
+        {
+            auto pm = pmSingerImg;
+            CPainter::zoomoutPixmap(pm, MAX(rcSingerImg.width(), rcSingerImg.height()));
+            ui.labelSingerImg->setPixmap(pm);
+        }
     }
     else
     {
+        if (m_PlayingInfo.bWholeTrack)
+        {
+            ui.labelSingerImg->clear();
+        }
+
         cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
         labelAlbumName.adjustSize();
         do {
@@ -795,13 +807,6 @@ void MainWindow::_relayout()
 
             y_PlayingListMax = ui.labelPlayingfile->y();
         }
-    }
-
-    if (m_PlayingInfo.bWholeTrack)
-    {
-        auto pm = pmSingerImg;
-        CPainter::zoomoutPixmap(pm, MAX(rcSingerImg.width(), rcSingerImg.height()));
-        ui.labelSingerImg->setPixmap(pm);
     }
 
 #define __CyPlayItem __size(115)

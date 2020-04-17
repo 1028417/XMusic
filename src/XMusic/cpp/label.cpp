@@ -8,9 +8,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
     auto pm = QLabel::pixmap();
 	if (pm && !pm->isNull())
     {
-        QRect rcImg(1, 1, m_rc.width()-2, m_rc.height()-2);
-
-        painter.drawPixmapEx(rcImg, *pm, m_szRound);
+        painter.drawPixmapEx(m_rc, *pm, m_szRound);
 
         if (m_uShadowWidth > 0)
         {
