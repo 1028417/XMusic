@@ -73,14 +73,14 @@ private:
     int m_dxbkg = 0;
     int m_dybkg = 0;
 
-    enum E_SingerImgPos
+    enum class E_SingerImgPos
     {
         SIP_Float = 1,
         SIP_Dock,
         SIP_Zoomout
     };
 
-    E_SingerImgPos m_eSingerImgPos = SIP_Float;
+    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 

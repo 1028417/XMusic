@@ -33,7 +33,8 @@ SOURCES += ../controller.cpp \
     cpp/ListViewEx.cpp \
     cpp/label.cpp \
     cpp/dialog.cpp \
-    cpp/msgbox.cpp
+    cpp/msgbox.cpp \
+    cpp/wholeTrackDlg.cpp
 
 HEADERS += cpp/app.h \
     cpp/MedialibView.h \
@@ -56,7 +57,8 @@ HEADERS += cpp/app.h \
     ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
     cpp/msgbox.h \
-    cpp/centralwidget.h
+    cpp/centralwidget.h \
+    cpp/wholeTrackDlg.h
 
 RESOURCES += res.qrc
 

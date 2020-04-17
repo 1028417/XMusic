@@ -15,15 +15,16 @@ class CDialog : public QDialog
 {
 public:
     CDialog(QWidget& parent, bool bFullScreen = true)
-      : m_parent(parent)
-      , m_bFullScreen(bFullScreen)
+        : QDialog(NULL)
+        , m_parent(parent)
+        , m_bFullScreen(bFullScreen)
     {
     }
 
-    CDialog(CDialog& dlg, bool bFullScreen = true)
-      : QDialog(NULL)
-      , m_parent(dlg)
-      , m_bFullScreen(bFullScreen)
+    CDialog(CDialog& parent, bool bFullScreen = true)
+        : QDialog(NULL)
+        , m_parent(parent)
+        , m_bFullScreen(bFullScreen)
     {
     }
 

@@ -17,14 +17,12 @@ class CLabel : public TWidget<QLabel>
 {
     Q_OBJECT
 public:
-    CLabel(QWidget *parent) : TWidget(parent, QPainter::TextAntialiasing)
+    CLabel(QWidget *parent) : TWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
-    bool m_bCutPixmap = false;
-
     E_LabelTextOption m_eTextOption = E_LabelTextOption::LTO_AutoFit;
 
     bool m_bUseCustomColor = false;
@@ -49,12 +47,6 @@ public:
     void setPixmapRound(UINT szRound)
     {
         m_szRound = szRound;
-    }
-
-    void setPixmap(const QPixmap &pm, bool bCut=true)
-    {
-        m_bCutPixmap = bCut;
-        QLabel::setPixmap(pm);
     }
 
     const QPixmap& pixmap() const

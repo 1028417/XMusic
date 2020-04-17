@@ -608,25 +608,33 @@ void MainWindow::_relayout()
 
     ui.labelPlayingfile->setShadow(uShadowWidth);
 
-    ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
-
-    //TODO auto pm = (int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD?m_pmHDDisk:m_pmLLDisk;
-    //ui.labelSingerImg->setPixmap(pm);
-
-    E_SingerImgPos eSingerImgPos = SIP_Float;
-    cauto pmSingerImg = ui.labelSingerImg->pixmap();
-
-    if (!pmSingerImg.isNull())
+    E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
+    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ? ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_SQ ? m_pmHDDisk:m_pmLLDisk)
+        : ui.labelSingerImg->pixmap();
+    if (m_PlayingInfo.bWholeTrack)
     {
-        eSingerImgPos = m_eSingerImgPos;
+        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
 
-        ui.labelSingerImg->setShadow(2);
+        ui.labelSingerImg->setPixmapRound(0);
+        ui.labelSingerImg->setShadow(0);
 
-        ui.labelSingerName->setShadow(2);
+        ui.labelSingerName->setShadow(uShadowWidth);
     }
     else
     {
-        ui.labelSingerName->setShadow(uShadowWidth);
+        if (!pmSingerImg.isNull())
+        {
+            eSingerImgPos = m_eSingerImgPos;
+
+            ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
+            ui.labelSingerImg->setShadow(2);
+
+            ui.labelSingerName->setShadow(2);
+        }
+        else
+        {
+            ui.labelSingerName->setShadow(uShadowWidth);
+        }
     }
 
     auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
@@ -656,7 +664,7 @@ void MainWindow::_relayout()
         int cx_SingerImg = 0;
         int y_SingerImg = 0;
         int cy_SingerImg = 0;
-        if (SIP_Zoomout == eSingerImgPos)
+        if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
         {
             cy_SingerImg = 2*(y_Playingfile+cy_Playingfile - (y_labelAlbumName+__cylabelAlbumName/2));
             y_SingerImg = y_Playingfile+cy_Playingfile+1 - cy_SingerImg;
@@ -677,7 +685,7 @@ void MainWindow::_relayout()
         }
         else
         {
-            if (SIP_Float == eSingerImgPos)
+            if (E_SingerImgPos::SIP_Float == eSingerImgPos)
             {
                 if (m_bHScreen)
                 {
@@ -789,6 +797,13 @@ void MainWindow::_relayout()
         }
     }
 
+    if (m_PlayingInfo.bWholeTrack)
+    {
+        auto pm = pmSingerImg;
+        CPainter::zoomoutPixmap(pm, MAX(rcSingerImg.width(), rcSingerImg.height()));
+        ui.labelSingerImg->setPixmap(pm);
+    }
+
 #define __CyPlayItem __size(115)
     UINT uRowCount = 0;
     if (m_bHScreen)
@@ -823,11 +838,11 @@ void MainWindow::_relayout()
             uRowCount = 10;
             y_Margin += __size10;
 
-            if (pmSingerImg.isNull() || SIP_Zoomout == eSingerImgPos)
+            if (pmSingerImg.isNull() || E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
             {
                 y_Margin += __size10*2;
             }
-            else if (SIP_Dock == eSingerImgPos)
+            else if (E_SingerImgPos::SIP_Dock == eSingerImgPos)
             {
                 y_Margin += __size10;
             }
@@ -929,14 +944,14 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.strPath = PlayItem.GetPath();
 
     PlayingInfo.uDuration = PlayItem.duration();
-    /*if (PlayingInfo.uDuration > __wholeTrackDuration)
+    if (PlayingInfo.uDuration > __wholeTrackDuration)
     {
         CMediaRes *pMediaRes = __medialib.findSubFile(PlayingInfo.strPath);
         if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
             PlayingInfo.bWholeTrack = true;
         }
-    }*/
+    }
 
     PlayingInfo.uStreamSize = 0;
 #if __OnlineMediaLib
@@ -1241,9 +1256,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         if (!m_bUseDefaultBkg)
         {
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
-            if (m_eSingerImgPos > SIP_Zoomout)
+            if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
-                m_eSingerImgPos = SIP_Float;
+                m_eSingerImgPos = E_SingerImgPos::SIP_Float;
             }
 
             _relayout();
