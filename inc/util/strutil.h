@@ -293,6 +293,12 @@ public:
 		return base64_decode(str.c_str(), str.length(), pszBase, chrTail);
 	}
 
+    static bool checkGBK(unsigned char *pStr, int len = -1);
+    static bool checkGBK(const string& str)
+    {
+        return checkGBK(str.c_str(), str.size());
+    }
+
 	static bool checkUtf8(const char *pStr, int len = -1);
 	static bool checkUtf8(const string& str)
 	{

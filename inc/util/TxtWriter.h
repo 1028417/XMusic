@@ -151,7 +151,7 @@ private:
 	{
 		if (_isAsc())
 		{
-			cauto str = qstr.toStdString();
+            cauto str = qstr.toLocal8Bit().toStdString();
 			return _write((const void*)str.c_str(), str.size(), bEndLine);
 		}
 		else if (_isUtf8())
