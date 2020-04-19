@@ -248,7 +248,7 @@ void CPlayItemPage::UpdateHead()
 {
 	m_view.m_PlaylistPage.Invalidate();
 
-	/*wstring strColumnText = strutil::wcSpace + __ColumnText_Name;
+	/*wstring strColumnText = L' ' + __ColumnText_Name;
 
 	int iItemCount = m_wndList.GetItemCount();
 	if (iItemCount > 0)

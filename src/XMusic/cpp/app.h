@@ -186,7 +186,7 @@ public:
     }
 
 #elif __android
-    void vibrate(UINT duration=100);
+    static void vibrate(UINT duration=100);
 #endif
 };
 

@@ -3,9 +3,20 @@
 
 #include "dialog.h"
 
+class CWholeTrackView : public CListView
+{
+public:
+    CWholeTrackView(class CWholeTrackDlg *WholeTrackDlg);
+
+private:
+    void _onPaintRow(CPainter& painter, tagLVRow& lvRow) override;
+
+    size_t getPageRowCount() const override;
+    size_t getRowCount() const override;
+};
+
 class CWholeTrackDlg : public CDialog
 {
-    Q_OBJECT
 public:
     CWholeTrackDlg(class CMedialibDlg& medialibDlg, class CApp& app);
 
@@ -16,8 +27,10 @@ private:
 
     class CMediaRes *m_pMediaRes;
 
+    CWholeTrackView m_lv;
+
 public:
-    void relayout(cqrc rcBtnReturn, cqrc rcBtnPlay);
+    void relayout(cqrc rcBtnReturn, cqrc rcBtnPlay, cqrc rcLv);
 
     bool tryShow(class CMediaRes& mediaRes);
 };

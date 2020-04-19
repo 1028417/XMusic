@@ -260,7 +260,7 @@ const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& st
     {
         m_lstSingerPixmap.emplace_back(QPixmap());
         QPixmap& pm = m_lstSingerPixmap.back();
-        if (pm.load(strutil::toQstr(strSingerImg)))
+        if (pm.load(__WS2Q(strSingerImg)))
         {
 #define __singerimgZoomout 160
             CPainter::zoomoutPixmap(pm, __singerimgZoomout);

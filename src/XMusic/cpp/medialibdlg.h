@@ -51,7 +51,7 @@ private:
 
     COuterDir m_OuterDir;
 
-    CMedialibView m_MedialibView;
+    CMedialibView m_lv;
 
     CWholeTrackDlg m_wholeTrackDlg;
 
@@ -72,7 +72,7 @@ public:
 
     void updateSingerImg()
     {
-        m_MedialibView.updateSingerImg();
+        m_lv.updateSingerImg();
     }
 
     bool tryShowWholeTrack(CMediaRes& mediaRes)
@@ -87,7 +87,7 @@ private:
 
     bool _handleReturn() override
     {
-        return m_MedialibView.upward();
+        return m_lv.upward();
     }
 
     void _onClosed() override;

@@ -119,12 +119,12 @@ CAppInit::CAppInit(QApplication& app)
 #if __android
     string strWorkDir = __sdcardDir __pkgName;
 #else
-    string strWorkDir = fsutil::getHomePath(__pkgName);
+    string strWorkDir = strutil::toStr(fsutil::getHomePath(QString::fromLocal8Bit(__pkgName)));
 #endif
     (void)fsutil::createDir(strWorkDir);
     fsutil::setWorkDir(strWorkDir);
 
-    m_logger.open(L"XMusic.log", true);
+    m_logger.open("XMusic.log", true);
 
     g_logger << "applicationDirPath: " >> QApplication::applicationDirPath();
     g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
@@ -421,7 +421,7 @@ bool CApp::_initRootDir(wstring& strRootDir)
     strRootDir = strutil::toWstr(__sdcardDir "XMusic");
 
 #else
-    strRootDir = fsutil::getHomePath(L"/XMusic");
+    strRootDir = fsutil::getHomePath(QString::fromLocal8Bit("/XMusic")).toStdWString();
 
 //#if __ios && TARGET_IPHONE_SIMULATOR
 //    strRootDir = L"/Users/lhyuan/XMusic";
@@ -650,10 +650,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             else if (strutil::endWith(unzfile.strPath, string(".cue")))
             {
-                cauto strFileTitle = fsutil::getFileTitle(strutil::fromUtf8(unzfile.strPath));
-                if (!__xmedialib.loadXCue(ifbData, strFileTitle))
+                cauto strPath = strutil::fromGbk(unzfile.strPath).toStdWString();
+                if (!__xmedialib.loadXCue(ifbData, fsutil::getFileTitle(strPath)))
                 {
-                    g_logger << "loadCue fail: " >> unzfile.strPath;
+                    g_logger << "loadCue fail: " >> strPath;
                 }
             }
         }
@@ -752,7 +752,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
             return false;
         }
 
-        installApk(strutil::toQstr(strApkFile));
+        installApk(__WS2Q(strutil::toWstr(strApkFile)));
 
 #elif __mac
         cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";

@@ -185,7 +185,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
     m_colorDlg(*this, app),
     m_addbkgDlg(*this, m_paImgDirs),
-    m_bkgView(app, *this)
+    m_lv(app, *this)
 {
 }
 
@@ -306,12 +306,12 @@ void CBkgDlg::_relayout(int cx, int cy)
     if (bHScreen != m_bHScreen)
     {
         bHScreen = m_bHScreen;
-        m_bkgView.scroll(0);
+        m_lv.scroll(0);
 
 #if !__windows
-        m_bkgView.setVisible(false);
+        m_lv.setVisible(false);
         __appAsync([&](){
-            m_bkgView.setVisible(true);
+            m_lv.setVisible(true);
         });
 #endif
     }
@@ -324,7 +324,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         int x_bkgView = rcReturn.right()+xMargin;
         int cx_bkgView = cx-x_bkgView;
         int cy_bkgView = cx_bkgView*cy/cx;
-        m_bkgView.setGeometry(x_bkgView - m_bkgView.margin()/2
+        m_lv.setGeometry(x_bkgView - m_lv.margin()/2
                               , (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
 
         ui.labelTitle->setGeometry(0, 0, x_bkgView, cy);
@@ -339,7 +339,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         int y_bkgView = rcReturn.bottom() + rcReturn.top();
         int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
-        m_bkgView.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
+        m_lv.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
         ui.labelTitle->setGeometry(0, 0, cx, y_bkgView);
         ui.labelTitle->setText("设置背景");
@@ -536,7 +536,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
         fsutil::removeFile(_bkgDir() + bkgFile.strPath);
         vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
-        m_bkgView.update();
+        m_lv.update();
     }
 }
 
@@ -573,7 +573,7 @@ void CBkgDlg::_onClosed()
         }
     }
 
-    m_bkgView.reset();
+    m_lv.reset();
 }
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
@@ -591,7 +591,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
 inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 {
-    if (!pm.load(strutil::toQstr(subFile.path())))
+    if (!pm.load(__WS2Q(subFile.path())))
     {
         return false;
     }

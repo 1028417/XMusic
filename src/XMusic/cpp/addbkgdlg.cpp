@@ -10,7 +10,7 @@ static Ui::AddBkgDlg ui;
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDirs)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_addbkgView(*this, paImgDirs)
+    , m_lv(*this, paImgDirs)
 {
 }
 
@@ -21,7 +21,7 @@ void CAddBkgDlg::init()
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](){
-        if (!m_addbkgView.upward())
+        if (!m_lv.upward())
         {
             close();
         }
@@ -32,7 +32,7 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
 {
     if (pImgDir)
     {
-        m_addbkgView.showImgDir(*pImgDir);
+        m_lv.showImgDir(*pImgDir);
     }
 
     CDialog::show([=](){
@@ -41,7 +41,7 @@ void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
             cbClose();
         }
 
-        m_addbkgView.reset();
+        m_lv.reset();
     });
 }
 
@@ -59,19 +59,19 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     ui.labelTitle->move(rcReturn.right() + xMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
     int y_addbkgView = 0;
-    if (m_addbkgView.isInRoot())
+    if (m_lv.isInRoot())
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
     }
-    m_addbkgView.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
+    m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
 #if !__windows
     static bool bHScreen = false;
     if (bHScreen != m_bHScreen)
     {
-        m_addbkgView.setVisible(false);
+        m_lv.setVisible(false);
         __appAsync([&](){
-            m_addbkgView.setVisible(true);
+            m_lv.setVisible(true);
         });
     }
 #endif
@@ -157,7 +157,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
-            QDir dir(strutil::toQstr(imgDir.path()));
+            QDir dir(__WS2Q(imgDir.path()));
             context.strText = dir.absolutePath().toStdWString();
 
             context.pixmap = imgDir.snapshot();

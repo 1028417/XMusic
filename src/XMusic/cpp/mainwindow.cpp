@@ -158,7 +158,7 @@ void MainWindow::showLogo()
 
         _updateLogoCompany(5, [&](){
             _updateLogoCompany(-5, [&](){
-                ui.labelLogoCompany->setText("v"+strutil::toQstr(m_app.appVersion()));
+                ui.labelLogoCompany->setText(__WS2Q(L"v" + m_app.appVersion()));
                 _updateLogoCompany(5);
             });
         });
@@ -171,7 +171,7 @@ void MainWindow::_updateLogoTip()
     labelLogoTip->setText("播放器");
 
     __appAsync(600, [=](){
-        labelLogoTip->setText(labelLogoTip->text() + strutil::toQstr(__CNDot) + "媒体库");
+        labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
 
         __appAsync(600, [=](){
             labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
@@ -379,7 +379,7 @@ bool MainWindow::event(QEvent *ev)
             if (currTime - prevTime > 3)
             {
 #if __android
-                m_app.vibrate();
+                CApp::vibrate();
 #endif
                 prevTime = currTime;
                 return true;
@@ -938,8 +938,8 @@ void MainWindow::_updateProgress()
         }
         else
         {
-            QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
-            ui.labelDuration->setText(qsDuration);
+            WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
+            ui.labelDuration->setText(strDuration);
         }
 #endif
         ui.progressbar->setValue(nProgress, bufferValue);
@@ -955,7 +955,7 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    PlayingInfo.qsTitle = strutil::toQstr(PlayItem.GetTitle());
+    PlayingInfo.qsTitle = __WS2Q(PlayItem.GetTitle());
 
     PlayingInfo.strPath = PlayItem.GetPath();
 
@@ -1031,15 +1031,15 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
 #if __OnlineMediaLib
     ui.labelDuration->clear();
 #else
-    cauto qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
-    ui.labelDuration->setText(qsDuration);
+    WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
+    ui.labelDuration->setText(strDuration);
 #endif
 
     _updatePlayPauseButton(true);
 
     m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    ui.labelSingerName->setText(strutil::toQstr(m_PlayingInfo.strSingerName));
+    ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
 
     if (m_PlayingInfo.strSingerName.empty())
     {
@@ -1073,8 +1073,8 @@ void MainWindow::slot_playStoped(bool bOpenFail)
 {
     ui.progressbar->setMaximum(0);
 
-    QString qsDuration = strutil::toQstr(CMedia::genDurationString(m_PlayingInfo.uDuration));
-    ui.labelDuration->setText(qsDuration);
+    WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
+    ui.labelDuration->setText(strDuration);
 
     (void)bOpenFail;
     /*if (bOpenFail)
@@ -1156,11 +1156,11 @@ void MainWindow::_playSingerImg(bool bReset)
         }
     }
 
-    WString strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
-    if (!strSingerImg->empty())
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
+    if (!strSingerImg.empty())
     {
         QPixmap pm;
-        if (pm.load(strSingerImg))
+        if (pm.load(__WS2Q(strSingerImg)))
         {
             ui.labelSingerImg->setPixmap(pm);
 

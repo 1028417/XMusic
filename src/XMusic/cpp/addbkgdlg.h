@@ -25,7 +25,6 @@ using TD_ImgDirList = PtrArray<IImgDir>;
 
 class CAddBkgView : public CListView
 {
-    Q_OBJECT
 public:
     CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
@@ -66,21 +65,20 @@ public:
 
 class CAddBkgDlg : public CDialog
 {
-    Q_OBJECT
 public:
     CAddBkgDlg(class CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
     class CBkgDlg& m_bkgDlg;
 
-    CAddBkgView m_addbkgView;
+    CAddBkgView m_lv;
 
 private:
     void _relayout(int cx, int cy) override;
 
     bool _handleReturn() override
     {
-        return m_addbkgView.upward();
+        return m_lv.upward();
     }
 
 public:

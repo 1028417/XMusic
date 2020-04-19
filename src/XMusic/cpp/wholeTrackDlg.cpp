@@ -12,6 +12,7 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     : CDialog(medialibDlg)
     , m_medialibDlg(medialibDlg)
     , m_app(app)
+    , m_lv(this)
 {
     ui.setupUi(this);
 
@@ -22,11 +23,13 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     });
 }
 
-void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcBtnPlay)
+void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcBtnPlay, cqrc rcLv)
 {
      ui.btnReturn->setGeometry(rcBtnReturn);
 
      ui.btnPlay->setGeometry(rcBtnPlay);
+
+     m_lv.setGeometry(rcLv);
 }
 
 bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
@@ -47,4 +50,25 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
     CDialog::show();
 
     return true;
+}
+
+
+CWholeTrackView::CWholeTrackView(class CWholeTrackDlg *WholeTrackDlg)
+    : CListView(WholeTrackDlg)
+{
+}
+
+void CWholeTrackView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+{
+
+}
+
+size_t CWholeTrackView::getPageRowCount() const
+{
+    return 0;
+}
+
+size_t CWholeTrackView::getRowCount() const
+{
+    return 0;
 }

@@ -112,7 +112,7 @@ private:
 
     CAddBkgDlg m_addbkgDlg;
 
-    CBkgView m_bkgView;
+    CBkgView m_lv;
 
     WString m_strHBkgDir;
     WString m_strVBkgDir;

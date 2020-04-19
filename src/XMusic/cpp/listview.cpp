@@ -156,7 +156,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
         painter.adjustFont(QFont::Weight::DemiBold);
     }
 
-    QString qsText = strutil::toQstr(context.strText);
+    QString qsText = context.strText;
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
     if (context.eStyle & E_RowStyle::IS_MultiLine)
     {
