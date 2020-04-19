@@ -127,12 +127,12 @@ public:
 #if !__winvc
     operator QString() const
     {
-        return strutil::toQstr(m_str);
+        return __WS2Q(m_str);
     }
 
     QString qstr() const
     {
-        return strutil::toQstr(m_str);
+        return __WS2Q(m_str);
     }
 #endif
 

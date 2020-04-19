@@ -64,111 +64,16 @@ protected:
 private:
 	virtual bool _write(const void *ptr, size_t len, bool bEndLine) = 0;
 
-	inline bool _write(const char *pStr, size_t len, bool bEndLine = false)
-	{
-		if (_isAsc() || _isUtf8())
-		{
-			return _write((const void*)pStr, len, bEndLine);
-		}
-		else
-		{
-			wstring str = strutil::toWstr(pStr);
-			if (_isUcsBigEndian())
-			{
-				strutil::transEndian(str);
-			}
+    bool _write(const char *pStr, size_t len, bool bEndLine = false);
 
-			return _write((const void*)str.c_str(), str.size() * 2, bEndLine);
-		}
-	}
+    bool _write(char ch, bool bEndLine = false);
 
-    inline bool _write(char ch, bool bEndLine = false)
-    {
-        if (_isAsc() || _isUtf8())
-        {
-            return _write(&ch, 1, bEndLine);
-        }
-        else
-        {
-            wchar_t wch = ch;
-            if (_isUcsBigEndian())
-            {
-                wch = strutil::transEndian(wch);
-            }
+    bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false);
 
-            return _write(&wch, 2, bEndLine);
-        }
-    }
-
-	inline bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false)
-	{
-		if (_isAsc())
-		{
-			cauto str = strutil::toStr(pStr, len);
-			return _write((const void*)str.c_str(), str.size(), bEndLine);
-		}
-		else if (_isUtf8())
-		{
-			cauto str = strutil::toUtf8(pStr, len);
-			return _write((const void*)str.c_str(), str.size(), bEndLine);
-		}
-		else if (_isUcsBigEndian())
-		{
-			cauto str = strutil::transEndian(pStr, len);
-			return _write((const void*)str.c_str(), str.size()*2, bEndLine);
-		}
-		else
-		{
-			return _write((const void*)pStr, len*2, bEndLine);
-		}
-    }
-
-    inline bool _write(wchar_t wch, bool bEndLine = false)
-    {
-        if (_isAsc())
-        {
-            cauto str = strutil::toStr(&wch, 1);
-            return _write((const void*)str.c_str(), str.size(), bEndLine);
-        }
-        else if (_isUtf8())
-        {
-            cauto str = strutil::toUtf8(&wch, 1);
-            return _write((const void*)str.c_str(), str.size(), bEndLine);
-        }
-        else
-        {
-            if (_isUcsBigEndian())
-            {
-                wch = strutil::transEndian(wch);
-            }
-
-            return _write(&wch, 2, bEndLine);
-        }
-    }
+    bool _write(wchar_t wch, bool bEndLine = false);
 
 #if !__winvc
-	bool _write(const QString& qstr, bool bEndLine = false)
-	{
-		if (_isAsc())
-		{
-            cauto str = qstr.toLocal8Bit().toStdString();
-			return _write((const void*)str.c_str(), str.size(), bEndLine);
-		}
-		else if (_isUtf8())
-		{
-			cauto str = qstr.toUtf8().toStdString();
-			return _write((const void*)str.c_str(), str.size(), bEndLine);
-		}
-		else
-		{
-			wstring str = qstr.toStdWString();
-			if (_isUcsBigEndian())
-			{
-				strutil::transEndian(str);
-			}
-			return _write((const void*)str.c_str(), str.size() * 2, bEndLine);
-		}
-	}
+    bool _write(const QString& qstr, bool bEndLine = false);
 #endif
 
 public:

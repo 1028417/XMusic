@@ -272,10 +272,8 @@ public:
 #endif
 
 #if !__winvc
-    static QString getHomeDir();
-
-    static string getHomePath(const string& strSubDir);
-    static wstring getHomePath(const wstring& strSubDir);
+    static QString getHomeDir();    
+    static QString getHomePath(const QString& qsSubDir);
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;

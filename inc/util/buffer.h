@@ -60,7 +60,6 @@ public:
 };
 
 using TD_ByteBuffer = TBuffer<byte_t>;
-using TD_CharBuffer = TBuffer<char>;
 
 class __UtilExt CByteBuffer
 {

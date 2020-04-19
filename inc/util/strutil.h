@@ -6,11 +6,8 @@
 #if !__winvc
 #include <QString>
 
-#define __A2Q(str, len) QString::fromUtf8(str, len)
-#define __S2Q(s) __A2Q(s.c_str(), s.size())
-
-#define __W2Q(str, len) QString::fromWCharArray(str, len)
-#define __WS2Q(ws) __W2Q(ws.c_str(), ws.size())
+#define __W2Q(pStr, len) QString::fromWCharArray(pStr, len)
+#define __WS2Q(wstr) QString::fromStdWString(wstr)
 
 #define to_string(x) QString::number(x).toStdString()
 #define to_wstring(x) QString::number(x).toStdWString()
@@ -25,8 +22,26 @@
 
 class __UtilExt strutil
 {
-public:
-	static const wchar_t wcSpace = L' ';
+private:
+    inline static bool _checkLen(const wchar_t *pStr, int& len)
+    {
+        if (-1 == len)
+        {
+            len = wcslen(pStr);
+        }
+
+        return len > 0;
+    }
+
+    inline static bool _checkLen(const char *pStr, int& len)
+    {
+        if (-1 == len)
+        {
+            len = strlen(pStr);
+        }
+
+        return len > 0;
+    }
 
 public:
 	static int collate(const wstring& lhs, const wstring& rhs);
@@ -292,13 +307,7 @@ public:
 	{
 		return base64_decode(str.c_str(), str.length(), pszBase, chrTail);
 	}
-
-    static bool checkGBK(unsigned char *pStr, int len = -1);
-    static bool checkGBK(const string& str)
-    {
-        return checkGBK(str.c_str(), str.size());
-    }
-
+	
 	static bool checkUtf8(const char *pStr, int len = -1);
 	static bool checkUtf8(const string& str)
 	{
@@ -322,14 +331,6 @@ public:
         return (wch << 8) | (wch >> 8);
     }
 
-    static void transEndian(wstring& str);
-    static wstring transEndian(const wchar_t *pStr, int len=-1)
-	{
-        wstring str(pStr, len);
-        transEndian(str);
-        return str;
-    }
-		
     static wstring toWstr(const char *pStr, int len = -1);
     static wstring toWstr(const string& str)
     {
@@ -342,23 +343,32 @@ public:
         return toStr(str.c_str(), str.size());
     }
 
-#if !__winvc
-    static QString toQstr(const wchar_t *pStr, int len = -1)
+    static void transEndian(wstring& str);
+    static wstring transEndian(const wchar_t *pStr, int len=-1)
     {
-        return __W2Q(pStr, len);
-    }
-    static QString toQstr(const wstring& str)
-	{
-        return __WS2Q(str);
+        wstring str(pStr, len);
+        transEndian(str);
+        return str;
     }
 
-    static QString toQstr(const char* pStr, int len = -1)
+	static bool checkGbk(const char *pStr, int len = -1);
+	static bool checkGbk(const string& str)
+	{
+		return checkGbk(str.c_str(), str.size());
+	}
+
+#if !__winvc
+    static QString fromGbk(const char *pStr, int len = -1);
+    static QString fromGbk(const string& str)
+	{
+		return fromGbk(str.c_str(), str.size());
+	}
+
+    static string toGbk(const QString& qs);
+
+    static string toStr(const QString& qs)
     {
-        return __A2Q(pStr, len);
-    }
-    static QString toQstr(const string& str)
-    {
-        return __S2Q(str);
+        return toStr(qs.toStdWString());
     }
 #endif
 
