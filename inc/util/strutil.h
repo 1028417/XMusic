@@ -325,52 +325,60 @@ public:
 	{
 		return toUtf8(str.c_str(), str.size());
 	}
-
-    inline static wchar_t transEndian(wchar_t wch)
+	
+    static wstring fromGbk(const char *pStr, int len = -1);
+    static wstring fromGbk(const string& str)
     {
-        return (wch << 8) | (wch >> 8);
+        return fromGbk(str.c_str(), str.size());
     }
 
-    static wstring toWstr(const char *pStr, int len = -1);
-    static wstring toWstr(const string& str)
+    static string toGbk(const wchar_t *pStr, int len = -1);
+    static string toGbk(const wstring& str)
     {
-        return toWstr(str.c_str(), str.size());
+        return toGbk(str.c_str(), str.size());
     }
-
-    static string toStr(const wchar_t *pStr, int len = -1);
-    static string toStr(const wstring& str)
-    {
-        return toStr(str.c_str(), str.size());
-    }
-
-    static void transEndian(wstring& str);
-    static wstring transEndian(const wchar_t *pStr, int len=-1)
-    {
-        wstring str(pStr, len);
-        transEndian(str);
-        return str;
-    }
-
-	static bool checkGbk(const char *pStr, int len = -1);
-	static bool checkGbk(const string& str)
-	{
-		return checkGbk(str.c_str(), str.size());
-	}
 
 #if !__winvc
-    static QString fromGbk(const char *pStr, int len = -1);
-    static QString fromGbk(const string& str)
+    static string toGbk(const QString& qs);
+#endif
+
+    static string toAsc(const wchar_t *pStr, int len = -1);
+    static string toAsc(const wstring& str)
+    {
+        return toAsc(str.c_str(), str.size());
+    }
+
+    static wstring fromAsc(const char *pStr, int len = -1);
+    static wstring fromAsc(const string& str)
+    {
+        return fromAsc(str.c_str(), str.size());
+    }
+
+	static wstring fromStr(const char *pStr, int len = -1);
+	static wstring fromStr(const string& str)
 	{
-		return fromGbk(str.c_str(), str.size());
+		return fromStr(str.c_str(), str.size());
 	}
 
-    static string toGbk(const QString& qs);
+	inline static wchar_t transEndian(wchar_t wch)
+	{
+		return (wch << 8) | (wch >> 8);
+	}
 
-    static string toStr(const QString& qs)
-    {
-        return toStr(qs.toStdWString());
-    }
-#endif
+	static void transEndian(wstring& str)
+	{
+		for (auto& wch : str)
+		{
+			wch = transEndian(wch);
+		}
+	}
+
+	static wstring transEndian(const wchar_t *pStr, int len = -1)
+	{
+		wstring str(pStr, len);
+		transEndian(str);
+		return str;
+	}
 
 	template <typename T>
 	static wstring ContainerToStr(const T& container, const wstring& strSplitor)

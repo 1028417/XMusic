@@ -272,8 +272,7 @@ public:
 #endif
 
 #if !__winvc
-    static QString getHomeDir();    
-    static QString getHomePath(const QString& qsSubDir);
+    static QString getHomeDir();
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;

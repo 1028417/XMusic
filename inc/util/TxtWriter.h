@@ -15,7 +15,7 @@ enum class E_EOLType
 
 enum class E_TxtEncodeType
 {
-	TET_Asc = 0,
+    TET_ANSI = 0,
 
 	TET_UTF8_NoBom,
 	TET_UTF8_WithBom,
@@ -37,9 +37,9 @@ private:
 	E_TxtEncodeType m_eEncodeType;
 
 protected:
-	inline bool _isAsc() const
+    inline bool _isANSI() const
 	{
-		return E_TxtEncodeType::TET_Asc == m_eEncodeType;
+        return E_TxtEncodeType::TET_ANSI == m_eEncodeType;
 	}
 
 	inline bool _isUtf8() const
@@ -163,7 +163,7 @@ public:
     template <typename T>
     bool write(const T& num)
     {
-            if (_isAsc())
+            if (_isANSI())
             {
                     return write(to_string(num));
             }
@@ -176,7 +176,7 @@ public:
     template <typename T>
     bool writeln(const T& num)
     {
-            if (_isAsc())
+            if (_isANSI())
             {
                     return writeln(to_string(num));
             }
