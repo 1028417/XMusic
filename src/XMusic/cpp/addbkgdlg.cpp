@@ -176,9 +176,11 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
         cauto strFilePath = m_pImgDir->path(uIdx);
         if (!strFilePath.empty())
         {
-            m_addbkgDlg.close();
-
             m_addbkgDlg.bkgDlg().addBkg(strFilePath);
+
+            m_addbkgDlg.bkgDlg().close();
+
+            m_addbkgDlg.close();
         }
     }
     else

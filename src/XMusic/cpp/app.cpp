@@ -7,7 +7,7 @@
 
 #include <QScreen>
 
-#define __pkgName "com.musicrossoft.xmusic"
+#define __pkgName L"com.musicrossoft.xmusic"
 
 #if __android
 #include <QAndroidJniObject>
@@ -105,7 +105,7 @@ static const wstring& sdcardPath()
     return g_strSDCardPath;
 }*/
 
-#define __sdcardDir "/sdcard/"
+#define __sdcardDir L"/sdcard/"
 // "/storage/emulated/0/"
 #endif
 
@@ -117,12 +117,17 @@ ITxtWriter& g_logger(m_logger);
 CAppInit::CAppInit(QApplication& app)
 {
 #if __android
-    string strWorkDir = __sdcardDir __pkgName;
+    wstring strWorkDir = __sdcardDir __pkgName;
 #else
-    string strWorkDir = strutil::toStr(fsutil::getHomePath(QString::fromLocal8Bit(__pkgName)));
+    wstring strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
 #endif
     (void)fsutil::createDir(strWorkDir);
-    fsutil::setWorkDir(strWorkDir);
+
+#if __windows
+    fsutil::setWorkDir(strutil::toGbk(strWorkDir));
+#else
+    fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
+#endif
 
     m_logger.open("XMusic.log", true);
 
@@ -337,7 +342,7 @@ int CApp::run()
             g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
                      << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
                      << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-            m_strAppVersion = strutil::toWstr(orgMedialibConf.strAppVersion);
+            m_strAppVersion = strutil::fromAsc(orgMedialibConf.strAppVersion);
 
             E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
                 return _initMediaLib(orgMedialibConf);
@@ -418,10 +423,10 @@ bool CApp::_initRootDir(wstring& strRootDir)
     }
 
 #elif __android
-    strRootDir = strutil::toWstr(__sdcardDir "XMusic");
+    strRootDir = __sdcardDir L"XMusic";
 
 #else
-    strRootDir = fsutil::getHomePath(QString::fromLocal8Bit("/XMusic")).toStdWString();
+    strRootDir = (fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
 
 //#if __ios && TARGET_IPHONE_SIMULATOR
 //    strRootDir = L"/Users/lhyuan/XMusic";
@@ -634,23 +639,23 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
             IFBuffer ifbData(bbfData);
 
-            if (strutil::endWith(unzfile.strPath, string(".xurl")))
+            cauto strPath = strutil::fromGbk(unzfile.strPath);
+            if (strutil::endWith(strPath, L".xurl"))
             {
                 if (!__xmedialib.loadXUrl(ifbData))
                 {
-                    g_logger << "loadXUrl fail: " >> unzfile.strPath;
+                    g_logger << "loadXUrl fail: " >> strPath;
                 }
             }
-            else if (strutil::endWith(unzfile.strPath, string(".snapshot.json")))
+            else if (strutil::endWith(strPath, L".snapshot.json"))
             {
                 if (!__xmedialib.loadXSnapshot(ifbData))
                 {
-                    g_logger << "loadSnapshot fail: " >> unzfile.strPath;
+                    g_logger << "loadSnapshot fail: " >> strPath;
                 }
             }
-            else if (strutil::endWith(unzfile.strPath, string(".cue")))
+            else if (strutil::endWith(strPath, L".cue"))
             {
-                cauto strPath = strutil::fromGbk(unzfile.strPath).toStdWString();
                 if (!__xmedialib.loadXCue(ifbData, fsutil::getFileTitle(strPath)))
                 {
                     g_logger << "loadCue fail: " >> strPath;
@@ -752,7 +757,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
             return false;
         }
 
-        installApk(__WS2Q(strutil::toWstr(strApkFile)));
+        installApk(__WS2Q(strutil::fromAsc(strApkFile)));
 
 #elif __mac
         cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";

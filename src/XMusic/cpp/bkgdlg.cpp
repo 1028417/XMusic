@@ -191,7 +191,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 
 void CBkgDlg::initBkg()
 {
-    cauto strWorkDir = strutil::toWstr(fsutil::workDir());
+    cauto strWorkDir = strutil::fromStr(fsutil::workDir());
     cauto strAppVersion = m_app.appVersion();
 
     cauto fn = [&](bool bHBkg)
@@ -505,7 +505,7 @@ void CBkgDlg::addBkg(const wstring& strFile)
     auto& vecBkgFile = _vecBkgFile();    
     vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName));
 
-    close(); //m_bkgView.update();
+    update();
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
