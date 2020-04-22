@@ -212,25 +212,25 @@ namespace NS_SSTL
 			return lhs & SContainerT(rhs);
 		}
 
-		__ContainerType& operator->()
+        __ContainerType* operator->()
+		{
+            return &m_data;
+		}
+        const __ContainerType* operator->() const
+		{
+            return &m_data;
+		}
+
+        __ContainerType& operator*()
 		{
 			return m_data;
 		}
-		const __ContainerType& operator->() const
+        const __ContainerType& operator*() const
 		{
 			return m_data;
 		}
 
-		__ContainerType& operator *()
-		{
-			return m_data;
-		}
-		const __ContainerType& operator *() const
-		{
-			return m_data;
-		}
-
-		operator __ContainerType& ()
+        operator __ContainerType& ()
 		{
 			return m_data;
 		}

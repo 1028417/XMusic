@@ -257,21 +257,21 @@ namespace NS_SSTL
 			return lhs & PtrArrayT(rhs);
 		}
 
-	public:
-		const __ContainerType& operator->()
+    public:
+        const __ContainerType* operator->()
 		{
-			return m_data;
+            return &m_data;
 		}
-		const __ContainerType& operator->() const
+        const __ContainerType* operator->() const
 		{
-			return m_data;
+            return &m_data;
 		}
 
-		const __ContainerType& operator *()
+        const __ContainerType& operator*()
 		{
 			return m_data;
 		}
-		const __ContainerType& operator *() const
+        const __ContainerType& operator*() const
 		{
 			return m_data;
 		}
