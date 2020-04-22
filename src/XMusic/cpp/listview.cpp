@@ -156,28 +156,28 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         painter.adjustFont(QFont::Weight::DemiBold);
     }
 
-    if (!context.strText->empty())
+    int flags = Qt::AlignLeft|Qt::AlignVCenter;
+    if (context.eStyle & E_RowStyle::IS_MultiLine)
     {
-        int flags = Qt::AlignLeft|Qt::AlignVCenter;
-        if (context.eStyle & E_RowStyle::IS_MultiLine)
-        {
-            flags |= Qt::TextWrapAnywhere;
-        }
-        _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
+        flags |= Qt::TextWrapAnywhere;
     }
+    _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
 }
 
 cqrc CListView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    QString qsText = context.strText;
-    if ((context.eStyle & E_RowStyle::IS_MultiLine) == 0)
+    if (!context.strText->empty())
     {
-        qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
-                                                  , Qt::TextSingleLine | Qt::TextShowMnemonic);
-    }
+        QString qsText = context.strText;
+        if ((context.eStyle & E_RowStyle::IS_MultiLine) == 0)
+        {
+            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
+                                                      , Qt::TextSingleLine | Qt::TextShowMnemonic);
+        }
 
-    return painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+        return painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+    }
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
