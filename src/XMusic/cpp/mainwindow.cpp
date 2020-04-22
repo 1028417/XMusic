@@ -676,7 +676,15 @@ void MainWindow::_relayout()
         int cy_SingerImg = 0;
         if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
         {
-            cy_SingerImg = 2*(y_Playingfile+cy_Playingfile - (y_labelAlbumName+__cylabelAlbumName/2));
+            if (m_PlayingInfo.bWholeTrack)
+            {
+                cy_SingerImg = __size(70);
+            }
+            else
+            {
+                cy_SingerImg = 2*(y_Playingfile+cy_Playingfile - (y_labelAlbumName+__cylabelAlbumName/2));
+            }
+
             y_SingerImg = y_Playingfile+cy_Playingfile+1 - cy_SingerImg;
 
             cx_SingerImg = cy_SingerImg;
