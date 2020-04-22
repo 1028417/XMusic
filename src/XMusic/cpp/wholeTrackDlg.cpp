@@ -109,7 +109,7 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
 
         if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
                                      uDuration = (nextTrackInfo.uMsBegin - TrackInfo.uMsBegin)/1000;
-        })
+        }))
         {
             uDuration = m_uDuration - TrackInfo.uMsBegin/1000;
         }
