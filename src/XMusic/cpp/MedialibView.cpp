@@ -410,12 +410,12 @@ inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIc
          || E_MediaSetType::MST_Singer == context.pMediaSet->m_eType))
         || context.pMedia || context.pFile)
     {
-        UINT cy = context.lvRow.rc.height();
+        UINT cy = context->rc.height();
         int yMargin = cy * context.fIconMargin*1.3;
         cy -= yMargin*2;
 
-        int x_icon = context.lvRow.rc.right()- __playIconMagin - cy;
-        int y_icon = context.lvRow.rc.top()+yMargin;
+        int x_icon = context->rc.right()- __playIconMagin - cy;
+        int y_icon = context->rc.top()+yMargin;
         rcPlayIcon.setRect(x_icon, y_icon, cy, cy);
 
         return true;
@@ -432,7 +432,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
     QRect rcPlayIcon;
     if (_playIconRect(mediaContext, rcPlayIcon))
     {
-        bool bFlashing = (int)mediaContext.lvRow.uRow == m_nFlashingRow;
+        bool bFlashing = (int)mediaContext->uRow == m_nFlashingRow;
         cauto pixmap = mediaContext.pMediaSet
                 ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
                :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
@@ -517,7 +517,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 
     uTextAlpha = 255;
     uShadowAlpha = __ShadowAlpha;
-    if ((int)mediaContext.lvRow.uRow == m_nFlashingRow)
+    if ((int)mediaContext->uRow == m_nFlashingRow)
     {
         uTextAlpha = __FlashingAlpha;
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;

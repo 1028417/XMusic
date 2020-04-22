@@ -49,6 +49,15 @@ struct tagRowContext
         fIconMargin = t_fIconMargin;
     }
 
+    tagLVRow* operator->()
+    {
+        return &lvRow;
+    }
+    const tagLVRow* operator->() const
+    {
+        return &lvRow;
+    }
+
     tagLVRow& lvRow;
 
     UINT eStyle = E_RowStyle::IS_None;

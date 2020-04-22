@@ -151,7 +151,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         rc.setRight(x_righttip - __lvRowMargin);
     }
 
-    if (context.lvRow.bSelected)
+    if (context->bSelected)
     {
         painter.adjustFont(QFont::Weight::DemiBold);
     }
