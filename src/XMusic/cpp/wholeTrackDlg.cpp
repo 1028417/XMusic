@@ -122,5 +122,5 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
     cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
     painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
 
-    return rcRect;
+    return rcRet;
 }
