@@ -104,7 +104,7 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
             context.strText << '0';
         }
 
-        context.strText << uIdx << wstring(4, ' ') << TrackInfo.strTitle;
+        context.strText << uIdx << wstring(3, ' ') << TrackInfo.strTitle;
 
 
         if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
@@ -117,9 +117,9 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
 
     if (uDuration > 0)
     {
-        CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.9, QFont::Weight::ExtraLight);
 
-        cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
+        cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration) + L' ');
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
     }
 
