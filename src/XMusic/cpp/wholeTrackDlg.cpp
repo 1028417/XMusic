@@ -115,12 +115,15 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
         }
     });
 
+    if (uDuration > 0)
+    {
+        CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
+
+        cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
+        painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
+    }
+
     rc.setRight(rc.right() - __size(100));
 
-    cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
-
-    cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
-    painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
-
-    return rcRet;
+    return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 }

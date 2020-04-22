@@ -8,7 +8,7 @@
 
 #define __FlashingAlpha 170
 
-#define __RemarkAlpha 170
+#define __RemarkAlpha 200
 
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
     CListViewEx(&medialibDlg)
@@ -533,7 +533,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(9));
         rcPos.setRight(10000);
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsMediaQuality, 1, __ShadowAlpha, uTextAlpha);
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsMediaQuality, 1, uShadowAlpha, uTextAlpha);
     }
 
     return rcRet;
