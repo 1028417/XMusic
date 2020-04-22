@@ -110,7 +110,16 @@ private:
 
     void _onPaint(CPainter& painter, cqrc) override;
 
-    virtual void _onPaintRow(CPainter&, tagLVRow&) = 0;
+    virtual void _onPaintRow(CPainter& painter, tagLVRow& lvRow)
+    {
+        tagRowContext context(lvRow);
+        if (_genRowContext(context))
+        {
+            _paintRow(painter, context);
+        }
+    }
+
+    virtual bool _genRowContext(tagRowContext&) { return true; }
 
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&) {}
     virtual void _onRowDblClick(tagLVRow&, const QMouseEvent&) {}
@@ -133,9 +142,9 @@ protected:
 
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 
-    void _paintRow(CPainter&, const tagRowContext&);
+    void _paintRow(CPainter&, tagRowContext&);
 
-    virtual cqrc _paintText(const tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
+    virtual cqrc _paintText(tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 

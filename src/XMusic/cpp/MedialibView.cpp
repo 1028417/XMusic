@@ -424,7 +424,7 @@ inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIc
     return false;
 }
 
-cqrc CMedialibView::_paintText(const tagRowContext& context, CPainter& painter, QRect& rc
+cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     cauto mediaContext = (tagMediaContext&)context;

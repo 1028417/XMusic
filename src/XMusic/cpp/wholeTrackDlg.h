@@ -12,17 +12,16 @@ private:
     class CWholeTrackDlg& m_WholeTrackDlg;
 
     CCueFile m_cue;
+    UINT m_uDuration = 0;
 
 public:
-    void showCue(CCueFile cue);
+    void showCue(CCueFile cue, UINT uDuration);
 
 private:
     size_t getPageRowCount() const override;
     size_t getRowCount() const override;
 
-    void _onPaintRow(CPainter& painter, tagLVRow& lvRow) override;
-
-    cqrc _paintText(const tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
+    cqrc _paintText(tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 };
 
 class CWholeTrackDlg : public CDialog

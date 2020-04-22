@@ -100,7 +100,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     }
 }
 
-void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
+void CListView::_paintRow(CPainter& painter, tagRowContext& context)
 {
     cauto lvRow = context.lvRow;
     QRect rc = lvRow.rc;
@@ -167,7 +167,7 @@ void CListView::_paintRow(CPainter& painter, const tagRowContext& context)
     }
 }
 
-cqrc CListView::_paintText(const tagRowContext& context, CPainter& painter, QRect& rc
+cqrc CListView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     QString qsText = context.strText;
