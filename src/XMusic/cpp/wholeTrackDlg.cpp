@@ -94,11 +94,7 @@ size_t CWholeTrackView::getRowCount() const
 cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    cauto qsDuration = __WS2Q(IMedia::genDurationString(400));
-    painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
-
-    rc.setRight(rc.right() - __size(100));
-
+    UINT uDuration = 0;
     m_cue.m_alTrackInfo.get(context->uRow, [&](const tagTrackInfo& TrackInfo){
         context.strText << ' ';
 
@@ -109,7 +105,22 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
         }
 
         context.strText << uIdx << wstring(4, ' ') << TrackInfo.strTitle;
+
+
+        if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
+                                     uDuration = (nextTrackInfo.uMsBegin - TrackInfo.uMsBegin)/1000;
+        })
+        {
+            uDuration = m_uDuration - TrackInfo.uMsBegin/1000;
+        }
     });
 
-    return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
+    rc.setRight(rc.right() - __size(100));
+
+    cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
+
+    cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
+    painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
+
+    return rcRect;
 }
