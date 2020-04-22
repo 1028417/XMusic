@@ -135,7 +135,7 @@ protected:
 
     void _paintRow(CPainter&, const tagRowContext&);
 
-    virtual void _paintText(CPainter&, QRect&, const tagRowContext&, const QString&, int flags);
+    virtual cqrc _paintText(const tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 

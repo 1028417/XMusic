@@ -6,13 +6,23 @@
 class CWholeTrackView : public CListView
 {
 public:
-    CWholeTrackView(class CWholeTrackDlg *WholeTrackDlg);
+    CWholeTrackView(class CWholeTrackDlg& WholeTrackDlg);
 
 private:
-    void _onPaintRow(CPainter& painter, tagLVRow& lvRow) override;
+    class CWholeTrackDlg& m_WholeTrackDlg;
 
+    CCueFile m_cue;
+
+public:
+    void showCue(CCueFile cue);
+
+private:
     size_t getPageRowCount() const override;
     size_t getRowCount() const override;
+
+    void _onPaintRow(CPainter& painter, tagLVRow& lvRow) override;
+
+    cqrc _paintText(const tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 };
 
 class CWholeTrackDlg : public CDialog

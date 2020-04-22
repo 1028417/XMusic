@@ -173,10 +173,9 @@ bool CMedialibDlg::showMediaRes(const wstring& strPath)
     return true;
 }
 
-size_t CMedialibDlg::getPageRowCount() const
+size_t CMedialibDlg::getPageRowCount(int cy)
 {
     UINT uRet = 10;
-    int cy = height();
     /*if (cy >= __size(2560))
     {
        uRet++;
@@ -192,7 +191,7 @@ size_t CMedialibDlg::getPageRowCount() const
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    int sz = cy/(1.1+getPageRowCount());
+    int sz = cy/(1.1+getPageRowCount(cy));
     int xMargin = sz/4;
 //    if (cy < cx)
 //    {

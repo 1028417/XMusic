@@ -59,7 +59,7 @@ private slots:
     void slot_labelClick(class CLabel*, const QPoint&);
 
 public:
-    size_t getPageRowCount() const;
+    static size_t getPageRowCount(int cy);
 
     void init();
 

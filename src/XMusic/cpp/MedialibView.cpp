@@ -176,7 +176,7 @@ size_t CMedialibView::getPageRowCount() const
         return _getRootRowCount();
     }
 
-    return m_medialibDlg.getPageRowCount();
+    return CMedialibDlg::getPageRowCount(m_medialibDlg.height());
 }
 
 size_t CMedialibView::getColumnCount() const
@@ -424,7 +424,8 @@ inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIc
     return false;
 }
 
-void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext& context, const QString& qsText, int flags)
+cqrc CMedialibView::_paintText(const tagRowContext& context, CPainter& painter, QRect& rc
+                               , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     cauto mediaContext = (tagMediaContext&)context;
 
@@ -514,25 +515,28 @@ void CMedialibView::_paintText(CPainter& painter, QRect& rc, const tagRowContext
         }
     }
 
-    UINT uTextAlpha = 255;
-    UINT uShadowAlpha = __ShadowAlpha;
+    uTextAlpha = 255;
+    uShadowAlpha = __ShadowAlpha;
     if ((int)mediaContext.lvRow.uRow == m_nFlashingRow)
     {
         uTextAlpha = __FlashingAlpha;
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
     }
 
-    auto rcPos = painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+    cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 
     if (!qsMediaQuality.isEmpty())
     {
         CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
 
+        auto rcPos = rcRet;
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(9));
         rcPos.setRight(10000);
         painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsMediaQuality, 1, __ShadowAlpha, uTextAlpha);
     }
+
+    return rcRet;
 }
 
 inline static bool _hittestPlayIcon(const tagMediaContext& context, int x)
@@ -564,6 +568,7 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& p
     {
         if (m_medialibDlg.tryShowWholeTrack(mediaRes))
         {
+            selectRow(lvRow.uRow);
             return;
         }
     }

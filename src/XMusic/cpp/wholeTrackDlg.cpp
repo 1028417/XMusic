@@ -12,14 +12,17 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     : CDialog(medialibDlg)
     , m_medialibDlg(medialibDlg)
     , m_app(app)
-    , m_lv(this)
+    , m_lv(*this)
 {
     ui.setupUi(this);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QWidget::close);
 
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(m_pMediaRes)));
+        if (m_pMediaRes)
+        {
+            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(m_pMediaRes)));
+        }
     });
 }
 
@@ -39,13 +42,15 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
         return false;
     }
 
-    cauto cueFile = ((CSnapshotMediaRes&)mediaRes).cueFile();
-    if (!cueFile)
+    cauto cue = ((CSnapshotMediaRes&)mediaRes).cueFile();
+    if (!cue)
     {
         return false;
     }
 
     m_pMediaRes = &mediaRes;
+
+    m_lv.showCue(cue);
 
     CDialog::show();
 
@@ -53,22 +58,45 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 }
 
 
-CWholeTrackView::CWholeTrackView(class CWholeTrackDlg *WholeTrackDlg)
-    : CListView(WholeTrackDlg)
+CWholeTrackView::CWholeTrackView(CWholeTrackDlg& WholeTrackDlg)
+    : CListView(&WholeTrackDlg)
+    , m_WholeTrackDlg(WholeTrackDlg)
 {
 }
 
-void CWholeTrackView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+void CWholeTrackView::showCue(CCueFile cue)
 {
-
+    m_cue = cue;
+    update();
 }
 
 size_t CWholeTrackView::getPageRowCount() const
 {
-    return 0;
+    return CMedialibDlg::getPageRowCount(m_WholeTrackDlg.height());
 }
 
 size_t CWholeTrackView::getRowCount() const
 {
-    return 0;
+    return m_cue.m_alTrackInfo.size();
+}
+
+void CWholeTrackView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+{
+    tagRowContext rowContext(lvRow);
+    m_cue.m_alTrackInfo.get(lvRow.uRow, [&](const tagTrackInfo& TrackInfo){
+        rowContext.strText << ' ';
+        auto uIdx = TrackInfo.uIndex+1;
+        if (uIdx<10)
+        {
+            rowContext.strText << '0';
+        }
+        rowContext.strText << uIdx << wstring(5, ' ') << TrackInfo.strTitle;
+    });
+    _paintRow(painter, rowContext);
+}
+
+cqrc CWholeTrackView::_paintText(const tagRowContext& context, CPainter& painter, QRect& rc
+                                 , int flags, UINT uShadowAlpha, UINT uTextAlpha)
+{
+    return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 }
