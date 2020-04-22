@@ -218,5 +218,7 @@ public:
         m_nSelectRow = -1;
 
         m_uAutoScrollSeq = 0;
+
+        update();
     }
 };

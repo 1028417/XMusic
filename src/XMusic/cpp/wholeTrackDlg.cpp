@@ -41,9 +41,9 @@ void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay
 
      ui.btnPlay->setGeometry(rcBtnPlay);
 
-     auto x_title = rcLabelDisk.right()+ rcLabelDisk.left() - rcBtnReturn.right();
-     ui.labelTitle->setGeometry(x_title, rcLabelDisk.top(), rcBtnPlay.left()
-                                -rcBtnReturn.left()-x_title, rcLabelDisk.height());
+     auto xOffset = rcLabelDisk.left() - rcBtnReturn.right();
+     auto x_title = rcLabelDisk.right() + xOffset;
+     ui.labelTitle->setGeometry(x_title, rcLabelDisk.top(), rcBtnPlay.left()-xOffset-x_title, rcLabelDisk.height());
 
      m_lv.setGeometry(rcLv);
 }
@@ -86,7 +86,7 @@ void CWholeTrackView::showCue(CCueFile cue, UINT uDuration)
 {
     m_cue = cue;
     m_uDuration = uDuration;
-    update();
+    reset();
 }
 
 size_t CWholeTrackView::getPageRowCount() const
@@ -112,7 +112,7 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
             context.strText << '0';
         }
 
-        context.strText << uIdx << L"  " << TrackInfo.strTitle;
+        context.strText << uIdx << L"   " << TrackInfo.strTitle;
 
 
         if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
@@ -125,7 +125,7 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
 
     if (uDuration > 0)
     {
-        CPainterFontGuard fontGuard(painter, 0.95, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.9f, QFont::Weight::ExtraLight);
 
         cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration) + L' ');
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
