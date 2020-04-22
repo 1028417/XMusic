@@ -18,9 +18,12 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaD
     , m_PlaylistLib(app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
 {
+    connect(this, &CMedialibView::signal_update, this, [&](){
+        update();
+    });
 }
 
-void CMedialibView::init()
+void CMedialibView::initpm()
 {
     (void)m_pmSSFile.load(__mediaPng(media));
 
@@ -38,9 +41,6 @@ void CMedialibView::init()
     (void)m_pmHires.load(__mediaPng(hires));
     (void)m_pmDSD.load(__mediaPng(dsd));
 
-    (void)m_pmHDDisk.load(__mediaPng(hddisk));
-    (void)m_pmLLDisk.load(__mediaPng(lldisk));
-
     (void)m_pmDir.load(__mediaPng(dir));
     (void)m_pmDirLink.load(__mediaPng(dirLink));
     (void)m_pmFile.load(__mediaPng(file));
@@ -49,10 +49,6 @@ void CMedialibView::init()
     m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
     (void)m_pmAddPlay.load(":/img/btnAddplay.png");
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
-
-    connect(this, &CMedialibView::signal_update, this, [&](){
-        update();
-    });
 }
 
 void CMedialibView::play()
@@ -381,11 +377,11 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
-                    context.pixmap = &m_pmHDDisk;
+                    context.pixmap = &m_app.m_pmHDDisk;
                 }
                 else
                 {
-                    context.pixmap = &m_pmLLDisk;
+                    context.pixmap = &m_app.m_pmLLDisk;
                 }
             }
             else

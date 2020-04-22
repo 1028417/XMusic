@@ -49,9 +49,6 @@ public:
 private:
     class CApp& m_app;
 
-    QPixmap m_pmHDDisk;
-    QPixmap m_pmLLDisk;
-
     class CPlayingList m_PlayingList;
 
     CMedialibDlg m_medialibDlg;
@@ -115,12 +112,14 @@ public:
     }
 #endif
 
-    CBkgDlg& bkgDlg()
-    {
-        return m_bkgDlg;
-    }
-
     void showLogo();
+
+    void preinit()
+    {
+        m_medialibDlg.preinit();
+
+        m_bkgDlg.initBkg();
+    }
 
     void show();
 

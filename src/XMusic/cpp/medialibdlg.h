@@ -61,6 +61,8 @@ private slots:
 public:
     static size_t getPageRowCount(int cy);
 
+    void preinit();
+
     void init();
 
     void show();

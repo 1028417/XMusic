@@ -167,17 +167,14 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
 cqrc CListView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    if (!context.strText->empty())
+    QString qsText = context.strText;
+    if ((context.eStyle & E_RowStyle::IS_MultiLine) == 0)
     {
-        QString qsText = context.strText;
-        if ((context.eStyle & E_RowStyle::IS_MultiLine) == 0)
-        {
-            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
-                                                      , Qt::TextSingleLine | Qt::TextShowMnemonic);
-        }
-
-        return painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+        qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
+                                                  , Qt::TextSingleLine | Qt::TextShowMnemonic);
     }
+
+    return painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
 }
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

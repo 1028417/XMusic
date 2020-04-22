@@ -85,17 +85,36 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="CLabel" name="labelDisk">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>40</y>
+     <width>90</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>CLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">label.h</header>
-  </customwidget>
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

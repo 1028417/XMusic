@@ -37,9 +37,6 @@ private:
     QPixmap m_pmHires;
     QPixmap m_pmDSD;
 
-    QPixmap m_pmHDDisk;
-    QPixmap m_pmLLDisk;
-
     QPixmap m_pmDir;
     QPixmap m_pmDirLink;
     QPixmap m_pmFile;
@@ -60,7 +57,7 @@ signals:
     void signal_update();
 
 public:
-    void init();
+    void initpm();
 
     void play();
 

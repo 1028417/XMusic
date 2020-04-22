@@ -319,9 +319,6 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
-    (void)m_pmHDDisk.load(__mediaPng(hddisk));
-    (void)m_pmLLDisk.load(__mediaPng(lldisk));
-
     _init();
     m_medialibDlg.init();
     m_bkgDlg.init();
@@ -620,8 +617,10 @@ void MainWindow::_relayout()
     ui.labelPlayingfile->setShadow(uShadowWidth);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
-    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ? ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD ? m_pmHDDisk:m_pmLLDisk)
-        : ui.labelSingerImg->pixmap();
+    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ?
+                ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD
+                 ? m_app.m_pmHDDisk : m_app.m_pmLLDisk)
+              : ui.labelSingerImg->pixmap();
     if (m_PlayingInfo.bWholeTrack)
     {
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;

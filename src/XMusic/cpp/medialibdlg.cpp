@@ -78,6 +78,11 @@ CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 {
 }
 
+void CMedialibDlg::preinit()
+{
+    m_lv.initpm();
+}
+
 void CMedialibDlg::init()
 {
     ui.setupUi(this);
@@ -85,7 +90,6 @@ void CMedialibDlg::init()
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     m_lv.setFont(1.04, QFont::Weight::Normal);
-    m_lv.init();
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -223,7 +227,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     int y_MedialibView = rcReturn.bottom() + rcReturn.top();
     m_lv.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 
-    m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
+    m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnUpward->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
 }
 
 void CMedialibDlg::_resizeTitle() const

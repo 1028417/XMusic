@@ -16,6 +16,9 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
 {
     ui.setupUi(this);
 
+    ui.labelDisk->setPixmapRound(0);
+    ui.labelDisk->setShadow(0);
+
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     m_lv.setFont(1.04, QFont::Weight::Normal);
@@ -30,15 +33,17 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     });
 }
 
-void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcBtnPlay, cqrc rcLv)
+void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay, cqrc rcLv)
 {
      ui.btnReturn->setGeometry(rcBtnReturn);
 
+     ui.labelDisk->setGeometry(rcLabelDisk);
+
      ui.btnPlay->setGeometry(rcBtnPlay);
 
-     auto x_title = rcBtnReturn.right()+rcBtnReturn.left();
-     ui.labelTitle->setGeometry(x_title, rcBtnReturn.top(), rcBtnPlay.left()
-                                -rcBtnReturn.left()-x_title, rcBtnReturn.height());
+     auto x_title = rcLabelDisk.right()+ rcLabelDisk.left() - rcBtnReturn.right();
+     ui.labelTitle->setGeometry(x_title, rcLabelDisk.top(), rcBtnPlay.left()
+                                -rcBtnReturn.left()-x_title, rcLabelDisk.height());
 
      m_lv.setGeometry(rcLv);
 }
@@ -58,7 +63,10 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 
     m_pMediaRes = &mediaRes;
 
-    ui.labelTitle->setText(__WS2Q(m_pMediaRes->GetName()));
+    cauto pm = ((int)m_pMediaRes->quality() >= (int)E_MediaQuality::MQ_CD) ? m_app.m_pmHDDisk : m_app.m_pmLLDisk;
+    ui.labelDisk->setPixmap(pm);
+
+    ui.labelTitle->setText(__WS2Q(m_pMediaRes->GetTitle()));
 
     m_lv.showCue(cue, m_pMediaRes->duration());
 
@@ -117,13 +125,13 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
 
     if (uDuration > 0)
     {
-        CPainterFontGuard fontGuard(painter, 0.9, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.95, QFont::Weight::ExtraLight);
 
         cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration) + L' ');
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
     }
 
-    rc.setRight(rc.right() - __size(100));
+    rc.setRight(rc.right() - __size(120));
 
     return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 }

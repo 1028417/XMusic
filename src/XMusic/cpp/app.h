@@ -57,6 +57,9 @@ public:
     {
     }
 
+    QPixmap m_pmHDDisk;
+    QPixmap m_pmLLDisk;
+
 private:
     static bool m_bRunSignal;
 
