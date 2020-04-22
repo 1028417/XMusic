@@ -112,7 +112,7 @@ cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRec
             context.strText << '0';
         }
 
-        context.strText << uIdx << wstring(3, ' ') << TrackInfo.strTitle;
+        context.strText << uIdx << L"  " << TrackInfo.strTitle;
 
 
         if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
