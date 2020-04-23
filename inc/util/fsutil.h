@@ -228,20 +228,14 @@ public:
     static bool existPath(const wstring& strPath, bool bDir);
     static bool existPath(const string& strPath, bool bDir);
 
-    static bool existDir(const wstring& strDir)
-    {
-        return existPath(strDir, true);
-    }
-    static bool existDir(const string& strDir)
+    template <class S>
+    static bool existDir(const S& strDir)
     {
         return existPath(strDir, true);
     }
 
-    static bool existFile(const wstring& strFile)
-    {
-        return existPath(strFile, false);
-    }
-    static bool existFile(const string& strFile)
+    template <class S>
+    static bool existFile(const S& strFile)
     {
         return existPath(strFile, false);
     }
