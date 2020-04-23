@@ -21,7 +21,7 @@ void CXController::start()
             {
                 __srand
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
-                strAlarmmedia = __xmedialib.toAbsPath(strAlarmmedia);
+                strAlarmmedia = __xmedialib.toAbsPath(strAlarmmedia, true);
 
                 if (PlayMgr.play(strAlarmmedia))
                 {
