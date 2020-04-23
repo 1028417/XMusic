@@ -81,7 +81,7 @@ public:
 	
 	void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 	
-	wstring toAbsPath(const wstring& strSubPath, bool bDir = false);
+	wstring toAbsPath(const wstring& strSubPath, bool bDir);
 
 	wstring toOppPath(const wstring& strAbsPath) const;
 
