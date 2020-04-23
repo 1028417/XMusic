@@ -201,9 +201,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelDuration">
     <property name="geometry">
      <rect>
-      <x>930</x>
+      <x>920</x>
       <y>2105</y>
-      <width>100</width>
+      <width>110</width>
       <height>45</height>
      </rect>
     </property>
@@ -868,14 +868,14 @@ gridline-color: rgb(255, 255, 255);</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>CLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">label.h</header>
-  </customwidget>
-  <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
   <customwidget>
    <class>CProgressBar</class>

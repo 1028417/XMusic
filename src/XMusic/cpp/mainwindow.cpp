@@ -334,7 +334,7 @@ void MainWindow::show()
 
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
 
-    update();
+    repaint(); //update();
 
     (void)startTimer(1000);
 

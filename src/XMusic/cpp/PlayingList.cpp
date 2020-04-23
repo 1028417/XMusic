@@ -137,8 +137,6 @@ void CPlayingList::updateList(UINT uPlayingItem)
         m_alPlayingItems.add(playingItem);
     });
 
-    CListView::reset();
-
     updatePlayingItem(uPlayingItem, true);
 }
 
@@ -148,12 +146,13 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
     if (bHittestPlayingItem)
     {
+        CListView::reset();
         CListView::showRow(m_uPlayingItem);
-    }
 
-    if (bHittestPlayingItem && m_nActiveTime != -1)
-    {
-        _updateActive();
+        if (m_nActiveTime != -1)
+        {
+            _updateActive();
+        }
     }
     else
     {
