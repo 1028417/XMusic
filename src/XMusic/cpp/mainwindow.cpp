@@ -59,10 +59,6 @@ MainWindow::MainWindow(CApp& app)
 {
     ui.setupUi(this);
 
-    ui.labelBkg->setVisible(false);
-
-    ui.btnPause->setVisible(false);
-
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
@@ -80,12 +76,6 @@ MainWindow::MainWindow(CApp& app)
         m_mapWidgetPos[pWidget] = pWidget->geometry();
     }
 
-    ui.labelLogo->setParent(this);
-    ui.labelLogoTip->setParent(this);
-    ui.labelLogoCompany->setParent(this);
-
-    ui.btnExit->setParent(this); // ui.btnExit->raise();
-
     for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
                 , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
                 , ui.btnDemandPlayItem, ui.btnDemandPlaylist
@@ -95,10 +85,30 @@ MainWindow::MainWindow(CApp& app)
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
 
-    ui.btnFullScreen->setParent(this);
+    m_PlayingList.raise();
+    //m_PlayingList.setParent(ui.centralWidget);
+
 #if __android || __ios
     ui.btnFullScreen->setVisible(false);
+    ui.btnExit->setVisible(false);
+
+#else
+    ui.btnFullScreen->setParent(this);
+
+    ui.btnExit->setParent(this);
+    ui.btnExit->raise();
 #endif
+
+#if __android || __ios
+#endif
+
+    ui.labelLogo->setParent(this);
+    ui.labelLogoTip->setParent(this);
+    ui.labelLogoCompany->setParent(this);
+
+    ui.btnPause->setVisible(false);
+
+    ui.labelBkg->setVisible(false);
 
     ui.centralWidget->setVisible(false);
 
@@ -268,9 +278,6 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 void MainWindow::_init()
 {
     qRegisterMetaType<QVariant>("QVariant");
-
-    m_PlayingList.raise();
-    //m_PlayingList.setParent(ui.centralWidget);
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
@@ -571,14 +578,11 @@ void MainWindow::_relayout()
      {
          x_btnMore = cx - __size(25) - ui.btnMore->width();
      }
+#endif    
+    ui.btnMore->move(x_btnMore, y_btnMore);
 
-     ui.btnExit->move(-200,-200);
-#else
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
     ui.btnExit->move(x_btnExit, y_btnMore);
-#endif
-
-    ui.btnMore->move(x_btnMore, y_btnMore);
 
     if (!m_bUseDefaultBkg)
     {
