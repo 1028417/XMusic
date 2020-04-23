@@ -77,7 +77,7 @@ void CCompareResultPage::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 			cauto strOppPath = m_fnGetPath((UINT)nItem);
 			if (!strOppPath.empty())
 			{
-				cauto strAbsPath = __xmedialib.toAbsPath(strOppPath);
+				cauto strAbsPath = __xmedialib.toAbsPath(strOppPath, false);
 				if (fsutil::existFile(strAbsPath))
 				{
 					m_view.m_PlayCtrl.addPlayingItem(strOppPath);

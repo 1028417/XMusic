@@ -302,7 +302,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		};
 		fnGenTag(MediaResInfo->m_strPath);
 
-		cauto strMediaPath = __xmedialib.toAbsPath(MatchMediaInfo->m_strPath);
+		cauto strMediaPath = __xmedialib.toAbsPath(MatchMediaInfo->m_strPath, false);
 		
 		strText << L"\n\n\n是否更新以下曲目？\n" << MatchMediaInfo->fileName()
 			<< L"\n日期:  " << MatchMediaInfo.fileTimeString()

@@ -215,7 +215,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 {
 	cauto strBaseDir = media.GetBaseDir();
 
-	wstring strInitialDir = __xmedialib.toAbsPath(media.GetDir());
+	wstring strInitialDir = __xmedialib.toAbsPath(media.GetDir(), true);
 	if (!fsutil::existDir(strInitialDir))
 	{
 		if (!strBaseDir.empty())

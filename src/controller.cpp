@@ -321,7 +321,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 
 void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
 {
-	cauto strDstAbsDir = __xmedialib.toAbsPath(strOppDir);
+	cauto strDstAbsDir = __xmedialib.toAbsPath(strOppDir, true);
 
 	SMap<wstring, wstring> mapMovedFiles;
 
