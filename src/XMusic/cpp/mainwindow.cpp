@@ -44,6 +44,13 @@ void fixWorkArea(QWidget& wnd)
     _fixWorkArea(wnd);
 }
 
+void MainWindow::_switchFullScreen()
+{
+    g_bFullScreen = !g_bFullScreen;
+    m_app.getOption().bFullScreen = g_bFullScreen;
+    fixWorkArea(*this);
+}
+
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
     , m_PlayingList(app, this)
@@ -51,9 +58,6 @@ MainWindow::MainWindow(CApp& app)
     , m_bkgDlg(*this, app)
 {
     ui.setupUi(this);
-
-    m_PlayingList.raise();
-    //m_PlayingList.setParent(ui.centralWidget);
 
     ui.labelBkg->setVisible(false);
 
@@ -82,19 +86,14 @@ MainWindow::MainWindow(CApp& app)
 
     ui.btnExit->setParent(this); // ui.btnExit->raise();
 
-    for (auto button : SList<CButton*>(ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-                , ui.btnDemandPlayItem, ui.btnDemandPlaylist, ui.btnMore
-                , ui.btnExit, ui.btnSetting, ui.btnPause, ui.btnPlay
-                , ui.btnPlayPrev, ui.btnPlayNext, ui.btnOrder, ui.btnRandom))
+    for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
+                , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
+                , ui.btnDemandPlayItem, ui.btnDemandPlaylist
+                , ui.btnSetting, ui.btnOrder, ui.btnRandom
+                , ui.btnPause, ui.btnPlay, ui.btnPlayPrev, ui.btnPlayNext))
     {
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
-
-    connect(ui.btnFullScreen, &QPushButton::clicked, [&](){
-        g_bFullScreen = !g_bFullScreen;
-        m_app.getOption().bFullScreen = g_bFullScreen;
-        fixWorkArea(*this);
-    });
 
     ui.btnFullScreen->setParent(this);
 #if __android || __ios
@@ -104,8 +103,6 @@ MainWindow::MainWindow(CApp& app)
     ui.centralWidget->setVisible(false);
 
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
-
-    qRegisterMetaType<QVariant>("QVariant");
 }
 
 void MainWindow::showLogo()
@@ -270,6 +267,11 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 
 void MainWindow::_init()
 {
+    qRegisterMetaType<QVariant>("QVariant");
+
+    m_PlayingList.raise();
+    //m_PlayingList.setParent(ui.centralWidget);
+
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
@@ -283,7 +285,7 @@ void MainWindow::_init()
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
 
-    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);
+    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList, Qt::BlockingQueuedConnection);
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
@@ -387,13 +389,23 @@ bool MainWindow::event(QEvent *ev)
 #else
         if (((QKeyEvent*)ev)->nativeVirtualKey() == 13)
         {
-            g_bFullScreen = !g_bFullScreen;
-            m_app.getOption().bFullScreen = g_bFullScreen;
-            fixWorkArea(*this);
+            _switchFullScreen();
         }
 #endif
     }
     break;
+#if __windows || __mac
+    case QEvent::MouseButtonDblClick:
+    {
+        cauto pos = ((QMouseEvent*)ev)->pos();
+        if (!m_PlayingList.geometry().contains(pos))
+        {
+            _switchFullScreen();
+        }
+    }
+
+        break;
+#endif
     case QEvent::Close:
         m_app.quit();
 
@@ -1189,7 +1201,11 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::slot_buttonClicked(CButton* button)
 {
-    if (button == ui.btnExit)
+    if (button == ui.btnFullScreen)
+    {
+        _switchFullScreen();
+    }
+    else if (button == ui.btnExit)
     {
         this->close();
     }

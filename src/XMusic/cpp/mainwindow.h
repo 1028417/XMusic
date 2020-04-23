@@ -137,6 +137,8 @@ public:
 private:
     void _init();
 
+    void _switchFullScreen();
+
     bool event(QEvent *) override;
 
     void _onPaint(CPainter& painter);
