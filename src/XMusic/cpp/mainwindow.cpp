@@ -292,7 +292,7 @@ void MainWindow::_init()
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
 
-    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList, Qt::BlockingQueuedConnection);
+    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);//, Qt::BlockingQueuedConnection);
     connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
     connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
 
@@ -737,7 +737,7 @@ void MainWindow::_relayout()
                     //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
 
                     cx_SingerImg = cy_SingerImg * pmSingerImg.width() / pmSingerImg.height();
-                    cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.25);
+                    cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.2f);
                     cx_SingerImg = MIN(cx_SingerImg, ui.progressbar->width());
                 }
 
