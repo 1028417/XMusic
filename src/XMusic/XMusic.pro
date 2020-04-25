@@ -130,7 +130,7 @@ font.files += $$BinDir/font/msyhl-6.23.ttc
 #font.files += $$BinDir/font/Microsoft-YaHei-Semilight-11.0.ttc
 font.files += $$BinDir/font/Microsoft-YaHei-SemiBold-11.0.ttc
 
-bkg.files += ../../release/bkg/*
+bkg.files += ../../bkg/*
 
 android {
     #CONFIG += mobility
