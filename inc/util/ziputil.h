@@ -21,11 +21,6 @@ public:
         (void)open(strFile, strPwd);
     }
 
-    CZipFile(const wstring& strFile, const string& strPwd = "")
-    {
-        (void)open(strFile, strPwd);
-    }
-
     CZipFile(Instream& ins, const string& strPwd = "")
     {
         (void)open(ins, strPwd);
@@ -78,12 +73,6 @@ public:
         m_strPwd = strPwd;
 
         return _open(strFile.c_str());
-    }
-
-    bool open(const wstring& strFile, const string& strPwd = "")
-    {
-        IFStream ifs(strFile);
-        return open(ifs, strPwd);
     }
 
     bool open(Instream& ins, const string& strPwd = "");
