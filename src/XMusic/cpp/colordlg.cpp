@@ -202,6 +202,9 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
         applyBkgColor();
         m_bkgDlg.close();
         this->close();
+#if __windows
+        m_app.setForeground();
+#endif
     }
 }
 

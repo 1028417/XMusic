@@ -20,15 +20,16 @@ static Ui::MainWindow ui;
 
 static bool g_bFullScreen = true;
 
+#if __windows
 inline static void _fixWorkArea(QWidget& wnd)
 {
-    (void)wnd;
-#if __windows
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
     wnd.setGeometry(rcWorkArea.left, rcWorkArea.top
                       , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
-#endif
 }
+#else
+#define _fixWorkArea(wnd)
+#endif
 
 void fixWorkArea(QWidget& wnd)
 {
@@ -48,7 +49,22 @@ void MainWindow::_switchFullScreen()
 {
     g_bFullScreen = !g_bFullScreen;
     m_app.getOption().bFullScreen = g_bFullScreen;
+
+#if __windows
+    if (g_bFullScreen)
+    {
+        ::SetWindowPos(hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+    }
+#endif
+
     fixWorkArea(*this);
+
+#if __windows
+    if (g_bFullScreen)
+    {
+        ::SetWindowPos(hwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+    }
+#endif
 }
 
 MainWindow::MainWindow(CApp& app)

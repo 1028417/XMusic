@@ -105,8 +105,23 @@ static const wstring& sdcardPath()
     return g_strSDCardPath;
 }*/
 
-#define __sdcardDir L"/sdcard/"
-// "/storage/emulated/0/"
+#define __sdcardDir L"/sdcard/" // "/storage/emulated/0/"
+
+#elif __windows
+void CApp::setForeground()
+{
+    auto hwnd = m_mainWnd.hwnd();
+    if (IsIconic(hwnd))
+    {
+        ::ShowWindow(hwnd, SW_RESTORE);
+    }
+    else
+    {
+        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        ::SetForegroundWindow(hwnd);
+    }
+}
 #endif
 
 float g_fPixelRatio = 1;

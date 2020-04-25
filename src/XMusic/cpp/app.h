@@ -173,24 +173,11 @@ public:
 
     void quit();
 
-#if __windows
-    void setForeground()
-    {
-        auto hwnd = m_mainWnd.hwnd();
-        if (IsIconic(hwnd))
-        {
-            ::ShowWindow(hwnd, SW_RESTORE);
-        }
-        else
-        {
-            //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-            //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-            ::SetForegroundWindow(hwnd);
-        }
-    }
-
-#elif __android
+#if __android
     static void vibrate(UINT duration=100);
+
+#elif __windows
+    void setForeground();
 #endif
 };
 

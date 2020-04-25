@@ -180,7 +180,6 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
 
             m_addbkgDlg.bkgDlg().addBkg(strFilePath);
 
-            m_addbkgDlg.close();
             m_addbkgDlg.setEnabled(true);
         }
     }

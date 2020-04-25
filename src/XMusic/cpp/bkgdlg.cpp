@@ -531,14 +531,14 @@ void CBkgDlg::addBkg(const wstring& strFile)
 
     _updateBkg(strFileName);
 
-    close();
-
     cauto strDstFile = _bkgDir() + strFileName;
     pm.save(__WS2Q(strDstFile));
 
-    /*__appAsync([=](){
-        (void)fsutil::copyFile(strFile, strDstFile);
-    });*/
+    this->close();
+    m_addbkgDlg.close();
+#if __windows
+    m_app.setForeground();
+#endif
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
