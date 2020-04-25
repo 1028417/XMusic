@@ -58,17 +58,7 @@ public:
         : m_curlOpt(bShare)
     {
         m_curlOpt.connectTimeout = connectTimeout;
-        m_curlOpt.timeout = timeout;        
-#if __isdebug//载入库慢
-        if (m_curlOpt.connectTimeout > 0)
-        {
-            m_curlOpt.connectTimeout++;
-        }
-        if (m_curlOpt.timeout > 0)
-        {
-            m_curlOpt.timeout++;
-        }
-#endif
+        m_curlOpt.timeout = timeout;
 
         m_curlOpt.lowSpeedLimit = lowSpeedLimit; // 单位字节
         m_curlOpt.lowSpeedLimitTime = lowSpeedLimitTime;
