@@ -129,7 +129,7 @@ CAppInit::CAppInit(QApplication& app)
     fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
 #endif
 
-    m_logger.open("XMusic.log", true);
+    m_logger.open("xmusic.log", true);
 
     g_logger << "applicationDirPath: " >> QApplication::applicationDirPath();
     g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
@@ -466,8 +466,9 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
+    cauto strConffile = m_model.medialibPath(L"medialib.conf");
     tagMedialibConf userMedialibConf;
-    IFStream ifsMedialibConf(m_model.medialibPath(L"medialib.conf"));
+    IFStream ifsMedialibConf(strConffile);
     if (ifsMedialibConf)
     {
          if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
@@ -487,16 +488,15 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;
     for (cauto upgradeUrl : lstUpgradeUrl)
     {
-        cauto strMedialibUrl = upgradeUrl.medialibUrl();
-        g_logger << "dowloadMediaLib: " >> strMedialibUrl;
+        cauto strMdlconfUrl = upgradeUrl.mdlconf();
+        g_logger << "checkMediaLib: " >> strMdlconfUrl;
 
-        CByteBuffer bbfZip;
-
-        CDownloader downloader(3, 30, 1, 3);
-        int nRet = downloader.syncDownload(m_bRunSignal, strMedialibUrl, bbfZip, 1);
+        CByteBuffer bbfConf;
+        CDownloader downloader(3, 6);
+        int nRet = downloader.syncDownload(m_bRunSignal, strMdlconfUrl, bbfConf, 1);
         if (nRet != 0)
         {
-            g_logger << "download fail: " >> nRet;
+            g_logger << "checkMediaLib fail: " >> nRet;
             if (E_UpgradeResult::UR_Fail == eRet)
             {
                 eRet = E_UpgradeResult::UR_DownloadFail;
@@ -504,40 +504,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             continue;
         }
 
-        auto time0 = time(0);
-
-        IFBuffer ifbZip(bbfZip);
-        string strPwd;
-        //strPwd.append("medialib").append(".zip");
-        CZipFile zipFile(ifbZip, strPwd);
-        if (!zipFile)
-        {
-            g_logger >> "invalid zipfile";
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
-            continue;
-        }
-
-        auto mapUnzfile = zipFile.unzfileMap();
-        auto itrUnzfile = mapUnzfile.find("medialib.conf");
-        if (itrUnzfile == mapUnzfile.end())
-        {
-            g_logger >> "medialibConf not found";
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
-            continue;
-        }
-        CByteBuffer bbfMedialibConf;
-        if (zipFile.read(itrUnzfile->second, bbfMedialibConf) <= 0)
-        {
-            g_logger >> "readZip fail: medialibConf";
-            eRet = E_UpgradeResult::UR_ReadMedialibFail;
-            continue;
-        }
-        mapUnzfile.erase(itrUnzfile);
-
-        IFBuffer ifbMedialibConf(bbfMedialibConf);
+        IFBuffer ifbConf(bbfConf);
         auto& newMedialibConf = __xmedialib.medialibConf();
         newMedialibConf.clear();
-        if (!_readMedialibConf(ifbMedialibConf, newMedialibConf))
+        if (!_readMedialibConf(ifbConf, newMedialibConf))
         {
             g_logger >> "readMedialibConf fail";
             eRet = E_UpgradeResult::UR_MedialibInvalid;
@@ -589,97 +559,148 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             return E_UpgradeResult::UR_MedialibUncompatible;
         }
 
-        itrUnzfile = mapUnzfile.find("medialib");
-        if (itrUnzfile == mapUnzfile.end())
+        cauto strMdlUrl = upgradeUrl.mdl();
+        g_logger << "dowloadMdl: " >> strMdlUrl;
+
+        cauto strMdlFile = m_model.medialibPath(L"mdl");
+        bool bExistMdl = fsutil::existFile(strMdlFile);
+        if (!bExistMdl || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
         {
-            g_logger >> "medialib not found";
-            eRet = E_UpgradeResult::UR_MedialibInvalid;
-            continue;
+            auto time0 = time(0);
+
+            CByteBuffer bbfMdl;
+            CDownloader downloader(3, 30, 1, 3);
+            int nRet = downloader.syncDownload(m_bRunSignal, strMdlUrl, bbfMdl, 1);
+            if (nRet != 0)
+            {
+                g_logger << "download fail: " >> nRet;
+                return E_UpgradeResult::UR_DownloadFail;
+            }
+
+            IFBuffer ifbMdl(bbfMdl);
+            CZipFile zipMdl(ifbMdl);
+            auto eRet = _loadMdl(zipMdl, true);
+            if (E_UpgradeResult::UR_Success != eRet)
+            {
+                return eRet;
+            }
+
+            if (!OFStream::writefilex(strMdlFile, true, bbfMdl))
+            {
+                g_logger >> "write mdl fail";
+                //return E_UpgradeResult::UR_Fail;
+            }
+
+            g_logger << "upgradeMedialib success " >> (time(0)-time0);
         }
-
-        cauto strDBFile = m_model.medialibPath(__DBFile);
-        bool bExistDB = fsutil::existFile(strDBFile);
-        if (!bExistDB || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
+        else
         {
-            CByteBuffer bbfMedialib;
-            if (zipFile.read(itrUnzfile->second, bbfMedialib) <= 0)
+            IFStream ifsMdl(strMdlFile);
+            CZipFile zipMdl(ifsMdl);
+            eRet = _loadMdl(zipMdl, false);
+            if (E_UpgradeResult::UR_Success != eRet)
             {
-                g_logger >> "readZip fail: medialib";
-                eRet = E_UpgradeResult::UR_ReadMedialibFail;
-                continue;
-            }
-
-            wstring strDBFileBak;
-            if (bExistDB)
-            {
-                strDBFileBak = strDBFile+L".bak";
-                fsutil::moveFile(strDBFile, strDBFileBak);
-            }
-
-            if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
-            {
-                g_logger >> "write medialib fail";
-                return E_UpgradeResult::UR_Fail;
-            }
-
-            if (bExistDB)
-            {
-                _importPlayingList(strDBFileBak, strDBFile);
-
-                fsutil::removeFile(strDBFileBak);
-            }
-        }
-
-        mapUnzfile.erase(itrUnzfile);
-
-        for (cauto pr : mapUnzfile)
-        {
-            const tagUnzfile& unzfile = pr.second;
-            CByteBuffer bbfData;
-            if (zipFile.read(unzfile, bbfData) <= 0)
-            {
-                g_logger << "readZip fail: " >> unzfile.strPath;
-                continue; // E_UpgradeResult::UR_ReadMedialibFail;
-            }
-            IFBuffer ifbData(bbfData);
-
-            cauto strPath = strutil::fromGbk(unzfile.strPath);
-            if (strutil::endWith(strPath, L".xurl"))
-            {
-                if (!__xmedialib.loadXUrl(ifbData))
-                {
-                    g_logger << "loadXUrl fail: " >> strPath;
-                }
-            }
-            else if (strutil::endWith(strPath, L".snapshot.json"))
-            {
-                if (!__xmedialib.loadXSnapshot(ifbData))
-                {
-                    g_logger << "loadSnapshot fail: " >> strPath;
-                }
-            }
-            else if (strutil::endWith(strPath, L".cue"))
-            {
-                if (!__xmedialib.loadXCue(ifbData, fsutil::getFileTitle(strPath)))
-                {
-                    g_logger << "loadCue fail: " >> strPath;
-                }
+                return eRet;
             }
         }
 
-        OFStream ofbMedialibConf(m_model.medialibPath(L"medialib.conf"), true);
-        if (!ofbMedialibConf || !ofbMedialibConf.writex(bbfMedialibConf))
+        if (!OFStream::writefilex(strConffile, true, bbfConf))
         {
             g_logger >> "write medialibConf fail";
             //return E_UpgradeResult::UR_Fail;
         }
 
-        g_logger << "upgradeMedialib success " >> (time(0)-time0);
-
         return E_UpgradeResult::UR_Success;
     }
 
     return eRet;
+}
+
+E_UpgradeResult CApp::_loadMdl(CZipFile& zipMdl, bool bUpgradeDB)
+{
+    if (!zipMdl)
+    {
+        g_logger >> "invalid zipfile";
+        return E_UpgradeResult::UR_MedialibInvalid;
+    }
+
+    auto mapUnzfile = zipMdl.unzfileMap();
+    cauto itrUnzfile = mapUnzfile.find("mdl");
+    if (itrUnzfile == mapUnzfile.end())
+    {
+        g_logger >> "medialib not found";
+        return E_UpgradeResult::UR_MedialibInvalid;
+    }
+
+    cauto strDBFile = m_model.medialibPath(__DBFile);
+    bool bExistDB = fsutil::existFile(strDBFile);
+    if (!bExistDB || bUpgradeDB)
+    {
+        wstring strDBFileBak;
+        if (bExistDB)
+        {
+            strDBFileBak = strDBFile+L".bak";
+            (void)fsutil::moveFile(strDBFile, strDBFileBak);
+        }
+
+        CByteBuffer bbfMedialib;
+        if (zipMdl.read(itrUnzfile->second, bbfMedialib) <= 0)
+        {
+            g_logger >> "readZip fail: medialib";
+            return E_UpgradeResult::UR_ReadMedialibFail;
+        }
+
+        if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
+        {
+            g_logger >> "write medialib fail";
+            return E_UpgradeResult::UR_Fail;
+        }
+
+        if (bExistDB)
+        {
+            _importPlayingList(strDBFileBak, strDBFile);
+            (void)fsutil::removeFile(strDBFileBak);
+        }
+    }
+
+    mapUnzfile.erase(itrUnzfile);
+
+    for (cauto pr : mapUnzfile)
+    {
+        const tagUnzfile& unzfile = pr.second;
+        CByteBuffer bbfData;
+        if (zipMdl.read(unzfile, bbfData) <= 0)
+        {
+            g_logger << "readZip fail: " >> unzfile.strPath;
+            continue; // E_UpgradeResult::UR_ReadMedialibFail;
+        }
+        IFBuffer ifbData(bbfData);
+
+        cauto strPath = strutil::fromGbk(unzfile.strPath);
+        if (strutil::endWith(strPath, L".xurl"))
+        {
+            if (!__xmedialib.loadXUrl(ifbData))
+            {
+                g_logger << "loadXUrl fail: " >> strPath;
+            }
+        }
+        else if (strutil::endWith(strPath, L".snapshot.json"))
+        {
+            if (!__xmedialib.loadXSnapshot(ifbData))
+            {
+                g_logger << "loadSnapshot fail: " >> strPath;
+            }
+        }
+        else if (strutil::endWith(strPath, L".cue"))
+        {
+            if (!__xmedialib.loadXCue(ifbData, fsutil::getFileTitle(strPath)))
+            {
+                g_logger << "loadCue fail: " >> strPath;
+            }
+        }
+    }
+
+    return E_UpgradeResult::UR_Success;
 }
 
 #if __windows
@@ -721,7 +742,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
              return false;
         }
 
-        cauto strAppUrl = upgradeUrl.appUrl();
+        cauto strAppUrl = upgradeUrl.app();
         if (strAppUrl.empty())
         {
             continue;

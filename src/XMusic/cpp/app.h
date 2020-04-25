@@ -90,6 +90,7 @@ private:
     bool _initRootDir(wstring& strRootDir);
 
     E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf);
+    E_UpgradeResult _loadMdl(CZipFile& zipMdl, bool bUpgradeDB);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
