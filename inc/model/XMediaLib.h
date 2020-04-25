@@ -13,7 +13,21 @@ private:
     string m_strBaseUrl;
 
 public:
-    string appUrl() const
+    string mdlconf() const
+    {
+        return m_strBaseUrl + "/mdl/mdlconf";
+    }
+    string mdl() const
+    {
+        return m_strBaseUrl + "/mdl/mdl";
+    }
+
+    string singerimg() const
+    {
+        return m_strBaseUrl + "/singerimg/";
+    }
+
+    string app() const
     {
 #if __android
 #define __appFilePostfix "android.apk"
@@ -27,26 +41,6 @@ public:
 #endif
 
         return m_strBaseUrl + "/app/XMusic-" __appFilePostfix;
-    }
-
-    string medialibUrl() const
-    {
-        return m_strBaseUrl + "/medialib/medialib";
-    }
-
-    string singerimgUrl() const
-    {
-        return m_strBaseUrl + "/singerimg/";
-    }
-
-    string hbkgUrl() const
-    {
-        return m_strBaseUrl + "/hbkg";
-    }
-
-    string vbkgUrl() const
-    {
-        return m_strBaseUrl + "/vbkg";
     }
 };
 
