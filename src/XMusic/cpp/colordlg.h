@@ -18,8 +18,6 @@ private:
 
     void applyBkgColor();
 
-    void _onClosed() override;
-
 private slots:
     void slot_buttonClicked(class CButton *pButton);
 

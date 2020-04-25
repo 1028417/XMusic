@@ -131,8 +131,6 @@ font.files += $$BinDir/font/msyhl-6.23.ttc
 font.files += $$BinDir/font/Microsoft-YaHei-SemiBold-11.0.ttc
 
 bkg.files += ../../release/bkg/*
-hbkg.files += ../../release/hbkg/*
-vbkg.files += ../../release/vbkg/*
 
 android {
     #CONFIG += mobility
@@ -140,9 +138,7 @@ android {
 
     font.path = /assets/font
     bkg.path = /assets/bkg
-    hbkg.path = /assets/hbkg
-    vbkg.path = /assets/vbkg
-    INSTALLS += font bkg hbkg vbkg
+    INSTALLS += font bkg
 
     DISTFILES += \
         android/AndroidManifest.xml \
@@ -179,9 +175,7 @@ macx {
 
     font.path = Contents/MacOS/font
     bkg.path = Contents/MacOS/bkg
-    hbkg.path = Contents/MacOS/hbkg
-    vbkg.path = Contents/MacOS/vbkg
-    QMAKE_BUNDLE_DATA  += font bkg hbkg vbkg
+    QMAKE_BUNDLE_DATA  += font bkg hbkg
 }
 
 ios {
@@ -191,9 +185,7 @@ ios {
 
     font.path = /font
     bkg.path = /bkg
-    hbkg.path = /hbkg
-    vbkg.path = /vbkg
-    QMAKE_BUNDLE_DATA  += font bkg hbkg vbkg
+    QMAKE_BUNDLE_DATA  += font bkg
 } else {
 MOC_DIR = $$BuildDir
 RCC_DIR = $$BuildDir

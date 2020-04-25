@@ -26,7 +26,7 @@ void CPainter::alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst)
 
 void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
 {
-    if (pm.width() < pm.height())
+    if (pm.width() > pm.height())
     {
         if (pm.width() > (int)size)
         {
@@ -36,7 +36,7 @@ void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
     }
     else
     {
-        if (pm.width() > (int)size)
+        if (pm.height() > (int)size)
         {
             auto&& temp = pm.scaledToHeight(size, Qt::SmoothTransformation);
             pm.swap(temp);

@@ -86,15 +86,16 @@ struct tagBkgFile
 {
     tagBkgFile() = default;
 
-    tagBkgFile(bool bInner, const wstring& strPath)
+    tagBkgFile(bool bInner, const wstring& strPath, const QPixmap *pm = NULL)
         : bInner(bInner)
         , strPath(strPath)
+        , pm(pm)
     {
     }
 
     bool bInner = false;
     WString strPath;
-    const QPixmap* pm = NULL;
+    const QPixmap *pm = NULL;
 };
 
 class CBkgDlg : public CDialog
@@ -154,12 +155,16 @@ private:
 
     void _setBkg(const wstring& strFile);
 
+    QPixmap _loadBkg(const WString& strFile);
+
+    void _updateBkg(const wstring& strFile);
+
     void _showAddBkg();
 
     void _onClosed() override;
 
 public:
-    void initBkg();
+    void preinit();
 
     void init();
 

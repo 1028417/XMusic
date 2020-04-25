@@ -200,18 +200,25 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     else if (ui.btnApplyBkgColor == pButton)
     {
         applyBkgColor();
-        this->close();
         m_bkgDlg.close();
+        this->close();
     }
 }
 
 void CColorDlg::applyBkgColor()
 {
+    this->update();
+    m_bkgDlg.update();
+
     if (!m_app.getOption().bUseThemeColor)
     {
         m_app.getOption().bUseThemeColor = true;
 
         m_app.mainWnd().updateBkg();
+    }
+    else
+    {
+        m_app.mainWnd().update();
     }
 }
 
@@ -235,13 +242,9 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
 
         CDialog::setWidgetTextColor(ui.groupBkgColor, g_crText);
         CDialog::setWidgetTextColor(ui.groupFontColor, g_crText);
+
+        this->update();
+        m_bkgDlg.update();
+        m_app.mainWnd().update();
     }
-
-    this->update();
-}
-
-void CColorDlg::_onClosed()
-{
-    m_bkgDlg.repaint();
-    m_app.mainWnd().repaint();
 }

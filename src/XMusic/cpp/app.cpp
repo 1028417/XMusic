@@ -609,9 +609,10 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 continue;
             }
 
-            cauto strDBFileBak = strDBFile+L".bak";
+            wstring strDBFileBak;
             if (bExistDB)
             {
+                strDBFileBak = strDBFile+L".bak";
                 fsutil::moveFile(strDBFile, strDBFileBak);
             }
 

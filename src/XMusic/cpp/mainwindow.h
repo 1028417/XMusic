@@ -118,7 +118,7 @@ public:
     {
         m_medialibDlg.preinit();
 
-        m_bkgDlg.initBkg();
+        m_bkgDlg.preinit();
     }
 
     void show();

@@ -3,7 +3,11 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __retainSnapshot 8
+#define __szZoomout 2160
+
+#define __snapshotZoomout 900
+
+#define __snapshotRetain 16
 
 static int g_xsize = 0;
 
@@ -189,8 +193,12 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 {
 }
 
-void CBkgDlg::initBkg()
+void CBkgDlg::preinit()
 {
+#if __windows
+    CFolderDlg::preInit();
+#endif
+
     cauto strWorkDir = strutil::fromStr(fsutil::workDir());
     cauto strAppVersion = m_app.appVersion();
 
@@ -200,26 +208,28 @@ void CBkgDlg::initBkg()
                               :(m_strVBkgDir = strWorkDir + L"/vbkg/");
         (void)fsutil::createDir(strBkgDir);
 
-#if __android
-        wstring strBkgSrc = L"assets:";
-#else
-        wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
-#endif
         wstring strAppBkgDir = strBkgDir + strAppVersion;
         if (!fsutil::existDir(strAppBkgDir))
         {
             (void)fsutil::createDir(strAppBkgDir);
 
-            for (wchar_t wch = L'0'; wch <= L'9'; wch++)
-            {
-                cauto strBkg = strBkgSrc + L"/bkg/" + wch + L".jpg";
-                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + wch);
-            }
+#if __android
+            wstring strBkgSrc = L"assets:";
+#else
+            wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
+#endif
+            strBkgSrc.append(L"/bkg/");
 
             for (wchar_t wch = L'a'; wch <= L'z'; wch++)
             {
-                cauto strBkg = strBkgSrc + (bHBkg?L"/hbkg/":L"/vbkg/") + wch + L".jpg";
-                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + wch);
+                auto strBkg = strBkgSrc + wch + L".jpg";
+                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"0." + wch);
+
+                strBkg = strBkgSrc + (bHBkg?L"hbkg/":L"vbkg/") + wch + L".jpg";
+                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"1." + wch);
+
+                strBkg = strBkgSrc + (bHBkg?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
+                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"2." + wch);
             }
         }
 
@@ -244,7 +254,7 @@ void CBkgDlg::initBkg()
         });
 
         for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
-             && itr-vecBkgFile.begin() < __retainSnapshot; ++itr)
+             && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
         {
             itr->pm = _loadPixmap(strBkgDir + itr->strPath);
         }
@@ -283,10 +293,6 @@ void CBkgDlg::init()
     m_addbkgDlg.init();
 
     connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
-
-#if __windows
-    CFolderDlg::preInit();
-#endif
 }
 
 void CBkgDlg::_relayout(int cx, int cy)
@@ -362,7 +368,6 @@ const QPixmap* CBkgDlg::_loadPixmap(const WString& strBkgFile)
     auto& pm = m_lstPixmap.back();
     if (pm.load(strBkgFile))
     {
-#define __snapshotZoomout 900
         CPainter::zoomoutPixmap(pm, __snapshotZoomout);
     }
 
@@ -395,8 +400,36 @@ const QPixmap* CBkgDlg::pixmap(size_t uIdx)
 
 void CBkgDlg::_setBkg(const wstring& strFile)
 {
-    m_app.getOption().bUseThemeColor = false;
+    auto& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    if (!strFile.empty())
+    {
+        pmBkg = _loadBkg(_bkgDir() + strFile);
+    }
+    else
+    {
+        pmBkg = QPixmap();
+    }
 
+    _updateBkg(strFile);
+}
+
+QPixmap CBkgDlg::_loadBkg(const WString& strFile)
+{
+    QPixmap pm;
+    if (pm.load(strFile))
+    {
+        auto szZoomout = __szZoomout;
+        szZoomout = MAX(szZoomout, width());
+        szZoomout = MAX(szZoomout, height());
+        CPainter::zoomoutPixmap(pm, szZoomout);
+    }
+
+    return pm;
+}
+
+void CBkgDlg::_updateBkg(const wstring& strFile)
+{
+    m_app.getOption().bUseThemeColor = false;
     if (m_bHScreen)
     {
         m_app.getOption().strHBkg = strFile;
@@ -404,16 +437,6 @@ void CBkgDlg::_setBkg(const wstring& strFile)
     else
     {
         m_app.getOption().strVBkg = strFile;
-    }
-
-    QPixmap& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
-    if (!strFile.empty())
-    {
-        (void)pmBkg.load(_bkgDir() + strFile);
-    }
-    else
-    {
-        pmBkg = QPixmap();
     }
 
     m_app.mainWnd().updateBkg();
@@ -494,18 +517,28 @@ void CBkgDlg::_showAddBkg()
 
 void CBkgDlg::addBkg(const wstring& strFile)
 {
-    wstring strFileName = to_wstring(time(0));
-    if (!fsutil::copyFile(strFile, _bkgDir() + strFileName))
-    {
-        return;
-    }
+    auto& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    pmBkg = _loadBkg(strFile);
 
-    _setBkg(strFileName);
+    m_lstPixmap.push_back(pmBkg);
+    auto& pm = m_lstPixmap.back();
+    CPainter::zoomoutPixmap(pm, __snapshotZoomout);
 
-    auto& vecBkgFile = _vecBkgFile();    
-    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName));
+    cauto strFileName = to_wstring(time(0));
+    auto& vecBkgFile = _vecBkgFile();
+    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &pm));
+    //update();
 
-    update();
+    _updateBkg(strFileName);
+
+    close();
+
+    cauto strDstFile = _bkgDir() + strFileName;
+    pm.save(__WS2Q(strDstFile));
+
+    /*__appAsync([=](){
+        (void)fsutil::copyFile(strFile, strDstFile);
+    });*/
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
@@ -543,18 +576,18 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 void CBkgDlg::_onClosed()
 {
     set<const QPixmap*> setDelelePixmap;
-    if (m_vecHBkgFile.size() > __retainSnapshot)
+    if (m_vecHBkgFile.size() > __snapshotRetain)
     {
-        for (auto itr = m_vecHBkgFile.begin()+__retainSnapshot; itr != m_vecHBkgFile.end(); ++itr)
+        for (auto itr = m_vecHBkgFile.begin()+__snapshotRetain; itr != m_vecHBkgFile.end(); ++itr)
         {
             setDelelePixmap.insert(itr->pm);
             itr->pm = NULL;
         }
     }
 
-    if (m_vecVBkgFile.size() > __retainSnapshot)
+    if (m_vecVBkgFile.size() > __snapshotRetain)
     {
-        for (auto itr = m_vecVBkgFile.begin()+__retainSnapshot; itr != m_vecVBkgFile.end(); ++itr)
+        for (auto itr = m_vecVBkgFile.begin()+__snapshotRetain; itr != m_vecVBkgFile.end(); ++itr)
         {
             setDelelePixmap.insert(itr->pm);
             itr->pm = NULL;
