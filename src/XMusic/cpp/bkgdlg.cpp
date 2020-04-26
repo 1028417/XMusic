@@ -265,7 +265,7 @@ void CBkgDlg::preinit()
             (void)m_pmHBkg.load(__WS2Q(m_strHBkgDir + strHBkg));
         }
 
-        wString strVBkg = m_app.getOption().strVBkg;
+        wstring strVBkg = m_app.getOption().strVBkg;
         if (!strVBkg.empty())
         {
             (void)m_pmVBkg.load(__WS2Q(m_strVBkgDir + strVBkg));
