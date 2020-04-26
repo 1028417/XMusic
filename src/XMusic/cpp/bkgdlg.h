@@ -115,8 +115,8 @@ private:
 
     CBkgView m_lv;
 
-    WString m_strHBkgDir;
-    WString m_strVBkgDir;
+    wstring m_strHBkgDir;
+    wstring m_strVBkgDir;
 
     vector<tagBkgFile> m_vecHBkgFile;
     vector<tagBkgFile> m_vecVBkgFile;
@@ -145,7 +145,7 @@ private:
         emit signal_founddir(&imgDir);
     }
 
-    WString& _bkgDir();
+    wstring& _bkgDir();
 
     vector<tagBkgFile>& _vecBkgFile();
 

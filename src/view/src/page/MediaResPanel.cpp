@@ -546,7 +546,8 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			if (NULL != m_pCurrDir)
 			{
 				m_view.exportDir(*m_pCurrDir);
-	}	}
+			}
+		}
 
 		break;
 	case ID_Snapshot:

@@ -259,16 +259,16 @@ void CBkgDlg::preinit()
             itr->pm = _loadPixmap(strBkgDir + itr->strPath);
         }
 
-        cauto strHBkg = m_app.getOption().strHBkg;
+        wstring strHBkg = m_app.getOption().strHBkg;
         if (!strHBkg.empty())
         {
-            (void)m_pmHBkg.load(m_strHBkgDir + strHBkg);
+            (void)m_pmHBkg.load(__WS2Q(m_strHBkgDir + strHBkg));
         }
 
-        cauto strVBkg = m_app.getOption().strVBkg;
+        wString strVBkg = m_app.getOption().strVBkg;
         if (!strVBkg.empty())
         {
-            (void)m_pmVBkg.load(m_strVBkgDir + strVBkg);
+            (void)m_pmVBkg.load(__WS2Q(m_strVBkgDir + strVBkg));
         }
     };
 
@@ -352,7 +352,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
 }
 
-inline WString& CBkgDlg::_bkgDir()
+inline wstring& CBkgDlg::_bkgDir()
 {
     return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
 }
@@ -517,7 +517,7 @@ void CBkgDlg::_showAddBkg()
 
 void CBkgDlg::addBkg(const wstring& strFile)
 {
-    auto& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    QPixmap& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
     pmBkg = _loadBkg(strFile);
 
     m_lstPixmap.push_back(pmBkg);
@@ -532,7 +532,7 @@ void CBkgDlg::addBkg(const wstring& strFile)
     _updateBkg(strFileName);
 
     cauto strDstFile = _bkgDir() + strFileName;
-    pm.save(__WS2Q(strDstFile));
+    pmBkg.save(__WS2Q(strDstFile), "JPG");
 
     this->close();
     m_addbkgDlg.close();
