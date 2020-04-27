@@ -351,8 +351,12 @@ void MainWindow::show()
     {
         auto nLogoBkgAlpha = g_crLogoBkg.alpha();
         UINT uOffset = 0;
-        CApp::asyncloop(25, [=]()mutable{
+        CApp::asyncloop(10, [=]()mutable{
+#if __android || __ios
+            uOffset=12;
+#else
             uOffset+=1;
+#endif
             nLogoBkgAlpha -= uOffset;
             if (nLogoBkgAlpha <= 0)
             {
