@@ -134,6 +134,11 @@ public:
         this->setRenderHints(eRenderHints);
     }
 
+    CPainter(QPaintDevice& device)
+        : QPainter(&device)
+    {
+    }
+
 public:
     static UINT oppTextAlpha(UINT uMinAlpha, float fPow = 0.1f)
     {

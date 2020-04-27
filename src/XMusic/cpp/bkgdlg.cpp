@@ -7,7 +7,7 @@
 
 #define __snapshotZoomout 900
 
-#define __snapshotRetain 16
+#define __snapshotRetain 7
 
 static int g_xsize = 0;
 

@@ -346,14 +346,20 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
+    _init();
+    m_medialibDlg.init();
+    m_bkgDlg.init();
+
+    _show();
+
     if (!m_app.getOption().bUseThemeColor || (g_crTheme.red()!=g_crTheme.red()
         && g_crTheme.green()!=g_crTheme.green() && g_crTheme.blue()!=g_crTheme.blue()))
     {
         auto nLogoBkgAlpha = g_crLogoBkg.alpha();
         UINT uOffset = 0;
-        CApp::asyncloop(10, [=]()mutable{
+        CApp::asyncloop(3, [=]()mutable{
 #if __android || __ios
-            uOffset=12;
+            uOffset=15;
 #else
             uOffset+=1;
 #endif
@@ -370,12 +376,6 @@ void MainWindow::show()
             return true;
         });
     }
-
-    _init();
-    m_medialibDlg.init();
-    m_bkgDlg.init();
-
-    _show();
 }
 
 void MainWindow::_show()
@@ -419,12 +419,9 @@ bool MainWindow::event(QEvent *ev)
 
         break;
     case QEvent::Paint:
-    {
-        CPainter painter(this);
-        _onPaint(painter);
-    }
+        _onPaint();
 
-    break;
+        break;
     case QEvent::KeyRelease:
     {
 #if __android || __ios
@@ -955,14 +952,18 @@ void MainWindow::_relayout()
     m_PlayingList.setPageRowCount(uRowCount);
 }
 
-void MainWindow::_onPaint(CPainter& painter)
+void MainWindow::_onPaint()
 {
+    CPainter painter(*this);
     cauto rc = this->rect();
 
     auto nLogoAlpha = g_crLogoBkg.alpha();
     auto nBkgAlpha = 255-nLogoAlpha;
+
     if (nBkgAlpha > 0)
     {
+        painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
+
         if (m_app.getOption().bUseThemeColor)
         {
             painter.fillRect(rc, g_crTheme);
