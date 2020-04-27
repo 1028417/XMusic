@@ -346,7 +346,6 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
-//#if __android || __ios
     if (!m_app.getOption().bUseThemeColor || (g_crTheme.red()!=g_crTheme.red()
         && g_crTheme.green()!=g_crTheme.green() && g_crTheme.blue()!=g_crTheme.blue()))
     {
@@ -367,7 +366,6 @@ void MainWindow::show()
             return true;
         });
     }
-//#endif
 
     _init();
     m_medialibDlg.init();
