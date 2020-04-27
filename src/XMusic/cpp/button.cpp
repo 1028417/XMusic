@@ -69,7 +69,7 @@ void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
 #if __windows || __mac
 		uDelayTime = 200;
 #endif
-        __appAsync(uDelayTime, [&](){
+        CApp::async(uDelayTime, [&](){
             unsetOpacityEffect();
             m_bPressing = false;
         });

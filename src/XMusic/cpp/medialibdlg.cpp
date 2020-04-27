@@ -115,7 +115,7 @@ void CMedialibDlg::init()
 
 /*this->setGeometry(m_app.mainWnd().geometry());
 _resizeTitle();
-//__appAsync([&](){
+//CApp::async([&](){
 //    _resizeTitle();
 //});*/
 
@@ -123,7 +123,7 @@ void CMedialibDlg::show()
 {
     m_lv.showRoot();
 
-    __appAsync([&](){
+    CApp::async([&](){
         m_OuterDir.findFile();
     });
 
@@ -168,7 +168,7 @@ bool CMedialibDlg::showMediaRes(const wstring& strPath)
     }
     m_lv.hittestFile(*pMediaRes);
 
-    __appAsync([=]() {
+    CApp::async([=]() {
         tryShowWholeTrack(*pMediaRes);
     });
 

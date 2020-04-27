@@ -680,7 +680,7 @@ void CMedialibView::_flashRow(UINT uRow, UINT uMSDelay)
     m_nFlashingRow = uRow;
     update();
 
-    __appAsync(uMSDelay, [&](){
+    CApp::async(uMSDelay, [&](){
         m_nFlashingRow = -1;
         update();
     });

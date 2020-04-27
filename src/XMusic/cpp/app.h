@@ -12,8 +12,6 @@
 
 #define __cyIPhoneXBangs __size(128)
 
-#define __appAsync CApp::async
-
 #if __windows || __mac
 #include <QLockFile>
 extern QLockFile g_lf;
@@ -61,8 +59,6 @@ public:
     QPixmap m_pmLLDisk;
 
 private:
-    static bool m_bRunSignal;
-
     CXController m_ctrl;
 
     CModel m_model;
@@ -100,24 +96,15 @@ public:
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
     }
 
-    static void async(UINT uDelayTime, cfn_void cb);
-
     static void async(cfn_void cb)
     {
         async(0, cb);
     }
 
-    static void async(UINT uDelayTime, UINT uTimes, cfn_void cb)
-    {
-        async(uDelayTime, [=](){
-            cb();
+    static void async(UINT uDelayTime, cfn_void cb);
 
-            if (uTimes > 1)
-            {
-                async(uDelayTime, uTimes-1, cb);
-            }
-        });
-    }
+    static void asyncloop(UINT uDelayTime, UINT uTimes, cfn_void cb);
+    static void asyncloop(UINT uDelayTime, cfn_bool cb);
 
     tagOption& getOption()
     {

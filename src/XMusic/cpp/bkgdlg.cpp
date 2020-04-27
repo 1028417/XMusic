@@ -316,7 +316,7 @@ void CBkgDlg::_relayout(int cx, int cy)
 
 #if !__windows
         m_lv.setVisible(false);
-        __appAsync([&](){
+        CApp::async([&](){
             m_lv.setVisible(true);
         });
 #endif

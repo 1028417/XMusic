@@ -171,6 +171,11 @@ void CPlayingList::_onRowDblClick(tagLVRow& lvRow, const QMouseEvent&)
     }
 }
 
+void CPlayingList::_onBlankDblClick(const QMouseEvent&)
+{
+    m_app.mainWnd().switchFullScreen();
+}
+
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
     if (E_TouchEventType::TET_TouchMove == type)

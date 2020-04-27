@@ -9,6 +9,13 @@
 
 #define __pkgName L"com.musicrossoft.xmusic"
 
+static CUTF8TxtWriter m_logger;
+ITxtWriter& g_logger(m_logger);
+
+float g_fPixelRatio = 1;
+
+static bool g_bRunSignal = true;
+
 #if __android
 #include <QAndroidJniObject>
 #include <QAndroidJniEnvironment>
@@ -123,11 +130,6 @@ void CApp::setForeground()
     }
 }
 #endif
-
-float g_fPixelRatio = 1;
-
-static CUTF8TxtWriter m_logger;
-ITxtWriter& g_logger(m_logger);
 
 CAppInit::CAppInit(QApplication& app)
 {
@@ -244,20 +246,6 @@ CAppInit::CAppInit(QApplication& app)
     app.setFont(CFont());
 }
 
-bool CApp::m_bRunSignal = true;
-
-void CApp::async(UINT uDelayTime, cfn_void cb)
-{
-    __async(uDelayTime, [&, cb](){
-        if (!m_bRunSignal)
-        {
-            return;
-        }
-
-        cb();
-    });
-}
-
 static bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
 {
     JValue jRoot;
@@ -324,7 +312,7 @@ int CApp::run()
 {
     std::thread thrUpgrade;
 
-    __appAsync([&](){
+    CApp::async([&](){
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
@@ -374,7 +362,7 @@ int CApp::run()
 
     m_mainWnd.showLogo();
     int nRet = exec();
-    m_bRunSignal = false;
+    g_bRunSignal = false;
 
     g_logger >> "stop controller";
     m_ctrl.stop();
@@ -508,7 +496,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
         CByteBuffer bbfConf;
         CDownloader downloader(3, 6);
-        int nRet = downloader.syncDownload(m_bRunSignal, strMdlconfUrl, bbfConf, 1);
+        int nRet = downloader.syncDownload(g_bRunSignal, strMdlconfUrl, bbfConf, 1);
         if (nRet != 0)
         {
             g_logger << "checkMediaLib fail: " >> nRet;
@@ -585,7 +573,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
             CByteBuffer bbfMdl;
             CDownloader downloader(3, 30, 1, 3);
-            int nRet = downloader.syncDownload(m_bRunSignal, strMdlUrl, bbfMdl, 1);
+            int nRet = downloader.syncDownload(g_bRunSignal, strMdlUrl, bbfMdl, 1);
             if (nRet != 0)
             {
                 g_logger << "download fail: " >> nRet;
@@ -752,7 +740,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 {
     for (cauto upgradeUrl : lstUpgradeUrl)
     {
-        if (!m_bRunSignal)
+        if (!g_bRunSignal)
         {
              return false;
         }
@@ -781,7 +769,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
                     return false;
                 }*/
 
-                return m_bRunSignal;
+                return g_bRunSignal;
         });
         if (nRet != 0)
         {
@@ -931,7 +919,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
 
 void CApp::slot_run(int nUpgradeResult)
 {
-    if (!m_bRunSignal)
+    if (!g_bRunSignal)
     {
         return;
     }
@@ -975,7 +963,7 @@ void CApp::slot_run(int nUpgradeResult)
             vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
-                __appAsync([&](){
+                CApp::async([&](){
                     this->quit();
                 });
             });
@@ -1002,7 +990,7 @@ void CApp::slot_run(int nUpgradeResult)
 
 void CApp::quit()
 {
-    m_bRunSignal = false;
+    g_bRunSignal = false;
 
 /*#if __android
     m_mainWnd.setVisible(false);
@@ -1015,6 +1003,47 @@ void CApp::quit()
 #endif*/
 
     QApplication::quit();
+}
+
+void CApp::async(UINT uDelayTime, cfn_void cb)
+{
+    __async(uDelayTime, [&, cb](){
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        cb();
+    });
+}
+
+void CApp::asyncloop(UINT uDelayTime, UINT uTimes, cfn_void cb)
+{
+    async(uDelayTime, [=](){
+        cb();
+
+        if (uTimes > 1)
+        {
+            asyncloop(uDelayTime, uTimes-1, cb);
+        }
+    });
+}
+
+void CApp::asyncloop(UINT uDelayTime, cfn_bool cb)
+{
+    __async(uDelayTime, [=](){
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        if (!cb())
+        {
+            return;
+        }
+
+        asyncloop(uDelayTime, cb);
+    });
 }
 
 static const WString g_lpQuality[] {

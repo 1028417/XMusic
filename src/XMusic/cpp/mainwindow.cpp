@@ -20,6 +20,8 @@ static Ui::MainWindow ui;
 
 static bool g_bFullScreen = true;
 
+static QColor g_crLogoBkg(180, 220, 255);
+
 #if __windows
 inline static void _fixWorkArea(QWidget& wnd)
 {
@@ -45,7 +47,7 @@ void fixWorkArea(QWidget& wnd)
     _fixWorkArea(wnd);
 }
 
-void MainWindow::_switchFullScreen()
+void MainWindow::switchFullScreen()
 {
     g_bFullScreen = !g_bFullScreen;
     m_app.getOption().bFullScreen = g_bFullScreen;
@@ -69,7 +71,7 @@ void MainWindow::_switchFullScreen()
 
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
-    , m_PlayingList(app, this)
+    , m_PlayingList(app)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
@@ -101,8 +103,8 @@ MainWindow::MainWindow(CApp& app)
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
 
+    m_PlayingList.setParent(this);
     m_PlayingList.raise();
-    //m_PlayingList.setParent(ui.centralWidget);
 
 #if __android || __ios
     ui.btnFullScreen->setVisible(false);
@@ -168,12 +170,12 @@ void MainWindow::showLogo()
 #if !__android
     uDelayTime += 500;
 #endif
-    __appAsync(uDelayTime, [&](){
+    CApp::async(uDelayTime, [&](){
         this->repaint();
 
         ui.labelLogo->movie()->start();
 
-        __appAsync(100, [&](){
+        CApp::async(100, [&](){
             this->repaint();
 
             _updateLogoTip();
@@ -193,13 +195,13 @@ void MainWindow::_updateLogoTip()
     auto labelLogoTip = ui.labelLogoTip;
     labelLogoTip->setText("播放器");
 
-    __appAsync(600, [=](){
+    CApp::async(600, [=](){
         labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
 
-        __appAsync(600, [=](){
+        CApp::async(600, [=](){
             labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-            __appAsync(2700, [=](){
+            CApp::async(2700, [=](){
 #define __logoTip "更新媒体库"
                 if (-1 == g_nAppDownloadProgress)
                 {
@@ -344,6 +346,29 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
+//#if __android || __ios
+    if (!m_app.getOption().bUseThemeColor || (g_crTheme.red()!=g_crTheme.red()
+        && g_crTheme.green()!=g_crTheme.green() && g_crTheme.blue()!=g_crTheme.blue()))
+    {
+        auto nLogoBkgAlpha = g_crLogoBkg.alpha();
+        UINT uOffset = 0;
+        CApp::asyncloop(30, [=]()mutable{
+            uOffset+=2;
+            nLogoBkgAlpha -= uOffset;
+            if (nLogoBkgAlpha <= 0)
+            {
+                g_crLogoBkg.setAlpha(0);
+                update();
+                return false;
+            }
+
+            g_crLogoBkg.setAlpha(nLogoBkgAlpha);
+            update();
+            return true;
+        });
+    }
+//#endif
+
     _init();
     m_medialibDlg.init();
     m_bkgDlg.init();
@@ -358,7 +383,7 @@ void MainWindow::show()
     _relayout();
 
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
-    __appAsync(100, [&](){
+    CApp::async(100, [&](){
         m_PlayingList.updatePlayingItem(m_app.getOption().uPlayingItem, true);
     });
 
@@ -367,7 +392,7 @@ void MainWindow::show()
     (void)startTimer(1000);
 
 #if __windows
-    __appAsync(100, [&](){
+    CApp::async(100, [&](){
         m_app.setForeground();
     });
 #endif
@@ -415,7 +440,7 @@ bool MainWindow::event(QEvent *ev)
 #else
         if (((QKeyEvent*)ev)->nativeVirtualKey() == 13)
         {
-            _switchFullScreen();
+            switchFullScreen();
         }
 #endif
     }
@@ -426,7 +451,7 @@ bool MainWindow::event(QEvent *ev)
         cauto pos = ((QMouseEvent*)ev)->pos();
         if (!m_PlayingList.geometry().contains(pos))
         {
-            _switchFullScreen();
+            switchFullScreen();
         }
     }
 
@@ -435,7 +460,7 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Close:
         this->setVisible(false);
 
-        __appAsync(30, [&](){
+        CApp::async(30, [&](){
             m_app.quit();
         });
 
@@ -923,33 +948,36 @@ void MainWindow::_relayout()
     m_PlayingList.setPageRowCount(uRowCount);
 }
 
-#define __logoBkgColor QRGB(180, 220, 255)
-
 void MainWindow::_onPaint(CPainter& painter)
 {
     cauto rc = this->rect();
 
-    if (ui.labelLogo->isVisible())
+    auto nLogoAlpha = g_crLogoBkg.alpha();
+    auto nBkgAlpha = 255-nLogoAlpha;
+    if (nBkgAlpha > 0)
     {
-        painter.fillRect(rc, QColor(__logoBkgColor));
-        return;
+        if (m_app.getOption().bUseThemeColor)
+        {
+            painter.fillRect(rc, g_crTheme);
+        }
+        else
+        {
+            bool bHScreen = rc.width() > rc.height();
+            cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+            if (!pmBkg.isNull())
+            {
+               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
+            }
+            else
+            {
+                drawDefaultBkg(painter, rc);
+            }
+        }
     }
 
-    if (m_app.getOption().bUseThemeColor)
+    if (nLogoAlpha > 0)
     {
-        painter.fillRect(rc, g_crTheme);
-        return;
-    }
-
-    bool bHScreen = rc.width() > rc.height();
-    cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-    if (!pmBkg.isNull())
-    {
-       painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
-    }
-    else
-    {
-        drawDefaultBkg(painter, rc);
+        painter.fillRect(rc, g_crLogoBkg);
     }
 }
 
@@ -1130,7 +1158,7 @@ void MainWindow::slot_playStoped(bool bOpenFail)
     else
     {
         auto uPlaySeq = m_uPlaySeq;
-        __appAsync(2000, [&, uPlaySeq]() {
+        CApp::async(2000, [&, uPlaySeq]() {
             if (uPlaySeq == m_uPlaySeq)
             {
                 _updatePlayPauseButton(false);
@@ -1230,7 +1258,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnFullScreen)
     {
-        _switchFullScreen();
+        switchFullScreen();
     }
     else if (button == ui.btnExit)
     {
@@ -1394,7 +1422,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 
         if (m_app.getPlayMgr().player().Seek(nSeekPos))
         {
-            __appAsync(100, [&](){
+            CApp::async(100, [&](){
               _updateProgress();
             });
         }

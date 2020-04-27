@@ -123,6 +123,8 @@ public:
 
     void show();
 
+    void switchFullScreen();
+
     void updateBkg();
 
     void handleTouchMove(const CTouchEvent& te);
@@ -136,8 +138,6 @@ public:
 
 private:
     void _init();
-
-    void _switchFullScreen();
 
     bool event(QEvent *) override;
 

@@ -206,6 +206,17 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
                 _onRowDblClick(lvRow, me);
             }
         }
+        else
+        {
+            if (E_MouseEventType::MET_Click == type)
+            {
+                _onBlankClick(me);
+            }
+            else
+            {
+                _onBlankDblClick(me);
+            }
+        }
     }
 }
 
@@ -309,7 +320,7 @@ bool CListView::_scroll(int dy)
 
 void CListView::_autoScroll(ulong uSeq, int dy, UINT dt, UINT total)
 {
-    __appAsync(dt, [=]() {
+    CApp::async(dt, [=]() {
         if (uSeq != m_uAutoScrollSeq)
         {
             return;

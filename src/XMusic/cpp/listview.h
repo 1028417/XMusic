@@ -133,6 +133,9 @@ private:
     virtual void _onRowClick(tagLVRow&, const QMouseEvent&) {}
     virtual void _onRowDblClick(tagLVRow&, const QMouseEvent&) {}
 
+    virtual void _onBlankClick(const QMouseEvent&) {}
+    virtual void _onBlankDblClick(const QMouseEvent&) {}
+
     bool _scroll(int dy);
     void _autoScroll(ulong uSeq, int dy, UINT dt, UINT total);
 

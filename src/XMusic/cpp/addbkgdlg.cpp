@@ -70,7 +70,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     if (bHScreen != m_bHScreen)
     {
         m_lv.setVisible(false);
-        __appAsync([&](){
+        CApp::async([&](){
             m_lv.setVisible(true);
         });
     }
