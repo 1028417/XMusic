@@ -5,6 +5,8 @@
 
 void CListView::showRow(UINT uRow, bool bToCenter)
 {
+    m_uAutoScrollSeq = 0;
+
     size_t uPageRowCount = getPageRowCount();
 
     if (bToCenter)

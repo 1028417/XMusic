@@ -146,7 +146,6 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
     if (bHittestPlayingItem)
     {
-        CListView::reset();
         CListView::showRow(m_uPlayingItem);
 
         if (m_nActiveTime != -1)

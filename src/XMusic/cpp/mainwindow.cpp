@@ -433,7 +433,11 @@ bool MainWindow::event(QEvent *ev)
         break;
 #endif
     case QEvent::Close:
-        m_app.quit();
+        this->setVisible(false);
+
+        __appAsync(30, [&](){
+            m_app.quit();
+        });
 
         break;
     case QEvent::Timer:

@@ -517,6 +517,13 @@ void CBkgDlg::_showAddBkg()
 
 void CBkgDlg::addBkg(const wstring& strFile)
 {
+    static bool bFlag = false;
+    if (bFlag)
+    {
+        return;
+    }
+    bFlag = true;
+
     QPixmap& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
     pmBkg = _loadBkg(strFile);
 
@@ -539,6 +546,8 @@ void CBkgDlg::addBkg(const wstring& strFile)
 #if __windows
     m_app.setForeground();
 #endif
+
+    bFlag = false;
 }
 
 void CBkgDlg::deleleBkg(size_t uIdx)
