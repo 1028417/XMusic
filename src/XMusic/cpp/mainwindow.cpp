@@ -351,8 +351,8 @@ void MainWindow::show()
     {
         auto nLogoBkgAlpha = g_crLogoBkg.alpha();
         UINT uOffset = 0;
-        CApp::asyncloop(30, [=]()mutable{
-            uOffset+=2;
+        CApp::asyncloop(25, [=]()mutable{
+            uOffset+=1;
             nLogoBkgAlpha -= uOffset;
             if (nLogoBkgAlpha <= 0)
             {
@@ -371,6 +371,11 @@ void MainWindow::show()
     m_medialibDlg.init();
     m_bkgDlg.init();
 
+    _show();
+}
+
+void MainWindow::_show()
+{
     ui.labelLogo->movie()->stop();
     ui.labelLogo->setVisible(false);
     ui.labelLogoTip->setVisible(false);
