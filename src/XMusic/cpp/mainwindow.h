@@ -139,8 +139,6 @@ public:
 private:
     void _init();
 
-    void _show();
-
     bool event(QEvent *) override;
 
     void _onPaint();

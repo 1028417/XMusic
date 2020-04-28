@@ -350,36 +350,6 @@ void MainWindow::show()
     m_medialibDlg.init();
     m_bkgDlg.init();
 
-    _show();
-
-    if (!m_app.getOption().bUseThemeColor || (g_crTheme.red()!=g_crTheme.red()
-        && g_crTheme.green()!=g_crTheme.green() && g_crTheme.blue()!=g_crTheme.blue()))
-    {
-        auto nLogoBkgAlpha = g_crLogoBkg.alpha();
-        UINT uOffset = 0;
-        CApp::asyncloop(3, [=]()mutable{
-#if __android || __ios
-            uOffset=15;
-#else
-            uOffset+=1;
-#endif
-            nLogoBkgAlpha -= uOffset;
-            if (nLogoBkgAlpha <= 0)
-            {
-                g_crLogoBkg.setAlpha(0);
-                update();
-                return false;
-            }
-
-            g_crLogoBkg.setAlpha(nLogoBkgAlpha);
-            update();
-            return true;
-        });
-    }
-}
-
-void MainWindow::_show()
-{
     ui.labelLogo->movie()->stop();
     ui.labelLogo->setVisible(false);
     ui.labelLogoTip->setVisible(false);
@@ -394,15 +364,34 @@ void MainWindow::_show()
         m_PlayingList.updatePlayingItem(m_app.getOption().uPlayingItem, true);
     });
 
-    repaint(); //update();
-
     (void)startTimer(1000);
 
-#if __windows
-    CApp::async(100, [&](){
-        m_app.setForeground();
-    });
+    auto nLogoBkgAlpha = g_crLogoBkg.alpha();
+    UINT uOffset = 0;
+    UINT uDelayTime = m_app.getOption().bUseThemeColor?40:3;
+    CApp::asyncloop(3, [=]()mutable{
+#if __android || __ios
+        uOffset = 28;
+#else
+        uOffset += 1;
 #endif
+        nLogoBkgAlpha -= uOffset;
+        if (nLogoBkgAlpha <= 0)
+        {
+            g_crLogoBkg.setAlpha(0);
+            update();
+
+#if __windows
+            m_app.setForeground();
+#endif
+
+            return false;
+        }
+
+        g_crLogoBkg.setAlpha(nLogoBkgAlpha);
+        update();
+        return true;
+    });
 }
 
 bool MainWindow::event(QEvent *ev)
