@@ -295,6 +295,15 @@ void CBkgDlg::init()
     connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
 }
 
+/*预加载void CBkgDlg::show()
+{
+    CDialog::show();
+
+    CApp::async([&](){
+        m_lv
+    });
+}*/
+
 void CBkgDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/11;

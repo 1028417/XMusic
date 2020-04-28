@@ -369,9 +369,9 @@ void MainWindow::show()
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
     UINT uOffset = 0;
     UINT uDelayTime = m_app.getOption().bUseThemeColor?40:3;
-    CApp::asyncloop(3, [=]()mutable{
+    CApp::asyncloop(uDelayTime, [=]()mutable{
 #if __android || __ios
-        uOffset = 28;
+        uOffset = 29;
 #else
         uOffset += 1;
 #endif
@@ -1261,6 +1261,14 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         this->close();
     }
+    else if (button == ui.btnMore)
+    {
+        m_medialibDlg.show();
+    }
+    else if (button == ui.btnSetting)
+    {
+        m_bkgDlg.show();
+    }
     else if (button == ui.btnPause)
     {
         //if (m_app.getPlayMgr().mediaOpaque().byteRate())
@@ -1305,14 +1313,6 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
         ui.btnRandom->setVisible(bRandomPlay);
         ui.btnOrder->setVisible(!bRandomPlay);
-    }
-    else if (button == ui.btnSetting)
-    {
-        m_bkgDlg.show();
-    }
-    else if (button == ui.btnMore)
-    {
-        m_medialibDlg.show();
     }
     else
     {
