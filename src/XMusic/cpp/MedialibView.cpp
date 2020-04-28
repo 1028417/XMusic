@@ -213,28 +213,28 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
 
     if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
     {
-        context.pixmap = &m_pmSingerGroup;
+        context.pmImg = &m_pmSingerGroup;
         context.strText = L" 歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
     else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
     {
-        context.pixmap = &m_pmPlaylistSet;
+        context.pmImg = &m_pmPlaylistSet;
         context.strText = L" 歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
     {
-        context.pixmap = &m_pmXmusicDir;
+        context.pmImg = &m_pmXmusicDir;
         context.strText = __XMusicDirName;
         context.pDir = &__medialib;
         return true;
     }
     else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
     {
-        context.pixmap = &m_pmDir;
+        context.pmImg = &m_pmDir;
         context.strText << ' ' << __OuterDirName;
         context.pDir = &m_OuterDir;
         return true;
@@ -243,7 +243,7 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     return false;
 }
 
-const QPixmap& CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& strSingerName)
+cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& strSingerName)
 {
     auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
     if (pSingerPixmap)
@@ -281,17 +281,17 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         switch (context.pMediaSet->m_eType)
         {
         case E_MediaSetType::MST_Playlist:
-            context.pixmap = &m_pmPlaylist;
+            context.pmImg = &m_pmPlaylist;
             break;
         case E_MediaSetType::MST_Album:
-            context.pixmap = &m_pmAlbum;
+            context.pmImg = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pixmap = &_getSingerPixmap(context.pMediaSet->m_uID,
+            context.pmImg = &_getSingerPixmap(context.pMediaSet->m_uID,
                                                context.pMediaSet->m_strName);
             break;
         case E_MediaSetType::MST_SingerGroup:
-            context.pixmap = &m_pmSingerGroup;
+            context.pmImg = &m_pmSingerGroup;
 
             context.eStyle |= E_RowStyle::IS_RightTip;
         default:
@@ -302,7 +302,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     {
         if (context.pMedia->GetMediaSetType() == E_MediaSetType::MST_Playlist)
         {
-            context.pixmap = &m_pmPlayItem;
+            context.pmImg = &m_pmPlayItem;
 
             UINT uSingerID = context.pMedia->GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
             if (uSingerID > 0)
@@ -310,7 +310,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
                 if (!strSingerName.empty())
                 {
-                    context.pixmap = &_getSingerPixmap(uSingerID, strSingerName);
+                    context.pmImg = &_getSingerPixmap(uSingerID, strSingerName);
                 }
             }
         }
@@ -320,7 +320,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     {
         if (context.pDir->rootDir() == &__medialib)
         {
-            context.pixmap = &m_pmSSDir;
+            context.pmImg = &m_pmSSDir;
 
             if (context.pDir->parent() == &__medialib)
             {
@@ -328,11 +328,11 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 strutil::lowerCase(strDirName);
                 if (strDirName.find(L"hires") != __wnpos)
                 {
-                    context.pixmap = &m_pmHires;
+                    context.pmImg = &m_pmHires;
                 }
                 else if (strDirName.find(L"dsd") != __wnpos)
                 {
-                    context.pixmap = &m_pmDSD;
+                    context.pmImg = &m_pmDSD;
                 }
                 /*else if (strDirName.find(L"CD整轨") != __wnpos)
                 {
@@ -346,14 +346,14 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         }
         else
         {
-            context.pixmap = &m_pmDir;
+            context.pmImg = &m_pmDir;
 
             if (context.pDir->parent() == NULL)
             {
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
                 if (pAttachDir)
                 {
-                    context.pixmap = &m_pmDirLink;
+                    context.pmImg = &m_pmDirLink;
 
                     /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                     {
@@ -377,23 +377,23 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
                 context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
-                    context.pixmap = &m_app.m_pmHDDisk;
+                    context.pmImg = &m_app.m_pmHDDisk;
                 }
                 else
                 {
-                    context.pixmap = &m_app.m_pmLLDisk;
+                    context.pmImg = &m_app.m_pmLLDisk;
                 }
             }
             else
             {
-                context.pixmap = &m_pmSSFile;
+                context.pmImg = &m_pmSSFile;
             }
 
             context.strText = pMediaRes->GetTitle();
         }
         else
         {
-            context.pixmap = &m_pmFile;
+            context.pmImg = &m_pmFile;
             context.strText = pMediaRes->fileName();
         }
     }
@@ -429,10 +429,10 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
     if (_playIconRect(mediaContext, rcPlayIcon))
     {
         bool bFlashing = (int)mediaContext->uRow == m_nFlashingRow;
-        cauto pixmap = mediaContext.pMediaSet
+        cauto pm = mediaContext.pMediaSet
                 ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
                :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
-        painter.drawPixmap(rcPlayIcon, pixmap);
+        painter.drawPixmap(rcPlayIcon, pm);
 
         rc.setRight(rcPlayIcon.left() - __playIconMagin);
     }

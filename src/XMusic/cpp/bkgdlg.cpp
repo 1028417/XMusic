@@ -104,10 +104,10 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     {
         if (uItem >= 2)
         {
-            auto pm = m_bkgDlg.pixmap(uItem-2);
-            if (pm)
+            auto br = m_bkgDlg.brush(uItem-2);
+            if (br)
             {
-                painter.drawPixmapEx(rc, *pm, __szRound);
+                painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
 
                 QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
                 painter.drawPixmap(rcX, m_pmX);
@@ -256,7 +256,8 @@ void CBkgDlg::preinit()
         for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
              && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
         {
-            itr->pm = _loadPixmap(strBkgDir + itr->strPath);
+            QPixmap pm(strBkgDir + itr->strPath);
+            itr->br = &_addbr(pm);
         }
 
         wstring strHBkg = m_app.getOption().strHBkg;
@@ -371,16 +372,16 @@ inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
     return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
 }
 
-const QPixmap* CBkgDlg::_loadPixmap(const WString& strBkgFile)
+inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm)
 {
-    m_lstPixmap.emplace_back(QPixmap());
-    auto& pm = m_lstPixmap.back();
-    if (pm.load(strBkgFile))
+    if (!pm.isNull())
     {
         CPainter::zoomoutPixmap(pm, __snapshotZoomout);
     }
 
-    return &pm;
+    m_lstBr.emplace_back(pm);
+
+    return m_lstBr.back();
 }
 
 size_t CBkgDlg::bkgCount() const
@@ -388,7 +389,7 @@ size_t CBkgDlg::bkgCount() const
     return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size();
 }
 
-const QPixmap* CBkgDlg::pixmap(size_t uIdx)
+CBkgBrush* CBkgDlg::brush(size_t uIdx)
 {
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx >= vecBkgFile.size())
@@ -397,26 +398,28 @@ const QPixmap* CBkgDlg::pixmap(size_t uIdx)
     }
 
     auto& bkgFile = vecBkgFile[uIdx];
-    if (bkgFile.pm)
+    if (bkgFile.br)
     {
-        return bkgFile.pm;
+        return bkgFile.br;
     }
 
     cauto strBkgFile = _bkgDir() + bkgFile.strPath;
 
-    return bkgFile.pm = _loadPixmap(strBkgFile);
+    QPixmap pm(strBkgFile);
+    auto& br = _addbr(pm);
+    return bkgFile.br = &br;
 }
 
 void CBkgDlg::_setBkg(const wstring& strFile)
 {
-    auto& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
     if (!strFile.empty())
     {
-        pmBkg = _loadBkg(_bkgDir() + strFile);
+        pm = _loadBkg(_bkgDir() + strFile);
     }
     else
     {
-        pmBkg = QPixmap();
+        pm = QPixmap();
     }
 
     _updateBkg(strFile);
@@ -533,23 +536,18 @@ void CBkgDlg::addBkg(const wstring& strFile)
     }
     bFlag = true;
 
-    QPixmap& pmBkg = m_bHScreen?m_pmHBkg:m_pmVBkg;
-    pmBkg = _loadBkg(strFile);
-
-    m_lstPixmap.push_back(pmBkg);
-    auto& pm = m_lstPixmap.back();
-    CPainter::zoomoutPixmap(pm, __snapshotZoomout);
+    auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    pm = _loadBkg(strFile);
 
     cauto strFileName = to_wstring(time(0));
+    cauto strDstFile = _bkgDir() + strFileName;
+    pm.save(__WS2Q(strDstFile), "JPG");
+
     auto& vecBkgFile = _vecBkgFile();
-    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &pm));
+    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_addbr(pm)));
     //update();
 
     _updateBkg(strFileName);
-
-    cauto strDstFile = _bkgDir() + strFileName;
-    pmBkg.save(__WS2Q(strDstFile), "JPG");
-
     this->close();
     m_addbkgDlg.close();
 #if __windows
@@ -572,13 +570,13 @@ void CBkgDlg::deleleBkg(size_t uIdx)
             _setBkg(L"");
         }
 
-        if (bkgFile.pm)
+        if (bkgFile.br)
         {
-            for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); ++itr)
+            for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); ++itr)
             {
-                if (&*itr == bkgFile.pm)
+                if (&*itr == bkgFile.br)
                 {
-                    m_lstPixmap.erase(itr);
+                    m_lstBr.erase(itr);
                     break;
                 }
             }
@@ -593,13 +591,13 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::_onClosed()
 {
-    set<const QPixmap*> setDelelePixmap;
+    set<CBkgBrush*> setDeleleBrush;
     if (m_vecHBkgFile.size() > __snapshotRetain)
     {
         for (auto itr = m_vecHBkgFile.begin()+__snapshotRetain; itr != m_vecHBkgFile.end(); ++itr)
         {
-            setDelelePixmap.insert(itr->pm);
-            itr->pm = NULL;
+            setDeleleBrush.insert(itr->br);
+            itr->br = NULL;
         }
     }
 
@@ -607,16 +605,16 @@ void CBkgDlg::_onClosed()
     {
         for (auto itr = m_vecVBkgFile.begin()+__snapshotRetain; itr != m_vecVBkgFile.end(); ++itr)
         {
-            setDelelePixmap.insert(itr->pm);
-            itr->pm = NULL;
+            setDeleleBrush.insert(itr->br);
+            itr->br = NULL;
         }
     }
 
-    for (auto itr = m_lstPixmap.begin(); itr != m_lstPixmap.end(); )
+    for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); )
     {
-        if (setDelelePixmap.find(&*itr) != setDelelePixmap.end())
+        if (setDeleleBrush.find(&*itr) != setDeleleBrush.end())
         {
-           itr = m_lstPixmap.erase(itr);
+           itr = m_lstBr.erase(itr);
         }
         else
         {
@@ -650,6 +648,7 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
 #define __filterSize 640
     if (pm.width()<__filterSize || pm.height()<__filterSize)
     {
+        pm = QPixmap();
         return false;
     }
 

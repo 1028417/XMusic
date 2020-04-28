@@ -49,12 +49,12 @@ public:
         m_szRound = szRound;
     }
 
-    const QPixmap& pixmap() const
+    cqpm pixmap() const
     {
-        auto pixmap = QLabel::pixmap();
-        if (pixmap)
+        auto pm = QLabel::pixmap();
+        if (pm)
         {
-            return *pixmap;
+            return *pm;
         }
 
         static QPixmap s_pixmap;

@@ -13,7 +13,7 @@ int g_nDefFontWeight = QFont::Weight::Light;
 
 UINT g_uDefFontSize = 0;
 
-void CPainter::alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst)
+void CPainter::alphaPixmap(cqpm pmSrc, int alpha, QPixmap& pmDst)
 {
     pmDst.fill(Qt::transparent);
     QPainter painter(&pmDst);
@@ -59,104 +59,87 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap, UINT xround, UINT yround)
+inline static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
 {
-    if (xround > 0)
+    auto cxSrc = rcSrc.width();
+    auto cySrc = rcSrc.height();
+    if (cxSrc > 0 && cySrc > 0)
     {
-        if (0 == yround)
+        float fHWRate = (float)rcDst.height()/rcDst.width();
+        if ((float)cySrc/cxSrc > fHWRate)
         {
-            yround = xround;
+            int dy = (cySrc - cxSrc*fHWRate)/2;
+            rcSrc.setTop(rcSrc.top()+dy);
+            rcSrc.setBottom(rcSrc.bottom()-dy);
         }
-
-        QTransform transform;
-        transform.translate(rc.left(), rc.top());
-        auto scaleRate = (double)rc.width()/pixmap.width();
-        transform.scale(scaleRate, scaleRate);
-
-        QBrush brush(pixmap);
-        brush.setTransform(transform);
-
-        this->save();
-
-        this->setBrush(brush);
-        this->setPen(Qt::transparent);
-
-        this->drawRoundedRect(rc,xround,yround);
-
-        this->restore();
-    }
-    else
-    {
-        QPainter::drawPixmap(rc, pixmap);
+        else
+        {
+            int dx = (cxSrc - cySrc/fHWRate)/2;
+            rcSrc.setLeft(rcSrc.left()+dx);
+            rcSrc.setRight(rcSrc.right()-dx);
+        }
     }
 }
 
-void CPainter::drawPixmap(cqrc rc, const QPixmap& pixmap
-                            , cqrc rcSrc, UINT xround, UINT yround)
+void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
-        if (0 == yround)
-        {
-            yround = xround;
-        }
-
         QTransform transform;
         auto scaleRate = (1.0f+rc.width())/rcSrc.width();
         transform.translate(rc.left()-rcSrc.left()*scaleRate
                             , rc.top()-rcSrc.top()*scaleRate);
         transform.scale(scaleRate, scaleRate);
 
-        QBrush brush(pixmap);
-        brush.setTransform(transform);
+        br.setTransform(transform);
+    }
 
-        this->save();
+    this->save();
 
-        this->setBrush(brush);
-        this->setPen(Qt::transparent);
+    this->setBrush(br);
+    this->setPen(Qt::transparent);
 
-        this->drawRoundedRect(rc,xround,yround);
+    this->drawRectEx(rc,xround,yround);
 
-        this->restore();
+    this->restore();
+}
+
+void CPainter::drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
+{
+    QRect t_rcSrc = rcSrc;
+    _genSrcRect(rc, t_rcSrc);
+    this->drawPixmap(rc, br, t_rcSrc, xround, yround);
+}
+
+void CPainter::drawPixmap(cqrc rc, cqpm pm, UINT xround, UINT yround)
+{
+    drawPixmap(rc, pm, pm.rect(), xround, yround);
+}
+
+void CPainter::drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround, UINT yround)
+{
+    if (xround > 0)
+    {
+        QBrush br(pm);
+        drawPixmap(rc, br, rcSrc, xround, yround);
     }
     else
     {
-        QPainter::drawPixmap(rc, pixmap, rcSrc);
+        QPainter::drawPixmap(rc, pm, rcSrc);
     }
 }
 
-inline static QRect _genSrcRect(cqrc rcDst, const QPixmap& pixmap)
+void CPainter::drawPixmapEx(cqrc rc, cqpm pm, UINT xround, UINT yround)
 {
-    QRect rcSrc = pixmap.rect();
-    int width = rcSrc.width();
-    int height = rcSrc.height();
-
-    float fHWRate = (float)rcDst.height()/rcDst.width();
-    if ((float)height/width > fHWRate)
-    {
-        int dy = (height - width*fHWRate)/2;
-        rcSrc.setTop(rcSrc.top()+dy);
-        rcSrc.setBottom(rcSrc.bottom()-dy);
-    }
-    else
-    {
-        int dx = (width - height/fHWRate)/2;
-        rcSrc.setLeft(rcSrc.left()+dx);
-        rcSrc.setRight(rcSrc.right()-dx);
-    }
-
-    return rcSrc;
+    QRect rcSrc = pm.rect();
+    _genSrcRect(rc, rcSrc);
+    this->drawPixmap(rc, pm, rcSrc, xround, yround);
 }
 
-void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, UINT xround, UINT yround)
+void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
 {
-    QRect rcSrc = _genSrcRect(rc, pixmap);
-    this->drawPixmap(rc, pixmap, rcSrc, xround, yround);
-}
-
-void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
-{
-    QRect rcSrc = _genSrcRect(rc, pixmap);
+    QRect rcSrc = pm.rect();
+    _genSrcRect(rc, rcSrc);
 
     if (dx != 0 || dy != 0)
     {
@@ -175,7 +158,7 @@ void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
             else
             {
                 auto rpos = rcSrc.right()+offset;
-                auto cx = pixmap.width();
+                auto cx = pm.width();
                 if (rpos >= cx)
                 {
                     dx = (cx-1-rcSrc.right())/fZoomRate;
@@ -205,7 +188,7 @@ void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
             else
             {
                 auto bpos = rcSrc.bottom()+offset;
-                auto cy = pixmap.height();
+                auto cy = pm.height();
                 if (bpos >= cy)
                 {
                     dy = (cy-1-rcSrc.bottom())/fZoomRate;
@@ -222,7 +205,7 @@ void CPainter::drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy)
         }
     }
 
-    this->drawPixmap(rc, pixmap, rcSrc);
+    this->drawPixmap(rc, pm, rcSrc);
 }
 
 void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
@@ -233,7 +216,6 @@ void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
         {
             yround = xround;
         }
-
         this->drawRoundedRect(rc, xround, yround);
     }
     else
@@ -287,9 +269,9 @@ void CPainter::fillRectEx(cqrc rc, cqcr crBegin
     QLinearGradient gradient(rc.topLeft(), rc.topRight());
     gradient.setColorAt(0, crBegin);
     gradient.setColorAt(1, crEnd);
-    QBrush brush(gradient);
+    QBrush br(gradient);
 
-    fillRectEx(rc, brush, xround, yround);
+    fillRectEx(rc, br, xround, yround);
 }
 
 static QRect g_rcDrawTextRet;

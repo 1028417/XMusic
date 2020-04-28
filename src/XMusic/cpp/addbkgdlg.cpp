@@ -160,7 +160,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             QDir dir(__WS2Q(imgDir.path()));
             context.strText = dir.absolutePath().toStdWString();
 
-            context.pixmap = imgDir.snapshot();
+            context.pmImg = imgDir.snapshot();
 
             _paintRow(painter, context);
         });

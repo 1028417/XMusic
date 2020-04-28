@@ -26,6 +26,8 @@ extern QColor g_crText;
 
 using cqcr = const QColor&;
 using cqrc = const QRect&;
+using cqpm = const QPixmap&;
+using cqbr = const QBrush&;
 
 extern map<int, QString> g_mapFontFamily;
 
@@ -146,8 +148,8 @@ public:
         return MAX(uMinAlpha, uOppAlpha);
     }
 
-    static void alphaPixmap(const QPixmap& pmSrc, int alpha, QPixmap& pmDst);
-    static QPixmap alphaPixmap(const QPixmap& pmSrc, int alpha)
+    static void alphaPixmap(cqpm pmSrc, int alpha, QPixmap& pmDst);
+    static QPixmap alphaPixmap(cqpm pmSrc, int alpha)
     {
         QPixmap pmDst(pmSrc.size());
         alphaPixmap(pmSrc, alpha, pmDst);
@@ -213,12 +215,15 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmap(cqrc rc, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
-    void drawPixmap(cqrc rc, const QPixmap& pixmap, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmapEx(cqrc rc, const QPixmap& pixmap, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmapEx(cqrc rc, const QPixmap& pixmap, int& dx, int& dy);
+    void drawPixmapEx(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0);
+
+    void drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy);
 
     void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 
@@ -229,12 +234,11 @@ public:
 
     void fillRectEx(cqrc rc, cqcr cr, UINT xround=0, UINT yround=0)
     {
-        QBrush brush(cr);
-        fillRectEx(rc, brush, xround, yround);
+        QBrush br(cr);
+        fillRectEx(rc, br, xround, yround);
     }
 
-    void fillRectEx(cqrc rc, cqcr crBegin
-                    , cqcr crEnd, UINT xround=0, UINT yround=0);
+    void fillRectEx(cqrc rc, cqcr crBegin, cqcr crEnd, UINT xround=0, UINT yround=0);
 
     cqrc drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);

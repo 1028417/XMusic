@@ -108,7 +108,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
     QRect rc = lvRow.rc;
     int cy = rc.height();
 
-    if (context.pixmap && !context.pixmap->isNull())
+    if (context.pmImg && !context.pmImg->isNull())
     {
         UINT sz_icon = cy;
         if (context.fIconMargin > 0)
@@ -124,7 +124,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
 
         int y_icon = rc.center().y()-sz_icon/2;
         QRect rcPixmap(x_icon, y_icon, sz_icon, sz_icon);
-        painter.drawPixmapEx(rcPixmap, *context.pixmap, context.uIconRound);
+        painter.drawPixmapEx(rcPixmap, *context.pmImg, context.uIconRound);
 
         rc.setLeft(x_icon + sz_icon + __lvRowMargin);
     }

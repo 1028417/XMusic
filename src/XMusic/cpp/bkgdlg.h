@@ -82,20 +82,36 @@ private:
     bool _genSnapshot(TD_XFileList& paSubFile);
 };
 
+class CBkgBrush : public QBrush
+{
+public:
+    CBkgBrush()=default;
+
+    CBkgBrush(cqpm pm)
+        : QBrush(pm)
+    {
+        m_cx = pm.width();
+        m_cy = pm.height();
+    }
+
+    int m_cx = 0;
+    int m_cy = 0;
+};
+
 struct tagBkgFile
 {
     tagBkgFile() = default;
 
-    tagBkgFile(bool bInner, const wstring& strPath, const QPixmap *pm = NULL)
+    tagBkgFile(bool bInner, const wstring& strPath, CBkgBrush *br=NULL)
         : bInner(bInner)
         , strPath(strPath)
-        , pm(pm)
+        , br(br)
     {
     }
 
     bool bInner = false;
     WString strPath;
-    const QPixmap *pm = NULL;
+    CBkgBrush *br = NULL;
 };
 
 class CBkgDlg : public CDialog
@@ -121,7 +137,7 @@ private:
     vector<tagBkgFile> m_vecHBkgFile;
     vector<tagBkgFile> m_vecVBkgFile;
 
-    list<QPixmap> m_lstPixmap;
+    list<CBkgBrush> m_lstBr;
 
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
@@ -149,7 +165,7 @@ private:
 
     vector<tagBkgFile>& _vecBkgFile();
 
-    const QPixmap* _loadPixmap(const WString& strBkgFile);
+    CBkgBrush& _addbr(QPixmap& pm);
 
     void _relayout(int cx, int cy) override;
 
@@ -168,18 +184,18 @@ public:
 
     void init();
 
-    const QPixmap& hbkg() const
+    cqpm hbkg() const
     {
         return m_pmHBkg;
     }
-    const QPixmap& vbkg() const
+    cqpm vbkg() const
     {
         return m_pmVBkg;
     }
 
     size_t bkgCount() const;
 
-    const QPixmap* pixmap(size_t uIdx);
+    CBkgBrush* brush(size_t uIdx);
 
     void setBkg(size_t uItem);
 

@@ -43,9 +43,9 @@ struct tagRowContext
     {
     }
 
-    void setPixmap(const QPixmap *t_pixmap, float t_fIconMargin)
+    void setPixmap(const QPixmap *t_pm, float t_fIconMargin)
     {
-        pixmap = t_pixmap;
+        pmImg = t_pm;
         fIconMargin = t_fIconMargin;
     }
 
@@ -62,7 +62,7 @@ struct tagRowContext
 
     UINT eStyle = E_RowStyle::IS_None;
 
-    const QPixmap *pixmap = NULL;
+    const QPixmap *pmImg = NULL;
     float fIconMargin = 0.21f;
     UINT uIconRound = __size(6);
 
