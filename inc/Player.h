@@ -76,7 +76,7 @@ public:
 	uint32_t duration() const;
 	uint64_t clock() const;
 
-	int devSampleRate() const;
+	int sampleRate() const;
 
 private:
 	virtual wstring localFilePath() const override
