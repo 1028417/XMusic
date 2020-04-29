@@ -111,6 +111,34 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
                 QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
                 painter.drawPixmap(rcX, m_pmX);
+
+                static UINT s_uSequence = 0;
+                s_uSequence++;
+                if (lvRow.uCol == uColumnCount-1)
+                {
+                    auto uPageRowCount = getPageRowCount();
+                    UINT uFloorRow = ceil(scrollPos()+uPageRowCount-1);
+                    if ( lvRow.uRow == uFloorRow)
+                    {
+                        auto uSequence = s_uSequence;
+                        CApp::async(300, [=](){
+                            if (uSequence != s_uSequence || !isVisible())
+                            {
+                                return;
+                            }
+
+                            for (UINT uCol=0; uCol<uColumnCount; uCol++)
+                            {
+                                auto uItem = (uFloorRow+1) * uColumnCount + uCol;
+                                if (uItem >= 2)
+                                {
+                                    m_bkgDlg.brush(uItem-2);
+                                }
+                            }
+                        });
+                    }
+                }
+
                 return;
             }
 
@@ -295,15 +323,6 @@ void CBkgDlg::init()
 
     connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
 }
-
-/*预加载void CBkgDlg::show()
-{
-    CDialog::show();
-
-    CApp::async([&](){
-        m_lv
-    });
-}*/
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
