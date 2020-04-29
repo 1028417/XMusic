@@ -31,14 +31,12 @@ CMainWnd* CPlayerView::show()
 {
 	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
 	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
-
-	CFolderDlg::preInit();
-
+	
 	if (!m_view.show())
 	{
 		return NULL;
 	}
-
+	
 	return &m_view.m_MainWnd;
 }
 

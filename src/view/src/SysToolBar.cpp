@@ -122,7 +122,10 @@ void CSysToolBar::_onNMClick(UINT uID)
 
 		GetToolBarCtrl().SetState(ID_Force48KHz, bForce48KHz ? TBSTATE_PRESSED : TBSTATE_ENABLED);
 
-		m_view.getPlayMgr().replay();
+		if (m_view.getPlayMgr().mediaOpaque().sampleRate() == 44100)
+		{
+			m_view.getPlayMgr().replay();
+		}
 	}
 	
 	break;
