@@ -66,16 +66,10 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
 #if !__windows
-    static bool bHScreen = false;
-    if (bHScreen != m_bHScreen)
-    {
-        bHScreen = m_bHScreen;
-
-        m_lv.setVisible(false);
-        CApp::async([&](){
-            m_lv.setVisible(true);
-        });
-    }
+    m_lv.setVisible(false);
+    CApp::async([&](){
+        m_lv.setVisible(true);
+    });
 #endif
 }
 

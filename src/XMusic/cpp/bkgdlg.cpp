@@ -353,14 +353,17 @@ void CBkgDlg::_relayout(int cx, int cy)
     {
         bHScreen = m_bHScreen;
         m_lv.scroll(0);
+    }
 
 #if !__windows
+    if (m_bHScreen)
+    {
         m_lv.setVisible(false);
         CApp::async([&](){
             m_lv.setVisible(true);
         });
-#endif
     }
+#endif
 
     if (m_bHScreen)
     {
