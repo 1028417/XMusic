@@ -171,8 +171,6 @@ void MainWindow::showLogo()
     uDelayTime += 500;
 #endif
     CApp::async(uDelayTime, [&](){
-        this->repaint();
-
         ui.labelLogo->movie()->start();
 
         CApp::async(100, [&](){
@@ -373,7 +371,14 @@ void MainWindow::show()
 #if __android || __ios
         uOffset = 29;
 #else
-        uOffset += 1;
+        if (nLogoBkgAlpha > 127)
+        {
+            uOffset += 1;
+        }
+        else if (uOffset > 1)
+        {
+            uOffset -= 1;
+        }
 #endif
         nLogoBkgAlpha -= uOffset;
         if (nLogoBkgAlpha <= 0)

@@ -251,13 +251,22 @@ void CBkgDlg::preinit()
             for (wchar_t wch = L'a'; wch <= L'z'; wch++)
             {
                 auto strBkg = strBkgSrc + wch + L".jpg";
-                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"0." + wch);
+                if (fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"0." + wch))
+                {
+                    mtutil::usleep(10);
+                }
 
                 strBkg = strBkgSrc + (bHBkg?L"hbkg/":L"vbkg/") + wch + L".jpg";
-                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"1." + wch);
+                if (fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"1." + wch))
+                {
+                    mtutil::usleep(10);
+                }
 
                 strBkg = strBkgSrc + (bHBkg?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
-                (void)fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"2." + wch);
+                if (fsutil::copyFile(strBkg, strAppBkgDir + __wcPathSeparator + L"2." + wch))
+                {
+                    mtutil::usleep(10);
+                }
             }
         }
 
@@ -286,6 +295,8 @@ void CBkgDlg::preinit()
         {
             QPixmap pm(strBkgDir + itr->strPath);
             itr->br = &_addbr(pm);
+
+            mtutil::usleep(10);
         }
 
         wstring strHBkg = m_app.getOption().strHBkg;
@@ -560,7 +571,7 @@ void CBkgDlg::addBkg(const wstring& strFile)
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
-    pm.save(__WS2Q(strDstFile), "JPG");
+    pm.save(__WS2Q(strDstFile), "JPG", 100);
 
     auto& vecBkgFile = _vecBkgFile();
     vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_addbr(pm)));

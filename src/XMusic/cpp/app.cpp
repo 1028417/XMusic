@@ -350,6 +350,8 @@ int CApp::run()
             E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
                 return _initMediaLib(orgMedialibConf);
             }, [&](){
+                mtutil::usleep(100);
+
                 (void)m_pmHDDisk.load(__mediaPng(hddisk));
                 (void)m_pmLLDisk.load(__mediaPng(lldisk));
 
