@@ -47,16 +47,16 @@ void CColorDlg::init()
 
 void CColorDlg::show()
 {
-    setWidgetTextColor(ui.groupBkgColor, g_crText);
-    setWidgetTextColor(ui.groupFontColor, g_crText);
+    setWidgetTextColor(ui.groupBkgColor, g_crFore);
+    setWidgetTextColor(ui.groupFontColor, g_crFore);
 
-    ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crTheme.red());
-    ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crTheme.green());
-    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crTheme.blue());
+    ui.barBkgRed->setColor(E_BarColor::BC_Red, g_crBkg.red());
+    ui.barBkgGreen->setColor(E_BarColor::BC_Green, g_crBkg.green());
+    ui.barBkgBlue->setColor(E_BarColor::BC_Blue, g_crBkg.blue());
 
-    ui.barFontRed->setColor(E_BarColor::BC_Red, g_crText.red());
-    ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crText.green());
-    ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crText.blue());
+    ui.barFontRed->setColor(E_BarColor::BC_Red, g_crFore.red());
+    ui.barFontGreen->setColor(E_BarColor::BC_Green, g_crFore.green());
+    ui.barFontBlue->setColor(E_BarColor::BC_Blue, g_crFore.blue());
 
     CDialog::show();
 }
@@ -213,9 +213,9 @@ void CColorDlg::applyBkgColor()
     this->update();
     m_bkgDlg.update();
 
-    if (!m_app.getOption().bUseThemeColor)
+    if (!m_app.getOption().bUseBkgColor)
     {
-        m_app.getOption().bUseThemeColor = true;
+        m_app.getOption().bUseBkgColor = true;
 
         m_app.mainWnd().updateBkg();
     }
@@ -231,20 +231,20 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
 
     if (ui.barBkgRed == pBar || ui.barBkgGreen == pBar || ui.barBkgBlue == pBar)
     {
-        int crTheme = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
-        g_crTheme.setRgb(crTheme);
-        m_app.getOption().crTheme = (UINT)crTheme;
+        int crBkg = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
+        g_crBkg.setRgb(crBkg);
+        m_app.getOption().crBkg = (UINT)crBkg;
 
         applyBkgColor();
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
-        int crText = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
-        g_crText.setRgb(crText);
-        m_app.getOption().crText = (UINT)crText;
+        int crFore = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
+        g_crFore.setRgb(crFore);
+        m_app.getOption().crFore = (UINT)crFore;
 
-        CDialog::setWidgetTextColor(ui.groupBkgColor, g_crText);
-        CDialog::setWidgetTextColor(ui.groupFontColor, g_crText);
+        CDialog::setWidgetTextColor(ui.groupBkgColor, g_crFore);
+        CDialog::setWidgetTextColor(ui.groupFontColor, g_crFore);
 
         this->update();
         m_bkgDlg.update();

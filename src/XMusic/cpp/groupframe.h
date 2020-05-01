@@ -89,11 +89,11 @@ private:
             rc.setTop(ptCenter.y()+1);
         }
 
-        auto cr = g_crText;
+        auto cr = g_crFore;
         cr.setAlpha(CPainter::oppTextAlpha(100));
         painter.drawRectEx(rc, cr, 1, Qt::SolidLine, __szRound);
 
-        painter.fillRect(rcTitle, g_crTheme);
+        painter.fillRect(rcTitle, g_crBkg);
         painter.drawTextEx(rcTitle, nAlign, title());
     }
 };

@@ -53,14 +53,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 void CApp::vibrate(UINT duration)
 {
     QAndroidJniEnvironment env;
-    QAndroidJniObject activity = QtAndroid::androidActivity();
+
     QAndroidJniObject name = QAndroidJniObject::getStaticObjectField(
                 "android/content/Context",
                 "VIBRATOR_SERVICE",
                 "Ljava/lang/String;"
                 );
 
-    QAndroidJniObject vibrateService = activity.callObjectMethod(
+    QAndroidJniObject vibrateService = QtAndroid::androidActivity().callObjectMethod(
                 "getSystemService",
                 "(Ljava/lang/String;)Ljava/lang/Object;",
                 name.object<jstring>());
@@ -68,16 +68,25 @@ void CApp::vibrate(UINT duration)
     vibrateService.callMethod<void>("vibrate", "(J)V", jlong(duration));
 }
 
-static void installApk(const QString &qsApkPath)
+static bool installApk(const QString &qsApkPath)
 {
     QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);
-    QAndroidJniObject activity = QtAndroid::androidActivity();
     QAndroidJniObject::callStaticMethod<void>(
                 "xmusic/XActivity",
                 "installApk",
                 "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
                 jFilePath.object<jstring>(),
-                activity.object<jobject>()
+                QtAndroid::androidActivity().object<jobject>()
+                );
+}
+
+static bool isMobileConnected()
+{
+    return QAndroidJniObject::callStaticMethod<bool>(
+                "xmusic/XActivity",
+                "isMobileConnected",
+                "(Ljava/lang/String;)V",
+                QtAndroid::androidActivity().object<jobject>()
                 );
 }
 
@@ -974,13 +983,13 @@ void CApp::slot_run(int nUpgradeResult)
         return;
     }
 
-    if (m_ctrl.getOption().crTheme >= 0)
+    if (m_ctrl.getOption().crBkg >= 0)
     {
-        g_crTheme.setRgb((int)m_ctrl.getOption().crTheme);
+        g_crBkg.setRgb((int)m_ctrl.getOption().crBkg);
     }
-    if (m_ctrl.getOption().crText >= 0)
+    if (m_ctrl.getOption().crFore >= 0)
     {
-        g_crText.setRgb((int)m_ctrl.getOption().crText);
+        g_crFore.setRgb((int)m_ctrl.getOption().crFore);
     }
 
     m_mainWnd.show();

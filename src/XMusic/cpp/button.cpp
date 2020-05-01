@@ -26,7 +26,7 @@ bool CButton::event(QEvent *ev)
             }
             else
             {
-                cr = g_crText;
+                cr = g_crFore;
                 cr.setAlpha(10);
                 painter.fillRectEx(rc, cr, szRound);
 

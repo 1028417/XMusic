@@ -11,7 +11,7 @@
 #define __RemarkAlpha 200
 
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
-    CListViewEx(&medialibDlg)
+    CListViewEx(medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
     , m_app(app)
     , m_SingerLib(app.getSingerMgr())
@@ -513,7 +513,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
                         strRemark << IMedia::genDurationString(duration) << '\n' << cue.m_alTrackInfo.size() << L"曲目";
                         _paintRemark(painter, rc, strRemark);
 
-                        //QColor cr = g_crText;
+                        //QColor cr = g_crFore;
                         //cr.setAlpha(CPainter::oppTextAlpha(__RemarkAlpha)/2);
                         //painter.drawRectEx(QRect(rcRet.left(), rcRet.bottom()+1, rcRet.width(), 1), cr);
 

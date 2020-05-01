@@ -69,10 +69,19 @@ struct tagRowContext
     WString strText;
 };
 
+enum class E_LVScrollBar
+{
+    LVSB_None = 0,
+    LVSB_Right,
+    LVSB_Left
+};
+
 class CListView : public TWidget<QWidget>
 {
 public:
-    CListView(QWidget *parent) : TWidget(parent)
+    CListView(QWidget& parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None)
+        : TWidget(&parent)
+        , m_eScrollBar(eScrollBar)
     {
         setAttribute(Qt::WA_TranslucentBackground);
 
@@ -85,6 +94,8 @@ public:
     }
 
 private:
+    E_LVScrollBar m_eScrollBar = E_LVScrollBar::LVSB_None;
+
     QPixmap m_pmRightTip;
 
     UINT m_uRowHeight = 0;

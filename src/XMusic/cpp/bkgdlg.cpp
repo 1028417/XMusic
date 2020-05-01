@@ -14,7 +14,7 @@ static int g_xsize = 0;
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg),
+    : CListView(bkgDlg),
     m_app(app),
     m_bkgDlg(bkgDlg)
 {
@@ -151,12 +151,12 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        int r = g_crTheme.red();
-        int g = g_crTheme.green();
-        int b = g_crTheme.blue();
+        int r = g_crBkg.red();
+        int g = g_crBkg.green();
+        int b = g_crBkg.blue();
         QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
 
-        int d = abs(cr.red()+cr.green()+cr.blue()-g_crTheme.red()-g_crTheme.green()-g_crTheme.blue());
+        int d = abs(cr.red()+cr.green()+cr.blue()-g_crBkg.red()-g_crBkg.green()-g_crBkg.blue());
         if (abs(d) == 128)
         {
             cr.setAlpha(100);
@@ -176,7 +176,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         painter.fillRectEx(rc, cr, __szAdd/2);
 
         rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
-        painter.fillRect(rc, g_crTheme);
+        painter.fillRect(rc, g_crBkg);
         painter.fillRectEx(rc, cr, __szAdd/2);
     }
 }
@@ -474,7 +474,7 @@ QPixmap CBkgDlg::_loadBkg(const WString& strFile)
 
 void CBkgDlg::_updateBkg(const wstring& strFile)
 {
-    m_app.getOption().bUseThemeColor = false;
+    m_app.getOption().bUseBkgColor = false;
     if (m_bHScreen)
     {
         m_app.getOption().strHBkg = strFile;

@@ -71,7 +71,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
-    , m_PlayingList(app)
+    , m_PlayingList(app, *this)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
@@ -366,7 +366,7 @@ void MainWindow::show()
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
     UINT uOffset = 0;
-    UINT uDelayTime = m_app.getOption().bUseThemeColor?40:3;
+    UINT uDelayTime = m_app.getOption().bUseBkgColor?40:3;
     CApp::asyncloop(uDelayTime, [=]()mutable{
 #if __android || __ios
         uOffset = 29;
@@ -528,7 +528,7 @@ void MainWindow::_relayout()
     int dy_bkg = cy - cy_bkg;
 
     m_bUseDefaultBkg = false;
-    if (!m_app.getOption().bUseThemeColor)
+    if (!m_app.getOption().bUseBkgColor)
     {
         cauto pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bUseDefaultBkg = pmBkg.isNull();
@@ -905,7 +905,7 @@ void MainWindow::_relayout()
         }
         int x_PlayingList = ui.progressbar->geometry().right() + xOffset;
 
-        int cx_PlayingList = cx - x_PlayingList - uMargin * fCXRate;
+        int cx_PlayingList = cx - x_PlayingList;// - uMargin * fCXRate;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
@@ -958,9 +958,9 @@ void MainWindow::_onPaint()
     {
         painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
-        if (m_app.getOption().bUseThemeColor)
+        if (m_app.getOption().bUseBkgColor)
         {
-            painter.fillRect(rc, g_crTheme);
+            painter.fillRect(rc, g_crBkg);
         }
         else
         {

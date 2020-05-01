@@ -11,14 +11,14 @@
 
 #include "util/util.h"
 
-extern QColor g_crTheme;
-extern QColor g_crText;
+extern QColor g_crBkg;
+extern QColor g_crFore;
 
 #define __ColorOffset(cr1, cr2) (abs(cr1.red()-cr2.red()) + abs(cr1.green()-cr2.green()) \
     + abs(cr1.blue()-cr2.blue()))
 #define __ColorOffsetAvg(cr1, cr2) (__ColorOffset(cr1, cr2) / 3)
 
-#define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crText, g_crTheme)/255.0, f)))
+#define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crFore, g_crBkg)/255.0, f)))
 
 #define __ShadowColor(alpha) QColor(128, 128, 128, 128*alpha/255)
 
@@ -245,7 +245,7 @@ public:
     cqrc drawTextEx(cqrc rc, int flags, const QString& qsText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
-        return drawTextEx(rc, flags, qsText, g_crText, uShadowWidth, uShadowAlpha, uTextAlpha);
+        return drawTextEx(rc, flags, qsText, g_crFore, uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 };
 

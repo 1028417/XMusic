@@ -77,7 +77,7 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 
 
 CWholeTrackView::CWholeTrackView(CWholeTrackDlg& WholeTrackDlg)
-    : CListView(&WholeTrackDlg)
+    : CListView(WholeTrackDlg)
     , m_WholeTrackDlg(WholeTrackDlg)
 {
 }

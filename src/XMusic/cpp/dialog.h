@@ -39,7 +39,7 @@ protected:
 private:
     virtual cqcr bkgColor() const
     {
-        return g_crTheme;
+        return g_crBkg;
     }
 
     void _show(cfn_void cbClose);

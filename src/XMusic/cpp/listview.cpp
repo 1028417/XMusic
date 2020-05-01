@@ -39,6 +39,9 @@ void CListView::_onPaint(CPainter& painter, cqrc)
     _onPaint(painter, cx, cy);
 }
 
+#define __cxBar __size(5)
+#define __marginBar __size(10)
+
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
     size_t uPageRowCount = getPageRowCount();
@@ -70,23 +73,34 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     {
         uColumnCount = 1;
     }
+
+    int x = 0;
+    if (uRowCount > uPageRowCount)
+    {
+        if (E_LVScrollBar::LVSB_Left == m_eScrollBar)
+        {
+            x = __marginBar*2 + __cxBar;
+        }
+
+        cx -= __marginBar*2 + __cxBar;
+    }
     UINT cx_col = cx / uColumnCount;
 
     for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
         painter.setFont(this->font());
-        painter.setPen(g_crText);
+        painter.setPen(g_crFore);
 
         bool bSelected = (int)uRow == m_nSelectRow;
         tagLVRow lvRow(uIdx, uRow, 0, bSelected);
         QRect& rc = lvRow.rc;
         for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
         {
-            rc.setRect(uCol * cx_col, y, cx_col, m_uRowHeight);
+            rc.setRect(x + uCol*cx_col, y, cx_col, m_uRowHeight);
 
             if (bSelected)
             {
-                QColor cr = g_crText;
+                QColor cr = g_crFore;
                 cr.setAlpha(CPainter::oppTextAlpha(20));
                 painter.fillRect(rc.left(), rc.top(), rc.width(), m_uRowHeight, cr);
             }
@@ -99,6 +113,20 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         {
             break;
         }
+    }
+
+    if (uRowCount > uPageRowCount && E_LVScrollBar::LVSB_None != m_eScrollBar)
+    {
+        auto cr = g_crFore;
+        cr.setAlpha(128);
+
+        auto xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? 0 : cx;
+        cy -= __marginBar*2;
+        auto cyBar = cy*uPageRowCount/uRowCount;
+        auto yBar = int(__marginBar + m_fScrollPos*(cy-cyBar)/(uRowCount-uPageRowCount));
+        QRect rcBar(xBar + __marginBar, yBar, __cxBar, cyBar);
+
+        painter.fillRectEx(rcBar, cr, __cxBar/2);
     }
 }
 
@@ -135,7 +163,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
 
     if (context.eStyle & E_RowStyle::IS_BottomLine)
     {
-        QColor cr = g_crText;
+        QColor cr = g_crFore;
         cr.setAlpha(CPainter::oppTextAlpha(20));
         painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-__lvRowMargin, 1), cr);
         rc.setBottom(rc.bottom()-3);

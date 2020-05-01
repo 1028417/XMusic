@@ -10,19 +10,11 @@ import android.os.Bundle;
 
 import android.os.PowerManager;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
-    public static void installApk(String filePath, QtActivity activity)
-    {
-        Intent intent = new Intent();
-        // 执行动作
-        intent.setAction(Intent.ACTION_VIEW);
-        File file = new File(filePath);
-        // 执行的数据类型
-        intent.setDataAndType(Uri.fromFile(file),"application/vnd.android.package-archive");
-        activity.startActivity(intent);
-    };
-
     private PowerManager.WakeLock wakeLock = null;
 
     @Override
@@ -34,5 +26,26 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
             | PowerManager.ACQUIRE_CAUSES_WAKEUP, "xmusicWakelock");
         wakeLock.acquire();
+    }
+
+    public static void installApk(String filePath, QtActivity activity)
+    {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(filePath)),"application/vnd.android.package-archive");
+        activity.startActivity(intent);
+    };
+
+    public static boolean isMobileConnected(QtActivity activity)
+    {
+        Context context = activity.getApplicationContext();
+        ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+        {
+            return networkInfo.isAvailable();
+        }
+
+        return false;
     }
 };

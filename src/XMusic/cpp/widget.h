@@ -369,7 +369,7 @@ protected:
             return m_crFore;
         }
 
-        return g_crText;
+        return g_crFore;
     }
 
 private:

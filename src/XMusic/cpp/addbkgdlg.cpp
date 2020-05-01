@@ -74,7 +74,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
-    CListView(&addbkgDlg)
+    CListView(addbkgDlg)
     , m_addbkgDlg(addbkgDlg)
     , m_paImgDirs(paImgDir)
 {

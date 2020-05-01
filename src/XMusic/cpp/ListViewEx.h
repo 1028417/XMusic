@@ -59,7 +59,7 @@ struct tagMediaContext : public tagRowContext
 class CListViewEx : public CListView
 {
 public:
-    CListViewEx(QWidget *parent) : CListView(parent)
+    CListViewEx(QWidget& parent, E_LVScrollBar eScrollBar) : CListView(parent, eScrollBar)
     {
     }
 
