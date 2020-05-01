@@ -54,40 +54,34 @@ void CApp::vibrate(UINT duration)
 {
     QAndroidJniEnvironment env;
 
-    QAndroidJniObject name = QAndroidJniObject::getStaticObjectField(
+    cauto jniName = QAndroidJniObject::getStaticObjectField(
                 "android/content/Context",
                 "VIBRATOR_SERVICE",
-                "Ljava/lang/String;"
-                );
+                "Ljava/lang/String;");
 
-    QAndroidJniObject vibrateService = QtAndroid::androidActivity().callObjectMethod(
+    cauto jniService = QtAndroid::androidActivity().callObjectMethod(
                 "getSystemService",
                 "(Ljava/lang/String;)Ljava/lang/Object;",
-                name.object<jstring>());
+                jniName.object<jstring>());
 
-    vibrateService.callMethod<void>("vibrate", "(J)V", jlong(duration));
-}
-
-static bool installApk(const QString &qsApkPath)
-{
-    QAndroidJniObject jFilePath = QAndroidJniObject::fromString(qsApkPath);
-    QAndroidJniObject::callStaticMethod<void>(
-                "xmusic/XActivity",
-                "installApk",
-                "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
-                jFilePath.object<jstring>(),
-                QtAndroid::androidActivity().object<jobject>()
-                );
+    jniService.callMethod<void>("vibrate", "(J)V", jlong(duration));
 }
 
 static bool isMobileConnected()
 {
-    return QAndroidJniObject::callStaticMethod<bool>(
+    cauto jniRet = QtAndroid::androidActivity().callObjectMethod("isMobileConnected", "()Ljava.lang.Boolean;");
+    return jniRet.object<bool>();
+}
+
+static void installApk(const QString &qsApkPath)
+{
+    cauto jniApkPath = QAndroidJniObject::fromString(qsApkPath);
+    QAndroidJniObject::callStaticMethod<void>(
                 "xmusic/XActivity",
-                "isMobileConnected",
-                "(Ljava/lang/String;)V",
-                QtAndroid::androidActivity().object<jobject>()
-                );
+                "installApk",
+                "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
+                jniApkPath.object<jstring>(),
+                QtAndroid::androidActivity().object<jobject>());
 }
 
 /*string g_strSDCardPath;
@@ -322,6 +316,14 @@ int CApp::run()
     std::thread thrUpgrade;
 
     CApp::async([&](){
+#if __android
+        if (isMobileConnected())
+        {
+            vibrate();
+        }
+#endif
+
+
         connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {

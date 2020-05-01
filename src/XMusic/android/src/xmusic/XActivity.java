@@ -28,19 +28,10 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         wakeLock.acquire();
     }
 
-    public static void installApk(String filePath, QtActivity activity)
+    public boolean isMobileConnected()
     {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(filePath)),"application/vnd.android.package-archive");
-        activity.startActivity(intent);
-    };
-
-    public static boolean isMobileConnected(QtActivity activity)
-    {
-        Context context = activity.getApplicationContext();
-        ConnectivityManager manager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        ConnectivityManager connManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
         {
             return networkInfo.isAvailable();
@@ -48,4 +39,12 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 
         return false;
     }
+
+    public static void installApk(String filePath, QtActivity activity)
+    {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(filePath)),"application/vnd.android.package-archive");
+        activity.startActivity(intent);
+    };
 };
