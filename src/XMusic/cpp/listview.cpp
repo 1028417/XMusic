@@ -138,6 +138,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         QColor cr = g_crText;
         cr.setAlpha(CPainter::oppTextAlpha(20));
         painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width()-__lvRowMargin, 1), cr);
+        rc.setBottom(rc.bottom()-3);
     }
 
     rc.setRight(rc.right() - __lvRowMargin);

@@ -420,6 +420,15 @@ inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIc
     return false;
 }
 
+#define __rAlign Qt::AlignRight|Qt::AlignVCenter
+
+inline static cqrc _paintRemark(CPainter& painter, cqrc rc, const QString& qsRemark)
+{
+    CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
+    UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
+    return painter.drawTextEx(rc, __rAlign, qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
+}
+
 cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
@@ -439,22 +448,9 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 
     QString qsMediaQuality;
     WString strRemark;
-
-    IMedia *pMedia = mediaContext.pMedia;
-    if (NULL == pMedia)
+    if (mediaContext.pMedia)
     {
-        pMedia = (CMediaRes*)mediaContext.pFile;
-    }
-    if (pMedia)
-    {
-        qsMediaQuality = mediaQualityString(pMedia->quality());
-
-        if (pMedia->duration() > __wholeTrackDuration)
-        {
-            strRemark << '\n' << pMedia->durationString();
-        }
-
-        if (pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
+        if (mediaContext.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
         {
             rc.setLeft(rc.left() + __size(10));
         }
@@ -495,18 +491,46 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
     }
     if (!strRemark->empty())
     {
-        CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
-
-        UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
-        painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter
-                           , strRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
-
-        rc.setRight(rc.right() - __size(100));
+        _paintRemark(painter, rc, strRemark);
     }
     else
     {
-        if (!qsMediaQuality.isEmpty())
+        IMedia *pMedia = mediaContext.pMedia;
+        if (NULL == pMedia)
         {
+            auto pMediaRes = (CMediaRes*)mediaContext.pFile;
+            if (pMediaRes)
+            {
+                pMedia = pMediaRes;
+
+                if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+                {
+                    auto duration = pMediaRes->duration();
+                    cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
+                    if (cue)
+                    {
+                        WString strRemark;
+                        strRemark << IMedia::genDurationString(duration) << '\n' << cue.m_alTrackInfo.size() << L"曲目";
+                        _paintRemark(painter, rc, strRemark);
+
+                        //QColor cr = g_crText;
+                        //cr.setAlpha(CPainter::oppTextAlpha(__RemarkAlpha)/2);
+                        //painter.drawRectEx(QRect(rcRet.left(), rcRet.bottom()+1, rcRet.width(), 1), cr);
+
+                        rc.setRight(rc.right() - __size(120));
+                    }
+                    else if (duration > __wholeTrackDuration)
+                    {
+                        _paintRemark(painter, rc, __WS2Q(L'\n' + IMedia::genDurationString(duration)));
+                        rc.setRight(rc.right() - __size(100));
+                    }
+                }
+            }
+        }
+
+        if (pMedia)
+        {
+            qsMediaQuality = mediaQualityString(pMedia->quality());
             rc.setRight(rc.right() - __size(20) - __size(10)*qsMediaQuality.length());
         }
     }
