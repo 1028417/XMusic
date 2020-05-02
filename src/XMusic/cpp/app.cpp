@@ -69,8 +69,7 @@ void CApp::vibrate(UINT duration)
 
 static bool isMobileConnected()
 {
-    cauto jniRet = QtAndroid::androidActivity().callObjectMethod("isMobileConnected", "()Ljava.lang.Boolean;");
-    return jniRet.object<bool>();
+    return QtAndroid::androidActivity().callMethod<jboolean>("isMobileConnected", "()Ljava.lang.Boolean;");
 }
 
 static void installApk(const QString &qsApkPath)
