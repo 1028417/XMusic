@@ -52,7 +52,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 void CApp::vibrate(UINT duration)
 {
-    QAndroidJniEnvironment env;
+    //QAndroidJniEnvironment env;
 
     cauto jniName = QAndroidJniObject::getStaticObjectField(
                 "android/content/Context",
@@ -69,8 +69,8 @@ void CApp::vibrate(UINT duration)
 
 static bool isMobileConnected()
 {
-    auto jRet = QtAndroid::androidActivity().callObjectMethod("isMobileConnected", "()Ljava/lang/String;");
-    return jRet.toString() == "true";
+    //QAndroidJniEnvironment env;
+    return QtAndroid::androidActivity().callMethod<jint>("isMobileConnected", "()I");
 }
 
 static void installApk(const QString &qsApkPath)
