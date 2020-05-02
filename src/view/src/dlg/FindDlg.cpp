@@ -167,13 +167,9 @@ void CFindDlg::Refresh()
 	CString strTitle;
 	strTitle.Format(L"查找结果(%d项)", uItem);
 	this->SetWindowText(strTitle);
-
-	(void)this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
-
+	
 	(void)this->GetDlgItem(IDC_BTN_VERIFY)->EnableWindow(arrMediaMixture);
 	(void)this->GetDlgItem(IDC_BTN_EXPORT)->EnableWindow(arrMediaMixture);
-
-	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(FALSE);
 }
 
 void CFindDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)

@@ -14,7 +14,7 @@ CTrackDetailDlg::CTrackDetailDlg(__view& view, CRCueFile cueFile, CMediaRes *pMe
 BEGIN_MESSAGE_MAP(CTrackDetailDlg, CDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CTrackDetailDlg::OnNMDbclickList1)
 
-	ON_BN_CLICKED(ID_BTN_PLAY, &CTrackDetailDlg::OnBnClickedPlay)
+	ON_BN_CLICKED(IDC_BTN_PLAY, &CTrackDetailDlg::OnBnClickedPlay)
 END_MESSAGE_MAP()
 
 void CTrackDetailDlg::DoDataExchange(CDataExchange* pDX)
@@ -37,7 +37,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 	{
 		strTitle.append(m_cueFile.m_strTitle);
 
-		this->GetDlgItem(ID_BTN_PLAY)->EnableWindow(FALSE);
+		this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 	}
 	this->SetWindowText(strTitle.c_str());
 

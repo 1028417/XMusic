@@ -18,8 +18,8 @@ BEGIN_MESSAGE_MAP(CNewSongDlg, CDialog)
 	
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CNewSongDlg::OnLvnItemchangedList1)
 
-	ON_BN_CLICKED(ID_BTN_DEMAND, &CNewSongDlg::OnBnClickedBtnDemand)
-	ON_BN_CLICKED(ID_BTN_PLAY, &CNewSongDlg::OnBnClickedBtnPlay)
+	ON_BN_CLICKED(IDC_BTN_DEMAND, &CNewSongDlg::OnBnClickedBtnDemand)
+	ON_BN_CLICKED(IDC_BTN_PLAY, &CNewSongDlg::OnBnClickedBtnPlay)
 	ON_BN_CLICKED(IDC_BTN_EXPORT, &CNewSongDlg::OnBnClickedBtnExport)
 END_MESSAGE_MAP()
 
@@ -128,7 +128,8 @@ void CNewSongDlg::Refresh()
 			uIndex++;
 		});
 
-		this->GetDlgItem(ID_BTN_DEMAND)->EnableWindow(0 != uIndex);
+		this->GetDlgItem(IDC_BTN_DEMAND)->EnableWindow(uIndex);
+		this->GetDlgItem(IDC_BTN_EXPORT)->EnableWindow(uIndex);
 
 		wstring strTitle(L"新曲目");
 		if (0 != uIndex)
@@ -191,7 +192,7 @@ void CNewSongDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	int nSelCount = m_wndList.GetSelectedCount();
 
-	(void)this->GetDlgItem(ID_BTN_PLAY)->EnableWindow(nSelCount > 0);
+	(void)this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(nSelCount > 0);
 }
 
 void CNewSongDlg::OnDtnDatetimechange(NMHDR *pNMHDR, LRESULT *pResult)

@@ -4,7 +4,7 @@
 //
 #define IDD_PAGE_SINGER                 1
 #define IDC_BTN_PLAY                    3
-#define ID_BTN_PLAY                     3
+#define IDC_BTN_PLAY                     3
 #define IDD_DLG_ChooseDir               1000
 #define IDI_MAINWND                     2000
 #define IDC_LIST_BROWSE                 2000
@@ -84,11 +84,10 @@
 #define IDD_PAGE_PLAYITEM               2029
 #define IDC_DATETIMEPICKER              2030
 #define IDD_DLG_WholeTrack              2030
-#define ID_BTN_DEMAND                   2031
+#define IDC_BTN_DEMAND                   2031
 #define IDD_DLG_TrackDetail             2031
 #define IDC_BTN_AutoMatch               2032
-#define IDD_DLG_ExportOption            2032
-#define ID_BTN_DEMAND2                  2032
+#define IDD_DLG_ExportOption            20322
 #define IDC_COMBO1                      2033
 #define IDC_COMBO_SRC                   2034
 #define IDR_TOOLBAR1                    2034

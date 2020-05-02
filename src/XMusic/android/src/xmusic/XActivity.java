@@ -28,16 +28,19 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         wakeLock.acquire();
     }
 
-    public boolean isMobileConnected()
+    public String isMobileConnected()
     {
         ConnectivityManager connManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
         {
-            return networkInfo.isAvailable();
+            if (networkInfo.isAvailable())
+            {
+                return "true";
+            }
         }
 
-        return false;
+        return "false";
     }
 
     public static void installApk(String filePath, QtActivity activity)
