@@ -5,7 +5,7 @@
 
 #define __szZoomout 2160
 
-#define __snapshotZoomout 900
+#define __snapshotZoomout 800
 
 #define __snapshotRetain 7
 
@@ -405,11 +405,31 @@ inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
     return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
 }
 
+static void zoomoutPixmap(QPixmap& pm, UINT size)
+{
+    if (pm.width() < pm.height())
+    {
+        if (pm.width() > (int)size)
+        {
+            auto&& temp = pm.scaledToWidth(size, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+    else
+    {
+        if (pm.height() > (int)size)
+        {
+            auto&& temp = pm.scaledToHeight(size, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+}
+
 inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm)
 {
     if (!pm.isNull())
     {
-        CPainter::zoomoutPixmap(pm, __snapshotZoomout);
+        zoomoutPixmap(pm, __snapshotZoomout);
     }
 
     m_lstBr.emplace_back(pm);
@@ -466,7 +486,7 @@ QPixmap CBkgDlg::_loadBkg(const WString& strFile)
         auto szZoomout = __szZoomout;
         szZoomout = MAX(szZoomout, width());
         szZoomout = MAX(szZoomout, height());
-        CPainter::zoomoutPixmap(pm, szZoomout);
+        zoomoutPixmap(pm, szZoomout);
     }
 
     return pm;
@@ -685,7 +705,7 @@ inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
         return false;
     }
 
-    CPainter::zoomoutPixmap(pm, uZoomOutSize);
+    zoomoutPixmap(pm, uZoomOutSize);
 
     return true;
 }

@@ -24,26 +24,6 @@ void CPainter::alphaPixmap(cqpm pmSrc, int alpha, QPixmap& pmDst)
     painter.end();
 }
 
-void CPainter::zoomoutPixmap(QPixmap& pm, UINT size)
-{
-    if (pm.width() > pm.height())
-    {
-        if (pm.width() > (int)size)
-        {
-            auto&& temp = pm.scaledToWidth(size, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-    else
-    {
-        if (pm.height() > (int)size)
-        {
-            auto&& temp = pm.scaledToHeight(size, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-}
-
 QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
 {
     uAlpha = uAlpha * crSrc.alpha()/255 * crDst.alpha()/255;

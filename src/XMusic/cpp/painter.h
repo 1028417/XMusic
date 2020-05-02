@@ -156,8 +156,6 @@ public:
         return pmDst;
     }
 
-    static void zoomoutPixmap(QPixmap& pm, UINT size);
-
     static QColor mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha);
 
     void setPenColor(int r, int g, int b, int a=255)

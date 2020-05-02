@@ -254,12 +254,15 @@ cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& strSingerNam
     cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(strSingerName, 0);
     if (!strSingerImg.empty())
     {
-        m_lstSingerPixmap.emplace_back(QPixmap());
+        m_lstSingerPixmap.emplace_back();
         QPixmap& pm = m_lstSingerPixmap.back();
         if (pm.load(__WS2Q(strSingerImg)))
         {
 #define __singerimgZoomout 160
-            CPainter::zoomoutPixmap(pm, __singerimgZoomout);
+            auto&& temp = pm.width() < pm.height()
+                    ? pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation)
+                    : pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
+            pm.swap(temp);
 
             pSingerPixmap = &pm;
             return pm;

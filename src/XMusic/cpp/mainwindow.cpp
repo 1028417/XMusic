@@ -829,8 +829,7 @@ void MainWindow::_relayout()
 
         if (m_PlayingInfo.bWholeTrack)
         {
-            auto pm = pmSingerImg;
-            CPainter::zoomoutPixmap(pm, rcSingerImg.width());
+            cauto pm = pmSingerImg.scaledToWidth(rcSingerImg.width(), Qt::SmoothTransformation);
             ui.labelSingerImg->setPixmap(pm);
         }
     }
