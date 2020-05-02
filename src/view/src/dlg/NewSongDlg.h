@@ -46,4 +46,6 @@ public:
 	afx_msg void OnBnClickedBtnDemand();
 
 	afx_msg void OnBnClickedBtnPlay();
+
+	afx_msg void OnBnClickedBtnExport();
 };

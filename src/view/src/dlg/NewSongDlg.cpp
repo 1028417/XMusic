@@ -20,6 +20,7 @@ BEGIN_MESSAGE_MAP(CNewSongDlg, CDialog)
 
 	ON_BN_CLICKED(ID_BTN_DEMAND, &CNewSongDlg::OnBnClickedBtnDemand)
 	ON_BN_CLICKED(ID_BTN_PLAY, &CNewSongDlg::OnBnClickedBtnPlay)
+	ON_BN_CLICKED(IDC_BTN_EXPORT, &CNewSongDlg::OnBnClickedBtnExport)
 END_MESSAGE_MAP()
 
 void CNewSongDlg::DoDataExchange(CDataExchange* pDX)
@@ -229,4 +230,9 @@ void CNewSongDlg::OnBnClickedBtnPlay()
 	}
 
 	m_view.m_PlayCtrl.addPlayingItem(lstMedias);
+}
+
+void CNewSongDlg::OnBnClickedBtnExport()
+{
+	m_view.exportMedia(m_MediaMixer.getMedias(), this);
 }

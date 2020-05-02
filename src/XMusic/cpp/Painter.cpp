@@ -86,10 +86,10 @@ void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yro
     if (xround > 0)
     {
         QTransform transform;
-        auto scaleRate = (1.0f+rc.width())/rcSrc.width();
-        transform.translate(rc.left()-rcSrc.left()*scaleRate
-                            , rc.top()-rcSrc.top()*scaleRate);
-        transform.scale(scaleRate, scaleRate);
+        auto fScaleRate = (1.0f+rc.width())/rcSrc.width();
+        transform.translate(rc.left()-rcSrc.left()*fScaleRate
+                            , rc.top()-rcSrc.top()*fScaleRate);
+        transform.scale(fScaleRate, fScaleRate);
 
         br.setTransform(transform);
     }
@@ -143,14 +143,14 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
 
     if (dx != 0 || dy != 0)
     {
-        auto fZoomRate = (float)rcSrc.width()/rc.width();
+        auto fScaleRate = (1.0f+rcSrc.width())/rc.width();
         if (dx != 0)
         {
-            auto offset = dx*fZoomRate;
+            auto offset = dx*fScaleRate;
             auto lpos = rcSrc.left()+offset;
             if (lpos < 0)
             {
-                dx = -rcSrc.left()/fZoomRate;
+                dx = -rcSrc.left()/fScaleRate;
 
                 rcSrc.setRight(rcSrc.right()-rcSrc.left());
                 rcSrc.setLeft(0);
@@ -161,7 +161,7 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
                 auto cx = pm.width();
                 if (rpos >= cx)
                 {
-                    dx = (cx-1-rcSrc.right())/fZoomRate;
+                    dx = (cx-1-rcSrc.right())/fScaleRate;
 
                     rcSrc.setLeft(cx-rcSrc.width());
                     rcSrc.setRight(cx-1);
@@ -176,11 +176,11 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
 
         if (dy != 0)
         {
-            auto offset = dy*fZoomRate;
+            auto offset = dy*fScaleRate;
             auto tpos = rcSrc.top()+offset;
             if (tpos < 0)
             {
-                dy = -rcSrc.top()/fZoomRate;
+                dy = -rcSrc.top()/fScaleRate;
 
                 rcSrc.setBottom(rcSrc.bottom()-rcSrc.top());
                 rcSrc.setTop(0);
@@ -191,7 +191,7 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
                 auto cy = pm.height();
                 if (bpos >= cy)
                 {
-                    dy = (cy-1-rcSrc.bottom())/fZoomRate;
+                    dy = (cy-1-rcSrc.bottom())/fScaleRate;
 
                     rcSrc.setTop(cy-rcSrc.height());
                     rcSrc.setBottom(cy-1);

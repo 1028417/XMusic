@@ -80,9 +80,8 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         if (E_LVScrollBar::LVSB_Left == m_eScrollBar)
         {
             x = __marginBar*2 + __cxBar;
+            cx -= __marginBar*2 + __cxBar;
         }
-
-        cx -= __marginBar*2 + __cxBar;
     }
     UINT cx_col = cx / uColumnCount;
 
