@@ -80,11 +80,11 @@ public:
 	virtual tagOption& getOption() = 0;
 
 #if __winvc
-    virtual CMediaDir* attachDir(const wstring& strDir) = 0;
+    virtual CMediaDir* attachDir(cwstr strDir) = 0;
 
-    virtual bool renameMedia(const IMedia& media, const wstring& strNewName) = 0;
+    virtual bool renameMedia(const IMedia& media, cwstr strNewName) = 0;
 
-    virtual void moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strDir) = 0;
+    virtual void moveMediaFile(const TD_IMediaList& lstMedias, cwstr strDir) = 0;
 
     virtual bool removeMediaRes(const TD_MediaResList& lstMediaRes) = 0;
 
@@ -93,7 +93,7 @@ public:
 	virtual int AddAlbumItems(const list<wstring>& lstAbsPaths, CAlbum& Album, int nPos = -1) = 0;
 	virtual int AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos = -1) = 0;
 
-    virtual E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName) = 0;
+    virtual E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, cwstr strNewName) = 0;
 
     virtual bool removeMediaSet(CMediaSet& MediaSet) = 0;
 

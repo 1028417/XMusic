@@ -152,11 +152,11 @@ public:
     }
 
     static int zCompress(const void* pData, size_t len, CByteBuffer& bbfBuff, int level=0);
-    static long zCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int level=0);
-    static long zUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static long zCompressFile(cwstr strSrcFile, cwstr strDstFile, int level=0);
+    static long zUncompressFile(cwstr strSrcFile, cwstr strDstFile);
 
 #if !__winvc
-    static long qCompressFile(const wstring& strSrcFile, const wstring& strDstFile, int nCompressLecvel = -1);
-    static long qUncompressFile(const wstring& strSrcFile, const wstring& strDstFile);
+    static long qCompressFile(cwstr strSrcFile, cwstr strDstFile, int nCompressLecvel = -1);
+    static long qUncompressFile(cwstr strSrcFile, cwstr strDstFile);
 #endif
 };

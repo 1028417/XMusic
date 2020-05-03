@@ -27,7 +27,7 @@ public:
 	static bool loadXml(char* buf, size_t length, bool bUtf8, bool bHtml, tagXmlElementInfo& rootElementInfo);
 
 	static bool loadXml(Instream& ins, bool bHtml, tagXmlElementInfo& rootElementInfo);
-	static bool loadXml(const wstring& strFile, bool bHtml, tagXmlElementInfo& rootElementInfo)
+	static bool loadXml(cwstr strFile, bool bHtml, tagXmlElementInfo& rootElementInfo)
 	{
 		IFStream ifs(strFile);
 		__EnsureReturn(ifs, false);

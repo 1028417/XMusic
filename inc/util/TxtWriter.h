@@ -73,16 +73,16 @@ private:
     bool _write(wchar_t wch, bool bEndLine = false);
 
 #if !__winvc
-    bool _write(const QString& qstr, bool bEndLine = false);
+    bool _write(cqstr qstr, bool bEndLine = false);
 #endif
 
 public:
 #if !__winvc
-	inline bool write(const QString& qstr)
+	inline bool write(cqstr qstr)
 	{
 		return _write(qstr);
 	}
-	inline bool writeln(const QString& qstr)
+	inline bool writeln(cqstr qstr)
 	{
 		return _write(qstr, true);
 	}
@@ -151,11 +151,11 @@ public:
 		return _write(strText.c_str(), strText.size(), true);
 	}
 
-	inline bool write(const wstring& strText)
+	inline bool write(cwstr strText)
 	{
 		return _write(strText.c_str(), strText.size());
 	}
-	inline bool writeln(const wstring& strText)
+	inline bool writeln(cwstr strText)
 	{
 		return _write(strText.c_str(), strText.size(), true);
 	}
@@ -212,7 +212,7 @@ public:
 	{
 	}
 
-    CTxtWriter(const wstring& strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
+    CTxtWriter(cwstr strFile, bool bTrunc, E_TxtEncodeType eEncodeType, E_EOLType eEOLType = __DefEOL) :
         ITxtWriter(eEncodeType),
         m_eEOLFlag(eEOLType)
     {
@@ -243,7 +243,7 @@ public:
 		return m_ofs.is_open();
 	}
 
-	bool open(const wstring& strFile, bool bTrunc);
+	bool open(cwstr strFile, bool bTrunc);
 	bool open(const string& strFile, bool bTrunc);
 
     void close()
@@ -268,7 +268,7 @@ public:
 	{
 	}
 
-    CUTF8TxtWriter(const wstring& strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
+    CUTF8TxtWriter(cwstr strFile, bool bTrunc, bool bWithBom = __DefUTF8BomOpt, E_EOLType eEOLType = __DefEOL) :
         CTxtWriter(strFile, bTrunc, bWithBom ? E_TxtEncodeType::TET_UTF8_WithBom : E_TxtEncodeType::TET_UTF8_NoBom, eEOLType)
 	{
 	}
@@ -296,7 +296,7 @@ public:
 	{
 	}
 
-    CUCS2TextWriter(const wstring& strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
+    CUCS2TextWriter(cwstr strFile, bool bTrunc, E_UnicodeHeadOpt eHeadType = E_UnicodeHeadOpt::UHO_LittleEndian, E_EOLType eEOLType = __DefEOL) :
 		CTxtWriter(strFile, bTrunc, E_UnicodeHeadOpt::UHO_LittleEndian == eHeadType ? E_TxtEncodeType::TET_UCS2_LittleEndian
             : E_TxtEncodeType::TET_UCS2_BigEndian, eEOLType)
 	{
@@ -347,7 +347,7 @@ public:
 		_read(ins, cb);
         return m_eHeadType;
 	}
-    E_TxtHeadType read(Instream& ins, cfn_bool_t<const wstring&> cb)
+    E_TxtHeadType read(Instream& ins, cfn_bool_t<cwstr> cb)
 	{
 		_read(ins, cb);
         return m_eHeadType;

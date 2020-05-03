@@ -28,11 +28,11 @@ public:
 
 	static bool timeToTM(time_t tTime, tagTM& tm);
 
-    static wstring formatTime(const wstring& strFormat, time32_t tTime);
+    static wstring formatTime(cwstr strFormat, time32_t tTime);
     static string formatTime(const string& strFormat, time32_t tTime);
 
 #if __windows
-	static wstring formatTime(const wstring& strFormat, time64_t tTime);
+	static wstring formatTime(cwstr strFormat, time64_t tTime);
 	static string formatTime(const string& strFormat, time64_t tTime);
 
 	static time64_t transFileTime(unsigned long dwLowDateTime, unsigned long dwHighDateTime);

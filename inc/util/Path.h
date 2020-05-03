@@ -33,7 +33,7 @@ public:
 	{
 	}
 
-	XFile(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+	XFile(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
 		: m_fileInfo(t_bDir, t_strName, t_pParent)
 	{
 	}
@@ -55,7 +55,7 @@ public:
 		return m_fileInfo.bDir;
 	}
 
-    void setName(const wstring& strNewName)
+    void setName(cwstr strNewName)
 	{
 		m_fileInfo.strName = strNewName;
 	}
@@ -88,7 +88,7 @@ public:
 	{
 	}
 	
-	CPath(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+	CPath(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
 		: XFile(t_bDir, t_bDir? strutil::rtrim_r(t_strName, __wcPathSeparator) : t_strName, t_pParent)
 	{
 	}
@@ -134,7 +134,7 @@ protected:
 	}
 
 public:
-    void setDir(const wstring& strDir)
+    void setDir(cwstr strDir)
 	{
         clear();
 
@@ -193,11 +193,11 @@ public:
 	}
 
     XFile* findSubPath(wstring strSubPath, bool bDir);
-    XFile* findSubFile(const wstring& strSubFile)
+    XFile* findSubFile(cwstr strSubFile)
     {
         return findSubPath(strSubFile, false);
     }
-    CPath* findSubDir(const wstring& strSubDir)
+    CPath* findSubDir(cwstr strSubDir)
     {
         return (CPath*)findSubPath(strSubDir, true);
     }
@@ -244,7 +244,7 @@ public:
 		return true;
 	}
 
-	virtual void OnListItemRename(const wstring& strNewName)
+	virtual void OnListItemRename(cwstr strNewName)
 	{
         (void)strNewName;
 	}
@@ -281,7 +281,7 @@ public:
 	{
 	}
 
-	CPathObject(bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+	CPathObject(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
 		: CPath(t_bDir, t_strName, t_pParent)
 	{
 	}
@@ -313,7 +313,7 @@ public:
 	{
 	}
 
-	CDirObject(const wstring& t_strName, class CPath *t_pParent = NULL)
+	CDirObject(cwstr t_strName, class CPath *t_pParent = NULL)
 		: CPathObject(true, t_strName, t_pParent)
 	{
 	}

@@ -64,7 +64,7 @@ class __UtilExt CSQLiteDB : public IDB
 public:
     CSQLiteDB() = default;
 
-    CSQLiteDB(const wstring& strFile)
+    CSQLiteDB(cwstr strFile)
     {
         (void)Connect(strFile);
     }
@@ -85,7 +85,7 @@ private:
 	bool m_bInTrans = false;
 
 public:
-	const wstring& file() const
+	cwstr file() const
 	{
 		return m_strFile;
 	}
@@ -105,15 +105,15 @@ public:
         return (NULL != m_hDB);
     }
 
-    bool Connect(const wstring& strPara) override;
+    bool Connect(cwstr strPara) override;
 
 	bool Disconnect() override;
 
 	bool Execute(const string& strSql) override;
-	bool Execute(const wstring& strSql) override;
+	bool Execute(cwstr strSql) override;
 
 	IDBResult* Query(const string& strSql) override;
-	IDBResult* Query(const wstring& strSql) override;
+	IDBResult* Query(cwstr strSql) override;
 
 	bool BeginTrans() override;
 	bool CommitTrans() override;

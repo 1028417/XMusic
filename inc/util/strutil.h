@@ -3,8 +3,11 @@
 
 #include <string>
 
+using cwstr = const wstring&;
+
 #if !__winvc
 #include <QString>
+using cqstr = const QString&;
 
 #define __W2Q(pStr, len) QString::fromWCharArray(pStr, len)
 #define __WS2Q(wstr) QString::fromStdWString(wstr)
@@ -44,8 +47,8 @@ private:
     }
 
 public:
-	static int collate(const wstring& lhs, const wstring& rhs);
-	static int collate_cn(const wstring& lhs, const wstring& rhs);
+    static int collate(cwstr lhs, cwstr rhs);
+    static int collate_cn(cwstr lhs, cwstr rhs);
 
 	template <class S>
 	static S substr(const S& str, size_t pos, size_t len = -1)
@@ -58,7 +61,7 @@ public:
 		return str.substr(pos, len);
 	}
 
-        static bool endWith(const wstring& str, const wstring& strEnd);
+        static bool endWith(cwstr str, cwstr strEnd);
         static bool endWith(const string& str, const string& strEnd);
 
 	template <class S, typename T = decltype(*S().c_str())>
@@ -113,10 +116,10 @@ public:
 		return strRet;
 	}
 
-	static void split(const wstring& strText, wchar_t wcSplitor, vector<wstring>& vecRet);
+    static void split(cwstr strText, wchar_t wcSplitor, vector<wstring>& vecRet);
 	static void split(const string& strText, char wcSplitor, vector<string>& vecRet);
 
-	static bool matchIgnoreCase(const wstring& str1, const wstring& str2, size_t maxlen = 0);
+    static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
 
 	static void lowerCase(wstring& str)
 	{
@@ -166,10 +169,10 @@ public:
 		return strRet;
 	}
 
-	static UINT replace(wstring& str, const wstring& strFind, const wchar_t *pszReplace = NULL);
+    static UINT replace(wstring& str, cwstr strFind, const wchar_t *pszReplace = NULL);
 	static UINT replace(string& str, const string& strFind, const char *pszReplace = NULL);
 
-	static UINT replace(wstring& str, const wstring& strFind, const wstring& strReplace);
+    static UINT replace(wstring& str, cwstr strFind, cwstr strReplace);
 	static UINT replace(string& str, const string& strFind, const string& strReplace);
 
 	template <class S, typename T = decltype(S().c_str())>
@@ -321,7 +324,7 @@ public:
 	}
 
 	static string toUtf8(const wchar_t *pStr, int len = -1);
-	static string toUtf8(const wstring& str)
+    static string toUtf8(cwstr str)
 	{
 		return toUtf8(str.c_str(), str.size());
 	}
@@ -333,17 +336,17 @@ public:
     }
 
     static string toGbk(const wchar_t *pStr, int len = -1);
-    static string toGbk(const wstring& str)
+    static string toGbk(cwstr str)
     {
         return toGbk(str.c_str(), str.size());
     }
 
 #if !__winvc
-    static string toGbk(const QString& qs);
+    static string toGbk(cqstr qs);
 #endif
 
     static string toAsc(const wchar_t *pStr, int len = -1);
-    static string toAsc(const wstring& str)
+    static string toAsc(cwstr str)
     {
         return toAsc(str.c_str(), str.size());
     }
@@ -381,7 +384,7 @@ public:
 	}
 
 	template <typename T>
-	static wstring ContainerToStr(const T& container, const wstring& strSplitor)
+    static wstring ContainerToStr(const T& container, cwstr strSplitor)
 	{
         wstringstream strmRet;
         for (typename T::const_iterator it = container.begin(); ; )
@@ -399,7 +402,7 @@ public:
 	
 	struct tagCNSortor
 	{
-		bool operator()(const wstring& lhs, const wstring& rhs) const
+        bool operator()(cwstr lhs, cwstr rhs) const
 		{
 			return strutil::collate(lhs, rhs)<0;
 		}

@@ -19,7 +19,7 @@ public:
 protected:
     FStream() = default;
 	
-	FStream(const wstring& strFile, const string& strMode)
+	FStream(cwstr strFile, const string& strMode)
 	{
 		(void)_open(strFile, strMode);
 	}
@@ -165,7 +165,7 @@ public:
 
     IFStream() = default;
 
-    IFStream(const wstring& strFile)
+    IFStream(cwstr strFile)
     {
         (void)open(strFile);
     }
@@ -199,7 +199,7 @@ public:
 		return m_size;
 	}
 
-	virtual bool open(const wstring& strFile)
+	virtual bool open(cwstr strFile)
 	{
 		return _open(strFile);
 	}
@@ -288,7 +288,7 @@ public:
 
     OFStream() = default;
 
-    OFStream(const wstring& strFile, bool bTrunc)
+    OFStream(cwstr strFile, bool bTrunc)
     {
         (void)open(strFile, bTrunc);
     }
@@ -298,7 +298,7 @@ public:
     }
 
 public:
-    virtual bool open(const wstring& strFile, bool bTrunc)
+    virtual bool open(cwstr strFile, bool bTrunc)
     {
         return _open(strFile, bTrunc?"wb":"ab");
     }

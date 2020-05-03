@@ -36,14 +36,14 @@ class IDB
 public:
     virtual int GetStatus() const = 0;
 
-	virtual bool Connect(const wstring& strPara=L"") = 0;
+	virtual bool Connect(cwstr strPara=L"") = 0;
 	virtual bool Disconnect() = 0;
 
 	virtual bool Execute(const string& strSql) = 0;
-	virtual bool Execute(const wstring& strSql) = 0;
+	virtual bool Execute(cwstr strSql) = 0;
 
 	virtual IDBResult* Query(const string& strSql) = 0;
-	virtual IDBResult* Query(const wstring& strSql) = 0;
+	virtual IDBResult* Query(cwstr strSql) = 0;
 
 	virtual bool BeginTrans() = 0;
 	virtual bool RollbakTrans() = 0;
