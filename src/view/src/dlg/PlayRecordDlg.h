@@ -7,7 +7,7 @@ public:
 	{
 	}
 
-	CPlayRecord(const wstring& strPath, dbtime_t tTime)
+	CPlayRecord(cwstr strPath, dbtime_t tTime)
 		: CMedia(NULL, 0, strPath, tTime)
 	{
 	}

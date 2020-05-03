@@ -26,7 +26,7 @@ private:
 private:
 	BOOL OnInitDialog() override;
 
-	void showCueInfo(const wstring& strDir, CRCueFile cueFile, CMediaRes *pMediaRes);
+	void showCueInfo(cwstr strDir, CRCueFile cueFile, CMediaRes *pMediaRes);
 
 	void OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult);
 

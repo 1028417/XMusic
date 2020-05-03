@@ -8,7 +8,7 @@ public:
 	{
 	}
 	
-	CFindDlg(__view& view, bool bQuickHittest, E_FindMediaMode eFindMediaMode, const wstring& strFindText, const wstring& strFindSingerName=L"")
+	CFindDlg(__view& view, bool bQuickHittest, E_FindMediaMode eFindMediaMode, cwstr strFindText, cwstr strFindSingerName=L"")
 		: m_view(view)
 		, m_strFindText(strFindText)
 		, m_strFindSingerName(strFindSingerName)
@@ -43,7 +43,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	const TD_MediaMixtureVector& FindMedia(E_FindMediaMode eFindMediaMode, const wstring& strFindText, const wstring& strFindSingerName=L"");
+	const TD_MediaMixtureVector& FindMedia(E_FindMediaMode eFindMediaMode, cwstr strFindText, cwstr strFindSingerName=L"");
 
 	void Refresh();
 

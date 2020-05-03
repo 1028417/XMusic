@@ -3,7 +3,7 @@
 
 #include "ChooseDirDlg.h"
 
-CChooseDirDlg::CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot)
+CChooseDirDlg::CChooseDirDlg(cwstr strTitle, CMediaDir& RootDir, bool bShowRoot)
 	: m_strTitle(strTitle)
 	, m_RootDir(RootDir)
 	, m_bShowRoot(bShowRoot)

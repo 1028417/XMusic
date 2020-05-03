@@ -3,7 +3,7 @@
 
 #include "MediaSetDlg.h"
 
-CMediaSetDlg::CMediaSetDlg(__view& view, CMediaSet& MediaSet, TD_MediaSetList& lstRetMediaSets, const wstring& strTitle)
+CMediaSetDlg::CMediaSetDlg(__view& view, CMediaSet& MediaSet, TD_MediaSetList& lstRetMediaSets, cwstr strTitle)
 	: m_view(view)
 	, m_MediaSet(MediaSet)
 	, m_lstSelMediaSets(lstRetMediaSets)

@@ -9,7 +9,7 @@
 class CBasePage : public CPage, protected CDropTargetEx
 {
 public:
-	CBasePage(class __view& view, UINT uIDDlgRes, const wstring& strBaseTitle, UINT uIDMenu = 0, bool bAutoActive=false);
+	CBasePage(class __view& view, UINT uIDDlgRes, cwstr strBaseTitle, UINT uIDMenu = 0, bool bAutoActive=false);
 	
 	virtual ~CBasePage() = default;
 
@@ -45,5 +45,5 @@ protected:
 public:
 	void Active(bool bForceFocus = true);
 	
-	void SetTitle(const wstring& strTitle);
+	void SetTitle(cwstr strTitle);
 };

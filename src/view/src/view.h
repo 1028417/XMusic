@@ -139,10 +139,10 @@ public:
 private:
 	bool _create();
 
-	bool _exportMedia(CWnd& wnd, const wstring& strTitle
+	bool _exportMedia(CWnd& wnd, cwstr strTitle
 		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
-	void _snapshotDir(CMediaRes& dir, const wstring& strOutputFile);
+	void _snapshotDir(CMediaRes& dir, cwstr strOutputFile);
 
 	void _checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult)>& fnWork);
 
@@ -154,11 +154,11 @@ public:
 
 	void foregroundMainWnd();
 	
-	CMediaDir* showChooseDirDlg(const wstring& strTitle, bool bShowRoot = true);
+	CMediaDir* showChooseDirDlg(cwstr strTitle, bool bShowRoot = true);
 
-	void showFindDlg(const wstring& strFind, bool bQuickHittest=false);
+	void showFindDlg(cwstr strFind, bool bQuickHittest=false);
 	
-	void findMedia(const wstring& strFindPath, bool bDir, const wstring& strSingerName = L"");
+	void findMedia(cwstr strFindPath, bool bDir, cwstr strSingerName = L"");
 
 	void verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd = NULL
 		, cfn_void_t<const tagVerifyResult&> cb = NULL);

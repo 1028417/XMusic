@@ -77,7 +77,7 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 	return true;
 }
 
-bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
+bool CImgMgr::_setImg(cwstr strImg, bool bHalfToneMode)
 {
 	Gdiplus::Bitmap img(getImgPath(strImg).c_str());
 	HICON hIcon = NULL;
@@ -100,7 +100,7 @@ bool CImgMgr::_setImg(const wstring& strImg, bool bHalfToneMode)
 	return true;
 }
 
-bool CImgMgr::_setSingerImg(const wstring& strFile)
+bool CImgMgr::_setSingerImg(cwstr strFile)
 {
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
@@ -125,7 +125,7 @@ void CImgMgr::initSingerImg()
 	});
 }
 
-bool CImgMgr::_initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile)
+bool CImgMgr::_initSingerImg(UINT uSingerID, cwstr strSingerName, cwstr strFile)
 {
 	__EnsureReturn(_setSingerImg(strFile), false);
 	
@@ -134,7 +134,7 @@ bool CImgMgr::_initSingerImg(UINT uSingerID, const wstring& strSingerName, const
 	return true;
 }
 
-bool CImgMgr::addSingerImg(UINT uSingerID, const wstring& strSingerName, const list<wstring>& lstFiles)
+bool CImgMgr::addSingerImg(UINT uSingerID, cwstr strSingerName, const list<wstring>& lstFiles)
 {
 	UINT uRet = m_model.getSingerImgMgr().addSingerImg(strSingerName, lstFiles);
 	__EnsureReturn(uRet != 0, false);
@@ -150,7 +150,7 @@ bool CImgMgr::addSingerImg(UINT uSingerID, const wstring& strSingerName, const l
 	return true;
 }
 
-void CImgMgr::removeSingerImg(UINT uSingerID, const wstring& strSingerName)
+void CImgMgr::removeSingerImg(UINT uSingerID, cwstr strSingerName)
 {
 	auto itr = std::find(m_vctSingerID.begin(), m_vctSingerID.end(), uSingerID);
 	if (itr == m_vctSingerID.end())

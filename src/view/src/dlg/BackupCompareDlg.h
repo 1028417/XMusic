@@ -68,7 +68,7 @@ class CBackupCompareDlg : public TDialog<IDD_DLG_BackupCompare>
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 
 public:
-	CBackupCompareDlg(__view& view, const wstring& strTag, bool bCompareCurrent)
+	CBackupCompareDlg(__view& view, cwstr strTag, bool bCompareCurrent)
 		: m_view(view)
 		, m_BackupMgr(view.getBackupMgr())
 		, m_strTag(strTag)

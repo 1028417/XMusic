@@ -21,7 +21,7 @@ private:
 private:
 	void _OnInitDialog() override;
 
-	void UpdateTitle(const wstring& strTitle) override;
+	void UpdateTitle(cwstr strTitle) override;
 
 	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 	

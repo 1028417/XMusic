@@ -100,7 +100,7 @@ void CFindDlg::OnEnChangeEdit1()
 	});
 }
 
-const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode, const wstring& strFindText, const wstring& strFindSingerName)
+const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode, cwstr strFindText, cwstr strFindSingerName)
 {
 	tagFindMediaResult FindResult;
 

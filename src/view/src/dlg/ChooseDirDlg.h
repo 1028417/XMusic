@@ -3,7 +3,7 @@
 class CChooseDirDlg : public TDialog<IDD_DLG_ChooseDir, true>
 {
 public:
-	CChooseDirDlg(const wstring& strTitle, CMediaDir& RootDir, bool bShowRoot);
+	CChooseDirDlg(cwstr strTitle, CMediaDir& RootDir, bool bShowRoot);
 
 	void DoDataExchange(CDataExchange* pDX);
 

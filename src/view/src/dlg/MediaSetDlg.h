@@ -3,7 +3,7 @@
 class CMediaSetDlg : public TDialog<IDD_DLG_MEDIASET, true>
 {
 public:
-	CMediaSetDlg(__view& view, CMediaSet& MediaSet, TD_MediaSetList& lstRetMediaSets, const wstring& strTitle);
+	CMediaSetDlg(__view& view, CMediaSet& MediaSet, TD_MediaSetList& lstRetMediaSets, cwstr strTitle);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 

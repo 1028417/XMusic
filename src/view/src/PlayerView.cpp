@@ -340,7 +340,7 @@ void CPlayerView::_addInMedia()
 	(void)ProgressDlg.DoModal(L"合入外部文件");
 }
 
-bool CPlayerView::msgBox(const wstring& strMsg, bool bWarning)
+bool CPlayerView::msgBox(cwstr strMsg, bool bWarning)
 {
 	if (bWarning)
 	{

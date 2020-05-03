@@ -144,7 +144,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 
 	map<CMedia*, wstring> mapUpdateMedias;
 	auto cbAutoMatch = [&](CProgressDlg& ProgressDlg) {
-		auto cbProgress = [&](const wstring& strDir) {
+		auto cbProgress = [&](cwstr strDir) {
 			ProgressDlg.SetStatusText(strDir.c_str());
 			
 			return !ProgressDlg.checkCancel();

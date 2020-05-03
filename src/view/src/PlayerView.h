@@ -42,7 +42,7 @@ private:
 	bool handleCommand(UINT uID) override;
 
 private:
-	bool msgBox(const wstring& strMsg, bool bWarning = false) override;
+	bool msgBox(cwstr strMsg, bool bWarning = false) override;
 
 	void updateMediaRelated(const tagMediaSetChanged& MediaSetChanged) override
 	{

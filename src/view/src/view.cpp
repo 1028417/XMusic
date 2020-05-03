@@ -138,7 +138,7 @@ void __view::clearView()
 	//m_MediaResPage.Active();
 }
 
-CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
+CMediaDir* __view::showChooseDirDlg(cwstr strTitle, bool bShowRoot)
 {
 	//CRootMediaDir RootDir(__medialib.path(), m_view.getOption().plAttachDir);
 
@@ -147,14 +147,14 @@ CMediaDir* __view::showChooseDirDlg(const wstring& strTitle, bool bShowRoot)
 	return ChooseDirDlg.show();
 }
 
-void __view::showFindDlg(const wstring& strFind, bool bQuickHittest)
+void __view::showFindDlg(cwstr strFind, bool bQuickHittest)
 {
 	m_ResModule.ActivateResource();
 	CFindDlg FindDlg(*this, bQuickHittest, E_FindMediaMode::FMM_MatchText, strFind);
 	(void)FindDlg.DoModal();
 }
 
-void __view::findMedia(const wstring& strFindPath, bool bDir, const wstring& strSingerName)
+void __view::findMedia(cwstr strFindPath, bool bDir, cwstr strSingerName)
 {
 	CResGuard ResGuard(m_ResModule);
 
@@ -277,7 +277,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo->m_strPath))
 			<< L"      大小:  " << MediaResInfo.fileSizeString();
 
-		cauto fnGenTag = [&](const wstring& strPath) {
+		cauto fnGenTag = [&](cwstr strPath) {
 			auto eFileType = IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
 			if (E_MediaFileType::MFT_MP3 == eFileType || E_MediaFileType::MFT_FLAC == eFileType)
 			{
@@ -456,7 +456,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
 }
 
-bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle
+bool __view::_exportMedia(CWnd& wnd, cwstr strTitle
 	, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport)
 {
 	m_ResModule.ActivateResource();
@@ -487,7 +487,7 @@ bool __view::_exportMedia(CWnd& wnd, const wstring& strTitle
 
 		ProgressDlg.SetProgress(0, uCount);
 
-		UINT uRet = m_model.exportMedia(ExportOption, [&](UINT uProgressOffset, const wstring& strDstFile) {
+		UINT uRet = m_model.exportMedia(ExportOption, [&](UINT uProgressOffset, cwstr strDstFile) {
 			if (!strDstFile.empty())
 			{
 				ProgressDlg.SetStatusText(strDstFile.c_str());
@@ -685,7 +685,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	}
 }
 
-void __view::_snapshotDir(CMediaRes& dir, const wstring& strOutputFile)
+void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 {
 	CUTF8TxtWriter TxtWriter;
 	if (!TxtWriter.open(strOutputFile, true))

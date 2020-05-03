@@ -28,7 +28,7 @@ public:
 	void close();
 
 	bool addPlayingItem(const SArray<wstring>& arrOppPaths, int nPos = -1);
-	bool addPlayingItem(const wstring& strOppPaths, int nPos = -1)
+	bool addPlayingItem(cwstr strOppPaths, int nPos = -1)
 	{
 		return addPlayingItem(SArray<wstring>(strOppPaths), nPos);
 	}

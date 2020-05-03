@@ -20,15 +20,15 @@ private:
 	vector<UINT> m_vctSingerID;
 
 private:
-	bool _setImg(const wstring& strImg, bool bHalfToneMode=false);
-	bool _setSingerImg(const wstring& strFile);
+	bool _setImg(cwstr strImg, bool bHalfToneMode=false);
+	bool _setSingerImg(cwstr strFile);
 
-	bool _initSingerImg(UINT uSingerID, const wstring& strSingerName, const wstring& strFile);
+	bool _initSingerImg(UINT uSingerID, cwstr strSingerName, cwstr strFile);
 	
 	int _getSingerImgPos(UINT uSingerID) const;
 
 public:
-	wstring getImgPath(const wstring& strImgFile) const
+	wstring getImgPath(cwstr strImgFile) const
 	{
 		return m_strImgDir + strImgFile + L".png";
 	}
@@ -48,9 +48,9 @@ public:
 
 	void initSingerImg();
 
-	bool addSingerImg(UINT uSingerID, const wstring& strSingerName, const list<wstring>& lstFiles);
+	bool addSingerImg(UINT uSingerID, cwstr strSingerName, const list<wstring>& lstFiles);
 
-	void removeSingerImg(UINT uSingerID, const wstring& strSingerName);
+	void removeSingerImg(UINT uSingerID, cwstr strSingerName);
 	
 	void clearSingerImg();
 };

@@ -20,7 +20,7 @@ void CSingerMediaResPanel::OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult)
 	m_wndAlbumPage.m_wndAlbumList.SelectItem(0);
 }
 
-void CSingerMediaResPanel::UpdateTitle(const wstring& strTitle)
+void CSingerMediaResPanel::UpdateTitle(cwstr strTitle)
 {
 	__super::UpdateTitle(strTitle);
 

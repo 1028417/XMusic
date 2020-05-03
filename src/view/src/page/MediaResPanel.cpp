@@ -280,7 +280,7 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 	m_cy = cy;
 }
 
-void CMediaResPanel::ShowDir(const wstring& strPath)
+void CMediaResPanel::ShowDir(cwstr strPath)
 {
 	__waitCursor;
 

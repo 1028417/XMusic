@@ -76,7 +76,7 @@ void CPlaySpirit::Dock(bool bDock)
 	}
 }
 
-void CPlaySpirit::SetSkin(const wstring& strSkinPath)
+void CPlaySpirit::SetSkin(cwstr strSkinPath)
 {
 	cauto rcPos = rect();
 

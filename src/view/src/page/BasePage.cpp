@@ -3,7 +3,7 @@
 
 #define __PlayerClipboardFormat ((UINT)-1)
 
-CBasePage::CBasePage(__view& view, UINT uIDDlgRes, const wstring& strBaseTitle, UINT uIDMenu, bool bAutoActive)
+CBasePage::CBasePage(__view& view, UINT uIDDlgRes, cwstr strBaseTitle, UINT uIDMenu, bool bAutoActive)
 	: CPage(view.m_ResModule, uIDDlgRes, strBaseTitle.c_str(), bAutoActive)
 	, m_view(view)
 	, m_strBaseTitle(strBaseTitle)
@@ -16,7 +16,7 @@ void CBasePage::Active(bool bForceFocus)
 	m_view.m_MainWnd.ActivePage(*this, bForceFocus);
 }
 
-void CBasePage::SetTitle(const wstring& strTitle)
+void CBasePage::SetTitle(cwstr strTitle)
 {
 	int iImage = GetTabImage();
 	__super::SetTitle((m_strBaseTitle + strTitle).c_str(), iImage);

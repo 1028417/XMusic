@@ -66,7 +66,7 @@ protected:
 protected:
 	BOOL OnInitDialog() override;
 
-	virtual void UpdateTitle(const wstring& strTitle)
+	virtual void UpdateTitle(cwstr strTitle)
 	{
 		__super::SetTitle(strTitle);
 	}
@@ -74,7 +74,7 @@ protected:
 public:
 	BOOL Create(CBasePage& wndPage);
 
-	void ShowDir(const wstring& strPath=L"");
+	void ShowDir(cwstr strPath=L"");
 
 	void Refresh();
 

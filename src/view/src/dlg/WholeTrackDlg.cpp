@@ -108,7 +108,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 		if (plUnmatchFile)
 		{
 			__appSync([&]() {
-				plUnmatchFile([&](CMediaRes *pMediaRes, const wstring& strDir) {
+				plUnmatchFile([&](CMediaRes *pMediaRes, cwstr strDir) {
 					showCueInfo(strDir, CCueFile::NoCue, pMediaRes);
 				});
 			});
@@ -118,7 +118,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 	return true;
 }
 
-void CWholeTrackDlg::showCueInfo(const wstring& strDir, CRCueFile cueFile, CMediaRes *pMediaRes)
+void CWholeTrackDlg::showCueInfo(cwstr strDir, CRCueFile cueFile, CMediaRes *pMediaRes)
 {
 	m_plCueFile.add(&cueFile, pMediaRes);
 	
