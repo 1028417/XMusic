@@ -194,9 +194,7 @@ private:
 
     void _relayout(int cx, int cy) override;
 
-    void _setBkg(cwstr strFile);
-
-    QPixmap _loadBkg(const WString& strFile);
+    bool _setBkg(int nIdx);
 
     void _updateBkg(cwstr strFile);
 
