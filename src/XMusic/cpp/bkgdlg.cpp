@@ -5,8 +5,6 @@
 
 #define __szZoomout 2160
 
-#define __snapshotZoomout 800
-
 #define __snapshotRetain 7
 
 static int g_xsize = 0;
@@ -271,7 +269,7 @@ void CBkgDlg::preinit()
         }
 
         auto& vecBkgFile = bHBkg?m_vecHBkgFile:m_vecVBkgFile;
-        fsutil::findSubFile(strAppBkgDir, [&](const wstring& strSubFile) {
+        fsutil::findSubFile(strAppBkgDir, [&](cwstr strSubFile) {
             vecBkgFile.emplace_back(false, strAppVersion + __wcPathSeparator + strSubFile);
         });
 
@@ -405,23 +403,52 @@ inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
     return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
 }
 
-static void zoomoutPixmap(QPixmap& pm, UINT size)
+enum class E_BkgType
 {
-    if (pm.width() < pm.height())
+    BT_H,
+    BT_V,
+    BT_Both
+};
+
+inline static void zoomoutPixmap(QPixmap &pm, int cx, int cy, UINT uDiv)
+{
+    if (uDiv > 1)
     {
-        if (pm.width() > (int)size)
+        cx /= uDiv;
+        cy /= uDiv;
+    }
+
+    if ((float)pm.height()/pm.width() > (float)cy/cx)
+    {
+        if (pm.width() > cx)
         {
-            auto&& temp = pm.scaledToWidth(size, Qt::SmoothTransformation);
+            auto&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
             pm.swap(temp);
         }
     }
     else
     {
-        if (pm.height() > (int)size)
+        if (pm.height() > cy)
         {
-            auto&& temp = pm.scaledToHeight(size, Qt::SmoothTransformation);
+            auto&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
             pm.swap(temp);
         }
+    }
+}
+
+static void zoomoutPixmap(E_BkgType eType, QPixmap& pm, UINT uDiv=0)
+{
+    if (E_BkgType::BT_H == eType)
+    {
+        zoomoutPixmap(pm, g_szScreenMax, g_szScreenMin, uDiv);
+    }
+    else if (E_BkgType::BT_V == eType)
+    {
+        zoomoutPixmap(pm, g_szScreenMin, g_szScreenMax, uDiv);
+    }
+    else
+    {
+        zoomoutPixmap(pm, g_szScreenMax, g_szScreenMax, uDiv);
     }
 }
 
@@ -429,7 +456,7 @@ inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm)
 {
     if (!pm.isNull())
     {
-        zoomoutPixmap(pm, __snapshotZoomout);
+        zoomoutPixmap(m_bHScreen?E_BkgType::BT_H:E_BkgType::BT_V, pm, 2);
     }
 
     m_lstBr.emplace_back(pm);
@@ -463,7 +490,7 @@ CBkgBrush* CBkgDlg::brush(size_t uIdx)
     return bkgFile.br = &br;
 }
 
-void CBkgDlg::_setBkg(const wstring& strFile)
+void CBkgDlg::_setBkg(cwstr strFile)
 {
     auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
     if (!strFile.empty())
@@ -483,16 +510,13 @@ QPixmap CBkgDlg::_loadBkg(const WString& strFile)
     QPixmap pm;
     if (pm.load(strFile))
     {
-        auto szZoomout = __szZoomout;
-        szZoomout = MAX(szZoomout, width());
-        szZoomout = MAX(szZoomout, height());
-        zoomoutPixmap(pm, szZoomout);
+        zoomoutPixmap(m_bHScreen?E_BkgType::BT_H:E_BkgType::BT_V, pm);
     }
 
     return pm;
 }
 
-void CBkgDlg::_updateBkg(const wstring& strFile)
+void CBkgDlg::_updateBkg(cwstr strFile)
 {
     m_app.getOption().bUseBkgColor = false;
     if (m_bHScreen)
@@ -580,7 +604,7 @@ void CBkgDlg::_showAddBkg()
 #endif
 }
 
-void CBkgDlg::addBkg(const wstring& strFile)
+void CBkgDlg::addBkg(cwstr strFile)
 {
     static bool bFlag = false;
     if (bFlag)
@@ -691,26 +715,24 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     return NULL;
 }
 
-inline static bool _loadImg(XFile& subFile, QPixmap& pm, UINT uZoomOutSize)
+#define __szSubIngFilter 640
+
+inline static bool _loadSubImg(XFile& subFile, QPixmap& pm)
 {
     if (!pm.load(__WS2Q(subFile.path())))
     {
         return false;
     }
 
-#define __filterSize 640
-    if (pm.width()<__filterSize || pm.height()<__filterSize)
+    if (pm.width()<__szSubIngFilter || pm.height()<__szSubIngFilter)
     {
-        pm = QPixmap();
         return false;
     }
-
-    zoomoutPixmap(pm, uZoomOutSize);
 
     return true;
 }
 
-void CImgDir::scan(const wstring& strDir, cfn_void_t<CImgDir&> cb)
+void CImgDir::scan(cwstr strDir, cfn_void_t<CImgDir&> cb)
 {
     if (m_thread.joinable())
     {
@@ -742,55 +764,52 @@ void CImgDir::_onClear()
 {
     m_thread.cancel();
 
-    m_vecSubImgs.clear();
+    m_vecImgs.clear();
 }
+
+#define __szSnapshot 160
 
 bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)
 {
     for (m_itrSubFile = paSubFile.begin(); m_itrSubFile != paSubFile.end(); ++m_itrSubFile)
     {
-        auto pSubFile = *m_itrSubFile;
-
-#define __snapshotSize 150
-        if (_loadImg(*pSubFile, m_pmSnapshot, __snapshotSize))
+        if (_loadSubImg(**m_itrSubFile, m_pmSnapshot))
         {
-            m_vecSubImgs.reserve(paSubFile.size());
+            auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
+                    ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+                    : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+            m_pmSnapshot.swap(temp);
+
+            //m_vecSubImgs.reserve(paSubFile.size());
             return true;
         }
+        m_pmSnapshot = QPixmap();
     }
 
     return false;
 }
 
-const QPixmap* CImgDir::snapshot(int nIdx) const
+const QPixmap* CImgDir::img(UINT uIdx) const
 {
-    if (nIdx < 0)
+    if (uIdx < m_vecImgs.size())
     {
-        return &m_pmSnapshot;
-    }
-
-    if ((size_t)nIdx < m_vecSubImgs.size())
-    {
-        return &m_vecSubImgs[nIdx].first;
+        return &m_vecImgs[uIdx].pm;
     }
 
     return NULL;
 }
 
-wstring CImgDir::path(int nIdx) const
+wstring CImgDir::imgPath(UINT uIdx) const
 {
-    if (nIdx < 0)
+    if (uIdx < m_vecImgs.size())
     {
-        return CPath::path();
-    }
-
-    if ((size_t)nIdx < m_vecSubImgs.size())
-    {
-        return m_vecSubImgs[nIdx].second;
+        return m_vecImgs[uIdx].strPath;
     }
 
     return L"";
 }
+
+#define __szSubimgZoomout 500
 
 bool CImgDir::genSubImgs()
 {
@@ -802,12 +821,25 @@ bool CImgDir::genSubImgs()
 
     auto pSubFile = *m_itrSubFile;
 
-#define __subimgZoomout 500
     QPixmap pm;
-    if (_loadImg(*pSubFile, pm, __subimgZoomout))
+    if (_loadSubImg(*pSubFile, pm))
     {
-        m_vecSubImgs.emplace_back(QPixmap(), pSubFile->path());
-        m_vecSubImgs.back().first.swap(pm);
+        UINT uDiv = 2;
+        auto count = m_vecImgs.size();
+        if (count >= 4)
+        {
+            uDiv = 3;
+
+            if (4 == count)
+            {
+                for (auto& bkgImg : m_vecImgs)
+                {
+                    zoomoutPixmap(E_BkgType::BT_Both, bkgImg.pm, uDiv);
+                }
+            }
+        }
+        zoomoutPixmap(E_BkgType::BT_Both, pm, uDiv);
+        m_vecImgs.emplace_back(pm, pSubFile->path());
     }
 
     ++m_itrSubFile;

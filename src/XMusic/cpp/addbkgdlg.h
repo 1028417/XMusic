@@ -12,11 +12,15 @@ public:
 
     virtual ~IImgDir() = default;
 
+    virtual wstring displayName() const = 0;
+
+    virtual cqpm snapshot() const = 0;
+
     virtual size_t imgCount() const = 0;
 
-    virtual const QPixmap* snapshot(int nIdx=-1) const = 0;
+    virtual const QPixmap* img(UINT uIdx) const = 0;
 
-    virtual wstring path(int nIdx=-1) const = 0;
+    virtual wstring imgPath(UINT uIdx) const = 0;
 
     virtual bool genSubImgs() = 0;
 };

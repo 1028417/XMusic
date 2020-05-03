@@ -19,6 +19,9 @@ extern QLockFile g_lf;
 
 extern ITxtWriter& g_logger;
 
+extern int g_szScreenMax;
+extern int g_szScreenMin;
+
 extern int g_nAppDownloadProgress;
 
 class CAppInit

@@ -12,6 +12,8 @@
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
+int g_szScreenMax = 0;
+int g_szScreenMin = 0;
 float g_fPixelRatio = 1;
 
 static bool g_bRunSignal = true;
@@ -159,9 +161,16 @@ CAppInit::CAppInit(QApplication& app)
 #endif
 
     QScreen *screen = QApplication::primaryScreen();
+    QSize szScreen = screen->size();
+    g_szScreenMax = szScreen.width();
+    g_szScreenMin = szScreen.height();
+    if (g_szScreenMax < g_szScreenMin)
+    {
+        std::swap(g_szScreenMax, g_szScreenMin);
+    }
     float fPixelRatio = screen->devicePixelRatio();
     auto fDPI = screen->logicalDotsPerInch();
-    g_logger << "DPR: " << fPixelRatio << " DPI: " >> fDPI;
+    g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin << " DPR: " << fPixelRatio << " DPI: " >> fDPI;
 
 #if __ios
     g_fPixelRatio = fPixelRatio;
@@ -191,10 +200,8 @@ CAppInit::CAppInit(QApplication& app)
         break;
     };*/
 
-    QSize szScreen = screen->size();
-    int nScreenWidth = MIN(szScreen.width(), szScreen.height()) ;
     g_uDefFontSize = app.font().pointSize();
-    g_uDefFontSize *= nScreenWidth/540.0f;
+    g_uDefFontSize *= g_szScreenMax/540.0f;
 
 #elif __mac
     g_uDefFontSize = 29;

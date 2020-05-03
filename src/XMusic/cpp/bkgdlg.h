@@ -36,6 +36,20 @@ public:
     UINT margin();
 };
 
+struct tagBkgImg
+{
+    tagBkgImg() = default;
+
+    tagBkgImg(QPixmap& pm, cwstr strPath)
+        : strPath(strPath)
+    {
+        this->pm.swap(pm);
+    }
+
+    QPixmap pm;
+    wstring strPath;
+};
+
 class CImgDir : public CPath, public IImgDir
 {
 public:
@@ -52,20 +66,31 @@ private:
 
     QPixmap m_pmSnapshot;
 
-    vector<pair<QPixmap, wstring>> m_vecSubImgs;
+    vector<tagBkgImg> m_vecImgs;
 
 public:
-    void scan(const wstring& strDir, cfn_void_t<CImgDir&> cb);
+    void scan(cwstr strDir, cfn_void_t<CImgDir&> cb);
 
 private:
-    size_t imgCount() const override
+    wstring displayName() const override
     {
-        return m_vecSubImgs.size();
+        QDir dir(__WS2Q(path()));
+        return dir.absolutePath().toStdWString();
     }
 
-    const QPixmap* snapshot(int nIdx) const override;
+    const cqpm snapshot() const override
+    {
+        return m_pmSnapshot;
+    }
 
-    wstring path(int nIdx) const override;
+    size_t imgCount() const override
+    {
+        return m_vecImgs.size();
+    }
+
+    const QPixmap* img(UINT uIdx) const override;
+
+    wstring imgPath(UINT uIdx) const override;
 
     bool genSubImgs() override;
 
@@ -102,7 +127,7 @@ struct tagBkgFile
 {
     tagBkgFile() = default;
 
-    tagBkgFile(bool bInner, const wstring& strPath, CBkgBrush *br=NULL)
+    tagBkgFile(bool bInner, cwstr strPath, CBkgBrush *br=NULL)
         : bInner(bInner)
         , strPath(strPath)
         , br(br)
@@ -169,11 +194,11 @@ private:
 
     void _relayout(int cx, int cy) override;
 
-    void _setBkg(const wstring& strFile);
+    void _setBkg(cwstr strFile);
 
     QPixmap _loadBkg(const WString& strFile);
 
-    void _updateBkg(const wstring& strFile);
+    void _updateBkg(cwstr strFile);
 
     void _showAddBkg();
 
@@ -199,7 +224,7 @@ public:
 
     void setBkg(size_t uItem);
 
-    void addBkg(const wstring& strFile);
+    void addBkg(cwstr strFile);
 
     void deleleBkg(size_t uIdx);
 };

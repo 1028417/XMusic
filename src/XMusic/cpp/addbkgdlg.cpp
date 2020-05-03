@@ -135,8 +135,7 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     if (m_pImgDir)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
-
-        auto pm = m_pImgDir->snapshot(uIdx);
+        auto pm = m_pImgDir->img(uIdx);
         if (pm)
         {
             QRect rcFrame(lvRow.rc);
@@ -153,11 +152,8 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             auto eStyle = E_RowStyle::IS_MultiLine
                     | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
             tagRowContext context(lvRow, eStyle);
-            QDir dir(__WS2Q(imgDir.path()));
-            context.strText = dir.absolutePath().toStdWString();
-
-            context.pmImg = imgDir.snapshot();
-
+            context.strText = imgDir.displayName();
+            context.pmImg = &imgDir.snapshot();
             _paintRow(painter, context);
         });
     }
@@ -169,7 +165,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
     {
         size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
 
-        cauto strFilePath = m_pImgDir->path(uIdx);
+        cauto strFilePath = m_pImgDir->imgPath(uIdx);
         if (!strFilePath.empty())
         {
             m_addbkgDlg.bkgDlg().addBkg(strFilePath);
