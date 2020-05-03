@@ -12,7 +12,7 @@ private:
 public:
 	bool clearData();
 
-	bool updateMediaSetName(CMediaSet& MediaSet, const wstring& strName);
+	bool updateMediaSetName(CMediaSet& MediaSet, cwstr strName);
 	bool updateMediaSetProperty(CMediaSet& MediaSet, const CMediasetProperty& property);
 
 	void updateMediaSizeDuration(const TD_MediaList& lstMedias);

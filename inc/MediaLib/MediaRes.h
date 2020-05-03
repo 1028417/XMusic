@@ -23,7 +23,7 @@ public:
 	{
 	}
 
-	CMediaRes(E_MediaFileType eFileType, bool t_bDir, const wstring& t_strName, class CPath *t_pParent)
+    CMediaRes(E_MediaFileType eFileType, bool t_bDir, cwstr t_strName, class CPath *t_pParent)
 		: IMedia(eFileType)
 		, CPathObject(t_bDir, t_strName, t_pParent)
 	{
@@ -41,12 +41,12 @@ private:
 private:
 	bool GetRenameText(wstring& stRenameText) const override;
 
-	void OnListItemRename(const wstring& strNewName) override;
+    void OnListItemRename(cwstr strNewName) override;
 	
 public:
-	static void ReadMP3Tag(const wstring& strFile, tagMediaTag& MediaTag);
+    static void ReadMP3Tag(cwstr strFile, tagMediaTag& MediaTag);
 
-	static bool ReadFlacTag(const wstring& strFile, tagMediaTag& MediaTag);
+    static bool ReadFlacTag(cwstr strFile, tagMediaTag& MediaTag);
 
     CRCueFile getCueFile();
 
@@ -76,7 +76,7 @@ public:
 		return CMediaTime::genFileTimeString(m_fi.tModifyTime, bNewLine);
 	}
 
-	void SetDirRelatedSinger(UINT uSingerID, const wstring& strSingerName, bool& bChanged);
+    void SetDirRelatedSinger(UINT uSingerID, cwstr strSingerName, bool& bChanged);
 
     void AsyncTask();
 };
@@ -109,11 +109,11 @@ public:
                 return m_lstCueFile;
 	}
 
-	bool load(const wstring& strDir, const wstring& strFileName);
+    bool load(cwstr strDir, cwstr strFileName);
 
-    bool load(Instream& ins, const wstring& strFileTitle);
+    bool load(Instream& ins, cwstr strFileTitle);
 
-    CRCueFile find(const wstring& strTitle) const;
+    CRCueFile find(cwstr strTitle) const;
 
 	void clear()
 	{
@@ -137,7 +137,7 @@ public:
 	{
 	}
 
-	CMediaDir(const wstring& strPath, class CPath *t_pParent = NULL)
+    CMediaDir(cwstr strPath, class CPath *t_pParent = NULL)
 		: CMediaRes(E_MediaFileType::MFT_Null, true, strPath, t_pParent)
 	{
 	}

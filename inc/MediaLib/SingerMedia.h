@@ -5,7 +5,7 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-	CAlbumItem(int nID, const wstring& strPath, filetime_t time, class CAlbum& Album);
+	CAlbumItem(int nID, cwstr strPath, filetime_t time, class CAlbum& Album);
 
 #if __winvc
 private:
@@ -29,7 +29,7 @@ class __MediaLibExt CAlbum : public CMediaSet
 public:
     virtual ~CAlbum() = default; // 解决qt-mac clang告警
 
-	CAlbum(int nID = 0, const wstring& strName = L"", class CSinger *pSinger = NULL
+	CAlbum(int nID = 0, cwstr strName = L"", class CSinger *pSinger = NULL
 		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false)
 		: CMediaSet(strName, (CMediaSet*)pSinger, nID, E_MediaSetType::MST_Album
 			, uLanguage, bDisableDemand, bDisableExport)
@@ -98,7 +98,7 @@ class __MediaLibExt CSinger : public CMediaSet
 public:
     virtual ~CSinger() = default; // 解决qt-mac clang告警
 
-    CSinger(CMediaSet& parent, int nID = 0, const wstring& strName = L"", const wstring& strDir = L""
+    CSinger(CMediaSet& parent, int nID = 0, cwstr strName = L"", cwstr strDir = L""
             , int nPos = 0, UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
 
 	CSinger(const CSinger& other);
@@ -161,7 +161,7 @@ class __MediaLibExt CSingerGroup : public CMediaSet
 public:
     virtual ~CSingerGroup() = default; // 解决qt-mac clang告警
 
-    CSingerGroup(CMediaSet& parent, int nID=0, const wstring& strName = L""
+    CSingerGroup(CMediaSet& parent, int nID=0, cwstr strName = L""
             , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
 
 	CSingerGroup(const CSingerGroup& other);

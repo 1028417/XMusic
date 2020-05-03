@@ -52,7 +52,7 @@ public:
 
 	virtual void refreshMedia() {}
 
-	virtual void renameMedia(IMedia& media, const wstring& strNewName)
+	virtual void renameMedia(IMedia& media, cwstr strNewName)
 	{
 		(void)media;
 		(void)strNewName;
@@ -87,18 +87,18 @@ public:
 
 #if __winvc
     virtual CBackupMgr& getBackupMgr() = 0;\
-    virtual bool setupMediaLib(const wstring& strRootDir) = 0;
+    virtual bool setupMediaLib(cwstr strRootDir) = 0;
 
     virtual void refreshMediaLib() = 0;
 
-    virtual CMediaDir* attachDir(const wstring& strDir) = 0;
-    virtual void detachDir(const wstring& strDir) = 0;
+    virtual CMediaDir* attachDir(cwstr strDir) = 0;
+    virtual void detachDir(cwstr strDir) = 0;
 
-    virtual bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) = 0;
+    virtual bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) = 0;
 
     virtual bool removeMedia(const TD_MediaList& lstMedias) = 0;
 
-    virtual bool moveFiles(const wstring& strDir, const SMap<wstring, wstring>& mapUpdateFiles) = 0;
+    virtual bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) = 0;
 
     virtual bool removeFiles(const std::set<wstring>& setFiles) = 0;
 
@@ -112,11 +112,11 @@ public:
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
-    using CB_exportorMedia = function<bool(UINT uProgressOffset, const wstring& strDstFile)>;
+    using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
     virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
     virtual wstring backupDB() = 0;
-    virtual bool restoreDB(const wstring& strTag) = 0;
+    virtual bool restoreDB(cwstr strTag) = 0;
 #endif
 
     virtual bool clearData() = 0;
@@ -149,7 +149,7 @@ private:
 	CPlayMgr m_PlayMgr;
 
 public:
-	wstring medialibPath(const wstring& strSubPath = L"");
+	wstring medialibPath(cwstr strSubPath = L"");
 
     CDataMgr& getDataMgr() override
     {
@@ -184,18 +184,18 @@ public:
         return m_BackupMgr;
     }
 
-    bool setupMediaLib(const wstring& strRootDir) override;
+    bool setupMediaLib(cwstr strRootDir) override;
 
 	void refreshMediaLib() override;
 
-	CMediaDir* attachDir(const wstring& strDir) override;
-	void detachDir(const wstring& strDir) override;
+	CMediaDir* attachDir(cwstr strDir) override;
+	void detachDir(cwstr strDir) override;
 
-	bool renameMedia(const wstring& strOldOppPath, const wstring& strNewOppPath, bool bDir) override;
+	bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
 
 	bool removeMedia(const TD_MediaList& lstMedias) override;
 
-	bool moveFiles(const wstring& strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
+	bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
 
 	bool removeFiles(const std::set<wstring>& setFiles) override;
 
@@ -212,7 +212,7 @@ public:
     UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
 
     wstring backupDB() override;
-	bool restoreDB(const wstring& strTag) override;
+	bool restoreDB(cwstr strTag) override;
 #endif
 
     bool clearData() override;
@@ -224,12 +224,12 @@ private:
 	wstring _scanXMusicDir();
 	wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
 
-	bool _exportDB(const wstring& strExportDir, bool bExportXmsc);
+	bool _exportDB(cwstr strExportDir, bool bExportXmsc);
 #endif
 
-    bool _initData(const wstring& strDBFile);
+    bool _initData(cwstr strDBFile);
 	
-	bool _updateDir(const wstring& strOldPath, const wstring& strNewPath);
+	bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
 	void _clear();
 

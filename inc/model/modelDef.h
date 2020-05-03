@@ -127,11 +127,11 @@ struct tagAddPlayItem
 {
     tagAddPlayItem() = default;
 
-	tagAddPlayItem(const wstring& t_strPath) : strPath(t_strPath)
+	tagAddPlayItem(cwstr t_strPath) : strPath(t_strPath)
 	{
 	}
 
-	tagAddPlayItem(const wstring& t_strPath, long long t_nFileSize, UINT t_uDuration)
+	tagAddPlayItem(cwstr t_strPath, long long t_nFileSize, UINT t_uDuration)
 		: strPath(t_strPath)
 		, nFileSize(t_nFileSize)
 		, uDuration(t_uDuration)

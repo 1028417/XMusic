@@ -168,7 +168,7 @@ struct tagFindMediaPara
 		eFindMediaMode = t_eFindMediaMode;
 	}
 
-	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode, const wstring& t_strFindText, bool t_bFindOne = false)
+	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode, cwstr t_strFindText, bool t_bFindOne = false)
 	{
 		eFindMediaMode = t_eFindMediaMode;
 		strFindText = strutil::lowerCase_r(t_strFindText);

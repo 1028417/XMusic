@@ -22,7 +22,7 @@ private:
     size_t m_uWaitSize = 0;
 
 private:
-    long long _openFile(const wstring& strFile, bool bXmsc);
+    long long _openFile(cwstr strFile, bool bXmsc);
 
 	UINT _checkDuration()
 	{
@@ -31,10 +31,10 @@ private:
 		return uDuration;
 	}
 
-	static UINT _checkDuration(const wstring& strFile, bool bXmsc, long long& nFileSize);
+	static UINT _checkDuration(cwstr strFile, bool bXmsc, long long& nFileSize);
 
 public:
-    const wstring& currentFile() const
+    cwstr currentFile() const
     {
         return m_strFile;
     }
@@ -48,7 +48,7 @@ public:
     void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
 #endif
 
-    long long openFile(const wstring& strFile, bool bXmsc)
+    long long openFile(cwstr strFile, bool bXmsc)
     {
         return _openFile(strFile, bXmsc);
     }
@@ -58,7 +58,7 @@ public:
         return _openFile(media.GetAbsPath(), media.isXmsc());
     }
 
-	UINT checkFileDuration(const wstring& strFile, long long& nFileSize)
+	UINT checkFileDuration(cwstr strFile, long long& nFileSize)
 	{
 		nFileSize = _openFile(strFile, false);
 		if (nFileSize <= 0)
@@ -69,7 +69,7 @@ public:
 		return _checkDuration();
 	}
 
-	UINT checkFileDuration(const wstring& strFile)
+	UINT checkFileDuration(cwstr strFile)
 	{
 		long long nFileSize = 0;
 		return checkDuration(strFile, nFileSize);
@@ -94,11 +94,11 @@ public:
 		(void)nFileSize;
 	}
 
-	static UINT checkDuration(const wstring& strFile, long long& nFileSize)
+	static UINT checkDuration(cwstr strFile, long long& nFileSize)
 	{
 		return _checkDuration(strFile, false, nFileSize);
 	}
-	static UINT checkDuration(const wstring& strFile)
+	static UINT checkDuration(cwstr strFile)
 	{
 		long long nFileSize = 0;
 		return checkDuration(strFile, nFileSize);

@@ -14,7 +14,7 @@ public:
 	{
 	}
 
-	WString(const wstring& str)
+	WString(cwstr str)
 		: m_str(str)
 	{
 	}
@@ -52,7 +52,7 @@ public:
 		return *this;
 	}
 
-	WString& operator=(const wstring& str)
+	WString& operator=(cwstr str)
 	{
 		m_str.assign(str);
 		return *this;
@@ -77,11 +77,11 @@ public:
                 return m_str != other.m_str;
         }
 
-        inline bool operator ==(const wstring& str) const
+        inline bool operator ==(cwstr str) const
         {
                 return m_str == str;
         }
-        inline bool operator !=(const wstring& str) const
+        inline bool operator !=(cwstr str) const
         {
                 return m_str != str;
         }
@@ -105,11 +105,11 @@ public:
                 return 0!=m_str.compare(pStr);
         }
 
-        friend bool operator ==(const wstring& lhs, const WString& rhs)
+        friend bool operator ==(cwstr lhs, const WString& rhs)
         {
                 return rhs == lhs;
         }
-        friend bool operator !=(const wstring& lhs, const WString& rhs)
+        friend bool operator !=(cwstr lhs, const WString& rhs)
         {
                 return rhs != lhs;
         }
@@ -136,7 +136,7 @@ public:
     }
 #endif
 
-	operator const wstring&() const
+	operator cwstr () const
 	{
 		return m_str;
 	}
@@ -181,7 +181,7 @@ public:
 		return *this;
 	}
 
-    WString& operator<<(const wstring& str)
+    WString& operator<<(cwstr str)
     {
 		m_str.append(str);
         return *this;
@@ -209,7 +209,7 @@ public:
 		return ret;
 	}
 
-	friend WString operator +(const wstring& lhs, const WString& rhs)
+	friend WString operator +(cwstr lhs, const WString& rhs)
 	{
 		WString ret(lhs);
 		ret << rhs;

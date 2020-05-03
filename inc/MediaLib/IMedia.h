@@ -30,13 +30,13 @@ enum class E_MediaQuality
 class __MediaLibExt IMedia
 {
 public:
-	static const wstring& GetMediaFileType(E_MediaFileType eMediaFileType);
-	static E_MediaFileType GetMediaFileType(const wstring& strExtName);
+	static cwstr GetMediaFileType(E_MediaFileType eMediaFileType);
+	static E_MediaFileType GetMediaFileType(cwstr strExtName);
 
 public:
 	IMedia(E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
 
-	IMedia(const wstring& strPath);
+	IMedia(cwstr strPath);
 
     virtual ~IMedia() = default;
 
@@ -78,7 +78,7 @@ public:
 		return m_eFileType;
 	}
 
-	const wstring& GetExtName() const;
+	cwstr GetExtName() const;
 
 	virtual long long fileSize() const
 	{
@@ -130,12 +130,12 @@ public:
 		return _getRelatedMediaSet(eMediaSetType).uMediaSetID;
 	}
 
-	const wstring& GetRelatedMediaSetName(E_MediaSetType eMediaSetType) const
+	cwstr GetRelatedMediaSetName(E_MediaSetType eMediaSetType) const
 	{
 		return _getRelatedMediaSet(eMediaSetType).strMediaSetName;
 	}
 
-	void SetRelatedMediaSet(E_MediaSetType eMediaSetType, UINT uMediaSetID, const wstring& strMediaSetName, int iMediaID = -1);
+	void SetRelatedMediaSet(E_MediaSetType eMediaSetType, UINT uMediaSetID, cwstr strMediaSetName, int iMediaID = -1);
 
 	void SetRelatedMediaSet(CMediaSet& MediaSet);
 
@@ -146,5 +146,5 @@ public:
 	CMedia *findRelatedMedia(E_MediaSetType eMediaSetType);
 
 protected:
-	void UpdateFileType(const wstring& strPath);
+	void UpdateFileType(cwstr strPath);
 };

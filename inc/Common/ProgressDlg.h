@@ -37,16 +37,16 @@ private:
 	CProgressCtrl m_wndProgressCtrl;
 
 public:
-	virtual INT_PTR DoModal(const wstring& strTitle, CWnd *pWndParent=NULL);
+	virtual INT_PTR DoModal(cwstr strTitle, CWnd *pWndParent=NULL);
 	
-	int msgBox(const wstring& strText, const wstring& strTitle, UINT uType = 0)
+	int msgBox(cwstr strText, cwstr strTitle, UINT uType = 0)
 	{
 		return __appSync([&]() {
 			return TDialog::msgBox(strText.c_str(), strTitle.c_str(), uType);
 		});
 	}
 
-	int msgBox(const wstring& strText, UINT uType = 0)
+	int msgBox(cwstr strText, UINT uType = 0)
 	{
 		return msgBox(strText, m_strTitle, uType);
 	}

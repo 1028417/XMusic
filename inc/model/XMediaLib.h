@@ -98,15 +98,15 @@ public:
         return m_newMedialibConf;
     }
 
-    bool checkXUrl(const wstring& strPath);
+    bool checkXUrl(cwstr strPath);
 
-    string getXUrl(const wstring& strPath) const;
+    string getXUrl(cwstr strPath) const;
 
     bool loadXUrl(Instream& ins);
 
     bool loadXSnapshot(Instream& ins);
 
-    bool loadXCue(Instream& ins, const wstring& strFileTitle)
+    bool loadXCue(Instream& ins, cwstr strFileTitle)
     {
         return m_cuelist.load(ins, strFileTitle);
     }
@@ -121,7 +121,7 @@ private:
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
-    CMediaDir* _genSnapshotDir(const wstring& strFileType, const JValue& jRoot, CMediaDir *pParent);
+    CMediaDir* _genSnapshotDir(cwstr strFileType, const JValue& jRoot, CMediaDir *pParent);
 #endif
 
 private:
@@ -129,9 +129,9 @@ private:
 
     void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
-	CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType eMediaSetType, CSinger*& pRelatedSinger) override;
+	CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType eMediaSetType, CSinger*& pRelatedSinger) override;
 
-	void renameMedia(IMedia& media, const wstring& strNewName) override;
+	void renameMedia(IMedia& media, cwstr strNewName) override;
 
 	UINT checkDuration(IMedia& media, long long& nFileSize) override;
 
@@ -173,7 +173,7 @@ class CSnapshotDir : public CMediaDir
 public:
     CSnapshotDir() = default;
 
-    CSnapshotDir(const wstring& strPath, class CPath *t_pParent = NULL)
+    CSnapshotDir(cwstr strPath, class CPath *t_pParent = NULL)
         : CMediaDir(strPath, t_pParent)
     {
     }

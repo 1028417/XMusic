@@ -29,7 +29,7 @@ private:
 
 	void _saveCompareResult(const tagCompareBackupResult& result);
 
-	bool _getCompareResult(const wstring& strSrcTag, const wstring& strDstTag, const CB_BackupCompare& cb);
+	bool _getCompareResult(cwstr strSrcTag, cwstr strDstTag, const CB_BackupCompare& cb);
 	
 public:
 	const SArray<wstring>& getBackupTags() const
@@ -37,23 +37,23 @@ public:
 		return m_arrBackupTag;
 	}
 
-	wstring getBackupFile(const wstring& strTag) const;
+	wstring getBackupFile(cwstr strTag) const;
 
     void init();
 
 	void close();
 
-	bool exportDB(const wstring& strDstFile, bool bExportXmsc);
+	bool exportDB(cwstr strDstFile, bool bExportXmsc);
 
 	wstring backup();
 
-	void removeBackup(const wstring& strTag);
+	void removeBackup(cwstr strTag);
 
 	void getCompareResult(const SList<pair<wstring, wstring>>& lstTags, SList<tagCompareBackupResult>& lstResult);
 
 	void compareBackup(const SList<pair<wstring, wstring>>& lstTags, SList<tagCompareBackupResult>& lstResult);
 
-	void compareBackup(const wstring& strSrcTag, const wstring& strDstTag, const CB_BackupCompare& cb=NULL);
+	void compareBackup(cwstr strSrcTag, cwstr strDstTag, const CB_BackupCompare& cb=NULL);
 
-	bool compareBackup(const wstring& strSrcTag, tagCompareBackupResult& result);
+	bool compareBackup(cwstr strSrcTag, tagCompareBackupResult& result);
 };

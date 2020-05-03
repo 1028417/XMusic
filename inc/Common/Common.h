@@ -101,7 +101,7 @@ public:
 		});
 	}
 
-	wstring Show(const wstring& strTitle, const wstring& strTip = L"", HWND hWndOwner = NULL)
+	wstring Show(cwstr strTitle, cwstr strTip = L"", HWND hWndOwner = NULL)
 	{
 		return Show(hWndOwner, NULL, strTitle.c_str(), strTip.c_str());
 	}

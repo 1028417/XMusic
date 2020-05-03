@@ -72,7 +72,7 @@ public:
 	CImg() = default;
 	
 public:
-	BOOL Load(const wstring& strFile);
+	BOOL Load(cwstr strFile);
 
 	BOOL StretchBltEx(HDC hDC, const RECT& rc, E_ImgFixMode eFixMode);
 };

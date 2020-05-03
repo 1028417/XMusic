@@ -10,7 +10,7 @@ enum class E_AttachDirType
 class __MediaLibExt CAttachDir : public CMediaDir
 {
 public:
-	CAttachDir(const wstring& strDir, E_AttachDirType eType)
+	CAttachDir(cwstr strDir, E_AttachDirType eType)
 		: CMediaDir(strDir)
 		, m_eType(eType)
 	{
@@ -55,7 +55,7 @@ public:
 	
     CRootMediaDir() = default;
 
-	CRootMediaDir(const wstring& strPath, const PairList<wstring, E_AttachDirType>& plAttachDir)
+	CRootMediaDir(cwstr strPath, const PairList<wstring, E_AttachDirType>& plAttachDir)
 	{
 		setDir(strPath, plAttachDir);
 	}
@@ -79,22 +79,22 @@ private:
 public:
 	bool available();
 	
-	void setDir(const wstring& strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
+	void setDir(cwstr strDir, const PairList<wstring, E_AttachDirType>& plAttachDir);
 	
-	wstring toAbsPath(const wstring& strSubPath, bool bDir);
+	wstring toAbsPath(cwstr strSubPath, bool bDir);
 
-	wstring toOppPath(const wstring& strAbsPath) const;
+	wstring toOppPath(cwstr strAbsPath) const;
 
-	bool checkIndependentDir(const wstring& strAbsDir, bool bCheckAttachDir);
+	bool checkIndependentDir(cwstr strAbsDir, bool bCheckAttachDir);
 
-	CMediaRes* findSubPath(const wstring& strSubPath, bool bDir);
+	CMediaRes* findSubPath(cwstr strSubPath, bool bDir);
 
-	CMediaDir* findSubDir(const wstring& strSubDir)
+	CMediaDir* findSubDir(cwstr strSubDir)
 	{
 		return (CMediaDir*)findSubPath(strSubDir, true);
 	}
 
-	CMediaRes* findSubFile(const wstring& strSubFile)
+	CMediaRes* findSubFile(cwstr strSubFile)
 	{
 		return findSubPath(strSubFile, false);
 	}
@@ -134,14 +134,14 @@ protected:
 	}
 	
 public:
-	virtual CMedia* findRelatedMedia(const wstring& strPath, E_MediaSetType, class CSinger*& pSinger)
+	virtual CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType, class CSinger*& pSinger)
 	{
 		(void)strPath;
 		(void)pSinger;
 		return NULL;
 	}
 	
-	virtual void renameMedia(IMedia&, const wstring& strNewName)
+	virtual void renameMedia(IMedia&, cwstr strNewName)
 	{
 		(void)strNewName;
 	}

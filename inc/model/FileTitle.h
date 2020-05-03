@@ -14,15 +14,15 @@ private:
 	wstring _matchSinger(wstring& strFileTitle);
 
 public:
-	static wstring genCollateSingerName(const wstring& strSingerName);
+	static wstring genCollateSingerName(cwstr strSingerName);
 
 	static void genCollateTitle(wstring& strFileTitle);
-	static wstring genCollateTitle_r(const wstring& strFileTitle);
+	static wstring genCollateTitle_r(cwstr strFileTitle);
 
 	static void genDisplayTitle(wstring& strPath);
-	static wstring genDisplayTitle_r(const wstring& strFileTitle);
+	static wstring genDisplayTitle_r(cwstr strFileTitle);
 
-	wstring matchSinger(const wstring& strFileTitle);
+	wstring matchSinger(cwstr strFileTitle);
 	wstring matchSinger(IMedia& media);
 };
 
@@ -34,8 +34,8 @@ private:
 
 public:
     CFileTitle() = default;
-	CFileTitle(const wstring& strPath, const wstring& strSingerName);
-	CFileTitle(IMedia& media, const wstring& strSingerName);
+	CFileTitle(cwstr strPath, cwstr strSingerName);
+	CFileTitle(IMedia& media, cwstr strSingerName);
 
 public:
 	wstring m_strPath;

@@ -31,19 +31,19 @@ public:
 #endif
 
 public:
-    void init(const wstring& strDir, const list<wstring>& lstOnlineSingerImg);
+    void init(cwstr strDir, const list<wstring>& lstOnlineSingerImg);
 
-	UINT addSingerImg(const wstring& strSingerName, const list<wstring>& lstFiles);
+	UINT addSingerImg(cwstr strSingerName, const list<wstring>& lstFiles);
 
-	void renameSinger(const wstring& strSingerName, const wstring& strNewName);
+	void renameSinger(cwstr strSingerName, cwstr strNewName);
 
-	void removeSingerImg(const wstring& strSingerName);
+	void removeSingerImg(cwstr strSingerName);
 
 	void clearSingerImg();
 
-    wstring getSingerImg(const wstring& strSingerName, UINT uIndex);
+    wstring getSingerImg(cwstr strSingerName, UINT uIndex);
 
 	void getSingerImg(list<wstring>& lstSingerImg) const;
 
-	bool exportSingerImg(const wstring& strDstDir);
+	bool exportSingerImg(cwstr strDstDir);
 };

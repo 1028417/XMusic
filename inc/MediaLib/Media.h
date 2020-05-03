@@ -5,7 +5,7 @@ struct __MediaLibExt tagMediaInfo
 {
     tagMediaInfo() = default;
 
-	tagMediaInfo(CMediaSet *pParent, const wstring& strName, int nID = 0)
+	tagMediaInfo(CMediaSet *pParent, cwstr strName, int nID = 0)
 		: m_pParent(pParent)
 		, m_strName(strName)
 		, m_uID(nID)
@@ -23,7 +23,7 @@ class __MediaLibExt CMedia : public IMedia, public tagMediaInfo
 #endif
 {
 public:
-	CMedia(CMediaSet *pParent = NULL, int nID = 0, const wstring& strPath = L"", filetime_t tTime = 0)
+	CMedia(CMediaSet *pParent = NULL, int nID = 0, cwstr strPath = L"", filetime_t tTime = 0)
 		: IMedia(strPath)
 		, tagMediaInfo(pParent, L"", nID)
 		, m_addTime(tTime)
@@ -137,11 +137,11 @@ public:
 #if __winvc
     CRCueFile getCueFile() const;
 
-    void UpdatePath(const wstring& strPath);
+    void UpdatePath(cwstr strPath);
 #endif
 
 private:
-    inline void _UpdatePath(const wstring& strPath)
+    inline void _UpdatePath(cwstr strPath)
     {
         fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
     }
@@ -153,6 +153,6 @@ private:
 		return true;
 	}
 
-	void OnListItemRename(const wstring& strNewName) override;
+	void OnListItemRename(cwstr strNewName) override;
 #endif
 };

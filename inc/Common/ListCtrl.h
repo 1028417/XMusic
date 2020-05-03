@@ -332,18 +332,18 @@ public:
 	void _AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
 
 public:
-	int InsertItemEx(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
-	int InsertItemEx(UINT uItem, const list<pair<UINT, wstring>>& lstText, const wstring& strPrefix = L"");
+	int InsertItemEx(UINT uItem, const vector<wstring>& vecText, cwstr strPrefix = L"");
+	int InsertItemEx(UINT uItem, const list<pair<UINT, wstring>>& lstText, cwstr strPrefix = L"");
 
-	void SetItemTexts(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
-	void SetItemTexts(UINT uItem, const list<pair<UINT, wstring>>& lstText, const wstring& strPrefix = L"");
-	void SetItemTexts(UINT uItem, UINT uSubItem, const vector<wstring>& vecText, const wstring& strPrefix);
+	void SetItemTexts(UINT uItem, const vector<wstring>& vecText, cwstr strPrefix = L"");
+	void SetItemTexts(UINT uItem, const list<pair<UINT, wstring>>& lstText, cwstr strPrefix = L"");
+	void SetItemTexts(UINT uItem, UINT uSubItem, const vector<wstring>& vecText, cwstr strPrefix);
 
-	void SetTexts(const vector<vector<wstring>>& vecTexts);// , int nPos = 0, const wstring& strPrefix = L"");
+	void SetTexts(const vector<vector<wstring>>& vecTexts);// , int nPos = 0, cwstr strPrefix = L"");
 
-	void SetObjects(const TD_ListObjectList& lstObjects);// , int nPos = 0, const wstring& strPrefix = L"");
+	void SetObjects(const TD_ListObjectList& lstObjects);// , int nPos = 0, cwstr strPrefix = L"");
 
-	int InsertObject(CListObject& Object, int nItem=-1, const wstring& strPrefix=L"");
+	int InsertObject(CListObject& Object, int nItem=-1, cwstr strPrefix=L"");
 
 	void UpdateItem(UINT uItem, CListObject *pObject=NULL);
 	void UpdateItems();
@@ -354,7 +354,7 @@ public:
 		UpdateColumns({ uColumn });
 	}
 
-	void SetColumnText(UINT uColumn, const wstring& strText);
+	void SetColumnText(UINT uColumn, cwstr strText);
 
 	BOOL DeleteObject(const CListObject *pObject);
 	void DeleteObjects(const set<CListObject*>& setDeleteObjects);
@@ -415,10 +415,10 @@ protected:
 	void ChangeListCtrlView(short zDelta);
 
 private:
-	void _SetItemObject(UINT uItem, CListObject& Object, const wstring& strPrefix=L"");
+	void _SetItemObject(UINT uItem, CListObject& Object, cwstr strPrefix=L"");
 
 	template <bool _clear_other>
-	void _SetItemTexts(UINT uItem, const vector<wstring>& vecText, const wstring& strPrefix = L"");
+	void _SetItemTexts(UINT uItem, const vector<wstring>& vecText, cwstr strPrefix = L"");
 
 	void handleCustomDraw(NMLVCUSTOMDRAW& lvnmcd, LRESULT* pResult);
 

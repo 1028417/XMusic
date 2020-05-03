@@ -5,7 +5,7 @@ class __MediaLibExt CPlayItem : public CMedia
 public:
     CPlayItem() = default;
 
-    CPlayItem(int nID, const wstring& strPath, filetime_t time, class CPlaylist& Playlist);
+    CPlayItem(int nID, cwstr strPath, filetime_t time, class CPlaylist& Playlist);
 
 private:
 	wstring _GetDisplayName(bool bDynamic);
@@ -41,7 +41,7 @@ public:
 
     CPlaylist() = default;
 
-    CPlaylist(CMediaSet& parent, int nID, const wstring& strName
+    CPlaylist(CMediaSet& parent, int nID, cwstr strName
               , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
 
 	CPlaylist(const CPlaylist& other);

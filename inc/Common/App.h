@@ -228,21 +228,21 @@ public:
 
 	static void foregroundWnd(HWND hWnd);
 
-	static int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType, CWnd *pWnd = NULL);
-	static void msgBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	static int msgBox(cwstr strMsg, cwstr strTitle, UINT nType, CWnd *pWnd = NULL);
+	static void msgBox(cwstr strMsg, cwstr strTitle, CWnd *pWnd = NULL)
 	{
 		(void)msgBox(strMsg, strTitle, MB_OK, pWnd);
 	}
-	static void msgBox(const wstring& strMsg, CWnd *pWnd = NULL)
+	static void msgBox(cwstr strMsg, CWnd *pWnd = NULL)
 	{
 		msgBox(strMsg, L"Ã· æ", pWnd);
 	}
 
-	static bool confirmBox(const wstring& strMsg, const wstring& strTitle, CWnd *pWnd = NULL)
+	static bool confirmBox(cwstr strMsg, cwstr strTitle, CWnd *pWnd = NULL)
 	{
 		return IDYES == msgBox(strMsg, strTitle, MB_YESNO, pWnd);
 	}
-	static bool confirmBox(const wstring& strMsg, CWnd *pWnd = NULL)
+	static bool confirmBox(cwstr strMsg, CWnd *pWnd = NULL)
 	{
 		return confirmBox(strMsg, L"æØ∏Ê", pWnd);
 	}

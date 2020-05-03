@@ -57,7 +57,7 @@ private:
 
 	bool _play(uint64_t uStartPos = 0);
 
-    void _tryPause(const wstring& strCheckPath, cfn_void_t<wstring&> cb);
+    void _tryPause(cwstr strCheckPath, cfn_void_t<wstring&> cb);
 
     void _genDemandableSinger(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
     void _genDemandableAlbum(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguageType);
@@ -109,15 +109,15 @@ public:
 
 	bool checkPlayedID(UINT uID);
 
-    bool play(const wstring& strFile, uint64_t uStartPos = 0);
+    bool play(cwstr strFile, uint64_t uStartPos = 0);
 
 	bool play(UINT uItem, bool bManual=true);
 
 	bool playNext(bool bManual=true);
 	void playPrev();
 	
-	void renameFile(bool bDir, const wstring& strPath, const wstring& strNewPath, cfn_bool cb);
-	void moveFile(const wstring& strPath, const wstring& strNewPath, cfn_bool cb);
+	void renameFile(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
+	void moveFile(cwstr strPath, cwstr strNewPath, cfn_bool cb);
 
 	void replay();
 	

@@ -44,7 +44,7 @@ public:
 
 	CCueFile() = default;
 
-    CCueFile(wstring strFileTitle, const wstring& strDir)
+    CCueFile(wstring strFileTitle, cwstr strDir)
         : m_strCueName(strFileTitle)
         , m_strDir(strDir)
     {
@@ -101,5 +101,5 @@ public:
 
 	CRTrackInfo getTrack(UINT uMs) const;
 	
-	bool updateMediaFileName(const wstring& strMediaFileName);
+	bool updateMediaFileName(cwstr strMediaFileName);
 };

@@ -62,7 +62,7 @@ public:
 
     virtual void close();
 
-    long long open(const wstring& strFile);
+    long long open(cwstr strFile);
 
 	uint32_t checkDuration();
 

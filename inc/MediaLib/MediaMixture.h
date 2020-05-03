@@ -38,7 +38,7 @@ public:
 	bool Remove(CMedia *pMedia);
 
 public:
-	const wstring& GetTitle() const
+	cwstr GetTitle() const
 	{
 		return m_strTitle;
 	}
@@ -53,7 +53,7 @@ public:
 		return m_pPlayItem;
 	}
 
-	const wstring& GetPlaylistName() const
+	cwstr GetPlaylistName() const
 	{
 		return m_strPlaylistName;
 	}
@@ -65,14 +65,14 @@ public:
 
 	CAlbum* GetAlbum() const;
 
-	const wstring& GetAlbumName() const
+	cwstr GetAlbumName() const
 	{
 		return m_strAlbumName;
 	}
 
 	CSinger* GetSinger() const;
 
-	const wstring& GetSingerName() const
+	cwstr GetSingerName() const
 	{
 		return m_strSingerName;
 	}

@@ -66,24 +66,24 @@ protected:
 
 
 public:
-	int msgBox(const wstring& strMsg, const wstring& strTitle, UINT nType)
+	int msgBox(cwstr strMsg, cwstr strTitle, UINT nType)
 	{
 		return CMainApp::msgBox(strMsg, strTitle, nType, this);
 	}
-	void msgBox(const wstring& strMsg, const wstring& strTitle)
+	void msgBox(cwstr strMsg, cwstr strTitle)
 	{
 		CMainApp::msgBox(strMsg, strTitle, this);
 	}
-	void msgBox(const wstring& strMsg)
+	void msgBox(cwstr strMsg)
 	{
 		CMainApp::msgBox(strMsg, this);
 	}
 
-	bool confirmBox(const wstring& strMsg, const wstring& strTitle)
+	bool confirmBox(cwstr strMsg, cwstr strTitle)
 	{
 		return CMainApp::confirmBox(strMsg, strTitle, this);
 	}
-	bool confirmBox(const wstring& strMsg)
+	bool confirmBox(cwstr strMsg)
 	{
 		return CMainApp::confirmBox(strMsg, this);
 	}

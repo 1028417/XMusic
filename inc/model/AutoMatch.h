@@ -5,14 +5,14 @@ class __ModelExt CMediaResInfo
 public:
 	CMediaResInfo() = default;
 
-	CMediaResInfo(CMediaRes& MediaRes, const wstring& strSingerName)
+	CMediaResInfo(CMediaRes& MediaRes, cwstr strSingerName)
 		: m_FileTitle(MediaRes, strSingerName)
 		, m_strFileSize(MediaRes.fileSizeString(false))
 		, m_strFileTime(MediaRes.fileTimeString(false))
 	{
 	}
 
-	CMediaResInfo(const wstring& strPath, const wstring& strSingerName)
+	CMediaResInfo(cwstr strPath, cwstr strSingerName)
 		: m_FileTitle(strPath, strSingerName)
 	{
 		m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false);		
@@ -59,13 +59,13 @@ class __ModelExt CMatchMediaInfo
 public:
 	CMatchMediaInfo() = default;
 
-	CMatchMediaInfo(const wstring& strPath, CMedia& media, const wstring& strSingerName)
+	CMatchMediaInfo(cwstr strPath, CMedia& media, cwstr strSingerName)
 		: m_FileTitle(strPath, strSingerName)
 		, m_lstMedias(media)
 	{
 	}
 
-	CMatchMediaInfo(const wstring& strPath, TD_MediaList& lstMedias, const wstring& strSingerName)
+	CMatchMediaInfo(cwstr strPath, TD_MediaList& lstMedias, cwstr strSingerName)
 		: m_FileTitle(strPath, strSingerName)
 		, m_lstMedias(lstMedias)
 	{
@@ -108,7 +108,7 @@ enum class E_MatchResult
 
 using CB_AutoMatchConfirm = function<E_MatchResult(CMatchMediaInfo&, CMediaResInfo&)>;
 
-using CB_AutoMatchProgress = function<bool(const wstring& strDir)>;
+using CB_AutoMatchProgress = function<bool(cwstr strDir)>;
 
 class __ModelExt CAutoMatch
 {
