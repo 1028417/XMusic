@@ -8,7 +8,7 @@ class CMsgBox : private CDialog
     CMsgBox(QWidget& parent);
 
 public:
-    void show(const QString& qsMsg, cfn_void cbClose);
+    void show(cqstr qsMsg, cfn_void cbClose);
 
 private:
     cqcr bkgColor() const override

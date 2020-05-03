@@ -238,9 +238,9 @@ public:
 
     void fillRectEx(cqrc rc, cqcr crBegin, cqcr crEnd, UINT xround=0, UINT yround=0);
 
-    cqrc drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
+    cqrc drawTextEx(cqrc rc, int flags, cqstr qsText, cqcr crText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255);
-    cqrc drawTextEx(cqrc rc, int flags, const QString& qsText
+    cqrc drawTextEx(cqrc rc, int flags, cqstr qsText
                     , UINT uShadowWidth=1, UINT uShadowAlpha=__ShadowAlpha, UINT uTextAlpha=255)
     {
         return drawTextEx(rc, flags, qsText, g_crFore, uShadowWidth, uShadowAlpha, uTextAlpha);

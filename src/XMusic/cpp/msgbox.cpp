@@ -20,7 +20,7 @@ CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
     connect(ui.btnClose, &CButton::signal_clicked, this, &QDialog::close);
 }
 
-void CMsgBox::show(const QString& qsMsg, cfn_void cbClose)
+void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 {
     ui.labelTip->setText(qsMsg);
 

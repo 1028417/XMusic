@@ -90,7 +90,7 @@ private:
 
     bool event(QEvent *ev) override;
 
-    cqpm _getSingerPixmap(UINT uSingerID, const wstring& strSingerName);
+    cqpm _getSingerPixmap(UINT uSingerID, cwstr strSingerName);
 
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CPath&, WString& strTitle);

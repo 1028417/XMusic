@@ -147,7 +147,7 @@ void CMedialibDlg::showMedia(CMedia& media)
     CDialog::show();
 }
 
-bool CMedialibDlg::showMediaRes(const wstring& strPath)
+bool CMedialibDlg::showMediaRes(cwstr strPath)
 {
     cauto strOuterDir = m_OuterDir.init();
 

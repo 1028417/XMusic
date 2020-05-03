@@ -85,7 +85,7 @@ static void installApk(const QString &qsApkPath)
 }
 
 /*string g_strSDCardPath;
-static const wstring& sdcardPath()
+static cwstr sdcardPath()
 {
     if (!g_strSDCardPath.empty())
     {
@@ -454,7 +454,7 @@ bool CApp::_initRootDir(wstring& strRootDir)
     return true;
 }
 
-static void _importPlayingList(const wstring& strDBFileBak, const wstring& strDBFile)
+static void _importPlayingList(cwstr strDBFileBak, cwstr strDBFile)
 {
     CSQLiteDB db;
     if (!db.Connect(strDBFile))

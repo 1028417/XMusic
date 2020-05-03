@@ -256,7 +256,7 @@ void CPainter::fillRectEx(cqrc rc, cqcr crBegin
 
 static QRect g_rcDrawTextRet;
 
-cqrc CPainter::drawTextEx(cqrc rc, int flags, const QString& qsText, cqcr crText
+cqrc CPainter::drawTextEx(cqrc rc, int flags, cqstr qsText, cqcr crText
                           , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
 {
     this->save();

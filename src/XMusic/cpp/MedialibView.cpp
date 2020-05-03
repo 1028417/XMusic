@@ -243,7 +243,7 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
     return false;
 }
 
-cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, const wstring& strSingerName)
+cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
 {
     auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
     if (pSingerPixmap)
@@ -425,7 +425,7 @@ inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIc
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
 
-inline static cqrc _paintRemark(CPainter& painter, cqrc rc, const QString& qsRemark)
+inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
 {
     CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
     UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);

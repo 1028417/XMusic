@@ -12,7 +12,7 @@ class COuterDir : public CMediaDir
 public:
     COuterDir() = default;
 
-    COuterDir(const tagFileInfo& fileInfo, const wstring& strMediaLibDir)
+    COuterDir(const tagFileInfo& fileInfo, cwstr strMediaLibDir)
         : CMediaDir(fileInfo)
         , m_strMediaLibDir(strMediaLibDir)
     {
@@ -68,7 +68,7 @@ public:
     void show();
     void showMediaSet(CMediaSet& MediaSet);
     void showMedia(CMedia& media);
-    bool showMediaRes(const wstring& strPath);
+    bool showMediaRes(cwstr strPath);
 
     void updateHead(const WString& strTitle);
 
