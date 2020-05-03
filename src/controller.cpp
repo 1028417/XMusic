@@ -161,7 +161,7 @@ bool CXController::setupMediaLib()
     return true;
 }
 
-E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, const wstring& strNewName)
+E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, cwstr strNewName)
 {
 	if (strNewName.find_first_of(g_strInvalidMediaSetName) != __wnpos)
 	{
@@ -226,7 +226,7 @@ bool CXController::removeMediaSet(CMediaSet& MediaSet)
 	return true;
 }
 
-CMediaDir* CXController::attachDir(const wstring& strDir)
+CMediaDir* CXController::attachDir(cwstr strDir)
 {
 	if (strDir.size() <= 3)
 	{
@@ -240,7 +240,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 		return NULL;
 	}
 
-    bool bExist = m_OptionMgr.getOption().plAttachDir.anyFirst([&](const wstring& strAttachDir) {
+    bool bExist = m_OptionMgr.getOption().plAttachDir.anyFirst([&](cwstr strAttachDir) {
         return strutil::matchIgnoreCase(strAttachDir, strDir) || fsutil::CheckSubPath(strAttachDir, strDir);
     });
 	if (bExist)
@@ -252,7 +252,7 @@ CMediaDir* CXController::attachDir(const wstring& strDir)
 	return m_model.attachDir(strDir);
 }
 
-bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
+bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 {
 	if (strNewName.find_first_of(g_strInvalidMediaName) != __wnpos)
 	{
@@ -310,7 +310,7 @@ bool CXController::renameMedia(const IMedia& media, const wstring& strNewName)
 	return m_model.renameMedia(strOldOppPath, strNewOppPath, bDir);
 }
 
-void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
+void CXController::moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir)
 {
 	cauto t_lstMedias = lstMedias.filter([&](IMedia& media) {
 		return !strutil::matchIgnoreCase(fsutil::GetParentDir(media.GetPath()), strOppDir);
@@ -321,7 +321,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, const wstring& 
 	_moveMediaFile(t_lstMedias, strOppDir);
 }
 
-void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, const wstring& strOppDir)
+void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir)
 {
 	cauto strDstAbsDir = __xmedialib.toAbsPath(strOppDir, true);
 
