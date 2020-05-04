@@ -1036,35 +1036,6 @@ void CApp::async(UINT uDelayTime, cfn_void cb)
     });
 }
 
-void CApp::asyncloop(UINT uDelayTime, UINT uTimes, cfn_void cb)
-{
-    async(uDelayTime, [=](){
-        cb();
-
-        if (uTimes > 1)
-        {
-            asyncloop(uDelayTime, uTimes-1, cb);
-        }
-    });
-}
-
-void CApp::asyncloop(UINT uDelayTime, cfn_bool cb)
-{
-    __async(uDelayTime, [=](){
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        if (!cb())
-        {
-            return;
-        }
-
-        asyncloop(uDelayTime, cb);
-    });
-}
-
 static const WString g_lpQuality[] {
     L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
 };

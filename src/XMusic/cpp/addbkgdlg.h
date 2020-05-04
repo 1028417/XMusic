@@ -63,7 +63,7 @@ public:
         return NULL==m_pImgDir;
     }
 
-    bool upward();
+    void upward();
 };
 
 
@@ -82,7 +82,13 @@ private:
 
     bool _handleReturn() override
     {
-        return m_lv.upward();
+        if (m_lv.isInRoot())
+        {
+            return false;
+        }
+
+        m_lv.upward();
+        return true;
     }
 
 public:
@@ -93,7 +99,7 @@ public:
 
     void init();
 
-    void show(IImgDir *pImgDir = NULL, cfn_void cbClose = NULL);
+    void show(cfn_void cbClose = NULL);
 
     void relayout()
     {

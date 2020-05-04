@@ -106,9 +106,6 @@ public:
 
     static void async(UINT uDelayTime, cfn_void cb);
 
-    static void asyncloop(UINT uDelayTime, UINT uTimes, cfn_void cb);
-    static void asyncloop(UINT uDelayTime, cfn_bool cb);
-
     tagOption& getOption()
     {
         return m_ctrl.getOption();

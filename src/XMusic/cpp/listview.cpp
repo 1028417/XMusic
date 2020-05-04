@@ -330,10 +330,10 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         int dy = te.dy();
-        /*if (abs(dy) < 3)
+        if (0 == dy) //abs(dy) < 3)
         {
             return;
-        }*/
+        }
         mtutil::yield();
 
         if (dy > 0)

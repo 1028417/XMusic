@@ -587,7 +587,7 @@ void CBkgDlg::_showAddBkg()
         _addImgDir(imgDir);
     });
 
-    m_addbkgDlg.show(NULL, [&](){
+    m_addbkgDlg.show([&](){
         m_rootImgDir.clear();
         m_paImgDirs.clear();
     });

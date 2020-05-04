@@ -21,19 +21,21 @@ void CAddBkgDlg::init()
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     connect(ui.btnReturn, &CButton::signal_clicked, [&](){
-        if (!m_lv.upward())
+        if (m_lv.isInRoot())
         {
             close();
+        }
+        else
+        {
+            m_lv.upward();
+            relayout();
         }
     });
 }
 
-void CAddBkgDlg::show(IImgDir *pImgDir, cfn_void cbClose)
+void CAddBkgDlg::show(cfn_void cbClose)
 {
-    if (pImgDir)
-    {
-        m_lv.showImgDir(*pImgDir);
-    }
+    //if (pImgDir) m_lv.showImgDir(*pImgDir);
 
     CDialog::show([=](){
         if (cbClose)
@@ -62,6 +64,11 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     if (m_lv.isInRoot())
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
+        ui.labelTitle->setVisible(true);
+    }
+    else
+    {
+        ui.labelTitle->setVisible(false);
     }
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
@@ -206,27 +213,13 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
     });
 }
 
-bool CAddBkgView::upward()
+void CAddBkgView::upward()
 {
-    if (m_pImgDir)
-    {
-        m_pImgDir = NULL;
+    m_pImgDir = NULL;
 
-        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+    m_eScrollBar = E_LVScrollBar::LVSB_Left;
 
-        reset();
+    reset();
 
-        scroll(_scrollRecord(NULL));
-
-        if (!m_paImgDirs)
-        {
-            return false;
-        }
-
-        m_addbkgDlg.relayout();
-
-        return true;
-    }
-
-    return false;
+    scroll(_scrollRecord(NULL));
 }
