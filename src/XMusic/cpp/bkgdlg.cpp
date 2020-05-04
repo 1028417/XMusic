@@ -294,30 +294,30 @@ void CBkgDlg::preinit()
             strBkgSrc.append(L"/bkg/");
 
             QPixmap pm;
-            wstring strBkg;
-            wstring strDstFile;
-            cauto fn = [&](){
+            for (wchar_t wch = L'a'; wch <= L'z'; wch++)
+            {
+                auto strBkg = strBkgSrc + wch + L".jpg";
+                auto strDstFile = strAppBkgDir + __wcPathSeparator + L"0." + wch;
                 if (pm.load(__WS2Q(strBkg)))
                 {
                     zoomoutPixmap(bHBkg, pm);
-                    pm.save(__WS2Q(strDstFile), "JPG", 50);
+                    pm.save(__WS2Q(strDstFile), "JPG", 90);
                     mtutil::usleep(10);
                 }
-            };
-
-            for (wchar_t wch = L'a'; wch <= L'z'; wch++)
-            {
-                strBkg = strBkgSrc + wch + L".jpg";
-                strDstFile = strAppBkgDir + __wcPathSeparator + L"0." + wch;
-                fn();
 
                 strBkg = strBkgSrc + (bHBkg?L"hbkg/":L"vbkg/") + wch + L".jpg";
                 strDstFile = strAppBkgDir + __wcPathSeparator + L"1." + wch;
-                fn();
+                if (fsutil::copyFile(strBkg, strDstFile))
+                {
+                    mtutil::usleep(10);
+                }
 
                 strBkg = strBkgSrc + (bHBkg?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
                 strDstFile = strAppBkgDir + __wcPathSeparator + L"2." + wch;
-                fn();
+                if (fsutil::copyFile(strBkg, strDstFile))
+                {
+                    mtutil::usleep(10);
+                }
             }
         }
 
@@ -397,7 +397,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    g_xsize = rcReturn.width()-__size(5);  
+    g_xsize = rcReturn.width()-__size(5);
 
     static bool bHScreen = false;
     if (bHScreen != m_bHScreen)
@@ -406,7 +406,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         m_lv.scroll(0);
     }
 
-#if !__windows
+/*#if !__windows
     if (m_bHScreen)
     {
         m_lv.setVisible(false);
@@ -414,7 +414,7 @@ void CBkgDlg::_relayout(int cx, int cy)
             m_lv.setVisible(true);
         });
     }
-#endif
+#endif*/
 
     if (m_bHScreen)
     {
