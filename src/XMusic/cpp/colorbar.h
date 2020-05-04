@@ -97,6 +97,8 @@ private:
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
     {
+        mtutil::yield();
+
         QRect rc = _rect();
         auto margin = rc.height()/4+1;
         auto len = rc.height();
