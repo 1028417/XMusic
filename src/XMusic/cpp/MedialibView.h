@@ -3,7 +3,7 @@
 
 #include "ListViewEx.h"
 
-#define __playIconMagin (__lvRowMargin- __size(6))
+#define __playIconOffset __size(12)
 
 class CMedialibView : public CListViewEx
 {

@@ -402,27 +402,6 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
     }
 }
 
-inline static bool _playIconRect(const tagMediaContext& context, QRect& rcPlayIcon)
-{
-    if ((context.pMediaSet && (E_MediaSetType::MST_Playlist == context.pMediaSet->m_eType
-         || E_MediaSetType::MST_Album == context.pMediaSet->m_eType
-         || E_MediaSetType::MST_Singer == context.pMediaSet->m_eType))
-        || context.pMedia || context.pFile)
-    {
-        UINT cy = context->rc.height();
-        int yMargin = cy * context.fIconMargin*1.3;
-        cy -= yMargin*2;
-
-        int x_icon = context->rc.right()- __playIconMagin - cy;
-        int y_icon = context->rc.top()+yMargin;
-        rcPlayIcon.setRect(x_icon, y_icon, cy, cy);
-
-        return true;
-    }
-
-    return false;
-}
-
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
 
 inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
@@ -437,16 +416,23 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 {
     cauto mediaContext = (tagMediaContext&)context;
 
-    QRect rcPlayIcon;
-    if (_playIconRect(mediaContext, rcPlayIcon))
+    if (mediaContext.playable())
     {
+        UINT cy = context->rc.height();
+        int yMargin = cy * context.fIconMargin*1.3;
+        cy -= yMargin*2;
+
+        int x_icon = context->rc.right() + __playIconOffset - cy;
+        int y_icon = context->rc.top()+yMargin;
+        QRect rcPlayIcon(x_icon, y_icon, cy, cy);
+
         bool bFlashing = (int)mediaContext->uRow == m_nFlashingRow;
         cauto pm = mediaContext.pMediaSet
                 ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
                :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pm);
 
-        rc.setRight(rcPlayIcon.left() - __playIconMagin);
+        rc.setRight(x_icon-__lvRowMargin+__playIconOffset);
     }
 
     QString qsMediaQuality;
@@ -564,8 +550,13 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 
 inline static bool _hittestPlayIcon(const tagMediaContext& context, int x)
 {
-    QRect rcPlayIcon;
-    return _playIconRect(context, rcPlayIcon) && x >= rcPlayIcon.left()- __playIconMagin;
+    if (!context.playable())
+    {
+        return false;
+    }
+
+    int xPlayIcon = context->rc.right() - __lvRowMargin + __playIconOffset - context->rc.height();
+    return x >= xPlayIcon;
 }
 
 void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)

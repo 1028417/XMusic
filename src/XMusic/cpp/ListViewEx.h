@@ -54,6 +54,18 @@ struct tagMediaContext : public tagRowContext
     {
         strText = file.fileName();
     }
+
+    bool playable() const
+    {
+        if (pFile || pMedia || (pMediaSet && (E_MediaSetType::MST_Playlist == pMediaSet->m_eType
+             || E_MediaSetType::MST_Album == pMediaSet->m_eType
+             || E_MediaSetType::MST_Singer == pMediaSet->m_eType)))
+        {
+            return true;
+        }
+
+        return false;
+    }
 };
 
 class CListViewEx : public CListView

@@ -186,6 +186,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
 void CAddBkgView::showImgDir(IImgDir& imgDir)
 {
     m_pImgDir = &imgDir;
+    m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
     timerutil::setTimerEx(100, [=](){
@@ -210,6 +211,9 @@ bool CAddBkgView::upward()
     if (m_pImgDir)
     {
         m_pImgDir = NULL;
+
+        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+
         reset();
 
         scroll(_scrollRecord(NULL));

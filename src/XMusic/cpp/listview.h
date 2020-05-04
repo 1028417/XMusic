@@ -71,9 +71,9 @@ struct tagRowContext
 
 enum class E_LVScrollBar
 {
-    LVSB_None = 0,
-    LVSB_Right,
-    LVSB_Left
+    LVSB_None,
+    LVSB_Left,
+    LVSB_Right
 };
 
 class CListView : public TWidget<QWidget>
@@ -93,9 +93,10 @@ public:
         (void)m_pmRightTip.load(":/img/righttip.png");
     }
 
-private:
+protected:
     E_LVScrollBar m_eScrollBar = E_LVScrollBar::LVSB_None;
 
+private:
     QPixmap m_pmRightTip;
 
     UINT m_uRowHeight = 0;
@@ -153,6 +154,8 @@ private:
     virtual void _onAutoScrollBegin() {}
     virtual void _onAutoScrollEnd() {}
 
+    bool _checkBarArea(int x);
+
 protected:
     virtual size_t getPageRowCount() const = 0;
 
@@ -198,9 +201,9 @@ public:
         return m_fScrollPos;
     }
 
-    void scroll(float fScrollPos)
+    void scroll(float fPos)
     {
-        m_fScrollPos = fScrollPos;
+        m_fScrollPos = fPos;
         m_uAutoScrollSeq = 0;
 
         update();

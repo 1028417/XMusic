@@ -219,7 +219,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2
                                     , frameFilterLanguage.width(), frameFilterLanguage.height());
 
-    int x_btnPlay = cx - __playIconMagin - rcReturn.width();
+    int x_btnPlay = cx - __lvRowMargin +__playIconOffset - rcReturn.width();
     ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
     _resizeTitle();
