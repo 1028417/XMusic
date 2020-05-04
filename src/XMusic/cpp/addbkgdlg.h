@@ -80,16 +80,7 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
-    bool _handleReturn() override
-    {
-        if (m_lv.isInRoot())
-        {
-            return false;
-        }
-
-        m_lv.upward();
-        return true;
-    }
+    bool _handleReturn() override;
 
 public:
     class CBkgDlg& bkgDlg()

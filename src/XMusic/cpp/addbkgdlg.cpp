@@ -20,17 +20,7 @@ void CAddBkgDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, [&](){
-        if (m_lv.isInRoot())
-        {
-            close();
-        }
-        else
-        {
-            m_lv.upward();
-            relayout();
-        }
-    });
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &CAddBkgDlg::_handleReturn);
 }
 
 void CAddBkgDlg::show(cfn_void cbClose)
@@ -78,6 +68,21 @@ void CAddBkgDlg::_relayout(int cx, int cy)
         m_lv.setVisible(true);
     });
 #endif
+}
+
+bool CAddBkgDlg::_handleReturn()
+{
+    if (m_lv.isInRoot())
+    {
+        close();
+    }
+    else
+    {
+        m_lv.upward();
+        relayout();
+    }
+
+    return true;
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
