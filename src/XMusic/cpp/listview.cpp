@@ -74,13 +74,16 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     }
 
     int x = 0;
+    UINT cx_col = 0;
     if (E_LVScrollBar::LVSB_None != m_eScrollBar)
     {
         x = __lvRowMargin;
-        cx -= __lvRowMargin*2;
+        cx_col = (cx-__lvRowMargin*2) / uColumnCount;
     }
-
-    UINT cx_col = cx / uColumnCount;
+    else
+    {
+        cx_col = cx / uColumnCount;
+    }
 
     for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
     {
