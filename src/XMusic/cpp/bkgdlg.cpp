@@ -147,11 +147,10 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        int r = g_crBkg.red();
+        /*int r = g_crBkg.red();
         int g = g_crBkg.green();
         int b = g_crBkg.blue();
         QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
-
         int d = abs(cr.red()+cr.green()+cr.blue()-g_crBkg.red()-g_crBkg.green()-g_crBkg.blue());
         if (abs(d) == 128)
         {
@@ -160,9 +159,12 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         else
         {
             cr.setAlpha(50);
-        }
+        }*/
+        auto cr = g_crFore;
+        cr.setAlpha(100);
 
         painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
+
         cr.setAlpha(128);
 
         int len = MIN(rc.width(), rc.height())/4;
@@ -301,7 +303,7 @@ void CBkgDlg::preinit()
                 if (pm.load(__WS2Q(strBkg)))
                 {
                     zoomoutPixmap(bHBkg, pm);
-                    pm.save(__WS2Q(strDstFile), "JPG", 90);
+                    pm.save(__WS2Q(strDstFile), "JPG", 89);
                     mtutil::usleep(10);
                 }
 
@@ -500,7 +502,7 @@ bool CBkgDlg::_setBkg(int nIdx)
     }
 
     auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
-    if (nIdx > 0)
+    if (nIdx >= 0)
     {
         cwstr strFile = vecBkgFile[nIdx].strPath;
         (void)pm.load(__WS2Q(_bkgDir() + strFile));
