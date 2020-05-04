@@ -113,6 +113,8 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
+    int m_yBar = 0;
+
 protected:
     UINT rowHeight() const
     {

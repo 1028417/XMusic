@@ -1337,6 +1337,7 @@ void MainWindow::updateBkg()
 
 void MainWindow::handleTouchMove(const CTouchEvent& te)
 {
+    mtutil::yield();
     m_dxbkg -= te.dx();
     m_dybkg -= te.dy();
     update();

@@ -113,13 +113,13 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
     if (E_LVScrollBar::LVSB_None != m_eScrollBar && uRowCount > uPageRowCount)
     {
-        auto szMargin = (__lvRowMargin-__cxBar)/2;
-        auto xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? 0 : cx;
+        int szMargin = (__lvRowMargin-__cxBar)/2;
+        int xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? 0 : cx;
         xBar += szMargin;
         cy -= szMargin*2;
         auto cyBar = cy*uPageRowCount/uRowCount;
-        auto yBar = int(szMargin + m_fScrollPos*(cy-cyBar)/(uRowCount-uPageRowCount));
-        QRect rcBar(xBar, yBar, __cxBar, cyBar);
+        m_yBar = szMargin + m_fScrollPos*(cy-cyBar)/(uRowCount-uPageRowCount);
+        QRect rcBar(xBar, m_yBar, __cxBar, cyBar);
 
         auto cr = g_crFore;
         cr.setAlpha(128);
@@ -279,14 +279,36 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
 
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    if (_checkBarArea(te.x()))
+    static bool bTouchBarArea = false;
+    static int nTouchBarPos = 0;
+    if (E_TouchEventType::TET_TouchBegin == type)
+    {
+        bTouchBarArea = _checkBarArea(te.x());
+        if (bTouchBarArea)
+        {
+            nTouchBarPos = te.y()-m_yBar;
+        }
+    }
+
+    if (bTouchBarArea)
     {
         auto uRowCount = getRowCount();
         auto uPageRowCount = getPageRowCount();
         if (uRowCount > uPageRowCount)
         {
+            mtutil::yield();
+
             int cyBar = height()*uPageRowCount/uRowCount;
-            int y = te.y()-(__lvRowMargin-__cxBar)/2-cyBar/2;
+            int y = te.y()-(__lvRowMargin-__cxBar)/2;
+            if (nTouchBarPos > 0 && nTouchBarPos < cyBar)
+            {
+                y -= nTouchBarPos;
+            }
+            else
+            {
+                y -= cyBar/2;
+            }
+
             y = MAX(y, 0);
             auto fPos = float(uRowCount-uPageRowCount)*y/(height()-(__lvRowMargin-__cxBar)-cyBar);
             scroll(fPos);
@@ -308,10 +330,11 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         int dy = te.dy();
-        if (abs(dy) < 3)
+        /*if (abs(dy) < 3)
         {
             return;
-        }
+        }*/
+        mtutil::yield();
 
         if (dy > 0)
         {
