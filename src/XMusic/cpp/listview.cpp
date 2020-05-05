@@ -326,39 +326,46 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
-        ulong dt = te.dt();
-        if (0 == dt || dt > 500)
+        auto dy = te.y() - m_teBegin.y();
+        if (dy < 3 && dy > -3)
         {
             return;
         }
 
-        int dy = te.dy();
-        if (0 == dy) //abs(dy) < 3)
+        auto dt = te.timestamp() - m_teBegin.timestamp();
+        if (dt < 300)
         {
-            return;
-        }
-        mtutil::yield();
+            if (dy > 30 || dy < -30)
+            {
+                dy /= 3;
 
-        if (dy > 0)
-        {
-            dy = 1;
+                dt /= 3;
+                dt = MAX(20, dt);
+            }
         }
         else
         {
-            dy = -1;
+            if (dt > 1000)
+            {
+                return;
+            }
+
+            dt = 20;
+
+            if (dy > 0)
+            {
+                dy = 3;
+            }
+            else
+            {
+                dy = -3;
+            }
         }
 
         _onAutoScrollBegin();
 
         m_uAutoScrollSeq = te.timestamp();
-        if (dt < 100)
-        {
-            _autoScroll(m_uAutoScrollSeq, m_uRowHeight*dy, 100, 3000);
-        }
-        else
-        {
-            _autoScroll(m_uAutoScrollSeq, m_uRowHeight/20*dy, 45, 3000);
-        }
+        _autoScroll(m_uAutoScrollSeq, dy, dt, 2000);
     }
 }
 

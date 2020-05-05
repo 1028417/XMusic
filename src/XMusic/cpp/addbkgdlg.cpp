@@ -220,10 +220,6 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
 
 void CAddBkgView::upward()
 {
-    m_pImgDir = NULL;
-
-    m_eScrollBar = E_LVScrollBar::LVSB_Left;
-
     reset();
 
     scroll(_scrollRecord(NULL));

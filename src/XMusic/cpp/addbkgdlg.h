@@ -42,6 +42,8 @@ private:
 private:
     void _reset() override
     {
+        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+
         m_pImgDir = NULL;
     }
 

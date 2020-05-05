@@ -135,18 +135,18 @@ private:
 
     SSet<Qt::GestureType> m_setGestureType;
 
-    CTouchEvent m_teBegin;
+    bool m_bSetForeColor = false;
+    QColor m_crFore;
 
     int m_xTouch = 0;
     int m_yTouch = 0;
 
-    bool m_bTouching = false;
+    bool m_bTouch = false;
 
-    bool m_bMousePressed = false;
+    bool m_bMousePress = false;
 
 protected:
-    bool m_bSetForeColor = false;
-    QColor m_crFore;
+    CTouchEvent m_teBegin;
 
     bool m_bClicking = false;
 

@@ -114,18 +114,18 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
     if (E_MouseEventType::MET_Press == type)
     {
-        if (!m_bTouching)
+        if (!m_bTouch)
         {
-            m_bMousePressed = true;
+            m_bMousePress = true;
 
             _handleTouchBegin(me);
         }
     }
     else if (E_MouseEventType::MET_Release == type)
     {
-        if (m_bMousePressed)
+        if (m_bMousePress)
         {
-            m_bMousePressed = false;
+            m_bMousePress = false;
 
             _handleTouchEnd(me);
         }
@@ -146,7 +146,7 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
     }
     else if (E_MouseEventType::MET_Move == type)
     {
-        if (m_bMousePressed)
+        if (m_bMousePress)
         {
             _handleTouchMove(me);
         }
@@ -158,25 +158,25 @@ void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEven
 {
     if (E_TouchEventType::TET_TouchBegin == type)
     {
-        if (!m_bMousePressed)
+        if (!m_bMousePress)
         {
-            m_bTouching = true;
+            m_bTouch = true;
 
             _handleTouchBegin(te);
         }
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
-        if (m_bTouching)
+        if (m_bTouch)
         {
-            m_bTouching = false;
+            m_bTouch = false;
 
             _handleTouchEnd(te);
         }
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (m_bTouching)
+        if (m_bTouch)
         {
             _handleTouchMove(te);
         }
