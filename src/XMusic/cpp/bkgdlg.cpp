@@ -401,23 +401,6 @@ void CBkgDlg::_relayout(int cx, int cy)
 
     g_xsize = rcReturn.width()-__size(5);
 
-    static bool bHScreen = false;
-    if (bHScreen != m_bHScreen)
-    {
-        bHScreen = m_bHScreen;
-        m_lv.scroll(0);
-    }
-
-/*#if !__windows
-    if (m_bHScreen)
-    {
-        m_lv.setVisible(false);
-        CApp::async([&](){
-            m_lv.setVisible(true);
-        });
-    }
-#endif*/
-
     if (m_bHScreen)
     {
         ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()
@@ -445,6 +428,13 @@ void CBkgDlg::_relayout(int cx, int cy)
 
         ui.labelTitle->setGeometry(0, 0, cx, y_bkgView);
         ui.labelTitle->setText("设置背景");
+    }
+
+    static BOOL bHScreen = -1;
+    if (bHScreen != (BOOL)m_bHScreen)
+    {
+        bHScreen = m_bHScreen;
+        m_lv.scroll(0);
     }
 }
 

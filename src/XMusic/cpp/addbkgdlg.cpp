@@ -33,7 +33,7 @@ void CAddBkgDlg::show(cfn_void cbClose)
             cbClose();
         }
 
-        m_lv.reset();
+        m_lv.upward();
     });
 }
 
@@ -62,12 +62,12 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     }
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
-#if !__windows
-    m_lv.setVisible(false);
-    CApp::async([&](){
-        m_lv.setVisible(true);
-    });
-#endif
+    static BOOL bHScreen = -1;
+    if (bHScreen != (BOOL)m_bHScreen)
+    {
+        bHScreen = m_bHScreen;
+        m_lv.scroll(m_lv.scrollPos());
+    }
 }
 
 bool CAddBkgDlg::_handleReturn()
@@ -221,6 +221,10 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
 void CAddBkgView::upward()
 {
     reset();
+
+    m_eScrollBar = E_LVScrollBar::LVSB_Left;
+
+    m_pImgDir = NULL;
 
     scroll(_scrollRecord(NULL));
 }

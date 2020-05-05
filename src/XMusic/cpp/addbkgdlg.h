@@ -40,13 +40,6 @@ private:
     IImgDir *m_pImgDir = NULL;
 
 private:
-    void _reset() override
-    {
-        m_eScrollBar = E_LVScrollBar::LVSB_Left;
-
-        m_pImgDir = NULL;
-    }
-
     size_t getColumnCount() const override;
 
     size_t getPageRowCount() const override;
