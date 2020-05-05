@@ -340,7 +340,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
                 dy /= 3;
 
                 dt /= 3;
-                dt = MAX(20, dt);
+                dt = MAX(30, dt);
             }
         }
         else
@@ -350,15 +350,15 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
                 return;
             }
 
-            dt = 20;
+            dt = 30;
 
             if (dy > 0)
             {
-                dy = 3;
+                dy = 2+rowHeight()/100;
             }
             else
             {
-                dy = -3;
+                dy = -2-rowHeight()/100;
             }
         }
 

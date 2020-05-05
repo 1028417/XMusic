@@ -178,6 +178,7 @@ void CPlayingList::_onBlankDblClick(const QMouseEvent&)
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
+    static bool bFlag = false;
     if (E_TouchEventType::TET_TouchMove == type)
     {
         if (abs(te.dy()) < abs(te.dx())
@@ -186,6 +187,7 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
                 || getRowCount() <= getPageRowCount())
         {
             ((MainWindow*)parent())->handleTouchMove(te);
+            bFlag = true;
             return;
         }
     }
@@ -196,6 +198,12 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
         _updateActive();
+
+        if (bFlag)
+        {
+            bFlag = false;
+            return;
+        }
     }
 
     CListView::_onTouchEvent(type, te);
