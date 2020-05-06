@@ -1,11 +1,11 @@
 
-#include "ListViewEx.h"
+#include "MLListView.h"
 
-size_t CListViewEx::getRowCount() const
+size_t CMLListView::getItemCount() const
 {
     if (m_pMediaset)
     {
-          return m_lstSubSets.size() + m_lstSubMedias.size();
+        return m_lstSubSets.size() + m_lstSubMedias.size();
     }
     else if (m_pDir)
     {
@@ -13,11 +13,11 @@ size_t CListViewEx::getRowCount() const
     }
     else
     {
-        return _getRootRowCount();
+        return _getRootItemCount();
     }
 }
 
-void CListViewEx::showRoot()
+void CMLListView::showRoot()
 {
     _cleanup();
 
@@ -26,7 +26,7 @@ void CListViewEx::showRoot()
     _onShowRoot();
 }
 
-void CListViewEx::showMediaSet(CMediaSet& MediaSet)
+void CMLListView::showMediaSet(CMediaSet& MediaSet)
 {
     _cleanup();
 
@@ -39,7 +39,7 @@ void CListViewEx::showMediaSet(CMediaSet& MediaSet)
     _onShowMediaSet(MediaSet);
 }
 
-void CListViewEx::hittestMedia(CMedia& media)
+void CMLListView::hittestMedia(CMedia& media)
 {
     if (media.m_pParent)
     {
@@ -48,13 +48,13 @@ void CListViewEx::hittestMedia(CMedia& media)
         int nIdx = media.index();
         if (nIdx >= 0)
         {
-            showRow((UINT)nIdx, true);
-            selectRow((UINT)nIdx);
+            showItemCenter((UINT)nIdx);
+            selectItem((UINT)nIdx);
         }
     }
 }
 
-void CListViewEx::showDir(CPath& dir)
+void CMLListView::showDir(CPath& dir)
 {
     _cleanup();
 
@@ -67,7 +67,7 @@ void CListViewEx::showDir(CPath& dir)
     _onShowDir(dir);
 }
 
-void CListViewEx::hittestFile(XFile& file)
+void CMLListView::hittestFile(XFile& file)
 {
     auto pParent = file.parent();
     if (pParent)
@@ -77,20 +77,20 @@ void CListViewEx::hittestFile(XFile& file)
         int nIdx = pParent->files().indexOf(&file);
         if (nIdx >= 0)
         {
-            UINT uIdx = UINT(pParent->dirs().size() + nIdx);
-            showRow(uIdx, true);
-            selectRow(uIdx);
+            auto uItem = pParent->dirs().size() + nIdx;
+            showItemCenter(uItem);
+            selectItem(uItem);
         }
     }
 }
 
-void CListViewEx::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
+void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(lvItem.uRow, [&](CMediaSet& mediaSet) {
+            m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
                 tagMLItemContext context(lvItem, mediaSet);
                 _genMediaContext(context);
                 _paintRow(painter, context);
@@ -98,7 +98,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(lvItem.uRow, [&](CMedia& media) {
+            m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media) {
                 tagMLItemContext context(lvItem, media);
                 _genMediaContext(context);
                 _paintRow(painter, context);
@@ -107,9 +107,9 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
     }
     else if (m_pDir)
     {
-        if (lvItem.uRow >= m_paSubDirs.size())
+        if (lvItem.uItem >= m_paSubDirs.size())
         {
-            m_paSubFiles.get(lvItem.uRow-m_paSubDirs.size(), [&](XFile& subFile) {
+            m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
                 tagMLItemContext context(lvItem, subFile);
                 _genMediaContext(context);
                 _paintRow(painter, context);
@@ -117,7 +117,7 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
         }
         else
         {
-            m_paSubDirs.get(lvItem.uRow, [&](CPath& subPath) {
+            m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 tagMLItemContext context(lvItem, subPath);
                 _genMediaContext(context);
                 _paintRow(painter, context);
@@ -134,36 +134,34 @@ void CListViewEx::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
-void CListViewEx::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
+void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
-    UINT uRow = lvItem.uRow;
-
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
-            m_lstSubSets.get(uRow, [&](CMediaSet& mediaSet){
+            m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet){
                 _onRowClick(lvItem, me, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(uRow, [&](CMedia& media){
+            m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media){
                 _onRowClick(lvItem, me, media);
             });
         }
     }
     else if (m_pDir)
     {
-        if (uRow >= m_paSubDirs.size())
+        if (lvItem.uRow >= m_paSubDirs.size())
         {
-            m_paSubFiles.get(uRow-m_paSubDirs.size(), [&](XFile& subFile) {
+            m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
                 _onRowClick(lvItem, me, (CPath&)subFile);
             });
         }
         else
         {
-            m_paSubDirs.get(uRow, [&](CPath& subPath) {
+            m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 _saveScrollRecord();
                 showDir(subPath);
             });
@@ -188,7 +186,7 @@ void CListViewEx::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
     }
 }
 
-bool CListViewEx::upward()
+bool CMLListView::upward()
 {
     _clearScrollRecord(_current());
 

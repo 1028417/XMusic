@@ -111,10 +111,10 @@ enum class E_MediaSetChanged
 
 struct tagMediaSetChanged
 {
-	tagMediaSetChanged(E_MediaSetType t_eMediaSetType, UINT t_uMediaSetID, E_MediaSetChanged t_eChangedType)
-		: eMediaSetType(t_eMediaSetType)
-		, uMediaSetID(t_uMediaSetID)
-		, eChangedType(t_eChangedType)
+    tagMediaSetChanged(E_MediaSetType eMediaSetType, UINT uMediaSetID, E_MediaSetChanged eChangedType)
+        : eMediaSetType(eMediaSetType)
+        , uMediaSetID(uMediaSetID)
+        , eChangedType(eChangedType)
 	{
 	}
 
@@ -163,17 +163,16 @@ struct tagFindMediaPara
 	{
 	}
 
-	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode)
-	{
-		eFindMediaMode = t_eFindMediaMode;
+    tagFindMediaPara(E_FindMediaMode eFindMediaMode)
+        : eFindMediaMode(eFindMediaMode)
+    {
 	}
 
-	tagFindMediaPara(E_FindMediaMode t_eFindMediaMode, cwstr t_strFindText, bool t_bFindOne = false)
-	{
-		eFindMediaMode = t_eFindMediaMode;
-		strFindText = strutil::lowerCase_r(t_strFindText);
-
-		bFindOne = t_bFindOne;
+    tagFindMediaPara(E_FindMediaMode eFindMediaMode, cwstr strFindText, bool bFindOne = false)
+        : eFindMediaMode(eFindMediaMode)
+        , strFindText(strutil::lowerCase_r(strFindText))
+        , bFindOne(bFindOne)
+    {
 	}
 
 	E_FindMediaMode eFindMediaMode = E_FindMediaMode::FMM_MatchText;

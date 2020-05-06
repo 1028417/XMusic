@@ -173,8 +173,8 @@ class CSnapshotDir : public CMediaDir
 public:
     CSnapshotDir() = default;
 
-    CSnapshotDir(cwstr strPath, class CPath *t_pParent = NULL)
-        : CMediaDir(strPath, t_pParent)
+    CSnapshotDir(cwstr strPath, class CPath *pParent = NULL)
+        : CMediaDir(strPath, pParent)
     {
     }
 

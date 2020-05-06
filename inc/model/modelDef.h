@@ -103,9 +103,9 @@ struct tagCompareBackupResult
 {
     tagCompareBackupResult() = default;
 
-	tagCompareBackupResult(const wstring t_strSrcTag, const wstring t_strDstTag=L"")
-		: strSrcTag(t_strSrcTag)
-		, strDstTag(t_strDstTag)
+    tagCompareBackupResult(const wstring strSrcTag, const wstring strDstTag=L"")
+        : strSrcTag(strSrcTag)
+        , strDstTag(strDstTag)
 	{
 	}
 
@@ -127,14 +127,14 @@ struct tagAddPlayItem
 {
     tagAddPlayItem() = default;
 
-	tagAddPlayItem(cwstr t_strPath) : strPath(t_strPath)
+    tagAddPlayItem(cwstr strPath) : strPath(strPath)
 	{
 	}
 
-	tagAddPlayItem(cwstr t_strPath, long long t_nFileSize, UINT t_uDuration)
-		: strPath(t_strPath)
-		, nFileSize(t_nFileSize)
-		, uDuration(t_uDuration)
+    tagAddPlayItem(cwstr strPath, long long nFileSize, UINT uDuration)
+        : strPath(strPath)
+        , nFileSize(nFileSize)
+        , uDuration(uDuration)
 	{
 	}
 

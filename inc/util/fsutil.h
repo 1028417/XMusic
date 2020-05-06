@@ -72,10 +72,10 @@ struct __UtilExt tagFileInfo
 	{
 	}
 
-	tagFileInfo(bool t_bDir, cwstr t_strName, class CPath *t_pParent=NULL)
-		: pParent(t_pParent)
-		, bDir(t_bDir)
-		, strName(t_strName)
+    tagFileInfo(bool bDir, cwstr strName, class CPath *pParent=NULL)
+        : pParent(pParent)
+        , bDir(bDir)
+        , strName(strName)
 	{
 	}
 

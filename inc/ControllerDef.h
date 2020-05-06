@@ -23,33 +23,34 @@ struct tagPlayCtrl
 {
     tagPlayCtrl() = default;
 
-    tagPlayCtrl(E_PlayCtrl t_ePlayCtrl)
+    tagPlayCtrl(E_PlayCtrl ePlayCtrl)
+        : ePlayCtrl(ePlayCtrl)
     {
-        ePlayCtrl = t_ePlayCtrl;
     }
 
-    tagPlayCtrl(UINT uIdx)
+    tagPlayCtrl(UINT uPlayIdx)
+        : ePlayCtrl(E_PlayCtrl::PC_PlayIndex)
+        , uPlayIdx(uPlayIdx)
     {
-        ePlayCtrl = E_PlayCtrl::PC_PlayIndex;
-        uPlayIdx = uIdx;
     }
 
-    tagPlayCtrl(const TD_IMediaList& t_paMedias)
+    tagPlayCtrl(const TD_IMediaList& paMedias)
+        : ePlayCtrl(E_PlayCtrl::PC_Assign)
+        , paMedias(paMedias)
     {
-        ePlayCtrl = E_PlayCtrl::PC_Assign;
-        paMedias.assign(t_paMedias);
     }
+
     tagPlayCtrl(IMedia& media, bool bPlay)
     {
         ePlayCtrl = bPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
         paMedias.assign(media);
     }
 
-    tagPlayCtrl(E_DemandMode eMode, E_LanguageType eLanguage = E_LanguageType::LT_None)
+    tagPlayCtrl(E_DemandMode eDemandMode, E_LanguageType eDemandLanguage = E_LanguageType::LT_None)
+        : ePlayCtrl(E_PlayCtrl::PC_Demand)
+        , eDemandMode(eDemandMode)
+        , eDemandLanguage(eDemandLanguage)
     {
-        ePlayCtrl = E_PlayCtrl::PC_Demand;
-        eDemandMode = eMode;
-        eDemandLanguage = eLanguage;
     }
 
     void get(tagPlayCtrl& PlayCtrl)

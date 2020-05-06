@@ -68,10 +68,10 @@ struct tagMLItemContext : public tagLVItemContext
     }
 };
 
-class CListViewEx : public CListView
+class CMLListView : public CListView
 {
 public:
-    CListViewEx(QWidget& parent, E_LVScrollBar eScrollBar) : CListView(parent, eScrollBar)
+    CMLListView(QWidget& parent, E_LVScrollBar eScrollBar) : CListView(parent, eScrollBar)
     {
     }
 
@@ -118,11 +118,9 @@ private:
     virtual void _onShowMediaSet(CMediaSet&) {}
     virtual void _onShowDir(CPath&) {}
 
-    size_t getRowCount() const override;
+    virtual size_t _getRootItemCount() const = 0;
 
-    virtual size_t _getRootRowCount() const = 0;
-
-    void _onPaintRow(CPainter&, tagLVItem&) override;
+    void _onPaintItem(CPainter&, tagLVItem&) override;
 
     virtual bool _genRootRowContext(tagMLItemContext&) = 0;
     virtual void _genMediaContext(tagMLItemContext&) = 0;
@@ -148,6 +146,8 @@ private:
     }
 
 public:
+    size_t getItemCount() const override;
+
     CMediaSet* currentMediaSet() const
     {
         return m_pMediaset;

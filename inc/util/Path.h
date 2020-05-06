@@ -33,8 +33,8 @@ public:
 	{
 	}
 
-	XFile(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
-		: m_fileInfo(t_bDir, t_strName, t_pParent)
+    XFile(bool bDir, cwstr strName, class CPath *pParent)
+        : m_fileInfo(bDir, strName, pParent)
 	{
 	}
 
@@ -88,8 +88,8 @@ public:
 	{
 	}
 	
-	CPath(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
-		: XFile(t_bDir, t_bDir? strutil::rtrim_r(t_strName, __wcPathSeparator) : t_strName, t_pParent)
+    CPath(bool bDir, cwstr strName, class CPath *pParent)
+        : XFile(bDir, bDir? strutil::rtrim_r(strName, __wcPathSeparator) : strName, pParent)
 	{
 	}
 
@@ -281,8 +281,8 @@ public:
 	{
 	}
 
-	CPathObject(bool t_bDir, cwstr t_strName, class CPath *t_pParent)
-		: CPath(t_bDir, t_strName, t_pParent)
+    CPathObject(bool bDir, cwstr strName, class CPath *pParent)
+        : CPath(bDir, strName, pParent)
 	{
 	}
 
@@ -313,8 +313,8 @@ public:
 	{
 	}
 
-	CDirObject(cwstr t_strName, class CPath *t_pParent = NULL)
-		: CPathObject(true, t_strName, t_pParent)
+    CDirObject(cwstr strName, class CPath *pParent = NULL)
+        : CPathObject(true, strName, pParent)
 	{
 	}
 

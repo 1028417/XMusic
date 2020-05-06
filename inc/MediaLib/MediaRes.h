@@ -23,9 +23,9 @@ public:
 	{
 	}
 
-    CMediaRes(E_MediaFileType eFileType, bool t_bDir, cwstr t_strName, class CPath *t_pParent)
+    CMediaRes(E_MediaFileType eFileType, bool bDir, cwstr strName, class CPath *pParent)
 		: IMedia(eFileType)
-		, CPathObject(t_bDir, t_strName, t_pParent)
+        , CPathObject(bDir, strName, pParent)
 	{
 	}
 
@@ -137,8 +137,8 @@ public:
 	{
 	}
 
-    CMediaDir(cwstr strPath, class CPath *t_pParent = NULL)
-		: CMediaRes(E_MediaFileType::MFT_Null, true, strPath, t_pParent)
+    CMediaDir(cwstr strPath, class CPath *pParent = NULL)
+        : CMediaRes(E_MediaFileType::MFT_Null, true, strPath, pParent)
 	{
 	}
 	
