@@ -30,11 +30,11 @@ SOURCES += ../controller.cpp \
     cpp/listview.cpp \
     cpp/medialibdlg.cpp \
     cpp/addbkgdlg.cpp \
-    cpp/ListViewEx.cpp \
     cpp/label.cpp \
     cpp/dialog.cpp \
     cpp/msgbox.cpp \
-    cpp/wholeTrackDlg.cpp
+    cpp/wholeTrackDlg.cpp \
+    cpp/MLListView.cpp
 
 HEADERS += cpp/app.h \
     cpp/MedialibView.h \
@@ -53,12 +53,12 @@ HEADERS += cpp/app.h \
     cpp/dialog.h \
     cpp/medialibdlg.h \
     cpp/addbkgdlg.h \
-    cpp/ListViewEx.h \
     ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
     cpp/msgbox.h \
     cpp/centralwidget.h \
-    cpp/wholeTrackDlg.h
+    cpp/wholeTrackDlg.h \
+    cpp/MLListView.h
 
 RESOURCES += res.qrc
 

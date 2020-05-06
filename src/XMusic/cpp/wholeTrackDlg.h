@@ -18,8 +18,8 @@ public:
     void setCue(CCueFile cue, UINT uDuration);
 
 private:
-    size_t getPageRowCount() const override;
     size_t getRowCount() const override;
+    size_t getItemCount() const override;
 
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 };

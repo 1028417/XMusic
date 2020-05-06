@@ -90,12 +90,12 @@ void CWholeTrackView::setCue(CCueFile cue, UINT uDuration)
     m_uDuration = uDuration;
 }
 
-size_t CWholeTrackView::getPageRowCount() const
+size_t CWholeTrackView::getRowCount() const
 {
-    return CMedialibDlg::getPageRowCount(m_WholeTrackDlg.height());
+    return CMedialibDlg::getRowCount(m_WholeTrackDlg.height());
 }
 
-size_t CWholeTrackView::getRowCount() const
+size_t CWholeTrackView::getItemCount() const
 {
     return m_cue.m_alTrackInfo.size();
 }
@@ -104,7 +104,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     UINT uDuration = 0;
-    m_cue.m_alTrackInfo.get(context->uRow, [&](const tagTrackInfo& TrackInfo){
+    m_cue.m_alTrackInfo.get(context->uItem, [&](const tagTrackInfo& TrackInfo){
         context.strText << ' ';
 
         auto uIdx = TrackInfo.uIndex+1;
@@ -116,7 +116,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
         context.strText << uIdx << L"   " << TrackInfo.strTitle;
 
 
-        if (!m_cue.m_alTrackInfo.get(context->uRow+1, [&](const tagTrackInfo& nextTrackInfo){
+        if (!m_cue.m_alTrackInfo.get(context->uItem+1, [&](const tagTrackInfo& nextTrackInfo){
                                      uDuration = (nextTrackInfo.uMsBegin - TrackInfo.uMsBegin)/1000;
         }))
         {

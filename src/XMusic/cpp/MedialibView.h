@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include "ListViewEx.h"
+#include "MLListView.h"
 
-#define __playIconOffset __size(12)
+#define __playIconOffset __size(10)
 
-class CMedialibView : public CListViewEx
+class CMedialibView : public CMLListView
 {
     Q_OBJECT
 public:
@@ -49,7 +49,7 @@ private:
     list<QPixmap> m_lstSingerPixmap;
     map<UINT, QPixmap*> m_mapSingerPixmap;
 
-    int m_nFlashingRow = -1;
+    int m_nFlashItem = -1;
 
     XThread m_thrAsyncTask;
 
@@ -65,7 +65,7 @@ public:
 
     void reset() override
     {
-        m_nFlashingRow = -1;
+        m_nFlashItem = -1;
 
         CListView::reset();
     }
@@ -77,18 +77,15 @@ private:
     void _onShowMediaSet(CMediaSet&) override;
     void _onShowDir(CPath&) override;
 
-    size_t getPageRowCount() const override;
+    size_t getColCount() const override;
+    size_t getRowCount() const override;
 
-    size_t getColumnCount() const override;
-
-    size_t _getRootRowCount() const override;
+    size_t _getRootItemCount() const override;
 
     bool _genRootRowContext(tagMLItemContext&) override;
     void _genMediaContext(tagMLItemContext&) override;
 
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
-
-    bool event(QEvent *ev) override;
 
     cqpm _getSingerPixmap(UINT uSingerID, cwstr strSingerName);
 
@@ -109,5 +106,5 @@ private:
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;
 
-    void _flashRow(UINT uRow, UINT uMSDelay=300);
+    void _flashItem(UINT uItem, UINT uMSDelay=300);
 };

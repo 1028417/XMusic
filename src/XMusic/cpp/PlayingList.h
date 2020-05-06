@@ -47,15 +47,15 @@ public:
     }
 
 private:
-    size_t getPageRowCount() const override;
+    size_t getRowCount() const override;
 
-    size_t getRowCount() const override
+    size_t getItemCount() const override
     {
         return m_alPlayingItems.size();
     }
 
-    void _onPaintRow(CPainter&, tagLVItem&) override;
-    void _onPaintRow(CPainter& painter, QRect& rc, const tagPlayingItem& playingItem, bool bPlayingItem, UINT uIdx);
+    void _onPaintItem(CPainter&, tagLVItem&) override;
+    void _onPaintItem(CPainter&, tagLVItem&, const tagPlayingItem&);
 
     void _onRowDblClick(tagLVItem&, const QMouseEvent&) override;
 

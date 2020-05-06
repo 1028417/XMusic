@@ -3,7 +3,7 @@
 
 #include "dialog.h"
 
-#include "ListViewEx.h"
+#include "MLListView.h"
 
 class IImgDir
 {
@@ -40,13 +40,13 @@ private:
     IImgDir *m_pImgDir = NULL;
 
 private:
-    size_t getColumnCount() const override;
-
-    size_t getPageRowCount() const override;
+    size_t getColCount() const override;
 
     size_t getRowCount() const override;
 
-    void _onPaintRow(CPainter&, tagLVItem&) override;
+    size_t getItemCount() const override;
+
+    void _onPaintItem(CPainter&, tagLVItem&) override;
 
     void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
 

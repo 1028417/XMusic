@@ -9,19 +9,16 @@ struct tagLVItem
 {
     tagLVItem() = default;
 
-    tagLVItem(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
-        : uIdx(t_uIdx)
-        , uRow(t_uRow)
-        , uCol(t_uCol)
-        , bSelected(t_bSelected)
+    tagLVItem(UINT uRow, UINT uCol, UINT uItem)
+        : uRow(uRow)
+        , uCol(uCol)
+        , uItem(uItem)
     {
     }
 
-    UINT uIdx = 0;
     UINT uRow = 0;
     UINT uCol = 0;
-
-    bool bSelected = false;
+    UINT uItem = 0;
 
     QRect rc;
 };
@@ -38,15 +35,15 @@ enum E_LVItemStyle
 };
 struct tagLVItemContext
 {
-    tagLVItemContext(tagLVItem& t_lvItem, UINT t_eStyle = E_LVItemStyle::IS_None)
-        : lvItem(t_lvItem), eStyle(t_eStyle)
+    tagLVItemContext(tagLVItem& lvItem, UINT eStyle = E_LVItemStyle::IS_None)
+        : lvItem(lvItem), eStyle(eStyle)
     {
     }
 
-    void setPixmap(const QPixmap *t_pm, float t_fIconMargin)
+    void setIcon(const QPixmap *pm, float fMargin)
     {
-        pmImg = t_pm;
-        fIconMargin = t_fIconMargin;
+        pmIcon = pm;
+        fIconMargin = fMargin;
     }
 
     tagLVItem* operator->()
@@ -62,7 +59,7 @@ struct tagLVItemContext
 
     UINT eStyle = E_LVItemStyle::IS_None;
 
-    const QPixmap *pmImg = NULL;
+    const QPixmap *pmIcon = NULL;
     float fIconMargin = 0.21f;
     UINT uIconRound = __size(6);
 
@@ -99,7 +96,8 @@ protected:
 private:
     QPixmap m_pmRightTip;
 
-    UINT m_uRowHeight = 0;
+    UINT m_uRowHeight = 1;
+    UINT m_uTotalRows = 0;
 
     int m_yBar = 0;
 
@@ -109,8 +107,7 @@ private:
 
     ulong m_uAutoScrollSeq = 0;
 
-    int m_nSelectRow = -1;
-    int m_nSelectCol = -1;
+    int m_nSelectItem = -1;
 
     map<void*, float> m_mapScrollRecord;
 
@@ -121,16 +118,9 @@ protected:
     }
 
 private:
-    virtual size_t getColumnCount() const
-    {
-        return 1;
-    }
-
-    virtual size_t getRowCount() const = 0;
-
     void _onPaint(CPainter& painter, cqrc) override;
 
-    virtual void _onPaintRow(CPainter& painter, tagLVItem& lvItem)
+    virtual void _onPaintItem(CPainter& painter, tagLVItem& lvItem)
     {
         tagLVItemContext context(lvItem);
         if (_genRowContext(context))
@@ -156,7 +146,14 @@ private:
     bool _checkBarArea(int x);
 
 protected:
-    virtual size_t getPageRowCount() const = 0;
+    virtual size_t getColCount() const
+    {
+        return 1;
+    }
+
+    virtual size_t getRowCount() const = 0;
+
+    virtual size_t getItemCount() const = 0;
 
     bool isAutoScrolling() const
     {
@@ -208,19 +205,20 @@ public:
         update();
     }
 
-    void showRow(UINT uRow, bool bToCenter=false);
+    void showItem(UINT uItem);
+    void showItemTop(UINT uItem);
+    void showItemCenter(UINT uItem);
 
-    void selectRow(UINT uRow, int nCol = -1)
+    void selectItem(UINT uItem)
     {
-        m_nSelectRow = uRow;
-        m_nSelectCol = nCol;
+        m_nSelectItem = uItem;
 
         update();
     }
 
-    void dselectRow()
+    void dselectItem()
     {
-        m_nSelectRow = -1;
+        m_nSelectItem = -1;
 
         update();
     }
@@ -231,7 +229,7 @@ public:
 
         m_uAutoScrollSeq = 0;
 
-        m_nSelectRow = -1;
+        m_nSelectItem = -1;
 
         update();
     }

@@ -5,33 +5,31 @@
 
 #define __cxBar __size(5)
 
-void CListView::showRow(UINT uRow, bool bToCenter)
+void CListView::showItem(UINT uItem)
 {
-    m_uAutoScrollSeq = 0;
-
-    size_t uPageRowCount = getPageRowCount();
-
-    if (bToCenter)
+    auto uRow = uItem/getColCount();
+    size_t uRowCount = getRowCount();
+    if (uRow < m_fScrollPos)
     {
-        m_fScrollPos = MAX(.0f, (float)uRow - (uPageRowCount-1)/2);
+        scroll(uRow);
     }
-    else
+    else if (uRow+1 > m_fScrollPos+uRowCount)
     {
-        if (uRow < m_fScrollPos)
-        {
-            m_fScrollPos = uRow;
-        }
-        else if (uRow+1 > m_fScrollPos+uPageRowCount)
-        {
-            m_fScrollPos = uRow+1-uPageRowCount;
-        }
-        else
-        {
-            return;
-        }
+        scroll(uRow+1-uRowCount);
     }
+}
 
-    update();
+void CListView::showItemTop(UINT uItem)
+{
+    auto uRow = uItem/getColCount();
+    scroll(uRow);
+}
+
+void CListView::showItemCenter(UINT uItem)
+{
+    auto uRow = uItem/getColCount();
+    auto fPos = MAX(.0f, (float)uRow - (getRowCount()-1)/2);
+    scroll(fPos);
 }
 
 void CListView::_onPaint(CPainter& painter, cqrc)
@@ -43,19 +41,22 @@ void CListView::_onPaint(CPainter& painter, cqrc)
 
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
-    size_t uPageRowCount = getPageRowCount();
-    if (0 == uPageRowCount)
-    {
-        return;
-        //uPageRowCount = uRowCount;
-    }
-
-    m_uRowHeight = cy/uPageRowCount;
+    size_t uColCount = getColCount();
 
     size_t uRowCount = getRowCount();
-    if (uRowCount > uPageRowCount)
+    m_uRowHeight = cy/uRowCount;
+    m_uRowHeight = MAX(1, m_uRowHeight);
+
+    size_t uItemCount = getItemCount();
+    m_uTotalRows = uItemCount/uColCount;
+    if (uItemCount%uColCount != 0)
     {
-        m_uMaxScrollPos = uRowCount - uPageRowCount;
+        m_uTotalRows++;
+    }
+
+    if (m_uTotalRows > uRowCount)
+    {
+        m_uMaxScrollPos = m_uTotalRows - uRowCount;
     }
     else
     {
@@ -67,44 +68,34 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     UINT uRow = m_fScrollPos;
     int y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
 
-    size_t uColumnCount = getColumnCount();
-    if (0 == uColumnCount)
-    {
-        uColumnCount = 1;
-    }
+    UINT cx_col = cx/uColCount;
+    cx_col = MAX(1, cx_col);
 
-    int x = 0;
-    UINT cx_col = 0;
+    UINT xMargin = 0;
     if (E_LVScrollBar::LVSB_None != m_eScrollBar)
     {
-        x = __lvRowMargin;
-        cx_col = (cx-__lvRowMargin*2) / uColumnCount;
-    }
-    else
-    {
-        cx_col = cx / uColumnCount;
+        xMargin = __lvRowMargin;
     }
 
-    for (UINT uIdx = 0; uRow < uRowCount; uRow++, uIdx++)
+    for (UINT uIdx = 0; uRow < m_uTotalRows; uRow++, uIdx++)
     {
         painter.setFont(this->font());
         painter.setPen(g_crFore);
 
-        bool bSelected = (int)uRow == m_nSelectRow;
-        tagLVItem lvItem(uIdx, uRow, 0, bSelected);
-        QRect& rc = lvItem.rc;
-        for (auto& uCol = lvItem.uCol; uCol < uColumnCount; uCol++)
+        for (UINT uCol = 0; uCol < uColCount; uCol++)
         {
-            rc.setRect(x + uCol*cx_col, y, cx_col, m_uRowHeight);
+            tagLVItem lvItem(uRow, uCol, uRow*uColCount+uCol);
+            int x = uCol*cx_col;
+            lvItem.rc.setRect(x + xMargin, y, cx_col - xMargin*2, m_uRowHeight);
 
-            if (bSelected)
+            if ((int)lvItem.uItem == m_nSelectItem)
             {
                 QColor cr = g_crFore;
                 cr.setAlpha(CPainter::oppTextAlpha(20));
-                painter.fillRect(0, rc.top(), cx, m_uRowHeight, cr);
+                painter.fillRect(x, y, cx_col, m_uRowHeight, cr);
             }
 
-            _onPaintRow(painter, lvItem);
+            _onPaintItem(painter, lvItem);
         }
 
         y += m_uRowHeight;
@@ -114,14 +105,14 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         }
     }
 
-    if (E_LVScrollBar::LVSB_None != m_eScrollBar && uRowCount > uPageRowCount)
+    if (m_uMaxScrollPos != 0 && E_LVScrollBar::LVSB_None != m_eScrollBar)
     {
         int szMargin = (__lvRowMargin-__cxBar)/2;
         int xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? 0 : cx;
         xBar += szMargin;
         cy -= szMargin*2;
-        auto cyBar = cy*uPageRowCount/uRowCount;
-        m_yBar = szMargin + m_fScrollPos*(cy-cyBar)/(uRowCount-uPageRowCount);
+        auto cyBar = cy*uRowCount/m_uTotalRows;
+        m_yBar = szMargin + m_fScrollPos*(cy-cyBar)/m_uMaxScrollPos;
         QRect rcBar(xBar, m_yBar, __cxBar, cyBar);
 
         auto cr = g_crFore;
@@ -135,7 +126,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     QRect rc = context->rc;
     int cy = rc.height();
 
-    if (context.pmImg && !context.pmImg->isNull())
+    if (context.pmIcon && !context.pmIcon->isNull())
     {
         UINT sz_icon = cy;
         if (context.fIconMargin > 0)
@@ -151,7 +142,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
         int y_icon = rc.center().y()-sz_icon/2;
         QRect rcPixmap(x_icon, y_icon, sz_icon, sz_icon);
-        painter.drawPixmapEx(rcPixmap, *context.pmImg, context.uIconRound);
+        painter.drawPixmapEx(rcPixmap, *context.pmIcon, context.uIconRound);
 
         rc.setLeft(x_icon + sz_icon + __lvRowMargin);
     }
@@ -175,7 +166,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         rc.setRight(x_righttip - __lvRowMargin);
     }
 
-    if (context->bSelected)
+    if ((int)context->uItem == m_nSelectItem)
     {
         painter.adjustFont(QFont::Weight::DemiBold);
     }
@@ -209,12 +200,9 @@ bool CListView::_checkBarArea(int x)
 
 void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
-    if (_checkBarArea(me.pos().x()))
+    if (m_uMaxScrollPos != 0 && _checkBarArea(me.pos().x()))
     {
-        if (getRowCount() > getPageRowCount())
-        {
-            return;
-        }
+        return;
     }
 
     if (E_MouseEventType::MET_Press == type)
@@ -258,20 +246,17 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 
 bool CListView::_hittest(int x, int y, tagLVItem& lvItem)
 {
-    if (0 == m_uRowHeight)
-    {
-        return false;
-    }
-
     UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
-    if (uRow >= getRowCount())
+    if (uRow >= m_uTotalRows)
     {
         return false;
     }
 
-    UINT cx_col = width() / getColumnCount();
+    UINT uColCount = getColCount();
+    UINT cx_col = width()/uColCount;
+    cx_col = MAX(1, cx_col);
     UINT uCol = UINT(x/cx_col);
-    lvItem = tagLVItem(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow);
+    lvItem = tagLVItem(uRow, uCol, uRow*uColCount+uCol);
 
     y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
     lvItem.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
@@ -281,26 +266,26 @@ bool CListView::_hittest(int x, int y, tagLVItem& lvItem)
 
 void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    static bool bTouchBarArea = false;
-    static int nTouchBarPos = 0;
-    if (E_TouchEventType::TET_TouchBegin == type)
+    if (m_uMaxScrollPos != 0)
     {
-        bTouchBarArea = _checkBarArea(te.x());
-        if (bTouchBarArea)
+        static bool bTouchBarArea = false;
+        static int nTouchBarPos = 0;
+        if (E_TouchEventType::TET_TouchBegin == type)
         {
-            nTouchBarPos = te.y()-m_yBar;
+            bTouchBarArea = _checkBarArea(te.x());
+            if (bTouchBarArea)
+            {
+                nTouchBarPos = te.y()-m_yBar;
+            }
         }
-    }
 
-    if (bTouchBarArea)
-    {
-        auto uRowCount = getRowCount();
-        auto uPageRowCount = getPageRowCount();
-        if (uRowCount > uPageRowCount)
+        if (bTouchBarArea)
         {
             mtutil::yield();
 
-            int cyBar = height()*uPageRowCount/uRowCount;
+            UINT uRowCount = getRowCount();
+
+            int cyBar = height()*uRowCount/m_uTotalRows;
             int y = te.y()-(__lvRowMargin-__cxBar)/2;
             if (nTouchBarPos > 0 && nTouchBarPos < cyBar)
             {
@@ -312,7 +297,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             }
 
             y = MAX(y, 0);
-            auto fPos = float(uRowCount-uPageRowCount)*y/(height()-(__lvRowMargin-__cxBar)-cyBar);
+            auto fPos = (float)m_uMaxScrollPos*y/(height()-(__lvRowMargin-__cxBar)-cyBar);
             scroll(fPos);
 
             return;
@@ -370,12 +355,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
 bool CListView::_scroll(int dy)
 {
-    if (0 == m_uRowHeight)
-    {
-        return false;
-    }
-
-    m_fScrollPos -= (float)dy / m_uRowHeight;
+    m_fScrollPos -= (float)dy/m_uRowHeight;
 
     bool bFlag = false;
     if (dy < 0)

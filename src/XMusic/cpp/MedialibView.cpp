@@ -11,7 +11,7 @@
 #define __RemarkAlpha 200
 
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
-    CListViewEx(medialibDlg, E_LVScrollBar::LVSB_Left)
+    CMLListView(medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
     , m_app(app)
     , m_SingerLib(app.getSingerMgr())
@@ -136,19 +136,9 @@ void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
     }
 }
 
-size_t CMedialibView::getPageRowCount() const
+size_t CMedialibView::getColCount() const
 {
-    if (isInRoot())
-    {
-        return _getRootRowCount();
-    }
-
-    return CMedialibDlg::getPageRowCount(m_medialibDlg.height());
-}
-
-size_t CMedialibView::getColumnCount() const
-{
-    if (isInRoot() && m_medialibDlg.isHLayout())
+    if (m_medialibDlg.isHLayout() && getItemCount() > getRowCount())
     {
         return 2;
     }
@@ -156,11 +146,28 @@ size_t CMedialibView::getColumnCount() const
     return 1;
 }
 
-size_t CMedialibView::_getRootRowCount() const
+size_t CMedialibView::getRowCount() const
+{
+    if (isInRoot())
+    {
+        if (m_medialibDlg.isHLayout())
+        {
+            return 6;
+        }
+        else
+        {
+            return 10;
+        }
+    }
+
+    return CMedialibDlg::getRowCount(m_medialibDlg.height());
+}
+
+size_t CMedialibView::_getRootItemCount() const
 {
     if (m_medialibDlg.isHLayout())
     {
-        return 6;
+        return 12;
     }
     else
     {
@@ -184,28 +191,28 @@ bool CMedialibView::_genRootRowContext(tagMLItemContext& context)
     cauto uCol = context->uCol;
     if ((bHLayout && 1 == uRow && 0 == uCol) || (!bHLayout && 1 == uRow))
     {
-        context.pmImg = &m_pmSingerGroup;
+        context.pmIcon = &m_pmSingerGroup;
         context.strText = L" 歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
     else if ((bHLayout && 1 == uRow && 1 == uCol) || (!bHLayout && 3 == uRow))
     {
-        context.pmImg = &m_pmPlaylistSet;
+        context.pmIcon = &m_pmPlaylistSet;
         context.strText = L" 歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
     else if ((bHLayout && 3 == uRow && 0 == uCol) || (!bHLayout && 5 == uRow))
     {
-        context.pmImg = &m_pmXmusicDir;
+        context.pmIcon = &m_pmXmusicDir;
         context.strText = __XMusicDirName;
         context.pDir = &__medialib;
         return true;
     }
     else if ((bHLayout && 3 == uRow && 1 == uCol) || (!bHLayout && 7 == uRow))
     {
-        context.pmImg = &m_pmDir;
+        context.pmIcon = &m_pmDir;
         context.strText << ' ' << __OuterDirName;
         context.pDir = &m_OuterDir;
         return true;
@@ -255,17 +262,17 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
         switch (context.pMediaSet->m_eType)
         {
         case E_MediaSetType::MST_Playlist:
-            context.pmImg = &m_pmPlaylist;
+            context.pmIcon = &m_pmPlaylist;
             break;
         case E_MediaSetType::MST_Album:
-            context.pmImg = &m_pmAlbum;
+            context.pmIcon = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pmImg = &_getSingerPixmap(context.pMediaSet->m_uID,
+            context.pmIcon = &_getSingerPixmap(context.pMediaSet->m_uID,
                                                context.pMediaSet->m_strName);
             break;
         case E_MediaSetType::MST_SingerGroup:
-            context.pmImg = &m_pmSingerGroup;
+            context.pmIcon = &m_pmSingerGroup;
 
             context.eStyle |= E_LVItemStyle::IS_RightTip;
         default:
@@ -276,7 +283,7 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
     {
         if (context.pMedia->GetMediaSetType() == E_MediaSetType::MST_Playlist)
         {
-            context.pmImg = &m_pmPlayItem;
+            context.pmIcon = &m_pmPlayItem;
 
             UINT uSingerID = context.pMedia->GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
             if (uSingerID > 0)
@@ -284,7 +291,7 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
                 cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
                 if (!strSingerName.empty())
                 {
-                    context.pmImg = &_getSingerPixmap(uSingerID, strSingerName);
+                    context.pmIcon = &_getSingerPixmap(uSingerID, strSingerName);
                 }
             }
         }
@@ -294,7 +301,7 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
     {
         if (context.pDir->rootDir() == &__medialib)
         {
-            context.pmImg = &m_pmSSDir;
+            context.pmIcon = &m_pmSSDir;
 
             if (context.pDir->parent() == &__medialib)
             {
@@ -302,11 +309,11 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
                 strutil::lowerCase(strDirName);
                 if (strDirName.find(L"hires") != __wnpos)
                 {
-                    context.pmImg = &m_pmHires;
+                    context.pmIcon = &m_pmHires;
                 }
                 else if (strDirName.find(L"dsd") != __wnpos)
                 {
-                    context.pmImg = &m_pmDSD;
+                    context.pmIcon = &m_pmDSD;
                 }
                 /*else if (strDirName.find(L"CD整轨") != __wnpos)
                 {
@@ -320,14 +327,14 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
         }
         else
         {
-            context.pmImg = &m_pmDir;
+            context.pmIcon = &m_pmDir;
 
             if (context.pDir->parent() == NULL)
             {
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
                 if (pAttachDir)
                 {
-                    context.pmImg = &m_pmDirLink;
+                    context.pmIcon = &m_pmDirLink;
 
                     /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                     {
@@ -351,23 +358,23 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
                 context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
-                    context.pmImg = &m_app.m_pmHDDisk;
+                    context.pmIcon = &m_app.m_pmHDDisk;
                 }
                 else
                 {
-                    context.pmImg = &m_app.m_pmLLDisk;
+                    context.pmIcon = &m_app.m_pmLLDisk;
                 }
             }
             else
             {
-                context.pmImg = &m_pmSSFile;
+                context.pmIcon = &m_pmSSFile;
             }
 
             context.strText = pMediaRes->GetTitle();
         }
         else
         {
-            context.pmImg = &m_pmFile;
+            context.pmIcon = &m_pmFile;
             context.strText = pMediaRes->fileName();
         }
     }
@@ -390,17 +397,17 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     if (mlContext.playable())
     {
         UINT cy = context->rc.height();
-        int yMargin = cy * context.fIconMargin*1.3;
+        int yMargin = cy * context.fIconMargin*1.35;
         cy -= yMargin*2;
 
         int x_icon = context->rc.right() + __playIconOffset - cy;
         int y_icon = context->rc.top()+yMargin;
         QRect rcPlayIcon(x_icon, y_icon, cy, cy);
 
-        bool bFlashing = (int)mlContext->uRow == m_nFlashingRow;
+        bool bFlash = (int)mlContext->uItem == m_nFlashItem;
         cauto pm = mlContext.pMediaSet
-                ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
-               :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
+                ?(bFlash?m_pmPlayOpacity:m_pmPlay)
+               :(bFlash?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pm);
 
         rc.setRight(x_icon-__lvRowMargin+__playIconOffset);
@@ -497,7 +504,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     uTextAlpha = 255;
     uShadowAlpha = __ShadowAlpha;
-    if ((int)mlContext->uRow == m_nFlashingRow)
+    if ((int)mlContext->uItem == m_nFlashItem)
     {
         uTextAlpha = __FlashingAlpha;
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
@@ -534,7 +541,7 @@ void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMedia
 {
     if (_hittestPlayIcon(tagMLItemContext(lvItem, mediaSet), me.x()))
     {
-        _flashRow(lvItem.uRow);
+        _flashItem(lvItem.uItem);
 
         TD_MediaList lstMedias;
         mediaSet.GetAllMedias(lstMedias);
@@ -543,7 +550,7 @@ void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMedia
         return;
     }
 
-    CListViewEx::_onRowClick(lvItem, me, mediaSet);
+    CMLListView::_onRowClick(lvItem, me, mediaSet);
 }
 
 void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
@@ -553,7 +560,7 @@ void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CPath&
     {
         if (m_medialibDlg.tryShowWholeTrack(mediaRes))
         {
-            selectRow(lvItem.uRow);
+            selectItem(lvItem.uItem);
             return;
         }
     }
@@ -565,7 +572,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 {
     if (_hittestPlayIcon(tagMLItemContext(lvItem, media), me.x()))
     {
-        _flashRow(lvItem.uRow);
+        _flashItem(lvItem.uItem);
 
         bool bPlay = false;
         if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
@@ -577,8 +584,8 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
         return;
     }
 
-    selectRow(lvItem.uRow);
-    _flashRow(lvItem.uRow);
+    selectItem(lvItem.uItem);
+    _flashItem(lvItem.uItem);
 
     if (me.x() <= (int)rowHeight())
     {
@@ -616,7 +623,7 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
         return NULL;
     }
 
-    return CListViewEx::_onUpward(currentMediaSet);
+    return CMLListView::_onUpward(currentMediaSet);
 }
 
 CPath* CMedialibView::_onUpward(CPath& currentDir)
@@ -626,28 +633,16 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
         return &__medialib;
     }
 
-    return CListViewEx::_onUpward(currentDir);
+    return CMLListView::_onUpward(currentDir);
 }
 
-bool CMedialibView::event(QEvent *ev)
+void CMedialibView::_flashItem(UINT uItem, UINT uMSDelay)
 {
-    bool bRet = CListView::event(ev);
-
-    if (ev->type() == QEvent::Resize)
-    {
-        update();
-    }
-
-    return bRet;
-}
-
-void CMedialibView::_flashRow(UINT uRow, UINT uMSDelay)
-{
-    m_nFlashingRow = uRow;
+    m_nFlashItem = uItem;
     update();
 
     CApp::async(uMSDelay, [&](){
-        m_nFlashingRow = -1;
+        m_nFlashItem = -1;
         update();
     });
 }
@@ -667,7 +662,7 @@ void CMedialibView::updateSingerImg()
 
 void CMedialibView::play()
 {
-    dselectRow();
+    dselectItem();
 
     TD_IMediaList paMedias;
     CMediaSet *pMediaSet = currentMediaSet();
@@ -701,5 +696,5 @@ void CMedialibView::cleanup()
     m_mapSingerPixmap.clear();
     m_lstSingerPixmap.clear();
 
-    CListViewEx::_cleanup();
+    CMLListView::_cleanup();
 }

@@ -14,10 +14,10 @@ CPlayingList::CPlayingList(class CApp& app, QWidget& parent)
     this->startTimer(1000);
 }
 
-size_t CPlayingList::getPageRowCount() const
+size_t CPlayingList::getRowCount() const
 {
     size_t uPageRowCount = m_uPageRowCount;
-    size_t uRowCount = getRowCount();
+    size_t uRowCount = getItemCount();
     if (uRowCount >= 7)
     {
         if (uRowCount < uPageRowCount)
@@ -33,18 +33,16 @@ size_t CPlayingList::getPageRowCount() const
     return uPageRowCount;
 }
 
-void CPlayingList::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
+void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    m_alPlayingItems.get(lvItem.uRow, [&](tagPlayingItem& playingItem){
-        bool bPlayingItem = lvItem.uRow == m_uPlayingItem;
-        _onPaintRow(painter, lvItem.rc, playingItem, bPlayingItem, lvItem.uIdx);
+    m_alPlayingItems.get(lvItem.uItem, [&](tagPlayingItem& playingItem){
+        _onPaintItem(painter, lvItem, playingItem);
     });
 }
 
-void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
-                               , const tagPlayingItem& playingItem, bool bPlayingItem, UINT uIdx)
+void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagPlayingItem& playingItem)
 {
-    (void)uIdx;
+    auto& rc = lvItem.rc;
 
     int cy = height();
 
@@ -65,6 +63,7 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     UINT uTextAlpha = 255*fAlpha;
     UINT uShadowAlpha = __ShadowAlpha* pow(fAlpha,2.5);
 
+    bool bPlayingItem = lvItem.uItem == m_uPlayingItem;
     if (bPlayingItem)
     {
 #if __android || __ios
@@ -74,12 +73,16 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
                            , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
-    auto nMaxRight = rc.width();
+    rc.setLeft(__size(35));
+
+    auto nMaxRight = rc.right()-__size(35);
+    rc.setRight(nMaxRight);
+
     int nElidedWidth = nMaxRight;
     if (bPlayingItem)
     {
 #if __windows || __mac
-        if (0 == uIdx)
+        if (rc.bottom() < __size(150))
         {
             nMaxRight -= __size(90);
         }
@@ -92,8 +95,6 @@ void CPlayingList::_onPaintRow(CPainter& painter, QRect& rc
     {
         painter.adjustFont(true);
     }
-
-    rc.setLeft(__size(35));
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
     QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
@@ -146,7 +147,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
 
     if (bHittestPlayingItem)
     {
-        CListView::showRow(m_uPlayingItem);
+        CListView::showItem(m_uPlayingItem);
 
         if (m_nActiveTime != -1)
         {
@@ -163,11 +164,11 @@ void CPlayingList::_onRowDblClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     //_updateActive();
 
-    if (lvItem.uRow < m_alPlayingItems.size())
+    if (lvItem.uItem < m_alPlayingItems.size())
     {
-        //updatePlayingItem(lvItem.uRow, false);
+        //updatePlayingItem(lvItem.uItem, false);
 
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvItem.uRow));
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvItem.uItem));
     }
 }
 
@@ -183,8 +184,8 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     {
         if (abs(te.dy()) < abs(te.dx())
                 //|| (te.dy() > 0 && scrollPos() == 0)
-                //|| (te.dy() < 0 && scrollPos() + getPageRowCount() == getRowCount())
-                || getRowCount() <= getPageRowCount())
+                //|| (te.dy() < 0 && scrollPos() + getRowCount() == getItemCount())
+                || getItemCount() <= getRowCount())
         {
             ((MainWindow*)parent())->handleTouchMove(te);
             bFlag = true;

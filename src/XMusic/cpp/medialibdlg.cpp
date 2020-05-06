@@ -185,25 +185,29 @@ bool CMedialibDlg::showMediaRes(cwstr strPath)
     return true;
 }
 
-size_t CMedialibDlg::getPageRowCount(int cy)
+size_t CMedialibDlg::getRowCount(int cy)
 {
-    UINT uRet = 10;
-    /*if (cy >= __size(2560))
+    return round(11.0f*cy/__size(2160));
+
+    /*UINT uRet = 10;
+    if (cy >= __size(2340))
     {
        uRet++;
     }
-    else*/ if (cy < __size(1800))
+    else if (cy <= __size(1920))
     {
-        //uRet--;
-        uRet = ceil((float)uRet*cy/__size(1800));
+        uRet--;
+        if (cy < __size(1800))
+        {
+            uRet = round((float)uRet*cy/__size(1800));
+        }
     }
-
-    return uRet;
+    return uRet;*/
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    int sz = cy/(1.1+getPageRowCount(cy));
+    int sz = cy/(1.1+getRowCount(cy));
     int xMargin = sz/4;
 //    if (cy < cx)
 //    {
@@ -316,12 +320,12 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
     cauto paMediaSet = m_lv.currentSubSets();
     //paMediaSet.get((UINT)m_MedialibView.scrollPos(), [&](const CMediaSet& MediaSet){
     //    if (MediaSet.property().language() != uLanguage) {
-            int nRow = paMediaSet.find([&](const CMediaSet& MediaSet){
+            int nItem = paMediaSet.find([&](const CMediaSet& MediaSet){
                 return MediaSet.property().language() & uLanguage;
             });
-            if (nRow >= 0)
+            if (nItem >= 0)
             {
-                m_lv.scroll(nRow);
+                m_lv.showItemTop(nItem);
             }
     //    }
     //});

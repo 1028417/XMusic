@@ -92,7 +92,7 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
 {
 }
 
-size_t CAddBkgView::getColumnCount() const
+size_t CAddBkgView::getColCount() const
 {
     if (m_pImgDir)
     {
@@ -100,54 +100,63 @@ size_t CAddBkgView::getColumnCount() const
         {
             return 2;
         }
-
-        return 3;
-    }
-
-    return 1;
-}
-
-size_t CAddBkgView::getPageRowCount() const
-{
-    if (m_pImgDir)
-    {
-        return getColumnCount();
-    }
-
-    UINT uRet = 8;
-    int cy = m_addbkgDlg.height();
-    if (cy > __size(2160))
-    {
-        uRet++;
-        if (cy >= __size(2560))
+        else
         {
-           uRet++;
+            return 3;
         }
     }
-    else if (cy < __size(1800))
+    else
     {
-        uRet--;
-        uRet = ceil((float)uRet*m_addbkgDlg.height()/__size(1800));
+        if (m_addbkgDlg.isHLayout() && getItemCount() > getRowCount())
+        {
+            return 2;
+        }
+
+        return 1;
     }
-    return uRet;
 }
 
 size_t CAddBkgView::getRowCount() const
 {
     if (m_pImgDir)
     {
-        return (UINT)ceil((float)m_pImgDir->imgCount()/getColumnCount());
+        return getColCount();
+    }
+
+    int cy = m_addbkgDlg.height();
+    return round(10.0f*cy/__size(2160));
+
+    /*UINT uRet = 9;
+    if (cy >= __size(2340))
+    {
+       uRet++;
+    }
+    else if (cy <= __size(1920))
+    {
+        uRet--;
+        if (cy < __size(1800))
+        {
+            uRet = round((float)uRet*cy/__size(1800));
+        }
+    }
+    return uRet;*/
+}
+
+size_t CAddBkgView::getItemCount() const
+{
+    if (m_pImgDir)
+    {
+        return m_pImgDir->imgCount();
     }
 
     return m_paImgDirs.size();
 }
 
-void CAddBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
+void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
     if (m_pImgDir)
     {
-        size_t uIdx = lvItem.uRow * getColumnCount() + lvItem.uCol;
-        auto pm = m_pImgDir->img(uIdx);
+        auto pm = m_pImgDir->img(lvItem.uItem);
         if (pm)
         {
             QRect rcFrame(lvItem.rc);
@@ -160,12 +169,12 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uRow, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
             auto eStyle = E_LVItemStyle::IS_MultiLine
                     | E_LVItemStyle::IS_RightTip | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
-            context.pmImg = &imgDir.snapshot();
+            context.pmIcon = &imgDir.snapshot();
             _paintRow(painter, context);
         });
     }
@@ -175,9 +184,7 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     if (m_pImgDir)
     {
-        size_t uIdx = lvItem.uRow * getColumnCount() + lvItem.uCol;
-
-        cauto strFilePath = m_pImgDir->imgPath(uIdx);
+        cauto strFilePath = m_pImgDir->imgPath(lvItem.uItem);
         if (!strFilePath.empty())
         {
             m_addbkgDlg.bkgDlg().addBkg(strFilePath);
@@ -187,7 +194,7 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         _saveScrollRecord(NULL);
 
-        m_paImgDirs.get(lvItem.uRow, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
             showImgDir(imgDir);
         });
 

@@ -17,43 +17,38 @@ CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
     (void)m_pmX.load(":/img/btnX.png");
 }
 
-inline size_t CBkgView::getPageRowCount() const
+#define __ceilCount ((m_bkgDlg.bkgCount() <= 2) ? 2 : 3)
+
+inline size_t CBkgView::getRowCount() const
 {
-    if (m_bkgDlg.bkgCount() <= 2)
+    return __ceilCount;
+}
+
+inline size_t CBkgView::getColCount() const
+{
+    return __ceilCount;
+}
+
+size_t CBkgView::getItemCount() const
+{
+    auto uItemCount = 2+m_bkgDlg.bkgCount();
+    auto uColCount = getColCount();
+    auto nMod = uItemCount%uColCount;
+    if (0 == nMod)
     {
-        return 2;
+        uItemCount += uColCount;
     }
     else
     {
-        return 3;
-    }
-}
-
-inline size_t CBkgView::getColumnCount() const
-{
-    return getPageRowCount();
-}
-
-size_t CBkgView::getRowCount() const
-{
-    auto uItemCount = 2+m_bkgDlg.bkgCount();
-    auto uColCount = getColumnCount();
-
-    auto uRowCount = (UINT)ceil((float)uItemCount/uColCount);
-    if (uRowCount > 3)
-    {
-        if (uItemCount % uColCount == 0)
-        {
-            uRowCount++;
-        }
+        uItemCount += nMod;
     }
 
-    return uRowCount;
+    return uItemCount;
 }
 
-void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
+void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    size_t uColumnCount = getColumnCount();
+    size_t uColumnCount = getColCount();
 
     int nMargin = margin();
 
@@ -91,16 +86,15 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
         }
     }
 
-    size_t uItem = lvItem.uRow * uColumnCount + lvItem.uCol;
-    if (1 == uItem)
+    if (1 == lvItem.uItem)
     {
         m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
     else
     {
-        if (uItem >= 2)
+        if (lvItem.uItem >= 2)
         {
-            auto br = m_bkgDlg.brush(uItem-2);
+            auto br = m_bkgDlg.brush(lvItem.uItem-2);
             if (br)
             {
                 painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
@@ -112,9 +106,9 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
                 s_uSequence++;
                 if (lvItem.uCol == uColumnCount-1)
                 {
-                    auto uPageRowCount = getPageRowCount();
+                    auto uPageRowCount = getRowCount();
                     UINT uFloorRow = ceil(scrollPos()+uPageRowCount-1);
-                    if ( lvItem.uRow == uFloorRow)
+                    if (lvItem.uRow == uFloorRow)
                     {
                         auto uSequence = s_uSequence;
                         CApp::async(300, [=](){
@@ -138,7 +132,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
                 return;
             }
 
-            if (uItem < 9)
+            if (lvItem.uItem < 9)
             {
                 return;
             }
@@ -181,10 +175,9 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
 
 void CBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
-    size_t uItem = lvItem.uRow * getColumnCount() + lvItem.uCol;
-    if (uItem >= 2)
+    if (lvItem.uItem >= 2)
     {
-        auto uIdx = uItem-2;
+        auto uIdx = lvItem.uItem-2;
         if (uIdx < m_bkgDlg.bkgCount())
         {
             if (me.pos().x() >= lvItem.rc.right()-g_xsize && me.pos().y() <= lvItem.rc.top()+g_xsize)
@@ -195,20 +188,20 @@ void CBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
         }
         else
         {
-            if (uItem<9)
+            if (lvItem.uItem<9)
             {
                 return;
             }
         }
     }
 
-    m_bkgDlg.setBkg(uItem);
+    m_bkgDlg.setBkg(lvItem.uItem);
 }
 
 inline UINT CBkgView::margin()
 {
 #define __margin __size(40)
-    return __margin/(getColumnCount()-1);
+    return __margin/(__ceilCount-1);
 }
 
 CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
