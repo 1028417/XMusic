@@ -92,7 +92,7 @@ void CWholeTrackView::setCue(CCueFile cue, UINT uDuration)
 
 size_t CWholeTrackView::getRowCount() const
 {
-    return CMedialibDlg::getRowCount(m_WholeTrackDlg.height());
+    return CMedialibDlg::caleRowCount(m_WholeTrackDlg.height());
 }
 
 size_t CWholeTrackView::getItemCount() const

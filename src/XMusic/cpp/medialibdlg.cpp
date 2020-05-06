@@ -185,29 +185,29 @@ bool CMedialibDlg::showMediaRes(cwstr strPath)
     return true;
 }
 
-size_t CMedialibDlg::getRowCount(int cy)
+size_t CMedialibDlg::caleRowCount(int cy)
 {
-    return round(11.0f*cy/__size(2160));
-
-    /*UINT uRet = 10;
+    /*UINT uRowCount = 10;
     if (cy >= __size(2340))
     {
-       uRet++;
+       uRowCount++;
     }
     else if (cy <= __size(1920))
     {
-        uRet--;
+        uRowCount--;
         if (cy < __size(1800))
         {
-            uRet = round((float)uRet*cy/__size(1800));
+            uRowCount = round((float)uRowCount*cy/__size(1800));
         }
-    }
-    return uRet;*/
+    }*/
+
+    return round(11.0f*cy/__size(2160));
 }
 
 void CMedialibDlg::_relayout(int cx, int cy)
 {
-    int sz = cy/(1.1+getRowCount(cy));
+    m_uRowCount = caleRowCount(cy);
+    int sz = cy/(1.1f+m_uRowCount);
     int xMargin = sz/4;
 //    if (cy < cx)
 //    {

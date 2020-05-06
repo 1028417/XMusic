@@ -203,6 +203,8 @@ private:
     void _onClosed() override;
 
 public:
+    static size_t caleRowCount(int cy);
+
     void preinit();
 
     void init();

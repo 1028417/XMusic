@@ -63,7 +63,8 @@ void CColorDlg::show()
 
 void CColorDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11;
+    int sz = cy/(1.2f+CBkgDlg::caleRowCount(cy));
+    //int sz = MAX(cx, cy)/11;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移

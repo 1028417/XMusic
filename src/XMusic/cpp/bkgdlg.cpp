@@ -381,9 +381,29 @@ void CBkgDlg::init()
     connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
 }
 
+size_t CBkgDlg::caleRowCount(int cy)
+{
+    /*UINT uRowCount = 9;
+    if (cy >= __size(2340))
+    {
+       uRowCount++;
+    }
+    else if (cy <= __size(1920))
+    {
+        uRowCount--;
+        if (cy < __size(1800))
+        {
+            uRowCount = round((float)uRowCount*cy/__size(1800));
+        }
+    }*/
+
+    return round(10.0f*cy/__size(2160));
+}
+
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11;
+    int sz = cy/(1.2f+caleRowCount(cy));
+    //int sz = MAX(cx, cy)/11;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移

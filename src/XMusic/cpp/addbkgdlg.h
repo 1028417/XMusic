@@ -72,12 +72,19 @@ private:
 
     CAddBkgView m_lv;
 
+    size_t m_uRowCount = 0;
+
 private:
     void _relayout(int cx, int cy) override;
 
     bool _handleReturn() override;
 
 public:
+    size_t rowCount() const
+    {
+        return m_uRowCount;
+    }
+
     class CBkgDlg& bkgDlg()
     {
         return m_bkgDlg;

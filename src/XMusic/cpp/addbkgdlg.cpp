@@ -39,7 +39,9 @@ void CAddBkgDlg::show(cfn_void cbClose)
 
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/11;
+    m_uRowCount = CBkgDlg::caleRowCount(cy);
+    int sz = cy/(1.2+m_uRowCount);
+    //int sz = MAX(cx, cy)/11;
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
@@ -123,23 +125,7 @@ size_t CAddBkgView::getRowCount() const
         return getColCount();
     }
 
-    int cy = m_addbkgDlg.height();
-    return round(10.0f*cy/__size(2160));
-
-    /*UINT uRet = 9;
-    if (cy >= __size(2340))
-    {
-       uRet++;
-    }
-    else if (cy <= __size(1920))
-    {
-        uRet--;
-        if (cy < __size(1800))
-        {
-            uRet = round((float)uRet*cy/__size(1800));
-        }
-    }
-    return uRet;*/
+    return m_addbkgDlg.rowCount();
 }
 
 size_t CAddBkgView::getItemCount() const

@@ -55,11 +55,18 @@ private:
 
     CWholeTrackDlg m_wholeTrackDlg;
 
+    size_t m_uRowCount = 0;
+
 private slots:
     void slot_labelClick(class CLabel*, const QPoint&);
 
 public:
-    static size_t getRowCount(int cy);
+    static size_t caleRowCount(int cy);
+
+    size_t rowCount() const
+    {
+        return m_uRowCount;
+    }
 
     void preinit();
 

@@ -160,7 +160,7 @@ size_t CMedialibView::getRowCount() const
         }
     }
 
-    return CMedialibDlg::getRowCount(m_medialibDlg.height());
+    return m_medialibDlg.rowCount();
 }
 
 size_t CMedialibView::_getRootItemCount() const
