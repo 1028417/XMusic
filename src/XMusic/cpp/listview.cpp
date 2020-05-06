@@ -91,9 +91,9 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         painter.setPen(g_crFore);
 
         bool bSelected = (int)uRow == m_nSelectRow;
-        tagLVRow lvRow(uIdx, uRow, 0, bSelected);
-        QRect& rc = lvRow.rc;
-        for (auto& uCol = lvRow.uCol; uCol < uColumnCount; uCol++)
+        tagLVItem lvItem(uIdx, uRow, 0, bSelected);
+        QRect& rc = lvItem.rc;
+        for (auto& uCol = lvItem.uCol; uCol < uColumnCount; uCol++)
         {
             rc.setRect(x + uCol*cx_col, y, cx_col, m_uRowHeight);
 
@@ -104,7 +104,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
                 painter.fillRect(0, rc.top(), cx, m_uRowHeight, cr);
             }
 
-            _onPaintRow(painter, lvRow);
+            _onPaintRow(painter, lvItem);
         }
 
         y += m_uRowHeight;
@@ -130,10 +130,9 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     }
 }
 
-void CListView::_paintRow(CPainter& painter, tagRowContext& context)
+void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 {
-    cauto lvRow = context.lvRow;
-    QRect rc = lvRow.rc;
+    QRect rc = context->rc;
     int cy = rc.height();
 
     if (context.pmImg && !context.pmImg->isNull())
@@ -145,7 +144,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         }
 
         auto x_icon = rc.left();
-        if (context.eStyle & E_RowStyle::IS_CenterAlign)
+        if (context.eStyle & E_LVItemStyle::IS_CenterAlign)
         {
             x_icon = rc.center().x()-sz_icon-__lvRowMargin;
         }
@@ -157,7 +156,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         rc.setLeft(x_icon + sz_icon + __lvRowMargin);
     }
 
-    if (context.eStyle & E_RowStyle::IS_BottomLine)
+    if (context.eStyle & E_LVItemStyle::IS_BottomLine)
     {
         QColor cr = g_crFore;
         cr.setAlpha(CPainter::oppTextAlpha(20));
@@ -165,7 +164,7 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
         rc.setBottom(rc.bottom()-3);
     }
 
-    if (context.eStyle & E_RowStyle::IS_RightTip)
+    if (context.eStyle & E_LVItemStyle::IS_RightTip)
     {
         int sz_righttip = cy*22/100;
         int x_righttip = rc.right()-sz_righttip;
@@ -182,18 +181,18 @@ void CListView::_paintRow(CPainter& painter, tagRowContext& context)
     }
 
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
-    if (context.eStyle & E_RowStyle::IS_MultiLine)
+    if (context.eStyle & E_LVItemStyle::IS_MultiLine)
     {
         flags |= Qt::TextWrapAnywhere;
     }
     _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
 }
 
-cqrc CListView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
+cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     QString qsText = context.strText;
-    if ((context.eStyle & E_RowStyle::IS_MultiLine) == 0)
+    if ((context.eStyle & E_LVItemStyle::IS_MultiLine) == 0)
     {
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
                                                   , Qt::TextSingleLine | Qt::TextShowMnemonic);
@@ -231,16 +230,16 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
     else if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
     {
-        tagLVRow lvRow;
-        if (_hittest(me.pos().x(), me.pos().y(), lvRow))
+        tagLVItem lvItem;
+        if (_hittest(me.pos().x(), me.pos().y(), lvItem))
         {
             if (E_MouseEventType::MET_Click == type)
             {
-                _onRowClick(lvRow, me);
+                _onRowClick(lvItem, me);
             }
             else
             {
-                _onRowDblClick(lvRow, me);
+                _onRowDblClick(lvItem, me);
             }
         }
         else
@@ -257,7 +256,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
 }
 
-bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
+bool CListView::_hittest(int x, int y, tagLVItem& lvItem)
 {
     if (0 == m_uRowHeight)
     {
@@ -272,10 +271,10 @@ bool CListView::_hittest(int x, int y, tagLVRow& lvRow)
 
     UINT cx_col = width() / getColumnCount();
     UINT uCol = UINT(x/cx_col);
-    lvRow = tagLVRow(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow);
+    lvItem = tagLVItem(uRow-(UINT)m_fScrollPos, uRow, uCol, (int)uRow == m_nSelectRow);
 
     y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
-    lvRow.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
+    lvItem.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
 
     return true;
 }

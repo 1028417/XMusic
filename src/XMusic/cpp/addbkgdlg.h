@@ -46,9 +46,9 @@ private:
 
     size_t getRowCount() const override;
 
-    void _onPaintRow(CPainter&, tagLVRow&) override;
+    void _onPaintRow(CPainter&, tagLVItem&) override;
 
-    void _onRowClick(tagLVRow& lvRow, const QMouseEvent&) override;
+    void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
 public:
     void showImgDir(IImgDir& imgDir);

@@ -51,13 +51,13 @@ size_t CBkgView::getRowCount() const
     return uRowCount;
 }
 
-void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+void CBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
 {
     size_t uColumnCount = getColumnCount();
 
     int nMargin = margin();
 
-    QRect rc = lvRow.rc;
+    QRect rc = lvItem.rc;
     if (rc.width() > rc.height())
     {
         nMargin /= 2;
@@ -81,7 +81,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
             cx = rc.width()-nMargin;
         }
 
-        if (0 == lvRow.uCol)
+        if (0 == lvItem.uCol)
         {
             rc.setRect(rc.right()-nMargin/2-cx, rc.top(), cx, cy);
         }
@@ -91,7 +91,7 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
         }
     }
 
-    size_t uItem = lvRow.uRow * uColumnCount + lvRow.uCol;
+    size_t uItem = lvItem.uRow * uColumnCount + lvItem.uCol;
     if (1 == uItem)
     {
         m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
@@ -110,11 +110,11 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
 
                 static UINT s_uSequence = 0;
                 s_uSequence++;
-                if (lvRow.uCol == uColumnCount-1)
+                if (lvItem.uCol == uColumnCount-1)
                 {
                     auto uPageRowCount = getPageRowCount();
                     UINT uFloorRow = ceil(scrollPos()+uPageRowCount-1);
-                    if ( lvRow.uRow == uFloorRow)
+                    if ( lvItem.uRow == uFloorRow)
                     {
                         auto uSequence = s_uSequence;
                         CApp::async(300, [=](){
@@ -179,15 +179,15 @@ void CBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
 }
 
-void CBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me)
+void CBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
-    size_t uItem = lvRow.uRow * getColumnCount() + lvRow.uCol;
+    size_t uItem = lvItem.uRow * getColumnCount() + lvItem.uCol;
     if (uItem >= 2)
     {
         auto uIdx = uItem-2;
         if (uIdx < m_bkgDlg.bkgCount())
         {
-            if (me.pos().x() >= lvRow.rc.right()-g_xsize && me.pos().y() <= lvRow.rc.top()+g_xsize)
+            if (me.pos().x() >= lvItem.rc.right()-g_xsize && me.pos().y() <= lvItem.rc.top()+g_xsize)
             {
                 m_bkgDlg.deleleBkg(uIdx);
                 return;

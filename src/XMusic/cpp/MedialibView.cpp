@@ -168,11 +168,9 @@ size_t CMedialibView::_getRootRowCount() const
     }
 }
 
-bool CMedialibView::_genRootRowContext(tagMediaContext& context)
+bool CMedialibView::_genRootRowContext(tagMLItemContext& context)
 {
-    cauto lvRow = context.lvRow;
-
-    context.eStyle = E_RowStyle::IS_CenterAlign;
+    context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
     bool bHLayout = m_medialibDlg.isHLayout();
     if (bHLayout)
@@ -182,28 +180,30 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
 
     context.uIconRound = 0;
 
-    if ((bHLayout && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHLayout && 1 == lvRow.uRow))
+    cauto uRow = context->uRow;
+    cauto uCol = context->uCol;
+    if ((bHLayout && 1 == uRow && 0 == uCol) || (!bHLayout && 1 == uRow))
     {
         context.pmImg = &m_pmSingerGroup;
         context.strText = L" 歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
-    else if ((bHLayout && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHLayout && 3 == lvRow.uRow))
+    else if ((bHLayout && 1 == uRow && 1 == uCol) || (!bHLayout && 3 == uRow))
     {
         context.pmImg = &m_pmPlaylistSet;
         context.strText = L" 歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
-    else if ((bHLayout && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHLayout && 5 == lvRow.uRow))
+    else if ((bHLayout && 3 == uRow && 0 == uCol) || (!bHLayout && 5 == uRow))
     {
         context.pmImg = &m_pmXmusicDir;
         context.strText = __XMusicDirName;
         context.pDir = &__medialib;
         return true;
     }
-    else if ((bHLayout && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHLayout && 7 == lvRow.uRow))
+    else if ((bHLayout && 3 == uRow && 1 == uCol) || (!bHLayout && 7 == uRow))
     {
         context.pmImg = &m_pmDir;
         context.strText << ' ' << __OuterDirName;
@@ -247,9 +247,9 @@ cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
     return m_pmDefaultSinger;
 }
 
-void CMedialibView::_genMediaContext(tagMediaContext& context)
+void CMedialibView::_genMediaContext(tagMLItemContext& context)
 {
-    context.eStyle |= E_RowStyle::IS_MultiLine;
+    context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
     {
         switch (context.pMediaSet->m_eType)
@@ -267,7 +267,7 @@ void CMedialibView::_genMediaContext(tagMediaContext& context)
         case E_MediaSetType::MST_SingerGroup:
             context.pmImg = &m_pmSingerGroup;
 
-            context.eStyle |= E_RowStyle::IS_RightTip;
+            context.eStyle |= E_LVItemStyle::IS_RightTip;
         default:
             break;
         };
@@ -382,12 +382,12 @@ inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
     return painter.drawTextEx(rc, __rAlign, qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 }
 
-cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
+cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    cauto mediaContext = (tagMediaContext&)context;
+    cauto mlContext = (tagMLItemContext&)context;
 
-    if (mediaContext.playable())
+    if (mlContext.playable())
     {
         UINT cy = context->rc.height();
         int yMargin = cy * context.fIconMargin*1.3;
@@ -397,8 +397,8 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
         int y_icon = context->rc.top()+yMargin;
         QRect rcPlayIcon(x_icon, y_icon, cy, cy);
 
-        bool bFlashing = (int)mediaContext->uRow == m_nFlashingRow;
-        cauto pm = mediaContext.pMediaSet
+        bool bFlashing = (int)mlContext->uRow == m_nFlashingRow;
+        cauto pm = mlContext.pMediaSet
                 ?(bFlashing?m_pmPlayOpacity:m_pmPlay)
                :(bFlashing?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pm);
@@ -408,18 +408,18 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 
     QString qsMediaQuality;
     WString strRemark;
-    if (mediaContext.pMedia)
+    if (mlContext.pMedia)
     {
-        if (mediaContext.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
+        if (mlContext.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
         {
             rc.setLeft(rc.left() + __size(10));
         }
     }
-    else if (mediaContext.pMediaSet)
+    else if (mlContext.pMediaSet)
     {
-        if (E_MediaSetType::MST_SingerGroup == mediaContext.pMediaSet->m_eType)
+        if (E_MediaSetType::MST_SingerGroup == mlContext.pMediaSet->m_eType)
         {
-            auto pSingerGroup = (CSingerGroup*)mediaContext.pMediaSet;
+            auto pSingerGroup = (CSingerGroup*)mlContext.pMediaSet;
             size_t uAlbumCount = 0;
             cauto lstSingers = pSingerGroup->singers();
             for (cauto singer : lstSingers)
@@ -428,9 +428,9 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
             }
             strRemark << lstSingers.size() << L" 歌手\n" << uAlbumCount << L" 专辑";
         }
-        else if (E_MediaSetType::MST_Singer == mediaContext.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Singer == mlContext.pMediaSet->m_eType)
         {
-            cauto lstAlbum = ((CSinger*)mediaContext.pMediaSet)->albums();
+            cauto lstAlbum = ((CSinger*)mlContext.pMediaSet)->albums();
             size_t uAlbumItemCount = 0;
             for (cauto album : lstAlbum)
             {
@@ -438,14 +438,14 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
             }
             strRemark << lstAlbum.size() << L" 专辑\n" << uAlbumItemCount << L" 曲目";
         }
-        else if (E_MediaSetType::MST_Album == mediaContext.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Album == mlContext.pMediaSet->m_eType)
         {
-            auto pAlbum = (CAlbum*)mediaContext.pMediaSet;
+            auto pAlbum = (CAlbum*)mlContext.pMediaSet;
             strRemark << pAlbum->albumItems().size() << L" 曲目";
         }
-        else if (E_MediaSetType::MST_Playlist == mediaContext.pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
         {
-            auto pPlaylist = (CPlaylist*)mediaContext.pMediaSet;
+            auto pPlaylist = (CPlaylist*)mlContext.pMediaSet;
             strRemark << pPlaylist->size() << L" 曲目";
         }
     }
@@ -455,10 +455,10 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
     }
     else
     {
-        IMedia *pMedia = mediaContext.pMedia;
+        IMedia *pMedia = mlContext.pMedia;
         if (NULL == pMedia)
         {
-            auto pMediaRes = (CMediaRes*)mediaContext.pFile;
+            auto pMediaRes = (CMediaRes*)mlContext.pFile;
             if (pMediaRes)
             {
                 pMedia = pMediaRes;
@@ -497,7 +497,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
 
     uTextAlpha = 255;
     uShadowAlpha = __ShadowAlpha;
-    if ((int)mediaContext->uRow == m_nFlashingRow)
+    if ((int)mlContext->uRow == m_nFlashingRow)
     {
         uTextAlpha = __FlashingAlpha;
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
@@ -519,7 +519,7 @@ cqrc CMedialibView::_paintText(tagRowContext& context, CPainter& painter, QRect&
     return rcRet;
 }
 
-inline static bool _hittestPlayIcon(const tagMediaContext& context, int x)
+inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)
 {
     if (!context.playable())
     {
@@ -530,11 +530,11 @@ inline static bool _hittestPlayIcon(const tagMediaContext& context, int x)
     return x >= xPlayIcon;
 }
 
-void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSet& mediaSet)
+void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMediaSet& mediaSet)
 {
-    if (_hittestPlayIcon(tagMediaContext(lvRow, mediaSet), me.x()))
+    if (_hittestPlayIcon(tagMLItemContext(lvItem, mediaSet), me.x()))
     {
-        _flashRow(lvRow.uRow);
+        _flashRow(lvItem.uRow);
 
         TD_MediaList lstMedias;
         mediaSet.GetAllMedias(lstMedias);
@@ -543,29 +543,29 @@ void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMediaSe
         return;
     }
 
-    CListViewEx::_onRowClick(lvRow, me, mediaSet);
+    CListViewEx::_onRowClick(lvItem, me, mediaSet);
 }
 
-void CMedialibView::_onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path)
+void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
 {
     auto& mediaRes = (CMediaRes&)path;
-    if (!_hittestPlayIcon(tagMediaContext(lvRow, (IMedia&)mediaRes), me.x()))
+    if (!_hittestPlayIcon(tagMLItemContext(lvItem, (IMedia&)mediaRes), me.x()))
     {
         if (m_medialibDlg.tryShowWholeTrack(mediaRes))
         {
-            selectRow(lvRow.uRow);
+            selectRow(lvItem.uRow);
             return;
         }
     }
 
-    _onMediaClick(lvRow, me, mediaRes);
+    _onMediaClick(lvItem, me, mediaRes);
 }
 
-void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia& media)
+void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
 {
-    if (_hittestPlayIcon(tagMediaContext(lvRow, media), me.x()))
+    if (_hittestPlayIcon(tagMLItemContext(lvItem, media), me.x()))
     {
-        _flashRow(lvRow.uRow);
+        _flashRow(lvItem.uRow);
 
         bool bPlay = false;
         if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
@@ -577,8 +577,8 @@ void CMedialibView::_onMediaClick(tagLVRow& lvRow, const QMouseEvent& me, IMedia
         return;
     }
 
-    selectRow(lvRow.uRow);
-    _flashRow(lvRow.uRow);
+    selectRow(lvItem.uRow);
+    _flashRow(lvItem.uRow);
 
     if (me.x() <= (int)rowHeight())
     {

@@ -142,15 +142,15 @@ size_t CAddBkgView::getRowCount() const
     return m_paImgDirs.size();
 }
 
-void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+void CAddBkgView::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
 {
     if (m_pImgDir)
     {
-        size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+        size_t uIdx = lvItem.uRow * getColumnCount() + lvItem.uCol;
         auto pm = m_pImgDir->img(uIdx);
         if (pm)
         {
-            QRect rcFrame(lvRow.rc);
+            QRect rcFrame(lvItem.rc);
             painter.drawPixmapEx(rcFrame, *pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
@@ -160,10 +160,10 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
     else
     {
-        m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
-            auto eStyle = E_RowStyle::IS_MultiLine
-                    | E_RowStyle::IS_RightTip | E_RowStyle::IS_BottomLine;
-            tagRowContext context(lvRow, eStyle);
+        m_paImgDirs.get(lvItem.uRow, [&](IImgDir& imgDir){
+            auto eStyle = E_LVItemStyle::IS_MultiLine
+                    | E_LVItemStyle::IS_RightTip | E_LVItemStyle::IS_BottomLine;
+            tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
             context.pmImg = &imgDir.snapshot();
             _paintRow(painter, context);
@@ -171,11 +171,11 @@ void CAddBkgView::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
     }
 }
 
-void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
+void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     if (m_pImgDir)
     {
-        size_t uIdx = lvRow.uRow * getColumnCount() + lvRow.uCol;
+        size_t uIdx = lvItem.uRow * getColumnCount() + lvItem.uCol;
 
         cauto strFilePath = m_pImgDir->imgPath(uIdx);
         if (!strFilePath.empty())
@@ -187,7 +187,7 @@ void CAddBkgView::_onRowClick(tagLVRow& lvRow, const QMouseEvent&)
     {
         _saveScrollRecord(NULL);
 
-        m_paImgDirs.get(lvRow.uRow, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uRow, [&](IImgDir& imgDir){
             showImgDir(imgDir);
         });
 

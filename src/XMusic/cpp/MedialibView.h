@@ -83,10 +83,10 @@ private:
 
     size_t _getRootRowCount() const override;
 
-    bool _genRootRowContext(tagMediaContext&) override;
-    void _genMediaContext(tagMediaContext&) override;
+    bool _genRootRowContext(tagMLItemContext&) override;
+    void _genMediaContext(tagMLItemContext&) override;
 
-    cqrc _paintText(tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
+    cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 
     bool event(QEvent *ev) override;
 
@@ -95,16 +95,16 @@ private:
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CPath&, WString& strTitle);
 
-    void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet) override;
+    void _onRowClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
 
-    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CMedia& media) override
+    void _onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMedia& media) override
     {
-        _onMediaClick(lvRow, me, media);
+        _onMediaClick(lvItem, me, media);
     }
 
-    void _onRowClick(tagLVRow& lvRow, const QMouseEvent& me, CPath& path) override;
+    void _onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path) override;
 
-    void _onMediaClick(tagLVRow&, const QMouseEvent&, IMedia&);
+    void _onMediaClick(tagLVItem&, const QMouseEvent&, IMedia&);
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;

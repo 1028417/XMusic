@@ -33,11 +33,11 @@ size_t CPlayingList::getPageRowCount() const
     return uPageRowCount;
 }
 
-void CPlayingList::_onPaintRow(CPainter& painter, tagLVRow& lvRow)
+void CPlayingList::_onPaintRow(CPainter& painter, tagLVItem& lvItem)
 {
-    m_alPlayingItems.get(lvRow.uRow, [&](tagPlayingItem& playingItem){
-        bool bPlayingItem = lvRow.uRow == m_uPlayingItem;
-        _onPaintRow(painter, lvRow.rc, playingItem, bPlayingItem, lvRow.uIdx);
+    m_alPlayingItems.get(lvItem.uRow, [&](tagPlayingItem& playingItem){
+        bool bPlayingItem = lvItem.uRow == m_uPlayingItem;
+        _onPaintRow(painter, lvItem.rc, playingItem, bPlayingItem, lvItem.uIdx);
     });
 }
 
@@ -159,15 +159,15 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_onRowDblClick(tagLVRow& lvRow, const QMouseEvent&)
+void CPlayingList::_onRowDblClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     //_updateActive();
 
-    if (lvRow.uRow < m_alPlayingItems.size())
+    if (lvItem.uRow < m_alPlayingItems.size())
     {
-        //updatePlayingItem(lvRow.uRow, false);
+        //updatePlayingItem(lvItem.uRow, false);
 
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvRow.uRow));
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvItem.uRow));
     }
 }
 

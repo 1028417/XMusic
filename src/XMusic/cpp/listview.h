@@ -5,11 +5,11 @@
 
 #define __lvRowMargin __size(40)
 
-struct tagLVRow
+struct tagLVItem
 {
-    tagLVRow() = default;
+    tagLVItem() = default;
 
-    tagLVRow(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
+    tagLVItem(UINT t_uIdx, UINT t_uRow, UINT t_uCol, bool t_bSelected)
         : uIdx(t_uIdx)
         , uRow(t_uRow)
         , uCol(t_uCol)
@@ -26,7 +26,7 @@ struct tagLVRow
     QRect rc;
 };
 
-enum E_RowStyle
+enum E_LVItemStyle
 {
     IS_None = 0
 
@@ -36,10 +36,10 @@ enum E_RowStyle
     , IS_BottomLine     = 0x0004
     , IS_RightTip       = 0x0008
 };
-struct tagRowContext
+struct tagLVItemContext
 {
-    tagRowContext(tagLVRow& t_lvRow, UINT t_eStyle = E_RowStyle::IS_None)
-        : lvRow(t_lvRow), eStyle(t_eStyle)
+    tagLVItemContext(tagLVItem& t_lvItem, UINT t_eStyle = E_LVItemStyle::IS_None)
+        : lvItem(t_lvItem), eStyle(t_eStyle)
     {
     }
 
@@ -49,18 +49,18 @@ struct tagRowContext
         fIconMargin = t_fIconMargin;
     }
 
-    tagLVRow* operator->()
+    tagLVItem* operator->()
     {
-        return &lvRow;
+        return &lvItem;
     }
-    const tagLVRow* operator->() const
+    const tagLVItem* operator->() const
     {
-        return &lvRow;
+        return &lvItem;
     }
 
-    tagLVRow& lvRow;
+    tagLVItem& lvItem;
 
-    UINT eStyle = E_RowStyle::IS_None;
+    UINT eStyle = E_LVItemStyle::IS_None;
 
     const QPixmap *pmImg = NULL;
     float fIconMargin = 0.21f;
@@ -130,19 +130,19 @@ private:
 
     void _onPaint(CPainter& painter, cqrc) override;
 
-    virtual void _onPaintRow(CPainter& painter, tagLVRow& lvRow)
+    virtual void _onPaintRow(CPainter& painter, tagLVItem& lvItem)
     {
-        tagRowContext context(lvRow);
+        tagLVItemContext context(lvItem);
         if (_genRowContext(context))
         {
             _paintRow(painter, context);
         }
     }
 
-    virtual bool _genRowContext(tagRowContext&) { return true; }
+    virtual bool _genRowContext(tagLVItemContext&) { return true; }
 
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&) {}
-    virtual void _onRowDblClick(tagLVRow&, const QMouseEvent&) {}
+    virtual void _onRowClick(tagLVItem&, const QMouseEvent&) {}
+    virtual void _onRowDblClick(tagLVItem&, const QMouseEvent&) {}
 
     virtual void _onBlankClick(const QMouseEvent&) {}
     virtual void _onBlankDblClick(const QMouseEvent&) {}
@@ -163,13 +163,13 @@ protected:
         return m_uAutoScrollSeq > 0;
     }
 
-    bool _hittest(int x, int y, tagLVRow& lvRow);
+    bool _hittest(int x, int y, tagLVItem& lvItem);
 
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 
-    void _paintRow(CPainter&, tagRowContext&);
+    void _paintRow(CPainter&, tagLVItemContext&);
 
-    virtual cqrc _paintText(tagRowContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
+    virtual cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 

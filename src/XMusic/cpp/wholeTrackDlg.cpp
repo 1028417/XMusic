@@ -100,7 +100,7 @@ size_t CWholeTrackView::getRowCount() const
     return m_cue.m_alTrackInfo.size();
 }
 
-cqrc CWholeTrackView::_paintText(tagRowContext& context, CPainter& painter, QRect& rc
+cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     UINT uDuration = 0;

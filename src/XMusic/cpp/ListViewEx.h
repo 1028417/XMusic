@@ -5,7 +5,7 @@
 
 #include "listview.h"
 
-struct tagMediaContext : public tagRowContext
+struct tagMLItemContext : public tagLVItemContext
 {
     CMediaSet *pMediaSet = NULL;
     CMedia *pMedia = NULL;
@@ -13,11 +13,11 @@ struct tagMediaContext : public tagRowContext
     CPath *pDir = NULL;
     XFile *pFile = NULL;
 
-    tagMediaContext(tagLVRow& lvRow) : tagRowContext(lvRow)
+    tagMLItemContext(tagLVItem& lvItem) : tagLVItemContext(lvItem)
     {
     }
 
-    tagMediaContext(tagLVRow& lvRow, IMedia& media) : tagRowContext(lvRow)
+    tagMLItemContext(tagLVItem& lvItem, IMedia& media) : tagLVItemContext(lvItem)
     {
         if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
         {
@@ -29,27 +29,27 @@ struct tagMediaContext : public tagRowContext
         }
     }
 
-    tagMediaContext(tagLVRow& lvRow, CMediaSet& MediaSet) :
-        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, CMediaSet& MediaSet) :
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
         , pMediaSet(&MediaSet)
     {
         strText = MediaSet.m_strName;
     }
-    tagMediaContext(tagLVRow& lvRow, CMedia& media) :
-        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, CMedia& media) :
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
         , pMedia(&media)
     {
         strText = media.GetTitle();
     }
 
-    tagMediaContext(tagLVRow& lvRow, CPath& dir) :
-        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, CPath& dir) :
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
         , pDir(&dir)
     {
         strText = dir.fileName();
     }
-    tagMediaContext(tagLVRow& lvRow, XFile& file) :
-        tagRowContext(lvRow, E_RowStyle::IS_MultiLine | E_RowStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, XFile& file) :
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
         , pFile(&file)
     {
         strText = file.fileName();
@@ -107,7 +107,7 @@ protected:
         return (CPath*)currentDir.parent();
     }
 
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMediaSet& mediaSet)
+    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)
     {
         _saveScrollRecord();
         showMediaSet(mediaSet);
@@ -122,15 +122,15 @@ private:
 
     virtual size_t _getRootRowCount() const = 0;
 
-    void _onPaintRow(CPainter&, tagLVRow&) override;
+    void _onPaintRow(CPainter&, tagLVItem&) override;
 
-    virtual bool _genRootRowContext(tagMediaContext&) = 0;
-    virtual void _genMediaContext(tagMediaContext&) = 0;
+    virtual bool _genRootRowContext(tagMLItemContext&) = 0;
+    virtual void _genMediaContext(tagMLItemContext&) = 0;
 
-    void _onRowClick(tagLVRow&, const QMouseEvent&) override;
+    void _onRowClick(tagLVItem&, const QMouseEvent&) override;
 
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CMedia&){}
-    virtual void _onRowClick(tagLVRow&, const QMouseEvent&, CPath&){}
+    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CMedia&){}
+    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CPath&){}
 
     inline void* _current() const
     {
