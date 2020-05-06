@@ -59,11 +59,9 @@ signals:
 public:
     void initpm();
 
-    void play();
-
-    void clear();
-
     void updateSingerImg();
+
+    void play();
 
     void reset() override
     {
@@ -71,6 +69,8 @@ public:
 
         CListView::reset();
     }
+
+    void cleanup();
 
 private:
     void _onShowRoot() override;

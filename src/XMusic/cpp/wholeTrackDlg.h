@@ -15,7 +15,7 @@ private:
     UINT m_uDuration = 0;
 
 public:
-    void showCue(CCueFile cue, UINT uDuration);
+    void setCue(CCueFile cue, UINT uDuration);
 
 private:
     size_t getPageRowCount() const override;

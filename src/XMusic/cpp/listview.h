@@ -101,19 +101,18 @@ private:
 
     UINT m_uRowHeight = 0;
 
+    int m_yBar = 0;
+
     size_t m_uMaxScrollPos = 0;
+
     float m_fScrollPos = 0;
+
+    ulong m_uAutoScrollSeq = 0;
 
     int m_nSelectRow = -1;
     int m_nSelectCol = -1;
 
-    ulong m_uAutoScrollSeq = 0;
-
-    QColor m_crFlashText;
-
     map<void*, float> m_mapScrollRecord;
-
-    int m_yBar = 0;
 
 protected:
     UINT rowHeight() const
@@ -229,6 +228,7 @@ public:
     virtual void reset()
     {
         m_fScrollPos = 0;
+
         m_uAutoScrollSeq = 0;
 
         m_nSelectRow = -1;

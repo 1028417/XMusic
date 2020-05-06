@@ -83,6 +83,8 @@ public:
     }
 
 private:
+    void _show();
+
     void _relayout(int cx, int cy) override;
 
     void _resizeTitle() const;
@@ -91,6 +93,4 @@ private:
     {
         return m_lv.upward();
     }
-
-    void _onClosed() override;
 };

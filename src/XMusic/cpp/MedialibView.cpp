@@ -51,35 +51,6 @@ void CMedialibView::initpm()
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
 }
 
-void CMedialibView::play()
-{
-    dselectRow();
-
-    TD_IMediaList paMedias;
-    CMediaSet *pMediaSet = currentMediaSet();
-    if (pMediaSet)
-    {
-        TD_MediaList lstMedias;
-        pMediaSet->GetAllMedias(lstMedias);
-        paMedias.add(lstMedias);
-    }
-    else
-    {
-        CPath *pDir = currentDir();
-        if (pDir)
-        {
-            pDir->files()([&](XFile& file){
-                paMedias.add((CMediaRes&)file);
-            });
-        }
-    }
-
-    if (paMedias)
-    {
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(paMedias));
-    }
-}
-
 void CMedialibView::_onShowRoot()
 {
     m_medialibDlg.updateHead(L"媒体库");
@@ -658,29 +629,6 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
     return CListViewEx::_onUpward(currentDir);
 }
 
-void CMedialibView::clear()
-{
-    m_thrAsyncTask.cancel();
-
-    m_mapSingerPixmap.clear();
-    m_lstSingerPixmap.clear();
-
-    CListViewEx::_clear();
-}
-
-void CMedialibView::updateSingerImg()
-{
-    CMediaSet* pMediaSet = currentMediaSet();
-    if (pMediaSet)
-    {
-        if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType
-            || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
-        {
-            update();
-        }
-    }
-}
-
 bool CMedialibView::event(QEvent *ev)
 {
     bool bRet = CListView::event(ev);
@@ -702,4 +650,56 @@ void CMedialibView::_flashRow(UINT uRow, UINT uMSDelay)
         m_nFlashingRow = -1;
         update();
     });
+}
+
+void CMedialibView::updateSingerImg()
+{
+    CMediaSet* pMediaSet = currentMediaSet();
+    if (pMediaSet)
+    {
+        if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType
+            || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
+        {
+            update();
+        }
+    }
+}
+
+void CMedialibView::play()
+{
+    dselectRow();
+
+    TD_IMediaList paMedias;
+    CMediaSet *pMediaSet = currentMediaSet();
+    if (pMediaSet)
+    {
+        TD_MediaList lstMedias;
+        pMediaSet->GetAllMedias(lstMedias);
+        paMedias.add(lstMedias);
+    }
+    else
+    {
+        CPath *pDir = currentDir();
+        if (pDir)
+        {
+            pDir->files()([&](XFile& file){
+                paMedias.add((CMediaRes&)file);
+            });
+        }
+    }
+
+    if (paMedias)
+    {
+        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(paMedias));
+    }
+}
+
+void CMedialibView::cleanup()
+{
+    m_thrAsyncTask.cancel();
+
+    m_mapSingerPixmap.clear();
+    m_lstSingerPixmap.clear();
+
+    CListViewEx::_cleanup();
 }

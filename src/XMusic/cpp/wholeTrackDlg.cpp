@@ -68,9 +68,11 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 
     ui.labelTitle->setText(__WS2Q(m_pMediaRes->GetTitle()));
 
-    m_lv.showCue(cue, m_pMediaRes->duration());
+    m_lv.setCue(cue, m_pMediaRes->duration());
 
-    CDialog::show();
+    CDialog::show([&](){
+        m_lv.reset();
+    });
 
     return true;
 }
@@ -82,11 +84,10 @@ CWholeTrackView::CWholeTrackView(CWholeTrackDlg& WholeTrackDlg)
 {
 }
 
-void CWholeTrackView::showCue(CCueFile cue, UINT uDuration)
+void CWholeTrackView::setCue(CCueFile cue, UINT uDuration)
 {
     m_cue = cue;
     m_uDuration = uDuration;
-    reset();
 }
 
 size_t CWholeTrackView::getPageRowCount() const

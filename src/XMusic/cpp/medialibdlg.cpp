@@ -119,6 +119,17 @@ _resizeTitle();
 //    _resizeTitle();
 //});*/
 
+void CMedialibDlg::_show()
+{
+    m_OuterDir.init();
+
+    CDialog::show([&](){
+        m_lv.cleanup();
+
+        m_OuterDir.clear();
+    });
+}
+
 void CMedialibDlg::show()
 {
     m_lv.showRoot();
@@ -127,24 +138,21 @@ void CMedialibDlg::show()
         m_OuterDir.findFile();
     });
 
-    m_OuterDir.init();
-    CDialog::show();
+    _show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_lv.showMediaSet(MediaSet);
 
-    m_OuterDir.init();
-    CDialog::show();
+    _show();
 }
 
 void CMedialibDlg::showMedia(CMedia& media)
 {
     m_lv.hittestMedia(media);
 
-    m_OuterDir.init();
-    CDialog::show();
+    _show();
 }
 
 bool CMedialibDlg::showMediaRes(cwstr strPath)
@@ -292,13 +300,6 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     ui.btnUpward->setVisible(bShowUpwardButton);
 
     _resizeTitle();
-}
-
-void CMedialibDlg::_onClosed()
-{
-    m_lv.clear();
-
-    m_OuterDir.clear();
 }
 
 void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)

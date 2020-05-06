@@ -85,7 +85,7 @@ private:
     TD_XFileList m_paSubFiles;
 
 protected:
-    void _clear()
+    void _cleanup()
     {
         reset();
 

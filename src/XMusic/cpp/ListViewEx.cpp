@@ -19,7 +19,7 @@ size_t CListViewEx::getRowCount() const
 
 void CListViewEx::showRoot()
 {
-    _clear();
+    _cleanup();
 
     update();
 
@@ -28,7 +28,7 @@ void CListViewEx::showRoot()
 
 void CListViewEx::showMediaSet(CMediaSet& MediaSet)
 {
-    _clear();
+    _cleanup();
 
     m_pMediaset = &MediaSet;
     m_pMediaset->GetSubSets(m_lstSubSets);
@@ -56,7 +56,7 @@ void CListViewEx::hittestMedia(CMedia& media)
 
 void CListViewEx::showDir(CPath& dir)
 {
-    _clear();
+    _cleanup();
 
     m_pDir = &dir;
     m_paSubDirs.assign(dir.dirs());
