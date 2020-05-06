@@ -63,7 +63,7 @@ private:
     UINT m_uPlaySeq = 0;
     tagPlayingInfo m_PlayingInfo;
 
-    bool m_bHScreen = false;
+    bool m_bHLayout = false;
 
     bool m_bUseDefaultBkg = false;
 

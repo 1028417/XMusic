@@ -357,11 +357,6 @@ public:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    bool isHLayout() const
-    {
-        return T::width()>T::height();
-    }
-
     virtual cqcr foreColor() const
     {
         if (m_bSetForeColor)

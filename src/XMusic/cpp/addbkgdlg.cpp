@@ -62,10 +62,10 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     }
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
-    static BOOL bHScreen = -1;
-    if (bHScreen != (BOOL)m_bHScreen)
+    static BOOL bHLayout = -1;
+    if (bHLayout != (BOOL)m_bHLayout)
     {
-        bHScreen = m_bHScreen;
+        bHLayout = m_bHLayout;
         m_lv.scroll(m_lv.scrollPos());
     }
 }

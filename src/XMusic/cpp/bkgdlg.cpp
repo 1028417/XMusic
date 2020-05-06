@@ -401,7 +401,7 @@ void CBkgDlg::_relayout(int cx, int cy)
 
     g_xsize = rcReturn.width()-__size(5);
 
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()
                                  , rcReturn.width(), rcReturn.height());
@@ -430,27 +430,27 @@ void CBkgDlg::_relayout(int cx, int cy)
         ui.labelTitle->setText("设置背景");
     }
 
-    static BOOL bHScreen = -1;
-    if (bHScreen != (BOOL)m_bHScreen)
+    static BOOL bHLayout = -1;
+    if (bHLayout != (BOOL)m_bHLayout)
     {
-        bHScreen = m_bHScreen;
+        bHLayout = m_bHLayout;
         m_lv.scroll(0);
     }
 }
 
 inline wstring& CBkgDlg::_bkgDir()
 {
-    return m_bHScreen?m_strHBkgDir:m_strVBkgDir;
+    return m_bHLayout?m_strHBkgDir:m_strVBkgDir;
 }
 
 inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
 {
-    return m_bHScreen?m_vecHBkgFile:m_vecVBkgFile;
+    return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
 }
 
 inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm)
 {
-    zoomoutPixmap(m_bHScreen, pm, 2);
+    zoomoutPixmap(m_bHLayout, pm, 2);
 
     m_lstBr.emplace_back(pm);
 
@@ -459,7 +459,7 @@ inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm)
 
 size_t CBkgDlg::bkgCount() const
 {
-    return (m_bHScreen?m_vecHBkgFile:m_vecVBkgFile).size();
+    return (m_bHLayout?m_vecHBkgFile:m_vecVBkgFile).size();
 }
 
 CBkgBrush* CBkgDlg::brush(size_t uIdx)
@@ -491,7 +491,7 @@ bool CBkgDlg::_setBkg(int nIdx)
         return false;
     }
 
-    auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    auto& pm = m_bHLayout?m_pmHBkg:m_pmVBkg;
     if (nIdx >= 0)
     {
         cwstr strFile = vecBkgFile[nIdx].strPath;
@@ -510,7 +510,7 @@ bool CBkgDlg::_setBkg(int nIdx)
 void CBkgDlg::_updateBkg(cwstr strFile)
 {
     m_app.getOption().bUseBkgColor = false;
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         m_app.getOption().strHBkg = strFile;
     }
@@ -602,9 +602,9 @@ void CBkgDlg::addBkg(cwstr strFile)
     }
     bFlag = true;
 
-    auto& pm = m_bHScreen?m_pmHBkg:m_pmVBkg;
+    auto& pm = m_bHLayout?m_pmHBkg:m_pmVBkg;
     (void)pm.load(__WS2Q(strFile));
-    zoomoutPixmap(m_bHScreen, pm);
+    zoomoutPixmap(m_bHLayout, pm);
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
@@ -631,7 +631,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     {
         cauto bkgFile = vecBkgFile[uIdx];
 
-        cauto strBkg = m_bHScreen ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
+        cauto strBkg = m_bHLayout ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
         if (strBkg == bkgFile.strPath)
         {
             _setBkg(-1);

@@ -483,11 +483,11 @@ void MainWindow::_relayout()
 
     int cx = rc.width();
     int cy = rc.height();
-    m_bHScreen = cx > cy; // 橫屏
+    m_bHLayout = cx > cy; // 橫屏
 
     int x_Logo = (cx - ui.labelLogo->width())/2;
     int y_Logo = (cy - ui.labelLogo->height())/2;
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         y_Logo -= __size(60);
     }
@@ -503,7 +503,7 @@ void MainWindow::_relayout()
 #define __LogoCompanyMargin __size(50)
     int y_LogoCompany = cy - __LogoCompanyMargin - ui.labelLogoCompany->height();
     ui.labelLogoCompany->setGeometry(__LogoCompanyMargin, y_LogoCompany, cx-__LogoCompanyMargin*2, ui.labelLogoCompany->height());
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
     }
@@ -514,7 +514,7 @@ void MainWindow::_relayout()
 
     float fCXRate = 0;
     float fCXRateEx = 0;
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         fCXRate = (float)cx/ui.labelBkg->pixmap()->width();
     }
@@ -530,7 +530,7 @@ void MainWindow::_relayout()
     m_bUseDefaultBkg = false;
     if (!m_app.getOption().bUseBkgColor)
     {
-        cauto pmBkg = m_bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bUseDefaultBkg = pmBkg.isNull();
     }
 
@@ -604,7 +604,7 @@ void MainWindow::_relayout()
     }
 
     int x_frameDemand = 0;
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         x_frameDemand = (ui.progressbar->geometry().right()
             + ui.progressbar->x() - ui.frameDemand->width())/2;
@@ -620,7 +620,7 @@ void MainWindow::_relayout()
     int x_btnMore = __size(27);
 
 #if __android || __ios
-     if (!m_bHScreen)
+     if (!m_bHLayout)
      {
          x_btnMore = cx - __size(25) - ui.btnMore->width();
      }
@@ -767,7 +767,7 @@ void MainWindow::_relayout()
         {
             if (E_SingerImgPos::SIP_Float == eSingerImgPos)
             {
-                if (m_bHScreen)
+                if (m_bHLayout)
                 {
                     y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(50);
                 }
@@ -860,7 +860,7 @@ void MainWindow::_relayout()
         } while (0);
 
         bool bFlag = false;//fCXRateEx > 1;
-        if (m_bHScreen)
+        if (m_bHLayout)
         {
              if (cy < __size(1080)*fCXRateEx)
              {
@@ -890,7 +890,7 @@ void MainWindow::_relayout()
 
 #define __CyPlayItem __size(115)
     UINT uRowCount = 0;
-    if (m_bHScreen)
+    if (m_bHLayout)
     {
         UINT uMargin = __size(45);
         UINT xOffset = uMargin;
@@ -963,8 +963,8 @@ void MainWindow::_onPaint()
         }
         else
         {
-            bool bHScreen = rc.width() > rc.height();
-            cauto pmBkg = bHScreen?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+            bool bHLayout = rc.width() > rc.height();
+            cauto pmBkg = bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
                painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);

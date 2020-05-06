@@ -148,7 +148,7 @@ size_t CMedialibView::getPageRowCount() const
 
 size_t CMedialibView::getColumnCount() const
 {
-    if (isInRoot() && isHLayout())
+    if (isInRoot() && m_medialibDlg.isHLayout())
     {
         return 2;
     }
@@ -158,7 +158,7 @@ size_t CMedialibView::getColumnCount() const
 
 size_t CMedialibView::_getRootRowCount() const
 {
-    if (isHLayout())
+    if (m_medialibDlg.isHLayout())
     {
         return 6;
     }
@@ -174,36 +174,36 @@ bool CMedialibView::_genRootRowContext(tagMediaContext& context)
 
     context.eStyle = E_RowStyle::IS_CenterAlign;
 
-    bool bHScreen = isHLayout();
-    if (bHScreen)
+    bool bHLayout = m_medialibDlg.isHLayout();
+    if (bHLayout)
     {
         context.fIconMargin /= 1.3;
     }
 
     context.uIconRound = 0;
 
-    if ((bHScreen && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 1 == lvRow.uRow))
+    if ((bHLayout && 1 == lvRow.uRow && 0 == lvRow.uCol) || (!bHLayout && 1 == lvRow.uRow))
     {
         context.pmImg = &m_pmSingerGroup;
         context.strText = L" 歌手";
         context.pMediaSet = &m_SingerLib;
         return true;
     }
-    else if ((bHScreen && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 3 == lvRow.uRow))
+    else if ((bHLayout && 1 == lvRow.uRow && 1 == lvRow.uCol) || (!bHLayout && 3 == lvRow.uRow))
     {
         context.pmImg = &m_pmPlaylistSet;
         context.strText = L" 歌单";
         context.pMediaSet = &m_PlaylistLib;
         return true;
     }
-    else if ((bHScreen && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHScreen && 5 == lvRow.uRow))
+    else if ((bHLayout && 3 == lvRow.uRow && 0 == lvRow.uCol) || (!bHLayout && 5 == lvRow.uRow))
     {
         context.pmImg = &m_pmXmusicDir;
         context.strText = __XMusicDirName;
         context.pDir = &__medialib;
         return true;
     }
-    else if ((bHScreen && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHScreen && 7 == lvRow.uRow))
+    else if ((bHLayout && 3 == lvRow.uRow && 1 == lvRow.uCol) || (!bHLayout && 7 == lvRow.uRow))
     {
         context.pmImg = &m_pmDir;
         context.strText << ' ' << __OuterDirName;

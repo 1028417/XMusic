@@ -34,7 +34,7 @@ private:
     bool m_bFullScreen = true;
 
 protected:
-    bool m_bHScreen = false;
+    bool m_bHLayout = false;
 
 private:
     virtual cqcr bkgColor() const
@@ -64,6 +64,11 @@ public:
     }
 
     static void resetPos();
+
+    bool isHLayout() const
+    {
+        return m_bHLayout;
+    }
 
 #if __windows
     HWND hwnd() const

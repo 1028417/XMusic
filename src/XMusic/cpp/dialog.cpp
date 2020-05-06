@@ -103,7 +103,7 @@ bool CDialog::event(QEvent *ev)
     {
         auto cx = width();
         auto cy = height();
-        m_bHScreen = cx > cy;
+        m_bHLayout = cx > cy;
 
         _relayout(cx, cy);
     }
