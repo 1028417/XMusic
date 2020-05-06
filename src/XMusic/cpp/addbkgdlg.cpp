@@ -40,8 +40,8 @@ void CAddBkgDlg::show(cfn_void cbClose)
 void CAddBkgDlg::_relayout(int cx, int cy)
 {
     m_uRowCount = CBkgDlg::caleRowCount(cy);
-    int sz = cy/(1.2+m_uRowCount);
-    //int sz = MAX(cx, cy)/11;
+
+    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1);
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
