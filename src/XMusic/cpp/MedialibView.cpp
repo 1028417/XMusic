@@ -391,7 +391,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     if (mlContext.playable())
     {
         UINT cy = context->rc.height();
-        int yMargin = cy * context.fIconMargin*1.34;
+        int yMargin = cy * context.fIconMargin*1.33;
         cy -= yMargin*2;
 
         int x_icon = context->rc.right() + __playIconOffset - cy;

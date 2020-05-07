@@ -872,8 +872,10 @@ void MainWindow::_relayout()
         }
         if (bFlag)
         {
-            int y_Playingfile = rcSingerImg.bottom()- ui.labelPlayingfile->height() - __size(20);
-            ui.labelPlayingfile->move(rcSingerImg.left() + __size(30), y_Playingfile);
+            int cy_Playingfile = ui.labelPlayingfile->height();
+            int y_Playingfile = rcSingerImg.bottom()- cy_Playingfile - __size(20);
+            int x_Playingfile = rcSingerImg.left() + __size(30);
+            ui.labelPlayingfile->setGeometry(x_Playingfile, y_Playingfile, ui.labelDuration->x()-x_Playingfile, cy_Playingfile);
 
             y_PlayingListMax = rcSingerImg.top();
         }
