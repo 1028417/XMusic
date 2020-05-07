@@ -97,7 +97,7 @@ size_t CWholeTrackView::getColCount() const
         return 2;
     }
 
-    return;
+    return 1;
 }
 
 size_t CWholeTrackView::getRowCount() const
