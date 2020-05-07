@@ -41,7 +41,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 {
     m_uRowCount = CBkgDlg::caleRowCount(cy);
 
-    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1);
+    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.3);
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
@@ -88,7 +88,7 @@ bool CAddBkgDlg::_handleReturn()
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
-    CListView(addbkgDlg, E_LVScrollBar::LVSB_Left)
+    CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
     , m_paImgDirs(paImgDir)
 {

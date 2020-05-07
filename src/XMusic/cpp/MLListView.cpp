@@ -92,7 +92,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
                 tagMLItemContext context(lvItem, mediaSet);
-                _genMediaContext(context);
+                _genItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -100,7 +100,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media) {
                 tagMLItemContext context(lvItem, media);
-                _genMediaContext(context);
+                _genItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -111,7 +111,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
                 tagMLItemContext context(lvItem, subFile);
-                _genMediaContext(context);
+                _genItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -119,7 +119,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 tagMLItemContext context(lvItem, subPath);
-                _genMediaContext(context);
+                _genItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -127,7 +127,8 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     else
     {
         tagMLItemContext context(lvItem);
-        if (_genRootRowContext(context))
+        _genItemContext(context);
+        if (context)
         {
             _paintRow(painter, context);
         }
@@ -153,7 +154,7 @@ void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
     }
     else if (m_pDir)
     {
-        if (lvItem.uRow >= m_paSubDirs.size())
+        if (lvItem.uItem >= m_paSubDirs.size())
         {
             m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
                 _onRowClick(lvItem, me, (CPath&)subFile);
@@ -170,18 +171,16 @@ void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
     else
     {
         tagMLItemContext context(lvItem);
-        if (_genRootRowContext(context))
+        _genItemContext(context);
+        if (context.pMediaSet)
         {
-            if (context.pMediaSet)
-            {
-                _saveScrollRecord();
-                showMediaSet(*context.pMediaSet);
-            }
-            else if (context.pDir)
-            {
-                _saveScrollRecord();
-                showDir(*context.pDir);
-            }
+            _saveScrollRecord();
+            showMediaSet(*context.pMediaSet);
+        }
+        else if (context.pDir)
+        {
+            _saveScrollRecord();
+            showDir(*context.pDir);
         }
     }
 }

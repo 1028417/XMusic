@@ -79,7 +79,7 @@ bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 
 
 CWholeTrackView::CWholeTrackView(CWholeTrackDlg& WholeTrackDlg)
-    : CListView(WholeTrackDlg)
+    : CListView(&WholeTrackDlg, E_LVScrollBar::LVSB_Right)
     , m_WholeTrackDlg(WholeTrackDlg)
 {
 }
@@ -88,6 +88,16 @@ void CWholeTrackView::setCue(CCueFile cue, UINT uDuration)
 {
     m_cue = cue;
     m_uDuration = uDuration;
+}
+
+size_t CWholeTrackView::getColCount() const
+{
+    if (m_WholeTrackDlg.isHLayout() && m_cue.m_alTrackInfo.size() > getRowCount())
+    {
+        return 2;
+    }
+
+    return;
 }
 
 size_t CWholeTrackView::getRowCount() const
@@ -104,9 +114,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     UINT uDuration = 0;
-    m_cue.m_alTrackInfo.get(context->uItem, [&](const tagTrackInfo& TrackInfo){
-        context.strText << ' ';
-
+    m_cue.m_alTrackInfo.get(context->uItem, [&](const tagTrackInfo& TrackInfo) {
         auto uIdx = TrackInfo.uIndex+1;
         if (uIdx<10)
         {
@@ -124,15 +132,18 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
         }
     });
 
+    rc.setLeft(rc.left() + __size(12));
+    rc.setRight(rc.right() - __size(20));
+
     if (uDuration > 0)
     {
-        CPainterFontGuard fontGuard(painter, 0.9f, QFont::Weight::ExtraLight);
+        cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
 
-        cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration) + L' ');
+        CPainterFontGuard fontGuard(painter, 0.9f, QFont::Weight::ExtraLight);
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
     }
 
-    rc.setRight(rc.right() - __size(120));
+    rc.setRight(rc.right() - __size(100));
 
     return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 }

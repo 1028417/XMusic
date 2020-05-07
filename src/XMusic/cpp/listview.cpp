@@ -108,8 +108,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     if (m_uMaxScrollPos != 0 && E_LVScrollBar::LVSB_None != m_eScrollBar)
     {
         int szMargin = (__lvRowMargin-__cxBar)/2;
-        int xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? 0 : cx;
-        xBar += szMargin;
+        int xBar = E_LVScrollBar::LVSB_Left == m_eScrollBar ? szMargin : cx-szMargin-__cxBar;
         cy -= szMargin*2;
         auto cyBar = cy*uRowCount/m_uTotalRows;
         m_yBar = szMargin + m_fScrollPos*(cy-cyBar)/m_uMaxScrollPos;

@@ -11,7 +11,7 @@
 #define __RemarkAlpha 200
 
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
-    CMLListView(medialibDlg, E_LVScrollBar::LVSB_Left)
+    CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
     , m_app(app)
     , m_SingerLib(app.getSingerMgr())
@@ -175,86 +175,7 @@ size_t CMedialibView::_getRootItemCount() const
     }
 }
 
-bool CMedialibView::_genRootRowContext(tagMLItemContext& context)
-{
-    context.eStyle = E_LVItemStyle::IS_CenterAlign;
-
-    bool bHLayout = m_medialibDlg.isHLayout();
-    if (bHLayout)
-    {
-        context.fIconMargin /= 1.3;
-    }
-
-    context.uIconRound = 0;
-
-    cauto uRow = context->uRow;
-    cauto uCol = context->uCol;
-    if ((bHLayout && 1 == uRow && 0 == uCol) || (!bHLayout && 1 == uRow))
-    {
-        context.pmIcon = &m_pmSingerGroup;
-        context.strText = L" 歌手";
-        context.pMediaSet = &m_SingerLib;
-        return true;
-    }
-    else if ((bHLayout && 1 == uRow && 1 == uCol) || (!bHLayout && 3 == uRow))
-    {
-        context.pmIcon = &m_pmPlaylistSet;
-        context.strText = L" 歌单";
-        context.pMediaSet = &m_PlaylistLib;
-        return true;
-    }
-    else if ((bHLayout && 3 == uRow && 0 == uCol) || (!bHLayout && 5 == uRow))
-    {
-        context.pmIcon = &m_pmXmusicDir;
-        context.strText = __XMusicDirName;
-        context.pDir = &__medialib;
-        return true;
-    }
-    else if ((bHLayout && 3 == uRow && 1 == uCol) || (!bHLayout && 7 == uRow))
-    {
-        context.pmIcon = &m_pmDir;
-        context.strText << ' ' << __OuterDirName;
-        context.pDir = &m_OuterDir;
-        return true;
-    }
-
-    return false;
-}
-
-cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
-{
-    auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
-    if (pSingerPixmap)
-    {
-        return *pSingerPixmap;
-    }
-
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(strSingerName, 0);
-    if (!strSingerImg.empty())
-    {
-        m_lstSingerPixmap.emplace_back();
-        QPixmap& pm = m_lstSingerPixmap.back();
-        if (pm.load(__WS2Q(strSingerImg)))
-        {
-#define __singerimgZoomout 160
-            auto&& temp = pm.width() < pm.height()
-                    ? pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation)
-                    : pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
-            pm.swap(temp);
-
-            pSingerPixmap = &pm;
-            return pm;
-        }
-        else
-        {
-            m_lstSingerPixmap.pop_back();
-        }
-    }
-
-    return m_pmDefaultSinger;
-}
-
-void CMedialibView::_genMediaContext(tagMLItemContext& context)
+void CMedialibView::_genItemContext(tagMLItemContext& context)
 {
     context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
@@ -299,6 +220,8 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
     }
     else if (context.pDir)
     {
+        context.eStyle |= E_LVItemStyle::IS_RightTip;
+
         if (context.pDir->rootDir() == &__medialib)
         {
             context.pmIcon = &m_pmSSDir;
@@ -378,6 +301,77 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context)
             context.strText = pMediaRes->fileName();
         }
     }
+    else
+    {
+        context.eStyle = E_LVItemStyle::IS_CenterAlign;
+
+        bool bHLayout = m_medialibDlg.isHLayout();
+        if (bHLayout)
+        {
+            context.fIconMargin /= 1.3;
+        }
+
+        context.uIconRound = 0;
+
+        cauto uRow = context->uRow;
+        if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
+        {
+            context.pmIcon = &m_pmSingerGroup;
+            context.strText = L" 歌手";
+            context.pMediaSet = &m_SingerLib;
+        }
+        else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
+        {
+            context.pmIcon = &m_pmPlaylistSet;
+            context.strText = L" 歌单";
+            context.pMediaSet = &m_PlaylistLib;
+        }
+        else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
+        {
+            context.pmIcon = &m_pmXmusicDir;
+            context.strText = __XMusicDirName;
+            context.pDir = &__medialib;
+        }
+        else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
+        {
+            context.pmIcon = &m_pmDir;
+            context.strText << ' ' << __OuterDirName;
+            context.pDir = &m_OuterDir;
+        }
+    }
+}
+
+cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
+{
+    auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
+    if (pSingerPixmap)
+    {
+        return *pSingerPixmap;
+    }
+
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(strSingerName, 0);
+    if (!strSingerImg.empty())
+    {
+        m_lstSingerPixmap.emplace_back();
+        QPixmap& pm = m_lstSingerPixmap.back();
+        if (pm.load(__WS2Q(strSingerImg)))
+        {
+#define __singerimgZoomout 160
+            auto&& temp = pm.width() < pm.height()
+                    ? pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation)
+                    : pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
+            pm.swap(temp);
+
+            pSingerPixmap = &pm;
+            return pm;
+        }
+        else
+        {
+            m_lstSingerPixmap.pop_back();
+        }
+    }
+
+    return m_pmDefaultSinger;
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter

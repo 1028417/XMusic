@@ -76,8 +76,8 @@ enum class E_LVScrollBar
 class CListView : public TWidget<QWidget>
 {
 public:
-    CListView(QWidget& parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None)
-        : TWidget(&parent)
+    CListView(QWidget *parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None)
+        : TWidget(parent)
         , m_eScrollBar(eScrollBar)
     {
         setAttribute(Qt::WA_TranslucentBackground);
@@ -123,13 +123,11 @@ private:
     virtual void _onPaintItem(CPainter& painter, tagLVItem& lvItem)
     {
         tagLVItemContext context(lvItem);
-        if (_genRowContext(context))
-        {
-            _paintRow(painter, context);
-        }
+        _genItemContext(context);
+        _paintRow(painter, context);
     }
 
-    virtual bool _genRowContext(tagLVItemContext&) { return true; }
+    virtual void _genItemContext(tagLVItemContext&) {}
 
     virtual void _onRowClick(tagLVItem&, const QMouseEvent&) {}
     virtual void _onRowDblClick(tagLVItem&, const QMouseEvent&) {}

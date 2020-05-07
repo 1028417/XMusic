@@ -18,6 +18,7 @@ public:
     void setCue(CCueFile cue, UINT uDuration);
 
 private:
+    size_t getColCount() const override;
     size_t getRowCount() const override;
     size_t getItemCount() const override;
 

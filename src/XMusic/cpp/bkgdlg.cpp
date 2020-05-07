@@ -9,10 +9,10 @@ static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(class CApp& app, CBkgDlg& bkgDlg)
-    : CListView(bkgDlg),
-    m_app(app),
-    m_bkgDlg(bkgDlg)
+CBkgView::CBkgView(CBkgDlg& bkgDlg, class CApp& app)
+    : CListView(&bkgDlg),
+    m_bkgDlg(bkgDlg),
+    m_app(app)
 {
     (void)m_pmX.load(":/img/btnX.png");
 }
@@ -208,7 +208,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
     m_colorDlg(*this, app),
     m_addbkgDlg(*this, m_paImgDirs),
-    m_lv(app, *this)
+    m_lv(*this, app)
 {
 }
 
@@ -402,7 +402,7 @@ size_t CBkgDlg::caleRowCount(int cy)
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1);
+    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.3);
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移

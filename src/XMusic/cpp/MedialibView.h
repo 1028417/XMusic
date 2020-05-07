@@ -82,8 +82,7 @@ private:
 
     size_t _getRootItemCount() const override;
 
-    bool _genRootRowContext(tagMLItemContext&) override;
-    void _genMediaContext(tagMLItemContext&) override;
+    void _genItemContext(tagMLItemContext&) override;
 
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 

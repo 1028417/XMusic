@@ -13,6 +13,11 @@ struct tagMLItemContext : public tagLVItemContext
     CPath *pDir = NULL;
     XFile *pFile = NULL;
 
+    operator bool() const
+    {
+        return pMediaSet || pMedia || pDir || pFile;
+    }
+
     tagMLItemContext(tagLVItem& lvItem) : tagLVItemContext(lvItem)
     {
     }
@@ -71,7 +76,7 @@ struct tagMLItemContext : public tagLVItemContext
 class CMLListView : public CListView
 {
 public:
-    CMLListView(QWidget& parent, E_LVScrollBar eScrollBar) : CListView(parent, eScrollBar)
+    CMLListView(QWidget *parent, E_LVScrollBar eScrollBar) : CListView(parent, eScrollBar)
     {
     }
 
@@ -122,8 +127,7 @@ private:
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
-    virtual bool _genRootRowContext(tagMLItemContext&) = 0;
-    virtual void _genMediaContext(tagMLItemContext&) = 0;
+    virtual void _genItemContext(tagMLItemContext&) = 0;
 
     void _onRowClick(tagLVItem&, const QMouseEvent&) override;
 

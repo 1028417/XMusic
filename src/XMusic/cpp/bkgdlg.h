@@ -12,12 +12,12 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CApp& app, class CBkgDlg& bkgDlg);
+    CBkgView(class CBkgDlg& bkgDlg, class CApp& app);
 
-private:
-    class CApp& m_app;
-
+private:    
     class CBkgDlg& m_bkgDlg;
+
+    class CApp& m_app;
 
     QPixmap m_pmX;
 

@@ -71,7 +71,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
-    , m_PlayingList(app, *this)
+    , m_PlayingList(app, this)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
@@ -103,7 +103,6 @@ MainWindow::MainWindow(CApp& app)
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
 
-    m_PlayingList.setParent(this);
     m_PlayingList.raise();
 
 #if __android || __ios

@@ -14,7 +14,7 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CApp& app, QWidget& parent);
+    CPlayingList(class CApp& app, QWidget *parent=NULL);
 
 private:
     class CApp& m_app;

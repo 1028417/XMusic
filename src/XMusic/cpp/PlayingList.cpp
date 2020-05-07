@@ -3,7 +3,7 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CApp& app, QWidget& parent)
+CPlayingList::CPlayingList(class CApp& app, QWidget *parent)
     : CListView(parent)
     , m_app(app)
 {
