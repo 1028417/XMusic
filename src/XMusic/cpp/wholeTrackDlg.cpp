@@ -121,7 +121,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
             context.strText << '0';
         }
 
-        context.strText << uIdx << L"   " << TrackInfo.strTitle;
+        context.strText << uIdx << L"  " << TrackInfo.strTitle;
 
 
         if (!m_cue.m_alTrackInfo.get(context->uItem+1, [&](const tagTrackInfo& nextTrackInfo){
@@ -132,7 +132,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
         }
     });
 
-    rc.setLeft(rc.left() + __size(12));
+    rc.setLeft(rc.left() + __size(15));
     rc.setRight(rc.right() - __size(20));
 
     if (uDuration > 0)
