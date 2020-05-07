@@ -402,7 +402,7 @@ size_t CBkgDlg::caleRowCount(int cy)
 
 void CBkgDlg::_relayout(int cx, int cy)
 {
-    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.5f);
+    int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
     int xMargin = sz/4;
     QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
