@@ -67,7 +67,6 @@ void CXController::start()
 
 #else
     m_threadPlayCtrl.start([&]()mutable {
-        mtutil::usleep(300);
         PlayMgr.tryPlay();
 
         while (m_threadPlayCtrl.usleepex(100))
