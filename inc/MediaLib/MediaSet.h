@@ -118,13 +118,13 @@ private:
     bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
 
 #if __winvc
-	bool GetRenameText(wstring& stRenameText) const override
+	virtual bool GetRenameText(wstring& stRenameText) const override
 	{
 		stRenameText = m_strName;
 		return true;
 	}
 
-	wstring GetTreeText() const override
+	virtual wstring GetTreeText() const override
 	{
 		return m_strName;
 	}

@@ -152,7 +152,15 @@ private:
 	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) override;
 
 #if __winvc
-    int GetTreeImage() override;
+	int GetTreeImage() override
+	{
+		return __medialib.getSingerImgPos(m_uID);
+	}
+
+	wstring GetTreeText() const override
+	{
+		return m_strName + L' ';
+	}
 #endif
 };
 
@@ -195,6 +203,11 @@ private:
 	int GetTreeImage() override
 	{
 		return (int)E_GlobalImage::GI_SingerGroup;
+	}
+
+	wstring GetTreeText() const override
+	{
+		return m_strName + L' ';
 	}
 #endif
 };
