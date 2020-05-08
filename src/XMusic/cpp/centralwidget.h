@@ -21,5 +21,9 @@ public:
         {
             ((MainWindow*)parent())->handleTouchMove(te);
         }
+        else if (E_TouchEventType::TET_TouchEnd == type)
+        {
+            ((MainWindow*)parent())->handleTouchEnd(m_teBegin, te);
+        }
     }
 };

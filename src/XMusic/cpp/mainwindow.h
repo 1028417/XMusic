@@ -65,7 +65,7 @@ private:
 
     bool m_bHLayout = false;
 
-    bool m_bUseDefaultBkg = false;
+    bool m_bDefaultBkg = false;
 
     int m_dxbkg = 0;
     int m_dybkg = 0;
@@ -128,6 +128,7 @@ public:
     void updateBkg();
 
     void handleTouchMove(const CTouchEvent& te);
+    void handleTouchEnd(const CTouchEvent& teBegin, const CTouchEvent& teEnd);
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 

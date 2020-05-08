@@ -526,14 +526,14 @@ void MainWindow::_relayout()
     int cy_bkg = __round(fCXRate * ui.labelBkg->pixmap()->height());
     int dy_bkg = cy - cy_bkg;
 
-    m_bUseDefaultBkg = false;
+    m_bDefaultBkg = false;
     if (!m_app.getOption().bUseBkgColor)
     {
         cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
-        m_bUseDefaultBkg = pmBkg.isNull();
+        m_bDefaultBkg = pmBkg.isNull();
     }
 
-    UINT uShadowWidth = m_bUseDefaultBkg?0:1;
+    UINT uShadowWidth = m_bDefaultBkg?0:1;
     ui.labelDemandHK->setShadow(uShadowWidth);
     ui.labelDemandCN->setShadow(uShadowWidth);
     ui.labelDemandKR->setShadow(uShadowWidth);
@@ -596,7 +596,7 @@ void MainWindow::_relayout()
     }
     else if (cy < __size(1000))
     {
-        if (m_bUseDefaultBkg)
+        if (m_bDefaultBkg)
         {
             y_frameDemand = __size(12);
         }
@@ -629,7 +629,7 @@ void MainWindow::_relayout()
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
     ui.btnExit->move(x_btnExit, y_btnMore);
 
-    if (!m_bUseDefaultBkg)
+    if (!m_bDefaultBkg)
     {
         int yOffset = 0;
 
@@ -697,7 +697,7 @@ void MainWindow::_relayout()
         {
             eSingerImgPos = m_eSingerImgPos;
 
-            ui.labelSingerImg->setPixmapRound(m_bUseDefaultBkg?__size(4):__szRound);
+            ui.labelSingerImg->setPixmapRound(m_bDefaultBkg?__size(4):__szRound);
             ui.labelSingerImg->setShadow(2);
 
             ui.labelSingerName->setShadow(2);
@@ -712,7 +712,7 @@ void MainWindow::_relayout()
 
     int y_PlayingListMax = 0;
 
-    if (!m_bUseDefaultBkg)
+    if (!m_bDefaultBkg)
     {
         int cx_progressbar = ui.progressbar->width();
 
@@ -1180,7 +1180,7 @@ WString MainWindow::_genAlbumName()
     {
         if (!m_PlayingInfo.strPlaylist.empty())
         {
-            if (!m_bUseDefaultBkg)
+            if (!m_bDefaultBkg)
             {
                 strMediaSet << L"歌单:  ";
             }
@@ -1191,7 +1191,7 @@ WString MainWindow::_genAlbumName()
     }
     else if (!m_PlayingInfo.strAlbum.empty())
     {
-        if (!m_bUseDefaultBkg)
+        if (!m_bDefaultBkg)
         {
             strMediaSet << L"专辑:  ";
         }
@@ -1338,10 +1338,47 @@ void MainWindow::updateBkg()
 
 void MainWindow::handleTouchMove(const CTouchEvent& te)
 {
+    if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
+    {
+        return;
+    }
+
     mtutil::yield();
     m_dxbkg -= te.dx();
     m_dybkg -= te.dy();
     update();
+}
+
+void MainWindow::handleTouchEnd(const CTouchEvent& teBegin, const CTouchEvent& teEnd)
+{
+    auto dt = teEnd.timestamp() - teBegin.timestamp();
+    if (dt < 300)
+    {
+        auto dx = teEnd.x() - teBegin.x();
+        auto dy = teEnd.y() - teBegin.y();
+        if (abs(dx) > abs(dy))
+        {
+            if (dx > 3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, false);
+            }
+            else if (dx < -3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, true);
+            }
+        }
+        else
+        {
+            if (dy > 3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, false);
+            }
+            else if (dy < -3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, true);
+            }
+        }
+    }
 }
 
 static const QString __qsCheck(QChar(L'√'));
@@ -1350,7 +1387,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
     {
-        if (!m_bUseDefaultBkg)
+        if (!m_bDefaultBkg)
         {
             if (m_PlayingInfo.bWholeTrack)
             {

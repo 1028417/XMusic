@@ -127,15 +127,15 @@ struct tagBkgFile
 {
     tagBkgFile() = default;
 
-    tagBkgFile(bool bInner, cwstr strPath, CBkgBrush *br=NULL)
+    tagBkgFile(bool bInner, cwstr strFile, CBkgBrush *br=NULL)
         : bInner(bInner)
-        , strPath(strPath)
+        , strFile(strFile)
         , br(br)
     {
     }
 
     bool bInner = false;
-    WString strPath;
+    WString strFile;
     CBkgBrush *br = NULL;
 };
 
@@ -222,9 +222,11 @@ public:
 
     CBkgBrush* brush(size_t uIdx);
 
-    void setBkg(size_t uItem);
+    void switchBkg(bool bHLayout, bool bNext);
 
-    void addBkg(cwstr strFile);
+    void handleLVClick(size_t uItem);
 
     void deleleBkg(size_t uIdx);
+
+    void addBkg(cwstr strFile);
 };
