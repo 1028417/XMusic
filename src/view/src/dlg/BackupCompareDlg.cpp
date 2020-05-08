@@ -165,12 +165,16 @@ void CCompareResultPage::_fillDeletedMedia()
 
 	m_fnGetPath = [&](UINT uItem) {
 		wstring strPath;
-		if (!m_arrDeletedPlayItem.get(uItem, [&](tagDiffMedia& DeletedPlayItem) {
-			strPath = DeletedPlayItem.strPath;
-		}))
+		if (uItem >= m_arrDeletedPlayItem.size())
 		{
-			m_arrDeletedAlbumItem.get(uItem, [&](tagDiffMedia& DeletedAlbumItem) {
+			m_arrDeletedAlbumItem.get(uItem- m_arrDeletedPlayItem.size(), [&](tagDiffMedia& DeletedAlbumItem) {
 				strPath = DeletedAlbumItem.strSingerDir + DeletedAlbumItem.strPath;
+			});
+		}
+		else
+		{
+			m_arrDeletedPlayItem.get(uItem, [&](tagDiffMedia& DeletedPlayItem) {
+				strPath = DeletedPlayItem.strPath;
 			});
 		}
 		
@@ -255,12 +259,16 @@ void CCompareResultPage::_fillNewMedia()
 
 	m_fnGetPath = [&](UINT uItem) {
 		wstring strPath;
-		if (!m_arrNewPlayItem.get(uItem, [&](tagDiffMedia& NewPlayItem) {
-			strPath = NewPlayItem.strPath;
-		}))
+		if (uItem >= m_arrNewPlayItem.size())
 		{
-			m_arrNewAlbumItem.get(uItem, [&](tagDiffMedia& NewAlbumItem) {
+			m_arrNewAlbumItem.get(uItem-m_arrNewPlayItem.size(), [&](tagDiffMedia& NewAlbumItem) {
 				strPath = NewAlbumItem.strSingerDir + NewAlbumItem.strPath;
+			});
+		}
+		else
+		{
+			m_arrNewPlayItem.get(uItem, [&](tagDiffMedia& NewPlayItem) {
+				strPath = NewPlayItem.strPath;
 			});
 		}
 
