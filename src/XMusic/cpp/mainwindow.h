@@ -128,7 +128,7 @@ public:
     void updateBkg();
 
     void handleTouchMove(const CTouchEvent& te);
-    void handleTouchEnd(const CTouchEvent& teBegin, const CTouchEvent& teEnd);
+    void handleTouchEnd(const CTouchEvent& te);
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 

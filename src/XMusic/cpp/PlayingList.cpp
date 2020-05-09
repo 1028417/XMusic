@@ -204,11 +204,9 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         {
             bFlag = false;
 
-            auto dx = te.x() - m_teBegin.x();
-            auto dy = te.y() - m_teBegin.y();
-            if (abs(dx) > abs(dy))
+            if (abs(te.dx()) > abs(te.dy()))
             {
-                ((MainWindow*)parent())->handleTouchEnd(m_teBegin, te);
+                ((MainWindow*)parent())->handleTouchEnd(te);
             }
 
             return;

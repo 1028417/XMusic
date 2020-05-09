@@ -1336,51 +1336,6 @@ void MainWindow::updateBkg()
     this->repaint();
 }
 
-void MainWindow::handleTouchMove(const CTouchEvent& te)
-{
-    if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
-    {
-        return;
-    }
-
-    mtutil::yield();
-    m_dxbkg -= te.dx();
-    m_dybkg -= te.dy();
-    update();
-}
-
-void MainWindow::handleTouchEnd(const CTouchEvent& teBegin, const CTouchEvent& teEnd)
-{
-    auto dt = teEnd.timestamp() - teBegin.timestamp();
-    if (dt < 300)
-    {
-        auto dx = teEnd.x() - teBegin.x();
-        auto dy = teEnd.y() - teBegin.y();
-        if (abs(dx) > abs(dy))
-        {
-            if (dx > 3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
-            }
-            else if (dx < -3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
-            }
-        }
-        else
-        {
-            if (dy > 3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
-            }
-            else if (dy < -3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
-            }
-        }
-    }
-}
-
 static const QString __qsCheck(QChar(L'√'));
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
@@ -1553,4 +1508,68 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     }
 
     painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
+}
+
+void MainWindow::handleTouchMove(const CTouchEvent& te)
+{
+    if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
+    {
+        return;
+    }
+
+    mtutil::yield();
+    m_dxbkg -= te.dx();
+    m_dybkg -= te.dy();
+    update();
+}
+
+void MainWindow::handleTouchEnd(const CTouchEvent& te)
+{
+    if (te.dt() < 222)
+    {
+        auto dx = te.dx();
+        auto dy = te.dy();
+        if (abs(dx) > abs(dy))
+        {
+            if (dx >= 3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, false);
+            }
+            else if (dx <= -3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, true);
+            }
+        }
+        else
+        {
+            if (dy >= 3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, false);
+            }
+            else if (dy <= -3)
+            {
+                m_bkgDlg.switchBkg(m_bHLayout, true);
+            }
+        }
+    }
+}
+
+void CCentralWidget::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+{
+    static bool bFlag = false;
+    if (E_TouchEventType::TET_TouchBegin == type)
+    {
+        bFlag = ui.labelSingerImg->geometry().contains(te.x(), te.y());
+    }
+    else if (E_TouchEventType::TET_TouchMove == type)
+    {
+        ((MainWindow*)parent())->handleTouchMove(te);
+    }
+    else if (E_TouchEventType::TET_TouchEnd == type)
+    {
+        if (!bFlag)
+        {
+            ((MainWindow*)parent())->handleTouchEnd(te);
+        }
+    }
 }

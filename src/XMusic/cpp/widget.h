@@ -138,6 +138,8 @@ private:
     bool m_bSetForeColor = false;
     QColor m_crFore;
 
+    CTouchEvent m_teBegin;
+
     int m_xTouch = 0;
     int m_yTouch = 0;
 
@@ -146,8 +148,6 @@ private:
     bool m_bMousePress = false;
 
 protected:
-    CTouchEvent m_teBegin;
-
     bool m_bClicking = false;
 
 public:
@@ -374,7 +374,7 @@ private:
 
     void _handleTouchBegin(const CTouchEvent&);
     void _handleTouchEnd(CTouchEvent);
-    void _handleTouchMove(CTouchEvent);
+    void _handleTouchMove(CTouchEvent&);
 
     void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
 

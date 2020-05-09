@@ -148,13 +148,14 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
     {
         if (m_bMousePress)
         {
-            _handleTouchMove(me);
+            CTouchEvent te(me);
+            _handleTouchMove(te);
         }
     }
 }
 
 template <class TParent>
-void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& te)
+void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& ev)
 {
     if (E_TouchEventType::TET_TouchBegin == type)
     {
@@ -162,7 +163,7 @@ void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEven
         {
             m_bTouch = true;
 
-            _handleTouchBegin(te);
+            _handleTouchBegin(ev);
         }
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
@@ -171,13 +172,14 @@ void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEven
         {
             m_bTouch = false;
 
-            _handleTouchEnd(te);
+            _handleTouchEnd(ev);
         }
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
         if (m_bTouch)
         {
+            CTouchEvent te(ev);
             _handleTouchMove(te);
         }
     }
@@ -205,7 +207,7 @@ void TWidget<TParent>::_handleTouchEnd(CTouchEvent te)
 }
 
 template <class TParent>
-void TWidget<TParent>::_handleTouchMove(CTouchEvent te)
+void TWidget<TParent>::_handleTouchMove(CTouchEvent& te)
 {
     int dx = te.x()-m_xTouch;
     int dy = te.y()-m_yTouch;

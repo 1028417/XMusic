@@ -309,13 +309,13 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
-        auto dy = te.y() - m_teBegin.y();
+        auto dy = te.dy();
         if (dy < 3 && dy > -3)
         {
             return;
         }
 
-        auto dt = te.timestamp() - m_teBegin.timestamp();
+        auto dt = te.dt();
         if (dt < 300)
         {
             if (dy > 30 || dy < -30)
