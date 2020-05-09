@@ -40,7 +40,7 @@ size_t CBkgView::getItemCount() const
     }
     else
     {
-        uItemCount += nMod;
+        uItemCount += (uColCount-nMod);
     }
 
     return uItemCount;
@@ -607,19 +607,16 @@ void CBkgDlg::_showAddBkg()
 #if __windows
 /*#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
     |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
-            tagFileDlgOpt FileDlgOpt;
+    tagFileDlgOpt FileDlgOpt;
     FileDlgOpt.strTitle = L"选择背景图";
     FileDlgOpt.strFilter = __MediaFilter;
     FileDlgOpt.hWndOwner = hwnd();
     CFileDlg fileDlg(FileDlgOpt);
-
     wstring strFile = fileDlg.ShowOpenSingle();
     if (!strFile.empty())
     {
         this->addBkg(strFile);
-    }
-
-    return;*/
+    }*/
 
     static CFolderDlg FolderDlg;
     cauto strImgDir = FolderDlg.Show(hwnd(), NULL, L" 添加背景", L"请选择图片目录");
@@ -745,6 +742,12 @@ void CBkgDlg::_onClosed()
     }
 
     m_lv.reset();
+}
+
+wstring CImgDir::displayName() const
+{
+    return path();
+    //return QDir(__WS2Q(path())).absolutePath().toStdWString();
 }
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");

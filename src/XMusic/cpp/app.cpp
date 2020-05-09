@@ -341,7 +341,7 @@ int CApp::run()
             }
             g_logger << "RootDir: " >> option.strRootDir;
 
-            QFile qf(":/medialib.conf");
+            QFile qf(":/mdlconf");
             if (!qf.open(QFile::OpenModeFlag::ReadOnly))
             {
                 g_logger >> "loadMedialibConfResource fail";
@@ -488,7 +488,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
-    cauto strConffile = m_model.medialibPath(L"medialib.conf");
+    cauto strConffile = m_model.medialibPath(L"mdlconf");
     tagMedialibConf userMedialibConf;
     IFStream ifsMedialibConf(strConffile);
     if (ifsMedialibConf)

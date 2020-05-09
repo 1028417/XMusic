@@ -72,11 +72,7 @@ public:
     void scan(cwstr strDir, cfn_void_t<CImgDir&> cb);
 
 private:
-    wstring displayName() const override
-    {
-        QDir dir(__WS2Q(path()));
-        return dir.absolutePath().toStdWString();
-    }
+    wstring displayName() const override;
 
     const cqpm snapshot() const override
     {

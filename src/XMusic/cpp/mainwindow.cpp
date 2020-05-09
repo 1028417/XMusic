@@ -1528,6 +1528,12 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
     update();
 }
 
+#if __isdebug
+#define __fastTouchDt 200
+#else
+#define __fastTouchDt 150
+#endif
+
 void MainWindow::handleTouchEnd(const CTouchEvent& te)
 {
     if (g_crLogoBkg.alpha() > 0)
@@ -1535,7 +1541,7 @@ void MainWindow::handleTouchEnd(const CTouchEvent& te)
         return;
     }
 
-    if (te.dt() < 150)
+    if (te.dt() < __fastTouchDt)
     {
         auto dx = te.dx();
         auto dy = te.dy();

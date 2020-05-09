@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-    <file>medialib.conf</file>
         <file>img/btnPlayNext.png</file>
         <file>img/btnPause.png</file>
         <file>img/btnPlay.png</file>
@@ -42,5 +41,6 @@
         <file>img/medialib/dir.png</file>
         <file>img/medialib/attachdir.png</file>
         <file>img/medialib/file.png</file>
+        <file>mdlconf</file>
     </qresource>
 </RCC>
