@@ -105,6 +105,11 @@ private slots:
     void slot_labelClick(CLabel*, const QPoint&);
 
 public:
+    const tagPlayingInfo& playingInfo() const
+    {
+        return m_PlayingInfo;
+    }
+
 #if __windows
     HWND hwnd() const
     {
@@ -132,10 +137,7 @@ public:
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 
-    const tagPlayingInfo& playingInfo() const
-    {
-        return m_PlayingInfo;
-    }
+    void playSingerImg(bool bReset);
 
 private:
     void _init();
@@ -156,8 +158,6 @@ private:
     void _updateProgress();
 
     WString _genAlbumName();
-
-    void _playSingerImg(bool bReset);
 
     void _demand(CButton* btnDemand);
 

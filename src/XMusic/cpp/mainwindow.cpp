@@ -354,7 +354,7 @@ void MainWindow::show()
     ui.btnFullScreen->setVisible(false);
 
     ui.centralWidget->setVisible(true);
-    _relayout();
+    //_relayout();
 
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
     CApp::async(100, [&](){
@@ -465,7 +465,7 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Timer:
         _updateProgress();
 
-        _playSingerImg(false);
+        playSingerImg(false);
 
         break;
     default:
@@ -1124,7 +1124,7 @@ void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVari
     else if (m_PlayingInfo.strSingerName != strPrevSinger)
     {
         ui.labelSingerImg->clear();
-        _playSingerImg(true);
+        playSingerImg(true);
     }
 
     _relayout();
@@ -1205,7 +1205,7 @@ WString MainWindow::_genAlbumName()
 
 #define ___singerImgElapse 8
 
-void MainWindow::_playSingerImg(bool bReset)
+void MainWindow::playSingerImg(bool bReset)
 {
     if (m_PlayingInfo.strSingerName.empty())
     {
@@ -1251,7 +1251,7 @@ void MainWindow::_playSingerImg(bool bReset)
     {
         if (uSingerImgIdx > 1)
         {
-            _playSingerImg(true);
+            playSingerImg(true);
         }
     }
 }
@@ -1517,6 +1517,11 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
         return;
     }
 
+    if (g_crLogoBkg.alpha() > 0)
+    {
+        return;
+    }
+
     mtutil::yield();
     m_dxbkg -= te.dx();
     m_dybkg -= te.dy();
@@ -1525,7 +1530,12 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
 
 void MainWindow::handleTouchEnd(const CTouchEvent& te)
 {
-    if (te.dt() < 222)
+    if (g_crLogoBkg.alpha() > 0)
+    {
+        return;
+    }
+
+    if (te.dt() < 150)
     {
         auto dx = te.dx();
         auto dy = te.dy();
@@ -1559,7 +1569,7 @@ void CCentralWidget::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     static bool bFlag = false;
     if (E_TouchEventType::TET_TouchBegin == type)
     {
-        bFlag = ui.labelSingerImg->geometry().contains(te.x(), te.y());
+        bFlag = !ui.labelSingerImg->pixmap().isNull() && ui.labelSingerImg->geometry().contains(te.x(), te.y());
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
