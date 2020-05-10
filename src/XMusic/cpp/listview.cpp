@@ -337,11 +337,11 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
             if (dy > 0)
             {
-                dy = rowHeight()/70;
+                dy = 3+rowHeight()/100;
             }
             else
             {
-                dy = -(int)rowHeight()/70;
+                dy = -3-(int)rowHeight()/100;
             }
         }
 

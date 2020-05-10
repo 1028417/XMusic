@@ -746,8 +746,22 @@ void CBkgDlg::_onClosed()
 
 wstring CImgDir::displayName() const
 {
+#if __windows
     return path();
-    //return QDir(__WS2Q(path())).absolutePath().toStdWString();
+
+#elif __android
+    if (m_fi.pParent)
+    {
+        return (m_fi.pParent->parent() ? m_fi.pParent->path() : L"内部存储/") + L'/' + m_fi.strName;
+    }
+    else
+    {
+        return L"内部存储";
+    }
+
+#else
+    return QDir(__WS2Q(path())).absolutePath().toStdWString();
+#endif
 }
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
