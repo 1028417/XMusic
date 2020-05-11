@@ -93,6 +93,8 @@ public:
 	{
 	}
 
+	static void scanDir(const bool& bRunSignal, CPath& dir, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb);
+	
 private:
 	enum class E_FindFileStatus
 	{
@@ -116,11 +118,8 @@ private:
 		return new XFile(fileInfo);
 	}
 
-	using CB_PathScan = function<bool(CPath& dir, TD_XFileList& paSubFile)>;
-	bool _scan(const CB_PathScan& cb);
-
 protected:
-        virtual void _onClear() {}
+    virtual void _onClear() {}
 
 	void _findFile();
 
@@ -156,7 +155,7 @@ public:
 		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
 	}
 
-	void scan(const CB_PathScan& cb);
+    //void scan(const CB_PathScan& cb);
 
 	const TD_PathList& dirs()
 	{

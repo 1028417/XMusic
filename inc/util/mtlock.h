@@ -102,6 +102,11 @@ private:
     }
 
 public:
+	operator const T&() const
+	{
+		return m_value;
+	}
+
     const T& value() const
     {
         return m_value;
@@ -136,6 +141,16 @@ public:
     }
 
 public:
+	bool operator !() const
+	{
+		return !m_value;
+	}
+
+	operator const bool&() const
+	{
+		return m_value;
+	}
+
     const bool& value() const
     {
         return m_value;

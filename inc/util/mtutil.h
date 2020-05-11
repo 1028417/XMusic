@@ -111,13 +111,18 @@ private:
 
     volatile bool m_bPause = false;
 
-    bool m_bCancelEvent = false;
+    bool m_bRunSignal = false;
 
 public:
+    const bool& runSignal() const
+	{
+		return m_bRunSignal;
+	}
+
     using CB_WorkThread = function<void(UINT uThreadIndex)>;
     void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
 
-    bool checkCancel();
+    bool checkStatus();
 
 protected:
     void pause(bool bPause = true);
@@ -187,8 +192,8 @@ public:
 
 
 #include "mtlock.h"
-
-using CB_XThread = function<void(const bool& bRunSignal)>;
+using XT_RunSignal = const bool&;
+using CB_XThread = function<void(XT_RunSignal bRunSignal)>;
 
 class __UtilExt XThread
 {
@@ -210,7 +215,7 @@ private:
     thread m_thread;
 
 private:
-    virtual void _onStart(const bool& bRunSignal)
+    virtual void _onStart(XT_RunSignal bRunSignal)
     {
         (void)bRunSignal;
     }
@@ -250,9 +255,9 @@ public:
 		});
 	}
 
-    const bool& runSignal() const
+    const CSignal& runSignal() const
     {
-        return m_sgnRuning.value();
+        return m_sgnRuning;
     }
 
 	bool usleepex(UINT uMs)
