@@ -104,6 +104,7 @@ private:
 	};
 	E_FindFileStatus m_eFindFileStatus = E_FindFileStatus::FFS_None;
 
+protected:
 	TD_PathList m_paSubDir;
 	TD_XFileList m_paSubFile;
 

@@ -102,16 +102,6 @@ private:
     }
 
 public:
-	operator const T&() const
-	{
-		return m_value;
-	}
-
-    const T& value() const
-    {
-        return m_value;
-    }
-
     void wait(CB_CheckSignal cbCheck)
     {
         (void)_wait(cbCheck);
