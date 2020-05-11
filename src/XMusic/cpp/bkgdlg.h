@@ -67,7 +67,7 @@ public:
 private:
     XT_RunSignal m_bRunSignal;
 
-    UINT m_uNextPos = 0;
+    UINT m_uPos = 0;
 
     QPixmap m_pmSnapshot;
 
@@ -78,7 +78,7 @@ public:
 
     void clear()
     {
-        m_uNextPos = 0;
+        m_uPos = 0;
         m_pmSnapshot = QPixmap();
         m_vecImgs.clear();
 

@@ -856,11 +856,9 @@ inline static bool _loadSubImg(XFile& subFile, QPixmap& pm)
 
 bool CImgDir::loadSnapshot(TD_XFileList& paSubFile)
 {
-    m_uNextPos = 0;
+    m_uPos = 0;
     for (auto pSubFile : paSubFile)
     {
-        m_uNextPos++;
-
         mtutil::usleep(1);
         if (_loadSubImg(*pSubFile, m_pmSnapshot))
         {
@@ -873,6 +871,7 @@ bool CImgDir::loadSnapshot(TD_XFileList& paSubFile)
         }
 
         m_pmSnapshot = QPixmap();
+        m_uPos++;
     }
 
     return false;
@@ -902,7 +901,7 @@ wstring CImgDir::imgPath(UINT uIdx) const
 
 bool CImgDir::genSubImgs()
 {
-    return files().get(m_uNextPos, [&](XFile& file){
+    return files().get(m_uPos, [&](XFile& file){
         QPixmap pm;
         if (_loadSubImg(file, pm))
         {
@@ -929,7 +928,7 @@ bool CImgDir::genSubImgs()
             m_vecImgs.emplace_back(pm, file.path());
         }
 
-        m_uNextPos++;
+        m_uPos++;
     });
 }
 
