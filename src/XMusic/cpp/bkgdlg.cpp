@@ -607,7 +607,7 @@ void CBkgDlg::_showAddBkg()
 {
     cauto fnScan = [&](){
         cauto bRunSignal = m_thread.runSignal();
-        CPath::scanDir(bRunSignal, m_rootImgDir, [&](CPath& dir, TD_XFileList& paSubFile){
+        CPath::scanDir(bRunSignal, m_rootImgDir, [&](CPath& dir, TD_XFileList&){
             if (!m_addbkgDlg.isInRoot())
             {
                 mtutil::usleep(300);
@@ -617,18 +617,7 @@ void CBkgDlg::_showAddBkg()
                 }
             }
 
-            auto& imgDir = (CImgDir&)dir;
-            if (!imgDir.loadSnapshot(paSubFile))
-            {
-                return;
-            }
-
-            if (!bRunSignal)
-            {
-                return;
-            }
-
-            _addImgDir(imgDir);
+            _addImgDir((CImgDir&)dir);
         });
     };
 
@@ -819,25 +808,9 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
-XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
-{
-    if (!m_bRunSignal)
-    {
-        return NULL;
-    }
-
-    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
-    if (g_setImgExtName.includes(strExtName))
-    {
-        return new XFile(fileInfo);
-    }
-
-    return NULL;
-}
-
 #define __szSubIngFilter 640
 
-inline static bool _loadSubImg(XFile& subFile, QPixmap& pm)
+inline static bool _loadSubImg(const XFile& subFile, QPixmap& pm)
 {
     if (!pm.load(__WS2Q(subFile.path())))
     {
@@ -854,27 +827,35 @@ inline static bool _loadSubImg(XFile& subFile, QPixmap& pm)
 
 #define __szSnapshot 160
 
-bool CImgDir::loadSnapshot(TD_XFileList& paSubFile)
+XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
-    m_uPos = 0;
-    for (auto pSubFile : paSubFile)
+    if (!m_bRunSignal)
     {
-        mtutil::usleep(1);
-        if (_loadSubImg(*pSubFile, m_pmSnapshot))
-        {
-            auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
-                    ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
-                    : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
-            m_pmSnapshot.swap(temp);
-
-            return true;
-        }
-
-        m_pmSnapshot = QPixmap();
-        m_uPos++;
+        return NULL;
     }
 
-    return false;
+    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    if (!g_setImgExtName.includes(strExtName))
+    {
+        return NULL;
+    }
+
+    if (m_paSubFile.empty())
+    {
+        mtutil::usleep(1);
+        if (!_loadSubImg(XFile(fileInfo), m_pmSnapshot))
+        {
+            m_pmSnapshot = QPixmap();
+            return NULL;
+        }
+
+        auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
+                ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+                : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+        m_pmSnapshot.swap(temp);
+    }
+
+    return new XFile(fileInfo);
 }
 
 const QPixmap* CImgDir::img(UINT uIdx) const

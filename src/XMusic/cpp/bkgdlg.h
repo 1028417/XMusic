@@ -74,8 +74,6 @@ private:
     vector<tagBkgImg> m_vecImgs;
 
 public:
-    bool loadSnapshot(TD_XFileList& paSubFile);
-
     void clear()
     {
         m_uPos = 0;
