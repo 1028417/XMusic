@@ -147,7 +147,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		auto cbProgress = [&](cwstr strDir) {
 			ProgressDlg.SetStatusText(strDir.c_str());
 			
-			return !ProgressDlg.checkCancel();
+			return ProgressDlg.checkStatus();
 		};
 
 		auto cbConfirm = [&](CMatchMediaInfo& MatchMediaInfo, CMediaResInfo& MediaResInfo)

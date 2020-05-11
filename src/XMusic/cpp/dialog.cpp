@@ -88,7 +88,8 @@ void CDialog::show(cfn_void cbClose)
 
 void CDialog::show(QWidget& parent, cfn_void cbClose)
 {
-    setParent(&parent, Qt::Dialog | Qt::FramelessWindowHint);
+    auto flags = windowFlags() | Qt::Dialog;
+    setParent(&parent, flags);
 
     _show(cbClose);
 }

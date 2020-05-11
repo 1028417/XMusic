@@ -242,7 +242,7 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 
 	auto fnCheck = [&](CProgressDlg& ProgressDlg) {
 		auto cb = [&](CMedia& media) {
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}

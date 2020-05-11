@@ -46,6 +46,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     size_t uRowCount = getRowCount();
     m_uRowHeight = cy/uRowCount;
     m_uRowHeight = MAX(1, m_uRowHeight);
+    cy -= cy%uRowCount;
 
     size_t uItemCount = getItemCount();
     m_uTotalRows = uItemCount/uColCount;
@@ -70,6 +71,7 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
 
     UINT cx_col = cx/uColCount;
     cx_col = MAX(1, cx_col);
+    int x0 = (cx%uColCount)/2;
 
     UINT xMargin = 0;
     if (E_LVScrollBar::LVSB_None != m_eScrollBar)
@@ -82,10 +84,10 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
         painter.setFont(this->font());
         painter.setPen(g_crFore);
 
-        for (UINT uCol = 0; uCol < uColCount; uCol++)
+        int x = x0;
+        for (UINT uCol = 0; uCol < uColCount; uCol++, x += cx_col)
         {
             tagLVItem lvItem(uRow, uCol, uRow*uColCount+uCol);
-            int x = uCol*cx_col;
             lvItem.rc.setRect(x + xMargin, y, cx_col - xMargin*2, m_uRowHeight);
 
             if ((int)lvItem.uItem == m_nSelectItem)

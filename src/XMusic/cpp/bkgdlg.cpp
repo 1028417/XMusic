@@ -206,9 +206,10 @@ inline UINT CBkgView::margin()
 
 CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
-    m_colorDlg(*this, app),
+    m_lv(*this, app),
+    m_rootImgDir(m_thread.runSignal()),
     m_addbkgDlg(*this, m_paImgDirs),
-    m_lv(*this, app)
+    m_colorDlg(*this, app)
 {
 }
 
@@ -604,6 +605,33 @@ void CBkgDlg::handleLVClick(size_t uItem)
 
 void CBkgDlg::_showAddBkg()
 {
+    cauto fnScan = [&](){
+        cauto bRunSignal = m_thread.runSignal();
+        CPath::scanDir(bRunSignal, m_rootImgDir, [&](CPath& dir, TD_XFileList& paSubFile){
+            if (!m_addbkgDlg.isInRoot())
+            {
+                mtutil::usleep(300);
+                if (!bRunSignal)
+                {
+                    return;
+                }
+            }
+
+            auto& imgDir = (CImgDir&)dir;
+            if (!imgDir.loadSnapshot(paSubFile))
+            {
+                return;
+            }
+
+            if (!bRunSignal)
+            {
+                return;
+            }
+
+            _addImgDir(imgDir);
+        });
+    };
+
 #if __windows
 /*#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
     |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
@@ -625,21 +653,29 @@ void CBkgDlg::_showAddBkg()
         return;
     }
 
-    m_rootImgDir.scan(strImgDir, [&](CImgDir& imgDir) {
-        _addImgDir(imgDir);
-    });
+    m_rootImgDir.setDir(strImgDir);
+    m_thread.start([&](){
+        fnScan();
 
-    m_addbkgDlg.show([&](){
+        m_thread.usleepex(-1);
+
         m_rootImgDir.clear();
         m_paImgDirs.clear();
     });
+
+    m_addbkgDlg.show([&](){
+        m_thread.cancel(false);
+        m_thread.detach();
+    });
 #else
 
-    cauto strImgDir = __medialib.path() + L"/..";
-
-    m_rootImgDir.scan(strImgDir, [&](CImgDir& imgDir) {
-        _addImgDir(imgDir);
-    });
+    if (!m_thread.joinable())
+    {
+        m_rootImgDir.setDir(__medialib.path() + L"/..");
+        m_thread.start([&](){
+            fnScan();
+        });
+    }
 
     m_addbkgDlg.show();
 #endif
@@ -752,11 +788,18 @@ wstring CImgDir::displayName() const
 #elif __android
     if (m_fi.pParent)
     {
-        return (m_fi.pParent->parent() ? m_fi.pParent->path() : L"内部存储/") + L'/' + m_fi.strName;
+        if (m_fi.pParent->parent())
+        {
+            return ((CImgDir*)m_fi.pParent)->displayName() + L'/' + m_fi.strName;
+        }
+        else
+        {
+            return L'/' + m_fi.strName;
+        }
     }
     else
     {
-        return L"内部存储";
+        return L"根目录";
     }
 
 #else
@@ -766,8 +809,23 @@ wstring CImgDir::displayName() const
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
 
+CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
+{
+    if (!m_bRunSignal)
+    {
+        return NULL;
+    }
+
+    return new CImgDir(m_bRunSignal, fileInfo);
+}
+
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
+    if (!m_bRunSignal)
+    {
+        return NULL;
+    }
+
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (g_setImgExtName.includes(strExtName))
     {
@@ -794,57 +852,26 @@ inline static bool _loadSubImg(XFile& subFile, QPixmap& pm)
     return true;
 }
 
-void CImgDir::scan(cwstr strDir, cfn_void_t<CImgDir&> cb)
-{
-    if (m_thread.joinable())
-    {
-        return;
-    }
-
-    CPath::setDir(strDir);
-
-    m_thread.start([&, cb](const bool& bRunSignal){
-        CPath::scan([&, cb](CPath& dir, TD_XFileList& paSubFile) {
-            if (paSubFile)
-            {
-                auto& imgDir = (CImgDir&)dir;
-                if (imgDir._genSnapshot(paSubFile))
-                {
-                    if (bRunSignal)
-                    {
-                        cb(imgDir);
-                    }
-                }
-            }
-
-            return bRunSignal;
-        });
-    });
-}
-
-void CImgDir::_onClear()
-{
-    m_thread.cancel();
-
-    m_vecImgs.clear();
-}
-
 #define __szSnapshot 160
 
-bool CImgDir::_genSnapshot(TD_XFileList& paSubFile)
+bool CImgDir::loadSnapshot(TD_XFileList& paSubFile)
 {
-    for (m_itrSubFile = paSubFile.begin(); m_itrSubFile != paSubFile.end(); ++m_itrSubFile)
+    m_uNextPos = 0;
+    for (auto pSubFile : paSubFile)
     {
-        if (_loadSubImg(**m_itrSubFile, m_pmSnapshot))
+        m_uNextPos++;
+
+        mtutil::usleep(1);
+        if (_loadSubImg(*pSubFile, m_pmSnapshot))
         {
             auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
                     ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
                     : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
             m_pmSnapshot.swap(temp);
 
-            //m_vecSubImgs.reserve(paSubFile.size());
             return true;
         }
+
         m_pmSnapshot = QPixmap();
     }
 
@@ -875,43 +902,35 @@ wstring CImgDir::imgPath(UINT uIdx) const
 
 bool CImgDir::genSubImgs()
 {
-    cauto files = CPath::files();
-    if (files.end() == m_itrSubFile)
-    {
-        return false;
-    }
-
-    auto pSubFile = *m_itrSubFile;
-
-    QPixmap pm;
-    if (_loadSubImg(*pSubFile, pm))
-    {
-        int szZoomout = g_szScreenMax*0.9f;
-        auto count = m_vecImgs.size();
-        if (count >= 4)
+    return files().get(m_uNextPos, [&](XFile& file){
+        QPixmap pm;
+        if (_loadSubImg(file, pm))
         {
-            szZoomout /= 3;
-
-            if (4 == count)
+            int szZoomout = g_szScreenMax*0.9f;
+            auto count = m_vecImgs.size();
+            if (count >= 4)
             {
-                for (auto& bkgImg : m_vecImgs)
+                szZoomout /= 3;
+
+                if (4 == count)
                 {
-                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                    for (auto& bkgImg : m_vecImgs)
+                    {
+                        zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                    }
                 }
             }
+            else
+            {
+                szZoomout /= 2;
+            }
+
+            zoomoutPixmap(pm, szZoomout, szZoomout);
+            m_vecImgs.emplace_back(pm, file.path());
         }
-        else
-        {
-            szZoomout /= 2;
-        }
 
-        zoomoutPixmap(pm, szZoomout, szZoomout);
-        m_vecImgs.emplace_back(pm, pSubFile->path());
-    }
-
-    ++m_itrSubFile;
-
-    return true;
+        m_uNextPos++;
+    });
 }
 
 /*class CResImgDir : public CPath, public IImgDir

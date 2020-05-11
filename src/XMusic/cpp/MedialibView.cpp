@@ -64,7 +64,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
-        m_thrAsyncTask.start([&](const bool& bRunSignal){
+        m_thrAsyncTask.start([&](XT_RunSignal bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
                 ((CPlayItem&)playItem).findRelatedMedia(E_MediaSetType::MST_Album);
 

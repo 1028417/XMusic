@@ -53,23 +53,37 @@ struct tagBkgImg
 class CImgDir : public CPath, public IImgDir
 {
 public:
-    CImgDir() = default;
+    CImgDir(XT_RunSignal bRunSignal)
+        : m_bRunSignal(bRunSignal)
+    {
+    }
 
-    CImgDir(const tagFileInfo& fileInfo) : CPath(fileInfo)
+    CImgDir(XT_RunSignal bRunSignal, const tagFileInfo& fileInfo)
+        : CPath(fileInfo)
+        , m_bRunSignal(bRunSignal)
     {
     }
 
 private:
-    XThread m_thread;
+    XT_RunSignal m_bRunSignal;
 
-    decltype(declval<TD_XFileList>().begin()) m_itrSubFile;
+    UINT m_uNextPos = 0;
 
     QPixmap m_pmSnapshot;
 
     vector<tagBkgImg> m_vecImgs;
 
 public:
-    void scan(cwstr strDir, cfn_void_t<CImgDir&> cb);
+    bool loadSnapshot(TD_XFileList& paSubFile);
+
+    void clear()
+    {
+        m_uNextPos = 0;
+        m_pmSnapshot = QPixmap();
+        m_vecImgs.clear();
+
+        CPath::clear();
+    }
 
 private:
     wstring displayName() const override;
@@ -90,17 +104,9 @@ private:
 
     bool genSubImgs() override;
 
-private:
-    void _onClear() override;
-
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override
-    {
-        return new CImgDir(fileInfo);
-    }
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
-
-    bool _genSnapshot(TD_XFileList& paSubFile);
 };
 
 class CBkgBrush : public QBrush
@@ -144,12 +150,6 @@ public:
 private:
     class CApp& m_app;
 
-    CColorDlg m_colorDlg;
-
-    TD_ImgDirList m_paImgDirs;
-
-    CAddBkgDlg m_addbkgDlg;
-
     CBkgView m_lv;
 
     wstring m_strHBkgDir;
@@ -163,7 +163,13 @@ private:
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
+    XThread m_thread;
     CImgDir m_rootImgDir;
+
+    TD_ImgDirList m_paImgDirs;
+    CAddBkgDlg m_addbkgDlg;
+
+    CColorDlg m_colorDlg;
 
 signals:
     void signal_founddir(void* pDir);

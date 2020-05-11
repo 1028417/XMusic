@@ -98,4 +98,9 @@ public:
     {
         _relayout(width(), height());
     }
+
+    bool isInRoot() const
+    {
+        return m_lv.isInRoot();
+    }
 };

@@ -194,7 +194,7 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
-    timerutil::setTimerEx(100, [=](){
+    timerutil::setTimerEx(50, [=](){
         if (NULL == m_pImgDir)
         {
             return false;

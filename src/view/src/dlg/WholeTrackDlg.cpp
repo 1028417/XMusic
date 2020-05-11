@@ -46,16 +46,9 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);
 
-	m_thread.start([&](const bool& bRunSignal) {
+	m_thread.start([&](XT_RunSignal bRunSignal) {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
-
-		__medialib.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-			mtutil::usleep(1);
-			if (!bRunSignal)
-			{
-				return false;
-			}
-
+		CPath::scanDir(bRunSignal, __medialib, [&](CPath& dir, TD_XFileList& paSubFile) {
 			CMediaDir& subDir = (CMediaDir&)dir;
 
 			map<LPCCueFile, CMediaRes*> mapCueFile;
@@ -82,7 +75,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 			{
 				if (!bRunSignal)
 				{
-					return false;
+					return;
 				}
 
 				CMediaRes *pMediaRes = NULL;
@@ -96,8 +89,6 @@ BOOL CWholeTrackDlg::OnInitDialog()
 					showCueInfo(subDir.GetPath(), cueFile, pMediaRes);
 				});
 			}
-
-			return true;
 		});
 
 		if (!bRunSignal)

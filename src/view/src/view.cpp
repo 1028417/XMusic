@@ -210,7 +210,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 				}
 			});
 
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
@@ -218,7 +218,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			return true;
 		});
 
-		if (ProgressDlg.checkCancel())
+		if (!ProgressDlg.checkStatus())
 		{
 			return;
 		}
@@ -368,7 +368,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	for (auto& strFile : lstFiles)
 	{
 		ProgressDlg.SetStatusText((L"比对文件: " + strFile).c_str(), 1);
-		if (ProgressDlg.checkCancel())
+		if (!ProgressDlg.checkStatus())
 		{
 			return;
 		}
@@ -415,7 +415,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		cauto strSrcPath = pr.first;
 		cauto strSrcFileName = fsutil::GetFileName(strSrcPath);
 		ProgressDlg.SetStatusText((L"合入文件: " + strSrcFileName).c_str(), 1);
-		if (ProgressDlg.checkCancel())
+		if (!ProgressDlg.checkStatus())
 		{
 			return;
 		}
@@ -498,7 +498,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle
 				ProgressDlg.ForwardProgress(uProgressOffset);
 			}
 
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
@@ -628,33 +628,27 @@ void __view::exportDir(CMediaDir& dir)
 
 	_exportMedia(m_MainWnd, L"导出目录", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
-
-		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-			if (ProgressDlg.checkCancel())
+		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
+			if (!ProgressDlg.checkStatus())
 			{
-				return false;
+				return;
 			}
 
-			if (paSubFile)
+			uCount += paSubFile.size();
+
+			tagExportMedia ExportMedia;
+			ExportMedia.strDstDir = ExportOption.strExportPath;
+			if (ExportOption.bActualMode)
 			{
-				uCount += paSubFile.size();
-
-				tagExportMedia ExportMedia;
-				ExportMedia.strDstDir = ExportOption.strExportPath;
-				if (ExportOption.bActualMode)
-				{
-					ExportMedia.strDstDir.append(((CMediaRes&)dir).GetPath());
-				}
-				ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
-				ExportOption.lstExportMedias.push_back(ExportMedia);
-
-				for (cauto cueFile : ((CMediaDir&)dir).cuelist().cues())
-				{
-					ExportMedia.lstCueFiles.push_back(cueFile.filePath());
-				}
+				ExportMedia.strDstDir.append(((CMediaRes&)dir).GetPath());
 			}
+			ExportMedia.paMedias.add(TD_MediaResList(paSubFile));
+			ExportOption.lstExportMedias.push_back(ExportMedia);
 
-			return true;
+			for (cauto cueFile : ((CMediaDir&)dir).cuelist().cues())
+			{
+				ExportMedia.lstCueFiles.push_back(cueFile.filePath());
+			}
 		});
 
 		return uCount;
@@ -700,7 +694,7 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 
 		function<bool(CPath&, JValue&)> fnSnapshot;
 		fnSnapshot = [&](CPath& dir, JValue& jRoot) {
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
@@ -811,20 +805,15 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes1;
-		dir1.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-			if (ProgressDlg.checkCancel())
+		CPath::scanDir(ProgressDlg.runSignal(), dir1, [&](CPath& dir, TD_XFileList& paSubFile) {
+			if (!ProgressDlg.checkStatus())
 			{
-				return false;
+				return;
 			}
 
-			if (paSubFile)
-			{
-				lstMediaRes1.add(paSubFile);
+			lstMediaRes1.add(paSubFile);
 
-				ProgressDlg.SetProgress(0, lstMediaRes1.size());
-			}
-
-			return true;
+			ProgressDlg.SetProgress(0, lstMediaRes1.size());
 		});
 
 		if (!lstMediaRes1)
@@ -838,20 +827,15 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 		UINT uProgress = lstMediaRes1.size();
 
 		TD_MediaResList lstMediaRes2;
-		dir2.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-			if (ProgressDlg.checkCancel())
+		CPath::scanDir(ProgressDlg.runSignal(), dir2, [&](CPath& dir, TD_XFileList& paSubFile) {
+			if (!ProgressDlg.checkStatus())
 			{
-				return false;
+				return;
 			}
-
-			if (paSubFile)
-			{
-				lstMediaRes2.add(paSubFile);
-
-				ProgressDlg.SetProgress(0, uProgress + lstMediaRes2.size());
-			}
-
-			return true;
+			
+			lstMediaRes2.add(paSubFile);
+			
+			ProgressDlg.SetProgress(0, uProgress + lstMediaRes2.size());
 		});
 
 		if (!lstMediaRes2)
@@ -863,7 +847,7 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 		}
 
 		m_model.checkSimilarFile(lstMediaRes1, lstMediaRes2, [&](CMediaRes& MediaRes) {
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
@@ -879,20 +863,15 @@ void __view::checkSimilarFile(CMediaDir& dir)
 {
 	_checkSimilarFile([&](CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult) {
 		TD_MediaResList lstMediaRes;
-		dir.scan([&](CPath& dir, TD_XFileList& paSubFile) {
-			if (ProgressDlg.checkCancel())
+		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
+			if (!ProgressDlg.checkStatus())
 			{
-				return false;
+				return;
 			}
+			
+			lstMediaRes.add(paSubFile);
 
-			if (paSubFile)
-			{
-				lstMediaRes.add(paSubFile);
-
-				ProgressDlg.SetProgress(0, lstMediaRes.size());
-			}
-
-			return true;
+			ProgressDlg.SetProgress(0, lstMediaRes.size());
 		});
 
 		if (!lstMediaRes)
@@ -904,7 +883,7 @@ void __view::checkSimilarFile(CMediaDir& dir)
 		}
 
 		m_model.checkSimilarFile(lstMediaRes, [&](CMediaRes& MediaRes) {
-			if (ProgressDlg.checkCancel())
+			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
