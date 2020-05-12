@@ -20,7 +20,7 @@ private:
 public:
 	void ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive = true);
 
-	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
+	void UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged);
 
 	void UpdateTitle();
 

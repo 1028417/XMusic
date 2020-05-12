@@ -270,13 +270,13 @@ void CPlayItemPage::UpdateHead()
 	m_wndList.UpdateColumn(0);
 }*/
 
-void CPlayItemPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
+void CPlayItemPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged)
 {
 	__Ensure(m_pPlaylist);
 
 	m_pPlaylist->playItems()([&](cauto t_PlayItem, size_t uIdx){
 		auto& PlayItem = (CPlayItem&)t_PlayItem;
-		if (PlayItem.UpdateRelatedMediaSet(MediaSetChanged))
+		if (PlayItem.UpdateRelatedMediaSet(eMediaSetType, MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &PlayItem);
 		}
@@ -354,7 +354,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_HITTEST:
 		lstPlayItems.front([&](CMedia& media) {
-			if (!m_view.hittestRelatedMediaSet(media, E_MediaSetType::MST_Singer))
+			if (!m_view.hittestRelatedMediaSet(media, E_RelatedMediaSet::RMS_Singer))
 			{
 				m_view.m_MediaResPage.HittestMedia(media, *this);
 			}
@@ -485,9 +485,9 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (__Column_SingerAlbum == iSubItem)
 			{
-				if (!m_view.hittestRelatedMediaSet(*pPlayItem, E_MediaSetType::MST_Album))
+				if (!m_view.hittestRelatedMediaSet(*pPlayItem, E_RelatedMediaSet::RMS_Album))
 				{
-					(void)m_view.hittestRelatedMediaSet(*pPlayItem, E_MediaSetType::MST_Singer);
+					(void)m_view.hittestRelatedMediaSet(*pPlayItem, E_RelatedMediaSet::RMS_Singer);
 				}
 			}
 			else

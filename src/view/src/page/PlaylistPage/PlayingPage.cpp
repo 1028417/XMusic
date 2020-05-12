@@ -77,7 +77,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_HITTEST:
 		arrSelPlayItem.front([&](auto& playItem) {
-			if (!m_view.hittestRelatedMediaSet(playItem, E_MediaSetType::MST_Singer))
+			if (!m_view.hittestRelatedMediaSet(playItem, E_RelatedMediaSet::RMS_Singer))
 			{
 				m_view.m_MediaResPage.HittestMedia(playItem, *this);
 			}

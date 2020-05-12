@@ -897,16 +897,34 @@ void __view::checkSimilarFile(CMediaDir& dir)
 
 void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
 {
-	m_MediaResPage.UpdateRelated(MediaSetChanged);
+	E_RelatedMediaSet eRmsType;
+	if (E_MediaSetType::MST_Playlist == MediaSetChanged.eMediaSetType)
+	{
+		eRmsType = E_RelatedMediaSet::RMS::Playlist;
+	}
+	else if (E_MediaSetType::MST_Album == MediaSetChanged.eMediaSetType)
+	{
+		eRmsType = E_RelatedMediaSet::RMS::Album;
+	}
+	else if (E_MediaSetType::MST_Singer == MediaSetChanged.eMediaSetType)
+	{
+		eRmsType = E_RelatedMediaSet::RMS_Singer;
+	}
+	else
+	{
+		return;
+	}
+
+	m_MediaResPage.UpdateRelated(eRmsType, MediaSetChanged);
 
 	if (m_PlayItemPage)
 	{
-		m_PlayItemPage.UpdateRelated(MediaSetChanged);
+		m_PlayItemPage.UpdateRelated(eRmsType, MediaSetChanged);
 	}
 
 	if (m_AlbumPage)
 	{
-		m_AlbumPage.UpdateRelated(MediaSetChanged);
+		m_AlbumPage.UpdateRelated(eRmsType, MediaSetChanged);
 	}
 
 	m_PlayingPage.RefreshList();
@@ -953,14 +971,14 @@ void __view::hittestMedia(CMedia& media)
 	}
 }
 
-bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
+bool __view::hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType)
 {
 	__waitCursor;
 
-	int nRelatedMediaID = media.GetRelatedMediaID(eMediaSetType);
+	int nRelatedMediaID = media.GetRelatedMediaID(eRmsType);
 	if (nRelatedMediaID > 0)
 	{
-		CMedia *pRelatedMedia = __xmedialib.FindMedia(eMediaSetType, (UINT)nRelatedMediaID);
+		CMedia *pRelatedMedia = __xmedialib.FindMedia((E_MediaSetType)eRmsType, (UINT)nRelatedMediaID);
 		if (pRelatedMedia)
 		{
 			hittestMedia(*pRelatedMedia);
@@ -968,10 +986,10 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType)
 		}
 	}
 
-	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eMediaSetType);
+	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eRmsType);
 	if (uRelatedMediaSetID > 0)
 	{
-		CMediaSet *pMediaSet = __xmedialib.FindSubSet(eMediaSetType, uRelatedMediaSetID);
+		CMediaSet *pMediaSet = __xmedialib.FindSubSet((E_MediaSetType)eRmsType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
 		this->hittestMediaSet(*pMediaSet, NULL, &media);
@@ -987,7 +1005,7 @@ bool __view::addSingerImage(CSinger& Singer, const list<wstring>& lstFiles)
 	__EnsureReturn(m_ImgMgr.addSingerImg(Singer.m_uID, Singer.m_strName, lstFiles), false);
 
 	tagMediaSetChanged MediaSetChanged(E_MediaSetType::MST_Singer, Singer.m_uID, E_MediaSetChanged::MSC_SingerImgChanged);
-	MediaSetChanged.uSingerImgPos = m_ImgMgr.getSingerImgPos(Singer.m_uID);
+	//MediaSetChanged.uSingerImgPos = m_ImgMgr.getSingerImgPos(Singer.m_uID);
 	updateMediaRelated(MediaSetChanged);
 
 	return true;

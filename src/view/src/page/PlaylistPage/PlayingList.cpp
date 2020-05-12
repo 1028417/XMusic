@@ -165,12 +165,12 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 	}
 	else
 	{
-		cauto strAlbumName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Album);
+		cauto strAlbumName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 
 		iImage = PlayItem.getSingerImg();
 		if (iImage < 0)
 		{
-			wstring strSingerName = PlayItem.GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+			wstring strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
 			if (!strSingerName.empty())
 			{
 				if (!strAlbumName.empty())
@@ -538,17 +538,17 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 	switch (eLinkType)
 	{
 	case E_ItemLinkType::ILT_SingerImg:
-		(void)m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Singer);
+		(void)m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Singer);
 		break;
 	case E_ItemLinkType::ILT_SingerAlbum:
-		(void)PlayItem.findRelatedMedia(E_MediaSetType::MST_Album);
+		(void)PlayItem.findRelatedMedia(E_RelatedMediaSet::RMS_Album);
 
 		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);
 
-		if (!m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Album))
+		if (!m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Album))
 		{
-			(void)m_view.hittestRelatedMediaSet(PlayItem, E_MediaSetType::MST_Singer);
+			(void)m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Singer);
 		}
 
 		break;

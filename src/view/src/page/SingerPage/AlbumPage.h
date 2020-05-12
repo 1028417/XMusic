@@ -57,7 +57,7 @@ public:
 
 	void UpdateTitle();
 
-	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
+	void UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged);
 
 	void RefreshAlbum();
 

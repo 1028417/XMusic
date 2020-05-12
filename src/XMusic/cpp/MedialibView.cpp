@@ -66,7 +66,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         m_thrAsyncTask.start([&](XT_RunSignal bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
-                ((CPlayItem&)playItem).findRelatedMedia(E_MediaSetType::MST_Album);
+                ((CPlayItem&)playItem).findRelatedMedia(E_RelatedMediaSet::RMS_Album);
 
                 mtutil::usleep(10);
 
@@ -206,10 +206,10 @@ void CMedialibView::_genItemContext(tagMLItemContext& context)
         {
             context.pmIcon = &m_pmPlayItem;
 
-            UINT uSingerID = context.pMedia->GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
+            UINT uSingerID = context.pMedia->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
             if (uSingerID > 0)
             {
-                cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_MediaSetType::MST_Singer);
+                cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (!strSingerName.empty())
                 {
                     context.pmIcon = &_getSingerPixmap(uSingerID, strSingerName);
@@ -585,7 +585,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
     {
         if (media.type() == E_MediaType::MT_PlayItem)
         {
-            auto pAlbumItem = media.findRelatedMedia(E_MediaSetType::MST_Album);
+            auto pAlbumItem = media.findRelatedMedia(E_RelatedMediaSet::RMS_Album);
             if (pAlbumItem)
             {
                 hittestMedia(*pAlbumItem);

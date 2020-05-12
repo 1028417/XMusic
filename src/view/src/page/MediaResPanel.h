@@ -82,7 +82,7 @@ public:
 	
 	virtual void HittestMediaRes(CMediaRes& MediaRes);
 
-	void UpdateRelated(const tagMediaSetChanged& MediaSetChanged);
+	void UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged);
 
 	void attachDir();
 

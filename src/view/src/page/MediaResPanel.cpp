@@ -413,11 +413,11 @@ void CMediaResPanel::_showDir()
 			auto& MediaRes = ((CMediaRes&)subDir);
 			if (itr != mapSingerInfo.end())
 			{
-				MediaRes.SetRelatedMediaSet(E_MediaSetType::MST_Singer, itr->second.first, itr->second.second);
+				MediaRes.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
 			}
 			else
 			{
-				MediaRes.ClearRelatedMediaSet(E_MediaSetType::MST_Singer);
+				MediaRes.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
 			}
 
 			m_wndList.UpdateItem(uIdx, &MediaRes);
@@ -467,21 +467,21 @@ void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 	}
 }
 
-void CMediaResPanel::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
+void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged)
 {
 	__Ensure(m_pCurrDir);
 
 	if (m_bShowRelatedSinger)
 	{
-		if (E_MediaSetType::MST_Singer == MediaSetChanged.eMediaSetType)
+		if (E_RelatedMediaSet::RMS_Singer == eRmsType)
 		{
-			(void)m_pCurrDir->UpdateRelatedMediaSet(MediaSetChanged);
+			(void)m_pCurrDir->UpdateRelatedMediaSet(eRmsType, MediaSetChanged);
 		}
 	}
 	
 	UINT uIdx = 0;
 	m_pCurrDir->subMediaRes([&](CMediaRes& MediaRes){
-		if (MediaRes.UpdateRelatedMediaSet(MediaSetChanged))
+		if (MediaRes.UpdateRelatedMediaSet(eRmsType, MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &MediaRes);
 		}
@@ -887,15 +887,15 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (__Column_Playlist == iSubItem)
 			{
-				m_view.hittestRelatedMediaSet(*pMediaRes, E_MediaSetType::MST_Playlist);
+				m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Playlist);
 			}
 			else
 			{
-				if (!m_view.hittestRelatedMediaSet(*pMediaRes, E_MediaSetType::MST_Album))
+				if (!m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Album))
 				{
 					if (m_bShowRelatedSinger)
 					{
-						(void)m_view.hittestRelatedMediaSet(*pMediaRes, E_MediaSetType::MST_Singer);
+						(void)m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Singer);
 					}
 				}
 			}

@@ -180,7 +180,7 @@ public:
 
 	void hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia = NULL);
 
-	bool hittestRelatedMediaSet(IMedia& media, E_MediaSetType eMediaSetType);
+	bool hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType);
 
 	bool addSingerImage(CSinger& Singer, const list<wstring>& lstFiles);
 

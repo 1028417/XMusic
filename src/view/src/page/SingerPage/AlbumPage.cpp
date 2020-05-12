@@ -1301,12 +1301,12 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 		m_wndAlbumItemList.AsyncLButtondown([=]() {
 			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);
-			(void)pAlbumItem->findRelatedMedia(E_MediaSetType::MST_Playlist);
+			(void)pAlbumItem->findRelatedMedia(E_RelatedMediaSet::RMS_Playlist);
 			m_wndAlbumItemList.UpdateItem(iItem, pAlbumItem);
 
 			if (__Column_Playlist == iSubItem)
 			{
-				m_view.hittestRelatedMediaSet(*pAlbumItem, E_MediaSetType::MST_Playlist);
+				m_view.hittestRelatedMediaSet(*pAlbumItem, E_RelatedMediaSet::RMS_Playlist);
 			}
 			else
 			{
@@ -1316,17 +1316,17 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
-void CAlbumPage::UpdateRelated(const tagMediaSetChanged& MediaSetChanged)
+void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged)
 {
 	if (NULL != m_pSinger)
 	{
-		m_wndMediaResPanel.UpdateRelated(MediaSetChanged);
+		m_wndMediaResPanel.UpdateRelated(eMediaSetType, MediaSetChanged);
 
 		if (m_pAlbum)
 		{
 			m_pAlbum->albumItems()([&](cauto t_AlbumItem, size_t uIdx) {
 				auto& AlbumItem = (CAlbumItem&)t_AlbumItem;
-				if (AlbumItem.UpdateRelatedMediaSet(MediaSetChanged))
+				if (AlbumItem.UpdateRelatedMediaSet(eMediaSetType, MediaSetChanged))
 				{
 					m_wndAlbumItemList.UpdateItem(uIdx, &AlbumItem);
 				}
