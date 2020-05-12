@@ -122,7 +122,7 @@ public:
 		m_nFileSize = nFileSize;
 	}
 
-	CMediaSet *GetMediaSet() override
+    CMediaSet *GetMediaSet() const override
 	{
 		return m_pParent;
 	}
