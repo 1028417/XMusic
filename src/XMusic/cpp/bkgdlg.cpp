@@ -886,7 +886,7 @@ bool CImgDir::genSubImgs()
         QPixmap pm;
         if (_loadSubImg(file, pm))
         {
-            int szZoomout = g_szScreenMax*0.9f;
+            int szZoomout = g_szScreenMax*0.88f;
             auto count = m_vecImgs.size();
             if (count >= 4)
             {
