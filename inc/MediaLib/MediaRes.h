@@ -55,6 +55,11 @@ public:
     void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 #endif
 
+    E_MediaType type() const override
+    {
+        return E_MediaType::MT_MediaRes;
+    }
+
 	class CMediaDir* parent() const;
 
 	virtual wstring GetPath() const override;

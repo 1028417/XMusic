@@ -122,10 +122,12 @@ public:
 		m_nFileSize = nFileSize;
 	}
 
-	CMediaSet *GetMediaSet() override
+	CMediaSet *GetMediaSet()
 	{
 		return m_pParent;
 	}
+
+    E_MediaSetType GetMediaSetType() const;
 
 	virtual wstring GetExportFileName() override
 	{

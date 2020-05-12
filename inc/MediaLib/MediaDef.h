@@ -72,8 +72,7 @@ public:
 			return L"";
 		}
 
-		return bNewLine ? tmutil::formatTime(L"%y-%m-%d\n %H:%M", time)
-			: tmutil::formatTime(L"%y-%m-%d %H:%M", time);
+		return tmutil::formatTime(bNewLine ? L"%y-%m-%d\n %H:%M" : L"%y-%m-%d %H:%M", time);
 	}
 
 public:

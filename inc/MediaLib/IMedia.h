@@ -1,6 +1,13 @@
 
 #pragma once
 
+enum class E_MediaType
+{
+    MT_MediaRes,
+    MT_PlayItem,
+    MT_AlbumItem
+};
+
 enum class E_MediaFileType
 {
     MFT_Null = 0,
@@ -46,12 +53,12 @@ protected:
 private:
 	tagRelatedMediaSet m_lpRelatedMediaSet[4];
 
-	tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType)
+	inline tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType)
 	{
 		return m_lpRelatedMediaSet[(UINT)eMediaSetType];
 	}
 
-	const tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType) const
+	inline const tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType) const
 	{
 		return m_lpRelatedMediaSet[(UINT)eMediaSetType];
 	}
@@ -63,6 +70,8 @@ public:
 	virtual wstring GetName() const = 0;
 
     virtual wstring GetTitle() const;
+
+    virtual E_MediaType type() const = 0;
 
 	bool isXmsc() const
 	{
@@ -105,13 +114,6 @@ public:
 	static wstring genDurationString(int nDuration);
 
     E_MediaQuality quality() const;
-
-	virtual CMediaSet *GetMediaSet()
-	{
-		return NULL;
-	}
-
-	E_MediaSetType GetMediaSetType();
 
 	virtual wstring GetExportFileName()
 	{

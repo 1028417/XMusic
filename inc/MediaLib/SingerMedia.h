@@ -13,6 +13,11 @@ private:
 #endif
 
 public:
+    E_MediaType type() const override
+    {
+        return E_MediaType::MT_AlbumItem;
+    }
+
 	class CAlbum* GetAlbum() const;
 	
 	wstring GetAlbumName() const;

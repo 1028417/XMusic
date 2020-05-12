@@ -20,6 +20,11 @@ private:
 #endif
 
 public:
+    E_MediaType type() const override
+    {
+        return E_MediaType::MT_PlayItem;
+    }
+
 	class CPlaylist* GetPlaylist() const;
 
 	wstring GetPlaylistName() const;
