@@ -276,7 +276,7 @@ void CPlayItemPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetC
 
 	m_pPlaylist->playItems()([&](cauto t_PlayItem, size_t uIdx){
 		auto& PlayItem = (CPlayItem&)t_PlayItem;
-		if (PlayItem.UpdateRelatedMediaSet(eMediaSetType, MediaSetChanged))
+		if (PlayItem.UpdateRelatedMediaSet(eRmsType, MediaSetChanged))
 		{
 			m_wndList.UpdateItem(uIdx, &PlayItem);
 		}
@@ -480,7 +480,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_wndList.AsyncLButtondown([=]() {
 			CMedia *pPlayItem = (CMedia*)m_wndList.GetItemObject(iItem);
 			__Ensure(pPlayItem);
-			(void)pPlayItem->findRelatedMedia(E_MediaSetType::MST_Album);
+			(void)pPlayItem->findRelatedMedia(E_RelatedMediaSet::RMS_Album);
 			m_wndList.UpdateItem(iItem, pPlayItem);
 
 			if (__Column_SingerAlbum == iSubItem)

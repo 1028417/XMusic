@@ -1320,13 +1320,13 @@ void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChan
 {
 	if (NULL != m_pSinger)
 	{
-		m_wndMediaResPanel.UpdateRelated(eMediaSetType, MediaSetChanged);
+		m_wndMediaResPanel.UpdateRelated(eRmsType, MediaSetChanged);
 
 		if (m_pAlbum)
 		{
 			m_pAlbum->albumItems()([&](cauto t_AlbumItem, size_t uIdx) {
 				auto& AlbumItem = (CAlbumItem&)t_AlbumItem;
-				if (AlbumItem.UpdateRelatedMediaSet(eMediaSetType, MediaSetChanged))
+				if (AlbumItem.UpdateRelatedMediaSet(eRmsType, MediaSetChanged))
 				{
 					m_wndAlbumItemList.UpdateItem(uIdx, &AlbumItem);
 				}

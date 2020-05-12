@@ -900,11 +900,11 @@ void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
 	E_RelatedMediaSet eRmsType;
 	if (E_MediaSetType::MST_Playlist == MediaSetChanged.eMediaSetType)
 	{
-		eRmsType = E_RelatedMediaSet::RMS::Playlist;
+		eRmsType = E_RelatedMediaSet::RMS_Playlist;
 	}
 	else if (E_MediaSetType::MST_Album == MediaSetChanged.eMediaSetType)
 	{
-		eRmsType = E_RelatedMediaSet::RMS::Album;
+		eRmsType = E_RelatedMediaSet::RMS_Album;
 	}
 	else if (E_MediaSetType::MST_Singer == MediaSetChanged.eMediaSetType)
 	{
