@@ -69,30 +69,28 @@ BOOL CPlayRecordDlg::Refresh()
 
 	CTime fiterTime(time.GetYear(), time.GetMonth(), time.GetDay(), 0, 0, 0);
 
-	vector<pair<wstring, int>> vecPlayRecord;
-	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((dbtime_t)fiterTime.GetTime(), vecPlayRecord), FALSE);
+	m_vecPlayRecord.clear();
+	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((dbtime_t)fiterTime.GetTime(), m_vecPlayRecord), FALSE);
 
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 
 	CRedrawLock RedrawGuard(m_wndList);
 	(void)m_wndList.DeleteAllItems();
 
-	m_vctPlayRecord.clear();
-
 	wstring strTitle(L"播放记录");
 
-	if (!vecPlayRecord.empty())
+	if (!m_vecPlayRecord.empty())
 	{
-		for (auto& pr : vecPlayRecord)
+		UINT uItem = 0;
+		for (auto& pr : m_vecPlayRecord)
 		{
-			m_vctPlayRecord.emplace_back(pr.first, pr.second);
-
-			(void)m_wndList.InsertObject(m_vctPlayRecord.back());
+			cauto strTime = CMediaTime::genFileTimeString((time32_t)pr.second, false);
+			m_wndList.InsertItemEx(uItem++, { strTime, pr.first });
 		}
 
-		(void)m_wndList.EnsureVisible(m_vctPlayRecord.size() - 1, FALSE);
+		(void)m_wndList.EnsureVisible(m_vecPlayRecord.size() - 1, FALSE);
 		
-		strTitle.append(L"(" + to_wstring(vecPlayRecord.size()) + L"项)");
+		strTitle.append(L"(" + to_wstring(m_vecPlayRecord.size()) + L"项)");
 	}
 	
 	this->SetWindowText(strTitle.c_str());
@@ -139,11 +137,17 @@ void CPlayRecordDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CPlayRecordDlg::OnBnClickedPlay()
 {
-	TD_ListObjectList lstObjects;
-	m_wndList.GetSelObjects(lstObjects);
-	__Ensure(lstObjects);
+	list<UINT> lstItems;
+	m_wndList.GetSelItems(lstItems);
+	__Ensure(!lstItems.empty());
 
-	m_view.m_PlayCtrl.addPlayingItem(TD_IMediaList(lstObjects));
+	SArray<wstring> arrOppPaths;
+	for (auto uItem : lstItems)
+	{
+		arrOppPaths.add(m_vecPlayRecord[uItem].first);
+	}
+
+	m_view.m_PlayCtrl.addPlayingItem(arrOppPaths);
 }
 
 void CPlayRecordDlg::OnBnClickedClear()
@@ -152,7 +156,7 @@ void CPlayRecordDlg::OnBnClickedClear()
 
 	__Ensure(m_view.getDataMgr().clearPlayRecord());
 
-	m_vctPlayRecord.clear();
+	m_vecPlayRecord.clear();
 	(void)m_wndList.DeleteAllItems();
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 }

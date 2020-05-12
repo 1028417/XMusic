@@ -1,26 +1,5 @@
 #pragma once
 
-class CPlayRecord : public CMedia
-{
-public:
-	CPlayRecord()
-	{
-	}
-
-	CPlayRecord(cwstr strPath, dbtime_t tTime)
-		: CMedia(NULL, 0, strPath, tTime)
-	{
-	}
-
-public:
-	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override
-	{
-		vecText.push_back(m_addTime.GetText(false));
-		vecText.push_back(GetPath());
-	}
-};
-
-
 // CPlayRecordDlg ¶Ô»°¿ò
 
 class CPlayRecordDlg : public TDialog<IDD_DLG_PlayRecord>
@@ -39,7 +18,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	list<CPlayRecord> m_vctPlayRecord;
+	vector<pair<wstring, int>> m_vecPlayRecord;
 
 	CDateTimeCtrl m_wndDateTimeCtrl;
 
