@@ -323,14 +323,15 @@ int CApp::run()
     std::thread thrUpgrade;
 
     CApp::async([&](){
+        connect(this, &CApp::signal_sync, this, &CApp::slot_sync, Qt::BlockingQueuedConnection);
+        //connect(this, &CApp::signal_run, this, &CApp::slot_run);
+
 #if __android
         if (isMobileConnected())
         {
             vibrate();
         }
 #endif
-
-        connect(this, &CApp::signal_run, this, &CApp::slot_run);
 
         thrUpgrade = std::thread([&]() {
             auto& option = m_ctrl.initOption();
@@ -375,16 +376,15 @@ int CApp::run()
                 m_mainWnd.preinit();
             });
 
-            emit signal_run((int)eUpgradeResult);
+            sync([=](){
+                _run(eUpgradeResult);
+            });
         });
     });
 
     m_mainWnd.showLogo();
-    int nRet = exec();
+    auto nRet = exec();
     g_bRunSignal = false;
-
-    g_logger >> "stop controller";
-    m_ctrl.stop();
 
 #if !__android // TODO 规避5.6.1退出的bug
     if (thrUpgrade.joinable())
@@ -392,6 +392,9 @@ int CApp::run()
         thrUpgrade.join();
     }
 #endif
+
+    g_logger >> "stop controller";
+    m_ctrl.stop();
 
     g_logger >> "app quit";
     m_logger.close();
@@ -936,14 +939,8 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
     return false;
 }
 
-void CApp::slot_run(int nUpgradeResult)
+void CApp::_run(E_UpgradeResult eUpgradeResult)
 {
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    auto eUpgradeResult = (E_UpgradeResult)nUpgradeResult;
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
@@ -1009,19 +1006,33 @@ void CApp::slot_run(int nUpgradeResult)
 
 void CApp::quit()
 {
-    g_bRunSignal = false;
-
-/*#if __android
     m_mainWnd.setVisible(false);
 
-    async(50, [](){
+    async([&](){
+        g_bRunSignal = false;
         QApplication::quit();
     });
+}
 
-    return;
-#endif*/
+void CApp::sync(cfn_void cb)
+{
+    if (!g_bRunSignal)
+    {
+        return;
+    }
 
-    QApplication::quit();
+    emit signal_sync(&cb);
+}
+
+void CApp::slot_sync(const void* pcb)
+{
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
+    cfn_void cb = *(const fn_void*)pcb;
+    cb();
 }
 
 void CApp::async(UINT uDelayTime, cfn_void cb)

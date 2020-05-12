@@ -208,7 +208,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
     m_lv(*this, app),
     m_rootImgDir(m_thread.runSignal()),
-    m_addbkgDlg(*this, m_paImgDirs),
+    m_addbkgDlg(*this, app, m_paImgDirs),
     m_colorDlg(*this, app)
 {
 }
@@ -378,8 +378,6 @@ void CBkgDlg::init()
     m_colorDlg.init();
 
     m_addbkgDlg.init();
-
-    connect(this, &CBkgDlg::signal_founddir, this, &CBkgDlg::slot_founddir);
 }
 
 size_t CBkgDlg::caleRowCount(int cy)
@@ -617,7 +615,11 @@ void CBkgDlg::_showAddBkg()
                 }
             }
 
-            _addImgDir((CImgDir&)dir);
+            m_app.sync([&](){
+                m_paImgDirs.add((CImgDir&)dir);
+
+                m_addbkgDlg.update();
+            });
         });
     };
 
@@ -876,6 +878,11 @@ wstring CImgDir::imgPath(UINT uIdx) const
     }
 
     return L"";
+}
+
+void CImgDir::loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb)
+{
+
 }
 
 #define __szSubimgZoomout 500

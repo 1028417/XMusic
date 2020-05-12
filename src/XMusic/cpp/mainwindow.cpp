@@ -307,20 +307,6 @@ void MainWindow::_init()
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
 
-    connect(this, &MainWindow::signal_updatePlayingList, this, &MainWindow::slot_updatePlayingList);//, Qt::BlockingQueuedConnection);
-    connect(this, &MainWindow::signal_showPlaying, this, &MainWindow::slot_showPlaying);
-    connect(this, &MainWindow::signal_playStoped, this, &MainWindow::slot_playStoped);
-
-//#if __OnlineMediaLib
-    connect(this, &MainWindow::signal_updateSingerImg, this, [&](){
-        if (m_medialibDlg.isVisible())
-        {
-            m_medialibDlg.updateSingerImg();
-        }
-    });
-
-    //ui.labelSingerImg->setVisible(false);
-
     ui.labelSingerName->setFont(0.95);
 
     ui.labelPlayingfile->setFont(0.95);
@@ -417,6 +403,18 @@ bool MainWindow::event(QEvent *ev)
         _onPaint();
 
         break;
+#if __windows || __mac
+    case QEvent::MouseButtonDblClick:
+    {
+        cauto pos = ((QMouseEvent*)ev)->pos();
+        if (!m_PlayingList.geometry().contains(pos))
+        {
+            switchFullScreen();
+        }
+    }
+
+        break;
+#endif
     case QEvent::KeyRelease:
     {
 #if __android || __ios
@@ -444,26 +442,10 @@ bool MainWindow::event(QEvent *ev)
 #endif
     }
     break;
-#if __windows || __mac
-    case QEvent::MouseButtonDblClick:
-    {
-        cauto pos = ((QMouseEvent*)ev)->pos();
-        if (!m_PlayingList.geometry().contains(pos))
-        {
-            switchFullScreen();
-        }
-    }
+/*    case QEvent::Close:
+        m_app.quit();
 
-        break;
-#endif
-    case QEvent::Close:
-        this->setVisible(false);
-
-        CApp::async(30, [&](){
-            m_app.quit();
-        });
-
-        break;
+        break;*/
     case QEvent::Timer:
         _updateProgress();
 
@@ -1030,6 +1012,14 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
     ui.btnPause->setVisible(bPlaying);
 }
 
+void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
+{
+    (void)bSetActive;
+    m_app.sync([&](){
+        m_PlayingList.updateList(nPlayingItem);
+    });
+}
+
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
@@ -1088,87 +1078,87 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.pRelatedMedia = NULL;
     }
 
-    QVariant var;
-    var.setValue(PlayingInfo);
-
-    emit signal_showPlaying(uPlayingItem, bManual, var);
-}
-
-void MainWindow::slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var)
-{
     m_uPlaySeq++;
 
-    auto strPrevSinger = m_PlayingInfo.strSingerName;
-    m_PlayingInfo = var.value<tagPlayingInfo>();
+    m_app.sync([&](){
+        auto strPrevSinger = m_PlayingInfo.strSingerName;
+        m_PlayingInfo = PlayingInfo;
 
-    ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
+        ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
 
-    ui.progressbar->setValue(0);
-    ui.progressbar->setMaximum(m_PlayingInfo.uDuration, m_PlayingInfo.uStreamSize);
+        ui.progressbar->setValue(0);
+        ui.progressbar->setMaximum(m_PlayingInfo.uDuration, m_PlayingInfo.uStreamSize);
 
-#if __OnlineMediaLib
-    ui.labelDuration->clear();
-#else
-    WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
-    ui.labelDuration->setText(strDuration);
-#endif
+    #if __OnlineMediaLib
+        ui.labelDuration->clear();
+    #else
+        WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
+        ui.labelDuration->setText(strDuration);
+    #endif
 
-    _updatePlayPauseButton(true);
+        _updatePlayPauseButton(true);
 
-    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
+        m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-    ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
+        ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
 
-    if (m_PlayingInfo.strSingerName.empty())
-    {
-        ui.labelSingerImg->clear();
-    }
-    else if (m_PlayingInfo.strSingerName != strPrevSinger)
-    {
-        ui.labelSingerImg->clear();
-        playSingerImg(true);
-    }
+        if (m_PlayingInfo.strSingerName.empty())
+        {
+            ui.labelSingerImg->clear();
+        }
+        else if (m_PlayingInfo.strSingerName != strPrevSinger)
+        {
+            ui.labelSingerImg->clear();
+            playSingerImg(true);
+        }
 
-    _relayout();
+        _relayout();
+    });
 }
 
 void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
 {
-    emit signal_playStoped(bOpenFail);
+    (void)bOpenFail;
+
+    m_app.sync([&](){
+        ui.progressbar->setMaximum(0);
+
+        WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
+        ui.labelDuration->setText(strDuration);
+
+        /*if (bOpenFail)
+        {
+            _updatePlayPauseButton(false);
+        }
+        else
+        {
+            auto uPlaySeq = m_uPlaySeq;
+            CApp::async(2000, [&, uPlaySeq]() {
+                if (uPlaySeq == m_uPlaySeq)
+                {
+                    _updatePlayPauseButton(false);
+                }
+            });
+        }*/
+    });
 
     if (!bCanceled)
     {
-        /*if (bOpenFail)
-        {
-            mtutil::usleep(1000);
-        }*/
-
         m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
     }
 }
 
-void MainWindow::slot_playStoped(bool bOpenFail)
+void MainWindow::onSingerImgDownloaded()
 {
-    ui.progressbar->setMaximum(0);
-
-    WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
-    ui.labelDuration->setText(strDuration);
-
-    (void)bOpenFail;
-    /*if (bOpenFail)
+    if (m_medialibDlg.isVisible())
     {
-        _updatePlayPauseButton(false);
-    }
-    else
-    {
-        auto uPlaySeq = m_uPlaySeq;
-        CApp::async(2000, [&, uPlaySeq]() {
-            if (uPlaySeq == m_uPlaySeq)
+        m_app.sync([&](){
+            if (m_medialibDlg.isVisible())
             {
-                _updatePlayPauseButton(false);
+                m_medialibDlg.updateSingerImg();
             }
         });
-    }*/
+    }
 }
 
 WString MainWindow::_genAlbumName()
@@ -1266,7 +1256,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnExit)
     {
-        this->close();
+        m_app.quit();
     }
     else if (button == ui.btnMore)
     {

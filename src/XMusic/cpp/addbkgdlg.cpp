@@ -7,10 +7,10 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDirs)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app, const TD_ImgDirList& paImgDirs)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_lv(*this, paImgDirs)
+    , m_lv(*this, app, paImgDirs)
 {
 }
 
@@ -87,9 +87,10 @@ bool CAddBkgDlg::_handleReturn()
     return true;
 }
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, CApp& app, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
+    , m_app(app)
     , m_paImgDirs(paImgDir)
 {
 }
@@ -193,6 +194,12 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
     m_pImgDir = &imgDir;
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
+
+    /*m_pImgDir->loadImg(-1, [&](UINT, QPixmap&){
+        m_app.sync([&](){
+            update();
+        });
+    });*/
 
     timerutil::setTimerEx(50, [=](){
         if (NULL == m_pImgDir)

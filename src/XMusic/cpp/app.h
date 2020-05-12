@@ -75,8 +75,10 @@ private:
 signals:
     void signal_run(int nUpgradeResult);
 
+    void signal_sync(const void*);
+
 private slots:
-    void slot_run(int nUpgradeResult);
+    void slot_sync(const void* pcb);
 
 private:
     IModelObserver& getModelObserver() override
@@ -93,11 +95,15 @@ private:
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
+    void _run(E_UpgradeResult eUpgradeResult);
+
 public:
     static bool checkIPhoneXBangs(int cx, int cy)
     {
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
     }
+
+    void sync(cfn_void cb);
 
     static void async(cfn_void cb)
     {

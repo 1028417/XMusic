@@ -22,6 +22,7 @@ public:
 
     virtual wstring imgPath(UINT uIdx) const = 0;
 
+    virtual void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) = 0;
     virtual bool genSubImgs() = 0;
 };
 
@@ -30,11 +31,11 @@ using TD_ImgDirList = PtrArray<IImgDir>;
 class CAddBkgView : public CListView
 {
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
-
+    class CApp& m_app;
     const TD_ImgDirList& m_paImgDirs;
 
     IImgDir *m_pImgDir = NULL;
@@ -65,7 +66,7 @@ public:
 class CAddBkgDlg : public CDialog
 {
 public:
-    CAddBkgDlg(class CBkgDlg& bkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgDlg(class CBkgDlg& bkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
 
 private:
     class CBkgDlg& m_bkgDlg;

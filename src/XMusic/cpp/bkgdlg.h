@@ -100,6 +100,7 @@ private:
 
     wstring imgPath(UINT uIdx) const override;
 
+    void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) override;
     bool genSubImgs() override;
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
@@ -169,23 +170,7 @@ private:
 
     CColorDlg m_colorDlg;
 
-signals:
-    void signal_founddir(void* pDir);
-
-private slots:
-    void slot_founddir(void *pDir)
-    {
-        m_paImgDirs.add((IImgDir*)pDir);
-
-        m_addbkgDlg.update();
-    }
-
 private:
-    void _addImgDir(IImgDir& imgDir)
-    {
-        emit signal_founddir(&imgDir);
-    }
-
     wstring& _bkgDir();
 
     vector<tagBkgFile>& _vecBkgFile();

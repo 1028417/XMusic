@@ -81,25 +81,7 @@ private:
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
-signals:
-    void signal_updatePlayingList(int nPlayingItem);
-
-    void signal_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var);
-
-    void signal_playStoped(bool bOpenFail);
-
-    void signal_updateSingerImg();
-
 private slots:
-    void slot_updatePlayingList(int nPlayingItem)
-    {
-        m_PlayingList.updateList(nPlayingItem);
-    }
-
-    void slot_showPlaying(unsigned int uPlayingItem, bool bManual, QVariant var);
-
-    void slot_playStoped(bool bOpenFail);
-
     void slot_buttonClicked(CButton*);
 
     void slot_labelClick(CLabel*, const QPoint&);
@@ -162,18 +144,11 @@ private:
     void _demand(CButton* btnDemand);
 
 private:
-    void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override
-    {
-        (void)bSetActive;
-        emit signal_updatePlayingList(nPlayingItem);
-    }
+    void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
     void onPlayStop(bool bCanceled, bool bOpenFail) override;
 
-    void onSingerImgDownloaded() override
-    {
-        emit signal_updateSingerImg();
-    }
+    void onSingerImgDownloaded() override;
 };
