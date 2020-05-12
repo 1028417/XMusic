@@ -51,11 +51,11 @@ enum class E_GlobalImage
 
 enum class E_MediaSetType
 {
-	MST_Null = -1
-	, MST_Playlist
+	MST_Playlist = 0
 	, MST_Album
 	, MST_Singer
 	, MST_SingerGroup
+	, MST_Root
 };
 
 using filetime_t = time32_t;
@@ -124,7 +124,7 @@ struct tagMediaSetChanged
 
 	wstring strNewName;
 
-	UINT uSingerImgPos = 0;
+	//UINT uSingerImgPos = 0;
 };
 
 struct tagRelatedMediaSet

@@ -34,6 +34,13 @@ enum class E_MediaQuality
     MQ_HiRes
 };
 
+enum class E_RelatedMediaSet
+{
+	RMS_Playlist = E_MediaSetType::MST_Playlist
+	, RMS_Album = E_MediaSetType::MST_Album
+	, RMS_Singer = E_MediaSetType::MST_Singer
+};
+
 class __MediaLibExt IMedia
 {
 public:
@@ -45,22 +52,22 @@ public:
 
 	IMedia(cwstr strPath);
 
-    virtual ~IMedia() = default;
+	virtual ~IMedia() = default;
 
 protected:
 	E_MediaFileType m_eFileType = E_MediaFileType::MFT_Null;
 
 private:
-	tagRelatedMediaSet m_lpRelatedMediaSet[4];
+	tagRelatedMediaSet m_lpRelatedMediaSet[UINT(E_RelatedMediaSet::RMS_Singer) + 1];
 
-	inline tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType)
+	inline tagRelatedMediaSet& _getRelatedMediaSet(E_RelatedMediaSet eRmsType)
 	{
-		return m_lpRelatedMediaSet[(UINT)eMediaSetType];
+		return m_lpRelatedMediaSet[(UINT)eRmsType];
 	}
 
-	inline const tagRelatedMediaSet& _getRelatedMediaSet(E_MediaSetType eMediaSetType) const
+	inline const tagRelatedMediaSet& _getRelatedMediaSet(E_RelatedMediaSet eRmsType) const
 	{
-		return m_lpRelatedMediaSet[(UINT)eMediaSetType];
+		return m_lpRelatedMediaSet[(UINT)eRmsType];
 	}
 
 public:
@@ -69,9 +76,9 @@ public:
 
 	virtual wstring GetName() const = 0;
 
-    virtual wstring GetTitle() const;
+	virtual wstring GetTitle() const;
 
-    virtual E_MediaType type() const = 0;
+	virtual E_MediaType type() const = 0;
 
 	virtual class CMediaSet* GetMediaSet() const
 	{
@@ -118,39 +125,40 @@ public:
 
 	static wstring genDurationString(int nDuration);
 
-    E_MediaQuality quality() const;
+	E_MediaQuality quality() const;
 
 	virtual wstring GetExportFileName()
 	{
 		return GetName();
 	}
 
-	bool UpdateRelatedMediaSet(const tagMediaSetChanged& MediaSetChanged);
+	CMedia *findRelatedMedia(E_RelatedMediaSet eRmsType);
 
-	UINT GetRelatedMediaID(E_MediaSetType eMediaSetType) const
+	UINT GetRelatedMediaID(E_RelatedMediaSet eRmsType) const
 	{
-		return _getRelatedMediaSet(eMediaSetType).uMediaID;
+		return _getRelatedMediaSet(eRmsType).uMediaID;
 	}
 
-	UINT GetRelatedMediaSetID(E_MediaSetType eMediaSetType) const
+	UINT GetRelatedMediaSetID(E_RelatedMediaSet eRmsType) const
 	{
-		return _getRelatedMediaSet(eMediaSetType).uMediaSetID;
+		return _getRelatedMediaSet(eRmsType).uMediaSetID;
 	}
 
-	cwstr GetRelatedMediaSetName(E_MediaSetType eMediaSetType) const
+	cwstr GetRelatedMediaSetName(E_RelatedMediaSet eRmsType) const
 	{
-		return _getRelatedMediaSet(eMediaSetType).strMediaSetName;
+		return _getRelatedMediaSet(eRmsType).strMediaSetName;
 	}
 
-	void SetRelatedMediaSet(E_MediaSetType eMediaSetType, UINT uMediaSetID, cwstr strMediaSetName, int iMediaID = -1);
+	void SetRelatedMediaSet(E_RelatedMediaSet eRmsType, UINT uMediaSetID, cwstr strMediaSetName, int iMediaID = -1);
 
-	void SetRelatedMediaSet(CMediaSet& MediaSet);
+	void SetRelatedMediaSet(E_RelatedMediaSet eRmsType, CMedia& media);
 
-	void SetRelatedMediaSet(CMedia& media);
+	void ClearRelatedMediaSet(E_RelatedMediaSet eRmsType)
+	{
+		_getRelatedMediaSet(eRmsType).clear();
+	}
 
-	void ClearRelatedMediaSet(E_MediaSetType eMediaSetType);
-	
-	CMedia *findRelatedMedia(E_MediaSetType eMediaSetType);
+	bool UpdateRelatedMediaSet(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged);
 
 protected:
 	void UpdateFileType(cwstr strPath);
