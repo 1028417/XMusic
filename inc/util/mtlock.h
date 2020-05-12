@@ -65,6 +65,7 @@ public:
 private:
     mutex m_mutex;
     condition_variable m_condition;
+    bool m_bReset = false;
 
 protected:
     T m_value;
@@ -76,35 +77,47 @@ private:
         if (nMs >= 0)
         {
             mutex_lock lock(m_mutex);
-            if (!cbCheck(m_value))
+            if (m_bReset)
             {
-                if (cv_status::timeout == m_condition.wait_for(lock, std::chrono::milliseconds(nMs)))
-                {
-                    return false;
-                }
-
-                if (!cbCheck(m_value))
-                {
-                    return false;
-                }
+                return false;
             }
+
+            if (cbCheck(m_value))
+            {
+                return true;
+            }
+
+            if (cv_status::timeout == m_condition.wait_for(lock, std::chrono::milliseconds(nMs)))
+            {
+                return false;
+            }
+            if (m_bReset)
+            {
+                return false;
+            }
+
+            return cbCheck(m_value);
         }
         else
         {
-            while (!cbCheck(m_value))
+            mutex_lock lock(m_mutex);
+            while (!m_bReset)
             {
-                mutex_lock lock(m_mutex);
+                if (cbCheck(m_value))
+                {
+                    return true;
+                }
+
                 m_condition.wait(lock);
             }
+            return false;
         }
-
-        return true;
     }
 
 public:
-    void wait(CB_CheckSignal cbCheck)
+    bool wait(CB_CheckSignal cbCheck)
     {
-        (void)_wait(cbCheck);
+        return _wait(cbCheck);
     }
 
     bool wait(UINT uMs, CB_CheckSignal cbCheck)
@@ -115,9 +128,15 @@ public:
     void set(const T& value)
     {
         mutex_lock lock(m_mutex);
-
+        m_bReset = false;
         m_value = value;
+        m_condition.notify_one();
+    }
 
+    void reset()
+    {
+        mutex_lock lock(m_mutex);
+        m_bReset = true;
         m_condition.notify_one();
     }
 };
