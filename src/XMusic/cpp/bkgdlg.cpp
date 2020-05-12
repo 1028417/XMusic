@@ -212,7 +212,7 @@ CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
 {
 }
 
-inline void zoomoutPixmap(QPixmap& pm, int cx, int cy)
+void zoomoutPixmap(QPixmap& pm, int cx, int cy)
 {
     if (pm.isNull())
     {

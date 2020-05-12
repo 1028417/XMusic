@@ -343,9 +343,6 @@ void MainWindow::show()
     //_relayout();
 
     m_PlayingList.updateList(m_app.getOption().uPlayingItem);
-    CApp::async(100, [&](){
-        m_PlayingList.updatePlayingItem(m_app.getOption().uPlayingItem, true);
-    });
 
     (void)startTimer(1000);
 
