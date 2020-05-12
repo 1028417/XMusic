@@ -73,6 +73,11 @@ public:
 
     virtual E_MediaType type() const = 0;
 
+	virtual class CMediaSet* GetMediaSet() const
+	{
+		return NULL;
+	}
+
 	bool isXmsc() const
 	{
 #if __winvc
