@@ -36,78 +36,6 @@ public:
     UINT margin();
 };
 
-struct tagBkgImg
-{
-    tagBkgImg() = default;
-
-    tagBkgImg(QPixmap& pm, cwstr strPath)
-        : strPath(strPath)
-    {
-        this->pm.swap(pm);
-    }
-
-    QPixmap pm;
-    wstring strPath;
-};
-
-class CImgDir : public CPath, public IImgDir
-{
-public:
-    CImgDir(XT_RunSignal bRunSignal)
-        : m_bRunSignal(bRunSignal)
-    {
-    }
-
-    CImgDir(XT_RunSignal bRunSignal, const tagFileInfo& fileInfo)
-        : CPath(fileInfo)
-        , m_bRunSignal(bRunSignal)
-    {
-    }
-
-private:
-    XT_RunSignal m_bRunSignal;
-
-    UINT m_uPos = 0;
-
-    QPixmap m_pmSnapshot;
-
-    vector<tagBkgImg> m_vecImgs;
-
-public:
-    void clear()
-    {
-        m_uPos = 0;
-        m_pmSnapshot = QPixmap();
-        m_vecImgs.clear();
-
-        CPath::clear();
-    }
-
-private:
-    wstring displayName() const override;
-
-    const cqpm snapshot() const override
-    {
-        return m_pmSnapshot;
-    }
-
-    size_t imgCount() const override
-    {
-        return m_vecImgs.size();
-    }
-
-    const QPixmap* img(UINT uIdx) const override;
-
-    wstring imgPath(UINT uIdx) const override;
-
-    void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) override;
-    bool genSubImgs() override;
-
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
-
-    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
-};
-
 class CBkgBrush : public QBrush
 {
 public:
@@ -162,10 +90,6 @@ private:
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
 
-    XThread m_thread;
-    CImgDir m_rootImgDir;
-
-    TD_ImgDirList m_paImgDirs;
     CAddBkgDlg m_addbkgDlg;
 
     CColorDlg m_colorDlg;
@@ -182,8 +106,6 @@ private:
     bool _setBkg(int nIdx);
 
     void _updateBkg(cwstr strFile);
-
-    void _showAddBkg();
 
     void _onClosed() override;
 

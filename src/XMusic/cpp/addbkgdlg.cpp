@@ -7,11 +7,36 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app, const TD_ImgDirList& paImgDirs)
+static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
+
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_lv(*this, app, paImgDirs)
+    , m_app(app)
+    , m_rootImgDir(m_thread.runSignal())
+    , m_lv(*this, app, m_paImgDirs)
 {
+    mtutil::thread([&](){
+        wstring strFile;
+        UINT uIdx = 0;
+        while (true)
+        {
+            bool bRet = g_sgnLoadImg.wait([&](pair<wstring, UINT>& pr){
+                if (!pr.first.empty())
+                {
+                    strFile.swap(pr.first);
+                    uIdx = pr.second;
+                    return true;
+                }
+
+                return false;
+            });
+            if (!bRet)
+            {
+                break;
+            }
+        }
+    });
 }
 
 void CAddBkgDlg::init()
@@ -23,18 +48,75 @@ void CAddBkgDlg::init()
     connect(ui.btnReturn, &CButton::signal_clicked, this, &CAddBkgDlg::_handleReturn);
 }
 
-void CAddBkgDlg::show(cfn_void cbClose)
+void CAddBkgDlg::show()
 {
-    //if (pImgDir) m_lv.showImgDir(*pImgDir);
+    cauto fnScan = [&](){
+        cauto bRunSignal = m_thread.runSignal();
+        CPath::scanDir(bRunSignal, m_rootImgDir, [&](CPath& dir, TD_XFileList&){
+            if (!m_lv.isInRoot())
+            {
+                mtutil::usleep(300);
+                if (!bRunSignal)
+                {
+                    return;
+                }
+            }
 
-    CDialog::show([=](){
-        if (cbClose)
-        {
-            cbClose();
-        }
+            m_app.sync([&](){
+                m_paImgDirs.add((CImgDir&)dir);
 
-        m_lv.upward();
+                this->update();
+            });
+        });
+    };
+
+#if __windows
+/*#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+    |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
+    tagFileDlgOpt FileDlgOpt;
+    FileDlgOpt.strTitle = L"选择背景图";
+    FileDlgOpt.strFilter = __MediaFilter;
+    FileDlgOpt.hWndOwner = hwnd();
+    CFileDlg fileDlg(FileDlgOpt);
+    wstring strFile = fileDlg.ShowOpenSingle();
+    if (!strFile.empty())
+    {
+        this->addBkg(strFile);
+    }*/
+
+    static CFolderDlg FolderDlg;
+    cauto strImgDir = FolderDlg.Show(hwnd(), NULL, L" 添加背景", L"请选择图片目录");
+    if (strImgDir.empty())
+    {
+        return;
+    }
+
+    m_rootImgDir.setDir(strImgDir);
+    m_thread.start([&](){
+        fnScan();
+
+        m_thread.usleepex(-1);
+
+        m_rootImgDir.clear();
+        m_paImgDirs.clear();
     });
+
+    CDialog::show([&](){
+        m_thread.cancel(false);
+        m_thread.detach();
+    });
+#else
+
+    if (!m_thread.joinable())
+    {
+        m_rootImgDir.setDir(__medialib.path() + L"/..");
+        m_thread.start([&](){
+            fnScan();
+        });
+    }
+
+    CDialog::show();
+#endif
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -86,6 +168,189 @@ bool CAddBkgDlg::_handleReturn()
 
     return true;
 }
+
+wstring CImgDir::displayName() const
+{
+#if __windows
+    return path();
+
+#elif __android
+    if (m_fi.pParent)
+    {
+        if (m_fi.pParent->parent())
+        {
+            return ((CImgDir*)m_fi.pParent)->displayName() + L'/' + m_fi.strName;
+        }
+        else
+        {
+            return L'/' + m_fi.strName;
+        }
+    }
+    else
+    {
+        return L"根目录";
+    }
+
+#else
+    return QDir(__WS2Q(path())).absolutePath().toStdWString();
+#endif
+}
+
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
+
+CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
+{
+    if (!m_bRunSignal)
+    {
+        return NULL;
+    }
+
+    return new CImgDir(m_bRunSignal, fileInfo);
+}
+
+#define __szSubIngFilter 640
+
+inline static bool _loadSubImg(const XFile& subFile, QPixmap& pm)
+{
+    if (!pm.load(__WS2Q(subFile.path())))
+    {
+        return false;
+    }
+
+    if (pm.width()<__szSubIngFilter || pm.height()<__szSubIngFilter)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+#define __szSnapshot 160
+
+XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
+{
+    if (!m_bRunSignal)
+    {
+        return NULL;
+    }
+
+    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    if (!g_setImgExtName.includes(strExtName))
+    {
+        return NULL;
+    }
+
+    if (m_paSubFile.empty())
+    {
+        mtutil::usleep(1);
+        if (!_loadSubImg(XFile(fileInfo), m_pmSnapshot))
+        {
+            m_pmSnapshot = QPixmap();
+            return NULL;
+        }
+
+        auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
+                ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+                : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+        m_pmSnapshot.swap(temp);
+    }
+
+    return new XFile(fileInfo);
+}
+
+const QPixmap* CImgDir::img(UINT uIdx) const
+{
+    if (uIdx < m_vecImgs.size())
+    {
+        return &m_vecImgs[uIdx].pm;
+    }
+
+    return NULL;
+}
+
+wstring CImgDir::imgPath(UINT uIdx) const
+{
+    if (uIdx < m_vecImgs.size())
+    {
+        return m_vecImgs[uIdx].strPath;
+    }
+
+    return L"";
+}
+
+void CImgDir::loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb)
+{
+    if (-1 == nIdx)
+    {
+        m_paSubFile.get(m_uPos, [&](XFile& file){
+            g_sgnLoadImg.set({file.path(), m_uPos});
+        });
+    }
+}
+
+#define __szSubimgZoomout 500
+
+extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
+
+bool CImgDir::genSubImgs()
+{
+    return files().get(m_uPos, [&](XFile& file){
+        QPixmap pm;
+        if (_loadSubImg(file, pm))
+        {
+            int szZoomout = g_szScreenMax*0.88f;
+            auto count = m_vecImgs.size();
+            if (count >= 4)
+            {
+                szZoomout /= 3;
+
+                if (4 == count)
+                {
+                    for (auto& bkgImg : m_vecImgs)
+                    {
+                        zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                    }
+                }
+            }
+            else
+            {
+                szZoomout /= 2;
+            }
+
+            zoomoutPixmap(pm, szZoomout, szZoomout);
+            m_vecImgs.emplace_back(pm, file.path());
+        }
+
+        m_uPos++;
+    });
+}
+
+/*class CResImgDir : public CPath, public IImgDir
+{
+public:
+    CResImgDir() = default;
+
+private:
+    virtual size_t imgCount() const
+    {
+        return 0;
+    }
+
+    virtual const QPixmap* snapshot(int nIdx=-1) const
+    {
+        return NULL;
+    }
+
+    virtual wstring path(int nIdx=-1) const
+    {
+        return L"";
+    }
+
+    virtual bool genSubImgs()
+    {
+        return false;
+    }
+};*/
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, CApp& app, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
@@ -199,7 +464,8 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
         m_app.sync([&](){
             update();
         });
-    });*/
+    });
+    return;*/
 
     timerutil::setTimerEx(50, [=](){
         if (NULL == m_pImgDir)

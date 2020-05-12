@@ -63,13 +63,90 @@ public:
 };
 
 
+struct tagBkgImg
+{
+    tagBkgImg() = default;
+
+    tagBkgImg(QPixmap& pm, cwstr strPath)
+        : strPath(strPath)
+    {
+        this->pm.swap(pm);
+    }
+
+    QPixmap pm;
+    wstring strPath;
+};
+
+class CImgDir : public CPath, public IImgDir
+{
+public:
+    CImgDir(XT_RunSignal bRunSignal)
+        : m_bRunSignal(bRunSignal)
+    {
+    }
+
+    CImgDir(XT_RunSignal bRunSignal, const tagFileInfo& fileInfo)
+        : CPath(fileInfo)
+        , m_bRunSignal(bRunSignal)
+    {
+    }
+
+private:
+    XT_RunSignal m_bRunSignal;
+
+    UINT m_uPos = 0;
+
+    QPixmap m_pmSnapshot;
+
+    vector<tagBkgImg> m_vecImgs;
+
+public:
+    void clear()
+    {
+        m_uPos = 0;
+        m_pmSnapshot = QPixmap();
+        m_vecImgs.clear();
+
+        CPath::clear();
+    }
+
+private:
+    wstring displayName() const override;
+
+    const cqpm snapshot() const override
+    {
+        return m_pmSnapshot;
+    }
+
+    size_t imgCount() const override
+    {
+        return m_vecImgs.size();
+    }
+
+    const QPixmap* img(UINT uIdx) const override;
+
+    wstring imgPath(UINT uIdx) const override;
+
+    void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) override;
+    bool genSubImgs() override;
+
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
+
+    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+};
+
 class CAddBkgDlg : public CDialog
 {
 public:
-    CAddBkgDlg(class CBkgDlg& bkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
+    CAddBkgDlg(class CBkgDlg& bkgDlg, class CApp& app);
 
 private:
     class CBkgDlg& m_bkgDlg;
+    class CApp& m_app;
+
+    CImgDir m_rootImgDir;
+    TD_ImgDirList m_paImgDirs;
+    XThread m_thread;
 
     CAddBkgView m_lv;
 
@@ -78,7 +155,12 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
-    bool _handleReturn() override;
+    bool _handleReturn() override;    
+
+    void _onClosed() override
+    {
+        m_lv.upward();
+    }
 
 public:
     size_t rowCount() const
@@ -93,15 +175,10 @@ public:
 
     void init();
 
-    void show(cfn_void cbClose = NULL);
+    void show();
 
     void relayout()
     {
         _relayout(width(), height());
-    }
-
-    bool isInRoot() const
-    {
-        return m_lv.isInRoot();
     }
 };
