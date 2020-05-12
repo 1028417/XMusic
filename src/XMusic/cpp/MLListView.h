@@ -24,7 +24,7 @@ struct tagMLItemContext : public tagLVItemContext
 
     tagMLItemContext(tagLVItem& lvItem, IMedia& media) : tagLVItemContext(lvItem)
     {
-        if (media.GetMediaSetType() == E_MediaSetType::MST_Null)
+        if (media.type() == E_MediaType::MT_MediaRes)
         {
             pFile = (CMediaRes*)&media;
         }

@@ -583,19 +583,8 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
     if (me.x() <= (int)rowHeight())
     {
-        if (media.GetMediaSetType() == E_MediaSetType::MST_Playlist)
+        if (media.type() == E_MediaType::MT_PlayItem)
         {
-            /*UINT uSingerID = media.GetRelatedMediaSetID(E_MediaSetType::MST_Singer);
-            if (uSingerID > 0)
-            {
-                auto pSinger = m_SingerLib.FindSubSet(E_MediaSetType::MST_Singer, uSingerID);
-                if (pSinger)
-                {
-                    showMediaSet(*pSinger);
-                    return;
-                }
-            }*/
-
             auto pAlbumItem = media.findRelatedMedia(E_MediaSetType::MST_Album);
             if (pAlbumItem)
             {

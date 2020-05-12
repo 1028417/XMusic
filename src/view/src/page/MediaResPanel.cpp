@@ -962,9 +962,8 @@ DROPEFFECT CMediaResPanel::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList&
 	__EnsureReturn(DragContext.y > (int)m_wndList.GetHeaderHeight(), DROPEFFECT_NONE);
 
 	DROPEFFECT dwRet = DROPEFFECT_NONE;
-
 	lstMedias.front([&](IMedia& media) {
-		if (E_MediaSetType::MST_Null != media.GetMediaSetType())
+		if (E_MediaType::MT_MediaRes != media.type())
 		{
 			dwRet = DROPEFFECT_MOVE;
 		}
