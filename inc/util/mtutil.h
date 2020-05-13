@@ -193,7 +193,6 @@ public:
 
 #include "mtlock.h"
 using XT_RunSignal = const bool&;
-using CB_XThread = cfn_void_t<XT_RunSignal>;
 
 class __UtilExt XThread
 {
@@ -212,14 +211,8 @@ private:
     CSignal m_sgnRuning;
     thread m_thread;
 
-private:
-    virtual void _onStart(XT_RunSignal bRunSignal)
-    {
-        (void)bRunSignal;
-    }
-
 public:
-    void start(cfn_void cb)
+    void start(cfn_void cb, UINT uMsLoop=0)
     {
         m_mutex.lock();
 
@@ -229,7 +222,19 @@ public:
             m_mutex.lock();
             m_mutex.unlock();
 
-            cb();
+            while (true)
+            {
+                cb();
+                if (0 == uMsLoop)
+                {
+                    break;
+                }
+
+                if (!this->usleepex(uMsLoop))
+                {
+                    return;
+                }
+            }
 
             if (m_sgnRuning)
             {
@@ -242,18 +247,37 @@ public:
         m_mutex.unlock();
     }
 
-    void start(CB_XThread cb)
+    void start(cfn_void_t<XT_RunSignal> cb, UINT uMsLoop=0)
     {
         start([&, cb]() {
-            cb(m_sgnRuning.value());
-        });
+            cb(m_sgnRuning);
+        }, uMsLoop);
     }
 
-    void start()
+    void start(UINT uMsLoop, cfn_bool cb)
     {
-        start([&]() {
-            _onStart(m_sgnRuning.value());
-        });
+        start([&, cb](){
+            if (!cb())
+            {
+                if (m_sgnRuning)
+                {
+                    m_sgnRuning.reset();
+                }
+            }
+        }, uMsLoop);
+    }
+
+    void start(UINT uMsLoop, cfn_bool_t<XT_RunSignal> cb)
+    {
+        start([&, cb](){
+            if (!cb(m_sgnRuning))
+            {
+                if (m_sgnRuning)
+                {
+                    m_sgnRuning.reset();
+                }
+            }
+        }, uMsLoop);
     }
 
     const CSignal& runSignal() const
@@ -263,7 +287,7 @@ public:
 
     bool usleepex(UINT uMs)
     {
-        if (!m_sgnRuning.value())
+        if (!m_sgnRuning)
         {
             return false;
         }
@@ -272,7 +296,7 @@ public:
             return false == bValue;
         });
 
-        return m_sgnRuning.value();
+        return m_sgnRuning;
     }
 
     void detach()
