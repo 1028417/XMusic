@@ -144,9 +144,9 @@ private:
     class CBkgDlg& m_bkgDlg;
     class CApp& m_app;
 
+    XThread& m_thrScan;
     CImgDir m_rootImgDir;
     TD_ImgDirList m_paImgDirs;
-    XThread m_thread;
 
     CAddBkgView m_lv;
 

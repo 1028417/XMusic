@@ -183,8 +183,15 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             return;
         }
 
-        m_thrAsyncTask.join();
-        m_thrAsyncTask.start([&](XT_RunSignal bRunSignal){
+        if (m_pthrFindRelated)
+        {
+            m_pthrFindRelated->join();
+        }
+        else
+        {
+            m_pthrFindRelated = &m_app.thread();
+        }
+        m_pthrFindRelated->start([&](XT_RunSignal bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
                 mtutil::usleep(10);
                 ((CPlayItem&)playItem).findRelatedMedia(E_RelatedMediaSet::RMS_Album);
@@ -720,9 +727,9 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
-    if (E_MediaSetType::MST_Playlist == currentMediaSet.m_eType)
+    if (m_pthrFindRelated)
     {
-        m_thrAsyncTask.cancel(false);
+        m_pthrFindRelated->cancel(false);
     }
 
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
@@ -798,7 +805,10 @@ void CMedialibView::play()
 
 void CMedialibView::cleanup()
 {
-    m_thrAsyncTask.cancel();
+    if (m_pthrFindRelated)
+    {
+        m_pthrFindRelated->cancel(false);
+    }
 
     m_mapSingerPixmap.clear();
     m_lstSingerPixmap.clear();

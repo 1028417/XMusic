@@ -396,6 +396,15 @@ int CApp::run()
     g_logger >> "stop controller";
     m_ctrl.stop();
 
+    for (auto& thr : m_lstThread)
+    {
+        thr.cancel(false);
+    }
+    for (auto& thr : m_lstThread)
+    {
+        thr.join();
+    }
+
     g_logger >> "app quit";
     m_logger.close();
 

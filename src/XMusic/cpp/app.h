@@ -66,11 +66,13 @@ private:
 
     CModel m_model;
 
+    wstring m_strAppVersion;
+
+    list<XThread> m_lstThread;
+
     MainWindow m_mainWnd;
 
     CMsgBox m_msgbox;
-
-    wstring m_strAppVersion;
 
 signals:
     void signal_run(int nUpgradeResult);
@@ -101,6 +103,21 @@ public:
     static bool checkIPhoneXBangs(int cx, int cy)
     {
         return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
+    }
+
+    XThread& thread()
+    {
+        m_lstThread.emplace_back();
+        return m_lstThread.back();
+    }
+
+    template <typename CB>
+    XThread& thread(const CB& cb)
+    {
+        m_lstThread.emplace_back();
+        auto& thr = m_lstThread.back();
+        thr.start(cb);
+        return thr;
     }
 
     void sync(cfn_void cb);

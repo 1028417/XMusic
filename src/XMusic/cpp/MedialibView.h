@@ -51,7 +51,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    XThread m_thrAsyncTask;
+    XThread *m_pthrFindRelated = NULL;
 
     PtrArray<const CPlaylist> m_paPlaylist;
 

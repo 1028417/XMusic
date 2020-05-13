@@ -13,7 +13,8 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
     , m_app(app)
-    , m_rootImgDir(m_thread.runSignal())
+    , m_thrScan(m_app.thread())
+    , m_rootImgDir(m_thrScan.runSignal())
     , m_lv(*this, app, m_paImgDirs)
 {
     mtutil::thread([&](){
@@ -51,12 +52,10 @@ void CAddBkgDlg::init()
 void CAddBkgDlg::show()
 {
     cauto fnScan = [&](){
-        cauto bRunSignal = m_thread.runSignal();
-        CPath::scanDir(bRunSignal, m_rootImgDir, [&](CPath& dir, TD_XFileList&){
-            if (!m_lv.isInRoot())
+        CPath::scanDir(m_thrScan.runSignal(), m_rootImgDir, [&](CPath& dir, TD_XFileList&){
+            if (!m_lv.isInRoot() || !this->isVisible())
             {
-                mtutil::usleep(300);
-                if (!bRunSignal)
+                if (!m_thrScan.usleepex(300))
                 {
                     return;
                 }
@@ -91,25 +90,26 @@ void CAddBkgDlg::show()
         return;
     }
 
+    m_thrScan.join();
     m_rootImgDir.setDir(strImgDir);
-    m_thread.start([&](){
+    m_thrScan.start([&](){
         fnScan();
 
-        m_thread.usleepex(-1);
+        m_thrScan.usleepex(-1);
 
         m_rootImgDir.clear();
         m_paImgDirs.clear();
     });
 
     CDialog::show([&](){
-        m_thread.cancel();
+        m_thrScan.cancel(false);
     });
 #else
 
-    if (!m_thread.joinable())
+    if (!m_thrScan.joinable())
     {
         m_rootImgDir.setDir(__medialib.path() + L"/..");
-        m_thread.start([&](){
+        m_thrScan.start([&](){
             fnScan();
         });
     }
