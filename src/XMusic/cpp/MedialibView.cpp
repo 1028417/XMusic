@@ -18,9 +18,6 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaD
     , m_PlaylistLib(app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
 {
-    connect(this, &CMedialibView::signal_update, this, [&](){
-        update();
-    });
 }
 
 void CMedialibView::initpm()
@@ -51,6 +48,107 @@ void CMedialibView::initpm()
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
 }
 
+void CMedialibView::init()
+{
+    m_paPlaylist.add(m_app.getPlaylistMgr().playlists());
+    _asyncTask();
+}
+
+class cbthread
+{
+public:
+    cbthread()
+    {
+    }
+
+private:
+    mutex m_mtx;
+    condition_variable m_cv;
+    thread m_thr;
+
+    function<void()> m_cb;
+    bool m_bQuit = false;
+
+public:
+    void init(const std::condition_variable& cv, cfn_void cb)
+    {
+        unique_lock<mutex> lock(m_mtx);
+
+        m_thr = thread([&](){
+            while (!m_bQuit)
+            {
+                unique_lock<mutex> lock(m_mtx);
+                if (!m_cb)
+                {
+                    m_cv.wait(lock);
+                    if (m_bQuit)
+                    {
+                        break;
+                    }
+                }
+
+                auto cb = m_cb;
+                m_cb = NULL;
+                lock.unlock();
+
+                m_cb();
+            };
+        });
+    }
+
+    bool start(cfn_void cb)
+    {
+        unique_lock<mutex> lock(m_mtx);
+        if (m_bQuit || m_cb)
+        {
+            return false;
+        }
+        m_cb = cb;
+        m_cv.notify_one();
+
+        return true;
+    }
+
+    void quit(bool bJoin)
+    {
+        unique_lock<mutex> lock(m_mtx);
+        if (!m_thr.joinable())
+        {
+            return;
+        }
+
+        m_bQuit = true;
+        m_cv.notify_one();
+
+        if (!bJoin)
+        {
+            m_thr.detach();
+        }
+        m_mtx.unlock();
+
+        if (bJoin)
+        {
+            m_thr.join();
+        }
+    }
+};
+
+void CMedialibView::_asyncTask()
+{
+    CApp::async(3000, [&](){
+        m_paPlaylist.popFront([&](const CPlaylist&){
+
+        });
+
+        if (!m_paPlaylist)
+        {
+            return;
+        }
+
+        _asyncTask();
+    });
+}
+
 void CMedialibView::_onShowRoot()
 {
     m_medialibDlg.updateHead(L"媒体库");
@@ -75,7 +173,9 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
             if (bRunSignal)
             {
-                emit signal_update();
+                m_app.sync([&](){
+                    update();
+                });
             }
         });
     }

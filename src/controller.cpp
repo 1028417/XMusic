@@ -120,13 +120,6 @@ void CXController::start()
 
                 break;
             default:
-                /*for (auto& playlist : m_PlaylistMgr.playlists())
-                        {
-                            for (auto& playItem : playlist.playItems())
-                            {
-                                ((CPlayItem&)playItem).findRelatedMedia(E_MediaSetType::MST_Album);
-                            }
-                        }                 */
                 break;
             }
         }

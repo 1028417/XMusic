@@ -53,11 +53,12 @@ private:
 
     XThread m_thrAsyncTask;
 
-signals:
-    void signal_update();
+    PtrArray<const CPlaylist> m_paPlaylist;
 
 public:
     void initpm();
+
+    void init();
 
     void updateSingerImg();
 
@@ -73,6 +74,8 @@ public:
     void cleanup();
 
 private:
+    void _asyncTask();
+
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
     void _onShowDir(CPath&) override;
