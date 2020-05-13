@@ -102,8 +102,7 @@ void CAddBkgDlg::show()
     });
 
     CDialog::show([&](){
-        m_thread.cancel(false);
-        m_thread.detach();
+        m_thread.cancel();
     });
 #else
 

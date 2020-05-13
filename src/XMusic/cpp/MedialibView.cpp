@@ -66,43 +66,58 @@ private:
     condition_variable m_cv;
     thread m_thr;
 
-    function<void()> m_cb;
-    bool m_bQuit = false;
+    bool m_bRunSignal = true;
+
+    bool m_bReset = false;
+
+    using cb_type = function<void(XT_RunSignal, const bool& bReset)>;
+    cb_type m_cb;
 
 public:
-    void init(const std::condition_variable& cv, cfn_void cb)
+    void start()
     {
         unique_lock<mutex> lock(m_mtx);
 
         m_thr = thread([&](){
-            while (!m_bQuit)
+            while (m_bRunSignal)
             {
                 unique_lock<mutex> lock(m_mtx);
-                if (!m_cb)
+                if (!m_bRunSignal)
+                {
+                    break;
+                }
+
+                if (!m_bReset)
                 {
                     m_cv.wait(lock);
-                    if (m_bQuit)
+                    if (!m_bRunSignal)
                     {
                         break;
                     }
                 }
 
+                m_bReset = false;
                 auto cb = m_cb;
-                m_cb = NULL;
                 lock.unlock();
 
-                m_cb();
+                cb(m_bRunSignal, m_bReset);
             };
         });
     }
 
-    bool start(cfn_void cb)
+    bool try_emit(const cb_type& cb)
     {
         unique_lock<mutex> lock(m_mtx);
-        if (m_bQuit || m_cb)
+        if (!m_bRunSignal)
         {
             return false;
         }
+        if (m_bReset)
+        {
+            return false;
+        }
+
+        m_bReset = true;
         m_cb = cb;
         m_cv.notify_one();
 
@@ -117,7 +132,7 @@ public:
             return;
         }
 
-        m_bQuit = true;
+        m_bRunSignal = false;
         m_cv.notify_one();
 
         if (!bJoin)
@@ -162,12 +177,17 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
+        static set<void*> setPlaylist;
+        if (setPlaylist.find(&MediaSet) != setPlaylist.end())
+        {
+            return;
+        }
+
+        m_thrAsyncTask.join();
         m_thrAsyncTask.start([&](XT_RunSignal bRunSignal){
             ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
-                ((CPlayItem&)playItem).findRelatedMedia(E_RelatedMediaSet::RMS_Album);
-
                 mtutil::usleep(10);
-
+                ((CPlayItem&)playItem).findRelatedMedia(E_RelatedMediaSet::RMS_Album);
                 return bRunSignal;
             });
 
@@ -175,6 +195,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             {
                 m_app.sync([&](){
                     update();
+                    setPlaylist.insert(&MediaSet);
                 });
             }
         });
@@ -699,7 +720,10 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
-    m_thrAsyncTask.cancel();
+    if (E_MediaSetType::MST_Playlist == currentMediaSet.m_eType)
+    {
+        m_thrAsyncTask.cancel(false);
+    }
 
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {

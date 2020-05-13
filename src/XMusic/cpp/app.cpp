@@ -1037,6 +1037,11 @@ void CApp::slot_sync(const void* pcb)
 
 void CApp::async(UINT uDelayTime, cfn_void cb)
 {
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
     __async(uDelayTime, [&, cb](){
         if (!g_bRunSignal)
         {
