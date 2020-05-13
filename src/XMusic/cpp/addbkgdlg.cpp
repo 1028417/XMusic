@@ -241,7 +241,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
     if (m_paSubFile.empty())
     {
-        mtutil::usleep(1);
+        mtutil::usleep(100);
         if (!_loadSubImg(XFile(fileInfo), m_pmSnapshot))
         {
             m_pmSnapshot = QPixmap();
