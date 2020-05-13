@@ -195,18 +195,6 @@ wstring CImgDir::displayName() const
 #endif
 }
 
-static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
-
-CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
-{
-    if (!m_bRunSignal)
-    {
-        return NULL;
-    }
-
-    return new CImgDir(m_bRunSignal, fileInfo);
-}
-
 #define __szSubIngFilter 640
 
 inline static bool _loadSubImg(const XFile& subFile, QPixmap& pm)
@@ -224,6 +212,8 @@ inline static bool _loadSubImg(const XFile& subFile, QPixmap& pm)
     return true;
 }
 
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
+
 #define __szSnapshot 160
 
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
@@ -232,6 +222,8 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
+
+    mtutil::yield();
 
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (!g_setImgExtName.includes(strExtName))
@@ -255,6 +247,18 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     }
 
     return new XFile(fileInfo);
+}
+
+CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
+{
+    if (!m_bRunSignal)
+    {
+        return NULL;
+    }
+
+    mtutil::yield();
+
+    return new CImgDir(m_bRunSignal, fileInfo);
 }
 
 const QPixmap* CImgDir::img(UINT uIdx) const
