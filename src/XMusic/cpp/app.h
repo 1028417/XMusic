@@ -111,12 +111,12 @@ public:
         return m_lstThread.back();
     }
 
-    template <typename CB>
-    XThread& thread(const CB& cb)
+    template<typename... T>
+    XThread& thread(const T&... args)
     {
         m_lstThread.emplace_back();
         auto& thr = m_lstThread.back();
-        thr.start(cb);
+        thr.start(args...);
         return thr;
     }
 
