@@ -280,9 +280,9 @@ public:
         }, uMsLoop);
     }
 
-    const CSignal& runSignal() const
+    XT_RunSignal runSignal() const
     {
-        return m_sgnRuning;
+        return m_sgnRuning.value();
     }
 
     bool usleepex(UINT uMs)
