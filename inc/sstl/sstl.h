@@ -18,7 +18,8 @@ namespace NS_SSTL
 	template <typename __DataType> using SVector = SArray<__DataType, std::vector>;
 	template <typename __DataType> using SDeque = SArrayT<__DataType, std::deque>;
 
-	template <typename __Type, template<typename...> class __BaseType> class PtrArrayT;
+    template <typename __Type, template<typename...> class __BaseType> class PtrArrayT;
+    template <typename __PtrType> using ptrvectorT = ptrcontainerT<vector, __PtrType>;
 	template <typename __Type> using PtrArray = PtrArrayT<__Type, ptrvectorT>;
 	template <typename __Type> using ConstPtrArray = PtrArray<const __Type>;
 

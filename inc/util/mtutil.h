@@ -132,7 +132,7 @@ protected:
     UINT getActiveCount();
 
 public:
-	template <class T, class R>
+    template <typename T, typename R>
 	using CB_SubTask = const function<bool(UINT uTaskIdx, T&, R&)>&;
 	
 	template <typename T, typename R>

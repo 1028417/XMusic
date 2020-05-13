@@ -35,21 +35,10 @@ namespace NS_SSTL
     template <typename RET, typename T> using fn_t = function<RET(T)>;
     template <typename RET, typename T> using cfn_t = const fn_t<RET, T>&;
 
-
 	template <template<typename...> class __BaseType, class __PtrType> class ptrcontainerT;
+    template <typename __Type> using ptrvector = ptrcontainerT<vector, __Type*>;
 
-	template <class __PtrType>
-	using ptrvectorT = ptrcontainerT<vector, __PtrType>;
-
-	template <class __Type>
-	using ptrvector = ptrvectorT<__Type*>;
-
-	template <class __PtrType>
-	using ptrlistT = ptrcontainerT<list, __PtrType>;
-
-
-    template <typename T>
-    using InitList_T = const initializer_list<T>&;
+    template <typename T> using InitList_T = const initializer_list<T>&;
 
 	enum class E_DelConfirm
 	{
