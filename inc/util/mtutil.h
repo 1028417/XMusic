@@ -193,25 +193,23 @@ public:
 
 #include "mtlock.h"
 using XT_RunSignal = const bool&;
-using CB_XThread = function<void(XT_RunSignal bRunSignal)>;
+using CB_XThread = cfn_void_t<XT_RunSignal>;
 
 class __UtilExt XThread
 {
 public:
     XThread() : m_sgnRuning(false)
-	{
-	}
+    {
+    }
 
-	virtual ~XThread()
-	{
+    virtual ~XThread()
+    {
         cancel();
-	}
+    }
 
 private:
-	mutex m_mutex;
-
+    mutex m_mutex;
     CSignal m_sgnRuning;
-
     thread m_thread;
 
 private:
@@ -221,7 +219,7 @@ private:
     }
 
 public:
-	void start(cfn_void cb)
+    void start(cfn_void cb)
     {
         m_mutex.lock();
 
@@ -233,92 +231,98 @@ public:
 
             cb();
 
-            m_sgnRuning.reset();
-		});
+            if (m_sgnRuning)
+            {
+                m_sgnRuning.reset();
+            }
+        });
 
         m_sgnRuning.wait();
 
         m_mutex.unlock();
-	}
+    }
 
-	void start(const CB_XThread& cb)
-	{
-		start([&, cb]() {
+    void start(CB_XThread cb)
+    {
+        start([&, cb]() {
             cb(m_sgnRuning.value());
-		});
-	}
-	
-	void start()
-	{
-		start([&]() {
+        });
+    }
+
+    void start()
+    {
+        start([&]() {
             _onStart(m_sgnRuning.value());
-		});
-	}
+        });
+    }
 
     const CSignal& runSignal() const
     {
         return m_sgnRuning;
     }
 
-	bool usleepex(UINT uMs)
-	{
-		if (!m_sgnRuning.value())
-		{
-			return false;
-		}
-        
-		(void)((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {
-			return false == bValue;
-		});
+    bool usleepex(UINT uMs)
+    {
+        if (!m_sgnRuning.value())
+        {
+            return false;
+        }
 
-		return m_sgnRuning.value();
-	}
+        (void)((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {
+            return false == bValue;
+        });
 
-	void detach()
-	{
-		if (m_thread.joinable())
-		{
-			m_mutex.lock();
-			m_thread.detach();
-			m_mutex.unlock();
-		}
-	}
+        return m_sgnRuning.value();
+    }
 
-	bool joinable() const
-	{
-		return m_thread.joinable();
-	}
-
-	void join()
-	{
-		if (m_thread.joinable())
+    void detach()
+    {
+        if (m_thread.joinable())
         {
             m_mutex.lock();
-			if (m_thread.joinable())
-			{
-				m_thread.join();
-			}
+            m_thread.detach();
             m_mutex.unlock();
-		}
-	}
+        }
+    }
 
-	void cancel(bool bJoin = true)
-	{
-		if (m_thread.joinable())
-		{
-			m_mutex.lock();
+    bool joinable() const
+    {
+        return m_thread.joinable();
+    }
 
-			if (m_thread.joinable())
-			{
-				m_sgnRuning.reset();
+    void join()
+    {
+        if (m_thread.joinable())
+        {
+            m_mutex.lock();
+            if (m_thread.joinable())
+            {
+                m_thread.join();
+            }
+            m_mutex.unlock();
+        }
+    }
 
-				if (bJoin)
-				{
-					m_thread.join();
-				}
-			}
+    void cancel(bool bJoin = true)
+    {
+        if (m_thread.joinable())
+        {
+            m_mutex.lock();
 
-			m_mutex.unlock();
-		}
-	}
+            if (m_thread.joinable())
+            {
+                if (m_sgnRuning)
+                {
+                    m_sgnRuning.reset();
+                }
+
+                if (bJoin)
+                {
+                    m_thread.join();
+                }
+            }
+
+            m_mutex.unlock();
+        }
+    }
 };
