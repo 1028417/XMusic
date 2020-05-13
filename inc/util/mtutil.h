@@ -216,7 +216,7 @@ public:
     {
         m_mutex.lock();
 
-        m_thread = thread([&, cb]() {
+        m_thread = thread([=]() {
             m_sgnRuning.set();
             //mtutil::usleep(1);
             m_mutex.lock();
