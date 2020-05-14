@@ -84,7 +84,7 @@ void CAddBkgDlg::show()
     }*/
 
     static CFolderDlg FolderDlg;
-    cauto strImgDir = FolderDlg.Show(hwnd(), NULL, L" 添加背景", L"请选择图片目录");
+    cauto strImgDir = FolderDlg.Show(m_bkgDlg.hwnd(), NULL, L" 添加背景", L"请选择图片目录");
     if (strImgDir.empty())
     {
         return;
@@ -281,23 +281,13 @@ wstring CImgDir::imgPath(UINT uIdx) const
     return L"";
 }
 
-void CImgDir::loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb)
-{
-    if (-1 == nIdx)
-    {
-        m_paSubFile.get(m_uPos, [&](XFile& file){
-            g_sgnLoadImg.set({file.path(), m_uPos});
-        });
-    }
-}
-
 #define __szSubimgZoomout 500
 
 extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
 
 bool CImgDir::genSubImgs()
 {
-    return files().get(m_uPos, [&](XFile& file){
+    return m_paSubFile.get(m_uPos, [&](XFile& file){
         QPixmap pm;
         if (_loadSubImg(file, pm))
         {
@@ -321,6 +311,11 @@ bool CImgDir::genSubImgs()
             }
 
             zoomoutPixmap(pm, szZoomout, szZoomout);
+
+            if (m_vecImgs.empty())
+            {
+                m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
+            }
             m_vecImgs.emplace_back(pm, file.path());
         }
 
@@ -462,13 +457,6 @@ void CAddBkgView::showImgDir(IImgDir& imgDir)
     m_pImgDir = &imgDir;
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
-
-    /*m_pImgDir->loadImg(-1, [&](UINT, QPixmap&){
-        m_app.sync([&](){
-            update();
-        });
-    });
-    return;*/
 
     timerutil::setTimerEx(50, [=](){
         if (NULL == m_pImgDir)

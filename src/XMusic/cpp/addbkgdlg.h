@@ -22,7 +22,6 @@ public:
 
     virtual wstring imgPath(UINT uIdx) const = 0;
 
-    virtual void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) = 0;
     virtual bool genSubImgs() = 0;
 };
 
@@ -127,7 +126,6 @@ private:
 
     wstring imgPath(UINT uIdx) const override;
 
-    void loadImg(int nIdx, const function<void(UINT, QPixmap&)>& cb) override;
     bool genSubImgs() override;
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
