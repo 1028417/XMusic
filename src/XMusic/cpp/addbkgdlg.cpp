@@ -155,17 +155,13 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (m_lv.isInRoot())
+    if (m_lv.upward())
     {
-        close();
-    }
-    else
-    {
-        m_lv.upward();
         relayout();
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 wstring CImgDir::displayName() const
@@ -475,17 +471,21 @@ void CAddBkgView::showImgDir(CImgDir& imgDir)
     });
 }
 
-void CAddBkgView::upward()
+bool CAddBkgView::upward()
 {
+    if (NULL == m_pImgDir)
+    {
+        return false;
+    }
+
     reset();
 
     m_eScrollBar = E_LVScrollBar::LVSB_Left;
 
-    if (m_pImgDir)
-    {
-        m_pImgDir->cleanup();
-    }
+    m_pImgDir->cleanup();
     m_pImgDir = NULL;
 
     scroll(_scrollRecord(NULL));
+
+    return true;
 }

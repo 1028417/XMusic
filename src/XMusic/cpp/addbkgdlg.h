@@ -62,6 +62,7 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
+public:
     wstring displayName() const;
 
     const cqpm snapshot() const
@@ -114,7 +115,7 @@ public:
         return NULL==m_pImgDir;
     }
 
-    void upward();
+    bool upward();
 };
 
 class CAddBkgDlg : public CDialog
@@ -141,7 +142,7 @@ private:
 
     void _onClosed() override
     {
-        m_lv.upward();
+        (void)m_lv.upward();
     }
 
 public:
