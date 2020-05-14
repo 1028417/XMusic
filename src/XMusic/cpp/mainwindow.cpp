@@ -1518,9 +1518,9 @@ void MainWindow::handleTouchMove(const CTouchEvent& te)
 }
 
 #if __isdebug
-#define __fastTouchDt 200
+#define __fastTouchDt 220
 #else
-#define __fastTouchDt 150
+#define __fastTouchDt 120
 #endif
 
 void MainWindow::handleTouchEnd(const CTouchEvent& te)

@@ -7,7 +7,7 @@
 
 static Ui::AddBkgDlg ui;
 
-static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
+//static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
@@ -17,7 +17,7 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     , m_rootImgDir(m_thrScan.runSignal())
     , m_lv(*this, app, m_paImgDirs)
 {
-    mtutil::thread([&](){
+    /*mtutil::thread([&](){
         wstring strFile;
         UINT uIdx = 0;
         while (true)
@@ -37,7 +37,7 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
                 break;
             }
         }
-    });
+    });*/
 }
 
 void CAddBkgDlg::init()
@@ -196,9 +196,9 @@ wstring CImgDir::displayName() const
 
 #define __szSubIngFilter 640
 
-inline static bool _loadSubImg(const XFile& subFile, QPixmap& pm)
+inline static bool _loadSubImg(cwstr strFile, QPixmap& pm)
 {
-    if (!pm.load(__WS2Q(subFile.path())))
+    if (!pm.load(__WS2Q(strFile)))
     {
         return false;
     }
@@ -233,7 +233,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     if (m_paSubFile.empty())
     {
         mtutil::usleep(100);
-        if (!_loadSubImg(XFile(fileInfo), m_pmSnapshot))
+        if (!_loadSubImg(XFile(fileInfo).path(), m_pmSnapshot))
         {
             m_pmSnapshot = QPixmap();
             return NULL;
@@ -286,40 +286,70 @@ extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
 
 bool CImgDir::genSubImgs()
 {
-    return m_paSubFile.get(m_uPos, [&](XFile& file){
+    wstring strFile;
+    if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+        strFile = file.path();
+    }))
+    {
+        return false;
+    }
+
+    cauto fn = [&](){
         QPixmap pm;
-        if (_loadSubImg(file, pm))
-        {
-            int szZoomout = g_szScreenMax*0.88f;
-            auto count = m_vecImgs.size();
-            if (count >= 4)
-            {
-                szZoomout /= 3;
-
-                if (4 == count)
-                {
-                    for (auto& bkgImg : m_vecImgs)
-                    {
-                        zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
-                    }
-                }
-            }
-            else
-            {
-                szZoomout /= 2;
-            }
-
-            zoomoutPixmap(pm, szZoomout, szZoomout);
-
-            if (m_vecImgs.empty())
-            {
-                m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
-            }
-            m_vecImgs.emplace_back(pm, file.path());
-        }
-
+        (void)_loadSubImg(strFile, pm);
+        _genSubImgs(pm, strFile);
         m_uPos++;
-    });
+    };
+
+    if (!m_paSubFile.get(m_uPos+1, [&](XFile& file){
+        cauto strFile = file.path();
+        QPixmap pm;
+        mtutil::concurrence(fn, [&](){
+            (void)_loadSubImg(strFile, pm);
+        });
+        _genSubImgs(pm, strFile);
+        m_uPos++;
+    }))
+    {
+        fn();
+    }
+
+    return true;
+}
+
+void CImgDir::_genSubImgs(QPixmap& pm, cwstr strFile)
+{
+    if (pm.isNull())
+    {
+        return;
+    }
+
+    int szZoomout = g_szScreenMax*0.88f;
+    auto count = m_vecImgs.size();
+    if (count >= 4)
+    {
+        szZoomout /= 3;
+
+        if (4 == count)
+        {
+            for (auto& bkgImg : m_vecImgs)
+            {
+                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+            }
+        }
+    }
+    else
+    {
+        szZoomout /= 2;
+    }
+
+    zoomoutPixmap(pm, szZoomout, szZoomout);
+
+    if (m_vecImgs.empty())
+    {
+        m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
+    }
+    m_vecImgs.emplace_back(pm, strFile);
 }
 
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, CApp& app, const TD_ImgDirList& paImgDir) :
@@ -427,6 +457,12 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
 void CAddBkgView::showImgDir(CImgDir& imgDir)
 {
     m_pImgDir = &imgDir;
+    if (m_pPrevImgDir && m_pPrevImgDir != m_pImgDir)
+    {
+        m_pPrevImgDir->cleanup();
+        m_pPrevImgDir = m_pImgDir;
+    }
+
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
@@ -451,6 +487,12 @@ bool CAddBkgView::upward()
 {
     if (NULL == m_pImgDir)
     {
+        if (m_pPrevImgDir)
+        {
+            m_pPrevImgDir->cleanup();
+            m_pPrevImgDir = NULL;
+        }
+
         return false;
     }
 
@@ -458,7 +500,6 @@ bool CAddBkgView::upward()
 
     m_eScrollBar = E_LVScrollBar::LVSB_Left;
 
-    m_pImgDir->cleanup();
     m_pImgDir = NULL;
 
     scroll(_scrollRecord(NULL));

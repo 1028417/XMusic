@@ -62,6 +62,8 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
+    void _genSubImgs(QPixmap& pm, cwstr strFile);
+
 public:
     wstring displayName() const;
 
@@ -95,6 +97,7 @@ private:
     const TD_ImgDirList& m_paImgDirs;
 
     CImgDir *m_pImgDir = NULL;
+    CImgDir *m_pPrevImgDir = NULL;
 
 private:
     size_t getColCount() const override;

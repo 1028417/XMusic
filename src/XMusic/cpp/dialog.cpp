@@ -60,6 +60,7 @@ void CDialog::_show(cfn_void cbClose)
     _setPos();
 
     g_pFrontDlg = this;
+
     connect(this, &QDialog::finished, [&, cbClose]() {
         g_pFrontDlg = dynamic_cast<CDialog*>(&m_parent);
 
@@ -69,6 +70,8 @@ void CDialog::_show(cfn_void cbClose)
         {
             cbClose();
         }
+
+        disconnect(this, &QDialog::finished, 0, 0);
     });
 
 #if __android || __ios // 移动端exec会露出任务栏
