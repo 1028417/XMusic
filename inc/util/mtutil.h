@@ -61,7 +61,8 @@ public:
 		thr.join();
 	}
 
-	template <typename FN, typename CB, typename RET=decltype(declval<FN>()()), typename = checkCBVoid_t<CB>>
+        template <typename FN, typename CB, typename RET = decltype(declval<FN>()())
+                  , typename = checkCBNotVoid_t<FN>, typename = checkCBVoid_t<CB>>
 	static RET concurrence(const FN& fn, const CB& cbThread)
 	{
 		std::thread thr(cbThread);
@@ -72,12 +73,13 @@ public:
 		return ret;
 	}
 
-    template <typename FN, typename CB, typename RET = decltype(declval<CB>()()), typename = checkCBVoid_t<FN>, typename=void>
+        template <typename FN, typename CB, typename RET = decltype(declval<CB>()())
+                  , typename = checkCBVoid_t<FN>, typename = checkCBNotVoid_t<CB>, typename=void>
 	static RET concurrence(const FN& fn, const CB& cbThread)
 	{
 		RET ret;
-		std::thread thr([&]() {
-            ret = cbThread();
+                std::thread thr([&]() {
+                    ret = cbThread();
 		});
 
 		fn();
