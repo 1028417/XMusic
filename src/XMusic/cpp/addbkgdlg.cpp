@@ -323,7 +323,7 @@ bool CImgDir::genSubImgs()
     });
 }
 
-/*class CResImgDir : public CPath, public IImgDir
+/*class CResImgDir : public CPath, public CImgDir
 {
 public:
     CResImgDir() = default;
@@ -419,7 +419,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             auto eStyle = E_LVItemStyle::IS_MultiLine
                     | E_LVItemStyle::IS_RightTip | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
@@ -444,7 +444,7 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         _saveScrollRecord(NULL);
 
-        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             showImgDir(imgDir);
         });
 
@@ -452,7 +452,7 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
     }
 }
 
-void CAddBkgView::showImgDir(IImgDir& imgDir)
+void CAddBkgView::showImgDir(CImgDir& imgDir)
 {
     m_pImgDir = &imgDir;
     m_eScrollBar = E_LVScrollBar::LVSB_None;
@@ -481,6 +481,10 @@ void CAddBkgView::upward()
 
     m_eScrollBar = E_LVScrollBar::LVSB_Left;
 
+    if (m_pImgDir)
+    {
+        m_pImgDir->cleanup();
+    }
     m_pImgDir = NULL;
 
     scroll(_scrollRecord(NULL));

@@ -5,63 +5,6 @@
 
 #include "MLListView.h"
 
-class IImgDir
-{
-public:
-    IImgDir() = default;
-
-    virtual ~IImgDir() = default;
-
-    virtual wstring displayName() const = 0;
-
-    virtual cqpm snapshot() const = 0;
-
-    virtual size_t imgCount() const = 0;
-
-    virtual const QPixmap* img(UINT uIdx) const = 0;
-
-    virtual wstring imgPath(UINT uIdx) const = 0;
-
-    virtual bool genSubImgs() = 0;
-};
-
-using TD_ImgDirList = PtrArray<IImgDir>;
-
-class CAddBkgView : public CListView
-{
-public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
-
-private:
-    class CAddBkgDlg& m_addbkgDlg;
-    class CApp& m_app;
-    const TD_ImgDirList& m_paImgDirs;
-
-    IImgDir *m_pImgDir = NULL;
-
-private:
-    size_t getColCount() const override;
-
-    size_t getRowCount() const override;
-
-    size_t getItemCount() const override;
-
-    void _onPaintItem(CPainter&, tagLVItem&) override;
-
-    void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
-
-public:
-    void showImgDir(IImgDir& imgDir);
-
-    bool isInRoot() const
-    {
-        return NULL==m_pImgDir;
-    }
-
-    void upward();
-};
-
-
 struct tagBkgImg
 {
     tagBkgImg() = default;
@@ -76,7 +19,7 @@ struct tagBkgImg
     wstring strPath;
 };
 
-class CImgDir : public CPath, public IImgDir
+class CImgDir : public CPath
 {
 public:
     CImgDir(XT_RunSignal bRunSignal)
@@ -93,44 +36,85 @@ public:
 private:
     XT_RunSignal m_bRunSignal;
 
-    UINT m_uPos = 0;
-
     QPixmap m_pmSnapshot;
 
+    UINT m_uPos = 0;
     vector<tagBkgImg> m_vecImgs;
 
 public:
     void clear()
     {
-        m_uPos = 0;
         m_pmSnapshot = QPixmap();
+
+        m_uPos = 0;
         m_vecImgs.clear();
 
         CPath::clear();
     }
 
-private:
-    wstring displayName() const override;
+    void cleanup()
+    {
+        m_uPos = 0;
+        m_vecImgs.clear();
+    }
 
-    const cqpm snapshot() const override
+private:
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
+    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+
+    wstring displayName() const;
+
+    const cqpm snapshot() const
     {
         return m_pmSnapshot;
     }
 
-    size_t imgCount() const override
+    size_t imgCount() const
     {
         return m_vecImgs.size();
     }
 
-    const QPixmap* img(UINT uIdx) const override;
+    const QPixmap* img(UINT uIdx) const;
 
-    wstring imgPath(UINT uIdx) const override;
+    wstring imgPath(UINT uIdx) const;
 
-    bool genSubImgs() override;
+    bool genSubImgs();
+};
 
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
+using TD_ImgDirList = PtrArray<CImgDir>;
 
-    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+class CAddBkgView : public CListView
+{
+public:
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
+
+private:
+    class CAddBkgDlg& m_addbkgDlg;
+    class CApp& m_app;
+    const TD_ImgDirList& m_paImgDirs;
+
+    CImgDir *m_pImgDir = NULL;
+
+private:
+    size_t getColCount() const override;
+
+    size_t getRowCount() const override;
+
+    size_t getItemCount() const override;
+
+    void _onPaintItem(CPainter&, tagLVItem&) override;
+
+    void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
+
+public:
+    void showImgDir(CImgDir& imgDir);
+
+    bool isInRoot() const
+    {
+        return NULL==m_pImgDir;
+    }
+
+    void upward();
 };
 
 class CAddBkgDlg : public CDialog
