@@ -322,33 +322,6 @@ bool CImgDir::genSubImgs()
     });
 }
 
-/*class CResImgDir : public CPath, public CImgDir
-{
-public:
-    CResImgDir() = default;
-
-private:
-    virtual size_t imgCount() const
-    {
-        return 0;
-    }
-
-    virtual const QPixmap* snapshot(int nIdx=-1) const
-    {
-        return NULL;
-    }
-
-    virtual wstring path(int nIdx=-1) const
-    {
-        return L"";
-    }
-
-    virtual bool genSubImgs()
-    {
-        return false;
-    }
-};*/
-
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, CApp& app, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
