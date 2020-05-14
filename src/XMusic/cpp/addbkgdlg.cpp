@@ -158,10 +158,13 @@ bool CAddBkgDlg::_handleReturn()
     if (m_lv.upward())
     {
         relayout();
-        return true;
+    }
+    else
+    {
+        close();
     }
 
-    return false;
+    return true;
 }
 
 wstring CImgDir::displayName() const
