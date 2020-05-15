@@ -116,14 +116,14 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, UINT xround, UINT yround)
     this->drawPixmap(rc, pm, rcSrc, xround, yround);
 }
 
-void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy)
+void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, float fAdjust)
 {
     QRect rcSrc = pm.rect();
     _genSrcRect(rc, rcSrc);
 
     if (dx != 0 || dy != 0)
     {
-        auto fScaleRate = (1.0f+rcSrc.width())/rc.width();
+        auto fScaleRate = (fAdjust+rcSrc.width())/rc.width();
         if (dx != 0)
         {
             auto offset = dx*fScaleRate;

@@ -48,7 +48,7 @@ size_t CBkgView::getItemCount() const
 
 void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    size_t uColumnCount = getColCount();
+    size_t uColCount = getColCount();
 
     int nMargin = margin();
 
@@ -66,7 +66,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         int cy = rc.height()-nMargin;
         int cx = 0;
 
-        if (2 == uColumnCount)
+        if (2 == uColCount)
         {
             cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
             cx = MIN(cx, rc.width()-nMargin/2);
@@ -104,7 +104,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 
                 static UINT s_uSequence = 0;
                 s_uSequence++;
-                if (lvItem.uCol == uColumnCount-1)
+                if (lvItem.uCol == uColCount-1)
                 {
                     auto uPageRowCount = getRowCount();
                     UINT uFloorRow = ceil(scrollPos()+uPageRowCount-1);
@@ -117,9 +117,9 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                                 return;
                             }
 
-                            for (UINT uCol=0; uCol<uColumnCount; uCol++)
+                            for (UINT uCol=0; uCol<uColCount; uCol++)
                             {
-                                auto uItem = (uFloorRow+1) * uColumnCount + uCol;
+                                auto uItem = (uFloorRow+1) * uColCount + uCol;
                                 if (uItem >= 2)
                                 {
                                     m_bkgDlg.brush(uItem-2);

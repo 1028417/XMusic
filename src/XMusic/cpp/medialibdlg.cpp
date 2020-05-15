@@ -324,7 +324,7 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
             });
             if (nItem >= 0)
             {
-                m_lv.showItemTop(nItem);
+                m_lv.scrollToItem(nItem);
             }
     //    }
     //});

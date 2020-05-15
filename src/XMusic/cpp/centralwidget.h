@@ -15,5 +15,8 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
-    void _onTouchEvent(E_TouchEventType type, const CTouchEvent& te) override;
+    void _onTouchEvent(E_TouchEventType type, const CTouchEvent& te) override
+    {
+        ((MainWindow*)parent())->handleTouchEvent(type, te);
+    }
 };

@@ -5,31 +5,29 @@
 
 #define __cxBar __size(5)
 
-void CListView::showItem(UINT uItem)
+void CListView::showItem(UINT uItem, bool bToCenter)
 {
     auto uRow = uItem/getColCount();
-    size_t uRowCount = getRowCount();
-    if (uRow < m_fScrollPos)
+    if (bToCenter)
     {
-        scroll(uRow);
+        auto fPos = MAX(.0f, (float)uRow - (getRowCount()-1)/2);
+        scroll(fPos);
     }
-    else if (uRow+1 > m_fScrollPos+uRowCount)
+    else
     {
-        scroll(uRow+1-uRowCount);
+        if (uRow < m_fScrollPos)
+        {
+            scroll(uRow);
+        }
+        else
+        {
+            size_t uRowCount = getRowCount();
+            if (uRow+1 > m_fScrollPos+uRowCount)
+            {
+                scroll(uRow+1-uRowCount);
+            }
+        }
     }
-}
-
-void CListView::showItemTop(UINT uItem)
-{
-    auto uRow = uItem/getColCount();
-    scroll(uRow);
-}
-
-void CListView::showItemCenter(UINT uItem)
-{
-    auto uRow = uItem/getColCount();
-    auto fPos = MAX(.0f, (float)uRow - (getRowCount()-1)/2);
-    scroll(fPos);
 }
 
 void CListView::_onPaint(CPainter& painter, cqrc)
@@ -67,6 +65,8 @@ void CListView::_onPaint(CPainter& painter, int cx, int cy)
     m_fScrollPos = MIN(m_fScrollPos, m_uMaxScrollPos);
 
     UINT uRow = m_fScrollPos;
+    m_fTopItem = m_fScrollPos-uRow+uRow*uColCount;
+
     int y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
 
     UINT cx_col = cx/uColCount;
@@ -400,4 +400,21 @@ void CListView::_autoScroll(ulong uSeq, int dy, UINT dt, UINT total)
 
         _autoScroll(uSeq, dy, dt, total-dt);
     });
+}
+
+bool CListView::event(QEvent *ev)
+{
+    if (ev->type() == QEvent::Resize)
+    {
+        if (m_fTopItem > 0)
+        {
+            scrollToItem(m_fTopItem);
+        }
+        else
+        {
+            m_uAutoScrollSeq = 0;
+        }
+    }
+
+    return TWidget::event(ev);
 }

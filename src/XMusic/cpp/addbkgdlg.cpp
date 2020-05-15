@@ -194,12 +194,12 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
-    static BOOL bHLayout = -1;
+    /*static BOOL bHLayout = -1;
     if (bHLayout != (BOOL)m_bHLayout)
     {
         bHLayout = m_bHLayout;
         m_lv.scroll(m_lv.scrollPos());
-    }
+    }*/
 }
 
 bool CAddBkgDlg::_handleReturn()
@@ -573,7 +573,7 @@ bool CAddBkgView::handleReturn()
 
         m_pImgDir = NULL;
 
-        scroll(_scrollRecord(NULL));
+        scrollToItem(_scrollRecord(NULL));
 
         return true;
     }

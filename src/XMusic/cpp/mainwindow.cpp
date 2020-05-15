@@ -949,7 +949,7 @@ void MainWindow::_onPaint()
             cauto pmBkg = bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
+               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg, .0f);
             }
             else
             {
@@ -1499,31 +1499,13 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
 }
 
-void MainWindow::handleTouchMove(const CTouchEvent& te)
-{
-    if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
-    {
-        return;
-    }
-
-    if (g_crLogoBkg.alpha() > 0)
-    {
-        return;
-    }
-
-    mtutil::yield();
-    m_dxbkg -= te.dx();
-    m_dybkg -= te.dy();
-    update();
-}
-
 #if __isdebug
 #define __fastTouchDt 220
 #else
 #define __fastTouchDt 120
 #endif
 
-void MainWindow::handleTouchEnd(const CTouchEvent& te)
+void MainWindow::_handleTouchEnd(const CTouchEvent& te)
 {
     if (g_crLogoBkg.alpha() > 0)
     {
@@ -1559,22 +1541,38 @@ void MainWindow::handleTouchEnd(const CTouchEvent& te)
     }
 }
 
-void CCentralWidget::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    static bool bFlag = false;
+    static bool bTouchSingerImg = false;
     if (E_TouchEventType::TET_TouchBegin == type)
     {
-        bFlag = !ui.labelSingerImg->pixmap().isNull() && ui.labelSingerImg->geometry().contains(te.x(), te.y());
+        bTouchSingerImg = !m_bDefaultBkg && !ui.labelSingerImg->pixmap().isNull() && ui.labelSingerImg->geometry().contains(te.x(), te.y());
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
-        ((MainWindow*)parent())->handleTouchMove(te);
+        if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
+        {
+            return;
+        }
+
+        if (g_crLogoBkg.alpha() > 0)
+        {
+            return;
+        }
+
+        mtutil::yield();
+        m_dxbkg -= te.dx();
+        m_dybkg -= te.dy();
+        update();
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
     {
-        if (!bFlag)
+        if (bTouchSingerImg)
         {
-            ((MainWindow*)parent())->handleTouchEnd(te);
+            bTouchSingerImg = false;
+            return;
         }
+
+        _handleTouchEnd(te);
     }
 }

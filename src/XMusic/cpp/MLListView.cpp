@@ -48,7 +48,7 @@ void CMLListView::hittestMedia(CMedia& media)
         int nIdx = media.index();
         if (nIdx >= 0)
         {
-            showItemCenter((UINT)nIdx);
+            showItem((UINT)nIdx, true);
             selectItem((UINT)nIdx);
         }
     }
@@ -78,7 +78,7 @@ void CMLListView::hittestFile(XFile& file)
         if (nIdx >= 0)
         {
             auto uItem = pParent->dirs().size() + nIdx;
-            showItemCenter(uItem);
+            showItem(uItem, true);
             selectItem(uItem);
         }
     }
@@ -218,6 +218,6 @@ bool CMLListView::upward()
         return false;
     }
 
-    scroll(_scrollRecord(_current()));
+    scrollToItem(_scrollRecord(_current()));
     return true;
 }

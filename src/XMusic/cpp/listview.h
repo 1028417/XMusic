@@ -104,18 +104,13 @@ private:
     size_t m_uMaxScrollPos = 0;
 
     float m_fScrollPos = 0;
+    float m_fTopItem = 0;
 
     ulong m_uAutoScrollSeq = 0;
 
     int m_nSelectItem = -1;
 
     map<void*, float> m_mapScrollRecord;
-
-protected:
-    UINT rowHeight() const
-    {
-        return m_uRowHeight;
-    }
 
 private:
     void _onPaint(CPainter& painter, cqrc) override;
@@ -144,6 +139,11 @@ private:
     bool _checkBarArea(int x);
 
 protected:
+    UINT rowHeight() const
+    {
+        return m_uRowHeight;
+    }
+
     virtual size_t getColCount() const
     {
         return 1;
@@ -177,7 +177,7 @@ protected:
 
     void _saveScrollRecord(void* p)
     {
-        m_mapScrollRecord[p] = scrollPos();
+        m_mapScrollRecord[p] = m_fTopItem;
 
         reset();
     }
@@ -189,8 +189,15 @@ protected:
         reset();
     }
 
+    virtual bool event(QEvent *ev) override;
+
 public:
-    float scrollPos() const
+    inline float topItem() const
+    {
+        return m_fScrollPos;
+    }
+
+    inline float scrollPos() const
     {
         return m_fScrollPos;
     }
@@ -203,9 +210,15 @@ public:
         update();
     }
 
-    void showItem(UINT uItem);
-    void showItemTop(UINT uItem);
-    void showItemCenter(UINT uItem);
+    void scrollToItem(float fItemPos)
+    {
+        m_fScrollPos = fItemPos-(UINT)fItemPos+(UINT)fItemPos/getColCount();
+        m_uAutoScrollSeq = 0;
+
+        update();
+    }
+
+    void showItem(UINT uItem, bool bToCenter = false);
 
     void selectItem(UINT uItem)
     {

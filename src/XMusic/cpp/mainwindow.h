@@ -114,8 +114,7 @@ public:
 
     void updateBkg();
 
-    void handleTouchMove(const CTouchEvent& te);
-    void handleTouchEnd(const CTouchEvent& te);
+    void handleTouchEvent(E_TouchEventType type, const CTouchEvent& te);
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 
@@ -142,6 +141,8 @@ private:
     WString _genAlbumName();
 
     void _demand(CButton* btnDemand);
+
+    void _handleTouchEnd(const CTouchEvent& te);
 
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;

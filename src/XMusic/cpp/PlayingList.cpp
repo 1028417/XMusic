@@ -187,7 +187,7 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
                 //|| (te.dy() < 0 && scrollPos() + getRowCount() == getItemCount())
                 || getItemCount() <= getRowCount())
         {
-            ((MainWindow*)parent())->handleTouchMove(te);
+            ((MainWindow*)parent())->handleTouchEvent(type, te);
             bFlag = true;
             return;
         }
@@ -206,7 +206,7 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
             if (abs(te.dx()) > abs(te.dy()))
             {
-                ((MainWindow*)parent())->handleTouchEnd(te);
+                ((MainWindow*)parent())->handleTouchEvent(type, te);
             }
 
             return;
