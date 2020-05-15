@@ -88,7 +88,7 @@ bool CAddBkgDlg::_chooseDir()
     auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
 
     CFolderDlg FolderDlg;
-    cauto strDir = FolderDlg.Show(this->isVisible()?hwnd():m_bkgDlg.hwnd(), strAddBkgDir.c_str(), L" 添加背景", L"请选择图片目录");
+    cauto strDir = FolderDlg.Show(this->isVisible()?hwnd():m_bkgDlg.hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
     if (strDir.empty())
     {
         return false;
