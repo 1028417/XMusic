@@ -471,14 +471,14 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
         _saveScrollRecord(NULL);
 
         m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
-            showImgDir(imgDir);
+            _showImgDir(imgDir);
         });
 
         m_addbkgDlg.relayout();
     }
 }
 
-void CAddBkgView::showImgDir(CImgDir& imgDir)
+void CAddBkgView::_showImgDir(CImgDir& imgDir)
 {
     g_uMsScanYield = 10;
 
@@ -492,20 +492,27 @@ void CAddBkgView::showImgDir(CImgDir& imgDir)
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
-    timerutil::setTimerEx(30, [=](){
-        if (NULL == m_pImgDir)
-        {
-            return false;
-        }
+    CApp::async([&](){
+        _genSubImgs();
+    });
+}
 
-        if (!m_pImgDir->genSubImgs())
-        {
-            return false;
-        }
+void CAddBkgView::_genSubImgs()
+{
+    if (NULL == m_pImgDir)
+    {
+        return;
+    }
 
-        update();
+    if (!m_pImgDir->genSubImgs())
+    {
+        return;
+    }
 
-        return true;
+    update();
+
+    CApp::async(30, [&](){
+        _genSubImgs();
     });
 }
 

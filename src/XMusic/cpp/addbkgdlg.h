@@ -110,9 +110,11 @@ private:
 
     void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
-public:
-    void showImgDir(CImgDir& imgDir);
+    void _showImgDir(CImgDir& imgDir);
 
+    void _genSubImgs();
+
+public:
     bool isInRoot() const
     {
         return NULL==m_pImgDir;
