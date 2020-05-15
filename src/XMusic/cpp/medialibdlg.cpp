@@ -227,9 +227,8 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
 
     auto& frameFilterLanguage = *ui.frameFilterLanguage;
-    frameFilterLanguage.setGeometry(cx-frameFilterLanguage.width()-xMargin
-                                    , rcReturn.center().y()-frameFilterLanguage.height()/2
-                                    , frameFilterLanguage.width(), frameFilterLanguage.height());
+    frameFilterLanguage.move(cx-frameFilterLanguage.width()-xMargin
+                                    , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
     int x_btnPlay = cx - __lvRowMargin +__playIconOffset - rcReturn.width();
     ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());

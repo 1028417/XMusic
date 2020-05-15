@@ -48,14 +48,93 @@ void CAddBkgDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
+#if __windows
+    ui.labelChooseDir->setFont(1.055, QFont::Weight::Normal, false, true);
+
+    connect(ui.labelChooseDir, &CLabel::signal_click, [&](){
+        if (!_chooseDir())
+        {
+            return;
+        }
+
+        m_thrScan.cancel();
+
+        m_paImgDirs.clear();
+        update();
+
+        _scanDir(m_app.getCtrl().getOption().strAddBkgDir);
+    });
+#endif
+
     connect(ui.btnReturn, &CButton::signal_clicked, this, &CAddBkgDlg::_handleReturn);
 }
+
+/*#define __MediaFilter L"所有支持格式|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
+    |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
+    tagFileDlgOpt FileDlgOpt;
+    FileDlgOpt.strTitle = L"选择背景图";
+    FileDlgOpt.strFilter = __MediaFilter;
+    FileDlgOpt.hWndOwner = hwnd();
+    CFileDlg fileDlg(FileDlgOpt);
+    wstring strFile = fileDlg.ShowOpenSingle();
+    if (!strFile.empty())
+    {
+        this->addBkg(strFile);
+    }*/
+
+#if __windows
+bool CAddBkgDlg::_chooseDir()
+{
+    auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
+
+    CFolderDlg FolderDlg;
+    cauto strDir = FolderDlg.Show(this->isVisible()?hwnd():m_bkgDlg.hwnd(), strAddBkgDir.c_str(), L" 添加背景", L"请选择图片目录");
+    if (strDir.empty())
+    {
+        return false;
+    }
+
+    if (strutil::matchIgnoreCase(strDir, strAddBkgDir))
+    {
+        return false;
+    }
+
+    strAddBkgDir = strDir;
+
+    return true;
+}
+#endif
 
 void CAddBkgDlg::show()
 {
     g_uMsScanYield = 1;
 
-    cauto fnScan = [&](){
+    if (!m_thrScan.joinable())
+    {
+#if __windows
+        auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
+        if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
+        {
+            if (!_chooseDir())
+            {
+                return;
+            }
+        }
+        _scanDir(strAddBkgDir);
+
+#else
+        _scanDir(__medialib.path() + L"/..");
+#endif
+    }
+
+    CDialog::show();
+}
+
+void CAddBkgDlg::_scanDir(cwstr strDir)
+{
+    m_rootImgDir.setDir(strDir);
+
+    m_thrScan.start([&](){
         CPath::scanDir(m_thrScan.runSignal(), m_rootImgDir, [&](CPath& dir, TD_XFileList&){
             if (!m_lv.isInRoot() || !this->isVisible())
             {
@@ -71,55 +150,12 @@ void CAddBkgDlg::show()
                 this->update();
             });
         });
-    };
-
-#if __windows
-/*#define __MediaFilter L"所有支持图片|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
-    |Png文件(*.Png)|*.Png|位图文件(*.Bmp)|*.Bmp|"
-    tagFileDlgOpt FileDlgOpt;
-    FileDlgOpt.strTitle = L"选择背景图";
-    FileDlgOpt.strFilter = __MediaFilter;
-    FileDlgOpt.hWndOwner = hwnd();
-    CFileDlg fileDlg(FileDlgOpt);
-    wstring strFile = fileDlg.ShowOpenSingle();
-    if (!strFile.empty())
-    {
-        this->addBkg(strFile);
-    }*/
-
-    static CFolderDlg FolderDlg;
-    cauto strImgDir = FolderDlg.Show(m_bkgDlg.hwnd(), NULL, L" 添加背景", L"请选择图片目录");
-    if (strImgDir.empty())
-    {
-        return;
-    }
-
-    m_thrScan.join();
-    m_rootImgDir.setDir(strImgDir);
-    m_thrScan.start([&](){
-        fnScan();
 
         m_thrScan.usleepex(-1);
 
         m_rootImgDir.clear();
         m_paImgDirs.clear();
     });
-
-    CDialog::show([&](){
-        m_thrScan.cancel(false);
-    });
-#else
-
-    if (!m_thrScan.joinable())
-    {
-        m_rootImgDir.setDir(__medialib.path() + L"/..");
-        m_thrScan.start([&](){
-            fnScan();
-        });
-    }
-
-    CDialog::show();
-#endif
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -137,16 +173,25 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     ui.labelTitle->move(rcReturn.right() + xMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
+    ui.labelChooseDir->setVisible(false);
+
     int y_addbkgView = 0;
     if (m_lv.isInRoot())
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
         ui.labelTitle->setVisible(true);
+
+#if __windows
+        ui.labelChooseDir->setVisible(true);
+        ui.labelChooseDir->move(cx-ui.labelChooseDir->width()-xMargin
+                                        , rcReturn.center().y()-ui.labelChooseDir->height()/2);
+#endif
     }
     else
     {
         ui.labelTitle->setVisible(false);
     }
+
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
     static BOOL bHLayout = -1;

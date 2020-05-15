@@ -150,6 +150,12 @@ private:
         (void)m_lv.handleReturn();
     }
 
+#if __windows
+    bool _chooseDir();
+#endif
+
+    void _scanDir(cwstr strDir);
+
 public:
     size_t rowCount() const
     {
