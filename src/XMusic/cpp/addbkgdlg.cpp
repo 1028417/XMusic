@@ -301,7 +301,8 @@ bool CImgDir::genSubImgs()
         m_uPos++;
     };
 
-    if (!m_paSubFile.get(m_uPos+1, [&](XFile& file){
+#if __windows || __mac
+    if (m_paSubFile.get(m_uPos+1, [&](XFile& file){
         cauto strFile = file.path();
         QPixmap pm;
         mtutil::concurrence(fn, [&](){
@@ -311,8 +312,11 @@ bool CImgDir::genSubImgs()
         m_uPos++;
     }))
     {
-        fn();
+        return true;
     }
+#endif
+
+    fn();
 
     return true;
 }
@@ -324,13 +328,30 @@ void CImgDir::_genSubImgs(QPixmap& pm, cwstr strFile)
         return;
     }
 
+    auto prevCount = m_vecImgs.size();
+    if (0 == prevCount)
+    {
+        m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
+    }
+
     int szZoomout = g_szScreenMax*0.88f;
-    auto count = m_vecImgs.size();
-    if (count >= 4)
+    if (prevCount >= 4)
     {
         szZoomout /= 3;
 
-        if (4 == count)
+        auto n = prevCount/18;
+        if (n > 1)
+        {
+            szZoomout /= pow(n, 0.3);
+            if (prevCount % 18 == 0)
+            {
+                for (auto& bkgImg : m_vecImgs)
+                {
+                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                }
+            }
+        }
+        else if (4 == prevCount)
         {
             for (auto& bkgImg : m_vecImgs)
             {
@@ -345,10 +366,6 @@ void CImgDir::_genSubImgs(QPixmap& pm, cwstr strFile)
 
     zoomoutPixmap(pm, szZoomout, szZoomout);
 
-    if (m_vecImgs.empty())
-    {
-        m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
-    }
     m_vecImgs.emplace_back(pm, strFile);
 }
 
@@ -460,13 +477,13 @@ void CAddBkgView::showImgDir(CImgDir& imgDir)
     if (m_pPrevImgDir && m_pPrevImgDir != m_pImgDir)
     {
         m_pPrevImgDir->cleanup();
-        m_pPrevImgDir = m_pImgDir;
     }
+    m_pPrevImgDir = m_pImgDir;
 
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
-    timerutil::setTimerEx(50, [=](){
+    timerutil::setTimerEx(30, [=](){
         if (NULL == m_pImgDir)
         {
             return false;
