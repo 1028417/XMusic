@@ -50,12 +50,13 @@ struct __ModelExt tagOption
     bool bHideMenuBar = false;
 
 #else
-    wstring strHBkg;
-    wstring strVBkg;
-
     bool bUseBkgColor = false;
     int64_t crBkg = -1;
     int64_t crFore = -1;
+
+    wstring strHBkg;
+    wstring strVBkg;
+    wstring strAddBkgDir;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;
