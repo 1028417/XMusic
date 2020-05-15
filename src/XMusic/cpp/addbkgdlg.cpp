@@ -9,7 +9,7 @@ static Ui::AddBkgDlg ui;
 
 //static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
 
-static UINT g_uMsScanYield = 0;
+static UINT g_uMsScanYield = 1;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
@@ -53,7 +53,7 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
-    g_uMsScanYield = 0;
+    g_uMsScanYield = 1;
 
     cauto fnScan = [&](){
         CPath::scanDir(m_thrScan.runSignal(), m_rootImgDir, [&](CPath& dir, TD_XFileList&){
@@ -225,8 +225,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-
-    mtutil::yield();
+    mtutil::usleep(g_uMsScanYield);
 
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (!g_setImgExtName.includes(strExtName))
@@ -236,9 +235,14 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
     if (m_paSubFile.empty())
     {
-        mtutil::usleep(100);
         if (!_loadSubImg(XFile(fileInfo).path(), m_pmSnapshot))
         {
+            if (!m_bRunSignal)
+            {
+                return NULL;
+            }
+            mtutil::usleep(g_uMsScanYield);
+
             m_pmSnapshot = QPixmap();
             return NULL;
         }
@@ -258,8 +262,7 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-
-    mtutil::yield();
+    mtutil::usleep(g_uMsScanYield*3);
 
     return new CImgDir(m_bRunSignal, fileInfo);
 }
@@ -510,7 +513,7 @@ bool CAddBkgView::handleReturn()
 {
     if (m_pImgDir)
     {        
-        g_uMsScanYield = 0;
+        g_uMsScanYield = 1;
 
         reset();
 
