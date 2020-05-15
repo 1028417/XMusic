@@ -118,7 +118,7 @@ public:
         return NULL==m_pImgDir;
     }
 
-    bool upward();
+    bool handleReturn();
 };
 
 class CAddBkgDlg : public CDialog
@@ -145,7 +145,7 @@ private:
 
     void _onClosed() override
     {
-        (void)m_lv.upward();
+        (void)m_lv.handleReturn();
     }
 
 public:

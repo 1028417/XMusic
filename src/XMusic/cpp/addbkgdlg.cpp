@@ -9,6 +9,8 @@ static Ui::AddBkgDlg ui;
 
 //static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
 
+static UINT g_uMsScanYield = 0;
+
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
@@ -51,6 +53,8 @@ void CAddBkgDlg::init()
 
 void CAddBkgDlg::show()
 {
+    g_uMsScanYield = 0;
+
     cauto fnScan = [&](){
         CPath::scanDir(m_thrScan.runSignal(), m_rootImgDir, [&](CPath& dir, TD_XFileList&){
             if (!m_lv.isInRoot() || !this->isVisible())
@@ -155,7 +159,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (m_lv.upward())
+    if (m_lv.handleReturn())
     {
         relayout();
     }
@@ -334,7 +338,7 @@ void CImgDir::_genSubImgs(QPixmap& pm, cwstr strFile)
         m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
     }
 
-    int szZoomout = g_szScreenMax*0.88f;
+    int szZoomout = g_szScreenMax;
     if (prevCount >= 4)
     {
         szZoomout /= 3;
@@ -473,6 +477,8 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
 
 void CAddBkgView::showImgDir(CImgDir& imgDir)
 {
+    g_uMsScanYield = 10;
+
     m_pImgDir = &imgDir;
     if (m_pPrevImgDir && m_pPrevImgDir != m_pImgDir)
     {
@@ -500,26 +506,30 @@ void CAddBkgView::showImgDir(CImgDir& imgDir)
     });
 }
 
-bool CAddBkgView::upward()
+bool CAddBkgView::handleReturn()
 {
-    if (NULL == m_pImgDir)
-    {
-        if (m_pPrevImgDir)
-        {
-            m_pPrevImgDir->cleanup();
-            m_pPrevImgDir = NULL;
-        }
+    if (m_pImgDir)
+    {        
+        g_uMsScanYield = 0;
 
-        return false;
+        reset();
+
+        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+
+        m_pImgDir = NULL;
+
+        scroll(_scrollRecord(NULL));
+
+        return true;
     }
 
-    reset();
+    if (m_pPrevImgDir)
+    {
+        m_pPrevImgDir->cleanup();
+        m_pPrevImgDir = NULL;
+    }
 
-    m_eScrollBar = E_LVScrollBar::LVSB_Left;
+    g_uMsScanYield = 10;
 
-    m_pImgDir = NULL;
-
-    scroll(_scrollRecord(NULL));
-
-    return true;
+    return false;
 }
