@@ -158,12 +158,16 @@ void MainWindow::showLogo()
     CDialog::setWidgetTextColor(ui.labelLogoTip, QColor(64, 128, 255));
     CDialog::setWidgetTextColor(ui.labelLogoCompany, QColor(64, 128, 255, 0));
 
-    static QMovie movie(":/img/logo.gif");
-    ui.labelLogo->setMovie(&movie);
+    auto movie = new QMovie(this);
+    movie->setFileName(":/img/logo.gif");
+    ui.labelLogo->setVisible(false);
+    ui.labelLogo->setMovie(movie);
 
     g_bFullScreen = m_app.getOption().bFullScreen;
     fixWorkArea(*this);
     this->setVisible(true);
+
+    this->repaint();
 
     UINT uDelayTime = 100;
 #if !__android
@@ -171,10 +175,9 @@ void MainWindow::showLogo()
 #endif
     CApp::async(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
+        ui.labelLogo->setVisible(true);
 
         CApp::async(100, [&](){
-            this->repaint();
-
             _updateLogoTip();
         });
 
