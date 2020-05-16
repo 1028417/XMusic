@@ -16,7 +16,7 @@ int g_szScreenMax = 0;
 int g_szScreenMin = 0;
 float g_fPixelRatio = 1;
 
-static bool g_bRunSignal = true;
+bool g_bRunSignal = true;
 
 #if __android
 #include <QAndroidJniObject>
@@ -318,80 +318,71 @@ static bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
     return true;
 }
 
-int CApp::run()
+void CApp::_init()
 {
-    std::thread thrUpgrade;
-
-    CApp::async([&](){
-        connect(this, &CApp::signal_sync, this, &CApp::slot_sync, Qt::BlockingQueuedConnection);
-        //connect(this, &CApp::signal_run, this, &CApp::slot_run);
-
 #if __android
-        if (isMobileConnected())
-        {
-            vibrate();
-        }
+    if (isMobileConnected())
+    {
+        vibrate();
+    }
 #endif
 
-        thrUpgrade = std::thread([&]() {
-            auto& option = m_ctrl.initOption();
-            if (!_initRootDir(option.strRootDir))
-            {
-                this->quit();
-                return;
-            }
-            g_logger << "RootDir: " >> option.strRootDir;
+    auto& option = m_ctrl.initOption();
+    if (!_initRootDir(option.strRootDir))
+    {
+        this->quit();
+        return;
+    }
+    g_logger << "RootDir: " >> option.strRootDir;
 
-            QFile qf(":/mdlconf");
-            if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-            {
-                g_logger >> "loadMedialibConfResource fail";
-                this->quit();
-                return;
-            }
+    QFile qf(":/mdlconf");
+    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        g_logger >> "loadMedialibConfResource fail";
+        this->quit();
+        return;
+    }
 
-            cauto ba = qf.readAll();
-            IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-            tagMedialibConf orgMedialibConf;
-            if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
-            {
-                g_logger >> "readMedialibConfResource fail";
+    cauto ba = qf.readAll();
+    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
+    tagMedialibConf orgMedialibConf;
+    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+    {
+        g_logger >> "readMedialibConfResource fail";
 
-                this->quit();
-                return;
-            }
-            g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-                     << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-                     << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-            m_strAppVersion = strutil::fromAsc(orgMedialibConf.strAppVersion);
+        this->quit();
+        return;
+    }
+    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
+             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
+             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
+    m_strAppVersion = strutil::fromAsc(orgMedialibConf.strAppVersion);
 
-            E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
-                return _initMediaLib(orgMedialibConf);
-            }, [&](){
-                mtutil::usleep(300);
+    E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
+        return _initMediaLib(orgMedialibConf);
+    }, [&](){
+        (void)m_pmHDDisk.load(__mediaPng(hddisk));
+        (void)m_pmLLDisk.load(__mediaPng(lldisk));
 
-                (void)m_pmHDDisk.load(__mediaPng(hddisk));
-                (void)m_pmLLDisk.load(__mediaPng(lldisk));
+        m_mainWnd.preinit();
+    });
 
-                m_mainWnd.preinit();
-            });
+    sync([=](){
+        _run(eUpgradeResult);
+    });
+}
 
-            sync([=](){
-                _run(eUpgradeResult);
-            });
-        });
+int CApp::run()
+{
+    connect(this, &CApp::signal_sync, this, &CApp::slot_sync, Qt::BlockingQueuedConnection);
+
+    std::thread thrUpgrade([&](){
+        _init();
     });
 
     m_mainWnd.showLogo();
     auto nRet = exec();
     g_bRunSignal = false;
-
-#if !__android // TODO 规避5.6.1退出的bug
-    if (thrUpgrade.joinable())
-    {
-        thrUpgrade.join();
-    }
-#endif
 
     g_logger >> "stop controller";
     m_ctrl.stop();
@@ -404,6 +395,10 @@ int CApp::run()
     {
         thr.join();
     }
+
+#if !__android // TODO 规避5.6.1退出的bug
+    thrUpgrade.join();
+#endif
 
     g_logger >> "app quit";
     m_logger.close();
@@ -522,6 +517,11 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;
     for (cauto upgradeUrl : lstUpgradeUrl)
     {
+        if (!g_bRunSignal)
+        {
+            break;
+        }
+
         cauto strMdlconfUrl = upgradeUrl.mdlconf();
         g_logger << "checkMediaLib: " >> strMdlconfUrl;
 
@@ -600,6 +600,11 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         bool bExistMdl = fsutil::existFile(strMdlFile);
         if (!bExistMdl || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
         {
+            if (!g_bRunSignal)
+            {
+                break;
+            }
+
             auto time0 = time(0);
 
             CByteBuffer bbfMdl;
@@ -668,7 +673,7 @@ E_UpgradeResult CApp::_loadMdl(CZipFile& zipMdl, bool bUpgradeDB)
 
     cauto strDBFile = m_model.medialibPath(__DBFile);
     bool bExistDB = fsutil::existFile(strDBFile);
-    if (!bExistDB || bUpgradeDB)
+    if (g_bRunSignal && (!bExistDB || bUpgradeDB))
     {
         wstring strDBFileBak;
         if (bExistDB)
@@ -701,6 +706,11 @@ E_UpgradeResult CApp::_loadMdl(CZipFile& zipMdl, bool bUpgradeDB)
 
     for (cauto pr : mapUnzfile)
     {
+        if (!g_bRunSignal)
+        {
+            break;
+        }
+
         const tagUnzfile& unzfile = pr.second;
         CByteBuffer bbfData;
         if (zipMdl.read(unzfile, bbfData) <= 0)

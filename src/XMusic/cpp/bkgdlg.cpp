@@ -261,6 +261,8 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, UINT uDiv=0)
     zoomoutPixmap(pm, cx, cy);
 }
 
+extern bool g_bRunSignal;
+
 void CBkgDlg::preinit()
 {
 #if __windows
@@ -272,6 +274,11 @@ void CBkgDlg::preinit()
 
     cauto fn = [&](bool bHLayout)
     {
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
         cauto strBkgDir = bHLayout?(m_strHBkgDir = strWorkDir + L"/hbkg/")
                               :(m_strVBkgDir = strWorkDir + L"/vbkg/");
         (void)fsutil::createDir(strBkgDir);
@@ -339,16 +346,31 @@ void CBkgDlg::preinit()
         for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
              && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
         {
+            if (!g_bRunSignal)
+            {
+                return;
+            }
+
             QPixmap pm(strBkgDir + itr->strFile);
             itr->br = &_addbr(pm);
 
             mtutil::usleep(10);
         }
 
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
         wstring strHBkg = m_app.getOption().strHBkg;
         if (!strHBkg.empty())
         {
             (void)m_pmHBkg.load(__WS2Q(m_strHBkgDir + strHBkg));
+        }
+
+        if (!g_bRunSignal)
+        {
+            return;
         }
 
         wstring strVBkg = m_app.getOption().strVBkg;

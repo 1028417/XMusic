@@ -88,6 +88,8 @@ private:
         return m_mainWnd;
     }
 
+    void _init();
+
     E_UpgradeResult _initMediaLib(const tagMedialibConf& orgMedialibConf);
 
     bool _initRootDir(wstring& strRootDir);
