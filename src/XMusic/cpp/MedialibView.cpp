@@ -50,23 +50,11 @@ void CMedialibView::initpm()
 
 void CMedialibView::init()
 {
-    m_paPlaylist.add(m_app.getPlaylistMgr().playlists());
-    _asyncTask();
-}
-
-void CMedialibView::_asyncTask()
-{
-    CApp::async(3000, [&](){
-        m_paPlaylist.popFront([&](const CPlaylist&){
-
-        });
-
-        if (!m_paPlaylist)
-        {
-            return;
-        }
-
-        _asyncTask();
+    TD_MediaSetList paSingers;
+    m_SingerLib.GetAllMediaSets(E_MediaSetType::MST_Singer, paSingers);
+    paSingers([&](CMediaSet& singer){
+        auto&& strSingerDir = strutil::lowerCase_r(singer.GetBaseDir());
+        m_lstSingerDir.emplace_back(strSingerDir, &singer);
     });
 }
 
@@ -89,7 +77,22 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             return;
         }
 
-        if (m_pthrFindRelated)
+        setPlaylist.insert(&MediaSet);
+        for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
+        {
+            cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
+            for (cauto pr : m_lstSingerDir)
+            {
+                if (fsutil::CheckSubPath(pr.first, strPath))
+                {
+                    ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
+                                                              , pr.second->m_uID, pr.second->m_strName);
+                    break;
+                }
+            }
+        }
+
+        /*if (m_pthrFindRelated)
         {
             m_pthrFindRelated->join();
         }
@@ -111,7 +114,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                     setPlaylist.insert(&MediaSet);
                 });
             }
-        });
+        });*/
     }
 }
 
@@ -633,10 +636,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
-    if (m_pthrFindRelated)
-    {
-        m_pthrFindRelated->cancel(false);
-    }
+    //if (m_pthrFindRelated) m_pthrFindRelated->cancel(false);
 
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {
@@ -711,10 +711,7 @@ void CMedialibView::play()
 
 void CMedialibView::cleanup()
 {
-    if (m_pthrFindRelated)
-    {
-        m_pthrFindRelated->cancel(false);
-    }
+    //if (m_pthrFindRelated) m_pthrFindRelated->cancel(false);
 
     m_mapSingerPixmap.clear();
     m_lstSingerPixmap.clear();

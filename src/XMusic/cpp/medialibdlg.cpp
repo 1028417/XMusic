@@ -111,6 +111,8 @@ void CMedialibDlg::init()
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         m_lv.play();
     });
+
+    m_lv.init();
 }
 
 /*this->setGeometry(m_app.mainWnd().geometry());

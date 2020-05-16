@@ -51,9 +51,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    XThread *m_pthrFindRelated = NULL;
-
-    PtrArray<const CPlaylist> m_paPlaylist;
+    list<pair<wstring, CMediaSet*>> m_lstSingerDir;
 
 public:
     void initpm();
@@ -74,8 +72,6 @@ public:
     void cleanup();
 
 private:
-    void _asyncTask();
-
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
     void _onShowDir(CPath&) override;
