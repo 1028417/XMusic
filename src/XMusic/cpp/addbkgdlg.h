@@ -99,7 +99,6 @@ private:
     const TD_ImgDirList& m_paImgDirs;
 
     CImgDir *m_pImgDir = NULL;
-    CImgDir *m_pPrevImgDir = NULL;
 
 private:
     size_t getColCount() const override;

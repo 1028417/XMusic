@@ -579,11 +579,13 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     m_eScrollBar = E_LVScrollBar::LVSB_None;
 
     m_pImgDir = &imgDir;
-    if (m_pPrevImgDir && m_pPrevImgDir != m_pImgDir)
+    for (auto pImgDir : m_paImgDirs)
     {
-        m_pPrevImgDir->cleanup();
+        if (pImgDir != m_pImgDir)
+        {
+            m_pImgDir->cleanup();
+        }
     }
-    m_pPrevImgDir = m_pImgDir;
 
     m_addbkgDlg.relayout();
     m_addbkgDlg.repaint(); //update();
@@ -631,12 +633,6 @@ bool CAddBkgView::handleReturn()
     }
 
     g_uMsScanYield = 10;
-
-    if (m_pPrevImgDir)
-    {
-        m_pPrevImgDir->cleanup();
-        m_pPrevImgDir = NULL;
-    }
 
     /*if (g_thrGenSubImg)
     {
