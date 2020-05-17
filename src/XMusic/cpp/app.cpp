@@ -384,13 +384,14 @@ int CApp::run()
     auto nRet = exec();
     g_bRunSignal = false;
 
-    g_logger >> "stop controller";
-    m_ctrl.stop();
-
     for (auto& thr : m_lstThread)
     {
         thr.cancel(false);
     }
+
+    g_logger >> "stop controller";
+    m_ctrl.stop();
+
     for (auto& thr : m_lstThread)
     {
         thr.join();

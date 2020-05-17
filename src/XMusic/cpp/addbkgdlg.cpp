@@ -333,10 +333,37 @@ wstring CImgDir::imgPath(UINT uIdx) const
 }
 
 #define __szSubimgZoomout 500
-
 extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
 
-bool CImgDir::genSubImgs()
+static XThread *g_thrGenSubImg = NULL;
+
+void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
+{
+    if (m_uPos >= m_paSubFile.size())
+    {
+        return;
+    }
+
+    if (g_thrGenSubImg)
+    {
+        g_thrGenSubImg->join();
+    }
+    else
+    {
+        g_thrGenSubImg = new XThread;
+    }
+    g_thrGenSubImg->start([&](){
+        do {
+            if (!_genSubImgs(app, lv))
+            {
+                return;
+            }
+
+        } while (g_thrGenSubImg->usleepex(30));
+    });
+}
+
+bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 {
     wstring strFile;
     if (!m_paSubFile.get(m_uPos, [&](XFile& file){
@@ -346,40 +373,57 @@ bool CImgDir::genSubImgs()
         return false;
     }
 
-    cauto fn = [&](){
-        QPixmap pm;
-        (void)_loadSubImg(strFile, pm);
-        _genSubImgs(pm, strFile);
-        m_uPos++;
-    };
+    QPixmap pm;
 
 #if __windows || __mac
     if (m_paSubFile.get(m_uPos+1, [&](XFile& file){
-        cauto strFile = file.path();
-        QPixmap pm;
-        mtutil::concurrence(fn, [&](){
+        cauto strFile2 = file.path();
+        QPixmap pm2;
+        mtutil::concurrence([&](){
             (void)_loadSubImg(strFile, pm);
+        }, [&](){
+            (void)_loadSubImg(strFile2, pm2);
         });
-        _genSubImgs(pm, strFile);
-        m_uPos++;
+
+        if (!pm.isNull() || !pm2.isNull())
+        {
+            app.sync([&](){
+                if (!pm.isNull())
+                {
+                    _genSubImgs(strFile, pm);
+                }
+                m_uPos++;
+
+                if (!pm2.isNull())
+                {
+                    _genSubImgs(strFile2, pm2);
+                }
+                m_uPos++;
+
+                lv.update();
+            });
+        }
     }))
     {
         return true;
     }
 #endif
 
-    fn();
+    if (_loadSubImg(strFile, pm))
+    {
+        app.sync([&](){
+            _genSubImgs(strFile, pm);
+            m_uPos++;
+
+            lv.update();
+        });
+    }
 
     return true;
 }
 
-void CImgDir::_genSubImgs(QPixmap& pm, cwstr strFile)
+void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
 {
-    if (pm.isNull())
-    {
-        return;
-    }
-
     auto prevCount = m_vecImgs.size();
     if (0 == prevCount)
     {
@@ -537,12 +581,14 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     m_eScrollBar = E_LVScrollBar::LVSB_None;
     update();
 
-    CApp::async([&](){
+    m_pImgDir->genSubImgs(m_app, *this);
+
+    /*CApp::async([&](){
         _genSubImgs();
-    });
+    });*/
 }
 
-void CAddBkgView::_genSubImgs()
+/*void CAddBkgView::_genSubImgs()
 {
     if (NULL == m_pImgDir)
     {
@@ -559,12 +605,12 @@ void CAddBkgView::_genSubImgs()
     CApp::async(30, [&](){
         _genSubImgs();
     });
-}
+}*/
 
 bool CAddBkgView::handleReturn()
 {
     if (m_pImgDir)
-    {        
+    {
         g_uMsScanYield = 1;
 
         reset();
@@ -574,6 +620,11 @@ bool CAddBkgView::handleReturn()
         m_pImgDir = NULL;
 
         scrollToItem(_scrollRecord(NULL));
+
+        if (g_thrGenSubImg)
+        {
+            g_thrGenSubImg->cancel(false);
+        }
 
         return true;
     }
@@ -585,6 +636,13 @@ bool CAddBkgView::handleReturn()
     }
 
     g_uMsScanYield = 10;
+
+    if (g_thrGenSubImg)
+    {
+        g_thrGenSubImg->join();
+        delete g_thrGenSubImg;
+        g_thrGenSubImg = NULL;
+    }
 
     return false;
 }

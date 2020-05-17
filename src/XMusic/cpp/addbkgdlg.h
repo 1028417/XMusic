@@ -62,7 +62,9 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    void _genSubImgs(QPixmap& pm, cwstr strFile);
+    bool _genSubImgs(class CApp& app, class CAddBkgView& lv);
+
+    void _genSubImgs(cwstr strFile, QPixmap& pm);
 
 public:
     wstring displayName() const;
@@ -81,7 +83,7 @@ public:
 
     wstring imgPath(UINT uIdx) const;
 
-    bool genSubImgs();
+    void genSubImgs(class CApp& app, class CAddBkgView& lv);
 };
 
 using TD_ImgDirList = PtrArray<CImgDir>;
@@ -111,8 +113,6 @@ private:
     void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
     void _showImgDir(CImgDir& imgDir);
-
-    void _genSubImgs();
 
 public:
     bool isInRoot() const

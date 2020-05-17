@@ -1505,7 +1505,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
 #if __isdebug
 #define __fastTouchDt 220
 #else
-#define __fastTouchDt 120
+#define __fastTouchDt 130
 #endif
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
