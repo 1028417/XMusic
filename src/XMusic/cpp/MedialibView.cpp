@@ -183,9 +183,9 @@ size_t CMedialibView::getColCount() const
     return 1;
 }
 
-size_t CMedialibView::getRowCount() const
+size_t CMedialibView::_getRowCount(bool bRoot) const
 {
-    if (isInRoot())
+    if (bRoot)
     {
         if (m_medialibDlg.isHLayout())
         {
@@ -196,8 +196,10 @@ size_t CMedialibView::getRowCount() const
             return 10;
         }
     }
-
-    return m_medialibDlg.rowCount();
+    else
+    {
+        return m_medialibDlg.rowCount();
+    }
 }
 
 size_t CMedialibView::_getRootItemCount() const

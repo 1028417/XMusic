@@ -374,13 +374,17 @@ void CApp::_init()
 
 int CApp::run()
 {
-    connect(this, &CApp::signal_sync, this, &CApp::slot_sync, Qt::BlockingQueuedConnection);
+    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
+    connect(this, &CApp::signal_sync, this, [&](fn_void cb){
+        cb();
+    });
+
+    m_mainWnd.showLogo();
 
     std::thread thrUpgrade([&](){
         _init();
     });
 
-    m_mainWnd.showLogo();
     auto nRet = exec();
     g_bRunSignal = false;
 
@@ -1036,40 +1040,25 @@ void CApp::quit()
 
 void CApp::sync(cfn_void cb)
 {
-    if (!g_bRunSignal)
+    if (g_bRunSignal)
     {
-        return;
+        //QVariant var;
+        //var.setValue(cb);
+        emit signal_sync(cb);
     }
-
-    emit signal_sync(&cb);
-}
-
-void CApp::slot_sync(const void* pcb)
-{
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    cfn_void cb = *(const fn_void*)pcb;
-    cb();
 }
 
 void CApp::async(UINT uDelayTime, cfn_void cb)
 {
-    if (!g_bRunSignal)
+    if (g_bRunSignal)
     {
-        return;
+        __async(uDelayTime, [&, cb](){
+            if (g_bRunSignal)
+            {
+                cb();
+            }
+        });
     }
-
-    __async(uDelayTime, [&, cb](){
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        cb();
-    });
 }
 
 static const WString g_lpQuality[] {

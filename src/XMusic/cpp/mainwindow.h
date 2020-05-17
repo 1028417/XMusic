@@ -38,7 +38,6 @@ struct tagPlayingInfo
 
     CMedia *pRelatedMedia = NULL;
 };
-Q_DECLARE_METATYPE(tagPlayingInfo);
 
 class MainWindow : public QMainWindow, public IModelObserver
 {

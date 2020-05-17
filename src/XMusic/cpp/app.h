@@ -44,6 +44,8 @@ enum class E_UpgradeResult
     UR_AppUpgraded
 };
 
+Q_DECLARE_METATYPE(fn_void);
+
 class CApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
@@ -77,10 +79,7 @@ private:
 signals:
     void signal_run(int nUpgradeResult);
 
-    void signal_sync(const void*);
-
-private slots:
-    void slot_sync(const void* pcb);
+    void signal_sync(fn_void cb);
 
 private:
     IModelObserver& getModelObserver() override

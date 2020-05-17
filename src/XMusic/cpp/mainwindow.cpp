@@ -1015,7 +1015,7 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
     (void)bSetActive;
-    m_app.sync([&](){
+    m_app.sync([=](){
         m_PlayingList.updateList(nPlayingItem);
     });
 }
@@ -1080,7 +1080,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     m_uPlaySeq++;
 
-    m_app.sync([&](){
+    m_app.sync([=](){
         auto strPrevSinger = m_PlayingInfo.strSingerName;
         m_PlayingInfo = PlayingInfo;
 
@@ -1120,7 +1120,7 @@ void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
 {
     (void)bOpenFail;
 
-    m_app.sync([&](){
+    m_app.sync([=](){
         ui.progressbar->setMaximum(0);
 
         WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);

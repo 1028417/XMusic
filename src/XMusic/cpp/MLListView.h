@@ -90,6 +90,12 @@ private:
     TD_XFileList m_paSubFiles;
 
 protected:
+    size_t getRowCount() const override
+    {
+        bool bRoot = NULL==m_pMediaset && NULL==m_pDir;
+        return _getRowCount(bRoot);
+    }
+
     void _cleanup()
     {
         reset();
@@ -124,6 +130,8 @@ private:
     virtual void _onShowDir(CPath&) {}
 
     virtual size_t _getRootItemCount() const = 0;
+
+    virtual size_t _getRowCount(bool bRoot) const = 0;
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
@@ -168,11 +176,6 @@ public:
     CPath* currentDir() const
     {
         return m_pDir;
-    }
-
-    bool isInRoot() const
-    {
-        return NULL==m_pMediaset && NULL==m_pDir;
     }
 
     void showRoot();

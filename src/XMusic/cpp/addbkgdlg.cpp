@@ -7,9 +7,9 @@
 
 static Ui::AddBkgDlg ui;
 
-//static TSignal<pair<wstring, UINT>> g_sgnLoadImg;
-
 static UINT g_uMsScanYield = 1;
+
+static XThread *g_thrGenSubImg = NULL;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     : CDialog(bkgDlg)
@@ -19,27 +19,6 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
     , m_rootImgDir(m_thrScan.runSignal())
     , m_lv(*this, app, m_paImgDirs)
 {
-    /*mtutil::thread([&](){
-        wstring strFile;
-        UINT uIdx = 0;
-        while (true)
-        {
-            bool bRet = g_sgnLoadImg.wait([&](pair<wstring, UINT>& pr){
-                if (!pr.first.empty())
-                {
-                    strFile.swap(pr.first);
-                    uIdx = pr.second;
-                    return true;
-                }
-
-                return false;
-            });
-            if (!bRet)
-            {
-                break;
-            }
-        }
-    });*/
 }
 
 void CAddBkgDlg::init()
@@ -58,6 +37,11 @@ void CAddBkgDlg::init()
         }
 
         m_thrScan.cancel();
+
+        if (g_thrGenSubImg)
+        {
+            g_thrGenSubImg->join();
+        }
 
         m_paImgDirs.clear();
         update();
@@ -107,8 +91,6 @@ bool CAddBkgDlg::_chooseDir()
 
 void CAddBkgDlg::show()
 {
-    g_uMsScanYield = 1;
-
     if (!m_thrScan.joinable())
     {
 #if __windows
@@ -120,12 +102,20 @@ void CAddBkgDlg::show()
                 return;
             }
         }
+
+        if (g_thrGenSubImg)
+        {
+            g_thrGenSubImg->join();
+        }
+
         _scanDir(strAddBkgDir);
 
 #else
         _scanDir(__medialib.path() + L"/..");
 #endif
     }
+
+    g_uMsScanYield = 1;
 
     CDialog::show();
 }
@@ -134,27 +124,32 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
 {
     m_rootImgDir.setDir(strDir);
 
-    m_thrScan.start([&](){
-        CPath::scanDir(m_thrScan.runSignal(), m_rootImgDir, [&](CPath& dir, TD_XFileList&){
-            if (!m_lv.isInRoot() || !this->isVisible())
+    static UINT s_uSequence = 0;
+    auto uSequence = ++s_uSequence;
+
+    m_thrScan.start([&, uSequence](XT_RunSignal bRunSignal){
+        CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
+            if (m_lv.imgDir() || !this->isVisible())
             {
-                if (!m_thrScan.usleepex(300))
+                m_thrScan.usleepex(300);
+            }
+
+            if (!bRunSignal)
+            {
+                return;
+            }
+
+            m_app.sync([&, uSequence](){
+                if (uSequence != s_uSequence)
                 {
                     return;
                 }
-            }
 
-            m_app.sync([&](){
                 m_paImgDirs.add((CImgDir&)dir);
 
                 this->update();
             });
         });
-
-        m_thrScan.usleepex(-1);
-
-        m_rootImgDir.clear();
-        m_paImgDirs.clear();
     });
 }
 
@@ -176,7 +171,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     ui.labelChooseDir->setVisible(false);
 
     int y_addbkgView = 0;
-    if (m_lv.isInRoot())
+    if (m_lv.imgDir() == NULL)
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
         ui.labelTitle->setVisible(true);
@@ -207,6 +202,7 @@ bool CAddBkgDlg::_handleReturn()
     if (m_lv.handleReturn())
     {
         relayout();
+        repaint();
     }
     else
     {
@@ -335,13 +331,16 @@ wstring CImgDir::imgPath(UINT uIdx) const
 #define __szSubimgZoomout 500
 extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
 
-static XThread *g_thrGenSubImg = NULL;
-
 void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
 {
     if (m_uPos >= m_paSubFile.size())
     {
         return;
+    }
+
+    if (m_vecImgs.capacity() == 0)
+    {
+        m_vecImgs.reserve(m_paSubFile.size());
     }
 
     if (g_thrGenSubImg)
@@ -350,7 +349,7 @@ void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
     }
     else
     {
-        g_thrGenSubImg = new XThread;
+        g_thrGenSubImg = &app.thread(); //new XThread;
     }
     g_thrGenSubImg->start([&](){
         do {
@@ -373,10 +372,14 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
         return false;
     }
 
+    m_uPos++;
+
     QPixmap pm;
 
 #if __windows || __mac
-    if (m_paSubFile.get(m_uPos+1, [&](XFile& file){
+    if (m_paSubFile.get(m_uPos, [&](XFile& file){
+        m_uPos++;
+
         cauto strFile2 = file.path();
         QPixmap pm2;
         mtutil::concurrence([&](){
@@ -387,18 +390,22 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 
         if (!pm.isNull() || !pm2.isNull())
         {
-            app.sync([&](){
+            app.sync([&, strFile, pm, strFile2, pm2]()mutable{
+                if (this != lv.imgDir())
+                {
+                     m_uPos-=2;
+                     return;
+                }
+
                 if (!pm.isNull())
                 {
                     _genSubImgs(strFile, pm);
                 }
-                m_uPos++;
 
                 if (!pm2.isNull())
                 {
                     _genSubImgs(strFile2, pm2);
                 }
-                m_uPos++;
 
                 lv.update();
             });
@@ -411,9 +418,14 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 
     if (_loadSubImg(strFile, pm))
     {
-        app.sync([&](){
+        app.sync([&, strFile, pm]()mutable{
+            if (this != lv.imgDir())
+            {
+                m_uPos--;
+                return;
+            }
+
             _genSubImgs(strFile, pm);
-            m_uPos++;
 
             lv.update();
         });
@@ -425,11 +437,6 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
 {
     auto prevCount = m_vecImgs.size();
-    if (0 == prevCount)
-    {
-        m_vecImgs.reserve(m_paSubFile.size()-m_uPos);
-    }
-
     int szZoomout = g_szScreenMax;
     if (prevCount >= 4)
     {
@@ -557,19 +564,19 @@ void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else
     {
-        _saveScrollRecord(NULL);
-
         m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             _showImgDir(imgDir);
         });
-
-        m_addbkgDlg.relayout();
     }
 }
 
 void CAddBkgView::_showImgDir(CImgDir& imgDir)
-{
+{    
     g_uMsScanYield = 10;
+
+    _saveScrollRecord(NULL);
+
+    m_eScrollBar = E_LVScrollBar::LVSB_None;
 
     m_pImgDir = &imgDir;
     if (m_pPrevImgDir && m_pPrevImgDir != m_pImgDir)
@@ -578,14 +585,10 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     }
     m_pPrevImgDir = m_pImgDir;
 
-    m_eScrollBar = E_LVScrollBar::LVSB_None;
-    update();
+    m_addbkgDlg.relayout();
+    m_addbkgDlg.repaint(); //update();
 
-    m_pImgDir->genSubImgs(m_app, *this);
-
-    /*CApp::async([&](){
-        _genSubImgs();
-    });*/
+    m_pImgDir->genSubImgs(m_app, *this); //_genSubImgs();
 }
 
 /*void CAddBkgView::_genSubImgs()
@@ -611,23 +614,23 @@ bool CAddBkgView::handleReturn()
 {
     if (m_pImgDir)
     {
-        g_uMsScanYield = 1;
-
-        reset();
-
-        m_eScrollBar = E_LVScrollBar::LVSB_Left;
-
-        m_pImgDir = NULL;
-
-        scrollToItem(_scrollRecord(NULL));
-
         if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel(false);
         }
 
+        m_pImgDir = NULL;
+
+        reset();
+        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+        scrollToItem(_scrollRecord(NULL));
+
+        g_uMsScanYield = 1;
+
         return true;
     }
+
+    g_uMsScanYield = 10;
 
     if (m_pPrevImgDir)
     {
@@ -635,14 +638,12 @@ bool CAddBkgView::handleReturn()
         m_pPrevImgDir = NULL;
     }
 
-    g_uMsScanYield = 10;
-
-    if (g_thrGenSubImg)
+    /*if (g_thrGenSubImg)
     {
         g_thrGenSubImg->join();
         delete g_thrGenSubImg;
         g_thrGenSubImg = NULL;
-    }
+    }*/
 
     return false;
 }

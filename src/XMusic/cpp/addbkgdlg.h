@@ -115,9 +115,9 @@ private:
     void _showImgDir(CImgDir& imgDir);
 
 public:
-    bool isInRoot() const
+    CImgDir* imgDir() const
     {
-        return NULL==m_pImgDir;
+        return m_pImgDir;
     }
 
     bool handleReturn();
