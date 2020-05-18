@@ -63,19 +63,19 @@ BOOL CBackupDlg::OnInitDialog()
 			}
 
 			wstring strPrevTag;
-			SList<pair<wstring, wstring>> lstTask;
+			prlist<wstring, wstring> plTask;
 			for (auto& strTag : arrBackupTag)
 			{
 				if (!strPrevTag.empty())
 				{
-					lstTask.add({ strPrevTag, strTag });
+					plTask.emplace_back(strPrevTag, strTag);
 				}
 
 				strPrevTag = strTag;
 			}
 
 			SList<tagCompareBackupResult> lstResult;
-			m_BackupMgr.compareBackup(lstTask, lstResult);
+			m_BackupMgr.compareBackup(plTask, lstResult);
 			for (auto& result : lstResult)
 			{
 				m_mapCompareBackupResult.set(result.strDstTag, result);
@@ -135,13 +135,13 @@ void CBackupDlg::Refresh()
 	}
 	
 	m_timer.set(500, [&]() {
-		SList<pair<wstring, wstring>> lstTask;
+		prlist<wstring, wstring> plTask;
 		s_mapEmptyRow([&](auto& strTag, auto& pr) {
-			lstTask.add({pr.second, strTag});
+			plTask.emplace_back(pr.second, strTag);
 		});
 
 		SList<tagCompareBackupResult> lstResult;
-		m_BackupMgr.getCompareResult(lstTask, lstResult);
+		m_BackupMgr.getCompareResult(plTask, lstResult);
 		for (auto& result : lstResult)
 		{
 			s_mapEmptyRow.del(result.strDstTag, [&](auto& pr) {

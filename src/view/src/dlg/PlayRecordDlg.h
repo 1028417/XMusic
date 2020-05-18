@@ -18,7 +18,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	vector<pair<wstring, int>> m_vecPlayRecord;
+	prvector<wstring, int> m_vecPlayRecord;
 
 	CDateTimeCtrl m_wndDateTimeCtrl;
 

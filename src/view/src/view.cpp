@@ -364,7 +364,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 	});
 
-	list<pair<wstring, CMatchMediaInfo>> lstMatchResult;
+	prlist<wstring, CMatchMediaInfo> lstMatchResult;
 	for (auto& strFile : lstFiles)
 	{
 		ProgressDlg.SetStatusText((L"比对文件: " + strFile).c_str(), 1);

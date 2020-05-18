@@ -109,7 +109,7 @@ void CDuplicateMediaDlg::OnBnClickedRemove()
 	m_wndList.GetSelItems(lstItems);
 	
 	TD_MediaList arrDelMedia;
-	SArray<pair<UINT, UINT>> arrDelMediaInfo;
+	prlist<UINT, UINT> plDelMediaInfo;
 	for (auto uItem : lstItems)
 	{
 		m_arrDuplicateMediaInfo.get(uItem, [&](auto& pr) {
@@ -117,7 +117,7 @@ void CDuplicateMediaDlg::OnBnClickedRemove()
 				arrDuplicateMedia.get(pr.second, [&](auto& media) {
 					arrDelMedia.add(media);
 
-					arrDelMediaInfo.add(pr);
+					plDelMediaInfo.push_back(pr);
 				});
 			});
 		});
@@ -129,7 +129,8 @@ void CDuplicateMediaDlg::OnBnClickedRemove()
 	__Assert(m_view.getModel().removeMedia(arrDelMedia));
 
 	set<UINT> setSingleGroup;
-	arrDelMediaInfo([&](auto& pr) {
+	for (cauto pr : plDelMediaInfo)
+	{
 		m_arrDuplicateMedia.get(pr.first, [&](TD_MediaList& arrDuplicateMedia) {
 			(void)arrDuplicateMedia.del_pos(pr.second);
 
@@ -138,7 +139,7 @@ void CDuplicateMediaDlg::OnBnClickedRemove()
 				setSingleGroup.insert(pr.first);
 			}
 		});
-	});
+	}
 
 	m_arrDuplicateMediaInfo.del_pos(lstItems);
 	(void)m_wndList.DeleteItems(SSet<UINT>(lstItems));
