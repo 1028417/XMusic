@@ -6,6 +6,12 @@
 #include "../sstl/sstl.h"
 using namespace NS_SSTL;
 
+template <typename __FirstType, typename __SecondType>
+using prlist = list<pair<__FirstType, __SecondType>>;
+
+template <typename __FirstType, typename __SecondType>
+using prvector = vector<pair<__FirstType, __SecondType>>;
+
 #if defined(_MSC_VER)
     #define __winvc true
     #define __windows true

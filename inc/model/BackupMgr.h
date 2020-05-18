@@ -49,9 +49,9 @@ public:
 
 	void removeBackup(cwstr strTag);
 
-	void getCompareResult(const SList<pair<wstring, wstring>>& lstTags, SList<tagCompareBackupResult>& lstResult);
+	void getCompareResult(const prlist<wstring, wstring>& plTags, SList<tagCompareBackupResult>& lstResult);
 
-	void compareBackup(const SList<pair<wstring, wstring>>& lstTags, SList<tagCompareBackupResult>& lstResult);
+	void compareBackup(const prlist<wstring, wstring>& plTags, SList<tagCompareBackupResult>& lstResult);
 
 	void compareBackup(cwstr strSrcTag, cwstr strDstTag, const CB_BackupCompare& cb=NULL);
 

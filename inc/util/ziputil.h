@@ -40,7 +40,7 @@ private:
 
     map<string, tagUnzfile> m_mapUnzfile;
 
-    list<pair<bool, tagUnzfile*>> m_lstUnzfile;
+    prlist<bool, tagUnzfile*> m_lstUnzfile;
 
 private:
     bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
@@ -63,7 +63,7 @@ public:
         return m_lstUnzdirInfo;
     }
 
-    const list<pair<bool, tagUnzfile*>>& unzfileList() const
+    const prlist<bool, tagUnzfile*>& unzfileList() const
     {
         return m_lstUnzfile;
     }

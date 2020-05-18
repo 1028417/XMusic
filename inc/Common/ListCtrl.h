@@ -59,7 +59,7 @@ private:
 
 	TD_ListColumn m_lstColumn;
 
-	list<pair<tagListColumn*, double>> m_lstDblWidth;
+	prlist<tagListColumn*, double> m_lstDblWidth;
 
 	UINT m_uFixWidth = 0;
 	
@@ -333,10 +333,10 @@ public:
 
 public:
 	int InsertItemEx(UINT uItem, const vector<wstring>& vecText, cwstr strPrefix = L"");
-	int InsertItemEx(UINT uItem, const list<pair<UINT, wstring>>& lstText, cwstr strPrefix = L"");
+	int InsertItemEx(UINT uItem, const prlist<UINT, wstring>& lstText, cwstr strPrefix = L"");
 
 	void SetItemTexts(UINT uItem, const vector<wstring>& vecText, cwstr strPrefix = L"");
-	void SetItemTexts(UINT uItem, const list<pair<UINT, wstring>>& lstText, cwstr strPrefix = L"");
+	void SetItemTexts(UINT uItem, const prlist<UINT, wstring>& lstText, cwstr strPrefix = L"");
 	void SetItemTexts(UINT uItem, UINT uSubItem, const vector<wstring>& vecText, cwstr strPrefix);
 
 	void SetTexts(const vector<vector<wstring>>& vecTexts);// , int nPos = 0, cwstr strPrefix = L"");

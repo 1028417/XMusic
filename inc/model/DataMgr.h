@@ -31,6 +31,6 @@ public:
     }
 
 	bool queryPlayRecordMaxTime(dbtime_t& tTime);
-	bool queryPlayRecord(dbtime_t tTime, vector<pair<wstring, int>>& vecPlayRecord);
+	bool queryPlayRecord(dbtime_t tTime, prvector<wstring, int>& vecPlayRecord);
 	bool clearPlayRecord();
 };
