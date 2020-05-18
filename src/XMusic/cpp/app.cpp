@@ -377,7 +377,7 @@ int CApp::run()
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [&](fn_void cb){
         cb();
-    });
+    }, Qt::QueuedConnection);
 
     m_mainWnd.showLogo();
 

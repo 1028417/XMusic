@@ -36,11 +36,16 @@ void CAddBkgDlg::init()
             return;
         }
 
+        if (g_thrGenSubImg)
+        {
+            g_thrGenSubImg->cancel(false);
+        }
+
         m_thrScan.cancel();
 
         if (g_thrGenSubImg)
         {
-            g_thrGenSubImg->join();
+            g_thrGenSubImg->cancel();
         }
 
         m_paImgDirs.clear();
@@ -105,7 +110,7 @@ void CAddBkgDlg::show()
 
         if (g_thrGenSubImg)
         {
-            g_thrGenSubImg->join();
+            g_thrGenSubImg->cancel();
         }
 
         _scanDir(strAddBkgDir);
@@ -345,7 +350,7 @@ void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
 
     if (g_thrGenSubImg)
     {
-        g_thrGenSubImg->join();
+        g_thrGenSubImg->cancel();
     }
     else
     {

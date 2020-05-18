@@ -54,7 +54,7 @@ void CMedialibView::init()
     m_SingerLib.GetAllMediaSets(E_MediaSetType::MST_Singer, paSingers);
     paSingers([&](CMediaSet& singer){
         auto&& strSingerDir = strutil::lowerCase_r(singer.GetBaseDir());
-        m_lstSingerDir.emplace_back(strSingerDir, &singer);
+        m_plSingerDir.emplace_back(strSingerDir, &singer);
     });
 }
 
@@ -81,7 +81,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
         {
             cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
-            for (cauto pr : m_lstSingerDir)
+            for (cauto pr : m_plSingerDir)
             {
                 if (fsutil::CheckSubPath(pr.first, strPath))
                 {

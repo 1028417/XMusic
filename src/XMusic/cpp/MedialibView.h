@@ -51,7 +51,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    list<pair<wstring, CMediaSet*>> m_lstSingerDir;
+    prlist<wstring, CMediaSet*> m_lstSingerDir;
 
 public:
     void initpm();
