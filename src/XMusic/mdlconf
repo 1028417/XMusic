@@ -2,7 +2,7 @@
         "appVersion" : "3.2.13",
 
         "compatibleCode" : 20022901,
-        "medialibVersion" : 20010802,
+        "medialibVersion" : 20051901,
 
         "medialibUrl" : [
             "https://musicrossoft-generic.pkg.coding.net/XMusic",
