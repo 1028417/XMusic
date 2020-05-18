@@ -43,7 +43,7 @@ public:
 
     wstring getSingerImg(cwstr strSingerName, UINT uIndex);
 
-	void getSingerImg(list<wstring>& lstSingerImg) const;
+	void getSingerImg(prlist<wstring, UINT>& plSingerImg) const;
 
 	bool exportSingerImg(cwstr strDstDir);
 };
