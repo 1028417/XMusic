@@ -318,37 +318,39 @@ public:
 
     void join()
     {
+        if (!m_thread.joinable())
+        {
+            return;
+        }
+
+        m_mutex.lock();
         if (m_thread.joinable())
         {
-            m_mutex.lock();
-            if (m_thread.joinable())
-            {
-                m_thread.join();
-            }
-            m_mutex.unlock();
+            m_thread.join();
         }
+        m_mutex.unlock();
     }
 
     void cancel(bool bJoin = true)
     {
+        if (!m_thread.joinable())
+        {
+            return;
+        }
+
+        m_mutex.lock();
         if (m_thread.joinable())
         {
-            m_mutex.lock();
-
-            if (m_thread.joinable())
+            if (m_sgnRuning)
             {
-                if (m_sgnRuning)
-                {
-                    m_sgnRuning.reset();
-                }
-
-                if (bJoin)
-                {
-                    m_thread.join();
-                }
+                m_sgnRuning.reset();
             }
 
-            m_mutex.unlock();
+            if (bJoin)
+            {
+                m_thread.join();
+            }
         }
+        m_mutex.unlock();
     }
 };
