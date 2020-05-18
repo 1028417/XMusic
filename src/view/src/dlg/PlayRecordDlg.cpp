@@ -69,8 +69,8 @@ BOOL CPlayRecordDlg::Refresh()
 
 	CTime fiterTime(time.GetYear(), time.GetMonth(), time.GetDay(), 0, 0, 0);
 
-	m_vecPlayRecord.clear();
-	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((dbtime_t)fiterTime.GetTime(), m_vecPlayRecord), FALSE);
+	m_pvPlayRecord.clear();
+	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((dbtime_t)fiterTime.GetTime(), m_pvPlayRecord), FALSE);
 
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 
@@ -79,18 +79,18 @@ BOOL CPlayRecordDlg::Refresh()
 
 	wstring strTitle(L"播放记录");
 
-	if (!m_vecPlayRecord.empty())
+	if (!m_pvPlayRecord.empty())
 	{
 		UINT uItem = 0;
-		for (auto& pr : m_vecPlayRecord)
+		for (auto& pr : m_pvPlayRecord)
 		{
 			cauto strTime = CMediaTime::genFileTimeString((time32_t)pr.second, false);
 			m_wndList.InsertItemEx(uItem++, { strTime, pr.first });
 		}
 
-		(void)m_wndList.EnsureVisible(m_vecPlayRecord.size() - 1, FALSE);
+		(void)m_wndList.EnsureVisible(m_pvPlayRecord.size() - 1, FALSE);
 		
-		strTitle.append(L"(" + to_wstring(m_vecPlayRecord.size()) + L"项)");
+		strTitle.append(L"(" + to_wstring(m_pvPlayRecord.size()) + L"项)");
 	}
 	
 	this->SetWindowText(strTitle.c_str());
@@ -144,7 +144,7 @@ void CPlayRecordDlg::OnBnClickedPlay()
 	SArray<wstring> arrOppPaths;
 	for (auto uItem : lstItems)
 	{
-		arrOppPaths.add(m_vecPlayRecord[uItem].first);
+		arrOppPaths.add(m_pvPlayRecord[uItem].first);
 	}
 
 	m_view.m_PlayCtrl.addPlayingItem(arrOppPaths);
@@ -156,7 +156,7 @@ void CPlayRecordDlg::OnBnClickedClear()
 
 	__Ensure(m_view.getDataMgr().clearPlayRecord());
 
-	m_vecPlayRecord.clear();
+	m_pvPlayRecord.clear();
 	(void)m_wndList.DeleteAllItems();
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 }
