@@ -261,7 +261,7 @@ inline static bool _loadSubImg(cwstr strFile, QPixmap& pm)
     return true;
 }
 
-static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpeg", L"jfif", L"png", L"bmp");
+static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpe", L"jpeg", L"jfif", L"png", L"bmp");
 
 #define __szSnapshot 160
 
