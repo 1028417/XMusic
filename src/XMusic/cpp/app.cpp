@@ -605,16 +605,16 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 return E_UpgradeResult::UR_DownloadFail;
             }
 
-            auto eRet = m_model.loadMdl(bbfMdl, true);
-            if (E_UpgradeResult::UR_Success != eRet)
-            {
-                return eRet;
-            }
-
             if (!OFStream::writefilex(strMdlFile, true, bbfMdl))
             {
                 g_logger >> "write mdl fail";
                 //return E_UpgradeResult::UR_Fail;
+            }
+
+            auto eRet = m_model.loadMdl(bbfMdl, true);
+            if (E_UpgradeResult::UR_Success != eRet)
+            {
+                return eRet;
             }
 
             g_logger << "upgradeMedialib success " >> (time(0)-time0);
