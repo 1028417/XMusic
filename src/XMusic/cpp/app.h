@@ -30,20 +30,6 @@ protected:
     CAppInit(QApplication& app);
 };
 
-enum class E_UpgradeResult
-{
-    UR_Success,
-    UR_Fail,
-
-    UR_DownloadFail,
-    UR_MedialibInvalid,
-    UR_ReadMedialibFail,
-
-    UR_MedialibUncompatible,
-    UR_AppUpgradeFail,
-    UR_AppUpgraded
-};
-
 Q_DECLARE_METATYPE(fn_void);
 
 class CApp : public QApplication, private CAppInit, private IPlayerView
@@ -94,7 +80,7 @@ private:
     bool _initRootDir(wstring& strRootDir);
 
     E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf);
-    E_UpgradeResult _loadMdl(CZipFile& zipMdl, bool bUpgradeDB);
+    E_UpgradeResult _loadMdl(Instream& ins, bool bUpgradeDB);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 

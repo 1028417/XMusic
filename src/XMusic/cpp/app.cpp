@@ -473,22 +473,6 @@ bool CApp::_initRootDir(wstring& strRootDir)
     return true;
 }
 
-static void _importPlayingList(cwstr strDBFileBak, cwstr strDBFile)
-{
-    CSQLiteDB db;
-    if (!db.Connect(strDBFile))
-    {
-        return;
-    }
-
-    if (!db.Execute(L"attach \"" + strDBFileBak + L"\" as bak"))
-    {
-        return;
-    }
-
-    (void)db.Execute("INSERT INTO tbl_playitem SELECT * from bak.tbl_playitem where playlist_id = 0");
-}
-
 E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 {
     string strVerInfo;
@@ -622,8 +606,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             }
 
             IFBuffer ifbMdl(bbfMdl);
-            CZipFile zipMdl(ifbMdl);
-            auto eRet = _loadMdl(zipMdl, true);
+            auto eRet = m_model.loadMdl(ifbMdl, true);
             if (E_UpgradeResult::UR_Success != eRet)
             {
                 return eRet;
@@ -640,8 +623,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         else
         {
             IFStream ifsMdl(strMdlFile);
-            CZipFile zipMdl(ifsMdl);
-            eRet = _loadMdl(zipMdl, false);
+            eRet = m_model.loadMdl(ifsMdl, false);
             if (E_UpgradeResult::UR_Success != eRet)
             {
                 return eRet;
@@ -658,98 +640,6 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
     }
 
     return eRet;
-}
-
-E_UpgradeResult CApp::_loadMdl(CZipFile& zipMdl, bool bUpgradeDB)
-{
-    if (!zipMdl)
-    {
-        g_logger >> "invalid zipfile";
-        return E_UpgradeResult::UR_MedialibInvalid;
-    }
-
-    auto mapUnzfile = zipMdl.unzfileMap();
-    cauto itrUnzfile = mapUnzfile.find("mdl");
-    if (itrUnzfile == mapUnzfile.end())
-    {
-        g_logger >> "medialib not found";
-        return E_UpgradeResult::UR_MedialibInvalid;
-    }
-
-    cauto strDBFile = m_model.medialibPath(__DBFile);
-    bool bExistDB = fsutil::existFile(strDBFile);
-    if (g_bRunSignal && (!bExistDB || bUpgradeDB))
-    {
-        wstring strDBFileBak;
-        if (bExistDB)
-        {
-            strDBFileBak = strDBFile+L".bak";
-            (void)fsutil::moveFile(strDBFile, strDBFileBak);
-        }
-
-        CByteBuffer bbfMedialib;
-        if (zipMdl.read(itrUnzfile->second, bbfMedialib) <= 0)
-        {
-            g_logger >> "readZip fail: medialib";
-            return E_UpgradeResult::UR_ReadMedialibFail;
-        }
-
-        if (!OFStream::writefilex(strDBFile, true, bbfMedialib))
-        {
-            g_logger >> "write medialib fail";
-            return E_UpgradeResult::UR_Fail;
-        }
-
-        if (bExistDB)
-        {
-            _importPlayingList(strDBFileBak, strDBFile);
-            (void)fsutil::removeFile(strDBFileBak);
-        }
-    }
-
-    mapUnzfile.erase(itrUnzfile);
-
-    for (cauto pr : mapUnzfile)
-    {
-        if (!g_bRunSignal)
-        {
-            break;
-        }
-
-        const tagUnzfile& unzfile = pr.second;
-        CByteBuffer bbfData;
-        if (zipMdl.read(unzfile, bbfData) <= 0)
-        {
-            g_logger << "readZip fail: " >> unzfile.strPath;
-            continue; // E_UpgradeResult::UR_ReadMedialibFail;
-        }
-        IFBuffer ifbData(bbfData);
-
-        cauto strPath = strutil::fromGbk(unzfile.strPath);
-        if (strutil::endWith(strPath, L".xurl"))
-        {
-            if (!__xmedialib.loadXUrl(ifbData))
-            {
-                g_logger << "loadXUrl fail: " >> strPath;
-            }
-        }
-        else if (strutil::endWith(strPath, L".snapshot.json"))
-        {
-            if (!__xmedialib.loadXSnapshot(ifbData))
-            {
-                g_logger << "loadSnapshot fail: " >> strPath;
-            }
-        }
-        else if (strutil::endWith(strPath, L".cue"))
-        {
-            if (!__xmedialib.loadXCue(ifbData, fsutil::getFileTitle(strPath)))
-            {
-                g_logger << "loadCue fail: " >> strPath;
-            }
-        }
-    }
-
-    return E_UpgradeResult::UR_Success;
 }
 
 #if __windows
