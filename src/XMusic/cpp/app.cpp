@@ -515,7 +515,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         g_logger << "checkMediaLib: " >> strMdlconfUrl;
 
         CByteBuffer bbfConf;
-        CDownloader downloader(3, 6);
+        CDownloader downloader(30, 60);
         int nRet = downloader.syncDownload(g_bRunSignal, strMdlconfUrl, bbfConf, 1);
         if (nRet != 0)
         {
@@ -582,9 +582,6 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             return E_UpgradeResult::UR_MedialibUncompatible;
         }
 
-        cauto strMdlUrl = upgradeUrl.mdl();
-        g_logger << "dowloadMdl: " >> strMdlUrl;
-
         cauto strMdlFile = m_model.medialibPath(L"mdl");
         bool bExistMdl = fsutil::existFile(strMdlFile);
         if (!bExistMdl || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
@@ -594,6 +591,8 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 break;
             }
 
+            cauto strMdlUrl = upgradeUrl.mdl();
+            g_logger << "dowloadMdl: " >> strMdlUrl;
             auto time0 = time(0);
 
             CByteBuffer bbfMdl;
