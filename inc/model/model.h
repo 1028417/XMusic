@@ -13,6 +13,20 @@ extern ITxtWriter& g_modelLogger;
 
 #if !__winvc
 #define __OnlineMediaLib 1
+
+enum class E_UpgradeResult
+{
+	UR_Success,
+	UR_Fail,
+
+	UR_DownloadFail,
+	UR_MedialibInvalid,
+	UR_ReadMedialibFail,
+
+	UR_MedialibUncompatible,
+	UR_AppUpgradeFail,
+	UR_AppUpgraded
+};
 #endif
 
 #define __medialibDir L".xmusic"
@@ -72,24 +86,12 @@ public:
     virtual void onSingerImgDownloaded() {}
 };
 
-enum class E_UpgradeResult
-{
-    UR_Success,
-    UR_Fail,
-
-    UR_DownloadFail,
-    UR_MedialibInvalid,
-    UR_ReadMedialibFail,
-
-    UR_MedialibUncompatible,
-    UR_AppUpgradeFail,
-    UR_AppUpgraded
-};
-
 class IModel
 {
 public:
-    virtual E_UpgradeResult loadMdl(Instream& ins, bool bUpgradeDB) = 0;
+#if __OnlineMediaLib
+    virtual E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) = 0;
+#endif
 
     virtual bool initMediaLib() = 0;
 	
@@ -192,7 +194,9 @@ public:
 		return m_SingerImgMgr;
 	}
 
-    E_UpgradeResult loadMdl(Instream& ins, bool bUpgradeDB) override;
+#if __OnlineMediaLib
+    E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) override;
+#endif
 
     bool initMediaLib() override;
 

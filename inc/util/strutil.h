@@ -298,7 +298,7 @@ public:
 	}
 	static string base64_encode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
-		return base64_encode(str.c_str(), str.length(), pszBase, chrTail);
+        return base64_encode(str.c_str(), str.size(), pszBase, chrTail);
 	}
 
 	static string base64_decode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
@@ -308,7 +308,7 @@ public:
 	}
 	static string base64_decode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
-		return base64_decode(str.c_str(), str.length(), pszBase, chrTail);
+        return base64_decode(str.c_str(), str.size(), pszBase, chrTail);
 	}
 	
 	static bool checkUtf8(const char *pStr, int len = -1);

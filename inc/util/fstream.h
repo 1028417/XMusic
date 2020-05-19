@@ -148,14 +148,98 @@ private:
 	}
 };
 
-class __UtilExt Outstream
+class __UtilExt IFBuffer : public Instream
 {
 public:
-    virtual ~Outstream() = default;
+    virtual ~IFBuffer() = default;
 
-    virtual size_t write(const void *pData, size_t size, size_t count) = 0;
+    IFBuffer(cbyte_p ptr, size_t size)
+        : m_ptr(ptr)
+        , m_size(size)
+    {
+    }
 
-    virtual void flush() = 0;
+        IFBuffer(const CByteBuffer& bbfBuff)
+                : m_ptr(bbfBuff)
+                , m_size(bbfBuff->size())
+        {
+        }
+
+        IFBuffer(const IFBuffer& other) = delete;
+        IFBuffer(IFBuffer&& other) = delete;
+        IFBuffer& operator=(const IFBuffer& other) = delete;
+        IFBuffer& operator=(IFBuffer&& other) = delete;
+
+protected:
+        cbyte_p m_ptr;
+        uint64_t m_size;
+
+    uint64_t m_pos = 0;
+
+public:
+    operator bool() const
+    {
+        return m_ptr && 0!=m_size;
+    }
+
+    virtual size_t read(void *buff, size_t size, size_t count) override
+    {
+                if (NULL == buff || 0 == size || 0 == count)
+                {
+                        return 0;
+                }
+
+                uint64_t max = (m_size - m_pos) / size;
+                if (max < (uint64_t)count)
+                {
+                        count = (size_t)max;
+                }
+
+                size *= count;
+        memcpy(buff, m_ptr+m_pos, size);
+        m_pos += size;
+
+        return count;
+    }
+
+    virtual bool seek(long long offset, int origin) override
+    {
+        long long pos = (long long)m_pos;
+        if (SEEK_SET == origin)
+        {
+            pos = offset;
+        }
+        else if (SEEK_CUR == origin)
+        {
+            pos += offset;
+        }
+        else if (SEEK_END == origin)
+        {
+            pos = (long long)m_size-1+offset;
+        }
+        else
+        {
+            return false;
+        }
+
+        if (pos < 0 || pos >= (long long)m_size)
+        {
+            return false;
+        }
+        m_pos = (uint64_t)pos;
+
+        return true;
+    }
+
+    virtual long long pos() override
+    {
+        return m_pos;
+    }
+
+        virtual uint64_t size() override
+        {
+                return m_size;
+        }
 };
 
 class __UtilExt IFStream : public FStream, public Instream
@@ -279,6 +363,16 @@ public:
 
 		return ((Instream&)ifs).read(cbfBuff, uReadSize);
 	}
+};
+
+class __UtilExt Outstream
+{
+public:
+    virtual ~Outstream() = default;
+
+    virtual size_t write(const void *pData, size_t size, size_t count) = 0;
+
+    virtual void flush() = 0;
 };
 
 class __UtilExt OFStream : public FStream, public Outstream
@@ -423,99 +517,5 @@ public:
     static bool writefilex(const S& strFile, bool bTrunc, CCharBuffer& cbfData)
 	{
         return writefilex(strFile, bTrunc, cbfData, cbfData->size());
-	}
-};
-
-class __UtilExt IFBuffer : public Instream
-{
-public:
-    virtual ~IFBuffer() = default;
-
-    IFBuffer(cbyte_p ptr, size_t size)
-        : m_ptr(ptr)
-        , m_size(size)
-    {
-    }
-
-	IFBuffer(const CByteBuffer& bbfBuff)
-		: m_ptr(bbfBuff)
-		, m_size(bbfBuff->size())
-	{
-	}
-
-	IFBuffer(const IFBuffer& other) = delete;
-	IFBuffer(IFBuffer&& other) = delete;
-	IFBuffer& operator=(const IFBuffer& other) = delete;
-	IFBuffer& operator=(IFBuffer&& other) = delete;
-
-protected:
-	cbyte_p m_ptr;
-	uint64_t m_size;
-
-    uint64_t m_pos = 0;
-
-public:
-    operator bool() const
-    {
-        return m_ptr && 0!=m_size;
-    }
-
-    virtual size_t read(void *buff, size_t size, size_t count) override
-    {
-		if (NULL == buff || 0 == size || 0 == count)
-		{
-			return 0;
-		}
-
-		uint64_t max = (m_size - m_pos) / size;
-		if (max < (uint64_t)count)
-		{
-			count = (size_t)max;
-		}
-
-		size *= count;
-        memcpy(buff, m_ptr+m_pos, size);
-        m_pos += size;
-        
-        return count;
-    }
-
-    virtual bool seek(long long offset, int origin) override
-    {
-        long long pos = (long long)m_pos;
-        if (SEEK_SET == origin)
-        {
-            pos = offset;
-        }
-        else if (SEEK_CUR == origin)
-        {
-            pos += offset;
-        }
-        else if (SEEK_END == origin)
-        {
-            pos = (long long)m_size-1+offset;
-        }
-        else
-        {
-            return false;
-        }
-
-        if (pos < 0 || pos >= (long long)m_size)
-        {
-            return false;
-        }
-        m_pos = (uint64_t)pos;
-
-        return true;
-    }
-
-    virtual long long pos() override
-    {
-        return m_pos;
-    }
-
-	virtual uint64_t size() override
-	{
-		return m_size;
 	}
 };
