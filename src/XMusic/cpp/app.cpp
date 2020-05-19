@@ -515,7 +515,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         g_logger << "checkMediaLib: " >> strMdlconfUrl;
 
         CByteBuffer bbfConf;
-        CDownloader downloader(30, 60);
+        CDownloader downloader(4, 8);
         int nRet = downloader.syncDownload(g_bRunSignal, strMdlconfUrl, bbfConf, 1);
         if (nRet != 0)
         {

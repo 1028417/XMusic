@@ -230,15 +230,15 @@ void MainWindow::_showUpgradeProgress()
         QString qsText;
         if (0 == g_nAppDownloadProgress)
         {
-            qsText.append("下载更新包···");
+            qsText.append("下载升级包...");
         }
         else if (100 == g_nAppDownloadProgress)
         {
-            qsText.append("准备安装···");
+            qsText.append("准备安装...");
         }
         else
         {
-            qsText.sprintf("下载更新包:  %u%%", (UINT)g_nAppDownloadProgress);
+            qsText.sprintf("下载升级包:  %u%%", (UINT)g_nAppDownloadProgress);
         }
         ui.labelLogoTip->setText(qsText);
     }
