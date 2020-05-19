@@ -605,8 +605,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
                 return E_UpgradeResult::UR_DownloadFail;
             }
 
-            IFBuffer ifbMdl(bbfMdl);
-            auto eRet = m_model.loadMdl(ifbMdl, true);
+            auto eRet = m_model.loadMdl(bbfMdl, true);
             if (E_UpgradeResult::UR_Success != eRet)
             {
                 return eRet;
@@ -622,8 +621,13 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
         }
         else
         {
-            IFStream ifsMdl(strMdlFile);
-            eRet = m_model.loadMdl(ifsMdl, false);
+            CByteBuffer bbfMdl;
+            if (0 == IFStream::readfile(strMdlFile, bbfMdl))
+            {
+                g_logger >> "invalid mdlfile";
+                return E_UpgradeResult::UR_MedialibInvalid;
+            }
+            eRet = m_model.loadMdl(bbfMdl, false);
             if (E_UpgradeResult::UR_Success != eRet)
             {
                 return eRet;
