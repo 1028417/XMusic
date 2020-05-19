@@ -72,9 +72,25 @@ public:
     virtual void onSingerImgDownloaded() {}
 };
 
+enum class E_UpgradeResult
+{
+    UR_Success,
+    UR_Fail,
+
+    UR_DownloadFail,
+    UR_MedialibInvalid,
+    UR_ReadMedialibFail,
+
+    UR_MedialibUncompatible,
+    UR_AppUpgradeFail,
+    UR_AppUpgraded
+};
+
 class IModel
 {
 public:
+    virtual E_UpgradeResult loadMdl(Instream& ins, bool bUpgradeDB) = 0;
+
     virtual bool initMediaLib() = 0;
 	
     virtual CDataMgr& getDataMgr() = 0;
@@ -175,6 +191,8 @@ public:
 	{
 		return m_SingerImgMgr;
 	}
+
+    E_UpgradeResult loadMdl(Instream& ins, bool bUpgradeDB) override;
 
     bool initMediaLib() override;
 
