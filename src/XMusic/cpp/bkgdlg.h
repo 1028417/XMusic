@@ -99,7 +99,9 @@ private:
 
     vector<tagBkgFile>& _vecBkgFile();
 
-    CBkgBrush& _addbr(QPixmap& pm);
+    void _preInitBkg(bool bHLayout);
+
+    CBkgBrush& _addbr(QPixmap& pm, bool bHLayout);
 
     void _relayout(int cx, int cy) override;
 
