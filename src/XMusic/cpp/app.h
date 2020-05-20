@@ -73,13 +73,13 @@ private:
         return m_mainWnd;
     }
 
-    void _init();
+    bool _init();
 
-    E_UpgradeResult _initMediaLib(const tagMedialibConf& orgMedialibConf);
+    E_UpgradeResult _initMediaLib(const tagMdlConf& orgMdlConf);
 
     bool _initRootDir(wstring& strRootDir);
 
-    E_UpgradeResult _upgradeMedialib(const tagMedialibConf& orgMedialibConf);
+    E_UpgradeResult _upgradeMedialib(const tagMdlConf& orgMdlConf);
     E_UpgradeResult _loadMdl(Instream& ins, bool bUpgradeDB);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);

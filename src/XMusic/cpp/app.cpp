@@ -256,69 +256,7 @@ CAppInit::CAppInit(QApplication& app)
     app.setFont(CFont());
 }
 
-static bool _readMedialibConf(Instream& ins, tagMedialibConf& medialibConf)
-{
-    JValue jRoot;
-    if (!jsonutil::loadFile(ins, jRoot))
-    {
-        g_logger >> "loadMedialibConf fail";
-        return false;
-    }
-
-    if (!jsonutil::get(jRoot["appVersion"], medialibConf.strAppVersion))
-    {
-        g_logger >> "readMedialibConf fail: appVersion";
-        return false;
-    }
-
-    if (!jsonutil::get(jRoot["medialibVersion"], medialibConf.uMedialibVersion))
-    {
-        g_logger >> "readMedialibConf fail: medialibVersion";
-        return false;
-    }
-
-    if (!jsonutil::get(jRoot["compatibleCode"], medialibConf.uCompatibleCode))
-    {
-        g_logger >> "readMedialibConf fail: appVersion";
-        return false;
-    }
-
-    const JValue& jMedialibUrl = jRoot["medialibUrl"];
-    if (!jMedialibUrl.isArray())
-    {
-        g_logger >> "readMedialibConf fail: url";
-        return false;
-    }
-
-    string strMedialib;
-    for (UINT uIdx = 0; uIdx < jMedialibUrl.size(); uIdx++)
-    {
-        if (!jsonutil::get(jMedialibUrl[uIdx], strMedialib))
-        {
-            g_logger >> "readMedialibConf fail: url";
-            return false;
-        }
-
-        medialibConf.lstUpgradeUrl.emplace_back(strMedialib);
-    }
-
-    /*string strBkg;
-    const JValue& jHBkg = jRoot["hbkg"];
-    if (jHBkg.isArray())
-    {
-        for (UINT uIdx = 0; uIdx < jHBkg.size(); uIdx++)
-        {
-            if (jsonutil::get(jHBkg[uIdx], strBkg))
-            {
-                medialibConf.lstOnlineHBkg.push_back(strBkg);
-            }
-        }
-    }*/
-
-    return true;
-}
-
-void CApp::_init()
+bool CApp::_init()
 {
 #if __android
     if (isMobileConnected())
@@ -330,36 +268,31 @@ void CApp::_init()
     auto& option = m_ctrl.initOption();
     if (!_initRootDir(option.strRootDir))
     {
-        this->quit();
-        return;
+        return false;
     }
     g_logger << "RootDir: " >> option.strRootDir;
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
-        g_logger >> "loadMedialibConfResource fail";
-        this->quit();
-        return;
+        g_logger >> "loadMdlConfResource fail";
+        return false;
     }
+    auto&& ba = qf.readAll();
 
-    cauto ba = qf.readAll();
-    IFBuffer ifbMedialibConf((cbyte_p)ba.data(), ba.size());
-    tagMedialibConf orgMedialibConf;
-    if (!_readMedialibConf(ifbMedialibConf, orgMedialibConf))
+    tagMdlConf orgMdlConf;
+    if (!m_model.loadMdlConf((byte_p)ba.data(), ba.size(), orgMdlConf))
     {
-        g_logger >> "readMedialibConfResource fail";
-
-        this->quit();
-        return;
+        g_logger >> "readMdlConfResource fail";
+        return false;
     }
-    g_logger << "orgMedialibConf AppVersion: " << orgMedialibConf.strAppVersion
-             << " CompatibleCode: " << orgMedialibConf.uCompatibleCode
-             << " MedialibVersion: " >> orgMedialibConf.uMedialibVersion;
-    m_strAppVersion = strutil::fromAsc(orgMedialibConf.strAppVersion);
+    g_logger << "orgMdlConf AppVersion: " << orgMdlConf.strAppVersion
+             << " CompatibleCode: " << orgMdlConf.uCompatibleCode
+             << " MedialibVersion: " >> orgMdlConf.uMdlVersion;
+    m_strAppVersion = strutil::fromAsc(orgMdlConf.strAppVersion);
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
-        return _initMediaLib(orgMedialibConf);
+        return _initMediaLib(orgMdlConf);
     }, [&](){
         (void)m_pmHDDisk.load(__mediaPng(hddisk));
         (void)m_pmLLDisk.load(__mediaPng(lldisk));
@@ -370,6 +303,8 @@ void CApp::_init()
     sync([=](){
         _run(eUpgradeResult);
     });
+
+    return true;
 }
 
 int CApp::run()
@@ -382,7 +317,12 @@ int CApp::run()
     m_mainWnd.showLogo();
 
     std::thread thrUpgrade([&](){
-        _init();
+        if (!_init())
+        {
+            sync([&](){
+                this->quit();
+            });
+        }
     });
 
     auto nRet = exec();
@@ -411,12 +351,12 @@ int CApp::run()
     return nRet;
 }
 
-E_UpgradeResult CApp::_initMediaLib(const tagMedialibConf& orgMedialibConf)
+E_UpgradeResult CApp::_initMediaLib(const tagMdlConf& orgMdlConf)
 {
     auto timeBegin = time(0);
 
 #if __OnlineMediaLib
-    E_UpgradeResult eUpgradeResult = this->_upgradeMedialib(orgMedialibConf);
+    E_UpgradeResult eUpgradeResult = this->_upgradeMedialib(orgMdlConf);
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         return eUpgradeResult;
@@ -473,7 +413,7 @@ bool CApp::_initRootDir(wstring& strRootDir)
     return true;
 }
 
-E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
+E_UpgradeResult CApp::_upgradeMedialib(const tagMdlConf& orgMdlConf)
 {
     string strVerInfo;
     int nRet = curlutil::initCurl(strVerInfo);
@@ -484,26 +424,24 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
     }
     g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
+    tagMdlConf userMdlConf;
     cauto strConffile = m_model.medialibPath(L"mdlconf");
-    tagMedialibConf userMedialibConf;
-    IFStream ifsMedialibConf(strConffile);
-    if (ifsMedialibConf)
+    CByteBuffer bbfConf;
+    if (IFStream::readfile(strConffile, bbfConf) > 0)
     {
-         if (_readMedialibConf(ifsMedialibConf, userMedialibConf))
+         if (m_model.loadMdlConf(bbfConf, bbfConf->size(), userMdlConf))
          {
-             g_logger << "userMedialibConf AppVersion: " << userMedialibConf.strAppVersion
-                      << " CompatibleCode: " << userMedialibConf.uCompatibleCode
-                      << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
+             g_logger << "userMdlConf AppVersion: " << userMdlConf.strAppVersion
+                      << " CompatibleCode: " << userMdlConf.uCompatibleCode
+                      << " MedialibVersion: " >> userMdlConf.uMdlVersion;
          }
-
-         ifsMedialibConf.close();
     }
 
     E_UpgradeResult eRet = E_UpgradeResult::UR_Fail;
 
-    const list<CUpgradeUrl>& lstUpgradeUrl = (userMedialibConf.strAppVersion >= orgMedialibConf.strAppVersion ||
-            userMedialibConf.uCompatibleCode >= orgMedialibConf.uCompatibleCode)
-            ? userMedialibConf.lstUpgradeUrl : orgMedialibConf.lstUpgradeUrl;
+    const list<CUpgradeUrl>& lstUpgradeUrl = (userMdlConf.strAppVersion >= orgMdlConf.strAppVersion ||
+            userMdlConf.uCompatibleCode >= orgMdlConf.uCompatibleCode)
+            ? userMdlConf.lstUpgradeUrl : orgMdlConf.lstUpgradeUrl;
     for (cauto upgradeUrl : lstUpgradeUrl)
     {
         if (!g_bRunSignal)
@@ -527,49 +465,48 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
             continue;
         }
 
-        IFBuffer ifbConf(bbfConf);
-        auto& newMedialibConf = __xmedialib.medialibConf();
-        newMedialibConf.clear();
-        if (!_readMedialibConf(ifbConf, newMedialibConf))
+        auto& newMdlConf = __xmedialib.mdlConf();
+        newMdlConf.clear();
+        if (!m_model.loadMdlConf(bbfConf, bbfConf->size(), newMdlConf))
         {
-            g_logger >> "readMedialibConf fail";
+            g_logger >> "readMdlConf fail";
             eRet = E_UpgradeResult::UR_MedialibInvalid;
             continue;
         }
 
-        g_logger << "newMedialibConf AppVersion: " << userMedialibConf.strAppVersion
-                 << " CompatibleCode: " << userMedialibConf.uCompatibleCode
-                 << " MedialibVersion: " >> userMedialibConf.uMedialibVersion;
+        g_logger << "newMdlConf AppVersion: " << userMdlConf.strAppVersion
+                 << " CompatibleCode: " << userMdlConf.uCompatibleCode
+                 << " MedialibVersion: " >> userMdlConf.uMdlVersion;
 
-        if (newMedialibConf.strAppVersion < MAX(orgMedialibConf.strAppVersion, userMedialibConf.strAppVersion))
+        if (newMdlConf.strAppVersion < MAX(orgMdlConf.strAppVersion, userMdlConf.strAppVersion))
         {
-            g_logger << "AppVersion invalid: " >> newMedialibConf.strAppVersion;
+            g_logger << "AppVersion invalid: " >> newMdlConf.strAppVersion;
             eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
-        if (newMedialibConf.uCompatibleCode < MAX(orgMedialibConf.uCompatibleCode, userMedialibConf.uCompatibleCode))
+        if (newMdlConf.uCompatibleCode < MAX(orgMdlConf.uCompatibleCode, userMdlConf.uCompatibleCode))
         {
-            g_logger << "CompatibleCode invalid: " >> newMedialibConf.uCompatibleCode;
+            g_logger << "CompatibleCode invalid: " >> newMdlConf.uCompatibleCode;
             eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
-        if (newMedialibConf.uMedialibVersion < MAX(orgMedialibConf.uMedialibVersion, userMedialibConf.uMedialibVersion))
+        if (newMdlConf.uMdlVersion < MAX(orgMdlConf.uMdlVersion, userMdlConf.uMdlVersion))
         {
-            g_logger << "MedialibVersion invalid: " >> newMedialibConf.uMedialibVersion;
+            g_logger << "MedialibVersion invalid: " >> newMdlConf.uMdlVersion;
             eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
         }
 
-        if (newMedialibConf.uCompatibleCode > orgMedialibConf.uCompatibleCode)
+        if (newMdlConf.uCompatibleCode > orgMdlConf.uCompatibleCode)
         {
             g_logger >> "medialib Uncompatible";
 
 #if !__ios
-            if (newMedialibConf.strAppVersion > orgMedialibConf.strAppVersion)
+            if (newMdlConf.strAppVersion > orgMdlConf.strAppVersion)
             {
-                if (_upgradeApp(newMedialibConf.lstUpgradeUrl))
+                if (_upgradeApp(newMdlConf.lstUpgradeUrl))
                 {
                     return E_UpgradeResult::UR_AppUpgraded;
                 }
@@ -584,7 +521,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
         cauto strMdlFile = m_model.medialibPath(L"mdl");
         bool bExistMdl = fsutil::existFile(strMdlFile);
-        if (!bExistMdl || newMedialibConf.uMedialibVersion > userMedialibConf.uMedialibVersion)
+        if (!bExistMdl || newMdlConf.uMdlVersion > userMdlConf.uMdlVersion)
         {
             if (!g_bRunSignal)
             {
@@ -635,7 +572,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMedialibConf& orgMedialibConf)
 
         if (!OFStream::writefilex(strConffile, true, bbfConf))
         {
-            g_logger >> "write medialibConf fail";
+            g_logger >> "write mdlConf fail";
             //return E_UpgradeResult::UR_Fail;
         }
 
@@ -896,9 +833,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
             vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
-                CApp::async([&](){
-                    this->quit();
-                });
+                this->quit();
             });
         }
 
