@@ -44,11 +44,11 @@ public:
     }
 };
 
-struct __ModelExt tagMedialibConf
+struct __ModelExt tagMdlConf
 {
     string strAppVersion;
 
-    UINT uMedialibVersion = 0;
+    UINT uMdlVersion = 0;
 
     UINT uCompatibleCode = 0;
 
@@ -61,7 +61,7 @@ struct __ModelExt tagMedialibConf
     {
         strAppVersion.clear();
 
-        uMedialibVersion = 0;
+        uMdlVersion = 0;
 
         uCompatibleCode = 0;
 
@@ -86,16 +86,16 @@ private:
 
 #if __OnlineMediaLib
 private:
-    tagMedialibConf m_newMedialibConf;
+    tagMdlConf m_newMdlConf;
 
     list<JValue> m_lstSnapshot;
 
     CCueList m_cuelist;
 
 public:
-    tagMedialibConf& medialibConf()
+    tagMdlConf& mdlConf()
     {
-        return m_newMedialibConf;
+        return m_newMdlConf;
     }
 
     bool checkXUrl(cwstr strPath);

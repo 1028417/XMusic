@@ -76,39 +76,41 @@ public:
 class __UtilExt Instream
 {
 public:
+    Instream() = default;
     virtual ~Instream() = default;
 
-	virtual size_t read(void *buff, size_t size, size_t count) = 0;
-	inline size_t read(void *buff, size_t size)
-	{
-		return read(buff, 1, size);
-	}
+public:
+    virtual size_t read(void *buff, size_t size, size_t count) = 0;
+    inline size_t read(void *buff, size_t size)
+    {
+        return read(buff, 1, size);
+    }
 
-	inline bool readex(void *buff, size_t size)
-	{
-		return read(buff, size, 1) == 1;
-	}
+    inline bool readex(void *buff, size_t size)
+    {
+        return read(buff, size, 1) == 1;
+    }
 
-	template <typename T>
-	size_t read(TBuffer<T>& buff)
-	{
-		return read(buff, sizeof(T), buff.count());
-	}
-	template <typename T>
-	bool readex(TBuffer<T>& buff)
-	{
-		return readex(buff, buff.size());
-	}
+    template <typename T>
+    size_t read(TBuffer<T>& buff)
+    {
+        return read(buff, sizeof(T), buff.count());
+    }
+    template <typename T>
+    bool readex(TBuffer<T>& buff)
+    {
+        return readex(buff, buff.size());
+    }
 
-	size_t read(CByteBuffer& bbfBuff, size_t uReadSize = 0)
-	{
-		return _read(bbfBuff, uReadSize);
-	}
+    size_t read(CByteBuffer& bbfBuff, size_t uReadSize = 0)
+    {
+        return _read(bbfBuff, uReadSize);
+    }
 
-	size_t read(CCharBuffer& cbfBuff, size_t uReadSize = 0)
-	{
-		return _read(cbfBuff, uReadSize);
-	}
+    size_t read(CCharBuffer& cbfBuff, size_t uReadSize = 0)
+    {
+        return _read(cbfBuff, uReadSize);
+    }
 
     virtual bool seek(long long offset, int origin) = 0;
 
@@ -117,35 +119,35 @@ public:
     virtual uint64_t size() = 0;
 
 private:
-	template <class T>
-	size_t _read(T& buff, size_t uReadSize = 0)
-	{
-		long long pos = this->pos();
-		if (pos < 0)
-		{
-			return 0;
-		}
+    template <class T>
+    size_t _read(T& buff, size_t uReadSize = 0)
+    {
+        long long pos = this->pos();
+        if (pos < 0)
+        {
+            return 0;
+        }
 
-		uint64_t max64 = this->size() - (uint64_t)pos;
-		size_t max = fsize_t(max64);
-		if (0 == uReadSize)
-		{
-			uReadSize = max;
-		}
-		else
-		{
-			uReadSize = MIN(uReadSize, max);
-		}
-		
-		auto ptr = buff.resizeMore(uReadSize);
-		size_t size = read(ptr, uReadSize);
-		if (size < uReadSize)
-		{
-			buff.resizeLess(uReadSize - size);
-		}
+        uint64_t max64 = this->size() - (uint64_t)pos;
+        size_t max = fsize_t(max64);
+        if (0 == uReadSize)
+        {
+            uReadSize = max;
+        }
+        else
+        {
+            uReadSize = MIN(uReadSize, max);
+        }
 
-		return size;
-	}
+        auto ptr = buff.resizeMore(uReadSize);
+        size_t size = read(ptr, uReadSize);
+        if (size < uReadSize)
+        {
+            buff.resizeLess(uReadSize - size);
+        }
+
+        return size;
+    }
 };
 
 class __UtilExt IFBuffer : public Instream
@@ -159,20 +161,30 @@ public:
     {
     }
 
-        IFBuffer(const CByteBuffer& bbfBuff)
-                : m_ptr(bbfBuff)
-                , m_size(bbfBuff->size())
-        {
-        }
+    IFBuffer(const CByteBuffer& bbfBuff)
+        : m_ptr(bbfBuff)
+        , m_size(bbfBuff->size())
+    {
+    }
 
-        IFBuffer(const IFBuffer& other) = delete;
-        IFBuffer(IFBuffer&& other) = delete;
-        IFBuffer& operator=(const IFBuffer& other) = delete;
-        IFBuffer& operator=(IFBuffer&& other) = delete;
+    IFBuffer(const IFBuffer& other)
+    {
+        m_ptr = other.m_ptr;
+        m_size = other.m_size;
+        m_pos = 0;
+    }
+
+    IFBuffer& operator=(const IFBuffer& other)
+    {
+        m_ptr = other.m_ptr;
+        m_size = other.m_size;
+        m_pos = 0;
+        return *this;
+    }
 
 protected:
-        cbyte_p m_ptr;
-        uint64_t m_size;
+    cbyte_p m_ptr;
+    uint64_t m_size;
 
     uint64_t m_pos = 0;
 
