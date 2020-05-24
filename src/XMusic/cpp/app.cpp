@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 
-#include "NetworkTipDlg.h"
+#include "NetworkWarnDlg.h"
 
 #include <QFontDatabase>
 
@@ -835,21 +835,21 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         return;
     }
 
-    if (m_ctrl.getOption().crBkg >= 0)
+    cauto option = m_ctrl.getOption();
+    if (m_option.crBkg >= 0)
     {
-        g_crBkg.setRgb((int)m_ctrl.getOption().crBkg);
+        g_crBkg.setRgb((int)option.crBkg);
     }
-    if (m_ctrl.getOption().crFore >= 0)
+    if (option.crFore >= 0)
     {
-        g_crFore.setRgb((int)m_ctrl.getOption().crFore);
+        g_crFore.setRgb((int)option.crFore);
     }
-
 #if __android
-    if (isMobileConnected())
+    if (option.bNetworkWarn && isMobileConnected())
     {
         vibrate();
 
-        static CNetworkTipDlg dlg(m_mainWnd, *this);
+        static CNetworkWarnDlg dlg(m_mainWnd, *this);
         dlg.show([&](){
             m_mainWnd.show();
 

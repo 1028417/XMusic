@@ -35,7 +35,7 @@ SOURCES += ../controller.cpp \
     cpp/msgbox.cpp \
     cpp/wholeTrackDlg.cpp \
     cpp/MLListView.cpp \
-    cpp/networkTipDlg.cpp
+    cpp/networkWarnDlg.cpp
 
 HEADERS += cpp/app.h \
     cpp/MedialibView.h \
@@ -60,7 +60,7 @@ HEADERS += cpp/app.h \
     cpp/centralwidget.h \
     cpp/wholeTrackDlg.h \
     cpp/MLListView.h \
-    cpp/networkTipDlg.h
+    cpp/networkWarnDlg.h
 
 RESOURCES += res.qrc
 
@@ -68,7 +68,7 @@ FORMS += mainwindow.ui  bkgdlg.ui  medialibdlg.ui  addbkgdlg.ui \
     colordlg.ui \
     msgbox.ui \
     wholeTrackDlg.ui \
-    networkTipDlg.ui
+    networkWarnDlg.ui
 
 INCLUDEPATH += ../../inc  cpp
 
