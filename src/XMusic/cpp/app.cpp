@@ -3,6 +3,8 @@
 
 #include "mainwindow.h"
 
+#include "NetworkTipDlg.h"
+
 #include <QFontDatabase>
 
 #include <QScreen>
@@ -258,13 +260,6 @@ CAppInit::CAppInit(QApplication& app)
 
 bool CApp::_init()
 {
-#if __android
-    if (isMobileConnected())
-    {
-        vibrate();
-    }
-#endif
-
     auto& option = m_ctrl.initOption();
     if (!_initRootDir(option.strRootDir))
     {
@@ -851,9 +846,21 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 
     m_mainWnd.show();
 
-    g_logger >> "start controller";
+#if 1//__android
+    if (1)//isMobileConnected())
+    {
+        //vibrate();
+
+        static CNetworkTipDlg dlg(m_mainWnd, *this);
+        dlg.show([&](){
+            m_ctrl.start();
+        });
+
+        return;
+    }
+#endif
+
     m_ctrl.start();
-    g_logger >> "app running";
 }
 
 void CApp::quit()
