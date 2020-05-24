@@ -20,7 +20,7 @@ CNetworkTipDlg::CNetworkTipDlg(QWidget& parent, class CApp& app)
     ui.labelNeverWarn->setForeColor(crText);
     ui.labelExit->setForeColor(crText);
 
-#define __space "                "
+#define __space "                    "
     ui.labelContinue->setText(__space + ui.labelContinue->text() + __space);
     ui.labelNeverWarn->setText(__space + ui.labelNeverWarn->text() + __space);
     ui.labelExit->setText(__space + ui.labelExit->text() + __space);
