@@ -3,6 +3,8 @@
 
 #include <QBitmap>
 
+#include <QStyleOption>
+
 extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
@@ -40,22 +42,11 @@ void CDialog::_setPos()
 
 void CDialog::_show(cfn_void cbClose)
 {
-    if (!m_bFullScreen)
+    /*if (!m_bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground);
         setAttribute(Qt::WA_NoSystemBackground);
-
-        QBitmap bmp(this->size());
-        bmp.fill();
-
-        CPainter painter(&bmp);
-        painter.setPen(Qt::transparent);
-        painter.setBrush(Qt::black);
-        painter.drawRectEx(bmp.rect(), __xround);
-        painter.end();
-
-        this->setMask(bmp);
-    }
+    }*/
 
     _setPos();
 
@@ -113,8 +104,19 @@ bool CDialog::event(QEvent *ev)
         break;
     case QEvent::Paint:
     {
-        QPainter painter(this);
-        painter.fillRect(rect(), bkgColor());
+        CPainter painter(this);
+        cauto rc = rect();
+        if (!m_bFullScreen)
+        {
+            extern QColor g_crLogoBkg;
+            painter.fillRect(rc, g_crLogoBkg);
+
+            painter.fillRectEx(rc, bkgColor(), __xround);
+        }
+        else
+        {
+            painter.fillRect(rc, bkgColor());
+        }
     }
 
         break;

@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>继续</string>
+    <string>继 续</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>退出</string>
+    <string>退 出</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -20,7 +20,7 @@ static Ui::MainWindow ui;
 
 static bool g_bFullScreen = true;
 
-static QColor g_crLogoBkg(180, 220, 255);
+QColor g_crLogoBkg(180, 220, 255);
 
 #if __windows
 inline static void _fixWorkArea(QWidget& wnd)

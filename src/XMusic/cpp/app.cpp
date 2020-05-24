@@ -844,8 +844,6 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         g_crFore.setRgb((int)m_ctrl.getOption().crFore);
     }
 
-    m_mainWnd.show();
-
 #if __android
     if (isMobileConnected())
     {
@@ -853,14 +851,16 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 
         static CNetworkTipDlg dlg(m_mainWnd, *this);
         dlg.show([&](){
-            async([&](){
-                m_ctrl.start();
-            });
+            m_mainWnd.show();
+
+            m_ctrl.start();
         });
 
         return;
     }
 #endif
+
+    m_mainWnd.show();
 
     m_ctrl.start();
 }

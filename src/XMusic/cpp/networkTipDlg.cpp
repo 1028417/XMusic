@@ -20,9 +20,13 @@ CNetworkTipDlg::CNetworkTipDlg(QWidget& parent, class CApp& app)
     ui.labelNeverWarn->setForeColor(crText);
     ui.labelExit->setForeColor(crText);
 
+#define __space "                "
+    ui.labelContinue->setText(__space + ui.labelContinue->text() + __space);
+    ui.labelNeverWarn->setText(__space + ui.labelNeverWarn->text() + __space);
+    ui.labelExit->setText(__space + ui.labelExit->text() + __space);
+
     connect(ui.labelExit, &CLabel::signal_click, [&](){
-        this->setVisible(false);
-        m_app.quit();
+        close();
     });
 }
 
@@ -37,5 +41,7 @@ void CNetworkTipDlg::show(cfn_void cb)
         cb();
     });
 
-    CDialog::show();
+    CDialog::show([&]{
+        m_app.quit();
+    });
 }
