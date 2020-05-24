@@ -836,7 +836,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
     }
 
     cauto option = m_ctrl.getOption();
-    if (m_option.crBkg >= 0)
+    if (option.crBkg >= 0)
     {
         g_crBkg.setRgb((int)option.crBkg);
     }
