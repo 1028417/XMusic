@@ -57,6 +57,8 @@ struct __ModelExt tagOption
     wstring strHBkg;
     wstring strVBkg;
     wstring strAddBkgDir;
+
+    bool bNetworkWarn = true;
 #endif
 
     tagPlaySpiritOption PlaySpiritOption;

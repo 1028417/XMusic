@@ -1,12 +1,12 @@
 
 #include "app.h"
 
-#include "NetworkTipDlg.h"
-#include "ui_networkTipDlg.h"
+#include "NetworkWarnDlg.h"
+#include "ui_networkWarnDlg.h"
 
-static Ui::networkTipDlg ui;
+static Ui::networkWarnDlg ui;
 
-CNetworkTipDlg::CNetworkTipDlg(QWidget& parent, class CApp& app)
+CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
     : CDialog(parent, false)
     , m_app(app)
 {
@@ -20,7 +20,7 @@ CNetworkTipDlg::CNetworkTipDlg(QWidget& parent, class CApp& app)
     ui.labelNeverWarn->setForeColor(crText);
     ui.labelExit->setForeColor(crText);
 
-#define __space "                    "
+#define __space "                            "
     ui.labelContinue->setText(__space + ui.labelContinue->text() + __space);
     ui.labelNeverWarn->setText(__space + ui.labelNeverWarn->text() + __space);
     ui.labelExit->setText(__space + ui.labelExit->text() + __space);
@@ -30,7 +30,7 @@ CNetworkTipDlg::CNetworkTipDlg(QWidget& parent, class CApp& app)
     });
 }
 
-void CNetworkTipDlg::show(cfn_void cb)
+void CNetworkWarnDlg::show(cfn_void cb)
 {
     connect(ui.labelContinue, &CLabel::signal_click, [=](){
         this->setVisible(false);

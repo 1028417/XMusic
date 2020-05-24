@@ -2,10 +2,10 @@
 
 #include "dialog.h"
 
-class CNetworkTipDlg : private CDialog
+class CNetworkWarnDlg : private CDialog
 {
  public:
-    CNetworkTipDlg(QWidget& parent, class CApp& app);
+    CNetworkWarnDlg(QWidget& parent, class CApp& app);
 
 private:
     class CApp& m_app;
