@@ -74,9 +74,7 @@ void CDialog::_show(cfn_void cbClose)
         disconnect(this, &QDialog::finished, 0, 0);
     });
 
-#if __android || __ios // 移动端exec会露出任务栏
-    this->setVisible(true);
-#elif __mac
+#if __mac
     this->exec();
 #else
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);

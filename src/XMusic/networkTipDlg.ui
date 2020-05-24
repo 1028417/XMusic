@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
+    <width>600</width>
     <height>560</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="CLabel" name="labelTip">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>50</x>
      <y>40</y>
      <width>500</width>
      <height>81</height>
@@ -32,8 +32,8 @@
   <widget class="CLabel" name="labelContinue">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>180</y>
+     <x>50</x>
+     <y>170</y>
      <width>500</width>
      <height>80</height>
     </rect>
@@ -48,8 +48,8 @@
   <widget class="CLabel" name="labelNeverWarn">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>310</y>
+     <x>50</x>
+     <y>300</y>
      <width>500</width>
      <height>80</height>
     </rect>
@@ -64,8 +64,8 @@
   <widget class="CLabel" name="labelExit">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>440</y>
+     <x>50</x>
+     <y>430</y>
      <width>500</width>
      <height>80</height>
     </rect>

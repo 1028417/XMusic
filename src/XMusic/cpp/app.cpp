@@ -846,14 +846,16 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 
     m_mainWnd.show();
 
-#if 1//__android
-    if (1)//isMobileConnected())
+#if __android
+    if (isMobileConnected())
     {
-        //vibrate();
+        vibrate();
 
         static CNetworkTipDlg dlg(m_mainWnd, *this);
         dlg.show([&](){
-            m_ctrl.start();
+            async([&](){
+                m_ctrl.start();
+            });
         });
 
         return;
