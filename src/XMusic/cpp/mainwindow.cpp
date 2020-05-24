@@ -679,7 +679,7 @@ void MainWindow::_relayout()
         {
             eSingerImgPos = m_eSingerImgPos;
 
-            ui.labelSingerImg->setPixmapRound(m_bDefaultBkg?__size(4):__szRound);
+            ui.labelSingerImg->setPixmapRound(m_bDefaultBkg?__size(5):__szRound);
             ui.labelSingerImg->setShadow(2);
 
             ui.labelSingerName->setShadow(2);
