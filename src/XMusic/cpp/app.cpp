@@ -867,12 +867,12 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 
 void CApp::quit()
 {
-    m_mainWnd.setVisible(false);
+    //m_mainWnd.setVisible(false);
 
-    async([&](){
+    //async([&](){
         g_bRunSignal = false;
         QApplication::quit();
-    });
+    //});
 }
 
 void CApp::sync(cfn_void cb)

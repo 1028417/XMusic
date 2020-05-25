@@ -221,7 +221,7 @@ public:
 
     void drawPixmapEx(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0);
 
-    void drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, float fAdjust=1.0f);
+    void drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);
 
     void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 

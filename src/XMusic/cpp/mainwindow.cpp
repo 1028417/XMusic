@@ -950,7 +950,7 @@ void MainWindow::_onPaint()
             cauto pmBkg = bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg, .0f);
+               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
             }
             else
             {
