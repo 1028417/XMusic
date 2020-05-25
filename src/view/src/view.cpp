@@ -666,7 +666,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	FileDlgOpt.strTitle = L"选择保存快照路径";
 	FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
 	FileDlgOpt.strFileName = dir.GetName() + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
-	static CFileDlgEx fileDlg(FileDlgOpt);
+	CFileDlgEx fileDlg(FileDlgOpt);
 
 	wstring strFile = fileDlg.ShowSave();
 	if (!strFile.empty())
