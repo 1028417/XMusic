@@ -28,7 +28,7 @@ enum class E_UpgradeResult
 	UR_AppUpgraded
 };
 
-class CUpgradeUrl
+class __ModelExt CUpgradeUrl
 {
 public:
     CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
