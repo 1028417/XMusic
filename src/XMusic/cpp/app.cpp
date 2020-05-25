@@ -460,8 +460,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMdlConf& orgMdlConf)
             continue;
         }
 
-        auto& newMdlConf = __xmedialib.mdlConf();
-        newMdlConf.clear();
+        tagMdlConf newMdlConf;
         if (!m_model.loadMdlConf(bbfConf, bbfConf->size(), newMdlConf))
         {
             g_logger >> "readMdlConf fail";
