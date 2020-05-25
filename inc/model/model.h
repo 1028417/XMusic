@@ -27,6 +27,53 @@ enum class E_UpgradeResult
 	UR_AppUpgradeFail,
 	UR_AppUpgraded
 };
+
+class CUpgradeUrl
+{
+public:
+    CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
+    {
+    }
+
+private:
+    string m_strBaseUrl;
+
+public:
+    string mdlconf() const;
+    string mdl() const;
+
+    string singerimg() const;
+
+    string app() const;
+};
+
+struct __ModelExt tagMdlConf
+{
+    string strAppVersion;
+
+    UINT uMdlVersion = 0;
+
+    UINT uCompatibleCode = 0;
+
+    list<CUpgradeUrl> lstUpgradeUrl;
+
+    //list<string> lstOnlineHBkg;
+    //list<string> lstOnlineVBkg;
+
+    void clear()
+    {
+        strAppVersion.clear();
+
+        uMdlVersion = 0;
+
+        uCompatibleCode = 0;
+
+        lstUpgradeUrl.clear();
+
+        //lstOnlineHBkg.clear();
+        //lstOnlineVBkg.clear();
+    }
+};
 #endif
 
 #define __medialibDir L".xmusic"
@@ -158,6 +205,8 @@ private:
 
 #if __winvc
     CBackupMgr m_BackupMgr;
+#else
+    tagMdlConf m_newMdlConf;
 #endif
 
 	CPlaylistMgr m_PlaylistMgr;

@@ -1,78 +1,6 @@
 
 #pragma once
 
-#if __OnlineMediaLib
-class CUpgradeUrl
-{
-public:
-    CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
-    {
-    }
-
-private:
-    string m_strBaseUrl;
-
-public:
-    string mdlconf() const
-    {
-        return m_strBaseUrl + "/mdl/mdlconf";
-    }
-    string mdl() const
-    {
-        return m_strBaseUrl + "/mdl/mdl";
-    }
-
-    string singerimg() const
-    {
-        return m_strBaseUrl + "/singerimg/";
-    }
-
-    string app() const
-    {
-#if __android
-#define __appFilePostfix "android.apk"
-#elif __windows
-#define __appFilePostfix "win32.zip"
-#elif __mac
-#define __appFilePostfix "macOs.zip"
-#else
-#define __appFilePostfix ""
-        return "";
-#endif
-
-        return m_strBaseUrl + "/app/XMusic-" __appFilePostfix;
-    }
-};
-
-struct __ModelExt tagMdlConf
-{
-    string strAppVersion;
-
-    UINT uMdlVersion = 0;
-
-    UINT uCompatibleCode = 0;
-
-    list<CUpgradeUrl> lstUpgradeUrl;
-
-    //list<string> lstOnlineHBkg;
-    //list<string> lstOnlineVBkg;
-
-    void clear()
-    {
-        strAppVersion.clear();
-
-        uMdlVersion = 0;
-
-        uCompatibleCode = 0;
-
-        lstUpgradeUrl.clear();
-
-        //lstOnlineHBkg.clear();
-        //lstOnlineVBkg.clear();
-    }
-};
-#endif
-
 #define __xmedialib ((XMediaLib&)__medialib)
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
@@ -86,18 +14,11 @@ private:
 
 #if __OnlineMediaLib
 private:
-    tagMdlConf m_newMdlConf;
-
     list<JValue> m_lstSnapshot;
 
     CCueList m_cuelist;
 
 public:
-    tagMdlConf& mdlConf()
-    {
-        return m_newMdlConf;
-    }
-
     bool checkXUrl(cwstr strPath);
 
     string getXUrl(cwstr strPath) const;
