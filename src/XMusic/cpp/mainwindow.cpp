@@ -390,11 +390,14 @@ bool MainWindow::event(QEvent *ev)
     {
     case QEvent::Move:
     case QEvent::Resize:
-        _fixWorkArea(*this);
+        if (this->windowState() != Qt::WindowMinimized)
+        {
+            _fixWorkArea(*this);
 
-        _relayout();
+            _relayout();
 
-        CDialog::resetPos();
+            CDialog::resetPos();
+        }
 
         break;
     case QEvent::Paint:
@@ -433,10 +436,19 @@ bool MainWindow::event(QEvent *ev)
             prevTime = currTime;
         }
 #else
-        if (((QKeyEvent*)ev)->nativeVirtualKey() == 13)
+
+        if (Qt::Key_Return == ((QKeyEvent*)ev)->key())
         {
             switchFullScreen();
         }
+
+#if __windows
+        auto vkKey = ((QKeyEvent*)ev)->nativeVirtualKey();
+        if (VK_ESCAPE == vkKey)
+        {
+            this->setWindowState(Qt::WindowMinimized);
+        }
+#endif
 #endif
     }
     break;
