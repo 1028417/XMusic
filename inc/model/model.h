@@ -31,20 +31,20 @@ enum class E_UpgradeResult
 class __ModelExt CUpgradeUrl
 {
 public:
-    CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
-    {
-    }
+	CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
+	{
+	}
 
 private:
-    string m_strBaseUrl;
+	string m_strBaseUrl;
 
 public:
-    string mdlconf() const;
-    string mdl() const;
+	string mdlconf() const;
+	string mdl() const;
 
-    string singerimg() const;
+	string singerimg() const;
 
-    string app() const;
+	string app() const;
 };
 
 struct __ModelExt tagMdlConf
@@ -199,14 +199,16 @@ private:
 	IModelObserver& m_ModelObserver;
 	tagOption& m_Option;
 
+#if __OnlineMediaLib
+	tagMdlConf m_newMdlConf;
+#endif
+
     XMediaLib m_MediaLib;
 	
 	CDataMgr m_DataMgr;
 
 #if __winvc
-    CBackupMgr m_BackupMgr;
-#else
-    tagMdlConf m_newMdlConf;
+	CBackupMgr m_BackupMgr;
 #endif
 
 	CPlaylistMgr m_PlaylistMgr;

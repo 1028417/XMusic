@@ -31,7 +31,11 @@ public:
 #endif
 
 public:
-    void init(cwstr strDir, const list<CUpgradeUrl>& lstUpgradeUrl, const list<wstring>& lstOnlineSingerImg);
+    void init(cwstr strDir
+#if __OnlineMediaLib
+		, const list<CUpgradeUrl>& lstUpgradeUrl, const list<wstring>& lstOnlineSingerImg
+#endif
+	);
 
 	UINT addSingerImg(cwstr strSingerName, const list<wstring>& lstFiles);
 
