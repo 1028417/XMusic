@@ -137,7 +137,7 @@ class IModel
 {
 public:
 #if __OnlineMediaLib
-    virtual bool loadMdlConf(byte_p lpData, size_t size, tagMdlConf& mdlConf) = 0;
+    virtual bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) = 0;
     virtual E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) = 0;
 #endif
 
@@ -245,7 +245,7 @@ public:
 	}
 
 #if __OnlineMediaLib
-    bool loadMdlConf(byte_p lpData, size_t size, tagMdlConf& mdlConf) override;
+    bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) override;
     E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) override;
 #endif
 

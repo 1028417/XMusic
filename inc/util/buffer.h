@@ -5,13 +5,20 @@ template<typename T>
 struct TBuffer
 {
 public:
-	TBuffer(size_t count)
+        TBuffer(size_t count, const T *lpSrc=NULL)
 	{
 		m_count = MAX(1, count);
 		m_size = m_count * sizeof(T);
 
 		m_pBuff = (T*)malloc(m_size);
-		memset(m_pBuff, 0, m_size);
+                if (lpSrc)
+                {
+                    memcpy(m_pBuff, lpSrc, m_size);
+                }
+                else
+                {
+                    memset(m_pBuff, 0, m_size);
+                }
 	}
 	
 	~TBuffer()
