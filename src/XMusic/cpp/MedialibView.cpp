@@ -269,7 +269,7 @@ void CMedialibView::_genItemContext(tagMLItemContext& context)
             {
                 auto strDirName = context.pDir->fileName();
                 strutil::lowerCase(strDirName);
-                if (strDirName.find(L"hires") != __wnpos)
+                if (strDirName.find(L"hi-res") != __wnpos)
                 {
                     context.pmIcon = &m_pmHires;
                 }
@@ -277,14 +277,6 @@ void CMedialibView::_genItemContext(tagMLItemContext& context)
                 {
                     context.pmIcon = &m_pmDSD;
                 }
-                /*else if (strDirName.find(L"CD整轨") != __wnpos)
-                {
-                    context.pixmap = &m_pmCdDiskdir;
-                }
-                else if (strDirName.find(L"无损整轨") != __wnpos)
-                {
-                    context.pixmap = &m_pmllDiskdir;
-                }*/
             }
         }
         else
