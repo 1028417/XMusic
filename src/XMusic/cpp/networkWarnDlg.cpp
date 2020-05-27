@@ -32,7 +32,7 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
 
 cqcr CNetworkWarnDlg::bkgColor() const
 {
-    static QColor crBkg(200, 230, 255);
+    static QColor crBkg(195, 230, 255);
     return crBkg;
 }
 

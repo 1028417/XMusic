@@ -19,7 +19,7 @@ CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 
 cqcr CMsgBox::bkgColor() const
 {
-    static QColor crBkg(200, 230, 255);
+    static QColor crBkg(195, 230, 255);
     return crBkg;
 }
 
