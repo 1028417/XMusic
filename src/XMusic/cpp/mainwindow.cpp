@@ -177,7 +177,7 @@ void MainWindow::showLogo()
         ui.labelLogo->movie()->start();
         ui.labelLogo->setVisible(true);
 
-        CApp::async(100, [&](){
+        CApp::async(50, [&](){
             _updateLogoTip();
         });
 
@@ -201,7 +201,7 @@ void MainWindow::_updateLogoTip()
         CApp::async(600, [=](){
             labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-            CApp::async(2700, [=](){
+            CApp::async(2600, [=](){
 #define __logoTip "更新媒体库"
                 if (-1 == g_nAppDownloadProgress)
                 {
@@ -274,9 +274,9 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     auto crCompany = peCompany.color(QPalette::WindowText);
     auto nAlpha = crCompany.alpha();
 
-    timerutil::setTimerEx(40, [=]()mutable{
+    timerutil::setTimerEx(35, [=]()mutable{
         nAlpha += nAlphaOffset;
-        if (nAlpha < 0 || nAlpha > 255)
+        if (nAlpha < 5 || nAlpha > 255)
         {
             if (cb)
             {

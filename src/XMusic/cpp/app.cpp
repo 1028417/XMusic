@@ -358,16 +358,16 @@ E_UpgradeResult CApp::_initMediaLib(const tagMdlConf& orgMdlConf)
     }
 #endif
 
-    //auto time0 = time(0);
+    auto time0 = time(0);
     if (!m_model.initMediaLib())
     {
         g_logger >> "initMediaLib fail";
         return E_UpgradeResult::UR_Fail;
     }
-    //g_logger << "initMediaLib success " >> (time(0)-time0);
+    g_logger << "initMediaLib success " >> (time(0)-time0);
 
     auto timeDiff = 6 - (time(0) - timeBegin);
-    //g_logger << "timeDiff: " >> timeDiff;
+    g_logger << "timeDiff: " >> timeDiff;
     if (timeDiff > 0)
     {
         mtutil::usleep((UINT)timeDiff*1000);
