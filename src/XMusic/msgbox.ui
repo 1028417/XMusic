@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>309</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>60</y>
-     <width>720</width>
+     <y>110</y>
+     <width>660</width>
      <height>80</height>
     </rect>
    </property>
@@ -29,32 +29,29 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="CButton" name="btnClose">
+  <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>630</x>
-     <y>200</y>
-     <width>120</width>
-     <height>60</height>
+     <x>710</x>
+     <y>10</y>
+     <width>80</width>
+     <height>80</height>
     </rect>
    </property>
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">border-image: url(:/img/btnX.png);</string>
    </property>
    <property name="text">
-    <string>关闭</string>
+    <string/>
    </property>
    <property name="iconSize">
     <size>
      <width>100</width>
      <height>100</height>
     </size>
-   </property>
-   <property name="checkable">
-    <bool>false</bool>
    </property>
    <property name="flat">
     <bool>false</bool>
@@ -63,14 +60,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">label.h</header>
-  </customwidget>
-  <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

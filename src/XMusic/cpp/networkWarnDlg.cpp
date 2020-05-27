@@ -30,6 +30,12 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
     });
 }
 
+cqcr CNetworkWarnDlg::bkgColor() const
+{
+    static QColor crBkg(200, 230, 255);
+    return crBkg;
+}
+
 void CNetworkWarnDlg::show(cfn_void cb)
 {
     connect(ui.labelContinue, &CLabel::signal_click, [=](){

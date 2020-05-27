@@ -14,9 +14,5 @@ public:
     void show(cfn_void cb);
 
 private:
-    cqcr bkgColor() const override
-    {
-        static QColor crBkg(200, 230, 255);
-        return crBkg;
-    }
+    cqcr bkgColor() const override;
 };
