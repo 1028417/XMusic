@@ -13,6 +13,8 @@
 
 #include "bkgdlg.h"
 
+#define __crLogoText 100, 150, 255
+
 struct tagPlayingInfo
 {
     QString qsTitle;

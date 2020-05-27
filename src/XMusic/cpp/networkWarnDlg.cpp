@@ -14,7 +14,7 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
 
     ui.labelTip->setFont(1, QFont::Weight::DemiBold);
 
-    QColor crText(64, 128, 255);
+    QColor crText(__crLogoText);
     ui.labelTip->setForeColor(crText);
     ui.labelContinue->setForeColor(crText);
     ui.labelNeverWarn->setForeColor(crText);
