@@ -21,7 +21,7 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
-    m_lv.setFont(1.04, QFont::Weight::Normal);
+    m_lv.setFont(1.0f, QFont::Weight::Normal);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QWidget::close);
 

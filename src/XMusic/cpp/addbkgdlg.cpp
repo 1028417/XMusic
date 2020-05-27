@@ -55,6 +55,8 @@ void CAddBkgDlg::init()
     });
 #endif
 
+    m_lv.setFont(1.0f, QFont::Weight::Normal);
+
     connect(ui.btnReturn, &CButton::signal_clicked, this, &CAddBkgDlg::_handleReturn);
 }
 
