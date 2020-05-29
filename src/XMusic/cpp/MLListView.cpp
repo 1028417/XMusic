@@ -92,7 +92,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
                 tagMLItemContext context(lvItem, mediaSet);
-                _genItemContext(context);
+                _genMLItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -100,7 +100,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media) {
                 tagMLItemContext context(lvItem, media);
-                _genItemContext(context);
+                _genMLItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -111,7 +111,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
                 tagMLItemContext context(lvItem, subFile);
-                _genItemContext(context);
+                _genMLItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -119,7 +119,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         {
             m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 tagMLItemContext context(lvItem, subPath);
-                _genItemContext(context);
+                _genMLItemContext(context);
                 _paintRow(painter, context);
             });
         }
@@ -127,7 +127,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     else
     {
         tagMLItemContext context(lvItem);
-        _genItemContext(context);
+        _genMLItemContext(context);
         if (context)
         {
             _paintRow(painter, context);
@@ -171,7 +171,7 @@ void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
     else
     {
         tagMLItemContext context(lvItem);
-        _genItemContext(context);
+        _genMLItemContext(context);
         if (context.pMediaSet)
         {
             _saveScrollRecord();
