@@ -214,8 +214,9 @@ size_t CMedialibView::_getRootItemCount() const
     }
 }
 
-void CMedialibView::_genItemContext(tagMLItemContext& context)
+void CMedialibView::_genItemContext(tagLVItemContext& t_context)
 {
+    auto& context = (tagMLItemContext&)t_context;
     context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
     {

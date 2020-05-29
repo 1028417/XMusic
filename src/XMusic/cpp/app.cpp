@@ -3,7 +3,7 @@
 
 #include "mainwindow.h"
 
-#include "NetworkWarnDlg.h"
+#include "networkWarnDlg.h"
 
 #include <QFontDatabase>
 

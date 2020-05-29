@@ -10,7 +10,6 @@ static Ui::WholeTrackDlg ui;
 
 CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     : CDialog(medialibDlg)
-    , m_medialibDlg(medialibDlg)
     , m_app(app)
     , m_lv(*this)
 {

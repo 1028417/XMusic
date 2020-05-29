@@ -135,8 +135,6 @@ private:
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
-    virtual void _genItemContext(tagMLItemContext&) = 0;
-
     void _onRowClick(tagLVItem&, const QMouseEvent&) override;
 
     virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CMedia&){}

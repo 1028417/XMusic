@@ -1,7 +1,7 @@
 
 #include "app.h"
 
-#include "NetworkWarnDlg.h"
+#include "networkWarnDlg.h"
 #include "ui_networkWarnDlg.h"
 
 static Ui::networkWarnDlg ui;

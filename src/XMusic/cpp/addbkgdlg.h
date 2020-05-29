@@ -69,7 +69,7 @@ private:
 public:
     wstring displayName() const;
 
-    const cqpm snapshot() const
+    cqpm snapshot() const
     {
         return m_pmSnapshot;
     }

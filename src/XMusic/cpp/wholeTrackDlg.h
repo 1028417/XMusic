@@ -31,8 +31,6 @@ public:
     CWholeTrackDlg(class CMedialibDlg& medialibDlg, class CApp& app);
 
 private:
-    class CMedialibDlg& m_medialibDlg;
-
     class CApp& m_app;
 
     class CMediaRes *m_pMediaRes;
