@@ -33,9 +33,9 @@ enum class E_MediaQuality
 
 enum class E_RelatedMediaSet
 {
-	RMS_Playlist = E_MediaSetType::MST_Playlist
-	, RMS_Album = E_MediaSetType::MST_Album
-	, RMS_Singer = E_MediaSetType::MST_Singer
+        RMS_Playlist = (int)E_MediaSetType::MST_Playlist
+        , RMS_Album = (int)E_MediaSetType::MST_Album
+        , RMS_Singer = (int)E_MediaSetType::MST_Singer
 };
 
 class __MediaLibExt IMedia
