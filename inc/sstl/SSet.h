@@ -97,7 +97,7 @@ namespace NS_SSTL
 			return set;
 		}
 
-		template <typename CB, typename RET = decltype(declval<CB>()(__DataType()))>
+        template <typename CB, typename RET = decltype(declval<CB>()(declval<__DataConstRef>()))>
 		SSetT<RET, __BaseType> map(const CB& cb) const
 		{
 			return map<RET>(cb);

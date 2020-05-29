@@ -256,7 +256,7 @@ namespace NS_SSTL
 			return lst;
 		}
 
-		template <typename CB, typename RET = decltype(declval<CB>()(__DataType()))>
+        template <typename CB, typename RET = decltype(declval<CB>()(declval<__DataConstRef>()))>
 		SListT<RET> map(const CB& cb) const
 		{
 			return map<RET>(cb);

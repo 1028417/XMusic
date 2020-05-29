@@ -3,15 +3,12 @@
 class __ModelExt CSingerImgMgr
 {
 public:
-    CSingerImgMgr(class CModel& model, IModelObserver& ModelObserver)
-        : m_model(model)
-        , m_ModelObserver(ModelObserver)
+    CSingerImgMgr(IModelObserver& ModelObserver)
+        : m_ModelObserver(ModelObserver)
     {
     }
 
 private:
-    class CModel& m_model;
-
     IModelObserver& m_ModelObserver;
 
 	wstring m_strDir;

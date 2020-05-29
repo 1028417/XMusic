@@ -429,7 +429,7 @@ namespace NS_SSTL
 			return arr;
 		}
 
-		template <typename CB, typename RET = decltype(declval<CB>()(__DataType()))>
+        template <typename CB, typename RET = decltype(declval<CB>()(declval<__DataConstRef>()))>
 		SArrayT<RET, __BaseType> map(const CB& cb) const
 		{
 			return map<RET>(cb);
