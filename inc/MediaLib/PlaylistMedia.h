@@ -10,11 +10,8 @@ public:
 private:
 	wstring _GetDisplayName(bool bDynamic);
 
-	wstring GetExportFileName() override
-	{
-        return _GetDisplayName(true) + __wcDot + GetExtName();
-	}
-
+	wstring GetExportFileName() override;
+	
 #if __winvc
 	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 #endif
