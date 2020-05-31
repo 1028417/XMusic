@@ -287,15 +287,16 @@ void CPlayItemPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	m_MenuGuard.EnableItem(ID_PLAY, (m_pPlaylist && m_pPlaylist->playable()));
 
-	int nCount = m_wndList.GetSelectedCount();
-	m_MenuGuard.EnableItem(ID_FIND, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_HITTEST, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (nCount > 0));
+	int nSelCount = m_wndList.GetSelectedCount();
+	m_MenuGuard.EnableItem(ID_FIND, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_HITTEST, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (nSelCount > 0));
 
-	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_EXPLORE, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_RENAME, (1 == nCount));
-	m_MenuGuard.EnableItem(ID_REMOVE, (nCount > 0));
+	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_EXPLORE, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_EXPORT, (m_wndList.GetItemCount() > 0));
+	m_MenuGuard.EnableItem(ID_RENAME, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_REMOVE, (nSelCount > 0));
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
@@ -382,6 +383,18 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			lstPlayItems.front([&](CMedia& media) {
 				m_view.exploreMedia(media);
 			});
+		}
+
+		break;
+	case ID_EXPORT:
+		if (lstPlayItems)
+		{
+			m_view.exportMedia(TD_IMediaList(lstPlayItems));
+		}
+		else
+		{
+			TD_IMediaList paMedias((ArrList<CPlayItem>&)m_pPlaylist->playItems());
+			m_view.exportMedia(paMedias);
 		}
 
 		break;

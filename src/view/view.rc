@@ -293,9 +293,10 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY_ALBUMITEM
-        MENUITEM "查找",                          ID_FIND_ALBUMITEM
         MENUITEM "定位",                          ID_HITTEST_ALBUMITEM
+        MENUITEM "查找",                          ID_FIND_ALBUMITEM
         MENUITEM "浏览",                          ID_EXPLORE_ALBUMITEM
+        MENUITEM "导出",                          ID_EXPORT_ALBUMITEM
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME_ALBUMITEM
@@ -365,9 +366,10 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "查找",                          ID_FIND
         MENUITEM "定位",                          ID_HITTEST
+        MENUITEM "查找",                          ID_FIND
         MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM "导出",                          ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME
@@ -381,9 +383,10 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "查找",                          ID_FIND
         MENUITEM "定位",                          ID_HITTEST
+        MENUITEM "查找",                          ID_FIND
         MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM "导出",                          ID_EXPORT
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME
@@ -1033,8 +1036,7 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
-
+#endif
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

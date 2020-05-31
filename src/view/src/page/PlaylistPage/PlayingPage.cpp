@@ -85,14 +85,10 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_SETALARMCLOCK:
-	{
 		__AssertBreak(arrSelPlayItem);
+		m_view.getDataMgr().addAlarmmedia(TD_IMediaList(arrSelPlayItem));
 
-		TD_IMediaList lstMedias(arrSelPlayItem);
-		m_view.getDataMgr().addAlarmmedia(lstMedias);
-	}
-
-	break;
+		break;
 	case ID_CopyTitle:
 		arrSelPlayItem.front([&](auto& playItem) {
 			(void)m_view.copyMediaTitle(playItem);
@@ -105,6 +101,18 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		arrSelPlayItem.front([&](auto& playItem) {
 			m_view.exploreMedia(playItem);
 		});
+
+		break;
+	case ID_EXPORT:
+		if (arrSelPlayItem)
+		{
+			m_view.exportMedia(TD_IMediaList(arrSelPlayItem));
+		}
+		else
+		{
+			TD_IMediaList paMedias((ArrList<CPlayItem>&)m_view.getPlaylistMgr().playinglist().playItems());
+			m_view.exportMedia(paMedias);
+		}
 
 		break;
 	case ID_RENAME:
@@ -261,6 +269,8 @@ void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.EnableItem(ID_EXPLORE, false);
 		m_MenuGuard.EnableItem(ID_RENAME, false);
 	}
+
+	m_MenuGuard.EnableItem(ID_EXPORT, (m_wndList.GetItemCount() > 0));
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }

@@ -4,7 +4,6 @@
 //
 #define IDD_PAGE_SINGER                 1
 #define IDC_BTN_PLAY                    3
-#define IDC_BTN_PLAY                     3
 #define IDD_DLG_ChooseDir               1000
 #define IDI_MAINWND                     2000
 #define IDC_LIST_BROWSE                 2000
@@ -84,10 +83,9 @@
 #define IDD_PAGE_PLAYITEM               2029
 #define IDC_DATETIMEPICKER              2030
 #define IDD_DLG_WholeTrack              2030
-#define IDC_BTN_DEMAND                   2031
+#define IDC_BTN_DEMAND                  2031
 #define IDD_DLG_TrackDetail             2031
 #define IDC_BTN_AutoMatch               2032
-#define IDD_DLG_ExportOption            20322
 #define IDC_COMBO1                      2033
 #define IDC_COMBO_SRC                   2034
 #define IDR_TOOLBAR1                    2034
@@ -102,6 +100,7 @@
 #define IDC_BTN_RESTORE2                2039
 #define IDC_ActualMode                  2041
 #define IDC_BTN_ClearAllMedia           2042
+#define IDD_DLG_ExportOption            20322
 #define ID_EXIT                         32773
 #define ID_REFRESH                      32773
 #define ID_Menu                         32774
@@ -230,13 +229,14 @@
 #define ID__32965                       32965
 #define ID_Attach                       32966
 #define ID_Detach                       32967
+#define ID_EXPORT_ALBUMITEM             32968
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32968
+#define _APS_NEXT_COMMAND_VALUE         32969
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif
