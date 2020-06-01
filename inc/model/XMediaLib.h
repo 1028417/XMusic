@@ -59,7 +59,7 @@ private:
 	UINT getSingerImgPos(UINT uSingerID) override;
 };
 
-#define __wholeTrackDuration 600
+#define __wholeTrackDuration 60 * 8
 
 #if __OnlineMediaLib
 class CSnapshotMediaRes : public CMediaRes
