@@ -72,7 +72,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         CPainterFontGuard fontGuard(painter, 0.6f, QFont::Weight::Thin);
 #endif
 #define __szIcon 16
-        QRect rcIcon(rc.x(), rc.center().y()-__szIcon/2, __szIcon, __szIcon);
+        QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
         painter.drawPixmap(rcIcon, m_pmPlaying);
         //painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
         //                   , m_uShadowWidth, uShadowAlpha, uTextAlpha);
