@@ -19,6 +19,8 @@ public:
 private:
     class CApp& m_app;
 
+    QPixmap m_pmPlaying;
+
     UINT m_uPageRowCount = 0;
 
     ArrList<tagPlayingItem> m_alPlayingItems;

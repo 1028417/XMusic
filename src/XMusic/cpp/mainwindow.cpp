@@ -351,7 +351,7 @@ void MainWindow::show()
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
     UINT uOffset = 0;
-    UINT uDelayTime = m_app.getOption().bUseBkgColor?40:3;
+    UINT uDelayTime = m_app.getOption().bUseBkgColor?50:20;
     timerutil::setTimerEx(uDelayTime, [=]()mutable{
 #if __android || __ios
         uOffset = 29;

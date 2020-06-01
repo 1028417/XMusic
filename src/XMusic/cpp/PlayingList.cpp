@@ -12,6 +12,8 @@ CPlayingList::CPlayingList(class CApp& app, QWidget *parent)
 #endif
 
     this->startTimer(1000);
+
+    (void)m_pmPlaying.load(":/img/btnPlay.png");
 }
 
 size_t CPlayingList::getRowCount() const
@@ -69,8 +71,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 #if __android || __ios
         CPainterFontGuard fontGuard(painter, 0.6f, QFont::Weight::Thin);
 #endif
-        painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
-                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+#define __szIcon 16
+        QRect rcIcon(rc.x(), rc.center().y()-__szIcon/2, __szIcon, __szIcon);
+        painter.drawPixmap(rcIcon, m_pmPlaying);
+        //painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
+        //                   , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
     rc.setLeft(__size(35));
