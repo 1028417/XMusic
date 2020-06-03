@@ -213,7 +213,7 @@ CAppInit::CAppInit(QApplication& app)
 
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;
-    g_uDefFontSize *= fDPIRate;
+    //g_uDefFontSize *= fDPIRate;
 
 #elif __android
     g_uDefFontSize = 12;
