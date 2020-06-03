@@ -15,7 +15,7 @@ private:
 	UINT m_uByteRate = 0;
 
     const void *m_pXmscCodec = NULL;
-    UINT m_uXmscHeadLen = 0;
+    size_t m_uXmscHeadLen = 0;
 
     //uint64_t m_uPos = 0;
 
