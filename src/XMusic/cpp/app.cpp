@@ -203,10 +203,10 @@ CAppInit::CAppInit(QApplication& app)
     };*/
 
     g_uDefFontSize = app.font().pointSize();
-    g_uDefFontSize *= g_szScreenMax/540.0f;
+    //g_uDefFontSize *= g_szScreenMax/540.0f;
 
 #elif __mac
-    g_uDefFontSize = 29;
+    g_uDefFontSize = 28;
 
 #elif __windows
     g_uDefFontSize = 22;
