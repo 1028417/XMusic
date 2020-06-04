@@ -124,10 +124,12 @@ bool CDialog::event(QEvent *ev)
         break;
 #if __android || __ios
 	case QEvent::KeyRelease:
-        if (_handleReturn())
+        if (!_handleReturn())
         {
-            return false;
+            close(); // 相比5.6.3，5.13.2有bug，必须这样手动clode
         }
+
+        return true;
 #endif
 	default:
         break;
