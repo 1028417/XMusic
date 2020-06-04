@@ -139,8 +139,8 @@ android {
     #CONFIG += mobility
     #MOBILITY =
 
-    font.path = /assets/font
-    bkg.path = /assets/bkg
+    font.path = /assets/font/
+    bkg.path = /assets/
     INSTALLS += font bkg
 
     DISTFILES += \
