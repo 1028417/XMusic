@@ -68,7 +68,9 @@ void CDialog::_show(cfn_void cbClose)
 #if __mac
     this->exec();
 #else
+#if __windows
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
+#endif
     this->setVisible(true);
 #endif
 }
