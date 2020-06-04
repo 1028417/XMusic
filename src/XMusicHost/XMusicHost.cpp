@@ -4,37 +4,18 @@
 
 #include "../view/resource.h"
 
-class CStartup
+struct tagStartup
 {
-public:
-	CStartup()
+	tagStartup()
 	{
-		if (CMainApp::checkRuning())
-		{
-			exit(0);
-			return;
-		}
-
 		fsutil::setWorkDir(fsutil::getModuleDir());
 
 		extern void InitMinDump(const string&);
 		InitMinDump("xmusichost_dump_");
-
-		//m_app = new CPlayerApp;
 	}
-
-	/*~CStartup()
-	{
-		if (m_app)
-		{
-			delete m_app;
-		}
-	}
-
-	CPlayerApp* m_app = NULL;*/
 };
 
-class CApp : public CMainApp, private CStartup
+class CApp : private tagStartup, public CMainApp
 {
 public:
 	CApp()
@@ -42,6 +23,19 @@ public:
 		, m_controller(m_view, m_model)
 		, m_model(m_view.getModelObserver(), m_controller.getOption())
 	{
+		CCommandLineInfo cmdInfo;
+		ParseCommandLine(cmdInfo);
+		if (!cmdInfo.m_strFileName.IsEmpty())
+		{
+			m_model.convertXmsc(wstring(cmdInfo.m_strFileName));
+			exit(0);
+		}
+
+		if (CMainApp::checkRuning())
+		{
+			exit(0);
+			return;
+		}
 	}
 
 	IView& getView() override
