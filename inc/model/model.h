@@ -152,8 +152,11 @@ public:
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
 #if __winvc
-    virtual CBackupMgr& getBackupMgr() = 0;\
-    virtual bool setupMediaLib(cwstr strRootDir) = 0;
+    virtual CBackupMgr& getBackupMgr() = 0;
+
+	virtual void convertXmsc(const wstring& strFile) = 0;
+
+	virtual bool setupMediaLib(cwstr strRootDir) = 0;
 
     virtual void refreshMediaLib() = 0;
 
@@ -183,9 +186,9 @@ public:
 
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
-#endif
 
-    virtual bool clearData() = 0;
+	virtual bool clearData() = 0;
+#endif
 
     virtual void close() = 0;
 };
@@ -259,6 +262,8 @@ public:
         return m_BackupMgr;
     }
 
+	void convertXmsc(const wstring& strFile) override;
+
     bool setupMediaLib(cwstr strRootDir) override;
 
 	void refreshMediaLib() override;
@@ -288,25 +293,25 @@ public:
 
     wstring backupDB() override;
 	bool restoreDB(cwstr strTag) override;
-#endif
 
-    bool clearData() override;
+	bool clearData() override;
+#endif
 
     void close() override;
 
 private:
+	bool _initData(cwstr strDBFile);
+
+	bool _updateDir(cwstr strOldPath, cwstr strNewPath);
+
 #if __winvc
 	wstring _scanXMusicDir();
 	wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
 
 	bool _exportDB(cwstr strExportDir, bool bExportXmsc);
-#endif
-
-    bool _initData(cwstr strDBFile);
-	
-	bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
 	void _clear();
+#endif
 
 	void _close();
 };
