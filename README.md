@@ -64,7 +64,7 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
 已编译出Windows、macOs版本和android安装包，安卓采用OpenSL ES播放音频流。
-完成ios版本编译和iPhone/iPad各机型适配，app待上架
+完成iOS版本编译和iPhone/iPad各机型适配，app待上架
 
 产品链接：www.xmusic.ltd
 
