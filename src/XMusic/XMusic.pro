@@ -85,10 +85,13 @@ BuildDir = ../../../build
 BinDir = ../../bin
 
 android {
-    LIBS += -L../../libs/armeabi-v7a
+    CommonLibDir = $$PWD/../../../Common2.1/libs/armeabi-v7a
+    PlaySDKLibDir = $$PWD/../../../PlaySDK/libs/armeabi-v7a
+    v7aLibDir = $$PWD/../../libs/armeabi-v7a
+    LIBS += -L$$v7aLibDir -L$$CommonLibDir -L$$PlaySDKLibDir
 
     platform = android
-    DESTDIR = ../../libs/armeabi-v7a
+    DESTDIR = $$v7aLibDir
 } else: macx {
     LIBS += -L$$BinDir/mac
 
@@ -162,20 +165,18 @@ android {
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
-    v7aLibDir = $$PWD/../../libs/armeabi-v7a
-    ffmpegLibDir= $$PWD/../../../PlaySDK/libs/armeabi-v7a/ffmpeg
     contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
         ANDROID_EXTRA_LIBS = \
-            $$v7aLibDir/libxutil.so \
+            $$CommonLibDir/libssl.so \
+            $$CommonLibDir/libcrypto.so \
+            $$CommonLibDir/libxutil.so \
+            $$PlaySDKLibDir/libxPlaySDK.so \
+            $$PlaySDKLibDir/libavcodec.so \
+            $$PlaySDKLibDir/libavformat.so \
+            $$PlaySDKLibDir/libavutil.so \
+            $$PlaySDKLibDir/libswresample.so \
             $$v7aLibDir/libxMediaLib.so \
-            $$v7aLibDir/libxModel.so \
-            $$v7aLibDir/libssl.so \
-            $$v7aLibDir/libcrypto.so \
-            $$v7aLibDir/libxPlaySDK.so \
-            $$ffmpegLibDir/libavcodec.so \
-            $$ffmpegLibDir/libavformat.so \
-            $$ffmpegLibDir/libavutil.so \
-            $$ffmpegLibDir/libswresample.so
+            $$v7aLibDir/libxModel.so
     }
 }
 
