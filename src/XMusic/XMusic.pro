@@ -17,6 +17,7 @@ QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += ../controller.cpp \
+    ../OptionMgr.cpp \
     cpp/MedialibView.cpp \
     cpp/painter.cpp \
     cpp/button.cpp \
@@ -38,6 +39,7 @@ SOURCES += ../controller.cpp \
     cpp/networkWarnDlg.cpp
 
 HEADERS += cpp/app.h \
+    ../OptionMgr.h \
     cpp/MedialibView.h \
     cpp/groupframe.h \
     cpp/jniutil.h \

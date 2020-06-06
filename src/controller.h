@@ -2,6 +2,8 @@
 
 #include "viewdef.h"
 
+#include "OptionMgr.h"
+
 class CXController : public IXController
 {
 public:

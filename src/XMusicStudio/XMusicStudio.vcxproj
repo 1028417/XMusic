@@ -160,11 +160,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dump.cpp" />
+    <ClCompile Include="..\OptionMgr.cpp" />
     <ClCompile Include="XMusicStudio.cpp" />
     <ClCompile Include="..\controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\controller.h" />
+    <ClInclude Include="..\OptionMgr.h" />
     <ClInclude Include="XMusicStudio.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

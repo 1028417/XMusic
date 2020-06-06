@@ -4,11 +4,13 @@
     <ClCompile Include="XMusicStudio.cpp" />
     <ClCompile Include="..\controller.cpp" />
     <ClCompile Include="..\Dump.cpp" />
+    <ClCompile Include="..\OptionMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="XMusicStudio.h" />
     <ClInclude Include="..\controller.h" />
+    <ClInclude Include="..\OptionMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\view\MainWnd.ico" />
