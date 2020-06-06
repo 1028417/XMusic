@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="XMusicHost.cpp" />
+    <ClCompile Include="XMusicStudio.cpp" />
     <ClCompile Include="..\controller.cpp" />
     <ClCompile Include="..\Dump.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="XMusicHost.h" />
+    <ClInclude Include="XMusicStudio.h" />
     <ClInclude Include="..\controller.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\view\MainWnd.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="XMusicHost.rc" />
+    <ResourceCompile Include="XMusicStudio.rc" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "XMusicHost.h"
+#include "XMusicStudio.h"
 
 #include "../view/resource.h"
 

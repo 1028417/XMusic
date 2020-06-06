@@ -19,7 +19,7 @@
     <RootNamespace>MainModule</RootNamespace>
     <Keyword>MFCDLLProj</Keyword>
     <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
-    <ProjectName>XMusicHost</ProjectName>
+    <ProjectName>XMusicStudio</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -160,16 +160,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Dump.cpp" />
-    <ClCompile Include="XMusicHost.cpp" />
+    <ClCompile Include="XMusicStudio.cpp" />
     <ClCompile Include="..\controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\controller.h" />
-    <ClInclude Include="XMusicHost.h" />
+    <ClInclude Include="XMusicStudio.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="XMusicHost.rc" />
+    <ResourceCompile Include="XMusicStudio.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\view\MainWnd.ico" />
