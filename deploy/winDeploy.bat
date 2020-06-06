@@ -31,11 +31,11 @@ copy /Y Qt5*.dll ..\deploy\XMusic-win32\bin
 
 copy font\msyhl-6.23.ttc ..\deploy\XMusic-win32\bin\font
 
-copy  %~dp0..\..\bkg\* ..\deploy\XMusic-win32\bin\bkg
-copy  %~dp0..\..\bkg\hbkg\* ..\deploy\XMusic-win32\bin\bkg\hbkg
-copy  %~dp0..\..\bkg\vbkg\* ..\deploy\XMusic-win32\bin\bkg\vbkg
-copy  %~dp0..\..\bkg\hbkg\city\* ..\deploy\XMusic-win32\bin\bkg\hbkg\city
-copy  %~dp0..\..\bkg\vbkg\city\* ..\deploy\XMusic-win32\bin\bkg\vbkg\city
+copy  %~dp0bkg\* ..\deploy\XMusic-win32\bin\bkg
+copy  %~dp0bkg\hbkg\* ..\deploy\XMusic-win32\bin\bkg\hbkg
+copy  %~dp0bkg\vbkg\* ..\deploy\XMusic-win32\bin\bkg\vbkg
+copy  %~dp0bkg\hbkg\city\* ..\deploy\XMusic-win32\bin\bkg\hbkg\city
+copy  %~dp0bkg\vbkg\city\* ..\deploy\XMusic-win32\bin\bkg\vbkg\city
 
 copy iconengines\* ..\deploy\XMusic-win32\bin\iconengines
 copy imageformats\* ..\deploy\XMusic-win32\bin\imageformats
