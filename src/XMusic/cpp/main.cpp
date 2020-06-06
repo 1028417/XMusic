@@ -7,17 +7,8 @@ QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 
 static int _run(int argc, char *argv[])
 {
-/*#if __android
-    if (!jniutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
-    {
-        exit(0);
-        return -1;
-    }
-#endif*/
-
     auto app = new CApp(argc, argv);
-    int nRet = -1;
-    app->run();
+    int nRet = app->run();
     //delete app;
     return nRet;
 }
