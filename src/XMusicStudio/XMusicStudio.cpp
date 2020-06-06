@@ -11,7 +11,7 @@ struct tagStartup
 		fsutil::setWorkDir(fsutil::getModuleDir());
 
 		extern void InitMinDump(const string&);
-		InitMinDump("xmusichost_dump_");
+		InitMinDump("xmusicstudio_dump_");
 	}
 };
 
