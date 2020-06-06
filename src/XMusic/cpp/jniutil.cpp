@@ -35,24 +35,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 
-// Qt5.10以下
-/*#include <QtCore/private/qjni_p.h>
-#include <QtCore/private/qjnihelpers_p.h>
-
-static QtAndroid::PermissionResultMap privateToPublicPermissionsHash(const QtAndroidPrivate::PermissionsHash &privateHash)
-{
-    QtAndroid::PermissionResultMap hash;
-    for (auto it = privateHash.constBegin(); it != privateHash.constEnd(); ++it)
-        hash[it.key()] = QtAndroid::PermissionResult(it.value());
-    return hash;
-}
-
-static QtAndroid::PermissionResultMap requestPermissionsSync(const QStringList &permissions, int timeoutMs)
-{
-    return privateToPublicPermissionsHash(QtAndroidPrivate::requestPermissionsSync(QJNIEnvironmentPrivate(), permissions, timeoutMs));
-}*/
-
 //安卓6以上需要动态申请权限
+#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
 bool jniutil::requestAndroidPermission(cqstr qsPermission)
 {
     auto ret = QtAndroid::checkPermission(qsPermission);
@@ -65,6 +49,7 @@ bool jniutil::requestAndroidPermission(cqstr qsPermission)
 
     return QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission);
 }
+#endif
 
 // Z -- jboolean -- bllean
 // I -- jint -- int;
