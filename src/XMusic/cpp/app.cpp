@@ -21,81 +21,10 @@ float g_fPixelRatio = 1;
 bool g_bRunSignal = true;
 
 #if __android
-#include <QAndroidJniObject>
-#include <QAndroidJniEnvironment>
-#include <QtAndroid>
-
-//#include <QtAndroidExtras>
-//#include <jni.h>
-
-static int g_jniVer = 0;
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
+#define __sdcardDir L"/sdcard/"
+/*static wstring g_strSDCardPath;
+static void checkSdcardPath()
 {
-    (void)reserved;
-
-    JNIEnv* env = nullptr;
-    if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) == JNI_OK)
-    {
-        return g_jniVer=JNI_VERSION_1_6;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) == JNI_OK)
-    {
-        return g_jniVer=JNI_VERSION_1_4;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_2) == JNI_OK)
-    {
-        return g_jniVer=JNI_VERSION_1_2;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_1) == JNI_OK)
-    {
-        return g_jniVer=JNI_VERSION_1_1;
-    }
-
-    return JNI_ERR;
-}
-
-void CApp::vibrate(UINT duration)
-{
-    //QAndroidJniEnvironment env;
-
-    cauto jniName = QAndroidJniObject::getStaticObjectField(
-                "android/content/Context",
-                "VIBRATOR_SERVICE",
-                "Ljava/lang/String;");
-
-    cauto jniService = QtAndroid::androidActivity().callObjectMethod(
-                "getSystemService",
-                "(Ljava/lang/String;)Ljava/lang/Object;",
-                jniName.object<jstring>());
-
-    jniService.callMethod<void>("vibrate", "(J)V", jlong(duration));
-}
-
-static bool isMobileConnected()
-{
-    //QAndroidJniEnvironment env;
-    return QtAndroid::androidActivity().callMethod<jint>("isMobileConnected", "()I");
-}
-
-static void installApk(const QString &qsApkPath)
-{
-    cauto jniApkPath = QAndroidJniObject::fromString(qsApkPath);
-    QAndroidJniObject::callStaticMethod<void>(
-                "xmusic/XActivity",
-                "installApk",
-                "(Ljava/lang/String;Lorg/qtproject/qt5/android/bindings/QtActivity;)V",
-                jniApkPath.object<jstring>(),
-                QtAndroid::androidActivity().object<jobject>());
-}
-
-/*string g_strSDCardPath;
-static cwstr sdcardPath()
-{
-    if (!g_strSDCardPath.empty())
-    {
-        return g_strSDCardPath;
-    }
-
     char *pszSdcardPath = getenv("SECONDARY_STORAGE");
     if (NULL == pszSdcardPath)
     {
@@ -103,23 +32,18 @@ static cwstr sdcardPath()
     }
     if (pszSdcardPath)
     {
-        return g_strSDCardPath = strutil::fromStr(pszSdcardPath);
+        g_strSDCardPath = strutil::fromStr(pszSdcardPath) + L'/';
+        return;
     }
 
-    g_strSDCardPath = L"/mnt/sdcard";
-    if (!fsutil::existDir(g_strSDCardPath))
+    g_strSDCardPath = L"/storage/emulated/0/";
+    if (fsutil::existDir(g_strSDCardPath))
     {
-        g_strSDCardPath = L"/storage/emulated/0";
-        if (!fsutil::existDir(g_strSDCardPath))
-        {
-            g_strSDCardPath = L"/sdcard";
-        }
+        return;
     }
 
-    return g_strSDCardPath;
+    g_strSDCardPath = __sdcardDir;
 }*/
-
-#define __sdcardDir L"/sdcard/" // "/storage/emulated/0/"
 
 #elif __windows
 void CApp::setForeground()
@@ -141,7 +65,11 @@ void CApp::setForeground()
 CAppInit::CAppInit(QApplication& app)
 {
 #if __android
-    wstring strWorkDir = __sdcardDir __pkgName;
+    //wstring strWorkDir = L"/data/data/" __pkgName;
+    //__sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
+    //内置存储读写不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
+
+    wstring strWorkDir = __sdcardDir __pkgName; //安卓6以上需要动态申请读写权限
 #else
     wstring strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
 #endif
@@ -159,7 +87,7 @@ CAppInit::CAppInit(QApplication& app)
     g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
 
 #if __android
-    g_logger << "jniVer: " >> g_jniVer;
+    g_logger << "jniVer: " >> jniutil::g_jniVer;
 #endif
 
     QScreen *screen = QApplication::primaryScreen();
@@ -655,7 +583,7 @@ bool CApp::_upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl)
             return false;
         }
 
-        installApk(__WS2Q(strutil::fromAsc(strApkFile)));
+        jniutil::installApk(QString::fromStdString(strApkFile));
 
 #elif __mac
         cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";
@@ -824,7 +752,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 #if __windows
             setForeground();
 #elif __android
-            vibrate();
+            jniutil::vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
                 this->quit();
@@ -844,9 +772,9 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         g_crFore.setRgb((int)option.crFore);
     }
 #if __android
-    if (option.bNetworkWarn && isMobileConnected())
+    if (option.bNetworkWarn && jniutil::checkMobileConnected())
     {
-        vibrate();
+        jniutil::vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd, *this);
         dlg.show([&](){

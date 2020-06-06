@@ -427,7 +427,7 @@ bool MainWindow::event(QEvent *ev)
             if (currTime - prevTime > 3)
             {
 #if __android
-                CApp::vibrate();
+                jniutil::vibrate();
 #endif
                 prevTime = currTime;
                 return true;

@@ -10,6 +10,8 @@
 
 #include "msgbox.h"
 
+#include "jniutil.h"
+
 #define __cyIPhoneXBangs __size(128)
 
 #if __windows || __mac
@@ -170,10 +172,7 @@ public:
 
     void quit();
 
-#if __android
-    static void vibrate(UINT duration=100);
-
-#elif __windows
+#if __windows
     void setForeground();
 #endif
 };

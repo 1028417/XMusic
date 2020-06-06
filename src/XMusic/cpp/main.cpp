@@ -5,6 +5,23 @@
 QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
+static int _run(int argc, char *argv[])
+{
+/*#if __android
+    if (!jniutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+    {
+        exit(0);
+        return -1;
+    }
+#endif*/
+
+    auto app = new CApp(argc, argv);
+    int nRet = -1;
+    app->run();
+    //delete app;
+    return nRet;
+}
+
 int main(int argc, char *argv[])
 {
 #if __windows || __mac
@@ -13,19 +30,16 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
-#endif
 
 #if __windows
     extern void InitMinDump(const string&);
     InitMinDump("xmusic_dump_");
+
+    //#if (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
+    //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    //#endif
+#endif
 #endif
 
-//#if __windows && (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
-//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//#endif
-
-    auto app = new CApp(argc, argv);
-    int nRet = app->run();
-    //delete app;
-    return nRet;
+    return _run(argc, argv);
 }
