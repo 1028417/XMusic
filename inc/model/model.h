@@ -23,18 +23,21 @@ enum class E_UpgradeResult
 class __ModelExt CUpgradeUrl
 {
 public:
-	CUpgradeUrl(const string& strBaseUrl) : m_strBaseUrl(strBaseUrl)
+    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
+        : m_strBaseUrl(strBaseUrl)
+        , m_strPostFix(strPostFix)
 	{
 	}
 
 private:
 	string m_strBaseUrl;
+    string m_strPostFix;
 
 public:
 	string mdlconf() const;
 	string mdl() const;
 
-	string singerimg() const;
+    string singerimg(const string& strFile) const;
 
 	string app() const;
 };
