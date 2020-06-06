@@ -406,7 +406,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMdlConf& orgMdlConf)
                  << " CompatibleCode: " << userMdlConf.uCompatibleCode
                  << " MedialibVersion: " >> userMdlConf.uMdlVersion;
 
-        if (newMdlConf.strAppVersion < MAX(orgMdlConf.strAppVersion, userMdlConf.strAppVersion))
+        /*if (newMdlConf.strAppVersion < MAX(orgMdlConf.strAppVersion, userMdlConf.strAppVersion))
         {
             g_logger << "AppVersion invalid: " >> newMdlConf.strAppVersion;
             eRet = E_UpgradeResult::UR_MedialibUncompatible;
@@ -418,7 +418,7 @@ E_UpgradeResult CApp::_upgradeMedialib(const tagMdlConf& orgMdlConf)
             g_logger << "CompatibleCode invalid: " >> newMdlConf.uCompatibleCode;
             eRet = E_UpgradeResult::UR_MedialibUncompatible;
             continue;
-        }
+        }*/
 
         if (newMdlConf.uMdlVersion < MAX(orgMdlConf.uMdlVersion, userMdlConf.uMdlVersion))
         {

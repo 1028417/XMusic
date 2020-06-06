@@ -3,8 +3,6 @@
 
 #include <QBitmap>
 
-#include <QStyleOption>
-
 extern void fixWorkArea(QWidget& wnd);
 
 static CDialog* g_pFrontDlg = NULL;
@@ -42,11 +40,25 @@ void CDialog::_setPos()
 
 void CDialog::_show(cfn_void cbClose)
 {
-    /*if (!m_bFullScreen)
+    // 主要mac需要
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoSystemBackground);
+
+/*#if !__android
+    if (!m_bFullScreen)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
-        setAttribute(Qt::WA_NoSystemBackground);
-    }*/
+        QBitmap bmp(this->size());
+        bmp.fill();
+
+        CPainter painter(&bmp);
+        painter.setPen(Qt::transparent);
+        painter.setBrush(Qt::black);
+        painter.drawRectEx(bmp.rect(), __xround);
+        painter.end();
+
+        this->setMask(bmp);
+    }
+#endif*/
 
     _setPos();
 
@@ -65,14 +77,16 @@ void CDialog::_show(cfn_void cbClose)
         disconnect(this, &QDialog::finished, 0, 0);
     });
 
-#if __mac
+/*#if __mac
     this->exec();
-#else
-#if __windows
+    return;
+#endif*/
+
+#if !__android //??安卓好像有问题
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
 #endif
+
     this->setVisible(true);
-#endif
 }
 
 void CDialog::show(cfn_void cbClose)
@@ -82,7 +96,7 @@ void CDialog::show(cfn_void cbClose)
 
 void CDialog::show(QWidget& parent, cfn_void cbClose)
 {
-    auto flags = windowFlags() | Qt::Dialog;
+    auto flags = windowFlags();// | Qt::Dialog;
     setParent(&parent, flags);
 
     _show(cbClose);
@@ -110,8 +124,10 @@ bool CDialog::event(QEvent *ev)
         cauto rc = rect();
         if (!m_bFullScreen)
         {
+#if __android
             extern QColor g_crLogoBkg;
             painter.fillRect(rc, g_crLogoBkg);
+#endif
 
             painter.fillRectEx(rc, bkgColor(), __xround);
         }
