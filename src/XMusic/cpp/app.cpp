@@ -69,12 +69,12 @@ CAppInit::CAppInit(QApplication& app)
     //__sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
     //内置存储读写不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
+/*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
     if (jniutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
         strWorkDir = __sdcardDir __pkgName; //安卓6以上需要动态申请读写权限
     }
-#endif
+#endif*/
 
 #else
     wstring strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();

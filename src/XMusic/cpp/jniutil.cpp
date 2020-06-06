@@ -45,7 +45,7 @@ bool jniutil::requestAndroidPermission(cqstr qsPermission)
         return true;
     }
 
-    QtAndroid::requestPermissionsSync( QStringList() << qsPermission ); // Qt5.10以上版本才支持
+    QtAndroid::requestPermissionsSync( QStringList() << qsPermission );
 
     return QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission);
 }
