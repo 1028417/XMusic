@@ -35,14 +35,14 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
             | PowerManager.ACQUIRE_CAUSES_WAKEUP, "xmusicWakelock");
         wakeLock.acquire();
 
-        //安卓6以上需要动态申请权限
+        /*//安卓6以上需要运行时申请权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (PackageManager.PERMISSION_GRANTED != checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
             {
                 requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
             }
-        }
+        }*/
     }
 
     public boolean checkMobileConnected()
