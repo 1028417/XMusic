@@ -3,14 +3,6 @@
 
 #include "modelDef.h"
 
-#ifdef __ModelPrj
-extern ITxtWriter& g_modelLogger;
-
-#define __ModelExt __dllexport
-#else
-#define __ModelExt __dllimport
-#endif
-
 #if !__winvc
 #define __OnlineMediaLib 1
 
@@ -84,8 +76,6 @@ struct __ModelExt tagMdlConf
 #include "XMediaLib.h"
 
 #include "DataMgr.h"
-
-#include "OptionMgr.h"
 
 #include "FileTitle.h"
 

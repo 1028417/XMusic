@@ -3,77 +3,34 @@
 
 #include "../MediaLib/MediaDef.h"
 
+#ifdef __ModelPrj
+extern ITxtWriter& g_modelLogger;
+
+#define __ModelExt __dllexport
+#else
+#define __ModelExt __dllimport
+#endif
+
 using dbtime_t = int32_t;
 
-struct tagPlayItemInfo
+struct tagAddPlayItem
 {
-	int nID = 0;
-	int nPlaylistID = 0;
-	wstring strPath;
-	dbtime_t tTime = 0;
+    tagAddPlayItem() = default;
 
-	int fileSize = 0;
-	int duration = 0;
-};
+    tagAddPlayItem(cwstr strPath) : strPath(strPath)
+        {
+        }
 
-struct tagPlaylistInfo
-{
-	int nID = 0;
-	wstring strName;
+    tagAddPlayItem(cwstr strPath, long long nFileSize, UINT uDuration)
+        : strPath(strPath)
+        , nFileSize(nFileSize)
+        , uDuration(uDuration)
+        {
+        }
 
-	UINT language = 0;
-    bool disableDemand = false;
-    bool disableExport = false;
-
-	SArray<tagPlayItemInfo> arrPlayItemInfo;
-};
-
-struct tagAlbumItemInfo
-{
-	int nID = 0;
-	wstring strPath;
-	dbtime_t tTime = 0;
-
-	long long fileSize = 0;
-	int duration = 0;
-};
-
-struct tagAlbumInfo
-{
-	int nID = 0;
-	wstring strName;
-
-	UINT language = 0;
-    bool disableDemand = false;
-    bool disableExport = false;
-
-	SArray<tagAlbumItemInfo> arrAlbumItemInfo;
-};
-
-struct tagSingerInfo
-{
-	int nID = 0;
-	wstring strName;
-	wstring strPath;
-	int nPos = 0;
-
-    UINT language = 0;
-    bool disableDemand = false;
-    bool disableExport = false;
-
-	SArray<tagAlbumInfo> arrAlbumInfo;
-};
-
-struct tagSingerGroupInfo
-{
-	int nID = 0;
-	wstring strName;
-
-	UINT language = 0;
-    bool disableDemand = false;
-    bool disableExport = false;
-
-	SArray<tagSingerInfo> arrSingerInfo;
+        wstring strPath;
+        long long nFileSize = 0;
+        UINT uDuration = 0;
 };
 
 struct tagDiffMedia
@@ -123,26 +80,6 @@ struct tagCompareBackupResult
 	SArray<tagMovedMedia> arrMovedMedia;
 };
 
-struct tagAddPlayItem
-{
-    tagAddPlayItem() = default;
-
-    tagAddPlayItem(cwstr strPath) : strPath(strPath)
-	{
-	}
-
-    tagAddPlayItem(cwstr strPath, long long nFileSize, UINT uDuration)
-        : strPath(strPath)
-        , nFileSize(nFileSize)
-        , uDuration(uDuration)
-	{
-	}
-
-	wstring strPath;
-	long long nFileSize = 0;
-	UINT uDuration = 0;
-};
-
 #if __winvc
 enum class E_CheckDuplicateMode
 {
@@ -158,7 +95,7 @@ using CB_checkSimilarFile = cfn_bool_t<CMediaRes&>;
 using TD_SimilarFileGroup = SArray<pair<CMediaRes*, UINT>>;
 using TD_SimilarFile = SArray<TD_SimilarFileGroup>;
 
-struct tagExportMedia
+struct __ModelExt tagExportMedia
 {
 	wstring strDstDir;
 
@@ -167,7 +104,7 @@ struct tagExportMedia
 	list<wstring> lstCueFiles;
 };
 
-struct tagExportOption
+struct __ModelExt tagExportOption
 {
 	bool bActualMode = false;
 
@@ -184,4 +121,70 @@ struct tagExportOption
 
 	list<tagExportMedia> lstExportMedias;
 };
+
+struct __ModelExt tagPlaySpiritOption
+{
+    wstring strSkinName;
+
+    int nPosX = 10000;
+    int nPosY = 10000;
+
+    UINT uVolume = 100;
+};
+
+enum E_TimerOperate
+{
+    TO_Null = 0
+    , TO_StopPlay
+    , TO_Shutdown
+    , TO_Hibernal
+};
+
+struct __ModelExt tagTimerOperateOpt
+{
+    tagTimerOperateOpt()
+    {
+        tmutil::getCurrentTime(nHour, nMinute);
+    }
+
+    E_TimerOperate eTimerOperate = TO_Null;
+
+    int nHour = 0;
+    int nMinute = 0;
+};
 #endif
+
+struct __ModelExt tagOption
+{
+    wstring strRootDir;
+    PairList<wstring, E_AttachDirType> plAttachDir;
+
+    UINT uPlayingItem = 0;
+
+    bool bRandomPlay = false;
+    bool bForce48KHz = false;
+
+    bool bFullScreen = false;
+
+#if __winvc
+    bool bHideMenuBar = false;
+
+    tagPlaySpiritOption PlaySpiritOption;
+
+    int nAlarmHour = 0;
+    int nAlarmMinute = 0;
+
+    tagTimerOperateOpt TimerOption;
+
+#else
+    bool bUseBkgColor = false;
+    int64_t crBkg = -1;
+    int64_t crFore = -1;
+
+    wstring strHBkg;
+    wstring strVBkg;
+    wstring strAddBkgDir;
+
+    bool bNetworkWarn = true;
+#endif
+};
