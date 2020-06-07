@@ -132,8 +132,6 @@ private:
 
     void _showUpgradeProgress();
 
-    void onAppUpgradeProgress(UINT uProgress) override;
-
     void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
 
     void _updatePlayPauseButton(bool bPlaying);

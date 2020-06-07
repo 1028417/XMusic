@@ -229,74 +229,64 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     });
 }
 
-static bool g_bUpgradApp = false;
-
 void MainWindow::_showUpgradeProgress()
 {
-    if (g_bUpgradApp)
+    extern int g_nAppUpgradeProgress;
+    if (-1 == g_nAppUpgradeProgress)
     {
-        return;
-    }
-
 #define __logoTip "更新媒体库"
-    ui.labelLogoTip->setText(__logoTip);
+        ui.labelLogoTip->setText(__logoTip);
+    }
 
     UINT uDotCount = 0;
 
     timerutil::setTimerEx(300, [=]()mutable{
-        if (g_bUpgradApp)
-        {
-            return false;
-        }
-
         if (!ui.labelLogoTip->isVisible())
         {
             return false;
         }
 
-        uDotCount++;
-        if (uDotCount > 3)
+        if (g_nAppUpgradeProgress >= 0)
         {
-            uDotCount = 0;
-        }
-
-        QString qsText(__logoTip);
-        for (UINT uIdx = 1; uIdx <= 3; uIdx++)
-        {
-            if (uDotCount >= uIdx)
+            QString qsText;
+            if (0 == g_nAppUpgradeProgress)
             {
-                qsText.append('.');
+                qsText.append("下载升级包...");
+            }
+            else if (100 == g_nAppUpgradeProgress)
+            {
+                qsText.append("准备安装...");
             }
             else
             {
-                qsText.append(' ');
+                qsText.sprintf("下载升级包:  %u%%", (UINT)g_nAppUpgradeProgress);
             }
-        }
-        ui.labelLogoTip->setText(qsText);
-
-        return true;
-    });
-}
-
-void MainWindow::onAppUpgradeProgress(UINT uProgress)
-{
-    g_bUpgradApp = true;
-
-    m_app.sync([&](){
-        QString qsText;
-        if (0 == uProgress)
-        {
-            qsText.append("下载升级包...");
-        }
-        else if (100 == uProgress)
-        {
-            qsText.append("准备安装...");
+            ui.labelLogoTip->setText(qsText);
         }
         else
         {
-            qsText.sprintf("下载升级包:  %u%%", (UINT)uProgress);
+            uDotCount++;
+            if (uDotCount > 3)
+            {
+                uDotCount = 0;
+            }
+
+            QString qsText(__logoTip);
+            for (UINT uIdx = 1; uIdx <= 3; uIdx++)
+            {
+                if (uDotCount >= uIdx)
+                {
+                    qsText.append('.');
+                }
+                else
+                {
+                    qsText.append(' ');
+                }
+            }
+            ui.labelLogoTip->setText(qsText);
         }
-        ui.labelLogoTip->setText(qsText);
+
+        return true;
     });
 }
 
