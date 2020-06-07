@@ -9,6 +9,7 @@
 
 #include <QScreen>
 
+#if __android
 #include <jni.h>
 
 static int g_jniVer = 0;
@@ -37,6 +38,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
     return JNI_ERR;
 }
+#endif
 
 #define __pkgName L"com.musicrossoft.xmusic"
 
@@ -309,12 +311,14 @@ int CApp::run()
     return nRet;
 }
 
+int g_nAppUpgradeProgress = -1;
+
 E_UpgradeResult CApp::_initMediaLib(const tagMdlConf& orgMdlConf)
 {
     auto timeBegin = time(0);
 
 #if __OnlineMediaLib
-    E_UpgradeResult eUpgradeResult = m_model.upgradeMedialib(orgMdlConf, g_bRunSignal);
+    E_UpgradeResult eUpgradeResult = m_model.upgradeMedialib(orgMdlConf, g_bRunSignal, (UINT&)g_nAppUpgradeProgress);
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         return eUpgradeResult;
