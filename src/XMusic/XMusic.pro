@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
-android: QT += androidextras
 
 RC_ICONS = "xmusic.ico"
 
@@ -42,7 +41,6 @@ HEADERS += cpp/app.h \
     ../OptionMgr.h \
     cpp/MedialibView.h \
     cpp/groupframe.h \
-    cpp/jniutil.h \
     cpp/painter.h \
     cpp/colorbar.h \
     cpp/colordlg.h \
@@ -64,11 +62,6 @@ HEADERS += cpp/app.h \
     cpp/wholeTrackDlg.h \
     cpp/MLListView.h \
     cpp/networkWarnDlg.h
-
-android {
-SOURCES += cpp/jniutil.cpp
-HEADERS += cpp/jniutil.h
-}
 
 RESOURCES += res.qrc
 

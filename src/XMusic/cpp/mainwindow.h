@@ -130,8 +130,9 @@ private:
 
     void _relayout();
 
-    void _updateLogoTip();
     void _showUpgradeProgress();
+
+    void onAppUpgradeProgress(UINT uProgress) override;
 
     void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
 

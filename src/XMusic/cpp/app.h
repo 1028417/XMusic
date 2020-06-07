@@ -10,8 +10,6 @@
 
 #include "msgbox.h"
 
-#include "jniutil.h"
-
 #define __cyIPhoneXBangs __size(128)
 
 #if __windows || __mac
@@ -23,8 +21,6 @@ extern ITxtWriter& g_logger;
 
 extern int g_szScreenMax;
 extern int g_szScreenMin;
-
-extern int g_nAppDownloadProgress;
 
 class CAppInit
 {
@@ -80,11 +76,6 @@ private:
     E_UpgradeResult _initMediaLib(const tagMdlConf& orgMdlConf);
 
     bool _initRootDir(wstring& strRootDir);
-
-    E_UpgradeResult _upgradeMedialib(const tagMdlConf& orgMdlConf);
-    E_UpgradeResult _loadMdl(Instream& ins, bool bUpgradeDB);
-
-    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl);
 
     void _run(E_UpgradeResult eUpgradeResult);
 

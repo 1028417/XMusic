@@ -177,94 +177,30 @@ void MainWindow::showLogo()
         ui.labelLogo->movie()->start();
         ui.labelLogo->setVisible(true);
 
-        CApp::async(50, [&](){
-            _updateLogoTip();
-        });
-
         _updateLogoCompany(5, [&](){
             _updateLogoCompany(-5, [&](){
                 ui.labelLogoCompany->setText(__WS2Q(L"v" + m_app.appVersion()));
                 _updateLogoCompany(5);
             });
         });
-    });
-}
 
-void MainWindow::_updateLogoTip()
-{
-    auto labelLogoTip = ui.labelLogoTip;
-    labelLogoTip->setText("播放器");
+        CApp::async(50, [&](){
+            auto labelLogoTip = ui.labelLogoTip;
+            labelLogoTip->setText("播放器");
 
-    CApp::async(600, [=](){
-        labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
+            CApp::async(600, [=](){
+                labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
 
-        CApp::async(600, [=](){
-            labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
+                CApp::async(600, [=](){
+                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-            CApp::async(2600, [=](){
-#define __logoTip "更新媒体库"
-                if (-1 == g_nAppDownloadProgress)
-                {
-                    labelLogoTip->setText(__logoTip);
-                }
-
-                timerutil::setTimerEx(300, [=](){
-                    if (!labelLogoTip->isVisible())
-                    {
-                        return false;
-                    }
-
-                    _showUpgradeProgress();
-
-                    return true;
+                    CApp::async(2600, [=](){
+                        _showUpgradeProgress();
+                    });
                 });
             });
         });
     });
-}
-
-void MainWindow::_showUpgradeProgress()
-{
-    if (g_nAppDownloadProgress >= 0)
-    {
-        QString qsText;
-        if (0 == g_nAppDownloadProgress)
-        {
-            qsText.append("下载升级包...");
-        }
-        else if (100 == g_nAppDownloadProgress)
-        {
-            qsText.append("准备安装...");
-        }
-        else
-        {
-            qsText.sprintf("下载升级包:  %u%%", (UINT)g_nAppDownloadProgress);
-        }
-        ui.labelLogoTip->setText(qsText);
-    }
-    else
-    {
-        static UINT uDotCount = 0;
-        uDotCount++;
-        if (uDotCount > 3)
-        {
-            uDotCount = 0;
-        }
-
-        QString qsText(__logoTip);
-        for (UINT uIdx = 1; uIdx <= 3; uIdx++)
-        {
-            if (uDotCount >= uIdx)
-            {
-                qsText.append('.');
-            }
-            else
-            {
-                qsText.append(' ');
-            }
-        }
-        ui.labelLogoTip->setText(qsText);
-    }
 }
 
 void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
@@ -290,6 +226,77 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
         labelLogoCompany->setPalette(peCompany);
 
         return true;
+    });
+}
+
+static bool g_bUpgradApp = false;
+
+void MainWindow::_showUpgradeProgress()
+{
+    if (g_bUpgradApp)
+    {
+        return;
+    }
+
+#define __logoTip "更新媒体库"
+    ui.labelLogoTip->setText(__logoTip);
+
+    UINT uDotCount = 0;
+
+    timerutil::setTimerEx(300, [=]()mutable{
+        if (g_bUpgradApp)
+        {
+            return false;
+        }
+
+        if (!ui.labelLogoTip->isVisible())
+        {
+            return false;
+        }
+
+        uDotCount++;
+        if (uDotCount > 3)
+        {
+            uDotCount = 0;
+        }
+
+        QString qsText(__logoTip);
+        for (UINT uIdx = 1; uIdx <= 3; uIdx++)
+        {
+            if (uDotCount >= uIdx)
+            {
+                qsText.append('.');
+            }
+            else
+            {
+                qsText.append(' ');
+            }
+        }
+        ui.labelLogoTip->setText(qsText);
+
+        return true;
+    });
+}
+
+void MainWindow::onAppUpgradeProgress(UINT uProgress)
+{
+    g_bUpgradApp = true;
+
+    m_app.sync([&](){
+        QString qsText;
+        if (0 == uProgress)
+        {
+            qsText.append("下载升级包...");
+        }
+        else if (100 == uProgress)
+        {
+            qsText.append("准备安装...");
+        }
+        else
+        {
+            qsText.sprintf("下载升级包:  %u%%", (UINT)uProgress);
+        }
+        ui.labelLogoTip->setText(qsText);
     });
 }
 
