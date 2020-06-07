@@ -101,6 +101,8 @@ struct __ModelExt tagMdlConf
 class IModelObserver
 {
 public:
+    virtual void onAppUpgradeProgress(UINT) {};
+
 	virtual void initView() {}
 	virtual void clearView() {}
 
@@ -131,7 +133,7 @@ class IModel
 public:
 #if __OnlineMediaLib
     virtual bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) = 0;
-    virtual E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) = 0;
+    virtual E_UpgradeResult upgradeMedialib(const tagMdlConf& orgMdlConf, const bool&bRunSignal) = 0;
 #endif
 
     virtual bool initMediaLib() = 0;
@@ -244,7 +246,7 @@ public:
 
 #if __OnlineMediaLib
     bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) override;
-    E_UpgradeResult loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB) override;
+    E_UpgradeResult upgradeMedialib(const tagMdlConf& orgMdlConf, const bool& bRunSignal) override;
 #endif
 
     bool initMediaLib() override;
@@ -292,7 +294,12 @@ public:
 
     void close() override;
 
-private:
+private:    
+#if __OnlineMediaLib
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, const bool& bRunSignal);
+    E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
+#endif
+
 	bool _initData(cwstr strDBFile);
 
 	bool _updateDir(cwstr strOldPath, cwstr strNewPath);

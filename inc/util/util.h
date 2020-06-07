@@ -186,12 +186,14 @@ __UtilExt const RECT& getWorkArea(bool bFullScreen);
 
 #if !__winvc
 #include "curlutil.h"
+
+//#include <QRgb>
+#define QRGB(r, g, b) ((0xffu << 24) | (((r) & 0xffu) << 16) | (((g) & 0xffu) << 8) | ((b) & 0xffu))
 #endif
 
 #undef min
 #undef max
 
-#if !__winvc
-//#include <QRgb>
-#define QRGB(r, g, b) ((0xffu << 24) | (((r) & 0xffu) << 16) | (((g) & 0xffu) << 8) | ((b) & 0xffu))
+#if __android
+#include "jniutil.h"
 #endif
