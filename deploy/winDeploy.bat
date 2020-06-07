@@ -1,44 +1,44 @@
 
-rd /S /Q %~dp0XMusic-win32\bin
+rd /S /Q XMusic-win32\bin
 
-mkdir %~dp0XMusic-win32\bin
-mkdir %~dp0XMusic-win32\bin\font
-mkdir %~dp0XMusic-win32\bin\bkg
-mkdir %~dp0XMusic-win32\bin\bkg\hbkg
-mkdir %~dp0XMusic-win32\bin\bkg\vbkg
-mkdir %~dp0XMusic-win32\bin\bkg\hbkg\city
-mkdir %~dp0XMusic-win32\bin\bkg\vbkg\city
-mkdir %~dp0XMusic-win32\bin\iconengines
-mkdir %~dp0XMusic-win32\bin\imageformats
-mkdir %~dp0XMusic-win32\bin\platforms
+mkdir XMusic-win32\bin
+mkdir XMusic-win32\bin\font
+mkdir XMusic-win32\bin\bkg
+mkdir XMusic-win32\bin\bkg\hbkg
+mkdir XMusic-win32\bin\bkg\vbkg
+mkdir XMusic-win32\bin\bkg\hbkg\city
+mkdir XMusic-win32\bin\bkg\vbkg\city
+mkdir XMusic-win32\bin\iconengines
+mkdir XMusic-win32\bin\imageformats
+mkdir XMusic-win32\bin\platforms
+
+copy bkg\*				XMusic-win32\bin\bkg
+copy bkg\hbkg\*			XMusic-win32\bin\bkg\hbkg
+copy bkg\vbkg\*			XMusic-win32\bin\bkg\vbkg
+copy bkg\hbkg\city\*	XMusic-win32\bin\bkg\hbkg\city
+copy bkg\vbkg\city\*	XMusic-win32\bin\bkg\vbkg\city
 
 cd /d ../bin
 
-copy /Y avutil-56.dll ..\deploy\XMusic-win32\bin
-copy /Y avformat-58.dll ..\deploy\XMusic-win32\bin
-copy /Y avcodec-58.dll ..\deploy\XMusic-win32\bin
-copy /Y swresample-3.dll ..\deploy\XMusic-win32\bin
+copy /Y avutil-56.dll 	%~dp0XMusic-win32\bin
+copy /Y avformat-58.dll %~dp0XMusic-win32\bin
+copy /Y avcodec-58.dll 	%~dp0XMusic-win32\bin
+copy /Y swresample-3.dll %~dp0XMusic-win32\bin
 
-copy /Y SDL2.dll ..\deploy\XMusic-win32\bin
+copy /Y SDL2.dll 		%~dp0XMusic-win32\bin
 
-copy /Y XMusic.exe ..\deploy\XMusic-win32\bin
+copy /Y XMusic.exe 		%~dp0XMusic-win32\bin
 
-copy /Y x*.dll ..\deploy\XMusic-win32\bin
+copy /Y x*.dll 			%~dp0XMusic-win32\bin
 
-copy /Y lib*.dll ..\deploy\XMusic-win32\bin
+copy /Y lib*.dll 		%~dp0XMusic-win32\bin
 
-copy /Y Qt5*.dll ..\deploy\XMusic-win32\bin
+copy /Y Qt5*.dll 		%~dp0XMusic-win32\bin
 
-copy font\msyhl-6.23.ttc ..\deploy\XMusic-win32\bin\font
+copy font\msyhl-6.23.ttc %~dp0XMusic-win32\bin\font
 
-copy  %~dp0bkg\* ..\deploy\XMusic-win32\bin\bkg
-copy  %~dp0bkg\hbkg\* ..\deploy\XMusic-win32\bin\bkg\hbkg
-copy  %~dp0bkg\vbkg\* ..\deploy\XMusic-win32\bin\bkg\vbkg
-copy  %~dp0bkg\hbkg\city\* ..\deploy\XMusic-win32\bin\bkg\hbkg\city
-copy  %~dp0bkg\vbkg\city\* ..\deploy\XMusic-win32\bin\bkg\vbkg\city
-
-copy iconengines\* ..\deploy\XMusic-win32\bin\iconengines
-copy imageformats\* ..\deploy\XMusic-win32\bin\imageformats
-copy platforms\* ..\deploy\XMusic-win32\bin\platforms
+copy platforms\* 		%~dp0XMusic-win32\bin\platforms
+copy imageformats\* 	%~dp0XMusic-win32\bin\imageformats
+rem copy iconengines\* 	%~dp0XMusic-win32\bin\iconengines
 
 pause
