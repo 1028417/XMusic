@@ -77,3 +77,9 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 ![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic4.jpg)
 
 ![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
+
+## 编译
+工作室软件：vs2017编译XMusicStudio解决方案
+
+XMusic Windows版本：Qt5编译XMusic_win32.pro项目组
+XMusic 安卓版本：Qt5编译XMusic_android.pro项目组
