@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui widgets
+android: QT += androidextras
 
 RC_ICONS = "xmusic.ico"
 
