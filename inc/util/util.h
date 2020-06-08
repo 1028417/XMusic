@@ -193,7 +193,3 @@ __UtilExt const RECT& getWorkArea(bool bFullScreen);
 
 #undef min
 #undef max
-
-#if __android
-#include "jniutil.h"
-#endif

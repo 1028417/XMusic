@@ -124,6 +124,8 @@ public:
 	}
 
     virtual void onSingerImgDownloaded() {}
+
+    virtual void installApk(const string&) = 0;
 };
 
 class IModel
