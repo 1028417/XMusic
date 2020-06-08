@@ -148,13 +148,14 @@ android {
     INSTALLS += font bkg
 
     DISTFILES += \
+        android/src/xmusic/XActivity.java \
         android/AndroidManifest.xml \
-        android/res/values/libs.xml \
-        android/build.gradle \
+        android/res/xml/file_paths.xml \        android/res/values/libs.xml \
         android/gradlew.bat \
         android/gradlew \
         android/gradle/wrapper/gradle-wrapper.jar \
-        android/gradle/wrapper/gradle-wrapper.properties
+        android/gradle/wrapper/gradle-wrapper.properties \
+        android/build.gradle
 
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
@@ -197,5 +198,3 @@ RCC_DIR = $$BuildDir
 UI_DIR = $$BuildDir
 }
 OBJECTS_DIR = $$BuildDir
-
-DISTFILES += android/src/xmusic/XActivity.java

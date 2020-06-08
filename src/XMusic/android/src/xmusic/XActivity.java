@@ -2,13 +2,15 @@ package xmusic;
 
 import org.qtproject.qt5.android.bindings.QtActivity;
 
+import android.os.Bundle;
+
+import android.os.Build;
+
+import android.os.PowerManager;
+
 import java.io.File;
 import android.net.Uri;
 import android.content.Intent;
-
-import android.os.Bundle;
-
-import android.os.PowerManager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,7 +19,7 @@ import android.Manifest;
 
 import android.content.pm.PackageManager;
 
-import android.os.Build;
+import android.support.v4.content.FileProvider;
 
 public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
@@ -35,7 +37,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
             | PowerManager.ACQUIRE_CAUSES_WAKEUP, "xmusicWakelock");
         wakeLock.acquire();
 
-        /*//安卓6以上需要运行时申请权限
+        /*//API 23以上需要运行时申请权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (PackageManager.PERMISSION_GRANTED != checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
@@ -49,22 +51,40 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
     {
         ConnectivityManager connManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE)
+        if (networkInfo == null)
         {
-            if (networkInfo.isAvailable())
-            {
-                return true;
-            }
+            return false;
         }
 
-        return false;
+        if (!networkInfo.isAvailable())
+        {
+            return false;
+        }
+
+        return networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
     public void installApk(String filePath)
     {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(filePath)),"application/vnd.android.package-archive");
+
+        File file = new File(filePath);
+        Uri uri;
+        // 安卓7需要通过FileProvider共享路径
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            uri = FileProvider.getUriForFile(this, "com.musicrossoft.xmusic.fileProvider", file);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        else
+        {
+            uri = Uri.fromFile(file);
+        }
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         startActivity(intent);
     };
 };

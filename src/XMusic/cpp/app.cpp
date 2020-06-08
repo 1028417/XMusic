@@ -103,7 +103,7 @@ CAppInit::CAppInit(QApplication& app)
 /*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
     if (jniutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
-        strWorkDir = __sdcardDir __pkgName; //安卓6以上需要动态申请读写权限
+        strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 #endif*/
 
@@ -318,7 +318,7 @@ E_UpgradeResult CApp::_initMediaLib(const tagMdlConf& orgMdlConf)
     auto timeBegin = time(0);
 
 #if __OnlineMediaLib
-    E_UpgradeResult eUpgradeResult = m_model.upgradeMedialib(orgMdlConf, g_bRunSignal, (UINT&)g_nAppUpgradeProgress);
+    E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(orgMdlConf, g_bRunSignal, (UINT&)g_nAppUpgradeProgress);
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         return eUpgradeResult;
