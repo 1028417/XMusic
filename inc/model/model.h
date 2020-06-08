@@ -9,8 +9,6 @@
 #define __ModelExt __dllimport
 #endif
 
-using dbtime_t = int32_t;
-
 struct tagAddPlayItem
 {
     tagAddPlayItem() = default;
@@ -257,7 +255,7 @@ public:
 
     virtual void onSingerImgDownloaded() {}
 
-    virtual void installApk(const string&) {};
+    virtual bool installApp(const CByteBuffer&) {return true;}
 };
 
 class IModel

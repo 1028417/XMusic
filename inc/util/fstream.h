@@ -508,25 +508,25 @@ public:
 	}
 
 	template <typename S>
-    static long writefile(const S& strFile, bool bTrunc, CByteBuffer& bbfData)
+    static long writefile(const S& strFile, bool bTrunc, const CByteBuffer& bbfData)
 	{
         return writefile(strFile, bTrunc, bbfData, bbfData->size());
 	}
 
 	template <typename S>
-    static bool writefilex(const S& strFile, bool bTrunc, CByteBuffer& bbfData)
+    static bool writefilex(const S& strFile, bool bTrunc, const CByteBuffer& bbfData)
 	{
         return writefilex(strFile, bTrunc, bbfData, bbfData->size());
 	}
 
 	template <typename S>
-    static long writefile(const S& strFile, bool bTrunc, CCharBuffer& cbfData)
+    static long writefile(const S& strFile, bool bTrunc, const CCharBuffer& cbfData)
 	{
         return writefile(strFile, bTrunc, cbfData, cbfData->size());
 	}
 
 	template <typename S>
-    static bool writefilex(const S& strFile, bool bTrunc, CCharBuffer& cbfData)
+    static bool writefilex(const S& strFile, bool bTrunc, const CCharBuffer& cbfData)
 	{
         return writefilex(strFile, bTrunc, cbfData, cbfData->size());
 	}
