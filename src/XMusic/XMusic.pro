@@ -17,7 +17,7 @@ QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 DEFINES += QT_DEPRECATED_WARNINGS
 
 android {
-HEADERS += ../../inc/util/jniutil.h
+HEADERS += cpp/jniutil.h
 SOURCES += cpp/jniutil.cpp
 }
 

@@ -153,7 +153,5 @@ private:
 
     void onSingerImgDownloaded() override;
 
-#if __android
-    void installApk(const string& strApkFile) override;
-#endif
+    bool installApp(const CByteBuffer& bbfBuff) override;
 };

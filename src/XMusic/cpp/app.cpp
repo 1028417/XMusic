@@ -278,9 +278,6 @@ int CApp::run()
         thr.cancel(false);
     }
 
-    g_logger >> "stop controller";
-    m_ctrl.stop();
-
     for (auto& thr : m_lstThread)
     {
         thr.join();
@@ -289,6 +286,9 @@ int CApp::run()
 #if !__android // TODO 规避5.6.1退出的bug
     thrUpgrade.join();
 #endif
+
+    g_logger >> "stop controller";
+    m_ctrl.stop();
 
     g_logger >> "app quit";
     m_logger.close();
