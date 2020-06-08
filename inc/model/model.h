@@ -41,34 +41,6 @@ public:
 
 	string app() const;
 };
-
-struct __ModelExt tagMdlConf
-{
-    string strAppVersion;
-
-    UINT uMdlVersion = 0;
-
-    UINT uCompatibleCode = 0;
-
-    list<CUpgradeUrl> lstUpgradeUrl;
-
-    //list<string> lstOnlineHBkg;
-    //list<string> lstOnlineVBkg;
-
-    void clear()
-    {
-        strAppVersion.clear();
-
-        uMdlVersion = 0;
-
-        uCompatibleCode = 0;
-
-        lstUpgradeUrl.clear();
-
-        //lstOnlineHBkg.clear();
-        //lstOnlineVBkg.clear();
-    }
-};
 #endif
 
 #define __medialibDir L".xmusic"
@@ -101,43 +73,38 @@ struct __ModelExt tagMdlConf
 class IModelObserver
 {
 public:
-	virtual void initView() {}
-	virtual void clearView() {}
+    virtual void initView() {}
+    virtual void clearView() {}
 
-	virtual void refreshMedia() {}
+    virtual void refreshMedia() {}
 
-	virtual void renameMedia(IMedia& media, cwstr strNewName)
-	{
-		(void)media;
-		(void)strNewName;
-	}
+    virtual void renameMedia(IMedia& media, cwstr strNewName)
+    {
+        (void)media;
+        (void)strNewName;
+    }
 
     virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
 
-	virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) = 0;
+    virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) = 0;
     virtual void onPlayStop(bool bCanceled, bool bOpenFail) = 0;
-	
-	virtual UINT GetSingerImgPos(UINT uSingerID)
-	{
-		(void)uSingerID;
-		return 0;
-	}
+
+    virtual UINT GetSingerImgPos(UINT uSingerID)
+    {
+        (void)uSingerID;
+        return 0;
+    }
 
     virtual void onSingerImgDownloaded() {}
 
-    virtual void installApk(const string&) = 0;
+    virtual void installApk(const string&) {};
 };
 
 class IModel
 {
 public:
-#if __OnlineMediaLib
-    virtual bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) = 0;
-    virtual E_UpgradeResult upgradeMdl(const tagMdlConf& orgMdlConf, const bool&bRunSignal, UINT& uAppUpgradeProgress) = 0;
-#endif
-
     virtual bool initMediaLib() = 0;
-	
+
     virtual CDataMgr& getDataMgr() = 0;
 
     virtual CPlaylistMgr& getPlaylistMgr() = 0;
@@ -146,12 +113,15 @@ public:
     virtual CSingerMgr& getSingerMgr() = 0;
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
-#if __winvc
+#if !__winvc
+    virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool&bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
+
+#else
     virtual CBackupMgr& getBackupMgr() = 0;
 
-	virtual void convertXmsc(const wstring& strFile) = 0;
+    virtual void convertXmsc(const wstring& strFile) = 0;
 
-	virtual bool setupMediaLib(cwstr strRootDir) = 0;
+    virtual bool setupMediaLib(cwstr strRootDir) = 0;
 
     virtual void refreshMediaLib() = 0;
 
@@ -182,7 +152,7 @@ public:
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
 
-	virtual bool clearData() = 0;
+    virtual bool clearData() = 0;
 #endif
 
     virtual void close() = 0;
@@ -191,92 +161,86 @@ public:
 class __ModelExt CModel : public IModel
 {
 public:
-	CModel(IModelObserver& ModelObserver, tagOption& Option);
+    CModel(IModelObserver& ModelObserver, tagOption& Option);
 
 private:
-	IModelObserver& m_ModelObserver;
-	tagOption& m_Option;
-
-#if __OnlineMediaLib
-	tagMdlConf m_newMdlConf;
-#endif
+    IModelObserver& m_ModelObserver;
+    tagOption& m_Option;
 
     XMediaLib m_MediaLib;
-	
-	CDataMgr m_DataMgr;
+
+    CDataMgr m_DataMgr;
 
 #if __winvc
-	CBackupMgr m_BackupMgr;
+    CBackupMgr m_BackupMgr;
 #endif
 
-	CPlaylistMgr m_PlaylistMgr;
+    CPlaylistMgr m_PlaylistMgr;
 
-	CSingerMgr m_SingerMgr;
-	CSingerImgMgr m_SingerImgMgr;
+    CSingerMgr m_SingerMgr;
+    CSingerImgMgr m_SingerImgMgr;
 
-	CPlayMgr m_PlayMgr;
+    CPlayMgr m_PlayMgr;
 
 public:
-	wstring medialibPath(cwstr strSubPath = L"");
+    wstring medialibPath(cwstr strSubPath = L"");
 
     CDataMgr& getDataMgr() override
     {
             return m_DataMgr;
     }
 
-	CPlaylistMgr& getPlaylistMgr() override
-	{
-		return m_PlaylistMgr;
-	}
+    CPlaylistMgr& getPlaylistMgr() override
+    {
+        return m_PlaylistMgr;
+    }
 
-	CPlayMgr& getPlayMgr() override
-	{
-		return m_PlayMgr;
-	}
+    CPlayMgr& getPlayMgr() override
+    {
+        return m_PlayMgr;
+    }
 
-	CSingerMgr& getSingerMgr() override
-	{
-		return m_SingerMgr;
-	}
+    CSingerMgr& getSingerMgr() override
+    {
+        return m_SingerMgr;
+    }
 
-	CSingerImgMgr& getSingerImgMgr() override
-	{
-		return m_SingerImgMgr;
-	}
-
-#if __OnlineMediaLib
-    bool loadMdlConf(cbyte_p lpData, size_t size, tagMdlConf& mdlConf) override;
-    E_UpgradeResult upgradeMdl(const tagMdlConf& orgMdlConf, const bool& bRunSignal, UINT& uAppUpgradeProgress) override;
-#endif
+    CSingerImgMgr& getSingerImgMgr() override
+    {
+        return m_SingerImgMgr;
+    }
 
     bool initMediaLib() override;
 
-#if __winvc
+#if !__winvc
+    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool& bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+
+#else
     CBackupMgr& getBackupMgr() override
     {
         return m_BackupMgr;
     }
 
-	void convertXmsc(const wstring& strFile) override;
+    void convertXmsc(const wstring& strFile) override;
 
     bool setupMediaLib(cwstr strRootDir) override;
 
-	void refreshMediaLib() override;
+    void refreshMediaLib() override;
 
-	CMediaDir* attachDir(cwstr strDir) override;
-	void detachDir(cwstr strDir) override;
+    CMediaDir* attachDir(cwstr strDir) override;
+    void detachDir(cwstr strDir) override;
 
-	bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
+    bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
 
-	bool removeMedia(const TD_MediaList& lstMedias) override;
+    bool removeMedia(const TD_MediaList& lstMedias) override;
 
-	bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
+    bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
 
-	bool removeFiles(const std::set<wstring>& setFiles) override;
+    bool removeFiles(const std::set<wstring>& setFiles) override;
 
-	bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) override;
-	
-	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
+    bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) override;
+
+    bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
     void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
         , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
@@ -287,31 +251,31 @@ public:
     UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
 
     wstring backupDB() override;
-	bool restoreDB(cwstr strTag) override;
+    bool restoreDB(cwstr strTag) override;
 
-	bool clearData() override;
+    bool clearData() override;
 #endif
 
     void close() override;
 
-private:    
+private:
 #if __OnlineMediaLib
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, const bool& bRunSignal, UINT& uAppUpgradeProgress);
     E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif
 
-	bool _initData(cwstr strDBFile);
+    bool _initData(cwstr strDBFile);
 
-	bool _updateDir(cwstr strOldPath, cwstr strNewPath);
+    bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
 #if __winvc
-	wstring _scanXMusicDir();
-	wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
+    wstring _scanXMusicDir();
+    wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
 
-	bool _exportDB(cwstr strExportDir, bool bExportXmsc);
+    bool _exportDB(cwstr strExportDir, bool bExportXmsc);
 
-	void _clear();
+    void _clear();
 #endif
 
-	void _close();
+    void _close();
 };
