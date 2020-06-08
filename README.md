@@ -81,5 +81,8 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 ## 编译
 工作室软件：vs2017编译XMusicStudio解决方案
 
-XMusic Windows版本：Qt5编译XMusic_win32.pro项目组
-XMusic 安卓版本：Qt5编译XMusic_android.pro项目组
+XMusic Windows版：Qt5编译XMusic_win32.pro项目
+
+XMusic安卓版：
+依赖Common2.1仓库、PlaySDK仓库，放在XMusic目录同级
+用Qt5编译XMusic_android.pro项目组
