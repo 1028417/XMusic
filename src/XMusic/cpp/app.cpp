@@ -9,37 +9,6 @@
 
 #include <QScreen>
 
-#if __android
-#include <jni.h>
-
-static int g_jniVer = 0;
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
-{
-    (void)reserved;
-
-    JNIEnv* env = nullptr;
-    if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) == JNI_OK)
-    {
-        return g_jniVer = JNI_VERSION_1_6;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) == JNI_OK)
-    {
-        return g_jniVer = JNI_VERSION_1_4;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_2) == JNI_OK)
-    {
-        return g_jniVer = JNI_VERSION_1_2;
-    }
-    else if (vm->GetEnv((void**) &env, JNI_VERSION_1_1) == JNI_OK)
-    {
-        return g_jniVer = JNI_VERSION_1_1;
-    }
-
-    return JNI_ERR;
-}
-#endif
-
 #define __pkgName L"com.musicrossoft.xmusic"
 
 static CUTF8TxtWriter m_logger;
@@ -124,6 +93,7 @@ CAppInit::CAppInit(QApplication& app)
     g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
 
 #if __android
+    extern int g_jniVer;
     g_logger << "jniVer: " >> g_jniVer;
 #endif
 

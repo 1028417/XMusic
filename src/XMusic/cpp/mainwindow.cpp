@@ -1586,3 +1586,10 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         _handleTouchEnd(te);
     }
 }
+
+#if __android
+void MainWindow::installApk(const string& strApkFile)
+{
+    jniutil::installApk(QString::fromStdString(strApkFile));
+}
+#endif

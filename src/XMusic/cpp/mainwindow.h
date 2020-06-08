@@ -152,4 +152,8 @@ private:
     void onPlayStop(bool bCanceled, bool bOpenFail) override;
 
     void onSingerImgDownloaded() override;
+
+#if __android
+    void installApk(const string& strApkFile) override;
+#endif
 };

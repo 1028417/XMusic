@@ -10,6 +10,8 @@
 
 #include "msgbox.h"
 
+#include "jniutil.h"
+
 #define __cyIPhoneXBangs __size(128)
 
 #if __windows || __mac
