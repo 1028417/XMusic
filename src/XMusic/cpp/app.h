@@ -75,8 +75,6 @@ private:
 
     bool _init();
 
-    E_UpgradeResult _initMediaLib(const tagMdlConf& orgMdlConf);
-
     bool _initRootDir(wstring& strRootDir);
 
     void _run(E_UpgradeResult eUpgradeResult);

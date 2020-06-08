@@ -193,6 +193,8 @@ CAppInit::CAppInit(QApplication& app)
     app.setFont(CFont());
 }
 
+int g_nAppUpgradeProgress = -1;
+
 bool CApp::_init()
 {
     auto& option = m_ctrl.initOption();
@@ -202,27 +204,40 @@ bool CApp::_init()
     }
     g_logger << "RootDir: " >> option.strRootDir;
 
-    QFile qf(":/mdlconf");
-    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-    {
-        g_logger >> "loadMdlConfResource fail";
-        return false;
-    }
-    auto&& ba = qf.readAll();
-
-    tagMdlConf orgMdlConf;
-    if (!m_model.loadMdlConf((byte_p)ba.data(), ba.size(), orgMdlConf))
-    {
-        g_logger >> "readMdlConfResource fail";
-        return false;
-    }
-    g_logger << "orgMdlConf AppVersion: " << orgMdlConf.strAppVersion
-             << " CompatibleCode: " << orgMdlConf.uCompatibleCode
-             << " MedialibVersion: " >> orgMdlConf.uMdlVersion;
-    m_strAppVersion = strutil::fromAsc(orgMdlConf.strAppVersion);
-
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
-        return _initMediaLib(orgMdlConf);
+        auto timeBegin = time(0);
+
+        QFile qf(":/mdlconf");
+        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            g_logger >> "loadMdlConfResource fail";
+            return E_UpgradeResult::UR_Fail;
+        }
+        auto&& ba = qf.readAll();
+
+        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
+                                                            , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
+        if (E_UpgradeResult::UR_Success != eUpgradeResult)
+        {
+            return eUpgradeResult;
+        }
+
+        auto time0 = time(0);
+        if (!m_model.initMediaLib())
+        {
+            g_logger >> "initMediaLib fail";
+            return E_UpgradeResult::UR_Fail;
+        }
+        g_logger << "initMediaLib success " >> (time(0)-time0);
+
+        auto timeDiff = 6 - (time(0) - timeBegin);
+        g_logger << "timeDiff: " >> timeDiff;
+        if (timeDiff > 0)
+        {
+            mtutil::usleep((UINT)timeDiff*1000);
+        }
+
+        return E_UpgradeResult::UR_Success;
     }, [&](){
         (void)m_pmHDDisk.load(__mediaPng(hddisk));
         (void)m_pmLLDisk.load(__mediaPng(lldisk));
@@ -279,38 +294,6 @@ int CApp::run()
     m_logger.close();
 
     return nRet;
-}
-
-int g_nAppUpgradeProgress = -1;
-
-E_UpgradeResult CApp::_initMediaLib(const tagMdlConf& orgMdlConf)
-{
-    auto timeBegin = time(0);
-
-#if __OnlineMediaLib
-    E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(orgMdlConf, g_bRunSignal, (UINT&)g_nAppUpgradeProgress);
-    if (E_UpgradeResult::UR_Success != eUpgradeResult)
-    {
-        return eUpgradeResult;
-    }
-#endif
-
-    auto time0 = time(0);
-    if (!m_model.initMediaLib())
-    {
-        g_logger >> "initMediaLib fail";
-        return E_UpgradeResult::UR_Fail;
-    }
-    g_logger << "initMediaLib success " >> (time(0)-time0);
-
-    auto timeDiff = 6 - (time(0) - timeBegin);
-    g_logger << "timeDiff: " >> timeDiff;
-    if (timeDiff > 0)
-    {
-        mtutil::usleep((UINT)timeDiff*1000);
-    }
-
-    return E_UpgradeResult::UR_Success;
 }
 
 bool CApp::_initRootDir(wstring& strRootDir)
