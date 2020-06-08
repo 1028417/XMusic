@@ -73,7 +73,7 @@ RESOURCES += res.qrc
 
 FORMS += mainwindow.ui  msgbox.ui  networkWarnDlg.ui \
          bkgdlg.ui  addbkgdlg.ui  colordlg.ui \
-         medialibdlg.ui wholeTrackDlg.ui
+         medialibdlg.ui  wholeTrackDlg.ui
 
 INCLUDEPATH += ../../inc  cpp
 
@@ -99,13 +99,13 @@ android {
     macDir = $$BinDir/mac
     frameworkDir = $$macDir/XMusic.app/Contents/Frameworks
     QMAKE_POST_LINK += \
-        rm -f $$macDir/XMusic.dmg \
-        && rm -rf $$frameworkDir \
-        && mkdir $$frameworkDir \
-#        && cp -rf $$PWD/../../deploy/bkg $$macDir/XMusic.app/Contents/MacOS/bkg \
-        && echo $$macDir $$frameworkDir | xargs -n 1 cp -rfv \
+            rm -f $$macDir/XMusic.dmg \
+            && rm -rf $$frameworkDir \
+            && mkdir $$frameworkDir \
+#            && cp -rf $$PWD/../../deploy/bkg $$macDir/XMusic.app/Contents/MacOS/bkg \
+            && echo $$macDir $$frameworkDir | xargs -n 1 cp -rfv \
             $$libDir/{SDL2.framework,libavcodec.58.dylib,libavformat.58.dylib,libavutil.56.dylib,libswresample.3.dylib} \
-        && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir #-dmg
+            && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir #-dmg
 } else: ios {
     LIBS += -L../../../Common2.1/libs/mac  -lssl  -lcrypto  #-lnghttp2
 

@@ -77,10 +77,10 @@ void CDialog::_show(cfn_void cbClose)
         disconnect(this, &QDialog::finished, 0, 0);
     });
 
-/*#if __mac
+#if __mac // 规避全屏的bug
     this->exec();
     return;
-#endif*/
+#endif
 
 #if !__android //??安卓好像有问题
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);

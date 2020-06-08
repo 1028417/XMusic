@@ -37,11 +37,11 @@ void fixWorkArea(QWidget& wnd)
 {
     if (__android || __ios || g_bFullScreen)
     {
-        wnd.setWindowState(Qt::WindowFullScreen);
+        wnd.setWindowState(Qt::WindowFullScreen | Qt::WindowActive); // Mac需要WindowActive
     }
     else
     {
-        wnd.setWindowState(Qt::WindowMaximized);
+        wnd.setWindowState(Qt::WindowMaximized | Qt::WindowActive);
     }
 
     _fixWorkArea(wnd);
@@ -403,19 +403,17 @@ bool MainWindow::event(QEvent *ev)
         break;
 #if __windows || __mac
     case QEvent::MouseButtonDblClick:
-    {
-        cauto pos = ((QMouseEvent*)ev)->pos();
-        if (!m_PlayingList.geometry().contains(pos))
+        if (!m_PlayingList.geometry().contains(((QMouseEvent*)ev)->pos()))
         {
             switchFullScreen();
         }
-    }
 
         break;
 #endif
     case QEvent::KeyRelease:
     {
 #if __android || __ios
+        g_logger << "KeyRelease: " >> ((QKeyEvent*)ev)->key();
         if (!ui.labelLogo->isVisible())
         {
             static time_t prevTime = 0;
@@ -432,22 +430,58 @@ bool MainWindow::event(QEvent *ev)
 
             prevTime = currTime;
         }
-#else
 
-        if (Qt::Key_Return == ((QKeyEvent*)ev)->key())
+#else
+#if __windows //规避qt5.13.2版本windows不停触发
+        static time_t prevTime = 0;
+        time_t currTime = time(0);
+        if (currTime - prevTime == 0)
+        {
+            return true;
+        }
+        prevTime = currTime;
+#endif
+
+        auto key = ((QKeyEvent*)ev)->key();
+        if (Qt::Key_Return == key)
         {
             switchFullScreen();
         }
-
-#if __windows
-        auto vkKey = ((QKeyEvent*)ev)->nativeVirtualKey();
-        if (VK_ESCAPE == vkKey)
+        else if (Qt::Key_Escape == key)
         {
+#if __mac
+            this->setWindowState(Qt::WindowMaximized | Qt::WindowActive); // Mac执行窗口还原
+#else
             this->setWindowState(Qt::WindowMinimized);
+#endif
+        }
+
+        else if (!ui.labelLogo->isVisible())
+        {
+            // TODO 上下键滚动播放列表、左右键切换背景
+            if (Qt::Key_Space == key)
+            {
+                if (E_PlayStatus::PS_Play == m_app.getPlayMgr().playStatus())
+                {
+                    slot_buttonClicked(ui.btnPause);
+                }
+                else
+                {
+                    slot_buttonClicked(ui.btnPlay);
+                }
+            }
+            else if (Qt::Key_Left == key || Qt::Key_Up == key)
+            {
+                slot_buttonClicked(ui.btnPlayPrev);
+            }
+            else if (Qt::Key_Right == key || Qt::Key_Down == key)
+            {
+                slot_buttonClicked(ui.btnPlayNext);
+            }
         }
 #endif
-#endif
     }
+
     break;
 /*    case QEvent::Close:
         m_app.quit();
@@ -614,7 +648,7 @@ void MainWindow::_relayout()
      {
          x_btnMore = cx - __size(25) - ui.btnMore->width();
      }
-#endif    
+#endif
     ui.btnMore->move(x_btnMore, y_btnMore);
 
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
@@ -1509,8 +1543,12 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
 }
 
+#if __windows || __mac
 #if __isdebug
-#define __fastTouchDt 220
+#define __fastTouchDt 300
+#else
+#define __fastTouchDt 200 // 鼠标慢，触屏快
+#endif
 #else
 #define __fastTouchDt 130
 #endif
