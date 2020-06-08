@@ -1587,6 +1587,34 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
 }
 
+#if __windows
+static bool _cmdShell(const string& strCmd, bool bBlock = true)
+{
+    STARTUPINFOA si;
+    memset(&si, 0, sizeof(si));
+    si.cb = sizeof(si);
+    si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);
+    si.wShowWindow = SW_HIDE;
+
+    PROCESS_INFORMATION pi;
+    memset(&pi, 0, sizeof(pi));
+    if(!CreateProcessA(NULL, (char*)strCmd.c_str(), NULL, NULL, FALSE
+                      , CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
+    {
+        return false;
+    }
+
+    if (bBlock)
+    {
+        WaitForSingleObject(pi.hProcess,INFINITE);
+    }
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    return true;
+}
+#endif
+
 bool MainWindow::installApp(const CByteBuffer& bbfData)
 {
 #if __android
@@ -1658,15 +1686,15 @@ bool MainWindow::installApp(const CByteBuffer& bbfData)
     CZipFile zipFile(ifbData);
     if (!zipFile)
     {
-        g_logger >> "invalid zipfile";
-        continue;
+        g_logger >> "invalid appData";
+        return false;
     }
 
     cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + __cPathSeparator;
 
     string strTempDir = strParentDir + "Upgrade";
     cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
-    if (!cmdShell(strCmd))
+    if (!_cmdShell(strCmd))
     {
         g_logger << "cmdShell fail: " >> strCmd;
         return false;
@@ -1718,7 +1746,7 @@ bool MainWindow::installApp(const CByteBuffer& bbfData)
         return false;
     }
 
-    if (!cmdShell("\"" + strParentDir + __StartupFile "\" -upg", false))
+    if (!_cmdShell("\"" + strParentDir + __StartupFile "\" -upg", false))
     {
         g_logger >> "shell StartupFile fail";
     }
