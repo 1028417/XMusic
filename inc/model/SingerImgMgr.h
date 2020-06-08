@@ -21,7 +21,7 @@ private:
     XThread m_thrDownload;
 
 private:
-    void _download(const CUpgradeUrl& UpgradeUrl);
+    void _download();
 
 public:
     void quitDownload();
