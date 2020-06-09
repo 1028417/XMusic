@@ -64,9 +64,10 @@ void CApp::setForeground()
 
 CAppInit::CAppInit(QApplication& app)
 {
+    wstring strWorkDir;
 #if __android
     //内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-    wstring strWorkDir = L"/data/data/" __pkgName;
+    strWorkDir = L"/data/data/" __pkgName;
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
 
 /*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
@@ -77,7 +78,7 @@ CAppInit::CAppInit(QApplication& app)
 #endif*/
 
 #else
-    wstring strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
+    strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
 #endif
     (void)fsutil::createDir(strWorkDir);
 

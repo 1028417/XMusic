@@ -413,23 +413,27 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::KeyRelease:
     {
 #if __android || __ios
-        g_logger << "KeyRelease: " >> ((QKeyEvent*)ev)->key();
-        if (!ui.labelLogo->isVisible())
+        if (__android && Qt::Key_Back != ((QKeyEvent*)ev)->key())
         {
-            static time_t prevTime = 0;
-
-            time_t currTime = time(0);
-            if (currTime - prevTime > 3)
-            {
-#if __android
-                jniutil::vibrate();
-#endif
-                prevTime = currTime;
-                return true;
-            }
-
-            prevTime = currTime;
+            break;
         }
+
+        if (ui.labelLogo->isVisible())
+        {
+            break;
+        }
+
+        static time_t prevTime = 0;
+        time_t currTime = time(0);
+        if (currTime - prevTime > 3)
+        {
+#if __android
+            jniutil::vibrate();
+#endif
+            prevTime = currTime;
+            return true;
+        }
+        prevTime = currTime;
 
 #else
 #if __windows //规避qt5.13.2版本windows不停触发
@@ -437,7 +441,7 @@ bool MainWindow::event(QEvent *ev)
         time_t currTime = time(0);
         if (currTime - prevTime == 0)
         {
-            return true;
+            break;
         }
         prevTime = currTime;
 #endif
@@ -455,7 +459,6 @@ bool MainWindow::event(QEvent *ev)
             this->setWindowState(Qt::WindowMinimized);
 #endif
         }
-
         else if (!ui.labelLogo->isVisible())
         {
             // TODO 上下键滚动播放列表、左右键切换背景
