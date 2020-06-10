@@ -35,7 +35,7 @@ copy /Y lib*.dll 		%~dp0XMusic-win32\bin
 
 copy /Y Qt5*.dll 		%~dp0XMusic-win32\bin
 
-copy font\msyhl-6.23.ttc %~dp0XMusic-win32\bin\font
+rem copy font\msyhl-6.23.ttc %~dp0XMusic-win32\bin\font
 
 copy platforms\* 		%~dp0XMusic-win32\bin\platforms
 copy imageformats\* 	%~dp0XMusic-win32\bin\imageformats
