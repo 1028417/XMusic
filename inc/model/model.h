@@ -186,8 +186,6 @@ struct __ModelExt tagOption
 };
 
 #if !__winvc
-#define __OnlineMediaLib 1
-
 enum class E_UpgradeResult
 {
 	UR_Success,
@@ -197,14 +195,12 @@ enum class E_UpgradeResult
 	UR_MedialibInvalid,
 	UR_ReadMedialibFail,
 
+    UR_MedialibUnmatch,
 	UR_MedialibUncompatible,
 	UR_AppUpgradeFail,
 	UR_AppUpgraded
 };
 #endif
-
-#define __medialibDir L".xmusic"
-#define __DBFile L"/medialib"
 
 #include "XMediaLib.h"
 
@@ -370,10 +366,7 @@ public:
 
     bool initMediaLib() override;
 
-#if !__winvc
-    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool& bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
-
-#else
+#if __winvc
     CBackupMgr& getBackupMgr() override
     {
         return m_BackupMgr;
@@ -412,27 +405,26 @@ public:
     bool restoreDB(cwstr strTag) override;
 
     bool clearData() override;
+
+#else
+    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool& bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 #endif
 
     void close() override;
 
 private:
-#if __OnlineMediaLib
-    bool _upgradeApp(const bool& bRunSignal, UINT& uAppUpgradeProgress);
-    E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
-#endif
-
     bool _initData(cwstr strDBFile);
 
-    bool _updateDir(cwstr strOldPath, cwstr strNewPath);
-
 #if __winvc
-    wstring _scanXMusicDir();
-    wstring _scanXMusicDir(PairList<wstring, E_AttachDirType>& plAttachDir);
+    bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
     bool _exportDB(cwstr strExportDir, bool bExportXmsc);
 
     void _clear();
+
+#else
+    bool _upgradeApp(const bool& bRunSignal, UINT& uAppUpgradeProgress);
+    E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif
 
     void _close();

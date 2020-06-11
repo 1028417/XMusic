@@ -3,7 +3,7 @@
 
 struct __UtilExt tagCurlOpt
 {
-    tagCurlOpt(bool t_bShare = false)//, long t_dnsCacheTimeout)
+    tagCurlOpt(bool t_bShare)//, long t_dnsCacheTimeout)
         : bShare(t_bShare)
         //, dnsCacheTimeout(t_dnsCacheTimeout)
     {

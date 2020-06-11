@@ -36,7 +36,7 @@ public:
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
-    virtual bool read(byte_p buf, UINT& size) = 0;
+    virtual int read(byte_p buf, UINT size) = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : private IAudioOpaque
@@ -84,17 +84,17 @@ private:
 		return L"";
 	}
 
+	virtual int64_t size() const override
+	{
+	    return m_nFileSize;
+	}
+
 protected:
-    virtual int64_t size() const override
-    {
-        return m_nFileSize;
-    }
+        virtual int64_t seek(int64_t offset, int origin) override;
 
-	virtual int64_t seek(int64_t offset, int origin) override;
+        virtual int read(byte_p buf, UINT size) override;
 
-    virtual bool read(byte_p buf, UINT& size) override;
-
-    bool seekingFlag() const;
+        bool seekingFlag() const;
 };
 
 using CB_PlayStop = cfn_void_t<bool>;

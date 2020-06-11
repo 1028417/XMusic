@@ -58,8 +58,7 @@ enum class E_MediaSetType
 	, MST_Root
 };
 
-using filetime_t = time32_t;
-#define __filetime ((filetime_t)time(0))
+using mediatime_t = time32_t;
 
 class __MediaLibExt CMediaTime
 {
@@ -76,17 +75,17 @@ public:
 	}
 
 public:
-	CMediaTime() : m_time(__filetime)
+	CMediaTime() : m_time((mediatime_t)time(0))
 	{
 	}
 
-	CMediaTime(filetime_t tAddTime)
+	CMediaTime(mediatime_t tAddTime)
 		: m_time(tAddTime)
 	{
 	}
 
 public:
-	filetime_t m_time;
+	mediatime_t m_time;
 
 public:
 	bool operator <(CMediaTime time) const

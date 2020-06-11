@@ -39,7 +39,9 @@ public:
         return m_strFile;
     }
 
-#if !__winvc
+#if __OnlineMediaLib
+    uint64_t downloadedSize() const;
+
     bool waitingFlag() const
     {
         return m_uWaitSize > 0;
@@ -129,21 +131,21 @@ private:
 		return m_strFile;
 	}
 
-        bool read(byte_p buf, UINT& size) override;
+        int read(byte_p buf, UINT size) override;
 
-#if !__winvc        
+#if __OnlineMediaLib
+        UINT _readStream(byte_p buf, UINT size);
+
         bool seekable() const override;
 
         int64_t seek(int64_t offset, int origin) override;
 
-        bool _readStream(byte_p buf, UINT& usize);
+        int64_t size() const override;
 
 public:
 	bool isOnline() const override
 	{
 		return m_strFile.empty();
 	}
-
-        int64_t size() const override;
 #endif
 };

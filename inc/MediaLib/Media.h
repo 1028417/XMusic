@@ -23,16 +23,13 @@ class __MediaLibExt CMedia : public IMedia, public tagMediaInfo
 #endif
 {
 public:
-	CMedia(CMediaSet *pParent = NULL, int nID = 0, cwstr strPath = L"", filetime_t tTime = 0)
-		: IMedia(strPath)
-		, tagMediaInfo(pParent, L"", nID)
+    CMedia() = default;
+
+    CMedia(CMediaSet *pParent, int nID, cwstr strPath, mediatime_t tTime)
+        : tagMediaInfo(pParent, L"", nID)
 		, m_addTime(tTime)
 	{
-		_UpdatePath(strPath);
-
-#if !__windows
-        fsutil::transSeparator(m_strParentDir);
-#endif
+        _UpdatePath(strPath);
 	}
 
     virtual ~CMedia() = default;
@@ -66,7 +63,7 @@ public:
 		return GetDir() + __wcPathSeparator + m_strName;
 	}
 
-	wstring GetAbsPath() const override;
+    virtual wstring GetAbsPath() const override;
 
 	wstring GetName() const override
 	{
@@ -129,6 +126,7 @@ public:
 
     E_MediaSetType GetMediaSetType() const;
 
+#if __winvc
 	virtual wstring GetExportFileName() override
 	{
 		return GetName();
@@ -136,7 +134,6 @@ public:
 
     virtual void AsyncTask() {}
 
-#if __winvc
     CRCueFile getCueFile() const;
 
     void UpdatePath(cwstr strPath);
@@ -145,7 +142,12 @@ public:
 private:
     inline void _UpdatePath(cwstr strPath)
     {
+        m_eFileType = __mediaFileType(strPath);
+
         fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
+#if !__windows
+        fsutil::transSeparator(m_strParentDir);
+#endif
     }
 
 #if __winvc

@@ -5,12 +5,7 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-	CAlbumItem(int nID, cwstr strPath, filetime_t time, class CAlbum& Album);
-
-#if __winvc
-private:
-	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
-#endif
+	CAlbumItem(int nID, cwstr strPath, mediatime_t time, class CAlbum& Album);
 
 public:
     E_MediaType type() const override
@@ -26,7 +21,12 @@ public:
 
 	wstring GetSingerName() const;
 
+#if __winvc
 	void AsyncTask() override;
+
+private:
+	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+#endif
 };
 
 class __MediaLibExt CAlbum : public CMediaSet

@@ -1,6 +1,11 @@
 
 #pragma once
 
+#if !__winvc
+#define __OnlineMediaLib 1
+#define __CheckXUrl 0
+#endif
+
 #define __xmedialib ((XMediaLib&)__medialib)
 
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet

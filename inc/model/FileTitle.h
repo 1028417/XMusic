@@ -20,7 +20,6 @@ public:
 	static wstring genCollateTitle_r(cwstr strFileTitle);
 
 	static void genDisplayTitle(wstring& strPath);
-	static wstring genDisplayTitle_r(cwstr strFileTitle);
 
 	wstring matchSinger(cwstr strFileTitle);
 	wstring matchSinger(IMedia& media);

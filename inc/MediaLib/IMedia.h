@@ -1,16 +1,11 @@
 
 #pragma once
 
-enum class E_MediaType
-{
-    MT_MediaRes,
-    MT_PlayItem,
-    MT_AlbumItem
-};
+#define __mediaFileType(strPath) IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
 
 enum class E_MediaFileType
 {
-	MFT_Null = 1,
+    MFT_Null = 0,
 
 	MFT_MP3, MFT_FLAC, MFT_WAV,
 
@@ -31,6 +26,13 @@ enum class E_MediaQuality
     MQ_HiRes
 };
 
+enum class E_MediaType
+{
+    MT_MediaRes,
+    MT_PlayItem,
+    MT_AlbumItem
+};
+
 enum class E_RelatedMediaSet
 {
         RMS_Playlist = (int)E_MediaSetType::MST_Playlist
@@ -45,9 +47,9 @@ public:
 	static E_MediaFileType GetMediaFileType(cwstr strExtName);
 
 public:
-	IMedia(E_MediaFileType eFileType = E_MediaFileType::MFT_Null);
+    IMedia() = default;
 
-	IMedia(cwstr strPath);
+    IMedia(E_MediaFileType eFileType);
 
 	virtual ~IMedia() = default;
 
@@ -156,7 +158,4 @@ public:
 	}
 
 	bool UpdateRelatedMediaSet(E_RelatedMediaSet eRmsType, const tagMediaSetChanged& MediaSetChanged);
-
-protected:
-	void UpdateFileType(cwstr strPath);
 };

@@ -30,7 +30,7 @@ public:
         return m_vctAlarmmedia;
     }
 
-    bool queryPlayRecordMaxTime(filetime_t& tTime);
-    bool queryPlayRecord(filetime_t tTime, prvector<wstring, int>& vecPlayRecord);
+    bool queryPlayRecordMaxTime(mediatime_t& tTime);
+    bool queryPlayRecord(mediatime_t tTime, prvector<wstring, int>& vecPlayRecord);
 	bool clearPlayRecord();
 };

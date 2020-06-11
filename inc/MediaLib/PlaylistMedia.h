@@ -5,15 +5,15 @@ class __MediaLibExt CPlayItem : public CMedia
 public:
     CPlayItem() = default;
 
-    CPlayItem(int nID, cwstr strPath, filetime_t time, class CPlaylist& Playlist);
+    CPlayItem(int nID, cwstr strPath, mediatime_t time, class CPlaylist& Playlist);
 
 private:
-	wstring _GetDisplayName(bool bDynamic);
-
-	wstring GetExportFileName() override;
-	
 #if __winvc
-	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+    wstring _GetDisplayName(bool bDynamic);
+
+    wstring GetExportFileName() override;
+
+    void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 #endif
 
 public:
@@ -26,14 +26,26 @@ public:
 
 	wstring GetPlaylistName() const;
 
-	inline bool isPlayingItem() const
-	{
-		return 0 == m_pParent->m_uID;
-	}
+    int getSingerImg() const;
 
-	int getSingerImg() const;
+#if __winvc
+    void AsyncTask() override;
 
-	void AsyncTask() override;
+#else
+    wstring GetAbsPath() const override // 兼容本地文件
+    {
+        cauto strPath = GetPath();
+        if (0 == m_pParent->m_uID)
+        {
+            if (fsutil::existFile(strPath))
+            {
+                return strPath;
+            }
+        }
+
+        return __medialib.toAbsPath(strPath, false);
+    }
+#endif
 };
 
 class __MediaLibExt CPlaylist : public CMediaSet
