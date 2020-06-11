@@ -142,7 +142,7 @@ void CXController::stop()
 bool CXController::setupMediaLib()
 {
     static CFolderDlgEx FolderDlg;
-    wstring strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
+    cauto strRootDir = FolderDlg.Show(L"设定根目录", L"请选择媒体库根目录");
     if (strRootDir.empty())
     {
         return false;

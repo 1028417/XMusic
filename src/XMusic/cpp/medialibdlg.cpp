@@ -6,71 +6,6 @@
 
 static Ui::MedialibDlg ui;
 
-wstring COuterDir::init()
-{
-     cauto strMediaLibDir = __medialib.path();
-#if __windows
-    for (auto wch : strMediaLibDir)
-    {
-        if (fsutil::checkSeparator(wch))
-        {
-            m_strOuterDir.append(L"/..");
-        }
-    }
-
-    m_strMediaLibDir = strMediaLibDir;
-#else
-    m_strMediaLibDir = fsutil::GetFileName(strMediaLibDir);
-
-    m_strOuterDir = L"/..";
-#endif
-
-    cauto strAbsPath = strMediaLibDir + m_strOuterDir;
-    CPath::setDir(strAbsPath);
-    return m_strOuterDir;
-}
-
-CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
-{
-#if __windows
-    wstring strSubDir = this->path() + __wcPathSeparator + fileInfo.strName;
-    QString qsSubDir = QDir(__WS2Q(strSubDir)).absolutePath();
-    strSubDir = QDir::toNativeSeparators(qsSubDir).toStdWString();
-    if (strutil::matchIgnoreCase(strSubDir, m_strMediaLibDir))
-    {
-        return NULL;
-    }
-
-    auto pSubDir = new COuterDir(fileInfo, m_strMediaLibDir);
-
-#else
-    if (fileInfo.strName == m_strMediaLibDir)
-    {
-        return NULL;
-    }
-
-    auto pSubDir = new CMediaDir(fileInfo);
-#endif
-
-    mtutil::usleep(1);
-
-    if (NULL == m_fi.pParent)
-    {
-        if (!pSubDir->files())
-        {
-            if (!pSubDir->dirs().any([](CPath& childDir){
-                return childDir.files() || childDir.dirs();
-            }))
-            {
-                delete pSubDir;
-                return NULL;
-            }
-        }
-    }
-
-    return pSubDir;
-}
-
 CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
   , m_lv(*this, app, m_OuterDir)
@@ -97,7 +32,7 @@ void CMedialibDlg::init()
                 , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1.05f, QFont::Weight::Normal, false, true);
+        label->setFont(1.08f, QFont::Weight::Normal, false, true);
 
         connect(label, &CLabel::signal_click, this, &CMedialibDlg::slot_labelClick);
     }
@@ -123,8 +58,6 @@ _resizeTitle();
 
 void CMedialibDlg::_show()
 {
-    m_OuterDir.init();
-
     CDialog::show([&](){
         m_lv.cleanup();
 
@@ -135,10 +68,6 @@ void CMedialibDlg::_show()
 void CMedialibDlg::show()
 {
     m_lv.showRoot();
-
-    CApp::async([&](){
-        m_OuterDir.findFile();
-    });
 
     _show();
 }
@@ -159,18 +88,10 @@ void CMedialibDlg::showMedia(CMedia& media)
 
 bool CMedialibDlg::showMediaRes(cwstr strPath)
 {
-    cauto strOuterDir = m_OuterDir.init();
-
     CMediaRes *pMediaRes = __medialib.findSubFile(strPath);
     if (NULL == pMediaRes)
     {
-        if (!fsutil::CheckSubPath(strOuterDir, strPath))
-        {
-            return false;
-        }
-
-        cauto t_strPath = __substr(strPath, strOuterDir.size());
-        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(t_strPath);
+        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strPath);
         if(NULL == pMediaRes)
         {
             return false;

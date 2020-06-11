@@ -62,6 +62,43 @@ void CApp::setForeground()
 }
 #endif
 
+static void _setupFont()
+{
+#if __windows
+    g_mapFontFamily[QFont::Weight::Light] = "微软雅黑 Light";
+    g_mapFontFamily[QFont::Weight::DemiBold] = "微软雅黑";
+    return;
+#endif
+
+    list<pair<int, QString>> plFontFile {
+        {QFont::Weight::Light, "msyhl-6.23.ttc"}
+        , {QFont::Weight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
+    };
+    for (auto& pr : plFontFile)
+    {
+        auto qsFontFile = "/font/" + pr.second;
+#if __android
+        qsFontFile = "assets:" +  qsFontFile;
+#else
+        qsFontFile = CApp::applicationDirPath() + qsFontFile;
+#endif
+
+        int fontId = QFontDatabase::addApplicationFont(qsFontFile);
+        if (-1 == fontId)
+        {
+            g_logger << "addFont fail: " >> qsFontFile;
+            continue;
+        }
+
+        cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
+        if (!qslst.empty())
+        {
+            g_logger << "addFont success: " << qsFontFile << " familyName: " >> qslst.front();
+            g_mapFontFamily[pr.first] = qslst.front();
+        }
+    }
+}
+
 CAppInit::CAppInit(QApplication& app)
 {
     wstring strWorkDir;
@@ -71,11 +108,12 @@ CAppInit::CAppInit(QApplication& app)
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
 
 /*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
-    if (jniutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+    if (androidutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
         strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 #endif*/
+    strWorkDir = __sdcardDir __pkgName;
 
 #else
     strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
@@ -90,12 +128,13 @@ CAppInit::CAppInit(QApplication& app)
 
     m_logger.open("xmusic.log", true);
 
-    g_logger << "applicationDirPath: " >> QApplication::applicationDirPath();
-    g_logger << "applicationFilePath: " >> QApplication::applicationFilePath();
+    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
+    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
 
 #if __android
     extern int g_jniVer;
-    g_logger << "jniVer: " >> g_jniVer;
+    extern int g_androidSdkVer;
+    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
 #endif
 
     QScreen *screen = QApplication::primaryScreen();
@@ -155,41 +194,12 @@ CAppInit::CAppInit(QApplication& app)
     g_uDefFontSize = 12;
 #endif
 
-    g_mapFontFamily[g_nDefFontWeight] = app.font().family();
+    g_nDefFontWeight = QFont::Weight::Light;
+    g_mapFontFamily[QFont::Weight::Light]
+            = g_mapFontFamily[QFont::Weight::DemiBold]
+            = app.font().family();
 
-#if __windows
-    //g_mapFontFamily[QFont::Weight::Light] = "微软雅黑 Light";
-    g_mapFontFamily[QFont::Weight::DemiBold] = "微软雅黑";
-#endif
-
-    list<pair<int, QString>> plFontFile {
-        {QFont::Weight::Light, "/font/msyhl-6.23.ttc"}
-        //, {QFont::Weight::Semilight, "/font/Microsoft-YaHei-Semilight-11.0.ttc"}
-        , {QFont::Weight::DemiBold, "/font/Microsoft-YaHei-Semibold-11.0.ttc"}
-    };
-    for (auto& pr : plFontFile)
-    {
-        auto& qsFontFile = pr.second;
-#if __android
-        qsFontFile = "assets:" +  qsFontFile;
-#else
-        qsFontFile = app.applicationDirPath() + qsFontFile;
-#endif
-
-        int fontId = QFontDatabase::addApplicationFont(qsFontFile);
-        if (-1 == fontId)
-        {
-            g_logger << "addFont fail: " >> qsFontFile;
-            continue;
-        }
-
-        cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
-        if (!qslst.empty())
-        {
-            g_logger << "newfamilyName: " >> qslst.front();
-            g_mapFontFamily[pr.first] = qslst.front();
-        }
-    }
+    _setupFont();
 
     app.setFont(CFont());
 }
@@ -348,6 +358,10 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
             {
                 qsErrMsg = "更新媒体库失败:  媒体库异常";
             }
+            else if (E_UpgradeResult::UR_MedialibUnmatch == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败:  媒体库不匹配";
+            }
             else if (E_UpgradeResult::UR_MedialibUncompatible == eUpgradeResult)
             {
                 qsErrMsg = "更新媒体库失败:  媒体库不兼容";
@@ -366,7 +380,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 #if __windows
             setForeground();
 #elif __android
-            jniutil::vibrate();
+            androidutil::vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
                 this->quit();
@@ -386,9 +400,9 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         g_crFore.setRgb((int)option.crFore);
     }
 #if __android
-    if (option.bNetworkWarn && jniutil::checkMobileConnected())
+    if (option.bNetworkWarn && androidutil::checkMobileConnected())
     {
-        jniutil::vibrate();
+        androidutil::vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd, *this);
         dlg.show([&](){

@@ -9,7 +9,7 @@ QColor g_crFore(__defTextColor);
 
 map<int, QString> g_mapFontFamily;
 
-int g_nDefFontWeight = QFont::Weight::Light;
+int g_nDefFontWeight = 0;
 
 UINT g_uDefFontSize = 0;
 

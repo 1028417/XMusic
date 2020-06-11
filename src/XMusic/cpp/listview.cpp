@@ -214,34 +214,50 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 
             _onAutoScrollEnd();
 
-            m_bClicking = false;
+            disableClick();
         }
     }
-    else if (E_MouseEventType::MET_Click == type || E_MouseEventType::MET_DblClick == type)
+#if __windows || __mac
+    else if (E_MouseEventType::MET_DblClick == type)
     {
         tagLVItem lvItem;
         if (_hittest(me.pos().x(), me.pos().y(), lvItem))
         {
-            if (E_MouseEventType::MET_Click == type)
-            {
-                _onRowClick(lvItem, me);
-            }
-            else
-            {
-                _onRowDblClick(lvItem, me);
-            }
+            _onRowDblClick(lvItem, me);
+        }
+    }
+#endif
+    else if (E_MouseEventType::MET_Click == type)
+    {
+        tagLVItem lvItem;
+        int nItem = -1;
+        if (_hittest(me.pos().x(), me.pos().y(), lvItem))
+        {
+            nItem = lvItem.uItem;
+            _onRowClick(lvItem, me);
         }
         else
         {
-            if (E_MouseEventType::MET_Click == type)
-            {
-                _onBlankClick(me);
-            }
-            else
-            {
-                _onBlankDblClick(me);
-            }
+            _onBlankClick(me);
         }
+        (void)nItem;
+
+#if __android || __ios // 允许移动端双击偏移大
+#define __tsDblClick 222
+        static int s_nPrevItem = -1;
+        static ulong s_tsPrevClick = 0;
+        do {
+            if (nItem >=0 && nItem == s_nPrevItem
+                    && me.timestamp() - s_tsPrevClick < __tsDblClick)
+            {
+                _onRowDblClick(lvItem, me);
+                break;
+            }
+
+            s_nPrevItem = nItem;
+            s_tsPrevClick = me.timestamp();
+        } while(0);
+#endif
     }
 }
 

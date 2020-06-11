@@ -298,7 +298,7 @@ void MainWindow::_init()
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1, QFont::Weight::DemiBold);
+        label->setFont(1.03f, QFont::Weight::DemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelProgress);
@@ -307,13 +307,13 @@ void MainWindow::_init()
         connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
     }
 
-    ui.labelSingerName->setFont(0.95);
+    ui.labelSingerName->setFont(0.95f);
 
-    ui.labelPlayingfile->setFont(0.95);
+    ui.labelPlayingfile->setFont(0.95f);
 
-    ui.labelDuration->setFont(0.8);
+    ui.labelDuration->setFont(0.8f);
 
-    m_PlayingList.setFont(0.9);
+    m_PlayingList.setFont(0.9f);
 
     if (m_app.getOption().bRandomPlay)
     {
@@ -428,7 +428,7 @@ bool MainWindow::event(QEvent *ev)
         if (currTime - prevTime > 3)
         {
 #if __android
-            jniutil::vibrate();
+            androidutil::vibrate();
 #endif
             prevTime = currTime;
             return true;
@@ -451,14 +451,14 @@ bool MainWindow::event(QEvent *ev)
         {
             switchFullScreen();
         }
-        else if (Qt::Key_Escape == key)
+/*        else if (Qt::Key_Escape == key)
         {
 #if __mac
-            this->setWindowState(Qt::WindowMaximized | Qt::WindowActive); // Mac执行窗口还原
+            this->setWindowState(Qt::WindowMaximized | Qt::WindowActive); // Mac最小化不了，执行还原
 #else
-            this->setWindowState(Qt::WindowMinimized);
+            this->setWindowState(Qt::WindowMinimized); // Qt5.13.2 Windows弹窗后也有bug
 #endif
-        }
+        }*/
         else if (!ui.labelLogo->isVisible())
         {
             // TODO 上下键滚动播放列表、左右键切换背景
@@ -691,7 +691,7 @@ void MainWindow::_relayout()
     {
         labelAlbumName.setVisible(true);
         labelAlbumName.setText(strMediaSet);
-        labelAlbumName.setFont(0.95);
+        labelAlbumName.setFont(0.95f);
 
         ui.labelAlbumName->setShadow(uShadowWidth);
 
@@ -1034,7 +1034,7 @@ void MainWindow::_updateProgress()
     {
         UINT bufferValue = 0;
 #if __OnlineMediaLib
-        bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().size()/1000);
+        bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
 
         if (playMgr.mediaOpaque().waitingFlag() && playMgr.player().packetQueueEmpty())
         {
@@ -1666,7 +1666,7 @@ bool MainWindow::installApp(const CByteBuffer& bbfData)
         return false;
     }
 
-    jniutil::installApk(QString::fromStdString(strApkFile));
+    androidutil::installApk(QString::fromStdString(strApkFile));
 
 #elif __mac
     cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";

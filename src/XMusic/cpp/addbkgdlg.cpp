@@ -28,7 +28,7 @@ void CAddBkgDlg::init()
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
 #if __windows
-    ui.labelChooseDir->setFont(1.055, QFont::Weight::Normal, false, true);
+    ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
 
     connect(ui.labelChooseDir, &CLabel::signal_click, [&](){
         if (!_chooseDir())
@@ -117,8 +117,15 @@ void CAddBkgDlg::show()
 
         _scanDir(strAddBkgDir);
 
+#elif __android
+        if (!androidutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+        {
+            return;
+        }
+        _scanDir(L"/sdcard/");
+
 #else
-        _scanDir(__medialib.path() + L"/..");
+        _scanDir(fsutil::getHomeDir().toStdWString());
 #endif
     }
 
@@ -221,10 +228,7 @@ bool CAddBkgDlg::_handleReturn()
 
 wstring CImgDir::displayName() const
 {
-#if __windows
-    return path();
-
-#elif __android
+#if __android
     if (m_fi.pParent)
     {
         if (m_fi.pParent->parent())
@@ -242,7 +246,7 @@ wstring CImgDir::displayName() const
     }
 
 #else
-    return QDir(__WS2Q(path())).absolutePath().toStdWString();
+    return path();
 #endif
 }
 

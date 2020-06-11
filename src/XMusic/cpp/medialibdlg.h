@@ -10,33 +10,48 @@
 class COuterDir : public CMediaDir
 {
 public:
-    COuterDir() = default;
+    COuterDir()
+#if __android
+        : CMediaDir(L"/sdcard")
+#elif !__windows
+        : CMediaDir(fsutil::getHomeDir().toStdWString())
+#endif
+    {
+    }
 
-    COuterDir(const tagFileInfo& fileInfo, cwstr strMediaLibDir)
-        : CMediaDir(fileInfo)
-        , m_strMediaLibDir(strMediaLibDir)
+    COuterDir(cwstr strPath, class CPath *pParent)
+        : CMediaDir(strPath, pParent)
     {
     }
 
 private:
-    wstring m_strMediaLibDir;
-
-    wstring m_strOuterDir;
-
-public:
-    wstring init();
-
-    void findFile()
+    wstring GetPath() const override // 所有平台都需要
     {
-        CPath::_findFile();
+        return m_fi.strName;
     }
 
-private:
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
-
-    wstring GetPath() const override
+#if __windows
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
     {
-        return m_strOuterDir + CMediaDir::GetPath();
+        if (NULL == m_fi.pParent)
+        {
+            std::list<std::wstring> lstDrivers;
+            winfsutil::getSysDrivers(lstDrivers);
+            for (cauto strDriver : lstDrivers)
+            {
+                paSubDir.add(new COuterDir(strDriver, this));
+            }
+        }
+        else
+        {
+            CMediaDir::_onFindFile(paSubDir, paSubFile);
+        }
+    }
+#endif
+
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override
+    {
+        return new CMediaDir(fileInfo);
     }
 };
 

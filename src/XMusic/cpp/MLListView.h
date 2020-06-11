@@ -183,7 +183,7 @@ public:
     void showMediaSet(CMediaSet& MediaSet);
     void hittestMedia(CMedia& media);
 
-    void showDir(CPath& dir);
+    virtual void showDir(CPath& dir);
 
     void hittestFile(XFile& file);
 

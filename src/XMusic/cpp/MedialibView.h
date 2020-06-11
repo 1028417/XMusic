@@ -3,6 +3,8 @@
 
 #include "MLListView.h"
 
+#include "androidutil.h"
+
 #define __playIconOffset __size(10)
 
 class CMedialibView : public CMLListView
@@ -70,6 +72,21 @@ public:
     }
 
     void cleanup();
+
+#if __android
+    void showDir(CPath& dir) override
+    {
+        if (&dir == &m_OuterDir)
+        {
+            if (!androidutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+            {
+                return;
+            }
+        }
+
+        CMLListView::showDir(dir);
+    }
+#endif
 
 private:
     void _onShowRoot() override;

@@ -22,11 +22,13 @@ void CColorDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
-    CFont font(1.05);
+    CFont font(1.08f);
     ui.groupBkgColor->setFont(font);
     ui.groupBkgColor->setAttribute(Qt::WA_TranslucentBackground);
     ui.groupFontColor->setFont(font);
     ui.groupFontColor->setAttribute(Qt::WA_TranslucentBackground);
+
+    ui.btnApplyBkgColor->setFont(font);
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 

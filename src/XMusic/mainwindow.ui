@@ -355,13 +355,6 @@ gridline-color: rgb(255, 255, 255);</string>
        <height>110</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
@@ -389,13 +382,6 @@ gridline-color: rgb(255, 255, 255);</string>
        <width>110</width>
        <height>110</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
      </property>
      <property name="autoFillBackground">
       <bool>false</bool>
@@ -425,13 +411,6 @@ gridline-color: rgb(255, 255, 255);</string>
        <height>110</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
@@ -460,13 +439,6 @@ gridline-color: rgb(255, 255, 255);</string>
        <height>110</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
      <property name="autoFillBackground">
       <bool>false</bool>
      </property>
@@ -494,13 +466,6 @@ gridline-color: rgb(255, 255, 255);</string>
        <width>110</width>
        <height>110</height>
       </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>16</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
      </property>
      <property name="autoFillBackground">
       <bool>false</bool>
@@ -667,11 +632,6 @@ gridline-color: rgb(255, 255, 255);</string>
       <height>100</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>48</pointsize>
-     </font>
-    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -694,11 +654,6 @@ gridline-color: rgb(255, 255, 255);</string>
       <height>80</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
-    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -717,11 +672,6 @@ gridline-color: rgb(255, 255, 255);</string>
       <width>491</width>
       <height>80</height>
      </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
     </property>
     <property name="styleSheet">
      <string notr="true"/>

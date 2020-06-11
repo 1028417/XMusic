@@ -1,6 +1,12 @@
 
 #include "widget.h"
 
+#if __windows || __mac
+#define __maxClickOffset 2
+#else
+#define __maxClickOffset __size(6)
+#endif
+
 static QPaintEvent *g_pe = NULL;
 
 template <class TParent>
@@ -59,10 +65,12 @@ bool TWidget<TParent>::event(QEvent *ev)
     }
 
     break;
+#if __windows || __mac // 移动端双击偏移大，listview特别处理
     case QEvent::MouseButtonDblClick:
         _handleMouseEvent(E_MouseEventType::MET_DblClick, *(QMouseEvent*)ev);
 
         break;
+#endif
     case QEvent::TouchBegin:
         _handleTouchEvent(E_TouchEventType::TET_TouchBegin, *(QTouchEvent*)ev);
 
@@ -132,15 +140,39 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
         if (m_bClicking)
         {
-            //CApp::async([me](){
-                //if (!m_bClicking)
-                //{
-                //    return;
-                //}
-
-                m_bClicking = false;
+            /*CApp::async([me](){
+                if (!m_bClicking)
+                {
+                    return;
+                }
+                m_bClicking = false;*/
 
                 _onMouseEvent(E_MouseEventType::MET_Click, me);
+
+/*#if __android || __ios // 移动端双击偏移大
+#define __tsDblClick 222
+#define __maxDblClickOffset __size(12)
+
+                static ulong s_tsPrevClick = 0;
+                if (me.timestamp() - s_tsPrevClick < __tsDblClick)
+                {
+                    static QPoint s_ptPrevClick(-100,-100);
+                    auto dx = me.x()-s_ptPrevClick.x();
+                    if (dx <= __maxDblClickOffset && dx >= -__maxDblClickOffset)
+                    {
+                        auto dy = me.y()-s_ptPrevClick.y();
+                        if (dy <= __maxDblClickOffset && dy > -__maxDblClickOffset)
+                        {
+                            _handleMouseEvent(E_MouseEventType::MET_DblClick, me);
+                            return;
+                        }
+                    }
+
+                    s_ptPrevClick = me.pos();
+                }
+
+                s_tsPrevClick = me.timestamp();
+#endif*/
             //});
         }
     }
@@ -213,7 +245,7 @@ void TWidget<TParent>::_handleTouchMove(CTouchEvent& te)
     int dy = te.y()-m_yTouch;
     if (dx != 0 || dy != 0)
     {
-        if (abs(dx)>2 || abs(dy)>2)
+        if (abs(dx) > __maxClickOffset || abs(dy) > __maxClickOffset)
         {
             m_bClicking = false;
         }

@@ -67,13 +67,13 @@ BOOL CNewSongDlg::OnInitDialog()
 
 	__xmedialib.GetAllMedias(m_lstSrcMedias);
 	
-	filetime_t maxTime = 0;
+	mediatime_t maxTime = 0;
 	m_lstSrcMedias([&](CMedia& media) {
 		maxTime = MAX(maxTime, media.GetAddTime().m_time);
 	});
 	if (0 == maxTime)
 	{
-		maxTime = __filetime;
+		maxTime = (mediatime_t)time(0);
 	}
 
 	tagTM tm;

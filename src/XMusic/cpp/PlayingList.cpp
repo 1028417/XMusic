@@ -68,14 +68,15 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     bool bPlayingItem = lvItem.uItem == m_uPlayingItem;
     if (bPlayingItem)
     {
-#if __android || __ios
+/*#if __android || __ios
         CPainterFontGuard fontGuard(painter, 0.6f, QFont::Weight::Thin);
 #endif
-#define __szIcon 17
+        painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);*/
+
+#define __szIcon __size(18)
         QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
         painter.drawPixmap(rcIcon, m_pmPlaying);
-        //painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
-        //                   , m_uShadowWidth, uShadowAlpha, uTextAlpha);
     }
 
     rc.setLeft(__size(35));
@@ -112,20 +113,17 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         painter.adjustFont(0.65, QFont::Weight::Thin);
 
         cauto qsQuality = m_app.mainWnd().playingInfo().qsQuality;
-        auto xOffset = __size(35);
+
+        int nRight = rcPos.right() + __size(35);
 #if __android || __ios
-        xOffset += __size(10);
+        nRight += __size(6);
 #endif
         if (qsQuality.length() > 2)
         {
-            xOffset += __size(20);
+            nRight += __size(20);
         }
+        rcPos.setRight(MIN(nRight, nMaxRight));
 
-        rcPos.setRight(rcPos.right() + xOffset);
-        if (rcPos.right() > nMaxRight)
-        {
-            rcPos.setRight(nMaxRight);
-        }
         rcPos.setTop(rcPos.top() - __size(8));
 
         painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);

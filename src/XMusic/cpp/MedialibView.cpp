@@ -488,7 +488,12 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     else
     {
         IMedia *pMedia = mlContext.pMedia;
-        if (NULL == pMedia)
+        if (pMedia)
+        {
+            qsMediaQuality = mediaQualityString(pMedia->quality());
+            rc.setRight(rc.right() - __size(20) - __size(10)*qsMediaQuality.length());
+        }
+        else
         {
             auto pMediaRes = (CMediaRes*)mlContext.pFile;
             if (pMediaRes)
@@ -518,12 +523,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                     }
                 }
             }
-        }
-
-        if (pMedia)
-        {
-            qsMediaQuality = mediaQualityString(pMedia->quality());
-            rc.setRight(rc.right() - __size(20) - __size(10)*qsMediaQuality.length());
         }
     }
 

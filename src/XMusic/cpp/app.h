@@ -10,7 +10,7 @@
 
 #include "msgbox.h"
 
-#include "jniutil.h"
+#include "androidutil.h"
 
 #define __cyIPhoneXBangs __size(128)
 

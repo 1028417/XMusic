@@ -17,8 +17,8 @@ QMAKE_CXXFLAGS += -std=c++11 #c++1y #gnu++1y
 DEFINES += QT_DEPRECATED_WARNINGS
 
 android {
-HEADERS += cpp/jniutil.h
-SOURCES += cpp/jniutil.cpp
+HEADERS += cpp/androidutil.h
+SOURCES += cpp/androidutil.cpp
 }
 
 SOURCES += ../controller.cpp \
@@ -138,9 +138,8 @@ BuildDir = $$BuildDir/XMusicd/$$platform
 BuildDir = $$BuildDir/XMusic/$$platform
 }
 
-font.files += $$BinDir/font/msyhl-6.23.ttc
-#font.files += $$BinDir/font/Microsoft-YaHei-Semilight-11.0.ttc
-font.files += $$BinDir/font/Microsoft-YaHei-SemiBold-11.0.ttc
+font.files += $$BinDir/font/msyhl-6.23.ttc \
+              $$BinDir/font/Microsoft-YaHei-Regular-11.0.ttc
 
 bkg.files += ../../deploy/bkg/
 

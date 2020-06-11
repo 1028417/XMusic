@@ -279,7 +279,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			<< L"      ด๓ะก:  " << MediaResInfo.fileSizeString();
 
 		cauto fnGenTag = [&](cwstr strPath) {
-			auto eFileType = IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
+			auto eFileType = __mediaFileType(strPath);
 			if (E_MediaFileType::MFT_MP3 == eFileType || E_MediaFileType::MFT_FLAC == eFileType)
 			{
 				tagMediaTag MediaTag;

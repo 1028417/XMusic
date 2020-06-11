@@ -12,7 +12,7 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
 {
     ui.setupUi(this);
 
-    ui.labelTip->setFont(1, QFont::Weight::DemiBold);
+    ui.labelTip->setFont(1.0f, QFont::Weight::DemiBold);
 
     QColor crText(__crLogoText);
     ui.labelTip->setForeColor(crText);

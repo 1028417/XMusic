@@ -147,7 +147,6 @@ private:
 
     bool m_bMousePress = false;
 
-protected:
     bool m_bClicking = false;
 
 public:
@@ -365,6 +364,11 @@ protected:
         }
 
         return g_crFore;
+    }
+
+    void disableClick()
+    {
+        m_bClicking = false;
     }
 
 private:

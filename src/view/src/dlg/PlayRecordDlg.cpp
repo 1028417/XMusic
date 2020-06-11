@@ -41,11 +41,11 @@ BOOL CPlayRecordDlg::OnInitDialog()
 	
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	dbtime_t maxTime = 0;
+	mediatime_t maxTime = 0;
 	__EnsureReturn(m_view.getDataMgr().queryPlayRecordMaxTime(maxTime), FALSE);
 	if (0 == maxTime)
 	{
-		maxTime = __filetime;
+		maxTime = (mediatime_t)time(0);
 	}
 
 	tagTM tm;
@@ -70,7 +70,7 @@ BOOL CPlayRecordDlg::Refresh()
 	CTime fiterTime(time.GetYear(), time.GetMonth(), time.GetDay(), 0, 0, 0);
 
 	m_pvPlayRecord.clear();
-	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((dbtime_t)fiterTime.GetTime(), m_pvPlayRecord), FALSE);
+	__EnsureReturn(m_view.getDataMgr().queryPlayRecord((mediatime_t)fiterTime.GetTime(), m_pvPlayRecord), FALSE);
 
 	GetDlgItem(IDC_BTN_PLAY)->EnableWindow(FALSE);
 
