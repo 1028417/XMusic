@@ -133,12 +133,12 @@ private:
 
         int read(byte_p buf, UINT size) override;
 
+        int64_t seek(int64_t offset, int origin) override;
+
 #if __OnlineMediaLib
         UINT _readStream(byte_p buf, UINT size);
 
         bool seekable() const override;
-
-        int64_t seek(int64_t offset, int origin) override;
 
         int64_t size() const override;
 
