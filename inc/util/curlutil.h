@@ -101,7 +101,7 @@ public:
 
     void asyncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
-    void cancel();
+    uint64_t cancel();
 };
 
 class __UtilExt CDownloader : public CCurlDownload
