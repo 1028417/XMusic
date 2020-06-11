@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define __mediaFileType(strPath) IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath));
+#define __mediaFileType(strPath) IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath))
 
 enum class E_MediaFileType
 {

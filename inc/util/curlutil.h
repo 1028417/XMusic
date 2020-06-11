@@ -79,12 +79,12 @@ private:
 
     time_t m_beginTime = 0;
 
-    uint64_t m_uSumSize = 0;
+    uint64_t m_uRecvSize = 0;
 
 private:
     virtual bool _onRecv(char *ptr, size_t size) = 0;
 
-    virtual void _clear() {}
+    virtual void clear() {}
 
 public:
     const bool& status() const
@@ -92,9 +92,9 @@ public:
         return m_bStatus;
     }
 
-    const uint64_t& sumSize() const
+    const uint64_t& recvSize() const
     {
-        return m_uSumSize;
+        return m_uRecvSize;
     }
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
@@ -128,8 +128,6 @@ private:
 
 private:
     virtual bool _onRecv(char *ptr, size_t size) override;
-
-    void _clear() override;
 
     template <class T>
     inline int _syncDownload(const string& strUrl, T& retData, UINT uRetryTime, CB_DownloadProgress cbProgress)
@@ -200,7 +198,7 @@ public:
     }
 //    uint64_t readPos() const
 //    {
-//        return m_uSumSize - m_uDataSize;
+//        return m_uRecvSize - m_uDataSize;
 //    }
 
     int getData(byte_p pBuff, size_t buffSize);
@@ -231,4 +229,6 @@ public:
     {
         return _getAllData(cbfData);
     }
+
+    void clear() override;
 };

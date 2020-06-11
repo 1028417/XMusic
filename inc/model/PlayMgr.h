@@ -53,9 +53,10 @@ private:
 
     bool _playNext(bool bNext, bool bManual);
 
-    BOOL _play(CPlayItem& PlayItem);
+    bool _play(CPlayItem& PlayItem);
 
-	bool _play(uint64_t uStartPos = 0);
+    bool _play(uint64_t uStartPos = 0);
+    void _playStream();
 
     void _tryPause(cwstr strCheckPath, cfn_void_t<wstring&> cb);
 

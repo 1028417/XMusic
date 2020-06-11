@@ -23,8 +23,6 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual bool isOnline() const = 0;
-
     virtual wstring localFilePath() const = 0;
 
     virtual int64_t size() const = 0;
@@ -68,11 +66,6 @@ public:
 
     const E_DecodeStatus& decodeStatus() const;
 
-	virtual bool isOnline() const override
-	{
-		return false;
-	}
-
 	uint32_t duration() const;
 	uint64_t clock() const;
 
@@ -97,41 +90,43 @@ protected:
         bool seekingFlag() const;
 };
 
-using CB_PlayStop = cfn_void_t<bool>;
-
 class __PlaySDKExt CPlayer
 {
 public:
-	CPlayer(CAudioOpaque& AudioOpaque)
-		: m_AudioOpaque(AudioOpaque)
-	{
-	}
+    CPlayer(CAudioOpaque& AudioOpaque)
+        : m_AudioOpaque(AudioOpaque)
+    {
+    }
 
-	~CPlayer()
-	{
-		Stop();
-	}
+    ~CPlayer()
+    {
+        Stop();
+    }
 	
 private:
-	CAudioOpaque& m_AudioOpaque;
+    CAudioOpaque& m_AudioOpaque;
 	
     mutex m_mutex;
 
     thread m_thread;
-	
+
+private:
+    void _Stop();
+
 public:
     static int InitSDK();
     static void QuitSDK();
 
-	void Stop();
-    bool Play(uint64_t uStartPos, bool bForce48KHz, CB_PlayStop cbStop);
-	
+    void Stop();
+    bool Play(uint64_t uStartPos, bool bForce48KHz, cfn_void cbStop);
+    void PlayStream(bool bForce48KHz, cfn_void_t<bool> cbStop);
+
     bool Pause();
     bool Resume();
 
     bool Seek(UINT uPos);
 
-	void SetVolume(UINT uVolume);
+    void SetVolume(UINT uVolume);
 
     bool packetQueueEmpty() const;
 };

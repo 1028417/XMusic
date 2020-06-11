@@ -141,11 +141,5 @@ private:
         bool seekable() const override;
 
         int64_t size() const override;
-
-public:
-	bool isOnline() const override
-	{
-		return m_strFile.empty();
-	}
 #endif
 };
