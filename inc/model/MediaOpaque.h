@@ -13,6 +13,7 @@ private:
 	wstring m_strFile;
 
 	UINT m_uByteRate = 0;
+    unsigned long long m_uFileSize = 0;
 
     const void *m_pXmscCodec = NULL;
     size_t m_uXmscHeadLen = 0;
@@ -47,7 +48,7 @@ public:
         return m_uWaitSize > 0;
     }
 	
-    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate = 0);
+    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate, long long nFileSize);
 #endif
 
     long long openFile(cwstr strFile, bool bXmsc)
