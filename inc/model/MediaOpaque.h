@@ -12,8 +12,7 @@ public:
 private:
 	wstring m_strFile;
 
-	UINT m_uByteRate = 0;
-    unsigned long long m_uFileSize = 0;
+    UINT m_uByteRate = 0;
 
     const void *m_pXmscCodec = NULL;
     size_t m_uXmscHeadLen = 0;
