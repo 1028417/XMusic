@@ -102,10 +102,15 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	CPlaySpirit::inst()->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), uDuration, 0);
 }
 
-void CPlayCtrl::onPlayFinish(bool bOpenFail)
+void CPlayCtrl::onPlayFinish(bool bRet)
 {
-	__appSync([&, bOpenFail]() {
-		if (bOpenFail)
+	if (m_view.getPlayMgr().mediaOpaque().decodeStatus() == E_DecodeStatus::DS_Cancel)
+	{
+		return;
+	}
+
+	__appSync([&, bRet]() {
+		if (!bRet)
 		{
 			//CPlaySpirit::inst()->clear();
 

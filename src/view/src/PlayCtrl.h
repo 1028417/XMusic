@@ -17,7 +17,7 @@ public:
 	BOOL showPlaySpirit();
 
 	void onPlay(CPlayItem& PlayItem);
-	void onPlayFinish(bool bOpenFail);
+	void onPlayFinish(bool bRet);
 
 	void handlePlaySpiritButtonClick(ST_PlaySpiritButton eButton, short para = 0);
 

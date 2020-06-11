@@ -54,15 +54,6 @@ background-color: rgb(255, 255, 255);
 border-color: rgb(255, 255, 255);
 gridline-color: rgb(255, 255, 255);</string>
     </property>
-    <property name="value" stdset="0">
-     <number>0</number>
-    </property>
-    <property name="textVisible" stdset="0">
-     <bool>false</bool>
-    </property>
-    <property name="format" stdset="0">
-     <string/>
-    </property>
    </widget>
    <widget class="CButton" name="btnPlay">
     <property name="geometry">

@@ -1029,25 +1029,25 @@ void MainWindow::_updateProgress()
 #endif
     }
 
-    int nProgress = int(playMgr.mediaOpaque().clock()/__1e6);
-    if (nProgress <= ui.progressbar->maximum())
-    {
-        UINT bufferValue = 0;
 #if __OnlineMediaLib
-        bufferValue = UINT(m_app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
-
-        if (playMgr.mediaOpaque().waitingFlag() && playMgr.player().packetQueueEmpty())
-        {
-            ui.labelDuration->setText("正在缓冲");
-        }
-        else
-        {
-            WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
-            ui.labelDuration->setText(strDuration);
-        }
-#endif
-        ui.progressbar->setValue(nProgress, bufferValue);
+    if (playMgr.mediaOpaque().waitingFlag() && playMgr.player().packetQueueEmpty())
+    {
+        ui.labelDuration->setText("正在缓冲");
     }
+    else
+    {
+        ui.labelDuration->setText(m_PlayingInfo.qsDuration);
+    }
+
+    UINT uBuffer = UINT(m_app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
+    if (uBuffer > 0)
+    {
+        ui.progressbar->setBuffer(uBuffer, m_PlayingInfo.uFileSize);
+    }
+#endif
+
+    UINT uProgress = UINT(playMgr.mediaOpaque().clock()/__1e6);
+    ui.progressbar->setValue(uProgress);
 }
 
 void MainWindow::_updatePlayPauseButton(bool bPlaying)
@@ -1071,8 +1071,9 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     PlayingInfo.strPath = PlayItem.GetPath();
 
-    PlayingInfo.uDuration = PlayItem.duration();
-    if (PlayingInfo.uDuration > __wholeTrackDuration)
+    UINT uDuration = PlayItem.duration();
+    PlayingInfo.qsDuration = __WS2Q(CMedia::genDurationString(uDuration));
+    if (uDuration > __wholeTrackDuration)
     {
         CMediaRes *pMediaRes = __medialib.findSubFile(PlayingInfo.strPath);
         if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
@@ -1081,19 +1082,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         }
     }
 
-    PlayingInfo.uStreamSize = 0;
 #if __OnlineMediaLib
-    if (m_app.getPlayMgr().mediaOpaque().isOnline())
+    auto nFileSize = PlayItem.fileSize();
+    if (nFileSize > 0)
     {
-        auto nStreamSize = PlayItem.fileSize()/1000;
-        if (nStreamSize > 0)
-        {
-            PlayingInfo.uStreamSize = (UINT)nStreamSize;
-        }
+        PlayingInfo.uFileSize = UINT(nFileSize/1000);
     }
 #endif
 
-    if (m_app.getPlayMgr().mediaOpaque().isOnline())
+    //if (m_app.getPlayMgr().mediaOpaque().isOnline()) // 本地视频文件不能按码率算
     {
         PlayingInfo.eQuality = PlayItem.quality();
         PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
@@ -1130,14 +1127,12 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
         ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
 
-        ui.progressbar->setValue(0);
-        ui.progressbar->setMaximum(m_PlayingInfo.uDuration, m_PlayingInfo.uStreamSize);
+        ui.progressbar->setValue(0, uDuration);
 
     #if __OnlineMediaLib
         ui.labelDuration->clear();
     #else
-        WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
-        ui.labelDuration->setText(strDuration);
+        ui.labelDuration->setText(m_PlayingInfo.qsDuration);
     #endif
 
         _updatePlayPauseButton(true);
@@ -1160,17 +1155,16 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     });
 }
 
-void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
+void MainWindow::onPlayStop(bool bRet)
 {
-    (void)bOpenFail;
+    (void)bRet;
 
     m_app.sync([=](){
-        ui.progressbar->setMaximum(0);
+        ui.progressbar->set(0, 0, 0, 0);
 
-        WString strDuration = CMedia::genDurationString(m_PlayingInfo.uDuration);
-        ui.labelDuration->setText(strDuration);
+        ui.labelDuration->setText(m_PlayingInfo.qsDuration);
 
-        /*if (bOpenFail)
+        /*if (!bRet)
         {
             _updatePlayPauseButton(false);
         }
@@ -1186,7 +1180,7 @@ void MainWindow::onPlayStop(bool bCanceled, bool bOpenFail)
         }*/
     });
 
-    if (!bCanceled)
+    if (m_app.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
     {
         m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
     }
@@ -1426,32 +1420,28 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
-        /*if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
-        {
-            return;
-        }
-        if (!m_app.getPlayMgr().mediaOpaque().byteRate())
-        {
-            return;
-        }*/
-
         cauto progressbar = *ui.progressbar;
-        auto nMax = progressbar.maximum();
-        if (nMax <= 0)
+        UINT uMax = progressbar.maximum();
+        if (0 == uMax)
         {
-            return;
+            return; // 播放停止
         }
 
-        auto nSeekPos = pos.x() * nMax / progressbar.width();
-        auto nCurrent = progressbar.value();
-        if (nSeekPos > nCurrent && progressbar.bufferValue() < progressbar.maxBuffer())
+        UINT uSeekPos = uMax*pos.x()/progressbar.width();
+        UINT uValue = progressbar.value();
+        if (uSeekPos > uValue)
         {
-            int nPlayablePos = nMax*progressbar.bufferValue()/progressbar.maxBuffer() - __ReadStreamWaitTime;
-            nPlayablePos = MAX(nPlayablePos, nCurrent);
-            nSeekPos = MIN(nSeekPos, nPlayablePos);
+            UINT uBuffer = progressbar.buffer();
+            UINT uMaxBuffer = progressbar.maxBuffer();
+            if (uBuffer < uMaxBuffer)
+            {
+                int nPlayablePos = (int)uMax*uBuffer/uMaxBuffer - __ReadStreamWaitTime;
+                nPlayablePos = MAX(nPlayablePos, (int)uValue);
+                uSeekPos = MIN(uSeekPos, (UINT)nPlayablePos);
+            }
         }
 
-        if (m_app.getPlayMgr().player().Seek(nSeekPos))
+        if (m_app.getPlayMgr().player().Seek(uSeekPos))
         {
             CApp::async(100, [&](){
               _updateProgress();

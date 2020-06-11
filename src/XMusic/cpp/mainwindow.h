@@ -21,10 +21,12 @@ struct tagPlayingInfo
 
     wstring strPath;
 
-    UINT uDuration = 0;
+    QString qsDuration = 0;
     bool bWholeTrack = false;
 
-    UINT uStreamSize = 0;
+#if __OnlineMediaLib
+    UINT uFileSize = 0;
+#endif
 
     E_MediaQuality eQuality = E_MediaQuality::MQ_None;
     QString qsQuality;
@@ -149,7 +151,7 @@ private:
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
-    void onPlayStop(bool bCanceled, bool bOpenFail) override;
+    void onPlayStop(bool bRet) override;
 
     void onSingerImgDownloaded() override;
 
