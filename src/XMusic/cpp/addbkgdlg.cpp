@@ -79,7 +79,7 @@ bool CAddBkgDlg::_chooseDir()
     auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
 
     CFolderDlg FolderDlg;
-    cauto strDir = FolderDlg.Show(this->isVisible()?hwnd():m_bkgDlg.hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
+    cauto strDir = FolderDlg.Show(hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
     if (strDir.empty())
     {
         return false;
@@ -98,21 +98,19 @@ bool CAddBkgDlg::_chooseDir()
 
 void CAddBkgDlg::show()
 {
+    g_uMsScanYield = 1;
+
     if (!m_thrScan.joinable())
     {
 #if __windows
         auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
         if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
         {
-            if (!_chooseDir())
-            {
-                return;
-            }
-        }
-
-        if (g_thrGenSubImg)
-        {
-            g_thrGenSubImg->cancel();
+            //if (!_chooseDir())
+            //{
+                //return;
+                strAddBkgDir = fsutil::getHomeDir().toStdWString();
+            //}
         }
 
         _scanDir(strAddBkgDir);
@@ -129,8 +127,6 @@ void CAddBkgDlg::show()
 #endif
     }
 
-    g_uMsScanYield = 1;
-
     CDialog::show();
 }
 
@@ -142,6 +138,8 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
     auto uSequence = ++s_uSequence;
 
     m_thrScan.start([&, uSequence](XT_RunSignal bRunSignal){
+        // TODO 显示正在扫描目录
+
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
             {
@@ -315,6 +313,15 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
         return NULL;
     }
     mtutil::usleep(g_uMsScanYield*3);
+
+    if (fileInfo.strName.front() == L'.')
+    {
+        return NULL;
+    }
+    if (fileInfo.strName == __pkgName)
+    {
+        return NULL;
+    }
 
     return new CImgDir(m_bRunSignal, fileInfo);
 }
@@ -563,7 +570,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
-void CAddBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent&)
+void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     if (m_pImgDir)
     {

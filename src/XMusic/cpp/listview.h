@@ -124,8 +124,8 @@ private:
 
     virtual void _genItemContext(tagLVItemContext&) {}
 
-    virtual void _onRowClick(tagLVItem&, const QMouseEvent&) {}
-    virtual void _onRowDblClick(tagLVItem&, const QMouseEvent&) {}
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&) {}
+    virtual void _onItemDblClick(tagLVItem&, const QMouseEvent&) {}
 
     virtual void _onBlankClick(const QMouseEvent&) {}
     virtual void _onBlankDblClick(const QMouseEvent&) {}

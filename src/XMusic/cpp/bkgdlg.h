@@ -30,7 +30,7 @@ private:
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
-    void _onRowClick(tagLVItem&, const QMouseEvent&) override;
+    void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 
 public:
     UINT margin();

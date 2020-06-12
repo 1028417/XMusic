@@ -118,7 +118,7 @@ protected:
         return (CPath*)currentDir.parent();
     }
 
-    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)
     {
         _saveScrollRecord();
         showMediaSet(mediaSet);
@@ -137,10 +137,10 @@ private:
 
     virtual void _genMLItemContext(tagMLItemContext&) = 0;
 
-    void _onRowClick(tagLVItem&, const QMouseEvent&) override;
+    void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 
-    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CMedia&){}
-    virtual void _onRowClick(tagLVItem&, const QMouseEvent&, CPath&){}
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMedia&){}
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CPath&){}
 
     inline void* _current() const
     {

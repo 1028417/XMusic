@@ -561,7 +561,7 @@ inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)
     return x >= xPlayIcon;
 }
 
-void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMediaSet& mediaSet)
+void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMediaSet& mediaSet)
 {
     if (_hittestPlayIcon(tagMLItemContext(lvItem, mediaSet), me.x()))
     {
@@ -574,10 +574,10 @@ void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CMedia
         return;
     }
 
-    CMLListView::_onRowClick(lvItem, me, mediaSet);
+    CMLListView::_onItemClick(lvItem, me, mediaSet);
 }
 
-void CMedialibView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
+void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
 {
     auto& mediaRes = (CMediaRes&)path;
     if (!_hittestPlayIcon(tagMLItemContext(lvItem, (IMedia&)mediaRes), me.x()))

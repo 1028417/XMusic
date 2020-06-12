@@ -51,6 +51,11 @@ private:
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
     {
+        if (fileInfo.strName.front() == L'.')
+        {
+            return NULL;
+        }
+
         return new CMediaDir(fileInfo);
     }
 };

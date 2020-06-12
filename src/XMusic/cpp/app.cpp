@@ -9,8 +9,6 @@
 
 #include <QScreen>
 
-#define __pkgName L"com.musicrossoft.xmusic"
-
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 

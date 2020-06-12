@@ -59,7 +59,7 @@ private:
     void _onPaintItem(CPainter&, tagLVItem&) override;
     void _onPaintItem(CPainter&, tagLVItem&, const tagPlayingItem&);
 
-    void _onRowDblClick(tagLVItem&, const QMouseEvent&) override;
+    void _onItemDblClick(tagLVItem&, const QMouseEvent&) override;
 
     void _onBlankDblClick(const QMouseEvent&) override;
 

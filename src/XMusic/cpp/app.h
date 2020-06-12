@@ -12,12 +12,14 @@
 
 #include "androidutil.h"
 
-#define __cyIPhoneXBangs __size(128)
-
 #if __windows || __mac
 #include <QLockFile>
 extern QLockFile g_lf;
 #endif
+
+#define __pkgName L"com.musicrossoft.xmusic"
+
+#define __cyIPhoneXBangs __size(128)
 
 extern ITxtWriter& g_logger;
 

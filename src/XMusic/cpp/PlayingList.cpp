@@ -163,7 +163,7 @@ void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem
     }
 }
 
-void CPlayingList::_onRowDblClick(tagLVItem& lvItem, const QMouseEvent&)
+void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     //_updateActive();
 

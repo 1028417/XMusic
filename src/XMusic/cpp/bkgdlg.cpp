@@ -173,7 +173,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
-void CBkgView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
+void CBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
     if (lvItem.uItem >= 2)
     {
@@ -676,10 +676,13 @@ void CBkgDlg::addBkg(cwstr strFile)
     //update();
 
     _updateBkg(strFileName);
+
+#if __windows
+    m_addbkgDlg.close();
+    this->close();
+#else
     this->close();
     m_addbkgDlg.close();
-#if __windows
-    m_app.setForeground();
 #endif
 
     bFlag = false;

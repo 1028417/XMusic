@@ -223,7 +223,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
         tagLVItem lvItem;
         if (_hittest(me.pos().x(), me.pos().y(), lvItem))
         {
-            _onRowDblClick(lvItem, me);
+            _onItemDblClick(lvItem, me);
         }
     }
 #endif
@@ -234,7 +234,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
         if (_hittest(me.pos().x(), me.pos().y(), lvItem))
         {
             nItem = lvItem.uItem;
-            _onRowClick(lvItem, me);
+            _onItemClick(lvItem, me);
         }
         else
         {
@@ -250,7 +250,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             if (nItem >=0 && nItem == s_nPrevItem
                     && me.timestamp() - s_tsPrevClick < __tsDblClick)
             {
-                _onRowDblClick(lvItem, me);
+                _onItemDblClick(lvItem, me);
                 break;
             }
 

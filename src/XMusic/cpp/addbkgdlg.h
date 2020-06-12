@@ -109,7 +109,7 @@ private:
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
-    void _onRowClick(tagLVItem& lvItem, const QMouseEvent&) override;
+    void _onItemClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
     void _showImgDir(CImgDir& imgDir);
 

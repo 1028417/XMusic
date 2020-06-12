@@ -135,20 +135,20 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
-void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
+void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
     if (m_pMediaset)
     {
         if (m_lstSubSets)
         {
             m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet){
-                _onRowClick(lvItem, me, mediaSet);
+                _onItemClick(lvItem, me, mediaSet);
             });
         }
         else if (m_lstSubMedias)
         {
             m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media){
-                _onRowClick(lvItem, me, media);
+                _onItemClick(lvItem, me, media);
             });
         }
     }
@@ -157,7 +157,7 @@ void CMLListView::_onRowClick(tagLVItem& lvItem, const QMouseEvent& me)
         if (lvItem.uItem >= m_paSubDirs.size())
         {
             m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
-                _onRowClick(lvItem, me, (CPath&)subFile);
+                _onItemClick(lvItem, me, (CPath&)subFile);
             });
         }
         else
