@@ -70,12 +70,13 @@ public:
     {
     }
 
+protected:
+    bool m_bStatus = false;
+
 private:
     tagCurlOpt m_curlOpt;
 
     XThread m_thread;
-
-    bool m_bStatus = false;
 
     time_t m_beginTime = 0;
 
