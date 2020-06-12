@@ -574,6 +574,16 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
         return;
     }
 
+    if (E_MediaSetType::MST_Singer == mediaSet.m_eType)
+    {
+        CSinger& singer = (CSinger&)mediaSet;
+        if (singer.albums().size() == 1)
+        {
+            CMLListView::_onItemClick(lvItem, me, (CMediaSet&)singer.albums().front());
+            return;
+        }
+    }
+
     CMLListView::_onItemClick(lvItem, me, mediaSet);
 }
 
@@ -634,6 +644,15 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
     {
         return NULL;
+    }
+
+    if (currentMediaSet.m_pParent && E_MediaSetType::MST_Singer == currentMediaSet.m_pParent->m_eType)
+    {
+        CSinger& singer = (CSinger&)*currentMediaSet.m_pParent;
+        if (singer.albums().size() == 1)
+        {
+            return CMLListView::_onUpward(singer);
+        }
     }
 
     return CMLListView::_onUpward(currentMediaSet);
