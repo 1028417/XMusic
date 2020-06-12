@@ -67,9 +67,12 @@ public:
     const E_DecodeStatus& decodeStatus() const;
 
 	uint32_t duration() const;
-	uint64_t clock() const;
 
-	int sampleRate() const;
+    uint32_t byteRate() const;
+
+    int sampleRate() const;
+
+	uint64_t clock() const;
 
 private:
 	virtual wstring localFilePath() const override

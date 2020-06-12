@@ -47,7 +47,7 @@ public:
         return m_uWaitSize > 0;
     }
 	
-    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate, long long nFileSize);
+    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate, unsigned long long uFileSize);
 #endif
 
     long long openFile(cwstr strFile, bool bXmsc)
