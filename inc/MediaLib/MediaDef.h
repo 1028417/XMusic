@@ -79,8 +79,7 @@ public:
 	{
 	}
 
-	CMediaTime(mediatime_t tAddTime)
-		: m_time(tAddTime)
+    CMediaTime(mediatime_t tAddTime) : m_time(tAddTime)
 	{
 	}
 
@@ -157,12 +156,9 @@ enum class E_FindMediaMode
 
 struct tagFindMediaPara
 {
-	tagFindMediaPara()
-	{
-	}
+    tagFindMediaPara() = default;
 
-    tagFindMediaPara(E_FindMediaMode eFindMediaMode)
-        : eFindMediaMode(eFindMediaMode)
+    tagFindMediaPara(E_FindMediaMode eFindMediaMode) : eFindMediaMode(eFindMediaMode)
     {
 	}
 

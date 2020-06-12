@@ -34,8 +34,10 @@ class __MediaLibExt CAlbum : public CMediaSet
 public:
     virtual ~CAlbum() = default; // 解决qt-mac clang告警
 
-	CAlbum(int nID = 0, cwstr strName = L"", class CSinger *pSinger = NULL
-		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false)
+    CAlbum() = default;
+
+    CAlbum(int nID, cwstr strName, class CSinger *pSinger
+        , UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false)
 		: CMediaSet(strName, (CMediaSet*)pSinger, nID, E_MediaSetType::MST_Album
 			, uLanguage, bDisableDemand, bDisableExport)
 	{
@@ -103,13 +105,14 @@ class __MediaLibExt CSinger : public CMediaSet
 public:
     virtual ~CSinger() = default; // 解决qt-mac clang告警
 
-    CSinger(CMediaSet& parent, int nID = 0, cwstr strName = L"", cwstr strDir = L""
-            , int nPos = 0, UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
+    CSinger(CMediaSet& parent, int nID, cwstr strName, cwstr strDir, int nPos
+            , UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false);
 
 	CSinger(const CSinger& other);
 
 	CSinger(CSinger&& other);
 
+public:
 	int m_nPos = 0;
 
 private:

@@ -19,7 +19,7 @@ private:
 
     //uint64_t m_uPos = 0;
 
-    size_t m_uWaitSize = 0;
+    uint64_t m_uWaitSize = 0;
 
 private:
     long long _openFile(cwstr strFile, bool bXmsc);

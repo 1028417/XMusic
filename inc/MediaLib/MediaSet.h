@@ -22,7 +22,9 @@ enum class E_LanguageType
 class CMediasetProperty
 {
 public:
-	CMediasetProperty(UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport = false)
+    CMediasetProperty() = default;
+
+    CMediasetProperty(UINT uLanguage, bool bDisableDemand, bool bDisableExport)
 		: m_uLanguage(uLanguage)
 		, m_bDisableDemand(bDisableDemand)
 		, m_bDisableExport(bDisableExport)
