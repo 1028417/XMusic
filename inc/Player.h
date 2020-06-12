@@ -91,6 +91,8 @@ protected:
         virtual int read(byte_p buf, UINT size) override;
 
         bool seekingFlag() const;
+
+        //bool probing() const;
 };
 
 class __PlaySDKExt CPlayer
