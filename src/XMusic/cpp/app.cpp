@@ -111,7 +111,6 @@ CAppInit::CAppInit(QApplication& app)
         strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 #endif*/
-    strWorkDir = __sdcardDir __pkgName;
 
 #else
     strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();

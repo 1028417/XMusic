@@ -354,7 +354,7 @@ void MainWindow::show()
         uOffset = 1;
     }
 #endif
-    UINT uDelayTime = m_app.getOption().bUseBkgColor?50:20;
+    UINT uDelayTime = m_app.getOption().bUseBkgColor?50:30;
     timerutil::setTimerEx(uDelayTime, [=]()mutable{
         uOffset+=1;
         nLogoBkgAlpha -= uOffset;
