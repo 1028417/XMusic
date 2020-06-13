@@ -70,7 +70,36 @@ private:
             return NULL;
         }
 
-        return new CMediaDir(fileInfo);
+        CMediaDir *pSubDir = new CMediaDir(fileInfo);
+        do {
+#if __windows
+            if (NULL == m_fi.pParent || m_fi.pParent->parent())
+            {
+                break;
+            }
+#else
+            if (m_fi.pParent)
+            {
+                break;
+            }
+#endif
+
+            cauto paDirs = pSubDir->dirs();
+            if (paDirs.size() > 1 || pSubDir->files())
+            {
+                break;
+            }
+
+            if (!paDirs.every([&](CPath& subDir){
+                              return subDir.dirs() || subDir.files();
+            }))
+            {
+                delete pSubDir;
+                return NULL;
+            }
+        } while(0);
+
+        return pSubDir;
     }
 };
 
