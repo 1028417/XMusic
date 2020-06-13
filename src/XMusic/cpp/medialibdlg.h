@@ -51,7 +51,7 @@ private:
 #else
     XFile* findSubFile(cwstr strSubFile)
     {
-        cauto strOppPath = fsutil::GetOppPath(m_fi.strName);
+        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubFile);
         if (strOppPath.empty())
         {
             return NULL;
