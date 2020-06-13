@@ -1,17 +1,14 @@
 
 #pragma once
 
-class androidutil
-{
-public:
-    //API 23以上需要动态申请权限
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
-    static bool requestAndroidPermission(cqstr qsPermission);
+    bool requestAndroidPermission(cqstr qsPermission); //API 23以上需要动态申请权限
+#else
+#define requestAndroidPermission(qs) true
 #endif
 
-	static bool checkMobileConnected();
+bool checkMobileConnected();
 
-	static void vibrate();
+void vibrate();
 
-    static void installApk(cqstr qsApkPath);
-};
+void installApk(cqstr qsApkPath);

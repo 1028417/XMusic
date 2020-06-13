@@ -116,7 +116,7 @@ void CAddBkgDlg::show()
         _scanDir(strAddBkgDir);
 
 #elif __android
-        if (!androidutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+        if (!requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
         {
             return;
         }

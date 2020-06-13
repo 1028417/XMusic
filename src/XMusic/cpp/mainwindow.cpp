@@ -423,7 +423,7 @@ bool MainWindow::event(QEvent *ev)
         if (currTime - prevTime > 3)
         {
 #if __android
-            androidutil::vibrate();
+            vibrate();
 #endif
             prevTime = currTime;
             return true;
@@ -1652,7 +1652,7 @@ bool MainWindow::installApp(const CByteBuffer& bbfData)
         return false;
     }
 
-    androidutil::installApk(QString::fromStdString(strApkFile));
+    installApk(QString::fromStdString(strApkFile));
 
 #elif __mac
     cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";

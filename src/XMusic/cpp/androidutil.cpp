@@ -41,15 +41,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
 //？？QAndroidJniObject::getStaticField<jint>("android/os/Build/VERSION", "SDK_INT");
 
-/*bool androidutil::checkBuildSdkVerion(const char *pszVersion)
+/*bool checkBuildSdkVerion(const char *pszVersion)
 {
     return buildSdkVerion() == QAndroidJniObject::getStaticField(
             "android/os/Build/VERSION_CODES", pszVersion);
 }*/
 
-//API 23以上需要动态申请权限
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
-bool androidutil::requestAndroidPermission(cqstr qsPermission)
+bool requestAndroidPermission(cqstr qsPermission) //API 23以上需要动态申请权限
 {
     auto ret = QtAndroid::checkPermission(qsPermission);
     if(QtAndroid::PermissionResult::Granted == ret)
@@ -83,12 +82,12 @@ static QAndroidJniObject _getService(const char *pszName)
 // Z -- jboolean -- bllean
 // I -- jint -- int;
 // J -- jlong -- long
-bool androidutil::checkMobileConnected()
+bool checkMobileConnected()
 {
     return QtAndroid::androidActivity().callMethod<jboolean>("checkMobileConnected");
 }
 
-void androidutil::vibrate()
+void vibrate()
 {
     cauto jniService = _getService("VIBRATOR_SERVICE");
     if (!jniService.isValid())
@@ -98,7 +97,7 @@ void androidutil::vibrate()
     jniService.callMethod<void>("vibrate", "(J)V", jlong(100));
 }
 
-void androidutil::installApk(cqstr qsApkPath)
+void installApk(cqstr qsApkPath)
 {
     // TODO 动态申请安装未知来源应用的权限(据说有些手机不提示未知来源应用)
     cauto jsApkPath = QAndroidJniObject::fromString(qsApkPath);

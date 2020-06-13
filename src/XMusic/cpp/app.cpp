@@ -106,7 +106,7 @@ CAppInit::CAppInit(QApplication& app)
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
 
 /*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
-    if (androidutil::requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
         strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
@@ -378,7 +378,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 #if __windows
             setForeground();
 #elif __android
-            androidutil::vibrate();
+            vibrate();
 #endif
             m_msgbox.show(qsErrMsg, [&](){
                 this->quit();
@@ -398,9 +398,9 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         g_crFore.setRgb((int)option.crFore);
     }
 #if __android
-    if (option.bNetworkWarn && androidutil::checkMobileConnected())
+    if (option.bNetworkWarn && checkMobileConnected())
     {
-        androidutil::vibrate();
+        vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd, *this);
         dlg.show([&](){
