@@ -671,15 +671,17 @@ namespace NS_SSTL
 
 		bool every(__CB_ConstRef_bool cb) const
 		{
+            bool bRet = false;
 			for (auto&data : m_data)
 			{
 				if (!cb(data))
 				{
 					return false;
 				}
+                bRet = true;
 			}
 
-			return true;
+            return bRet;
 		}
 
 		bool any(__CB_ConstRef_bool cb) const
