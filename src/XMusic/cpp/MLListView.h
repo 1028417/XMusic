@@ -157,6 +157,8 @@ private:
         CListView::_saveScrollRecord(_current());
     }
 
+    void _showMediaSet(CMediaSet& MediaSet);
+
 public:
     size_t getItemCount() const override;
 
@@ -180,7 +182,7 @@ public:
 
     void showRoot();
 
-    void showMediaSet(CMediaSet& MediaSet);
+    void showMediaSet(CMediaSet& MediaSet, bool bUpward=false);
     void hittestMedia(CMedia& media);
 
     virtual void showDir(CPath& dir);

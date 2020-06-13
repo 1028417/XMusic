@@ -26,7 +26,7 @@ void CMLListView::showRoot()
     _onShowRoot();
 }
 
-void CMLListView::showMediaSet(CMediaSet& MediaSet)
+void CMLListView::_showMediaSet(CMediaSet& MediaSet)
 {
     _cleanup();
 
@@ -39,11 +39,33 @@ void CMLListView::showMediaSet(CMediaSet& MediaSet)
     _onShowMediaSet(MediaSet);
 }
 
+void CMLListView::showMediaSet(CMediaSet& MediaSet, bool bUpward)
+{
+    if (E_MediaSetType::MST_Singer == MediaSet.m_eType)
+    {
+        CSinger& singer = (CSinger&)MediaSet;
+        if (singer.albums().size() == 1)
+        {
+            if (bUpward)
+            {
+                _showMediaSet(*singer.m_pParent);
+            }
+            else
+            {
+                _showMediaSet((CMediaSet&)singer.albums().front());
+            }
+            return;
+        }
+    }
+
+    _showMediaSet(MediaSet);
+}
+
 void CMLListView::hittestMedia(CMedia& media)
 {
     if (media.m_pParent)
     {
-        showMediaSet(*media.m_pParent);
+        _showMediaSet(*media.m_pParent);
 
         int nIdx = media.index();
         if (nIdx >= 0)
@@ -194,7 +216,7 @@ bool CMLListView::upward()
         auto parent = _onUpward(*m_pMediaset);
         if (parent)
         {
-            showMediaSet(*parent);
+            showMediaSet(*parent, true);
         }
         else
         {

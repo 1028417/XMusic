@@ -47,6 +47,19 @@ private:
             CMediaDir::_onFindFile(paSubDir, paSubFile);
         }
     }
+
+#else
+    XFile* findSubFile(cwstr strSubFile)
+    {
+        cauto strOppPath = fsutil::GetOppPath(m_fi.strName);
+        if (strOppPath.empty())
+        {
+            return NULL;
+        }
+
+        return CMediaDir::findSubFile(strOppPath);
+    }
+
 #endif
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override
