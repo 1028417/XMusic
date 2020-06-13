@@ -140,9 +140,9 @@ void MainWindow::showLogo()
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
 
-    float fFontSizeOffset = 1.0f;
+    float fFontSizeOffset = 1.03f;
 #if __android || __ios
-    fFontSizeOffset = 0.917;
+    fFontSizeOffset = 0.917f;
 
     cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
@@ -169,9 +169,9 @@ void MainWindow::showLogo()
 
     this->repaint();
 
-    UINT uDelayTime = 100;
-#if !__android
-    uDelayTime += 500;
+    UINT uDelayTime = 600;
+#if __android
+    uDelayTime = 100;
 #endif
     CApp::async(uDelayTime, [&](){
         ui.labelLogo->movie()->start();
@@ -347,21 +347,16 @@ void MainWindow::show()
     (void)startTimer(1000);
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
-    UINT uOffset = 0;
+    UINT uOffset = 23;
+#if __windows || __mac
+    if (std::thread::hardware_concurrency() > 4)
+    {
+        uOffset = 10;
+    }
+#endif
     UINT uDelayTime = m_app.getOption().bUseBkgColor?50:20;
     timerutil::setTimerEx(uDelayTime, [=]()mutable{
-#if __android || __ios
-        uOffset = 29;
-#else
-        if (nLogoBkgAlpha > 127)
-        {
-            uOffset += 1;
-        }
-        else if (uOffset > 1)
-        {
-            uOffset -= 1;
-        }
-#endif
+        uOffset+=1;
         nLogoBkgAlpha -= uOffset;
         if (nLogoBkgAlpha <= 0)
         {
