@@ -17,6 +17,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     (void)reserved;
 
     g_androidSdkVer = QtAndroid::androidSdkVersion();
+    //？？QAndroidJniObject::getStaticField<jshort>("android/os/Build/VERSION", "SDK_INT");
 
     JNIEnv* env = nullptr;
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) == JNI_OK)
@@ -38,14 +39,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 
     return JNI_ERR;
 }
-
-//？？QAndroidJniObject::getStaticField<jint>("android/os/Build/VERSION", "SDK_INT");
-
-/*bool checkBuildSdkVerion(const char *pszVersion)
-{
-    return buildSdkVerion() == QAndroidJniObject::getStaticField(
-            "android/os/Build/VERSION_CODES", pszVersion);
-}*/
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
 bool requestAndroidPermission(cqstr qsPermission) //API 23以上需要动态申请权限
@@ -79,9 +72,16 @@ static QAndroidJniObject _getService(const char *pszName)
                 jniName.object<jstring>());
 }
 
-// Z -- jboolean -- bllean
-// I -- jint -- int;
-// J -- jlong -- long
+/*jboolean    Z
+jbyte       B
+jchar       C
+jshort      S
+jint        I
+jlong       J
+jfloat      F
+jdouble     D
+jobject     L*/
+
 bool checkMobileConnected()
 {
     return QtAndroid::androidActivity().callMethod<jboolean>("checkMobileConnected");

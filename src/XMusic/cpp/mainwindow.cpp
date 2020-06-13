@@ -140,9 +140,9 @@ void MainWindow::showLogo()
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
 
-    float fFontSizeOffset = 1.03f;
+    float fFontSizeOffset = 1.072f;
 #if __android || __ios
-    fFontSizeOffset = 0.917f;
+    fFontSizeOffset = 0.918f;
 
     cauto szScreen = QApplication::primaryScreen()->size();
     int nScreenSize = MIN(szScreen.width(), szScreen.height());
@@ -351,7 +351,7 @@ void MainWindow::show()
 #if __windows || __mac
     if (std::thread::hardware_concurrency() > 4)
     {
-        uOffset = 10;
+        uOffset = 1;
     }
 #endif
     UINT uDelayTime = m_app.getOption().bUseBkgColor?50:20;
