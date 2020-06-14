@@ -87,9 +87,9 @@ public:
         auto ptr = bbfBuff.resizeMore(unzFile.uFileSize);
         return _read(unzFile, ptr, unzFile.uFileSize);
     }
-    long read(const string& strUnzfile, CByteBuffer& bbfBuff) const
+    long read(const string& strSubFilePath, CByteBuffer& bbfBuff) const
     {
-        auto itr = m_mapUnzfile.find(strUnzfile);
+        auto itr = m_mapUnzfile.find(strSubFilePath);
         if (itr == m_mapUnzfile.end())
         {
             return -1;
@@ -108,9 +108,9 @@ public:
         auto ptr = cbfBuff.resizeMore(unzFile.uFileSize);
         return _read(unzFile, ptr, unzFile.uFileSize);
     }
-    long read(const string& strUnzfile, CCharBuffer& cbfBuff) const
+    long read(const string& strSubFilePath, CCharBuffer& cbfBuff) const
     {
-        auto itr = m_mapUnzfile.find(strUnzfile);
+        auto itr = m_mapUnzfile.find(strSubFilePath);
         if (itr == m_mapUnzfile.end())
         {
             return -1;
@@ -120,9 +120,9 @@ public:
     }
 
     long unzip(const tagUnzfile& unzFile, const string& strDstFile);
-    long unzip(const string& strUnzfile, const string& strDstFile)
+    long unzip(const string& strSubFilePath, const string& strDstFile)
     {
-        auto itr = m_mapUnzfile.find(strUnzfile);
+        auto itr = m_mapUnzfile.find(strSubFilePath);
         if (itr == m_mapUnzfile.end())
         {
             return -1;
