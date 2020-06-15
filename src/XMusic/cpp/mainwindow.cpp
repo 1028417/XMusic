@@ -1519,16 +1519,11 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
 {
     QRect rcSrc = ui.labelBkg->pixmap()->rect();
 
-    float fHWRate = (float)rc.height()/rc.width();
-    if (fHWRate < 1)
-    {
-        rcSrc.setTop(rcSrc.bottom()-rcSrc.width()*fHWRate);
-    }
-    else
+    if (rc.height()>rc.width())
     {
         rcSrc.setRight(1080);
-        rcSrc.setTop(rcSrc.bottom()-rcSrc.right()*fHWRate);
     }
+    rcSrc.setTop(rcSrc.height()-rcSrc.width()*rc.height()/rc.width());
 
     painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
 }
