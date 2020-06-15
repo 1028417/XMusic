@@ -543,6 +543,7 @@ void MainWindow::_relayout()
     {
         fCXRate = (float)cx/1080;
     }
+    float fCXRateEx = fCXRate*g_fPixelRatio;
 
     int cy_bkg = __round(fCXRate * ui.labelBkg->pixmap()->height());
     int dy_bkg = cy - cy_bkg;
@@ -567,7 +568,7 @@ void MainWindow::_relayout()
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
         QRect pos = widgetPos.second;
-        if (fCXRate < 1)
+        if (fCXRateEx < 1)
         {
             pos.setRect(fCXRate*pos.left(), fCXRate*pos.top()
                         , fCXRate*pos.width(), fCXRate*pos.height());
@@ -582,7 +583,7 @@ void MainWindow::_relayout()
 
         int width = pos.width();
         int height = pos.height();
-        if (fCXRate < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
+        if (fCXRateEx < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
         {
             width = __round(width * fCXRate);
             height =__round(height * fCXRate);
@@ -654,7 +655,7 @@ void MainWindow::_relayout()
     {
         int yOffset = 0;
 
-        if (fCXRate <= 1)
+        if (fCXRateEx <= 1)
         {
 #define __offset __size(10.0f)
             yOffset = __round(__offset/fCXRate);
