@@ -535,7 +535,6 @@ void MainWindow::_relayout()
     }
 
     float fCXRate = 0;
-    float fCXRateEx = 0;
     if (m_bHLayout)
     {
         fCXRate = (float)cx/ui.labelBkg->pixmap()->width();
@@ -544,7 +543,6 @@ void MainWindow::_relayout()
     {
         fCXRate = (float)cx/1080;
     }
-    fCXRateEx = fCXRate * g_fPixelRatio;
 
     int cy_bkg = __round(fCXRate * ui.labelBkg->pixmap()->height());
     int dy_bkg = cy - cy_bkg;
@@ -881,17 +879,20 @@ void MainWindow::_relayout()
             labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
         } while (0);
 
-        bool bFlag = false;//fCXRateEx > 1;
+        bool bFlag = false;
         if (m_bHLayout)
         {
-             if (cy < __size(1080)*fCXRateEx)
+             if (cy < 1080*fCXRate)
              {
                  bFlag = true;
              }
         }
         else
         {
-            bFlag = fCXRateEx > 1; // bFlag = cy < __size(1920);
+            if (cy <= 1920*fCXRate)
+            {
+                bFlag = true;
+            }
         }
         if (bFlag)
         {
