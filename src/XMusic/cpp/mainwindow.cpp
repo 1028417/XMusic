@@ -883,7 +883,7 @@ void MainWindow::_relayout()
         bool bFlag = false;
         if (m_bHLayout)
         {
-             if (cy/fCXRate < 1080)
+             if (cy/fCXRate < 1050)
              {
                  bFlag = true;
              }
@@ -1116,8 +1116,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.pRelatedMedia = NULL;
     }
 
-    m_uPlaySeq++;
-
     m_app.sync([=](){
         auto strPrevSinger = m_PlayingInfo.strSingerName;
         m_PlayingInfo = PlayingInfo;
@@ -1154,33 +1152,44 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
 void MainWindow::onPlayStop(bool bRet)
 {
-    (void)bRet;
+    bool bCancel = m_app.getPlayMgr().mediaOpaque().decodeStatus() == E_DecodeStatus::DS_Cancel;
 
     m_app.sync([=](){
         ui.progressbar->set(0, 0, 0, 0);
 
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
 
-        /*if (!bRet)
+        if (bCancel)
         {
-            _updatePlayPauseButton(false);
+            return;
+        }
+
+        extern UINT g_uPlaySeq;
+        if (!bRet)
+        {
+            //_updatePlayPauseButton(false);
+
+            auto uPlaySeq = g_uPlaySeq;
+            CApp::async(2000, [=]() {
+                if (uPlaySeq == g_uPlaySeq)
+                {
+                    m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+                }
+            });
         }
         else
         {
-            auto uPlaySeq = m_uPlaySeq;
-            CApp::async(2000, [&, uPlaySeq]() {
-                if (uPlaySeq == m_uPlaySeq)
+            m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+
+            /*auto uPlaySeq = g_uPlaySeq;
+            CApp::async(1000, [=]() {
+                if (uPlaySeq == g_uPlaySeq)
                 {
                     _updatePlayPauseButton(false);
                 }
-            });
-        }*/
+            });*/
+        }
     });
-
-    if (m_app.getPlayMgr().mediaOpaque().decodeStatus() != E_DecodeStatus::DS_Cancel)
-    {
-        m_app.getCtrl().callPlayCtrl(E_PlayCtrl::PC_AutoPlayNext);
-    }
 }
 
 void MainWindow::onSingerImgDownloaded()
@@ -1305,7 +1314,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     {
         //if (m_app.getPlayMgr().mediaOpaque().byteRate())
         //{
-        //    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Pause));
+        //    m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
         if (m_app.getPlayMgr().player().Pause())
         {
             _updatePlayPauseButton(false);
@@ -1317,11 +1326,11 @@ void MainWindow::slot_buttonClicked(CButton* button)
         {
             _updatePlayPauseButton(true);
         }
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_Play));*/
+        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
 
         if (E_PlayStatus::PS_Stop == m_app.getPlayMgr().playStatus())
         {
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(m_app.getCtrl().getOption().uPlayingItem));
+            m_app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_app.getCtrl().getOption().uPlayingItem));
             return;
         }
 
@@ -1332,11 +1341,11 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPlayPrev)
     {
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayPrev));
+        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
     }
     else if (button == ui.btnPlayNext)
     {
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(E_PlayCtrl::PC_PlayNext));
+        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
@@ -1513,7 +1522,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    m_app.getCtrl().callPlayCtrl(tagPlayCtrl(eDemandMode, m_eDemandLanguage));
+    m_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)

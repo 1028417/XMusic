@@ -8,6 +8,8 @@
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
 
+UINT g_uPlaySeq = 0;
+
 void CXController::start()
 {
 	static auto& PlayMgr = m_model.getPlayMgr();
@@ -71,52 +73,48 @@ void CXController::start()
 
         while (m_threadPlayCtrl.usleepex(100))
         {
-            tagPlayCtrl PlayCtrl;
-            m_mtxPlayCtrl.lock([&](tagPlayCtrl& t_PlayCtrl){
-                t_PlayCtrl.get(PlayCtrl);
-            });
+            tagPlayCmd PlayCmd;
+            m_mutex.lock();
+            m_PlayCmd.get(PlayCmd);
+            m_mutex.unlock();
 
-            switch (PlayCtrl.ePlayCtrl)
+            if (PlayCmd.ePlayCmd != E_PlayCmd::PC_Append)
             {
-            case E_PlayCtrl::PC_PlayIndex:
-                (void)PlayMgr.play(PlayCtrl.uPlayIdx);
+                g_uPlaySeq++;
+            }
+
+            switch (PlayCmd.ePlayCmd)
+            {
+            case E_PlayCmd::PC_PlayIndex:
+                (void)PlayMgr.play(PlayCmd.uPlayIdx);
 
                 break;
-            case E_PlayCtrl::PC_PlayPrev:
+            case E_PlayCmd::PC_PlayPrev:
                 PlayMgr.playPrev();
                 break;
 
-            case E_PlayCtrl::PC_PlayNext:
+            case E_PlayCmd::PC_PlayNext:
                 (void)PlayMgr.playNext();
 
                 break;
-            case E_PlayCtrl::PC_AutoPlayNext:
-                __EnsureBreak(PlayMgr.playStatus() == E_PlayStatus::PS_Stop);
-
-                if (!m_threadPlayCtrl.usleepex(1500))
-                {
-                    return;
-                }
-
-                __EnsureBreak(PlayMgr.playStatus() == E_PlayStatus::PS_Stop);
-
+            case E_PlayCmd::PC_AutoPlayNext:
                 (void)PlayMgr.playNext(false);
 
                 break;
-            case E_PlayCtrl::PC_Demand:
-                (void)PlayMgr.demand(PlayCtrl.eDemandMode, PlayCtrl.eDemandLanguage);
+            case E_PlayCmd::PC_Demand:
+                (void)PlayMgr.demand(PlayCmd.eDemandMode, PlayCmd.eDemandLanguage);
 
                 break;
-            case E_PlayCtrl::PC_Assign:
-                (void)PlayMgr.assign(PlayCtrl.paMedias);
+            case E_PlayCmd::PC_Assign:
+                (void)PlayMgr.assign(PlayCmd.paMedias);
 
                 break;
-            case E_PlayCtrl::PC_AppendPlay:
-                (void)PlayMgr.insert(PlayCtrl.paMedias, true);
+            case E_PlayCmd::PC_AppendPlay:
+                (void)PlayMgr.insert(PlayCmd.paMedias, true);
 
                 break;
-            case E_PlayCtrl::PC_Append:
-                (void)PlayMgr.insert(PlayCtrl.paMedias, false);
+            case E_PlayCmd::PC_Append:
+                (void)PlayMgr.insert(PlayCmd.paMedias, false);
 
                 break;
             default:

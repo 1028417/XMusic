@@ -171,7 +171,7 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         //updatePlayingItem(lvItem.uItem, false);
 
-        m_app.getCtrl().callPlayCtrl(tagPlayCtrl(lvItem.uItem));
+        m_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
     }
 }
 

@@ -9,7 +9,7 @@ class CXController : public IXController
 public:
 	CXController(IPlayerView& view, IModel& model)
 		: m_view(view)
-		, m_model(model)
+                , m_model(model)
 	{
 	}
 
@@ -23,7 +23,10 @@ protected:
 #if !__winvc
 private:
         XThread m_threadPlayCtrl;
-        CMtxLock<tagPlayCtrl> m_mtxPlayCtrl;
+        tagPlayCmd m_PlayCmd;
+        mutex m_mutex;
+
+        UINT m_uAutoPlayNextSeq = 0;
 #endif
 
 #if __winvc
@@ -71,9 +74,11 @@ public:
 		, const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedia) override;
 
 #else
-        void callPlayCtrl(const tagPlayCtrl& PlayCtrl) override
+        void callPlayCmd(const tagPlayCmd& PlayCmd) override
         {
-            m_mtxPlayCtrl.set(PlayCtrl); //m_sigPlayCtrl.set(PlayCtrl);
+            m_mutex.lock();
+            m_PlayCmd = PlayCmd;
+            m_mutex.unlock();
         }
 #endif
 };
