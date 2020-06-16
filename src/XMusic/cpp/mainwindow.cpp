@@ -883,7 +883,7 @@ void MainWindow::_relayout()
         bool bFlag = false;
         if (m_bHLayout)
         {
-             if (cy/fCXRate < 1050)
+             if (cy/fCXRate < 1060)
              {
                  bFlag = true;
              }
