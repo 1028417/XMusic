@@ -2,7 +2,7 @@
 
 #include "model/model.h"
 
-enum class E_PlayCtrl
+enum class E_PlayCmd
 {
     PC_Null = 0,
 
@@ -19,52 +19,25 @@ enum class E_PlayCtrl
     PC_Demand
 };
 
-struct tagPlayCtrl
+struct tagPlayCmd
 {
-    tagPlayCtrl() = default;
-
-    tagPlayCtrl(E_PlayCtrl ePlayCtrl)
-        : ePlayCtrl(ePlayCtrl)
+    tagPlayCmd(E_PlayCmd ePlayCmd = E_PlayCmd::PC_Null)
+        : ePlayCmd(ePlayCmd)
     {
     }
 
-    tagPlayCtrl(UINT uPlayIdx)
-        : ePlayCtrl(E_PlayCtrl::PC_PlayIndex)
-        , uPlayIdx(uPlayIdx)
+    void get(tagPlayCmd& PlayCmd)
     {
-    }
-
-    tagPlayCtrl(const TD_IMediaList& paMedias)
-        : ePlayCtrl(E_PlayCtrl::PC_Assign)
-        , paMedias(paMedias)
-    {
-    }
-
-    tagPlayCtrl(IMedia& media, bool bPlay)
-    {
-        ePlayCtrl = bPlay ? E_PlayCtrl::PC_AppendPlay : E_PlayCtrl::PC_Append;
-        paMedias.assign(media);
-    }
-
-    tagPlayCtrl(E_DemandMode eDemandMode, E_LanguageType eDemandLanguage = E_LanguageType::LT_None)
-        : ePlayCtrl(E_PlayCtrl::PC_Demand)
-        , eDemandMode(eDemandMode)
-        , eDemandLanguage(eDemandLanguage)
-    {
-    }
-
-    void get(tagPlayCtrl& PlayCtrl)
-    {
-        if (ePlayCtrl != E_PlayCtrl::PC_Null)
+        if (ePlayCmd != E_PlayCmd::PC_Null)
         {
-            PlayCtrl = *this;
+            PlayCmd = *this;
 
-            ePlayCtrl = E_PlayCtrl::PC_Null;
+            ePlayCmd = E_PlayCmd::PC_Null;
             paMedias.clear();
         }
     }
 
-    E_PlayCtrl ePlayCtrl = E_PlayCtrl::PC_Null;
+    E_PlayCmd ePlayCmd = E_PlayCmd::PC_Null;
 
     UINT uPlayIdx = 0;
 
@@ -72,6 +45,64 @@ struct tagPlayCtrl
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
 
     TD_IMediaList paMedias;
+
+    UINT uAutoPlayNextDelay = 0;
+    UINT uAutoPlayNextSeq = 0;
+};
+
+struct tagPlayIndexCmd : tagPlayCmd
+{
+    tagPlayIndexCmd(UINT uIdx)
+        : tagPlayCmd(E_PlayCmd::PC_PlayIndex)
+    {
+        uPlayIdx = uIdx;
+    }
+};
+
+struct tagAutoPlayNextCmd : tagPlayCmd
+{
+    tagAutoPlayNextCmd(UINT uMsDelay)
+        : tagPlayCmd(E_PlayCmd::PC_AutoPlayNext)
+    {
+        uAutoPlayNextDelay = uMsDelay;
+    }
+};
+
+struct tagAssignMediaCmd : tagPlayCmd
+{
+    tagAssignMediaCmd(const TD_IMediaList& paMedias)
+        : tagPlayCmd(E_PlayCmd::PC_Assign)
+    {
+        tagPlayCmd::paMedias.assign(paMedias);
+    }
+};
+
+struct tagAppendMediaCmd : tagPlayCmd
+{
+    tagAppendMediaCmd(IMedia& media)
+        : tagPlayCmd(E_PlayCmd::PC_Append)
+    {
+        paMedias.assign(media);
+    }
+};
+
+struct tagPlayMediaCmd : tagPlayCmd
+{
+    tagPlayMediaCmd(IMedia& media)
+        : tagPlayCmd(E_PlayCmd::PC_AppendPlay)
+    {
+        paMedias.assign(media);
+    }
+};
+
+struct tagDemandCmd : tagPlayCmd
+{
+    tagDemandCmd(E_DemandMode eMode, E_LanguageType eLanguage)
+        : tagPlayCmd(E_PlayCmd::PC_Demand)
+    {
+        eDemandMode = eMode;
+        eDemandLanguage = eLanguage;
+    }
 };
 
 class IXController
@@ -102,6 +133,6 @@ public:
             , const CB_AutoMatchConfirm& cbConfirm, map<CMedia*, wstring>& mapUpdatedMedias) = 0;
 
 #else
-    virtual void callPlayCtrl(const tagPlayCtrl& PlayCtrl) = 0;
+    virtual void callPlayCmd(const tagPlayCmd& PlayCmd) = 0;
 #endif
 };
