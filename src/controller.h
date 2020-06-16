@@ -77,6 +77,16 @@ public:
         void callPlayCmd(const tagPlayCmd& PlayCmd) override
         {
             m_mutex.lock();
+
+            if (E_PlayCmd::PC_AutoPlayNext == PlayCmd.ePlayCmd)
+            {
+                if (m_PlayCmd.ePlayCmd != E_PlayCmd::PC_Null && m_PlayCmd.ePlayCmd != E_PlayCmd::PC_Append)
+                {
+                    m_mutex.unlock();
+                    return;
+                }
+            }
+
             m_PlayCmd = PlayCmd;
             m_mutex.unlock();
         }

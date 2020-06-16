@@ -78,7 +78,7 @@ void CXController::start()
             m_PlayCmd.get(PlayCmd);
             m_mutex.unlock();
 
-            if (PlayCmd.ePlayCmd != E_PlayCmd::PC_Append)
+            if (PlayCmd.ePlayCmd != E_PlayCmd::PC_Null && PlayCmd.ePlayCmd != E_PlayCmd::PC_Append)
             {
                 g_uPlaySeq++;
             }
