@@ -45,9 +45,6 @@ struct tagPlayCmd
     E_LanguageType eDemandLanguage = E_LanguageType::LT_None;
 
     TD_IMediaList paMedias;
-
-    UINT uAutoPlayNextDelay = 0;
-    UINT uAutoPlayNextSeq = 0;
 };
 
 struct tagPlayIndexCmd : tagPlayCmd
@@ -56,15 +53,6 @@ struct tagPlayIndexCmd : tagPlayCmd
         : tagPlayCmd(E_PlayCmd::PC_PlayIndex)
     {
         uPlayIdx = uIdx;
-    }
-};
-
-struct tagAutoPlayNextCmd : tagPlayCmd
-{
-    tagAutoPlayNextCmd(UINT uMsDelay)
-        : tagPlayCmd(E_PlayCmd::PC_AutoPlayNext)
-    {
-        uAutoPlayNextDelay = uMsDelay;
     }
 };
 
