@@ -109,12 +109,30 @@ void CXController::start()
                 (void)PlayMgr.assign(PlayCmd.paMedias);
 
                 break;
-            case E_PlayCmd::PC_AppendPlay:
-                (void)PlayMgr.insert(PlayCmd.paMedias, true);
-
-                break;
             case E_PlayCmd::PC_Append:
-                (void)PlayMgr.insert(PlayCmd.paMedias, false);
+            case E_PlayCmd::PC_AppendPlay:
+                if (PlayCmd.paMedias.size() == 1)
+                {
+                    bool bFlag = false;
+                    PlayCmd.paMedias.get(0, [&](const IMedia& media){
+                        PlayMgr.playingItems().back([&](const CPlayItem& PlayItem){
+                            if (media.GetPath() == PlayItem.GetPath())
+                            {
+                                bFlag = true;
+                            }
+                        });
+                    });
+                    if (bFlag)
+                    {
+                        if (E_PlayCmd::PC_AppendPlay==PlayCmd.ePlayCmd)
+                        {
+                            (void)PlayMgr.play(PlayMgr.playingItems().size()-1);
+                        }
+                        break;
+                    }
+                }
+
+                (void)PlayMgr.insert(PlayCmd.paMedias, E_PlayCmd::PC_AppendPlay==PlayCmd.ePlayCmd);
 
                 break;
             default:
