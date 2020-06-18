@@ -27,7 +27,7 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         if (m_pMediaRes)
         {
-            m_app.getCtrl().callPlayCtrl(tagPlayCtrl(TD_IMediaList(m_pMediaRes)));
+            m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMediaRes));
         }
     });
 }

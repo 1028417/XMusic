@@ -63,7 +63,6 @@ private:
     map<QWidget*, QRect> m_mapWidgetPos;
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
-    UINT m_uPlaySeq = 0;
     tagPlayingInfo m_PlayingInfo;
 
     bool m_bHLayout = false;

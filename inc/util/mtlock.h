@@ -8,47 +8,65 @@
 using mutex_lock = std::unique_lock<mutex>;
 
 template <typename T>
-class CMtxLock : public mutex
+class TMutexData
 {
 public:
-    CMtxLock() = default;
+    TMutexData(T& data)
+        : m_data(data)
+    {
+    }
 
+private:
     T m_data;
+    mutex m_mutex;
 
 public:
     T& lock()
     {
-        mutex::lock();
+        m_mutex.lock();
 
         return m_data;
     }
 
     void lock(const function<void(T& data)>& cb)
     {
-        mutex::lock();
+        m_mutex.lock();
 
         cb(m_data);
 
-        mutex::unlock();
+        m_mutex.unlock();
     }
 
     void get(T& data)
     {
-        mutex::lock();
+        m_mutex.lock();
 
         data = m_data;
 
-        mutex::unlock();
+        m_mutex.unlock();
     }
 
     void set(const T& data)
     {
-        mutex::lock();
+        m_mutex.lock();
 
         m_data = data;
 
-        mutex::unlock();
+        m_mutex.unlock();
     }
+};
+
+template <typename T>
+class CMutexData : public TMutexData<T>
+{
+public:
+    CMutexData()
+        : TMutexData<T>(m_data)
+    {
+    }
+
+private:
+    T m_data;
 };
 
 template <typename T>
