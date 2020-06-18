@@ -72,6 +72,8 @@ private:
     int m_dxbkg = 0;
     int m_dybkg = 0;
 
+    //QPixmap m_pmDiskFace;
+
     enum class E_SingerImgPos
     {
         SIP_Float = 1,
@@ -105,6 +107,8 @@ public:
 
     void preinit()
     {
+        //m_pmDiskFace.load(":/img/diskface.png");
+
         m_medialibDlg.preinit();
 
         m_bkgDlg.preinit();

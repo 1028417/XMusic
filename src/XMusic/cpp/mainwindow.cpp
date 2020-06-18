@@ -730,7 +730,7 @@ void MainWindow::_relayout()
         }
     }
 
-    auto& rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
+    auto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
 
     int y_PlayingListMax = 0;
 
@@ -994,6 +994,12 @@ void MainWindow::_onPaint()
             if (!pmBkg.isNull())
             {
                painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
+
+               //auto cx = ui.progressbar->width();
+               //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
+               //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
+               //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
+               //painter.drawPixmap(rcDst, m_pmDiskFace);
             }
             else
             {
