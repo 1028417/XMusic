@@ -413,6 +413,8 @@ namespace NS_SSTL
 			}
 
 			cb(*m_data.rbegin());
+
+                        return true;
 		}
 
 		bool back(__DataRef data) const
