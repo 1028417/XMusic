@@ -73,7 +73,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 #endif
         painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
                            , m_uShadowWidth, uShadowAlpha, uTextAlpha);*/
-
+//❥
 #define __szIcon __size(18)
         QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
         painter.drawPixmap(rcIcon, m_pmPlaying);

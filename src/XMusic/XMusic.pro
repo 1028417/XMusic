@@ -81,15 +81,7 @@ BuildDir = ../../../build
 
 BinDir = $$PWD/../../bin
 
-android {
-    CommonLibDir = $$PWD/../../../Common2.1/libs/armeabi-v7a
-    PlaySDKLibDir = $$PWD/../../../PlaySDK/libs/armeabi-v7a
-    v7aLibDir = $$PWD/../../libs/armeabi-v7a
-    LIBS += -L$$v7aLibDir -L$$CommonLibDir -L$$PlaySDKLibDir
-
-    platform = android
-    DESTDIR = $$v7aLibDir
-} else: macx {
+macx {
     LIBS += -L$$BinDir/mac
 
     platform = mac
@@ -106,6 +98,17 @@ android {
             && echo $$macDir $$frameworkDir | xargs -n 1 cp -rfv \
             $$libDir/{SDL2.framework,libavcodec.58.dylib,libavformat.58.dylib,libavutil.56.dylib,libswresample.3.dylib} \
             && ~/Qt5.13.2/5.13.2/clang_64/bin/macdeployqt $$macDir/XMusic.app -libpath=$$macDir #-dmg
+
+    LIBS += -lxutil.1  -lxPlaySDK.1  -lxMediaLib.1  -lxmodel.1
+} else {
+android {
+    CommonLibDir = $$PWD/../../../Common2.1/libs/armeabi-v7a
+    PlaySDKLibDir = $$PWD/../../../PlaySDK/libs/armeabi-v7a
+    v7aLibDir = $$PWD/../../libs/armeabi-v7a
+    LIBS += -L$$v7aLibDir -L$$CommonLibDir -L$$PlaySDKLibDir
+
+    platform = android
+    DESTDIR = $$v7aLibDir
 } else: ios {
     LIBS += -L../../../Common2.1/libs/mac  -lssl  -lcrypto  #-lnghttp2
 
@@ -130,6 +133,7 @@ android {
 }
 
 LIBS += -lxutil  -lxPlaySDK  -lxMediaLib  -lxmodel
+}
 
 #CONFIG += debug_and_release
 CONFIG(debug, debug|release) {
