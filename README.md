@@ -67,7 +67,7 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
 
-已编译出Windows、macOs版本和android安装包。完成iOS版本编译和iPhone/iPad各机型适配，app待上架
+已编译出Windows、macOs版本和android安装包。完成iOS版本编译和iPhone/iPad各机型适配，app待上架。
 
 产品链接：www.xmusic.ltd
 
@@ -82,9 +82,8 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 ![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
 
 ## 编译
-Windows版：Qt5编译XMusic_win32.pro项目
+Windows版：Qt5编译XMusic_win32.pro项目。
 
-安卓版、Mac版：
-依赖Common2.1仓库、PlaySDK仓库，与XMusic目录同级。用Qt5.13.2编译XMusic_andriod_mac.pro项目组
+安卓版、Mac版：依赖Common2.1仓库、PlaySDK仓库，与XMusic目录同级。用Qt5.13.2编译XMusic_andriod_mac.pro项目组。
 
-工作室软件：vs2017编译XMusicStudio解决方案
+工作室软件：vs2017编译XMusicStudio解决方案。
