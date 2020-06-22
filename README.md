@@ -1,7 +1,7 @@
 # **XMusic介绍**
 ![](https://musicrossoft.coding.net/p/XMusic/git/raw/master/XMusicStudio.jpg)
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic0.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic0.jpg)
 
 ## **创作背景**
 07年用VB开发一个迷你播放器，只支持Mp3、Wma、Wav格式播放。  
@@ -71,15 +71,15 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 产品链接：www.xmusic.ltd
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic1.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic1.jpg)
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic2.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic2.jpg)
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic3.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic3.jpg)
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic4.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic4.jpg)
 
-![](http://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
+![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
 
 ## 编译
 Windows版：Qt5编译XMusic_win32.pro项目。
