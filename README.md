@@ -62,7 +62,7 @@
 
 * 支持Win10平板触屏操作
 
-### 跨平台点播APP
+### 跨平台点播App
 Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 主要实现随机点播和媒体库浏览功能，支持横屏、竖屏和背景更换。
@@ -71,7 +71,6 @@ Qt开发的新UI支持横屏和竖屏，其他模块复用。
 
 产品链接：www.xmusic.ltd
 
-![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic5.jpg)
 ![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic1.jpg)
 ![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic2.jpg)
 ![](https://musicrossoft.coding.net/p/Musicrossoft/git/raw/master/web/pic3.jpg)
