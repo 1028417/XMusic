@@ -3,7 +3,7 @@
 
 #if !__winvc
 #define __OnlineMediaLib 1
-#define __CheckXUrl 0
+//#define __CheckXUrl 1
 #endif
 
 #define __xmedialib ((XMediaLib&)__medialib)
