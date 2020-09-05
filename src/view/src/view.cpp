@@ -11,11 +11,13 @@
 #include "dlg/ExportMediaSetDlg.h"
 #include "dlg/option/ExportOptionDlg.h"
 
-static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.wav;*.dsf;*.dff;*.m4a;*.ape;*.aiff;*.wma;*.ac3;*.aac"
-	L"| Mp3文件|*.mp3| Flac文件|*.flac| Wav文件|*.wav"
-	L"| Dsf文件|*.dsf|  Dff文件|*.dff"
-	L"| M4A文件|*.m4a|  Ape文件|*.ape| Aiff文件|*.aiff"
-	L"| Wma文件|*.wma|  AC3文件|*.ac3|  AAC文件|*.aac|";
+static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.wav;*.dts;\
+	*.dsf;*.dff;*.m4a;*.ape;*.aiff;*.wma;*.ac3;*.aac"
+	L"| MP3文件|*.mp3| FLAC文件|*.flac"
+	L"| WAV文件|*.wav| DTS文件|*.dts"
+	L"| DSF文件|*.dsf| DFF文件|*.dff"
+	L"| M4A文件|*.m4a| APE文件|*.ape| AIFF文件|*.aiff"
+	L"| WMA文件|*.wma| AC3文件|*.ac3|  AAC文件|*.aac|";
 
 bool __view::show()
 {
