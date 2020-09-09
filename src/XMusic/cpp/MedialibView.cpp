@@ -4,7 +4,7 @@
 #include "MedialibView.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName  L" 本地"
+#define __OuterDirName  L" 本机"
 
 #define __FlashingAlpha 170
 
@@ -155,7 +155,7 @@ void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
     }
     else if (&dir == &m_OuterDir)
     {
-        strTitle << __OuterDirName;
+        strTitle << __LocalDirName;
     }
     else
     {
@@ -366,7 +366,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
         {
             context.pmIcon = &m_pmDir;
-            context.strText << ' ' << __OuterDirName;
+            context.strText << ' ' << __LocalDirName;
             context.pDir = &m_OuterDir;
         }
     }
