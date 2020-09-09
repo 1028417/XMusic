@@ -18,19 +18,18 @@ BOOL CExportOptionDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	auto pBtn = ((CButton*)GetDlgItem(IDC_ActualMode));
-	//pBtn->SetCheck(TRUE);
 	if (m_ExportOption.bActualMode)
 	{
 		pBtn->SetCheck(TRUE);
 		pBtn->EnableWindow(FALSE);
 	}
 
-	((CButton*)GetDlgItem(IDC_ExportXmsc))->SetCheck(TRUE);
+	//((CButton*)GetDlgItem(IDC_ExportXmsc))->SetCheck(TRUE);
 
-	//((CButton*)GetDlgItem(IDC_CompareFileSize))->SetCheck(TRUE);
-	//OnBnClickedCompareFileSize();
+	((CButton*)GetDlgItem(IDC_CompareFileSize))->SetCheck(TRUE);
+	OnBnClickedCompareFileSize();
 
-	//((CButton*)GetDlgItem(IDC_DeleteOther))->SetCheck(TRUE);
+	((CButton*)GetDlgItem(IDC_DeleteOther))->SetCheck(TRUE);
 
 	return TRUE;
 }
