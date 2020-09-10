@@ -37,6 +37,7 @@ void CMedialibView::initpm()
 
     (void)m_pmHires.load(__mediaPng(hires));
     (void)m_pmDSD.load(__mediaPng(dsd));
+    (void)m_pmDTS.load(__mediaPng(dts));
 
     (void)m_pmDir.load(__mediaPng(dir));
     (void)m_pmDirLink.load(__mediaPng(dirLink));
@@ -276,6 +277,10 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strDirName.find(L"dsd") != __wnpos)
                 {
                     context.pmIcon = &m_pmDSD;
+                }
+                else if (strDirName.find(L"dts") != __wnpos)
+                {
+                    context.pmIcon = &m_pmDTS;
                 }
             }
         }

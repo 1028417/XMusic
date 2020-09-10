@@ -38,6 +38,8 @@ private:
 
     QPixmap m_pmHires;
     QPixmap m_pmDSD;
+    QPixmap m_pmDTS;
+
 
     QPixmap m_pmDir;
     QPixmap m_pmDirLink;
