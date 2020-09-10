@@ -4,7 +4,7 @@
 #include "MedialibView.h"
 
 #define __XMusicDirName L"XMusic"
-#define __OuterDirName  L" 本机"
+#define __LocalDirName  L" 本机"
 
 #define __FlashingAlpha 170
 
