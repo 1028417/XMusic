@@ -423,8 +423,6 @@ private:
     void _clear();
 
 #else
-    wstring _scanXMusicDir();
-
     bool _upgradeApp(const bool& bRunSignal, UINT& uAppUpgradeProgress);
     E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif
