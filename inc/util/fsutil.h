@@ -53,8 +53,8 @@ using tagFileStat64 = struct stat;
 #define ftell64 ftello
 #endif
 
-#define __fileTitle(fileName) fileName.erase(fileName.rfind(__cDot))
-#define __fileTitle_r(fileName) fileName.substr(0, fileName.rfind(__cDot))
+#define __fileTitle(file) file.erase(file.rfind(__cDot))
+#define __fileTitle_r(file) ({cauto str=file; str.substr(0, str.rfind(__cDot));})
 
 enum class E_FindFindFilter
 {

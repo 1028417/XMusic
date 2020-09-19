@@ -55,10 +55,7 @@ public:
         return _openFile(strFile, bXmsc);
     }
 
-    long long openFile(IMedia& media)
-    {
-        return _openFile(media.GetAbsPath(), media.isXmsc());
-    }
+    long long openFile(IMedia& media);
 
 	UINT checkFileDuration(cwstr strFile, long long& nFileSize)
 	{
