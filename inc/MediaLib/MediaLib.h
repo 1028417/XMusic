@@ -64,7 +64,7 @@ private:
 	PairList<wstring, E_AttachDirType> m_plAttachDir;
 	map<wstring, list<class CAttachDir*>> m_mapAttachDir;
 
-private:
+protected:
     virtual void _onFindFile(TD_PathList& lstSubDir, TD_XFileList& lstSubFile) override;
 
     virtual int _sort(const XFile& lhs, const XFile& rhs) const override;
