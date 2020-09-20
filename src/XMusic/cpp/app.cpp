@@ -306,11 +306,6 @@ int CApp::run()
 
 bool CApp::_initRootDir(wstring& strRootDir)
 {
-#if __android
-    strRootDir = __sdcardDir L"XMusic";
-    return true;
-#endif
-
 #if __OnlineMediaLib
     strRootDir = QDir::currentPath().toStdWString();
     return fsutil::createDir(m_model.medialibPath());
@@ -326,6 +321,9 @@ bool CApp::_initRootDir(wstring& strRootDir)
             return false;
         }
     }
+
+#elif __android
+    strRootDir = __sdcardDir L"XMusic";
 
 #else
     strRootDir = (fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
