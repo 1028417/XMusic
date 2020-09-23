@@ -245,6 +245,7 @@ BEGIN
         MENUITEM "导出",                          ID_EXPORT
         MENUITEM "快照",                          ID_Snapshot
         MENUITEM "检查相似文件",                      ID_CheckSimilar
+        MENUITEM "简体转换",                        ID_SimplifiedTrans
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME

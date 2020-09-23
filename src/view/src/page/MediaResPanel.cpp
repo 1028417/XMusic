@@ -673,7 +673,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_REFRESH:
-		if (NULL != m_pCurrDir)
+		if (m_pCurrDir)
 		{
 			m_pCurrDir->clear();
 			CMediaResPanel::RefreshMediaResPanel();
@@ -681,6 +681,13 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		else
 		{
 			m_view.getModel().refreshMediaLib();
+		}
+
+		break;
+	case ID_SimplifiedTrans:
+		if (m_pCurrDir)
+		{
+			m_view.simplifiedTrans(*m_pCurrDir);
 		}
 
 		break;

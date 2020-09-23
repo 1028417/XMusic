@@ -176,6 +176,8 @@ public:
 	void checkSimilarFile(CMediaDir& dir);
 	void checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2);
 
+	void simplifiedTrans(CMediaDir& dir);
+
 	void hittestMedia(CMedia& media);
 
 	void hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia = NULL);

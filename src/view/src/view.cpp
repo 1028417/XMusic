@@ -816,13 +816,11 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 
 			lstMediaRes1.add(paSubFile);
 
-			ProgressDlg.SetProgress(0, lstMediaRes1.size());
+			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
 		});
 
 		if (!lstMediaRes1)
 		{
-			ProgressDlg.SetProgress(0, 0);
-
 			ProgressDlg.SetStatusText(L"第一个目录未发现文件");
 			return;
 		}
@@ -837,8 +835,8 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 			}
 			
 			lstMediaRes2.add(paSubFile);
-			
-			ProgressDlg.SetProgress(0, uProgress + lstMediaRes2.size());
+
+			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
 		});
 
 		if (!lstMediaRes2)
@@ -874,13 +872,11 @@ void __view::checkSimilarFile(CMediaDir& dir)
 			
 			lstMediaRes.add(paSubFile);
 
-			ProgressDlg.SetProgress(0, lstMediaRes.size());
+			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
 		});
 
 		if (!lstMediaRes)
 		{
-			ProgressDlg.SetProgress(0, 0);
-
 			ProgressDlg.SetStatusText(L"未发现文件");
 			return;
 		}
@@ -896,6 +892,34 @@ void __view::checkSimilarFile(CMediaDir& dir)
 			return true;
 		}, arrResult);
 	});
+}
+
+void __view::simplifiedTrans(CMediaDir& dir)
+{
+	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
+		TD_MediaResList lstMediaRes;
+		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
+			if (!ProgressDlg.checkStatus())
+			{
+				return;
+			}
+
+			lstMediaRes.add(paSubFile);
+
+			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
+		});
+
+		UINT uCount = 0;
+		lstMediaRes([&](CMediaRes& MediaRes) {
+			if (m_model.simplifiedTrans(MediaRes))
+			{
+				uCount++;
+			}
+		});
+
+		ProgressDlg.SetStatusText((L"转换" + to_wstring(uCount) + L"个文件").c_str());
+	});
+	(void)ProgressDlg.DoModal(L"简体转换", &m_MainWnd);
 }
 
 void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
