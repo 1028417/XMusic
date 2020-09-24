@@ -894,7 +894,7 @@ void __view::checkSimilarFile(CMediaDir& dir)
 	});
 }
 
-void __view::simplifiedTrans(CMediaDir& dir)
+void __view::formatFileTitle(CMediaDir& dir)
 {
 	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
 		TD_MediaResList lstMediaRes;
@@ -911,7 +911,7 @@ void __view::simplifiedTrans(CMediaDir& dir)
 
 		UINT uCount = 0;
 		lstMediaRes([&](CMediaRes& MediaRes) {
-			if (m_model.simplifiedTrans(MediaRes))
+			if (m_model.formatFileTitle(MediaRes))
 			{
 				uCount++;
 			}

@@ -232,13 +232,15 @@
 #define ID_EXPORT_ALBUMITEM             32968
 #define ID__32969                       32969
 #define ID_SimplifiedTrans              32970
+#define ID__32971                       32971
+#define ID_FormatTitle                  32972
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32971
+#define _APS_NEXT_COMMAND_VALUE         32973
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

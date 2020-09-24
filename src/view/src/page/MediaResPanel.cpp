@@ -684,17 +684,17 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_SimplifiedTrans:
+	case ID_FormatTitle:
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.isDir())
 			{
-				m_view.simplifiedTrans((CMediaDir&)MediaRes);
+				m_view.formatFileTitle((CMediaDir&)MediaRes);
 			}
 		}))
 		{
 			if (m_pCurrDir)
 			{
-				m_view.simplifiedTrans(*m_pCurrDir);
+				m_view.formatFileTitle(*m_pCurrDir);
 			}
 		}
 
@@ -802,9 +802,9 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 {
-	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE, ID_Detach, ID_Attach }, FALSE);
+	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE, ID_Detach, ID_Attach, ID_FormatTitle }, FALSE);
 
-	if (NULL != pSubDir)
+	if (pSubDir)
 	{
 		m_MenuGuard.SetItemText(ID_OPEN, _T("´ò¿ª"));
 		m_MenuGuard.EnableItem(ID_OPEN, TRUE);
@@ -813,7 +813,9 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_CopyTitle, TRUE);
 
-		if (pSubDir->parent() != NULL)
+		m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
+
+		if (pSubDir->parent())
 		{
 			m_MenuGuard.EnableItem(ID_RENAME, TRUE);
 		}
@@ -833,13 +835,15 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_FIND, m_pCurrDir && m_pCurrDir != &__medialib);
 
+		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrDir);
+
 		bool bFlag = m_wndList.GetItemCount()>0;
 		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
 
-		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrDir);
-		
+		m_MenuGuard.EnableItem(ID_FormatTitle, m_pCurrDir && bFlag);
+
 		if (m_pCurrDir == &__medialib)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
