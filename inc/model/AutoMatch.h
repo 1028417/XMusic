@@ -135,7 +135,7 @@ private:
 	void FilterBasePath(CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstSubPaths
 		, list<wstring>& lstPaths, list<wstring>& lstNewSubPaths);
 
-	void enumMediaRes(class CFileTitleGuard& FileTitleGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
+	void enumMediaRes(class CSingerMatcher& FileTitleGuard, CMediaRes& SrcPath, CMediaRes *pDir, list<wstring>& lstPaths, list<wstring>& lstSubPaths);
 
     void matchMedia(CMediaResInfo& MediaResInfo, list<CMatchMediaInfo>& lstMatchMedias);
 };

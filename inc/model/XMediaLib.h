@@ -46,8 +46,6 @@ private:
     bool _loadXUrl(const string& strText);
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
-
-    CMediaDir* _genSnapshotDir(cwstr strFileType, const JValue& jRoot, CMediaDir *pParent);
 #endif
 
 private:

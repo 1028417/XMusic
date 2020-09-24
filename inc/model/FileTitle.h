@@ -1,34 +1,39 @@
 #pragma once
 
-class __ModelExt CFileTitleGuard
+class __ModelExt CSingerMatcher
 {
 public:
-	CFileTitleGuard(class CSingerMgr& SingerMgr);
+	CSingerMatcher(class CSingerMgr& SingerMgr);
 	
 private:
 	class CSingerMgr& m_SingerMgr;
 
-	PairList<wstring, wstring> m_plSingerInfo;
+    PairList<wstring, wstring> m_plSingerInfo;
+    map<wstring, wstring> m_mapSingerName;
 
 private:
-	wstring _matchSinger(wstring& strFileTitle);
+	wstring _matchSinger(wstring& strFileTitle) const;
 
+public:
+    wstring checkSinger(const wstring& strSingerName) const;
+
+	wstring matchSinger(IMedia& media) const;
+
+    wstring matchSinger(cwstr strFileTitle) const;
+};
+
+
+class __ModelExt CFileTitle
+{
 public:
 	static wstring genCollateSingerName(cwstr strSingerName);
 
 	static void genCollateTitle(wstring& strFileTitle);
 	static wstring genCollateTitle_r(cwstr strFileTitle);
 
-	static bool formatFileTitle(wstring& strFileTitle);
-	static void genDisplayTitle(wstring& strFileName);
+    static bool formatFileTitle(wstring& strFileTitle, const CSingerMatcher *pSingerMatcher=NULL, const wchar_t *pszSingerName=NULL);
+    static void genDisplayName(wstring& strFileName, const CSingerMatcher *pSingerMatcher=NULL, const wchar_t *pszSingerName=NULL);
 
-	wstring matchSinger(cwstr strFileTitle);
-	wstring matchSinger(IMedia& media);
-};
-
-
-class __ModelExt CFileTitle
-{
 private:
 	void _parseTitle();
 

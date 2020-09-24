@@ -340,7 +340,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	__xmedialib.GetAllMedias(lstMedias);
 	__Ensure(lstMedias);
 
-	CFileTitleGuard FileTitleGuard(m_model.getSingerMgr());
+	CSingerMatcher SingerMatcher(m_model.getSingerMgr());
 	map<wstring, CMatchMediaInfo> mapMatchMediaInfo;
 	lstMedias([&](CMedia& media) {
 		cauto strMediaPath = media.GetPath();
@@ -356,11 +356,11 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			wstring strSingerName;
 			if (E_MediaSetType::MST_Album == media.GetMediaSetType())
 			{
-				strSingerName = CFileTitleGuard::genCollateSingerName(((CAlbumItem&)media).GetSingerName());
+				strSingerName = CFileTitle::genCollateSingerName(((CAlbumItem&)media).GetSingerName());
 			}
 			else
 			{
-				strSingerName = FileTitleGuard.matchSinger(media);
+				strSingerName = SingerMatcher.matchSinger(media);
 			}
 
 			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, media, strSingerName);
@@ -376,7 +376,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			return;
 		}
 
-		cauto strSingerName = FileTitleGuard.matchSinger(fsutil::getFileTitle(strFile));
+		cauto strSingerName = SingerMatcher.matchSinger(fsutil::getFileTitle(strFile));
 		CMediaResInfo MediaResInfo(strFile, strSingerName);
 		for (auto itr = mapMatchMediaInfo.begin(); itr != mapMatchMediaInfo.end(); )
 		{
@@ -896,6 +896,8 @@ void __view::checkSimilarFile(CMediaDir& dir)
 
 void __view::formatFileTitle(CMediaDir& dir)
 {
+	CSingerMatcher SingerMatcher(m_model.getSingerMgr());
+
 	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
 		TD_MediaResList lstMediaRes;
 		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
@@ -911,7 +913,7 @@ void __view::formatFileTitle(CMediaDir& dir)
 
 		UINT uCount = 0;
 		lstMediaRes([&](CMediaRes& MediaRes) {
-			if (m_model.formatFileTitle(MediaRes))
+			if (m_model.formatFileTitle(MediaRes, SingerMatcher))
 			{
 				uCount++;
 			}
