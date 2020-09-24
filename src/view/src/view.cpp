@@ -917,6 +917,11 @@ void __view::simplifiedTrans(CMediaDir& dir)
 			}
 		});
 
+		if (uCount > 0)
+		{
+			CMediaResPanel::RefreshMediaResPanel();
+		}
+
 		ProgressDlg.SetStatusText((L"转换" + to_wstring(uCount) + L"个文件").c_str());
 	});
 	(void)ProgressDlg.DoModal(L"简体转换", &m_MainWnd);

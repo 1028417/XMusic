@@ -685,9 +685,17 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_SimplifiedTrans:
-		if (m_pCurrDir)
+		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
+			if (MediaRes.isDir())
+			{
+				m_view.simplifiedTrans((CMediaDir&)MediaRes);
+			}
+		}))
 		{
-			m_view.simplifiedTrans(*m_pCurrDir);
+			if (m_pCurrDir)
+			{
+				m_view.simplifiedTrans(*m_pCurrDir);
+			}
 		}
 
 		break;
