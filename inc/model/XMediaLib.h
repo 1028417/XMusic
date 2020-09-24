@@ -55,7 +55,7 @@ private:
 
     void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
-	CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType eMediaSetType, CSinger*& pRelatedSinger) override;
+    CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType eMediaSetType, const CSinger*& pRelatedSinger) override;
 
 	void renameMedia(IMedia& media, cwstr strNewName) override;
 

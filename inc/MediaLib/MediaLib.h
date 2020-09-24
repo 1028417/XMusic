@@ -134,7 +134,7 @@ protected:
 	}
 	
 public:
-	virtual CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType, class CSinger*& pSinger)
+	virtual CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType, const class CSinger*& pSinger)
 	{
 		(void)strPath;
 		(void)pSinger;

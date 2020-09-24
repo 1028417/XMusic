@@ -395,15 +395,12 @@ void CMediaResPanel::_showDir()
 	cauto paSubDir = m_pCurrDir->dirs();
 	if (m_bShowRelatedSinger && paSubDir)
 	{
-		TD_MediaSetList lstSinger;
-		m_view.getSingerMgr().GetAllSinger(lstSinger);
-
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
-		lstSinger([&](CMediaSet& Singer) {
-			cauto strSingerDir = Singer.GetBaseDir();
+		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
+			cauto strSingerDir = singer.GetBaseDir();
 			if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
 			{
-				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { Singer.m_uID, Singer.m_strName };
+				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { singer.m_uID, singer.m_strName };
 			}
 		});
 				

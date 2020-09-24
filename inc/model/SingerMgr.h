@@ -31,7 +31,7 @@ public:
 
 	BOOL Init();
 
-	void GetAllSinger(TD_MediaSetList& arrSingers);
+    void enumSinger(cfn_void_t<const CSinger&>);
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
 

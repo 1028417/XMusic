@@ -19,7 +19,8 @@ public:
 	static void genCollateTitle(wstring& strFileTitle);
 	static wstring genCollateTitle_r(cwstr strFileTitle);
 
-	static void genDisplayTitle(wstring& strPath);
+	static bool formatFileTitle(wstring& strFileTitle);
+	static void genDisplayTitle(wstring& strFileName);
 
 	wstring matchSinger(cwstr strFileTitle);
 	wstring matchSinger(IMedia& media);

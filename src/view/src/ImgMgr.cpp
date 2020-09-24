@@ -114,13 +114,11 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 
 void CImgMgr::initSingerImg()
 {
-	TD_MediaSetList arrSingers;
-	m_model.getSingerMgr().GetAllSinger(arrSingers);
-	arrSingers([&](CMediaSet& Singer) {
-		cauto strSingerImg = m_model.getSingerImgMgr().getSingerImg(Singer.m_strName, 0);
+	m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
+		cauto strSingerImg = m_model.getSingerImgMgr().getSingerImg(singer.m_strName, 0);
 		if (!strSingerImg.empty())
 		{
-			(void)_initSingerImg(Singer.m_uID, Singer.m_strName, strSingerImg);
+			(void)_initSingerImg(singer.m_uID, singer.m_strName, strSingerImg);
 		}
 	});
 }
