@@ -15,7 +15,7 @@ enum class E_MediaFileType
 
 	MFT_M4A, MFT_APE, MFT_AIFF,
 
-	MFT_WMA, MFT_AC3, MFT_AAC,
+	MFT_WMA, MFT_AC3, MFT_AAC, MFT_OGG,
 
     MFT_Max
 };
