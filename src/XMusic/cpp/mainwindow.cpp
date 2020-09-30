@@ -325,6 +325,20 @@ void MainWindow::_init()
         ui.btnRandom->setVisible(false);
         ui.btnOrder->setVisible(true);
     }
+
+    extern function<void(int,int,int)> g_fnAccelerometerNotify;
+    g_fnAccelerometerNotify = [&](int x, int, int z){
+        if (abs(x) >= 20)
+        {
+            vibrate();
+            slot_buttonClicked(ui.btnPlayNext);
+        }
+        else if (abs(z) >= 20)
+        {
+            vibrate();
+            slot_buttonClicked(ui.btnPlayPrev);
+        }
+    };
 }
 
 void MainWindow::show()

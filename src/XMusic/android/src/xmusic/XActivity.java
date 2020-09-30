@@ -21,9 +21,34 @@ import android.content.pm.PackageManager;
 
 import android.support.v4.content.FileProvider;
 
+import android.hardware.SensorManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+
 public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
     private PowerManager.WakeLock wakeLock = null;
+
+    private native void accelerometerNotify(int x,int y,int z);
+
+    private SensorEventListener eventListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            int type = event.sensor.getType();
+            if (type == Sensor.TYPE_ACCELEROMETER) {
+                float[] values = event.values;
+                float x = values[0];
+                float y = values[1];
+                float z = values[2];
+                accelerometerNotify((int)x, (int)y, (int)z);
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -36,6 +61,14 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
             | PowerManager.ACQUIRE_CAUSES_WAKEUP, "xmusicWakelock");
         wakeLock.acquire();
+
+        SensorManager mSensorManager = ((SensorManager)getSystemService(SENSOR_SERVICE));
+        if (mSensorManager != null) {
+            Sensor mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (mAccelerometerSensor != null) {
+                mSensorManager.registerListener(eventListener, mAccelerometerSensor, SensorManager.SENSOR_DELAY_UI);
+            }
+        }
 
         /*//API 23以上需要运行时申请权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)

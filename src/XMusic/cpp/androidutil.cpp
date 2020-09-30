@@ -4,13 +4,32 @@
 #include "androidutil.h"
 
 //#include <jni.h>
-//#include <QAndroidJniEnvironment>
+#include <QAndroidJniEnvironment>
 //#include <QAndroidJniObject>
 #include <QtAndroid>
 //#include <QtAndroidExtras>
 
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
+
+function<void(int,int,int)> g_fnAccelerometerNotify;
+
+static void accelerometerNotify(int x, int y, int z)
+{
+    if (g_fnAccelerometerNotify)
+    {
+        g_fnAccelerometerNotify(x,y,z);
+    }
+}
+
+extern "C" {
+JNIEXPORT void JNICALL
+Java_xmusic_XActivity_accelerometerNotify(JNIEnv*, jclass
+                                          , jint x, jint y, jint z)
+{
+    accelerometerNotify(x,y,z);
+}
+}
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {

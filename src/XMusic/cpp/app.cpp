@@ -105,6 +105,7 @@ CAppInit::CAppInit(QApplication& app)
     strWorkDir = L"/data/data/" __pkgName;
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
 
+    strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
 /*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
     if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
