@@ -41,7 +41,7 @@
         <file>img/medialib/dir.png</file>
         <file>img/medialib/attachdir.png</file>
         <file>img/medialib/file.png</file>
-        <file>mdlconf</file>
         <file>img/medialib/dts.png</file>
+        <file>mdlconf</file>
     </qresource>
 </RCC>
