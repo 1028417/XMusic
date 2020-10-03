@@ -326,7 +326,7 @@ void MainWindow::_init()
         ui.btnOrder->setVisible(true);
     }
 
-    extern function<void(int,int,int)> g_fnAccelerometerNotify;
+#if __android
     g_fnAccelerometerNotify = [&](int x, int y, int z){
         if (abs(x) >= abs(y) && abs(x) >= abs(z))
         {
@@ -337,6 +337,7 @@ void MainWindow::_init()
             }
         }
     };
+#endif
 }
 
 void MainWindow::show()
