@@ -78,7 +78,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "检查相似文件",                      ID_CheckSimilar
         MENUITEM "查找整轨",                        ID_WholeTrack
-        MENUITEM "格式化文件名",                      ID_FormatTitle
         MENUITEM SEPARATOR
         MENUITEM "刷新 F5",                       ID_REFRESH_ROOT
     END

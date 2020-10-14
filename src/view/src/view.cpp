@@ -894,10 +894,11 @@ void __view::checkSimilarFile(CMediaDir& dir)
 	});
 }
 
-void __view::formatFileTitle(CMediaDir& dir)
+UINT __view::formatFileTitle(CMediaDir& dir)
 {
 	CSingerMatcher SingerMatcher(m_model.getSingerMgr());
 
+	UINT uCount = 0;
 	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
 		TD_MediaResList lstMediaRes;
 		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
@@ -911,7 +912,6 @@ void __view::formatFileTitle(CMediaDir& dir)
 			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
 		});
 
-		UINT uCount = 0;
 		lstMediaRes([&](CMediaRes& MediaRes) {
 			if (m_model.formatFileTitle(MediaRes, SingerMatcher))
 			{
@@ -919,14 +919,11 @@ void __view::formatFileTitle(CMediaDir& dir)
 			}
 		});
 
-		if (uCount > 0)
-		{
-			CMediaResPanel::RefreshMediaResPanel();
-		}
-
 		ProgressDlg.SetStatusText((L"转换" + to_wstring(uCount) + L"个文件").c_str());
 	});
 	(void)ProgressDlg.DoModal(L"简体转换", &m_MainWnd);
+	
+	return uCount;
 }
 
 void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)

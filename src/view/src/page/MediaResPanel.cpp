@@ -685,13 +685,21 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
 			if (MediaRes.isDir())
 			{
-				m_view.formatFileTitle((CMediaDir&)MediaRes);
+				if (m_view.formatFileTitle((CMediaDir&)MediaRes) > 0)
+				{
+					MediaRes.clear();
+					CMediaResPanel::RefreshMediaResPanel();
+				}
 			}
 		}))
 		{
 			if (m_pCurrDir)
 			{
-				m_view.formatFileTitle(*m_pCurrDir);
+				if (m_view.formatFileTitle(*m_pCurrDir) > 0)
+				{
+					m_pCurrDir->clear();
+					CMediaResPanel::RefreshMediaResPanel();
+				}
 			}
 		}
 

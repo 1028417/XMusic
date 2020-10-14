@@ -176,7 +176,7 @@ public:
 	void checkSimilarFile(CMediaDir& dir);
 	void checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2);
 
-	void formatFileTitle(CMediaDir& dir);
+	UINT formatFileTitle(CMediaDir& dir);
 
 	void hittestMedia(CMedia& media);
 
