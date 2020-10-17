@@ -5,15 +5,15 @@ class __ModelExt CMediaResInfo
 public:
 	CMediaResInfo() = default;
 
-	CMediaResInfo(CMediaRes& MediaRes, cwstr strSingerName)
-		: m_FileTitle(MediaRes, strSingerName)
+	CMediaResInfo(CMediaRes& MediaRes, const CSingerMatcher& SingerMatcher)
+		: m_FileTitle(MediaRes, SingerMatcher)
 		, m_strFileSize(MediaRes.fileSizeString(false))
 		, m_strFileTime(MediaRes.fileTimeString(false))
 	{
 	}
 
-	CMediaResInfo(cwstr strPath, cwstr strSingerName)
-		: m_FileTitle(strPath, strSingerName)
+	CMediaResInfo(cwstr strPath, const CSingerMatcher& SingerMatcher)
+		: m_FileTitle(strPath, SingerMatcher)
 	{
 		m_strFileSize = IMedia::genFileSizeString(fsutil::GetFileSize64(strPath), false);		
 		m_strFileTime = CMediaTime::genFileTimeString(fsutil::GetFileModifyTime64(strPath), false);
@@ -59,14 +59,14 @@ class __ModelExt CMatchMediaInfo
 public:
 	CMatchMediaInfo() = default;
 
-	CMatchMediaInfo(cwstr strPath, CMedia& media, cwstr strSingerName)
-		: m_FileTitle(strPath, strSingerName)
+	CMatchMediaInfo(cwstr strPath, CMedia& media, const CSingerMatcher& SingerMatcher)
+		: m_FileTitle(strPath, SingerMatcher)
 		, m_lstMedias(media)
 	{
 	}
 
-	CMatchMediaInfo(cwstr strPath, TD_MediaList& lstMedias, cwstr strSingerName)
-		: m_FileTitle(strPath, strSingerName)
+	CMatchMediaInfo(cwstr strPath, TD_MediaList& lstMedias, const CSingerMatcher& SingerMatcher)
+		: m_FileTitle(strPath, SingerMatcher)
 		, m_lstMedias(lstMedias)
 	{
 	}

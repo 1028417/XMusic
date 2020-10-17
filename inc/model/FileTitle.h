@@ -16,10 +16,9 @@ private:
 
 public:
     wstring checkSinger(const wstring& strSingerName) const;
-
-	wstring matchSinger(IMedia& media) const;
-
+	
     wstring matchSinger(cwstr strFileTitle) const;
+	wstring matchSinger(cwstr strFileTitle, cwstr strPath) const;
 };
 
 
@@ -35,12 +34,12 @@ public:
     static void genDisplayName(wstring& strFileName, const CSingerMatcher *pSingerMatcher=NULL, const wchar_t *pszSingerName=NULL);
 
 private:
-	void _parseTitle();
+	void _parseTitle(const CSingerMatcher& SingerMatcher);
 
 public:
     CFileTitle() = default;
-	CFileTitle(cwstr strPath, cwstr strSingerName);
-	CFileTitle(IMedia& media, cwstr strSingerName);
+	CFileTitle(cwstr strPath, const CSingerMatcher& SingerMatcher);
+	CFileTitle(IMedia& media, const CSingerMatcher& SingerMatcher);
 
 public:
 	wstring m_strPath;

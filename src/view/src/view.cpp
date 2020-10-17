@@ -353,17 +353,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		}
 		else
 		{
-			wstring strSingerName;
-			if (E_MediaSetType::MST_Album == media.GetMediaSetType())
-			{
-				strSingerName = CFileTitle::genCollateSingerName(((CAlbumItem&)media).GetSingerName());
-			}
-			else
-			{
-				strSingerName = SingerMatcher.matchSinger(media);
-			}
-
-			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, media, strSingerName);
+			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, media, SingerMatcher);
 		}
 	});
 
@@ -376,8 +366,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			return;
 		}
 
-		cauto strSingerName = SingerMatcher.matchSinger(fsutil::getFileTitle(strFile));
-		CMediaResInfo MediaResInfo(strFile, strSingerName);
+		CMediaResInfo MediaResInfo(strFile, SingerMatcher);
 		for (auto itr = mapMatchMediaInfo.begin(); itr != mapMatchMediaInfo.end(); )
 		{
 			CMatchMediaInfo& MatchMediaInfo = itr->second;
