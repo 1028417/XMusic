@@ -152,8 +152,6 @@ public:
 	void initView();
 	void clearView();
 
-	void foregroundMainWnd();
-	
 	CMediaDir* showChooseDirDlg(cwstr strTitle, bool bShowRoot = true);
 
 	void showFindDlg(cwstr strFind, bool bQuickHittest=false);

@@ -300,8 +300,6 @@ public:
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
-	virtual bool formatFileTitle(CMediaRes& MediaRes, const CSingerMatcher& SingerMatcher) = 0;
-
     using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
     virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
@@ -399,8 +397,6 @@ public:
 
     void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
     void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
-
-	bool formatFileTitle(CMediaRes& MediaRes, const CSingerMatcher& SingerMatcher);
 
     UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
 

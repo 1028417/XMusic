@@ -902,10 +902,22 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 		});
 
 		lstMediaRes([&](CMediaRes& MediaRes) {
-			if (m_model.formatFileTitle(MediaRes, SingerMatcher))
+			cauto strPath = MediaRes.GetAbsPath();
+			auto strTitle = fsutil::getFileTitle(strPath);
+
+			if (!CFileTitle::formatFileTitle(strTitle, &SingerMatcher))
 			{
-				uCount++;
+				return;
 			}
+
+			cauto strNewName = strTitle + L'.' + fsutil::GetFileExtName(strPath);
+			if (!fsutil::moveFile(strPath, fsutil::GetParentDir(strPath) + __wcPathSeparator + strNewName))
+			{
+				ProgressDlg.msgBox(L"重命名文件失败: " + strNewName);
+				return;
+			}
+			
+			uCount++;
 		});
 
 		ProgressDlg.SetStatusText((L"转换" + to_wstring(uCount) + L"个文件").c_str());
