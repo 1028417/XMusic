@@ -30,8 +30,8 @@ public:
 	static void genCollateTitle(wstring& strFileTitle);
 	static wstring genCollateTitle_r(cwstr strFileTitle);
 
-    static bool formatFileTitle(wstring& strFileTitle, const CSingerMatcher *pSingerMatcher=NULL, const wchar_t *pszSingerName=NULL);
-    static void genDisplayName(wstring& strFileName, const CSingerMatcher *pSingerMatcher=NULL, const wchar_t *pszSingerName=NULL);
+    static bool formatFileTitle(wstring& strFileTitle, const wchar_t *pszSingerName=NULL);
+    static void genDisplayName(wstring& strFileName, const wchar_t *pszSingerName=NULL);
 
 private:
 	void _parseTitle(const CSingerMatcher& SingerMatcher);

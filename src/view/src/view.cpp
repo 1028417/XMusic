@@ -885,8 +885,6 @@ void __view::checkSimilarFile(CMediaDir& dir)
 
 UINT __view::formatFileTitle(CMediaDir& dir)
 {
-	CSingerMatcher SingerMatcher(m_model.getSingerMgr());
-
 	UINT uCount = 0;
 	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
 		TD_MediaResList lstMediaRes;
@@ -905,7 +903,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 			cauto strPath = MediaRes.GetAbsPath();
 			auto strTitle = fsutil::getFileTitle(strPath);
 
-			if (!CFileTitle::formatFileTitle(strTitle, &SingerMatcher))
+			if (!CFileTitle::formatFileTitle(strTitle))
 			{
 				return;
 			}
