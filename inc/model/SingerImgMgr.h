@@ -19,7 +19,8 @@ private:
 	map<wstring, vector<wstring>> m_mapFile;
 
 #if __OnlineMediaLib
-    list<wstring> m_lstOnlineImgFile;
+    map<wstring, UINT> m_mapOnlineFile;
+    list<wstring> m_lstDownloadFile;
     mutex m_mutex;
     XThread m_thrDownload;
 
