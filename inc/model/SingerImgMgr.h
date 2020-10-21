@@ -42,6 +42,10 @@ public:
 
 	void clearSingerImg();
 
+    void downloadSingerHead(const list<wstring>& lstSingerName);
+
+    wstring getSingerHead(cwstr strSingerName);
+
     wstring getSingerImg(cwstr strSingerName, UINT uIndex);
 
 	void getSingerImg(prlist<wstring, UINT>& plSingerImg) const;
