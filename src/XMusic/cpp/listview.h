@@ -158,7 +158,7 @@ protected:
         return m_uAutoScrollSeq > 0;
     }
 
-    bool _hittest(int x, int y, tagLVItem& lvItem);
+    bool _hittest(int& x, int& y, tagLVItem& lvItem);
 
     virtual void _onPaint(CPainter& painter, int cx, int cy);
 

@@ -221,20 +221,30 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     else if (E_MouseEventType::MET_DblClick == type)
     {
         tagLVItem lvItem;
-        if (_hittest(me.pos().x(), me.pos().y(), lvItem))
+        int x = me.pos().x();
+        int y = me.pos().y();
+        if (_hittest(x, y, lvItem))
         {
-            _onItemDblClick(lvItem, me);
+            auto t_me = me;
+            t_me.setLocalPos(QPoint(x,y));
+            _onItemDblClick(lvItem, t_me);
         }
     }
 #endif
     else if (E_MouseEventType::MET_Click == type)
     {
-        tagLVItem lvItem;
         int nItem = -1;
-        if (_hittest(me.pos().x(), me.pos().y(), lvItem))
+
+        tagLVItem lvItem;
+        int x = me.pos().x();
+        int y = me.pos().y();
+        if (_hittest(x, y, lvItem))
         {
             nItem = lvItem.uItem;
-            _onItemClick(lvItem, me);
+
+            auto t_me = me;
+            t_me.setLocalPos(QPoint(x,y));
+            _onItemClick(lvItem, t_me);
         }
         else
         {
@@ -261,7 +271,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
 }
 
-bool CListView::_hittest(int x, int y, tagLVItem& lvItem)
+bool CListView::_hittest(int& x, int& y, tagLVItem& lvItem)
 {
     UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
     if (uRow >= m_uTotalRows)
@@ -275,8 +285,12 @@ bool CListView::_hittest(int x, int y, tagLVItem& lvItem)
     UINT uCol = UINT(x/cx_col);
     lvItem = tagLVItem(uRow, uCol, uRow*uColCount+uCol);
 
-    y = int(-(m_fScrollPos-uRow)*m_uRowHeight);
-    lvItem.rc.setRect(uCol*cx_col, y, cx_col, m_uRowHeight);
+    int left = uCol*cx_col;
+    int top = int(-(m_fScrollPos-uRow)*m_uRowHeight);
+    lvItem.rc.setRect(left, top, cx_col, m_uRowHeight);
+
+    x -= left;
+    y -= top;
 
     return true;
 }

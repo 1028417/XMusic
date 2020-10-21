@@ -72,27 +72,6 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
-        static set<void*> setPlaylist;
-        if (setPlaylist.find(&MediaSet) != setPlaylist.end())
-        {
-            return;
-        }
-
-        setPlaylist.insert(&MediaSet);
-        for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
-        {
-            cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
-            for (cauto pr : m_plSingerDir)
-            {
-                if (fsutil::CheckSubPath(pr.first, strPath))
-                {
-                    ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
-                                                              , pr.second->m_uID, pr.second->m_strName);
-                    break;
-                }
-            }
-        }
-
         /*if (m_pthrFindRelated)
         {
             m_pthrFindRelated->join();
@@ -116,6 +95,57 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                 });
             }
         });*/
+
+        static set<void*> setPlaylist;
+        if (setPlaylist.find(&MediaSet) == setPlaylist.end())
+        {
+            setPlaylist.insert(&MediaSet);
+
+            for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
+            {
+                cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
+                for (cauto pr : m_plSingerDir)
+                {
+                    if (fsutil::CheckSubPath(pr.first, strPath))
+                    {
+                        ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
+                                                                  , pr.second->m_uID, pr.second->m_strName);
+                        break;
+                    }
+                }
+            }
+        }
+
+        list<wstring> lstSingerName;
+        for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
+        {
+            cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+            if (!strSingerName.empty())
+            {
+                if (std::find(lstSingerName.begin(), lstSingerName.end(), strSingerName) == lstSingerName.end())
+                {
+                    lstSingerName.push_back(strSingerName);
+                }
+            }
+        }
+
+        if (!lstSingerName.empty())
+        {
+            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        }
+    }
+    else if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
+    {
+        list<wstring> lstSingerName;
+        for (cauto singer : ((CSingerGroup&)MediaSet).singers())
+        {
+            if (std::find(lstSingerName.begin(), lstSingerName.end(), singer.m_strName) == lstSingerName.end())
+            {
+                lstSingerName.push_back(singer.m_strName);
+            }
+        }
+
+        m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -385,7 +415,7 @@ cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
         return *pSingerPixmap;
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(strSingerName, 0);
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
     if (!strSingerImg.empty())
     {
         m_lstSingerPixmap.emplace_back();
