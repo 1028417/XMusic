@@ -52,9 +52,11 @@ public:
 
 	void clearSingerImg();
 
+#if __OnlineMediaLib
     void downloadSingerHead(const list<wstring>& lstSingerName);
+#endif
 
-    wstring getSingerHead(cwstr strSingerName);
+	wstring getSingerHead(cwstr strSingerName);
 
     wstring getSingerImg(cwstr strSingerName, UINT uIndex);
 };
