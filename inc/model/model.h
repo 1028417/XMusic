@@ -185,6 +185,14 @@ struct __ModelExt tagOption
 #endif
 };
 
+struct __ModelExt tagSingerImg
+{
+	wstring strFile;
+	UINT uFileSize = 0;
+	UINT cx = 0;
+	UINT cy = 0;
+};
+
 #if !__winvc
 enum class E_UpgradeResult
 {

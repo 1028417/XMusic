@@ -32,6 +32,16 @@ public:
 #endif
 
 public:
+	cwstr dir() const
+	{
+		return m_strDir;
+	}
+
+	const map<wstring, vector<wstring>>& fileMap() const
+	{
+		return m_mapFile;
+	}
+
     bool init(cwstr strDir);
 
 	UINT addSingerImg(cwstr strSingerName, const list<wstring>& lstFiles);
@@ -47,8 +57,4 @@ public:
     wstring getSingerHead(cwstr strSingerName);
 
     wstring getSingerImg(cwstr strSingerName, UINT uIndex);
-
-	void getSingerImg(prlist<wstring, UINT>& plSingerImg) const;
-
-	bool exportSingerImg(cwstr strDstDir);
 };
