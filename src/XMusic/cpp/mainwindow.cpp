@@ -1290,15 +1290,18 @@ void MainWindow::playSingerImg(bool bReset)
     cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
     if (!strSingerImg.empty())
     {
-        QPixmap pm;
-        if (pm.load(__WS2Q(strSingerImg)))
+        if (!fsutil::existFile(strSingerImg))
         {
-            ui.labelSingerImg->setPixmap(pm);
-
-            //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
-
-            _relayout();
+            return;
         }
+
+        QPixmap pm;
+        (void)pm.load(__WS2Q(strSingerImg));
+        ui.labelSingerImg->setPixmap(pm);
+
+        //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
+
+        _relayout();
 
         uSingerImgIdx++;
     }
