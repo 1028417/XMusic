@@ -16,10 +16,10 @@ private:
 
 	wstring m_strDir;
 
-	map<wstring, vector<wstring>> m_mapFile;
+    map<wstring, vector<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
-    map<wstring, UINT> m_mapOnlineFile;
+    map<wstring, tagSingerImg> m_mapOnlineFile;
     list<wstring> m_lstDownloadFile;
     mutex m_mutex;
     XThread m_thrDownload;
@@ -37,7 +37,7 @@ public:
 		return m_strDir;
 	}
 
-	const map<wstring, vector<wstring>>& fileMap() const
+    const map<wstring, vector<tagSingerImg>>& fileMap() const
 	{
 		return m_mapFile;
 	}

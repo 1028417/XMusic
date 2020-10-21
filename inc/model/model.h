@@ -185,9 +185,16 @@ struct __ModelExt tagOption
 #endif
 };
 
-struct __ModelExt tagSingerImg
+struct tagSingerImg
 {
-	wstring strFile;
+    tagSingerImg() = default;
+
+    tagSingerImg(cwstr strFile)
+        : strFile(strFile)
+    {
+    }
+
+    wstring strFile;
 	UINT uFileSize = 0;
 	UINT cx = 0;
 	UINT cy = 0;
