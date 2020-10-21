@@ -3,10 +3,9 @@
 class __ModelExt CPlaylistMgr : public CMediaSet
 {
 public:
-    CPlaylistMgr(class CModel& model, CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
+    CPlaylistMgr(CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
 
 private:
-    class CModel& m_model;
     class IModelObserver& m_ModelObserver;
 
 	CPlaylist m_Playinglist;
