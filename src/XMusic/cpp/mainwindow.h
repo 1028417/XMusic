@@ -124,8 +124,6 @@ public:
 
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
 
-    void playSingerImg(bool bReset);
-
 private:
     void _init();
 
@@ -149,6 +147,9 @@ private:
 
     void _handleTouchEnd(const CTouchEvent& te);
 
+    void _playSingerImg(bool bReset);
+    void _playSingerImg();
+
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;
 
@@ -156,7 +157,7 @@ private:
 
     void onPlayStop(bool bRet) override;
 
-    void onSingerImgDownloaded() override;
+    void onSingerImgDownloaded(cwstr strSingerName) override;
 
     bool installApp(const CByteBuffer& bbfBuff) override;
 };

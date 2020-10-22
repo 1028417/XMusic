@@ -501,7 +501,7 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Timer:
         _updateProgress();
 
-        playSingerImg(false);
+        _playSingerImg(false);
 
         break;
     default:
@@ -1162,7 +1162,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         else if (m_PlayingInfo.strSingerName != strPrevSinger)
         {
             ui.labelSingerImg->clear();
-            playSingerImg(true);
+            _playSingerImg(true);
         }
 
         _relayout();
@@ -1211,16 +1211,21 @@ void MainWindow::onPlayStop(bool bRet)
     });
 }
 
-void MainWindow::onSingerImgDownloaded()
+void MainWindow::onSingerImgDownloaded(cwstr strSingerName)
 {
     if (m_medialibDlg.isVisible())
     {
         m_app.sync([&](){
             if (m_medialibDlg.isVisible())
             {
-                m_medialibDlg.updateSingerImg();
+                m_medialibDlg.update(); //m_medialibDlg.updateSingerImg();
             }
         });
+    }
+
+    if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
+    {
+        _playSingerImg();
     }
 }
 
@@ -1260,7 +1265,9 @@ WString MainWindow::_genAlbumName()
 
 #define ___singerImgElapse 8
 
-void MainWindow::playSingerImg(bool bReset)
+static UINT g_uSingerImgIdx = 0;
+
+void MainWindow::_playSingerImg(bool bReset)
 {
     if (m_PlayingInfo.strSingerName.empty())
     {
@@ -1268,11 +1275,10 @@ void MainWindow::playSingerImg(bool bReset)
     }
 
     static UINT uTickCount = 0;
-    static UINT uSingerImgIdx = 0;
     if (bReset)
     {
         uTickCount = 0;
-        uSingerImgIdx = 0;
+        g_uSingerImgIdx = 0;
     }
     else
     {
@@ -1287,7 +1293,12 @@ void MainWindow::playSingerImg(bool bReset)
         }
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, uSingerImgIdx);
+    _playSingerImg();
+}
+
+void MainWindow::_playSingerImg()
+{
+    cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx);
     if (!strSingerImg.empty())
     {
         if (!fsutil::existFile(strSingerImg))
@@ -1303,13 +1314,13 @@ void MainWindow::playSingerImg(bool bReset)
 
         _relayout();
 
-        uSingerImgIdx++;
+        g_uSingerImgIdx++;
     }
     else
     {
-        if (uSingerImgIdx > 1)
+        if (g_uSingerImgIdx > 1)
         {
-            playSingerImg(true);
+            _playSingerImg(true);
         }
     }
 }
