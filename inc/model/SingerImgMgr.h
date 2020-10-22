@@ -16,6 +16,7 @@ private:
 
 	wstring m_strDir;
 
+    map<wstring, wstring> m_mapSingerName;
     map<wstring, vector<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
