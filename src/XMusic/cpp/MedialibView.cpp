@@ -592,7 +592,7 @@ inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)
         return false;
     }
 
-    int xPlayIcon = context->rc.right() - __lvRowMargin + __playIconOffset - context->rc.height();
+    int xPlayIcon = context->rc.width() - __lvRowMargin + __playIconOffset - context->rc.height();
     return x >= xPlayIcon;
 }
 
