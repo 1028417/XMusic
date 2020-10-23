@@ -23,7 +23,7 @@ private:
 	bool _setImg(cwstr strImg, bool bHalfToneMode=false);
 	bool _setSingerImg(cwstr strFile);
 
-	bool _initSingerHead(UINT uSingerID, cwstr strSingerName, cwstr strFile);
+	bool _initSingerHead(UINT uSingerID, cwstr strSingerName);
 	
 	int _getSingerImgPos(UINT uSingerID) const;
 

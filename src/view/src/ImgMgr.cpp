@@ -115,17 +115,16 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 void CImgMgr::initSingerImg()
 {
 	m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
-		cauto strSingerImg = m_model.getSingerImgMgr().getSingerHead(singer.m_strName);
-		if (!strSingerImg.empty())
-		{
-			(void)_initSingerHead(singer.m_uID, singer.m_strName, strSingerImg);
-		}
+		(void)_initSingerHead(singer.m_uID, singer.m_strName);
 	});
 }
 
-bool CImgMgr::_initSingerHead(UINT uSingerID, cwstr strSingerName, cwstr strFile)
+bool CImgMgr::_initSingerHead(UINT uSingerID, cwstr strSingerName)
 {
-	__EnsureReturn(_setSingerImg(strFile), false);
+	cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(strSingerName);
+	__EnsureReturn(!strHeadImg.empty(), false);
+	
+	__EnsureReturn(_setSingerImg(strHeadImg), false);
 	
 	m_vctSingerID.push_back(uSingerID);
 
@@ -138,11 +137,8 @@ bool CImgMgr::addSingerImg(UINT uSingerID, cwstr strSingerName, const list<wstri
 	__EnsureReturn(uRet != 0, false);
 
 	if (_getSingerImgPos(uSingerID) < 0)
-	{
-		cauto strSingerImg = m_model.getSingerImgMgr().getSingerHead(strSingerName);
-		__EnsureReturn(!strSingerImg.empty(), false);
-		
-		__EnsureReturn(_initSingerHead(uSingerID, strSingerName, strSingerImg), false);
+	{		
+		__EnsureReturn(_initSingerHead(uSingerID, strSingerName), false);
 	}
 	
 	return true;
