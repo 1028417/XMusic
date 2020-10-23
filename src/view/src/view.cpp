@@ -44,14 +44,17 @@ bool __view::show()
 	{
 		return false;
 	}
-
-	m_ImgMgr.initSingerImg();
-
-	m_PlayingPage.RefreshList();
+	
 	m_MainWnd.show();
 
 	__async([&]() {
+		m_PlayingPage.RefreshList();
 		m_MediaResPage.ShowDir();
+
+		__async([&]() {
+			m_ImgMgr.initSingerImg();
+			m_PlayingPage.Invalidate();
+		});
 	});
 
 	return true;
