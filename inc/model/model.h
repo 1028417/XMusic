@@ -432,7 +432,7 @@ private:
 #if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
-    bool _exportDB(cwstr strExportDir, bool bExportXmsc);
+    bool _exportDB(cwstr strExportDir, bool bExportXmsc, const CB_exportorMedia& cb);
 
     void _clear();
 
