@@ -1225,7 +1225,9 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName)
 
     if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
     {
-        _playSingerImg();
+        m_app.sync([&](){
+            _playSingerImg();
+        });
     }
 }
 
