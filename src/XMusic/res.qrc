@@ -43,5 +43,6 @@
         <file>img/medialib/file.png</file>
         <file>img/medialib/dts.png</file>
         <file>mdlconf</file>
+        <file>img/medialib/mqs.png</file>
     </qresource>
 </RCC>

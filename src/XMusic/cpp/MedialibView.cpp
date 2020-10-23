@@ -37,6 +37,7 @@ void CMedialibView::initpm()
 
     (void)m_pmHires.load(__mediaPng(hires));
     (void)m_pmDSD.load(__mediaPng(dsd));
+    (void)m_pmMQS.load(__mediaPng(mqs));
     (void)m_pmDTS.load(__mediaPng(dts));
 
     (void)m_pmDir.load(__mediaPng(dir));
@@ -299,18 +300,28 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             if (context.pDir->parent() == &__medialib)
             {
                 auto strDirName = context.pDir->fileName();
-                strutil::lowerCase(strDirName);
-                if (strDirName.find(L"hi-res") != __wnpos)
+                strDirName = __substr(strDirName,3);
+                context.strText = strDirName;
+
+                if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
                     context.pmIcon = &m_pmHires;
+                    context.strText = L"高解析音频(High Resolution Audio)";
                 }
-                else if (strDirName.find(L"dsd") != __wnpos)
+                else if (strutil::matchIgnoreCase(strDirName, L"dsd"))
                 {
                     context.pmIcon = &m_pmDSD;
+                    context.strText = L"直接比特流数字编码(Direct Stream Digital)";
                 }
-                else if (strDirName.find(L"dts") != __wnpos)
+                else if (strutil::matchIgnoreCase(strDirName, L"mqs"))
+                {
+                    context.pmIcon = &m_pmMQS;
+                    context.strText = L"录音棚级别无损音乐(Mastering Quality Sound)";
+                }
+                else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
+                    context.strText = L"DTS 5.1声道DigitalSurround";
                 }
             }
         }
