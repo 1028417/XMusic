@@ -198,6 +198,16 @@ struct tagSingerImg
 	UINT uFileSize = 0;
 	UINT cx = 0;
 	UINT cy = 0;
+
+    bool isHead() const
+    {
+        return cx < 400 || cy < 400;
+    }
+
+    bool isPiiic() const
+    {
+        return cx > cy*1.5f || cy > cx*1.5f;
+    }
 };
 
 #if !__winvc

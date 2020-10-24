@@ -59,7 +59,7 @@ public:
 
     wstring getSingerHead(cwstr strSingerName);
 
-    wstring getSingerImg(cwstr strSingerName, UINT uIndex);
+    wstring getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
     wstring checkSingerImg(cwstr strFile);
 };
