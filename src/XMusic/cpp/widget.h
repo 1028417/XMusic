@@ -13,7 +13,15 @@
 
 #include "painter.h"
 
-extern float g_fPixelRatio;
+#if __windows || __mac
+#if __isdebug
+#define __fastTouchDt 300
+#else
+#define __fastTouchDt 200 // 鼠标慢，触屏快
+#endif
+#else
+#define __fastTouchDt 130
+#endif
 
 #if __ios
 #define __size(x) decltype(x)((x)/g_fPixelRatio)
@@ -24,6 +32,8 @@ extern float g_fPixelRatio;
 #endif
 
 #define __szRound __size(10)
+
+extern float g_fPixelRatio;
 
 enum class E_MouseEventType
 {
@@ -124,9 +134,15 @@ template <class T>
 class TWidget : public T
 {
 public:
-    TWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints) :
-        T(parent),
-        m_eRenderHints(eRenderHints)
+    TWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints)
+        : T(parent)
+        , m_eRenderHints(eRenderHints)
+    {
+    }
+
+    TWidget(QWidget *parent, Qt::WindowFlags f, QPainter::RenderHints eRenderHints = __defRenderHints)
+        : T(parent, f)
+        , m_eRenderHints(eRenderHints)
     {
     }
 

@@ -1300,7 +1300,7 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::_playSingerImg()
 {
-    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx);
+    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
     if (strFile.empty())
     {
         if (g_uSingerImgIdx > 1)
@@ -1573,16 +1573,6 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
 
     painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
 }
-
-#if __windows || __mac
-#if __isdebug
-#define __fastTouchDt 300
-#else
-#define __fastTouchDt 200 // 鼠标慢，触屏快
-#endif
-#else
-#define __fastTouchDt 130
-#endif
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
 {

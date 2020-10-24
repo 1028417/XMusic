@@ -35,13 +35,30 @@ void CMedialibDlg::init()
             return;
         }
 
-        cauto strFile = m_app.getSingerImgMgr().getSingerImg(pSinger->m_strName, 0);
-        if (strFile.empty())
+        cauto mapSingerImg = m_app.getSingerImgMgr().fileMap();
+        cauto itr = mapSingerImg.find(pSinger->m_strName);
+        if (itr == mapSingerImg.end())
         {
             return;
         }
 
-        (void)m_app.getSingerImgMgr().checkSingerImg(strFile);
+        bool bFlag = false;
+        for (cauto singerImg : itr->second)
+        {
+            if (singerImg.isHead())
+            {
+                continue;
+            }
+
+            bFlag = true;
+
+            (void)m_app.getSingerImgMgr().checkSingerImg(singerImg.strFile);
+        }
+
+        if (!bFlag)
+        {
+            return;
+        }
 
         m_singerImgDlg.show(pSinger->m_strName);
     });
@@ -187,6 +204,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     m_lv.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
 
     m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnUpward->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
+    m_singerImgDlg.relayout(ui.btnReturn->geometry());
 }
 
 void CMedialibDlg::_resizeTitle() const

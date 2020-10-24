@@ -14,14 +14,9 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 }
 
-void CSingerImgDlg::show(cwstr strSingerName)
+void CSingerImgDlg::relayout(cqrc rcBtnReturn)
 {
-    m_strSingerName = strSingerName;
-    m_uSingerImgIdx = 0;
-
-    CDialog::show([&](){
-        m_pm = QPixmap();
-    });
+    ui.btnReturn->setGeometry(rcBtnReturn);
 }
 
 void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
@@ -30,22 +25,7 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
     if (m_pm.isNull())
     {
-        auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, m_uSingerImgIdx);
-        if (strFile.empty())
-        {
-            return;
-        }
-
-        strFile = m_app.getSingerImgMgr().checkSingerImg(strFile);
-        if (strFile.empty())
-        {
-            return;
-        }
-
-        if (!m_pm.load(__WS2Q(strFile)))
-        {
-            return;
-        }
+        return;
     }
 
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
@@ -80,4 +60,84 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     }
 
     painter.drawPixmap(QRect(xDst, yDst, cxDst, cyDst), m_pm, QRect(0, 0, cxSrc, cySrc));
+}
+
+void CSingerImgDlg::show(cwstr strSingerName)
+{
+    m_strSingerName = strSingerName;
+    m_uSingerImgIdx = 0;
+    _switchImg(0);
+
+    CDialog::show([&](){
+        m_pm = QPixmap();
+    });
+}
+
+void CSingerImgDlg::_switchImg(int nOffset)
+{
+    auto uSingerImgIdx = m_uSingerImgIdx;
+    if (nOffset > 0)
+    {
+        uSingerImgIdx++;
+    }
+    else if (nOffset < 0)
+    {
+        if (0 == uSingerImgIdx)
+        {
+            return;
+        }
+        uSingerImgIdx--;
+    }
+
+    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
+    if (strFile.empty())
+    {
+        return;
+    }
+
+    strFile = m_app.getSingerImgMgr().dir() + strFile;
+    if (!fsutil::existFile(strFile))
+    {
+        return;
+    }
+
+    (void)m_pm.load(__WS2Q(strFile));
+    update();
+    m_uSingerImgIdx = uSingerImgIdx;
+}
+
+void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
+{
+    if (eType != E_TouchEventType::TET_TouchEnd)
+    {
+        return;
+    }
+
+    if (te.dt() < __fastTouchDt)
+    {
+        auto dx = te.dx();
+        auto dy = te.dy();
+        if (abs(dx) > abs(dy))
+        {
+            if (dx >= 3)
+            {
+                _switchImg(-1);
+            }
+            else if (dx <= -3)
+            {
+                _switchImg(1);
+            }
+        }
+        else
+        {
+            if (dy >= 3)
+            {
+                _switchImg(-1);
+            }
+            else if (dy <= -3)
+            {
+                _switchImg(1);
+            }
+        }
+    }
 }

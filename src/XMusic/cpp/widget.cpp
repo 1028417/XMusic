@@ -15,7 +15,7 @@ void TWidget<TParent>::paintEvent(QPaintEvent *pe)
     g_pe = pe;
 
     CPainter painter(this, m_eRenderHints);
-    _onPaint(painter, pe->rect());
+    _onPaint(painter, TParent::rect());
 }
 
 template <class TParent>

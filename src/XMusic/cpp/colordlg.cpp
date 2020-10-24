@@ -245,8 +245,8 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
         g_crFore.setRgb(crFore);
         m_app.getOption().crFore = (UINT)crFore;
 
-        CDialog::setWidgetTextColor(ui.groupBkgColor, g_crFore);
-        CDialog::setWidgetTextColor(ui.groupFontColor, g_crFore);
+        setWidgetTextColor(ui.groupBkgColor, g_crFore);
+        setWidgetTextColor(ui.groupFontColor, g_crFore);
 
         this->update();
         m_bkgDlg.update();

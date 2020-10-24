@@ -11,21 +11,28 @@
 
 #define __titleFontSize 1.16f
 
-class CDialog : public QDialog
+class CDialog : public TWidget<QDialog>
 {
 public:
     CDialog(QWidget& parent, bool bFullScreen = true)
-        : QDialog(NULL, Qt::FramelessWindowHint)
+        : TWidget(NULL, Qt::FramelessWindowHint)
         , m_parent(parent)
         , m_bFullScreen(bFullScreen)
     {
     }
 
     CDialog(CDialog& parent, bool bFullScreen = true)
-        : QDialog(NULL, Qt::FramelessWindowHint)
+        : TWidget(NULL, Qt::FramelessWindowHint)
         , m_parent(parent)
         , m_bFullScreen(bFullScreen)
     {
+    }
+
+    static void setWidgetTextColor(QWidget *widget, cqcr cr)
+    {
+        QPalette pe = widget->palette();
+        pe.setColor(QPalette::WindowText, cr);
+        widget->setPalette(pe);
     }
 
 private:
@@ -55,16 +62,9 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
-    virtual void _onPaint(CPainter& painter, cqrc rc);
+    virtual void _onPaint(CPainter& painter, cqrc rc) override;
 
 public:
-    static void setWidgetTextColor(QWidget *widget, cqcr cr)
-    {
-        QPalette pe = widget->palette();
-        pe.setColor(QPalette::WindowText, cr);
-        widget->setPalette(pe);
-    }
-
     static void resetPos();
 
     bool isHLayout() const

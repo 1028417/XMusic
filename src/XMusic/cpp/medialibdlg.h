@@ -7,7 +7,7 @@
 
 #include "wholeTrackDlg.h"
 
-#include "SingerImgDlg.h"
+#include "singerimgdlg.h"
 
 class COuterDir : public CMediaDir
 {

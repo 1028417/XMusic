@@ -118,14 +118,6 @@ bool CDialog::event(QEvent *ev)
     }
 
         break;
-    case QEvent::Paint:
-    {
-        CPainter painter(this);
-        cauto rc = rect();
-        _onPaint(painter, rc);
-    }
-
-        break;
 #if __android || __ios
 	case QEvent::KeyRelease:
         if (!_handleReturn())
@@ -139,7 +131,7 @@ bool CDialog::event(QEvent *ev)
         break;
 	}
 
-	return QDialog::event(ev);
+    return TWidget::event(ev);
 }
 
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
