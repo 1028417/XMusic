@@ -52,20 +52,31 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
     auto cxSrc = m_pm.width();
     auto cySrc = m_pm.height();
-    auto fHWRate = (float)cxSrc/cySrc;
 
-    int xDst = 0, yDst = 0;
     auto cxDst = rc.width();
     auto cyDst = rc.height();
-    if (fHWRate > (float)cxDst/cyDst)
+
+    int xDst = 0, yDst = 0;
+    if (cxSrc <= cxDst && cySrc <= cyDst)
     {
-        xDst = (cxDst - cyDst/fHWRate)/2;
-        cxDst -= xDst*2;
+        xDst = (cxDst - cxSrc)/2;
+        yDst = (cyDst - cySrc)/2;
+        cxDst = cxSrc;
+        cyDst = cySrc;
     }
     else
     {
-        yDst = (cyDst - cxDst*fHWRate)/2;
-        cyDst -= yDst*2;
+        auto fHWRate = (float)cySrc/cxSrc;
+        if (fHWRate > (float)cyDst/cxDst)
+        {
+            xDst = (cxDst - cyDst/fHWRate)/2;
+            cxDst -= xDst*2;
+        }
+        else
+        {
+            yDst = (cyDst - cxDst*fHWRate)/2;
+            cyDst -= yDst*2;
+        }
     }
 
     painter.drawPixmap(QRect(xDst, yDst, cxDst, cyDst), m_pm, QRect(0, 0, cxSrc, cySrc));
