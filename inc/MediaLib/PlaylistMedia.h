@@ -26,9 +26,9 @@ public:
 
 	wstring GetPlaylistName() const;
 
+#if __winvc
     int getSingerImg() const;
 
-#if __winvc
     void AsyncTask() override;
 
 #else
