@@ -51,7 +51,7 @@
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>xxxxxxxxxxxxxx</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -117,7 +117,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>60</y>
+     <y>90</y>
      <width>585</width>
      <height>60</height>
     </rect>
@@ -248,9 +248,9 @@
     <bool>true</bool>
    </property>
   </widget>
+  <zorder>labelTitle</zorder>
   <zorder>labelSingerImg</zorder>
   <zorder>btnReturn</zorder>
-  <zorder>labelTitle</zorder>
   <zorder>btnUpward</zorder>
   <zorder>btnPlay</zorder>
   <zorder>frameFilterLanguage</zorder>
