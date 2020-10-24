@@ -35,11 +35,13 @@ void CMedialibDlg::init()
             return;
         }
 
-        cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(pSinger->m_strName, 0);
-        if (strSingerImg.empty())
+        cauto strFile = m_app.getSingerImgMgr().getSingerImg(pSinger->m_strName, 0);
+        if (strFile.empty())
         {
             return;
         }
+
+        (void)m_app.getSingerImgMgr().checkSingerImg(strFile);
 
         m_singerImgDlg.show(pSinger->m_strName);
     });
@@ -266,6 +268,8 @@ void CMedialibDlg::updateSingerImg(cwstr strSingerName)
         if (pSinger->m_strName == strSingerName)
         {
             ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+
+            m_singerImgDlg.update();
         }
     }
     else

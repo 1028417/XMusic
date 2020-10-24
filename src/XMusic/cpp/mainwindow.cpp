@@ -1300,26 +1300,32 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::_playSingerImg()
 {
-    cauto strFile = m_app.getSingerImgMgr().checkSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx);
-    if (!strFile.empty())
-    {
-        QPixmap pm;
-        (void)pm.load(__WS2Q(strFile));
-        ui.labelSingerImg->setPixmap(pm);
-
-        //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
-
-        _relayout();
-
-        g_uSingerImgIdx++;
-    }
-    else
+    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx);
+    if (strFile.empty())
     {
         if (g_uSingerImgIdx > 1)
         {
             _playSingerImg(true);
         }
+
+        return;
     }
+
+    strFile = m_app.getSingerImgMgr().checkSingerImg(strFile);
+    if (strFile.empty())
+    {
+        return;
+    }
+
+    g_uSingerImgIdx++;
+
+    QPixmap pm;
+    (void)pm.load(__WS2Q(strFile));
+    ui.labelSingerImg->setPixmap(pm);
+
+    //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
+
+    _relayout();
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)

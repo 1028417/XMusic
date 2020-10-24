@@ -30,7 +30,13 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
     if (m_pm.isNull())
     {
-        cauto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, m_uSingerImgIdx);
+        auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, m_uSingerImgIdx);
+        if (strFile.empty())
+        {
+            return;
+        }
+
+        strFile = m_app.getSingerImgMgr().checkSingerImg(strFile);
         if (strFile.empty())
         {
             return;
@@ -42,5 +48,25 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
         }
     }
 
-    painter.drawPixmapEx(rc, m_pm);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
+
+    auto cxSrc = m_pm.width();
+    auto cySrc = m_pm.height();
+    auto fHWRate = (float)cxSrc/cySrc;
+
+    int xDst = 0, yDst = 0;
+    auto cxDst = rc.width();
+    auto cyDst = rc.height();
+    if (fHWRate > (float)cxDst/cyDst)
+    {
+        xDst = (cxDst - cyDst/fHWRate)/2;
+        cxDst -= xDst*2;
+    }
+    else
+    {
+        yDst = (cyDst - cxDst*fHWRate)/2;
+        cyDst -= yDst*2;
+    }
+
+    painter.drawPixmap(QRect(xDst, yDst, cxDst, cyDst), m_pm, QRect(0, 0, cxSrc, cySrc));
 }
