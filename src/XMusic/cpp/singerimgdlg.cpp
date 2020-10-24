@@ -122,6 +122,12 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
         return;
     }
 
+    if (0 == m_uSingerImgIdx)
+    {
+        _switchImg(1);
+        return;
+    }
+
     if (te.dt() < __fastTouchDt)
     {
         auto dx = te.dx();
