@@ -131,10 +131,12 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
             if (dx >= 3)
             {
                 _switchImg(-1);
+                return;
             }
             else if (dx <= -3)
             {
                 _switchImg(1);
+                return;
             }
         }
         else
@@ -142,11 +144,22 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
             if (dy >= 3)
             {
                 _switchImg(-1);
+                return;
             }
             else if (dy <= -3)
             {
                 _switchImg(1);
+                return;
             }
         }
+    }
+
+    if (te.x() < rect().center().x()-__size(100))
+    {
+        _switchImg(-1);
+    }
+    else
+    {
+        _switchImg(1);
     }
 }
