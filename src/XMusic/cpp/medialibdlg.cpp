@@ -287,7 +287,7 @@ void CMedialibDlg::updateSingerImg(cwstr strSingerName)
         {
             ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
 
-            m_singerImgDlg.update();
+            m_singerImgDlg.updateSingerImg();
         }
     }
     else

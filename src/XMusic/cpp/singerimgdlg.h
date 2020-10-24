@@ -27,4 +27,6 @@ public:
     void show(cwstr strSingerName);
 
     void relayout(cqrc rcBtnReturn);
+
+    void updateSingerImg();
 };

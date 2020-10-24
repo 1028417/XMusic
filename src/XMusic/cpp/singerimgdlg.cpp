@@ -73,6 +73,15 @@ void CSingerImgDlg::show(cwstr strSingerName)
     });
 }
 
+void CSingerImgDlg::updateSingerImg()
+{
+    if (m_pm.isNull())
+    {
+        m_uSingerImgIdx = 0;
+        _switchImg(0);
+    }
+}
+
 void CSingerImgDlg::_switchImg(int nOffset)
 {
     auto uSingerImgIdx = m_uSingerImgIdx;
@@ -101,9 +110,9 @@ void CSingerImgDlg::_switchImg(int nOffset)
         return;
     }
 
+    m_uSingerImgIdx = uSingerImgIdx;
     (void)m_pm.load(__WS2Q(strFile));
     update();
-    m_uSingerImgIdx = uSingerImgIdx;
 }
 
 void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
