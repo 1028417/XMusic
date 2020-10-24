@@ -28,8 +28,6 @@ private:
 private:
     void _download();
 
-    wstring _getSingerImg(cwstr strSingerName, UINT uIndex);
-
 public:
     void quitDownload();
 #endif
@@ -62,5 +60,6 @@ public:
     wstring getSingerHead(cwstr strSingerName);
 
     wstring getSingerImg(cwstr strSingerName, UINT uIndex);
-    wstring checkSingerImg(cwstr strSingerName, UINT uIndex);
+
+    wstring checkSingerImg(cwstr strFile);
 };
