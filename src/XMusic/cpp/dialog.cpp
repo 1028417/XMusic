@@ -122,19 +122,7 @@ bool CDialog::event(QEvent *ev)
     {
         CPainter painter(this);
         cauto rc = rect();
-        if (!m_bFullScreen)
-        {
-#if __android
-            extern QColor g_crLogoBkg;
-            painter.fillRect(rc, g_crLogoBkg);
-#endif
-
-            painter.fillRectEx(rc, bkgColor(), __xround);
-        }
-        else
-        {
-            painter.fillRect(rc, bkgColor());
-        }
+        _onPaint(painter, rc);
     }
 
         break;
@@ -152,4 +140,21 @@ bool CDialog::event(QEvent *ev)
 	}
 
 	return QDialog::event(ev);
+}
+
+void CDialog::_onPaint(CPainter& painter, cqrc rc)
+{
+    if (!m_bFullScreen)
+    {
+    #if __android
+        extern QColor g_crLogoBkg;
+        painter.fillRect(rc, g_crLogoBkg);
+    #endif
+
+        painter.fillRectEx(rc, bkgColor(), __xround);
+    }
+    else
+    {
+        painter.fillRect(rc, bkgColor());
+    }
 }

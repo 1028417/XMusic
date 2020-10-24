@@ -29,7 +29,19 @@ void CMedialibDlg::init()
 
     ui.labelSingerImg->setPixmapRound(__szRound);
     connect(ui.labelSingerImg, &CLabel::signal_click, [&](){
-        m_singerImgDlg.show();
+        auto pSinger = m_lv.currentSinger();
+        if (NULL == pSinger)
+        {
+            return;
+        }
+
+        cauto strSingerImg = m_app.getSingerImgMgr().getSingerImg(pSinger->m_strName, 0);
+        if (strSingerImg.empty())
+        {
+            return;
+        }
+
+        m_singerImgDlg.show(pSinger->m_strName);
     });
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);

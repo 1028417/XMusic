@@ -12,10 +12,13 @@ private:
     class CMedialibDlg& m_medialibDlg;
     class CApp& m_app;
 
-private:
-    void _relayout(int cx, int cy) override;
+    wstring m_strSingerName;
+    UINT m_uSingerImgIdx = 0;
+    QPixmap m_pm;
 
-    void _onClosed() override
-    {
-    }
+private:
+    void _onPaint(CPainter& painter, cqrc rc) override;
+
+public:
+    void show(cwstr strSingerName);
 };

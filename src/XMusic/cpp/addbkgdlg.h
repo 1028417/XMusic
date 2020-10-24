@@ -144,11 +144,6 @@ private:
 
     bool _handleReturn() override;    
 
-    void _onClosed() override
-    {
-        (void)m_lv.handleReturn();
-    }
-
 #if __windows
     bool _chooseDir();
 #endif

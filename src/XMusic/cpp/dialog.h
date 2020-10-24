@@ -55,6 +55,8 @@ private:
 protected:
     virtual bool event(QEvent *ev) override;
 
+    virtual void _onPaint(CPainter& painter, cqrc rc);
+
 public:
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
     {

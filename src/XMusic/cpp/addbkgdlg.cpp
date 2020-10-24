@@ -127,7 +127,9 @@ void CAddBkgDlg::show()
 #endif
     }
 
-    CDialog::show();
+    CDialog::show([&](){
+        (void)m_lv.handleReturn();
+    });
 }
 
 void CAddBkgDlg::_scanDir(cwstr strDir)
