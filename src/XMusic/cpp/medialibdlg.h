@@ -7,6 +7,8 @@
 
 #include "wholeTrackDlg.h"
 
+#include "SingerImgDlg.h"
+
 class COuterDir : public CMediaDir
 {
 public:
@@ -118,6 +120,8 @@ private:
 
     CWholeTrackDlg m_wholeTrackDlg;
 
+    CSingerImgDlg m_singerImgDlg;
+
     size_t m_uRowCount = 0;
 
 private slots:
@@ -142,10 +146,7 @@ public:
 
     void updateHead(const WString& strTitle);
 
-    void updateSingerImg()
-    {
-        m_lv.updateSingerImg();
-    }
+    void updateSingerImg(cwstr strSingerName);
 
     bool tryShowWholeTrack(CMediaRes& mediaRes)
     {

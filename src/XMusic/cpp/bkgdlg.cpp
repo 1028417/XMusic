@@ -425,22 +425,22 @@ size_t CBkgDlg::caleRowCount(int cy)
 void CBkgDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
-    int xMargin = sz/4;
-    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
+    int cxMargin = sz/4;
+    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    g_xsize = rcReturn.width()-__size(5);
+    auto szBtn = rcReturn.width();
+    g_xsize = szBtn-__size(5);
 
     if (m_bHLayout)
     {
-        ui.btnColor->setGeometry(xMargin, cy - rcReturn.top() - rcReturn.height()
-                                 , rcReturn.width(), rcReturn.height());
+        ui.btnColor->setGeometry(cxMargin, cy - rcReturn.top() - szBtn, szBtn, szBtn);
 
-        int x_bkgView = rcReturn.right()+xMargin;
+        int x_bkgView = rcReturn.right()+cxMargin;
         int cx_bkgView = cx-x_bkgView;
         int cy_bkgView = cx_bkgView*cy/cx;
         m_lv.setGeometry(x_bkgView - m_lv.margin()/2
@@ -452,8 +452,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     }
     else
     {
-        ui.btnColor->setGeometry(cx-xMargin-rcReturn.width()
-                                 , rcReturn.top(), rcReturn.width(), rcReturn.height());
+        ui.btnColor->setGeometry(cx-cxMargin-szBtn, rcReturn.top(), szBtn, szBtn);
 
         int y_bkgView = rcReturn.bottom() + rcReturn.top();
         int cy_bkgView = cy-y_bkgView;

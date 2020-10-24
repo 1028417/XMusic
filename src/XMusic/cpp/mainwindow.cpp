@@ -1218,7 +1218,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName)
         m_app.sync([&](){
             if (m_medialibDlg.isVisible())
             {
-                m_medialibDlg.update(); //m_medialibDlg.updateSingerImg();
+                m_medialibDlg.updateSingerImg(strSingerName);
             }
         });
     }

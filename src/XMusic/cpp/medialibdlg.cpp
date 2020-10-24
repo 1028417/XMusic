@@ -10,6 +10,7 @@ CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
   , m_app(app)
   , m_lv(*this, app, m_OuterDir)
   , m_wholeTrackDlg(*this, app)
+  , m_singerImgDlg(*this, app)
 {
 }
 
@@ -25,6 +26,11 @@ void CMedialibDlg::init()
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     m_lv.setFont(1.0f, QFont::Weight::Normal);
+
+    ui.labelSingerImg->setPixmapRound(__szRound);
+    connect(ui.labelSingerImg, &CLabel::signal_click, [&](){
+        m_singerImgDlg.show();
+    });
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -131,14 +137,14 @@ void CMedialibDlg::_relayout(int cx, int cy)
 {
     m_uRowCount = caleRowCount(cy);
     int sz = cy/(1.1f+m_uRowCount);
-    int xMargin = sz/4;
+    int cxMargin = sz/4;
 //    if (cy < cx)
 //    {
 //#define __szOffset __size(6)
-//        xMargin += __szOffset;
+//        cxMargin += __szOffset;
 //        yReturn -= __szOffset;
 //    }
-    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
+    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
 
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
@@ -147,14 +153,19 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     ui.btnReturn->setGeometry(rcReturn);
 
-    ui.btnUpward->setGeometry(rcReturn.right() + xMargin/2, rcReturn.top(), rcReturn.width(), rcReturn.height());
+    auto szBtn = rcReturn.width();
+    ui.btnUpward->setGeometry(rcReturn.right() + cxMargin/2, rcReturn.top(), szBtn, szBtn);
 
     auto& frameFilterLanguage = *ui.frameFilterLanguage;
-    frameFilterLanguage.move(cx-frameFilterLanguage.width()-xMargin
+    frameFilterLanguage.move(cx-frameFilterLanguage.width()-cxMargin
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
-    int x_btnPlay = cx - __lvRowMargin +__playIconOffset - rcReturn.width();
-    ui.btnPlay->setGeometry(x_btnPlay, rcReturn.top(), rcReturn.width(), rcReturn.height());
+    int x_btnPlay = cx - __lvRowMargin + __playIconOffset - szBtn;
+    QRect rc(x_btnPlay, rcReturn.top(), szBtn, szBtn);
+    ui.btnPlay->setGeometry(rc);
+
+    rc.moveLeft(x_btnPlay - cxMargin - szBtn);
+    ui.labelSingerImg->setGeometry(rc);
 
     _resizeTitle();
 
@@ -166,18 +177,18 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
 void CMedialibDlg::_resizeTitle() const
 {
-    int xMargin = ui.btnReturn->x();
+    int cxMargin = ui.btnReturn->x();
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
-    int x_title = pButton->geometry().right() + xMargin;
+    int x_title = pButton->geometry().right() + cxMargin;
 
     int cx_title = 0;
     if (ui.btnPlay->isVisible())
     {
-        cx_title = ui.btnPlay->x() - xMargin - x_title;
+        cx_title = ui.btnPlay->x() - cxMargin - x_title;
     }
     else
     {
-        cx_title = width() - xMargin - x_title;
+        cx_title = width() - cxMargin - x_title;
     }
 
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
@@ -218,6 +229,13 @@ void CMedialibDlg::updateHead(const WString& strTitle)
 
     ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
 
+    ui.labelSingerImg->clear();
+    auto pSinger = m_lv.currentSinger();
+    if (pSinger)
+    {
+        ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+    }
+
     ui.btnPlay->setVisible(bShowPlayButton);
 
 /*#if __android// || __ios
@@ -226,6 +244,22 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     ui.btnUpward->setVisible(bShowUpwardButton);
 
     _resizeTitle();
+}
+
+void CMedialibDlg::updateSingerImg(cwstr strSingerName)
+{
+    auto pSinger = m_lv.currentSinger();
+    if (pSinger)
+    {
+        if (pSinger->m_strName == strSingerName)
+        {
+            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+        }
+    }
+    else
+    {
+        m_lv.update(); //m_lv.updateSingerImg();
+    }
 }
 
 void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)

@@ -91,6 +91,10 @@ public:
     }
 #endif
 
+    CSinger *currentSinger() const;
+
+    cqpm genSingerHead(UINT uSingerID, cwstr strSingerName);
+
 private:
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
@@ -104,8 +108,6 @@ private:
     void _genMLItemContext(tagMLItemContext&) override;
 
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
-
-    cqpm _getSingerPixmap(UINT uSingerID, cwstr strSingerName);
 
     void _getTitle(CMediaSet&, WString& strTitle);
     void _getTitle(CPath&, WString& strTitle);

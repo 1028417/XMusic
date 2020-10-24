@@ -31,6 +31,7 @@ SOURCES += ../controller.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
     cpp/PlayingList.cpp \
+    cpp/singerimgdlg.cpp \
     cpp/widget.cpp \
     cpp/bkgdlg.cpp \
     cpp/listview.cpp \
@@ -53,6 +54,7 @@ HEADERS += cpp/app.h \
     cpp/mainwindow.h \
     cpp/label.h \
     cpp/PlayingList.h \
+    cpp/singerimgdlg.h \
     cpp/widget.h \
     cpp/button.h \
     cpp/progressbar.h \
@@ -73,7 +75,8 @@ RESOURCES += res.qrc
 
 FORMS += mainwindow.ui  msgbox.ui  networkWarnDlg.ui \
          bkgdlg.ui  addbkgdlg.ui  colordlg.ui \
-         medialibdlg.ui  wholeTrackDlg.ui
+         medialibdlg.ui  wholeTrackDlg.ui \
+         singerimgdlg.ui
 
 INCLUDEPATH += ../../inc  cpp
 

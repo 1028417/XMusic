@@ -260,7 +260,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pmIcon = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pmIcon = &_getSingerPixmap(context.pMediaSet->m_uID,
+            context.pmIcon = &genSingerHead(context.pMediaSet->m_uID,
                                                context.pMediaSet->m_strName);
             break;
         case E_MediaSetType::MST_SingerGroup:
@@ -283,7 +283,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (!strSingerName.empty())
                 {
-                    context.pmIcon = &_getSingerPixmap(uSingerID, strSingerName);
+                    context.pmIcon = &genSingerHead(uSingerID, strSingerName);
                 }
             }
         }
@@ -418,7 +418,26 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
 }
 
-cqpm CMedialibView::_getSingerPixmap(UINT uSingerID, cwstr strSingerName)
+CSinger *CMedialibView::currentSinger() const
+{
+    auto pMediaSet = currentMediaSet();
+    if (pMediaSet)
+    {
+        if (E_MediaSetType::MST_Singer == pMediaSet->m_eType)
+        {
+            return (CSinger*)pMediaSet;
+        }
+
+        if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+        {
+            return (CSinger*)pMediaSet->m_pParent;
+        }
+    }
+
+    return NULL;
+}
+
+cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
 {
     auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
     if (pSingerPixmap)

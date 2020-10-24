@@ -170,15 +170,15 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_uRowCount = CBkgDlg::caleRowCount(cy);
 
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
-    int xMargin = sz/4;
-    QRect rcReturn(xMargin, xMargin, sz-xMargin*2, sz-xMargin*2);
+    int cxMargin = sz/4;
+    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    ui.labelTitle->move(rcReturn.right() + xMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
+    ui.labelTitle->move(rcReturn.right() + cxMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
     ui.labelChooseDir->setVisible(false);
 
@@ -190,7 +190,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 #if __windows
         ui.labelChooseDir->setVisible(true);
-        ui.labelChooseDir->move(cx-ui.labelChooseDir->width()-xMargin
+        ui.labelChooseDir->move(cx-ui.labelChooseDir->width()-cxMargin
                                         , rcReturn.center().y()-ui.labelChooseDir->height()/2);
 #endif
     }
