@@ -88,11 +88,34 @@ void CSingerImgDlg::_switchImg(int nOffset)
     }
     else if (nOffset < 0)
     {
-        if (0 == uSingerImgIdx)
+        if (uSingerImgIdx > 0)
         {
-            return;
+            uSingerImgIdx--;
         }
-        uSingerImgIdx--;
+        else
+        {
+            cauto mapFile = m_app.getSingerImgMgr().fileMap();
+            cauto itr = mapFile.find(m_strSingerName);
+            if (itr != mapFile.end())
+            {
+                uSingerImgIdx = itr->second.size();
+                while (uSingerImgIdx > 1)
+                {
+                    uSingerImgIdx--;
+
+                    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
+                    if (!strFile.empty())
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (0 == uSingerImgIdx)
+            {
+                return;
+            }
+        }
     }
 
     auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
@@ -156,12 +179,6 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
                 return;
             }
         }
-    }
-
-    if (0 == m_uSingerImgIdx)
-    {
-        _switchImg(1);
-        return;
     }
 
     if (te.x() < rect().center().x()-__size(100))

@@ -261,7 +261,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
 
-                context.fIconMargin *= m_medialibDlg.isHLayout()?1.333f:1.3f;
+                context.fIconMargin *= m_medialibDlg.isHLayout()?1.3f:1.33f;
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -343,7 +343,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
-        context.fIconMargin /= bHLayout?1.3f:1.333f;
+        context.fIconMargin /= bHLayout?1.333f:1.3f;
 
         context.uIconRound = 0;
 
@@ -495,7 +495,12 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         else if (E_MediaSetType::MST_Album == mlContext.pMediaSet->m_eType)
         {
             auto pAlbum = (CAlbum*)mlContext.pMediaSet;
-            strRemark << pAlbum->languageName() << '\n' << pAlbum->albumItems().size() << L" 曲目";
+            cauto strLanguageName = pAlbum->languageName();
+            if (!strLanguageName.empty())
+            {
+                strRemark << strLanguageName << '\n';
+            }
+            strRemark << pAlbum->albumItems().size() << L" 曲目";
         }
         else if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
         {
