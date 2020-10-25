@@ -550,7 +550,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         else if (E_MediaSetType::MST_Album == mlContext.pMediaSet->m_eType)
         {
             auto pAlbum = (CAlbum*)mlContext.pMediaSet;
-            strRemark << pAlbum->albumItems().size() << L" 曲目";
+            strRemark << pAlbum->languageName() << '\n' << pAlbum->albumItems().size() << L" 曲目";
         }
         else if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
         {
