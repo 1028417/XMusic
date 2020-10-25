@@ -3,9 +3,6 @@
 
 #include "MedialibView.h"
 
-#define __XMusicDirName L"XMusic"
-#define __LocalDirName  L" 本机"
-
 #define __FlashingAlpha 170
 
 #define __RemarkAlpha 200
@@ -62,14 +59,12 @@ void CMedialibView::init()
 
 void CMedialibView::_onShowRoot()
 {
-    m_medialibDlg.updateHead(L"媒体库");
+    m_medialibDlg.updateHead();
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    WString strTitle;
-    _getTitle(MediaSet, strTitle);
-    m_medialibDlg.updateHead(strTitle);
+    m_medialibDlg.updateHead();
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
@@ -150,59 +145,9 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     }
 }
 
-void CMedialibView::_onShowDir(CPath& dir)
+void CMedialibView::_onShowDir(CPath&)
 {
-    WString strTitle;
-    _getTitle(dir, strTitle);
-    m_medialibDlg.updateHead(strTitle);
-}
-
-void CMedialibView::_getTitle(CMediaSet& MediaSet, WString& strTitle)
-{
-    if (&MediaSet == &m_SingerLib || &MediaSet == &m_PlaylistLib)
-    {
-        strTitle << MediaSet.m_strName;
-    }
-    else if (E_MediaSetType::MST_Album == MediaSet.m_eType)
-    {
-        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
-    }
-    else
-    {
-        if (MediaSet.m_pParent)
-        {
-            strTitle << MediaSet.m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
-            strTitle << __CNDot;
-        }
-
-        strTitle << MediaSet.m_strName;
-    }
-}
-
-void CMedialibView::_getTitle(CPath& dir, WString& strTitle)
-{
-    if (&dir == &__medialib)
-    {
-        strTitle << __XMusicDirName;
-    }
-    else if (&dir == &m_OuterDir)
-    {
-        strTitle << __LocalDirName;
-    }
-    else
-    {
-        strTitle << dir.fileName();
-
-        /*auto pParent = dir.parent();
-        if (NULL == pParent)
-        {
-            pParent = &m_MediaLib;
-        }
-
-        _getTitle(*pParent, strTitle);
-
-        strTitle << __wcDirSeparator << dir.GetName();*/
-    }
+    m_medialibDlg.updateHead();
 }
 
 size_t CMedialibView::getColCount() const

@@ -5,6 +5,9 @@
 
 #include "androidutil.h"
 
+#define __XMusicDirName L"XMusic"
+#define __LocalDirName  L" 本机"
+
 #define __playIconOffset __size(10)
 
 class CMedialibView : public CMLListView
@@ -108,9 +111,6 @@ private:
     void _genMLItemContext(tagMLItemContext&) override;
 
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
-
-    void _getTitle(CMediaSet&, WString& strTitle);
-    void _getTitle(CPath&, WString& strTitle);
 
     void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
 
