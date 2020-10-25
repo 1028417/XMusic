@@ -100,8 +100,10 @@ void CSingerImgDlg::_switchImg(int nOffset)
     auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
     if (strFile.empty())
     {
-        uSingerImgIdx = 0;
         //return;
+
+        strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
+        uSingerImgIdx = 0;
     }
 
     strFile = m_app.getSingerImgMgr().dir() + strFile;
@@ -111,6 +113,7 @@ void CSingerImgDlg::_switchImg(int nOffset)
     }
 
     m_uSingerImgIdx = uSingerImgIdx;
+
     (void)m_pm.load(__WS2Q(strFile));
     update();
 }
