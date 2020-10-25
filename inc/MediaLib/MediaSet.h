@@ -22,6 +22,9 @@ enum class E_LanguageType
 class CMediasetProperty
 {
 public:
+    static cwstr languageName(UINT uLanguage);
+    static cwstr languageName(E_LanguageType eLanguage);
+
     CMediasetProperty() = default;
 
     CMediasetProperty(UINT uLanguage, bool bDisableDemand, bool bDisableExport)
@@ -140,15 +143,26 @@ private:
 #endif
 
 public:
+    void setProperty(const CMediasetProperty& property)
+    {
+        m_property = property;
+    }
+
 	const CMediasetProperty& property() const
 	{
 		return m_property;
 	}
 
-	void setProperty(const CMediasetProperty& property)
-	{
-		m_property = property;
-	}
+    UINT language() const;
+
+    cwstr languageName() const
+    {
+        return CMediasetProperty::languageName(language());
+    }
+
+    bool isDisableDemand() const;
+
+    bool isDisableExport() const;
 
 	int index() const
 	{
