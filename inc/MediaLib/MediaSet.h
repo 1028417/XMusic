@@ -19,7 +19,7 @@ enum class E_LanguageType
 	LT_EUR = __EURLanguage,
 };
 
-class CMediasetProperty
+class __MediaLibExt CMediasetProperty
 {
 public:
     static cwstr languageName(UINT uLanguage);
