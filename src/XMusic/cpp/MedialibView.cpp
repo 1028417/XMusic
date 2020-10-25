@@ -398,7 +398,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
-        context.fIconMargin /= bHLayout?1.33f:1.3f;
+        context.fIconMargin *= bHLayout?1.33f:1.3f;
 
         context.uIconRound = 0;
 
