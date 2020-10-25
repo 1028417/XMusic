@@ -218,7 +218,8 @@ void CMedialibDlg::_resizeTitle() const
     int cx_title = 0;
     if (ui.btnPlay->isVisible())
     {
-        cx_title = ui.btnPlay->x() - cxMargin - x_title;
+        cx_title = ui.labelSingerImg->x();
+        //cx_title = ui.btnPlay->x() - cxMargin - x_title;
     }
     else
     {
@@ -232,13 +233,11 @@ void CMedialibDlg::_genTitle(CMediaSet& MediaSet, WString& strTitle)
 {
     if (E_MediaSetType::MST_Album == MediaSet.m_eType)
     {
-        if (MediaSet.m_strName.size() > 10)
+        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
+
+        if (!m_bHLayout && strutil::checkWordCount(strTitle) >= 14)
         {
-            strTitle << MediaSet.m_pParent->m_strName << '\n' << MediaSet.m_strName;
-        }
-        else
-        {
-            strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
+            strTitle = MediaSet.m_strName;
         }
     }
     else
@@ -247,9 +246,17 @@ void CMedialibDlg::_genTitle(CMediaSet& MediaSet, WString& strTitle)
         {
             strTitle << MediaSet.m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
             strTitle << __CNDot;
-        }
+            strTitle << MediaSet.m_strName;
 
-        strTitle << MediaSet.m_strName;
+            if (!m_bHLayout && strutil::checkWordCount(strTitle) >= 14)
+            {
+                strTitle = MediaSet.m_strName;
+            }
+        }
+        else
+        {
+            strTitle << MediaSet.m_strName;
+        }
     }
 }
 
