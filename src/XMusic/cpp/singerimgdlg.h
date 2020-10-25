@@ -13,7 +13,10 @@ private:
 
     wstring m_strSingerName;
     UINT m_uSingerImgIdx = 0;
-    QPixmap m_pm;
+
+    UINT m_cxImg = 0;
+    UINT m_cyImg = 0;
+    QBrush m_brush;
 
 private:
     void _onPaint(CPainter& painter, cqrc rc) override;
