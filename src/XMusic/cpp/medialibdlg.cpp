@@ -357,21 +357,47 @@ void CMedialibDlg::updateHead()
     _resizeTitle();
 }
 
-void CMedialibDlg::updateSingerImg(cwstr strSingerName)
+void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg)
 {
     auto pSinger = m_lv.currentSinger();
     if (pSinger)
     {
-        if (pSinger->m_strName == strSingerName)
+        if (pSinger->m_strName != strSingerName)
         {
-            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+            return;
+        }
 
-            m_singerImgDlg.updateSingerImg();
+        if (singerImg.isHead())
+        {
+            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, strSingerName));
+        }
+        else
+        {
+            if (m_singerImgDlg.isVisible())
+            {
+                m_singerImgDlg.updateSingerImg();
+            }
         }
     }
     else
     {
-        m_lv.update(); //m_lv.updateSingerImg();
+        if (!singerImg.isHead())
+        {
+            return;
+        }
+
+        auto pMediaSet = m_lv.currentMediaSet();
+        if (NULL == pMediaSet)
+        {
+            return;
+        }
+        if (E_MediaSetType::MST_SingerGroup != pMediaSet->m_eType
+                && E_MediaSetType::MST_Playlist != pMediaSet->m_eType)
+        {
+            return;
+        }
+
+        m_lv.update();
     }
 }
 

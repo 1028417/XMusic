@@ -261,7 +261,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
 
-                context.fIconMargin *= m_medialibDlg.isHLayout()?1.3f:1.33f;
+                context.fIconMargin = (context.fIconMargin-0.01f) * m_medialibDlg.rowCount()/this->getRowCount();
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -281,7 +281,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
-                    context.strText = L"DTS 5.1声道DigitalSurround";
+                    context.strText = L"5.1声道DTSDigitalSurround";
                 }
             }
         }
@@ -687,19 +687,6 @@ void CMedialibView::_flashItem(UINT uItem, UINT uMSDelay)
         m_nFlashItem = -1;
         update();
     });
-}
-
-void CMedialibView::updateSingerImg()
-{
-    CMediaSet* pMediaSet = currentMediaSet();
-    if (pMediaSet)
-    {
-        if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType
-            || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
-        {
-            update();
-        }
-    }
 }
 
 void CMedialibView::play()

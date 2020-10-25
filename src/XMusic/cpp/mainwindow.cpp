@@ -1211,23 +1211,26 @@ void MainWindow::onPlayStop(bool bRet)
     });
 }
 
-void MainWindow::onSingerImgDownloaded(cwstr strSingerName)
+void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& singerImg)
 {
     if (m_medialibDlg.isVisible())
     {
         m_app.sync([&](){
             if (m_medialibDlg.isVisible())
             {
-                m_medialibDlg.updateSingerImg(strSingerName);
+                m_medialibDlg.updateSingerImg(strSingerName, singerImg);
             }
         });
     }
 
-    if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
+    if (!singerImg.isHead() && !singerImg.isPiiic())
     {
-        m_app.sync([&](){
-            _playSingerImg();
-        });
+        if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
+        {
+            m_app.sync([&](){
+                _playSingerImg();
+            });
+        }
     }
 }
 

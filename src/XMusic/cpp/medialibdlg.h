@@ -146,7 +146,7 @@ public:
 
     void updateHead();
 
-    void updateSingerImg(cwstr strSingerName);
+    void updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg);
 
     bool tryShowWholeTrack(CMediaRes& mediaRes)
     {

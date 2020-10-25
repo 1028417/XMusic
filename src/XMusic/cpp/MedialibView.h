@@ -66,8 +66,6 @@ public:
 
     void init();
 
-    void updateSingerImg();
-
     void play();
 
     void reset() override

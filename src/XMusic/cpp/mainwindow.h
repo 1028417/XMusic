@@ -157,7 +157,7 @@ private:
 
     void onPlayStop(bool bRet) override;
 
-    void onSingerImgDownloaded(cwstr strSingerName) override;
+    void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
 
     bool installApp(const CByteBuffer& bbfBuff) override;
 };
