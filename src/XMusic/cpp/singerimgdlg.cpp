@@ -7,7 +7,6 @@ static Ui::SingerImgDlg ui;
 
 CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
     : CDialog(medialibDlg)
-    , m_medialibDlg(medialibDlg)
     , m_app(app)
 {
     ui.setupUi(this);

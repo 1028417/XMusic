@@ -9,7 +9,6 @@ public:
     CSingerImgDlg(class CMedialibDlg& medialibDlg, class CApp& app);
 
 private:
-    class CMedialibDlg& m_medialibDlg;
     class CApp& m_app;
 
     wstring m_strSingerName;
@@ -19,7 +18,7 @@ private:
 private:
     void _onPaint(CPainter& painter, cqrc rc) override;
 
-    void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te);
+    void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te) override;
 
     void _switchImg(int nOffset);
 
