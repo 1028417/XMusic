@@ -100,7 +100,8 @@ void CSingerImgDlg::_switchImg(int nOffset)
     auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
     if (strFile.empty())
     {
-        return;
+        uSingerImgIdx = 0;
+        //return;
     }
 
     strFile = m_app.getSingerImgMgr().dir() + strFile;
