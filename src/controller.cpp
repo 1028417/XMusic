@@ -23,7 +23,7 @@ void CXController::start()
             {
                 __srand
                 auto strAlarmmedia = vctAlarmmedia[__rand(vctAlarmmedia.size() - 1)];
-                strAlarmmedia = __xmedialib.toAbsPath(strAlarmmedia, true);
+                strAlarmmedia = __medialib.toAbsPath(strAlarmmedia, true);
 
                 if (PlayMgr.play(strAlarmmedia))
                 {
@@ -250,7 +250,7 @@ CMediaDir* CXController::attachDir(cwstr strDir)
 		return NULL;
 	}
 
-	if (!__xmedialib.checkIndependentDir(strDir, false))
+    if (!__medialib.checkIndependentDir(strDir, false))
 	{
 		m_view.msgBox(L"请选择与根目录不相关的目录");
 		return NULL;
@@ -339,7 +339,7 @@ void CXController::moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir
 
 void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir)
 {
-	cauto strDstAbsDir = __xmedialib.toAbsPath(strOppDir, true);
+    cauto strDstAbsDir = __medialib.toAbsPath(strOppDir, true);
 
 	SMap<wstring, wstring> mapMovedFiles;
 
@@ -419,7 +419,7 @@ int CXController::AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 	SArray<wstring> arrOppPaths;
 	for (cauto strFile : lstFiles)
 	{
-		strOppPath = __xmedialib.toOppPath(strFile);
+        strOppPath = __medialib.toOppPath(strFile);
 		if (strOppPath.empty())
 		{
             m_view.msgBox((L"添加曲目失败，请选择以下目录中的文件: \n\n\t"
@@ -442,7 +442,7 @@ int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& album, 
 	SArray<wstring> lstOppPaths;
 	for (cauto strFile : lstAbsPath)
 	{
-		wstring strOppPath = __xmedialib.toOppPath(strFile);
+        wstring strOppPath = __medialib.toOppPath(strFile);
 		strOppPath = fsutil::GetOppPath(strSingerDir, strOppPath);
 		if (strOppPath.empty())
 		{

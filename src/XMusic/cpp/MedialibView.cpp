@@ -215,9 +215,26 @@ size_t CMedialibView::getColCount() const
     return 1;
 }
 
-size_t CMedialibView::_getRowCount(bool bRoot) const
+size_t CMedialibView::getRowCount() const
 {
-    if (bRoot)
+    if (current())
+    {
+        if (currentDir() == &__medialib)
+        {
+            //return m_medialibDlg.rowCount()-1;
+
+            if (m_medialibDlg.isHLayout())
+            {
+                return ceil(__medialib.dirs().size()/2.0f);
+            }
+            else
+            {
+                return __medialib.dirs().size();
+            }
+        }
+        return m_medialibDlg.rowCount();
+    }
+    else
     {
         if (m_medialibDlg.isHLayout())
         {
@@ -227,10 +244,6 @@ size_t CMedialibView::_getRowCount(bool bRoot) const
         {
             return 10;
         }
-    }
-    else
-    {
-        return m_medialibDlg.rowCount();
     }
 }
 
@@ -302,6 +315,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 auto strDirName = context.pDir->fileName();
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
+
+                context.fIconMargin /= m_medialibDlg.isHLayout()?1.33f:1.3f;
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -383,10 +398,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
-        if (bHLayout)
-        {
-            context.fIconMargin /= 1.3;
-        }
+        context.fIconMargin /= bHLayout?1.33f:1.3f;
 
         context.uIconRound = 0;
 

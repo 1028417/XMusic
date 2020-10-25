@@ -90,12 +90,6 @@ private:
     TD_XFileList m_paSubFiles;
 
 protected:
-    size_t getRowCount() const override
-    {
-        bool bRoot = NULL==m_pMediaset && NULL==m_pDir;
-        return _getRowCount(bRoot);
-    }
-
     void _cleanup()
     {
         reset();
@@ -131,8 +125,6 @@ private:
 
     virtual size_t _getRootItemCount() const = 0;
 
-    virtual size_t _getRowCount(bool bRoot) const = 0;
-
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
     virtual void _genMLItemContext(tagMLItemContext&) = 0;
@@ -142,25 +134,25 @@ private:
     virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMedia&){}
     virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CPath&){}
 
-    inline void* _current() const
-    {
-        void *p = m_pMediaset;
-        if (NULL == p)
-        {
-            p = m_pDir;
-        }
-        return p;
-    }
-
     inline void _saveScrollRecord()
     {
-        CListView::_saveScrollRecord(_current());
+        CListView::_saveScrollRecord(current());
     }
 
     void _showMediaSet(CMediaSet& MediaSet);
 
 public:
     size_t getItemCount() const override;
+
+    void* current() const
+    {
+        if (m_pMediaset)
+        {
+            return m_pMediaset;
+        }
+
+        return m_pDir;
+    }
 
     CMediaSet* currentMediaSet() const
     {

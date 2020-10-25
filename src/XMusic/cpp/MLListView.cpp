@@ -209,7 +209,7 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
 
 bool CMLListView::upward()
 {
-    _clearScrollRecord(_current());
+    _clearScrollRecord(current());
 
     if (m_pMediaset)
     {
@@ -240,6 +240,6 @@ bool CMLListView::upward()
         return false;
     }
 
-    scrollToItem(_scrollRecord(_current()));
+    scrollToItem(_scrollRecord(current()));
     return true;
 }

@@ -101,7 +101,7 @@ private:
     void _onShowDir(CPath&) override;
 
     size_t getColCount() const override;
-    size_t _getRowCount(bool bRoot) const override;
+    size_t getRowCount() const override;
 
     size_t _getRootItemCount() const override;
 
