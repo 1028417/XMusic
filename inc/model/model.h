@@ -274,7 +274,7 @@ public:
         return 0;
     }
 
-    virtual void onSingerImgDownloaded(cwstr) {}
+    virtual void onSingerImgDownloaded(cwstr, const tagSingerImg&) {}
 
     virtual bool installApp(const CByteBuffer&) {return true;}
 };

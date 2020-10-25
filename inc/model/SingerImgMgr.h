@@ -21,7 +21,7 @@ private:
 
 #if __OnlineMediaLib
     map<wstring, tagSingerImg> m_mapOnlineFile;
-    list<wstring> m_lstDownloadFile;
+    list<tagSingerImg> m_lstDownloadFile;
     mutex m_mutex;
     XThread m_thrDownload;
 
