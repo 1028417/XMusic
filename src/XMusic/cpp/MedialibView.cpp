@@ -316,7 +316,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
 
-                context.fIconMargin /= m_medialibDlg.isHLayout()?1.33f:1.3f;
+                context.fIconMargin *= m_medialibDlg.isHLayout()?1.3f:1.33f;
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -398,7 +398,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
-        context.fIconMargin *= bHLayout?1.33f:1.3f;
+        context.fIconMargin /= bHLayout?1.3f:1.33f;
 
         context.uIconRound = 0;
 
