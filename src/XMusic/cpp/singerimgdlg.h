@@ -12,6 +12,7 @@ private:
     class CApp& m_app;
 
     wstring m_strSingerName;
+    UINT m_uImgCount = 0;
     UINT m_uSingerImgIdx = 0;
 
     UINT m_cxImg = 0;

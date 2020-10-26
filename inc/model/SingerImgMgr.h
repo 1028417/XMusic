@@ -17,20 +17,22 @@ private:
 	wstring m_strDir;
 
     map<wstring, wstring> m_mapSingerName;
-    map<wstring, vector<tagSingerImg>> m_mapFile;
+    map<wstring, list<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
-    map<wstring, tagSingerImg> m_mapOnlineFile;
-    list<tagSingerImg> m_lstDownloadFile;
+    set<const tagSingerImg*> m_setOnlineFile;
+    list<const tagSingerImg*> m_lstDownloadFile;
     mutex m_mutex;
     XThread m_thrDownload;
 
 private:
-    void _download();
+    bool _raiseFile(const tagSingerImg *pSingerImg);
 
-public:
-    void quitDownload();
+    void _download();
 #endif
+
+private:
+    wstring _fileSingerName(cwstr strFile) const;
 
 public:
 	cwstr dir() const
@@ -38,7 +40,7 @@ public:
 		return m_strDir;
 	}
 
-    const map<wstring, vector<tagSingerImg>>& fileMap() const
+    const map<wstring, list<tagSingerImg>>& fileMap() const
 	{
 		return m_mapFile;
 	}
@@ -53,13 +55,17 @@ public:
 
 	void clearSingerImg();
 
-#if __OnlineMediaLib
-    void downloadSingerHead(const list<wstring>& lstSingerName);
-#endif
-
     wstring getSingerHead(cwstr strSingerName);
 
-    wstring getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
+    const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
-    wstring checkSingerImg(cwstr strFile);
+#if __OnlineMediaLib
+    void downloadSingerHead(const list<wstring>& lstSingerName);
+
+	wstring checkSingerImg(const tagSingerImg*);
+
+	UINT downloadSingerImg(cwstr strSingerName);
+
+    void quitDownload();
+#endif
 };

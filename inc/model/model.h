@@ -199,7 +199,7 @@ struct tagSingerImg
 	UINT cx = 0;
 	UINT cy = 0;
 
-    bool isHead() const
+    bool isSmall() const
     {
         return cx < 400 || cy < 400;
     }

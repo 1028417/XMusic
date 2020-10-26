@@ -60,6 +60,12 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
 void CSingerImgDlg::show(cwstr strSingerName)
 {
+    m_uImgCount = m_app.getSingerImgMgr().downloadSingerImg(strSingerName);
+    if (0 == m_uImgCount)
+    {
+        return;
+    }
+
     m_strSingerName = strSingerName;
     m_uSingerImgIdx = 0;
     m_cxImg = m_cyImg = 0;
@@ -94,40 +100,25 @@ void CSingerImgDlg::_switchImg(int nOffset)
         }
         else
         {
-            cauto mapFile = m_app.getSingerImgMgr().fileMap();
-            cauto itr = mapFile.find(m_strSingerName);
-            if (itr != mapFile.end())
-            {
-                uSingerImgIdx = itr->second.size();
-                while (uSingerImgIdx > 1)
-                {
-                    uSingerImgIdx--;
-
-                    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
-                    if (!strFile.empty())
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (0 == uSingerImgIdx)
+            if (m_uImgCount <= 1)
             {
                 return;
             }
+
+            uSingerImgIdx = m_uImgCount-1;
         }
     }
 
-    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
-    if (strFile.empty())
+    auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
+    if (NULL == pSingerImg)
     {
         //return;
 
-        strFile = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
+        pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
         uSingerImgIdx = 0;
     }
 
-    strFile = m_app.getSingerImgMgr().dir() + strFile;
+    cauto strFile = m_app.getSingerImgMgr().dir() + pSingerImg->strFile;
     if (!fsutil::existFile(strFile))
     {
         return;

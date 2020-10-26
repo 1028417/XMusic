@@ -409,10 +409,10 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 		uSingerImgIdx = 0;
 	}
 
-	cauto strSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx, false);
-	if (!strSingerImg.empty())
+	cauto pSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx, false);
+	if (pSingerImg)
 	{
-		(void)m_imgSinger.Load(strSingerImg);
+		(void)m_imgSinger.Load(m_view.getSingerImgMgr().dir() + pSingerImg->strFile);
 		this->InvalidateRect(__SingerImgRect);
 
 		uSingerImgIdx++;

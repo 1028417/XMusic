@@ -30,37 +30,10 @@ void CMedialibDlg::init()
     ui.labelSingerImg->setPixmapRound(__szRound);
     connect(ui.labelSingerImg, &CLabel::signal_click, [&](){
         auto pSinger = m_lv.currentSinger();
-        if (NULL == pSinger)
+        if (pSinger)
         {
-            return;
+            m_singerImgDlg.show(pSinger->m_strName);
         }
-
-        cauto mapSingerImg = m_app.getSingerImgMgr().fileMap();
-        cauto itr = mapSingerImg.find(pSinger->m_strName);
-        if (itr == mapSingerImg.end())
-        {
-            return;
-        }
-
-        bool bFlag = false;
-        for (cauto singerImg : itr->second)
-        {
-            if (singerImg.isHead())
-            {
-                continue;
-            }
-
-            bFlag = true;
-
-            (void)m_app.getSingerImgMgr().checkSingerImg(singerImg.strFile);
-        }
-
-        if (!bFlag)
-        {
-            return;
-        }
-
-        m_singerImgDlg.show(pSinger->m_strName);
     });
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
@@ -367,7 +340,7 @@ void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& sing
             return;
         }
 
-        if (singerImg.isHead())
+        if (singerImg.isSmall())
         {
             ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, strSingerName));
         }
@@ -381,7 +354,7 @@ void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& sing
     }
     else
     {
-        if (!singerImg.isHead())
+        if (!singerImg.isSmall())
         {
             return;
         }

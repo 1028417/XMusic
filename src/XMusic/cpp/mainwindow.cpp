@@ -1223,14 +1223,16 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
         });
     }
 
-    if (!singerImg.isHead() && !singerImg.isPiiic())
+    if (singerImg.isSmall() || singerImg.isPiiic())
     {
-        if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
-        {
-            m_app.sync([&](){
-                _playSingerImg();
-            });
-        }
+        return;
+    }
+
+    if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
+    {
+        m_app.sync([&](){
+            _playSingerImg();
+        });
     }
 }
 
@@ -1303,8 +1305,8 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::_playSingerImg()
 {
-    auto strFile = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
-    if (strFile.empty())
+    auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    if (NULL == pSingerImg)
     {
         if (g_uSingerImgIdx > 1)
         {
@@ -1314,7 +1316,7 @@ void MainWindow::_playSingerImg()
         return;
     }
 
-    strFile = m_app.getSingerImgMgr().checkSingerImg(strFile);
+    cauto strFile = m_app.getSingerImgMgr().checkSingerImg(pSingerImg);
     if (strFile.empty())
     {
         return;
