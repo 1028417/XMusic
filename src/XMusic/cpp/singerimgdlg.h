@@ -12,8 +12,11 @@ private:
     class CApp& m_app;
 
     wstring m_strSingerName;
+
     UINT m_uImgCount = 0;
-    UINT m_uSingerImgIdx = 0;
+    map<UINT, wstring> m_mapImg;
+    UINT m_uImgIdx = 0;
+    int m_nSwitchingOffset = 0;
 
     UINT m_cxImg = 0;
     UINT m_cyImg = 0;

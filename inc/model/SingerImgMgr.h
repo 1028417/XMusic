@@ -60,11 +60,12 @@ public:
     const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
 #if __OnlineMediaLib
+    UINT getSingerImgCount(cwstr strSingerName);
+
     void downloadSingerHead(const list<wstring>& lstSingerName);
 
-	wstring checkSingerImg(const tagSingerImg*);
-
-	UINT downloadSingerImg(cwstr strSingerName);
+    wstring checkSingerImg(const tagSingerImg*);
+    wstring checkSingerImg(cwstr strSingerName, UINT uIndex);
 
     void quitDownload();
 #endif

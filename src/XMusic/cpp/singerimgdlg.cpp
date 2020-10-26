@@ -60,15 +60,19 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
 void CSingerImgDlg::show(cwstr strSingerName)
 {
-    m_uImgCount = m_app.getSingerImgMgr().downloadSingerImg(strSingerName);
+    m_uImgCount = m_app.getSingerImgMgr().getSingerImgCount(strSingerName);
     if (0 == m_uImgCount)
     {
         return;
     }
 
     m_strSingerName = strSingerName;
-    m_uSingerImgIdx = 0;
+
+    m_mapImg.clear();
+    m_uImgIdx = 0;
+
     m_cxImg = m_cyImg = 0;
+
     _switchImg(0);
 
     CDialog::show([&](){
@@ -80,23 +84,27 @@ void CSingerImgDlg::updateSingerImg()
 {
     if (0 == m_cxImg)
     {
-        m_uSingerImgIdx = 0;
+        m_uImgIdx = 0;
         _switchImg(0);
+    }
+    else if (m_nSwitchingOffset != 0)
+    {
+        _switchImg(m_nSwitchingOffset);
     }
 }
 
 void CSingerImgDlg::_switchImg(int nOffset)
 {
-    auto uSingerImgIdx = m_uSingerImgIdx;
+    auto uImgIdx = m_uImgIdx;
     if (nOffset > 0)
     {
-        uSingerImgIdx++;
+        uImgIdx++;
     }
     else if (nOffset < 0)
     {
-        if (uSingerImgIdx > 0)
+        if (uImgIdx > 0)
         {
-            uSingerImgIdx--;
+            uImgIdx--;
         }
         else
         {
@@ -105,36 +113,73 @@ void CSingerImgDlg::_switchImg(int nOffset)
                 return;
             }
 
-            uSingerImgIdx = m_uImgCount-1;
+            uImgIdx = m_uImgCount-1;
         }
     }
 
-    auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uSingerImgIdx, false);
-    if (NULL == pSingerImg)
-    {
-        //return;
+    m_nSwitchingOffset = nOffset;
 
-        pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
-        uSingerImgIdx = 0;
+    wstring strFile;
+    cauto itr = m_mapImg.find(uImgIdx);
+    if (itr != m_mapImg.end())
+    {
+        strFile = itr->second;
+    }
+    else
+    {
+        auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uImgIdx, false);
+        if (NULL == pSingerImg)
+        {
+            //return;
+
+            pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
+            uImgIdx = 0;
+        }
+
+        strFile = m_app.getSingerImgMgr().checkSingerImg(pSingerImg);
+        if (strFile.empty())
+        {
+            return;
+        }
     }
 
-    cauto strFile = m_app.getSingerImgMgr().dir() + pSingerImg->strFile;
-    if (!fsutil::existFile(strFile))
-    {
-        return;
-    }
-
-    m_uSingerImgIdx = uSingerImgIdx;
+    m_nSwitchingOffset = 0;
 
     QPixmap pm(__WS2Q(strFile));
     m_cxImg = pm.width();
     m_cyImg = pm.height();
     m_brush = QBrush(pm);
     update();
+
+    m_uImgIdx = uImgIdx;
+    m_mapImg[m_uImgIdx] = strFile;
+
+    if (m_uImgCount > 1)
+    {
+        if (m_uImgIdx < m_uImgCount-1)
+        {
+            uImgIdx = m_uImgIdx+1;
+            if (m_mapImg.find(uImgIdx) == m_mapImg.end())
+            {
+                (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx);
+            }
+        }
+
+        uImgIdx = (0 == m_uImgIdx) ? (m_uImgCount-1) : (m_uImgIdx-1);
+        if (m_mapImg.find(uImgIdx) == m_mapImg.end())
+        {
+            (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx);
+        }
+    }
 }
 
 void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
 {
+    if (0 == m_cxImg)
+    {
+        return;
+    }
+
     if (eType != E_TouchEventType::TET_TouchEnd)
     {
         return;
