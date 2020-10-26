@@ -1322,8 +1322,6 @@ void MainWindow::_playSingerImg()
         return;
     }
 
-    g_uSingerImgIdx++;
-
     QPixmap pm;
     (void)pm.load(__WS2Q(strFile));
     ui.labelSingerImg->setPixmap(pm);
@@ -1331,6 +1329,9 @@ void MainWindow::_playSingerImg()
     //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
 
     _relayout();
+
+    g_uSingerImgIdx++;
+    (void)m_app.getSingerImgMgr().checkSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)

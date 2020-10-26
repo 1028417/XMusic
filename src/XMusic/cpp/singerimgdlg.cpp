@@ -161,14 +161,14 @@ void CSingerImgDlg::_switchImg(int nOffset)
             uImgIdx = m_uImgIdx+1;
             if (m_mapImg.find(uImgIdx) == m_mapImg.end())
             {
-                (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx);
+                (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx, false);
             }
         }
 
         uImgIdx = (0 == m_uImgIdx) ? (m_uImgCount-1) : (m_uImgIdx-1);
         if (m_mapImg.find(uImgIdx) == m_mapImg.end())
         {
-            (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx);
+            (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx, false);
         }
     }
 }
