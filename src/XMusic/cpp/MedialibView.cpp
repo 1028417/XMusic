@@ -405,22 +405,30 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     cauto strSingerImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
     if (!strSingerImg.empty())
     {
-        m_lstSingerPixmap.emplace_back();
-        QPixmap& pm = m_lstSingerPixmap.back();
+        QPixmap pm;
         if (pm.load(__WS2Q(strSingerImg)))
         {
-#define __singerimgZoomout 160
-            auto&& temp = pm.width() < pm.height()
-                    ? pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation)
-                    : pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
-            pm.swap(temp);
+            m_lstSingerPixmap.emplace_back();
+            pSingerPixmap = &m_lstSingerPixmap.back();
 
-            pSingerPixmap = &pm;
-            return pm;
-        }
-        else
-        {
-            m_lstSingerPixmap.pop_back();
+/*#define __singerimgZoomout 128
+            if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
+            {
+                if (pm.width() < pm.height())
+                {
+                    *pSingerPixmap = pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation);
+                }
+                else
+                {
+                    *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
+                }
+            }
+            else*/
+            {
+                *pSingerPixmap = std::move(pm);
+            }
+
+            return *pSingerPixmap;
         }
     }
 
