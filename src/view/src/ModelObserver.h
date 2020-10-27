@@ -22,7 +22,7 @@ private:
 	void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) override;
 
 	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
-	void onPlayStop(bool bRet) override;
+	void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 	
 	UINT GetSingerImgPos(UINT uSingerID) override;
 };

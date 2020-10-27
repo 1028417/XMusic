@@ -496,6 +496,11 @@ int CAlbumPage::GetTabImage()
 
 void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	if (NULL == m_pSinger)
+	{
+		return;
+	}
+
 	*pResult = 0;
 	LPNMLISTVIEW lpNM = (LPNMLISTVIEW)pNMHDR;
 	BOOL bEnable = (lpNM->iItem > 0);
@@ -516,11 +521,13 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	m_AlbumMenuGuard.EnableItem(ID_ENLanguage, bEnable);
 	m_AlbumMenuGuard.EnableItem(ID_EURLanguage, bEnable);
 
-	bool bAvalible = false;
+	bool bPlayable = false;
+	bool bNormal = false;
 	if (bEnable)
 	{
 		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(lpNM->iItem);
 		__Assert(pAlbum);
+
 		const CMediasetProperty& property = pAlbum->property();
 
 		m_AlbumMenuGuard.CheckItem(ID_DisableDemand, property.isDisableDemand());
@@ -533,14 +540,17 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
-		bAvalible = pAlbum->playable();
+		bPlayable = pAlbum->playable();
+		bNormal = E_AlbumType::AT_Normal == pAlbum->type();
 	}
+	
+	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bPlayable);
+	m_AlbumMenuGuard.EnableItem(ID_VERIFY_ALBUM, bPlayable && bNormal);
+	m_AlbumMenuGuard.EnableItem(ID_EXPORT_ALBUM, bPlayable && bNormal);
 
-	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bAvalible);
-	m_AlbumMenuGuard.EnableItem(ID_VERIFY_ALBUM, bAvalible);
-	m_AlbumMenuGuard.EnableItem(ID_EXPORT_ALBUM, bAvalible);
-
-	(void)m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUM, NULL != m_pSinger);
+	(void)m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUM, true);
+	(void)m_AlbumMenuGuard.EnableItem(ID_ATTACH_DIR, true);
+	(void)m_AlbumMenuGuard.EnableItem(ID_ATTACH_WHOLETRACK, true);
 
 	(void)m_AlbumMenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
@@ -599,15 +609,37 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 
 		break;
 	case ID_ADD_ALBUM:
+	case ID_ATTACH_DIR:
+	case ID_ATTACH_WHOLETRACK:
+	{
 		__AssertBreak(m_pSinger);
 
-		pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger);
+		wstring strAttachPath;
+		E_AlbumType eType = E_AlbumType::AT_Normal;
+		wstring strName;
+		if (ID_ATTACH_DIR == uID)
+		{
+			CMediaDir *pDstDir = m_view.showChooseDirDlg(L"ѡ�񸽼�Ŀ¼", false);
+			if (NULL == pDstDir)
+			{
+				return;
+			}
+			strAttachPath = pDstDir->path();
+			eType = E_AlbumType::AT_Dir;
+			strName = pDstDir->fileName();
+		}
+		else if (ID_ATTACH_DIR == uID)
+		{
+			eType = E_AlbumType::AT_WholeTrack;
+		}
+
+		pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger, strName, NULL, eType, strAttachPath);
 		__EnsureBreak(pAlbum);
 
 		nItem = m_wndAlbumList.InsertObject(*pAlbum);
 		(void)m_wndAlbumList.EditLabel(nItem);
-
-		break;
+	}
+	break;
 	case ID_RENAME_ALBUM:
 		__EnsureBreak(nItem > 0);
 

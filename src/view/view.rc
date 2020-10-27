@@ -318,6 +318,8 @@ BEGIN
         MENUITEM "重命名",                         ID_RENAME_ALBUM
         MENUITEM "移除专辑",                        ID_REMOVE_ALBUM
         MENUITEM "新建专辑",                        ID_ADD_ALBUM
+        MENUITEM "附加专辑",                        ID_ATTACH_DIR
+        MENUITEM "附加整轨",                        ID_ATTACH_WHOLETRACK
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN

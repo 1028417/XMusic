@@ -92,11 +92,16 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             }
         });*/
 
-        static set<void*> setPlaylist;
-        if (setPlaylist.find(&MediaSet) == setPlaylist.end())
+        list<wstring> *plstSingerName = NULL;
+        static map<const void*, std::list<wstring>> mapSingerName;
+        cauto itr = mapSingerName.find(&MediaSet);
+        if (itr != mapSingerName.end())
         {
-            setPlaylist.insert(&MediaSet);
-
+            plstSingerName = &itr->second;
+        }
+        else
+        {
+            plstSingerName = &mapSingerName[&MediaSet];
             for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
                 cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
@@ -104,30 +109,22 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                 {
                     if (fsutil::CheckSubPath(pr.first, strPath))
                     {
+                        cauto singer = *pr.second;
                         ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
-                                                                  , pr.second->m_uID, pr.second->m_strName);
+                                                                  , singer.m_uID, singer.m_strName);
+                        if (std::find(plstSingerName->begin(), plstSingerName->end(), singer.m_strName) == plstSingerName->end())
+                        {
+                            plstSingerName->push_back(singer.m_strName);
+                        }
                         break;
                     }
                 }
             }
         }
 
-        list<wstring> lstSingerName;
-        for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
+        if (!plstSingerName->empty())
         {
-            cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-            if (!strSingerName.empty())
-            {
-                if (std::find(lstSingerName.begin(), lstSingerName.end(), strSingerName) == lstSingerName.end())
-                {
-                    lstSingerName.push_back(strSingerName);
-                }
-            }
-        }
-
-        if (!lstSingerName.empty())
-        {
-            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+            m_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
@@ -135,12 +132,8 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         list<wstring> lstSingerName;
         for (cauto singer : ((CSingerGroup&)MediaSet).singers())
         {
-            if (std::find(lstSingerName.begin(), lstSingerName.end(), singer.m_strName) == lstSingerName.end())
-            {
-                lstSingerName.push_back(singer.m_strName);
-            }
+            lstSingerName.push_back(singer.m_strName);
         }
-
         m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
@@ -492,9 +485,9 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         }
         else if (E_MediaSetType::MST_Singer == mlContext.pMediaSet->m_eType)
         {
-            cauto lstAlbum = ((CSinger*)mlContext.pMediaSet)->albums();
+            auto& lstAlbum = ((CSinger*)mlContext.pMediaSet)->albums();
             size_t uAlbumItemCount = 0;
-            for (cauto album : lstAlbum)
+            for (CAlbum& album : lstAlbum)
             {
                 uAlbumItemCount += album.albumItems().size();
             }

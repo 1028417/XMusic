@@ -135,7 +135,7 @@ void CVerifyResultDlg::OnBnClickedVerify()
 void CVerifyResultDlg::OnBnClickedAutoMatch()
 {
 	m_view.getModel().refreshMediaLib();
-	CMediaDir* pDir = m_view.showChooseDirDlg(L"选择查找目录");
+	CMediaDir *pDir = m_view.showChooseDirDlg(L"选择查找目录");
 	__Ensure(pDir);
 
 	TD_MediaList paInvalidMedia = m_VerifyResult.paInvalidMedia.filter([](CMedia& media) {

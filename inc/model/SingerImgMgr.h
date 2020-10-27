@@ -65,7 +65,7 @@ public:
     void downloadSingerHead(const list<wstring>& lstSingerName);
 
     wstring checkSingerImg(const tagSingerImg*);
-    wstring checkSingerImg(cwstr strSingerName, UINT uIndex);
+    wstring checkSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
     void quitDownload();
 #endif

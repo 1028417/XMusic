@@ -5,7 +5,9 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-	CAlbumItem(int nID, cwstr strPath, mediatime_t time, class CAlbum& Album);
+	CAlbumItem(class CAlbum& Album, int nID, cwstr strPath, mediatime_t time);
+
+	CAlbumItem(class CAlbum& Album, cwstr strAttachPath);
 
 public:
     E_MediaType type() const override
@@ -29,6 +31,13 @@ private:
 #endif
 };
 
+enum class E_AlbumType
+{
+	AT_Normal = 0,
+	AT_Dir,
+	AT_WholeTrack
+};
+
 class __MediaLibExt CAlbum : public CMediaSet
 {
 public:
@@ -36,10 +45,12 @@ public:
 
     CAlbum() = default;
 
-    CAlbum(int nID, cwstr strName, class CSinger *pSinger
-        , UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false)
-		: CMediaSet(strName, (CMediaSet*)pSinger, nID, E_MediaSetType::MST_Album
+    CAlbum(int nID, cwstr strName, E_AlbumType eType, cwstr strAttachPath, class CSinger *pSinger
+		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false) :
+		CMediaSet(strName, (CMediaSet*)pSinger, nID, E_MediaSetType::MST_Album
 			, uLanguage, bDisableDemand, bDisableExport)
+		, m_eType(eType)
+		, m_strAttachPath(strAttachPath)
 	{
 	}
 
@@ -48,16 +59,23 @@ public:
 	CAlbum(CAlbum&& other);
 
 private:
-    ArrList<CAlbumItem> m_alAlbumItems;
+	E_AlbumType m_eType = E_AlbumType::AT_Normal;
+	wstring m_strAttachPath;
+
+	void *m_pAttachPath = NULL;
+
+	ArrList<CAlbumItem> m_alAlbumItems;
 
 public:
 	class CSinger& GetSinger() const;
 
-	const ArrList<CAlbumItem>& albumItems() const
+	E_AlbumType type() const
 	{
-         return m_alAlbumItems;
+		return m_eType;
 	}
 
+        const ArrList<CAlbumItem>& albumItems();
+	
     CAlbumItem& add(const CAlbumItem& AlbumItem)
     {
         auto& t_AlbumItem = m_alAlbumItems.add(AlbumItem);
@@ -121,10 +139,14 @@ private:
 	list<CAlbum> m_lstAlbums;
 
 public:
-    const list<CAlbum>& albums() const
-    {
-        return m_lstAlbums;
-    }
+	list<CAlbum>& albums()
+	{
+		return m_lstAlbums;
+	}
+	const list<CAlbum>& albums() const
+	{
+		return m_lstAlbums;
+	}
 
     CAlbum& add(const CAlbum& album)
     {

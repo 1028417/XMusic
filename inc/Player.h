@@ -16,8 +16,7 @@ enum class E_DecodeStatus
 {
 	DS_Decoding,
 	DS_Paused,
-	DS_Cancel,
-	DS_Finished,
+	DS_Stop,
 };
 
 class IAudioOpaque
@@ -123,8 +122,8 @@ public:
     static void QuitSDK();
 
     void Stop();
-    bool Play(uint64_t uStartPos, bool bForce48KHz, cfn_void cbStop);
-    void PlayStream(bool bForce48KHz, cfn_void_t<bool> cbStop);
+    bool Play(uint64_t uStartPos, bool bForce48KHz, const function<void(bool bPlayFinish)>& cbStop);
+    void PlayStream(bool bForce48KHz, const function<void(bool bOpenSuccess, bool bPlayFinish)>& cbStop);
 
     bool Pause();
     bool Resume();

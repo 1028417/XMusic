@@ -155,7 +155,7 @@ private:
 
     void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
 
-    void onPlayStop(bool bRet) override;
+    void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 
     void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
 

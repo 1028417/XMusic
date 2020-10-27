@@ -1169,34 +1169,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     });
 }
 
-void MainWindow::onPlayStop(bool bRet)
+void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-    bool bCancel = m_app.getPlayMgr().mediaOpaque().decodeStatus() == E_DecodeStatus::DS_Cancel;
-
     m_app.sync([=](){
         ui.progressbar->set(0, 0, 0, 0);
 
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
 
-        if (bCancel)
-        {
-            return;
-        }
-
         extern UINT g_uPlaySeq;
-        if (!bRet)
-        {
-            //_updatePlayPauseButton(false);
-
-            auto uPlaySeq = g_uPlaySeq;
-            CApp::async(2000, [=]() {
-                if (uPlaySeq == g_uPlaySeq)
-                {
-                    m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
-                }
-            });
-        }
-        else
+        if (bPlayFinish)
         {
             m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
 
@@ -1207,6 +1188,18 @@ void MainWindow::onPlayStop(bool bRet)
                     _updatePlayPauseButton(false);
                 }
             });*/
+        }
+        else if (!bOpenSuccess)
+        {
+            //_updatePlayPauseButton(false);
+
+            auto uPlaySeq = g_uPlaySeq;
+            CApp::async(2000, [=]() {
+                if (uPlaySeq == g_uPlaySeq)
+                {
+                    m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+                }
+            });
         }
     });
 }

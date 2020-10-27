@@ -102,7 +102,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	case ID_ExportDir:
 	{
 		m_view.getModel().refreshMediaLib();
-		CMediaDir* pDir = m_view.showChooseDirDlg(L"选择导出目录");
+		CMediaDir *pDir = m_view.showChooseDirDlg(L"选择导出目录");
 		__EnsureBreak(pDir);
 
 		m_view.exportDir(*pDir);
@@ -277,7 +277,7 @@ void CPlayerView::_checkSimilarFile()
 {
 	m_view.getModel().refreshMediaLib();
 
-	CMediaDir* pSrcDir = m_view.showChooseDirDlg(L"选择第一个目录");
+	CMediaDir *pSrcDir = m_view.showChooseDirDlg(L"选择第一个目录");
 	if (NULL == pSrcDir)
 	{
 		return;

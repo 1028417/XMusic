@@ -59,9 +59,9 @@ void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual
 	m_view.m_PlayCtrl.onPlay(PlayItem);
 }
 
-void CModelObserver::onPlayStop(bool bRet)
+void CModelObserver::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-	m_view.m_PlayCtrl.onPlayFinish(bRet);
+	m_view.m_PlayCtrl.onPlayStop(bOpenSuccess, bPlayFinish);
 }
 
 UINT CModelObserver::GetSingerImgPos(UINT uSingerID)

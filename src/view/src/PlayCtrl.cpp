@@ -102,15 +102,19 @@ void CPlayCtrl::onPlay(CPlayItem& PlayItem)
 	CPlaySpirit::inst()->SetPlayState(_bstr_t(m_strPlayingFile.c_str()), uDuration, 0);
 }
 
-void CPlayCtrl::onPlayFinish(bool bRet)
+void CPlayCtrl::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-	if (m_view.getPlayMgr().mediaOpaque().decodeStatus() == E_DecodeStatus::DS_Cancel)
+	if (bOpenSuccess && !bPlayFinish)
 	{
 		return;
 	}
 
-	__appSync([&, bRet]() {
-		if (!bRet)
+	__appSync([=]() {
+		if (bPlayFinish)
+		{
+			(void)m_view.getPlayMgr().playNext(false);
+		}
+		else
 		{
 			//CPlaySpirit::inst()->clear();
 
@@ -121,10 +125,6 @@ void CPlayCtrl::onPlayFinish(bool bRet)
 					(void)m_view.getPlayMgr().playNext(false);
 				}
 			});
-		}
-		else
-		{
-			(void)m_view.getPlayMgr().playNext(false);
 		}
 	}, false);
 }
