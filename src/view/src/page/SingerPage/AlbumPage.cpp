@@ -239,7 +239,7 @@ BOOL CAlbumPage::OnInitDialog()
 		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetSelObject();
 		__EnsureReturn(pAlbum, false);
 
-		__EnsureReturn(0 != pAlbum->m_uID, false);
+		__EnsureReturn(pAlbum->type() == E_AlbumType::AT_Normal, false);
 
 		DragData.pMediaSet = pAlbum;
 
@@ -496,10 +496,7 @@ int CAlbumPage::GetTabImage()
 
 void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	if (NULL == m_pSinger)
-	{
-		return;
-	}
+	__Ensure(m_pSinger);
 
 	*pResult = 0;
 	LPNMLISTVIEW lpNM = (LPNMLISTVIEW)pNMHDR;
@@ -547,6 +544,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bPlayable);
 	m_AlbumMenuGuard.EnableItem(ID_VERIFY_ALBUM, bPlayable && bNormal);
 	m_AlbumMenuGuard.EnableItem(ID_EXPORT_ALBUM, bPlayable && bNormal);
+	m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormal);
 
 	(void)m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUM, true);
 	(void)m_AlbumMenuGuard.EnableItem(ID_ATTACH_DIR, true);
@@ -1298,7 +1296,12 @@ BOOL CAlbumPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CD
 
 void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, (m_pAlbum && m_pAlbum->playable()));
+	__Ensure(m_pAlbum);
+	auto eAlbumType = m_pAlbum->type();
+	
+	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, E_AlbumType::AT_Normal == eAlbumType);
+
+	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, m_pAlbum->playable());
 
 	int nSelCount = m_wndAlbumItemList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nSelCount));
@@ -1308,8 +1311,9 @@ void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nSelCount));
 	m_MenuGuard.EnableItem(ID_EXPLORE_ALBUMITEM, (1 == nSelCount));
 	m_MenuGuard.EnableItem(ID_EXPORT_ALBUMITEM, (m_wndAlbumItemList.GetItemCount() > 0));
-	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nSelCount));
-	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nSelCount > 0));
+
+	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nSelCount) && E_AlbumType::AT_Normal == eAlbumType);
+	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nSelCount > 0) && E_AlbumType::AT_Normal == eAlbumType);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
