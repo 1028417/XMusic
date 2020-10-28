@@ -52,7 +52,7 @@ public:
 		std::thread(cb).detach();
 	}
 
-	static bool concurrence(const cfn_bool& fn, const cfn_bool& cbThread)
+    static bool concurrence(cfn_bool& fn, cfn_bool& cbThread)
 	{
 		bool bRet = true;
 		std::thread thr([&]() {
