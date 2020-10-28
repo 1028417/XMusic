@@ -52,6 +52,26 @@ public:
 		std::thread(cb).detach();
 	}
 
+	static bool concurrence(const cfn_bool& fn, const cfn_bool& cbThread)
+	{
+		bool bRet = true;
+		std::thread thr([&]() {
+			if (!cbThread())
+			{
+				bRet = false;
+			}
+		});
+
+		if (!fn())
+		{
+			bRet = false;
+		}
+
+		thr.join();
+
+		return bRet;
+	}
+
 	template <typename FN, typename CB, typename = checkCBVoid_t<FN>, typename = checkCBVoid_t<CB>>
 	static void concurrence(const FN& fn, const CB& cbThread)
 	{

@@ -38,7 +38,7 @@ bool __view::show()
 
 		return true;
 	}, [&]() {
-		m_model.initMediaLib();
+		return m_model.initMediaLib();
 	});
 	if (!bRet)
 	{
