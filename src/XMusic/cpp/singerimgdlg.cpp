@@ -20,26 +20,16 @@ void CSingerImgDlg::relayout(cqrc rcBtnReturn)
 static void _genRect(UINT cxSrc, UINT cySrc, UINT cxDst, UINT cyDst, QRect& rc)
 {
     int xDst = 0, yDst = 0;
-    if (cxSrc <= cxDst && cySrc <= cyDst)
+    auto fHWRate = (float)cySrc/cxSrc;
+    if (fHWRate > (float)cyDst/cxDst)
     {
-        xDst = (cxDst - cxSrc)/2;
-        yDst = (cyDst - cySrc)/2;
-        cxDst = cxSrc;
-        cyDst = cySrc;
+        xDst = (cxDst - cyDst/fHWRate)/2;
+        cxDst -= xDst*2;
     }
     else
     {
-        auto fHWRate = (float)cySrc/cxSrc;
-        if (fHWRate > (float)cyDst/cxDst)
-        {
-            xDst = (cxDst - cyDst/fHWRate)/2;
-            cxDst -= xDst*2;
-        }
-        else
-        {
-            yDst = (cyDst - cxDst*fHWRate)/2;
-            cyDst -= yDst*2;
-        }
+        yDst = (cyDst - cxDst*fHWRate)/2;
+        cyDst -= yDst*2;
     }
 
     rc.setRect(xDst, yDst, cxDst, cyDst);
@@ -60,16 +50,30 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     UINT cyDst = rc.height();
 
     QRect rcPos;
-    if (m_cxImg+__size(30) > cxDst  && m_cyImg+__size(30) > cyDst)
+    _genRect(m_cxImg, m_cyImg, cxDst, cyDst, rcPos);
+    if (rcPos.x() < __size(30) && rcPos.y() < __size(30))
     {
         _genRect(cxDst, cyDst, m_cxImg, m_cyImg, rcPos);
-        painter.drawPixmap(QRect(0,0,cxDst,cxDst), m_brush, rcPos);
+        painter.drawPixmap(rc, m_brush, rcPos);
+        return;
     }
-    else
+
+    if (m_cxImg + __size(30)*2 < cxDst && m_cyImg + __size(30)*2 < cyDst)
     {
-        _genRect(m_cxImg, m_cyImg, cxDst, cyDst, rcPos);
-        painter.drawPixmap(rcPos, m_brush, QRect(0,0,m_cxImg,m_cyImg), __szRound);
+        rcPos.setRect((cxDst - m_cxImg)/2, (cyDst - m_cyImg)/2, m_cxImg, m_cyImg);
     }
+    else if (rcPos.x() < __size(30))
+    {
+        cyDst = cxDst * m_cyImg / m_cxImg;
+        rcPos.setRect(0, (rc.height()-cyDst)/2, cxDst, cyDst);
+    }
+    else if (rcPos.y() < __size(30))
+    {
+        cxDst = cyDst * m_cxImg / m_cyImg;
+        rcPos.setRect((rc.width()-cxDst)/2, 0, cxDst, cyDst);
+    }
+
+    painter.drawPixmap(rcPos, m_brush, QRect(0,0,m_cxImg,m_cyImg), __szRound);
 }
 
 void CSingerImgDlg::show(cwstr strSingerName)
