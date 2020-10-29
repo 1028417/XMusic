@@ -17,6 +17,33 @@ void CSingerImgDlg::relayout(cqrc rcBtnReturn)
 {
     ui.btnReturn->setGeometry(rcBtnReturn);
 }
+static void _genRect(UINT cxSrc, UINT cySrc, UINT cxDst, UINT cyDst, QRect& rc)
+{
+    int xDst = 0, yDst = 0;
+    if (cxSrc <= cxDst && cySrc <= cyDst)
+    {
+        xDst = (cxDst - cxSrc)/2;
+        yDst = (cyDst - cySrc)/2;
+        cxDst = cxSrc;
+        cyDst = cySrc;
+    }
+    else
+    {
+        auto fHWRate = (float)cySrc/cxSrc;
+        if (fHWRate > (float)cyDst/cxDst)
+        {
+            xDst = (cxDst - cyDst/fHWRate)/2;
+            cxDst -= xDst*2;
+        }
+        else
+        {
+            yDst = (cyDst - cxDst*fHWRate)/2;
+            cyDst -= yDst*2;
+        }
+    }
+
+    rc.setRect(xDst, yDst, cxDst, cyDst);
+}
 
 void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 {
@@ -32,35 +59,17 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     UINT cxDst = rc.width();
     UINT cyDst = rc.height();
 
-    int xDst = 0, yDst = 0;
-    if (m_cxImg <= cxDst && m_cyImg <= cyDst)
+    QRect rcPos;
+    if (m_cxImg+__size(30) > cxDst  && m_cyImg+__size(30) > cyDst)
     {
-        xDst = (cxDst - m_cxImg)/2;
-        yDst = (cyDst - m_cyImg)/2;
-        cxDst = m_cxImg;
-        cyDst = m_cyImg;
+        _genRect(cxDst, cyDst, m_cxImg, m_cyImg, rcPos);
+        painter.drawPixmap(QRect(0,0,cxDst,cxDst), m_brush, rcPos);
     }
     else
     {
-        auto fHWRate = (float)m_cyImg/m_cxImg;
-        if (fHWRate > (float)cyDst/cxDst)
-        {
-            xDst = (cxDst - cyDst/fHWRate)/2;
-            cxDst -= xDst*2;
-        }
-        else
-        {
-            yDst = (cyDst - cxDst*fHWRate)/2;
-            cyDst -= yDst*2;
-        }
+        _genRect(m_cxImg, m_cyImg, cxDst, cyDst, rcPos);
+        painter.drawPixmap(rcPos, m_brush, QRect(0,0,m_cxImg,m_cyImg), __szRound);
     }
-
-    if (m_cxImg+__size(30) > cxDst  && m_cyImg+__size(30) > cyDst)
-    {
-
-    }
-
-    painter.drawPixmap(QRect(xDst, yDst, cxDst, cyDst), m_brush, QRect(0, 0, m_cxImg, m_cyImg), __szRound);
 }
 
 void CSingerImgDlg::show(cwstr strSingerName)

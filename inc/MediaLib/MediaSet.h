@@ -134,7 +134,7 @@ private:
 		return m_strName;
 	}
 
-	void GetTreeChilds(TD_TreeObjectList& lstChilds) override;
+	virtual void GetTreeChilds(TD_TreeObjectList& lstChilds) override;
 
 	bool hasCheckState() override
 	{

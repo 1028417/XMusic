@@ -27,7 +27,7 @@ BOOL CMediaSetDlg::OnInitDialog()
 
 	__EnsureReturn(m_wndTree.InitCtrl(), FALSE);
 	
-	(void)m_wndTree.SetRootObject(m_MediaSet, false);	
+	(void)m_wndTree.SetRootObject(m_MediaSet, false);
 	m_wndTree.SetCheckState(m_MediaSet, true);
 
 	return TRUE;

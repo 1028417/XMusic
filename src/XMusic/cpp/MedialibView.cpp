@@ -254,7 +254,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
 
-                context.fIconMargin = (context.fIconMargin-0.01f) * m_medialibDlg.rowCount()/this->getRowCount();
+                context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -336,7 +336,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         context.eStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
-        context.fIconMargin /= bHLayout?1.333f:1.3f;
+
+        context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
 
         context.uIconRound = 0;
 
@@ -445,7 +446,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     if (mlContext.playable())
     {
         UINT cy = context->rc.height();
-        int yMargin = cy * context.fIconMargin*1.33;
+        int yMargin = cy * context.fIconMargin;
         cy -= yMargin*2;
 
         int x_icon = context->rc.right() + __playIconOffset - cy;

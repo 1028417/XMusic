@@ -95,14 +95,27 @@ BOOL CAlbumPage::OnInitDialog()
 	}, [=](tagLVDrawSubItem& lvcd){
 		__Ensure(m_pSinger);
 
-		CDC& dc = lvcd.dc;
-		auto& rc = lvcd.rc;
-	
-		auto iImage = (0 == lvcd.uItem) ? (int)E_GlobalImage::GI_Dir : (int)E_GlobalImage::GI_Album;
-		auto offset = (rc.bottom - rc.top - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
-		m_view.m_ImgMgr.bigImglst().Draw(&dc, iImage, { offset, rc.top + offset }, 0);
+		auto eImage = E_GlobalImage::GI_Album;
+		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
+		if (pAlbum)
+		{
+			if (pAlbum->type() == E_AlbumType::AT_Dir)
+			{
+				eImage = E_GlobalImage::GI_DirLink;
+			}
+		}
+		else
+		{
+			eImage = E_GlobalImage::GI_Dir;
+		}
 
-		if (0 == lvcd.uItem)
+		auto& rc = lvcd.rc;
+		auto offset = (rc.bottom - rc.top - (int)m_view.m_globalSize.m_uBigIconSize) / 2;
+
+		CDC& dc = lvcd.dc;
+		m_view.m_ImgMgr.bigImglst().Draw(&dc, (int)eImage, { offset, rc.top + offset }, 0);
+
+		if (NULL == pAlbum)
 		{
 			rc.left = rc.bottom - 20;
 
@@ -249,7 +262,7 @@ BOOL CAlbumPage::OnInitDialog()
 	});
 
 	(void)__super::RegDragDropCtrl(m_wndAlbumItemList, [&](tagDragData& DragData) {
-		__EnsureReturn(m_pAlbum, false);
+		__EnsureReturn(m_pAlbum && m_pAlbum->type() == E_AlbumType::AT_Normal, false);
 
 		TD_ListObjectList lstObjects;
 		m_wndAlbumItemList.GetSelObjects(lstObjects);
@@ -505,11 +518,6 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	m_AlbumMenuGuard.EnableItem(ID_RENAME_ALBUM, bEnable);
 	m_AlbumMenuGuard.EnableItem(ID_REMOVE_ALBUM, bEnable);
 
-	m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUMITEM, bEnable);
-
-	m_AlbumMenuGuard.EnableItem(ID_DisableDemand, bEnable);
-	m_AlbumMenuGuard.EnableItem(ID_DisableExport, bEnable);
-
 	m_AlbumMenuGuard.EnableItem(ID_CNLanguage, bEnable);
 	m_AlbumMenuGuard.EnableItem(ID_HKLanguage, bEnable);
 	m_AlbumMenuGuard.EnableItem(ID_KRLanguage, bEnable);
@@ -519,7 +527,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 	m_AlbumMenuGuard.EnableItem(ID_EURLanguage, bEnable);
 
 	bool bPlayable = false;
-	bool bNormal = false;
+	bool bNormalAlbum = false;
 	if (bEnable)
 	{
 		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetItemObject(lpNM->iItem);
@@ -538,13 +546,17 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
 		bPlayable = pAlbum->playable();
-		bNormal = E_AlbumType::AT_Normal == pAlbum->type();
+		bNormalAlbum = E_AlbumType::AT_Normal == pAlbum->type();
 	}
 	
 	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bPlayable);
-	m_AlbumMenuGuard.EnableItem(ID_VERIFY_ALBUM, bPlayable && bNormal);
-	m_AlbumMenuGuard.EnableItem(ID_EXPORT_ALBUM, bPlayable && bNormal);
-	m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormal);
+	m_AlbumMenuGuard.EnableItem(ID_VERIFY_ALBUM, bPlayable && bNormalAlbum);
+	m_AlbumMenuGuard.EnableItem(ID_EXPORT_ALBUM, bPlayable && bNormalAlbum);
+	
+	m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormalAlbum);
+	
+	m_AlbumMenuGuard.EnableItem(ID_DisableDemand, bNormalAlbum);
+	m_AlbumMenuGuard.EnableItem(ID_DisableExport, bNormalAlbum);
 
 	(void)m_AlbumMenuGuard.EnableItem(ID_ADD_ALBUM, true);
 	(void)m_AlbumMenuGuard.EnableItem(ID_ATTACH_DIR, true);
@@ -762,7 +774,14 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 		__AssertBreak(1 == lstAlbumItems.size());
 		
 		lstAlbumItems.front([&](auto& media) {
-			(void)m_wndMediaResPanel.HittestMedia(media, *this);
+			if (m_pAlbum->type() == E_AlbumType::AT_Normal)
+			{
+				(void)m_wndMediaResPanel.HittestMedia(media, *this);
+			}
+			else
+			{
+				m_view.m_MediaResPage.HittestMedia(media, *this);
+			}
 		});
 
 		break;
@@ -1297,23 +1316,23 @@ BOOL CAlbumPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CD
 void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	__Ensure(m_pAlbum);
-	auto eAlbumType = m_pAlbum->type();
+	bool bNormalAlbum = E_AlbumType::AT_Normal == m_pAlbum->type();
 	
-	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, E_AlbumType::AT_Normal == eAlbumType);
+	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormalAlbum);
 
 	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, m_pAlbum->playable());
 
 	int nSelCount = m_wndAlbumItemList.GetSelectedCount();
-	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nSelCount));
+	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nSelCount) && bNormalAlbum);
 	m_MenuGuard.EnableItem(ID_HITTEST_ALBUMITEM, (1 == nSelCount));
 	m_MenuGuard.EnableItem(ID_SETALARMCLOCK, (nSelCount > 0));
 	
 	m_MenuGuard.EnableItem(ID_CopyTitle, (1 == nSelCount));
 	m_MenuGuard.EnableItem(ID_EXPLORE_ALBUMITEM, (1 == nSelCount));
-	m_MenuGuard.EnableItem(ID_EXPORT_ALBUMITEM, (m_wndAlbumItemList.GetItemCount() > 0));
+	m_MenuGuard.EnableItem(ID_EXPORT_ALBUMITEM, (m_wndAlbumItemList.GetItemCount() > 0) && bNormalAlbum);
 
-	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nSelCount) && E_AlbumType::AT_Normal == eAlbumType);
-	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nSelCount > 0) && E_AlbumType::AT_Normal == eAlbumType);
+	m_MenuGuard.EnableItem(ID_RENAME_ALBUMITEM, (1 == nSelCount) && bNormalAlbum);
+	m_MenuGuard.EnableItem(ID_REMOVE_ALBUMITEM, (nSelCount > 0) && bNormalAlbum);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }

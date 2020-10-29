@@ -193,6 +193,17 @@ private:
 	{
 		return m_strName + L' ';
 	}
+
+	void GetTreeChilds(TD_TreeObjectList& lstChilds) override
+	{
+		for (auto& album : m_lstAlbums)
+		{
+			if (album.type() == E_AlbumType::AT_Normal)
+			{
+				lstChilds.add(album);
+			}
+		}
+	}
 #endif
 };
 

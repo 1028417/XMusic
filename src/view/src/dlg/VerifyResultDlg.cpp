@@ -86,8 +86,7 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	{
 		CAlbumItem& AlbumItem = (CAlbumItem&)media;
 
-		strMediaInfo << L"¸èÊÖ" << __CNDot << AlbumItem.GetSingerName()
-			<< __CNDot << AlbumItem.GetAlbumName();
+		strMediaInfo << L"¸èÊÖ" << __CNDot << AlbumItem.GetSingerName()	<< __CNDot << AlbumItem.GetAlbumName();
 	}
 	else
 	{

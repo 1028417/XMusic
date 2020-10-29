@@ -294,8 +294,8 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY_ALBUMITEM
-        MENUITEM "定位",                          ID_HITTEST_ALBUMITEM
         MENUITEM "查找",                          ID_FIND_ALBUMITEM
+        MENUITEM "定位",                          ID_HITTEST_ALBUMITEM
         MENUITEM "浏览",                          ID_EXPLORE_ALBUMITEM
         MENUITEM "导出",                          ID_EXPORT_ALBUMITEM
         MENUITEM SEPARATOR
@@ -369,8 +369,8 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "定位",                          ID_HITTEST
         MENUITEM "查找",                          ID_FIND
+        MENUITEM "定位",                          ID_HITTEST
         MENUITEM "浏览",                          ID_EXPLORE
         MENUITEM "导出",                          ID_EXPORT
         MENUITEM SEPARATOR
@@ -386,8 +386,8 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "定位",                          ID_HITTEST
         MENUITEM "查找",                          ID_FIND
+        MENUITEM "定位",                          ID_HITTEST
         MENUITEM "浏览",                          ID_EXPLORE
         MENUITEM "导出",                          ID_EXPORT
         MENUITEM SEPARATOR
