@@ -51,9 +51,9 @@ void CMedialibView::init()
 {
     TD_MediaSetList paSingers;
     m_SingerLib.GetAllMediaSets(E_MediaSetType::MST_Singer, paSingers);
-    paSingers([&](CMediaSet& singer){
-        auto&& strSingerDir = strutil::lowerCase_r(singer.GetBaseDir());
-        m_plSingerDir.emplace_back(strSingerDir, &singer);
+    paSingers([&](CMediaSet& MediaSet){
+        auto&& strSingerDir = strutil::lowerCase_r(((CSinger&)MediaSet). dir());
+        m_plSingerDir.emplace_back(strSingerDir, &MediaSet);
     });
 }
 

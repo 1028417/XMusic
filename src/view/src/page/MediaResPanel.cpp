@@ -397,7 +397,7 @@ void CMediaResPanel::_showDir()
 	{
 		map<wstring, pair<UINT, wstring>> mapSingerInfo;
 		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
-			cauto strSingerDir = singer.GetBaseDir();
+			cauto strSingerDir = singer.dir();
 			if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
 			{
 				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { singer.m_uID, singer.m_strName };

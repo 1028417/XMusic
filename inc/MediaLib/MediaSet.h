@@ -176,8 +176,6 @@ public:
 
 	virtual int indexOf(const CMedia&) const { return -1; }
 
-	virtual wstring GetBaseDir() const;
-
     virtual void GetMedias(TD_MediaList& lstMedias) {(void)lstMedias;}
 
     virtual void GetSubSets(TD_MediaSetList& lstSubSets) {(void)lstSubSets;}

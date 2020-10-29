@@ -370,7 +370,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.InsertItem(0, L"", -1);// , (int)E_GlobalImage::GI_Dir);
 
-		m_wndMediaResPanel.ShowDir(m_pSinger->GetBaseDir());
+		m_wndMediaResPanel.ShowDir(m_pSinger->dir());
 	}
 		
 	if (pAlbumItem)
@@ -579,7 +579,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 		{
 			__Ensure(pAlbum);
 
-			cauto strSingerDir = __xmedialib.toAbsPath(m_pSinger->GetBaseDir(), true);
+			cauto strSingerDir = __xmedialib.toAbsPath(m_pSinger->dir(), true);
 			if (!fsutil::existDir(strSingerDir))
 			{
 				msgBox(L"歌手目录不存在！");
@@ -1114,7 +1114,7 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 BOOL CAlbumPage::_checkMediasDropable(const TD_IMediaList& lstMedias)
 {
 	__EnsureReturn(m_pSinger, FALSE);
-	cauto strSingerDir = m_pSinger->GetBaseDir();
+	cauto strSingerDir = m_pSinger->dir();
 
 	BOOL bRet = TRUE;
 	lstMedias.front([&](IMedia& media) {
@@ -1186,7 +1186,7 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 	{
 		__EnsureReturn(pTargetAlbum != pSrcMediaSet, FALSE);
 
-		auto len = pTargetAlbum->GetBaseDir().size();
+		auto len = pTargetAlbum->GetSinger().dir().size();
 		TD_AlbumItemList lstAlbumItems(lstMedias);
 		cauto lstOppPath = lstAlbumItems.map([&](const CAlbumItem& AlbumItem) {
 			auto strPath = AlbumItem.GetPath();

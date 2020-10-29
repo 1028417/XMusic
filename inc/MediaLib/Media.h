@@ -51,7 +51,10 @@ private:
 public:
 	int index() const;
 	
-	wstring GetBaseDir() const;
+	virtual wstring GetBaseDir() const
+	{
+		return L"";
+	}
 	
 	wstring GetDir() const
 	{

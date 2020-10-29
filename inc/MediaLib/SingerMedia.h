@@ -23,6 +23,8 @@ public:
 
 	wstring GetSingerName() const;
 
+	wstring GetBaseDir() const override;
+
 #if __winvc
 	void AsyncTask() override;
 
@@ -173,7 +175,7 @@ public:
 		lstSubSets.add(m_lstAlbums);
 	}
 
-	wstring GetBaseDir() const override
+	cwstr dir() const
 	{
 		return m_strDir;
 	}

@@ -437,7 +437,7 @@ int CXController::AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlis
 
 int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& album, int nPos)
 {
-	cauto strSingerDir = album.GetBaseDir();
+	cauto strSingerDir = album.GetSinger().dir();
 
 	SArray<wstring> lstOppPaths;
 	for (cauto strFile : lstAbsPath)
@@ -460,7 +460,7 @@ int CXController::AddAlbumItems(const list<wstring>& lstAbsPath, CAlbum& album, 
 
 int CXController::AddAlbumItems(const TD_IMediaList& paMedias, CAlbum& album, int nPos)
 {
-	cauto strSingerDir = album.GetBaseDir();
+	cauto strSingerDir = album.GetSinger().dir();
 	
 	TD_IMediaList paMoveMedias;
 

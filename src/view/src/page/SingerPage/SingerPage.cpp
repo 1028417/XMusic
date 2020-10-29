@@ -297,7 +297,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 	break;
 	case ID_FIND:
-		m_view.findMedia(((CSinger*)pSingerObject)->GetBaseDir(), true, pSingerObject->m_strName);
+		m_view.findMedia(((CSinger*)pSingerObject)->dir(), true, pSingerObject->m_strName);
 		
 		break;
 	case ID_DisableDemand:
