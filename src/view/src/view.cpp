@@ -38,7 +38,12 @@ bool __view::show()
 
 		return true;
 	}, [&]() {
-		return m_model.initMediaLib();
+		if (!m_controller.getOption().strRootDir.empty() && fsutil::existDir(m_controller.getOption().strRootDir))
+		{
+			__EnsureReturn(m_model.initMediaLib(), false);
+		}
+
+		return true;
 	});
 	if (!bRet)
 	{
