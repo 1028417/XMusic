@@ -622,7 +622,7 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 			{
 				return;
 			}
-			strAttachPath = pDstDir->path();
+			strAttachPath = pDstDir->GetPath();
 			eType = E_AlbumType::AT_Dir;
 			strName = pDstDir->fileName();
 		}

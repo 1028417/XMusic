@@ -45,9 +45,9 @@ public:
 
     CAlbum() = default;
 
-    CAlbum(int nID, cwstr strName, E_AlbumType eType, cwstr strAttachPath, class CSinger *pSinger
+    CAlbum(class CSinger& Singer, int nID, cwstr strName, E_AlbumType eType, cwstr strAttachPath = L""
 		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false) :
-		CMediaSet(strName, (CMediaSet*)pSinger, nID, E_MediaSetType::MST_Album
+		CMediaSet(strName, (CMediaSet*)&Singer, nID, E_MediaSetType::MST_Album
 			, uLanguage, bDisableDemand, bDisableExport)
 		, m_eType(eType)
 		, m_strAttachPath(strAttachPath)

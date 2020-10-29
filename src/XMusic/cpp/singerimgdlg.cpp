@@ -55,6 +55,11 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
         }
     }
 
+    if (m_cxImg+__size(30) > cxDst  && m_cyImg+__size(30) > cyDst)
+    {
+
+    }
+
     painter.drawPixmap(QRect(xDst, yDst, cxDst, cyDst), m_brush, QRect(0, 0, m_cxImg, m_cyImg), __szRound);
 }
 

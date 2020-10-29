@@ -51,7 +51,7 @@ public:
 	BOOL UpdateSingerPos(UINT uSingerID, int nPos, int nDstGroupID);
 
 
-	CAlbum *AddAlbum(CSinger& Singer, wstring strName=L"", const SArray<wstring> *plstAlbumItem = NULL
+	CAlbum *AddAlbum(CSinger& Singer, wstring strName, const SArray<wstring> *plstAlbumItem = NULL
 		, E_AlbumType eType = E_AlbumType::AT_Normal, cwstr strAttachPath = L"");
 
 	BOOL RemoveAlbum(UINT uID);
