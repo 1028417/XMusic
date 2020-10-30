@@ -174,6 +174,9 @@ void CWholeTrackDlg::OnNMDbclickList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
+	int nItem = m_wndList.GetSelItem();
+	__Ensure(nItem >= 0);
+	
 	OnBnClickedPlay();
 
 	OnBnClickedViewDetail();
