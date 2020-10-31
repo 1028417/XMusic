@@ -206,6 +206,7 @@ inline UINT CBkgView::margin()
 
 CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
     , m_app(app),
+    m_option(app.getOption()),
     m_lv(*this, app),
     m_addbkgDlg(*this, app),
     m_colorDlg(*this, app)
@@ -379,7 +380,7 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
         return;
     }
 
-    cauto strBkg = bHLayout?m_app.getOption().strHBkg:m_app.getOption().strVBkg;
+    cauto strBkg = bHLayout?m_option.strHBkg:m_option.strVBkg;
     if (!strBkg.empty())
     {
         (bHLayout?m_pmHBkg:m_pmVBkg).load(__WS2Q(strBkgDir + strBkg));
@@ -538,14 +539,14 @@ bool CBkgDlg::_setBkg(int nIdx)
 
 void CBkgDlg::_updateBkg(cwstr strFile)
 {
-    m_app.getOption().bUseBkgColor = false;
+    m_option.bUseBkgColor = false;
     if (m_bHLayout)
     {
-        m_app.getOption().strHBkg = strFile;
+        m_option.strHBkg = strFile;
     }
     else
     {
-        m_app.getOption().strVBkg = strFile;
+        m_option.strVBkg = strFile;
     }
 
     m_app.mainWnd().updateBkg();
@@ -556,7 +557,7 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
     m_bHLayout = bHLayout;
     cauto vecBkgFile = _vecBkgFile();
 
-    cauto strFile = bHLayout ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
+    cauto strFile = bHLayout ? m_option.strHBkg : m_option.strVBkg;
     int nIdx = -1;
     if (!strFile.empty())
     {
@@ -570,7 +571,7 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
         }
     }
 
-    if (!m_app.getOption().bUseBkgColor)
+    if (!m_option.bUseBkgColor)
     {
         if (bNext)
         {
@@ -628,7 +629,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     {
         cauto bkgFile = vecBkgFile[uIdx];
 
-        cauto strBkg = m_bHLayout ? m_app.getOption().strHBkg : m_app.getOption().strVBkg;
+        cauto strBkg = m_bHLayout ? m_option.strHBkg : m_option.strVBkg;
         if (strBkg == bkgFile.strFile)
         {
             _setBkg(-1);

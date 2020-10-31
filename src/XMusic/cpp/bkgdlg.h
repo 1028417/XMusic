@@ -76,6 +76,7 @@ public:
 
 private:
     class CApp& m_app;
+    tagOption& m_option;
 
     CBkgView m_lv;
 

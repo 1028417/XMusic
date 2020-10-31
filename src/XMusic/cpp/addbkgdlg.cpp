@@ -51,7 +51,7 @@ void CAddBkgDlg::init()
         m_paImgDirs.clear();
         update();
 
-        _scanDir(m_app.getCtrl().getOption().strAddBkgDir);
+        _scanDir(m_app.getOption().strAddBkgDir);
     });
 #endif
 
@@ -76,7 +76,7 @@ void CAddBkgDlg::init()
 #if __windows
 bool CAddBkgDlg::_chooseDir()
 {
-    auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
+    auto& strAddBkgDir = m_app.getOption().strAddBkgDir;
 
     CFolderDlg FolderDlg;
     cauto strDir = FolderDlg.Show(hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
@@ -103,7 +103,7 @@ void CAddBkgDlg::show()
     if (!m_thrScan.joinable())
     {
 #if __windows
-        auto& strAddBkgDir = m_app.getCtrl().getOption().strAddBkgDir;
+        auto& strAddBkgDir = m_app.getOption().strAddBkgDir;
         if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
         {
             //if (!_chooseDir())

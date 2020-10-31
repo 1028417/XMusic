@@ -43,7 +43,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         cb();
     });
     connect(ui.labelNeverWarn, &CLabel::signal_click, [=](){
-        m_app.getCtrl().getOption().bNetworkWarn = false;
+        m_app.getOption().bNetworkWarn = false;
         this->setVisible(false);
         cb();
     });
