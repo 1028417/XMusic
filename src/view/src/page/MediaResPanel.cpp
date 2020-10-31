@@ -391,33 +391,39 @@ void CMediaResPanel::_showDir()
 	CRedrawLock RedrawLock(m_wndList);
 	
 	m_wndList.ShowDir(*m_pCurrDir);
-		
-	cauto paSubDir = m_pCurrDir->dirs();
-	if (m_bShowRelatedSinger && paSubDir)
+	
+	if (m_bShowRelatedSinger && m_pCurrDir->dirs())
 	{
-		map<wstring, pair<UINT, wstring>> mapSingerInfo;
-		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
-			cauto strSingerDir = singer.dir();
-			if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
+		__async([&]() {
+			if (NULL == m_pCurrDir)
 			{
-				mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { singer.m_uID, singer.m_strName };
-			}
-		});
-				
-		paSubDir([&](CPath& subDir, size_t uIdx) {
-			auto itr = mapSingerInfo.find(subDir.fileName());
-
-			auto& MediaDir = ((CMediaDir&)subDir);
-			if (itr != mapSingerInfo.end())
-			{
-				MediaDir.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
-			}
-			else
-			{
-				MediaDir.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
+				return;
 			}
 
-			m_wndList.UpdateItem(uIdx, &MediaDir);
+			map<wstring, pair<UINT, wstring>> mapSingerInfo;
+			m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
+				cauto strSingerDir = singer.dir();
+				if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
+				{
+					mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { singer.m_uID, singer.m_strName };
+				}
+			});
+			
+			m_pCurrDir->dirs()([&](CPath& subDir, size_t uIdx) {
+				auto itr = mapSingerInfo.find(subDir.fileName());
+
+				auto& MediaDir = ((CMediaDir&)subDir);
+				if (itr != mapSingerInfo.end())
+				{
+					MediaDir.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
+				}
+				else
+				{
+					MediaDir.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
+				}
+
+				m_wndList.UpdateItem(uIdx, &MediaDir);
+			});
 		});
 	}
 
