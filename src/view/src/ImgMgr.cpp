@@ -100,23 +100,86 @@ bool CImgMgr::_setImg(cwstr strImg, bool bHalfToneMode)
 	return true;
 }
 
+inline void CImgMgr::_setSingerImg(CImg& img)
+{
+	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+}
+
 bool CImgMgr::_setSingerImg(cwstr strFile)
 {
 	CImg img;
 	__EnsureReturn(img.Load(strFile.c_str()), false);
-
-	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
-	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
-	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
+	_setSingerImg(img);
 
 	return true;
 }
 
 void CImgMgr::initSingerImg()
 {
-	m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
+	/*m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
 		(void)_initSingerHead(singer.m_uID, singer.m_strName);
 	});
+	return;*/
+
+	CSignal sgn(false, true);
+	list<pair<UINT, CImg>> lstImg;
+	mtutil::concurrence([&]() {
+		m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
+			cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(singer.m_strName);
+			if (strHeadImg.empty())
+			{
+				return;
+			}
+
+			CImg img;
+			if (!img.Load(strHeadImg.c_str()))
+			{
+				return;
+			}
+			
+			sgn.set([&]() {
+				lstImg.emplace_back(singer.m_uID, img);
+			});
+			img.Detach();
+		});
+
+		sgn.stop();
+	}, [&]() {
+		UINT uSingerID = 0;
+		CImg img;
+		while (true)
+		{
+			if (!sgn.wait([&]() {
+				if (!lstImg.empty())
+				{
+					auto& pr = lstImg.front();
+					uSingerID = pr.first;
+					img = pr.second;
+					pr.second.Detach();
+					lstImg.pop_front();
+				}
+			}))
+			{
+				for (auto& pr : lstImg)
+				{
+					_initSingerHead(pr.first, pr.second);
+				}
+
+				break;
+			}
+
+			_initSingerHead(uSingerID, img);
+		}
+	});
+}
+
+void CImgMgr::_initSingerHead(UINT uSingerID, CImg& img)
+{
+	_setSingerImg(img);
+
+	m_vctSingerID.push_back(uSingerID);
 }
 
 bool CImgMgr::_initSingerHead(UINT uSingerID, cwstr strSingerName)

@@ -219,7 +219,7 @@ using XT_RunSignal = const bool&;
 class __UtilExt XThread
 {
 public:
-    XThread() : m_sgnRuning(false)
+    XThread() : m_sgnRuning(false, false)
     {
     }
 

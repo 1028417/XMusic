@@ -407,17 +407,17 @@ void CMediaResPanel::_showDir()
 		paSubDir([&](CPath& subDir, size_t uIdx) {
 			auto itr = mapSingerInfo.find(subDir.fileName());
 
-			auto& MediaRes = ((CMediaRes&)subDir);
+			auto& MediaDir = ((CMediaDir&)subDir);
 			if (itr != mapSingerInfo.end())
 			{
-				MediaRes.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
+				MediaDir.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
 			}
 			else
 			{
-				MediaRes.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
+				MediaDir.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
 			}
 
-			m_wndList.UpdateItem(uIdx, &MediaRes);
+			m_wndList.UpdateItem(uIdx, &MediaDir);
 		});
 	}
 
@@ -905,7 +905,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (!pMediaRes->isDir())
 			{
-				pMediaRes->AsyncTask();
+				pMediaRes->findRelatedMedia();
 				m_wndList.UpdateItem(iItem, pMediaRes);
 			}
 
@@ -1044,13 +1044,11 @@ int CMediaResPanel::GetTabImage()
 
 void CMediaResPanel::_asyncTask()
 {
-	__Ensure(m_wndList.GetView() == E_ListViewType::LVT_Report);
-
-	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [](CListObject& object) {
+	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [](CListObject& object) {
 		CMediaRes& mediaRes = (CMediaRes&)object;
 		if (!mediaRes.isDir())
 		{
-			mediaRes.AsyncTask();
+			mediaRes.findRelatedMedia();
 		}
 	});
 }

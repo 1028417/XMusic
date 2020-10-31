@@ -21,8 +21,10 @@ private:
 
 private:
 	bool _setImg(cwstr strImg, bool bHalfToneMode=false);
+	void _setSingerImg(CImg& img);
 	bool _setSingerImg(cwstr strFile);
 
+	void _initSingerHead(UINT uSingerID, CImg& img);
 	bool _initSingerHead(UINT uSingerID, cwstr strSingerName);
 	
 	int _getSingerImgPos(UINT uSingerID) const;

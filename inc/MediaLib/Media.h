@@ -135,11 +135,11 @@ public:
 		return GetName();
 	}
 
-    virtual void AsyncTask() {}
-
     CRCueFile getCueFile() const;
 
     void UpdatePath(cwstr strPath);
+	
+	virtual CMedia* findRelatedMedia() { return NULL; }
 #endif
 
 private:

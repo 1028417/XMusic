@@ -1367,9 +1367,9 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 
 		int iItem = lpNMList->iItem;
 		m_wndAlbumItemList.AsyncLButtondown([=]() {
-			CMedia *pAlbumItem = (CMedia*)m_wndAlbumItemList.GetItemObject(iItem);
+			auto pAlbumItem = (CAlbumItem*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);
-			(void)pAlbumItem->findRelatedMedia(E_RelatedMediaSet::RMS_Playlist);
+			(void)pAlbumItem->findRelatedMedia();
 			m_wndAlbumItemList.UpdateItem(iItem, pAlbumItem);
 
 			if (__Column_Playlist == iSubItem)
@@ -1406,9 +1406,19 @@ void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChan
 
 void CAlbumPage::_asyncTask()
 {
-	__Ensure(m_wndAlbumItemList.GetView() == E_ListViewType::LVT_Report);
-	
-	m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse, [](CListObject& object) {
-		((CAlbumItem&)object).AsyncTask();
+	__async(10, [&]() {
+		if (NULL == m_pAlbum)
+		{
+			return;
+		}
+
+		m_pAlbum->albumItems()([&](cauto AlbumItem) {
+			((CAlbumItem&)AlbumItem).findRelatedMedia();
+		});
+		m_wndAlbumItemList.Invalidate();
+
+		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_wndAlbumItemList.GetItemCount() / 10, [](CListObject& object) {
+			((CMedia&)object).checkDuration();
+		});
 	});
 }

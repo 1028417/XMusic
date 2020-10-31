@@ -151,10 +151,17 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 	m_wndList.GetWindowRect(rcList);
 	m_wndList.fixColumnWidth(rcList.Width());
 
-	cauto lstPlayingItems = m_view.getPlayMgr().playingItems();
-	m_wndList.AsyncTask(__AsyncTaskElapse * (m_wndList.GetItemCount() / 30 + 1), [&](UINT uItem) {
-		lstPlayingItems.get(uItem, [&](cauto PlayItem) {
-			((CPlayItem&)PlayItem).AsyncTask();
+	__async(10, [&]() {
+		cauto lstPlayingItems = m_view.getPlayMgr().playingItems();
+		lstPlayingItems([&](cauto PlayItem) {
+			((CPlayItem&)PlayItem).findRelatedMedia();
+		});
+		m_wndList.Invalidate();
+
+		m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [&](UINT uItem) {
+			lstPlayingItems.get(uItem, [&](cauto PlayItem) {
+				((CMedia&)PlayItem).checkDuration();
+			});
 		});
 	});
 }

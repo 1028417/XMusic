@@ -146,7 +146,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 			uGroupCount++;
 		});
 
-		m_wndList.AsyncTask(__AsyncTaskElapse, [&](UINT uItem) {
+		m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [&](UINT uItem) {
 			m_arrSimilarFileInfo.get(uItem, [&](auto& pr) {
 				auto group = pr.first;
 				auto index = pr.second;

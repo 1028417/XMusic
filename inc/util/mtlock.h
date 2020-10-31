@@ -83,7 +83,7 @@ public:
 private:
     mutex m_mutex;
     condition_variable m_condition;
-    bool m_bReset = false;
+    bool m_bStop = false;
 
 protected:
     T m_value;
@@ -95,7 +95,7 @@ private:
         if (nMs >= 0)
         {
             mutex_lock lock(m_mutex);
-            if (m_bReset)
+            if (m_bStop)
             {
                 return false;
             }
@@ -109,7 +109,7 @@ private:
             {
                 return false;
             }
-            if (m_bReset)
+            if (m_bStop)
             {
                 return false;
             }
@@ -119,7 +119,7 @@ private:
         else
         {
             mutex_lock lock(m_mutex);
-            while (!m_bReset)
+            while (!m_bStop)
             {
                 if (cbCheck(m_value))
                 {
@@ -143,18 +143,27 @@ public:
         return _wait(cbCheck, uMs);
     }
 
-    void set(const T& value)
+	void set(const T& value)
+	{
+		mutex_lock lock(m_mutex);
+		m_bStop = false;
+		m_value = value;
+		m_condition.notify_one();
+	}
+
+    void set(const T& value, cfn_void fn)
     {
         mutex_lock lock(m_mutex);
-        m_bReset = false;
+		m_bStop = false;
         m_value = value;
+		fn();
         m_condition.notify_one();
     }
 
-    void reset()
+    void stop()
     {
         mutex_lock lock(m_mutex);
-        m_bReset = true;
+		m_bStop = true;
         m_condition.notify_one();
     }
 };
@@ -162,10 +171,14 @@ public:
 class CSignal : public TSignal<bool>
 {
 public:
-    CSignal(bool bInitValue)
+    CSignal(bool bInitValue, bool bAutoReset)
         : TSignal(bInitValue)
+		, m_bAutoReset(bAutoReset)
     {
     }
+
+private:
+	bool m_bAutoReset;
 
 public:
 	bool operator !() const
@@ -183,15 +196,20 @@ public:
         return m_value;
     }
 
-    void wait(bool bReset = false)
+    bool wait(cfn_void cb=NULL)
     {
-        (void)TSignal::wait([=](bool bValue) {
+		return TSignal::wait([=](bool bValue) {
             if (bValue)
             {
-                if (bReset)
+                if (m_bAutoReset)
                 {
                     m_value = false;
                 }
+
+				if (cb)
+				{
+					cb();
+				}
 
                 return true;
             }
@@ -200,15 +218,20 @@ public:
         });
     }
 
-    bool wait(UINT uMs, bool bReset = false)
+    bool wait(UINT uMs, cfn_void cb = NULL)
     {
         return TSignal::wait(uMs, [=](bool bValue) {
            if (bValue)
            {
-               if (bReset)
+               if (m_bAutoReset)
                {
                    m_value = false;
                }
+
+			   if (cb)
+			   {
+				   cb();
+			   }
 
                return true;
            }
@@ -221,6 +244,11 @@ public:
     {
         TSignal::set(true);
     }
+
+	void set(cfn_void fn)
+	{
+		TSignal::set(true, fn);
+	}
 
     void reset()
     {

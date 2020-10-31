@@ -83,7 +83,7 @@ public:
 
     void SetDirRelatedSinger(UINT uSingerID, cwstr strSingerName, bool& bChanged);
 
-    void AsyncTask();
+    void findRelatedMedia();
 };
 
 enum class E_MediaDirType

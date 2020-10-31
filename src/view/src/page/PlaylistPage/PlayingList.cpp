@@ -541,7 +541,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		(void)m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Singer);
 		break;
 	case E_ItemLinkType::ILT_SingerAlbum:
-		(void)PlayItem.findRelatedMedia(E_RelatedMediaSet::RMS_Album);
+		(void)PlayItem.findRelatedMedia();
 
 		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);

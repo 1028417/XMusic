@@ -26,9 +26,11 @@ public:
 	wstring GetBaseDir() const override;
 
 #if __winvc
-	void AsyncTask() override;
+	CMedia* findRelatedMedia() override;
+#endif
 
 private:
+#if __winvc
 	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 #endif
 };
