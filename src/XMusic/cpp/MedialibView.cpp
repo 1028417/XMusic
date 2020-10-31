@@ -155,13 +155,15 @@ size_t CMedialibView::getColCount() const
 
 size_t CMedialibView::getRowCount() const
 {
+    bool bHLayout = m_medialibDlg.isHLayout();
+
     if (current())
     {
         if (currentDir() == &__medialib)
         {
             //return m_medialibDlg.rowCount()-1;
 
-            if (m_medialibDlg.isHLayout())
+            if (bHLayout)
             {
                 return ceil(__medialib.dirs().size()/2.0f);
             }
@@ -170,7 +172,28 @@ size_t CMedialibView::getRowCount() const
                 return __medialib.dirs().size();
             }
         }
-        return m_medialibDlg.rowCount();
+
+        auto uCount = getItemCount();
+        if (bHLayout)
+        {
+            uCount = ceil(uCount/2.0f);
+        }
+
+        auto uRowCount = m_medialibDlg.rowCount();
+        if (uRowCount > uCount)
+        {
+            uRowCount--;
+        }
+
+        if (!bHLayout)
+        {
+            if (uRowCount > uCount)
+            {
+                uRowCount--;
+            }
+        }
+
+        return uRowCount;
     }
     else
     {
@@ -446,12 +469,23 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     if (mlContext.playable())
     {
         UINT cy = context->rc.height();
-        int yMargin = cy * context.fIconMargin;
-        cy -= yMargin*2;
 
-        int x_icon = context->rc.right() + __playIconOffset - cy;
-        int y_icon = context->rc.top()+yMargin;
-        QRect rcPlayIcon(x_icon, y_icon, cy, cy);
+        int szMargin = 0;
+        int szIcon = 0;
+        if (mlContext.pMedia)
+        {
+            szMargin = cy * context.fIconMargin * m_medialibDlg.rowCount() / getRowCount();
+            szIcon = cy - szMargin*2;
+        }
+        else
+        {
+            szIcon = __size(90);
+            szMargin = (cy - szIcon)/2;
+        }
+
+        int xIcon = context->rc.right() + __playIconOffset - szIcon;
+        int yIcon = context->rc.top()+szMargin;
+        QRect rcPlayIcon(xIcon, yIcon, szIcon, szIcon);
 
         bool bFlash = (int)mlContext->uItem == m_nFlashItem;
         cauto pm = mlContext.pMediaSet
@@ -459,7 +493,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                :(bFlash?m_pmAddPlayOpacity:m_pmAddPlay);
         painter.drawPixmap(rcPlayIcon, pm);
 
-        rc.setRight(x_icon-__lvRowMargin+__playIconOffset);
+        rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }
 
     QString qsMediaQuality;

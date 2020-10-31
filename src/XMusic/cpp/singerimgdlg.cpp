@@ -49,25 +49,26 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     UINT cxDst = rc.width();
     UINT cyDst = rc.height();
 
+#define __margin __size(30)
     QRect rcPos;
     _genRect(m_cxImg, m_cyImg, cxDst, cyDst, rcPos);
-    if (rcPos.x() < __size(30) && rcPos.y() < __size(30))
+    if (rcPos.x() < __margin && rcPos.y() < __margin)
     {
         _genRect(cxDst, cyDst, m_cxImg, m_cyImg, rcPos);
         painter.drawPixmap(rc, m_brush, rcPos);
         return;
     }
 
-    if (m_cxImg + __size(30)*2 < cxDst && m_cyImg + __size(30)*2 < cyDst)
+    if (m_cxImg + __margin*2 < cxDst && m_cyImg + __margin*2 < cyDst)
     {
         rcPos.setRect((cxDst - m_cxImg)/2, (cyDst - m_cyImg)/2, m_cxImg, m_cyImg);
     }
-    else if (rcPos.x() < __size(30))
+    else if (rcPos.x() < __margin)
     {
         cyDst = cxDst * m_cyImg / m_cxImg;
         rcPos.setRect(0, (rc.height()-cyDst)/2, cxDst, cyDst);
     }
-    else if (rcPos.y() < __size(30))
+    else if (rcPos.y() < __margin)
     {
         cxDst = cyDst * m_cxImg / m_cyImg;
         rcPos.setRect((rc.width()-cxDst)/2, 0, cxDst, cyDst);

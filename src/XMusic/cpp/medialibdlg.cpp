@@ -391,13 +391,13 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
             int nItem = paMediaSet.find([&](const CMediaSet& MediaSet){
                 if ((UINT)E_LanguageType::LT_EUR == uLanguage)
                 {
-                    if (MediaSet.property().language() & E_LanguageType::LT_JP)
+                    if (MediaSet.property().language() & (UINT)E_LanguageType::LT_JP)
                     {
                         return true;
                     }
                 }
 
-                return MediaSet.property().language() & uLanguage;
+                return bool(MediaSet.property().language() & uLanguage);
             });
             if (nItem >= 0)
             {
