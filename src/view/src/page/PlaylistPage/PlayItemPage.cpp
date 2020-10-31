@@ -233,6 +233,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		
 		m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [](CListObject& object) {
 			((CMedia&)object).checkDuration();
+			return false;
 		});
 	});
 }

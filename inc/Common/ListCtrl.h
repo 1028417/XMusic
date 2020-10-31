@@ -387,7 +387,7 @@ public:
 	const LVHITTESTINFO& hittest(const POINT& ptPos) const;
 
 	void AsyncTask(UINT uElapse, cfn_void_t<UINT> cb);
-	void AsyncTask(UINT uElapse, cfn_void_t<CListObject&> cb);
+	void AsyncTask(UINT uElapse, cfn_bool_t<CListObject&> cb);
 
 	int getAsyncTaskStatus(UINT uItem)
 	{

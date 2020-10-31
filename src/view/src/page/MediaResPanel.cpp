@@ -1050,6 +1050,7 @@ void CMediaResPanel::_asyncTask()
 		{
 			mediaRes.findRelatedMedia();
 		}
+		return false;
 	});
 }
 

@@ -1419,6 +1419,7 @@ void CAlbumPage::_asyncTask()
 
 		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_wndAlbumItemList.GetItemCount() / 10, [](CListObject& object) {
 			((CMedia&)object).checkDuration();
+			return false;
 		});
 	});
 }
