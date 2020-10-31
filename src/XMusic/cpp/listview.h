@@ -40,10 +40,10 @@ struct tagLVItemContext
     {
     }
 
-    void setIcon(const QPixmap *pm, float fMargin)
+    void setIcon(const QPixmap *pm, int nIconSize)
     {
         pmIcon = pm;
-        fIconMargin = fMargin;
+        this->nIconSize = nIconSize;
     }
 
     tagLVItem* operator->()
@@ -60,7 +60,7 @@ struct tagLVItemContext
     UINT eStyle = E_LVItemStyle::IS_None;
 
     const QPixmap *pmIcon = NULL;
-    float fIconMargin = 0.21f;
+    int nIconSize = 0;
     UINT uIconRound = __size(6);
 
     WString strText;

@@ -129,23 +129,30 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if (context.pmIcon && !context.pmIcon->isNull())
     {
-        UINT sz_icon = cy;
-        if (context.fIconMargin > 0)
+        int szIcon = cy;
+        if (context.nIconSize > 0)
         {
-            sz_icon -= UINT(sz_icon * context.fIconMargin * 2);
+            szIcon = MIN(szIcon, context.nIconSize);
+        }
+        else
+        {
+            if (szIcon - context.nIconSize > 0)
+            {
+                szIcon -= context.nIconSize;
+            }
         }
 
-        auto x_icon = rc.left();
+        auto xIcon = rc.left();
         if (context.eStyle & E_LVItemStyle::IS_CenterAlign)
         {
-            x_icon = rc.center().x()-sz_icon-__lvRowMargin;
+            xIcon = rc.center().x()-szIcon-__lvRowMargin;
         }
 
-        int y_icon = rc.center().y()-sz_icon/2;
-        QRect rcPixmap(x_icon, y_icon, sz_icon, sz_icon);
+        int y_icon = rc.center().y()-szIcon/2;
+        QRect rcPixmap(xIcon, y_icon, szIcon, szIcon);
         painter.drawPixmapEx(rcPixmap, *context.pmIcon, context.uIconRound);
 
-        rc.setLeft(x_icon + sz_icon + __lvRowMargin);
+        rc.setLeft(xIcon + szIcon + __lvRowMargin);
     }
 
     if (context.eStyle & E_LVItemStyle::IS_BottomLine)

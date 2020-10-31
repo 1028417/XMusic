@@ -9,7 +9,7 @@ public:
     CSingerImgDlg(class CMedialibDlg& medialibDlg, class CApp& app);
 
 private:
-    class CApp& m_app;
+    CSingerImgMgr& m_singerImgMgr;
 
     wstring m_strSingerName;
 

@@ -185,13 +185,13 @@ size_t CMedialibView::getRowCount() const
             uRowCount--;
         }
 
-        if (!bHLayout)
+        /*if (uRowCount > 9)
         {
             if (uRowCount > uCount)
             {
                 uRowCount--;
             }
-        }
+        }*/
 
         return uRowCount;
     }
@@ -222,6 +222,7 @@ size_t CMedialibView::_getRootItemCount() const
 
 void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 {
+    context.nIconSize = __size(100);
     context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
     {
@@ -277,7 +278,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 strDirName = __substr(strDirName,3);
                 context.strText = strDirName;
 
-                context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
+                //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
+                context.nIconSize *= 1.1f;
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -360,7 +362,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 
         bool bHLayout = m_medialibDlg.isHLayout();
 
-        context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
+        //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
+        context.nIconSize *= 1.1f;
 
         context.uIconRound = 0;
 
@@ -472,14 +475,15 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
         int szMargin = 0;
         int szIcon = 0;
-        if (mlContext.pMedia)
+        /*if (mlContext.pMedia)
         {
             szMargin = cy * context.fIconMargin * m_medialibDlg.rowCount() / getRowCount();
             szIcon = cy - szMargin*2;
         }
-        else
+        else*/
         {
-            szIcon = __size(90);
+            //szMargin = context.nIconSize;
+            szIcon = __size(80);
             szMargin = (cy - szIcon)/2;
         }
 

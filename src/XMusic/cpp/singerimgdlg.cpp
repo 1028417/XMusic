@@ -7,7 +7,7 @@ static Ui::SingerImgDlg ui;
 
 CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
     : CDialog(medialibDlg)
-    , m_app(app)
+    , m_singerImgMgr(app.getSingerImgMgr())
 {
     ui.setupUi(this);
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
@@ -79,7 +79,7 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
 void CSingerImgDlg::show(cwstr strSingerName)
 {
-    m_uImgCount = m_app.getSingerImgMgr().getSingerImgCount(strSingerName);
+    m_uImgCount = m_singerImgMgr.getSingerImgCount(strSingerName);
     if (0 == m_uImgCount)
     {
         return;
@@ -146,16 +146,16 @@ void CSingerImgDlg::_switchImg(int nOffset)
     }
     else
     {
-        auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, uImgIdx, false);
+        auto pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
         if (NULL == pSingerImg)
         {
             //return;
 
-            pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_strSingerName, 0, false);
+            pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, 0, false);
             uImgIdx = 0;
         }
 
-        strFile = m_app.getSingerImgMgr().checkSingerImg(pSingerImg);
+        strFile = m_singerImgMgr.checkSingerImg(pSingerImg);
         if (strFile.empty())
         {
             return;
@@ -180,14 +180,14 @@ void CSingerImgDlg::_switchImg(int nOffset)
             uImgIdx = m_uImgIdx+1;
             if (m_mapImg.find(uImgIdx) == m_mapImg.end())
             {
-                (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx, false);
+                (void)m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
             }
         }
 
         uImgIdx = (0 == m_uImgIdx) ? (m_uImgCount-1) : (m_uImgIdx-1);
         if (m_mapImg.find(uImgIdx) == m_mapImg.end())
         {
-            (void)m_app.getSingerImgMgr().checkSingerImg(m_strSingerName, uImgIdx, false);
+            (void)m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
         }
     }
 }
