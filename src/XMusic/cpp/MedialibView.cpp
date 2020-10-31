@@ -279,7 +279,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 context.strText = strDirName;
 
                 //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
-                context.nIconSize *= 1.1f;
+                context.nIconSize *= 1.13f;
 
                 if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
                 {
@@ -363,7 +363,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         bool bHLayout = m_medialibDlg.isHLayout();
 
         //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
-        context.nIconSize *= 1.1f;
+        context.nIconSize *= 1.15f;
 
         context.uIconRound = 0;
 
