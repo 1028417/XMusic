@@ -55,8 +55,6 @@ public:
 
 	void clearSingerImg();
 
-    const tagSingerImg* getSingerHead(cwstr strSingerName);
-
     const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
 #if __OnlineMediaLib
@@ -68,5 +66,10 @@ public:
     wstring checkSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
     void quitDownload();
+
+	const tagSingerImg* getSingerHead(cwstr strSingerName);
+#else
+
+	wstring getSingerHead(cwstr strSingerName);
 #endif
 };
