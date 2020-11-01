@@ -566,7 +566,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                     | E_LVItemStyle::IS_RightTip | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
-            context.pmIcon = &imgDir.snapshot();
+            context.setIcon(&imgDir.snapshot(), __size(-12));
             _paintRow(painter, context);
         });
     }

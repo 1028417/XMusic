@@ -129,16 +129,17 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if (context.pmIcon && !context.pmIcon->isNull())
     {
-        int szIcon = cy;
+        int szIcon = 0;
         if (context.nIconSize > 0)
         {
-            szIcon = MIN(szIcon, context.nIconSize);
+            szIcon = MIN(cy, context.nIconSize);
         }
         else
         {
-            if (szIcon - context.nIconSize > 0)
+            szIcon = cy + context.nIconSize;
+            if (szIcon <= 0)
             {
-                szIcon -= context.nIconSize;
+                szIcon = cy;
             }
         }
 

@@ -36,6 +36,12 @@ void CDialog::_setPos()
         cauto ptCenter = m_parent.geometry().center();
         move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
+
+    auto cx = width();
+    auto cy = height();
+    m_bHLayout = cx > cy;
+
+    _relayout(cx, cy);
 }
 
 void CDialog::_show(cfn_void cbClose)

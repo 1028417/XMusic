@@ -26,8 +26,11 @@ QColor g_crLogoBkg(180, 220, 255);
 inline static void _fixWorkArea(QWidget& wnd)
 {
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
-    wnd.setGeometry(rcWorkArea.left, rcWorkArea.top
-                      , rcWorkArea.right-rcWorkArea.left, rcWorkArea.bottom-rcWorkArea.top);
+
+    auto cx = rcWorkArea.right-rcWorkArea.left+1;
+    auto cy = rcWorkArea.bottom-rcWorkArea.top+1;
+    wnd.setGeometry(rcWorkArea.left, rcWorkArea.top, cx, cy);
+    ::MoveWindow((HWND)wnd.winId(), rcWorkArea.left, rcWorkArea.top, cx, cy, TRUE);
 }
 #else
 #define _fixWorkArea(wnd)
