@@ -206,7 +206,7 @@ struct tagSingerImg
 
     bool isPiiic() const
     {
-        return cx > cy*1.5f || cy > cx*1.5f;
+        return cx > cy*1.3f || cy > cx*1.3f;
     }
 };
 
