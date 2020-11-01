@@ -166,7 +166,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if (context.eStyle & E_LVItemStyle::IS_ForwardButton)
     {
-        int sz_righttip = __size(30); //cy*22/100;
+        int sz_righttip = __size(36); //cy*22/100;
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
         QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);

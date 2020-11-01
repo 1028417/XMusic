@@ -423,7 +423,11 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     }
 
     cauto strSingerImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
-    if (!strSingerImg.empty())
+    if (strSingerImg.empty())
+    {
+        pSingerPixmap = &m_pmDefaultSinger;
+    }
+    else
     {
         QPixmap pm;
         if (pm.load(__WS2Q(strSingerImg)))
@@ -445,11 +449,13 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
             }
             else*/
             {
-                *pSingerPixmap = std::move(pm);
+                pSingerPixmap->swap(pm);
             }
 
             return *pSingerPixmap;
         }
+
+        m_app.getSingerImgMgr().checkSingerImg(strSingerName, 0, true);
     }
 
     return m_pmDefaultSinger;
