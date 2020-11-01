@@ -31,7 +31,7 @@ enum E_LVItemStyle
     , IS_MultiLine      = 0x0002
 
     , IS_BottomLine     = 0x0004
-    , IS_RightTip       = 0x0008
+    , IS_ForwardButton  = 0x0008
 };
 struct tagLVItemContext
 {
@@ -87,14 +87,14 @@ public:
             grabGesture(lstGestureType);
         }*/
 
-        (void)m_pmRightTip.load(":/img/righttip.png");
+        (void)m_pmForward.load(":/img/btnForward.png");
     }
 
 protected:
     E_LVScrollBar m_eScrollBar = E_LVScrollBar::LVSB_None;
 
 private:
-    QPixmap m_pmRightTip;
+    QPixmap m_pmForward;
 
     UINT m_uRowHeight = 1;
     UINT m_uTotalRows = 0;

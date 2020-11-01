@@ -11,12 +11,27 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
 {
     ui.setupUi(this);
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    connect(ui.btnBackward, &CButton::signal_clicked, [&](){
+        _switchImg(-1);
+    });
+    connect(ui.btnBackward, &CButton::signal_clicked, [&](){
+        _switchImg(1);
+    });
+}
+
+void CSingerImgDlg::_relayout(int cx, int cy)
+{
+    auto y = this->height()/2-ui.btnBackward->height()/2;
+    ui.btnBackward->move(ui.btnReturn->x(), y);
+    ui.btnForward->move(this->width()-ui.btnReturn->x()-ui.btnForward->width(), y);
 }
 
 void CSingerImgDlg::relayout(cqrc rcBtnReturn)
 {
     ui.btnReturn->setGeometry(rcBtnReturn);
 }
+
 static void _genRect(UINT cxSrc, UINT cySrc, UINT cxDst, UINT cyDst, QRect& rc)
 {
     int xDst = 0, yDst = 0;
@@ -84,6 +99,9 @@ void CSingerImgDlg::show(cwstr strSingerName)
     {
         return;
     }
+
+    ui.btnBackward->setVisible(m_uImgCount>1);
+    ui.btnForward->setVisible(m_uImgCount>1);
 
     m_strSingerName = strSingerName;
 

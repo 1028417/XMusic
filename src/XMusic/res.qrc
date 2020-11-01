@@ -13,7 +13,7 @@
         <file>img/btnMore.png</file>
         <file>img/btnReturn.png</file>
         <file>img/btnUpward.png</file>
-        <file>img/righttip.png</file>
+        <file>img/btnForward.png</file>
         <file>img/btnFullScreen.png</file>
         <file>img/btnX.png</file>
         <file>img/btnAddplay.png</file>
@@ -44,5 +44,6 @@
         <file>img/medialib/dts.png</file>
         <file>mdlconf</file>
         <file>img/medialib/mqs.png</file>
+        <file>img/btnBackward.png</file>
     </qresource>
 </RCC>

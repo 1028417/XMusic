@@ -241,7 +241,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         case E_MediaSetType::MST_SingerGroup:
             context.pmIcon = &m_pmSingerGroup;
 
-            context.eStyle |= E_LVItemStyle::IS_RightTip;
+            context.eStyle |= E_LVItemStyle::IS_ForwardButton;
         default:
             break;
         };
@@ -266,7 +266,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else if (context.pDir)
     {
-        context.eStyle |= E_LVItemStyle::IS_RightTip;
+        context.eStyle |= E_LVItemStyle::IS_ForwardButton;
 
         if (context.pDir->rootDir() == &__medialib)
         {

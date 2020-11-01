@@ -164,13 +164,13 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         rc.setBottom(rc.bottom()-3);
     }
 
-    if (context.eStyle & E_LVItemStyle::IS_RightTip)
+    if (context.eStyle & E_LVItemStyle::IS_ForwardButton)
     {
-        int sz_righttip = cy*22/100;
+        int sz_righttip = __size(30); //cy*22/100;
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
         QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
-        painter.drawPixmap(rcRighttip, m_pmRightTip);
+        painter.drawPixmap(rcRighttip, m_pmForward);
 
         rc.setRight(x_righttip - __lvRowMargin);
     }
