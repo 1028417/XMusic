@@ -29,7 +29,7 @@ private:
 
     void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te) override;
 
-    void _switchImg(int nOffset);
+    void _showImg(int nOffset);
 
 public:
     void show(cwstr strSingerName);

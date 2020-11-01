@@ -13,10 +13,10 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(ui.btnBackward, &CButton::signal_clicked, [&](){
-        _switchImg(-1);
+        _showImg(-1);
     });
     connect(ui.btnForward, &CButton::signal_clicked, [&](){
-        _switchImg(1);
+        _showImg(1);
     });
 }
 
@@ -110,7 +110,7 @@ void CSingerImgDlg::show(cwstr strSingerName)
 
     m_cxImg = m_cyImg = 0;
 
-    _switchImg(0);
+    _showImg(0);
 
     CDialog::show([&](){
         m_brush = QBrush();
@@ -122,20 +122,24 @@ void CSingerImgDlg::updateSingerImg()
     if (0 == m_cxImg)
     {
         m_uImgIdx = 0;
-        _switchImg(0);
+        _showImg(0);
     }
     else if (m_nSwitchingOffset != 0)
     {
-        _switchImg(m_nSwitchingOffset);
+        _showImg(m_nSwitchingOffset);
     }
 }
 
-void CSingerImgDlg::_switchImg(int nOffset)
+void CSingerImgDlg::_showImg(int nOffset)
 {
     auto uImgIdx = m_uImgIdx;
     if (nOffset > 0)
     {
         uImgIdx++;
+        if (uImgIdx >= m_uImgCount)
+        {
+            uImgIdx = 0;
+        }
     }
     else if (nOffset < 0)
     {
@@ -145,11 +149,6 @@ void CSingerImgDlg::_switchImg(int nOffset)
         }
         else
         {
-            if (m_uImgCount <= 1)
-            {
-                return;
-            }
-
             uImgIdx = m_uImgCount-1;
         }
     }
@@ -164,16 +163,7 @@ void CSingerImgDlg::_switchImg(int nOffset)
     }
     else
     {
-        auto pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
-        if (NULL == pSingerImg)
-        {
-            //return;
-
-            pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, 0, false);
-            uImgIdx = 0;
-        }
-
-        strFile = m_singerImgMgr.checkSingerImg(pSingerImg);
+        strFile = m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
         if (strFile.empty())
         {
             return;
@@ -212,7 +202,7 @@ void CSingerImgDlg::_switchImg(int nOffset)
 
 void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
 {
-    if (0 == m_cxImg)
+    if (0 == m_cxImg || m_uImgCount <= 1)
     {
         return;
     }
@@ -230,12 +220,12 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
         {
             if (dx >= 3)
             {
-                _switchImg(-1);
+                _showImg(-1);
                 return;
             }
             else if (dx <= -3)
             {
-                _switchImg(1);
+                _showImg(1);
                 return;
             }
         }
@@ -243,12 +233,12 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
         {
             if (dy >= 3)
             {
-                _switchImg(-1);
+                _showImg(-1);
                 return;
             }
             else if (dy <= -3)
             {
-                _switchImg(1);
+                _showImg(1);
                 return;
             }
         }
@@ -256,10 +246,10 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
 
     if (te.x() < rect().center().x()-__size(100))
     {
-        _switchImg(-1);
+        _showImg(-1);
     }
     else
     {
-        _switchImg(1);
+        _showImg(1);
     }
 }

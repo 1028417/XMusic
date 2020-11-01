@@ -40,7 +40,7 @@ public:
 		return m_mapFile;
 	}
 
-    cwstr file(const tagSingerImg& singerImg) const
+    wstring file(const tagSingerImg& singerImg) const
     {
         return m_strDir + singerImg.strFile;
     }
