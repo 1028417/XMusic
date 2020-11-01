@@ -422,15 +422,15 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pSingerPixmap;
     }
 
-    cauto strSingerImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
-    if (strSingerImg.empty())
+    auto pSingerImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
+    if (NULL == pSingerImg)
     {
         pSingerPixmap = &m_pmDefaultSinger;
     }
     else
     {
         QPixmap pm;
-        if (pm.load(__WS2Q(strSingerImg)))
+        if (pm.load(__WS2Q(m_app.getSingerImgMgr().file(*pSingerImg)))
         {
             m_lstSingerPixmap.emplace_back();
             pSingerPixmap = &m_lstSingerPixmap.back();
@@ -455,7 +455,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
             return *pSingerPixmap;
         }
 
-        m_app.getSingerImgMgr().checkSingerImg(strSingerName, 0, true);
+        m_app.getSingerImgMgr().checkSingerImg(pSingerImg);
     }
 
     return m_pmDefaultSinger;

@@ -425,7 +425,7 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 	cauto pSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx, false);
 	if (pSingerImg)
 	{
-		(void)m_imgSinger.Load(m_view.getSingerImgMgr().dir() + pSingerImg->strFile);
+		(void)m_imgSinger.Load(m_view.getSingerImgMgr().file(*pSingerImg));
 		this->InvalidateRect(__SingerImgRect);
 
 		uSingerImgIdx++;

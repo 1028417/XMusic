@@ -109,7 +109,7 @@ bool CMedialibDlg::showMediaRes(cwstr strPath)
     }
     m_lv.hittestFile(*pMediaRes);
 
-    CApp::async([=]() {
+    CApp::async([&, pMediaRes]() {
         tryShowWholeTrack(*pMediaRes);
     });
 

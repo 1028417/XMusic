@@ -1211,7 +1211,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 {
     if (m_medialibDlg.isVisible())
     {
-        m_app.sync([&](){
+        m_app.sync([&, strSingerName](){
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg(strSingerName, singerImg);

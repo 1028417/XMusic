@@ -35,15 +35,15 @@ private:
     wstring _fileSingerName(cwstr strFile) const;
 
 public:
-	cwstr dir() const
-	{
-		return m_strDir;
-	}
-
     const map<wstring, list<tagSingerImg>>& fileMap() const
 	{
 		return m_mapFile;
 	}
+
+    cwstr file(const tagSingerImg& singerImg) const
+    {
+        return m_strDir + singerImg.strFile;
+    }
 
     bool init(cwstr strDir);
 
@@ -55,7 +55,7 @@ public:
 
 	void clearSingerImg();
 
-    wstring getSingerHead(cwstr strSingerName);
+    const tagSingerImg* getSingerHead(cwstr strSingerName);
 
     const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
