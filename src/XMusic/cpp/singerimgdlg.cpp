@@ -15,16 +15,16 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
     connect(ui.btnBackward, &CButton::signal_clicked, [&](){
         _switchImg(-1);
     });
-    connect(ui.btnBackward, &CButton::signal_clicked, [&](){
+    connect(ui.btnForward, &CButton::signal_clicked, [&](){
         _switchImg(1);
     });
 }
 
 void CSingerImgDlg::_relayout(int cx, int cy)
 {
-    auto y = this->height()/2-ui.btnBackward->height()/2;
+    auto y = cy/2-ui.btnBackward->height()/2;
     ui.btnBackward->move(ui.btnReturn->x(), y);
-    ui.btnForward->move(this->width()-ui.btnReturn->x()-ui.btnForward->width(), y);
+    ui.btnForward->move(cx-ui.btnReturn->x()-ui.btnForward->width(), y);
 }
 
 void CSingerImgDlg::relayout(cqrc rcBtnReturn)
