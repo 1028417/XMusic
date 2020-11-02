@@ -1312,14 +1312,13 @@ void MainWindow::_playSingerImg()
         return;
     }
 
-    cauto strFile = m_app.getSingerImgMgr().checkSingerImg(pSingerImg);
-    if (strFile.empty())
+    if (!pSingerImg->bExist)
     {
         return;
     }
 
     QPixmap pm;
-    (void)pm.load(__WS2Q(strFile));
+    (void)pm.load(__WS2Q(m_app.getSingerImgMgr().file(*pSingerImg)));
     ui.labelSingerImg->setPixmap(pm);
 
     //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
@@ -1327,7 +1326,7 @@ void MainWindow::_playSingerImg()
     _relayout();
 
     g_uSingerImgIdx++;
-    (void)m_app.getSingerImgMgr().checkSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    (void)m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)

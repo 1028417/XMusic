@@ -9,6 +9,8 @@
 #define __ModelExt __dllimport
 #endif
 
+#include "XMediaLib.h"
+
 struct tagAddPlayItem
 {
     tagAddPlayItem() = default;
@@ -191,13 +193,16 @@ struct tagSingerImg
 
     tagSingerImg(cwstr strFile)
         : strFile(strFile)
+        , bExist(true)
     {
     }
 
     wstring strFile;
 	UINT uFileSize = 0;
 	UINT cx = 0;
-	UINT cy = 0;
+    UINT cy = 0;
+
+    bool bExist = false;
 
     bool isSmall() const
     {
@@ -226,8 +231,6 @@ enum class E_UpgradeResult
 	UR_AppUpgraded
 };
 #endif
-
-#include "XMediaLib.h"
 
 #include "DataMgr.h"
 

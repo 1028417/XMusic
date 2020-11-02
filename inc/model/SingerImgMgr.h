@@ -20,13 +20,15 @@ private:
     map<wstring, list<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
-    set<const tagSingerImg*> m_setOnlineFile;
-    list<const tagSingerImg*> m_lstDownloadFile;
+    set<tagSingerImg*> m_setOnlineFile;
+    list<tagSingerImg*> m_lstDownloadFile;
     mutex m_mutex;
     XThread m_thrDownload;
 
 private:
     bool _raiseFile(const tagSingerImg *pSingerImg);
+
+    void _downloadFile(tagSingerImg *pSingerImg);
 
     void _download();
 #endif
@@ -61,9 +63,6 @@ public:
     UINT getSingerImgCount(cwstr strSingerName);
 
     void downloadSingerHead(const list<wstring>& lstSingerName);
-
-    wstring checkSingerImg(const tagSingerImg*);
-    wstring checkSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 
     void quitDownload();
 

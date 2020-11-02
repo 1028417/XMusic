@@ -105,7 +105,6 @@ void CSingerImgDlg::show(cwstr strSingerName)
 
     m_strSingerName = strSingerName;
 
-    m_mapImg.clear();
     m_uImgIdx = 0;
 
     m_cxImg = m_cyImg = 0;
@@ -155,48 +154,31 @@ void CSingerImgDlg::_showImg(int nOffset)
 
     m_nSwitchingOffset = nOffset;
 
-    wstring strFile;
-    cauto itr = m_mapImg.find(uImgIdx);
-    if (itr != m_mapImg.end())
+    auto pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
+    if (NULL == pSingerImg || !pSingerImg->bExist)
     {
-        strFile = itr->second;
-    }
-    else
-    {
-        strFile = m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
-        if (strFile.empty())
-        {
-            return;
-        }
+        return;
     }
 
     m_nSwitchingOffset = 0;
 
-    QPixmap pm(__WS2Q(strFile));
+    QPixmap pm(__WS2Q(m_singerImgMgr.file(*pSingerImg)));
     m_cxImg = pm.width();
     m_cyImg = pm.height();
     m_brush = QBrush(pm);
     update();
 
     m_uImgIdx = uImgIdx;
-    m_mapImg[m_uImgIdx] = strFile;
 
     if (m_uImgCount > 1)
     {
         if (m_uImgIdx < m_uImgCount-1)
         {
-            uImgIdx = m_uImgIdx+1;
-            if (m_mapImg.find(uImgIdx) == m_mapImg.end())
-            {
-                (void)m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
-            }
+            (void)m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
         }
 
         uImgIdx = (0 == m_uImgIdx) ? (m_uImgCount-1) : (m_uImgIdx-1);
-        if (m_mapImg.find(uImgIdx) == m_mapImg.end())
-        {
-            (void)m_singerImgMgr.checkSingerImg(m_strSingerName, uImgIdx, false);
-        }
+        (void)m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
     }
 }
 

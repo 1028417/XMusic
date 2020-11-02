@@ -427,7 +427,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     {
         pSingerPixmap = &m_pmDefaultSinger;
     }
-    else
+    else if (pHeadImg->bExist)
     {
         QPixmap pm;
         if (pm.load(__WS2Q(m_app.getSingerImgMgr().file(*pHeadImg))))
@@ -454,8 +454,6 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
 
             return *pSingerPixmap;
         }
-
-        m_app.getSingerImgMgr().checkSingerImg(pHeadImg);
     }
 
     return m_pmDefaultSinger;

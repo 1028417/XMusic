@@ -14,7 +14,6 @@ private:
     wstring m_strSingerName;
 
     UINT m_uImgCount = 0;
-    map<UINT, wstring> m_mapImg;
     UINT m_uImgIdx = 0;
     int m_nSwitchingOffset = 0;
 
