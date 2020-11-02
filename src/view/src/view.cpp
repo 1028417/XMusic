@@ -21,26 +21,21 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.wav;*.dts;\
 
 bool __view::show()
 {
-	if (!m_controller.getOption().strRootDir.empty() && fsutil::existDir(m_controller.getOption().strRootDir))
-	{
-		__EnsureReturn(m_model.initMediaLib(), false);
-	}
-
-	m_globalSize.init();
-	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
-
-	mtutil::thread([&]() {
-		m_ImgMgr.initSingerImg();
-		m_PlayingPage.Invalidate();
-	});
-
 	if (!CPlaySpirit::inst().Create())
 	{
 		CMainApp::msgBox(L"请先执行安装");
 		return false;
 	}
 
+	m_globalSize.init();
+	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
+
 	__EnsureReturn(_create(), false);
+
+	if (!m_controller.getOption().strRootDir.empty() && fsutil::existDir(m_controller.getOption().strRootDir))
+	{
+		__EnsureReturn(m_model.initMediaLib(), false);
+	}
 
 	m_PlayCtrl.showPlaySpirit();
 
@@ -52,6 +47,14 @@ bool __view::show()
 	m_MainWnd.show();
 
 	return true;
+}
+
+void __view::_initSingerImg()
+{
+	mtutil::thread([&]() {
+		m_ImgMgr.initSingerImg();
+		m_PlayingPage.Invalidate();
+	});
 }
 
 bool __view::_create()
@@ -87,7 +90,7 @@ bool __view::_create()
 void __view::initView()
 {
 	m_ImgMgr.clearSingerImg();
-	m_ImgMgr.initSingerImg();
+	_initSingerImg();
 
 	CMediaResPanel::RefreshMediaResPanel();
 

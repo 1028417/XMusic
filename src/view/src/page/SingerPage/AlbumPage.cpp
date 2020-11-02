@@ -167,16 +167,17 @@ BOOL CAlbumPage::OnInitDialog()
 		case __Column_Info:
 		{
 			CDC& dc = lvcd.dc;
-			cauto rc = lvcd.rc;
-			dc.FillSolidRect(&rc, lvcd.crBkg);
+			//dc.FillSolidRect(&rc, lvcd.crBkg);
 
 			m_wndAlbumItemList.SetCustomFont(dc, -.2f, false);
-			RECT rcText = rc;
-			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
 			BYTE uAlpha = m_view.genByteRateAlpha(*pAlbumItem);
 			dc.SetTextColor(lvcd.getTextColor(uAlpha));
-			
+
+			cauto rc = lvcd.rc;
+			RECT rcText = rc;
+			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
+
 			dc.DrawText(pAlbumItem->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			dc.SetTextColor(lvcd.crText);
@@ -195,9 +196,15 @@ BOOL CAlbumPage::OnInitDialog()
 
 		break;
 		case __Column_Playlist:
-			lvcd.bSetUnderline = true;
-			lvcd.fFontSizeOffset = -.15f;
-
+			m_wndAlbumItemList.SetCustomFont(lvcd.dc, -.15f, true);
+			
+			{
+				cauto strPlaylist = pAlbumItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
+				lvcd.dc.DrawText(strPlaylist.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			
+			lvcd.bSkipDefault = true;
+		
 			break;
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
@@ -240,7 +247,10 @@ BOOL CAlbumPage::OnInitDialog()
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {
 		m_wndAlbumItemList.UpdateItems();
 
-		_asyncTask();
+		if (E_ListViewType::LVT_Report == eViewType)
+		{
+			_asyncTask();
+		}
 	});
 
 	m_wndAlbumItemList.SetIconSpacing(width / 5-1, m_view.m_globalSize.m_uBigIconSize + m_view.m_globalSize.m_uIconSpace);
@@ -911,8 +921,11 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 
 	(void)m_wndAlbumItemList.ShowWindow(SW_SHOW);
 	(void)m_wndMediaResPanel.ShowWindow(SW_HIDE);
-	
-	_asyncTask();
+
+	if (E_ListViewType::LVT_Report == m_wndAlbumItemList.GetView())
+	{
+		_asyncTask();
+	}
 }
 
 void CAlbumPage::RefreshAlbum()
@@ -1406,18 +1419,21 @@ void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChan
 
 void CAlbumPage::_asyncTask()
 {
+	if (m_pAlbum && E_AlbumType::AT_Normal == m_pAlbum->type())
+	{
+		m_pAlbum->albumItems()([&](cauto AlbumItem) {
+			((CAlbumItem&)AlbumItem).findRelatedMedia();
+		});
+		//m_wndAlbumItemList.Invalidate();
+	}
+
 	__async(10, [&]() {
 		if (NULL == m_pAlbum)
 		{
 			return;
 		}
-
-		m_pAlbum->albumItems()([&](cauto AlbumItem) {
-			((CAlbumItem&)AlbumItem).findRelatedMedia();
-		});
-		m_wndAlbumItemList.Invalidate();
-
-		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_wndAlbumItemList.GetItemCount() / 10, [](CListObject& object) {
+		
+		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_pAlbum->albumItems().size() / 10, [](CListObject& object) {
 			((CMedia&)object).checkDuration();
 			return false;
 		});

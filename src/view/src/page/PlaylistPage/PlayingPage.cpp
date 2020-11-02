@@ -158,7 +158,7 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 		});
 		m_wndList.Invalidate();
 
-		m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [&](UINT uItem) {
+		m_wndList.AsyncTask(__AsyncTaskElapse + lstPlayingItems.size() / 10, [&](UINT uItem) {
 			lstPlayingItems.get(uItem, [&](cauto PlayItem) {
 				((CMedia&)PlayItem).checkDuration();
 			});

@@ -81,16 +81,17 @@ BOOL CPlayItemPage::OnInitDialog()
 		case __Column_Info:
 		{
 			CDC& dc = lvcd.dc;
-			cauto rc = lvcd.rc;
-			dc.FillSolidRect(&rc, lvcd.crBkg);
+			//dc.FillSolidRect(&rc, lvcd.crBkg);
 
 			m_wndList.SetCustomFont(dc, -.2f, false);
-			RECT rcText = rc;
-			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
 
 			BYTE uAlpha = m_view.genByteRateAlpha(*pPlayItem);
 			dc.SetTextColor(lvcd.getTextColor(uAlpha));
-			
+
+			cauto rc = lvcd.rc;
+			auto rcText = rc;
+			rcText.right = rcText.left + globalSize.m_ColWidth_Type;
+
 			dc.DrawText(pPlayItem->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			dc.SetTextColor(lvcd.crText);
@@ -98,8 +99,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			rcText.left = rcText.right;
 			rcText.right = rc.right;
 			rcText.bottom = (rcText.bottom + rcText.top) / 2 +6;
-			dc.DrawText(pPlayItem->displayFileSizeString(true).c_str()
-				, &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(pPlayItem->displayFileSizeString(true).c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			rcText.top = rcText.bottom -9;
 			rcText.bottom = rc.bottom;
@@ -108,12 +108,23 @@ BOOL CPlayItemPage::OnInitDialog()
 
 		lvcd.bSkipDefault = true;
 
-		return;
+		break;
 		case __Column_SingerAlbum:
-			lvcd.bSetUnderline = true;
-			lvcd.fFontSizeOffset = -.15f;
+		{
+			wstring strSingerAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+			cauto strAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+			if (!strAlbum.empty())
+			{
+				strSingerAlbum.append(__CNDot + strAlbum);
+			}
 
-			break;
+			m_wndList.SetCustomFont(lvcd.dc, -.15f, true);
+			lvcd.dc.DrawText(strSingerAlbum.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+
+		lvcd.bSkipDefault = true;
+
+		break;
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;
@@ -231,7 +242,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 		});
 		m_wndList.Invalidate();
 		
-		m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [](CListObject& object) {
+		m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
 			((CMedia&)object).checkDuration();
 			return false;
 		});

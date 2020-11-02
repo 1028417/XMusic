@@ -137,6 +137,8 @@ public:
 	CPlayCtrl m_PlayCtrl;
 
 private:
+	void _initSingerImg();
+
 	bool _create();
 
 	bool _exportMedia(CWnd& wnd, cwstr strTitle
