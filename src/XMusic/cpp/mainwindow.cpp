@@ -1156,7 +1156,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-        ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
+        cauto qsSingerName = __WS2Q(m_PlayingInfo.strSingerName);
+        if (m_PlayingInfo.qsTitle.indexOf(qsSingerName) >= 0)
+        {
+            ui.labelSingerName->clear();
+        }
+        else
+        {
+            ui.labelSingerName->setText(qsSingerName);
+        }
 
         if (m_PlayingInfo.strSingerName.empty())
         {
