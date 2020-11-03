@@ -40,7 +40,6 @@ bool __view::show()
 	m_PlayCtrl.showPlaySpirit();
 
 	__async([&]() {
-		m_PlayingPage.RefreshList();
 		m_MediaResPage.ShowDir();
 	});
 
@@ -1008,7 +1007,7 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType)
 	int nRelatedMediaID = media.GetRelatedMediaID(eRmsType);
 	if (nRelatedMediaID > 0)
 	{
-		CMedia *pRelatedMedia = __xmedialib.FindMedia((E_MediaSetType)eRmsType, (UINT)nRelatedMediaID);
+		CMedia *pRelatedMedia = __xmedialib.GetMedia((E_MediaSetType)eRmsType, (UINT)nRelatedMediaID);
 		if (pRelatedMedia)
 		{
 			hittestMedia(*pRelatedMedia);
@@ -1019,7 +1018,7 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType)
 	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eRmsType);
 	if (uRelatedMediaSetID > 0)
 	{
-		CMediaSet *pMediaSet = __xmedialib.FindSubSet((E_MediaSetType)eRmsType, uRelatedMediaSetID);
+		CMediaSet *pMediaSet = __xmedialib.GetSubSet((E_MediaSetType)eRmsType, uRelatedMediaSetID);
 		__EnsureReturn(pMediaSet, false);
 
 		this->hittestMediaSet(*pMediaSet, NULL, &media);

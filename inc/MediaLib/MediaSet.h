@@ -120,8 +120,6 @@ private:
 private:
 	virtual int _indexOf(const CMediaSet&) const { return -1; }
 
-    bool _FindMedia(CMedia& media, const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
-
 #if __winvc
 	virtual bool GetRenameText(wstring& stRenameText) const override
 	{
@@ -187,9 +185,9 @@ public:
 
 	void GetAllMedias(TD_MediaList& lstMedias);
 
-    CMediaSet* FindSubSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
+    CMediaSet* GetSubSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
 
-    CMedia* FindMedia(E_MediaSetType eMediaSetType, UINT uMediaID);
+	CMedia* GetMedia(E_MediaSetType eMediaSetType, UINT uMediaID);
 
 	wstring GetLogicPath();
 
@@ -197,15 +195,4 @@ public:
 	{
 		return m_strName;
 	}
-
-	virtual bool FindMedia(const tagFindMediaPara& FindPara, struct tagFindMediaResult& FindResult);
-};
-
-struct tagFindMediaResult
-{
-	UINT uResult = 0;
-
-	TD_MediaList lstRetMedias;
-
-	map<UINT, wstring> mapSingerDirChanged;
 };

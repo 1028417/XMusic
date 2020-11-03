@@ -141,7 +141,7 @@ public:
 
     void show();
     void showMediaSet(CMediaSet& MediaSet);
-    void showMedia(CMedia& media);
+    void showMedia(const CMedia& media);
     bool showMediaRes(cwstr strPath);
 
     void updateHead();

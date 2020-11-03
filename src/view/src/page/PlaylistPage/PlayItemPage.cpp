@@ -231,21 +231,23 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	__async(10, [&]() {
-		if (NULL == m_pPlaylist)
-		{
-			return;
-		}
+	if (NULL == m_pPlaylist)
+	{
+		return;
+	}
 
-		m_pPlaylist->playItems()([&](cauto PlayItem) {
-			((CPlayItem&)PlayItem).findRelatedMedia();
-		});
-		m_wndList.Invalidate();
-		
-		m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
-			((CMedia&)object).checkDuration();
-			return false;
-		});
+	m_pPlaylist->playItems()([&](cauto PlayItem) {
+		((CPlayItem&)PlayItem).findRelatedMedia();
+	});
+
+	__async(10, [&]() {
+		if (m_pPlaylist)
+		{
+			m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
+				((CMedia&)object).checkDuration();
+				return false;
+			});
+		}
 	});
 }
 

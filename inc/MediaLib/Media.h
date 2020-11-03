@@ -139,8 +139,10 @@ public:
 
     void UpdatePath(cwstr strPath);
 	
-	virtual CMedia* findRelatedMedia() { return NULL; }
+	virtual const CMedia* findRelatedMedia() { return NULL; }
 #endif
+
+	bool find(const struct tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) const;
 
 private:
     inline void _UpdatePath(cwstr strPath)

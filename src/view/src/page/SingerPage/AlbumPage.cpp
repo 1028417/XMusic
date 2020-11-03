@@ -1424,18 +1424,15 @@ void CAlbumPage::_asyncTask()
 		m_pAlbum->albumItems()([&](cauto AlbumItem) {
 			((CAlbumItem&)AlbumItem).findRelatedMedia();
 		});
-		//m_wndAlbumItemList.Invalidate();
 	}
 
 	__async(10, [&]() {
-		if (NULL == m_pAlbum)
+		if (m_pAlbum)
 		{
-			return;
+			m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_pAlbum->albumItems().size() / 10, [](CListObject& object) {
+				((CMedia&)object).checkDuration();
+				return false;
+			});
 		}
-		
-		m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_pAlbum->albumItems().size() / 10, [](CListObject& object) {
-			((CMedia&)object).checkDuration();
-			return false;
-		});
 	});
 }

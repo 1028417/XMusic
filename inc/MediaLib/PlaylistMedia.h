@@ -29,7 +29,7 @@ public:
 #if __winvc
     int getSingerImg() const;
 
-	CMedia* findRelatedMedia() override;
+	const CMedia* findRelatedMedia() override;
 
 #else
     wstring GetAbsPath() const override // 兼容本地文件

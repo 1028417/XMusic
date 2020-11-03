@@ -67,4 +67,6 @@ public:
 	CSinger* RepositSinger(CSinger& Singer, CMediaSet& Target, bool bDropPositionFlag);
 
     int RepositAlbumItem(CAlbum& Album, const TD_IMediaList& lstMedias, UINT uTargetPos);
+
+	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 };

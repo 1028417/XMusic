@@ -183,6 +183,13 @@ struct tagFindMediaPara
 	std::set<wstring> setFiles;
 };
 
+struct tagFindMediaResult
+{
+	TD_MediaList lstRetMedias;
+
+	map<UINT, wstring> mapSingerDirChanged;
+};
+
 enum class E_RenameRetCode
 {
 	RRC_Success = 0

@@ -175,7 +175,7 @@ public:
     void showRoot();
 
     void showMediaSet(CMediaSet& MediaSet, bool bUpward=false);
-    void hittestMedia(CMedia& media);
+    void hittestMedia(const CMedia& media);
 
     virtual void showDir(CPath& dir);
 

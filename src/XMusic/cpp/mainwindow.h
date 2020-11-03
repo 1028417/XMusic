@@ -40,7 +40,7 @@ struct tagPlayingInfo
     wstring strPlaylist;
     UINT uRelatedPlayItemID = 0;
 
-    CMedia *pRelatedMedia = NULL;
+    const CMedia *pRelatedMedia = NULL;
 };
 
 class MainWindow : public QMainWindow, public IModelObserver

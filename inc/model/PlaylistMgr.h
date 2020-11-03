@@ -52,4 +52,6 @@ public:
 	int RepositPlayItem(CPlaylist& Playlist, const TD_IMediaList& lstMedias, UINT uTargetPos);
 
     BOOL SetBackPlayItems(CPlaylist& Playlist, const ConstPtrArray<CPlayItem>& paPlayItems);
+
+	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) const;
 };

@@ -48,12 +48,15 @@ private:
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 #endif
 
+public:
+	void FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
+
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 
     void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
-    CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType eMediaSetType, const CSinger*& pRelatedSinger) override;
+    const CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType eMediaSetType, const CSinger*& pRelatedSinger) override;
 
 	void renameMedia(IMedia& media, cwstr strNewName) override;
 

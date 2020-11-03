@@ -1125,12 +1125,12 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     if (PlayingInfo.uRelatedAlbumItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().FindMedia(
+        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(
                                 E_MediaSetType::MST_Album, PlayingInfo.uRelatedAlbumItemID);
     }
     else if (PlayingInfo.uRelatedPlayItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().FindMedia(
+        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(
                                 E_MediaSetType::MST_Playlist, PlayingInfo.uRelatedPlayItemID);
     }
     else
@@ -1444,7 +1444,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_app.getSingerMgr().FindSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = m_app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);

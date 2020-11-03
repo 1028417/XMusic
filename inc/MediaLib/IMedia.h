@@ -135,7 +135,7 @@ public:
 		return GetName();
 	}
 
-	CMedia *findRelatedMedia(E_RelatedMediaSet eRmsType);
+	const CMedia *findRelatedMedia(E_RelatedMediaSet eRmsType);
 
 	UINT GetRelatedMediaID(E_RelatedMediaSet eRmsType) const
 	{
@@ -154,7 +154,7 @@ public:
 
 	void SetRelatedMediaSet(E_RelatedMediaSet eRmsType, UINT uMediaSetID, cwstr strMediaSetName, int iMediaID = -1);
 
-	void SetRelatedMediaSet(E_RelatedMediaSet eRmsType, CMedia& media);
+	void SetRelatedMediaSet(E_RelatedMediaSet eRmsType, const CMedia& media);
 
 	void ClearRelatedMediaSet(E_RelatedMediaSet eRmsType)
 	{

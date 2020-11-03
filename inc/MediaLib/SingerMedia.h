@@ -26,7 +26,7 @@ public:
 	wstring GetBaseDir() const override;
 
 #if __winvc
-	CMedia* findRelatedMedia() override;
+	const CMedia* findRelatedMedia() override;
 #endif
 
 private:
@@ -182,9 +182,9 @@ public:
 		return m_strDir;
 	}
 
-private:
-	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) override;
+	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 
+private:
 #if __winvc
 	int GetTreeImage() override
 	{

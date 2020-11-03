@@ -61,7 +61,7 @@ void CMLListView::showMediaSet(CMediaSet& MediaSet, bool bUpward)
     _showMediaSet(MediaSet);
 }
 
-void CMLListView::hittestMedia(CMedia& media)
+void CMLListView::hittestMedia(const CMedia& media)
 {
     if (media.m_pParent)
     {

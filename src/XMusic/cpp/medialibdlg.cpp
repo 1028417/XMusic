@@ -89,7 +89,7 @@ void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
     _show();
 }
 
-void CMedialibDlg::showMedia(CMedia& media)
+void CMedialibDlg::showMedia(const CMedia& media)
 {
     m_lv.hittestMedia(media);
 
