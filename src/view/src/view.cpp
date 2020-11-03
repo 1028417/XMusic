@@ -690,8 +690,6 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 				return false;
 			}
 
-			jRoot["name"] = strutil::toUtf8(dir.fileName());
-
 			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.fileName();
 			if (!TxtWriter.writeln(strDirInfo))
 			{
@@ -705,6 +703,8 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText((L"正在生成目录快照: " + dir.path()).c_str());
 
+			jRoot["name"] = strutil::toUtf8(dir.fileName());
+			
 			cauto paSubFile = dir.files();
 			if (paSubFile)
 			{
@@ -712,11 +712,16 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 
 				paSubFile([&](XFile& subFile) {
 					JValue jFile;
-					jFile["name"] = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
-					jFile["size"] = ((CMediaRes&)subFile).fileSize();
+					auto strFileTitle = __fileTitle_r(subFile.fileName());
+					strutil::replace(strFileTitle, L" - ");
+					jFile.append(strutil::toUtf8(strFileTitle));
+					jFile.append(((CMediaRes&)subFile).fileSize());
+					//jFile["name"] = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
+					//jFile["size"] = ((CMediaRes&)subFile).fileSize();
 					if (bGenDuration)
 					{
-						jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+						//jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+						jFile.append(CMediaOpaque::checkDuration((CMediaRes&)subFile));
 					}
 					jFiles.append(jFile);
 
