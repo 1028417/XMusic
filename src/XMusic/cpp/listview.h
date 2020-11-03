@@ -112,6 +112,8 @@ private:
 
     map<void*, float> m_mapScrollRecord;
 
+    list<UINT> m_lstCurrentItems;
+
 private:
     void _onPaint(CPainter& painter, cqrc) override;
 
@@ -192,9 +194,14 @@ protected:
     virtual bool event(QEvent *ev) override;
 
 public:
-    inline float topItem() const
+    const list<UINT>& currentItems() const
     {
-        return m_fScrollPos;
+        return m_lstCurrentItems;
+    }
+
+    float topItem() const
+    {
+        return m_fTopItem;
     }
 
     inline float scrollPos() const

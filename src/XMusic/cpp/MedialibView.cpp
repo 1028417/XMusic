@@ -68,30 +68,6 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
-        /*if (m_pthrFindRelated)
-        {
-            m_pthrFindRelated->join();
-        }
-        else
-        {
-            m_pthrFindRelated = &m_app.thread();
-        }
-        m_pthrFindRelated->start([&](XT_RunSignal bRunSignal){
-            ((CPlaylist&)MediaSet).playItems()([&](const CPlayItem& playItem){
-                mtutil::usleep(10);
-                ((CPlayItem&)playItem).findRelatedMedia(E_RelatedMediaSet::RMS_Album);
-                return bRunSignal;
-            });
-
-            if (bRunSignal)
-            {
-                m_app.sync([&](){
-                    update();
-                    setPlaylist.insert(&MediaSet);
-                });
-            }
-        });*/
-
         list<wstring> *plstSingerName = NULL;
         static map<const void*, std::list<wstring>> mapSingerName;
         cauto itr = mapSingerName.find(&MediaSet);
@@ -135,6 +111,14 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             lstSingerName.push_back(singer.m_strName);
         }
         m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+    }
+    else
+    {
+        auto pSinger = currentSinger();
+        if (pSinger)
+        {
+            m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+        }
     }
 }
 
@@ -235,12 +219,10 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pmIcon = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pmIcon = &genSingerHead(context.pMediaSet->m_uID,
-                                               context.pMediaSet->m_strName);
+            context.pmIcon = &genSingerHead(context.pMediaSet->m_uID, context.pMediaSet->m_strName);
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pmIcon = &m_pmSingerGroup;
-
             context.eStyle |= E_LVItemStyle::IS_ForwardButton;
         default:
             break;
@@ -412,6 +394,52 @@ CSinger *CMedialibView::currentSinger() const
     }
 
     return NULL;
+}
+
+void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
+{
+    CListView::_onPaint(painter, cx, cy);
+
+    auto pMediaSet = currentMediaSet();
+    if (NULL == pMediaSet)
+    {
+        return;
+    }
+
+    if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
+    {
+        list<wstring> lstSingerName;
+        for (auto uItem : currentItems())
+        {
+            currentSubMedias().get(uItem, [&](CMedia& PlayItem){
+                cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+                if (!strSingerName.empty())
+                {
+                    lstSingerName.push_back(strSingerName);
+                }
+            });
+        }
+
+        if (!lstSingerName.empty())
+        {
+            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        }
+    }
+    else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
+    {
+        list<wstring> lstSingerName;
+        for (auto uItem : currentItems())
+        {
+            currentSubMedias().get(uItem, [&](CMedia& singer){
+                lstSingerName.push_back(singer.m_strName);
+            });
+        }
+
+        if (!lstSingerName.empty())
+        {
+            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        }
+    }
 }
 
 cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)

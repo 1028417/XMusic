@@ -313,11 +313,14 @@ void CMedialibDlg::updateHead()
 
     ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
 
-    ui.labelSingerImg->clear();
     auto pSinger = m_lv.currentSinger();
     if (pSinger)
     {
         ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+    }
+    else
+    {
+        ui.labelSingerImg->clear();
     }
 
     ui.btnPlay->setVisible(bShowPlayButton);

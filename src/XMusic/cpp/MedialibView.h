@@ -108,6 +108,8 @@ private:
 
     void _genMLItemContext(tagMLItemContext&) override;
 
+    void _onPaint(CPainter& painter, int cx, int cy) override;
+
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 
     void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
