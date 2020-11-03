@@ -711,19 +711,29 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 				JValue& jFiles = jRoot["files"];
 
 				paSubFile([&](XFile& subFile) {
-					JValue jFile;
 					auto strFileTitle = __fileTitle_r(subFile.fileName());
-					strutil::replace(strFileTitle, L" - ");
-					jFile.append(strutil::toUtf8(strFileTitle));
-					jFile.append(((CMediaRes&)subFile).fileSize());
+					strutil::replace(strFileTitle, L" - ", L"-");
+					auto strFileDesc = strutil::toUtf8(strFileTitle);
+
+					//JValue jFile;
 					//jFile["name"] = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
-					//jFile["size"] = ((CMediaRes&)subFile).fileSize();
+					//jFile.append(strutil::toUtf8(strFileTitle));
+					
+					auto nFileSize = ((CMediaRes&)subFile).fileSize();
+					strFileDesc.append(1, '|').append(to_string(nFileSize));
+					//jFile["size"] = nFileSize;
+					//jFile.append(nFileSize);
+
 					if (bGenDuration)
 					{
-						//jFile["duration"] = CMediaOpaque::checkDuration((CMediaRes&)subFile);
-						jFile.append(CMediaOpaque::checkDuration((CMediaRes&)subFile));
+						auto uDuration = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+						strFileDesc.append(1, '|').append(to_string(uDuration));
+						//jFile["duration"] = uDuration;
+						//jFile.append(uDuration);
 					}
-					jFiles.append(jFile);
+
+					jFiles.append(strFileDesc);
+					//jFiles.append(jFile);
 
 					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString(false);
 					auto& strFileInfo = strPrfix + subFile.fileName() + L'\t' + strFileSize;

@@ -39,12 +39,16 @@ void CListView::_onPaint(CPainter& painter, cqrc)
 
 void CListView::_onPaint(CPainter& painter, int cx, int cy)
 {
-    size_t uColCount = getColCount();
-
     size_t uRowCount = getRowCount();
+    uRowCount = MAX(1, uRowCount);
+
+    cy -= cy%uRowCount;
+
     m_uRowHeight = cy/uRowCount;
     m_uRowHeight = MAX(1, m_uRowHeight);
-    cy -= cy%uRowCount;
+
+    size_t uColCount = getColCount();
+    uColCount = MAX(1, uColCount);
 
     size_t uItemCount = getItemCount();
     m_uTotalRows = uItemCount/uColCount;

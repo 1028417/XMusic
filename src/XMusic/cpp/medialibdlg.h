@@ -92,9 +92,11 @@ private:
                 break;
             }
 
-            if (!paDirs.every([&](CPath& subDir){
-                              return subDir.dirs() || subDir.files();
-            }))
+            bool bAvalid = false;
+            paDirs.front([&](CPath& subDir){
+                bAvalid = subDir.dirs() || subDir.files();
+            });
+            if (!bAvalid)
             {
                 delete pSubDir;
                 return NULL;

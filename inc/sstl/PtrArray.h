@@ -984,18 +984,6 @@ namespace NS_SSTL
 			return arr;
 		}
 
-		bool every(__CB_RefType_bool cb) const
-		{
-			return __Super::every([&](__PtrType ptr) {
-				if (NULL == ptr)
-				{
-					return false;
-				}
-
-				return cb(*ptr);
-			});
-		}
-
 		bool any(__CB_RefType_bool cb) const
 		{
 			return __Super::any([&](__PtrType ptr) {

@@ -306,34 +306,6 @@ namespace NS_SSTL
 		}
 
 		template <typename CB, typename = checkCBBool_t<CB, __KeyConstRef> >
-		bool everyKey(const CB& cb) const
-		{
-			for (auto& pr : m_data)
-			{
-				if (!cb(pr.first))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		template <typename CB, typename = checkCBBool_t<CB, __ValueConstRef> >
-		bool everyValue(const CB& cb) const
-		{
-			for (auto& pr : m_data)
-			{
-				if (!cb(pr.second))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		template <typename CB, typename = checkCBBool_t<CB, __KeyConstRef> >
 		bool anyKey(const CB& cb) const
 		{
 			for (auto& pr : m_data)
