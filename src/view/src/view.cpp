@@ -711,13 +711,12 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 				JValue& jFiles = jRoot["files"];
 
 				paSubFile([&](XFile& subFile) {
-					auto strFileTitle = __fileTitle_r(subFile.fileName());
-					strutil::replace(strFileTitle, L" - ", L"-");
-					auto strFileDesc = strutil::toUtf8(strFileTitle);
+					cauto strFileTitle = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
+					auto strFileDesc = strFileTitle;
 
 					//JValue jFile;
-					//jFile["name"] = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
-					//jFile.append(strutil::toUtf8(strFileTitle));
+					//jFile["name"] = strFileTitle;
+					//jFile.append(strFileTitle);
 					
 					auto nFileSize = ((CMediaRes&)subFile).fileSize();
 					strFileDesc.append(1, '|').append(to_string(nFileSize));

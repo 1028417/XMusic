@@ -263,20 +263,20 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
                 context.nIconSize *= 1.13f;
 
-                if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
-                {
-                    context.pmIcon = &m_pmHires;
-                    context.strText = L"高解析音频(High Resolution Audio)";
-                }
-                else if (strutil::matchIgnoreCase(strDirName, L"dsd"))
+                if (strutil::matchIgnoreCase(strDirName, L"dsd"))
                 {
                     context.pmIcon = &m_pmDSD;
-                    context.strText = L"直接比特流数字编码(Direct Stream Digital)";
+                    context.strText = L"直接比特流数字编码\nDirect Stream Digital";
+                }
+                else if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
+                {
+                    context.pmIcon = &m_pmHires;
+                    context.strText = L"高解析音频\nHigh Resolution Audio";
                 }
                 else if (strutil::matchIgnoreCase(strDirName, L"mqs"))
                 {
                     context.pmIcon = &m_pmMQS;
-                    context.strText = L"录音棚级别无损音乐(Mastering Quality Sound)";
+                    context.strText = L"录音棚级别无损音乐\nMastering Quality Sound";
                 }
                 else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
@@ -457,31 +457,28 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     }
     else if (pHeadImg->bExist)
     {
-        QPixmap pm;
-        if (pm.load(__WS2Q(m_app.getSingerImgMgr().file(*pHeadImg))))
-        {
-            m_lstSingerPixmap.emplace_back();
-            pSingerPixmap = &m_lstSingerPixmap.back();
+        m_lstSingerPixmap.emplace_back();
+        pSingerPixmap = &m_lstSingerPixmap.back();
 
+        QPixmap pm(__WS2Q(m_app.getSingerImgMgr().file(*pHeadImg)));
 /*#define __singerimgZoomout 128
-            if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
+        if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
+        {
+            if (pm.width() < pm.height())
             {
-                if (pm.width() < pm.height())
-                {
-                    *pSingerPixmap = pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation);
-                }
-                else
-                {
-                    *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
-                }
+                *pSingerPixmap = pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation);
             }
-            else*/
+            else
             {
-                pSingerPixmap->swap(pm);
+                *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
             }
-
-            return *pSingerPixmap;
         }
+        else*/
+        {
+            pSingerPixmap->swap(pm);
+        }
+
+        return *pSingerPixmap;
     }
 
     return m_pmDefaultSinger;
