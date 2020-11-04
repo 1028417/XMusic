@@ -24,7 +24,7 @@ private:
     CCueList m_cuelist;
 
 public:
-    bool checkXUrl(cwstr strPath);
+    bool checkXUrl(cwstr strPath) const;
 
     string getXUrl(cwstr strPath) const;
 
