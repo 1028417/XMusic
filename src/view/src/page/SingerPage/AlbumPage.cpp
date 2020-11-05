@@ -432,10 +432,12 @@ bool CAlbumPage::_playSingerImage(bool bReset)
 		uSingerImgIdx = 0;
 	}
 
-	cauto pSingerImg = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx, false);
-	if (pSingerImg)
+	auto hBitmap = m_view.getSingerImgMgr().getSingerImg(m_pSinger->m_strName, uSingerImgIdx);
+	if (hBitmap)
 	{
-		(void)m_imgSinger.Load(m_view.getSingerImgMgr().file(*pSingerImg));
+		m_imgSinger.Destroy();
+		m_imgSinger.Attach(hBitmap);
+
 		this->InvalidateRect(__SingerImgRect);
 
 		uSingerImgIdx++;

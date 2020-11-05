@@ -57,8 +57,6 @@ public:
 
 	void clearSingerImg();
 
-    const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
-
 #if __OnlineMediaLib
     UINT getSingerImgCount(cwstr strSingerName);
 
@@ -70,5 +68,11 @@ public:
 #else
 
 	wstring getSingerHead(cwstr strSingerName);
+#endif
+
+#if __winvc
+	HBITMAP getSingerImg(cwstr strSingerName, UINT uIndex);
+#else
+	const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
 #endif
 };
