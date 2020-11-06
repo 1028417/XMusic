@@ -171,7 +171,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>1650</y>
+      <y>1655</y>
       <width>225</width>
       <height>70</height>
      </rect>
@@ -761,10 +761,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelSingerImg">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>1566</y>
-      <width>628</width>
-      <height>545</height>
+      <x>42</x>
+      <y>1567</y>
+      <width>626</width>
+      <height>544</height>
      </rect>
     </property>
     <property name="text">

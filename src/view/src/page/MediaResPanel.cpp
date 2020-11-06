@@ -852,16 +852,20 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
-
-		m_MenuGuard.EnableItem(ID_FormatTitle, m_pCurrDir && bFlag);
-
+		
 		if (m_pCurrDir == &__medialib)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
+		else
+		{
+			m_MenuGuard.EnableItem(ID_FormatTitle, m_pCurrDir && bFlag);
+
+			m_MenuGuard.EnableItem(ID_ADD_ALBUM, m_pCurrDir && bFlag);
+		}
 	}
 
-	m_MenuGuard.EnableItem(ID_Upward, m_pCurrDir&& m_pCurrDir != m_pRootDir);
+	m_MenuGuard.EnableItem(ID_Upward, m_pCurrDir && m_pCurrDir != m_pRootDir);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }

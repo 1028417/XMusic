@@ -630,35 +630,45 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 		}
 
 		break;
-	case ID_ADD_ALBUM:
+	//case ID_ATTACH_WHOLETRACK:
 	case ID_ATTACH_DIR:
-	case ID_ATTACH_WHOLETRACK:
 	{
 		__AssertBreak(m_pSinger);
-
-		wstring strAttachPath;
-		E_AlbumType eType = E_AlbumType::AT_Normal;
-		wstring strName;
-		if (ID_ATTACH_DIR == uID)
+		
+		CMediaDir *pDir = m_view.showChooseDirDlg(L"选择附加目录", false);
+		if (NULL == pDir)
 		{
-			CMediaDir *pDstDir = m_view.showChooseDirDlg(L"选择附加目录", false);
-			if (NULL == pDstDir)
+			return;
+		}
+
+		if (pDir->files())
+		{
+			auto pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger, pDir->fileName(), NULL, E_AlbumType::AT_Dir, pDir->GetPath());
+			__EnsureBreak(pAlbum);
+
+			m_wndAlbumList.InsertObject(*pAlbum);
+		}
+
+		pDir->dirs()([&](CPath& dir){
+			if (dir.files())
 			{
-				return;
+				auto pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger, ((CMediaDir&)dir).fileName()
+					, NULL, E_AlbumType::AT_Dir, ((CMediaDir&)dir).GetPath());
+				if (pAlbum)
+				{
+					m_wndAlbumList.InsertObject(*pAlbum);
+				}
 			}
-			strAttachPath = pDstDir->GetPath();
-			eType = E_AlbumType::AT_Dir;
-			strName = pDstDir->fileName();
-		}
-		else if (ID_ATTACH_DIR == uID)
-		{
-			eType = E_AlbumType::AT_WholeTrack;
-		}
+		});
+	}
 
-		pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger, strName, NULL, eType, strAttachPath);
+	break;
+	case ID_ADD_ALBUM:
+	{
+		auto pAlbum = m_view.getSingerMgr().AddAlbum(*m_pSinger, L"");
 		__EnsureBreak(pAlbum);
 
-		nItem = m_wndAlbumList.InsertObject(*pAlbum);
+		auto nItem = m_wndAlbumList.InsertObject(*pAlbum);
 		(void)m_wndAlbumList.EditLabel(nItem);
 	}
 	break;
