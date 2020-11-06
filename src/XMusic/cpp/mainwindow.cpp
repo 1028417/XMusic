@@ -579,8 +579,6 @@ void MainWindow::_relayout()
     ui.labelDemandEN->setShadow(uShadowWidth);
     ui.labelDemandEUR->setShadow(uShadowWidth);
 
-    ui.labelDuration->setShadow(uShadowWidth);
-
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
         QRect pos = widgetPos.second;
@@ -703,17 +701,16 @@ void MainWindow::_relayout()
         labelAlbumName.setText(strMediaSet);
         labelAlbumName.setFont(0.95f);
 
-        ui.labelAlbumName->setShadow(uShadowWidth);
-
+        labelAlbumName.setShadow(uShadowWidth);
         labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
     }
 
     ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
-    ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
 
     m_PlayingList.setShadow(uShadowWidth);
 
     ui.labelPlayingfile->setShadow(uShadowWidth);
+    ui.labelDuration->setShadow(uShadowWidth);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
     cauto pmSingerImg = m_PlayingInfo.bWholeTrack ?
@@ -752,10 +749,11 @@ void MainWindow::_relayout()
 
     if (!m_bDefaultBkg)
     {
+        ui.labelDuration->move(ui.labelDuration->x(), ui.labelDuration->y() - __size(12));
         int cx_progressbar = ui.progressbar->width();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
-        int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile - __size(2);
+        int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
 
 #define __cylabelAlbumName __size(70)
         int y_labelAlbumName = 0;
@@ -775,29 +773,30 @@ void MainWindow::_relayout()
         int cy_SingerImg = 0;
         if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
         {
+            int y_SingerName = y_labelAlbumName - cy_Playingfile;
             if (m_PlayingInfo.bWholeTrack)
             {
                 cy_SingerImg = __size(70);
+                y_SingerImg = y_Playingfile+cy_Playingfile - cy_SingerImg;
+
             }
             else
             {
-                cy_SingerImg = 2*(y_Playingfile+cy_Playingfile - (y_labelAlbumName+__cylabelAlbumName/2));
+                y_SingerImg = y_SingerName + __size(6);
+                cy_SingerImg = y_Playingfile+cy_Playingfile - y_SingerImg - __size(4);
             }
 
-            y_SingerImg = y_Playingfile+cy_Playingfile+1 - cy_SingerImg;
-
             cx_SingerImg = cy_SingerImg;
-
-            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
-            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
             auto dx = cx_SingerImg + __size(25);
             x += dx;
 
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar-dx, __cylabelAlbumName);
-            ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x()-x, cy_Playingfile);
+            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            ui.labelSingerName->setGeometry(x, y_SingerImg, cx_progressbar-dx, ui.labelSingerName->height());
+            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
+            ui.labelSingerName->setGeometry(x, y_SingerName, cx_progressbar-dx, __cylabelAlbumName);
+
             y_PlayingListMax = y_SingerImg;
         }
         else
@@ -836,7 +835,6 @@ void MainWindow::_relayout()
             }
 
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar, __cylabelAlbumName);
-            ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x()-x, cy_Playingfile);
 
             int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
             if (!pmSingerImg.isNull())
@@ -860,6 +858,8 @@ void MainWindow::_relayout()
             ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
                                             , cx_SingerImg-__size(15), ui.labelSingerName->height());
         }
+
+        ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x()-x, cy_Playingfile);
 
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
         ui.labelSingerImg->setGeometry(rcSingerImg);
@@ -896,38 +896,7 @@ void MainWindow::_relayout()
             labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
         } while (0);
 
-        bool bFlag = false;
-        if (m_bHLayout)
-        {
-             if (cy/fCXRate < 1060)
-             {
-                 bFlag = true;
-             }
-        }
-        else
-        {
-            if (cy/fCXRate < 1921)
-            {
-                bFlag = true;
-            }
-        }
-        if (bFlag)
-        {
-            int cy_Playingfile = ui.labelPlayingfile->height();
-            int y_Playingfile = rcSingerImg.bottom()- cy_Playingfile - __size(20);
-            int x_Playingfile = rcSingerImg.left() + __size(30);
-            ui.labelPlayingfile->setGeometry(x_Playingfile, y_Playingfile, ui.labelDuration->x()-x_Playingfile, cy_Playingfile);
-
-            y_PlayingListMax = rcSingerImg.top();
-        }
-        else
-        {
-            ui.labelPlayingfile->setShadow(0);
-
-            ui.labelPlayingfile->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignBottom);
-
-            y_PlayingListMax = ui.labelPlayingfile->y();
-        }
+        y_PlayingListMax = rcSingerImg.top();
     }
 
 #define __CyPlayItem __size(115)
@@ -1157,11 +1126,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
         cauto qsSingerName = __WS2Q(m_PlayingInfo.strSingerName);
-        if (m_PlayingInfo.qsTitle.indexOf(qsSingerName) >= 0)
+        /*if (m_PlayingInfo.qsTitle.indexOf(qsSingerName) >= 0)
         {
             ui.labelSingerName->clear();
         }
-        else
+        else*/
         {
             ui.labelSingerName->setText(qsSingerName);
         }
@@ -1442,7 +1411,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelSingerName)
     {
-        if (m_PlayingInfo.uSingerID != 0)
+        if (m_PlayingInfo.uSingerID != 0)// && !ui.labelSingerName->text().isEmpty())
         {
             CMediaSet *pMediaSet = m_app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)

@@ -42,9 +42,9 @@
    <widget class="CProgressBar" name="progressbar" native="true">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>2171</y>
-      <width>990</width>
+      <x>41</x>
+      <y>2172</y>
+      <width>998</width>
       <height>5</height>
      </rect>
     </property>
@@ -171,8 +171,8 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>1680</y>
-      <width>211</width>
+      <y>1650</y>
+      <width>225</width>
       <height>70</height>
      </rect>
     </property>
@@ -192,10 +192,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelDuration">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>2105</y>
+      <x>928</x>
+      <y>2115</y>
       <width>110</width>
-      <height>45</height>
+      <height>46</height>
      </rect>
     </property>
     <property name="text">
@@ -210,7 +210,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>40</x>
       <y>1570</y>
-      <width>630</width>
+      <width>628</width>
       <height>70</height>
      </rect>
     </property>
@@ -224,7 +224,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnOrder">
     <property name="geometry">
      <rect>
-      <x>965</x>
+      <x>970</x>
       <y>2215</y>
       <width>80</width>
       <height>80</height>
@@ -246,7 +246,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnRandom">
     <property name="geometry">
      <rect>
-      <x>965</x>
+      <x>970</x>
       <y>2215</y>
       <width>80</width>
       <height>80</height>
@@ -268,9 +268,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelProgress">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>2155</y>
-      <width>990</width>
+      <x>41</x>
+      <y>2156</y>
+      <width>998</width>
       <height>36</height>
      </rect>
     </property>
@@ -284,9 +284,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelPlayingfile">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>1500</y>
-      <width>1000</width>
+      <x>54</x>
+      <y>2114</y>
+      <width>860</width>
       <height>46</height>
      </rect>
     </property>
@@ -294,7 +294,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+     <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
     </property>
     <property name="wordWrap">
      <bool>false</bool>
@@ -761,10 +761,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelSingerImg">
     <property name="geometry">
      <rect>
-      <x>38</x>
-      <y>1570</y>
-      <width>632</width>
-      <height>573</height>
+      <x>40</x>
+      <y>1566</y>
+      <width>628</width>
+      <height>545</height>
      </rect>
     </property>
     <property name="text">
