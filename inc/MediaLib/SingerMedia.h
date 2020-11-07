@@ -142,6 +142,8 @@ private:
 
 	list<CAlbum> m_lstAlbums;
 
+    list<wstring> m_lstAttachDir;
+
 public:
 	list<CAlbum>& albums()
 	{
@@ -152,24 +154,20 @@ public:
 		return m_lstAlbums;
 	}
 
-    CAlbum& add(const CAlbum& album)
+    const list<wstring>& attachDirList() const
+    {
+        return m_lstAttachDir;
+    }
+
+    bool attachDir(cwstr strDir);
+    bool detachDir(cwstr strDir);
+
+    CAlbum& addAlbum(const CAlbum& album)
     {
         m_lstAlbums.push_back(album);
         auto& t_album = m_lstAlbums.back();
         t_album.m_pParent = this;
         return t_album;
-    }
-
-    template <class ITR>
-    CAlbum& add(const CAlbum& album, const ITR& itr)
-    {
-        return *m_lstAlbums.insert(itr, album);
-    }
-
-    template <class ITR>
-    ITR erase(const ITR& itr)
-    {
-        return m_lstAlbums.erase(itr);
     }
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override

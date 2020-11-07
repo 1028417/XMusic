@@ -6,7 +6,7 @@
 #include "controller.h"
 
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
-static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName + __wcDot;
+static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName;// + __wcDot;
 
 UINT g_uPlaySeq = 0;
 
