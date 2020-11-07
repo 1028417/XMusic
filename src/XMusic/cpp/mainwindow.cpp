@@ -966,14 +966,14 @@ void MainWindow::_onPaint()
 
     if (nBkgAlpha > 0)
     {
-        painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
-
         if (m_app.getOption().bUseBkgColor)
         {
             painter.fillRect(rc, g_crBkg);
         }
         else
         {
+            painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
+
             bool bHLayout = rc.width() > rc.height();
             cauto pmBkg = bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
@@ -1541,7 +1541,8 @@ void MainWindow::_demand(CButton* btnDemand)
 
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
 {
-    QRect rcSrc = ui.labelBkg->pixmap()->rect();
+    cauto pm = *ui.labelBkg->pixmap();
+    QRect rcSrc = pm.rect();
 
     if (rc.height()>rc.width())
     {
@@ -1549,7 +1550,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     }
     rcSrc.setTop(rcSrc.height()-rcSrc.width()*rc.height()/rc.width());
 
-    painter.drawPixmap(rc, *ui.labelBkg->pixmap(), rcSrc, xround, yround);
+    painter.drawPixmap(rc, pm, rcSrc, xround, yround);
 }
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
