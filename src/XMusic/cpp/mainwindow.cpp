@@ -72,14 +72,20 @@ void MainWindow::switchFullScreen()
 #endif
 }
 
+CMainWnd::CMainWnd()
+{
+    ui.setupUi(this);
+}
+
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
+    , m_pmBkg(*ui.labelBkg->pixmap())
+    , m_cxBkg(m_pmBkg.width())
+    , m_cyBkg(m_pmBkg.height())
     , m_PlayingList(app, this)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
-    ui.setupUi(this);
-
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
@@ -553,7 +559,7 @@ void MainWindow::_relayout()
     float fCXRate = 0;
     if (m_bHLayout)
     {
-        fCXRate = (float)cx/ui.labelBkg->pixmap()->width();
+        fCXRate = (float)cx/m_cxBkg;
     }
     else
     {
@@ -561,7 +567,7 @@ void MainWindow::_relayout()
     }
     float fCXRateEx = fCXRate*g_fPixelRatio;
 
-    int cy_bkg = __round(fCXRate * ui.labelBkg->pixmap()->height());
+    int cy_bkg = __round(fCXRate * m_cyBkg);
     int dy_bkg = cy - cy_bkg;
 
     m_bDefaultBkg = false;
@@ -979,12 +985,6 @@ void MainWindow::_onPaint()
             if (!pmBkg.isNull())
             {
                painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
-
-               //auto cx = ui.progressbar->width();
-               //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
-               //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
-               //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
-               //painter.drawPixmap(rcDst, m_pmDiskFace);
             }
             else
             {
@@ -997,6 +997,14 @@ void MainWindow::_onPaint()
     {
         painter.fillRect(rc, g_crLogoBkg);
     }
+}
+
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
+{
+    int cxSrc = rc.height()>rc.width() ? 1080 : m_cxBkg;
+    int ySrc = m_cyBkg - cxSrc*rc.height()/rc.width();
+    QRect rcSrc(0, ySrc, cxSrc, m_cyBkg-ySrc);
+    painter.drawPixmap(rc, m_pmBkg, rcSrc, xround, yround);
 }
 
 void MainWindow::_updateProgress()
@@ -1537,20 +1545,6 @@ void MainWindow::_demand(CButton* btnDemand)
     }
 
     m_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
-}
-
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
-{
-    cauto pm = *ui.labelBkg->pixmap();
-    QRect rcSrc = pm.rect();
-
-    if (rc.height()>rc.width())
-    {
-        rcSrc.setRight(1080);
-    }
-    rcSrc.setTop(rcSrc.height()-rcSrc.width()*rc.height()/rc.width());
-
-    painter.drawPixmap(rc, pm, rcSrc, xround, yround);
 }
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)

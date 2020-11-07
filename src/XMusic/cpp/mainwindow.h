@@ -43,7 +43,13 @@ struct tagPlayingInfo
     const CMedia *pRelatedMedia = NULL;
 };
 
-class MainWindow : public QMainWindow, public IModelObserver
+class CMainWnd : public QMainWindow
+{
+protected:
+    CMainWnd();
+};
+
+class MainWindow : public CMainWnd, public IModelObserver
 {
     Q_OBJECT
 public:
@@ -51,6 +57,10 @@ public:
 
 private:
     class CApp& m_app;
+
+    cqpm m_pmBkg;
+    int m_cxBkg = 0;
+    int m_cyBkg = 0;
 
     class CPlayingList m_PlayingList;
 
@@ -71,8 +81,6 @@ private:
 
     int m_dxbkg = 0;
     int m_dybkg = 0;
-
-    //QPixmap m_pmDiskFace;
 
     enum class E_SingerImgPos
     {
@@ -107,8 +115,6 @@ public:
 
     void preinit()
     {
-        //m_pmDiskFace.load(":/img/diskface.png");
-
         m_medialibDlg.preinit();
 
         m_bkgDlg.preinit();
