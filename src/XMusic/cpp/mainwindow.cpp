@@ -79,13 +79,21 @@ CMainWnd::CMainWnd()
 
 MainWindow::MainWindow(CApp& app)
     : m_app(app)
-    , m_pmBkg(*ui.labelBkg->pixmap())
-    , m_cxBkg(m_pmBkg.width())
-    , m_cyBkg(m_pmBkg.height())
     , m_PlayingList(app, this)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
+    cauto pmBkg = *ui.labelBkg->pixmap();
+    m_brBkg.setTexture(pmBkg);
+    m_cxBkg = pmBkg.width();
+    m_cyBkg = pmBkg.height();
+    ui.labelBkg->clear();
+
+    auto cy = m_cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
+    m_fBkgHWRate = (float)cy/m_cxBkg;
+    auto cyTop = ui.labelSingerImg->x() + ui.frameDemand->height();
+    m_fBkgTopReserve = (float)cyTop/(cyTop+cy);
+
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
@@ -556,18 +564,12 @@ void MainWindow::_relayout()
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
     }
 
-    float fCXRate = 0;
-    if (m_bHLayout)
-    {
-        fCXRate = (float)cx/m_cxBkg;
-    }
-    else
-    {
-        fCXRate = (float)cx/1080;
-    }
-    float fCXRateEx = fCXRate*g_fPixelRatio;
+    int cxDst = cx;
+    int xBkgOffset = 0;
+    auto fBkgZoomRate = _caleBkgZoomRate(cxDst, cy, xBkgOffset);
+    auto fBkgZoomRateEx = fBkgZoomRate*g_fPixelRatio;
 
-    int cy_bkg = __round(fCXRate * m_cyBkg);
+    int cy_bkg = __round(fBkgZoomRate * m_cyBkg);
     int dy_bkg = cy - cy_bkg;
 
     m_bDefaultBkg = false;
@@ -588,10 +590,10 @@ void MainWindow::_relayout()
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
         QRect pos = widgetPos.second;
-        if (fCXRateEx < 1)
+        if (fBkgZoomRateEx < 1)
         {
-            pos.setRect(fCXRate*pos.left(), fCXRate*pos.top()
-                        , fCXRate*pos.width(), fCXRate*pos.height());
+            pos.setRect(fBkgZoomRate*pos.left(), fBkgZoomRate*pos.top()
+                        , fBkgZoomRate*pos.width(), fBkgZoomRate*pos.height());
         }
         widgetPos.first->setGeometry(pos);
     }
@@ -603,10 +605,10 @@ void MainWindow::_relayout()
 
         int width = pos.width();
         int height = pos.height();
-        if (fCXRateEx < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
+        if (fBkgZoomRateEx < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
         {
-            width = __round(width * fCXRate);
-            height =__round(height * fCXRate);
+            width = __round(width * fBkgZoomRate);
+            height =__round(height * fBkgZoomRate);
         }
 
         /*if (width%2==1)
@@ -618,8 +620,8 @@ void MainWindow::_relayout()
             height++;
         }*/
 
-        newPos.setRect(__round(fCXRate*pos.center().x()) - width/2
-                       , __round(fCXRate*pos.center().y()) - height/2 + dy_bkg, width, height);
+        newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x()) - width/2
+                       , __round(fBkgZoomRate*pos.center().y()) - height/2 + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
     }
 
@@ -675,10 +677,10 @@ void MainWindow::_relayout()
     {
         int yOffset = 0;
 
-        if (fCXRateEx <= 1)
+        if (fBkgZoomRateEx <= 1)
         {
 #define __offset __size(10.0f)
-            yOffset = __round(__offset/fCXRate);
+            yOffset = __round(__offset/fBkgZoomRate);
 
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
@@ -687,7 +689,7 @@ void MainWindow::_relayout()
         }
 
 #define __dy __size(4)
-        int dy =  __round(fCXRate*__dy);
+        int dy =  __round(fBkgZoomRate*__dy);
         for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
         {
@@ -910,18 +912,22 @@ void MainWindow::_relayout()
     if (m_bHLayout)
     {
         UINT uMargin = __size(45);
-        UINT xOffset = uMargin;
+        UINT xOffset = xBkgOffset;
         if (cx > __size(1920))
         {
-            xOffset = __size(90) * fCXRate;
+            xOffset += __size(90) * fBkgZoomRate;
         }
         else if (cx > __size(1800))
         {
-            xOffset = __size(60) * fCXRate;
+            xOffset += __size(60) * fBkgZoomRate;
+        }
+        else
+        {
+            xOffset += uMargin;
         }
         int x_PlayingList = ui.progressbar->geometry().right() + xOffset;
 
-        int cx_PlayingList = cx - x_PlayingList;// - uMargin * fCXRate;
+        int cx_PlayingList = cx - x_PlayingList;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
@@ -985,6 +991,12 @@ void MainWindow::_onPaint()
             if (!pmBkg.isNull())
             {
                painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
+
+               //auto cx = ui.progressbar->width();
+               //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
+               //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
+               //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
+               //painter.drawPixmap(rcDst, m_pmDiskFace);
             }
             else
             {
@@ -999,20 +1011,44 @@ void MainWindow::_onPaint()
     }
 }
 
+float MainWindow::_caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
+{
+    cxDst = cyDst>cxDst ? cxDst : cxDst*9/16;
+    cyDst -= cyDst * m_fBkgTopReserve;
+    if ((float)cyDst/cxDst < m_fBkgHWRate)
+    {
+        xDst = (cxDst - cyDst / m_fBkgHWRate)/2;
+        cxDst -= xDst*2;
+    }
+    else
+    {
+        xDst = 0;
+    }
+
+    return (float)cxDst / m_cxBkg;
+}
+
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
 {
-    int cxSrc = rc.height()>rc.width() ? 1080 : m_cxBkg;
-    int ySrc = m_cyBkg - cxSrc*rc.height()/rc.width();
-    QRect rcSrc(0, ySrc, cxSrc, m_cyBkg-ySrc);
-    painter.drawPixmap(rc, m_pmBkg, rcSrc, xround, yround);
+    int cxDst = rc.width();
+    int cyDst = rc.height();
+    int xDst = 0;
+    auto fBkgZoomRate = _caleBkgZoomRate(cxDst, cyDst, xDst);
+
+    auto cySrc = cyDst/fBkgZoomRate;
+    QRect rcSrc(0, m_cyBkg-cySrc, 10, cySrc);
+    painter.drawPixmap(rc, m_brBkg, rcSrc, xround, yround);
+
+    rcSrc.setWidth(m_cxBkg);
+    QRect rcDst(rc.x()+xDst, rc.y(), cxDst, cyDst);
+    painter.drawPixmap(rcDst, m_brBkg, rcSrc);
 }
 
 void MainWindow::_updateProgress()
 {
     auto& playMgr = m_app.getPlayMgr();
     E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
-    _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for seek
-
+    _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for see
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
 #if __OnlineMediaLib

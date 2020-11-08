@@ -58,9 +58,11 @@ public:
 private:
     class CApp& m_app;
 
-    cqpm m_pmBkg;
+    QBrush m_brBkg;
     int m_cxBkg = 0;
     int m_cyBkg = 0;
+    float m_fBkgHWRate = .0f;
+    float m_fBkgTopReserve = .0f;
 
     class CPlayingList m_PlayingList;
 
@@ -138,6 +140,8 @@ private:
     void _onPaint();
 
     void _relayout();
+
+    float _caleBkgZoomRate(int& cxDst, int cyDst, int& xDst);
 
     void _showUpgradeProgress();
 

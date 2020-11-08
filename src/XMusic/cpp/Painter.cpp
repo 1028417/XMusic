@@ -64,11 +64,11 @@ inline static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
 void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QTransform transform;
-    auto fScaleRate = (1.0f+rc.width())/rcSrc.width();
-    transform.translate(rc.left()-rcSrc.left()*fScaleRate
-                        , rc.top()-rcSrc.top()*fScaleRate);
-    transform.scale(fScaleRate, fScaleRate);
 
+    auto fWScaleRate = (1.0f+rc.width())/rcSrc.width();
+    auto fHScaleRate = (1.0f+rc.height())/rcSrc.height();
+    transform.translate(rc.left()-rcSrc.left()*fWScaleRate, rc.top()-rcSrc.top()*fHScaleRate);
+    transform.scale(fWScaleRate, fHScaleRate);
     br.setTransform(transform);
 
     this->save();
