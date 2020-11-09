@@ -49,11 +49,8 @@ void CMedialibView::initpm()
 
 void CMedialibView::init()
 {
-    TD_MediaSetList paSingers;
-    m_SingerLib.GetAllMediaSets(E_MediaSetType::MST_Singer, paSingers);
-    paSingers([&](CMediaSet& MediaSet){
-        auto&& strSingerDir = strutil::lowerCase_r(((CSinger&)MediaSet). dir());
-        m_plSingerDir.emplace_back(strSingerDir, &MediaSet);
+    m_app.getSingerMgr().enumSinger([&](const CSinger& singer){
+        m_mapSingerDir[singer.dir()] = &singer;
     });
 }
 
@@ -80,12 +77,12 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             plstSingerName = &mapSingerName[&MediaSet];
             for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
-                cauto strPath = strutil::lowerCase_r(PlayItem.GetPath());
-                for (cauto pr : m_plSingerDir)
+                cauto strPath = PlayItem.GetPath();
+                for (auto itr = m_mapSingerDir.rbegin(); itr != m_mapSingerDir.rend(); ++itr)
                 {
-                    if (fsutil::CheckSubPath(pr.first, strPath))
+                    if (fsutil::CheckSubPath(itr->first, strPath))
                     {
-                        cauto singer = *pr.second;
+                        cauto singer = *itr->second;
                         ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
                                                                   , singer.m_uID, singer.m_strName);
                         if (std::find(plstSingerName->begin(), plstSingerName->end(), singer.m_strName) == plstSingerName->end())
@@ -206,7 +203,7 @@ size_t CMedialibView::_getRootItemCount() const
 
 void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 {
-    context.nIconSize = __size(100);
+    context.nIconSize = __size100;
     context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
     {
@@ -535,7 +532,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     {
         if (mlContext.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
         {
-            rc.setLeft(rc.left() + __size(10));
+            rc.setLeft(rc.left() + __size10);
         }
     }
     else if (mlContext.pMediaSet)
@@ -587,7 +584,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         if (pMedia)
         {
             qsMediaQuality = mediaQualityString(pMedia->quality());
-            rc.setRight(rc.right() - __size(20) - __size(10)*qsMediaQuality.length());
+            rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
         }
         else
         {
@@ -615,7 +612,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                     else if (duration > __wholeTrackDuration)
                     {
                         _paintRemark(painter, rc, __WS2Q(L'\n' + IMedia::genDurationString(duration)));
-                        rc.setRight(rc.right() - __size(100));
+                        rc.setRight(rc.right() - __size100);
                     }
                 }
             }

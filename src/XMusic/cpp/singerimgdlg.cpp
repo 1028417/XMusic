@@ -226,7 +226,7 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
         }
     }
 
-    if (te.x() < rect().center().x()-__size(100))
+    if (te.x() < rect().center().x()-__size100)
     {
         _showImg(-1);
     }

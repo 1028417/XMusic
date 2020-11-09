@@ -42,9 +42,9 @@
    <widget class="CProgressBar" name="progressbar" native="true">
     <property name="geometry">
      <rect>
-      <x>41</x>
+      <x>42</x>
       <y>2146</y>
-      <width>998</width>
+      <width>997</width>
       <height>5</height>
      </rect>
     </property>
@@ -171,7 +171,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>1608</y>
+      <y>1610</y>
       <width>225</width>
       <height>70</height>
      </rect>
@@ -192,7 +192,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelDuration">
     <property name="geometry">
      <rect>
-      <x>928</x>
+      <x>925</x>
       <y>2084</y>
       <width>110</width>
       <height>46</height>
@@ -268,9 +268,9 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelProgress">
     <property name="geometry">
      <rect>
-      <x>41</x>
+      <x>42</x>
       <y>2130</y>
-      <width>998</width>
+      <width>997</width>
       <height>38</height>
      </rect>
     </property>
@@ -284,7 +284,7 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CLabel" name="labelPlayingfile">
     <property name="geometry">
      <rect>
-      <x>54</x>
+      <x>42</x>
       <y>2085</y>
       <width>860</width>
       <height>46</height>

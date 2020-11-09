@@ -10,8 +10,6 @@
 
 #include <QScreen>
 
-#define __size10 __size(10)
-
 #define __round(f) (int)roundf(f)
 
 #define __demandplayitemPngCount 4
@@ -545,7 +543,7 @@ void MainWindow::_relayout()
     }
     else
     {
-        y_Logo -= __size(100);
+        y_Logo -= __size100;
     }
     ui.labelLogo->move(x_Logo, y_Logo);
 
@@ -679,8 +677,8 @@ void MainWindow::_relayout()
 
         if (fBkgZoomRateEx <= 1)
         {
-#define __offset __size(10.0f)
-            yOffset = __round(__offset/fBkgZoomRate);
+#define __offset __size10
+            yOffset = __round((float)__offset/fBkgZoomRate);
 
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
@@ -805,7 +803,7 @@ void MainWindow::_relayout()
             ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
             ui.labelSingerName->setGeometry(x, y_SingerName, cx_progressbar-dx, __cylabelAlbumName);
 
-            y_PlayingListMax = y_SingerImg;
+            y_PlayingListMax = y_SingerImg - __size10;
         }
         else
         {
@@ -847,7 +845,7 @@ void MainWindow::_relayout()
             int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
             if (!pmSingerImg.isNull())
             {
-                y_PlayingListMax = y_SingerImg;
+                y_PlayingListMax = y_SingerImg - __size10;
             }
             else
             {
@@ -904,7 +902,7 @@ void MainWindow::_relayout()
             labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
         } while (0);
 
-        y_PlayingListMax = rcSingerImg.top();
+        y_PlayingListMax = rcSingerImg.y() - __size10;
     }
 
 #define __CyPlayItem __size(115)
@@ -961,7 +959,7 @@ void MainWindow::_relayout()
         }
 
         UINT x_Margin = ui.frameDemand->x();
-        int y_PlayingList = y_frameDemandBottom + y_Margin;
+        int y_PlayingList = y_frameDemandBottom - __size10 + y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }

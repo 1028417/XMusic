@@ -8,7 +8,7 @@
 #define __XMusicDirName L"XMusic"
 #define __LocalDirName  L" 本机"
 
-#define __playIconOffset __size(10)
+#define __playIconOffset __size10
 
 class CMedialibView : public CMLListView
 {
@@ -59,7 +59,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    prlist<wstring, CMediaSet*> m_plSingerDir;
+    map<wstring, const CSinger*> m_mapSingerDir;
 
 public:
     void initpm();

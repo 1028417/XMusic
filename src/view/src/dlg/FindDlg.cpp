@@ -117,8 +117,9 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 			}
 		}
 
-		tagFindMediaPara FindPara(eFindMediaMode, t_strFindText);
-		FindPara.strFindSingerName = strutil::lowerCase_r(strFindSingerName);
+		tagFindMediaPara FindPara(eFindMediaMode);
+		FindPara.strFind = t_strFindText;
+		FindPara.strMatchSingerName = strutil::lowerCase_r(strFindSingerName);
 
 		if (E_FindMediaMode::FMM_MatchDir == eFindMediaMode)
 		{

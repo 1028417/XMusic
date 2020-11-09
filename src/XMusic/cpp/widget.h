@@ -31,7 +31,10 @@
 #define __rect(x) (x)
 #endif
 
-#define __szRound __size(10)
+#define __size10 __size(10)
+#define __size100 __size(100)
+
+#define __szRound __size10
 
 extern float g_fPixelRatio;
 

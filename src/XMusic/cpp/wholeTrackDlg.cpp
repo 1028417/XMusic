@@ -142,7 +142,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
     }
 
-    rc.setRight(rc.right() - __size(100));
+    rc.setRight(rc.right() - __size100);
 
     return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 }

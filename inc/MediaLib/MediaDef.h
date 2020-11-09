@@ -149,38 +149,63 @@ enum class E_FindMediaMode
 	
 	, FMM_MatchDir
 
-	, FMM_MatchFiles
+    , FMM_MatchFiles
 
-	, FMM_RenameDir
+    , FMM_RenameDir
 };
 
 struct tagFindMediaPara
 {
-    tagFindMediaPara() = default;
-
-    tagFindMediaPara(E_FindMediaMode eFindMediaMode) : eFindMediaMode(eFindMediaMode)
-    {
+	tagFindMediaPara(E_FindMediaMode eFindMediaMode)
+		: eFindMediaMode(eFindMediaMode)
+	{
 	}
 
-    tagFindMediaPara(E_FindMediaMode eFindMediaMode, cwstr strFindText, bool bFindOne = false)
-        : eFindMediaMode(eFindMediaMode)
-        , strFindText(strutil::lowerCase_r(strFindText))
+    tagFindMediaPara(cwstr strText)
+        : eFindMediaMode(E_FindMediaMode::FMM_MatchText)
+        , strFind(strutil::lowerCase_r(strText))
+    {
+    }
+
+    tagFindMediaPara(cwstr strPath, bool bDir, bool bFindOne=false)
+        : eFindMediaMode(bDir ? E_FindMediaMode::FMM_MatchDir : E_FindMediaMode::FMM_MatchPath)
+        , strFind(strPath)
         , bFindOne(bFindOne)
     {
-	}
+        if (bDir)
+        {
+            strDir = strPath;
+        }
+        else
+        {
+            strDir = fsutil::GetParentDir(strFind);
+        }
+    }
 
-	E_FindMediaMode eFindMediaMode = E_FindMediaMode::FMM_MatchText;
-	wstring strFindText;
+    tagFindMediaPara(const std::set<wstring>& setFiles)
+        : eFindMediaMode(E_FindMediaMode::FMM_MatchFiles)
+        , setFiles(setFiles)
+    {
+    }
+
+    tagFindMediaPara(cwstr strDir, cwstr strNewPath)
+        : eFindMediaMode(E_FindMediaMode::FMM_RenameDir)
+        , strDir(strDir)
+        , strNewDirPath(strNewPath)
+    {
+    }
+
+    E_FindMediaMode eFindMediaMode;
+    wstring strFind;
+    wstring strDir;
 
 	bool bFindOne = false;
 
-	wstring strFindSingerName;
-
-	wstring strDir;
-
-	wstring strRenameDir;
+    wstring strMatchSingerName;
 
 	std::set<wstring> setFiles;
+
+    wstring strNewDirPath;
 };
 
 struct tagFindMediaResult
@@ -188,6 +213,8 @@ struct tagFindMediaResult
 	TD_MediaList lstRetMedias;
 
 	map<UINT, wstring> mapSingerDirChanged;
+
+        class CSinger *pRetSinger = NULL;
 };
 
 enum class E_RenameRetCode
