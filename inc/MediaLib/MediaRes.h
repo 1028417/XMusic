@@ -193,6 +193,26 @@ public:
 		});
 	}
 
+	inline virtual CMediaRes* subPath(cwstr strSubPath, bool bDir)
+	{
+		return (CMediaRes*)CPath::findSubPath(strSubPath, bDir);
+	}
+
+	inline CMediaDir* subDir(cwstr strSubDir)
+	{
+		return (CMediaDir*)subPath(strSubDir, true);
+	}
+
+	inline CMediaRes* subFile(cwstr strSubFile)
+	{
+		return subPath(strSubFile, false);
+	}
+
+	inline CMediaRes* subFile(const IMedia& media)
+	{
+		return subPath(media.GetPath(), false);
+	}
+
 #if __winvc
 private:
 	wstring GetTreeText() const override

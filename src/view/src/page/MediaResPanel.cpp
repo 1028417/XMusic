@@ -289,7 +289,7 @@ void CMediaResPanel::ShowDir(cwstr strPath)
 	CMediaDir *pRootDir = NULL;
 	if (!strPath.empty())
 	{
-		pRootDir = __medialib.findSubDir(strPath);
+		pRootDir = __medialib.subDir(strPath);
 	}
 	else
 	{
@@ -300,8 +300,8 @@ void CMediaResPanel::ShowDir(cwstr strPath)
 
 void CMediaResPanel::Refresh()
 {
-	CMediaDir *pRootDir = __medialib.findSubDir(m_strRootDir);
-	CMediaDir *pCurrDir = __medialib.findSubDir(m_strCurrDir);
+	CMediaDir *pRootDir = __medialib.subDir(m_strRootDir);
+	CMediaDir *pCurrDir = __medialib.subDir(m_strCurrDir);
 	if (NULL == pCurrDir)
 	{
 		pCurrDir = pRootDir;
@@ -432,26 +432,27 @@ void CMediaResPanel::_showDir()
 
 BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
 {
-	CMediaRes *pMediaRes = __medialib.findSubFile(media.GetPath());
+	cauto strPath = media.GetPath();
+	auto pMediaRes = __medialib.subFile(strPath);
 	if (NULL == pMediaRes)
 	{
-		cauto strDir = fsutil::GetParentDir(media.GetPath());
+		cauto strDir = fsutil::GetParentDir(strPath);
 		if (!strDir.empty())
 		{
-			CMediaDir *pMediaDir = __medialib.findSubDir(strDir);
+			CMediaDir *pMediaDir = __medialib.subDir(strDir);
 			if (pMediaDir)
 			{
 				pMediaDir->clear();
 				CMediaResPanel::RefreshMediaResPanel();
 
-				pMediaRes = (CMediaRes*)pMediaDir->findSubFile(media.GetName());
+				pMediaRes = pMediaDir->subFile(strPath);
 			}
 		}
 	}
 	
 	if (NULL == pMediaRes)
 	{
-		CMainApp::msgBox(L"未定位到曲目: \n\n\t" + media.GetPath(), &wnd);
+		CMainApp::msgBox(L"未定位到曲目: \n\n\t" + strPath, &wnd);
 		return FALSE;
 	}
 

@@ -556,7 +556,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 	{
 		this->Update(uItem);
 
-		CMediaRes *pMediaRes = __medialib.findSubFile(PlayItem);
+		auto pMediaRes = __medialib.subFile(PlayItem);
 		if (pMediaRes)
 		{
 			(void)CTrackDetailDlg(m_view, pMediaRes->getCueFile(), pMediaRes).DoModal();

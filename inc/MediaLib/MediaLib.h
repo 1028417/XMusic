@@ -87,22 +87,7 @@ public:
 
 	bool checkIndependentDir(cwstr strAbsDir, bool bCheckAttachDir);
 
-	CMediaRes* findSubPath(cwstr strSubPath, bool bDir);
-
-	CMediaDir* findSubDir(cwstr strSubDir)
-	{
-		return (CMediaDir*)findSubPath(strSubDir, true);
-	}
-
-	CMediaRes* findSubFile(cwstr strSubFile)
-	{
-		return findSubPath(strSubFile, false);
-	}
-
-	CMediaRes* findSubFile(const CMedia& media)
-	{
-		return findSubPath(media.GetPath(), false);
-	}
+	CMediaRes* subPath(cwstr strSubPath, bool bDir) override;
 };
 
 #define __medialib CMediaLib::inst()

@@ -1111,7 +1111,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.qsDuration = __WS2Q(CMedia::genDurationString(uDuration));
     if (uDuration > __wholeTrackDuration)
     {
-        CMediaRes *pMediaRes = __medialib.findSubFile(PlayingInfo.strPath);
+        CMediaRes *pMediaRes = __medialib.subFile(PlayingInfo.strPath);
         if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
             PlayingInfo.bWholeTrack = true;

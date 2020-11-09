@@ -36,7 +36,7 @@ public:
             return NULL;
         }
 
-        return CMediaDir::findSubFile(strOppPath);
+        return CMediaDir::subFile(strOppPath);
     }
 #endif
 

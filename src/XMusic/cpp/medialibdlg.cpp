@@ -98,10 +98,10 @@ void CMedialibDlg::showMedia(const CMedia& media)
 
 bool CMedialibDlg::showMediaRes(cwstr strPath)
 {
-    CMediaRes *pMediaRes = __medialib.findSubFile(strPath);
+    CMediaRes *pMediaRes = __medialib.subFile(strPath);
     if (NULL == pMediaRes)
     {
-        pMediaRes = (CMediaRes*)m_OuterDir.findSubFile(strPath);
+        pMediaRes = m_OuterDir.subFile(strPath);
         if(NULL == pMediaRes)
         {
             return false;
