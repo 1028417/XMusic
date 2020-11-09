@@ -246,11 +246,8 @@ BOOL CAlbumPage::OnInitDialog()
 
 	m_wndAlbumItemList.SetViewAutoChange([&](E_ListViewType eViewType) {
 		m_wndAlbumItemList.UpdateItems();
-
-		if (E_ListViewType::LVT_Report == eViewType)
-		{
-			_asyncTask();
-		}
+		
+		_asyncTask();
 	});
 
 	m_wndAlbumItemList.SetIconSpacing(width / 5-1, m_view.m_globalSize.m_uBigIconSize + m_view.m_globalSize.m_uIconSpace);
@@ -933,11 +930,15 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 
 	(void)m_wndAlbumItemList.ShowWindow(SW_SHOW);
 	(void)m_wndMediaResPanel.ShowWindow(SW_HIDE);
-
-	if (E_ListViewType::LVT_Report == m_wndAlbumItemList.GetView())
+	
+	if (E_AlbumType::AT_Normal == m_pAlbum->type())
 	{
-		_asyncTask();
+		m_pAlbum->albumItems()([&](cauto AlbumItem) {
+			((CAlbumItem&)AlbumItem).findRelatedMedia();
+		});
 	}
+
+	_asyncTask();
 }
 
 void CAlbumPage::RefreshAlbum()
@@ -1431,13 +1432,6 @@ void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChan
 
 void CAlbumPage::_asyncTask()
 {
-	if (m_pAlbum && E_AlbumType::AT_Normal == m_pAlbum->type())
-	{
-		m_pAlbum->albumItems()([&](cauto AlbumItem) {
-			((CAlbumItem&)AlbumItem).findRelatedMedia();
-		});
-	}
-
 	__async(10, [&]() {
 		if (m_pAlbum)
 		{

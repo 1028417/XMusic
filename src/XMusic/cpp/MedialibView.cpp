@@ -594,7 +594,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         auto uCount = mlContext.pDir->dirs().size() + mlContext.pDir->files().size();
         if (uCount > 0)
         {
-            strRemark << uCount << L"项";
+            strRemark << uCount << L" 项";
         }
         /*uCount = mlContext.pDir->files().size();
         if (uCount > 0)

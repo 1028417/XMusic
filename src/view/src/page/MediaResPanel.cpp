@@ -1054,7 +1054,7 @@ int CMediaResPanel::GetTabImage()
 
 void CMediaResPanel::_asyncTask()
 {
-	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [](CListObject& object) {
+	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [](UINT uItem){CListObject& object) {
 		CMediaRes& mediaRes = (CMediaRes&)object;
 		if (!mediaRes.isDir())
 		{
