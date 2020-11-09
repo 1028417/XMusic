@@ -562,8 +562,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     else
     {
         m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
-            auto eStyle = E_LVItemStyle::IS_MultiLine
-                    | E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
+            auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
             context.setIcon(&imgDir.snapshot(), __size(-12));

@@ -89,7 +89,7 @@ MainWindow::MainWindow(CApp& app)
 
     auto cy = m_cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
     m_fBkgHWRate = (float)cy/m_cxBkg;
-    auto cyTop = ui.labelSingerImg->x() + ui.frameDemand->height();
+    auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();
     m_fBkgTopReserve = (float)cyTop/(cyTop+cy);
 
     for (auto pWidget : SList<QWidget*>(
@@ -1012,12 +1012,12 @@ float MainWindow::_caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
     if (cxDst > cyDst)
     {
         cxDst = cxDst*9/16;
-        cyDst -= cyDst * m_fBkgTopReserve;
     }
     else
     {
-        cyDst = cyDst*7/16;
+        cyDst = cyDst*9/16;
     }
+    cyDst -= cyDst * m_fBkgTopReserve;
 
     if ((float)cyDst/cxDst < m_fBkgHWRate)
     {

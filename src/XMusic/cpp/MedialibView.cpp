@@ -204,7 +204,6 @@ size_t CMedialibView::_getRootItemCount() const
 void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 {
     context.nIconSize = __size100;
-    context.eStyle |= E_LVItemStyle::IS_MultiLine;
     if (context.pMediaSet)
     {
         switch (context.pMediaSet->m_eType)
@@ -278,7 +277,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
-                    context.strText = L"5.1声道DTSDigitalSurround";
+                    context.strText = L"5.1声道\nDTSDigitalSurround";
                 }
             }
         }
@@ -526,7 +525,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }
 
-    QString qsMediaQuality;
     WString strRemark;
     if (mlContext.pMedia)
     {
@@ -574,45 +572,53 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             strRemark << pPlaylist->size() << L" 曲目";
         }
     }
-    if (!strRemark->empty())
+    else if (mlContext.pFile)
     {
-        _paintRemark(painter, rc, strRemark);
-    }
-    else
-    {
-        IMedia *pMedia = mlContext.pMedia;
-        if (pMedia)
+        auto pMediaRes = (CMediaRes*)mlContext.pFile;
+        if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
         {
-            qsMediaQuality = mediaQualityString(pMedia->quality());
-            rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
-        }
-        else
-        {
-            auto pMediaRes = (CMediaRes*)mlContext.pFile;
-            if (pMediaRes)
+            auto duration = pMediaRes->duration();
+            if (duration > __wholeTrackDuration)
             {
-                pMedia = pMediaRes;
-
-                if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+                cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
+                if (cue)
                 {
-                    auto duration = pMediaRes->duration();
-                    if (duration > __wholeTrackDuration)
-                    {
-                        WString strRemark;
-                        cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
-                        if (cue)
-                        {
-                            strRemark << cue.m_alTrackInfo.size() << L"曲目\n";
-                        }
-                        strRemark << IMedia::genDurationString(duration);
-
-                        _paintRemark(painter, rc, strRemark);
-
-                        rc.setRight(rc.right() - __size(120));
-                    }
+                    strRemark << cue.m_alTrackInfo.size() << L"曲目\n";
                 }
+                strRemark << IMedia::genDurationString(duration);
             }
         }
+    }
+    else if (mlContext.pDir && mlContext.pDir != &__medialib && mlContext.pDir != &m_OuterDir)
+    {
+        auto uCount = mlContext.pDir->dirs().size() + mlContext.pDir->files().size();
+        if (uCount > 0)
+        {
+            strRemark << uCount << L"项";
+        }
+        /*uCount = mlContext.pDir->files().size();
+        if (uCount > 0)
+        {
+            if (!strRemark->empty())
+            {
+                strRemark << '\n';
+            }
+            strRemark << uCount << L" 文件";
+        }*/
+    }
+
+    if (!strRemark->empty())
+    {
+        cauto rcRet = _paintRemark(painter, rc, strRemark);
+        rc.setRight(rcRet.x() - __size(20));
+    }
+
+    QString qsMediaQuality;
+    auto pMedia = mlContext.pMedia;// ? (IMedia*)mlContext.pMedia : (CMediaRes*)mlContext.pFile;
+    if (pMedia)
+    {
+        qsMediaQuality = mediaQualityString(pMedia->quality());
+        rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
     }
 
     uTextAlpha = 255;
@@ -621,6 +627,24 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     {
         uTextAlpha = __FlashingAlpha;
         uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+    }
+
+    if (mlContext.pDir && mlContext.pDir->parent() == &__medialib)
+    {
+        auto pos = mlContext.strText->find('\n');
+        if (pos != __wnpos)
+        {
+            cauto qsText1 = __WS2Q(mlContext.strText->substr(0, pos));
+            QRect rc1(rc);
+            rc1.setBottom(rc.center().y() - __size10);
+            painter.drawTextEx(rc1, Qt::AlignLeft|Qt::AlignBottom, qsText1, 1, uShadowAlpha, uTextAlpha);
+
+            UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
+            cauto qsText2 = __WS2Q(mlContext.strText->substr(pos+1));
+            QRect rc2(rc);
+            rc2.setTop(rc.center().y() + __size10);
+            return painter.drawTextEx(rc2, Qt::AlignLeft|Qt::AlignTop, qsText2, 1, __ShadowAlpha*uAlpha/255, uAlpha);
+        }
     }
 
     cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);

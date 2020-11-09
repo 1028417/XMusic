@@ -35,26 +35,26 @@ struct tagMLItemContext : public tagLVItemContext
     }
 
     tagMLItemContext(tagLVItem& lvItem, CMediaSet& MediaSet) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pMediaSet(&MediaSet)
     {
         strText = MediaSet.m_strName;
     }
     tagMLItemContext(tagLVItem& lvItem, CMedia& media) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pMedia(&media)
     {
         strText = media.GetTitle();
     }
 
     tagMLItemContext(tagLVItem& lvItem, CPath& dir) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pDir(&dir)
     {
         strText = dir.fileName();
     }
     tagMLItemContext(tagLVItem& lvItem, XFile& file) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_MultiLine | E_LVItemStyle::IS_BottomLine)
+        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pFile(&file)
     {
         strText = file.fileName();

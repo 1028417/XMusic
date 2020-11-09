@@ -185,7 +185,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     }
 
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
-    if (context.eStyle & E_LVItemStyle::IS_MultiLine)
+    if (0 == (context.eStyle & E_LVItemStyle::IS_SingleLine))
     {
         flags |= Qt::TextWrapAnywhere;
     }
@@ -196,7 +196,7 @@ cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& 
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     QString qsText = context.strText;
-    if ((context.eStyle & E_LVItemStyle::IS_MultiLine) == 0)
+    if (context.eStyle & E_LVItemStyle::IS_SingleLine)
     {
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
                                                   , Qt::TextSingleLine | Qt::TextShowMnemonic);

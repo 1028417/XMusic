@@ -28,7 +28,7 @@ enum E_LVItemStyle
     IS_None = 0
 
     , IS_CenterAlign    = 0x0001
-    , IS_MultiLine      = 0x0002
+    , IS_SingleLine      = 0x0002
 
     , IS_BottomLine     = 0x0004
     , IS_ForwardButton  = 0x0008
