@@ -596,23 +596,19 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                 if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
                 {
                     auto duration = pMediaRes->duration();
-                    cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
-                    if (cue)
+                    if (duration > __wholeTrackDuration)
                     {
                         WString strRemark;
-                        strRemark << IMedia::genDurationString(duration) << '\n' << cue.m_alTrackInfo.size() << L"曲目";
+                        cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
+                        if (cue)
+                        {
+                            strRemark << cue.m_alTrackInfo.size() << L"曲目\n";
+                        }
+                        strRemark << IMedia::genDurationString(duration);
+
                         _paintRemark(painter, rc, strRemark);
 
-                        //QColor cr = g_crFore;
-                        //cr.setAlpha(CPainter::oppTextAlpha(__RemarkAlpha)/2);
-                        //painter.drawRectEx(QRect(rcRet.left(), rcRet.bottom()+1, rcRet.width(), 1), cr);
-
                         rc.setRight(rc.right() - __size(120));
-                    }
-                    else if (duration > __wholeTrackDuration)
-                    {
-                        _paintRemark(painter, rc, __WS2Q(L'\n' + IMedia::genDurationString(duration)));
-                        rc.setRight(rc.right() - __size100);
                     }
                 }
             }

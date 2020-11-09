@@ -973,7 +973,6 @@ void MainWindow::_onPaint()
 
     auto nLogoAlpha = g_crLogoBkg.alpha();
     auto nBkgAlpha = 255-nLogoAlpha;
-
     if (nBkgAlpha > 0)
     {
         if (m_app.getOption().bUseBkgColor)
@@ -984,8 +983,7 @@ void MainWindow::_onPaint()
         {
             painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
-            bool bHLayout = rc.width() > rc.height();
-            cauto pmBkg = bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+            cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
                painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
@@ -1011,8 +1009,16 @@ void MainWindow::_onPaint()
 
 float MainWindow::_caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
 {
-    cxDst = cyDst>cxDst ? cxDst : cxDst*9/16;
-    cyDst -= cyDst * m_fBkgTopReserve;
+    if (cxDst > cyDst)
+    {
+        cxDst = cxDst*9/16;
+        cyDst -= cyDst * m_fBkgTopReserve;
+    }
+    else
+    {
+        cyDst = cyDst*7/16;
+    }
+
     if ((float)cyDst/cxDst < m_fBkgHWRate)
     {
         xDst = (cxDst - cyDst / m_fBkgHWRate)/2;
