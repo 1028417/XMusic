@@ -55,7 +55,7 @@ public:
     void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 #endif
 
-    E_MediaType type() const override
+    virtual E_MediaType type() const override
     {
         return E_MediaType::MT_MediaRes;
     }
@@ -85,6 +85,9 @@ public:
 
     void findRelatedMedia();
 };
+
+// TODO class __MediaLibExt CMediaFile : public IMedia, public CMediaRes
+
 
 enum class E_MediaDirType
 {
@@ -157,6 +160,11 @@ public:
 		return m_cuelist;
 	}
 #endif
+
+	E_MediaType type() const override
+	{
+		return E_MediaType::MT_MediaDir;
+	}
 
 protected:
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;

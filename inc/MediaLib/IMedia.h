@@ -33,6 +33,7 @@ enum class E_MediaQuality
 enum class E_MediaType
 {
     MT_MediaRes,
+	MT_MediaDir,
     MT_PlayItem,
     MT_AlbumItem
 };

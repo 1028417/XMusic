@@ -113,10 +113,7 @@ BOOL CMediaResPanel::OnInitDialog()
 		case __Column_Info:
 		{
 			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
-			if (NULL == pMediaRes || pMediaRes->isDir())
-			{
-				return;
-			}
+			__EnsureBreak(pMediaRes && !pMediaRes->isDir());
 
 			CDC& dc = lvcd.dc;
 			cauto rc = lvcd.rc;
@@ -139,10 +136,43 @@ BOOL CMediaResPanel::OnInitDialog()
 		break;
 		case __Column_Playlist:
 		case __Column_SingerAlbum:
-			lvcd.bSetUnderline = true;
-			lvcd.fFontSizeOffset = -.15f;
+		{
+			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
+			__EnsureBreak(pMediaRes);
 
-			break;
+			WString strMediaset;
+			if (__Column_Playlist == lvcd.nSubItem)
+			{
+				__EnsureBreak(!pMediaRes->isDir());
+				strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
+			}
+			else
+			{
+				if (m_bShowRelatedSinger || pMediaRes->isDir())
+				{
+					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+					if (!pMediaRes->isDir())
+					{
+						cauto strAlbum = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+						if (!strAlbum.empty())
+						{
+							strMediaset << __CNDot << strAlbum;
+						}
+					}
+				}
+				else
+				{
+					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+				}
+			}
+
+			m_wndList.SetCustomFont(lvcd.dc, -.15f, true);
+			lvcd.dc.DrawText(strMediaset->c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+		
+		lvcd.bSkipDefault = true;
+		
+		break;
 		default:
 			if (lvcd.nSubItem >= __Column_ModifyTime)
 			{
@@ -392,7 +422,7 @@ void CMediaResPanel::_showDir()
 	
 	m_wndList.ShowDir(*m_pCurrDir);
 	
-	if (m_bShowRelatedSinger && m_pCurrDir->dirs())
+	if (m_pCurrDir->dirs())// && m_bShowRelatedSinger)
 	{
 		__async([&]() {
 			if (NULL == m_pCurrDir)
