@@ -18,13 +18,19 @@ public:
 private:
 	class CAlbumPage& m_wndAlbumPage;
 
+	list<CMediaDir> m_lstAttachDir;
+
 private:
 	void _OnInitDialog() override;
 
 	void UpdateTitle(cwstr strTitle) override;
 
 	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
-	
+
+	void _showDir() override;
+
+	void OnMenuCommand(UINT uID, UINT uVkKey) override;
+
 public:
 	void HittestMediaRes(CMediaRes& MediaRes) override;
 };

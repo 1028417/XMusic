@@ -33,3 +33,49 @@ void CSingerMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 	__super::HittestMediaRes(MediaRes);
 	this->SetFocus();
 }
+
+void CSingerMediaResPanel::_showDir()
+{
+	CMediaResPanel::_showDir();
+
+	for (auto itr = m_lstAttachDir.rbegin(); itr != m_lstAttachDir.rend(); ++itr)
+	{
+		m_wndList.InsertObject(*itr, 0);
+	}
+}
+
+void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
+{
+	auto pSinger = m_wndAlbumPage.GetSinger();
+	__Ensure(pSinger);
+
+	if (ID_Attach == uID)
+	{
+		CMediaDir *pDir = m_view.showChooseDirDlg(L"ѡ�񸽼�Ŀ¼", false);
+		__Ensure(pDir);
+
+		cauto strDir = pDir->GetPath();
+		__Ensure(m_view.getSingerMgr().AttachDir(*pSinger, strDir));
+
+		m_lstAttachDir.emplace_back(strDir);
+	}
+	else if (ID_Detach == uID)
+	{
+		CMediaDir *pDir = NULL;
+
+		for (auto itr = m_lstAttachDir.begin(); itr != m_lstAttachDir.end(); ++itr)
+		{
+			if (&*itr == pDir)
+			{
+				__Ensure(m_view.getSingerMgr().DetachDir(*pSinger, pDir->GetPath()));
+				m_lstAttachDir.erase(itr);
+				break;
+			}
+		}
+
+	}
+	else
+	{
+		CMediaResPanel::OnMenuCommand(uID, uVkKey);
+	}
+}

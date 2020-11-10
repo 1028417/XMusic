@@ -854,15 +854,14 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
 		
-		if (m_pCurrDir == &__medialib)
+		if (m_pRootDir && m_pCurrDir == m_pRootDir)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
-		else
+
+		if (m_pCurrDir && m_pCurrDir != &__medialib)
 		{
 			m_MenuGuard.EnableItem(ID_FormatTitle, m_pCurrDir && bFlag);
-
-			m_MenuGuard.EnableItem(ID_ADD_ALBUM, m_pCurrDir && bFlag);
 		}
 	}
 

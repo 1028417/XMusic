@@ -71,6 +71,10 @@ protected:
 		__super::SetTitle(strTitle);
 	}
 
+	virtual void _showDir();
+
+	virtual void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
+
 public:
 	BOOL Create(CBasePage& wndPage);
 
@@ -100,7 +104,6 @@ private:
 	//void OnDeleteDir(CMediaDir& dir);
 
 	void _showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir = NULL, CMediaRes *pHitestItem = NULL);
-	void _showDir();
 
 	void _asyncTask();
 
@@ -109,8 +112,6 @@ private:
 
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	
-	void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
-
 	afx_msg void OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);

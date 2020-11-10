@@ -39,14 +39,9 @@ private:
 	CMenuGuard m_AlbumMenuGuard;
 
 public:
-	UINT GetSingerID() const
+	CSinger *GetSinger() const
 	{
-		if (NULL == m_pSinger)
-		{
-			return 0;
-		}
-
-		return m_pSinger->m_uID;
+		return m_pSinger;
 	}
 
 	void ShowSinger(CSinger *pSinger, CMedia *pAlbumItem=NULL, IMedia *pIMedia=NULL);

@@ -631,12 +631,9 @@ void CAlbumPage::OnMenuCommand_Album(UINT uID)
 	case ID_ATTACH_DIR:
 	{
 		__AssertBreak(m_pSinger);
-		
+
 		CMediaDir *pDir = m_view.showChooseDirDlg(L"ѡ�񸽼�Ŀ¼", false);
-		if (NULL == pDir)
-		{
-			return;
-		}
+		__EnsureBreak(pDir);
 
 		if (pDir->files())
 		{
