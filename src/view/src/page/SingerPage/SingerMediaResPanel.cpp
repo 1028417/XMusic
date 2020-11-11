@@ -34,64 +34,54 @@ void CSingerMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 	this->SetFocus();
 }
 
-void CSingerMediaResPanel::SetSinger(const CSinger& singer)
+UINT CSingerMediaResPanel::_onShowDir()
 {
-	_SetDir(singer.dir());
-
-	m_lstAttachDir.clear();
-	for (auto& strDir : singer.attachDir())
+	UINT uItem = 0;
+	if (currDir() == rootDir())
 	{
-		m_lstAttachDir.emplace_back(strDir);
-	}
-}
-
-bool CSingerMediaResPanel::_onShowDir()
-{
-	if (currDir() == rootDir() && !m_lstAttachDir.empty())
-	{
-		for (auto itr = m_lstAttachDir.rbegin(); itr != m_lstAttachDir.rend(); ++itr)
+		auto pSinger = m_wndAlbumPage.GetSinger();
+		if (pSinger)
 		{
-			m_wndList.InsertObject(*itr, 0);
+			for (cauto strDir : pSinger->attachDir())
+			{
+				auto pMediaDir = __medialib.subDir(strDir);
+				if (pMediaDir)
+				{
+					m_wndList.InsertObject(*pMediaDir, uItem++);
+				}
+			}
 		}
-
-		return true;
 	}
 
-	return false;
+	return uItem;
 }
 
 void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 {
-	auto pSinger = m_wndAlbumPage.GetSinger();
-	__Ensure(pSinger);
-
 	if (ID_Attach == uID)
 	{
+		auto pSinger = m_wndAlbumPage.GetSinger();
+		__Ensure(pSinger);
+
 		CMediaDir *pDir = m_view.showChooseDirDlg(L"ѡ�񸽼�Ŀ¼", false);
 		__Ensure(pDir);
 
 		cauto strDir = pDir->GetPath();
 		__Ensure(m_view.getSingerMgr().AttachDir(*pSinger, strDir));
-
-		m_lstAttachDir.emplace_back(strDir);
-		
-		Refresh(); //m_wndList.InsertObject(m_lstAttachDir.back(), m_lstAttachDir.size());
+				
+		Refresh();
 	}
 	else if (ID_Detach == uID)
 	{
-		auto *pObj = m_wndList.GetSelObject();
-		for (auto itr = m_lstAttachDir.begin(); itr != m_lstAttachDir.end(); ++itr)
+		auto pSinger = m_wndAlbumPage.GetSinger();
+		__Ensure(pSinger);
+
+		auto pMediaDir = (CMediaDir*)m_wndList.GetSelObject();
+		if (pMediaDir)
 		{
-			if (&*itr == pObj)
-			{
-				__Ensure(m_view.getSingerMgr().DetachDir(*pSinger, itr->GetAbsPath()));
-				
-				m_lstAttachDir.erase(itr);
-
-				Refresh(); //m_wndList.DeleteItem(uIdx);
-
-				break;
-			}
+			__Ensure(m_view.getSingerMgr().DetachDir(*pSinger, pMediaDir->GetPath()));
+			
+			Refresh();
 		}
 	}
 	else

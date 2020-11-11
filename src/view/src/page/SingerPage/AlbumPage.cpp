@@ -387,7 +387,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.InsertItem(0, L"", -1);// , (int)E_GlobalImage::GI_Dir);
 
-		m_wndMediaResPanel.SetSinger(*m_pSinger);
+		m_wndMediaResPanel.SetDir(m_pSinger->dir());
 	}
 		
 	if (pAlbumItem)

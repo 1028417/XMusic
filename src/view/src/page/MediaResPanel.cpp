@@ -318,7 +318,7 @@ void CMediaResPanel::ShowDir(cwstr strPath)
 	_showDir(pRootDir);
 }
 
-void CMediaResPanel::_SetDir(cwstr strPath)
+void CMediaResPanel::SetDir(cwstr strPath)
 {
 	m_wndList.DeleteAllItems();
 
@@ -355,7 +355,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 	{
 		m_wndList.DeleteAllItems();
 
-		if (_onShowDir())
+		if (_onShowDir() > 0)
 		{
 			(void)m_wndStatic.ShowWindow(SW_HIDE);
 		}

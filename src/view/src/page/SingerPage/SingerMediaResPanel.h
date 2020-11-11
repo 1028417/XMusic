@@ -18,8 +18,6 @@ public:
 private:
 	class CAlbumPage& m_wndAlbumPage;
 
-	list<CMediaDir> m_lstAttachDir;
-
 private:
 	void _OnInitDialog() override;
 
@@ -27,12 +25,10 @@ private:
 
 	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 
-	bool _onShowDir() override;
+	UINT _onShowDir() override;
 
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
 
 public:
-	void SetSinger(const CSinger& singer);
-
 	void HittestMediaRes(CMediaRes& MediaRes) override;
 };

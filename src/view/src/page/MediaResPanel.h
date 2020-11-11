@@ -83,13 +83,13 @@ protected:
 
 	virtual void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
-	void _SetDir(cwstr strPath);
-
 public:
 	BOOL Create(CBasePage& wndPage);
 
 	void ShowDir(cwstr strPath = L"");
-	
+
+	void SetDir(cwstr strPath);
+
 	void Refresh();
 
 	BOOL HittestMedia(IMedia& media, CWnd& wnd);
@@ -105,7 +105,7 @@ public:
 private:
 	virtual int GetTabImage() override;
 
-	virtual bool _onShowDir() { return false; }
+	virtual UINT _onShowDir() { return 0; }
 
 	void _showDirMenu(CMediaDir *pSubDir);
 	void _showFileMenu(TD_MediaResList& lstMediaRes);
