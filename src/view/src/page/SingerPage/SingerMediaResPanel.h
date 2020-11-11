@@ -18,6 +18,8 @@ public:
 private:
 	class CAlbumPage& m_wndAlbumPage;
 
+	list<CMediaDir> m_lstAttachDir;
+
 private:
 	void _OnInitDialog() override;
 
@@ -30,5 +32,7 @@ private:
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
 
 public:
+	void SetSinger(const CSinger& singer);
+
 	void HittestMediaRes(CMediaRes& MediaRes) override;
 };

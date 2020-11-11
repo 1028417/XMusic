@@ -856,6 +856,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 		m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
 
+		//if (pSubDir->rootDir() == m_pRootDir)
 		if (pSubDir->parent())
 		{
 			m_MenuGuard.EnableItem(ID_RENAME, TRUE);
