@@ -1001,7 +1001,13 @@ void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedi
 		}
 
 		(void)m_SingerPage.Active(*pSinger);
-		m_AlbumPage.ShowSinger(pSinger, pMedia, pIMedia->type()!=E_MediaType::MT_MediaDir? pIMedia:NULL);
+
+		if (pIMedia && pIMedia->type() == E_MediaType::MT_MediaDir)
+		{
+			pIMedia = NULL;
+		}
+		m_AlbumPage.ShowSinger(pSinger, pMedia, pIMedia);
+
 		m_AlbumPage.Active();
 	}
 }

@@ -115,24 +115,10 @@ BOOL CPlayItemPage::OnInitDialog()
 
 		break;
 		case __Column_SingerAlbum:
-		{
-			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
-			__Ensure(pPlayItem);
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.15f;
 
-			wstring strSingerAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-			cauto strAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
-			if (!strAlbum.empty())
-			{
-				strSingerAlbum.append(__CNDot + strAlbum);
-			}
-
-			m_wndList.SetCustomFont(lvcd.dc, -.15f, true);
-			lvcd.dc.DrawText(strSingerAlbum.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-
-		lvcd.bSkipDefault = true;
-
-		break;
+			break;
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;
@@ -231,6 +217,13 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 	m_pPlaylist = pPlaylist;
 	this->UpdateTitle();
 
+	if (m_pPlaylist)
+	{
+		m_pPlaylist->playItems()([&](cauto PlayItem) {
+			((CPlayItem&)PlayItem).findRelatedMedia();
+		});
+	}
+
 	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
 	if (bChanged)
 	{
@@ -239,24 +232,18 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	if (NULL == m_pPlaylist)
+	if (m_pPlaylist)
 	{
-		return;
+		__async(10, [&]() {
+			if (m_pPlaylist)
+			{
+				m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
+					((CMedia&)object).checkDuration();
+					return false;
+				});
+			}
+		});
 	}
-
-	m_pPlaylist->playItems()([&](cauto PlayItem) {
-		((CPlayItem&)PlayItem).findRelatedMedia();
-	});
-
-	__async(10, [&]() {
-		if (m_pPlaylist)
-		{
-			m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
-				((CMedia&)object).checkDuration();
-				return false;
-			});
-		}
-	});
 }
 
 void CPlayItemPage::UpdateTitle()

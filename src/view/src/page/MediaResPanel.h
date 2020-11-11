@@ -63,6 +63,16 @@ private:
 protected:
 	CMediaResList m_wndList;
 
+	CMediaDir* rootDir() const
+	{
+		return m_pRootDir;
+	}
+
+	CMediaDir* currDir() const
+	{
+		return m_pCurrDir;
+	}
+
 protected:
 	BOOL OnInitDialog() override;
 
@@ -71,14 +81,14 @@ protected:
 		__super::SetTitle(strTitle);
 	}
 
-	virtual void _showDir();
-
 	virtual void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
 public:
 	BOOL Create(CBasePage& wndPage);
 
-	void ShowDir(cwstr strPath=L"");
+	void ShowDir(cwstr strPath = L"");
+
+	void SetDir(cwstr strPath);
 
 	void Refresh();
 
@@ -94,6 +104,8 @@ public:
 
 private:
 	virtual int GetTabImage() override;
+
+	virtual bool _onShowDir() { return false; }
 
 	void _showDirMenu(CMediaDir *pSubDir);
 	void _showFileMenu(TD_MediaResList& lstMediaRes);

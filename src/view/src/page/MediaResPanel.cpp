@@ -312,61 +312,64 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 
 void CMediaResPanel::ShowDir(cwstr strPath)
 {
-	__waitCursor;
+	m_strCurrDir = m_strRootDir = strPath;
 
-	m_strRootDir = strPath;
-
-	CMediaDir *pRootDir = NULL;
-	if (!strPath.empty())
-	{
-		pRootDir = __medialib.subDir(strPath);
-	}
-	else
-	{
-		pRootDir = &__medialib;
-	}
+	CMediaDir *pRootDir = __medialib.subDir(strPath);
 	_showDir(pRootDir);
+}
+
+void CMediaResPanel::SetDir(cwstr strPath)
+{
+	m_wndList.DeleteAllItems();
+
+	m_strCurrDir = m_strRootDir = strPath;
 }
 
 void CMediaResPanel::Refresh()
 {
 	CMediaDir *pRootDir = __medialib.subDir(m_strRootDir);
 	CMediaDir *pCurrDir = __medialib.subDir(m_strCurrDir);
-	if (NULL == pCurrDir)
-	{
-		pCurrDir = pRootDir;
-	}
-
 	_showDir(pRootDir, pCurrDir);
 }
 
 void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRes *pHitestItem)
 {
 	__Ensure(m_hWnd);
-
+	
 	wstring strPrevCurrDir = m_strCurrDir;
 	
-	m_pCurrDir = m_pRootDir = pRootDir;
-	m_strCurrDir = m_strRootDir;
-	if (NULL == m_pCurrDir)
-	{
-		(void)m_wndStatic.ShowWindow(SW_SHOW);
-
-		m_wndList.DeleteAllItems();
-
-		return;
-	}
-
-	(void)m_wndStatic.ShowWindow(SW_HIDE);
+	m_pRootDir = pRootDir;
 
 	if (pCurrDir)
 	{
 		m_pCurrDir = pCurrDir;
 		m_strCurrDir = pCurrDir->GetPath();
 	}
+	else
+	{
+		m_pCurrDir = m_pRootDir;
+		m_strCurrDir = m_strRootDir;
+	}
+
+	if (NULL == m_pCurrDir)
+	{
+		m_wndList.DeleteAllItems();
+
+		if (_onShowDir())
+		{
+			(void)m_wndStatic.ShowWindow(SW_HIDE);
+		}
+		else
+		{
+			(void)m_wndStatic.ShowWindow(SW_SHOW);
+		}
+		
+		return;
+	}
+
+	(void)m_wndStatic.ShowWindow(SW_HIDE);
 
 	wstring	strTitle;
-	
 	wstring strOppPath = fsutil::GetOppPath(m_strRootDir, m_strCurrDir);
 	if (!strOppPath.empty())
 	{
@@ -398,10 +401,42 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 	}
 
 	UpdateTitle(strTitle);
-	
-	_showDir();
 
-	if (NULL != pHitestItem)
+	__waitCursor;
+	CRedrawLock RedrawLock(m_wndList);
+
+	cauto paSubDir = m_pCurrDir->dirs();
+	if (paSubDir)// && m_bShowRelatedSinger)
+	{
+		map<wstring, const CSinger*> mapDirSinger;
+		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
+			cauto strSingerDir = singer.dir();
+			if (strutil::matchIgnoreCase(fsutil::GetParentDir(strSingerDir), m_strCurrDir))
+			{
+				mapDirSinger[strutil::lowerCase_r(fsutil::GetFileName(strSingerDir))] = &singer;
+			}
+		});
+
+		m_pCurrDir->dirs()([&](CPath& subDir, size_t uIdx) {
+			auto& MediaDir = (CMediaDir&)subDir;
+
+			auto itr = mapDirSinger.find(strutil::lowerCase_r(subDir.fileName()));
+			if (itr != mapDirSinger.end())
+			{
+				MediaDir.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second->m_uID, itr->second->m_strName);
+			}
+			else
+			{
+				MediaDir.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
+			}
+
+			//m_wndList.UpdateItem(uIdx, MediaDir);
+		});
+	}
+
+	m_wndList.ShowDir(*m_pCurrDir);
+
+	if (pHitestItem)
 	{
 		m_wndList.SelectObject(pHitestItem);
 	}
@@ -412,52 +447,22 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 			m_wndList.EnsureVisible(0, FALSE);
 		}
 	}
-}
-
-void CMediaResPanel::_showDir()
-{
-	__waitCursor;
-
-	CRedrawLock RedrawLock(m_wndList);
-	
-	m_wndList.ShowDir(*m_pCurrDir);
-	
-	if (m_pCurrDir->dirs())// && m_bShowRelatedSinger)
-	{
-		__async([&]() {
-			if (NULL == m_pCurrDir)
-			{
-				return;
-			}
-
-			map<wstring, pair<UINT, wstring>> mapSingerInfo;
-			m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
-				cauto strSingerDir = singer.dir();
-				if (m_strCurrDir == fsutil::GetParentDir(strSingerDir))
-				{
-					mapSingerInfo[fsutil::GetFileName(strSingerDir)] = { singer.m_uID, singer.m_strName };
-				}
-			});
-			
-			m_pCurrDir->dirs()([&](CPath& subDir, size_t uIdx) {
-				auto itr = mapSingerInfo.find(subDir.fileName());
-
-				auto& MediaDir = ((CMediaDir&)subDir);
-				if (itr != mapSingerInfo.end())
-				{
-					MediaDir.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, itr->second.first, itr->second.second);
-				}
-				else
-				{
-					MediaDir.ClearRelatedMediaSet(E_RelatedMediaSet::RMS_Singer);
-				}
-
-				m_wndList.UpdateItem(uIdx, &MediaDir);
-			});
-		});
-	}
 
 	_asyncTask();
+
+	(void)_onShowDir();
+}
+
+void CMediaResPanel::_asyncTask()
+{
+	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [&](CListObject& object) {
+		CMediaRes& mediaRes = (CMediaRes&)object;
+		if (!mediaRes.isDir())
+		{
+			mediaRes.findRelatedMedia();
+		}
+		return false;
+	});
 }
 
 BOOL CMediaResPanel::HittestMedia(IMedia& media, CWnd& wnd)
@@ -675,12 +680,9 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_Detach:
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.isDir())
+			if (MediaRes.isDir() && MediaRes.parent() == NULL)
 			{
-				if (MediaRes.parent() == NULL)
-				{
-					m_view.getModel().detachDir(MediaRes.GetAbsPath());
-				}
+				m_view.getModel().detachDir(MediaRes.GetAbsPath());
 			}
 		});
 		
@@ -770,10 +772,7 @@ void CMediaResPanel::OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	if (NULL == m_pCurrDir)
-	{
-		return;
-	}
+	//__Ensure(m_pCurrDir);
 
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 	if (pNMLV->iItem >= 0)
@@ -884,7 +883,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
 		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
 		
-		if (m_pRootDir && m_pCurrDir == m_pRootDir)
+		if (m_pCurrDir == m_pRootDir)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
 		}
@@ -1080,18 +1079,6 @@ int CMediaResPanel::GetTabImage()
 	}
 
 	return (int)E_GlobalImage::GI_Dir;
-}
-
-void CMediaResPanel::_asyncTask()
-{
-	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [&](CListObject& object) {
-		CMediaRes& mediaRes = (CMediaRes&)object;
-		if (!mediaRes.isDir())
-		{
-			mediaRes.findRelatedMedia();
-		}
-		return false;
-	});
 }
 
 void CMediaResPanel::attachDir()

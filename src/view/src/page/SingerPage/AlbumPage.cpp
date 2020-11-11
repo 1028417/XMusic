@@ -199,18 +199,10 @@ BOOL CAlbumPage::OnInitDialog()
 
 		break;
 		case __Column_Playlist:
-		{
-			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
-			__EnsureBreak(pAlbumItem);
+			lvcd.bSetUnderline = true;
+			lvcd.fFontSizeOffset = -.15f;
 
-			cauto strPlaylist = pAlbumItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
-			m_wndAlbumItemList.SetCustomFont(lvcd.dc, -.15f, true);
-			lvcd.dc.DrawText(strPlaylist.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-		
-		lvcd.bSkipDefault = true;
-		
-		break;
+			break;
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;
@@ -395,7 +387,7 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		(void)m_wndAlbumList.InsertItem(0, L"", -1);// , (int)E_GlobalImage::GI_Dir);
 
-		m_wndMediaResPanel.ShowDir(m_pSinger->dir());
+		m_wndMediaResPanel.SetDir(m_pSinger->dir());
 	}
 		
 	if (pAlbumItem)
@@ -406,21 +398,19 @@ void CAlbumPage::ShowSinger(CSinger *pSinger, CMedia *pAlbumItem, IMedia *pIMedi
 
 		m_wndAlbumItemList.DeselectAll();
 		m_wndAlbumItemList.SelectObject(pAlbumItem);
+
+		(void)m_wndAlbumItemList.SetFocus();
 	}
 	else
 	{
 		_showAlbum(NULL);
 		(void)m_wndAlbumList.SelectFirstItem();
-	}
 
-	if (pAlbumItem)
-	{
-		(void)m_wndAlbumItemList.SetFocus();
-	}
-	else if (pIMedia)
-	{
-		m_wndMediaResPanel.HittestMedia(*pIMedia, *this);
-		(void)m_wndMediaResPanel.SetFocus();
+		if (pIMedia)
+		{
+			m_wndMediaResPanel.HittestMedia(*pIMedia, *this);
+			(void)m_wndMediaResPanel.SetFocus();
+		}
 	}
 }
 
@@ -924,6 +914,13 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
+	if (E_AlbumType::AT_Normal == m_pAlbum->type())
+	{
+		m_pAlbum->albumItems()([&](cauto AlbumItem) {
+			((CAlbumItem&)AlbumItem).findRelatedMedia();
+		});
+	}
+
 	(void)m_wndAlbumItemList.SetObjects(TD_ListObjectList((ArrList<CAlbumItem>&)m_pAlbum->albumItems()));
 	if (bChanged)
 	{
@@ -933,13 +930,6 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 	(void)m_wndAlbumItemList.ShowWindow(SW_SHOW);
 	(void)m_wndMediaResPanel.ShowWindow(SW_HIDE);
 	
-	if (E_AlbumType::AT_Normal == m_pAlbum->type())
-	{
-		m_pAlbum->albumItems()([&](cauto AlbumItem) {
-			((CAlbumItem&)AlbumItem).findRelatedMedia();
-		});
-	}
-
 	_asyncTask();
 }
 

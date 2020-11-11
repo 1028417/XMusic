@@ -27,7 +27,7 @@ private:
 
 	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 
-	void _showDir() override;
+	bool _onShowDir() override;
 
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
 
