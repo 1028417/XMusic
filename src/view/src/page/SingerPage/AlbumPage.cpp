@@ -58,8 +58,6 @@ void CAlbumPage::DoDataExchange(CDataExchange* pDX)
 	CPage::DoDataExchange(pDX);
 }
 
-#include <gdiplus.h>
-
 BOOL CAlbumPage::OnInitDialog()
 {
 	(void)CPage::OnInitDialog();
@@ -152,20 +150,25 @@ BOOL CAlbumPage::OnInitDialog()
 	__AssertReturn(m_wndAlbumItemList.InitCtrl(ListPara), FALSE);
 
 	m_wndAlbumItemList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
-		__Ensure(pAlbumItem);
-
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Name:
+		{
+			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
+			__EnsureBreak(pAlbumItem);
+
 			if (pAlbumItem->fileSize() == -1)
 			{
 				lvcd.setTextAlpha(128);
 			}
-
-			break;
+		}
+		
+		break;
 		case __Column_Info:
 		{
+			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
+			__EnsureBreak(pAlbumItem);
+
 			CDC& dc = lvcd.dc;
 			//dc.FillSolidRect(&rc, lvcd.crBkg);
 
@@ -196,16 +199,18 @@ BOOL CAlbumPage::OnInitDialog()
 
 		break;
 		case __Column_Playlist:
+		{
+			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
+			__EnsureBreak(pAlbumItem);
+
+			cauto strPlaylist = pAlbumItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
 			m_wndAlbumItemList.SetCustomFont(lvcd.dc, -.15f, true);
-			
-			{
-				cauto strPlaylist = pAlbumItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
-				lvcd.dc.DrawText(strPlaylist.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			
-			lvcd.bSkipDefault = true;
+			lvcd.dc.DrawText(strPlaylist.c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
 		
-			break;
+		lvcd.bSkipDefault = true;
+		
+		break;
 		case __Column_Path:
 			lvcd.bSetUnderline = true;
 			lvcd.fFontSizeOffset = -.2f;

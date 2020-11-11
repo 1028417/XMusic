@@ -66,20 +66,25 @@ BOOL CPlayItemPage::OnInitDialog()
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
-		__Ensure(pPlayItem);
-
 		switch (lvcd.nSubItem)
 		{
 		case __Column_Name:
+		{
+			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
+			__Ensure(pPlayItem);
+
 			if (pPlayItem->fileSize() == -1)
 			{
 				lvcd.setTextAlpha(128);
 			}
+		}
 
-			break;
+		break;
 		case __Column_Info:
 		{
+			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
+			__Ensure(pPlayItem);
+
 			CDC& dc = lvcd.dc;
 			//dc.FillSolidRect(&rc, lvcd.crBkg);
 
@@ -111,6 +116,9 @@ BOOL CPlayItemPage::OnInitDialog()
 		break;
 		case __Column_SingerAlbum:
 		{
+			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
+			__Ensure(pPlayItem);
+
 			wstring strSingerAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
 			cauto strAlbum = pPlayItem->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 			if (!strAlbum.empty())
