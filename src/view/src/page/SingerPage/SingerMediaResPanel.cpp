@@ -34,6 +34,17 @@ void CSingerMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 	this->SetFocus();
 }
 
+void CSingerMediaResPanel::SetSinger(const CSinger& singer)
+{
+	_SetDir(singer.dir());
+
+	m_lstAttachDir.clear();
+	for (auto& strDir : singer.attachDir())
+	{
+		m_lstAttachDir.emplace_back(strDir);
+	}
+}
+
 bool CSingerMediaResPanel::_onShowDir()
 {
 	if (currDir() == rootDir() && !m_lstAttachDir.empty())

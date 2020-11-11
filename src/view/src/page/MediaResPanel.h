@@ -83,13 +83,13 @@ protected:
 
 	virtual void OnMenuCommand(UINT uID, UINT uVkKey = 0) override;
 
+	void _SetDir(cwstr strPath);
+
 public:
 	BOOL Create(CBasePage& wndPage);
 
 	void ShowDir(cwstr strPath = L"");
-
-	void SetDir(cwstr strPath);
-
+	
 	void Refresh();
 
 	BOOL HittestMedia(IMedia& media, CWnd& wnd);

@@ -32,5 +32,7 @@ private:
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
 
 public:
+	void SetSinger(const CSinger& singer);
+
 	void HittestMediaRes(CMediaRes& MediaRes) override;
 };
