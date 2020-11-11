@@ -142,7 +142,7 @@ private:
 
 	list<CAlbum> m_lstAlbums;
 
-    list<wstring> m_lstAttachDir;
+    vector<wstring> m_vecAttachDir;
 
 public:
 	list<CAlbum>& albums()
@@ -154,13 +154,18 @@ public:
 		return m_lstAlbums;
 	}
 
-    const list<wstring>& attachDirList() const
+    vector<wstring>& attachDir()
     {
-        return m_lstAttachDir;
+        return m_vecAttachDir;
     }
 
-    bool attachDir(cwstr strDir);
-    bool detachDir(cwstr strDir);
+    const vector<wstring>& attachDir() const
+    {
+        return m_vecAttachDir;
+    }
+
+    bool addAttachDir(cwstr strDir);
+    bool removeAttachDir(cwstr strDir);
 
     CAlbum& addAlbum(const CAlbum& album)
     {
