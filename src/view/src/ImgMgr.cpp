@@ -9,6 +9,7 @@ static const wstring g_lpImg[]{
 	L"dir"
 	, L"attachdir"
 	, L"file"
+	, L"attachfile"
 	, L"wholeTrack"
 
 	, L"playlist"

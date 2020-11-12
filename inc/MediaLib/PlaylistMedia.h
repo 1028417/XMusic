@@ -102,7 +102,7 @@ public:
 	wstring GetDisplayName();
 
 private:
-	int indexOf(const CMedia& media) const override
+    int indexOf(const IMedia& media) const override
 	{
         return m_alPlayItems.find([&](const CPlayItem& PlayItem) {
 			return &PlayItem == &media;

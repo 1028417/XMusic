@@ -38,7 +38,7 @@ public:
 #if __winvc
 	int getImage() override
 	{
-		return (int)E_GlobalImage::GI_DirLink;
+		return (int)E_GlobalImage::GI_AttachDir;
 	}
 
     bool GetRenameText(wstring&) const override
@@ -143,3 +143,25 @@ public:
 		return 0;
 	}
 };
+
+#if !__winvc
+class __MediaLibExt CSnapshotMediaDir : public CMediaDir, public CMediaSet
+{
+public:
+    CSnapshotMediaDir() = default;
+
+    CSnapshotMediaDir(cwstr strPath, class CPath *pParent = NULL)
+        : CMediaDir(strPath, pParent)
+    {
+    }
+
+    E_MediaDirType dirType() override
+    {
+        return E_MediaDirType::MDT_Snapshot;
+    }
+
+    void GetMedias(TD_IMediaList&) override;
+
+    void GetSubSets(TD_MediaSetList&) override;
+};
+#endif

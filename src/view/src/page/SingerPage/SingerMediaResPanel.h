@@ -4,6 +4,32 @@
 
 #include "AlbumPage.h"
 
+class CSingerAttachDir : public CMediaDir
+{
+public:
+	virtual ~CSingerAttachDir() = default;
+
+	CSingerAttachDir() = default;
+
+	CSingerAttachDir(cwstr strPath)
+		: CMediaDir(strPath)
+	{
+	}
+
+private:
+	void genMediaResListItem(E_ListViewType eViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger) override
+	{
+		CMediaDir::genMediaResListItem(eViewType, vecText, iImage, bGenRelatedSinger);
+
+		iImage = (int)E_GlobalImage::GI_AttachDir;
+	}
+
+	wstring GetPath() const override
+	{
+		return m_fi.strName;
+	}
+};
+
 class CSingerMediaResPanel : public CMediaResPanel
 {
 	DECLARE_MESSAGE_MAP()
@@ -18,7 +44,7 @@ public:
 private:
 	class CAlbumPage& m_wndAlbumPage;
 
-	list<CMediaDir> m_lstAttachDir;
+	list<CSingerAttachDir> m_lstAttachDir;
 
 private:
 	void _OnInitDialog() override;

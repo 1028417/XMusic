@@ -31,7 +31,8 @@ public:
 
 	BOOL Init();
 
-    void enumSinger(cfn_void_t<const CSinger&>);
+    void enumSinger(cfn_void_t<const CSinger&>) const;
+    void enumSinger(cfn_void_t<CSinger&>);
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
 

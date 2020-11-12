@@ -99,7 +99,7 @@ BOOL CAlbumPage::OnInitDialog()
 		{
 			if (pAlbum->type() == E_AlbumType::AT_Dir)
 			{
-				eImage = E_GlobalImage::GI_DirLink;
+				eImage = E_GlobalImage::GI_AttachDir;
 			}
 		}
 		else

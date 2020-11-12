@@ -4,8 +4,7 @@
 class CImgMgr
 {
 public:
-	CImgMgr(IModel& model)
-		: m_model(model)
+	CImgMgr(IModel& model) : m_model(model)
 	{
 	}
 

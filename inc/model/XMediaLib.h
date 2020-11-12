@@ -67,8 +67,8 @@ private:
 
 #define __wholeTrackDuration 60 * 8
 
-#if __OnlineMediaLib
-class CSnapshotMediaRes : public CMediaRes
+#if !__winvc
+class __ModelExt CSnapshotMediaRes : public CMediaRes
 {
 public:
     CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
@@ -92,22 +92,6 @@ public:
     CRCueFile cueFile()
     {
         return m_CueFile;
-    }
-};
-
-class CSnapshotDir : public CMediaDir
-{
-public:
-    CSnapshotDir() = default;
-
-    CSnapshotDir(cwstr strPath, class CPath *pParent = NULL)
-        : CMediaDir(strPath, pParent)
-    {
-    }
-
-    E_MediaDirType dirType() override
-    {
-        return E_MediaDirType::MDT_Snapshot;
     }
 };
 #endif

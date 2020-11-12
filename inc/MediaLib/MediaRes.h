@@ -52,7 +52,7 @@ public:
 
     virtual int getImage();
 
-    void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
+    virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
 #endif
 
     virtual E_MediaType type() const override

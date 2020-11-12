@@ -225,7 +225,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 			DragData.lstMedias.add(lstObjects);
 
-			DragData.iImage = (int)E_GlobalImage::GI_MediaFile;
+			DragData.iImage = (int)E_GlobalImage::GI_File;
 			
 			bRet = true;
 		});
@@ -1075,7 +1075,7 @@ int CMediaResPanel::GetTabImage()
 	{
 		if (m_pCurrDir->rootDir() != &__medialib)
 		{
-			return (int)E_GlobalImage::GI_DirLink;
+			return (int)E_GlobalImage::GI_AttachDir;
 		}
 	}
 

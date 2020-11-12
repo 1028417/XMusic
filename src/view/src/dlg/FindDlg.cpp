@@ -111,6 +111,7 @@ const TD_MediaMixtureVector& CFindDlg::FindMedia(E_FindMediaMode eFindMediaMode,
 		wstring t_strFindText(strFindText);
 		if (E_FindMediaMode::FMM_MatchText == eFindMediaMode)
 		{
+			strutil::lowerCase(t_strFindText);
 			if (__mediaFileType(t_strFindText) != E_MediaFileType::MFT_Null)
 			{
 				t_strFindText = fsutil::getFileTitle(t_strFindText);

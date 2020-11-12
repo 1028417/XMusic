@@ -99,7 +99,7 @@ public:
 	}
 
 private:
-	int indexOf(const CMedia& media) const override
+    int indexOf(const IMedia& media) const override
 	{
         return m_alAlbumItems.find([&](const CAlbumItem& PlayItem) {
 			return &PlayItem == &media;
@@ -145,6 +145,11 @@ private:
     vector<wstring> m_vecAttachDir;
 
 public:
+    cwstr dir() const
+    {
+        return m_strDir;
+    }
+
 	list<CAlbum>& albums()
 	{
 		return m_lstAlbums;
@@ -175,15 +180,7 @@ public:
         return t_album;
     }
 
-	void GetSubSets(TD_MediaSetList& lstSubSets) override
-	{
-		lstSubSets.add(m_lstAlbums);
-	}
-
-	cwstr dir() const
-	{
-		return m_strDir;
-	}
+    void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
 	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 
@@ -229,6 +226,10 @@ private:
 
 public:
     const list<CSinger>& singers() const
+    {
+        return m_lstSingers;
+    }
+    list<CSinger>& singers()
     {
         return m_lstSingers;
     }

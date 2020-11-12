@@ -103,7 +103,7 @@ class __MediaLibExt CMediaSet : public tagMediaInfo
 {
 public:
     CMediaSet(cwstr strName = L"", CMediaSet *pParent = NULL, int nID = 0
-            , E_MediaSetType eType = E_MediaSetType::MST_Root
+            , E_MediaSetType eType = E_MediaSetType::MST_NULL
             , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false)
 		: tagMediaInfo(pParent, strName, nID)
 		, m_eType(eType)
@@ -172,11 +172,13 @@ public:
 		return -1;
 	}
 
-	virtual int indexOf(const CMedia&) const { return -1; }
+    virtual int indexOf(const IMedia&) const { return -1; }
 
-    virtual void GetMedias(TD_MediaList& lstMedias) {(void)lstMedias;}
+    virtual void GetMedias(TD_MediaList&) {}
 
-    virtual void GetSubSets(TD_MediaSetList& lstSubSets) {(void)lstSubSets;}
+    virtual void GetMedias(TD_IMediaList&) {}
+
+    virtual void GetSubSets(TD_MediaSetList&) {}
 
     virtual bool playable() const;
 

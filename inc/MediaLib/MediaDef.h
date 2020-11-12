@@ -36,8 +36,9 @@ using TD_AlbumItemList = PtrArray<CAlbumItem>;
 enum class E_GlobalImage
 {
 	GI_Dir = 0
-	, GI_DirLink
-	, GI_MediaFile
+	, GI_AttachDir
+	, GI_File
+	, GI_AttachFile
 	, GI_WholeTrack
 
 	, GI_Playlist
@@ -55,7 +56,7 @@ enum class E_MediaSetType
 	, MST_Album
 	, MST_Singer
 	, MST_SingerGroup
-	, MST_Root
+    , MST_NULL
 };
 
 using mediatime_t = time32_t;
