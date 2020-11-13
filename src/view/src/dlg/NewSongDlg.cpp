@@ -65,14 +65,14 @@ BOOL CNewSongDlg::OnInitDialog()
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	TD_IMediaList lstSrcMedias;
-	__xmedialib.GetAllMedias(lstSrcMedias);
-	m_lstSrcMedias.assign(lstSrcMedias);
+	__xmedialib.GetAllMedias(m_lstSrcMedias);
 	
 	mediatime_t maxTime = 0;
-	m_lstSrcMedias([&](CMedia& media) {
-		maxTime = MAX(maxTime, media.GetAddTime().m_time);
-	});
+	for (auto pMedia : m_lstSrcMedias)
+	{
+		cauto time = ((CMedia*)pMedia)->GetAddTime().m_time;
+		maxTime = MAX(maxTime, time);
+	}
 	if (0 == maxTime)
 	{
 		maxTime = (mediatime_t)time(0);
@@ -108,11 +108,13 @@ void CNewSongDlg::Refresh()
 
 		m_MediaMixer.clear();
 
-		m_lstSrcMedias([&](CMedia& media) {
-			__Ensure(media.GetAddTime().m_time >= tFilterTime);
-
-			m_MediaMixer.add(media);
-		});
+		for (auto pMedia : m_lstSrcMedias)
+		{
+			if (((CMedia*)pMedia)->GetAddTime().m_time >= tFilterTime)
+			{
+				m_MediaMixer.add(*(CMedia*)pMedia);
+			}
+		}
 
 		CRedrawLock RedrawGuard(m_wndList);
 		(void)m_wndList.DeleteAllItems();

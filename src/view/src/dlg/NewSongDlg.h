@@ -12,7 +12,7 @@ public:
 private:
 	__view& m_view;
 
-	TD_MediaList m_lstSrcMedias;
+	TD_IMediaList m_lstSrcMedias;
 
 	time_t m_tFilterTime = 0;
 	int m_nSortType = 0;
