@@ -98,12 +98,21 @@ public:
         m_alPlayItems.clear();
     }
 
-    bool playable() const override
-	{
-        return m_alPlayItems;
-	}
+#if __winvc
+    wstring GetDisplayName() const
+    {
+        wchar_t lpBuff[8] {0};
+        swprintf(lpBuff, sizeof(lpBuff), L"%02u", (UINT)index()+1);
 
-	wstring GetDisplayName();
+        return wstring(lpBuff) + __CNDot + m_strName;
+    }
+
+    wstring GetExportName() override;
+    {
+        return strutil::eraseChars_r(GetDisplayName(), wstring(1, L' ') + __CNDot);
+        //return L"歌单" + GetDisplayName();
+    }
+#endif
 
 private:
     int indexOf(const IMedia& media) const override
@@ -117,6 +126,4 @@ private:
     {
         lstMedias.add(m_alPlayItems);
     }
-
-    wstring GetExportName() override;
 };

@@ -8,7 +8,7 @@
 struct tagMLItemContext : public tagLVItemContext
 {
     CMediaSet *pMediaSet = NULL;
-    CMedia *pMedia = NULL;
+    IMedia *pMedia = NULL;
 
     CPath *pDir = NULL;
     XFile *pFile = NULL;
@@ -26,7 +26,7 @@ struct tagMLItemContext : public tagLVItemContext
     tagMLItemContext(tagLVItem& lvItem, IMedia& media)
         : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
     {
-        if (media.type() == E_MediaType::MT_MediaRes)
+        /*if (media.type() == E_MediaType::MT_MediaRes)
         {
             auto& MediaRes = (CMediaRes&)media;
             if (MediaRes.isDir())
@@ -40,7 +40,7 @@ struct tagMLItemContext : public tagLVItemContext
 
             strText = MediaRes.fileName();
         }
-        else
+        else*/
         {
             pMedia = (CMedia*)&media;
             strText = media.GetTitle();

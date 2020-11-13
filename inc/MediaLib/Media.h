@@ -127,8 +127,6 @@ public:
 		return m_pParent;
 	}
 
-    E_MediaSetType GetMediaSetType() const;
-
 #if __winvc
 	virtual wstring GetExportFileName() override
 	{

@@ -285,7 +285,10 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 }
             }
         }
-        //else context.pixmap = &m_pmAlbumItem;
+        else if (context.pMedia->type() != E_MediaType::MT_AlbumItem)
+        {
+            context.pmIcon = &m_pmSSFile;
+        }
     }
     else if (context.pDir)
     {
@@ -567,7 +570,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     WString strRemark;
     if (mlContext.pMedia)
     {
-        if (mlContext.pMedia->GetMediaSetType() == E_MediaSetType::MST_Album)
+        if (mlContext.pMedia->type() == E_MediaType::MT_AlbumItem)
         {
             rc.setLeft(rc.left() + __size10);
         }

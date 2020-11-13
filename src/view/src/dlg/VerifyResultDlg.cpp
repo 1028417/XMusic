@@ -82,7 +82,7 @@ void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 	(void)m_wndList.SetItemText(nItem, 0, cstrStatus);
 
 	WString strMediaInfo;
-	if (media.GetMediaSetType() == E_MediaSetType::MST_Album)
+	if (media.type() == E_MediaType::MT_AlbumItem)
 	{
 		CAlbumItem& AlbumItem = (CAlbumItem&)media;
 

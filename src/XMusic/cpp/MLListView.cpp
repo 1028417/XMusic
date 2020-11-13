@@ -44,7 +44,7 @@ void CMLListView::showMediaSet(CMediaSet& MediaSet, bool bUpward)
     if (E_MediaSetType::MST_Singer == MediaSet.m_eType)
     {
         CSinger& singer = (CSinger&)MediaSet;
-        if (singer.albums().size() == 1)
+        if (singer.albums().size() == 1 && singer.attachDir().empty())
         {
             if (bUpward)
             {
@@ -108,17 +108,13 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
     if (m_pMediaset)
     {
-        if (m_lstSubSets)
-        {
-            m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
+        if (!m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
                 tagMLItemContext context(lvItem, mediaSet);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
-            });
-        }
-        else if (m_lstSubMedias)
+            }))
         {
-            m_lstSubMedias.get(lvItem.uItem, [&](IMedia& media) {
+            m_lstSubMedias.get(lvItem.uItem - m_lstSubSets.size(), [&](IMedia& media) {
                 tagMLItemContext context(lvItem, media);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
