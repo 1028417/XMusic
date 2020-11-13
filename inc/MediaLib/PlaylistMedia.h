@@ -30,6 +30,9 @@ public:
     int getSingerImg() const;
 
 	const CMedia* findRelatedMedia() override;
+	{
+		return findRelatedAlbumItem();
+	}
 
 #else
     wstring GetAbsPath() const override // 兼容本地文件

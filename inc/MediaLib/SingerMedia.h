@@ -26,7 +26,11 @@ public:
 	wstring GetBaseDir() const override;
 
 #if __winvc
-	const CMedia* findRelatedMedia() override;
+	const CMedia* findRelatedMedia() override
+	{
+		return IMedia::findRelatedPlayItem();
+	}
+
 #endif
 
 private:

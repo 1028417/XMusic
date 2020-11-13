@@ -762,7 +762,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
     {
         if (media.type() == E_MediaType::MT_PlayItem)
         {
-            auto pAlbumItem = media.findRelatedMedia(E_RelatedMediaSet::RMS_Album);
+            auto pAlbumItem = media.findRelatedAlbumItem();
             if (pAlbumItem)
             {
                 hittestMedia(*pAlbumItem);
