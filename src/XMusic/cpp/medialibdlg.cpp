@@ -202,84 +202,8 @@ void CMedialibDlg::_resizeTitle() const
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
 }
 
-void CMedialibDlg::_genTitle(CMediaSet& MediaSet, WString& strTitle)
+void CMedialibDlg::updateHead(const WString& strTitle)
 {
-    if (E_MediaSetType::MST_Album == MediaSet.m_eType)
-    {
-        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
-
-        if (!m_bHLayout && strutil::checkWordCount(strTitle) >= 14)
-        {
-            strTitle = MediaSet.m_strName;
-        }
-    }
-    else
-    {
-        if (MediaSet.m_pParent && MediaSet.m_pParent != &__xmedialib)
-        {
-            strTitle << MediaSet.m_pParent->m_strName; //_getTitle(*MediaSet.m_pParent, strTitle);
-            strTitle << __CNDot;
-            strTitle << MediaSet.m_strName;
-
-            if (!m_bHLayout && strutil::checkWordCount(strTitle) >= 14)
-            {
-                strTitle = MediaSet.m_strName;
-            }
-        }
-        else
-        {
-            strTitle << MediaSet.m_strName;
-        }
-    }
-}
-
-void CMedialibDlg::_genTitle(CPath& dir, WString& strTitle)
-{
-    if (&dir == &__medialib)
-    {
-        strTitle << __XMusicDirName;
-    }
-    else if (&dir == &m_OuterDir)
-    {
-        strTitle << __LocalDirName;
-    }
-    else
-    {
-        strTitle << dir.fileName();
-
-        /*auto pParent = dir.parent();
-        if (NULL == pParent)
-        {
-            pParent = &m_MediaLib;
-        }
-
-        _getTitle(*pParent, strTitle);
-
-        strTitle << __wcDirSeparator << dir.GetName();*/
-    }
-}
-
-void CMedialibDlg::updateHead()
-{
-    WString strTitle;
-    do {
-        auto pMediaSet = m_lv.currentMediaSet();
-        if (pMediaSet)
-        {
-            _genTitle(*pMediaSet, strTitle);
-            break;
-        }
-
-        auto pDir = m_lv.currentDir();
-        if (pDir)
-        {
-            _genTitle(*pDir, strTitle);
-            break;
-        }
-
-        strTitle << L"媒体库";
-    } while(0);
-
     E_LabelTextOption lto = E_LabelTextOption::LTO_AutoFit;
     bool bShowFilterLanguage =  false;
     bool bShowUpwardButton = false;

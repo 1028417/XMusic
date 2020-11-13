@@ -49,7 +49,7 @@ void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay
 
 bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
 {
-    if (mediaRes.parent()->dirType() != E_MediaDirType::MDT_Snapshot)
+    if (mediaRes.parent()->isLocal())
     {
         return false;
     }
@@ -112,6 +112,8 @@ size_t CWholeTrackView::getItemCount() const
 cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
+    _paintBottonLine(rc);
+
     UINT uDuration = 0;
     m_cue.m_alTrackInfo.get(context->uItem, [&](const tagTrackInfo& TrackInfo) {
         auto uIdx = TrackInfo.uIndex+1;

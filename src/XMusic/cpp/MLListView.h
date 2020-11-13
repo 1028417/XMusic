@@ -86,8 +86,6 @@ private:
     TD_MediaList m_lstSubMedias;
 
     CPath *m_pDir = NULL;
-    TD_PathList m_paSubDirs;
-    TD_XFileList m_paSubFiles;
 
 protected:
     void _cleanup()
@@ -99,8 +97,6 @@ protected:
         m_lstSubMedias.clear();
 
         m_pDir = NULL;
-        m_paSubDirs.clear();
-        m_paSubFiles.clear();
     }
 
     virtual CMediaSet* _onUpward(CMediaSet& currentMediaSet)
@@ -109,7 +105,7 @@ protected:
     }
     virtual CPath* _onUpward(CPath& currentDir)
     {
-        return (CPath*)currentDir.parent();
+        return currentDir.parent();
     }
 
     virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)

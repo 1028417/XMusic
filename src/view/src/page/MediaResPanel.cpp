@@ -148,21 +148,25 @@ BOOL CMediaResPanel::OnInitDialog()
 			}
 			else
 			{
-				if (m_bShowRelatedSinger || pMediaRes->isDir())
+				if (pMediaRes->isDir())
 				{
 					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-					if (!pMediaRes->isDir())
+				}
+				else
+				{
+					if (m_bShowRelatedSinger)
 					{
 						cauto strAlbum = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 						if (!strAlbum.empty())
 						{
-							strMediaset << __CNDot << strAlbum;
+							cauto strSinger = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+							strMediaset << strSinger << __CNDot << strAlbum;
 						}
 					}
-				}
-				else
-				{
-					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+					else
+					{
+						strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+					}
 				}
 			}
 
@@ -208,7 +212,7 @@ BOOL CMediaResPanel::OnInitDialog()
 
 		m_uIconWidth = m_uTileWidth = 0;
 		OnSize(0, m_cx, m_cy);
-
+		
 		_asyncTask();
 	});
 
@@ -436,6 +440,8 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 
 	m_wndList.ShowDir(*m_pCurrDir);
 
+	(void)_onShowDir();
+
 	if (pHitestItem)
 	{
 		m_wndList.SelectObject(pHitestItem);
@@ -447,14 +453,20 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 			m_wndList.EnsureVisible(0, FALSE);
 		}
 	}
-
+	
 	_asyncTask();
-
-	(void)_onShowDir();
 }
 
 void CMediaResPanel::_asyncTask()
 {
+	if (!m_bShowRelatedSinger)
+	{
+		if (NULL == m_pCurrDir || m_pCurrDir->rootDir() != m_pRootDir)
+		{
+			return;
+		}
+	}
+
 	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount() / 10, [&](CListObject& object) {
 		CMediaRes& mediaRes = (CMediaRes&)object;
 		if (!mediaRes.isDir())

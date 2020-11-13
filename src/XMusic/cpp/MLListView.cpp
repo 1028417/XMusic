@@ -9,7 +9,7 @@ size_t CMLListView::getItemCount() const
     }
     else if (m_pDir)
     {
-        return m_paSubDirs.size() + m_paSubFiles.size();
+        return m_pDir->dirs().size() + m_pDir->files().size();
     }
     else
     {
@@ -81,8 +81,6 @@ void CMLListView::showDir(CPath& dir)
     _cleanup();
 
     m_pDir = &dir;
-    m_paSubDirs.assign(dir.dirs());
-    m_paSubFiles.assign(dir.files());
 
     update();
 
@@ -129,9 +127,10 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else if (m_pDir)
     {
-        if (lvItem.uItem >= m_paSubDirs.size())
+        cauto paSubDirs = m_pDir->dirs();
+        if (lvItem.uItem >= paSubDirs.size())
         {
-            m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
+            m_pDir->files().get(lvItem.uItem-paSubDirs.size(), [&](XFile& subFile) {
                 tagMLItemContext context(lvItem, subFile);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
@@ -139,7 +138,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         }
         else
         {
-            m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
+            paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 tagMLItemContext context(lvItem, subPath);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
@@ -176,15 +175,16 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
     }
     else if (m_pDir)
     {
-        if (lvItem.uItem >= m_paSubDirs.size())
+        cauto paSubDirs = m_pDir->dirs();
+        if (lvItem.uItem >= paSubDirs.size())
         {
-            m_paSubFiles.get(lvItem.uItem-m_paSubDirs.size(), [&](XFile& subFile) {
+            m_pDir->files().get(lvItem.uItem-paSubDirs.size(), [&](XFile& subFile) {
                 _onItemClick(lvItem, me, (CPath&)subFile);
             });
         }
         else
         {
-            m_paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
+            paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
                 _saveScrollRecord();
                 showDir(subPath);
             });

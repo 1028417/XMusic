@@ -20,11 +20,6 @@ public:
 	E_AttachDirType m_eType;
 
 public:
-    E_MediaDirType dirType() override
-	{
-		return E_MediaDirType::MDT_Attach;
-	}
-
 	wstring GetPath() const override
 	{
         return __wcPathSeparator + XFile::fileName();
@@ -155,9 +150,10 @@ public:
     {
     }
 
-    E_MediaDirType dirType() override
+private:
+    bool isLocal() const override
     {
-        return E_MediaDirType::MDT_Snapshot;
+        return false;
     }
 
     void GetMedias(TD_IMediaList&) override;

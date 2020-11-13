@@ -1002,7 +1002,7 @@ void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedi
 
 		(void)m_SingerPage.Active(*pSinger);
 
-		if (pIMedia && pIMedia->type() == E_MediaType::MT_MediaDir)
+		if (pIMedia && pIMedia->type() == E_MediaType::MT_MediaRes && ((CMediaRes*)pIMedia)->isDir())
 		{
 			pIMedia = NULL;
 		}

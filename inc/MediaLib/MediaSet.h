@@ -103,7 +103,7 @@ class __MediaLibExt CMediaSet : public tagMediaInfo
 {
 public:
     CMediaSet(cwstr strName = L"", CMediaSet *pParent = NULL, int nID = 0
-            , E_MediaSetType eType = E_MediaSetType::MST_NULL
+            , E_MediaSetType eType = E_MediaSetType::MST_None
             , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false)
 		: tagMediaInfo(pParent, strName, nID)
 		, m_eType(eType)

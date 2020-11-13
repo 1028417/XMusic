@@ -1112,7 +1112,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     if (uDuration > __wholeTrackDuration)
     {
         CMediaRes *pMediaRes = __medialib.subFile(PlayingInfo.strPath);
-        if (pMediaRes && pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        if (pMediaRes && !pMediaRes->parent()->isLocal())
         {
             PlayingInfo.bWholeTrack = true;
         }

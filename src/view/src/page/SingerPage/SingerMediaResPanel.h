@@ -17,11 +17,9 @@ public:
 	}
 
 private:
-	void genMediaResListItem(E_ListViewType eViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger) override
+	int getImage() override
 	{
-		CMediaDir::genMediaResListItem(eViewType, vecText, iImage, bGenRelatedSinger);
-
-		iImage = (int)E_GlobalImage::GI_AttachDir;
+		return (int)E_GlobalImage::GI_AttachDir;
 	}
 
 	wstring GetPath() const override

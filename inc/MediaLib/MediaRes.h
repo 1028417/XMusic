@@ -88,16 +88,6 @@ public:
 
 // TODO class __MediaLibExt CMediaFile : public IMedia, public CMediaRes
 
-
-enum class E_MediaDirType
-{
-	MDT_Local
-	, MDT_Attach
-#if !__winvc
-    , MDT_Snapshot
-#endif
-};
-
 class __MediaLibExt CCueList
 {
 public:
@@ -161,11 +151,6 @@ public:
 	}
 #endif
 
-	E_MediaType type() const override
-	{
-		return E_MediaType::MT_MediaDir;
-	}
-
 protected:
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override;
@@ -178,10 +163,12 @@ protected:
 #endif
 
 public:
-	virtual E_MediaDirType dirType()
+#if !__winvc
+    virtual bool isLocal() const
 	{
-		return E_MediaDirType::MDT_Local;
+        return true;
 	}
+#endif
 
     virtual wstring GetTitle() const override
     {

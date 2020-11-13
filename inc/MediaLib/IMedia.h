@@ -32,8 +32,8 @@ enum class E_MediaQuality
 
 enum class E_MediaType
 {
+	MT_None = 0,
     MT_MediaRes,
-	MT_MediaDir,
     MT_PlayItem,
     MT_AlbumItem
 };
@@ -82,7 +82,10 @@ public:
 
 	virtual wstring GetTitle() const;
 
-	virtual E_MediaType type() const = 0;
+	virtual E_MediaType type() const
+	{
+		return E_MediaType::MT_None;
+	}
 
 	virtual class CMediaSet* GetMediaSet() const
 	{

@@ -146,7 +146,7 @@ public:
     void showMedia(const CMedia& media);
     bool showMediaRes(cwstr strPath);
 
-    void updateHead();
+    void updateHead(const WString& strTitle);
 
     void updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg);
 
@@ -161,9 +161,6 @@ private:
     void _relayout(int cx, int cy) override;
 
     void _resizeTitle() const;
-
-    void _genTitle(CMediaSet&, WString& strTitle);
-    void _genTitle(CPath&, WString& strTitle);
 
     bool _handleReturn() override
     {

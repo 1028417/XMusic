@@ -166,6 +166,8 @@ protected:
 
     void _paintRow(CPainter&, tagLVItemContext&);
 
+    void _paintBottonLine(cqrc rc);
+
     virtual cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;

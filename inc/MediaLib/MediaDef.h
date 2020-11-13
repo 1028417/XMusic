@@ -56,7 +56,7 @@ enum class E_MediaSetType
 	, MST_Album
 	, MST_Singer
 	, MST_SingerGroup
-    , MST_NULL
+    , MST_None
 };
 
 using mediatime_t = time32_t;

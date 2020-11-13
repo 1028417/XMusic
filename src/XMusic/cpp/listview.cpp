@@ -162,10 +162,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if (context.eStyle & E_LVItemStyle::IS_BottomLine)
     {
-        QColor cr = g_crFore;
-        cr.setAlpha(CPainter::oppTextAlpha(20));
-        painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width(), 1), cr);
-        rc.setBottom(rc.bottom()-3);
+        _paintBottonLine(rc);
     }
 
     if (context.eStyle & E_LVItemStyle::IS_ForwardButton)
@@ -190,6 +187,14 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         flags |= Qt::TextWrapAnywhere;
     }
     _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
+}
+
+void CListView::_paintBottonLine(cqrc rc)
+{
+    QColor cr = g_crFore;
+    cr.setAlpha(CPainter::oppTextAlpha(20));
+    painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width(), 1), cr);
+    rc.setBottom(rc.bottom()-3);
 }
 
 cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc

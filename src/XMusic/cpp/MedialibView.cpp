@@ -3,6 +3,9 @@
 
 #include "MedialibView.h"
 
+#define __XMusicDirName L"XMusic"
+#define __LocalDirName  L" 本机"
+
 #define __FlashingAlpha 170
 
 #define __RemarkAlpha 200
@@ -56,12 +59,41 @@ void CMedialibView::init()
 
 void CMedialibView::_onShowRoot()
 {
-    m_medialibDlg.updateHead();
+    m_medialibDlg.updateHead(L"媒体库");
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    m_medialibDlg.updateHead();
+    WString strTitle;
+    if (E_MediaSetType::MST_Album == MediaSet.m_eType)
+    {
+        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
+
+        if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
+        {
+            strTitle = MediaSet.m_strName;
+        }
+    }
+    else
+    {
+        if (MediaSet.m_pParent && MediaSet.m_pParent != &__xmedialib)
+        {
+            strTitle << MediaSet.m_pParent->m_strName;
+            strTitle << __CNDot;
+            strTitle << MediaSet.m_strName;
+
+            if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
+            {
+                strTitle = MediaSet.m_strName;
+            }
+        }
+        else
+        {
+            strTitle << MediaSet.m_strName;
+        }
+    }
+
+    m_medialibDlg.updateHead(strTitle);
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
@@ -119,9 +151,27 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     }
 }
 
-void CMedialibView::_onShowDir(CPath&)
+void CMedialibView::_onShowDir(CPath& dir)
 {
-    m_medialibDlg.updateHead();
+    wstring strTitle;
+    if (&dir == &__medialib)
+    {
+        strTitle = __XMusicDirName;
+    }
+    else if (&dir == &m_OuterDir)
+    {
+        strTitle = __LocalDirName;
+    }
+    else
+    {
+        strTitle = dir.fileName();
+        if (!((CMediaDir&)dir).isLocal() && dir.parent() == &__medialib)
+        {
+            strTitle = __substr(strTitle,3);
+        }
+    }
+
+    m_medialibDlg.updateHead(strTitle);
 }
 
 size_t CMedialibView::getColCount() const
@@ -246,7 +296,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     {
         context.eStyle |= E_LVItemStyle::IS_ForwardButton;
 
-        if (context.pDir->rootDir() == &__medialib)
+        if (!((CMediaDir*)context.pDir)->isLocal())
         {
             context.pmIcon = &m_pmSSDir;
 
@@ -307,7 +357,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     else if (context.pFile)
     {
         auto pMediaRes = ((CMediaRes*)context.pFile);
-        if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        if (!pMediaRes->parent()->isLocal())
         {
             if (pMediaRes->duration() > __wholeTrackDuration)
             {
@@ -564,18 +614,18 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             {
                 strRemark << strLanguageName << '\n';
             }
-            strRemark << pAlbum->albumItems().size() << L" 曲目";
+            strRemark << pAlbum->albumItems().size() << L" 首";
         }
         else if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
         {
             auto pPlaylist = (CPlaylist*)mlContext.pMediaSet;
-            strRemark << pPlaylist->size() << L" 曲目";
+            strRemark << pPlaylist->size() << L" 首";
         }
     }
     else if (mlContext.pFile)
     {
         auto pMediaRes = (CMediaRes*)mlContext.pFile;
-        if (pMediaRes->parent()->dirType() == E_MediaDirType::MDT_Snapshot)
+        if (!pMediaRes->parent()->isLocal())
         {
             auto duration = pMediaRes->duration();
             if (duration > __wholeTrackDuration)
@@ -583,7 +633,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                 cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
                 if (cue)
                 {
-                    strRemark << cue.m_alTrackInfo.size() << L"曲目\n";
+                    strRemark << cue.m_alTrackInfo.size() << L" 首\n";
                 }
                 strRemark << IMedia::genDurationString(duration);
             }
@@ -756,9 +806,12 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 
 CPath* CMedialibView::_onUpward(CPath& currentDir)
 {
-    if (NULL == currentDir.parent() && ((CMediaDir&)currentDir).dirType() == E_MediaDirType::MDT_Attach)
+    if (NULL == currentDir.parent())
     {
-        return &__medialib;
+        if (&currentDir != &__medialib && &currentDir != &m_OuterDir)
+        {
+            return &__medialib;
+        }
     }
 
     return CMLListView::_onUpward(currentDir);
