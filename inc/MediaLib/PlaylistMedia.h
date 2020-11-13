@@ -107,7 +107,7 @@ public:
         return wstring(lpBuff) + __CNDot + m_strName;
     }
 
-    wstring GetExportName() override;
+    wstring GetExportName() override
     {
         return strutil::eraseChars_r(GetDisplayName(), wstring(1, L' ') + __CNDot);
         //return L"歌单" + GetDisplayName();
