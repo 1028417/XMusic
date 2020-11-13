@@ -65,13 +65,14 @@ void CMedialibView::_onShowRoot()
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
     WString strTitle;
-    if (MediaSet.m_pParent && E_MediaSetType::MST_Singer == MediaSet.m_pParent->m_eType) //E_MediaSetType::MST_Album == MediaSet.m_eType)
+    auto pSinger = currentSinger();
+    if (pSinger && &MediaSet != pSinger)
     {
-        strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
+        strTitle << pSinger->m_strName << __CNDot << MediaSet.GetDisplayName();
 
         if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
         {
-            strTitle = MediaSet.m_strName;
+            strTitle = MediaSet.GetDisplayName();
         }
     }
     else
@@ -107,7 +108,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         else
         {
             plstSingerName = &mapSingerName[&MediaSet];
-            for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
+            for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
                 cauto strPath = PlayItem.GetPath();
                 for (auto itr = m_mapSingerDir.rbegin(); itr != m_mapSingerDir.rend(); ++itr)
@@ -115,7 +116,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                     if (fsutil::CheckSubPath(itr->first, strPath))
                     {
                         cauto singer = *itr->second;
-                        ((CPlayItem&)PlayItem).SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
+                        PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
                                                                   , singer.m_uID, singer.m_strName);
                         if (std::find(plstSingerName->begin(), plstSingerName->end(), singer.m_strName) == plstSingerName->end())
                         {
@@ -140,14 +141,6 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             lstSingerName.push_back(singer.m_strName);
         }
         m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
-    }
-    else
-    {
-        auto pSinger = currentSinger();
-        if (pSinger)
-        {
-            m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
-        }
     }
 }
 
@@ -428,17 +421,14 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 CSinger *CMedialibView::currentSinger() const
 {
     auto pMediaSet = currentMediaSet();
-    if (pMediaSet)
+    while (pMediaSet)
     {
         if (E_MediaSetType::MST_Singer == pMediaSet->m_eType)
         {
             return (CSinger*)pMediaSet;
         }
 
-        if (pMediaSet->m_pParent && E_MediaSetType::MST_Singer == pMediaSet->m_eType) //E_MediaSetType::MST_Album == pMediaSet->m_eType)
-        {
-            return (CSinger*)pMediaSet->m_pParent;
-        }
+        pMediaSet = pMediaSet->m_pParent;
     }
 
     return NULL;

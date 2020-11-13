@@ -238,13 +238,17 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
 
     auto pSinger = m_lv.currentSinger();
-    if (pSinger)
+    if (pSinger && m_app.getSingerImgMgr().getSingerHead(pSinger->m_strName))
     {
+        m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+
         ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
+        ui.labelSingerImg->setVisible(true);
     }
     else
     {
         ui.labelSingerImg->clear();
+        ui.labelSingerImg->setVisible(false);
     }
 
     ui.btnPlay->setVisible(bShowPlayButton);
