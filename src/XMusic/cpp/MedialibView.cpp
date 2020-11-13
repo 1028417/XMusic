@@ -65,7 +65,7 @@ void CMedialibView::_onShowRoot()
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
     WString strTitle;
-    if (E_MediaSetType::MST_Album == MediaSet.m_eType)
+    if (MediaSet.m_pParent && E_MediaSetType::MST_Singer == MediaSet.m_pParent->m_eType) //E_MediaSetType::MST_Album == MediaSet.m_eType)
     {
         strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
 
@@ -271,6 +271,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pmIcon = &m_pmSingerGroup;
             context.eStyle |= E_LVItemStyle::IS_ForwardButton;
         default:
+            context.pmIcon = &m_pmSSDir;
             break;
         };
     }
@@ -433,7 +434,7 @@ CSinger *CMedialibView::currentSinger() const
             return (CSinger*)pMediaSet;
         }
 
-        if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+        if (pMediaSet->m_pParent && E_MediaSetType::MST_Singer == pMediaSet->m_eType) //E_MediaSetType::MST_Album == pMediaSet->m_eType)
         {
             return (CSinger*)pMediaSet->m_pParent;
         }
@@ -585,7 +586,12 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     }
     else if (mlContext.pMediaSet)
     {
-        if (E_MediaSetType::MST_SingerGroup == mlContext.pMediaSet->m_eType)
+        if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
+        {
+            auto pPlaylist = (CPlaylist*)mlContext.pMediaSet;
+            strRemark << pPlaylist->size() << L" 首";
+        }
+        else if (E_MediaSetType::MST_SingerGroup == mlContext.pMediaSet->m_eType)
         {
             auto pSingerGroup = (CSingerGroup*)mlContext.pMediaSet;
             size_t uAlbumCount = 0;
@@ -608,18 +614,19 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         }
         else if (E_MediaSetType::MST_Album == mlContext.pMediaSet->m_eType)
         {
-            auto pAlbum = (CAlbum*)mlContext.pMediaSet;
-            cauto strLanguageName = pAlbum->languageName();
+            cauto strLanguageName = mlContext.pMediaSet->languageName();
             if (!strLanguageName.empty())
             {
                 strRemark << strLanguageName << '\n';
             }
-            strRemark << pAlbum->albumItems().size() << L" 首";
-        }
-        else if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
-        {
-            auto pPlaylist = (CPlaylist*)mlContext.pMediaSet;
-            strRemark << pPlaylist->size() << L" 首";
+
+            auto uCount = ((CAlbum*)mlContext.pMediaSet)->albumItems().size();
+            strRemark << uCount;
+            if (uCount < 10)
+            {
+                strRemark << ' ';
+            }
+            strRemark << L"首";
         }
     }
     else if (mlContext.pFile)
