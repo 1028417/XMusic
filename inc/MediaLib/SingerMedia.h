@@ -31,10 +31,7 @@ public:
 		return IMedia::findRelatedPlayItem();
 	}
 
-#endif
-
 private:
-#if __winvc
 	void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
 #endif
 };

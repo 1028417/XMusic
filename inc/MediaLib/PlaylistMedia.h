@@ -29,7 +29,7 @@ public:
 #if __winvc
     int getSingerImg() const;
 
-	const CMedia* findRelatedMedia() override;
+	const CMedia* findRelatedMedia() override
 	{
 		return findRelatedAlbumItem();
 	}
