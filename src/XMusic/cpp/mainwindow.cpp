@@ -1142,13 +1142,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
     if (PlayingInfo.uRelatedAlbumItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(
-                                E_MediaSetType::MST_Album, PlayingInfo.uRelatedAlbumItemID);
+        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(PlayingInfo.uRelatedAlbumItemID);
     }
     else if (PlayingInfo.uRelatedPlayItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(
-                                E_MediaSetType::MST_Playlist, PlayingInfo.uRelatedPlayItemID);
+        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(PlayingInfo.uRelatedPlayItemID);
     }
     else
     {

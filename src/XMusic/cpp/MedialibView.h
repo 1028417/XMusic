@@ -111,14 +111,9 @@ private:
 
     void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
 
-    void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedia& media) override
-    {
-        _onMediaClick(lvItem, me, media);
-    }
+    void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;
 
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path) override;
-
-    void _onMediaClick(tagLVItem&, const QMouseEvent&, IMedia&);
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;

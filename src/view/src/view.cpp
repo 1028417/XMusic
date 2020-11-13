@@ -264,9 +264,9 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 
 void __view::verifyMedia(CMediaSet& MediaSet, CWnd *pWnd)
 {
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	MediaSet.GetAllMedias(lstMedias);
-	verifyMedia(lstMedias, pWnd);
+	verifyMedia(TD_MediaList(lstMedias), pWnd);
 }
 
 void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg)
@@ -335,26 +335,27 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 	ProgressDlg.SetStatusText(L"·ÖÎöÇúÄ¿...");
 
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	__xmedialib.GetAllMedias(lstMedias);
 	__Ensure(lstMedias);
 
 	CSingerMatcher SingerMatcher(m_model.getSingerMgr());
 	map<wstring, CMatchMediaInfo> mapMatchMediaInfo;
-	lstMedias([&](CMedia& media) {
-		cauto strMediaPath = media.GetPath();
+	for (auto pMedia : lstMedias)
+	{
+		cauto strMediaPath = pMedia->GetPath();
 		//strutil::lowerCase_r(strMediaPath);
 
 		cauto itr = mapMatchMediaInfo.find(strMediaPath);
 		if (itr != mapMatchMediaInfo.end())
 		{
-			itr->second.medias().add(media);
+			itr->second.medias().add(pMedia);
 		}
 		else
 		{
-			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, media, SingerMatcher);
+			mapMatchMediaInfo[strMediaPath] = CMatchMediaInfo(strMediaPath, *(CMedia*)pMedia, SingerMatcher);
 		}
-	});
+	}
 
 	prlist<wstring, CMatchMediaInfo> lstMatchResult;
 	for (auto& strFile : lstFiles)
@@ -506,7 +507,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle
 
 void __view::exportMediaSet(CMediaSet& MediaSet)
 {
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType || E_MediaSetType::MST_Album == MediaSet.m_eType)
 	{
 		MediaSet.GetAllMedias(lstMedias);
@@ -533,7 +534,7 @@ void __view::exportMediaSet(CMediaSet& MediaSet)
 		return;
 	}
 
-	exportMedia(lstMedias);
+	exportMedia(TD_IMediaList(lstMedias));
 }
 
 void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
@@ -1020,14 +1021,32 @@ void __view::hittestMedia(CMedia& media)
 	}
 }
 
-bool __view::hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType)
+bool __view::hittestRelatedPlaylist(IMedia& media)
 {
 	__waitCursor;
 
-	int nRelatedMediaID = media.GetRelatedMediaID(eRmsType);
-	if (nRelatedMediaID > 0)
+	auto uID = media.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
+	if (uID > 0)
 	{
-		CMedia *pRelatedMedia = __xmedialib.GetMedia((E_MediaSetType)eRmsType, (UINT)nRelatedMediaID);
+		CMedia *pMedia = m_model.getPlaylistMgr().GetMedia(uID);
+		if (pMedia)
+		{
+			hittestMedia(*pMedia);
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool __view::hittestRelatedAlbum(IMedia& media)
+{
+	__waitCursor;
+
+	auto uID = media.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
+	if (uID > 0)
+	{
+		CMedia *pRelatedMedia = m_model.getSingerMgr().GetMedia(uID);
 		if (pRelatedMedia)
 		{
 			hittestMedia(*pRelatedMedia);
@@ -1035,13 +1054,20 @@ bool __view::hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType)
 		}
 	}
 
-	UINT uRelatedMediaSetID = media.GetRelatedMediaSetID(eRmsType);
-	if (uRelatedMediaSetID > 0)
-	{
-		CMediaSet *pMediaSet = __xmedialib.GetSubSet((E_MediaSetType)eRmsType, uRelatedMediaSetID);
-		__EnsureReturn(pMediaSet, false);
+	return false;
+}
 
-		this->hittestMediaSet(*pMediaSet, NULL, &media);
+bool __view::hittestRelatedSinger(IMedia& media)
+{
+	__waitCursor;
+
+	auto uID = media.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+	if (uID > 0)
+	{
+		CMediaSet *pSinger = getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, uID);
+		__EnsureReturn(pSinger, false);
+
+		this->hittestMediaSet(*pSinger, NULL, &media);
 
 		return true;
 	}

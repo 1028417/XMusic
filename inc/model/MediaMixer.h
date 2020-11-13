@@ -67,9 +67,7 @@ public:
 	CMediaMixer& add(CMedia& media);
 
 	const TD_MediaMixtureVector& add(const TD_MediaList& lstMedias);
-
-	const TD_MediaMixtureVector& add(CMediaSet& mediaSet);
-
+	
 	const TD_MediaMixtureVector& get(E_SortMediaType eSortType = E_SortMediaType::SMT_Default);
 
 	bool getMediaMixture(cfn_void_t<const CMediaMixture&> cb, UINT uIndex

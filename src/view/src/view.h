@@ -182,7 +182,9 @@ public:
 
 	void hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia = NULL);
 
-	bool hittestRelatedMediaSet(IMedia& media, E_RelatedMediaSet eRmsType);
+	bool hittestRelatedPlaylist(IMedia& media);
+	bool hittestRelatedAlbum(IMedia& media);
+	bool hittestRelatedSinger(IMedia& media);
 
 	bool addSingerImage(CSinger& Singer, const list<wstring>& lstFiles);
 

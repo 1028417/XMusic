@@ -247,7 +247,7 @@ bool CPlayCtrl::addPlayingItem(const TD_IMediaList& lstMedias, int nPos)
 
 bool CPlayCtrl::addPlayingItem(CMediaSet& MediaSet)
 {
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	MediaSet.GetAllMedias(lstMedias);
-	return addPlayingItem(TD_IMediaList(lstMedias));
+	return addPlayingItem(lstMedias);
 }

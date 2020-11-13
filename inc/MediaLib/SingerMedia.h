@@ -78,7 +78,7 @@ public:
 		return m_eType;
 	}
 
-        const ArrList<CAlbumItem>& albumItems();
+    ArrList<CAlbumItem>& albumItems();
 	
     CAlbumItem& add(const CAlbumItem& AlbumItem)
     {
@@ -100,19 +100,19 @@ public:
 
 private:
     int indexOf(const IMedia& media) const override
-	{
+    {
         return m_alAlbumItems.find([&](const CAlbumItem& PlayItem) {
-			return &PlayItem == &media;
-		});
-	}
+            return &PlayItem == &media;
+        });
+    }
 
-	void GetMedias(TD_MediaList& lstMedias) override
-	{
+    void GetMedias(TD_IMediaList& lstMedias) override
+    {
         lstMedias.add(m_alAlbumItems);
-	}
+    }
 
-	wstring GetExportName() override
-	{
+    wstring GetExportName() override
+    {
         return (m_pParent->m_strName + L"专辑") + __CNDot + m_strName;
     }
 
@@ -150,14 +150,14 @@ public:
         return m_strDir;
     }
 
-	list<CAlbum>& albums()
-	{
-		return m_lstAlbums;
-	}
 	const list<CAlbum>& albums() const
 	{
 		return m_lstAlbums;
 	}
+    list<CAlbum>& albums()
+    {
+        return m_lstAlbums;
+    }
 
     vector<wstring>& attachDir()
     {

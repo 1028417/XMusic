@@ -376,7 +376,7 @@ void CPlayItemPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_HITTEST:
 		lstPlayItems.front([&](CMedia& media) {
-			if (!m_view.hittestRelatedMediaSet(media, E_RelatedMediaSet::RMS_Singer))
+			if (!m_view.hittestRelatedSinger(media))
 			{
 				m_view.m_MediaResPage.HittestMedia(media, *this);
 			}
@@ -519,9 +519,9 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (__Column_SingerAlbum == iSubItem)
 			{
-				if (!m_view.hittestRelatedMediaSet(*pPlayItem, E_RelatedMediaSet::RMS_Album))
+				if (!m_view.hittestRelatedAlbum(*pPlayItem))
 				{
-					(void)m_view.hittestRelatedMediaSet(*pPlayItem, E_RelatedMediaSet::RMS_Singer);
+					(void)m_view.hittestRelatedSinger(*pPlayItem);
 				}
 			}
 			else

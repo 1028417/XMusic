@@ -1392,7 +1392,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (__Column_Playlist == iSubItem)
 			{
-				m_view.hittestRelatedMediaSet(*pAlbumItem, E_RelatedMediaSet::RMS_Playlist);
+				m_view.hittestRelatedPlaylist(*pAlbumItem);
 			}
 			else
 			{

@@ -83,7 +83,7 @@ public:
 private:
     CMediaSet *m_pMediaset = NULL;
     TD_MediaSetList m_lstSubSets;
-    TD_MediaList m_lstSubMedias;
+    TD_IMediaList m_lstSubMedias;
 
     CPath *m_pDir = NULL;
 
@@ -127,7 +127,7 @@ private:
 
     void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 
-    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMedia&){}
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, IMedia&){}
     virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CPath&){}
 
     inline void _saveScrollRecord()
@@ -158,7 +158,7 @@ public:
     {
         return m_lstSubSets;
     }
-    const TD_MediaList& currentSubMedias() const
+    const TD_IMediaList& currentSubMedias() const
     {
         return m_lstSubMedias;
     }

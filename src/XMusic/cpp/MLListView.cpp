@@ -118,7 +118,7 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media) {
+            m_lstSubMedias.get(lvItem.uItem, [&](IMedia& media) {
                 tagMLItemContext context(lvItem, media);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
@@ -168,7 +168,7 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
         }
         else if (m_lstSubMedias)
         {
-            m_lstSubMedias.get(lvItem.uItem, [&](CMedia& media){
+            m_lstSubMedias.get(lvItem.uItem, [&](IMedia& media){
                 _onItemClick(lvItem, me, media);
             });
         }

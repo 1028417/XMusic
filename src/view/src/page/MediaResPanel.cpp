@@ -963,15 +963,15 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (__Column_Playlist == iSubItem)
 			{
-				m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Playlist);
+				m_view.hittestRelatedPlaylist(*pMediaRes);
 			}
 			else
 			{
-				if (!m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Album))
+				if (!m_view.hittestRelatedAlbum(*pMediaRes))
 				{
 					if (m_bShowRelatedSinger)
 					{
-						(void)m_view.hittestRelatedMediaSet(*pMediaRes, E_RelatedMediaSet::RMS_Singer);
+						(void)m_view.hittestRelatedSinger(*pMediaRes);
 					}
 				}
 			}

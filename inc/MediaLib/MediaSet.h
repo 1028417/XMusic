@@ -174,8 +174,6 @@ public:
 
     virtual int indexOf(const IMedia&) const { return -1; }
 
-    virtual void GetMedias(TD_MediaList&) {}
-
     virtual void GetMedias(TD_IMediaList&) {}
 
     virtual void GetSubSets(TD_MediaSetList&) {}
@@ -185,11 +183,9 @@ public:
 	void GetAllMediaSets(E_MediaSetType eType, TD_MediaSetList& arrMediaSets);
 	void GetAllMediaSets(TD_MediaSetList& arrMediaSets);
 
-	void GetAllMedias(TD_MediaList& lstMedias);
+    void GetAllMedias(TD_IMediaList& lstMedias);
 
     CMediaSet* GetSubSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
-
-	CMedia* GetMedia(E_MediaSetType eMediaSetType, UINT uMediaID);
 
 	wstring GetLogicPath();
 

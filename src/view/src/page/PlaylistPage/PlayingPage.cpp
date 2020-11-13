@@ -77,7 +77,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_HITTEST:
 		arrSelPlayItem.front([&](auto& playItem) {
-			if (!m_view.hittestRelatedMediaSet(playItem, E_RelatedMediaSet::RMS_Singer))
+			if (!m_view.hittestRelatedSinger(playItem))
 			{
 				m_view.m_MediaResPage.HittestMedia(playItem, *this);
 			}
@@ -230,22 +230,22 @@ DROPEFFECT CPlayingPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet
 {
 	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet, DROPEFFECT_NONE);
 
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	pMediaSet->GetAllMedias(lstMedias);
 	__EnsureReturn(lstMedias, DROPEFFECT_NONE);
 
-	return OnMediasDragOver(pwndCtrl, TD_IMediaList(lstMedias), DragContext);
+	return OnMediasDragOver(pwndCtrl, lstMedias, DragContext);
 }
 
 BOOL CPlayingPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
 	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet, FALSE);
 
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	pMediaSet->GetAllMedias(lstMedias);
 	__EnsureReturn(lstMedias, FALSE);
 
-	return OnMediasDrop(pwndCtrl, TD_IMediaList(lstMedias), DragContext);
+	return OnMediasDrop(pwndCtrl, lstMedias, DragContext);
 }
 
 void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)

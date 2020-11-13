@@ -221,19 +221,19 @@ void CPlayerView::_verifyMedia()
 		return;
 	}
 
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	lstMediaSets([&](CMediaSet& MediaSet){
 		MediaSet.GetMedias(lstMedias);
 	});
 
-	m_view.verifyMedia(lstMedias);
+	m_view.verifyMedia(TD_MediaList(lstMedias));
 }
 
 void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 {
-	TD_MediaList lstPlayItems;
+	TD_IMediaList lstPlayItems;
 	m_view.getPlaylistMgr().GetAllMedias(lstPlayItems);
-	TD_MediaList lstAlbumItems;
+	TD_IMediaList lstAlbumItems;
 	m_view.getSingerMgr().GetAllMedias(lstAlbumItems);
 
 	__Ensure(lstPlayItems || lstAlbumItems);
@@ -251,8 +251,8 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 
 			return true;
 		};
-		m_view.getModel().checkDuplicateMedia(eMode, lstPlayItems, cb, arrResult);
-		m_view.getModel().checkDuplicateMedia(eMode, lstAlbumItems, cb, arrResult);
+		m_view.getModel().checkDuplicateMedia(eMode, TD_MediaList(lstPlayItems), cb, arrResult);
+		m_view.getModel().checkDuplicateMedia(eMode, TD_MediaList(lstAlbumItems), cb, arrResult);
 		
 		if (!arrResult)
 		{

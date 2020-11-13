@@ -31,7 +31,6 @@ public:
 
 	BOOL Init();
 
-    void enumSinger(cfn_void_t<const CSinger&>) const;
     void enumSinger(cfn_void_t<CSinger&>);
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
@@ -71,5 +70,7 @@ public:
 
     int RepositAlbumItem(CAlbum& Album, const TD_IMediaList& lstMedias, UINT uTargetPos);
 
-	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
+    CMedia* GetMedia(UINT uID);
+
+    bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 };

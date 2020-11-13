@@ -269,7 +269,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             break;
         case E_MediaSetType::MST_SingerGroup:
             context.pmIcon = &m_pmSingerGroup;
-            context.eStyle |= E_LVItemStyle::IS_ForwardButton;
+            context.uStyle |= E_LVItemStyle::IS_ForwardButton;
+            break;
         default:
             context.pmIcon = &m_pmSSDir;
             break;
@@ -295,7 +296,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else if (context.pDir)
     {
-        context.eStyle |= E_LVItemStyle::IS_ForwardButton;
+        context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
         if (!((CMediaDir*)context.pDir)->isLocal())
         {
@@ -387,7 +388,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else
     {
-        context.eStyle = E_LVItemStyle::IS_CenterAlign;
+        context.uStyle = E_LVItemStyle::IS_CenterAlign;
 
         bool bHLayout = m_medialibDlg.isHLayout();
 
@@ -458,8 +459,8 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
         list<wstring> lstSingerName;
         for (auto uItem : currentItems())
         {
-            currentSubMedias().get(uItem, [&](CMedia& PlayItem){
-                cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+            currentSubMedias().get(uItem, [&](IMedia& media){
+                cauto strSingerName = media.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (!strSingerName.empty())
                 {
                     lstSingerName.push_back(strSingerName);
@@ -475,17 +476,14 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
     else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
     {
         list<wstring> lstSingerName;
-        for (auto uItem : currentItems())
-        {
-            currentSubMedias().get(uItem, [&](CMedia& singer){
+        cauto paSinger = currentSubSets();
+        for (cauto uItem : currentItems())
+        {            
+            paSinger.get(uItem, [&](CMediaSet& singer){
                 lstSingerName.push_back(singer.m_strName);
             });
         }
-
-        if (!lstSingerName.empty())
-        {
-            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
-        }
+        m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -737,9 +735,9 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
     {
         _flashItem(lvItem.uItem);
 
-        TD_MediaList lstMedias;
+        TD_IMediaList lstMedias;
         mediaSet.GetAllMedias(lstMedias);
-        m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(TD_IMediaList(lstMedias)));
+        m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(lstMedias));
 
         return;
     }
@@ -747,22 +745,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
     CMLListView::_onItemClick(lvItem, me, mediaSet);
 }
 
-void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
-{
-    auto& mediaRes = (CMediaRes&)path;
-    if (!_hittestPlayIcon(tagMLItemContext(lvItem, (IMedia&)mediaRes), me.x()))
-    {
-        if (m_medialibDlg.tryShowWholeTrack(mediaRes))
-        {
-            selectItem(lvItem.uItem);
-            return;
-        }
-    }
-
-    _onMediaClick(lvItem, me, mediaRes);
-}
-
-void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
+void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
 {
     if (_hittestPlayIcon(tagMLItemContext(lvItem, media), me.x()))
     {
@@ -797,6 +780,21 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
     }
 
     m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+}
+
+void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
+{
+    auto& mediaRes = (CMediaRes&)path;
+    if (!_hittestPlayIcon(tagMLItemContext(lvItem, (IMedia&)mediaRes), me.x()))
+    {
+        if (m_medialibDlg.tryShowWholeTrack(mediaRes))
+        {
+            selectItem(lvItem.uItem);
+            return;
+        }
+    }
+
+    _onItemClick(lvItem, me, (IMedia&)mediaRes);
 }
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
@@ -843,7 +841,7 @@ void CMedialibView::play()
     CMediaSet *pMediaSet = currentMediaSet();
     if (pMediaSet)
     {
-        TD_MediaList lstMedias;
+        TD_IMediaList lstMedias;
         pMediaSet->GetAllMedias(lstMedias);
         paMedias.add(lstMedias);
     }

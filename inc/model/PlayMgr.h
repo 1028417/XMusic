@@ -96,8 +96,8 @@ public:
 	
 	bool clear();
 
-        bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
-        bool insert(const TD_IMediaList& lstMedias, bool bPlay, int nPos = -1);
+    bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
+    bool insert(const TD_IMediaList& lstMedias, bool bPlay, int nPos = -1);
 
 	bool assign(const SArray<wstring>& arrOppPaths);
 	bool assign(const TD_IMediaList& lstMedias);
@@ -122,7 +122,7 @@ public:
 	void replay();
 	
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
-    int demand(const TD_MediaList& lstMedias, UINT uDemandCount = __DemandCount);
+    int demand(const TD_IMediaList& lstMedias, UINT uDemandCount = __DemandCount);
 
 	void tryPlay();
 };

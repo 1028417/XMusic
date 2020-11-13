@@ -71,10 +71,14 @@ public:
         return m_alPlayItems.size();
     }
 
-	const ArrList<CPlayItem>& playItems() const
-	{
+    const ArrList<CPlayItem>& playItems() const
+    {
         return m_alPlayItems;
-	}
+    }
+    ArrList<CPlayItem>& playItems()
+    {
+        return m_alPlayItems;
+    }
 
     CPlayItem& add(const CPlayItem& PlayItem)
     {
@@ -103,16 +107,16 @@ public:
 
 private:
     int indexOf(const IMedia& media) const override
-	{
+    {
         return m_alPlayItems.find([&](const CPlayItem& PlayItem) {
-			return &PlayItem == &media;
-		});
-	}
+            return &PlayItem == &media;
+        });
+    }
 
-	void GetMedias(TD_MediaList& lstMedias) override
-	{
+    void GetMedias(TD_IMediaList& lstMedias) override
+    {
         lstMedias.add(m_alPlayItems);
-	}
-	
-	wstring GetExportName() override;
+    }
+
+    wstring GetExportName() override;
 };

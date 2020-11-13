@@ -148,7 +148,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         }
 
         auto xIcon = rc.left();
-        if (context.eStyle & E_LVItemStyle::IS_CenterAlign)
+        if (context.uStyle & E_LVItemStyle::IS_CenterAlign)
         {
             xIcon = rc.center().x()-szIcon-__lvRowMargin;
         }
@@ -160,12 +160,12 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         rc.setLeft(xIcon + szIcon + __lvRowMargin);
     }
 
-    if (context.eStyle & E_LVItemStyle::IS_BottomLine)
+    if (context.uStyle & E_LVItemStyle::IS_BottomLine)
     {
         _paintBottonLine(painter, rc);
     }
 
-    if (context.eStyle & E_LVItemStyle::IS_ForwardButton)
+    if (context.uStyle & E_LVItemStyle::IS_ForwardButton)
     {
         int sz_righttip = __size(38);
         int x_righttip = rc.right()-sz_righttip;
@@ -182,7 +182,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     }
 
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
-    if (0 == (context.eStyle & E_LVItemStyle::IS_SingleLine))
+    if (0 == (context.uStyle & E_LVItemStyle::IS_SingleLine))
     {
         flags |= Qt::TextWrapAnywhere;
     }
@@ -201,7 +201,7 @@ cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& 
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     QString qsText = context.strText;
-    if (context.eStyle & E_LVItemStyle::IS_SingleLine)
+    if (context.uStyle & E_LVItemStyle::IS_SingleLine)
     {
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
                                                   , Qt::TextSingleLine | Qt::TextShowMnemonic);

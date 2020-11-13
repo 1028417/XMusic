@@ -538,7 +538,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 	switch (eLinkType)
 	{
 	case E_ItemLinkType::ILT_SingerImg:
-		(void)m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Singer);
+		(void)m_view.hittestRelatedSinger(PlayItem);
 		break;
 	case E_ItemLinkType::ILT_SingerAlbum:
 		(void)PlayItem.findRelatedMedia();
@@ -546,9 +546,9 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		ItemLinks.lnkSingerAlbum.bHittest = false;
 		this->Update(uItem);
 
-		if (!m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Album))
+		if (!m_view.hittestRelatedAlbum(PlayItem))
 		{
-			(void)m_view.hittestRelatedMediaSet(PlayItem, E_RelatedMediaSet::RMS_Singer);
+			(void)m_view.hittestRelatedSinger(PlayItem);
 		}
 
 		break;

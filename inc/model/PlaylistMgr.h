@@ -53,5 +53,7 @@ public:
 
     BOOL SetBackPlayItems(CPlaylist& Playlist, const ConstPtrArray<CPlayItem>& paPlayItems);
 
+    CMedia* GetMedia(UINT uID);
+
 	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) const;
 };

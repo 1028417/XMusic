@@ -65,7 +65,9 @@ BOOL CNewSongDlg::OnInitDialog()
 	CObjectList::tagListPara ListPara(ColumnGuard);
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
-	__xmedialib.GetAllMedias(m_lstSrcMedias);
+	TD_IMediaList lstSrcMedias;
+	__xmedialib.GetAllMedias(lstSrcMedias);
+	m_lstSrcMedias.assign(lstSrcMedias);
 	
 	mediatime_t maxTime = 0;
 	m_lstSrcMedias([&](CMedia& media) {
@@ -204,7 +206,7 @@ void CNewSongDlg::OnDtnDatetimechange(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CNewSongDlg::OnBnClickedBtnDemand()
 {
-	TD_MediaList lstMedias;
+	TD_IMediaList lstMedias;
 	_GetMediaMixture()([&](auto& NewSong){
 		lstMedias.add(NewSong.GetMedia());
 	});
