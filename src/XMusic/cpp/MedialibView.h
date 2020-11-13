@@ -63,8 +63,6 @@ public:
 
     void init();
 
-    void play();
-
     void reset() override
     {
         m_nFlashItem = -1;

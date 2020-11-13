@@ -728,9 +728,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
     {
         _flashItem(lvItem.uItem);
 
-        TD_IMediaList lstMedias;
-        mediaSet.GetAllMedias(lstMedias);
-        m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(lstMedias));
+        m_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
 
         return;
     }
@@ -824,35 +822,6 @@ void CMedialibView::_flashItem(UINT uItem, UINT uMSDelay)
         m_nFlashItem = -1;
         update();
     });
-}
-
-void CMedialibView::play()
-{
-    dselectItem();
-
-    TD_IMediaList paMedias;
-    CMediaSet *pMediaSet = currentMediaSet();
-    if (pMediaSet)
-    {
-        TD_IMediaList lstMedias;
-        pMediaSet->GetAllMedias(lstMedias);
-        paMedias.add(lstMedias);
-    }
-    else
-    {
-        CPath *pDir = currentDir();
-        if (pDir)
-        {
-            pDir->files()([&](XFile& file){
-                paMedias.add((CMediaRes&)file);
-            });
-        }
-    }
-
-    if (paMedias)
-    {
-        m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
-    }
 }
 
 void CMedialibView::cleanup()

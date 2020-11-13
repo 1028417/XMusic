@@ -54,7 +54,28 @@ void CMedialibDlg::init()
     });
 
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
-        m_lv.play();
+        m_lv.dselectItem();
+
+        CMediaSet *pMediaSet = m_lv.currentMediaSet();
+        if (pMediaSet)
+        {
+            m_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
+            return;
+        }
+
+        CPath *pDir = m_lv.currentDir();
+        if (pDir)
+        {
+            TD_IMediaList paMedias;
+            pDir->files()([&](XFile& file){
+                paMedias.add((CMediaRes&)file);
+            });
+
+            if (paMedias)
+            {
+                m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
+            }
+        }
     });
 
     m_lv.init();
