@@ -112,7 +112,7 @@ size_t CWholeTrackView::getItemCount() const
 cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                  , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    _paintBottonLine(rc);
+    _paintBottonLine(painter, rc);
 
     UINT uDuration = 0;
     m_cue.m_alTrackInfo.get(context->uItem, [&](const tagTrackInfo& TrackInfo) {

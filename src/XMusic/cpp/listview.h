@@ -166,7 +166,7 @@ protected:
 
     void _paintRow(CPainter&, tagLVItemContext&);
 
-    void _paintBottonLine(cqrc rc);
+    void _paintBottonLine(CPainter& painter, QRect& rc);
 
     virtual cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
 

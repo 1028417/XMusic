@@ -162,7 +162,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if (context.eStyle & E_LVItemStyle::IS_BottomLine)
     {
-        _paintBottonLine(rc);
+        _paintBottonLine(painter, rc);
     }
 
     if (context.eStyle & E_LVItemStyle::IS_ForwardButton)
@@ -189,7 +189,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
 }
 
-void CListView::_paintBottonLine(cqrc rc)
+void CListView::_paintBottonLine(CPainter& painter, QRect& rc)
 {
     QColor cr = g_crFore;
     cr.setAlpha(CPainter::oppTextAlpha(20));
