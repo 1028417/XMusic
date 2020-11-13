@@ -50,7 +50,7 @@ BOOL CDuplicateMediaDlg::OnInitDialog()
 	m_arrDuplicateMedia([&](TD_MediaList& arrDuplicateMedia, size_t group) {
 		arrDuplicateMedia([&](CMedia& media, size_t pos) {
 			SVector<wstring> vecText( media.GetName(), media.GetDir() );
-			if (E_MediaType::MST_PlayItem == media.type())
+			if (E_MediaType::MT_PlayItem == media.type())
 			{
 				vecText.add(((CPlayItem&)media).GetPlaylistName());
 			}
