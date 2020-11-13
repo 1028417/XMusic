@@ -53,6 +53,8 @@ public:
     virtual int getImage();
 
     virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
+
+    void asyncTask();
 #endif
 
     virtual E_MediaType type() const override
@@ -82,8 +84,6 @@ public:
 	}
 
     void SetDirRelatedSinger(UINT uSingerID, cwstr strSingerName, bool& bChanged);
-
-    void findRelatedMedia();
 };
 
 // TODO class __MediaLibExt CMediaFile : public IMedia, public CMediaRes

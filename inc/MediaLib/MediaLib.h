@@ -114,13 +114,18 @@ protected:
 	}
 	
 public:
-	virtual const CMedia* findRelatedMedia(cwstr strPath, E_MediaSetType, const class CSinger*& pSinger)
-	{
-		(void)strPath;
-		(void)pSinger;
-		return NULL;
+	virtual const CMedia* findRelatedPlayItem(cwstr strPath)
+        {
+            (void)strPath;
+            return NULL;
 	}
-	
+	virtual const CMedia* findRelatedAlbumItem(cwstr strPath, const CSinger*& pRelatedSinger)
+	{
+            (void)strPath;
+            (void)pRelatedSinger;
+            return NULL;
+	}
+
 	virtual void renameMedia(IMedia&, cwstr strNewName)
 	{
 		(void)strNewName;

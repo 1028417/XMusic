@@ -135,7 +135,8 @@ public:
 		return GetName();
 	}
 
-	const CMedia *findRelatedMedia(E_RelatedMediaSet eRmsType);
+	const CMedia *findRelatedPlayItem();
+	const CMedia *findRelatedAlbumItem();
 
 	UINT GetRelatedMediaID(E_RelatedMediaSet eRmsType) const
 	{

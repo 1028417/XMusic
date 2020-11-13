@@ -266,6 +266,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             break;
         default:
             context.pmIcon = &m_pmSSDir;
+            context.uStyle |= E_LVItemStyle::IS_ForwardButton;
             break;
         };
     }
