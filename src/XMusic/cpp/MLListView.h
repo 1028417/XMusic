@@ -28,8 +28,17 @@ struct tagMLItemContext : public tagLVItemContext
     {
         if (media.type() == E_MediaType::MT_MediaRes)
         {
-            pFile = (CMediaRes*)&media;
-            strText = dir.fileName();
+            auto& MediaRes = (CMediaRes&)media;
+            if (MediaRes.isDir())
+            {
+                pDir = &MediaRes;
+            }
+            else
+            {
+                pFile = &MediaRes;
+            }
+
+            strText = MediaRes.fileName();
         }
         else
         {

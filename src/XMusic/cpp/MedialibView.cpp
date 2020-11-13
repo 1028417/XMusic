@@ -271,7 +271,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else if (context.pMedia)
     {
-        if (context.pMedia->GetMediaSetType() == E_MediaSetType::MST_Playlist)
+        if (context.pMedia->type() == E_MediaType::MT_PlayItem)
         {
             context.pmIcon = &m_pmPlayItem;
 
