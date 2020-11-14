@@ -138,7 +138,7 @@ private:
 	
 	bool GetRenameText(UINT uItem, wstring& strRenameText) override;
 
-	void OnListItemRename(UINT uItem, const CString& cstrNewText) override;
+	bool OnItemRename(UINT uItem, CListObject *pObject, const CString& cstrNewText) override;
 
 	BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	

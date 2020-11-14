@@ -9,14 +9,16 @@ class CSingerAttachDir : public CMediaDir
 public:
 	CSingerAttachDir() = default;
 
-	CSingerAttachDir(cwstr strAliasName, cwstr strPath)
+	CSingerAttachDir(cwstr strName, cwstr strPath)
 		: CMediaDir(strPath)
-		, m_strAliasName(strAliasName)
+		, m_strName(strName)
+		, m_strPath(strPath)
 	{
 	}
 
-private:
-	wstring m_strAliasName;
+public:
+	wstring m_strName;
+	wstring m_strPath;
 
 private:
 	int getImage() override
@@ -26,17 +28,17 @@ private:
 
 	wstring GetPath() const override
 	{
-		return m_fi.strName;
+		return m_strPath;
 	}
 
 	wstring GetDisplayTitle() const override
 	{
-		return m_strAliasName;
+		return m_strName;
 	}
 
 	bool GetRenameText(wstring& strRenameText) const override
 	{
-		strRenameText = m_strAliasName;
+		strRenameText = m_strName;
 		return true;
 	}
 };
@@ -67,7 +69,7 @@ private:
 	UINT _onShowDir() override;
 
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
-
+	
 public:
 	void SetSinger(const CSinger& singer);
 

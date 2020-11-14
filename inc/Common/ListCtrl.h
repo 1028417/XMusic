@@ -414,6 +414,18 @@ protected:
 
 	void ChangeListCtrlView(short zDelta);
 
+	virtual bool OnItemRename(UINT uItem, CListObject *pObject, const CString& cstrNewText)
+	{
+		if (pObject)
+		{
+			return pObject->OnListItemRename((wstring)cstrNewText);
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 private:
 	void _SetItemObject(UINT uItem, CListObject& Object, cwstr strPrefix=L"");
 
@@ -423,6 +435,4 @@ private:
 	void handleCustomDraw(NMLVCUSTOMDRAW& lvnmcd, LRESULT* pResult);
 
 	void _AsyncTask(UINT uElapse, cfn_bool_t<UINT> cb);
-
-	virtual void OnListItemRename(UINT uItem, const CString& cstrNewText) {}
 };

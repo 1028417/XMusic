@@ -17,7 +17,7 @@ private:
 
 	void refreshMedia() override;
 
-	void renameMedia(IMedia& media, cwstr strNewName) override;
+	bool renameMedia(IMedia& media, cwstr strNewName) override;
 
 	void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) override;
 

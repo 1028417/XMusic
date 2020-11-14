@@ -59,7 +59,7 @@ private:
     const CMedia* findRelatedPlayItem(cwstr strPath) override;
     const CMedia* findRelatedAlbumItem(cwstr strPath, const CSinger*& pRelatedSinger) override;
 
-	void renameMedia(IMedia& media, cwstr strNewName) override;
+	bool renameMedia(IMedia& media, cwstr strNewName) override;
 
 	UINT checkDuration(IMedia& media, long long& nFileSize) override;
 

@@ -244,9 +244,10 @@ public:
 		return true;
 	}
 
-	virtual void OnListItemRename(cwstr strNewName)
+	virtual bool OnListItemRename(cwstr strNewName)
 	{
         (void)strNewName;
+		return false;
 	}
 };
 

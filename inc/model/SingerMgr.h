@@ -52,6 +52,7 @@ public:
 
     BOOL AttachDir(CSinger& singer, cwstr strDir);
     BOOL DetachDir(CSinger& singer, cwstr strDir);
+	BOOL SetAttachName(cwstr strDir, cwstr strName);
 
 	CAlbum *AddAlbum(CSinger& Singer, wstring strName, const SArray<wstring> *plstAlbumItem = NULL
 		, E_AlbumType eType = E_AlbumType::AT_Normal, cwstr strAttachPath = L"");

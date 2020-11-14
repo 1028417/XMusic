@@ -400,11 +400,13 @@ bool CPlayingList::GetRenameText(UINT uItem, wstring& strRenameText)
 	return true;
 }
 
-void CPlayingList::OnListItemRename(UINT uItem, const CString& cstrNewText)
+bool CPlayingList::OnItemRename(UINT uItem, CListObject*, const CString& cstrNewText)
 {
+	bool bRet = false;
 	m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
-		m_view.getController().renameMedia(PlayItem, (wstring)cstrNewText);
+		bRet = m_view.getController().renameMedia(PlayItem, (wstring)cstrNewText);
 	});
+	return bRet;
 }
 
 void CPlayingList::GetSelItems(TD_PlayItemList& arrSelPlayItem)

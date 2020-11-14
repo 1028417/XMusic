@@ -51,7 +51,7 @@ private:
 		return true;
 	}
 
-    void OnListItemRename(cwstr strNewName) override;
+    bool OnListItemRename(cwstr strNewName) override;
 
 public:
 	void asyncTask();

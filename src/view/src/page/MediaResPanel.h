@@ -5,12 +5,14 @@
 class CMediaResList : public CPathList
 {
 public:
-	CMediaResList(bool bSingerPanel)
-		: m_bSingerPanel(bSingerPanel)
+	CMediaResList(__view& view, bool bSingerPanel)
+		: m_view(view)
+		, m_bSingerPanel(bSingerPanel)
 	{
 	}
 
 private:
+	__view& m_view;
 	bool m_bSingerPanel;
 
 private:
@@ -18,6 +20,8 @@ private:
 	{
 		((CMediaRes&)Object).genMediaResListItem(eViewType, vecText, iImage, m_bSingerPanel);
 	}
+
+	bool OnItemRename(UINT uItem, CListObject *pObject, const CString& cstrNewText) override;
 };
 
 class CMediaResPanel : public CBasePage
@@ -36,9 +40,7 @@ public:
 
 private:
 	CMenuGuard m_FileMenuGuard;
-
-	static list<CMediaResPanel*> g_lstMediaResPanels;
-
+	
 	bool m_bSingerPanel;
 
 	CWnd m_wndStatic;
@@ -101,7 +103,7 @@ public:
 	void attachDir();
 
 	//void OnActive(BOOL bActive) override;
-
+	
 private:
 	virtual int GetTabImage() override;
 

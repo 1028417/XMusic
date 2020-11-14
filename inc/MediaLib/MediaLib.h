@@ -126,9 +126,10 @@ public:
             return NULL;
 	}
 
-	virtual void renameMedia(IMedia&, cwstr strNewName)
+	virtual bool renameMedia(IMedia&, cwstr strNewName)
 	{
 		(void)strNewName;
+		return false;
 	}
 
 	virtual UINT checkDuration(IMedia&, long long& nFileSize)

@@ -30,11 +30,9 @@ void CModelObserver::refreshMedia()
 	m_view.m_PlayingPage.RefreshList();
 }
 
-void CModelObserver::renameMedia(IMedia& media, cwstr strNewName)
+bool CModelObserver::renameMedia(IMedia& media, cwstr strNewName)
 {
-	CRedrawLock RedrawLock(m_view.m_MainWnd, true);
-
-	(void)m_view.getController().renameMedia(media, strNewName);
+	m_view.getController().renameMedia(media, strNewName);
 }
 
 void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)

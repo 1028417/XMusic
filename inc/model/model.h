@@ -260,10 +260,11 @@ public:
 
     virtual void refreshMedia() {}
 
-    virtual void renameMedia(IMedia& media, cwstr strNewName)
+    bool renameMedia(IMedia& media, cwstr strNewName)
     {
         (void)media;
         (void)strNewName;
+		return false;
     }
 
     virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
