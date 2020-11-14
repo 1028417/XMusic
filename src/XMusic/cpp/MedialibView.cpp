@@ -622,7 +622,8 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         }        
         else if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType)
         {
-            auto uCount = mlContext.pDir->dirs().size() + mlContext.pDir->files().size();
+            auto pDir = (CSnapshotMediaDir*)mlContext.pMediaSet;
+            auto uCount = pDir->dirs().size() + pDir->files().size();
             if (uCount > 0)
             {
                 strRemark << uCount << L" 项";
