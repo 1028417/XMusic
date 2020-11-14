@@ -102,18 +102,13 @@ public:
     }
 
 #if __winvc
-    wstring GetDisplayName() const
-    {
-        wchar_t lpBuff[8] {0};
-        swprintf(lpBuff, sizeof(lpBuff), L"%02u", (UINT)index()+1);
-
-        return wstring(lpBuff) + __CNDot + m_strName;
-    }
-
     wstring GetExportName() override
     {
-        return strutil::eraseChars_r(GetDisplayName(), wstring(1, L' ') + __CNDot);
-        //return L"歌单" + GetDisplayName();
+		wchar_t lpBuff[8]{ 0 };
+		swprintf(lpBuff, sizeof(lpBuff), L"%02u.", (UINT)index() + 1);
+		return wstring(lpBuff) + m_strName;
+
+        //return L"歌单" __CNDot + m_strName;
     }
 #endif
 

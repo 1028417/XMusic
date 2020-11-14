@@ -17,28 +17,28 @@ public:
 	}
 
 public:
-	E_AttachDirType m_eType;
+        E_AttachDirType m_eType;
 
 public:
-	wstring GetPath() const override
-	{
+    wstring GetPath() const override
+    {
         return __wcPathSeparator + XFile::fileName();
-	}
-
-	wstring GetTitle() const override
-	{
-		return XFile::fileName() + L" | " + XFile::parentDir();
-	}
+    }
 
 #if __winvc
-	int getImage() override
-	{
-		return (int)E_GlobalImage::GI_AttachDir;
-	}
+    wstring GetDisplayTitle() const override
+    {
+        return XFile::fileName() + L" | " + XFile::parentDir();
+    }
+
+    int getImage() override
+    {
+        return (int)E_GlobalImage::GI_AttachDir;
+    }
 
     bool GetRenameText(wstring&) const override
-	{
-		return false;
+    {
+        return false;
     }
 #endif
 };
@@ -165,9 +165,14 @@ private:
     void GetSubSets(TD_MediaSetList&) override;
 
 #if !__winvc
-    wstring GetDisplayName() const override
+    wstring name() const override
     {
-        return GetName();
+        if (!m_strName.empty())
+        {
+            return m_strName;
+        }
+
+		return XFile::fileName();;
     }
 #endif
 };

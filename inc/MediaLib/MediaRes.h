@@ -38,12 +38,24 @@ private:
 
     LPCCueFile m_pCueFile = NULL;
 
+protected:
+	virtual wstring GetDisplayTitle() const
+	{
+		return GetTitle();
+	}
+
 private:
-	bool GetRenameText(wstring& stRenameText) const override;
+	bool GetRenameText(wstring& stRenameText) const override
+	{
+		stRenameText = GetDisplayTitle();
+		return true;
+	}
 
     void OnListItemRename(cwstr strNewName) override;
-	
+
 public:
+	void asyncTask();
+
     static void ReadMP3Tag(cwstr strFile, tagMediaTag& MediaTag);
 
     static bool ReadFlacTag(cwstr strFile, tagMediaTag& MediaTag);
@@ -53,8 +65,6 @@ public:
     virtual int getImage();
 
     virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bGenRelatedSinger);
-
-    void asyncTask();
 #endif
 
     virtual E_MediaType type() const override
@@ -115,8 +125,8 @@ public:
 
 	void clear()
 	{
-                m_lstCueFile.clear();
-                m_mapCueFile.clear();
+		m_lstCueFile.clear();
+        m_mapCueFile.clear();
 	}
 };
 
@@ -126,20 +136,20 @@ class __MediaLibExt CMediaDir : public CMediaRes
 #endif
 {
 public:
-    virtual ~CMediaDir() = default;
+	virtual ~CMediaDir() = default;
 
-    CMediaDir() = default;
+	CMediaDir() = default;
 
 	CMediaDir(const tagFileInfo& fileInfo)
 		: CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
 	{
 	}
 
-    CMediaDir(cwstr strPath, class CPath *pParent = NULL)
-        : CMediaRes(E_MediaFileType::MFT_Null, true, strPath, pParent)
+	CMediaDir(cwstr strPath, class CPath *pParent = NULL)
+		: CMediaRes(E_MediaFileType::MFT_Null, true, strPath, pParent)
 	{
 	}
-	
+
 #if __winvc
 private:
 	CCueList m_cuelist;
@@ -156,24 +166,24 @@ protected:
 	virtual XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
 #if __winvc
-    virtual void _onClear() override
-    {
+	virtual void _onClear() override
+	{
 		m_cuelist.clear();
-    }
+	}
 #endif
 
 public:
 #if !__winvc
-    virtual bool isLocal() const
+	virtual bool isLocal() const
 	{
-        return true;
+		return true;
 	}
 #endif
 
-    virtual wstring GetTitle() const override
-    {
-        return XFile::fileName();
-    }
+	wstring GetTitle() const override
+	{
+		return XFile::fileName();
+	}
 
 	void subMediaRes(cfn_void_t<CMediaRes&> cb)
 	{
@@ -210,9 +220,9 @@ public:
 
 #if __winvc
 private:
-	wstring GetTreeText() const override
+	virtual wstring GetTreeText() const override
 	{
-	        return GetTitle();
+		return GetDisplayTitle();
 	}
 
 	void GetTreeChilds(TD_TreeObjectList& lstChilds) override

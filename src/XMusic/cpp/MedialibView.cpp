@@ -68,11 +68,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     auto pSinger = currentSinger();
     if (pSinger && &MediaSet != pSinger)
     {
-        strTitle << pSinger->m_strName << __CNDot << MediaSet.GetDisplayName();
+        strTitle << pSinger->m_strName << __CNDot << MediaSet.name();
 
         if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
         {
-            strTitle = MediaSet.GetDisplayName();
+            strTitle = MediaSet.name();
         }
     }
     else

@@ -7,14 +7,16 @@
 class CSingerAttachDir : public CMediaDir
 {
 public:
-	virtual ~CSingerAttachDir() = default;
-
 	CSingerAttachDir() = default;
 
-	CSingerAttachDir(cwstr strPath)
+	CSingerAttachDir(cwstr strAliasName, cwstr strPath)
 		: CMediaDir(strPath)
+		, m_strAliasName(strAliasName)
 	{
 	}
+
+private:
+	wstring m_strAliasName;
 
 private:
 	int getImage() override
@@ -25,6 +27,17 @@ private:
 	wstring GetPath() const override
 	{
 		return m_fi.strName;
+	}
+
+	wstring GetDisplayTitle() const override
+	{
+		return m_strAliasName;
+	}
+
+	bool GetRenameText(wstring& strRenameText) const override
+	{
+		strRenameText = m_strAliasName;
+		return true;
 	}
 };
 

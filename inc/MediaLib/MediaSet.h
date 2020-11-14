@@ -188,7 +188,7 @@ public:
 	}
 
 #if !__winvc
-    virtual wstring GetDisplayName() const
+    virtual wstring name() const
     {
         return m_strName;
     }
