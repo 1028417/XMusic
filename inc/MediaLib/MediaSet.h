@@ -132,12 +132,7 @@ private:
 		return m_strName;
 	}
 
-	virtual void GetTreeChilds(TD_TreeObjectList& lstChilds) override;
-
-	bool hasCheckState() override
-	{
-		return playable();
-	}
+    virtual void GetTreeChilds(TD_TreeObjectList& lstChilds) override;
 #endif
 
 public:
@@ -177,8 +172,6 @@ public:
     virtual void GetMedias(TD_IMediaList&) {}
 
     virtual void GetSubSets(TD_MediaSetList&) {}
-
-    virtual bool playable() const;
 
 	void GetAllMediaSets(E_MediaSetType eType, TD_MediaSetList& arrMediaSets);
 	void GetAllMediaSets(TD_MediaSetList& arrMediaSets);

@@ -549,7 +549,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_AlbumMenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
 
-		bPlayable = pAlbum->playable();
+		bPlayable = pAlbum->albumItems();
 		bNormalAlbum = E_AlbumType::AT_Normal == pAlbum->type();
 	}
 	
@@ -1338,7 +1338,7 @@ void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 	
 	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormalAlbum);
 
-	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, m_pAlbum->playable());
+	m_MenuGuard.EnableItem(ID_PLAY_ALBUMITEM, m_pAlbum->albumItems());
 
 	int nSelCount = m_wndAlbumItemList.GetSelectedCount();
 	m_MenuGuard.EnableItem(ID_FIND_ALBUMITEM, (1 == nSelCount) && bNormalAlbum);

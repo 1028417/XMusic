@@ -94,11 +94,6 @@ public:
         return m_alAlbumItems.erase(itr);
     }
 
-    bool playable() const override
-	{
-        return m_alAlbumItems;
-	}
-
 private:
     int indexOf(const IMedia& media) const override
     {

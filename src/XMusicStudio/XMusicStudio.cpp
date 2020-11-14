@@ -1,61 +1,25 @@
 #include "stdafx.h"
 
-#include "XMusicStudio.h"
-
 #include "../view/resource.h"
 
-struct tagStartup
-{
-	tagStartup()
-	{
-		fsutil::setWorkDir(fsutil::getModuleDir());
+#include "../controller.h"
 
-		extern void InitMinDump(const string&);
-		InitMinDump("xmusicstudio_dump_");
-	}
-};
-
-class CApp : private tagStartup, public CMainApp
+class CController : public CXController, public IController
 {
 public:
-	CApp()
-		: m_view(genView(m_controller, m_model))
-		, m_controller(m_view, m_model)
-		, m_model(m_view.getModelObserver(), m_controller.getOption())
+	CController(IPlayerView& view, IModel& model)
+		: CXController(view, model)
 	{
-		CCommandLineInfo cmdInfo;
-		ParseCommandLine(cmdInfo);
-		if (!cmdInfo.m_strFileName.IsEmpty())
-		{
-			m_model.convertXmsc(wstring(cmdInfo.m_strFileName));
-			exit(0);
-		}
-
-		if (CMainApp::checkRuning())
-		{
-			exit(0);
-			return;
-		}
+		initOption();
 	}
 
-	IView& getView() override
-	{
-		return m_view;
-	}
-
-	IController& getController() override
-	{
-		return m_controller;
-	}
-	
 public:
-	IPlayerView& m_view;
+	void start() override;
 
-	CController m_controller;
-	
-	CModel m_model;
+	void stop() override;
+
+	bool handleCommand(UINT uID) override;
 };
-static CApp g_app;
 
 void CController::start()
 {
@@ -278,3 +242,56 @@ bool CController::handleCommand(UINT uID)
 
 	return true;
 }
+
+struct tagStartup
+{
+	tagStartup()
+	{
+		fsutil::setWorkDir(fsutil::getModuleDir());
+
+		extern void InitMinDump(const string&);
+		InitMinDump("xmusicstudio_dump_");
+	}
+};
+
+class CApp : private tagStartup, public CMainApp
+{
+public:
+	CApp()
+		: m_view(genView(m_controller, m_model))
+		, m_controller(m_view, m_model)
+		, m_model(m_view.getModelObserver(), m_controller.getOption())
+	{
+		CCommandLineInfo cmdInfo;
+		ParseCommandLine(cmdInfo);
+		if (!cmdInfo.m_strFileName.IsEmpty())
+		{
+			m_model.convertXmsc(wstring(cmdInfo.m_strFileName));
+			exit(0);
+		}
+
+		if (CMainApp::checkRuning())
+		{
+			exit(0);
+			return;
+		}
+	}
+
+	IView& getView() override
+	{
+		return m_view;
+	}
+
+	IController& getController() override
+	{
+		return m_controller;
+	}
+
+public:
+	IPlayerView& m_view;
+
+	CController m_controller;
+
+	CModel m_model;
+};
+static CApp g_app;

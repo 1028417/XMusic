@@ -471,7 +471,7 @@ void CMediaResPanel::_asyncTask()
 		CMediaRes& mediaRes = (CMediaRes&)object;
 		if (!mediaRes.isDir())
 		{
-			mediaRes.findRelatedMedia();
+			mediaRes.asyncTask();
 		}
 		return false;
 	});
@@ -957,7 +957,14 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 			if (!pMediaRes->isDir())
 			{
-				pMediaRes->findRelatedMedia();
+				if (__Column_Playlist == iSubItem)
+				{
+					pMediaRes->findRelatedPlayItem();
+				}
+				else
+				{
+					pMediaRes->findRelatedAlbumItem();
+				}
 				m_wndList.UpdateItem(iItem, pMediaRes);
 			}
 

@@ -167,7 +167,6 @@
   <ItemGroup>
     <ClInclude Include="..\controller.h" />
     <ClInclude Include="..\OptionMgr.h" />
-    <ClInclude Include="XMusicStudio.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

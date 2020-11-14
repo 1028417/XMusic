@@ -606,7 +606,6 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_ENLanguage, NULL != pSingerObject);
 	m_MenuGuard.EnableItem(ID_EURLanguage, NULL != pSingerObject);
 
-	bool bAvalible = false;
 	if (NULL != pSingerObject)
 	{
 		const CMediasetProperty& property = pSingerObject->property();
@@ -620,13 +619,9 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.CheckItem(ID_JPLanguage, property.isJPLanguage());
 		m_MenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
 		m_MenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
-
-		bAvalible = pSingerObject->playable();
 	}
 
-	m_MenuGuard.EnableItem(ID_PLAY, bSinger && bAvalible);
-	m_MenuGuard.EnableItem(ID_VERIFY, bAvalible);
-	m_MenuGuard.EnableItem(ID_EXPORT, bAvalible);
+	m_MenuGuard.EnableItem(ID_PLAY, bSinger);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }

@@ -39,7 +39,7 @@ void CModelObserver::renameMedia(IMedia& media, cwstr strNewName)
 
 void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
-	if (!m_view.getPlaylistMgr().playinglist().playable())
+	if (!m_view.getPlaylistMgr().playinglist().playItems())
 	{
 		CPlaySpirit::inst()->clear();
 	}
