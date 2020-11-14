@@ -51,7 +51,7 @@ struct tagMLItemContext : public tagLVItemContext
         tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pMediaSet(&MediaSet)
     {
-        strText = MediaSet.GetDisplayName();
+        strText = MediaSet.name();
     }
 
     tagMLItemContext(tagLVItem& lvItem, CPath& dir) :
