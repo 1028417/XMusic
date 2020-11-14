@@ -47,7 +47,7 @@ class CSingerMediaResPanel : public CMediaResPanel
 
 public:
 	CSingerMediaResPanel(__view& view, class CAlbumPage& wndAlbumPage)
-		: CMediaResPanel(view, false)
+		: CMediaResPanel(view, true)
 		, m_wndAlbumPage(wndAlbumPage)
 	{
 	}

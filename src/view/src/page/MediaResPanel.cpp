@@ -24,11 +24,11 @@ void CMediaResPanel::RefreshMediaResPanel()
 	}
 }
 
-CMediaResPanel::CMediaResPanel(__view& view, bool bShowRelatedSinger)
+CMediaResPanel::CMediaResPanel(__view& view, bool bSingerPanel)
 	: CBasePage(view, IDD_PAGE_MediaResPanel, L"", IDR_MENU_Dir, true)
 	, m_FileMenuGuard(view.m_ResModule, IDR_MENU_File, __MenuWidth)
-	, m_bShowRelatedSinger(bShowRelatedSinger)
-	, m_wndList(bShowRelatedSinger)
+	, m_bSingerPanel(bSingerPanel)
+	, m_wndList(bSingerPanel)
 {
 }
 
@@ -77,13 +77,13 @@ BOOL CMediaResPanel::OnInitDialog()
 		,{ _T("关联歌单"), globalSize.m_ColWidth_RelatedPlaylist, true }
 	};
 	
-	if (m_bShowRelatedSinger)
+	if (bSingerPanel)
 	{
-		lstColumns.push_back({L"歌手" __CNDot L"专辑", globalSize.m_ColWidth_RelatedSingerAlbum, true });
+		lstColumns.push_back({ L"关联专辑", globalSize.m_ColWidth_RelatedPlaylist, true });
 	}
 	else
 	{
-		lstColumns.push_back({L"关联专辑", globalSize.m_ColWidth_RelatedPlaylist, true });
+		lstColumns.push_back({ L"歌手" __CNDot L"专辑", globalSize.m_ColWidth_RelatedSingerAlbum, true });
 	}
 
 	lstColumns.insert(lstColumns.end(), {
@@ -103,7 +103,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	ListPara.fFontSize = globalSize.m_fSmallFontSize;
 	ListPara.crText = __Color_Text;
 	
-	ListPara.eViewType = m_bShowRelatedSinger ? E_ListViewType::LVT_Icon : E_ListViewType::LVT_Report;
+	ListPara.eViewType = bSingerPanel ? E_ListViewType::LVT_Report : E_ListViewType::LVT_Icon;
 
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
@@ -154,7 +154,11 @@ BOOL CMediaResPanel::OnInitDialog()
 				}
 				else
 				{
-					if (m_bShowRelatedSinger)
+					if (bSingerPanel)
+					{
+						strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+					}
+					else
 					{
 						cauto strAlbum = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 						if (!strAlbum.empty())
@@ -162,10 +166,6 @@ BOOL CMediaResPanel::OnInitDialog()
 							cauto strSinger = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
 							strMediaset << strSinger << __CNDot << strAlbum;
 						}
-					}
-					else
-					{
-						strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 					}
 				}
 			}
@@ -298,7 +298,7 @@ void CMediaResPanel::OnSize(UINT nType, int cx, int cy)
 			m_wndList.SetTileSize(uTileWidth, m_view.m_globalSize.m_uTileHeight);
 		}
 
-		UINT uIconWidth = width / (m_bShowRelatedSinger?6:5)-1;
+		UINT uIconWidth = width / (bSingerPanel ? 5:6)-1;
 		if (uIconWidth > m_uIconWidth + 8 || uIconWidth < m_uIconWidth - 8)
 		{
 			m_uIconWidth = uIconWidth;
@@ -379,7 +379,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 	{
 		strOppPath.erase(0,1);
 
-		if (!m_bShowRelatedSinger)
+		if (bSingerPanel)
 		{
 			strTitle.append(L" | ");
 		}
@@ -394,7 +394,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 		strTitle.append(strDirName);
 	}
 
-	if (m_bShowRelatedSinger)
+	if (!bSingerPanel)
 	{
 		if (strTitle.empty())
 		{
@@ -410,7 +410,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 	CRedrawLock RedrawLock(m_wndList);
 
 	cauto paSubDir = m_pCurrDir->dirs();
-	if (paSubDir)// && m_bShowRelatedSinger)
+	if (paSubDir)// && !bSingerPanel)
 	{
 		map<wstring, const CSinger*> mapDirSinger;
 		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
@@ -459,7 +459,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 
 void CMediaResPanel::_asyncTask()
 {
-	if (!m_bShowRelatedSinger)
+	if (bSingerPanel)
 	{
 		if (NULL == m_pCurrDir || m_pCurrDir->rootDir() != m_pRootDir)
 		{
@@ -512,7 +512,7 @@ void CMediaResPanel::HittestMediaRes(CMediaRes& MediaRes)
 {
 	_showDir(m_pRootDir, MediaRes.parent(), &MediaRes);
 
-	if (m_bShowRelatedSinger)
+	if (!bSingerPanel)
 	{
 		this->Active();
 	}
@@ -522,7 +522,7 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 {
 	__Ensure(m_pCurrDir);
 
-	if (m_bShowRelatedSinger)
+	if (!bSingerPanel)
 	{
 		if (E_RelatedMediaSet::RMS_Singer == eRmsType)
 		{
@@ -875,6 +875,11 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		}
 		else
 		{
+			if (bSingerPanel)
+			{
+				m_MenuGuard.EnableItem(ID_RENAME, TRUE);
+			}
+
 			m_MenuGuard.EnableItem(ID_Detach, TRUE);
 		}
 	}
@@ -976,7 +981,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 			{
 				if (!m_view.hittestRelatedAlbum(*pMediaRes))
 				{
-					if (m_bShowRelatedSinger)
+					if (!bSingerPanel)
 					{
 						(void)m_view.hittestRelatedSinger(*pMediaRes);
 					}

@@ -5,18 +5,18 @@
 class CMediaResList : public CPathList
 {
 public:
-	CMediaResList(bool bShowRelatedSinger)
-		: m_bShowRelatedSinger(bShowRelatedSinger)
+	CMediaResList(bool bSingerPanel)
+		: m_bSingerPanel(bSingerPanel)
 	{
 	}
 
 private:
-	bool m_bShowRelatedSinger = true;
+	bool m_bSingerPanel;
 
 private:
 	void GenListItem(CListObject& Object, E_ListViewType eViewType, vector<wstring>& vecText, TD_ListImgIdx& iImage) override
 	{
-		((CMediaRes&)Object).genMediaResListItem(eViewType, vecText, iImage, m_bShowRelatedSinger);
+		((CMediaRes&)Object).genMediaResListItem(eViewType, vecText, iImage, m_bSingerPanel);
 	}
 };
 
@@ -30,7 +30,7 @@ public:
 	static void RefreshMediaResPanel();
 	
 public:
-	CMediaResPanel(__view& view, bool bShowRelatedSinger=true);
+	CMediaResPanel(__view& view, bool bSingerPanel=false);
 
 	virtual ~CMediaResPanel() = default;
 
@@ -39,7 +39,7 @@ private:
 
 	static list<CMediaResPanel*> g_lstMediaResPanels;
 
-	bool m_bShowRelatedSinger = true;
+	bool m_bSingerPanel;
 
 	CWnd m_wndStatic;
 
