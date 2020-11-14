@@ -150,7 +150,7 @@ class __MediaLibExt CSnapshotMediaDir : public CMediaDir, public CMediaSet
 public:
     CSnapshotMediaDir(cwstr strPath, CMediaDir *pParentDir, CMediaSet *pParentMediaSet)
         : CMediaDir(strPath, pParentDir)
-        , CMediaSet(L"", pParentMediaSet)
+        , CMediaSet(L"", pParentMediaSet, E_MediaSetType::MST_SnapshotMediaDir)
     {
     }
 

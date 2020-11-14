@@ -56,6 +56,7 @@ enum class E_MediaSetType
 	, MST_Album
 	, MST_Singer
 	, MST_SingerGroup
+    , MST_SnapshotMediaDir
     , MST_None
 };
 

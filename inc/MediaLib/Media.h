@@ -5,10 +5,10 @@ struct __MediaLibExt tagMediaInfo
 {
     tagMediaInfo() = default;
 
-	tagMediaInfo(CMediaSet *pParent, cwstr strName, int nID = 0)
+    tagMediaInfo(CMediaSet *pParent, cwstr strName, UINT uID = 0)
 		: m_pParent(pParent)
 		, m_strName(strName)
-		, m_uID(nID)
+        , m_uID(uID)
 	{
 	}
 
@@ -25,8 +25,8 @@ class __MediaLibExt CMedia : public IMedia, public tagMediaInfo
 public:
     CMedia() = default;
 
-    CMedia(CMediaSet *pParent, int nID, cwstr strPath, mediatime_t tTime)
-        : tagMediaInfo(pParent, L"", nID)
+    CMedia(CMediaSet *pParent, UINT uID, cwstr strPath, mediatime_t tTime)
+        : tagMediaInfo(pParent, L"", uID)
 		, m_addTime(tTime)
 	{
         _UpdatePath(strPath);

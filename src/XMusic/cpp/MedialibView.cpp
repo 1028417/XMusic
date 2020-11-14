@@ -619,6 +619,14 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                 strRemark << ' ';
             }
             strRemark << L"首";
+        }        
+        else if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType)
+        {
+            auto uCount = mlContext.pDir->dirs().size() + mlContext.pDir->files().size();
+            if (uCount > 0)
+            {
+                strRemark << uCount << L" 项";
+            }
         }
     }
     else if (mlContext.pFile)
@@ -645,15 +653,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         {
             strRemark << uCount << L" 项";
         }
-        /*uCount = mlContext.pDir->files().size();
-        if (uCount > 0)
-        {
-            if (!strRemark->empty())
-            {
-                strRemark << '\n';
-            }
-            strRemark << uCount << L" 文件";
-        }*/
     }
 
     if (!strRemark->empty())

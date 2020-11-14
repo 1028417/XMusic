@@ -5,7 +5,7 @@ class __MediaLibExt CPlayItem : public CMedia
 public:
     CPlayItem() = default;
 
-    CPlayItem(int nID, cwstr strPath, mediatime_t time, class CPlaylist& Playlist);
+    CPlayItem(UINT uID, cwstr strPath, mediatime_t time, class CPlaylist& Playlist);
 
 private:
 #if __winvc
@@ -58,7 +58,7 @@ public:
 
     CPlaylist() = default;
 
-    CPlaylist(CMediaSet& parent, int nID, cwstr strName
+    CPlaylist(CMediaSet& parent, UINT uID, cwstr strName
               , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
 
 	CPlaylist(const CPlaylist& other);

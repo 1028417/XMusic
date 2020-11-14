@@ -5,7 +5,7 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-	CAlbumItem(class CAlbum& Album, int nID, cwstr strPath, mediatime_t time);
+    CAlbumItem(class CAlbum& Album, UINT uID, cwstr strPath, mediatime_t time);
 
 	CAlbumItem(class CAlbum& Album, cwstr strAttachPath);
 
@@ -50,9 +50,9 @@ public:
 
     CAlbum() = default;
 
-    CAlbum(class CSinger& Singer, int nID, cwstr strName, E_AlbumType eType, cwstr strAttachPath = L""
+    CAlbum(class CSinger& Singer, UINT uID, cwstr strName, E_AlbumType eType, cwstr strAttachPath = L""
 		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false) :
-		CMediaSet(strName, (CMediaSet*)&Singer, nID, E_MediaSetType::MST_Album
+        CMediaSet(strName, (CMediaSet*)&Singer, E_MediaSetType::MST_Album, uID
 			, uLanguage, bDisableDemand, bDisableExport)
 		, m_eType(eType)
 		, m_strAttachPath(strAttachPath)
@@ -123,7 +123,7 @@ class __MediaLibExt CSinger : public CMediaSet
 public:
     virtual ~CSinger() = default; // 解决qt-mac clang告警
 
-    CSinger(CMediaSet& parent, int nID, cwstr strName, cwstr strDir, int nPos
+    CSinger(CMediaSet& parent, UINT uID, cwstr strName, cwstr strDir, int nPos
             , UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false);
 
 	CSinger(const CSinger& other);
@@ -210,7 +210,7 @@ class __MediaLibExt CSingerGroup : public CMediaSet
 public:
     virtual ~CSingerGroup() = default; // 解决qt-mac clang告警
 
-    CSingerGroup(CMediaSet& parent, int nID=0, cwstr strName = L""
+    CSingerGroup(CMediaSet& parent, UINT uID=0, cwstr strName = L""
             , UINT uLanguage=0, bool bDisableDemand=false, bool bDisableExport=false);
 
 	CSingerGroup(const CSingerGroup& other);
