@@ -164,9 +164,6 @@ public:
 		return m_vecAttachDir;
 	}
 
-    bool addAttachDir(cwstr strDir);
-    bool removeAttachDir(cwstr strDir);
-
     CAlbum& addAlbum(const CAlbum& album)
     {
         m_lstAlbums.push_back(album);

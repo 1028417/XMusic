@@ -260,7 +260,7 @@ public:
 
     virtual void refreshMedia() {}
 
-    bool renameMedia(IMedia& media, cwstr strNewName)
+	virtual bool renameMedia(IMedia& media, cwstr strNewName)
     {
         (void)media;
         (void)strNewName;

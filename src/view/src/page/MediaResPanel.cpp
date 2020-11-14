@@ -5,7 +5,6 @@
 
 #include "../dlg/TrackDetailDlg.h"
 
-
 #include "SingerPage/SingerMediaResPanel.h"
 
 bool CMediaResList::OnItemRename(UINT uItem, CListObject *pObject, const CString& cstrNewText)
