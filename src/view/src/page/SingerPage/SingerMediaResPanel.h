@@ -9,7 +9,7 @@ class CSingerAttachDir : public CMediaDir
 public:
 	CSingerAttachDir() = default;
 
-	CSingerAttachDir(cwstr strPath, cwstr strName)
+	CSingerAttachDir(cwstr strPath, cwstr strName=L"")
 		: CMediaDir(strPath)
 		, m_strPath(strPath)
 		, m_strName(strName)
@@ -33,12 +33,31 @@ private:
 
 	wstring GetDisplayTitle() const override
 	{
-		return m_strName;
+		if (m_strName.empty())
+		{
+			cauto strParentDir = fsutil::GetParentDir(m_strPath);
+			if (strParentDir.size() == 1)
+			{
+				return m_strPath;
+			}
+
+			return fsutil::GetFileName(m_strPath) + L" | " + strParentDir;
+		}
+
+		return m_strName + L" | " + m_strPath;
 	}
 
 	bool GetRenameText(wstring& strRenameText) const override
 	{
-		strRenameText = m_strName;
+		if (!m_strName.empty())
+		{
+			strRenameText = m_strName;
+		}
+		else
+		{
+			strRenameText = fsutil::GetFileName(m_strPath);
+		}
+
 		return true;
 	}
 };

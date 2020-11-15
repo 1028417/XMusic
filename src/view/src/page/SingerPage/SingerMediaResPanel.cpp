@@ -72,8 +72,7 @@ void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		cauto strDir = pDir->GetPath();
 		__Ensure(m_view.getSingerMgr().AttachDir(*pSinger, strDir));
 
-		cauto strAliasName = pSinger->attachDir().front().first;
-		m_lstAttachDir.emplace_back(strAliasName, strDir);
+		m_lstAttachDir.emplace_back(strDir);
 
 		Refresh(); //m_wndList.InsertObject(m_lstAttachDir.back(), m_lstAttachDir.size());
 	}
