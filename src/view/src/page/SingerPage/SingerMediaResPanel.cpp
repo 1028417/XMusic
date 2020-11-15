@@ -109,3 +109,26 @@ void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		CMediaResPanel::OnMenuCommand(uID, uVkKey);
 	}
 }
+
+bool CSingerMediaResPanel::OnListItemRename(UINT uItem, CListObject *pObject, cwstr strNewName)
+{
+	auto pSinger = m_wndAlbumPage.GetSinger();
+	if (NULL == pSinger)
+	{
+		return false;
+	}
+
+	auto pSingerAttachDir = dynamic_cast<CSingerAttachDir*>(pObject);
+	if (pSingerAttachDir)
+	{
+		if (!m_view.getSingerMgr().UpdateAttachName(*pSinger, pSingerAttachDir->m_strPath, strNewName))
+		{
+			return false;
+		}
+		
+		pSingerAttachDir->m_strName = strNewName;
+		return true;
+	}
+
+	return __super::OnListItemRename(uItem, pObject, strNewName);
+}

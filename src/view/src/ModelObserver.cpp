@@ -32,7 +32,7 @@ void CModelObserver::refreshMedia()
 
 bool CModelObserver::renameMedia(IMedia& media, cwstr strNewName)
 {
-	m_view.getController().renameMedia(media, strNewName);
+	return m_view.getController().renameMedia(media, strNewName);
 }
 
 void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)

@@ -5,14 +5,14 @@
 class CMediaResList : public CPathList
 {
 public:
-	CMediaResList(__view& view, bool bSingerPanel)
-		: m_view(view)
+	CMediaResList(class CMediaResPanel& MediaResPanel, bool bSingerPanel)
+		: m_MediaResPanel(MediaResPanel)
 		, m_bSingerPanel(bSingerPanel)
 	{
 	}
 
 private:
-	__view& m_view;
+	class CMediaResPanel& m_MediaResPanel;
 	bool m_bSingerPanel;
 
 private:
@@ -103,7 +103,16 @@ public:
 	void attachDir();
 
 	//void OnActive(BOOL bActive) override;
-	
+
+	virtual bool OnListItemRename(UINT uItem, CListObject *pObject, cwstr strNewName)
+	{
+		if (pObject)
+		{
+			return pObject->OnListItemRename(strNewName);
+		}
+		return false;
+	}
+
 private:
 	virtual int GetTabImage() override;
 

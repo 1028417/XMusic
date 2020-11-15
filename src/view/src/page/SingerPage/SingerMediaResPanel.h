@@ -69,7 +69,9 @@ private:
 	UINT _onShowDir() override;
 
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
-	
+
+	bool OnListItemRename(UINT uItem, CListObject *pObject, cwstr strNewName) override;
+
 public:
 	void SetSinger(const CSinger& singer);
 

@@ -5,21 +5,9 @@
 
 #include "../dlg/TrackDetailDlg.h"
 
-#include "SingerPage/SingerMediaResPanel.h"
-
 bool CMediaResList::OnItemRename(UINT uItem, CListObject *pObject, const CString& cstrNewText)
 {
-	auto pSingerAttachDir = dynamic_cast<CSingerAttachDir*>(pObject);
-	if (pSingerAttachDir)
-	{
-		wstring strName = cstrNewText;
-		if (m_view.getSingerMgr().updateAttachName(pSingerAttachDir->m_strPath, strName))
-		{
-			pSingerAttachDir->m_strName = strName;
-		}
-	}
-	
-	return __super::OnItemRename(uItem, pObject, cstrNewText);
+	return m_MediaResPanel.OnListItemRename(uItem, pObject, wstring(cstrNewText));
 }
 
 enum E_AlbumItemColumn
@@ -45,7 +33,7 @@ CMediaResPanel::CMediaResPanel(__view& view, bool m_bSingerPanel)
 	: CBasePage(view, IDD_PAGE_MediaResPanel, L"", IDR_MENU_Dir, true)
 	, m_FileMenuGuard(view.m_ResModule, IDR_MENU_File, __MenuWidth)
 	, m_bSingerPanel(m_bSingerPanel)
-	, m_wndList(view, m_bSingerPanel)
+	, m_wndList(*this, m_bSingerPanel)
 {
 }
 
