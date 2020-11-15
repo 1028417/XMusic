@@ -29,11 +29,11 @@ void CMediaResPanel::RefreshMediaResPanel()
 	}
 }
 
-CMediaResPanel::CMediaResPanel(__view& view, bool m_bSingerPanel)
+CMediaResPanel::CMediaResPanel(__view& view, bool bSingerPanel)
 	: CBasePage(view, IDD_PAGE_MediaResPanel, L"", IDR_MENU_Dir, true)
 	, m_FileMenuGuard(view.m_ResModule, IDR_MENU_File, __MenuWidth)
-	, m_bSingerPanel(m_bSingerPanel)
-	, m_wndList(*this, m_bSingerPanel)
+	, m_bSingerPanel(bSingerPanel)
+	, m_wndList(*this, bSingerPanel)
 {
 }
 
@@ -372,30 +372,28 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 		{
 			(void)m_wndStatic.ShowWindow(SW_SHOW);
 		}
-		
+
+		UpdateTitle(L"");
+
 		return;
 	}
 
 	(void)m_wndStatic.ShowWindow(SW_HIDE);
 
 	wstring	strTitle;
-	wstring strOppPath = fsutil::GetOppPath(m_strRootDir, m_strCurrDir);
-	if (!strOppPath.empty())
+	if (!m_strCurrDir.empty())
 	{
-		strOppPath.erase(0,1);
-
 		if (m_bSingerPanel)
 		{
-			strTitle.append(L" | ");
+			strTitle.append(__CNDot);
 		}
 		
-		wstring strDirName = fsutil::GetFileName(strOppPath);
+		wstring strDirName = fsutil::GetFileName(m_strCurrDir);
 		if  (strDirName.size() > __MaxTabTitle)
 		{
 			strDirName.erase(__MaxTabTitle);
 			strDirName.append(L"...");
 		}
-
 		strTitle.append(strDirName);
 	}
 
@@ -405,7 +403,6 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 		{
 			strTitle.append(L"Γ½ΜεΏβ");
 		}
-
 		strTitle.append(2, ' ');
 	}
 

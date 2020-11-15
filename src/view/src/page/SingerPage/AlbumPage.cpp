@@ -471,16 +471,22 @@ void CAlbumPage::UpdateTitle()
 	wstring strTitle;
 	if (m_pSinger)
 	{
-		m_strBaseTitle.append(m_pSinger->m_pParent->m_strName);
-		m_strBaseTitle.append(__CNDot + m_pSinger->m_strName);
-
 		if (m_pAlbum)
 		{
 			strTitle = __CNDot + m_pAlbum->m_strName;
+			m_strBaseTitle.append(m_pSinger->m_strName);
 		}
 		else
 		{
 			strTitle = m_wndMediaResPanel.GetTitle();
+			if (strTitle.empty())
+			{
+				m_strBaseTitle.append(m_pSinger->m_pParent->m_strName + __CNDot + m_pSinger->m_strName);
+			}
+			else
+			{
+				m_strBaseTitle.append(m_pSinger->m_strName);
+			}
 		}
 	}
 	else
@@ -488,7 +494,8 @@ void CAlbumPage::UpdateTitle()
 		m_strBaseTitle.append(L"∏Ë ÷");
 	}
 
-	SetTitle(strTitle + L" ");
+	strTitle.push_back(' ');
+	SetTitle(strTitle);
 }
 
 void CAlbumPage::UpdateSingerName()

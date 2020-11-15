@@ -54,7 +54,7 @@ public:
 
 		, m_MainWnd(*this)
 
-		, m_MediaResPage(*this, true)
+		, m_MediaResPage(*this)
 
 		, m_PlayingPage(*this)
 		, m_PlayItemPage(*this)
