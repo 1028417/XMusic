@@ -33,7 +33,8 @@ private:
 
 	wstring GetDisplayTitle() const override
 	{
-		if (m_strName.empty())
+		cauto strDirName = fsutil::GetFileName(m_strPath);
+		if (m_strName.empty() || m_strName == strDirName)
 		{
 			cauto strParentDir = fsutil::GetParentDir(m_strPath);
 			if (strParentDir.empty())
@@ -41,7 +42,7 @@ private:
 				return m_strPath;
 			}
 
-			return fsutil::GetFileName(m_strPath) + L" | " + strParentDir;
+			return strDirName + L" | " + strParentDir;
 		}
 
 		return m_strName + L" | " + m_strPath;
