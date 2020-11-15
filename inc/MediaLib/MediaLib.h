@@ -173,7 +173,7 @@ private:
             return m_strName;
         }
 
-		return XFile::fileName();;
+        return XFile::fileName();
     }
 #endif
 };

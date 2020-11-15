@@ -9,16 +9,16 @@ class CSingerAttachDir : public CMediaDir
 public:
 	CSingerAttachDir() = default;
 
-	CSingerAttachDir(cwstr strName, cwstr strPath)
+	CSingerAttachDir(cwstr strPath, cwstr strName)
 		: CMediaDir(strPath)
-		, m_strName(strName)
 		, m_strPath(strPath)
+		, m_strName(strName)
 	{
 	}
 
 public:
-	wstring m_strName;
 	wstring m_strPath;
+	wstring m_strName;
 
 private:
 	int getImage() override

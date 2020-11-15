@@ -50,19 +50,6 @@ UINT CSingerMediaResPanel::_onShowDir()
 	UINT uItem = 0;
 	if (currDir() == rootDir())
 	{
-		/*auto pSinger = m_wndAlbumPage.GetSinger();
-		if (pSinger)
-		{
-			for (cauto strDir : pSinger->attachDir())
-			{
-				auto pMediaDir = __medialib.subDir(strDir);
-				if (pMediaDir)
-				{
-					m_wndList.InsertObject(*pMediaDir, uItem++);
-				}
-			}
-		}*/
-
 		for (auto& mediaDir : m_lstAttachDir)
 		{
 			m_wndList.InsertObject(mediaDir, uItem++);
