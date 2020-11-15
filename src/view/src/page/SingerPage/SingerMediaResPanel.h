@@ -36,7 +36,7 @@ private:
 		if (m_strName.empty())
 		{
 			cauto strParentDir = fsutil::GetParentDir(m_strPath);
-			if (strParentDir.size() == 1)
+			if (strParentDir.empty())
 			{
 				return m_strPath;
 			}
