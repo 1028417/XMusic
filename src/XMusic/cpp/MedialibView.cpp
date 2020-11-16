@@ -526,7 +526,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
 
 inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
 {
-    CPainterFontGuard fontGuard(painter, 0.8, QFont::Weight::ExtraLight);
+    CPainterFontGuard fontGuard(painter, 0.81, QFont::Weight::ExtraLight);
     UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
     return painter.drawTextEx(rc, __rAlign, qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
 }
