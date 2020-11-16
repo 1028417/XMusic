@@ -618,9 +618,40 @@ void MainWindow::_relayout()
             height++;
         }*/
 
-        newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x()) - width/2
-                       , __round(fBkgZoomRate*pos.center().y()) - height/2 + dy_bkg, width, height);
+        newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x() - width/2.0f)
+                       , __round(fBkgZoomRate*pos.center().y() - height/2.0f) + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
+    }    
+
+    if (xBkgOffset != 0)
+    {
+        {auto& newPos = m_mapWidgetNewPos[ui.progressbar];
+        newPos.adjust(-xBkgOffset, 0, xBkgOffset, 0);
+        ui.progressbar->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.labelProgress];
+        newPos.adjust(-xBkgOffset, 0, xBkgOffset, 0);
+        ui.labelProgress->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.btnSetting];
+        newPos.moveLeft(newPos.x()-xBkgOffset);
+        ui.btnSetting->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.labelPlayingfile];
+        newPos.moveLeft(newPos.x()-xBkgOffset);
+        ui.labelPlayingfile->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.labelDuration];
+        newPos.moveLeft(newPos.x()+xBkgOffset);
+        ui.labelDuration->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.btnRandom];
+        newPos.moveLeft(newPos.x()+xBkgOffset);
+        ui.btnRandom->setGeometry(newPos);}
+
+        {auto& newPos = m_mapWidgetNewPos[ui.btnOrder];
+        newPos.moveLeft(newPos.x()+xBkgOffset);
+        ui.btnOrder->setGeometry(newPos);}
     }
 
     int y_frameDemand = __size(20);
@@ -673,12 +704,14 @@ void MainWindow::_relayout()
 
     if (!m_bDefaultBkg)
     {
-        int yOffset = 0;
+#define __dy __size(2)
+        int dy =  __round(fBkgZoomRate*__dy);
 
         if (fBkgZoomRateEx <= 1)
         {
-#define __offset __size10
-            yOffset = __round((float)__offset/fBkgZoomRate);
+#define __offset __size(6)
+            int yOffset = __round((float)__offset/fBkgZoomRate);
+            dy -= yOffset;
 
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
@@ -686,12 +719,10 @@ void MainWindow::_relayout()
             }
         }
 
-#define __dy __size(4)
-        int dy =  __round(fBkgZoomRate*__dy);
         for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
         {
-            pWidget->move(pWidget->x(), pWidget->y() + dy - yOffset);
+            pWidget->move(pWidget->x(), pWidget->y() + dy);
         }
     }
 
@@ -755,7 +786,6 @@ void MainWindow::_relayout()
 
     if (!m_bDefaultBkg)
     {
-        ui.labelDuration->move(ui.labelDuration->x(), ui.labelDuration->y() - __size(12));
         int cx_progressbar = ui.progressbar->width();
 
         int cy_Playingfile = ui.labelPlayingfile->height();
@@ -784,7 +814,6 @@ void MainWindow::_relayout()
             {
                 cy_SingerImg = __size(70);
                 y_SingerImg = y_Playingfile+cy_Playingfile - cy_SingerImg;
-
             }
             else
             {
