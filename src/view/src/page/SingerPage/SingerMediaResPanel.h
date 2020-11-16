@@ -10,7 +10,7 @@ public:
 	CSingerAttachDir() = default;
 
 	CSingerAttachDir(cwstr strPath, cwstr strName=L"")
-		: CMediaDir(strPath)
+		: CMediaDir(__medialib.toAbsPath(strPath, true))
 		, m_strPath(strPath)
 		, m_strName(strName)
 	{
@@ -86,7 +86,7 @@ private:
 
 	void OnNMSetFocusList(NMHDR *pNMHDR, LRESULT *pResult);
 
-	UINT _onShowDir() override;
+	void _onShowDir(TD_MediaResList& paMediaRes) override;
 
 	void OnMenuCommand(UINT uID, UINT uVkKey) override;
 

@@ -362,9 +362,11 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 
 	if (NULL == m_pCurrDir)
 	{
-		m_wndList.DeleteAllItems();
-
-		if (_onShowDir() > 0)
+		TD_MediaResList paMediaRes;
+		_onShowDir(paMediaRes);
+		//m_uAddInCount = paMediaRes.size();
+		
+		if (paMediaRes)
 		{
 			(void)m_wndStatic.ShowWindow(SW_HIDE);
 		}
@@ -372,6 +374,8 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 		{
 			(void)m_wndStatic.ShowWindow(SW_SHOW);
 		}
+
+		m_wndList.SetObjects(TD_ListObjectList(paMediaRes));
 
 		UpdateTitle(L"");
 
@@ -423,7 +427,7 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 			}
 		});
 
-		m_pCurrDir->dirs()([&](CPath& subDir, size_t uIdx) {
+		paSubDir([&](CPath& subDir, size_t uIdx) {
 			auto& MediaDir = (CMediaDir&)subDir;
 
 			auto itr = mapDirSinger.find(strutil::lowerCase_r(subDir.fileName()));
@@ -440,10 +444,14 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 		});
 	}
 
-	m_wndList.ShowDir(*m_pCurrDir);
+	TD_MediaResList paMediaRes;
+	_onShowDir(paMediaRes);
+	m_uAddInCount = paMediaRes.size();
 
-	(void)_onShowDir();
-
+	paMediaRes.add(paSubDir);
+	paMediaRes.add(m_pCurrDir->files());
+	m_wndList.SetObjects(TD_ListObjectList(paMediaRes));
+	
 	if (pHitestItem)
 	{
 		m_wndList.SelectObject(pHitestItem);
@@ -536,7 +544,7 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 	m_pCurrDir->subMediaRes([&](CMediaRes& MediaRes){
 		if (MediaRes.UpdateRelatedMediaSet(eRmsType, MediaSetChanged))
 		{
-			m_wndList.UpdateItem(uIdx, &MediaRes);
+			m_wndList.UpdateItem(m_uAddInCount+uIdx, &MediaRes);
 		}
 
 		uIdx++;

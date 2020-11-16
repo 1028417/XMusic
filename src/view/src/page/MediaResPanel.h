@@ -62,6 +62,8 @@ private:
 	UINT m_uTileWidth = 0;
 	UINT m_uIconWidth = 0;
 
+	UINT m_uAddInCount = 0;
+
 protected:
 	CMediaResList m_wndList;
 
@@ -116,7 +118,7 @@ public:
 private:
 	virtual int GetTabImage() override;
 
-	virtual UINT _onShowDir() { return 0; }
+	virtual void _onShowDir(TD_MediaResList& paMediaRes) {}
 
 	void _showDirMenu(CMediaDir *pSubDir);
 	void _showFileMenu(TD_MediaResList& lstMediaRes);

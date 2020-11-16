@@ -45,18 +45,12 @@ void CSingerMediaResPanel::SetSinger(const CSinger& singer)
 	}
 }
 
-UINT CSingerMediaResPanel::_onShowDir()
+void CSingerMediaResPanel::_onShowDir(TD_MediaResList& paMediaRes)
 {
-	UINT uItem = 0;
 	if (currDir() == rootDir())
 	{
-		for (auto& mediaDir : m_lstAttachDir)
-		{
-			m_wndList.InsertObject(mediaDir, uItem++);
-		}
+		paMediaRes.add(m_lstAttachDir);
 	}
-
-	return uItem;
 }
 
 void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
