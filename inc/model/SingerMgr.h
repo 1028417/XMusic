@@ -38,7 +38,8 @@ public:
 
 	BOOL Init();
 
-	CSinger* matchSingerDir(cwstr strPath, bool bDir) const;
+    CSinger* matchSingerDir(cwstr strDir) const;
+    CSinger* checkSingerDir(cwstr strPath, bool bDir) const;
 
     void enumSinger(cfn_void_t<CSinger&>);
 

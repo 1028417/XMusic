@@ -10,8 +10,6 @@
 
 #define __RemarkAlpha 200
 
-QPixmap g_pmDefaultSinger;
-
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
     CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
@@ -27,7 +25,7 @@ void CMedialibView::initpm()
     (void)m_pmSSFile.load(__mediaPng(media));
 
     (void)m_pmSingerGroup.load(__mediaPng(singergroup));
-    (void)g_pmDefaultSinger.load(__mediaPng(singerdefault));
+    (void)m_pmDefaultSinger.load(__mediaPng(singerdefault));
     (void)m_pmAlbum.load(__mediaPng(album));
 
     (void)m_pmPlaylistSet.load(__mediaPng(playlistset));
@@ -107,7 +105,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             cauto singerMgr = m_app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
-                auto pSinger = singerMgr.matchSingerDir(PlayItem.GetPath(), false);
+                auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath(), false);
                 if (pSinger)
                 {
                     PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
@@ -324,7 +322,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
-                auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath(), true);
+                auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath());
                 if (pSinger)
                 {
                     context.pmIcon = &genSingerHead(pSinger->m_uID, pSinger->m_strName);
@@ -493,7 +491,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     auto pHeadImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
     if (NULL == pHeadImg)
     {
-        pSingerPixmap = &g_pmDefaultSinger;
+        pSingerPixmap = &m_pmDefaultSinger;
     }
     else if (pHeadImg->bExist)
     {
@@ -521,7 +519,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pSingerPixmap;
     }
 
-    return g_pmDefaultSinger;
+    return m_pmDefaultSinger;
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter

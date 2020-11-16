@@ -263,7 +263,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
             bShowPlayButton = true;
 
             cauto pm = m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName);
-            if (&pm != &g_pmDefaultSinger)
+            if (&pm != &m_lv.m_pmDefaultSinger)
             {
                 ui.labelSingerImg->setPixmap(pm);
                 ui.labelSingerImg->setVisible(true);

@@ -7,13 +7,14 @@
 
 #define __playIconOffset __size10
 
-extern QPixmap g_pmDefaultSinger;
-
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
 public:
     CMedialibView(class CMedialibDlg& medialibDlg, class CApp& app, CMediaDir& OuterDir);
+
+public:
+    QPixmap m_pmDefaultSinger;
 
 private:
     class CMedialibDlg& m_medialibDlg;
@@ -41,7 +42,6 @@ private:
     QPixmap m_pmDSD;
     QPixmap m_pmMQS;
     QPixmap m_pmDTS;
-
 
     QPixmap m_pmDir;
     QPixmap m_pmDirLink;
