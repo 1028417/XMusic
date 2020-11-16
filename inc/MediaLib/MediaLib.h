@@ -33,7 +33,13 @@ public:
 
     int getImage() override
     {
-        return (int)E_GlobalImage::GI_AttachDir;
+		int nImg = __super::getImage();
+		if ((int)E_GlobalImage::GI_Dir == nImg)
+		{
+			nImg = (int)E_GlobalImage::GI_AttachDir;
+		}
+
+		return nImg;
     }
 
     bool GetRenameText(wstring&) const override
