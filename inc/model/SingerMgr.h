@@ -3,33 +3,42 @@
 class __ModelExt CSingerMgr : public CMediaSet
 {
 public:
-    CSingerMgr(CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
+	CSingerMgr(CMediaSet& RootMediaSet, class IModelObserver& ModelObserver);
 
 private:
 	class IModelObserver& m_ModelObserver;
 
-    SList<CSingerGroup> m_lstGroups;
+	SList<CSingerGroup> m_lstGroups;
 
 	list<CSinger> m_lstRootSingers;
 
+	PtrArray<CSinger> m_paSinger;
+
+	list<pair<wstring, CSinger*>> m_lstSingerDir;
+
 public:
-    const SList<CSingerGroup>& groups() const
+	const PtrArray<CSinger>& singers() const
 	{
-		return m_lstGroups;
+		return m_paSinger;
 	}
 
-	const list<CSinger>& rootSingers() const
+	const list<pair<wstring, CSinger*>>& singerDirList() const
 	{
-		return m_lstRootSingers;
+		return m_lstSingerDir;
 	}
 
     void clear()
     {
         m_lstGroups.clear();
         m_lstRootSingers.clear();
+		m_lstSingerDir.clear();
+
+		m_paSinger.clear();
     }
 
 	BOOL Init();
+
+	CSinger* matchSingerDir(cwstr strPath, bool bDir) const;
 
     void enumSinger(cfn_void_t<CSinger&>);
 
@@ -47,8 +56,6 @@ public:
 	CSinger *AddSinger(CMediaRes& SrcPath, CSingerGroup *pGroup, bool bInitAlbum);
 
 	BOOL RemoveSinger(UINT uSingerID);
-
-	BOOL UpdateSingerPos(UINT uSingerID, int nPos, int nDstGroupID);
 
     BOOL AttachDir(CSinger& singer, cwstr strDir);
     BOOL DetachDir(CSinger& singer, cwstr strDir);

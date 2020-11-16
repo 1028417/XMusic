@@ -419,14 +419,14 @@ void CMediaResPanel::_showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir, CMediaRe
 	if (paSubDir)// && !m_bSingerPanel)
 	{
 		map<wstring, const CSinger*> mapDirSinger;
-		m_view.getSingerMgr().enumSinger([&](const CSinger& singer) {
-			cauto strSingerDir = singer.dir();
-			if (strutil::matchIgnoreCase(fsutil::GetParentDir(strSingerDir), m_strCurrDir))
+		for (cauto pr : m_view.getSingerMgr().singerDirList())
+		{
+			if (strutil::matchIgnoreCase(fsutil::GetParentDir(pr.first), m_strCurrDir))
 			{
-				mapDirSinger[strutil::lowerCase_r(fsutil::GetFileName(strSingerDir))] = &singer;
+				mapDirSinger[strutil::lowerCase_r(fsutil::GetFileName(pr.first))] = pr.second;
 			}
-		});
-
+		}
+		
 		paSubDir([&](CPath& subDir, size_t uIdx) {
 			auto& MediaDir = (CMediaDir&)subDir;
 

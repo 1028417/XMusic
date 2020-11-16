@@ -7,6 +7,8 @@
 
 #define __playIconOffset __size10
 
+extern QPixmap g_pmDefaultSinger;
+
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
@@ -25,7 +27,6 @@ private:
     CMediaDir &m_OuterDir;
 
     QPixmap m_pmSingerGroup;
-    QPixmap m_pmDefaultSinger;
     QPixmap m_pmAlbum;
 
     QPixmap m_pmPlaylistSet;
@@ -56,12 +57,8 @@ private:
 
     int m_nFlashItem = -1;
 
-    map<wstring, const CSinger*> m_mapSingerDir;
-
 public:
     void initpm();
-
-    void init();
 
     void reset() override
     {

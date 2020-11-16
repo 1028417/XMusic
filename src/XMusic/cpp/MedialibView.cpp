@@ -10,6 +10,8 @@
 
 #define __RemarkAlpha 200
 
+QPixmap g_pmDefaultSinger;
+
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
     CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
@@ -25,7 +27,7 @@ void CMedialibView::initpm()
     (void)m_pmSSFile.load(__mediaPng(media));
 
     (void)m_pmSingerGroup.load(__mediaPng(singergroup));
-    (void)m_pmDefaultSinger.load(__mediaPng(singerdefault));
+    (void)g_pmDefaultSinger.load(__mediaPng(singerdefault));
     (void)m_pmAlbum.load(__mediaPng(album));
 
     (void)m_pmPlaylistSet.load(__mediaPng(playlistset));
@@ -48,13 +50,6 @@ void CMedialibView::initpm()
     m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
     (void)m_pmAddPlay.load(":/img/btnAddplay.png");
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
-}
-
-void CMedialibView::init()
-{
-    m_app.getSingerMgr().enumSinger([&](const CSinger& singer){
-        m_mapSingerDir[singer.dir()] = &singer;
-    });
 }
 
 void CMedialibView::_onShowRoot()
@@ -108,21 +103,18 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         else
         {
             plstSingerName = &mapSingerName[&MediaSet];
+
+            cauto singerMgr = m_app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
-                cauto strPath = PlayItem.GetPath();
-                for (auto itr = m_mapSingerDir.rbegin(); itr != m_mapSingerDir.rend(); ++itr)
+                auto pSinger = singerMgr.matchSingerDir(PlayItem.GetPath(), false);
+                if (pSinger)
                 {
-                    if (fsutil::CheckSubPath(itr->first, strPath))
+                    PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
+                                                              , pSinger->m_uID, pSinger->m_strName);
+                    if (std::find(plstSingerName->begin(), plstSingerName->end(), pSinger->m_strName) == plstSingerName->end())
                     {
-                        cauto singer = *itr->second;
-                        PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
-                                                                  , singer.m_uID, singer.m_strName);
-                        if (std::find(plstSingerName->begin(), plstSingerName->end(), singer.m_strName) == plstSingerName->end())
-                        {
-                            plstSingerName->push_back(singer.m_strName);
-                        }
-                        break;
+                        plstSingerName->push_back(pSinger->m_strName);
                     }
                 }
             }
@@ -295,7 +287,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     {
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-        if (!((CMediaDir*)context.pDir)->isLocal())
+        auto pMediaDir = (CMediaDir*)context.pDir;
+        if (!pMediaDir->isLocal())
         {
             context.pmIcon = &m_pmSSDir;
 
@@ -327,6 +320,14 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 {
                     context.pmIcon = &m_pmDTS;
                     context.strText = L"5.1声道\nDTSDigitalSurround";
+                }
+            }
+            else
+            {
+                auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath(), true);
+                if (pSinger)
+                {
+                    context.pmIcon = &genSingerHead(pSinger->m_uID, pSinger->m_strName);
                 }
             }
         }
@@ -472,7 +473,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
         list<wstring> lstSingerName;
         cauto paSinger = currentSubSets();
         for (cauto uItem : currentItems())
-        {            
+        {
             paSinger.get(uItem, [&](CMediaSet& singer){
                 lstSingerName.push_back(singer.m_strName);
             });
@@ -492,7 +493,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     auto pHeadImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
     if (NULL == pHeadImg)
     {
-        pSingerPixmap = &m_pmDefaultSinger;
+        pSingerPixmap = &g_pmDefaultSinger;
     }
     else if (pHeadImg->bExist)
     {
@@ -520,7 +521,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pSingerPixmap;
     }
 
-    return m_pmDefaultSinger;
+    return g_pmDefaultSinger;
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter

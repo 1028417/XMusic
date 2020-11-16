@@ -119,32 +119,28 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 
 void CImgMgr::initSingerImg()
 {
-	/*m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
-		(void)_initSingerHead(singer.m_uID, singer.m_strName);
-	});
-	return;*/
-
 	CSignal sgn(false, true);
 	list<pair<UINT, CImg>> lstImg;
 	mtutil::concurrence([&]() {
-		m_model.getSingerMgr().enumSinger([&](const CSinger& singer) {
-			cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(singer.m_strName);
+		for (auto pSinger : m_model.getSingerMgr().singers())
+		{
+			cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(pSinger->m_strName);
 			if (strHeadImg.empty())
 			{
-				return;
+				continue;
 			}
 
 			CImg img;
 			if (!img.Load(strHeadImg.c_str()))
 			{
-				return;
+				continue;
 			}
 			
 			sgn.set([&]() {
-				lstImg.emplace_back(singer.m_uID, img);
+				lstImg.emplace_back(pSinger->m_uID, img);
 			});
 			img.Detach();
-		});
+		}
 
 		sgn.stop();
 	}, [&]() {

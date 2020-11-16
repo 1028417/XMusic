@@ -6,19 +6,10 @@ public:
 	CSingerMatcher(class CSingerMgr& SingerMgr);
 	
 private:
-	class CSingerMgr& m_SingerMgr;
-
     PairList<wstring, wstring> m_plSingerInfo;
-    map<wstring, wstring> m_mapSingerName;
-
-private:
-	wstring _matchSinger(wstring& strFileTitle) const;
 
 public:
-    wstring checkSinger(const wstring& strSingerName) const;
-	
-    wstring matchSinger(cwstr strFileTitle) const;
-	wstring matchSinger(cwstr strFileTitle, cwstr strPath) const;
+    wstring matchSinger(cwstr strCollateTitle, cwstr strPath) const;
 };
 
 

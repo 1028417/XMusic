@@ -77,8 +77,6 @@ void CMedialibDlg::init()
             }
         }
     });
-
-    m_lv.init();
 }
 
 /*this->setGeometry(m_app.mainWnd().geometry());
@@ -259,22 +257,25 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
 
     auto pSinger = m_lv.currentSinger();
-    if (pSinger)
-    {
-        bShowPlayButton = true;
-    }
-    if (pSinger && m_app.getSingerImgMgr().getSingerHead(pSinger->m_strName))
-    {
-        m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+    do {
+        if (pSinger)
+        {
+            bShowPlayButton = true;
 
-        ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName));
-        ui.labelSingerImg->setVisible(true);
-    }
-    else
-    {
+            cauto pm = m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName);
+            if (&pm != &g_pmDefaultSinger)
+            {
+                ui.labelSingerImg->setPixmap(pm);
+                ui.labelSingerImg->setVisible(true);
+                break;
+            }
+
+            m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+        }
+
         ui.labelSingerImg->clear();
         ui.labelSingerImg->setVisible(false);
-    }
+    } while(0);
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
