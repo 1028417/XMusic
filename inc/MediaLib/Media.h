@@ -1,6 +1,12 @@
 
 #pragma once
 
+#if __windows
+#define __transSeparator(path)
+#else
+#define __transSeparator(path) fsutil::transSeparator(path)
+#endif
+
 struct __MediaLibExt tagMediaInfo
 {
     tagMediaInfo() = default;
@@ -148,9 +154,8 @@ private:
         m_eFileType = __mediaFileType(strPath);
 
         fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
-#if !__windows
-        fsutil::transSeparator(m_strParentDir);
-#endif
+
+        __transSeparator(m_strParentDir);
     }
 
 #if __winvc
