@@ -1179,7 +1179,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
     else
     {
-        auto pSinger = m_app.getSingerMgr().matchSingerDir(PlayingInfo.strPath);
+        auto pSinger = m_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
         if (pSinger)
         {
             PlayingInfo.uSingerID = pSinger->m_uID;

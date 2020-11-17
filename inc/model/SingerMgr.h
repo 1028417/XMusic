@@ -14,25 +14,16 @@ private:
 
 	PtrArray<CSinger> m_paSinger;
 
-	list<pair<wstring, CSinger*>> m_lstSingerDir;
-
 public:
 	const PtrArray<CSinger>& singers() const
 	{
 		return m_paSinger;
 	}
 
-	const list<pair<wstring, CSinger*>>& singerDirList() const
-	{
-		return m_lstSingerDir;
-	}
-
     void clear()
     {
         m_lstGroups.clear();
         m_lstRootSingers.clear();
-		m_lstSingerDir.clear();
-
 		m_paSinger.clear();
     }
 
@@ -40,8 +31,6 @@ public:
 
     CSinger* matchSingerDir(cwstr strDir) const;
     CSinger* checkSingerDir(cwstr strPath, bool bDir) const;
-
-    void enumSinger(cfn_void_t<CSinger&>);
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
 

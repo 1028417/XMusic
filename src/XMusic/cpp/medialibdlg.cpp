@@ -118,15 +118,32 @@ void CMedialibDlg::showMedia(const CMedia& media)
 bool CMedialibDlg::showMediaRes(cwstr strPath)
 {
     CMediaRes *pMediaRes = __medialib.subFile(strPath);
-    if (NULL == pMediaRes)
+    if (pMediaRes)
+    {
+        do {
+            auto pParentDir = pMediaRes->parent();
+            if (pParentDir && !pParentDir->isLocal())
+            {
+                auto pSinger = m_app.getSingerMgr().checkSingerDir(strPath, false);
+                if (pSinger)
+                {
+                    m_lv.showMediaSet((CSnapshotMediaDir&)*pParentDir);
+                    break;
+                }
+            }
+
+            m_lv.hittestFile(*pMediaRes);
+        } while(0);
+    }
+    else
     {
         pMediaRes = m_OuterDir.subFile(strPath);
         if(NULL == pMediaRes)
         {
             return false;
         }
+        m_lv.hittestFile(*pMediaRes);
     }
-    m_lv.hittestFile(*pMediaRes);
 
     CApp::async([&, pMediaRes]() {
         tryShowWholeTrack(*pMediaRes);

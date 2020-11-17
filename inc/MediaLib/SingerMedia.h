@@ -118,6 +118,24 @@ private:
 };
 
 
+struct tagSingerAttachDir
+{
+    tagSingerAttachDir() = default;
+
+    tagSingerAttachDir(cwstr strDir, cwstr strAliasName)
+        : strDir(strDir)
+        , strAliasName(strAliasName)
+    {
+    }
+
+    wstring strDir;
+    wstring strAliasName;
+
+#if !__winvc
+    class CSnapshotMediaDir* pMediaSet = NULL;
+#endif
+};
+
 class __MediaLibExt CSinger : public CMediaSet
 {
 public:
@@ -138,7 +156,7 @@ private:
 
 	list<CAlbum> m_lstAlbums;
 
-    vector<pair<wstring, wstring>> m_vecAttachDir;
+    list<tagSingerAttachDir> m_lstAttachDir;
 
 public:
     cwstr dir() const
@@ -146,23 +164,25 @@ public:
         return m_strDir;
     }
 
-	const list<CAlbum>& albums() const
-	{
-		return m_lstAlbums;
-	}
+    const list<CAlbum>& albums() const
+    {
+        return m_lstAlbums;
+    }
     list<CAlbum>& albums()
     {
         return m_lstAlbums;
     }
 
-    const vector<pair<wstring, wstring>>& attachDir() const
+    void setAttachDir(list<tagSingerAttachDir>&& lstAttachDir);
+
+    const list<tagSingerAttachDir>& attachDir() const
     {
-        return m_vecAttachDir;
+        return m_lstAttachDir;
     }
-	vector<pair<wstring, wstring>>& attachDir()
-	{
-		return m_vecAttachDir;
-	}
+    list<tagSingerAttachDir>& attachDir()
+    {
+        return m_lstAttachDir;
+    }
 
     CAlbum& addAlbum(const CAlbum& album)
     {
@@ -174,7 +194,7 @@ public:
 
     void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
-	bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
+    bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 
 private:
 #if __winvc

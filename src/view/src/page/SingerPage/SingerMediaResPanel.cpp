@@ -39,9 +39,9 @@ void CSingerMediaResPanel::SetSinger(const CSinger& singer)
 	SetDir(singer.dir());
 
 	m_lstAttachDir.clear();
-	for (cauto pr : singer.attachDir())
+	for (cauto attachDir : singer.attachDir())
 	{
-		m_lstAttachDir.emplace_back(pr.first, pr.second);
+		m_lstAttachDir.emplace_back(attachDir.strDir, attachDir.strAliasName);
 	}
 }
 
