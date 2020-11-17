@@ -529,7 +529,7 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 	}
 	
 	UINT uIdx = 0;
-	m_pCurrDir->subMediaRes([&](CMediaRes& MediaRes){
+	m_pCurrDir->get([&](CMediaRes& MediaRes){
 		if (MediaRes.UpdateRelatedMediaSet(eRmsType, MediaSetChanged))
 		{
 			m_wndList.UpdateItem(m_uAddInCount+uIdx, &MediaRes);

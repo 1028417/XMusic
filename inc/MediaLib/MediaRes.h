@@ -67,6 +67,13 @@ public:
     virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bSingerPanel);
 #endif
 
+#if !__winvc
+    virtual bool isLocal() const
+    {
+        return true;
+    }
+#endif
+
     virtual E_MediaType type() const override
     {
         return E_MediaType::MT_MediaRes;
@@ -173,25 +180,18 @@ protected:
 #endif
 
 public:
-#if !__winvc
-	virtual bool isLocal() const
-	{
-		return true;
-	}
-#endif
-
 	wstring GetTitle() const override
 	{
 		return XFile::fileName();
 	}
 
-	void subMediaRes(cfn_void_t<CMediaRes&> cb)
+    void get(cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get([&](XFile& subObj) {
 			cb((CMediaRes&)subObj);
 		});
 	}
-	void subMediaRes(UINT uIdx, cfn_void_t<CMediaRes&> cb)
+    void get(UINT uIdx, cfn_void_t<CMediaRes&> cb)
 	{
 		CPath::get(uIdx, [&](XFile& subObj) {
 			cb((CMediaRes&)subObj);
@@ -211,12 +211,7 @@ public:
 	inline CMediaRes* subFile(cwstr strSubFile)
 	{
 		return subPath(strSubFile, false);
-	}
-
-	inline CMediaRes* subFile(const IMedia& media)
-	{
-		return subPath(media.GetPath(), false);
-	}
+    }
 
 #if __winvc
 private:

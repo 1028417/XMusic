@@ -1133,7 +1133,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
     PlayingInfo.qsTitle = __WS2Q(PlayItem.GetTitle());
-
     PlayingInfo.strPath = PlayItem.GetPath();
 
     UINT uDuration = PlayItem.duration();
@@ -1155,31 +1154,37 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
-    //if (m_app.getPlayMgr().mediaOpaque().isOnline()) // 本地视频文件不能按码率算
+    // TODO 获取音频流码率 if (!m_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
+    PlayingInfo.eQuality = PlayItem.quality();
+    PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
+
+    PlayingInfo.uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
+    if (PlayingInfo.uPlayItemID != 0)
     {
-        PlayingInfo.eQuality = PlayItem.quality();
-        PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
+        PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
     }
 
-    PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-    PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
-    PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
-    PlayingInfo.uRelatedAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
-
-    PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
-    PlayingInfo.uRelatedPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
-
-    if (PlayingInfo.uRelatedAlbumItemID != 0)
+    PlayingInfo.uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
+    if (PlayingInfo.uAlbumItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(PlayingInfo.uRelatedAlbumItemID);
+        PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+        PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+        PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+
+        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(PlayingInfo.uAlbumItemID);
     }
-    else if (PlayingInfo.uRelatedPlayItemID != 0)
+    else if (PlayingInfo.uPlayItemID != 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(PlayingInfo.uRelatedPlayItemID);
+        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(PlayingInfo.uPlayItemID);
     }
     else
     {
-        PlayingInfo.pRelatedMedia = NULL;
+        auto pSinger = m_app.getSingerMgr().matchSingerDir(PlayingInfo.strPath);
+        if (pSinger)
+        {
+            PlayingInfo.uSingerID = pSinger->m_uID;
+            PlayingInfo.strSingerName = pSinger->m_strName;
+        }
     }
 
     m_app.sync([=](){
@@ -1301,7 +1306,7 @@ WString MainWindow::_genAlbumName()
             }
             strMediaSet << m_PlayingInfo.strPlaylist;
 
-            m_PlayingInfo.uRelatedAlbumItemID = 0;
+            m_PlayingInfo.uAlbumItemID = 0;
         }
     }
     else if (!m_PlayingInfo.strAlbum.empty())
@@ -1312,7 +1317,7 @@ WString MainWindow::_genAlbumName()
         }
         strMediaSet << m_PlayingInfo.strAlbum;
 
-        m_PlayingInfo.uRelatedPlayItemID = 0;
+        m_PlayingInfo.uPlayItemID = 0;
     }
 
     return strMediaSet;
@@ -1486,7 +1491,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelSingerName)
     {
-        if (m_PlayingInfo.uSingerID != 0)// && !ui.labelSingerName->text().isEmpty())
+        if (m_PlayingInfo.uSingerID != 0)
         {
             CMediaSet *pMediaSet = m_app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)

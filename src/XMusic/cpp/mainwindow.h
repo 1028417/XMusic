@@ -34,11 +34,11 @@ struct tagPlayingInfo
     wstring strSingerName;
     UINT uSingerID = 0;
 
+    UINT uAlbumItemID = 0;
     wstring strAlbum;
-    UINT uRelatedAlbumItemID = 0;
 
+    UINT uPlayItemID = 0;
     wstring strPlaylist;
-    UINT uRelatedPlayItemID = 0;
 
     const CMedia *pRelatedMedia = NULL;
 };

@@ -161,7 +161,7 @@ public:
     {
     }
 
-private:
+public:
     bool isLocal() const override
     {
         return false;
@@ -171,7 +171,6 @@ private:
 
     void GetSubSets(TD_MediaSetList&) override;
 
-#if !__winvc
     wstring name() const override
     {
         if (!m_strName.empty())
@@ -181,6 +180,5 @@ private:
 
         return XFile::fileName();
     }
-#endif
 };
 #endif

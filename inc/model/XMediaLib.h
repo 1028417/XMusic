@@ -85,6 +85,11 @@ private:
     CRCueFile m_CueFile;
 
 public:
+    bool isLocal() const override
+    {
+        return false;
+    }
+
     UINT duration() const override
     {
         return m_uDuration;
