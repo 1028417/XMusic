@@ -727,19 +727,32 @@ void MainWindow::_relayout()
     }
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
-    cauto strMediaSet = _genAlbumName();
-    if (strMediaSet->empty())
+    if (m_PlayingInfo.pRelatedMedia && m_PlayingInfo.pRelatedMedia->m_pParent)
     {
-        labelAlbumName.setVisible(false);
-    }
-    else
-    {
+        WString strMediaSet;
+        if (!m_bDefaultBkg)
+        {
+            if (E_MediaSetType::MST_Album == m_PlayingInfo.pRelatedMedia->m_pParent->m_eType)
+            {
+                strMediaSet << L"专辑:  ";
+            }
+            else
+            {
+                strMediaSet << L"歌单:  ";
+            }
+        }
+        strMediaSet << m_PlayingInfo.pRelatedMedia->m_pParent->m_strName;
+
         labelAlbumName.setVisible(true);
         labelAlbumName.setText(strMediaSet);
         labelAlbumName.setFont(0.95f);
 
         labelAlbumName.setShadow(uShadowWidth);
         labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
+    }
+    else
+    {
+        labelAlbumName.setVisible(false);
     }
 
     ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
@@ -1158,32 +1171,29 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.eQuality = PlayItem.quality();
     PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
 
-    PlayingInfo.uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
-    if (PlayingInfo.uPlayItemID != 0)
+    auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
+    if (uAlbumItemID > 0)
     {
-        PlayingInfo.strPlaylist = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
-    }
+        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(uAlbumItemID);
 
-    PlayingInfo.uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
-    if (PlayingInfo.uAlbumItemID != 0)
-    {
-        PlayingInfo.strAlbum = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-
-        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(PlayingInfo.uAlbumItemID);
-    }
-    else if (PlayingInfo.uPlayItemID != 0)
-    {
-        PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(PlayingInfo.uPlayItemID);
     }
     else
     {
-        auto pSinger = m_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
-        if (pSinger)
+        auto uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
+        if (uPlayItemID != 0)
         {
-            PlayingInfo.uSingerID = pSinger->m_uID;
-            PlayingInfo.strSingerName = pSinger->m_strName;
+            PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(uPlayItemID);
+        }
+        else
+        {
+            auto pSinger = m_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
+            if (pSinger)
+            {
+                PlayingInfo.uSingerID = pSinger->m_uID;
+                PlayingInfo.strSingerName = pSinger->m_strName;
+            }
         }
     }
 
@@ -1206,14 +1216,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
         cauto qsSingerName = __WS2Q(m_PlayingInfo.strSingerName);
-        /*if (m_PlayingInfo.qsTitle.indexOf(qsSingerName) >= 0)
-        {
-            ui.labelSingerName->clear();
-        }
-        else*/
-        {
-            ui.labelSingerName->setText(qsSingerName);
-        }
+        ui.labelSingerName->setText(qsSingerName);
 
         if (m_PlayingInfo.strSingerName.empty())
         {
@@ -1287,40 +1290,6 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
             _playSingerImg();
         });
     }
-}
-
-WString MainWindow::_genAlbumName()
-{
-    WString strMediaSet;
-
-    auto eDemandMode = m_app.getPlayMgr().demandMode();
-    if (E_DemandMode::DM_DemandPlayItem == eDemandMode
-            || E_DemandMode::DM_DemandPlaylist == eDemandMode
-            || m_PlayingInfo.strAlbum.empty())
-    {
-        if (!m_PlayingInfo.strPlaylist.empty())
-        {
-            if (!m_bDefaultBkg)
-            {
-                strMediaSet << L"歌单:  ";
-            }
-            strMediaSet << m_PlayingInfo.strPlaylist;
-
-            m_PlayingInfo.uAlbumItemID = 0;
-        }
-    }
-    else if (!m_PlayingInfo.strAlbum.empty())
-    {
-        if (!m_bDefaultBkg)
-        {
-            strMediaSet << L"专辑:  ";
-        }
-        strMediaSet << m_PlayingInfo.strAlbum;
-
-        m_PlayingInfo.uPlayItemID = 0;
-    }
-
-    return strMediaSet;
 }
 
 #define ___singerImgElapse 8

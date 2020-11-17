@@ -31,14 +31,8 @@ struct tagPlayingInfo
     E_MediaQuality eQuality = E_MediaQuality::MQ_None;
     QString qsQuality;
 
-    wstring strSingerName;
     UINT uSingerID = 0;
-
-    UINT uAlbumItemID = 0;
-    wstring strAlbum;
-
-    UINT uPlayItemID = 0;
-    wstring strPlaylist;
+    wstring strSingerName;
 
     const CMedia *pRelatedMedia = NULL;
 };
@@ -150,8 +144,6 @@ private:
     void _updatePlayPauseButton(bool bPlaying);
 
     void _updateProgress();
-
-    WString _genAlbumName();
 
     void _demand(CButton* btnDemand);
 
