@@ -276,9 +276,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 		return false;
 	}
 
-	cauto strOldOppPath = media.GetPath();
-
-	bool bDir = dynamic_cast<const CMediaDir*>(&media) != NULL;
+    bool bDir = (media.type() == E_MediaType::MT_MediaRes && ((CMediaRes&)media).isDir());
 
 	wstring strExtName;
 	if (!bDir)
@@ -286,6 +284,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 		strExtName = __wcDot + media.GetExtName();
 	}
 
+    cauto strOldOppPath = media.GetPath();
 	cauto strOldAbsPath = media.GetAbsPath();
 	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wcPathSeparator + strNewName + strExtName;
     if (fsutil::existPath(strOldAbsPath, bDir))
