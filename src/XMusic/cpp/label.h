@@ -23,7 +23,7 @@ public:
     }
 
 private:
-    E_LabelTextOption m_eTextOption = E_LabelTextOption::LTO_AutoFit;
+    int m_flag = -1;
 
     bool m_bUseCustomColor = false;
     QColor m_crText;
@@ -61,9 +61,9 @@ public:
         return s_pixmap;
     }
 
-    void setText(const QString &qsText, E_LabelTextOption eTextOption = E_LabelTextOption::LTO_AutoFit)
-    {        
-        m_eTextOption = eTextOption;
+    void setText(const QString &qsText, int flag = -1)
+    {
+        m_flag = flag;
         QLabel::setText(qsText);
     }
 

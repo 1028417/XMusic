@@ -171,39 +171,41 @@ void CMedialibDlg::_relayout(int cx, int cy)
 {
     m_uRowCount = caleRowCount(cy);
     int sz = cy/(1.1f+m_uRowCount);
-    int cxMargin = sz/4;
-//    if (cy < cx)
-//    {
-//#define __szOffset __size(6)
-//        cxMargin += __szOffset;
-//        yReturn -= __szOffset;
-//    }
-    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
+
+    int cyMargin = sz/4;
+    int cxMargin = cyMargin;
+    if (cx > 1080)
+    {
+        cxMargin += __size(6);
+    }
+
+    auto szBtn = sz-cyMargin*2;
+    QRect rcReturn(cxMargin, cyMargin, szBtn, szBtn);
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }
-
     ui.btnReturn->setGeometry(rcReturn);
 
-    auto szBtn = rcReturn.width();
-    ui.btnUpward->setGeometry(rcReturn.right() + cxMargin/2, rcReturn.top(), szBtn, szBtn);
+    QRect rcUpward(rcReturn.right() + cxMargin/2, rcReturn.top(), szBtn, szBtn);
+    ui.btnUpward->setGeometry(rcUpward);
 
     auto& frameFilterLanguage = *ui.frameFilterLanguage;
     frameFilterLanguage.move(cx-frameFilterLanguage.width()-cxMargin
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
     int x_btnPlay = cx - __lvRowMargin + __playIconOffset - szBtn;
-    QRect rc(x_btnPlay, rcReturn.top(), szBtn, szBtn);
-    ui.btnPlay->setGeometry(rc);
+    QRect rcPlay(x_btnPlay, rcReturn.top(), szBtn, szBtn);
+    ui.btnPlay->setGeometry(rcPlay);
 
     _relayoutTitle();
 
     int y_MedialibView = rcReturn.bottom() + rcReturn.top();
-    m_lv.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
+    QRect rcLv(0, y_MedialibView, cx, cy-y_MedialibView);
+    m_lv.setGeometry(rcLv);
 
-    m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnUpward->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
-    m_singerImgDlg.relayout(ui.btnReturn->geometry());
+    m_wholeTrackDlg.relayout(rcReturn, rcUpward, ui.labelTitle->geometry(), rcPlay, rcLv);
+    m_singerImgDlg.relayout(rcReturn);
 }
 
 void CMedialibDlg::_relayoutTitle() const
@@ -229,14 +231,14 @@ void CMedialibDlg::_relayoutTitle() const
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
     int x_title = pButton->geometry().right() + cxMargin;
     int cx_title = rc.x()-cxMargin-x_title;
-    ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
+    ui.labelTitle->setGeometry(x_title, 0, cx_title, rc.bottom() + rc.top());
 }
 
 void CMedialibDlg::updateHead(const WString& strTitle)
 {
     bool bShowUpwardButton = false;
     bool bShowPlayButton = false;
-    E_LabelTextOption lto = E_LabelTextOption::LTO_AutoFit;
+    int nElidedFlag = -1;
     auto pMediaSet = m_lv.currentMediaSet();
     if (pMediaSet)
     {
@@ -250,7 +252,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         }
         else if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
         {
-            lto = E_LabelTextOption::LtO_Elided;
+            nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
         }
     }
     else
@@ -258,20 +260,22 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         auto pDir = m_lv.currentDir();
         if (pDir)
         {
-            lto = E_LabelTextOption::LtO_Elided;
             bShowUpwardButton = true;
             bShowPlayButton = pDir->files();
+            nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
         }
     }
 
-/*#if __android// || __ios
-    bShowUpwardButton = false;
-#endif*/
+    if (width() <= 1080)
+    {
+        bShowUpwardButton = false;
+    }
+
     ui.btnUpward->setVisible(bShowUpwardButton);
 
-    ui.labelTitle->setText(strTitle, lto);
-
     ui.frameFilterLanguage->setVisible(&m_app.getPlaylistMgr() == pMediaSet);
+
+    ui.labelTitle->setText(strTitle, nElidedFlag);
 
     auto pSinger = m_lv.currentSinger();
     do {

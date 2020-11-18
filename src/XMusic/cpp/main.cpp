@@ -47,5 +47,8 @@ int main(int argc, char *argv[])
 
     int nRet = app->run(strWorkDir);
     //delete app;
+
+    //fsutil::copyFile(__WS2Q(strWorkDir+L"/xmusic.log"), "/sdcard/xmusic.log");
+
     return nRet;
 }

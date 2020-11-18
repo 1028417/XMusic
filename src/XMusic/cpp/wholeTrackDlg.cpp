@@ -32,7 +32,7 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     });
 }
 
-void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay, cqrc rcLv)
+void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv)
 {
      ui.btnReturn->setGeometry(rcBtnReturn);
 
@@ -40,9 +40,7 @@ void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay
 
      ui.btnPlay->setGeometry(rcBtnPlay);
 
-     auto xOffset = rcLabelDisk.left() - rcBtnReturn.right();
-     auto x_title = rcLabelDisk.right() + xOffset;
-     ui.labelTitle->setGeometry(x_title, rcLabelDisk.top(), rcBtnPlay.left()-xOffset-x_title, rcLabelDisk.height());
+     ui.labelTitle->setGeometry(rcTitle);
 
      m_lv.setGeometry(rcLv);
 }

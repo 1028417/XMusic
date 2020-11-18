@@ -380,8 +380,6 @@ void CApp::quit()
         g_bRunSignal = false;
         QApplication::quit();
     });
-
-    fsutil::copyFile(QString::fromStdString(fsutil::workDir()+"/xmusic.log"), "/sdcard/xmusic.log");
 }
 
 void CApp::sync(cfn_void cb)

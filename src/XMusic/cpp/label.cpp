@@ -28,9 +28,10 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
     QString qsText = this->text();
     if (!qsText.isEmpty())
     {
-		int cx = m_rc.right();
+        int flag = this->alignment();
 
-		if (E_LabelTextOption::LTO_AutoFit == m_eTextOption)
+        int cx = m_rc.width();
+        if (-1 == m_flag)
 		{
             QFont font = painter.font();
 
@@ -52,12 +53,12 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 			}
 		}
 		else
-		{
-            qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx
-                                                      , Qt::TextSingleLine | Qt::TextShowMnemonic);
-		}
+        {
+            //qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx);
+            flag |= m_flag;
+        }
 
-        m_rc = painter.drawTextEx(m_rc, this->alignment(), qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
+        m_rc = painter.drawTextEx(m_rc, flag, qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
     }
 }
 

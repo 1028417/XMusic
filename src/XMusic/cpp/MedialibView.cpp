@@ -63,7 +63,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         strTitle << pSinger->m_strName << __CNDot << MediaSet.name();
 
-        if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
+        if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
         {
             strTitle = MediaSet.name();
         }
@@ -76,7 +76,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             strTitle << __CNDot;
             strTitle << MediaSet.m_strName;
 
-            if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 14)
+            if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
             {
                 strTitle = MediaSet.m_strName;
             }
@@ -148,9 +148,44 @@ void CMedialibView::_onShowDir(CPath& dir)
     else
     {
         strTitle = dir.fileName();
-        if (!((CMediaDir&)dir).isLocal() && dir.parent() == &__medialib)
+        if (!((CMediaDir&)dir).isLocal())
         {
-            strTitle = __substr(strTitle,3);
+            if (dir.parent() == &__medialib)
+            {
+                strTitle = __substr(strTitle,3);
+            }
+
+            list<wstring> *plstSingerName = NULL;
+            static map<const void*, std::list<wstring>> mapSingerName;
+            cauto itr = mapSingerName.find(&dir);
+            if (itr != mapSingerName.end())
+            {
+                plstSingerName = &itr->second;
+            }
+            else
+            {
+                plstSingerName = &mapSingerName[&dir];
+
+                cauto singerMgr = m_app.getSingerMgr();
+                for (auto pSubDir : dir.dirs())
+                {
+                    auto pSinger = singerMgr.matchSingerDir(((CMediaDir*)pSubDir)->GetPath());
+                    if (pSinger)
+                    {
+                        ((CMediaDir*)pSubDir)->SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
+                                                                  , pSinger->m_uID, pSinger->m_strName);
+                        if (std::find(plstSingerName->begin(), plstSingerName->end(), pSinger->m_strName) == plstSingerName->end())
+                        {
+                            plstSingerName->push_back(pSinger->m_strName);
+                        }
+                    }
+                }
+            }
+
+            if (!plstSingerName->empty())
+            {
+                m_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+            }
         }
     }
 
@@ -322,23 +357,17 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
-                if (pMediaDir->GetPath().find(L"张学友")!=__wnpos)
-                {
-                g_logger << "xxxxx    " >> pMediaDir->GetPath();
-                for (CSinger* p : m_app.getSingerMgr().singers())
-                {
-                    g_logger << "aaaaa    " >> p->dir();
-                    for (cauto s : p->attachDir())
-                    {
-                        g_logger << "bbbbbbb    " >> s.strDir;
-                    }
-                    break;
-                }
-                }
-                auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath());
+                /*auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath());
                 if (pSinger)
                 {
                     context.pmIcon = &genSingerHead(pSinger->m_uID, pSinger->m_strName);
+                }*/
+
+                auto uSingerID = pMediaDir->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+                if (uSingerID > 0)
+                {
+                    cauto strSingerName = pMediaDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+                    context.pmIcon = &genSingerHead(uSingerID, strSingerName);
                 }
             }
         }
