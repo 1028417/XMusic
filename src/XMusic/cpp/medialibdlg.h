@@ -160,7 +160,7 @@ private:
 
     void _relayout(int cx, int cy) override;
 
-    void _resizeTitle() const;
+    void _relayoutTitle() const;
 
     bool _handleReturn() override
     {

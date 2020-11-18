@@ -18,32 +18,18 @@ float g_fPixelRatio = 1;
 
 bool g_bRunSignal = true;
 
-#if __android
-#define __sdcardDir L"/sdcard/"
-/*static wstring g_strSDCardPath;
-static void checkSdcardPath()
+int g_nAppUpgradeProgress = -1;
+
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+
+const WString& mediaQualityString(E_MediaQuality eQuality)
 {
-    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
-    if (NULL == pszSdcardPath)
-    {
-        pszSdcardPath = getenv("EXTERNAL_STORAGE");
-    }
-    if (pszSdcardPath)
-    {
-        g_strSDCardPath = strutil::fromStr(pszSdcardPath) + L'/';
-        return;
-    }
+    return g_lpQuality[(UINT)eQuality];
+}
 
-    g_strSDCardPath = L"/storage/emulated/0/";
-    if (fsutil::existDir(g_strSDCardPath))
-    {
-        return;
-    }
-
-    g_strSDCardPath = __sdcardDir;
-}*/
-
-#elif __windows
+#if __windows
 void CApp::setForeground()
 {
     auto hwnd = m_mainWnd.hwnd();
@@ -99,38 +85,12 @@ static void _setupFont()
 
 CAppInit::CAppInit(QApplication& app)
 {
-    wstring strWorkDir;
-#if __android
-    //内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-    strWorkDir = L"/data/data/" __pkgName;
-    // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-
-/*#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
-    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
-    {
-        strWorkDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
-    }
-#endif*/
-
-#else
-    strWorkDir = (fsutil::getHomeDir() + __WS2Q(L"/" __pkgName)).toStdWString();
-#endif
-    (void)fsutil::createDir(strWorkDir);
-
-#if __windows
-    fsutil::setWorkDir(strutil::toGbk(strWorkDir));
-#else
-    fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
-#endif
-
     m_logger.open("xmusic.log", true);
 
     g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
     g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
 
 #if __android
-    extern int g_jniVer;
-    extern int g_androidSdkVer;
     g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
 #endif
 
@@ -201,16 +161,43 @@ CAppInit::CAppInit(QApplication& app)
     app.setFont(CFont());
 }
 
-int g_nAppUpgradeProgress = -1;
-
-bool CApp::_init()
+static void _genRootDir(wstring& strRootDir)
 {
-    auto& option = m_ctrl.initOption();
-    if (!_initRootDir(option.strRootDir))
+#if __android
+    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+    {
+        strRootDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
+    }
+
+#elif __window
+    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+    {
+        CFolderDlg FolderDlg;
+        cauto strDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
+        if (!strDir.empty())
+        {
+            strRootDir = strDir;
+        }
+    }
+
+#elif __mac
+    strRootDir = fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
+
+    //#if __ios && TARGET_IPHONE_SIMULATOR
+    //    strRootDir = L"/Users/lhyuan/XMusic";
+    //#endif
+#endif
+}
+
+bool CApp::_init(cwstr strWorkDir)
+{
+    m_ctrl.initOption().strRootDir = strWorkDir;
+    //_genRootDir(m_ctrl.initOption().strRootDir);
+    g_logger << "RootDir: " >> m_ctrl.initOption().strRootDir;
+    if (!fsutil::createDir(m_model.medialibPath()))
     {
         return false;
     }
-    g_logger << "RootDir: " >> option.strRootDir;
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
         auto timeBegin = time(0);
@@ -260,7 +247,7 @@ bool CApp::_init()
     return true;
 }
 
-int CApp::run()
+int CApp::run(cwstr strWorkDir)
 {
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [&](fn_void cb){
@@ -269,8 +256,8 @@ int CApp::run()
 
     m_mainWnd.showLogo();
 
-    std::thread thrUpgrade([&](){
-        if (!_init())
+    std::thread thrUpgrade([=](){
+        if (!_init(strWorkDir))
         {
             sync([&](){
                 this->quit();
@@ -302,39 +289,6 @@ int CApp::run()
     m_logger.close();
 
     return nRet;
-}
-
-bool CApp::_initRootDir(wstring& strRootDir)
-{
-#if __OnlineMediaLib
-    strRootDir = QDir::currentPath().toStdWString();
-    //strRootDir = __sdcardDir L"XMusic";
-    return fsutil::createDir(m_model.medialibPath());
-#endif
-
-#if __window
-    if (strRootDir.empty() || !fsutil::existDir(strRootDir))
-    {
-        CFolderDlg FolderDlg;
-        strRootDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
-        if (strRootDir.empty())
-        {
-            return false;
-        }
-    }
-
-#elif __android
-    strRootDir = __sdcardDir L"XMusic";
-
-#else
-    strRootDir = (fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
-
-//#if __ios && TARGET_IPHONE_SIMULATOR
-//    strRootDir = L"/Users/lhyuan/XMusic";
-//#endif
-#endif
-
-    return true;
 }
 
 void CApp::_run(E_UpgradeResult eUpgradeResult)
@@ -426,6 +380,8 @@ void CApp::quit()
         g_bRunSignal = false;
         QApplication::quit();
     });
+
+    fsutil::copyFile(QString::fromStdString(fsutil::workDir()+"/xmusic.log"), "/sdcard/xmusic.log");
 }
 
 void CApp::sync(cfn_void cb)
@@ -449,13 +405,4 @@ void CApp::async(UINT uDelayTime, cfn_void cb)
             }
         });
     }
-}
-
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
-};
-
-const WString& mediaQualityString(E_MediaQuality eQuality)
-{
-    return g_lpQuality[(UINT)eQuality];
 }

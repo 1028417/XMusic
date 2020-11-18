@@ -79,12 +79,6 @@ void CMedialibDlg::init()
     });
 }
 
-/*this->setGeometry(m_app.mainWnd().geometry());
-_resizeTitle();
-//CApp::async([&](){
-//    _resizeTitle();
-//});*/
-
 void CMedialibDlg::_show()
 {
     CDialog::show([&](){
@@ -185,7 +179,6 @@ void CMedialibDlg::_relayout(int cx, int cy)
 //        yReturn -= __szOffset;
 //    }
     QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-
     if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
@@ -204,12 +197,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     QRect rc(x_btnPlay, rcReturn.top(), szBtn, szBtn);
     ui.btnPlay->setGeometry(rc);
 
-    rc.moveLeft(x_btnPlay - cxMargin - szBtn);
-#define __szOffset __size(6)
-    rc.adjust(-__szOffset, -__szOffset, __szOffset, __szOffset);
-    ui.labelSingerImg->setGeometry(rc);
-
-    _resizeTitle();
+    _relayoutTitle();
 
     int y_MedialibView = rcReturn.bottom() + rcReturn.top();
     m_lv.setGeometry(0, y_MedialibView, cx, cy-y_MedialibView);
@@ -218,60 +206,72 @@ void CMedialibDlg::_relayout(int cx, int cy)
     m_singerImgDlg.relayout(ui.btnReturn->geometry());
 }
 
-void CMedialibDlg::_resizeTitle() const
+void CMedialibDlg::_relayoutTitle() const
 {
     int cxMargin = ui.btnReturn->x();
+
+    auto rc = ui.btnPlay->geometry();
+    if (ui.labelSingerImg->isVisible())
+    {
+#define __szOffset __size(6)
+        if (ui.btnPlay->isVisible())
+        {
+            rc.moveLeft(rc.x() - cxMargin - rc.width() - __szOffset);
+        }
+        else
+        {
+            rc.moveLeft(rc.x() - __szOffset);
+        }
+        rc.adjust(-__szOffset, -__szOffset, __szOffset, __szOffset);
+        ui.labelSingerImg->setGeometry(rc);
+    }
+
     auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
     int x_title = pButton->geometry().right() + cxMargin;
-
-    int cx_title = 0;
-    if (ui.btnPlay->isVisible())
-    {
-        cx_title = ui.labelSingerImg->x();
-        //cx_title = ui.btnPlay->x() - cxMargin - x_title;
-    }
-    else
-    {
-        cx_title = width() - cxMargin - x_title;
-    }
-
+    int cx_title = rc.x()-cxMargin-x_title;
     ui.labelTitle->setGeometry(x_title, ui.btnReturn->y(), cx_title, ui.btnReturn->height());
 }
 
 void CMedialibDlg::updateHead(const WString& strTitle)
 {
-    E_LabelTextOption lto = E_LabelTextOption::LTO_AutoFit;
-    bool bShowFilterLanguage =  false;
     bool bShowUpwardButton = false;
     bool bShowPlayButton = false;
-
-    auto pDir = m_lv.currentDir();
-    if (pDir)
+    E_LabelTextOption lto = E_LabelTextOption::LTO_AutoFit;
+    auto pMediaSet = m_lv.currentMediaSet();
+    if (pMediaSet)
     {
-        lto = E_LabelTextOption::LtO_Elided;
         bShowUpwardButton = true;
-        bShowPlayButton = pDir->files();
+
+        if (E_MediaSetType::MST_Singer==pMediaSet->m_eType
+                || E_MediaSetType::MST_Album==pMediaSet->m_eType
+                || E_MediaSetType::MST_Playlist==pMediaSet->m_eType)
+        {
+            bShowPlayButton = true;
+        }
+        else if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
+        {
+            lto = E_LabelTextOption::LtO_Elided;
+        }
     }
     else
     {
-        auto pMediaSet = m_lv.currentMediaSet();
-        if (pMediaSet)
+        auto pDir = m_lv.currentDir();
+        if (pDir)
         {
+            lto = E_LabelTextOption::LtO_Elided;
             bShowUpwardButton = true;
-            bShowPlayButton = E_MediaSetType::MST_Singer==pMediaSet->m_eType
-                    || E_MediaSetType::MST_Album==pMediaSet->m_eType
-                    || E_MediaSetType::MST_Playlist==pMediaSet->m_eType;
-
-            if (&m_app.getPlaylistMgr() == pMediaSet)
-            {
-                bShowFilterLanguage = true;
-            }
+            bShowPlayButton = pDir->files();
         }
     }
 
+/*#if __android// || __ios
+    bShowUpwardButton = false;
+#endif*/
+    ui.btnUpward->setVisible(bShowUpwardButton);
+
     ui.labelTitle->setText(strTitle, lto);
 
-    ui.frameFilterLanguage->setVisible(bShowFilterLanguage);
+    ui.frameFilterLanguage->setVisible(&m_app.getPlaylistMgr() == pMediaSet);
 
     auto pSinger = m_lv.currentSinger();
     do {
@@ -296,27 +296,24 @@ void CMedialibDlg::updateHead(const WString& strTitle)
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
-/*#if __android// || __ios
-    bShowUpwardButton = false;
-#endif*/
-    ui.btnUpward->setVisible(bShowUpwardButton);
-
-    _resizeTitle();
+    _relayoutTitle();
 }
 
 void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg)
-{
-    auto pSinger = m_lv.currentSinger();
-    if (pSinger)
+{    
+    if (singerImg.isSmall())
     {
-        if (pSinger->m_strName != strSingerName)
-        {
-            return;
-        }
+        m_lv.update();
+    }
 
+    auto pSinger = m_lv.currentSinger();
+    if (pSinger && pSinger->m_strName == strSingerName)
+    {
         if (singerImg.isSmall())
         {
-            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, strSingerName));
+            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, strSingerName));            
+            ui.labelSingerImg->setVisible(true);
+            _relayoutTitle();
         }
         else
         {
@@ -325,26 +322,6 @@ void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& sing
                 m_singerImgDlg.updateSingerImg();
             }
         }
-    }
-    else
-    {
-        if (!singerImg.isSmall())
-        {
-            return;
-        }
-
-        auto pMediaSet = m_lv.currentMediaSet();
-        if (NULL == pMediaSet)
-        {
-            return;
-        }
-        if (E_MediaSetType::MST_SingerGroup != pMediaSet->m_eType
-                && E_MediaSetType::MST_Playlist != pMediaSet->m_eType)
-        {
-            return;
-        }
-
-        m_lv.update();
     }
 }
 

@@ -322,6 +322,19 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
+                if (pMediaDir->GetPath().find(L"张学友")!=__wnpos)
+                {
+                g_logger << "xxxxx    " >> pMediaDir->GetPath();
+                for (CSinger* p : m_app.getSingerMgr().singers())
+                {
+                    g_logger << "aaaaa    " >> p->dir();
+                    for (cauto s : p->attachDir())
+                    {
+                        g_logger << "bbbbbbb    " >> s.strDir;
+                    }
+                    break;
+                }
+                }
                 auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath());
                 if (pSinger)
                 {

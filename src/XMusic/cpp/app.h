@@ -21,6 +21,10 @@ extern QLockFile g_lf;
 
 #define __cyIPhoneXBangs __size(128)
 
+#define __mediaPng(f) ":/img/medialib/" #f ".png"
+
+extern const WString& mediaQualityString(E_MediaQuality eQuality);
+
 extern ITxtWriter& g_logger;
 
 extern int g_szScreenMax;
@@ -75,9 +79,7 @@ private:
         return m_mainWnd;
     }
 
-    bool _init();
-
-    bool _initRootDir(wstring& strRootDir);
+    bool _init(cwstr strWorkDir);
 
     void _run(E_UpgradeResult eUpgradeResult);
 
@@ -161,7 +163,7 @@ public:
         return m_strAppVersion;
     }
 
-    int run();
+    int run(cwstr strWorkDir);
 
     void quit();
 
@@ -169,7 +171,3 @@ public:
     void setForeground();
 #endif
 };
-
-extern const WString& mediaQualityString(E_MediaQuality eQuality);
-
-#define __mediaPng(f) ":/img/medialib/" #f ".png"

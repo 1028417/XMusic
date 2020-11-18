@@ -1,6 +1,4 @@
 
-#include "util/util.h"
-
 #include "androidutil.h"
 
 //#include <jni.h>
@@ -11,6 +9,29 @@
 
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
+
+/*static wstring g_strSDCardPath;
+static void checkSdcardPath()
+{
+    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
+    if (NULL == pszSdcardPath)
+    {
+        pszSdcardPath = getenv("EXTERNAL_STORAGE");
+    }
+    if (pszSdcardPath)
+    {
+        g_strSDCardPath = strutil::fromStr(pszSdcardPath) + L'/';
+        return;
+    }
+
+    g_strSDCardPath = L"/storage/emulated/0/";
+    if (fsutil::existDir(g_strSDCardPath))
+    {
+        return;
+    }
+
+    g_strSDCardPath = __sdcardDir;
+}*/
 
 function<void(int,int,int)> g_fnAccelerometerNotify;
 
@@ -62,8 +83,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
 bool requestAndroidPermission(cqstr qsPermission) //API 23以上需要动态申请权限
 {
-    auto ret = QtAndroid::checkPermission(qsPermission);
-    if(QtAndroid::PermissionResult::Granted == ret)
+    if(QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission))
     {
         return true;
     }
