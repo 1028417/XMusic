@@ -26,20 +26,6 @@ public:
     {
     }
 
-public:
-#if !__windows
-    XFile* findSubFile(cwstr strSubFile)
-    {
-        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubFile);
-        if (strOppPath.empty())
-        {
-            return NULL;
-        }
-
-        return CMediaDir::subFile(strOppPath);
-    }
-#endif
-
 private:
     wstring GetPath() const override // 所有平台都需要
     {
@@ -62,6 +48,18 @@ private:
         {
             CMediaDir::_onFindFile(paSubDir, paSubFile);
         }
+    }
+
+#else
+    CMediaRes* subPath(cwstr strSubPath, bool bDir) override
+    {
+        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubFile);
+        if (strOppPath.empty())
+        {
+            return NULL;
+        }
+
+        return (CMediaRes*)CMediaDir::subPath(strOppPath, bDir);
     }
 #endif
 
