@@ -266,10 +266,12 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         }
     }
 
+#if __android || __ios
     if (width() <= 1080)
     {
         bShowUpwardButton = false;
     }
+#endif
 
     ui.btnUpward->setVisible(bShowUpwardButton);
 

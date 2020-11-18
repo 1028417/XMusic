@@ -42,15 +42,7 @@ class CApp : public QApplication, private CAppInit, private IPlayerView
 {
     Q_OBJECT
 public:
-    CApp(int argc, char **argv) :
-        QApplication(argc, argv),
-        CAppInit((QApplication&)*this),
-        m_ctrl(*this, m_model),
-        m_model(m_mainWnd, m_ctrl.getOption()),
-        m_mainWnd(*this),
-        m_msgbox(m_mainWnd)
-    {
-    }
+    CApp(int argc, char **argv);
 
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;

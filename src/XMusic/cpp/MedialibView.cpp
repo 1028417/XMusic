@@ -62,7 +62,6 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (pSinger && &MediaSet != pSinger)
     {
         strTitle << pSinger->m_strName << __CNDot << MediaSet.name();
-
         if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
         {
             strTitle = MediaSet.name();
@@ -72,10 +71,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         if (MediaSet.m_pParent && MediaSet.m_pParent != &__xmedialib)
         {
-            strTitle << MediaSet.m_pParent->m_strName;
-            strTitle << __CNDot;
-            strTitle << MediaSet.m_strName;
-
+            strTitle << MediaSet.m_pParent->m_strName << __CNDot << MediaSet.m_strName;
             if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
             {
                 strTitle = MediaSet.m_strName;

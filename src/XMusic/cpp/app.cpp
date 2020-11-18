@@ -29,23 +29,6 @@ const WString& mediaQualityString(E_MediaQuality eQuality)
     return g_lpQuality[(UINT)eQuality];
 }
 
-#if __windows
-void CApp::setForeground()
-{
-    auto hwnd = m_mainWnd.hwnd();
-    if (IsIconic(hwnd))
-    {
-        ::ShowWindow(hwnd, SW_RESTORE);
-    }
-    else
-    {
-        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        ::SetForegroundWindow(hwnd);
-    }
-}
-#endif
-
 static void _setupFont()
 {
 #if __windows
@@ -161,6 +144,36 @@ CAppInit::CAppInit(QApplication& app)
     app.setFont(CFont());
 }
 
+CApp::CApp(int argc, char **argv) : QApplication(argc, argv),
+    CAppInit((QApplication&)*this),
+    m_ctrl(*this, m_model),
+    m_model(m_mainWnd, m_ctrl.getOption()),
+    m_mainWnd(*this),
+    m_msgbox(m_mainWnd)
+{
+    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
+    connect(this, &CApp::signal_sync, this, [&](fn_void cb){
+        cb();
+    }, Qt::QueuedConnection);
+}
+
+#if __windows
+void CApp::setForeground()
+{
+    auto hwnd = m_mainWnd.hwnd();
+    if (IsIconic(hwnd))
+    {
+        ::ShowWindow(hwnd, SW_RESTORE);
+    }
+    else
+    {
+        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        ::SetForegroundWindow(hwnd);
+    }
+}
+#endif
+
 static void _genRootDir(wstring& strRootDir)
 {
 #if __android
@@ -249,11 +262,6 @@ bool CApp::_init(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
-    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
-    connect(this, &CApp::signal_sync, this, [&](fn_void cb){
-        cb();
-    }, Qt::QueuedConnection);
-
     m_mainWnd.showLogo();
 
     std::thread thrUpgrade([=](){
