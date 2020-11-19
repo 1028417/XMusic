@@ -28,7 +28,7 @@ public:
 #if __winvc
     wstring GetDisplayTitle() const override
     {
-        return XFile::fileName() + L" | " + XFile::parentDir();
+        return XFile::fileName() + L" | " + fsutil::GetParentDir(m_fi.strName);
     }
 
     int getImage() override

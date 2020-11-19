@@ -9,15 +9,18 @@
 
 #include "singerimgdlg.h"
 
+#if __android
+#define __OuterDir L"/sdcard"
+#elif __windows
+#define __OuterDir L""
+#else
+#define __OuterDir fsutil::getHomeDir().toStdWString())
+#endif
+
 class COuterDir : public CMediaDir
 {
 public:
-    COuterDir()
-#if __android
-        : CMediaDir(L"/sdcard")
-#elif !__windows
-        : CMediaDir(fsutil::getHomeDir().toStdWString())
-#endif
+    COuterDir() : CMediaDir(__OuterDir)
     {
     }
 
@@ -27,6 +30,11 @@ public:
     }
 
 private:
+    wstring path() const override
+    {
+        return m_fi.strName;
+    }
+
     wstring GetPath() const override // 所有平台都需要
     {
         return m_fi.strName;
@@ -51,6 +59,20 @@ private:
     }
 
 #else
+#if __android
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
+    {
+        CMediaDir::_onFindFile(paSubDir, paSubFile);
+
+        if (NULL == m_fi.pParent)
+        {
+            (void)fsutil::findSubDir(L"/storage", [&](cwstr strSubDir) {
+                paSubDir.addFront(new COuterDir(L"/storage/" + strSubDir, this));
+            });
+        }
+    }
+#endif
+
     CMediaRes* subPath(cwstr strSubPath, bool bDir) override
     {
         cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubPath);
@@ -71,35 +93,27 @@ private:
         }
 
         CMediaDir *pSubDir = new CMediaDir(fileInfo);
-        do {
 #if __windows
-            if (NULL == m_fi.pParent || m_fi.pParent->parent())
-            {
-                break;
-            }
+        if (m_fi.pParent && NULL == m_fi.pParent->parent())
 #else
-            if (m_fi.pParent)
-            {
-                break;
-            }
+        if (NULL == m_fi.pParent)
 #endif
-
-            cauto paDirs = pSubDir->dirs();
-            if (paDirs.size() > 1 || pSubDir->files())
+        {
+            if (!pSubDir->files())
             {
-                break;
+                cauto paDirs = pSubDir->dirs();
+                if (paDirs.size() <= 1)
+                {
+                    if (!paDirs.any([&](CPath& subDir){
+                        return subDir.dirs() || subDir.files();
+                    }))
+                    {
+                        delete pSubDir;
+                        return NULL;
+                    }
+                }
             }
-
-            bool bAvalid = false;
-            paDirs.front([&](CPath& subDir){
-                bAvalid = subDir.dirs() || subDir.files();
-            });
-            if (!bAvalid)
-            {
-                delete pSubDir;
-                return NULL;
-            }
-        } while(0);
+        }
 
         return pSubDir;
     }

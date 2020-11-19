@@ -67,9 +67,7 @@ public:
 
 	wstring fileName() const;
 
-	wstring parentDir() const;
-
-	wstring path() const;
+    virtual wstring path() const;
 	
 	const CPath* rootDir() const;
 
