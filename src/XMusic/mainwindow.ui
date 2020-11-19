@@ -14,31 +14,12 @@
    <string>XMusic</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-image: url(:/img/bkg.jpg);</string>
   </property>
   <widget class="CCentralWidget" name="centralWidget">
-   <widget class="QLabel" name="labelBkg">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>1080</width>
-      <height>2340</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap resource="res.qrc">:/img/bkg.jpg</pixmap>
-    </property>
-    <property name="scaledContents">
-     <bool>false</bool>
-    </property>
-   </widget>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="CProgressBar" name="progressbar" native="true">
     <property name="geometry">
      <rect>
@@ -119,9 +100,6 @@ gridline-color: rgb(255, 255, 255);</string>
       <width>90</width>
       <height>90</height>
      </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
     </property>
     <property name="styleSheet">
      <string notr="true">border-image: url(:/img/btnPlayPrev.png);</string>
@@ -273,6 +251,9 @@ gridline-color: rgb(255, 255, 255);</string>
       <width>997</width>
       <height>38</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="text">
      <string/>
@@ -778,7 +759,6 @@ gridline-color: rgb(255, 255, 255);</string>
     </property>
    </widget>
    <zorder>labelSingerImg</zorder>
-   <zorder>labelBkg</zorder>
    <zorder>btnPlay</zorder>
    <zorder>btnPause</zorder>
    <zorder>btnPlayPrev</zorder>
@@ -830,8 +810,6 @@ gridline-color: rgb(255, 255, 255);</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

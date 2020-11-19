@@ -78,6 +78,26 @@ private:
         cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubPath);
         if (strOppPath.empty())
         {
+#if __android
+            if (NULL == m_fi.pParent)
+            {
+                for (auto pDir : dirs())
+                {
+                    auto pOuterDir = dynamic_cast<COuterDir*>(pDir);
+                    if (NULL == pOuterDir)
+                    {
+                        break;
+                    }
+
+                    auto pMediaRes = pOuterDir->subPath(strOppPath, bDir);
+                    if (pMediaRes)
+                    {
+                        return pMediaRes;
+                    }
+                }
+            }
+#endif
+
             return NULL;
         }
 

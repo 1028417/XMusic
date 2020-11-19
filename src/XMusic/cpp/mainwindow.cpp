@@ -81,11 +81,10 @@ MainWindow::MainWindow(CApp& app)
     , m_medialibDlg(*this, app)
     , m_bkgDlg(*this, app)
 {
-    cauto pmBkg = *ui.labelBkg->pixmap();
+    QPixmap pmBkg(":/img/bkg.jpg");
     m_brBkg.setTexture(pmBkg);
     m_cxBkg = pmBkg.width();
     m_cyBkg = pmBkg.height();
-    ui.labelBkg->clear();
 
     auto cy = m_cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
     m_fBkgHWRate = (float)cy/m_cxBkg;
@@ -140,9 +139,9 @@ MainWindow::MainWindow(CApp& app)
 
     ui.btnPause->setVisible(false);
 
-    ui.labelBkg->setVisible(false);
-
     ui.centralWidget->setVisible(false);
+
+    this->setStyleSheet("");
 
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
@@ -955,22 +954,12 @@ void MainWindow::_relayout()
     UINT uRowCount = 0;
     if (m_bHLayout)
     {
-        UINT uMargin = __size(45);
-        UINT xOffset = xBkgOffset;
+        UINT uMargin = ui.progressbar->x();
+        int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.5f;
         if (cx > __size(1920))
         {
-            xOffset += __size(90) * fBkgZoomRate;
+            x_PlayingList += uMargin;
         }
-        else if (cx > __size(1800))
-        {
-            xOffset += __size(60) * fBkgZoomRate;
-        }
-        else
-        {
-            xOffset += uMargin;
-        }
-        int x_PlayingList = ui.progressbar->geometry().right() + xOffset;
-
         int cx_PlayingList = cx - x_PlayingList;
         m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
 
