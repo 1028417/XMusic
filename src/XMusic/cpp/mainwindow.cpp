@@ -324,8 +324,6 @@ void MainWindow::_init()
 
     ui.labelSingerName->setFont(0.95f);
 
-    ui.labelAlbumName->setFont(0.95f);
-
     ui.labelPlayingfile->setFont(0.95f);
 
     ui.labelDuration->setFont(0.8f);
@@ -737,19 +735,24 @@ void MainWindow::_relayout()
         {
             if (!m_bDefaultBkg)
             {
-                if (E_MediaType::MT_PlayItem == m_PlayingInfo.pRelatedMedia->type())
-                {
-                    strMediaSet << L"歌单" __CNDot;
-                }
-                else if (!m_PlayingInfo.strSingerName.empty())
+                /*if (!m_PlayingInfo.strSingerName.empty())
                 {
                     strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
                     // TODO if ? ui.labelSingerName->clear();
+                }
+                else*/ if (E_MediaType::MT_PlayItem == m_PlayingInfo.pRelatedMedia->type())
+                {
+                    strMediaSet << L"歌单: ";
+                }
+                else if (E_MediaType::MT_AlbumItem == m_PlayingInfo.pRelatedMedia->type())
+                {
+                    strMediaSet << L"专辑: ";
                 }
             }
 
             strMediaSet << pMediaSet->name();
 
+            labelAlbumName.setFont(0.95f);
             labelAlbumName.setShadow(uShadowWidth);
             labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
         }
