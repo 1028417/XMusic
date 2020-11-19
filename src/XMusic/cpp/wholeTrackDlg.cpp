@@ -25,9 +25,9 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QWidget::close);
 
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
-        if (m_pMediaRes)
+        if (m_pMedia)
         {
-            m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMediaRes));
+            m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
         }
     });
 }
@@ -45,27 +45,22 @@ void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, 
      m_lv.setGeometry(rcLv);
 }
 
-bool CWholeTrackDlg::tryShow(CMediaRes& mediaRes)
+bool CWholeTrackDlg::tryShow(IMedia& media)
 {
-    if (mediaRes.parent()->isLocal())
-    {
-        return false;
-    }
-
-    cauto cue = ((CSnapshotMediaRes&)mediaRes).cueFile();
+    cauto cue = media.cueFile();
     if (!cue)
     {
         return false;
     }
 
-    m_pMediaRes = &mediaRes;
+    m_pMedia = &media;
 
-    cauto pm = ((int)m_pMediaRes->quality() >= (int)E_MediaQuality::MQ_CD) ? m_app.m_pmHDDisk : m_app.m_pmLLDisk;
+    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? m_app.m_pmHDDisk : m_app.m_pmLLDisk;
     ui.labelDisk->setPixmap(pm);
 
-    ui.labelTitle->setText(__WS2Q(m_pMediaRes->GetTitle()));
+    ui.labelTitle->setText(__WS2Q(media.GetTitle()));
 
-    m_lv.setCue(cue, m_pMediaRes->duration());
+    m_lv.setCue(cue, media.duration());
 
     CDialog::show([&](){
         m_lv.reset();

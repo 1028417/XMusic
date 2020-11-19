@@ -456,7 +456,7 @@ DROPEFFECT CPlaylistPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& 
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	__EnsureReturn(pSrcMediaSet != pDragOverPlaylist, DROPEFFECT_NONE);
@@ -486,7 +486,7 @@ BOOL CPlaylistPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	CPlaylist *pDragOverPlaylist = (CPlaylist*)DragContext.pTargetObj;

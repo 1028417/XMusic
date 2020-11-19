@@ -188,7 +188,7 @@ DROPEFFECT CPlayingPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& l
 
 	DROPEFFECT dwRet = DROPEFFECT_COPY;
 	lstMedias.front([&](IMedia& media) {
-		if (media.GetMediaSet() == &m_view.getPlaylistMgr().playinglist())
+		if (media.mediaSet() == &m_view.getPlaylistMgr().playinglist())
 		{
 			dwRet = DROPEFFECT_MOVE;
 		}
@@ -206,7 +206,7 @@ BOOL CPlayingPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, 
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	if (pSrcMediaSet == &m_view.getPlaylistMgr().playinglist())

@@ -60,6 +60,10 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 
         m_rc = painter.drawTextEx(m_rc, flag, qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
     }
+    else
+    {
+        m_rc.setRect(-1,-1,0,0);
+    }
 }
 
 void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)

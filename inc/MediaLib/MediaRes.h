@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "CueFile.h"
-
 struct tagMediaTag
 {
 	wstring strTitle;
@@ -18,14 +16,20 @@ public:
     CMediaRes() = default;
 
 	CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
-		: IMedia(eFileType)
+        : IMedia(eFileType)
 		, CPathObject(fileInfo)
 	{
 	}
 
-    CMediaRes(E_MediaFileType eFileType, bool bDir, cwstr strName, class CPath *pParent)
+    CMediaRes(cwstr strDir, CMediaRes *pParent = NULL)
+        : IMedia(E_MediaFileType::MFT_Null)
+        , CPathObject(strDir, pParent)
+    {
+    }
+
+    CMediaRes(E_MediaFileType eFileType, CMediaRes& parent, cwstr strName, uint64_t uFileSize = 0)
 		: IMedia(eFileType)
-        , CPathObject(bDir, strName, pParent)
+        , CPathObject(parent, strName, uFileSize)
 	{
 	}
 
@@ -60,28 +64,20 @@ public:
 
     static bool ReadFlacTag(cwstr strFile, tagMediaTag& MediaTag);
 
-    CRCueFile getCueFile();
-
     virtual int getImage();
 
     virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bSingerPanel);
+
+    CRCueFile cueFile() override;
 #endif
 
-#if !__winvc
-    virtual bool isLocal() const
-    {
-        return true;
-    }
-#endif
-
+public:
     virtual E_MediaType type() const override
     {
         return E_MediaType::MT_MediaRes;
     }
 
-	class CMediaDir* parent() const;
-
-	virtual wstring GetPath() const override;
+    virtual wstring GetPath() const override;
 
 	wstring GetAbsPath() const override;
 
@@ -94,6 +90,15 @@ public:
 	{
 		return m_fi.uFileSize;
 	}
+
+#if !__winvc
+    virtual bool isLocal() const
+    {
+        return true;
+    }
+#endif
+
+    class CMediaDir* parent() const;
 
 	wstring fileTimeString(bool bNewLine) const
 	{
@@ -152,8 +157,8 @@ public:
 	{
 	}
 
-	CMediaDir(cwstr strPath, class CPath *pParent = NULL)
-		: CMediaRes(E_MediaFileType::MFT_Null, true, strPath, pParent)
+    CMediaDir(cwstr strDir, CMediaDir *pParent = NULL)
+        : CMediaRes(strDir, pParent)
 	{
 	}
 

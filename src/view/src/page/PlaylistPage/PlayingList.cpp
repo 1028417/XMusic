@@ -90,7 +90,7 @@ void CPlayingList::fixColumnWidth(int width)
 
 void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 {
-	m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
+	m_view.getPlayMgr().playingItems().get(uItem, [&](CPlayItem& PlayItem) {
 #define __xOffset 1
 		int cx = (rc.right- __xOffset) - rc.left;
 		int cy = rc.bottom - rc.top;
@@ -105,7 +105,7 @@ void CPlayingList::_drawItem(HDC hDC, RECT& rc, UINT uItem)
 	});
 }
 
-void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem& PlayItem)
+void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& PlayItem)
 {
 	bool bPlayingItem = (nItem == m_nPlayingItem);
 	bool bMouseMoveItem = (nItem == m_nMouseMoveItem);
@@ -158,7 +158,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, const CPlayItem
 	wstring strSingerAlbum;
 
 	int iImage = -1;
-	CRCueFile cueFile = PlayItem.getCueFile();
+	CRCueFile cueFile = PlayItem.cueFile();
 	if (cueFile)
 	{
 		iImage = (int)E_GlobalImage::GI_WholeTrack;
@@ -561,7 +561,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 		auto pMediaRes = __medialib.subFile(PlayItem.GetPath());
 		if (pMediaRes)
 		{
-			(void)CTrackDetailDlg(m_view, pMediaRes->getCueFile(), pMediaRes).DoModal();
+			(void)CTrackDetailDlg(m_view, pMediaRes->cueFile(), pMediaRes).DoModal();
 		}
 	}
 
@@ -578,7 +578,7 @@ void CPlayingList::handleLinkClick(UINT uItem, CPlayItem& PlayItem, tagItemLinks
 			return;
 		}
 
-		CRCueFile cueFile = PlayItem.getCueFile();
+		CRCueFile cueFile = PlayItem.cueFile();
 
 		UINT uTrackIndex = 0;
 		auto uClock = UINT(playMgr.mediaOpaque().clock() / 1000);

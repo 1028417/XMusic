@@ -61,19 +61,25 @@ void CMLListView::showMediaSet(CMediaSet& MediaSet, bool bUpward)
     _showMediaSet(MediaSet);
 }
 
-void CMLListView::hittestMedia(const CMedia& media)
+bool CMLListView::hittestMedia(const IMedia& media)
 {
-    if (media.m_pParent)
+    auto pMediaSet = media.mediaSet();
+    if (NULL == pMediaSet)
     {
-        _showMediaSet(*media.m_pParent);
-
-        int nIdx = media.index();
-        if (nIdx >= 0)
-        {
-            showItem((UINT)nIdx, true);
-            selectItem((UINT)nIdx);
-        }
+        return false;
     }
+
+    _showMediaSet(*pMediaSet);
+
+    auto nIdx = m_lstSubMedias.indexOf(media);
+    if (nIdx >= 0)
+    {
+        nIdx += m_lstSubSets.size();
+        showItem((UINT)nIdx, true);
+        selectItem((UINT)nIdx);
+    }
+
+    return true;
 }
 
 void CMLListView::showDir(CPath& dir)

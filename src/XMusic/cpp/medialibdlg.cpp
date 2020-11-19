@@ -102,50 +102,44 @@ void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
     _show();
 }
 
-void CMedialibDlg::showMedia(const CMedia& media)
+bool CMedialibDlg::showMedia(IMedia& media)
 {
-    m_lv.hittestMedia(media);
+    if (!m_lv.hittestMedia(media))
+    {
+        if (media.type() != E_MediaType::MT_MediaRes)
+        {
+            return false;
+        }
+
+        m_lv.hittestFile((CMediaRes&)media);
+    }
+
+    CApp::async([&]() {
+        m_wholeTrackDlg.tryShow(media);
+    });
 
     _show();
+
+    return true;
 }
 
-bool CMedialibDlg::showMediaRes(cwstr strPath)
+CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
     CMediaRes *pMediaRes = __medialib.subFile(strPath);
-    if (pMediaRes)
-    {
-        do {
-            auto pParentDir = pMediaRes->parent();
-            if (pParentDir && !pParentDir->isLocal())
-            {
-                auto pSinger = m_app.getSingerMgr().checkSingerDir(strPath, false);
-                if (pSinger)
-                {
-                    m_lv.showMediaSet((CSnapshotMediaDir&)*pParentDir);
-                    break;
-                }
-            }
-
-            m_lv.hittestFile(*pMediaRes);
-        } while(0);
-    }
-    else
+    if (NULL == pMediaRes)
     {
         pMediaRes = m_OuterDir.subFile(strPath);
         if(NULL == pMediaRes)
         {
-            return false;
+            return NULL;
         }
-        m_lv.hittestFile(*pMediaRes);
     }
 
-    CApp::async([&, pMediaRes]() {
-        tryShowWholeTrack(*pMediaRes);
-    });
+    m_lv.hittestFile(*pMediaRes);
 
-    CDialog::show();
+    _show();
 
-    return true;
+    return pMediaRes;
 }
 
 size_t CMedialibDlg::caleRowCount(int cy)

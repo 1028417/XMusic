@@ -33,12 +33,12 @@ public:
 private:
     class CApp& m_app;
 
-    class CMediaRes *m_pMediaRes;
+    IMedia *m_pMedia = NULL;
 
     CWholeTrackView m_lv;
 
 public:
     void relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv);
 
-    bool tryShow(class CMediaRes& mediaRes);
+    bool tryShow(IMedia& media);
 };

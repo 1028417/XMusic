@@ -179,7 +179,7 @@ public:
     void showRoot();
 
     void showMediaSet(CMediaSet& MediaSet, bool bUpward=false);
-    void hittestMedia(const CMedia& media);
+    bool hittestMedia(const IMedia& media);
 
     virtual void showDir(CPath& dir);
 

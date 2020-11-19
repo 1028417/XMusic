@@ -128,8 +128,8 @@ public:
 		m_nFileSize = nFileSize;
 	}
 
-    CMediaSet* GetMediaSet() const override
-	{
+    CMediaSet* mediaSet() const override
+    {
 		return m_pParent;
 	}
 
@@ -139,7 +139,7 @@ public:
 		return GetName();
 	}
 
-    CRCueFile getCueFile() const;
+	CRCueFile cueFile() override;
 
     void UpdatePath(cwstr strPath);
 	

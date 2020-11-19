@@ -224,7 +224,7 @@ BOOL CAlbumPage::OnInitDialog()
 			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
 			__Ensure(pAlbumItem);
 
-			auto iImage = pAlbumItem->getCueFile() ? (int)E_GlobalImage::GI_WholeTrack : (int)E_GlobalImage::GI_AlbumItem;
+			auto iImage = pAlbumItem->cueFile() ? (int)E_GlobalImage::GI_WholeTrack : (int)E_GlobalImage::GI_AlbumItem;
 
 			POINT pt;
 			if (E_ListViewType::LVT_Report == eViewType)
@@ -1000,7 +1000,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverExploreList(const TD_IMediaList& lstMedia
 
 	DROPEFFECT dwRet = 0;
 	lstMedias.front([&](IMedia& media) {
-		if (media.GetMediaSet() == m_pAlbum)
+		if (media.mediaSet() == m_pAlbum)
 		{
 			dwRet = DROPEFFECT_MOVE;
 		}
@@ -1117,7 +1117,7 @@ BOOL CAlbumPage::OnMediasDropExploreList(const TD_IMediaList& lstMedias, UINT uT
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	UINT uCount = 0;
@@ -1192,7 +1192,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverBrowseList(const TD_IMediaList& lstMedias
 	
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 	__EnsureReturn(pSrcMediaSet != pDropHilightAlbum, DROPEFFECT_NONE);
 	DragContext.pTargetObj = pDropHilightAlbum;
@@ -1222,7 +1222,7 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	UINT uCount = 0;

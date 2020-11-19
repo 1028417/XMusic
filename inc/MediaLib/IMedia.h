@@ -83,11 +83,6 @@ public:
 
 	virtual wstring GetTitle() const;
 
-	virtual class CMediaSet* GetMediaSet() const
-	{
-		return NULL;
-	}
-
 	bool isXmsc() const
 	{
 #if __winvc
@@ -134,6 +129,16 @@ public:
 	{
 		return GetName();
 	}
+
+    virtual class CMediaSet* mediaSet() const
+    {
+        return NULL;
+    }
+
+    virtual CRCueFile cueFile()
+    {
+        return CCueFile::NoCue;
+    }
 
 	const CMedia *findRelatedPlayItem();
 	const CMedia *findRelatedAlbumItem();

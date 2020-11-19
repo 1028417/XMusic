@@ -72,10 +72,10 @@ private:
 class __ModelExt CSnapshotMediaRes : public CMediaRes
 {
 public:
-    CSnapshotMediaRes(const tagFileInfo& fileInfo, UINT uDuration)
-        : CMediaRes(E_MediaFileType::MFT_Null, fileInfo)
+    CSnapshotMediaRes(CSnapshotMediaDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
+        : CMediaRes(E_MediaFileType::MFT_Null, parent, strFileName, uFileSize)
         , m_uDuration(uDuration)
-        , m_CueFile(uDuration > __wholeTrackDuration ? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
+        , m_CueFile(uDuration>__wholeTrackDuration? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
     {
     }
 
@@ -95,7 +95,17 @@ public:
         return m_uDuration;
     }
 
-    CRCueFile cueFile()
+    CMediaSet* mediaSet() const override
+    {
+        if (m_fi.pParent)
+        {
+            return (CSnapshotMediaDir*)m_fi.pParent;
+        }
+
+        return NULL;
+    }
+
+    CRCueFile cueFile() override
     {
         return m_CueFile;
     }

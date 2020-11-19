@@ -138,7 +138,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		__Ensure(pPlayItem);
 
 		int iImage = 0;
-		if (pPlayItem->getCueFile())
+		if (pPlayItem->cueFile())
 		{
 			iImage = (int)E_GlobalImage::GI_WholeTrack;
 		}
@@ -448,7 +448,7 @@ DROPEFFECT CPlayItemPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& 
 
 	DROPEFFECT dwRet = DROPEFFECT_COPY;
 	lstMedias.front([&](IMedia& media) {
-		if (media.GetMediaSet() == m_pPlaylist)
+		if (media.mediaSet() == m_pPlaylist)
 		{
 			dwRet = DROPEFFECT_MOVE;
 		}
@@ -467,7 +467,7 @@ BOOL CPlayItemPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 
 	CMediaSet *pSrcMediaSet = NULL;
 	lstMedias.front([&](IMedia& media) {
-		pSrcMediaSet = media.GetMediaSet();
+		pSrcMediaSet = media.mediaSet();
 	});
 
 	if (pSrcMediaSet != m_pPlaylist)

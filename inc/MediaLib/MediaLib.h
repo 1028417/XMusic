@@ -155,13 +155,29 @@ public:
 class __MediaLibExt CSnapshotMediaDir : public CMediaDir, public CMediaSet
 {
 public:
-    CSnapshotMediaDir(cwstr strPath, CMediaDir *pParentDir, CMediaSet *pParentMediaSet)
-        : CMediaDir(strPath, pParentDir)
+    CSnapshotMediaDir(cwstr strDir, CMediaDir *pParent, CMediaSet *pParentMediaSet)
+        : CMediaDir(strDir, pParent)
         , CMediaSet(L"", pParentMediaSet, E_MediaSetType::MST_SnapshotMediaDir)
     {
     }
 
 public:
+    void attachToSinger(CMediaSet& singer, cwstr strAliasName)
+    {
+        m_pParent = &singer;
+        m_strName = strAliasName;
+        SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, singer.m_uID, singer.m_strName);
+    }
+
+    UINT singerID() const
+    {
+        return GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+    }
+    cwstr singerName() const
+    {
+        return GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+    }
+
     bool isLocal() const override
     {
         return false;
@@ -179,6 +195,11 @@ public:
         }
 
         return XFile::fileName();
+    }
+
+    class CMediaSet* mediaSet() const override
+    {
+        return (CMediaSet*)this;
     }
 };
 #endif

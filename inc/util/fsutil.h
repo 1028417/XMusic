@@ -67,15 +67,18 @@ struct __UtilExt tagFileInfo
 {
     tagFileInfo() = default;
 
-	tagFileInfo(cwstr strDirPath)
-        : strName(strDirPath)
+    tagFileInfo(cwstr strDir, class CPath *pParent = NULL)
+        : pParent(pParent)
+        , bDir(true)
+        , strName(strDir)
 	{
 	}
 
-    tagFileInfo(bool bDir, cwstr strName, class CPath *pParent=NULL)
-        : pParent(pParent)
-        , bDir(bDir)
+    tagFileInfo(class CPath& parent, cwstr strName, uint64_t uFileSize = 0)
+        : pParent(&parent)
+        , bDir(false)
         , strName(strName)
+        , uFileSize(uFileSize)
 	{
 	}
 

@@ -229,6 +229,8 @@ enum class E_RenameRetCode
 	, RRC_NameExists
 };
 
+#include "CueFile.h"
+
 #include "IMedia.h"
 
 #include "MediaRes.h"

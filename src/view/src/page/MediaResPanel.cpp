@@ -709,7 +709,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_ViewTrack:
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
-			CRCueFile cueFile = MediaRes.getCueFile();
+			CRCueFile cueFile = MediaRes.cueFile();
 			if (cueFile)
 			{
 				CTrackDetailDlg(m_view, cueFile, &MediaRes).DoModal();
@@ -796,7 +796,7 @@ void CMediaResPanel::OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult)
 
 		if (NULL != pMediaRes)
 		{
-			CRCueFile cueFile = pMediaRes->getCueFile();
+			CRCueFile cueFile = pMediaRes->cueFile();
 			if (cueFile)
 			{
 				CTrackDetailDlg(m_view, cueFile, pMediaRes).DoModal();
@@ -928,7 +928,7 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 		m_FileMenuGuard.EnableItem(ID_FIND, TRUE);
 
 		lstMediaRes.front([&](CMediaRes& subFile) {
-			if (subFile.getCueFile())
+			if (subFile.cueFile())
 			{
 				m_FileMenuGuard.EnableItem(ID_ViewTrack, TRUE);
 			}

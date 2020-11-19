@@ -144,7 +144,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     else
     {
         strTitle = dir.fileName();
-        if (!((CMediaDir&)dir).isLocal())
+        if (((CMediaDir&)dir).mediaSet())
         {
             if (dir.parent() == &__medialib)
             {
@@ -162,18 +162,12 @@ void CMedialibView::_onShowDir(CPath& dir)
             {
                 plstSingerName = &mapSingerName[&dir];
 
-                cauto singerMgr = m_app.getSingerMgr();
                 for (auto pSubDir : dir.dirs())
                 {
-                    auto pSinger = singerMgr.matchSingerDir(((CMediaDir*)pSubDir)->GetPath());
-                    if (pSinger)
+                    cauto strSingerName = ((CSnapshotMediaDir*)pSubDir)->singerName();
+                    if (!strSingerName.empty())
                     {
-                        ((CMediaDir*)pSubDir)->SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer
-                                                                  , pSinger->m_uID, pSinger->m_strName);
-                        if (std::find(plstSingerName->begin(), plstSingerName->end(), pSinger->m_strName) == plstSingerName->end())
-                        {
-                            plstSingerName->push_back(pSinger->m_strName);
-                        }
+                        plstSingerName->push_back(strSingerName);
                     }
                 }
             }
@@ -293,7 +287,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else if (context.pMedia)
     {
-        if (context.pMedia->type() == E_MediaType::MT_PlayItem)
+        auto eMediaType = context.pMedia->type();
+        if (E_MediaType::MT_PlayItem == eMediaType)
         {
             context.pmIcon = &m_pmPlayItem;
 
@@ -307,7 +302,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 }
             }
         }
-        else if (context.pMedia->type() != E_MediaType::MT_AlbumItem)
+        else if (E_MediaType::MT_MediaRes == eMediaType)
         {
             context.pmIcon = &m_pmSSFile;
         }
@@ -316,8 +311,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     {
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-        auto pMediaDir = (CMediaDir*)context.pDir;
-        if (!pMediaDir->isLocal())
+        auto pMediaSet = ((CMediaDir*)context.pDir)->mediaSet();
+        if (pMediaSet)
         {
             context.pmIcon = &m_pmSSDir;
 
@@ -353,17 +348,11 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
-                /*auto pSinger = m_app.getSingerMgr().matchSingerDir(pMediaDir->GetPath());
-                if (pSinger)
-                {
-                    context.pmIcon = &genSingerHead(pSinger->m_uID, pSinger->m_strName);
-                }*/
-
-                auto uSingerID = pMediaDir->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+                auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
+                auto uSingerID = pSnapshotMediaDir->singerID();
                 if (uSingerID > 0)
                 {
-                    cauto strSingerName = pMediaDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-                    context.pmIcon = &genSingerHead(uSingerID, strSingerName);
+                    context.pmIcon = &genSingerHead(uSingerID, pSnapshotMediaDir->singerName());
                 }
             }
         }
@@ -393,7 +382,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     else if (context.pFile)
     {
         auto pMediaRes = ((CMediaRes*)context.pFile);
-        if (!pMediaRes->parent()->isLocal())
+        if (pMediaRes->isLocal())
+        {
+            context.pmIcon = &m_pmFile;
+            context.strText = pMediaRes->fileName();
+        }
+        else
         {
             if (pMediaRes->duration() > __wholeTrackDuration)
             {
@@ -413,11 +407,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
 
             context.strText = pMediaRes->GetTitle();
-        }
-        else
-        {
-            context.pmIcon = &m_pmFile;
-            context.strText = pMediaRes->fileName();
         }
     }
     else
@@ -485,6 +474,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
         return;
     }
 
+    // TODO if (currentDir()
     if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
     {
         list<wstring> lstSingerName;
@@ -670,18 +660,15 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     else if (mlContext.pFile)
     {
         auto pMediaRes = (CMediaRes*)mlContext.pFile;
-        if (!pMediaRes->parent()->isLocal())
+        auto duration = pMediaRes->duration();
+        if (duration > __wholeTrackDuration)
         {
-            auto duration = pMediaRes->duration();
-            if (duration > __wholeTrackDuration)
+            cauto cue = pMediaRes->cueFile();
+            if (cue)
             {
-                cauto cue = ((CSnapshotMediaRes*)pMediaRes)->cueFile();
-                if (cue)
-                {
-                    strRemark << cue.m_alTrackInfo.size() << L" 首\n";
-                }
-                strRemark << IMedia::genDurationString(duration);
+                strRemark << cue.m_alTrackInfo.size() << L" 首\n";
             }
+            strRemark << IMedia::genDurationString(duration);
         }
     }
     else if (mlContext.pDir && mlContext.pDir != &__medialib && mlContext.pDir != &m_OuterDir)

@@ -21,7 +21,7 @@ public:
     {
     }
 
-    COuterDir(cwstr strPath, class CPath *pParent)
+    COuterDir(cwstr strPath, CMediaDir *pParent = NULL)
         : CMediaDir(strPath, pParent)
     {
     }
@@ -53,7 +53,7 @@ private:
 #else
     CMediaRes* subPath(cwstr strSubPath, bool bDir) override
     {
-        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubFile);
+        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubPath);
         if (strOppPath.empty())
         {
             return NULL;
@@ -141,8 +141,8 @@ public:
 
     void show();
     void showMediaSet(CMediaSet& MediaSet);
-    void showMedia(const CMedia& media);
-    bool showMediaRes(cwstr strPath);
+    bool showMedia(IMedia& media);
+    CMediaRes* showMediaRes(cwstr strPath);
 
     void updateHead(const WString& strTitle);
 

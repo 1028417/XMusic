@@ -34,7 +34,7 @@ struct tagPlayingInfo
     UINT uSingerID = 0;
     wstring strSingerName;
 
-    const CMedia *pRelatedMedia = NULL;
+    IMedia *pRelatedMedia = NULL;
 };
 
 class CMainWnd : public QMainWindow

@@ -324,6 +324,8 @@ void MainWindow::_init()
 
     ui.labelSingerName->setFont(0.95f);
 
+    ui.labelAlbumName->setFont(0.95f);
+
     ui.labelPlayingfile->setFont(0.95f);
 
     ui.labelDuration->setFont(0.8f);
@@ -621,7 +623,7 @@ void MainWindow::_relayout()
         newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x() - width/2.0f)
                        , __round(fBkgZoomRate*pos.center().y() - height/2.0f) + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
-    }    
+    }
 
     if (xBkgOffset != 0)
     {
@@ -727,33 +729,32 @@ void MainWindow::_relayout()
     }
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
-    if (m_PlayingInfo.pRelatedMedia && m_PlayingInfo.pRelatedMedia->m_pParent)
+    WString strMediaSet;
+    if (m_PlayingInfo.pRelatedMedia)
     {
-        WString strMediaSet;
-        if (!m_bDefaultBkg)
+        auto pMediaSet = m_PlayingInfo.pRelatedMedia->mediaSet();
+        if (pMediaSet)
         {
-            if (E_MediaSetType::MST_Album == m_PlayingInfo.pRelatedMedia->m_pParent->m_eType)
+            if (!m_bDefaultBkg)
             {
-                strMediaSet << L"专辑:  ";
+                if (E_MediaType::MT_PlayItem == m_PlayingInfo.pRelatedMedia->type())
+                {
+                    strMediaSet << L"歌单" __CNDot;
+                }
+                else if (!m_PlayingInfo.strSingerName.empty())
+                {
+                    strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
+                    // TODO if ? ui.labelSingerName->clear();
+                }
             }
-            else
-            {
-                strMediaSet << L"歌单:  ";
-            }
+
+            strMediaSet << pMediaSet->name();
+
+            labelAlbumName.setShadow(uShadowWidth);
+            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
         }
-        strMediaSet << m_PlayingInfo.pRelatedMedia->m_pParent->m_strName;
-
-        labelAlbumName.setVisible(true);
-        labelAlbumName.setText(strMediaSet);
-        labelAlbumName.setFont(0.95f);
-
-        labelAlbumName.setShadow(uShadowWidth);
-        labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
     }
-    else
-    {
-        labelAlbumName.setVisible(false);
-    }
+    labelAlbumName.setText(strMediaSet);
 
     ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
 
@@ -1152,8 +1153,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.qsDuration = __WS2Q(CMedia::genDurationString(uDuration));
     if (uDuration > __wholeTrackDuration)
     {
-        CMediaRes *pMediaRes = __medialib.subFile(PlayingInfo.strPath);
-        if (pMediaRes && !pMediaRes->parent()->isLocal())
+        auto pMediaRes = __medialib.subFile(PlayingInfo.strPath);
+        if (pMediaRes && !pMediaRes->isLocal())
         {
             PlayingInfo.bWholeTrack = true;
         }
@@ -1192,7 +1193,9 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
             if (pSinger)
             {
                 PlayingInfo.uSingerID = pSinger->m_uID;
-                PlayingInfo.strSingerName = pSinger->m_strName;
+                PlayingInfo.strSingerName = pSinger->m_strName;                
+
+                PlayingInfo.pRelatedMedia = __medialib.subFile(PlayingInfo.strPath);
             }
         }
     }

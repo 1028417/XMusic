@@ -33,10 +33,15 @@ public:
 	{
 	}
 
-    XFile(bool bDir, cwstr strName, class CPath *pParent)
-        : m_fileInfo(bDir, strName, pParent)
-	{
-	}
+    XFile(cwstr strDir, class CPath *pParent = NULL)
+        : m_fileInfo(strDir, pParent)
+    {
+    }
+
+    XFile(class CPath& parent, cwstr strName, uint64_t uFileSize = 0)
+        : m_fileInfo(parent, strName, uFileSize)
+    {
+    }
 
 private:
 	tagFileInfo m_fileInfo;
@@ -87,9 +92,14 @@ public:
         : XFile(fileInfo)
 	{
 	}
-	
-    CPath(bool bDir, cwstr strName, class CPath *pParent)
-        : XFile(bDir, bDir? strutil::rtrim_r(strName, __wcPathSeparator) : strName, pParent)
+
+    CPath(cwstr strDir, class CPath *pParent = NULL)
+        : XFile(strutil::rtrim_r(strDir, __wcPathSeparator), pParent)
+    {
+    }
+
+    CPath(class CPath& parent, cwstr strName, uint64_t uFileSize = 0)
+        : XFile(parent, strName, uFileSize)
 	{
 	}
 
@@ -282,8 +292,13 @@ public:
 	{
 	}
 
-    CPathObject(bool bDir, cwstr strName, class CPath *pParent)
-        : CPath(bDir, strName, pParent)
+    CPathObject(cwstr strDir, CPathObject *pParent = NULL)
+        : CPath(strDir, pParent)
+    {
+    }
+
+    CPathObject(CPathObject& parent, cwstr strName, uint64_t uFileSize = 0)
+        : CPath(parent, strName, uFileSize)
 	{
 	}
 
@@ -314,10 +329,10 @@ public:
 	{
 	}
 
-    CDirObject(cwstr strName, class CPath *pParent = NULL)
-        : CPathObject(true, strName, pParent)
-	{
-	}
+    CDirObject(cwstr strDir, CDirObject *pParent = NULL)
+        : CPathObject(strDir, pParent)
+    {
+    }
 
 protected:
 	virtual CPath* _newSubDir(const tagFileInfo& fileInfo) override
