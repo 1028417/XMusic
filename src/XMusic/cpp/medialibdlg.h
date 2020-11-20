@@ -89,7 +89,7 @@ private:
                         break;
                     }
 
-                    cauto strOppPath = fsutil::GetOppPath(pOuterDir->GetName(), strSubPath);
+                    cauto strOppPath = fsutil::GetOppPath(pOuterDir->path(), strSubPath);
                     if (strOppPath.empty())
                     {
                         continue;
