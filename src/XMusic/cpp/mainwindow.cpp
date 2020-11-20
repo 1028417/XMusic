@@ -734,7 +734,7 @@ void MainWindow::_relayout()
         {
             if (!m_bDefaultBkg)
             {
-                /*if (!m_PlayingInfo.strSingerName.empty())
+                /*if (m_PlayingInfo.uSingerID > 0)
                 {
                     strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
                     // TODO if ? ui.labelSingerName->clear();
@@ -846,8 +846,8 @@ void MainWindow::_relayout()
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar-dx, __cylabelAlbumName);
             labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
 
-            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
             ui.labelSingerName->setGeometry(x, y_SingerName, cx_progressbar-dx, __cylabelAlbumName);
+            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
 
             y_PlayingListMax = y_SingerImg - __size10;
         }
@@ -895,7 +895,7 @@ void MainWindow::_relayout()
             }
             else
             {
-                if (!ui.labelSingerName->text().isEmpty())
+                if (m_PlayingInfo.uSingerID > 0)
                 {
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
@@ -904,7 +904,6 @@ void MainWindow::_relayout()
                 {
                     y_PlayingListMax = y_labelAlbumName;
                 }
-                y_PlayingListMax += __size10;
             }
 
             ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
@@ -929,10 +928,25 @@ void MainWindow::_relayout()
             ui.labelSingerImg->clear();
         }
 
-        if (ui.labelSingerImg->pixmap().isNull())
+        if (pmSingerImg.isNull())
         {
-            labelAlbumName.setGeometry(x, y_Playingfile - __cylabelAlbumName, cx_progressbar, __cylabelAlbumName);
-            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+            auto y = y_Playingfile;
+
+            if (!strMediaSet->empty())
+            {
+                y -= __cylabelAlbumName;
+                labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
+                labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+            	y_PlayingListMax = y;
+			}
+
+            if (m_PlayingInfo.uSingerID > 0)
+            {
+                y -= __cylabelAlbumName;
+                ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
+                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
+            	y_PlayingListMax = y + __size10;
+            }
         }
         else
         {
@@ -947,16 +961,16 @@ void MainWindow::_relayout()
                     if (labelAlbumName.width() < rcAlbumNamePrev.width())
                     {
                         labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
-                        return;
+                        break;
                     }
                 }
 
                 int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
                 labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
             } while (0);
-        }
 
-        y_PlayingListMax = rcSingerImg.y() - __size10;
+            y_PlayingListMax = rcSingerImg.y() - __size10;
+        }
     }
 
 #define __CyPlayItem __size(115)
@@ -980,8 +994,8 @@ void MainWindow::_relayout()
     {
         UINT y_Margin = __size(30);
 
-        int y_frameDemandBottom = ui.frameDemand->geometry().bottom();
-        uRowCount = (y_PlayingListMax - y_frameDemandBottom - y_Margin*2)/__CyPlayItem;
+        int y_PlayingList = ui.frameDemand->geometry().bottom() - __size10;
+        uRowCount = (y_PlayingListMax - y_PlayingList - y_Margin*2)/__CyPlayItem;
         if (uRowCount > 10)
         {
             uRowCount = 10;
@@ -1002,9 +1016,9 @@ void MainWindow::_relayout()
             y_Margin -= __size10;
         }
 
-        UINT x_Margin = ui.frameDemand->x();
-        int y_PlayingList = y_frameDemandBottom - __size10 + y_Margin;
+        y_PlayingList += y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
+        UINT x_Margin = ui.frameDemand->x();
         m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
     m_PlayingList.setPageRowCount(uRowCount);
@@ -1206,7 +1220,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 
     m_app.sync([=](){
-        auto strPrevSinger = m_PlayingInfo.strSingerName;
+        auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
         ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
@@ -1226,7 +1240,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         cauto qsSingerName = __WS2Q(m_PlayingInfo.strSingerName);
         ui.labelSingerName->setText(qsSingerName);
 
-        if (m_PlayingInfo.strSingerName != strPrevSinger)
+        if (m_PlayingInfo.uSingerID != uPrevSingerID)
         {
             ui.labelSingerImg->clear();
             update();
@@ -1303,7 +1317,7 @@ static UINT g_uSingerImgIdx = 0;
 
 void MainWindow::_playSingerImg(bool bReset)
 {
-    if (m_PlayingInfo.strSingerName.empty())
+    if (0 == m_PlayingInfo.uSingerID)
     {
         return;
     }
@@ -1536,16 +1550,17 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {ui.labelDemandEN, E_LanguageType::LT_EN}
             , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
         plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {
-            if (lbl->text().startsWith(__qsCheck))
+            cauto text = lbl->text();
+            if (text.startsWith(__qsCheck))
             {
-                lbl->setText(lbl->text().mid(__qsCheck.length()));
+                lbl->setText(text.mid(__qsCheck.length()));
             }
             else
             {
                 if (lbl == label)
                 {
                     m_eDemandLanguage = eLanguage;
-                    lbl->setText(__qsCheck + lbl->text());
+                    lbl->setText(__qsCheck + text);
                 }
             }
         });
@@ -1635,7 +1650,8 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     static bool bTouchSingerImg = false;
     if (E_TouchEventType::TET_TouchBegin == type)
     {
-        bTouchSingerImg = !m_bDefaultBkg && !ui.labelSingerImg->pixmap().isNull() && ui.labelSingerImg->geometry().contains(te.x(), te.y());
+        bTouchSingerImg = !m_bDefaultBkg && !ui.labelSingerImg->pixmap().isNull()
+                && ui.labelSingerImg->geometry().contains(te.x(), te.y());
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
