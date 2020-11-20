@@ -753,17 +753,12 @@ void MainWindow::_relayout()
 
             labelAlbumName.setFont(0.95f);
             labelAlbumName.setShadow(uShadowWidth);
-            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
+            labelAlbumName.setAlignment(Qt::AlignCenter);
         }
     }
     labelAlbumName.setText(strMediaSet);
 
-    ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
-
-    m_PlayingList.setShadow(uShadowWidth);
-
-    ui.labelPlayingfile->setShadow(uShadowWidth);
-    ui.labelDuration->setShadow(uShadowWidth);
+    ui.labelSingerName->setAlignment(Qt::AlignCenter);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
     cauto pmSingerImg = m_PlayingInfo.bWholeTrack ?
@@ -797,6 +792,10 @@ void MainWindow::_relayout()
     }
 
     auto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
+
+    m_PlayingList.setShadow(uShadowWidth);
+    ui.labelPlayingfile->setShadow(uShadowWidth);
+    ui.labelDuration->setShadow(uShadowWidth);
 
     int y_PlayingListMax = 0;
 
@@ -937,16 +936,16 @@ void MainWindow::_relayout()
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
                 labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
-            	y_PlayingListMax = y;
-			}
+            }
 
             if (m_PlayingInfo.uSingerID > 0)
             {
                 y -= __cylabelAlbumName;
                 ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
-                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignBottom);
-            	y_PlayingListMax = y + __size10;
+                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
             }
+
+            y_PlayingListMax = y;
         }
         else
         {
