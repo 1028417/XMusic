@@ -89,11 +89,13 @@ private:
                         break;
                     }
 
-                    auto pMediaRes = pOuterDir->subPath(strOppPath, bDir);
-                    if (pMediaRes)
+                    cauto strOppPath = fsutil::GetOppPath(pOuterDir->GetName(), strSubPath);
+                    if (strOppPath.empty())
                     {
-                        return pMediaRes;
+                        continue;
                     }
+
+                    return pOuterDir->subPath(strOppPath, bDir);
                 }
             }
 #endif

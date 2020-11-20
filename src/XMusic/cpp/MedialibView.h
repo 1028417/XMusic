@@ -43,8 +43,9 @@ private:
     QPixmap m_pmMQS;
     QPixmap m_pmDTS;
 
-    QPixmap m_pmDir;
+    QPixmap m_pmTFCard;
     QPixmap m_pmDirLink;
+    QPixmap m_pmDir;
     QPixmap m_pmFile;
 
     QPixmap m_pmPlay;

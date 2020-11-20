@@ -45,5 +45,6 @@
         <file>mdlconf</file>
         <file>img/medialib/mqs.png</file>
         <file>img/btnBackward.png</file>
+        <file>img/medialib/tf.png</file>
     </qresource>
 </RCC>

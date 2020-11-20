@@ -124,7 +124,7 @@ public:
 
     void handleTouchEvent(E_TouchEventType type, const CTouchEvent& te);
 
-    void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0);
+    void drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround=0, UINT yround=0, bool bDrawDisk=true);
 
 private:
     void _init();

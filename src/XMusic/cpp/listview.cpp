@@ -182,7 +182,11 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     }
 
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
-    if (0 == (context.uStyle & E_LVItemStyle::IS_SingleLine))
+    if (context.uStyle & E_LVItemStyle::IS_SingleLine)
+    {
+        flags |= Qt::TextSingleLine;
+    }
+    else
     {
         flags |= Qt::TextWrapAnywhere;
     }
@@ -200,14 +204,14 @@ void CListView::_paintBottonLine(CPainter& painter, QRect& rc)
 cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                            , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    QString qsText = context.strText;
+    /*QString qsText = context.strText;
     if (context.uStyle & E_LVItemStyle::IS_SingleLine)
     {
         qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, rc.width()
                                                   , Qt::TextSingleLine | Qt::TextShowMnemonic);
-    }
+    }*/
 
-    return painter.drawTextEx(rc, flags, qsText, 1, uShadowAlpha, uTextAlpha);
+    return painter.drawTextEx(rc, flags, context.strText, 1, uShadowAlpha, uTextAlpha);
 }
 
 bool CListView::_checkBarArea(int x)

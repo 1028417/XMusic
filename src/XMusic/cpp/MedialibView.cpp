@@ -40,8 +40,9 @@ void CMedialibView::initpm()
     (void)m_pmMQS.load(__mediaPng(mqs));
     (void)m_pmDTS.load(__mediaPng(dts));
 
-    (void)m_pmDir.load(__mediaPng(dir));
+    (void)m_pmTFCard.load(__mediaPng(tf));
     (void)m_pmDirLink.load(__mediaPng(dirLink));
+    (void)m_pmDir.load(__mediaPng(dir));
     (void)m_pmFile.load(__mediaPng(file));
 
     (void)m_pmPlay.load(":/img/btnPlay.png");
@@ -360,7 +361,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         {
             context.pmIcon = &m_pmDir;
 
-            if (context.pDir->parent() == NULL)
+            auto pParentDir = context.pDir->parent();
+            if (pParentDir == NULL)
             {
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
                 if (pAttachDir)
@@ -375,6 +377,13 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                     {
                         context.strRemark = L"USB";
                     }*/
+                }
+            }
+            else if (pParentDir == &m_OuterDir)
+            {
+                if (dynamic_cast<COuterDir*>(context.pDir))
+                {
+                    context.pmIcon = &m_pmTFCard;
                 }
             }
         }

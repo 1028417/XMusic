@@ -22,9 +22,18 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
 
 void CSingerImgDlg::_relayout(int cx, int cy)
 {
-    auto y = cy/2-ui.btnBackward->height()/2;
-    ui.btnBackward->move(ui.btnReturn->x(), y);
-    ui.btnForward->move(cx-ui.btnReturn->x()-ui.btnForward->width(), y);
+    if (cx > cy)
+    {
+        auto y = cy/2-ui.btnBackward->height()/2;
+        ui.btnBackward->move(ui.btnReturn->x(), y);
+        ui.btnForward->move(cx-ui.btnReturn->x()-ui.btnForward->width(), y);
+    }
+    else
+    {
+        auto x = cx/2-ui.btnBackward->width()/2;
+        ui.btnBackward->move(x, ui.btnReturn->y());
+        ui.btnForward->move(x, cy-ui.btnReturn->y()-ui.btnForward->height());
+    }
 }
 
 void CSingerImgDlg::relayout(cqrc rcBtnReturn)

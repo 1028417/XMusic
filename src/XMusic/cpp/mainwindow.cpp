@@ -1031,7 +1031,7 @@ void MainWindow::_onPaint()
             }
             else
             {
-                drawDefaultBkg(painter, rc);
+                drawDefaultBkg(painter, rc, 0, 0, !ui.labelSingerImg->pixmap().isNull());
             }
         }
     }
@@ -1067,7 +1067,7 @@ float MainWindow::_caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
     return (float)cxDst / m_cxBkg;
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround, bool bDrawDisk)
 {
     int cxDst = rc.width();
     int cyDst = rc.height();
@@ -1078,6 +1078,10 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     QRect rcSrc(0, m_cyBkg-cySrc, 10, cySrc);
     painter.drawPixmap(rc, m_brBkg, rcSrc, xround, yround);
 
+    if (!bDrawDisk)
+    {
+        painter.setOpacity(0.06f);
+    }
     rcSrc.setWidth(m_cxBkg);
     QRect rcDst(rc.x()+xDst, rc.y(), cxDst, cyDst);
     painter.drawPixmap(rcDst, m_brBkg, rcSrc);
@@ -1213,14 +1217,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         cauto qsSingerName = __WS2Q(m_PlayingInfo.strSingerName);
         ui.labelSingerName->setText(qsSingerName);
 
-        if (m_PlayingInfo.strSingerName.empty())
-        {
-            ui.labelSingerImg->clear();
-        }
-        else if (m_PlayingInfo.strSingerName != strPrevSinger)
+        if (m_PlayingInfo.strSingerName != strPrevSinger)
         {
             ui.labelSingerImg->clear();
             _playSingerImg(true);
+            update();
         }
 
         _relayout();

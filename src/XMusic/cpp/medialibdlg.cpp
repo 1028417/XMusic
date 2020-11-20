@@ -125,10 +125,10 @@ bool CMedialibDlg::showMedia(IMedia& media)
 
 CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
-    CMediaRes *pMediaRes = __medialib.subFile(strPath);
+    CMediaRes *pMediaRes = m_OuterDir.subFile(strPath);
     if (NULL == pMediaRes)
     {
-        pMediaRes = m_OuterDir.subFile(strPath);
+        pMediaRes = __medialib.subFile(strPath);
         if(NULL == pMediaRes)
         {
             return NULL;

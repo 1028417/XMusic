@@ -71,12 +71,12 @@ bool CMLListView::hittestMedia(const IMedia& media)
 
     _showMediaSet(*pMediaSet);
 
-    auto nIdx = m_lstSubMedias.indexOf(media);
+    int nIdx = m_lstSubMedias.indexOf(media);
     if (nIdx >= 0)
     {
-        nIdx += m_lstSubSets.size();
-        showItem((UINT)nIdx, true);
-        selectItem((UINT)nIdx);
+        UINT uItem = m_lstSubSets.size() + nIdx;
+        showItem(uItem, true);
+        selectItem(uItem);
     }
 
     return true;
