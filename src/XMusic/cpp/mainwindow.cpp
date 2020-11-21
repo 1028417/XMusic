@@ -727,7 +727,7 @@ void MainWindow::_relayout()
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
     WString strMediaSet;
-    if (!m_PlayingInfo.pMediaSet)
+    if (!m_PlayingInfo.pRelatedMediaSet)
     {
         if (!m_bDefaultBkg)
         {
@@ -736,17 +736,17 @@ void MainWindow::_relayout()
                 strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
                 // TODO if ? ui.labelSingerName->clear();
             }
-            else*/ if (E_MediaSetType::MST_Playlist == m_PlayingInfo.pRelatedMedia->m_eType)
+            else*/ if (E_MediaSetType::MST_Playlist == m_PlayingInfo.pRelatedMediaSet->m_eType)
             {
                 strMediaSet << L"歌单: ";
             }
-            else if (E_MediaSetType::MST_Album == m_PlayingInfo.pMediaSet->m_eType)
+            else if (E_MediaSetType::MST_Album == m_PlayingInfo.pRelatedMediaSet->m_eType)
             {
                 strMediaSet << L"专辑: ";
             }
         }
 
-        strMediaSet << m_PlayingInfo.pMediaSet->name();
+        strMediaSet << m_PlayingInfo.pRelatedMediaSet->name();
 
         labelAlbumName.setFont(0.95f);
         labelAlbumName.setShadow(uShadowWidth);
@@ -894,7 +894,7 @@ void MainWindow::_relayout()
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
                 }
-                else if (m_PlayingInfo.pMediaSet)
+                else if (m_PlayingInfo.pRelatedMediaSet)
                 {
                     y_PlayingListMax = y_labelAlbumName;
                 }
@@ -929,7 +929,7 @@ void MainWindow::_relayout()
         if (pmSingerImg.isNull())
         {
             auto y = y_Playingfile;
-            if (m_PlayingInfo.pMediaSet)
+            if (m_PlayingInfo.pRelatedMediaSet)
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
@@ -1217,7 +1217,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
     if (PlayingInfo.pRelatedMedia)
     {
-        PlayingInfo.pMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
+        PlayingInfo.pRelatedMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
     }
 
     m_app.sync([=](){

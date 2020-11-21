@@ -36,7 +36,7 @@ struct tagPlayingInfo
 
     IMedia *pRelatedMedia = NULL;
 
-    CMediaSet *pMediaSet = NULL;
+    CMediaSet *pRelatedMediaSet = NULL;
 };
 
 class CMainWnd : public QMainWindow
