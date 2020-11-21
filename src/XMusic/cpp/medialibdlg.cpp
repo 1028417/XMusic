@@ -114,8 +114,6 @@ bool CMedialibDlg::showMedia(IMedia& media)
     }
 
     CApp::async([&]() {
-        m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnUpward->geometry()
-                                 , ui.labelTitle->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
         m_wholeTrackDlg.tryShow(media);
     });
 
@@ -199,13 +197,13 @@ void CMedialibDlg::_relayout(int cx, int cy)
     QRect rcLv(0, y_MedialibView, cx, cy-y_MedialibView);
     m_lv.setGeometry(rcLv);
 
-    m_wholeTrackDlg.relayout(rcReturn, rcUpward, ui.labelTitle->geometry(), rcPlay, rcLv);
     m_singerImgDlg.relayout(rcReturn);
 }
 
-void CMedialibDlg::_relayoutTitle() const
+void CMedialibDlg::_relayoutTitle()
 {
-    int cxMargin = ui.btnReturn->x();
+    cauto rcReturn = ui.btnReturn->geometry();
+    int cxMargin = rcReturn.x();
 
     auto rc = ui.btnPlay->geometry();
     if (ui.labelSingerImg->isVisible())
@@ -223,10 +221,14 @@ void CMedialibDlg::_relayoutTitle() const
         ui.labelSingerImg->setGeometry(rc);
     }
 
-    auto pButton = ui.btnUpward->isVisible() ? ui.btnUpward : ui.btnReturn;
-    int x_title = pButton->geometry().right() + cxMargin;
+    cauto rcUpward = ui.btnUpward->geometry();
+    int x_title = ui.btnUpward->isVisible() ? rcUpward.right() : rcReturn.right();
+    //x_title += cxMargin;
     int cx_title = rc.x()-cxMargin-x_title;
-    ui.labelTitle->setGeometry(x_title, 0, cx_title, rc.bottom() + rc.top());
+    QRect rcTitle(x_title, 0, cx_title, rcReturn.bottom() + rcReturn.top());
+    ui.labelTitle->setGeometry(rcTitle);
+
+    m_wholeTrackDlg.relayout(rcReturn, rcUpward, rcTitle, ui.btnPlay->geometry(), m_lv.geometry());
 }
 
 void CMedialibDlg::updateHead(const WString& strTitle)
