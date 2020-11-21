@@ -24,12 +24,6 @@ private:
     CCueList m_cuelist;
 
 public:
-    bool checkXUrl(cwstr strPath) const;
-
-    string getXUrl(cwstr strPath) const;
-
-    bool loadXUrl(Instream& ins);
-
     bool loadXSnapshot(Instream& ins);
 
     bool loadXCue(Instream& ins, cwstr strFileTitle)
@@ -43,8 +37,6 @@ public:
     }
 
 private:
-    bool _loadXUrl(const string& strText);
-
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 #endif
 
