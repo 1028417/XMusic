@@ -35,7 +35,6 @@ struct tagPlayingInfo
     wstring strSingerName;
 
     IMedia *pRelatedMedia = NULL;
-
     CMediaSet *pRelatedMediaSet = NULL;
 };
 
@@ -163,5 +162,9 @@ private:
 
     void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
 
-    bool installApp(const CByteBuffer& bbfBuff) override;
+    bool installApp(const CByteBuffer& bbfBuff) override
+    {
+        extern bool installApp(const CByteBuffer& bbfData);
+        return installApp(bbfBuff);
+    }
 };
