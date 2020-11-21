@@ -114,6 +114,8 @@ bool CMedialibDlg::showMedia(IMedia& media)
     }
 
     CApp::async([&]() {
+        m_wholeTrackDlg.relayout(ui.btnReturn->geometry(), ui.btnUpward->geometry()
+                                 , ui.labelTitle->geometry(), ui.btnPlay->geometry(), m_lv.geometry());
         m_wholeTrackDlg.tryShow(media);
     });
 
