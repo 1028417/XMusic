@@ -930,14 +930,13 @@ void MainWindow::_relayout()
         if (pmSingerImg.isNull())
         {
             auto y = y_Playingfile;
-
             if (!strMediaSet->empty())
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
                 labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
-                y_PlayingListMax = y;
             }
+            y_PlayingListMax = y;
 
             if (m_PlayingInfo.uSingerID > 0)
             {
