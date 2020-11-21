@@ -8,9 +8,8 @@
 
 static Ui::WholeTrackDlg ui;
 
-CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
+CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg)
     : CDialog(medialibDlg)
-    , m_app(app)
     , m_lv(*this)
 {
     ui.setupUi(this);
@@ -27,7 +26,7 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg, class CApp& app)
     connect(ui.btnPlay, &CButton::signal_clicked, [&](){
         if (m_pMedia)
         {
-            m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
+            __app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
         }
     });
 }
@@ -55,7 +54,7 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
 
     m_pMedia = &media;
 
-    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? m_app.m_pmHDDisk : m_app.m_pmLLDisk;
+    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmLLDisk;
     ui.labelDisk->setPixmap(pm);
 
     ui.labelTitle->setText(__WS2Q(media.GetTitle()));

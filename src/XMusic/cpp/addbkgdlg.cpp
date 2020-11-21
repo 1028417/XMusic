@@ -11,13 +11,12 @@ static UINT g_uMsScanYield = 1;
 
 static XThread *g_thrGenSubImg = NULL;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg, CApp& app)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_app(app)
-    , m_thrScan(m_app.thread())
+    , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.runSignal())
-    , m_lv(*this, app, m_paImgDirs)
+    , m_lv(*this, m_paImgDirs)
 {
 }
 
@@ -51,7 +50,7 @@ void CAddBkgDlg::init()
         m_paImgDirs.clear();
         update();
 
-        _scanDir(m_app.getOption().strAddBkgDir);
+        _scanDir(__app.getOption().strAddBkgDir);
     });
 #endif
 
@@ -76,7 +75,7 @@ void CAddBkgDlg::init()
 #if __windows
 bool CAddBkgDlg::_chooseDir()
 {
-    auto& strAddBkgDir = m_app.getOption().strAddBkgDir;
+    auto& strAddBkgDir = __app.getOption().strAddBkgDir;
 
     CFolderDlg FolderDlg;
     cauto strDir = FolderDlg.Show(hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
@@ -103,7 +102,7 @@ void CAddBkgDlg::show()
     if (!m_thrScan.joinable())
     {
 #if __windows
-        auto& strAddBkgDir = m_app.getOption().strAddBkgDir;
+        auto& strAddBkgDir = __app.getOption().strAddBkgDir;
         if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
         {
             //if (!_chooseDir())
@@ -153,7 +152,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
                 return;
             }
 
-            m_app.sync([&, uSequence](){
+            __app.sync([&, uSequence](){
                 if (uSequence != s_uSequence)
                 {
                     return;
@@ -351,7 +350,7 @@ wstring CImgDir::imgPath(UINT uIdx) const
 #define __szSubimgZoomout 500
 extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
 
-void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
+void CImgDir::genSubImgs(CAddBkgView& lv)
 {
     if (m_uPos >= m_paSubFile.size())
     {
@@ -369,11 +368,11 @@ void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
     }
     else
     {
-        g_thrGenSubImg = &app.thread(); //new XThread;
+        g_thrGenSubImg = &__app.thread(); //new XThread;
     }
     g_thrGenSubImg->start([&](){
         do {
-            if (!_genSubImgs(app, lv))
+            if (!_genSubImgs(lv))
             {
                 return;
             }
@@ -382,7 +381,7 @@ void CImgDir::genSubImgs(CApp& app, CAddBkgView& lv)
     });
 }
 
-bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
+bool CImgDir::_genSubImgs(CAddBkgView& lv)
 {
     wstring strFile;
     if (!m_paSubFile.get(m_uPos, [&](XFile& file){
@@ -410,7 +409,7 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 
         if (!pm.isNull() || !pm2.isNull())
         {
-            app.sync([&, strFile, pm, strFile2, pm2]()mutable{
+            __app.sync([&, strFile, pm, strFile2, pm2]()mutable{
                 if (this != lv.imgDir())
                 {
                      m_uPos-=2;
@@ -438,7 +437,7 @@ bool CImgDir::_genSubImgs(CApp& app, CAddBkgView& lv)
 
     if (_loadSubImg(strFile, pm))
     {
-        app.sync([&, strFile, pm]()mutable{
+        __app.sync([&, strFile, pm]()mutable{
             if (this != lv.imgDir())
             {
                 m_uPos--;
@@ -492,10 +491,9 @@ void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
     m_vecImgs.emplace_back(pm, strFile);
 }
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, CApp& app, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
-    , m_app(app)
     , m_paImgDirs(paImgDir)
 {
 }
@@ -609,7 +607,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     m_addbkgDlg.relayout();
     m_addbkgDlg.repaint(); //update();
 
-    m_pImgDir->genSubImgs(m_app, *this); //_genSubImgs();
+    m_pImgDir->genSubImgs(*this); //_genSubImgs();
 }
 
 /*void CAddBkgView::_genSubImgs()

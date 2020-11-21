@@ -11,15 +11,13 @@ class CMedialibView : public CMLListView
 {
     Q_OBJECT
 public:
-    CMedialibView(class CMedialibDlg& medialibDlg, class CApp& app, CMediaDir& OuterDir);
+    CMedialibView(class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
 
 public:
     QPixmap m_pmDefaultSinger;
 
 private:
     class CMedialibDlg& m_medialibDlg;
-
-    class CApp& m_app;
 
     CMediaSet& m_SingerLib;
 

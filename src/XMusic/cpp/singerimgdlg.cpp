@@ -5,9 +5,9 @@
 
 static Ui::SingerImgDlg ui;
 
-CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg, CApp& app)
+CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg)
     : CDialog(medialibDlg)
-    , m_singerImgMgr(app.getSingerImgMgr())
+    , m_singerImgMgr(__app.getSingerImgMgr())
 {
     ui.setupUi(this);
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);

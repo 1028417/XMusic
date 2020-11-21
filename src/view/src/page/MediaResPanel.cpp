@@ -459,7 +459,8 @@ void CMediaResPanel::_asyncTask()
 {
 	if (m_bSingerPanel)
 	{
-		if (NULL == m_pCurrDir || m_pCurrDir->rootDir() != m_pRootDir)
+		if (NULL == m_pCurrDir || (!fsutil::CheckSubPath(m_strRootDir, m_strCurrDir)
+			&& !strutil::matchIgnoreCase(m_strRootDir, m_strCurrDir)))
 		{
 			return;
 		}

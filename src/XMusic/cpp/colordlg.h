@@ -7,11 +7,10 @@ class CColorDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CColorDlg(class CBkgDlg& bkgDlg, class CApp& app);
+    CColorDlg(class CBkgDlg& bkgDlg);
 
 private:
     class CBkgDlg& m_bkgDlg;
-    class CApp& m_app;
 	
 private:
     void _relayout(int cx, int cy) override;

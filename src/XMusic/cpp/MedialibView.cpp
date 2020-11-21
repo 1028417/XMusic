@@ -10,12 +10,11 @@
 
 #define __RemarkAlpha 200
 
-CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, class CApp& app, CMediaDir &OuterDir) :
+CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
     CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
-    , m_app(app)
-    , m_SingerLib(app.getSingerMgr())
-    , m_PlaylistLib(app.getPlaylistMgr())
+    , m_SingerLib(__app.getSingerMgr())
+    , m_PlaylistLib(__app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
 {
 }
@@ -99,7 +98,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             plstSingerName = &mapSingerName[&MediaSet];
 
-            cauto singerMgr = m_app.getSingerMgr();
+            cauto singerMgr = __app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
                 auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath(), false);
@@ -117,7 +116,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
         if (!plstSingerName->empty())
         {
-            m_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+            __app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
@@ -127,7 +126,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             lstSingerName.push_back(singer.m_strName);
         }
-        m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -175,7 +174,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
             if (!plstSingerName->empty())
             {
-                m_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+                __app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
             }
         }
     }
@@ -403,11 +402,11 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
-                    context.pmIcon = &m_app.m_pmHDDisk;
+                    context.pmIcon = &__app.m_pmHDDisk;
                 }
                 else
                 {
-                    context.pmIcon = &m_app.m_pmLLDisk;
+                    context.pmIcon = &__app.m_pmLLDisk;
                 }
             }
             else
@@ -500,7 +499,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 
         if (!lstSingerName.empty())
         {
-            m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+            __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
@@ -513,7 +512,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
                 lstSingerName.push_back(singer.m_strName);
             });
         }
-        m_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -525,7 +524,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pSingerPixmap;
     }
 
-    auto pHeadImg = m_app.getSingerImgMgr().getSingerHead(strSingerName);
+    auto pHeadImg = __app.getSingerImgMgr().getSingerHead(strSingerName);
     if (NULL == pHeadImg)
     {
         pSingerPixmap = &m_pmDefaultSinger;
@@ -535,7 +534,7 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         m_lstSingerPixmap.emplace_back();
         pSingerPixmap = &m_lstSingerPixmap.back();
 
-        QPixmap pm(__WS2Q(m_app.getSingerImgMgr().file(*pHeadImg)));
+        QPixmap pm(__WS2Q(__app.getSingerImgMgr().file(*pHeadImg)));
 /*#define __singerimgZoomout 128
         if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
         {
@@ -762,7 +761,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
     {
         _flashItem(lvItem.uItem);
 
-        m_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
+        __app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
 
         return;
     }
@@ -776,13 +775,13 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
     {
         _flashItem(lvItem.uItem);
 
-        if (m_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+        if (__app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
-            m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+            __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
         }
         else
         {
-            m_app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
+            __app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
         }
 
         return;
@@ -804,7 +803,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
         }
     }
 
-    m_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+    __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
 }
 
 void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)

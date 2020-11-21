@@ -66,7 +66,10 @@ static void _setupFont()
     }
 }
 
-CAppInit::CAppInit(QApplication& app)
+extern int g_argc;
+extern char **g_argv;
+
+CAppInit::CAppInit() : QApplication(g_argc, g_argv)
 {
     m_logger.open("xmusic.log", true);
 
@@ -88,6 +91,8 @@ CAppInit::CAppInit(QApplication& app)
     float fPixelRatio = screen->devicePixelRatio();
     auto fDPI = screen->logicalDotsPerInch();
     g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin << " DPR: " << fPixelRatio << " DPI: " >> fDPI;
+
+    cauto font = this->font();
 
 #if __ios
     g_fPixelRatio = fPixelRatio;
@@ -117,7 +122,7 @@ CAppInit::CAppInit(QApplication& app)
         break;
     };*/
 
-    g_uDefFontSize = app.font().pointSize();
+    g_uDefFontSize = font.pointSize();
     //g_uDefFontSize *= g_szScreenMax/540.0f;
 
 #elif __mac
@@ -135,20 +140,29 @@ CAppInit::CAppInit(QApplication& app)
 #endif
 
     g_nDefFontWeight = QFont::Weight::Light;
-    g_mapFontFamily[QFont::Weight::Light]
-            = g_mapFontFamily[QFont::Weight::DemiBold]
-            = app.font().family();
+    g_mapFontFamily[QFont::Weight::Light] = g_mapFontFamily[QFont::Weight::DemiBold] = font.family();
 
     _setupFont();
 
-    app.setFont(CFont());
+    this->setFont(CFont());
 }
 
-CApp::CApp(int argc, char **argv) : QApplication(argc, argv),
-    CAppInit((QApplication&)*this),
-    m_ctrl(*this, m_model),
+static CApp *g_pApp = NULL;
+
+CApp& CApp::inst()
+{
+    if (NULL == g_pApp)
+    {
+        g_pApp = (CApp*)malloc(sizeof(CApp));
+        new (g_pApp) CApp();
+    }
+
+    return *g_pApp;
+}
+
+CApp::CApp()
+    : m_ctrl(*this, m_model),
     m_model(m_mainWnd, m_ctrl.getOption()),
-    m_mainWnd(*this),
     m_msgbox(m_mainWnd)
 {
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
@@ -364,7 +378,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
     {
         vibrate();
 
-        static CNetworkWarnDlg dlg(m_mainWnd, *this);
+        static CNetworkWarnDlg dlg(m_mainWnd);
         dlg.show([&](){
             m_mainWnd.show();
 

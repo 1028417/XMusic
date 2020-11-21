@@ -14,11 +14,9 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(class CApp& app, QWidget *parent=NULL);
+    CPlayingList(QWidget *parent=NULL);
 
 private:
-    class CApp& m_app;
-
     QPixmap m_pmPlaying;
 
     UINT m_uPageRowCount = 0;

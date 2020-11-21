@@ -10,9 +10,8 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(CBkgDlg& bkgDlg, class CApp& app) : CDialog(bkgDlg)
+CColorDlg::CColorDlg(CBkgDlg& bkgDlg) : CDialog(bkgDlg)
   , m_bkgDlg(bkgDlg)
-  , m_app(app)
 {
 }
 
@@ -205,7 +204,7 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
         m_bkgDlg.close();
         this->close();
 #if __windows
-        m_app.setForeground();
+        __app.setForeground();
 #endif
     }
 }
@@ -215,15 +214,15 @@ void CColorDlg::applyBkgColor()
     this->update();
     m_bkgDlg.update();
 
-    if (!m_app.getOption().bUseBkgColor)
+    if (!__app.getOption().bUseBkgColor)
     {
-        m_app.getOption().bUseBkgColor = true;
+        __app.getOption().bUseBkgColor = true;
 
-        m_app.mainWnd().updateBkg();
+        __app.mainWnd().updateBkg();
     }
     else
     {
-        m_app.mainWnd().update();
+        __app.mainWnd().update();
     }
 }
 
@@ -235,7 +234,7 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
     {
         int crBkg = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
         g_crBkg.setRgb(crBkg);
-        m_app.getOption().crBkg = (UINT)crBkg;
+        __app.getOption().crBkg = (UINT)crBkg;
 
         applyBkgColor();
     }
@@ -243,13 +242,13 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
     {
         int crFore = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crFore.setRgb(crFore);
-        m_app.getOption().crFore = (UINT)crFore;
+        __app.getOption().crFore = (UINT)crFore;
 
         setWidgetTextColor(ui.groupBkgColor, g_crFore);
         setWidgetTextColor(ui.groupFontColor, g_crFore);
 
         this->update();
         m_bkgDlg.update();
-        m_app.mainWnd().update();
+        __app.mainWnd().update();
     }
 }

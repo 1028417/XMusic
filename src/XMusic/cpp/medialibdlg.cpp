@@ -6,11 +6,10 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(QWidget& parent, class CApp& app) : CDialog(parent)
-  , m_app(app)
-  , m_lv(*this, app, m_OuterDir)
-  , m_wholeTrackDlg(*this, app)
-  , m_singerImgDlg(*this, app)
+CMedialibDlg::CMedialibDlg(QWidget& parent) : CDialog(parent)
+  , m_lv(*this, m_OuterDir)
+  , m_wholeTrackDlg(*this)
+  , m_singerImgDlg(*this)
 {
 }
 
@@ -59,7 +58,7 @@ void CMedialibDlg::init()
         CMediaSet *pMediaSet = m_lv.currentMediaSet();
         if (pMediaSet)
         {
-            m_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
+            __app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
             return;
         }
 
@@ -73,7 +72,7 @@ void CMedialibDlg::init()
 
             if (paMedias)
             {
-                m_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
+                __app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
             }
         }
     });
@@ -269,7 +268,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
 
     ui.btnUpward->setVisible(bShowUpwardButton);
 
-    ui.frameFilterLanguage->setVisible(&m_app.getPlaylistMgr() == pMediaSet);
+    ui.frameFilterLanguage->setVisible(&__app.getPlaylistMgr() == pMediaSet);
 
     ui.labelTitle->setText(strTitle, nElidedFlag);
 
@@ -287,7 +286,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
                 break;
             }
 
-            m_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+            __app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
         }
 
         ui.labelSingerImg->clear();

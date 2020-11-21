@@ -38,26 +38,21 @@ struct tagPlayingInfo
     CMediaSet *pRelatedMediaSet = NULL;
 };
 
-class CMainWnd : public QMainWindow
+enum class E_SingerImgPos
 {
-protected:
-    CMainWnd();
+    SIP_Float = 0,
+    SIP_Dock,
+    SIP_Zoomout
 };
 
-class MainWindow : public CMainWnd, public IModelObserver
+class MainWindow : public QMainWindow, public IModelObserver
 {
     Q_OBJECT
 public:
-    MainWindow(class CApp& app);
+    MainWindow();
 
 private:
-    class CApp& m_app;
-
     QBrush m_brBkg;
-    int m_cxBkg = 0;
-    int m_cyBkg = 0;
-    float m_fBkgHWRate = .0f;
-    float m_fBkgTopReserve = .0f;
 
     class CPlayingList m_PlayingList;
 
@@ -65,28 +60,16 @@ private:
 
     CBkgDlg m_bkgDlg;
 
-    map<QWidget*, QRect> m_mapTopWidgetPos;
-
-    map<QWidget*, QRect> m_mapWidgetPos;
-    map<QWidget*, QRect> m_mapWidgetNewPos;
-
     tagPlayingInfo m_PlayingInfo;
 
     bool m_bHLayout = false;
 
     bool m_bDefaultBkg = false;
 
+    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
+
     int m_dxbkg = 0;
     int m_dybkg = 0;
-
-    enum class E_SingerImgPos
-    {
-        SIP_Float = 1,
-        SIP_Dock,
-        SIP_Zoomout
-    };
-
-    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
@@ -135,8 +118,6 @@ private:
     void _onPaint();
 
     void _relayout();
-
-    float _caleBkgZoomRate(int& cxDst, int cyDst, int& xDst);
 
     void _showUpgradeProgress();
 

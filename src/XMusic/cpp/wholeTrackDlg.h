@@ -28,11 +28,9 @@ private:
 class CWholeTrackDlg : public CDialog
 {
 public:
-    CWholeTrackDlg(class CMedialibDlg& medialibDlg, class CApp& app);
+    CWholeTrackDlg(class CMedialibDlg& medialibDlg);
 
 private:
-    class CApp& m_app;
-
     IMedia *m_pMedia = NULL;
 
     CWholeTrackView m_lv;

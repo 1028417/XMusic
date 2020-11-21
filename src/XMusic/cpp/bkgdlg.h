@@ -12,12 +12,10 @@
 class CBkgView : public CListView
 {
 public:
-    CBkgView(class CBkgDlg& bkgDlg, class CApp& app);
+    CBkgView(class CBkgDlg& bkgDlg);
 
 private:    
     class CBkgDlg& m_bkgDlg;
-
-    class CApp& m_app;
 
     QPixmap m_pmX;
 
@@ -72,10 +70,9 @@ class CBkgDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CBkgDlg(QWidget& parent, class CApp& app);
+    CBkgDlg(QWidget& parent);
 
 private:
-    class CApp& m_app;
     tagOption& m_option;
 
     CBkgView m_lv;

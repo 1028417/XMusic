@@ -10,11 +10,9 @@
 
 #include <QScreen>
 
-#define __round(f) (int)roundf(f)
-
 #define __demandplayitemPngCount 4
 
-static Ui::MainWindow ui;
+Ui::MainWindow ui;
 
 static bool g_bFullScreen = true;
 
@@ -51,7 +49,7 @@ void fixWorkArea(QWidget& wnd)
 void MainWindow::switchFullScreen()
 {
     g_bFullScreen = !g_bFullScreen;
-    m_app.getOption().bFullScreen = g_bFullScreen;
+    __app.getOption().bFullScreen = g_bFullScreen;
 
 #if __windows
     if (g_bFullScreen)
@@ -70,43 +68,16 @@ void MainWindow::switchFullScreen()
 #endif
 }
 
-CMainWnd::CMainWnd()
+MainWindow::MainWindow()
+    : m_PlayingList(this)
+    , m_medialibDlg(*this)
+    , m_bkgDlg(*this)
 {
     ui.setupUi(this);
-}
 
-MainWindow::MainWindow(CApp& app)
-    : m_app(app)
-    , m_PlayingList(app, this)
-    , m_medialibDlg(*this, app)
-    , m_bkgDlg(*this, app)
-{
-    QPixmap pmBkg(":/img/bkg.jpg");
-    m_brBkg.setTexture(pmBkg);
-    m_cxBkg = pmBkg.width();
-    m_cyBkg = pmBkg.height();
+    ui.centralWidget->init();
 
-    auto cy = m_cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
-    m_fBkgHWRate = (float)cy/m_cxBkg;
-    auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();
-    m_fBkgTopReserve = (float)cyTop/(cyTop+cy);
-
-    for (auto pWidget : SList<QWidget*>(
-             ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
-             , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
-             , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-             , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR))
-    {
-        m_mapTopWidgetPos[pWidget] = pWidget->geometry();
-    }
-
-    for (auto pWidget : SList<QWidget*>(
-             ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
-             , ui.labelDuration, ui.progressbar, ui.labelProgress, ui.btnPlay, ui.btnPause
-             , ui.btnPlayPrev, ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom))
-    {
-        m_mapWidgetPos[pWidget] = pWidget->geometry();
-    }
+    m_brBkg.setTexture(QPixmap(":/img/bkg.jpg"));
 
     for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
                 , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
@@ -177,7 +148,7 @@ void MainWindow::showLogo()
     ui.labelLogo->setVisible(false);
     ui.labelLogo->setMovie(movie);
 
-    g_bFullScreen = m_app.getOption().bFullScreen;
+    g_bFullScreen = __app.getOption().bFullScreen;
     fixWorkArea(*this);
     this->setVisible(true);
 
@@ -193,7 +164,7 @@ void MainWindow::showLogo()
 
         _updateLogoCompany(5, [&](){
             _updateLogoCompany(-5, [&](){
-                ui.labelLogoCompany->setText(__WS2Q(L"v" + m_app.appVersion()));
+                ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
                 _updateLogoCompany(5);
             });
         });
@@ -329,7 +300,7 @@ void MainWindow::_init()
 
     m_PlayingList.setFont(0.9f);
 
-    if (m_app.getOption().bRandomPlay)
+    if (__app.getOption().bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -369,7 +340,7 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
     //_relayout();
 
-    m_PlayingList.updateList(m_app.getOption().uPlayingItem);
+    m_PlayingList.updateList(__app.getOption().uPlayingItem);
 
     (void)startTimer(1000);
 
@@ -381,7 +352,7 @@ void MainWindow::show()
         uOffset = 1;
     }
 #endif
-    UINT uDelayTime = m_app.getOption().bUseBkgColor?50:30;
+    UINT uDelayTime = __app.getOption().bUseBkgColor?50:30;
     timerutil::setTimerEx(uDelayTime, [=]()mutable{
         uOffset+=1;
         nLogoBkgAlpha -= uOffset;
@@ -391,7 +362,7 @@ void MainWindow::show()
             update();
 
 #if __windows
-            m_app.setForeground();
+            __app.setForeground();
 #endif
 
             return false;
@@ -486,7 +457,7 @@ bool MainWindow::event(QEvent *ev)
             // TODO 上下键滚动播放列表、左右键切换背景
             if (Qt::Key_Space == key)
             {
-                if (E_PlayStatus::PS_Play == m_app.getPlayMgr().playStatus())
+                if (E_PlayStatus::PS_Play == __app.getPlayMgr().playStatus())
                 {
                     slot_buttonClicked(ui.btnPause);
                 }
@@ -509,7 +480,7 @@ bool MainWindow::event(QEvent *ev)
 
     break;
 /*    case QEvent::Close:
-        m_app.quit();
+        __app.quit();
 
         break;*/
     case QEvent::Timer:
@@ -527,498 +498,18 @@ bool MainWindow::event(QEvent *ev)
 
 void MainWindow::_relayout()
 {
-    cauto rc = rect();
-    ui.centralWidget->setGeometry(rc); //for iPhoneX
-
-    int cx = rc.width();
-    int cy = rc.height();
+    int cx = width();
+    int cy = height();
     m_bHLayout = cx > cy; // 橫屏
 
-    int x_Logo = (cx - ui.labelLogo->width())/2;
-    int y_Logo = (cy - ui.labelLogo->height())/2;
-    if (m_bHLayout)
-    {
-        y_Logo -= __size(60);
-    }
-    else
-    {
-        y_Logo -= __size100;
-    }
-    ui.labelLogo->move(x_Logo, y_Logo);
-
-    int y_LogoTip = ui.labelLogo->geometry().bottom() + __size(30);
-    ui.labelLogoTip->setGeometry(0, y_LogoTip, cx, ui.labelLogoTip->height());
-
-#define __LogoCompanyMargin __size(50)
-    int y_LogoCompany = cy - __LogoCompanyMargin - ui.labelLogoCompany->height();
-    ui.labelLogoCompany->setGeometry(__LogoCompanyMargin, y_LogoCompany, cx-__LogoCompanyMargin*2, ui.labelLogoCompany->height());
-    if (m_bHLayout)
-    {
-        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
-    }
-    else
-    {
-        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
-    }
-
-    int cxDst = cx;
-    int xBkgOffset = 0;
-    auto fBkgZoomRate = _caleBkgZoomRate(cxDst, cy, xBkgOffset);
-    auto fBkgZoomRateEx = fBkgZoomRate*g_fPixelRatio;
-
-    int cy_bkg = __round(fBkgZoomRate * m_cyBkg);
-    int dy_bkg = cy - cy_bkg;
-
     m_bDefaultBkg = false;
-    if (!m_app.getOption().bUseBkgColor)
+    if (!__app.getOption().bUseBkgColor)
     {
         cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    UINT uShadowWidth = m_bDefaultBkg?0:1;
-    ui.labelDemandHK->setShadow(uShadowWidth);
-    ui.labelDemandCN->setShadow(uShadowWidth);
-    ui.labelDemandKR->setShadow(uShadowWidth);
-    ui.labelDemandJP->setShadow(uShadowWidth);
-    ui.labelDemandEN->setShadow(uShadowWidth);
-    ui.labelDemandEUR->setShadow(uShadowWidth);
-
-    for (cauto widgetPos : m_mapTopWidgetPos)
-    {
-        QRect pos = widgetPos.second;
-        if (fBkgZoomRateEx < 1)
-        {
-            pos.setRect(fBkgZoomRate*pos.left(), fBkgZoomRate*pos.top()
-                        , fBkgZoomRate*pos.width(), fBkgZoomRate*pos.height());
-        }
-        widgetPos.first->setGeometry(pos);
-    }
-
-    for (cauto widgetPos : m_mapWidgetPos)
-    {
-        cauto pos = widgetPos.second;
-        auto& newPos = m_mapWidgetNewPos[widgetPos.first];
-
-        int width = pos.width();
-        int height = pos.height();
-        if (fBkgZoomRateEx < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
-        {
-            width = __round(width * fBkgZoomRate);
-            height =__round(height * fBkgZoomRate);
-        }
-
-        /*if (width%2==1)
-        {
-            width++;
-        }
-        if (height%2==1)
-        {
-            height++;
-        }*/
-
-        newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x() - width/2.0f)
-                       , __round(fBkgZoomRate*pos.center().y() - height/2.0f) + dy_bkg, width, height);
-        widgetPos.first->setGeometry(newPos);
-    }
-
-    if (xBkgOffset != 0)
-    {
-        {auto& newPos = m_mapWidgetNewPos[ui.progressbar];
-        newPos.adjust(-xBkgOffset, 0, xBkgOffset, 0);
-        ui.progressbar->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.labelProgress];
-        newPos.adjust(-xBkgOffset, 0, xBkgOffset, 0);
-        ui.labelProgress->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.btnSetting];
-        newPos.moveLeft(newPos.x()-xBkgOffset);
-        ui.btnSetting->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.labelPlayingfile];
-        newPos.moveLeft(newPos.x()-xBkgOffset);
-        ui.labelPlayingfile->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.labelDuration];
-        newPos.moveLeft(newPos.x()+xBkgOffset);
-        ui.labelDuration->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.btnRandom];
-        newPos.moveLeft(newPos.x()+xBkgOffset);
-        ui.btnRandom->setGeometry(newPos);}
-
-        {auto& newPos = m_mapWidgetNewPos[ui.btnOrder];
-        newPos.moveLeft(newPos.x()+xBkgOffset);
-        ui.btnOrder->setGeometry(newPos);}
-    }
-
-    int y_frameDemand = __size(20);
-    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
-    {
-        y_frameDemand = __cyIPhoneXBangs-y_frameDemand;
-    }
-    else if (cy > __size(1920))
-    {
-        y_frameDemand = __size(36);
-    }
-    else if (__size(1920) == cy)
-    {
-        y_frameDemand = __size(28);
-    }
-    else if (cy < __size(1000))
-    {
-        if (m_bDefaultBkg)
-        {
-            y_frameDemand = __size(12);
-        }
-    }
-
-    int x_frameDemand = 0;
-    if (m_bHLayout)
-    {
-        x_frameDemand = (ui.progressbar->geometry().right()
-            + ui.progressbar->x() - ui.frameDemand->width())/2;
-    }
-    else
-    {
-        x_frameDemand = (cx - ui.frameDemand->width())/2;
-        x_frameDemand -= __size10;
-    }
-    ui.frameDemand->move(x_frameDemand, y_frameDemand);
-
-    int y_btnMore = ui.frameDemand->y() + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
-    int x_btnMore = __size(27);
-
-#if __android || __ios
-     if (!m_bHLayout)
-     {
-         x_btnMore = cx - __size(25) - ui.btnMore->width();
-     }
-#endif
-    ui.btnMore->move(x_btnMore, y_btnMore);
-
-    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
-    ui.btnExit->move(x_btnExit, y_btnMore);
-
-    if (!m_bDefaultBkg)
-    {
-#define __dy __size(2)
-        int dy =  __round(fBkgZoomRate*__dy);
-
-        if (fBkgZoomRateEx <= 1)
-        {
-#define __offset __size(6)
-            int yOffset = __round((float)__offset/fBkgZoomRate);
-            dy -= yOffset;
-
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
-            {
-                pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
-            }
-        }
-
-        for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                                            , ui.btnSetting, ui.btnOrder, ui.btnRandom))
-        {
-            pWidget->move(pWidget->x(), pWidget->y() + dy);
-        }
-    }
-
-    CLabel& labelAlbumName = *ui.labelAlbumName;
-    WString strMediaSet;
-    if (!m_PlayingInfo.pRelatedMediaSet)
-    {
-        if (!m_bDefaultBkg)
-        {
-            /*if (m_PlayingInfo.uSingerID > 0)
-            {
-                strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
-                // TODO if ? ui.labelSingerName->clear();
-            }
-            else*/ if (E_MediaSetType::MST_Playlist == m_PlayingInfo.pRelatedMediaSet->m_eType)
-            {
-                strMediaSet << L"歌单: ";
-            }
-            else if (E_MediaSetType::MST_Album == m_PlayingInfo.pRelatedMediaSet->m_eType)
-            {
-                strMediaSet << L"专辑: ";
-            }
-        }
-
-        strMediaSet << m_PlayingInfo.pRelatedMediaSet->name();
-
-        labelAlbumName.setFont(0.95f);
-        labelAlbumName.setShadow(uShadowWidth);
-        labelAlbumName.setAlignment(Qt::AlignCenter);
-    }
-    labelAlbumName.setText(strMediaSet);
-
-    ui.labelSingerName->setAlignment(Qt::AlignCenter);
-
-    E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
-    cauto pmSingerImg = m_PlayingInfo.bWholeTrack ?
-                ((int)m_PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD
-                 ? m_app.m_pmHDDisk : m_app.m_pmLLDisk)
-              : ui.labelSingerImg->pixmap();
-    if (m_PlayingInfo.bWholeTrack)
-    {
-        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
-
-        ui.labelSingerImg->setPixmapRound(0);
-        ui.labelSingerImg->setShadow(0);
-
-        ui.labelSingerName->setShadow(uShadowWidth);
-    }
-    else
-    {
-        if (!pmSingerImg.isNull())
-        {
-            eSingerImgPos = m_eSingerImgPos;
-
-            ui.labelSingerImg->setPixmapRound(m_bDefaultBkg?__size(5):__szRound);
-            ui.labelSingerImg->setShadow(2);
-
-            ui.labelSingerName->setShadow(2);
-        }
-        else
-        {
-            ui.labelSingerName->setShadow(uShadowWidth);
-        }
-    }
-
-    auto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
-
-    m_PlayingList.setShadow(uShadowWidth);
-    ui.labelPlayingfile->setShadow(uShadowWidth);
-    ui.labelDuration->setShadow(uShadowWidth);
-
-    int y_PlayingListMax = 0;
-
-    int x = ui.progressbar->x();
-    int cx_progressbar = ui.progressbar->width();
-
-    int cy_Playingfile = ui.labelPlayingfile->height();
-    int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
-
-#define __cylabelAlbumName __size(70)
-
-    if (!m_bDefaultBkg)
-    {
-        int y_labelAlbumName = 0;
-        if (labelAlbumName.isVisible())
-        {
-            y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
-        }
-        else
-        {
-            y_labelAlbumName = y_Playingfile - __size(20);
-        }
-
-        int x_SingerImg = x;
-        int cx_SingerImg = 0;
-        int y_SingerImg = 0;
-        int cy_SingerImg = 0;
-        if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
-        {
-            int y_SingerName = y_labelAlbumName - cy_Playingfile;
-            if (m_PlayingInfo.bWholeTrack)
-            {
-                cy_SingerImg = __size(70);
-                y_SingerImg = y_Playingfile+cy_Playingfile - cy_SingerImg;
-            }
-            else
-            {
-                y_SingerImg = y_SingerName + __size(6);
-                cy_SingerImg = y_Playingfile+cy_Playingfile - y_SingerImg - __size(4);
-            }
-
-            cx_SingerImg = cy_SingerImg;
-
-            auto dx = cx_SingerImg + __size(25);
-            x += dx;
-
-            labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar-dx, __cylabelAlbumName);
-            labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
-
-            ui.labelSingerName->setGeometry(x, y_SingerName, cx_progressbar-dx, __cylabelAlbumName);
-            ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignTop);
-
-            y_PlayingListMax = y_SingerImg - __size10;
-        }
-        else
-        {
-            if (E_SingerImgPos::SIP_Float == eSingerImgPos)
-            {
-                if (m_bHLayout)
-                {
-                    y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(50);
-                }
-                else
-                {
-                    y_SingerImg = cy/2+__size(150);
-                }
-
-                cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
-
-                if (!pmSingerImg.isNull())
-                {
-                    //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
-                    cx_SingerImg = cy_SingerImg * pmSingerImg.width() / pmSingerImg.height();
-                    cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.2f);
-                    cx_SingerImg = MIN(cx_SingerImg, cx_progressbar);
-                }
-
-                x_SingerImg += (cx_progressbar-cx_SingerImg)/2;
-            }
-            else
-            {
-                cx_SingerImg = cy_SingerImg = __size(300);
-                y_SingerImg = y_labelAlbumName-cy_SingerImg;
-
-                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
-                labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
-            }
-
-            labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar, __cylabelAlbumName);
-
-            int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
-            if (!pmSingerImg.isNull())
-            {
-                y_PlayingListMax = y_SingerImg - __size10;
-            }
-            else
-            {
-                if (m_PlayingInfo.uSingerID > 0)
-                {
-                    y_labelSingerName += __size10;
-                    y_PlayingListMax = y_labelSingerName;
-                }
-                else if (m_PlayingInfo.pRelatedMediaSet)
-                {
-                    y_PlayingListMax = y_labelAlbumName;
-                }
-                else
-                {
-                    y_PlayingListMax = y_Playingfile;
-                }
-            }
-
-            ui.labelSingerName->setGeometry(x_SingerImg+__size(15), y_labelSingerName
-                                            , cx_SingerImg-__size(15), ui.labelSingerName->height());
-        }
-
-        ui.labelPlayingfile->setGeometry(x, y_Playingfile, ui.labelDuration->x()-x, cy_Playingfile);
-
-        rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
-        ui.labelSingerImg->setGeometry(rcSingerImg);
-
-        if (m_PlayingInfo.bWholeTrack)
-        {
-            cauto pm = pmSingerImg.scaledToWidth(rcSingerImg.width(), Qt::SmoothTransformation);
-            ui.labelSingerImg->setPixmap(pm);
-        }
-    }
-    else
-    {
-        if (m_PlayingInfo.bWholeTrack)
-        {
-            ui.labelSingerImg->clear();
-        }
-
-        if (pmSingerImg.isNull())
-        {
-            auto y = y_Playingfile;
-            if (m_PlayingInfo.pRelatedMediaSet)
-            {
-                y -= __cylabelAlbumName;
-                labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
-                labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
-            }
-            y_PlayingListMax = y;
-
-            if (m_PlayingInfo.uSingerID > 0)
-            {
-                y -= ui.labelPlayingfile->height();
-                ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
-                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignTop);
-                y_PlayingListMax = y - __size10;
-            }
-        }
-        else
-        {
-            cauto rcAlbumNamePrev = m_mapWidgetNewPos[&labelAlbumName];
-            labelAlbumName.adjustSize();
-            do {
-                if (labelAlbumName.width() > rcAlbumNamePrev.width())
-                {
-                    labelAlbumName.adjustFont(0.9f);
-                    labelAlbumName.adjustSize();
-
-                    if (labelAlbumName.width() < rcAlbumNamePrev.width())
-                    {
-                        labelAlbumName.move(rcAlbumNamePrev.left(), labelAlbumName.y());
-                        break;
-                    }
-                }
-
-                int x_labelAlbumName = rcAlbumNamePrev.left() + (rcAlbumNamePrev.width()-labelAlbumName.width())/2;
-                labelAlbumName.move(x_labelAlbumName, labelAlbumName.y());
-            } while (0);
-
-            y_PlayingListMax = rcSingerImg.y() - __size10;
-        }
-    }
-
-#define __CyPlayItem __size(115)
-    UINT uRowCount = 0;
-    if (m_bHLayout)
-    {
-        UINT uMargin = x;
-        int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.5f;
-        if (cx > __size(1920))
-        {
-            x_PlayingList += uMargin;
-        }
-        int cx_PlayingList = cx - x_PlayingList;
-        m_PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
-
-        uRowCount = cy/__CyPlayItem;
-        uRowCount = MAX(uRowCount,7);
-        uRowCount = MIN(uRowCount,10);
-    }
-    else
-    {
-        UINT y_Margin = __size(30);
-
-        int y_PlayingList = ui.frameDemand->geometry().bottom() - __size10;
-        uRowCount = (y_PlayingListMax - y_PlayingList - y_Margin*2)/__CyPlayItem;
-        if (uRowCount > 10)
-        {
-            uRowCount = 10;
-            y_Margin += __size10;
-
-            if (pmSingerImg.isNull() || E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
-            {
-                y_Margin += __size10*2;
-            }
-            else if (E_SingerImgPos::SIP_Dock == eSingerImgPos)
-            {
-                y_Margin += __size10;
-            }
-        }
-        else if (uRowCount < 7)
-        {
-            uRowCount = 7;
-            y_Margin -= __size10;
-        }
-
-        y_PlayingList += y_Margin;
-        int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
-        UINT x_Margin = ui.frameDemand->x();
-        m_PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
-    }
-    m_PlayingList.setPageRowCount(uRowCount);
+    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
 void MainWindow::_onPaint()
@@ -1030,7 +521,7 @@ void MainWindow::_onPaint()
     auto nBkgAlpha = 255-nLogoAlpha;
     if (nBkgAlpha > 0)
     {
-        if (m_app.getOption().bUseBkgColor)
+        if (__app.getOption().bUseBkgColor)
         {
             painter.fillRect(rc, g_crBkg);
         }
@@ -1062,54 +553,29 @@ void MainWindow::_onPaint()
     }
 }
 
-float MainWindow::_caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
-{
-    if (cxDst > cyDst)
-    {
-        cxDst = cxDst*9/16;
-    }
-    else
-    {
-        cyDst = cyDst*9/16;
-    }
-    cyDst -= cyDst * m_fBkgTopReserve;
-
-    if ((float)cyDst/cxDst < m_fBkgHWRate)
-    {
-        xDst = (cxDst - cyDst / m_fBkgHWRate)/2;
-        cxDst -= xDst*2;
-    }
-    else
-    {
-        xDst = 0;
-    }
-
-    return (float)cxDst / m_cxBkg;
-}
-
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround, bool bDrawDisk)
 {
     int cxDst = rc.width();
     int cyDst = rc.height();
     int xDst = 0;
-    auto fBkgZoomRate = _caleBkgZoomRate(cxDst, cyDst, xDst);
+    auto fBkgZoomRate = ui.centralWidget->caleBkgZoomRate(cxDst, cyDst, xDst);
 
     auto cySrc = cyDst/fBkgZoomRate;
-    QRect rcSrc(0, m_cyBkg-cySrc, 10, cySrc);
+    QRect rcSrc(0, __cyBkg-cySrc, 10, cySrc);
     painter.drawPixmap(rc, m_brBkg, rcSrc, xround, yround);
 
     if (!bDrawDisk)
     {
         painter.setOpacity(0.06f);
     }
-    rcSrc.setWidth(m_cxBkg);
+    rcSrc.setWidth(__cxBkg);
     QRect rcDst(rc.x()+xDst, rc.y(), cxDst, cyDst);
     painter.drawPixmap(rcDst, m_brBkg, rcSrc);
 }
 
 void MainWindow::_updateProgress()
 {
-    auto& playMgr = m_app.getPlayMgr();
+    auto& playMgr = __app.getPlayMgr();
     E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
     _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for see
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
@@ -1134,7 +600,7 @@ void MainWindow::_updateProgress()
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
     }
 
-    UINT uBuffer = UINT(m_app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
+    UINT uBuffer = UINT(__app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
     if (uBuffer > 0)
     {
         ui.progressbar->setBuffer(uBuffer, m_PlayingInfo.uFileSize);
@@ -1154,7 +620,7 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
     (void)bSetActive;
-    m_app.sync([=](){
+    __app.sync([=](){
         m_PlayingList.updateList(nPlayingItem);
     });
 }
@@ -1184,14 +650,14 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 #endif
 
-    // TODO 获取音频流码率 if (!m_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
+    // TODO 获取音频流码率 if (!__app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
     PlayingInfo.eQuality = PlayItem.quality();
     PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
 
     auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
     if (uAlbumItemID > 0)
     {
-        PlayingInfo.pRelatedMedia = m_app.getSingerMgr().GetMedia(uAlbumItemID);
+        PlayingInfo.pRelatedMedia = __app.getSingerMgr().GetMedia(uAlbumItemID);
 
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
@@ -1201,11 +667,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         auto uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
         if (uPlayItemID > 0)
         {
-            PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(uPlayItemID);
+            PlayingInfo.pRelatedMedia = __app.getPlaylistMgr().GetMedia(uPlayItemID);
         }
         else
         {
-            auto pSinger = m_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
+            auto pSinger = __app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
             if (pSinger)
             {
                 PlayingInfo.uSingerID = pSinger->m_uID;
@@ -1220,7 +686,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.pRelatedMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
     }
 
-    m_app.sync([=](){
+    __app.sync([=](){
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
@@ -1254,7 +720,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-    m_app.sync([=](){
+    __app.sync([=](){
         ui.progressbar->set(0, 0, 0, 0);
 
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
@@ -1262,7 +728,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
         extern UINT g_uPlaySeq;
         if (bPlayFinish)
         {
-            m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+            __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
 
             /*auto uPlaySeq = g_uPlaySeq;
             CApp::async(1000, [=]() {
@@ -1280,7 +746,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
             CApp::async(2000, [=]() {
                 if (uPlaySeq == g_uPlaySeq)
                 {
-                    m_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+                    __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
                 }
             });
         }
@@ -1291,7 +757,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 {
     if (m_medialibDlg.isVisible())
     {
-        m_app.sync([&, strSingerName](){
+        __app.sync([&, strSingerName](){
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg(strSingerName, singerImg);
@@ -1306,7 +772,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 
     if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
     {
-        m_app.sync([&](){
+        __app.sync([&](){
             _playSingerImg();
         });
     }
@@ -1347,7 +813,7 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::_playSingerImg()
 {
-    auto pSingerImg = m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    auto pSingerImg = __app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
     if (NULL == pSingerImg)
     {
         if (g_uSingerImgIdx > 1)
@@ -1364,7 +830,7 @@ void MainWindow::_playSingerImg()
     }
 
     QPixmap pm;
-    (void)pm.load(__WS2Q(m_app.getSingerImgMgr().file(*pSingerImg)));
+    (void)pm.load(__WS2Q(__app.getSingerImgMgr().file(*pSingerImg)));
     ui.labelSingerImg->setPixmap(pm);
     update();
 
@@ -1373,7 +839,7 @@ void MainWindow::_playSingerImg()
     _relayout();
 
     g_uSingerImgIdx++;
-    (void)m_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    (void)__app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)
@@ -1384,7 +850,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnExit)
     {
-        m_app.quit();
+        __app.quit();
     }
     else if (button == ui.btnMore)
     {
@@ -1396,44 +862,44 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        //if (m_app.getPlayMgr().mediaOpaque().byteRate())
+        //if (__app.getPlayMgr().mediaOpaque().byteRate())
         //{
-        //    m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
-        if (m_app.getPlayMgr().player().Pause())
+        //    __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
+        if (__app.getPlayMgr().player().Pause())
         {
             _updatePlayPauseButton(false);
         }
     }
     else if (button == ui.btnPlay)
     {
-        /*if (E_PlayStatus::PS_Pause == m_app.getPlayMgr().playStatus())
+        /*if (E_PlayStatus::PS_Pause == __app.getPlayMgr().playStatus())
         {
             _updatePlayPauseButton(true);
         }
-        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
+        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
 
-        if (E_PlayStatus::PS_Stop == m_app.getPlayMgr().playStatus())
+        if (E_PlayStatus::PS_Stop == __app.getPlayMgr().playStatus())
         {
-            m_app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_app.getCtrl().getOption().uPlayingItem));
+            __app.getCtrl().callPlayCmd(tagPlayIndexCmd(__app.getCtrl().getOption().uPlayingItem));
             return;
         }
 
-        if (m_app.getPlayMgr().player().Resume())
+        if (__app.getPlayMgr().player().Resume())
         {
             _updatePlayPauseButton(true);
         }
     }
     else if (button == ui.btnPlayPrev)
     {
-        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
+        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
     }
     else if (button == ui.btnPlayNext)
     {
-        m_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
+        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = m_app.getOption().bRandomPlay;
+        auto& bRandomPlay = __app.getOption().bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);
@@ -1483,7 +949,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = m_app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet = __app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1532,7 +998,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
 
         // TODO 增加按文件位置seek
-        if (m_app.getPlayMgr().player().Seek(uSeekPos))
+        if (__app.getPlayMgr().player().Seek(uSeekPos))
         {
             CApp::async(100, [&](){
               _updateProgress();
@@ -1607,7 +1073,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    m_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
@@ -1656,7 +1122,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
     else if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (m_bDefaultBkg || m_app.getOption().bUseBkgColor)
+        if (m_bDefaultBkg || __app.getOption().bUseBkgColor)
         {
             return;
         }

@@ -9,10 +9,9 @@ static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CBkgDlg& bkgDlg, class CApp& app)
+CBkgView::CBkgView(CBkgDlg& bkgDlg)
     : CListView(&bkgDlg),
-    m_bkgDlg(bkgDlg),
-    m_app(app)
+    m_bkgDlg(bkgDlg)
 {
     (void)m_pmX.load(":/img/btnX.png");
 }
@@ -88,7 +87,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 
     if (1 == lvItem.uItem)
     {
-        m_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
+        __app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
     else
     {
@@ -204,12 +203,11 @@ inline UINT CBkgView::margin()
     return __margin/(__ceilCount-1);
 }
 
-CBkgDlg::CBkgDlg(QWidget& parent, class CApp& app) : CDialog(parent)
-    , m_app(app),
-    m_option(app.getOption()),
-    m_lv(*this, app),
-    m_addbkgDlg(*this, app),
-    m_colorDlg(*this, app)
+CBkgDlg::CBkgDlg(QWidget& parent) : CDialog(parent),
+    m_option(__app.getOption()),
+    m_lv(*this),
+    m_addbkgDlg(*this),
+    m_colorDlg(*this)
 {
 }
 
@@ -294,7 +292,7 @@ void CBkgDlg::preinit()
 void CBkgDlg::_preInitBkg(bool bHLayout)
 {
     cauto strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
-    wstring strAppBkgDir = strBkgDir + m_app.appVersion();
+    wstring strAppBkgDir = strBkgDir + __app.appVersion();
     if (!fsutil::existDir(strAppBkgDir))
     {
         (void)fsutil::createDir(strBkgDir);
@@ -305,7 +303,7 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
 #if __android
         wstring strBkgSrc = L"assets:";
 #else
-        wstring strBkgSrc = m_app.applicationDirPath().toStdWString();
+        wstring strBkgSrc = __app.applicationDirPath().toStdWString();
 #endif
         strBkgSrc.append(L"/bkg/");
 
@@ -343,14 +341,14 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
 
     auto& vecBkgFile = bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     fsutil::findSubFile(strAppBkgDir, [&](cwstr strSubFile) {
-        vecBkgFile.emplace_back(false, m_app.appVersion() + __wcPathSeparator + strSubFile);
+        vecBkgFile.emplace_back(false, __app.appVersion() + __wcPathSeparator + strSubFile);
     });
 
     fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
         cauto strPath = strBkgDir+fileInfo.strName;
         if (fileInfo.bDir)
         {
-            if (fileInfo.strName != m_app.appVersion())
+            if (fileInfo.strName != __app.appVersion())
             {
                 (void)fsutil::removeDirTree(strPath);
             }
@@ -549,7 +547,7 @@ void CBkgDlg::_updateBkg(cwstr strFile)
         m_option.strVBkg = strFile;
     }
 
-    m_app.mainWnd().updateBkg();
+    __app.mainWnd().updateBkg();
 }
 
 void CBkgDlg::switchBkg(bool bHLayout, bool bNext)

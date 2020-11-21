@@ -1,12 +1,18 @@
 
 #include "app.h"
 
+int g_argc = 0;
+char **g_argv = NULL;
+
 #if __windows || __mac
 QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
 int main(int argc, char *argv[])
 {
+    g_argc = argc;
+    g_argv = argv;
+
 #if __windows || __mac
     g_lf.setStaleLockTime(1);
     if (!g_lf.tryLock(0))
@@ -44,10 +50,7 @@ int main(int argc, char *argv[])
     fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
 #endif
 
-    auto app = new CApp(argc, argv);
-
-    int nRet = app->run(strWorkDir);
-    //delete app;
+    int nRet = __app.run(strWorkDir);
 
     //fsutil::copyFile(__WS2Q(strWorkDir+L"/xmusic.log"), "/sdcard/xmusic.log");
 

@@ -6,9 +6,8 @@
 
 static Ui::networkWarnDlg ui;
 
-CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent, class CApp& app)
+CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent)
     : CDialog(parent, false)
-    , m_app(app)
 {
     ui.setupUi(this);
 
@@ -43,12 +42,12 @@ void CNetworkWarnDlg::show(cfn_void cb)
         cb();
     });
     connect(ui.labelNeverWarn, &CLabel::signal_click, [=](){
-        m_app.getOption().bNetworkWarn = false;
+        __app.getOption().bNetworkWarn = false;
         this->setVisible(false);
         cb();
     });
 
     CDialog::show([&]{
-        m_app.quit();
+        __app.quit();
     });
 }

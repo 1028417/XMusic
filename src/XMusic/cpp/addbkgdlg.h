@@ -62,7 +62,7 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    bool _genSubImgs(class CApp& app, class CAddBkgView& lv);
+    bool _genSubImgs(class CAddBkgView& lv);
 
     void _genSubImgs(cwstr strFile, QPixmap& pm);
 
@@ -83,7 +83,7 @@ public:
 
     wstring imgPath(UINT uIdx) const;
 
-    void genSubImgs(class CApp& app, class CAddBkgView& lv);
+    void genSubImgs(class CAddBkgView& lv);
 };
 
 using TD_ImgDirList = PtrArray<CImgDir>;
@@ -91,11 +91,11 @@ using TD_ImgDirList = PtrArray<CImgDir>;
 class CAddBkgView : public CListView
 {
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, class CApp& app, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
-    class CApp& m_app;
+
     const TD_ImgDirList& m_paImgDirs;
 
     CImgDir *m_pImgDir = NULL;
@@ -125,11 +125,10 @@ public:
 class CAddBkgDlg : public CDialog
 {
 public:
-    CAddBkgDlg(class CBkgDlg& bkgDlg, class CApp& app);
+    CAddBkgDlg(class CBkgDlg& bkgDlg);
 
 private:
     class CBkgDlg& m_bkgDlg;
-    class CApp& m_app;
 
     XThread& m_thrScan;
     CImgDir m_rootImgDir;

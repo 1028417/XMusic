@@ -30,19 +30,24 @@ extern ITxtWriter& g_logger;
 extern int g_szScreenMax;
 extern int g_szScreenMin;
 
-class CAppInit
+class CAppInit : public QApplication
 {
 protected:
-    CAppInit(QApplication& app);
+    CAppInit();
 };
 
 Q_DECLARE_METATYPE(fn_void);
 
-class CApp : public QApplication, private CAppInit, private IPlayerView
+#define __app CApp::inst()
+
+class CApp : public CAppInit, private IPlayerView
 {
     Q_OBJECT
+private:
+    CApp();
+
 public:
-    CApp(int argc, char **argv);
+    static CApp& inst();
 
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;

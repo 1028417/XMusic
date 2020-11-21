@@ -24,6 +24,7 @@ SOURCES += cpp/androidutil.cpp
 SOURCES += ../controller.cpp \
     ../OptionMgr.cpp \
     cpp/MedialibView.cpp \
+    cpp/centralwidget.cpp \
     cpp/painter.cpp \
     cpp/button.cpp \
     cpp/colordlg.cpp \

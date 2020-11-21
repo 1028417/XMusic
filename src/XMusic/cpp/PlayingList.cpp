@@ -3,9 +3,8 @@
 
 #include "app.h"
 
-CPlayingList::CPlayingList(class CApp& app, QWidget *parent)
+CPlayingList::CPlayingList(QWidget *parent)
     : CListView(parent)
-    , m_app(app)
 {
 #if __windows || __mac
     this->setMouseTracking(true);
@@ -52,7 +51,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     if (0 == m_nActiveTime)
     {
         fAlpha = 0.4f;
-        //if (m_app.getOption().bUseThemeColor) fAlpha += 0.1f;
+        //if (__app.getOption().bUseThemeColor) fAlpha += 0.1f;
     }
     if (rc.top() < 0)
     {
@@ -97,7 +96,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         painter.adjustFont(1.05f, QFont::Weight::Normal);
     }
-    else if (m_app.getPlayMgr().checkPlayedID(playingItem.uID))
+    else if (__app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
     }
@@ -112,7 +111,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     {
         painter.adjustFont(0.65, QFont::Weight::Thin);
 
-        cauto qsQuality = m_app.mainWnd().playingInfo().qsQuality;
+        cauto qsQuality = __app.mainWnd().playingInfo().qsQuality;
 
         int nRight = rcPos.right() + __size(35);
 #if __android || __ios
@@ -135,7 +134,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
     m_alPlayingItems.clear();
 
     tagPlayingItem playingItem;
-    m_app.getPlayMgr().playingItems()([&](const CPlayItem& PlayItem){
+    __app.getPlayMgr().playingItems()([&](const CPlayItem& PlayItem){
         playingItem.uID = PlayItem.m_uID;
         playingItem.qsTitle = __WS2Q(PlayItem.GetTitle());
         m_alPlayingItems.add(playingItem);
@@ -171,13 +170,13 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         //updatePlayingItem(lvItem.uItem, false);
 
-        m_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
+        __app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
     }
 }
 
 void CPlayingList::_onBlankDblClick(const QMouseEvent&)
 {
-    m_app.mainWnd().switchFullScreen();
+    __app.mainWnd().switchFullScreen();
 }
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
