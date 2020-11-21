@@ -727,34 +727,30 @@ void MainWindow::_relayout()
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
     WString strMediaSet;
-    if (m_PlayingInfo.pRelatedMedia)
+    if (!m_PlayingInfo.pMediaSet)
     {
-        auto pMediaSet = m_PlayingInfo.pRelatedMedia->mediaSet();
-        if (pMediaSet)
+        if (!m_bDefaultBkg)
         {
-            if (!m_bDefaultBkg)
+            /*if (m_PlayingInfo.uSingerID > 0)
             {
-                /*if (m_PlayingInfo.uSingerID > 0)
-                {
-                    strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
-                    // TODO if ? ui.labelSingerName->clear();
-                }
-                else*/ if (E_MediaType::MT_PlayItem == m_PlayingInfo.pRelatedMedia->type())
-                {
-                    strMediaSet << L"歌单: ";
-                }
-                else if (E_MediaType::MT_AlbumItem == m_PlayingInfo.pRelatedMedia->type())
-                {
-                    strMediaSet << L"专辑: ";
-                }
+                strMediaSet << m_PlayingInfo.strSingerName << __CNDot;
+                // TODO if ? ui.labelSingerName->clear();
             }
-
-            strMediaSet << pMediaSet->name();
-
-            labelAlbumName.setFont(0.95f);
-            labelAlbumName.setShadow(uShadowWidth);
-            labelAlbumName.setAlignment(Qt::AlignCenter);
+            else*/ if (E_MediaSetType::MST_Playlist == m_PlayingInfo.pRelatedMedia->m_eType)
+            {
+                strMediaSet << L"歌单: ";
+            }
+            else if (E_MediaSetType::MST_Album == m_PlayingInfo.pMediaSet->m_eType)
+            {
+                strMediaSet << L"专辑: ";
+            }
         }
+
+        strMediaSet << m_PlayingInfo.pMediaSet->name();
+
+        labelAlbumName.setFont(0.95f);
+        labelAlbumName.setShadow(uShadowWidth);
+        labelAlbumName.setAlignment(Qt::AlignCenter);
     }
     labelAlbumName.setText(strMediaSet);
 
@@ -868,7 +864,6 @@ void MainWindow::_relayout()
                 if (!pmSingerImg.isNull())
                 {
                     //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
-
                     cx_SingerImg = cy_SingerImg * pmSingerImg.width() / pmSingerImg.height();
                     cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.2f);
                     cx_SingerImg = MIN(cx_SingerImg, cx_progressbar);
@@ -899,9 +894,13 @@ void MainWindow::_relayout()
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
                 }
-                else
+                else if (m_PlayingInfo.pMediaSet)
                 {
                     y_PlayingListMax = y_labelAlbumName;
+                }
+                else
+                {
+                    y_PlayingListMax = y_Playingfile;
                 }
             }
 
@@ -930,7 +929,7 @@ void MainWindow::_relayout()
         if (pmSingerImg.isNull())
         {
             auto y = y_Playingfile;
-            if (!strMediaSet->empty())
+            if (m_PlayingInfo.pMediaSet)
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
@@ -1200,7 +1199,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     else
     {
         auto uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
-        if (uPlayItemID != 0)
+        if (uPlayItemID > 0)
         {
             PlayingInfo.pRelatedMedia = m_app.getPlaylistMgr().GetMedia(uPlayItemID);
         }
@@ -1215,6 +1214,10 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
                 PlayingInfo.pRelatedMedia = __medialib.subFile(PlayingInfo.strPath);
             }
         }
+    }
+    if (PlayingInfo.pRelatedMedia)
+    {
+        PlayingInfo.pMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
     }
 
     m_app.sync([=](){

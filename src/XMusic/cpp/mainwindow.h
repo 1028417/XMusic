@@ -35,6 +35,8 @@ struct tagPlayingInfo
     wstring strSingerName;
 
     IMedia *pRelatedMedia = NULL;
+
+    CMediaSet *pMediaSet = NULL;
 };
 
 class CMainWnd : public QMainWindow
