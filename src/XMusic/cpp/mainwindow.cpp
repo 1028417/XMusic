@@ -871,7 +871,7 @@ void MainWindow::_relayout()
 
                     cx_SingerImg = cy_SingerImg * pmSingerImg.width() / pmSingerImg.height();
                     cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.2f);
-                    cx_SingerImg = MIN(cx_SingerImg, ui.progressbar->width());
+                    cx_SingerImg = MIN(cx_SingerImg, cx_progressbar);
                 }
 
                 x_SingerImg += (cx_progressbar-cx_SingerImg)/2;
@@ -935,17 +935,17 @@ void MainWindow::_relayout()
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
-                labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+                labelAlbumName.setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignVCenter);
+                y_PlayingListMax = y;
             }
 
             if (m_PlayingInfo.uSingerID > 0)
             {
-                y -= __cylabelAlbumName;
+                y -= ui.labelPlayingfile->height();
                 ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
-                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignLeft | Qt::AlignmentFlag::AlignVCenter);
+                ui.labelSingerName->setAlignment(Qt::AlignmentFlag::AlignHCenter | Qt::AlignmentFlag::AlignTop);
+                y_PlayingListMax = y - __size10;
             }
-
-            y_PlayingListMax = y;
         }
         else
         {
@@ -976,7 +976,7 @@ void MainWindow::_relayout()
     UINT uRowCount = 0;
     if (m_bHLayout)
     {
-        UINT uMargin = ui.progressbar->x();
+        UINT uMargin = x;
         int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.5f;
         if (cx > __size(1920))
         {
