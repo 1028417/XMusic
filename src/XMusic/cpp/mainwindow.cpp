@@ -575,8 +575,8 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
 
 void MainWindow::_updateProgress()
 {
-    auto& playMgr = __app.getPlayMgr();
-    E_DecodeStatus eDecodeStatus = playMgr.mediaOpaque().decodeStatus();
+    auto& mediaOpaque = __app.getPlayMgr().mediaOpaque();
+    E_DecodeStatus eDecodeStatus = mediaOpaque.decodeStatus();
     _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for see
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
     {
@@ -591,7 +591,7 @@ void MainWindow::_updateProgress()
     }
 
 #if __OnlineMediaLib
-    if (playMgr.mediaOpaque().waitingFlag() && playMgr.player().packetQueueEmpty())
+    if (mediaOpaque.waitingFlag() && __app.getPlayMgr().player().packetQueueEmpty())
     {
         ui.labelDuration->setText("正在缓冲");
     }
@@ -600,14 +600,14 @@ void MainWindow::_updateProgress()
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
     }
 
-    UINT uBuffer = UINT(__app.getPlayMgr().mediaOpaque().downloadedSize()/1000);
+    UINT uBuffer = UINT(mediaOpaque.downloadedSize()/1000);
     if (uBuffer > 0)
     {
         ui.progressbar->setBuffer(uBuffer, m_PlayingInfo.uFileSize);
     }
 #endif
 
-    UINT uProgress = UINT(playMgr.mediaOpaque().clock()/__1e6);
+    UINT uProgress = UINT(mediaOpaque.clock()/__1e6);
     ui.progressbar->setValue(uProgress);
 }
 

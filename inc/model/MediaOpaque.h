@@ -4,10 +4,50 @@
 
 #define __ReadStreamWaitTime 6
 
+struct tagXUrl
+{
+    tagXUrl() = default;
+
+    tagXUrl(const string& strUtf8Title, const string& strUrl, cwstr strFileTitle)
+        : m_strUtf8Title(strUtf8Title)
+        , m_strUrl(strUrl)
+        , m_strFileTitle(strFileTitle)
+    {
+    }
+
+    string m_strUtf8Title;
+    string m_strUrl;
+    wstring m_strFileTitle;
+    bool bUsing = false;
+
+    string genUrl();
+};
+
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
-public:
+ public:
     CMediaOpaque() = default;
+
+#if __OnlineMediaLib
+private:
+    unordered_map<wstring, const tagUnzfile*> m_mapUnzfile;
+
+    unordered_map<wstring, tagXUrl> m_mapXUrl;
+
+private:
+    void _addXUrl(const string& strUtf8Title, const string& strUrl);
+
+public:
+    bool loadPkg(const string& strFile);
+
+    bool checkMedia(cwstr strPath);
+
+    string getMedia(cwstr strPath);
+
+    void checkUnuse();
+
+    bool loadXUrl(Instream& ins);
+#endif
 
 private:
 	wstring m_strFile;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "MediaOpaque.h"
-
 #define __DemandCount 20
 
 enum class E_DemandMode
@@ -40,7 +38,6 @@ private:
 
     E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
 
-	CMediaOpaque m_MediaOpaque;
 	CPlayer m_Player;
 
 private:
@@ -84,15 +81,12 @@ public:
 
     bool init();
 
-    const CMediaOpaque& mediaOpaque() const
-    {
-        return m_MediaOpaque;
-    }
+    const CMediaOpaque& mediaOpaque() const;
 
     CPlayer& player()
     {
         return m_Player;
-	}
+    }
 
     E_PlayStatus playStatus() const;
 

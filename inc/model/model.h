@@ -244,6 +244,8 @@ enum class E_UpgradeResult
 #include "BackupMgr.h"
 #endif
 
+#include "MediaOpaque.h"
+
 #include "PlaylistMgr.h"
 
 #include "PlayMgr.h"
