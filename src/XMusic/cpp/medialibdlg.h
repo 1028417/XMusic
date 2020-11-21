@@ -10,11 +10,11 @@
 #include "singerimgdlg.h"
 
 #if __android
-#define __OuterDir L"/sdcard"
+#define __OuterDir __sdcardDir
 #elif __windows
 #define __OuterDir L""
 #else
-#define __OuterDir fsutil::getHomeDir().toStdWString())
+#define __OuterDir fsutil::getHomeDir().toStdWString()
 #endif
 
 class COuterDir : public CMediaDir

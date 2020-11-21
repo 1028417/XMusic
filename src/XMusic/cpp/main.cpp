@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     //内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
     wstring strWorkDir = L"/data/data/" __pkgName;
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-    //strWorkDir = L"/sdcard/" __pkgName;
+    //strWorkDir = __sdcardDir __pkgName;
 
 #else
     wstring strWorkDir = fsutil::getHomeDir().toStdWString() + L"/" __pkgName;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
     int nRet = __app.run(strWorkDir);
 
-    //fsutil::copyFile(__WS2Q(strWorkDir+L"/xmusic.log"), "/sdcard/xmusic.log");
+    //fsutil::copyFile(strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
     return nRet;
 }

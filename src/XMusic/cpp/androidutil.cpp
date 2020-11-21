@@ -13,14 +13,19 @@ int g_androidSdkVer = 0;
 /*static wstring g_strSDCardPath;
 static void checkSdcardPath()
 {
-    char *pszSdcardPath = getenv("SECONDARY_STORAGE");
+    cauto pszSdcardPath = getenv("SECONDARY_STORAGE");
     if (NULL == pszSdcardPath)
     {
         pszSdcardPath = getenv("EXTERNAL_STORAGE");
     }
     if (pszSdcardPath)
     {
-        g_strSDCardPath = strutil::fromStr(pszSdcardPath) + L'/';
+        while (*pszSdcardPath)
+        {
+            g_strSDCardPath.push_back(*pszSdcardPath);
+            pszSdcardPath++;
+        }
+        g_strSDCardPath.push_back('/');
         return;
     }
 

@@ -119,7 +119,7 @@ void CAddBkgDlg::show()
         {
             return;
         }
-        _scanDir(L"/sdcard/");
+        _scanDir(__sdcardDir);
 
 #else
         _scanDir(fsutil::getHomeDir().toStdWString());
