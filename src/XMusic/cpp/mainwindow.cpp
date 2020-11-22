@@ -330,10 +330,6 @@ void MainWindow::show()
 
     m_PlayingList.updateList(__app.getOption().uPlayingItem);
 
-#if __windows
-    __app.setForeground();
-#endif
-
     (void)startTimer(1000);
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();

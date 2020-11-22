@@ -30,6 +30,9 @@ extern ITxtWriter& g_logger;
 extern int g_szScreenMax;
 extern int g_szScreenMin;
 
+void async(cfn_void cb);
+void async(UINT uDelayTime, cfn_void cb);
+
 class CAppInit : public QApplication
 {
 protected:
@@ -110,7 +113,7 @@ private:
         return m_mainWnd;
     }
 
-    bool _init(cwstr strWorkDir);
+    E_UpgradeResult _init();
 
     void _run(E_UpgradeResult eUpgradeResult);
 
@@ -136,6 +139,12 @@ public:
     }
 
     void sync(cfn_void cb);
+    void sync(UINT uDelayTime, cfn_void cb)
+    {
+        sync([=](){
+            async(uDelayTime, cb);
+        });
+    }
 
     tagOption& getOption()
     {
@@ -195,6 +204,3 @@ public:
     void setForeground();
 #endif
 };
-
-void async(cfn_void cb);
-void async(UINT uDelayTime, cfn_void cb);

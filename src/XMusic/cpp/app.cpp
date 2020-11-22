@@ -163,32 +163,15 @@ CApp::CApp()
     }, Qt::QueuedConnection);
 }
 
-#if __windows
-void CApp::setForeground()
-{
-    auto hwnd = m_mainWnd.hwnd();
-    if (IsIconic(hwnd))
-    {
-        ::ShowWindow(hwnd, SW_RESTORE);
-    }
-    else
-    {
-        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        ::SetForegroundWindow(hwnd);
-    }
-}
-#endif
-
 static void _genRootDir(wstring& strRootDir)
 {
 #if __android
     if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
-        strRootDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
+        //strRootDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 
-#elif __window
+/*#elif __window
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         CFolderDlg FolderDlg;
@@ -204,21 +187,69 @@ static void _genRootDir(wstring& strRootDir)
 
     //#if __ios && TARGET_IPHONE_SIMULATOR
     //    strRootDir = L"/Users/lhyuan/XMusic";
-    //#endif
+    //#endif*/
 #endif
 }
 
-bool CApp::_init(cwstr strWorkDir)
+int CApp::run(cwstr strWorkDir)
 {
-    m_ctrl.getOption().strRootDir = strWorkDir;
-    //_genRootDir(m_ctrl.getOption().strRootDir);
-    g_logger << "RootDir: " >> m_ctrl.getOption().strRootDir;
-    if (!fsutil::createDir(m_model.medialibPath()))
+    m_mainWnd.showBlank();
+
+    std::thread thrInit([=](){
+        auto& strRootDir = m_ctrl.getOption().strRootDir = strWorkDir;
+        _genRootDir(strRootDir);
+        g_logger << "RootDir: " >> strRootDir;
+        if (!fsutil::createDir(m_model.medialibPath()))
+        {
+            sync([&](){
+                this->quit();
+            });
+            return;
+        }
+
+        UINT uDelayTime = 600;
+        #if __android
+            uDelayTime = 100;
+        #endif
+        sync(uDelayTime, [&](){
+            m_mainWnd.showLogo();
+        });
+
+        E_UpgradeResult eUpgradeResult = _init();
+        sync([=](){
+            _run(eUpgradeResult);
+        });
+    });
+
+    auto nRet = exec();
+    g_bRunSignal = false;
+
+    for (auto& thr : m_lstThread)
     {
-        return false;
+        thr.cancel(false);
     }
 
-    E_UpgradeResult eUpgradeResult = mtutil::concurrence([&](){
+    for (auto& thr : m_lstThread)
+    {
+        thr.join();
+    }
+
+#if !__android // TODO 规避5.6.1退出的bug
+    thrInit.join();
+#endif
+
+    g_logger >> "stop controller";
+    m_ctrl.stop();
+
+    g_logger >> "app quit";
+    m_logger.close();
+
+    return nRet;
+}
+
+E_UpgradeResult CApp::_init()
+{
+    return mtutil::concurrence([&](){
         auto timeBegin = time(0);
 
         QFile qf(":/mdlconf");
@@ -258,59 +289,6 @@ bool CApp::_init(cwstr strWorkDir)
 
         m_mainWnd.preinit();
     });
-
-    sync([=](){
-        _run(eUpgradeResult);
-    });
-
-    return true;
-}
-
-int CApp::run(cwstr strWorkDir)
-{
-    m_mainWnd.showBlank();
-
-    UINT uDelayTime = 600;
-#if __android
-    uDelayTime = 100;
-#endif
-    async(uDelayTime, [&](){
-        m_mainWnd.showLogo();
-    });
-
-    std::thread thrInit([=](){
-        if (!_init(strWorkDir))
-        {
-            sync([&](){
-                this->quit();
-            });
-        }
-    });
-
-    auto nRet = exec();
-    g_bRunSignal = false;
-
-    for (auto& thr : m_lstThread)
-    {
-        thr.cancel(false);
-    }
-
-    for (auto& thr : m_lstThread)
-    {
-        thr.join();
-    }
-
-#if !__android // TODO 规避5.6.1退出的bug
-    thrInit.join();
-#endif
-
-    g_logger >> "stop controller";
-    m_ctrl.stop();
-
-    g_logger >> "app quit";
-    m_logger.close();
-
-    return nRet;
 }
 
 void CApp::_run(E_UpgradeResult eUpgradeResult)
@@ -364,6 +342,10 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
         return;
     }
 
+#if __windows
+    setForeground();
+#endif
+
     cauto option = m_ctrl.getOption();
     if (option.crBkg >= 0)
     {
@@ -373,6 +355,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
     {
         g_crFore.setRgb((int)option.crFore);
     }
+
 #if __android
     if (option.bNetworkWarn && checkMobileConnected())
     {
@@ -403,6 +386,23 @@ void CApp::quit()
         QApplication::quit();
     });
 }
+
+#if __windows
+void CApp::setForeground()
+{
+    auto hwnd = m_mainWnd.hwnd();
+    if (IsIconic(hwnd))
+    {
+        ::ShowWindow(hwnd, SW_RESTORE);
+    }
+    else
+    {
+        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        ::SetForegroundWindow(hwnd);
+    }
+}
+#endif
 
 void CApp::sync(cfn_void cb)
 {
