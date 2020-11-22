@@ -45,10 +45,11 @@ float CCentralWidget::caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
     }
     cyDst -= cyDst * m_fBkgTopReserve;
 
-    if ((float)cyDst/cxDst < m_fBkgHWRate)
+    auto dx = cxDst - cyDst/m_fBkgHWRate;
+    if (dx > 0)
     {
-        xDst = (cxDst - cyDst / m_fBkgHWRate)/2;
-        cxDst -= xDst*2;
+        xDst = dx/2;
+        cxDst -= dx;
     }
     else
     {
@@ -227,19 +228,19 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     if (!bDefaultBkg)
     {
-#define __dy __size(2)
+#define __dy __size(3)
         int dy =  __round(fBkgZoomRate*__dy);
 
         if (fBkgZoomRateEx <= 1)
         {
 #define __offset __size(6)
             int yOffset = __round((float)__offset/fBkgZoomRate);
-            dy -= yOffset;
-
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
             }
+
+            dy -= yOffset;
         }
 
         for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext

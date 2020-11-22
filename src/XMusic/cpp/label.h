@@ -33,7 +33,7 @@ private:
 
     UINT m_szRound = 0;
 
-    QRect m_rc;
+    QRect m_rcText;
 
 signals:
     void signal_click(CLabel*, const QPoint& pos);
@@ -49,7 +49,7 @@ public:
         m_szRound = szRound;
     }
 
-    cqpm pixmap() const
+    inline cqpm pixmap() const
     {
         auto pm = QLabel::pixmap();
         if (pm)

@@ -398,7 +398,7 @@ void CApp::quit()
 {
     m_mainWnd.setVisible(false);
 
-    async([&](){
+    sync([&](){
         g_bRunSignal = false;
         QApplication::quit();
     });

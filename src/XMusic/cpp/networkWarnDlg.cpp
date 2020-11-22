@@ -23,10 +23,6 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent)
     ui.labelContinue->setText(__space + ui.labelContinue->text() + __space);
     ui.labelNeverWarn->setText(__space + ui.labelNeverWarn->text() + __space);
     ui.labelExit->setText(__space + ui.labelExit->text() + __space);
-
-    connect(ui.labelExit, &CLabel::signal_click, [&](){
-        close();
-    });
 }
 
 cqcr CNetworkWarnDlg::bkgColor() const
@@ -38,16 +34,19 @@ cqcr CNetworkWarnDlg::bkgColor() const
 void CNetworkWarnDlg::show(cfn_void cb)
 {
     connect(ui.labelContinue, &CLabel::signal_click, [=](){
-        this->setVisible(false);
+        close();
         cb();
     });
     connect(ui.labelNeverWarn, &CLabel::signal_click, [=](){
+        close();
         __app.getOption().bNetworkWarn = false;
-        this->setVisible(false);
         cb();
     });
 
-    CDialog::show([&]{
+    connect(ui.labelExit, &CLabel::signal_click, [&](){
+        close();
         __app.quit();
     });
+
+    CDialog::show();
 }

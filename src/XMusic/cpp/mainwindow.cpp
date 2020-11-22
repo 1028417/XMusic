@@ -326,9 +326,13 @@ void MainWindow::show()
     ui.btnFullScreen->setVisible(false);
 
     ui.centralWidget->setVisible(true);
-    //_relayout();
+    _relayout();
 
     m_PlayingList.updateList(__app.getOption().uPlayingItem);
+
+#if __windows
+    __app.setForeground();
+#endif
 
     (void)startTimer(1000);
 
@@ -348,11 +352,6 @@ void MainWindow::show()
         {
             g_crLogoBkg.setAlpha(0);
             update();
-
-#if __windows
-            __app.setForeground();
-#endif
-
             return false;
         }
 

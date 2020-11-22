@@ -3,12 +3,12 @@
 
 void CLabel::_onPaint(CPainter& painter, cqrc)
 {
-	m_rc = this->rect();
+    cauto rc = this->rect();
 
-    auto pm = QLabel::pixmap();
-	if (pm && !pm->isNull())
+    cauto pm = pixmap();
+    if (!pm.isNull())
     {
-        painter.drawPixmapEx(m_rc, *pm, m_szRound);
+        painter.drawPixmapEx(rc, pm, m_szRound);
 
         if (m_uShadowWidth > 0)
         {
@@ -17,7 +17,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
                 UINT uAlpha = m_uShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
                 painter.setPen(__ShadowColor(uAlpha));
 
-                QRect rcShadow(uIdx, uIdx, m_rc.right()-uIdx*2, m_rc.bottom()-uIdx*2);
+                QRect rcShadow(uIdx, uIdx, rc.right()-uIdx*2, rc.bottom()-uIdx*2);
                 painter.drawRectEx(rcShadow, m_szRound);
             }
         }
@@ -30,7 +30,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
     {
         int flag = this->alignment();
 
-        int cx = m_rc.width();
+        int cx = rc.width();
         if (-1 == m_flag)
 		{
             QFont font = painter.font();
@@ -58,21 +58,19 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
             flag |= m_flag;
         }
 
-        m_rc = painter.drawTextEx(m_rc, flag, qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
-    }
-    else
-    {
-        m_rc.setRect(-1,-1,0,0);
+        m_rcText = painter.drawTextEx(rc, flag, qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
     }
 }
 
 void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
 	if (E_MouseEventType::MET_Click == type)
-	{
-        if (m_rc.contains(me.pos()))
+    {
+        if (!text().isEmpty() && !m_rcText.contains(me.pos()))
 		{
-			emit signal_click(this, me.pos());
-		}
+            return;
+        }
+
+        emit signal_click(this, me.pos());
 	}
 }
