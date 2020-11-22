@@ -858,7 +858,7 @@ void CMedialibView::_flashItem(UINT uItem, UINT uMSDelay)
     m_nFlashItem = uItem;
     update();
 
-    CApp::async(uMSDelay, [&](){
+    async(uMSDelay, [&](){
         m_nFlashItem = -1;
         update();
     });

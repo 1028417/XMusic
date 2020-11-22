@@ -624,7 +624,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
 
     update();
 
-    CApp::async(30, [&](){
+    async(30, [&](){
         _genSubImgs();
     });
 }*/

@@ -9,8 +9,9 @@ class CXController : public IXController
 public:
 	CXController(IPlayerView& view, IModel& model)
 		: m_view(view)
-                , m_model(model)
+		, m_model(model)
 	{
+		m_OptionMgr.init();
 	}
 
 protected:
@@ -38,11 +39,6 @@ private:
 	void _moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir);
 
 public:
-        tagOption& initOption() override
-        {
-                return m_OptionMgr.init();
-        }
-
 	tagOption& getOption() override
 	{
 		return m_OptionMgr.getOption();

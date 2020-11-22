@@ -10,7 +10,6 @@ public:
 	CController(IPlayerView& view, IModel& model)
 		: CXController(view, model)
 	{
-		initOption();
 	}
 
 public:

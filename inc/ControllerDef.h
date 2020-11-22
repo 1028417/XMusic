@@ -115,7 +115,6 @@ struct tagDemandCmd : tagPlayCmd
 class IXController
 {
 public:
-	virtual tagOption& initOption() = 0;
 	virtual tagOption& getOption() = 0;
 
 #if __winvc

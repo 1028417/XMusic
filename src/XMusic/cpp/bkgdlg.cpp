@@ -110,7 +110,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                     if (lvItem.uRow == uFloorRow)
                     {
                         auto uSequence = s_uSequence;
-                        CApp::async(300, [=](){
+                        async(300, [=](){
                             if (uSequence != s_uSequence || !isVisible())
                             {
                                 return;

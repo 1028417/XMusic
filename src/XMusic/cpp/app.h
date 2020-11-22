@@ -30,15 +30,12 @@ extern ITxtWriter& g_logger;
 extern int g_szScreenMax;
 extern int g_szScreenMin;
 
-extern int g_argc;
-extern char **g_argv;
-
 class CAppInit : public QApplication
 {
 protected:
-    CAppInit() : QApplication(g_argc, g_argv)
-    {
-    }
+    CAppInit();
+
+    void setupFont();
 };
 
 Q_DECLARE_METATYPE(fn_void);
@@ -140,13 +137,6 @@ public:
 
     void sync(cfn_void cb);
 
-    static void async(cfn_void cb)
-    {
-        async(0, cb);
-    }
-
-    static void async(UINT uDelayTime, cfn_void cb);
-
     tagOption& getOption()
     {
         return m_ctrl.getOption();
@@ -205,3 +195,6 @@ public:
     void setForeground();
 #endif
 };
+
+void async(cfn_void cb);
+void async(UINT uDelayTime, cfn_void cb);

@@ -15,6 +15,7 @@ ITxtWriter& g_logger(m_logger);
 int g_szScreenMax = 0;
 int g_szScreenMin = 0;
 float g_fPixelRatio = 1;
+float g_fDPI = 0;
 
 bool g_bRunSignal = true;
 
@@ -27,6 +28,36 @@ static const WString g_lpQuality[] {
 const WString& mediaQualityString(E_MediaQuality eQuality)
 {
     return g_lpQuality[(UINT)eQuality];
+}
+
+extern int g_argc;
+extern char **g_argv;
+
+CAppInit::CAppInit() : QApplication(g_argc, g_argv)
+{
+    QScreen *screen = QApplication::primaryScreen();
+    cauto sz = screen->size();
+    g_szScreenMax = sz.width();
+    g_szScreenMin = sz.height();
+    if (g_szScreenMax < g_szScreenMin)
+    {
+        std::swap(g_szScreenMax, g_szScreenMin);
+    }
+
+    g_fPixelRatio = screen->devicePixelRatio();
+    g_fDPI = screen->logicalDotsPerInch();
+
+    m_logger.open("xmusic.log", true);
+#if __android
+    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
+#endif
+    g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin <<
+                " DPR: " << g_fPixelRatio << " DPI: " >> g_fDPI;
+
+    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
+    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
+
+    setupFont();
 }
 
 static void _setupFont()
@@ -66,25 +97,11 @@ static void _setupFont()
     }
 }
 
-static void _setupFont(QApplication& app)
+void CAppInit::setupFont()
 {
-    QScreen *screen = QApplication::primaryScreen();
-    QSize szScreen = screen->size();
-    g_szScreenMax = szScreen.width();
-    g_szScreenMin = szScreen.height();
-    if (g_szScreenMax < g_szScreenMin)
-    {
-        std::swap(g_szScreenMax, g_szScreenMin);
-    }
-    float fPixelRatio = screen->devicePixelRatio();
-    auto fDPI = screen->logicalDotsPerInch();
-    g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin << " DPR: " << fPixelRatio << " DPI: " >> fDPI;
-
-    cauto font = app.font();
+    cauto font = this->font();
 
 #if __ios
-    g_fPixelRatio = fPixelRatio;
-
     /*int nScreenSize = szScreen.width()*szScreen.height();
     switch (nScreenSize)
     {
@@ -132,7 +149,7 @@ static void _setupFont(QApplication& app)
 
     _setupFont();
 
-    app.setFont(CFont());
+    this->setFont(CFont());
 }
 
 CApp::CApp()
@@ -140,17 +157,6 @@ CApp::CApp()
     m_model(m_mainWnd, m_ctrl.getOption()),
     m_msgbox(m_mainWnd)
 {
-    m_logger.open("xmusic.log", true);
-
-    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
-    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
-
-#if __android
-    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
-#endif
-
-    _setupFont(*this);
-
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [&](fn_void cb){
         cb();
@@ -204,9 +210,9 @@ static void _genRootDir(wstring& strRootDir)
 
 bool CApp::_init(cwstr strWorkDir)
 {
-    m_ctrl.initOption().strRootDir = strWorkDir;
-    //_genRootDir(m_ctrl.initOption().strRootDir);
-    g_logger << "RootDir: " >> m_ctrl.initOption().strRootDir;
+    m_ctrl.getOption().strRootDir = strWorkDir;
+    //_genRootDir(m_ctrl.getOption().strRootDir);
+    g_logger << "RootDir: " >> m_ctrl.getOption().strRootDir;
     if (!fsutil::createDir(m_model.medialibPath()))
     {
         return false;
@@ -262,9 +268,17 @@ bool CApp::_init(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
-    m_mainWnd.showLogo();
+    m_mainWnd.showBlank();
 
-    std::thread thrUpgrade([=](){
+    UINT uDelayTime = 600;
+#if __android
+    uDelayTime = 100;
+#endif
+    async(uDelayTime, [&](){
+        m_mainWnd.showLogo();
+    });
+
+    std::thread thrInit([=](){
         if (!_init(strWorkDir))
         {
             sync([&](){
@@ -287,7 +301,7 @@ int CApp::run(cwstr strWorkDir)
     }
 
 #if !__android // TODO 规避5.6.1退出的bug
-    thrUpgrade.join();
+    thrInit.join();
 #endif
 
     g_logger >> "stop controller";
@@ -400,7 +414,7 @@ void CApp::sync(cfn_void cb)
     }
 }
 
-void CApp::async(UINT uDelayTime, cfn_void cb)
+inline void async(UINT uDelayTime, cfn_void cb)
 {
     if (g_bRunSignal)
     {
@@ -411,4 +425,9 @@ void CApp::async(UINT uDelayTime, cfn_void cb)
             }
         });
     }
+}
+
+void async(cfn_void cb)
+{
+    async(0, cb);
 }

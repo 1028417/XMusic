@@ -91,6 +91,8 @@ public:
     }
 #endif
 
+    void showBlank();
+
     void showLogo();
 
     void preinit()

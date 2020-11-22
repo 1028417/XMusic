@@ -113,7 +113,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_lv.hittestFile((CMediaRes&)media);
     }
 
-    CApp::async([&]() {
+    __app.sync([&]() {
         m_wholeTrackDlg.tryShow(media);
     });
 

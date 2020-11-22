@@ -69,15 +69,14 @@ void MainWindow::switchFullScreen()
 }
 
 MainWindow::MainWindow()
-    : m_PlayingList(this)
+    : m_brBkg(QPixmap(":/img/bkg.jpg"))
+    , m_PlayingList(this)
     , m_medialibDlg(*this)
     , m_bkgDlg(*this)
 {
     ui.setupUi(this);
 
     ui.centralWidget->init();
-
-    m_brBkg.setTexture(QPixmap(":/img/bkg.jpg"));
 
     for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
                 , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
@@ -88,9 +87,19 @@ MainWindow::MainWindow()
         connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
     }
 
+    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
+                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
+    {
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+    }
+
     m_PlayingList.raise();
 
 #if __android || __ios
+    int nLogoWidth = g_szScreenMin*42/100;
+    ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
+    ui.labelLogo->setScaledContents(true);
+
     ui.btnFullScreen->setVisible(false);
     ui.btnExit->setVisible(false);
 
@@ -101,13 +110,6 @@ MainWindow::MainWindow()
     ui.btnExit->raise();
 #endif
 
-#if __android || __ios
-#endif
-
-    ui.labelLogo->setParent(this);
-    ui.labelLogoTip->setParent(this);
-    ui.labelLogoCompany->setParent(this);
-
     ui.btnPause->setVisible(false);
 
     ui.centralWidget->setVisible(false);
@@ -117,26 +119,20 @@ MainWindow::MainWindow()
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
 
+void MainWindow::showBlank()
+{
+    g_bFullScreen = __app.getOption().bFullScreen;
+    fixWorkArea(*this);
+
+    this->setVisible(true);
+}
+
 void MainWindow::showLogo()
 {
-    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
-                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
-    {
-        widget->setAttribute(Qt::WA_TranslucentBackground);
-    }
-
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
     fFontSizeOffset = 0.918f;
-
-    cauto szScreen = QApplication::primaryScreen()->size();
-    int nScreenSize = MIN(szScreen.width(), szScreen.height());
-    int nLogoWidth = nScreenSize*42/100;
-
-    ui.labelLogo->setScaledContents(true);
-    ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
 #endif
-
     ui.labelLogoTip->setFont(CFont(fFontSizeOffset, g_nDefFontWeight, true));
     ui.labelLogoCompany->setFont(CFont(fFontSizeOffset));
 
@@ -145,45 +141,37 @@ void MainWindow::showLogo()
 
     auto movie = new QMovie(this);
     movie->setFileName(":/img/logo.gif");
-    ui.labelLogo->setVisible(false);
     ui.labelLogo->setMovie(movie);
+    ui.labelLogo->movie()->start();
+    ui.labelLogo->setParent(this);
+    ui.labelLogo->setVisible(true);
 
-    g_bFullScreen = __app.getOption().bFullScreen;
-    fixWorkArea(*this);
-    this->setVisible(true);
+    async(30, [&](){
+        auto labelLogoTip = ui.labelLogoTip;
+        labelLogoTip->setParent(this);
+        labelLogoTip->setVisible(true);
+        labelLogoTip->setText("播放器");
 
-    this->repaint();
+        async(600, [=](){
+            labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
 
-    UINT uDelayTime = 600;
-#if __android
-    uDelayTime = 100;
-#endif
-    CApp::async(uDelayTime, [&](){
-        ui.labelLogo->movie()->start();
-        ui.labelLogo->setVisible(true);
+            async(600, [=](){
+                labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
 
-        _updateLogoCompany(5, [&](){
-            _updateLogoCompany(-5, [&](){
-                ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
-                _updateLogoCompany(5);
-            });
-        });
-
-        CApp::async(50, [&](){
-            auto labelLogoTip = ui.labelLogoTip;
-            labelLogoTip->setText("播放器");
-
-            CApp::async(600, [=](){
-                labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
-
-                CApp::async(600, [=](){
-                    labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
-
-                    CApp::async(2600, [=](){
-                        _showUpgradeProgress();
-                    });
+                async(2600, [=](){
+                    _showUpgradeProgress();
                 });
             });
+        });
+    });
+
+    ui.labelLogoCompany->setParent(this);
+    ui.labelLogoCompany->setVisible(true);
+
+    _updateLogoCompany(5, [&](){
+        _updateLogoCompany(-5, [&](){
+            ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
+            _updateLogoCompany(5);
         });
     });
 }
@@ -444,7 +432,7 @@ bool MainWindow::event(QEvent *ev)
         {
             switchFullScreen();
         }
-/*        else if (Qt::Key_Escape == key)
+        /*else if (Qt::Key_Escape == key)
         {
 #if __mac
             this->setWindowState(Qt::WindowMaximized | Qt::WindowActive); // Mac最小化不了，执行还原
@@ -479,7 +467,7 @@ bool MainWindow::event(QEvent *ev)
     }
 
     break;
-/*    case QEvent::Close:
+    /*case QEvent::Close:
         __app.quit();
 
         break;*/
@@ -568,9 +556,15 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
     {
         painter.setOpacity(0.06f);
     }
+
     rcSrc.setWidth(__cxBkg);
     QRect rcDst(rc.x()+xDst, rc.y(), cxDst, cyDst);
     painter.drawPixmap(rcDst, m_brBkg, rcSrc);
+
+    if (!bDrawDisk)
+    {
+        painter.setOpacity(1.0f);
+    }
 }
 
 void MainWindow::_updateProgress()
@@ -731,7 +725,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
             __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
 
             /*auto uPlaySeq = g_uPlaySeq;
-            CApp::async(1000, [=]() {
+            async(1000, [=]() {
                 if (uPlaySeq == g_uPlaySeq)
                 {
                     _updatePlayPauseButton(false);
@@ -743,7 +737,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
             //_updatePlayPauseButton(false);
 
             auto uPlaySeq = g_uPlaySeq;
-            CApp::async(2000, [=]() {
+            async(2000, [=]() {
                 if (uPlaySeq == g_uPlaySeq)
                 {
                     __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
@@ -1000,7 +994,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         // TODO 增加按文件位置seek
         if (__app.getPlayMgr().player().Seek(uSeekPos))
         {
-            CApp::async(100, [&](){
+            async(100, [&](){
               _updateProgress();
             });
         }

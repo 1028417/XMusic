@@ -140,7 +140,7 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
 
         if (m_bClicking)
         {
-            /*CApp::async([&, me](){
+            /*__app.sync([&, me](){
                 if (!m_bClicking)
                 {
                     return;

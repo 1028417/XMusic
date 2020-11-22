@@ -151,9 +151,12 @@ void CPlayingPage::RefreshList(int nPlayingItem)
 	m_wndList.GetWindowRect(rcList);
 	m_wndList.fixColumnWidth(rcList.Width());
 
-	cauto lstPlayingItems = m_view.getPlayMgr().playingItems();
-	lstPlayingItems([&](cauto PlayItem) {
-		((CPlayItem&)PlayItem).findRelatedMedia();
+	auto& lstPlayingItems = m_view.getPlayMgr().playingItems();
+	lstPlayingItems([&](auto& PlayItem) {
+		if (NULL == PlayItem.findRelatedMedia())
+		{
+			PlayItem.findRelatedPlayItem();
+		}
 	});
 
 	__async(10, [&]() {
