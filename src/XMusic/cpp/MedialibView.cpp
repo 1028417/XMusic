@@ -39,7 +39,12 @@ void CMedialibView::initpm()
     (void)m_pmMQS.load(__mediaPng(mqs));
     (void)m_pmDTS.load(__mediaPng(dts));
 
-    (void)m_pmTFCard.load(__mediaPng(tf));
+#if __android
+    (void)m_pmOuterDir.load(__mediaPng(tf));
+#elif __windows
+    (void)m_pmOuterDir.load(__mediaPng(windriver));
+#endif
+
     (void)m_pmDirLink.load(__mediaPng(dirLink));
     (void)m_pmDir.load(__mediaPng(dir));
     (void)m_pmFile.load(__mediaPng(file));
@@ -361,7 +366,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pmIcon = &m_pmDir;
 
             auto pParentDir = context.pDir->parent();
-            if (pParentDir == NULL)
+            if (NULL == pParentDir)
             {
                 CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
                 if (pAttachDir)
@@ -378,13 +383,15 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                     }*/
                 }
             }
-            else if (pParentDir == &m_OuterDir)
+#if __android || __windows
+            else
             {
-                if (dynamic_cast<COuterDir*>(context.pDir))
+                if (pParentDir == &m_OuterDir && dynamic_cast<COuterDir*>(context.pDir))
                 {
-                    context.pmIcon = &m_pmTFCard;
+                    context.pmIcon = &m_pmOuterDir;
                 }
             }
+#endif
         }
     }
     else if (context.pFile)

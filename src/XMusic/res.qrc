@@ -46,5 +46,6 @@
         <file>img/medialib/mqs.png</file>
         <file>img/btnBackward.png</file>
         <file>img/medialib/tf.png</file>
+        <file>img/medialib/windriver.png</file>
     </qresource>
 </RCC>

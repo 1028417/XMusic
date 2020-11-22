@@ -41,7 +41,10 @@ private:
     QPixmap m_pmMQS;
     QPixmap m_pmDTS;
 
-    QPixmap m_pmTFCard;
+#if __android || __windows
+    QPixmap m_pmOuterDir;
+#endif
+
     QPixmap m_pmDirLink;
     QPixmap m_pmDir;
     QPixmap m_pmFile;

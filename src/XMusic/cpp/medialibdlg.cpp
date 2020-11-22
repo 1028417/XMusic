@@ -222,8 +222,7 @@ void CMedialibDlg::_relayoutTitle()
     }
 
     cauto rcUpward = ui.btnUpward->geometry();
-    int x_title = ui.btnUpward->isVisible() ? rcUpward.right() : rcReturn.right();
-    x_title += cxMargin/2;
+    int x_title = cxMargin + (ui.btnUpward->isVisible() ? rcUpward.right() : rcReturn.right());
     int cx_title = rc.x()-cxMargin-x_title;
     QRect rcTitle(x_title, 0, cx_title, rcReturn.bottom() + rcReturn.top());
     ui.labelTitle->setGeometry(rcTitle);

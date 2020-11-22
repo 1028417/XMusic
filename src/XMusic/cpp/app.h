@@ -30,25 +30,62 @@ extern ITxtWriter& g_logger;
 extern int g_szScreenMax;
 extern int g_szScreenMin;
 
+extern int g_argc;
+extern char **g_argv;
+
 class CAppInit : public QApplication
 {
 protected:
-    CAppInit();
+    CAppInit() : QApplication(g_argc, g_argv)
+    {
+    }
 };
 
 Q_DECLARE_METATYPE(fn_void);
 
+template <typename T>
+struct tagSinglePtr
+{
+    tagSinglePtr(T*ptr) : ptr(ptr)
+    {
+    }
+
+    ~tagSinglePtr()
+    {
+        delete ptr;
+    }
+
+    T *ptr;
+};
+
+template <typename T>
+struct tagSingleTone
+{
+    static T& inst()
+    {
+        static T *inst = NULL;
+        if (NULL == inst)
+        {
+            inst = (T*)malloc(sizeof(T));
+            new (inst) T();
+        }
+
+        static tagSinglePtr<T> SinglePtr(inst);
+
+        return *inst;
+    }
+};
+
 #define __app CApp::inst()
 
-class CApp : public CAppInit, private IPlayerView
+class CApp : public CAppInit, private IPlayerView, public tagSingleTone<CApp>
 {
     Q_OBJECT
 private:
     CApp();
+    friend tagSingleTone;
 
 public:
-    static CApp& inst();
-
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;
 

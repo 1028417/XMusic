@@ -66,20 +66,8 @@ static void _setupFont()
     }
 }
 
-extern int g_argc;
-extern char **g_argv;
-
-CAppInit::CAppInit() : QApplication(g_argc, g_argv)
+static void _setupFont(QApplication& app)
 {
-    m_logger.open("xmusic.log", true);
-
-    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
-    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
-
-#if __android
-    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
-#endif
-
     QScreen *screen = QApplication::primaryScreen();
     QSize szScreen = screen->size();
     g_szScreenMax = szScreen.width();
@@ -92,7 +80,7 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
     auto fDPI = screen->logicalDotsPerInch();
     g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin << " DPR: " << fPixelRatio << " DPI: " >> fDPI;
 
-    cauto font = this->font();
+    cauto font = app.font();
 
 #if __ios
     g_fPixelRatio = fPixelRatio;
@@ -144,20 +132,7 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
 
     _setupFont();
 
-    this->setFont(CFont());
-}
-
-static CApp *g_pApp = NULL;
-
-CApp& CApp::inst()
-{
-    if (NULL == g_pApp)
-    {
-        g_pApp = (CApp*)malloc(sizeof(CApp));
-        new (g_pApp) CApp();
-    }
-
-    return *g_pApp;
+    app.setFont(CFont());
 }
 
 CApp::CApp()
@@ -165,6 +140,17 @@ CApp::CApp()
     m_model(m_mainWnd, m_ctrl.getOption()),
     m_msgbox(m_mainWnd)
 {
+    m_logger.open("xmusic.log", true);
+
+    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
+    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
+
+#if __android
+    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
+#endif
+
+    _setupFont(*this);
+
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [&](fn_void cb){
         cb();
