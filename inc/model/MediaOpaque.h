@@ -30,15 +30,10 @@ class __ModelExt CMediaOpaque : public CAudioOpaque
 
 #if __OnlineMediaLib
 private:
-    unordered_map<wstring, const tagUnzfile*> m_mapUnzfile;
-
-    unordered_map<wstring, tagXUrl> m_mapXUrl;
-
-private:
     void _addXUrl(const string& strUtf8Title, const string& strUrl);
 
 public:
-    bool loadPkg(const string& strFile);
+    bool loadXPkg(const string& strFile);
 
     bool checkMedia(cwstr strPath);
 

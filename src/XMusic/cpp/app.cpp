@@ -207,11 +207,7 @@ int CApp::run(cwstr strWorkDir)
             return;
         }
 
-        UINT uDelayTime = 600;
-        #if __android
-            uDelayTime = 100;
-        #endif
-        sync(uDelayTime, [&](){
+        sync(100, [&](){
             m_mainWnd.showLogo();
         });
 

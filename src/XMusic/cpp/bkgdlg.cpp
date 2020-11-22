@@ -179,7 +179,7 @@ void CBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
         auto uIdx = lvItem.uItem-2;
         if (uIdx < m_bkgDlg.bkgCount())
         {
-            if (me.pos().x() >= lvItem.rc.right()-g_xsize && me.pos().y() <= lvItem.rc.top()+g_xsize)
+            if (me.pos().x() > lvItem.rc.width()-g_xsize && me.pos().y() < g_xsize)
             {
                 m_bkgDlg.deleleBkg(uIdx);
                 return;
