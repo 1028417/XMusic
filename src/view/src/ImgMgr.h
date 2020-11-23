@@ -23,9 +23,10 @@ private:
 	void _setSingerImg(CImg& img);
 	bool _setSingerImg(cwstr strFile);
 
-	void _initSingerHead(UINT uSingerID, CImg& img);
 	bool _initSingerHead(UINT uSingerID, cwstr strSingerName);
-	
+	void _initSingerHead(UINT uSingerID, CImg& img);
+	void _initSingerHead(const list<UINT>& lstSingerID, list<CImg>& lstImg);
+
 	int _getSingerImgPos(UINT uSingerID) const;
 
 public:

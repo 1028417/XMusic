@@ -121,6 +121,13 @@ public:
 	void SetBitmap(CBitmap& bitmap, int nPosReplace = -1);
 
 	void SetImg(Gdiplus::Image& img, int nPosReplace = -1);
-	
+	void SetImg(list<Gdiplus::Image>& lstImg, int nPosReplace = -1);
+
+	void SetImg(list<CImg>& lstImg, int nPosReplace = -1)
+	{
+		SetImg((list<Gdiplus::Image>&)lstImg, nPosReplace);
+	}
+
 	void SetImg(CImg& img, E_ImgFixMode eFixMode, int nPosReplace = -1);
+	void SetImg(list<CImg>& lstImg, E_ImgFixMode eFixMode, int nPosReplace = -1);
 };

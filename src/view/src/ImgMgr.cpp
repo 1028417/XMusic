@@ -68,7 +68,6 @@ bool CImgMgr::init(UINT uBigIconSize, UINT uSmallIconSize, UINT uTinyIconSize)
 
 	__AssertReturn(m_bigImglst.Init(__Size(uBigIconSize)), false);
 	__AssertReturn(m_smallImglst.Init(__Size(uSmallIconSize)), false);
-	//__AssertReturn(m_tabImglst.Init(__Size(uTinyIconSize)), false);
 	
 	for (cauto strImg : g_lpImg)
 	{
@@ -90,13 +89,11 @@ bool CImgMgr::_setImg(cwstr strImg, bool bHalfToneMode)
 
 	m_bigImglst.SetIcon(hIcon);
 	m_smallImglst.SetIcon(hIcon);
-	//m_tabImglst.SetIcon(hIcon);
 
 	/*CImg img;
 	__AssertReturn(img.Load(getImgPath(strImg).c_str()), false);
 	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_None);
-	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_None);
-	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_None);*/
+	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_None);*/
 
 	return true;
 }
@@ -105,7 +102,6 @@ inline void CImgMgr::_setSingerImg(CImg& img)
 {
 	m_bigImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
 	m_smallImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
-	//m_tabImglst.SetImg(img, E_ImgFixMode::IFM_Inner);
 }
 
 bool CImgMgr::_setSingerImg(cwstr strFile)
@@ -120,7 +116,8 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 void CImgMgr::initSingerImg()
 {
 	CSignal sgn(false, true);
-	list<pair<UINT, CImg>> lstImg;
+	list<UINT> lstSingerID;
+	list<CImg> lstImg;
 	mtutil::concurrence([&]() {
 		for (auto pSinger : m_model.getSingerMgr().singers())
 		{
@@ -137,7 +134,8 @@ void CImgMgr::initSingerImg()
 			}
 			
 			sgn.set([&]() {
-				lstImg.emplace_back(pSinger->m_uID, img);
+				lstSingerID.push_back(pSinger->m_uID);
+				lstImg.emplace_back(img);
 			});
 			img.Detach();
 		}
@@ -146,23 +144,37 @@ void CImgMgr::initSingerImg()
 	}, [&]() {
 		while (true)
 		{
-			if (!sgn.wait([&]() {
-				for (auto& pr : lstImg)
-				{
-					_initSingerHead(pr.first, pr.second);
-				}
-				lstImg.clear();
+			list<UINT> t_lstSingerID;
+			list<CImg> t_lstImg;
+			if (sgn.wait([&]() {
+				t_lstSingerID.swap(lstSingerID);
+				t_lstImg.swap(lstImg);
 			}))
 			{
-				for (auto& pr : lstImg)
-				{
-					_initSingerHead(pr.first, pr.second);
-				}
-
-				break;
+				_initSingerHead(t_lstSingerID, t_lstImg);
+				continue;
 			}
+			
+			break;
+		}
+
+		if (!lstSingerID.empty())
+		{
+			_initSingerHead(lstSingerID, lstImg);
 		}
 	});
+}
+
+bool CImgMgr::_initSingerHead(UINT uSingerID, cwstr strSingerName)
+{
+	cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(strSingerName);
+	__EnsureReturn(!strHeadImg.empty(), false);
+
+	__EnsureReturn(_setSingerImg(strHeadImg), false);
+
+	m_vctSingerID.push_back(uSingerID);
+
+	return true;
 }
 
 void CImgMgr::_initSingerHead(UINT uSingerID, CImg& img)
@@ -172,16 +184,12 @@ void CImgMgr::_initSingerHead(UINT uSingerID, CImg& img)
 	m_vctSingerID.push_back(uSingerID);
 }
 
-bool CImgMgr::_initSingerHead(UINT uSingerID, cwstr strSingerName)
+void CImgMgr::_initSingerHead(const list<UINT>& lstSingerID, list<CImg>& lstImg)
 {
-	cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(strSingerName);
-	__EnsureReturn(!strHeadImg.empty(), false);
-	
-	__EnsureReturn(_setSingerImg(strHeadImg), false);
-	
-	m_vctSingerID.push_back(uSingerID);
+	m_bigImglst.SetImg(lstImg, E_ImgFixMode::IFM_Inner);
+	m_smallImglst.SetImg(lstImg, E_ImgFixMode::IFM_Inner);
 
-	return true;
+	m_vctSingerID.insert(m_vctSingerID.end(), lstSingerID.begin(), lstSingerID.end());
 }
 
 bool CImgMgr::addSingerImg(UINT uSingerID, cwstr strSingerName, const list<wstring>& lstFiles)
@@ -210,7 +218,6 @@ void CImgMgr::removeSingerImg(UINT uSingerID, cwstr strSingerName)
 
 	m_bigImglst.Remove(uImgPos);
 	m_smallImglst.Remove(uImgPos);
-	//m_tabImglst.Remove(uImgPos);
 
 	m_model.getSingerImgMgr().removeSingerImg(strSingerName);
 }
@@ -221,7 +228,6 @@ void CImgMgr::clearSingerImg()
 	{
 		m_bigImglst.Remove(__SingerImgStartPos);
 		m_smallImglst.Remove(__SingerImgStartPos);
-		//m_tabImglst.Remove(__SingerImgStartPos);
 	}
 
 	m_vctSingerID.clear();
