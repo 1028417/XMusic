@@ -2,47 +2,14 @@
 
 #include "Player.h"
 
+//#define __xurl
+
 #define __ReadStreamWaitTime 6
-
-struct tagXUrl
-{
-    tagXUrl() = default;
-
-    tagXUrl(const string& strUtf8Title, const string& strUrl, cwstr strFileTitle)
-        : m_strUtf8Title(strUtf8Title)
-        , m_strUrl(strUrl)
-        , m_strFileTitle(strFileTitle)
-    {
-    }
-
-    string m_strUtf8Title;
-    string m_strUrl;
-    wstring m_strFileTitle;
-    bool bUsing = false;
-
-    string genUrl();
-};
 
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
  public:
     CMediaOpaque() = default;
-
-#if __OnlineMediaLib
-private:
-    void _addXUrl(const string& strUtf8Title, const string& strUrl);
-
-public:
-    bool loadXPkg(const string& strFile);
-
-    bool checkMedia(cwstr strPath);
-
-    string getMedia(cwstr strPath);
-
-    void checkUnuse();
-
-    bool loadXUrl(Instream& ins);
-#endif
 
 private:
 	wstring m_strFile;
@@ -69,21 +36,30 @@ private:
 	static UINT _checkDuration(cwstr strFile, bool bXmsc, long long& nFileSize);
 
 public:
-    cwstr currentFile() const
-    {
-        return m_strFile;
-    }
-
 #if __OnlineMediaLib
+    bool loadXPkg(const string& strFile);
+
+#if __xurl
+    bool loadXUrl(Instream& ins);
+#endif
+
+    bool checkOpaque(cwstr strPath);
+    void statOpaque();
+
+    bool openOpaque(cwstr strPath, bool bXmsc, UINT uByteRate, unsigned long long uFileSize);
+
     uint64_t downloadedSize() const;
 
     bool waitingFlag() const
     {
         return m_uWaitSize > 0;
     }
-	
-    void openUrl(const string& strUrl, bool bXmsc, UINT uByteRate, unsigned long long uFileSize);
 #endif
+
+    cwstr currentFile() const
+    {
+        return m_strFile;
+    }
 
     long long openFile(cwstr strFile, bool bXmsc)
     {

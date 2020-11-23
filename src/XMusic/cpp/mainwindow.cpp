@@ -647,7 +647,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     if (uAlbumItemID > 0)
     {
         PlayingInfo.pRelatedMedia = __app.getSingerMgr().GetMedia(uAlbumItemID);
-
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
     }
@@ -664,8 +663,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
             if (pSinger)
             {
                 PlayingInfo.uSingerID = pSinger->m_uID;
-                PlayingInfo.strSingerName = pSinger->m_strName;                
-
+                PlayingInfo.strSingerName = pSinger->m_strName;
                 PlayingInfo.pRelatedMedia = __medialib.subFile(PlayingInfo.strPath);
             }
         }
