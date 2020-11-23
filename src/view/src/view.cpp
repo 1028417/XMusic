@@ -37,13 +37,13 @@ bool __view::show()
 		__EnsureReturn(m_model.initMediaLib(), false);
 	}
 
+	m_MainWnd.show();
+
 	m_PlayCtrl.showPlaySpirit();
 
 	__async([&]() {
 		m_MediaResPage.ShowDir();
 	});
-
-	m_MainWnd.show();
 
 	return true;
 }

@@ -144,19 +144,14 @@ void CImgMgr::initSingerImg()
 
 		sgn.stop();
 	}, [&]() {
-		UINT uSingerID = 0;
-		CImg img;
 		while (true)
 		{
 			if (!sgn.wait([&]() {
-				if (!lstImg.empty())
+				for (auto& pr : lstImg)
 				{
-					auto& pr = lstImg.front();
-					uSingerID = pr.first;
-					img = pr.second;
-					pr.second.Detach();
-					lstImg.pop_front();
+					_initSingerHead(pr.first, pr.second);
 				}
+				lstImg.clear();
 			}))
 			{
 				for (auto& pr : lstImg)
@@ -166,8 +161,6 @@ void CImgMgr::initSingerImg()
 
 				break;
 			}
-
-			_initSingerHead(uSingerID, img);
 		}
 	});
 }
