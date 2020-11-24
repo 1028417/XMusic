@@ -919,7 +919,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 				return;
 			}
 
-			cauto strNewName = strTitle + L'.' + fsutil::GetFileExtName(strPath);
+			cauto strNewName = strTitle + __wcDot + fsutil::GetFileExtName(strPath);
 			if (!fsutil::moveFile(strPath, fsutil::GetParentDir(strPath) + __wcPathSeparator + strNewName))
 			{
 				ProgressDlg.msgBox(L"重命名文件失败: " + strNewName);
