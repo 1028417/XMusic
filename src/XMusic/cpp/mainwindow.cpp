@@ -114,7 +114,7 @@ MainWindow::MainWindow()
 
     ui.centralWidget->setVisible(false);
 
-    this->setStyleSheet("");
+    //this->setStyleSheet("");
 
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
@@ -320,6 +320,8 @@ void MainWindow::show()
     m_bkgDlg.init();
 
     ui.labelLogo->movie()->stop();
+    delete ui.labelLogo->movie();
+    ui.labelLogo->clear();
     ui.labelLogo->setVisible(false);
     ui.labelLogoTip->setVisible(false);
     ui.labelLogoCompany->setVisible(false);

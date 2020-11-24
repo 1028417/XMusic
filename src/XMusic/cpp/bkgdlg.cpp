@@ -3,7 +3,7 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __snapshotRetain 7
+#define __snapshotRetain 6
 
 static int g_xsize = 0;
 
@@ -236,7 +236,7 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     }
 }
 
-static void zoomoutPixmap(bool bHLayout, QPixmap& pm, UINT uDiv=0)
+static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
 {
     int cx = 0;
     int cy = 0;
@@ -251,10 +251,10 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, UINT uDiv=0)
         cy = g_szScreenMax;
     }
 
-    if (uDiv > 1)
+    if (fDiv > 1)
     {
-        cx = 0.9f*cx/uDiv;
-        cy = 0.9f*cy/uDiv;
+        cx /= fDiv;
+        cy /= fDiv;
     }
 
     zoomoutPixmap(pm, cx, cy);
@@ -311,7 +311,7 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
         for (wchar_t wch = L'a'; wch <= L'z'; wch++)
         {
             auto strBkg = strBkgSrc + wch + L".jpg";
-            auto strDstFile = strAppBkgDir + __wcPathSeparator + L"0." + wch;
+            auto strDstFile = strAppBkgDir + L"/0." + wch;
             if (pm.load(__WS2Q(strBkg)))
             {
                 zoomoutPixmap(bHLayout, pm);
@@ -320,14 +320,14 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
             }
 
             strBkg = strBkgSrc + (bHLayout?L"hbkg/":L"vbkg/") + wch + L".jpg";
-            strDstFile = strAppBkgDir + __wcPathSeparator + L"1." + wch;
+            strDstFile = strAppBkgDir + L"/1." + wch;
             if (fsutil::copyFile(strBkg, strDstFile))
             {
                 mtutil::usleep(10);
             }
 
             strBkg = strBkgSrc + (bHLayout?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
-            strDstFile = strAppBkgDir + __wcPathSeparator + L"2." + wch;
+            strDstFile = strAppBkgDir + L"/2." + wch;
             if (fsutil::copyFile(strBkg, strDstFile))
             {
                 mtutil::usleep(10);
@@ -482,7 +482,7 @@ inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
 
 inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm, bool bHLayout)
 {
-    zoomoutPixmap(bHLayout, pm, 2);
+    zoomoutPixmap(bHLayout, pm, 2.5f);
     m_lstBr.emplace_back(pm);
     return m_lstBr.back();
 }

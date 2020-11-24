@@ -14,7 +14,7 @@
    <string>XMusic</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url(:/img/bkg.jpg);</string>
+   <string notr="true"/>
   </property>
   <widget class="CCentralWidget" name="centralWidget">
    <property name="styleSheet">
