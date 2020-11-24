@@ -48,14 +48,6 @@ bool __view::show()
 	return true;
 }
 
-void __view::_initSingerImg()
-{
-	mtutil::thread([&]() {
-		m_ImgMgr.initSingerImg();
-		m_PlayingPage.Invalidate();
-	});
-}
-
 bool __view::_create()
 {
 	__EnsureReturn(m_MainWnd.Create(), false);
@@ -89,7 +81,12 @@ bool __view::_create()
 void __view::initView()
 {
 	m_ImgMgr.clearSingerImg();
-	_initSingerImg();
+	__async(50, [&](){
+		mtutil::thread([&](){
+			m_ImgMgr.initSingerImg();
+			m_PlayingPage.Invalidate();
+		});
+	});
 
 	CMediaResPanel::RefreshMediaResPanel();
 

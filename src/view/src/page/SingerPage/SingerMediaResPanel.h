@@ -56,7 +56,7 @@ private:
 		}
 		else
 		{
-			strRenameText = fsutil::GetFileName(m_strPath);
+			strRenameText = fileName();
 		}
 
 		return true;

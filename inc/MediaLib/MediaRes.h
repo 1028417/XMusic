@@ -43,15 +43,9 @@ private:
     LPCCueFile m_pCueFile = NULL;
 
 protected:
-	virtual wstring GetDisplayTitle() const
+	virtual bool GetRenameText(wstring& stRenameText) const override
 	{
-		return GetTitle();
-	}
-
-private:
-	bool GetRenameText(wstring& stRenameText) const override
-	{
-		stRenameText = GetDisplayTitle();
+		stRenameText = m_fi.bDir ? fileName() : GetTitle();
 		return true;
 	}
 
@@ -219,7 +213,13 @@ public:
     }
 
 #if __winvc
-private:
+public:
+	virtual wstring GetDisplayTitle() const
+	{
+		return fileName();
+	}
+
+protected:
 	virtual wstring GetTreeText() const override
 	{
 		return GetDisplayTitle();

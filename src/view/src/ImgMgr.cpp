@@ -119,43 +119,56 @@ void CImgMgr::initSingerImg()
 	list<UINT> lstSingerID;
 	list<CImg> lstImg;
 	mtutil::concurrence([&]() {
-		for (auto pSinger : m_model.getSingerMgr().singers())
-		{
-			cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(pSinger->m_strName);
-			if (strHeadImg.empty())
+		auto paSinger = m_model.getSingerMgr().singers();		
+		function<void(UINT, UINT)> fn;	
+		fn = [&](UINT begin, UINT end) {
+			auto part = (end - begin) / 2;
+			if (part >= 50)
 			{
-				continue;
+				mtutil::concurrence([&]() {
+					fn(begin, begin+part);
+				}, [&]() {
+					fn(begin+part, end);
+				});
+				return;
 			}
 
 			CImg img;
-			if (!img.Load(strHeadImg.c_str()))
+			for (auto uIdx = begin; uIdx < end; uIdx++)
 			{
-				continue;
+				paSinger.get(uIdx, [&](CSinger& singer) {
+					cauto strHeadImg = m_model.getSingerImgMgr().getSingerHead(singer.m_strName);
+					if (strHeadImg.empty())
+					{
+						return;
+					}
+					if (!img.Load(strHeadImg.c_str()))
+					{
+						return;
+					}
+
+					sgn.set([&](){
+						lstSingerID.push_back(singer.m_uID);
+						lstImg.emplace_back(img);
+					});
+					img.Detach();
+				});
 			}
-			
-			sgn.set([&]() {
-				lstSingerID.push_back(pSinger->m_uID);
-				lstImg.emplace_back(img);
-			});
-			img.Detach();
-		}
+		};
+		fn(0, paSinger.size());
 
 		sgn.stop();
 	}, [&]() {
-		while (true)
-		{
-			list<UINT> t_lstSingerID;
-			list<CImg> t_lstImg;
-			if (sgn.wait([&]() {
+		list<UINT> t_lstSingerID;
+		list<CImg> t_lstImg;
+		while (sgn.wait([&]() {
 				t_lstSingerID.swap(lstSingerID);
 				t_lstImg.swap(lstImg);
 			}))
-			{
-				_initSingerHead(t_lstSingerID, t_lstImg);
-				continue;
-			}
-			
-			break;
+		{
+			_initSingerHead(t_lstSingerID, t_lstImg);
+			t_lstSingerID.clear();
+			t_lstImg.clear();
 		}
 
 		if (!lstSingerID.empty())
