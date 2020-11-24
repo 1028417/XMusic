@@ -46,7 +46,7 @@ public:
     bool checkOpaque(cwstr strPath);
     void statOpaque();
 
-    bool openOpaque(cwstr strPath, bool bXmsc, UINT uByteRate, unsigned long long uFileSize);
+    bool openOpaque(IMedia& media);
 
     uint64_t downloadedSize() const;
 
