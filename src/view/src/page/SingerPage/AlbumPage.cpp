@@ -1299,8 +1299,13 @@ BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragConte
 	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
 	
-	int iTargetPos = DragContext.uTargetPos;
-	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, iTargetPos-1);
+	int nTargetPos = DragContext.uTargetPos;
+	nTargetPos--;
+	if (nTargetPos < 0)
+	{
+		nTargetPos = 0;
+	}
+	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, (UINT)nTargetPos);
 	__EnsureReturn(pAlbum, FALSE);
 
 	(void)m_wndAlbumList.DeleteItem(nDragingItem);

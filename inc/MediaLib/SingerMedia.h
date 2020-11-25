@@ -5,8 +5,8 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-    CAlbumItem(class CAlbum& Album, UINT uID, cwstr strPath, mediatime_t time
-		, uint64_t uFileSize, UINT uDuration);
+    CAlbumItem(class CAlbum& Album, UINT uID, cwstr strPath
+        , mediatime_t time, uint64_t uFileSize = 0, UINT uDuration = 0);
 
     CAlbumItem(class CAlbum& Album, CMediaRes& MediaRes);
 

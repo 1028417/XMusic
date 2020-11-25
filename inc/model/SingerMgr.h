@@ -56,7 +56,7 @@ public:
 
 	BOOL RemoveAlbum(UINT uID);
 
-	CAlbum *RepositAlbum(CAlbum& Album, int nNewPos);
+    CAlbum *RepositAlbum(CAlbum& Album, UINT uNewPos);
 
 	BOOL AddAlbumItems(const SArray<wstring>& lstOppPaths, CAlbum& Album, int nPos=-1);
 

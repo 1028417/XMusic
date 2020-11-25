@@ -32,7 +32,7 @@ public:
     CMedia() = default;
 
     CMedia(CMediaSet *pParent, UINT uID, cwstr strPath, mediatime_t tTime
-		, uint64_t uFileSize, UINT uDuration)
+        , uint64_t uFileSize = 0, UINT uDuration = 0)
         : tagMediaInfo(pParent, L"", uID)
 		, m_addTime(tTime)
 		, m_uFileSize(uFileSize)
