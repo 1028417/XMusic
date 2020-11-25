@@ -1108,17 +1108,13 @@ bool __view::copyMediaTitle(IMedia& media)
 
 BYTE __view::genByteRateAlpha(CMedia& media)
 {
-	auto uDuration = media.displayDuration();
-	if (uDuration > 0)
+	auto uKbRate = media.displayByteRate()/1000;
+	if (uKbRate > 0 && uKbRate <= 41) // 320kBitps == 40kByte
 	{
-		auto uKbRate = media.displayByteRate()/1000;
-		if (uKbRate <= 41) // 320kBitps == 40kByte
-		{
-			auto uAlpha = BYTE(255 - 255*pow((float)uKbRate/60, 2));
-			return uAlpha;
-		}
+		auto uAlpha = BYTE(255 - 255*pow((float)uKbRate/60, 2));
+		return uAlpha;
 	}
-
+	
 	return 0;
 }
 

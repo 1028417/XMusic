@@ -1309,8 +1309,8 @@ BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragConte
 	__EnsureReturn(pAlbum, FALSE);
 
 	(void)m_wndAlbumList.DeleteItem(nDragingItem);
-	(void)m_wndAlbumList.InsertObject(*pAlbum, iTargetPos);
-	m_wndAlbumList.SelectItem(iTargetPos);
+	(void)m_wndAlbumList.InsertObject(*pAlbum, nTargetPos);
+	m_wndAlbumList.SelectItem(nTargetPos);
 	
 	return TRUE;
 }
