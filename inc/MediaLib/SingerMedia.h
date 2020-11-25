@@ -5,9 +5,10 @@ class __MediaLibExt CAlbumItem : public CMedia
 public:
     CAlbumItem() = default;
 
-    CAlbumItem(class CAlbum& Album, UINT uID, cwstr strPath, mediatime_t time);
+    CAlbumItem(class CAlbum& Album, UINT uID, cwstr strPath, mediatime_t time
+		, uint64_t uFileSize, UINT uDuration);
 
-	CAlbumItem(class CAlbum& Album, cwstr strAttachPath);
+    CAlbumItem(class CAlbum& Album, CMediaRes& MediaRes);
 
 public:
     E_MediaType type() const override
@@ -141,7 +142,7 @@ class __MediaLibExt CSinger : public CMediaSet
 public:
     virtual ~CSinger() = default; // 解决qt-mac clang告警
 
-    CSinger(CMediaSet& parent, UINT uID, cwstr strName, cwstr strDir, int nPos
+    CSinger(CMediaSet& parent, UINT uID, cwstr strName, cwstr strDir, UINT uPos
             , UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false);
 
 	CSinger(const CSinger& other);
@@ -149,7 +150,7 @@ public:
 	CSinger(CSinger&& other);
 
 public:
-	int m_nPos = 0;
+	UINT m_uPos = 0;
 
 private:
 	wstring m_strDir;

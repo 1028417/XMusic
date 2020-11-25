@@ -191,7 +191,7 @@ public:
     static bool fStat64(FILE *pf, tagFileStat64& stat);
     static bool lStat64(cwstr strFile, tagFileStat64& stat);
 
-    static long long GetFileSize64(cwstr strFile);
+    static int64_t GetFileSize64(cwstr strFile);
 
     static time64_t GetFileModifyTime64(FILE *pf);
 	static time64_t GetFileModifyTime64(cwstr strFile);

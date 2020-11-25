@@ -50,6 +50,11 @@ protected:
 	const tagFileInfo& m_fi = m_fileInfo;
 
 public:
+    const tagFileInfo& fileInfo() const
+    {
+        return m_fileInfo;
+    }
+
 	CPath* parent() const
 	{
 		return m_fileInfo.pParent;

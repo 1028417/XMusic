@@ -24,7 +24,7 @@ private:
     uint64_t m_uWaitSize = 0;
 
 private:
-    long long _openFile(cwstr strFile, bool bXmsc);
+	int64_t _openFile(cwstr strFile, bool bXmsc);
 
 	UINT _checkDuration()
 	{
@@ -33,7 +33,7 @@ private:
 		return uDuration;
 	}
 
-	static UINT _checkDuration(cwstr strFile, bool bXmsc, long long& nFileSize);
+	static UINT _checkDuration(cwstr strFile, bool bXmsc, int64_t& nFileSize);
 
 public:
 #if __OnlineMediaLib
@@ -61,14 +61,14 @@ public:
         return m_strFile;
     }
 
-    long long openFile(cwstr strFile, bool bXmsc)
+	int64_t openFile(cwstr strFile, bool bXmsc)
     {
         return _openFile(strFile, bXmsc);
     }
 
-    long long openFile(IMedia& media);
+	int64_t openFile(IMedia& media);
 
-	UINT checkFileDuration(cwstr strFile, long long& nFileSize)
+	UINT checkFileDuration(cwstr strFile, int64_t& nFileSize)
 	{
 		nFileSize = _openFile(strFile, false);
 		if (nFileSize <= 0)
@@ -81,12 +81,12 @@ public:
 
 	UINT checkFileDuration(cwstr strFile)
 	{
-		long long nFileSize = 0;
+		int64_t nFileSize = 0;
 		return checkDuration(strFile, nFileSize);
 		(void)nFileSize;
     }
 
-	UINT checkMediaDuration(IMedia& media, long long& nFileSize)
+	UINT checkMediaDuration(IMedia& media, int64_t& nFileSize)
 	{
 		nFileSize = _openFile(media.GetAbsPath(), media.isXmsc());
 		if (nFileSize <= 0)
@@ -99,29 +99,29 @@ public:
 
 	UINT checkMediaDuration(IMedia& media)
 	{
-		long long nFileSize = 0;
+		int64_t nFileSize = 0;
 		return checkMediaDuration(media, nFileSize);
 		(void)nFileSize;
 	}
 
-	static UINT checkDuration(cwstr strFile, long long& nFileSize)
+	static UINT checkDuration(cwstr strFile, int64_t& nFileSize)
 	{
 		return _checkDuration(strFile, false, nFileSize);
 	}
 	static UINT checkDuration(cwstr strFile)
 	{
-		long long nFileSize = 0;
+		int64_t nFileSize = 0;
 		return checkDuration(strFile, nFileSize);
 		(void)nFileSize;
 	}
 
-	static UINT checkDuration(IMedia& media, long long& nFileSize)
+	static UINT checkDuration(IMedia& media, int64_t& nFileSize)
 	{
         return _checkDuration(media.GetAbsPath(), media.isXmsc(), nFileSize);
 	}
 	static UINT checkDuration(IMedia& media)
 	{
-		long long nFileSize = 0;
+		int64_t nFileSize = 0;
 		return checkDuration(media, nFileSize);
 		(void)nFileSize;
 	}

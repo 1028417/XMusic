@@ -15,10 +15,10 @@ public:
 	virtual bool GetData(UINT uRow, UINT uColumn, UINT& uValue) = 0;
 
     virtual bool GetData(UINT uRow, UINT uColumn, long& nValue) = 0;
-    virtual bool GetData(UINT uRow, UINT uColumn, unsigned long& nValue) = 0;
+    virtual bool GetData(UINT uRow, UINT uColumn, unsigned long& uValue) = 0;
 
-    virtual bool GetData(UINT uRow, UINT uColumn, long long& nValue) = 0;
-    virtual bool GetData(UINT uRow, UINT uColumn, unsigned long long& nValue) = 0;
+    virtual bool GetData(UINT uRow, UINT uColumn, int64_t& nValue) = 0;
+    virtual bool GetData(UINT uRow, UINT uColumn, uint64_t& uValue) = 0;
 
 	virtual bool GetData(UINT uRow, UINT uColumn, double& dbValue) = 0;
 

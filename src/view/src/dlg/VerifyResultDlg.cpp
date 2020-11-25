@@ -67,7 +67,7 @@ BOOL CVerifyResultDlg::OnInitDialog()
 void CVerifyResultDlg::UpdateItem(int nItem, CMedia& media)
 {
 	CString cstrStatus;
-	if (media.fileSize() < 0)
+	if (media.fileSize() == 0)
 	{
 		cstrStatus.Append(_T("²»´æÔÚ"));
 	}

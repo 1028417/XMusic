@@ -138,7 +138,7 @@ public:
 		return false;
 	}
 
-	virtual UINT checkDuration(IMedia&, long long& nFileSize)
+	virtual UINT checkDuration(IMedia&, int64_t& nFileSize)
 	{
 		(void)nFileSize;
 		return 0;

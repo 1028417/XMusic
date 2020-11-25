@@ -99,9 +99,9 @@ public:
 
 	cwstr GetExtName() const;
 
-	virtual long long fileSize() const
+	virtual uint64_t fileSize() const
 	{
-		return -1;
+		return 0;
 	}
 
 	wstring fileSizeString(bool bIgnoreByte)
@@ -109,7 +109,7 @@ public:
 		return genFileSizeString(fileSize(), bIgnoreByte);
 	}
 
-	static wstring genFileSizeString(long long nFileSize, bool bIgnoreByte);
+	static wstring genFileSizeString(int64_t nFileSize, bool bIgnoreByte);
 
 	virtual UINT duration() const
 	{

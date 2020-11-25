@@ -73,7 +73,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
 			__Ensure(pPlayItem);
 
-			if (pPlayItem->fileSize() == -1)
+			if (pPlayItem->fileSize() == 0)
 			{
 				lvcd.setTextAlpha(128);
 			}

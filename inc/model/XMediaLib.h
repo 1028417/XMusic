@@ -53,7 +53,7 @@ private:
 
 	bool renameMedia(IMedia& media, cwstr strNewName) override;
 
-	UINT checkDuration(IMedia& media, long long& nFileSize) override;
+	UINT checkDuration(IMedia& media, int64_t& nFileSize) override;
 
 	UINT getSingerImgPos(UINT uSingerID) override;
 };

@@ -77,7 +77,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 
 	for (IMedia *pMedia : lstMedias)
 	{
-		long long nFileSize = fsutil::GetFileSize64(pMedia->GetAbsPath());
+		auto nFileSize = fsutil::GetFileSize64(pMedia->GetAbsPath());
 		if (nFileSize > 0)
 		{
 			uSumSize += (uint64_t)nFileSize;

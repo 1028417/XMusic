@@ -49,7 +49,7 @@ private:
     FILE *m_pf = NULL;
 
 protected:
-    long long m_nFileSize = -1;
+    int64_t m_nFileSize = -1;
 	
 public:
 	void* decoder()
@@ -59,7 +59,7 @@ public:
 
     virtual void close();
 
-    long long open(cwstr strFile);
+    int64_t open(cwstr strFile);
 
 	uint32_t checkDuration();
 

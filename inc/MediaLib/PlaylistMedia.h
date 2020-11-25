@@ -5,7 +5,8 @@ class __MediaLibExt CPlayItem : public CMedia
 public:
     CPlayItem() = default;
 
-    CPlayItem(UINT uID, cwstr strPath, mediatime_t time, class CPlaylist& Playlist);
+    CPlayItem(class CPlaylist& Playlist, UINT uID, cwstr strPath, mediatime_t time
+		, uint64_t uFileSize, UINT uDuration);
 
 private:
 #if __winvc

@@ -31,10 +31,18 @@ class __MediaLibExt CMedia : public IMedia, public tagMediaInfo
 public:
     CMedia() = default;
 
-    CMedia(CMediaSet *pParent, UINT uID, cwstr strPath, mediatime_t tTime)
+    CMedia(CMediaSet *pParent, UINT uID, cwstr strPath, mediatime_t tTime
+		, uint64_t uFileSize, UINT uDuration)
         : tagMediaInfo(pParent, L"", uID)
 		, m_addTime(tTime)
+		, m_uFileSize(uFileSize)
+		, m_uDuration(uDuration)
 	{
+#if __winvc
+		m_uDisplayFileSize = uFileSize;
+		m_uDisplayDuration = uDuration;
+#endif
+
         _UpdatePath(strPath);
 	}
 
@@ -46,12 +54,12 @@ protected:
 	CMediaTime m_addTime;
 
 private:
-	UINT m_uDuration = 0;
-	long long m_nFileSize = 0;
-	
+        uint64_t m_uFileSize = 0;
+        UINT m_uDuration = 0;
+
 #if __winvc
-	UINT m_uDisplayDuration = 0;
-	long long m_nDisplayFileSize = 0;
+        uint64_t m_uDisplayFileSize = 0;
+        UINT m_uDisplayDuration = 0;
 #endif
 
 public:
@@ -84,14 +92,48 @@ public:
 		return m_addTime;
 	}
 
-	UINT checkDuration();
+	uint64_t fileSize() const override
+	{
+		return m_uFileSize;
+	}
 
+	void SetFileSize(uint64_t uFileSize)
+	{
+		m_uFileSize = uFileSize;
+#if __winvc
+		if (m_uFileSize > 0)
+		{
+			m_uDisplayFileSize = m_uFileSize;
+		}
+#endif
+	}
+
+	void SetFileSize(int64_t nFileSize)
+	{
+		if (nFileSize <= 0)
+		{
+			m_uFileSize = 0;
+			return;
+		}
+
+		m_uFileSize = (uint64_t)nFileSize;
+#if __winvc
+		m_uDisplayFileSize = m_uFileSize;
+#endif
+	}
+
+	UINT checkDuration();
+	
 	void SetDuration(UINT uDuration)
 	{
 		m_uDuration = uDuration;
+#if __winvc
+		if (uDuration > 0)
+		{
+			m_uDisplayDuration = m_uDuration;
+		}
+#endif
 	}
-
-	void SetDuration(UINT uDuration, long long nFileSize);
 
 	UINT duration() const override
 	{
@@ -99,41 +141,24 @@ public:
 	}
 
 #if __winvc
-	UINT displayDuration() const
+	wstring displayFileSizeString(bool bIgnoreByte) const
 	{
-		return m_uDisplayDuration;
+		return genFileSizeString(m_uDisplayFileSize, bIgnoreByte);
 	}
 	wstring displayDurationString() const
 	{
 		return genDurationString(m_uDisplayDuration);
 	}
-
-	long long displayFileSize() const
+	uint64_t displayByteRate() const
 	{
-		return m_nDisplayFileSize;
-	}
-	wstring displayFileSizeString(bool bIgnoreByte) const
-	{
-		return genFileSizeString(m_nDisplayFileSize, bIgnoreByte);
-	}
-#endif
+		if (0 == m_uDisplayDuration)
+		{
+			return 0;
+		}
 
-	long long fileSize() const override
-	{
-		return m_nFileSize;
+		return m_uDisplayFileSize / m_uDisplayDuration;
 	}
 
-	void SetFileSize(long long nFileSize)
-	{
-		m_nFileSize = nFileSize;
-	}
-
-    CMediaSet* mediaSet() const override
-    {
-		return m_pParent;
-	}
-
-#if __winvc
 	virtual wstring GetExportFileName() override
 	{
 		return GetName();
@@ -147,6 +172,11 @@ public:
 #endif
 
 	bool find(const struct tagFindMediaPara& FindPara, tagFindMediaResult& FindResult) const;
+
+	CMediaSet* mediaSet() const override
+	{
+		return m_pParent;
+	}
 
 private:
     inline void _UpdatePath(cwstr strPath)

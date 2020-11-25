@@ -16,19 +16,19 @@ struct tagAddPlayItem
     tagAddPlayItem() = default;
 
     tagAddPlayItem(cwstr strPath) : strPath(strPath)
-        {
-        }
+    {
+    }
 
-    tagAddPlayItem(cwstr strPath, long long nFileSize, UINT uDuration)
+    tagAddPlayItem(cwstr strPath, uint64_t uFileSize, UINT uDuration)
         : strPath(strPath)
-        , nFileSize(nFileSize)
+        , uFileSize(uFileSize)
         , uDuration(uDuration)
-        {
-        }
+    {
+    }
 
-        wstring strPath;
-        long long nFileSize = 0;
-        UINT uDuration = 0;
+    wstring strPath;
+    uint64_t uFileSize = 0;
+    UINT uDuration = 0;
 };
 
 struct tagDiffMedia

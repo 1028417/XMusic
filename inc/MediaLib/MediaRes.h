@@ -80,7 +80,7 @@ public:
 		return XFile::fileName();
 	}
 
-	long long fileSize() const override
+	uint64_t fileSize() const override
 	{
 		return m_fi.uFileSize;
 	}

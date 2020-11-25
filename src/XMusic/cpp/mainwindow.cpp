@@ -634,11 +634,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 
 #if __OnlineMediaLib
-    auto nFileSize = PlayItem.fileSize();
-    if (nFileSize > 0)
-    {
-        PlayingInfo.uFileSize = UINT(nFileSize/1000);
-    }
+    PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
 #endif
 
     // TODO 获取音频流码率 if (!__app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率

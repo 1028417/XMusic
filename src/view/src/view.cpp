@@ -199,10 +199,11 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			, [&](UINT taskIdx, auto& prTask, auto& prGroup) {
 			ProgressDlg.SetStatusText(prTask.first.c_str(), 1);
 
-			long long nFileSize = 0;
+			int64_t nFileSize = 0;
 			UINT uDuration = prGroup.first.checkFileDuration(prTask.first, nFileSize);
 			prTask.second([&](CMedia& media) {
-				media.SetDuration(uDuration, nFileSize);
+				media.SetFileSize(nFileSize);
+				media.SetDuration(uDuration);
 				if (0 == uDuration)
 				{
 					prGroup.second.add(media);
@@ -213,7 +214,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			{
 				return false;
 			}
-
+			
 			return true;
 		});
 
@@ -716,10 +717,10 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 					//jFile["name"] = strFileTitle;
 					//jFile.append(strFileTitle);
 					
-					auto nFileSize = ((CMediaRes&)subFile).fileSize();
-					strFileDesc.append(1, '|').append(to_string(nFileSize));
-					//jFile["size"] = nFileSize;
-					//jFile.append(nFileSize);
+					auto uFileSize = ((CMediaRes&)subFile).fileSize();
+					strFileDesc.append(1, '|').append(to_string(uFileSize));
+					//jFile["size"] = uFileSize;
+					//jFile.append(uFileSize);
 
 					if (bGenDuration)
 					{
@@ -1107,12 +1108,13 @@ bool __view::copyMediaTitle(IMedia& media)
 
 BYTE __view::genByteRateAlpha(CMedia& media)
 {
-	if (media.displayFileSize() > 0 && media.displayDuration() > 0)
+	auto uDuration = media.displayDuration();
+	if (uDuration > 0)
 	{
-		UINT bitRate = UINT(media.displayFileSize() / media.displayDuration());
-		if (bitRate < 60000) //Êµ¼Ê39kb
+		auto uKbRate = media.displayByteRate()/1000;
+		if (uKbRate <= 41) // 320kBitps == 40kByte
 		{
-			auto uAlpha = BYTE(255 - 255*pow((float)bitRate/60000, 2));
+			auto uAlpha = BYTE(255 - 255*pow((float)uKbRate/60, 2));
 			return uAlpha;
 		}
 	}
