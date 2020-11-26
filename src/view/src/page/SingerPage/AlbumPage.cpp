@@ -157,7 +157,7 @@ BOOL CAlbumPage::OnInitDialog()
 			CAlbumItem *pAlbumItem = (CAlbumItem *)lvcd.pObject;
 			__EnsureBreak(pAlbumItem);
 
-			if (pAlbumItem->fileSize() == 0)
+			if (pAlbumItem->notExist())
 			{
 				lvcd.setTextAlpha(128);
 			}

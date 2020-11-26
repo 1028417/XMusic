@@ -6,7 +6,7 @@ class __view;
 
 #define __PlaySpiritSkinDir (fsutil::getModuleSubPath(L"skin\\"))
 
-#define __AsyncTaskElapse (std::thread::hardware_concurrency()>4?30:200)
+#define __AsyncTaskElapse (std::thread::hardware_concurrency()>4?80:200)
 
 #include "viewdef.h"
 

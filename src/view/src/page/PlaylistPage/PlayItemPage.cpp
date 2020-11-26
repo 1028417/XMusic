@@ -73,7 +73,7 @@ BOOL CPlayItemPage::OnInitDialog()
 			CPlayItem *pPlayItem = (CPlayItem *)lvcd.pObject;
 			__Ensure(pPlayItem);
 
-			if (pPlayItem->fileSize() == 0)
+			if (pPlayItem->notExist())
 			{
 				lvcd.setTextAlpha(128);
 			}
@@ -217,13 +217,10 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 	m_pPlaylist = pPlaylist;
 	this->UpdateTitle();
 
-	if (m_pPlaylist)
-	{
-		m_pPlaylist->playItems()([&](cauto PlayItem) {
-			((CPlayItem&)PlayItem).findRelatedMedia();
-		});
-	}
-
+	m_pPlaylist->playItems()([&](cauto PlayItem) {
+		((CPlayItem&)PlayItem).findRelatedMedia();
+	});
+	
 	(void)m_wndList.SetObjects(TD_ListObjectList((ArrList<CPlayItem>&)m_pPlaylist->playItems()));
 	if (bChanged)
 	{
@@ -232,18 +229,15 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	if (m_pPlaylist)
-	{
-		__async(10, [&]() {
-			if (m_pPlaylist)
-			{
-				m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
-					((CMedia&)object).checkDuration();
-					return false;
-				});
-			}
-		});
-	}
+	__async(10, [&]() {
+		if (m_pPlaylist)
+		{
+			m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
+				((CMedia&)object).checkDuration();
+				return false;
+			});
+		}
+	});
 }
 
 void CPlayItemPage::UpdateTitle()

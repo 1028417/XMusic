@@ -35,7 +35,7 @@ public:
         , uint64_t uFileSize = 0, UINT uDuration = 0)
         : tagMediaInfo(pParent, L"", uID)
 		, m_addTime(tTime)
-		, m_uFileSize(uFileSize)
+		, m_nFileSize(uFileSize)
 		, m_uDuration(uDuration)
 	{
 #if __winvc
@@ -54,7 +54,7 @@ protected:
 	CMediaTime m_addTime;
 
 private:
-        uint64_t m_uFileSize = 0;
+        int64_t m_nFileSize = 0;
         UINT m_uDuration = 0;
 
 #if __winvc
@@ -92,33 +92,25 @@ public:
 		return m_addTime;
 	}
 
-	uint64_t fileSize() const override
+	bool notExist() const
 	{
-		return m_uFileSize;
+		return -1 == m_nFileSize;
 	}
 
-	void SetFileSize(uint64_t uFileSize)
+	uint64_t fileSize() const override
 	{
-		m_uFileSize = uFileSize;
-#if __winvc
-		if (m_uFileSize > 0)
-		{
-			m_uDisplayFileSize = m_uFileSize;
-		}
-#endif
+		return m_nFileSize > 0 ? (uint64_t)m_nFileSize : 0;
 	}
 
 	void SetFileSize(int64_t nFileSize)
 	{
-		if (nFileSize <= 0)
-		{
-			m_uFileSize = 0;
-			return;
-		}
+		m_nFileSize = nFileSize;
 
-		m_uFileSize = (uint64_t)nFileSize;
 #if __winvc
-		m_uDisplayFileSize = m_uFileSize;
+		if (nFileSize > 0)
+		{
+			m_uDisplayFileSize = (uint64_t)nFileSize;
+		}
 #endif
 	}
 
@@ -127,6 +119,7 @@ public:
 	void SetDuration(UINT uDuration)
 	{
 		m_uDuration = uDuration;
+
 #if __winvc
 		if (uDuration > 0)
 		{

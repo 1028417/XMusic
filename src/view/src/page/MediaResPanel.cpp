@@ -17,6 +17,10 @@ enum E_AlbumItemColumn
 	, __Column_Playlist
 	, __Column_SingerAlbum
 	, __Column_ModifyTime
+	, __Column_MediaTag_Title
+	, __Column_MediaTag_Artist
+	, __Column_MediaTag_Album
+
 };
 
 static list<CMediaResPanel*> g_lstMediaResPanels;
@@ -113,83 +117,7 @@ BOOL CMediaResPanel::OnInitDialog()
 	__AssertReturn(m_wndList.InitCtrl(ListPara), FALSE);
 
 	m_wndList.SetCustomDraw([&](tagLVDrawSubItem& lvcd) {
-		switch (lvcd.nSubItem)
-		{
-		case __Column_Info:
-		{
-			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
-			__EnsureBreak(pMediaRes && !pMediaRes->isDir());
-
-			CDC& dc = lvcd.dc;
-			cauto rc = lvcd.rc;
-			dc.FillSolidRect(&rc, lvcd.crBkg);
-
-			dc.SetTextColor(lvcd.crText);
-			m_wndList.SetCustomFont(dc, -.2f, false);
-			RECT rcText = rc;
-			rcText.bottom = (rcText.bottom + rcText.top)/2 +6;
-
-			dc.DrawText(pMediaRes->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
-			rcText.top = rcText.bottom -9;
-			rcText.bottom = rc.bottom;
-			dc.DrawText(pMediaRes->fileSizeString(true).c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-
-		lvcd.bSkipDefault = true;
-		
-		break;
-		case __Column_Playlist:
-		case __Column_SingerAlbum:
-		{
-			CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
-			__EnsureBreak(pMediaRes);
-
-			WString strMediaset;
-			if (__Column_Playlist == lvcd.nSubItem)
-			{
-				__EnsureBreak(!pMediaRes->isDir());
-				strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
-			}
-			else
-			{
-				if (pMediaRes->isDir())
-				{
-					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-				}
-				else
-				{
-					if (m_bSingerPanel)
-					{
-						strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
-					}
-					else
-					{
-						cauto strAlbum = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
-						if (!strAlbum.empty())
-						{
-							cauto strSinger = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-							strMediaset << strSinger << __CNDot << strAlbum;
-						}
-					}
-				}
-			}
-
-			m_wndList.SetCustomFont(lvcd.dc, -.15f, true);
-			lvcd.dc.DrawText(strMediaset->c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-		
-		lvcd.bSkipDefault = true;
-		
-		break;
-		default:
-			if (lvcd.nSubItem >= __Column_ModifyTime)
-			{
-				lvcd.fFontSizeOffset = -.2f;
-			}
-
-			break;
-		};
+		_onListCustomDraw(lvcd);
 	}, [&](tagLVDrawSubItem& lvcd) {
 		auto eViewType = m_wndList.GetView();
 		if (E_ListViewType::LVT_Report == eViewType || E_ListViewType::LVT_List == eViewType)
@@ -252,6 +180,116 @@ BOOL CMediaResPanel::OnInitDialog()
 	g_lstMediaResPanels.push_back(this);
 
 	return TRUE;
+}
+
+void CMediaResPanel::_onListCustomDraw(tagLVDrawSubItem& lvcd)
+{
+	switch (lvcd.nSubItem)
+	{
+	case __Column_Info:
+	{
+		CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
+		__EnsureBreak(pMediaRes && !pMediaRes->isDir());
+
+		CDC& dc = lvcd.dc;
+		cauto rc = lvcd.rc;
+		dc.FillSolidRect(&rc, lvcd.crBkg);
+
+		dc.SetTextColor(lvcd.crText);
+		m_wndList.SetCustomFont(dc, -.2f, false);
+		RECT rcText = rc;
+		rcText.bottom = (rcText.bottom + rcText.top) / 2 + 6;
+
+		dc.DrawText(pMediaRes->GetExtName().c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+		rcText.top = rcText.bottom - 9;
+		rcText.bottom = rc.bottom;
+		dc.DrawText(pMediaRes->fileSizeString(true).c_str(), &rcText, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	}
+
+	lvcd.bSkipDefault = true;
+
+	break;
+	case __Column_Playlist:
+	case __Column_SingerAlbum:
+	{
+		CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
+		__EnsureBreak(pMediaRes);
+
+		WString strMediaset;
+		if (__Column_Playlist == lvcd.nSubItem)
+		{
+			__EnsureBreak(!pMediaRes->isDir());
+			strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Playlist);
+		}
+		else
+		{
+			if (pMediaRes->isDir())
+			{
+				strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+			}
+			else
+			{
+				if (m_bSingerPanel)
+				{
+					strMediaset = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+				}
+				else
+				{
+					cauto strAlbum = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
+					if (!strAlbum.empty())
+					{
+						cauto strSinger = pMediaRes->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+						strMediaset << strSinger << __CNDot << strAlbum;
+					}
+				}
+			}
+		}
+
+		m_wndList.SetCustomFont(lvcd.dc, -.15f, true);
+		lvcd.dc.DrawText(strMediaset->c_str(), &lvcd.rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	}
+
+	lvcd.bSkipDefault = true;
+
+	break;
+	case __Column_MediaTag_Title:
+	case __Column_MediaTag_Artist:
+	case __Column_MediaTag_Album:
+	{
+		CMediaRes *pMediaRes = (CMediaRes*)lvcd.pObject;
+		__EnsureBreak(pMediaRes && !pMediaRes->isDir());
+
+		cauto mediaTag = pMediaRes->mediaTag();
+		LPCWSTR pszText = NULL;
+		if (__Column_MediaTag_Title == lvcd.nSubItem)
+		{
+			pszText = mediaTag.strTitle.c_str();
+		}
+		else if (__Column_MediaTag_Artist == lvcd.nSubItem)
+		{
+			pszText = mediaTag.strArtist.c_str();
+		}
+		else
+		{
+			pszText = mediaTag.strAlbum.c_str();
+		}
+
+		m_wndList.SetCustomFont(lvcd.dc, -.2f);
+		lvcd.dc.DrawText(pszText, &lvcd.rc, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+	}
+
+	lvcd.bSkipDefault = true;
+
+	break;
+	default:
+		if (lvcd.nSubItem >= __Column_ModifyTime)
+		{
+			lvcd.fFontSizeOffset = -.2f;
+		}
+
+		break;
+	};
 }
 
 #define __XOffset_Tile 12

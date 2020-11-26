@@ -116,6 +116,10 @@ public:
 	}
 
 private:
+	void _onListCustomDraw(tagLVDrawSubItem& lvcd);
+
+	virtual void _OnInitDialog() {}
+
 	virtual int GetTabImage() override;
 
 	virtual void _onShowDir(TD_MediaResList& paMediaRes) {}
@@ -133,8 +137,6 @@ private:
 	void _asyncTask();
 
 private:
-	virtual void _OnInitDialog() {}
-
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	
 	afx_msg void OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult);

@@ -54,6 +54,11 @@ protected:
 public:
 	void asyncTask();
 
+	const tagMediaTag& mediaTag() const
+	{
+		return m_MediaTag;
+	}
+
     static void ReadMP3Tag(cwstr strFile, tagMediaTag& MediaTag);
 
     static bool ReadFlacTag(cwstr strFile, tagMediaTag& MediaTag);
