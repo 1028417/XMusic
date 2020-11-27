@@ -184,6 +184,9 @@ struct __ModelExt tagOption
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;
+
+    list<wstring> lstXPkg;
+
 #endif
 };
 
@@ -313,6 +316,8 @@ public:
     virtual CMediaDir* attachDir(cwstr strDir) = 0;
     virtual void detachDir(cwstr strDir) = 0;
 
+    virtual bool attachXPkg(cwstr strFile) = 0;
+
     virtual bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) = 0;
 
     virtual bool removeMedia(const TD_MediaList& lstMedias) = 0;
@@ -410,6 +415,8 @@ public:
 
     CMediaDir* attachDir(cwstr strDir) override;
     void detachDir(cwstr strDir) override;
+
+    bool attachXPkg(cwstr strFile) override;
 
     bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
 
