@@ -42,10 +42,15 @@ private:
 
     prlist<bool, tagUnzfile*> m_lstUnzfile;
 
+    const tagUnzfile *m_pCurrent = NULL;
+
 private:
     bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
-	
-    long _readCurrent(void *buf, size_t len) const;
+
+    bool _unzOpen(const tagUnzfile& unzFile) const;
+    bool _unzOpen() const;
+
+    long _read(const tagUnzfile& unzFile, void *buf, size_t len) const;
 
 public:
     operator bool() const
@@ -76,6 +81,16 @@ public:
     }
 
     bool open(Instream& ins, const string& strPwd = "");
+
+    void close();
+
+    const tagUnzfile* unzCurrent() const
+    {
+        return m_pCurrent;
+    }
+    bool unzOpen(const tagUnzfile& unzFile);
+    long unzRead(void *buf, size_t len) const;
+    void unzClose();
 
     long read(const tagUnzfile& unzFile, CByteBuffer& bbfBuff) const
     {
@@ -119,8 +134,9 @@ public:
         return read(itr->second, cbfBuff);
     }
 
-    long unzip(const tagUnzfile& unzFile, const string& strDstFile);
-    long unzip(const string& strSubFilePath, const string& strDstFile)
+    bool unzip(const string& strDstDir) const;
+    long unzip(const tagUnzfile& unzFile, const string& strDstFile) const;
+    long unzip(const string& strSubFilePath, const string& strDstFile) const
     {
         auto itr = m_mapUnzfile.find(strSubFilePath);
         if (itr == m_mapUnzfile.end())
@@ -130,13 +146,6 @@ public:
 
         return unzip(itr->second, strDstFile);
     }
-
-    bool unzip(const string& strDstDir) const;
-
-    void close();
-	
-private:
-    long _read(const tagUnzfile& unzFile, void *buf, size_t len) const;
 };
 
 class __UtilExt ziputil

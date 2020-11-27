@@ -49,10 +49,10 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
 
     m_logger.open("xmusic.log", true);
 #if __android
-    g_logger << "jniVer: " << g_jniVer << " androidSdkVer: " >> g_androidSdkVer;
+    g_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer;
 #endif
     g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin <<
-                " DPR: " << g_fPixelRatio << " DPI: " >> g_fDPI;
+                ", DPR: " << g_fPixelRatio << ", DPI: " >> g_fDPI;
 
     g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
     g_logger << "applicationFilePath: " >> CApp::applicationFilePath();

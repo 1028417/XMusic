@@ -12,16 +12,21 @@ class __ModelExt CMediaOpaque : public CAudioOpaque
     CMediaOpaque() = default;
 
 private:
-	wstring m_strFile;
-
     UINT m_uByteRate = 0;
+
+#if __OnlineMediaLib
+    bool m_bOnlineFile = false;
+    uint64_t m_uWaitSize = 0;
+#endif
+
+    CZipFile *m_pXPkg = NULL;
 
     const void *m_pXmscCodec = NULL;
     size_t m_uXmscHeadLen = 0;
 
-    //uint64_t m_uPos = 0;
+    wstring m_strFile;
 
-    uint64_t m_uWaitSize = 0;
+    //uint64_t m_uPos = 0;
 
 private:
 	int64_t _openFile(cwstr strFile, bool bXmsc);
@@ -55,11 +60,6 @@ public:
         return m_uWaitSize > 0;
     }
 #endif
-
-    cwstr currentFile() const
-    {
-        return m_strFile;
-    }
 
 	int64_t openFile(cwstr strFile, bool bXmsc)
     {
@@ -131,12 +131,12 @@ public:
 private:
 	wstring localFilePath() const override
 	{
-        if (m_pXmscCodec)
+        if (!m_bOnlineFile && NULL == m_pXPkg && NULL == m_pXmscCodec)
 		{
-			return L"";
+            return m_strFile;
 		}
 
-		return m_strFile;
+        return L"";
 	}
 
         int read(byte_p buf, UINT size) override;

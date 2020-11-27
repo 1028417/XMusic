@@ -36,9 +36,9 @@ private:
 
     set<UINT> m_setPlayedIDs;
 
-    E_DemandMode m_eDemandMode = E_DemandMode::DM_Null;
-
 	CPlayer m_Player;
+
+    wstring m_strFile;
 
 private:
     void _refresh();
@@ -65,11 +65,6 @@ private:
     int _demandMediaSet(TD_MediaSetList& arrMediaSets);
 
 public:
-    E_DemandMode demandMode() const
-    {
-        return m_eDemandMode;
-    }
-
 	const ArrList<CPlayItem>& playingItems() const
 	{
 		return m_Playinglist.playItems();
