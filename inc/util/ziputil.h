@@ -53,7 +53,6 @@ private:
 
     void* m_pfile = NULL;
 
-    tagUnzDir m_unzRoot;
     list<string> m_lstSubDir;
     map<string, tagUnzSubFile> m_mapSubfile;
 
