@@ -1,14 +1,31 @@
 
 #pragma once
 
-struct __UtilExt tagUnzfile
+struct __UtilExt tagUnzSubFile
 {
     string strPath;
 
-    size_t uFileSize = 0;
+    unsigned long compressed_size = 0;
+    unsigned long uncompressed_size = 0;
 
-    size_t pos_in_zip_directory = 0;
-    size_t num_of_file = 0;
+    unsigned long pos_in_zip_directory = 0;
+    unsigned long num_of_file = 0;
+};
+
+struct tagUnzDir
+{
+    tagUnzDir() = default;
+
+    tagUnzDir(const string& strPath)
+        : strPath(strPath)
+    {
+    }
+
+    string strPath;
+
+    list<tagUnzDir> lstSubDir;
+
+    PtrArray<tagUnzSubFile> paSubFile;
 };
 
 class __UtilExt CZipFile
@@ -34,43 +51,36 @@ public:
 private:
     string m_strPwd;
 
-    void* m_unzfile = NULL;
+    void* m_pfile = NULL;
 
-    list<tagUnzfile> m_lstUnzdirInfo;
+    tagUnzDir m_unzRoot;
+    list<string> m_lstSubDir;
+    map<string, tagUnzSubFile> m_mapSubfile;
 
-    map<string, tagUnzfile> m_mapUnzfile;
-
-    prlist<bool, tagUnzfile*> m_lstUnzfile;
-
-    const tagUnzfile *m_pCurrent = NULL;
+    const tagUnzSubFile *m_pCurrent = NULL;
 
 private:
     bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
 
-    bool _unzOpen(const tagUnzfile& unzFile) const;
+    bool _unzOpen(const tagUnzSubFile& unzSubFile) const;
     bool _unzOpen() const;
 
-    long _read(const tagUnzfile& unzFile, void *buf, size_t len) const;
+    long _read(const tagUnzSubFile& unzSubFile, void *buf, size_t len) const;
 
 public:
     operator bool() const
     {
-        return m_unzfile != NULL;
+        return m_pfile != NULL;
     }
 
-    const map<string, tagUnzfile>& unzfileMap() const
+    const list<string>& subDirList() const
     {
-        return m_mapUnzfile;
+        return m_lstSubDir;
     }
 
-    const list<tagUnzfile>& unzdirList() const
+    const map<string, tagUnzSubFile>& subFileMap() const
     {
-        return m_lstUnzdirInfo;
-    }
-
-    const prlist<bool, tagUnzfile*>& unzfileList() const
-    {
-        return m_lstUnzfile;
+        return m_mapSubfile;
     }
 
     bool open(const string& strFile, const string& strPwd = "")
@@ -84,62 +94,41 @@ public:
 
     void close();
 
-    const tagUnzfile* unzCurrent() const
+    const tagUnzSubFile* unzCurrent() const
     {
         return m_pCurrent;
     }
-    bool unzOpen(const tagUnzfile& unzFile);
+    bool unzOpen(const tagUnzSubFile& unzSubFile);
     long unzRead(void *buf, size_t len) const;
     void unzClose();
 
-    long read(const tagUnzfile& unzFile, CByteBuffer& bbfBuff) const
+    long read(const tagUnzSubFile& unzSubFile, CByteBuffer& bbfBuff) const
     {
-        if (0 == unzFile.uFileSize)
+        if (0 == unzSubFile.uncompressed_size)
         {
             return 0;
         }
 
-        auto ptr = bbfBuff.resizeMore(unzFile.uFileSize);
-        return _read(unzFile, ptr, unzFile.uFileSize);
+        auto ptr = bbfBuff.resizeMore(unzSubFile.uncompressed_size);
+        return _read(unzSubFile, ptr, unzSubFile.uncompressed_size);
     }
-    long read(const string& strSubFilePath, CByteBuffer& bbfBuff) const
+    long read(const tagUnzSubFile& unzSubFile, CCharBuffer& cbfBuff) const
     {
-        auto itr = m_mapUnzfile.find(strSubFilePath);
-        if (itr == m_mapUnzfile.end())
-        {
-            return -1;
-        }
-
-        return read(itr->second, bbfBuff);
-    }
-
-    long read(const tagUnzfile& unzFile, CCharBuffer& cbfBuff) const
-    {
-        if (0 == unzFile.uFileSize)
+        if (0 == unzSubFile.uncompressed_size)
         {
             return 0;
         }
 
-        auto ptr = cbfBuff.resizeMore(unzFile.uFileSize);
-        return _read(unzFile, ptr, unzFile.uFileSize);
-    }
-    long read(const string& strSubFilePath, CCharBuffer& cbfBuff) const
-    {
-        auto itr = m_mapUnzfile.find(strSubFilePath);
-        if (itr == m_mapUnzfile.end())
-        {
-            return -1;
-        }
-
-        return read(itr->second, cbfBuff);
+        auto ptr = cbfBuff.resizeMore(unzSubFile.uncompressed_size);
+        return _read(unzSubFile, ptr, unzSubFile.uncompressed_size);
     }
 
     bool unzip(const string& strDstDir) const;
-    long unzip(const tagUnzfile& unzFile, const string& strDstFile) const;
+    long unzip(const tagUnzSubFile& unzSubFile, const string& strDstFile) const;
     long unzip(const string& strSubFilePath, const string& strDstFile) const
     {
-        auto itr = m_mapUnzfile.find(strSubFilePath);
-        if (itr == m_mapUnzfile.end())
+        auto itr = m_mapSubfile.find(strSubFilePath);
+        if (itr == m_mapSubfile.end())
         {
             return -1;
         }

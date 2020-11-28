@@ -177,19 +177,19 @@ bool installApp(const CByteBuffer& bbfData)
     }
 
     strTempDir.push_back(__cPathSeparator);
-    for (cauto unzdir : zipFile.unzdirList())
+    for (cauto strSubDir : zipFile.subDirList())
     {
-        cauto strSubDir = strTempDir + unzdir.strPath;
-        if (!fsutil::createDir(strSubDir))
+        cauto t_strSubDir = strTempDir + strSubDir;
+        if (!fsutil::createDir(t_strSubDir))
         {
-            g_logger << "createDir fail: " >> strSubDir;
+            g_logger << "createDir fail: " >> t_strSubDir;
             return false;
         }
     }
 
 #define __StartupFile "XMusicStartup.exe"
     string strStartupFile;
-    for (cauto pr : zipFile.unzfileMap())
+    for (cauto pr : zipFile.subFileMap())
     {
         cauto strSubFile = strTempDir + pr.first;
         if (strutil::endWith(strSubFile, __StartupFile))

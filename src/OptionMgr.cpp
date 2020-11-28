@@ -37,6 +37,8 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
+#define OI_XPkg             "XPkg"
+
 tagOption& COptionMgr::init()
 {
     m_bInited = true;
@@ -53,9 +55,9 @@ tagOption& COptionMgr::init()
     const JValue& jValue = jRoot[OI_AttachDir];
     if (jValue.isArray())
     {
-        wstring strAttachDir;
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
         {
+            wstring strAttachDir;
             jsonutil::get(jValue[uIdx], true, strAttachDir);
             if (!strAttachDir.empty())
             {
@@ -98,6 +100,20 @@ tagOption& COptionMgr::init()
     jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
+
+    const JValue& jValue = jRoot[OI_XPkg];
+    if (jValue.isArray())
+    {
+        for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
+        {
+            string strAttachXPkg;
+            jsonutil::get(jValue[uIdx], strAttachXPkg);
+            if (!strAttachXPkg.empty())
+            {
+                m_Option.lstXPkg.push_back(strAttachXPkg);
+            }
+        }
+    }
 #endif
 
 	return m_Option;
@@ -117,12 +133,11 @@ void COptionMgr::saveOption()
 
     if (m_Option.plAttachDir)
     {
-        JValue jValue;
+        auto& jValue = jRoot[OI_AttachDir];
         for (cauto pr : m_Option.plAttachDir)
         {
             jValue.append(JValue(strutil::toUtf8(pr.first)));
         }
-        jRoot[OI_AttachDir] = jValue;
     }
 #endif
 
@@ -160,6 +175,12 @@ void COptionMgr::saveOption()
     jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
+
+    auto& jValue = jRoot[OI_XPkg];
+    for (cauto strAttachXPkg : m_Option.lstXPkg)
+    {
+        jValue.append(JValue(strAttachXPkg));
+    }
 #endif
 
 	jsonutil::writeFile(jRoot, fsutil::workDir() + __confFile, true);
