@@ -3,7 +3,10 @@
 
 #if !__winvc
 #define __OnlineMediaLib 1
-//#define __CheckXmsc 1
+#if __OnlineMediaLib
+//#define __xurl 1
+//#define __CheckOpaque 1
+#endif
 #endif
 
 #define __xmedialib ((XMediaLib&)__medialib)

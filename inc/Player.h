@@ -22,7 +22,10 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual wstring localFilePath() const = 0;
+    virtual wstring localFilePath() const
+    {
+        return L"";
+    }
 
     virtual int64_t size() const = 0;
 
@@ -73,25 +76,20 @@ public:
 
 	uint64_t clock() const;
 
-private:
-	virtual wstring localFilePath() const override
-	{
-		return L"";
-	}
-
+public:
 	virtual int64_t size() const override
 	{
 	    return m_nFileSize;
 	}
 
-protected:
         virtual int64_t seek(int64_t offset, int origin) override;
 
         virtual int read(byte_p buf, UINT size) override;
 
+protected:
         bool seekingFlag() const;
 
-        //bool probing() const;
+        //bool probingFlag() const;
 };
 
 class __PlaySDKExt CPlayer
