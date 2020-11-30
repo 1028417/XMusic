@@ -274,6 +274,8 @@ public:
 			exit(0);
 			return;
 		}
+
+		(void)m_model.init();
 	}
 
 	IView& getView() override

@@ -163,12 +163,12 @@ CApp::CApp()
     }, Qt::QueuedConnection);
 }
 
-static void _genRootDir(wstring& strRootDir)
+static void _genMedialibDir(wstring& strMedialibDir)
 {
 #if __android
     if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
-        //strRootDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
+        //strMedialibDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 
 /*#elif __window
@@ -178,15 +178,15 @@ static void _genRootDir(wstring& strRootDir)
         cauto strDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
         if (!strDir.empty())
         {
-            strRootDir = strDir;
+            strMedialibDir = strDir;
         }
     }
 
 #elif __mac
-    strRootDir = fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
+    strMedialibDir = fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
 
     //#if __ios && TARGET_IPHONE_SIMULATOR
-    //    strRootDir = L"/Users/lhyuan/XMusic";
+    //    strMedialibDir = L"/Users/lhyuan/XMusic";
     //#endif*/
 #endif
 }
@@ -196,10 +196,9 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     std::thread thrInit([=](){
-        auto& strRootDir = m_ctrl.getOption().strRootDir = strWorkDir;
-        _genRootDir(strRootDir);
-        g_logger << "RootDir: " >> strRootDir;
-        if (!fsutil::createDir(m_model.medialibPath()))
+        auto strMedialibDir = strWorkDir;
+        _genMedialibDir(strMedialibDir);
+        if (!m_model.init(strWorkDir, strMedialibDir))
         {
             sync([&](){
                 this->quit();
@@ -211,7 +210,14 @@ int CApp::run(cwstr strWorkDir)
             m_mainWnd.showLogo();
         });
 
-        E_UpgradeResult eUpgradeResult = _init();
+        E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]() {
+            return _init();
+        }, [&](){
+            (void)m_pmHDDisk.load(__mediaPng(hddisk));
+            (void)m_pmLLDisk.load(__mediaPng(lldisk));
+
+            m_mainWnd.preinit();
+        });
         sync([=](){
             _run(eUpgradeResult);
         });
@@ -245,46 +251,39 @@ int CApp::run(cwstr strWorkDir)
 
 E_UpgradeResult CApp::_init()
 {
-    return mtutil::concurrence([&](){
-        auto timeBegin = time(0);
+    auto timeBegin = time(0);
 
-        QFile qf(":/mdlconf");
-        if (!qf.open(QFile::OpenModeFlag::ReadOnly))
-        {
-            g_logger >> "loadMdlConfResource fail";
-            return E_UpgradeResult::UR_Fail;
-        }
-        auto&& ba = qf.readAll();
+    QFile qf(":/mdlconf");
+    if (!qf.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        g_logger >> "loadMdlConfResource fail";
+        return E_UpgradeResult::UR_Fail;
+    }
+    auto&& ba = qf.readAll();
 
-        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
-                                                            , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
-        if (E_UpgradeResult::UR_Success != eUpgradeResult)
-        {
-            return eUpgradeResult;
-        }
+    E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
+                                                        , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
+    if (E_UpgradeResult::UR_Success != eUpgradeResult)
+    {
+        return eUpgradeResult;
+    }
 
-        auto time0 = time(0);
-        if (!m_model.initMediaLib())
-        {
-            g_logger >> "initMediaLib fail";
-            return E_UpgradeResult::UR_Fail;
-        }
-        g_logger << "initMediaLib success " >> (time(0)-time0);
+    auto time0 = time(0);
+    if (!m_model.initMediaLib())
+    {
+        g_logger >> "initMediaLib fail";
+        return E_UpgradeResult::UR_Fail;
+    }
+    g_logger << "initMediaLib success " >> (time(0)-time0);
 
-        auto timeDiff = 6 - (time(0) - timeBegin);
-        g_logger << "timeDiff: " >> timeDiff;
-        if (timeDiff > 0)
-        {
-            mtutil::usleep((UINT)timeDiff*1000);
-        }
+    auto timeDiff = 6 - (time(0) - timeBegin);
+    g_logger << "timeDiff: " >> timeDiff;
+    if (timeDiff > 0)
+    {
+        mtutil::usleep((UINT)timeDiff*1000);
+    }
 
-        return E_UpgradeResult::UR_Success;
-    }, [&](){
-        (void)m_pmHDDisk.load(__mediaPng(hddisk));
-        (void)m_pmLLDisk.load(__mediaPng(lldisk));
-
-        m_mainWnd.preinit();
-    });
+    return E_UpgradeResult::UR_Success;
 }
 
 void CApp::_run(E_UpgradeResult eUpgradeResult)

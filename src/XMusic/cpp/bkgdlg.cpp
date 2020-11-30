@@ -273,9 +273,8 @@ void CBkgDlg::preinit()
     CFolderDlg::preInit();
 #endif
 
-    cauto strWorkDir = strutil::fromStr(fsutil::workDir());    
-    m_strHBkgDir = strWorkDir + L"/hbkg/";
-    m_strVBkgDir = strWorkDir + L"/vbkg/";
+    m_strHBkgDir = g_strWorkDir + L"/hbkg/";
+    m_strVBkgDir = g_strWorkDir + L"/vbkg/";
 
     if (!g_bRunSignal)
     {

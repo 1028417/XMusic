@@ -300,10 +300,7 @@ public:
     virtual CSingerMgr& getSingerMgr() = 0;
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
-#if !__winvc
-    virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool&bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
-
-#else
+#if __winvc
     virtual CBackupMgr& getBackupMgr() = 0;
 
     virtual void convertXmsc(const wstring& strFile) = 0;
@@ -314,8 +311,6 @@ public:
 
     virtual CMediaDir* attachDir(cwstr strDir) = 0;
     virtual void detachDir(cwstr strDir) = 0;
-
-    virtual bool attachXPkg(const string& strFile) = 0;
 
     virtual bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) = 0;
 
@@ -342,7 +337,18 @@ public:
     virtual bool restoreDB(cwstr strTag) = 0;
 
     virtual bool clearData() = 0;
+
+#else
+	virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool&bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
+
+	virtual bool attachXPkg(const string& strFile) = 0;
 #endif
+
+	virtual bool init(
+#if !__winvc
+		cwstr strWorkDir, cwstr strMedialibDir
+#endif
+	) = 0;
 
     virtual void close() = 0;
 };
@@ -371,8 +377,6 @@ private:
     CPlayMgr m_PlayMgr;
 
 public:
-    wstring medialibPath(cwstr strSubPath = L"");
-
     CDataMgr& getDataMgr() override
     {
             return m_DataMgr;
@@ -415,8 +419,6 @@ public:
     CMediaDir* attachDir(cwstr strDir) override;
     void detachDir(cwstr strDir) override;
 
-    bool attachXPkg(const string& strFile) override;
-
     bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
 
     bool removeMedia(const TD_MediaList& lstMedias) override;
@@ -444,11 +446,21 @@ public:
 
 #else
     E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool& bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+
+	bool attachXPkg(const string& strFile) override;
 #endif
+
+	bool init(
+#if !__winvc
+		cwstr strWorkDir, cwstr strMedialibDir
+#endif
+	);
 
     void close() override;
 
 private:
+	wstring _medialibPath(cwstr strSubPath = L"");
+
     bool _initData(cwstr strDBFile);
 
 #if __winvc
@@ -460,6 +472,7 @@ private:
 
 #else
     bool _upgradeApp(const bool& bRunSignal, UINT& uAppUpgradeProgress);
+
     E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif
 

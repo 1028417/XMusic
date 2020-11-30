@@ -25,6 +25,8 @@ extern QLockFile g_lf;
 
 extern const WString& mediaQualityString(E_MediaQuality eQuality);
 
+extern cwstr g_strWorkDir;
+
 extern ITxtWriter& g_logger;
 
 extern int g_szScreenMax;

@@ -8,6 +8,9 @@ char **g_argv = NULL;
 QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
+static wstring m_strWorkDir;
+cwstr g_strWorkDir(m_strWorkDir);
+
 int main(int argc, char *argv[])
 {
     g_argc = argc;
@@ -32,27 +35,27 @@ int main(int argc, char *argv[])
 
 #if __android
     //内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-    wstring strWorkDir = L"/data/data/" __pkgName;
+    m_strWorkDir = L"/data/data/" __pkgName;
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-    //strWorkDir = __sdcardDir __pkgName;
+    //m_strWorkDir = __sdcardDir __pkgName;
 
 #else
-    wstring strWorkDir = fsutil::getHomeDir().toStdWString() + L"/" __pkgName;
+    m_strWorkDir = fsutil::getHomeDir().toStdWString() + L"/" __pkgName;
 #endif
-    if (!fsutil::createDir(strWorkDir))
+    if (!fsutil::createDir(m_strWorkDir))
     {
         return -1;
     }
 
 #if __windows
-    fsutil::setWorkDir(strutil::toGbk(strWorkDir));
+    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
 #else
-    fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
+    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
 #endif
 
-    int nRet = __app.run(strWorkDir);
+    int nRet = __app.run(m_strWorkDir);
 
-    //fsutil::copyFile(strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
+    //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
     return nRet;
 }
@@ -88,25 +91,25 @@ static bool _cmdShell(const string& strCmd, bool bBlock = true)
 bool installApp(const CByteBuffer& bbfData)
 {
 #if __android
-    cauto strApkFile = fsutil::workDir() + "/upgrade.apk";
+    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
     if (!OFStream::writefilex(strApkFile, true, bbfData))
     {
         g_logger << "save appPackage fail: " >> strApkFile;
         return false;
     }
 
-    installApk(QString::fromStdString(strApkFile));
+    installApk(__WS2Q(strApkFile));
 
 #elif __mac
-    cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";
+    cauto strWorkDir = fsutil::workDir();
+    cauto strUpgradeFile = strWorkDir + "/upgrade.zip";
     if (!OFStream::writefilex(strUpgradeFile, true, bbfData))
     {
         g_logger << "save appPackage fail: " >> strUpgradeFile;
         return false;
     }
 
-    cauto strUpgradeDir = fsutil::workDir() + "/XMusic.app";
-
+    cauto strUpgradeDir = strWorkDir + "/XMusic.app";
 #define system(x) system((x).c_str())
     (void)system("rm -rf " + strUpgradeDir);
 
