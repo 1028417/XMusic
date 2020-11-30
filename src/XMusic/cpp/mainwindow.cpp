@@ -591,7 +591,7 @@ void MainWindow::_updateProgress()
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
     }
 
-    UINT uBuffer = UINT(mediaOpaque.size()/1000);
+    UINT uBuffer = UINT(mediaOpaque.downloadedSize()/1000);
     if (uBuffer > 0)
     {
         ui.progressbar->setBuffer(uBuffer, m_PlayingInfo.uFileSize);

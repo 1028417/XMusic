@@ -39,6 +39,11 @@ private:
 
 public:
 #if __OnlineMediaLib
+    virtual uint64_t downloadedSize() const
+    {
+        return 0;
+    }
+
     virtual bool waitingFlag() const
     {
         return false;
