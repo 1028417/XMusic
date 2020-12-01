@@ -3,8 +3,6 @@
 
 #include <QBitmap>
 
-extern void fixWorkArea(QWidget& wnd);
-
 static CDialog* g_pFrontDlg = NULL;
 
 #define __xround 15
@@ -29,6 +27,7 @@ void CDialog::_setPos()
 {
     if (m_bFullScreen)
     {
+        extern void fixWorkArea(QWidget& wnd);
         fixWorkArea(*this);
     }
     else

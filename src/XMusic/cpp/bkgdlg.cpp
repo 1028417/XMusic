@@ -1,4 +1,4 @@
-﻿#include "app.h"
+﻿#include "xmusic.h"
 
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
@@ -242,13 +242,13 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
     int cy = 0;
     if (bHLayout)
     {
-        cx = g_szScreenMax;
-        cy = g_szScreenMin;
+        cx = g_screen.szScreenMax;
+        cy = g_screen.szScreenMin;
     }
     else
     {
-        cx = g_szScreenMin;
-        cy = g_szScreenMax;
+        cx = g_screen.szScreenMin;
+        cy = g_screen.szScreenMax;
     }
 
     if (fDiv > 1)
@@ -260,26 +260,10 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
     zoomoutPixmap(pm, cx, cy);
 }
 
-extern bool g_bRunSignal;
-
 void CBkgDlg::preinit()
 {
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-#if __windows
-    CFolderDlg::preInit();
-#endif
-
     m_strHBkgDir = g_strWorkDir + L"/hbkg/";
     m_strVBkgDir = g_strWorkDir + L"/vbkg/";
-
-    if (!g_bRunSignal)
-    {
-        return;
-    }
 
     mtutil::concurrence([&](){
         _preInitBkg(true);
@@ -320,16 +304,15 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
 
             strBkg = strBkgSrc + (bHLayout?L"hbkg/":L"vbkg/") + wch + L".jpg";
             strDstFile = strAppBkgDir + L"/1." + wch;
-            if (fsutil::copyFile(strBkg, strDstFile))
-            {
-                mtutil::usleep(10);
-            }
+            fsutil::copyFile(strBkg, strDstFile);
 
             strBkg = strBkgSrc + (bHLayout?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
             strDstFile = strAppBkgDir + L"/2." + wch;
-            if (fsutil::copyFile(strBkg, strDstFile))
+            fsutil::copyFile(strBkg, strDstFile);
+
+            if (!g_bRunSignal)
             {
-                mtutil::usleep(10);
+                return;
             }
         }
 
@@ -361,20 +344,15 @@ void CBkgDlg::_preInitBkg(bool bHLayout)
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
          && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
     {
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
         QPixmap pm(strBkgDir + itr->strFile);
         itr->br = &_addbr(pm, bHLayout);
 
         mtutil::usleep(10);
-    }
 
-    if (!g_bRunSignal)
-    {
-        return;
+        if (!g_bRunSignal)
+        {
+            return;
+        }
     }
 
     cauto strBkg = bHLayout?m_option.strHBkg:m_option.strVBkg;
@@ -425,7 +403,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
     int cxMargin = sz/4;
     QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }

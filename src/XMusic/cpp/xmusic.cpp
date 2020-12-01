@@ -1,15 +1,16 @@
 
-#include "app.h"
-
-int g_argc = 0;
-char **g_argv = NULL;
+#include "xmusic.h"
 
 #if __windows || __mac
+#include <QLockFile>
 QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
 static wstring m_strWorkDir;
 cwstr g_strWorkDir(m_strWorkDir);
+
+int g_argc = 0;
+char **g_argv = NULL;
 
 int main(int argc, char *argv[])
 {
@@ -58,6 +59,37 @@ int main(int argc, char *argv[])
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
     return nRet;
+}
+
+bool checkIPhoneXBangs(int cx, int cy)
+{
+    return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
+}
+
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+const WString& mediaQualityString(E_MediaQuality eQuality)
+{
+    return g_lpQuality[(UINT)eQuality];
+}
+
+inline void async(UINT uDelayTime, cfn_void cb)
+{
+    if (g_bRunSignal)
+    {
+        __async(uDelayTime, [&, cb](){
+            if (g_bRunSignal)
+            {
+                cb();
+            }
+        });
+    }
+}
+
+void async(cfn_void cb)
+{
+    async(0, cb);
 }
 
 #if __windows

@@ -1,4 +1,4 @@
-#include "app.h"
+#include "xmusic.h"
 
 #include "colordlg.h"
 
@@ -67,7 +67,7 @@ void CColorDlg::_relayout(int cx, int cy)
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
     int cxMargin = sz/4;
     QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }

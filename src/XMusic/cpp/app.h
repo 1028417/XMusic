@@ -1,39 +1,23 @@
 #pragma once
 
-#include "viewdef.h"
-#include "model/model.h"
-#include "../controller.h"
-
 #include <QApplication>
+
+struct tagScreenInfo
+{
+    int szScreenMax = 0;
+    int szScreenMin = 0;
+    float fPixelRatio = 1;
+    float fDPI = 0;
+};
+extern const tagScreenInfo& g_screen;
+
+extern const bool& g_bRunSignal;
+
+extern ITxtWriter& g_logger;
 
 #include "mainwindow.h"
 
 #include "msgbox.h"
-
-#include "androidutil.h"
-
-#if __windows || __mac
-#include <QLockFile>
-extern QLockFile g_lf;
-#endif
-
-#define __pkgName L"com.musicrossoft.xmusic"
-
-#define __cyIPhoneXBangs __size(128)
-
-#define __mediaPng(f) ":/img/medialib/" #f ".png"
-
-extern const WString& mediaQualityString(E_MediaQuality eQuality);
-
-extern cwstr g_strWorkDir;
-
-extern ITxtWriter& g_logger;
-
-extern int g_szScreenMax;
-extern int g_szScreenMin;
-
-void async(cfn_void cb);
-void async(UINT uDelayTime, cfn_void cb);
 
 class CAppInit : public QApplication
 {
@@ -120,11 +104,6 @@ private:
     void _run(E_UpgradeResult eUpgradeResult);
 
 public:
-    static bool checkIPhoneXBangs(int cx, int cy)
-    {
-        return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
-    }
-
     XThread& thread()
     {
         m_lstThread.emplace_back();

@@ -1,7 +1,5 @@
 
-#include "app.h"
-
-#include "mainwindow.h"
+#include "xmusic.h"
 
 #include "networkWarnDlg.h"
 
@@ -9,26 +7,14 @@
 
 #include <QScreen>
 
+tagScreenInfo m_screen;
+const tagScreenInfo& g_screen(m_screen);
+
+bool m_bRunSignal = true;
+const bool& g_bRunSignal(m_bRunSignal);
+
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
-
-int g_szScreenMax = 0;
-int g_szScreenMin = 0;
-float g_fPixelRatio = 1;
-float g_fDPI = 0;
-
-bool g_bRunSignal = true;
-
-int g_nAppUpgradeProgress = -1;
-
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
-};
-
-const WString& mediaQualityString(E_MediaQuality eQuality)
-{
-    return g_lpQuality[(UINT)eQuality];
-}
 
 extern int g_argc;
 extern char **g_argv;
@@ -37,22 +23,22 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
 {
     QScreen *screen = QApplication::primaryScreen();
     cauto sz = screen->size();
-    g_szScreenMax = sz.width();
-    g_szScreenMin = sz.height();
-    if (g_szScreenMax < g_szScreenMin)
+    m_screen.szScreenMax = sz.width();
+    m_screen.szScreenMin = sz.height();
+    if (m_screen.szScreenMax < m_screen.szScreenMin)
     {
-        std::swap(g_szScreenMax, g_szScreenMin);
+        std::swap(m_screen.szScreenMax, m_screen.szScreenMin);
     }
 
-    g_fPixelRatio = screen->devicePixelRatio();
-    g_fDPI = screen->logicalDotsPerInch();
+    m_screen.fPixelRatio = screen->devicePixelRatio();
+    m_screen.fDPI = screen->logicalDotsPerInch();
 
     m_logger.open("xmusic.log", true);
 #if __android
     g_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer;
 #endif
-    g_logger << "screen: " << g_szScreenMax << '*' << g_szScreenMin <<
-                ", DPR: " << g_fPixelRatio << ", DPI: " >> g_fDPI;
+    g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin <<
+                ", DPR: " << m_screen.fPixelRatio << ", DPI: " >> m_screen.fDPI;
 
     g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
     g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
@@ -128,7 +114,7 @@ void CAppInit::setupFont()
     };*/
 
     g_uDefFontSize = font.pointSize();
-    //g_uDefFontSize *= g_szScreenMax/540.0f;
+    //g_uDefFontSize *= m_screen.szScreenMax/540.0f;
 
 #elif __mac
     g_uDefFontSize = 28;
@@ -163,6 +149,7 @@ CApp::CApp()
     }, Qt::QueuedConnection);
 }
 
+#if 0
 static wstring _genMedialibDir(cwstr strWorkDir)
 {
 /*#if __android
@@ -192,6 +179,7 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
     return strWorkDir;
 }
+#endif
 
 int CApp::run(cwstr strWorkDir)
 {
@@ -225,7 +213,7 @@ int CApp::run(cwstr strWorkDir)
     });
 
     auto nRet = exec();
-    g_bRunSignal = false;
+    m_bRunSignal = false;
 
     for (auto& thr : m_lstThread)
     {
@@ -262,6 +250,7 @@ E_UpgradeResult CApp::_init()
     }
     auto&& ba = qf.readAll();
 
+    extern int g_nAppUpgradeProgress;
     E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
                                                         , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
@@ -378,7 +367,7 @@ void CApp::quit()
     m_mainWnd.setVisible(false);
 
     sync([&](){
-        g_bRunSignal = false;
+        m_bRunSignal = false;
         QApplication::quit();
     });
 }
@@ -408,22 +397,4 @@ void CApp::sync(cfn_void cb)
         //var.setValue(cb);
         emit signal_sync(cb);
     }
-}
-
-inline void async(UINT uDelayTime, cfn_void cb)
-{
-    if (g_bRunSignal)
-    {
-        __async(uDelayTime, [&, cb](){
-            if (g_bRunSignal)
-            {
-                cb();
-            }
-        });
-    }
-}
-
-void async(cfn_void cb)
-{
-    async(0, cb);
 }

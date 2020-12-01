@@ -1,4 +1,4 @@
-#include "app.h"
+#include "xmusic.h"
 
 #include "singerimgdlg.h"
 #include "ui_singerimgdlg.h"

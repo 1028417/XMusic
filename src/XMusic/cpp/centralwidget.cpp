@@ -1,4 +1,6 @@
 
+#include "xmusic.h"
+
 #include "centralwidget.h"
 
 #include "ui_mainwindow.h"
@@ -96,7 +98,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     auto cxDst = cx;
     int xBkgOffset = 0;
     auto fBkgZoomRate = caleBkgZoomRate(cxDst, cy, xBkgOffset);
-    auto fBkgZoomRateEx = fBkgZoomRate*g_fPixelRatio;
+    auto fBkgZoomRateEx = fBkgZoomRate * g_screen.fPixelRatio;
 
     int cy_bkg = fBkgZoomRate * __cyBkg; //__round(fBkgZoomRate * __cyBkg);
     int dy_bkg = cy - cy_bkg;
@@ -179,7 +181,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
 
     int y_frameDemand = __size(20);
-    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         y_frameDemand = __cyIPhoneXBangs-y_frameDemand;
     }

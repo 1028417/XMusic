@@ -1,5 +1,5 @@
 
-#include "app.h"
+#include "xmusic.h"
 
 #include "widget.cpp"
 
@@ -202,9 +202,10 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     });
 }
 
+int g_nAppUpgradeProgress = -1;
+
 void MainWindow::_showUpgradeProgress()
 {
-    extern int g_nAppUpgradeProgress;
     if (-1 == g_nAppUpgradeProgress)
     {
 #define __logoTip "更新媒体库"
@@ -350,6 +351,13 @@ void MainWindow::show()
         {
             g_crLogoBkg.setAlpha(0);
             update();
+
+#if __windows
+            mtutil::thread([&](){
+                CFolderDlg::preInit();
+            });
+#endif
+
             return false;
         }
 

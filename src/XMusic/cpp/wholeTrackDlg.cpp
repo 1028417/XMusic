@@ -1,5 +1,5 @@
 
-#include "app.h"
+#include "xmusic.h"
 
 #include "medialibdlg.h"
 

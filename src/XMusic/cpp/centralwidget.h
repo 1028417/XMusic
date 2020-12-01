@@ -3,8 +3,6 @@
 
 #include "widget.h"
 
-#include "app.h"
-
 #include "mainwindow.h"
 
 #define __cxBkg 1080

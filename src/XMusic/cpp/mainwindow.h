@@ -99,6 +99,11 @@ public:
     {
         m_medialibDlg.preinit();
 
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
         m_bkgDlg.preinit();
     }
 
@@ -147,7 +152,6 @@ private:
 
     bool installApp(const CByteBuffer& bbfBuff) override
     {
-        extern bool installApp(const CByteBuffer& bbfData);
         return installApp(bbfBuff);
     }
 };

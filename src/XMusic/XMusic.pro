@@ -28,7 +28,6 @@ SOURCES += ../controller.cpp \
     cpp/painter.cpp \
     cpp/button.cpp \
     cpp/colordlg.cpp \
-    cpp/main.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
     cpp/PlayingList.cpp \
@@ -43,7 +42,8 @@ SOURCES += ../controller.cpp \
     cpp/msgbox.cpp \
     cpp/wholeTrackDlg.cpp \
     cpp/MLListView.cpp \
-    cpp/networkWarnDlg.cpp
+    cpp/networkWarnDlg.cpp \
+    cpp/xmusic.cpp
 
 HEADERS += cpp/app.h \
     ../OptionMgr.h \
@@ -70,7 +70,8 @@ HEADERS += cpp/app.h \
     cpp/centralwidget.h \
     cpp/wholeTrackDlg.h \
     cpp/MLListView.h \
-    cpp/networkWarnDlg.h
+    cpp/networkWarnDlg.h \
+    cpp/xmusic.h
 
 RESOURCES += res.qrc
 

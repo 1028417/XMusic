@@ -1,7 +1,7 @@
 
 #include "button.h"
 
-#include "app.h"
+#include "xmusic.h"
 
 bool CButton::event(QEvent *ev)
 {

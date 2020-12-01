@@ -1,5 +1,5 @@
 
-#include "app.h"
+#include "xmusic.h"
 
 #include "medialibdlg.h"
 #include "ui_medialibdlg.h"
@@ -174,7 +174,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     auto szBtn = sz-cyMargin*2;
     QRect rcReturn(cxMargin, cyMargin, szBtn, szBtn);
-    if (CApp::checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }

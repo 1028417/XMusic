@@ -24,7 +24,7 @@
 #endif
 
 #if __ios
-#define __size(x) decltype(x)((x)/g_fPixelRatio)
+#define __size(x) decltype(x)((x)/g_screen.fPixelRatio)
 #define __rect(x) QRect(__size(x.left()), __size(x.top()), __size(x.width()), __size(x.height()))
 #else
 #define __size(x) (x)
@@ -35,8 +35,6 @@
 #define __size100 __size(100)
 
 #define __szRound __size10
-
-extern float g_fPixelRatio;
 
 enum class E_MouseEventType
 {

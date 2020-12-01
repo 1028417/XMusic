@@ -1,5 +1,5 @@
 
-#include "app.h"
+#include "xmusic.h"
 
 #include "msgbox.h"
 #include "ui_msgbox.h"

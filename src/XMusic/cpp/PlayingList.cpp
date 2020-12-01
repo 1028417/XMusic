@@ -1,7 +1,7 @@
 
 #include "PlayingList.h"
 
-#include "app.h"
+#include "xmusic.h"
 
 CPlayingList::CPlayingList(QWidget *parent)
     : CListView(parent)
