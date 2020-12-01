@@ -1,7 +1,7 @@
 
-#include "listview.h"
-
 #include "xmusic.h"
+
+#include "listview.h"
 
 #define __cxBar __size(5)
 

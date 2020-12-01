@@ -1,4 +1,5 @@
-﻿#include "xmusic.h"
+﻿
+#include "xmusic.h"
 
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"

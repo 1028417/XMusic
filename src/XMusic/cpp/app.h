@@ -1,5 +1,7 @@
 #pragma once
 
+#include "xmusic.h"
+
 #include <QApplication>
 
 struct tagScreenInfo

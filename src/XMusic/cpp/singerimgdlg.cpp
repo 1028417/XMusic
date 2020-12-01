@@ -1,3 +1,4 @@
+
 #include "xmusic.h"
 
 #include "singerimgdlg.h"

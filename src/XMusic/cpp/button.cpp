@@ -1,7 +1,7 @@
 
-#include "button.h"
-
 #include "xmusic.h"
+
+#include "button.h"
 
 bool CButton::event(QEvent *ev)
 {
