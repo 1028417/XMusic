@@ -18,7 +18,11 @@ private:
 
     wstring m_strFile;
 
-    //uint64_t m_uPos = 0;
+protected:
+    virtual int64_t seek(int64_t offset, int origin) override;
+    virtual int read(byte_p buf, UINT size) override;
+
+    void _decode(byte_p buf, int size);
 
 private:
     wstring localFilePath() const override
@@ -26,16 +30,16 @@ private:
         return m_strFile;
     }
 
-    int64_t _openFile(cwstr strFile, bool bXmsc);
+    int64_t _openXmsc(cwstr strFile);
 
-	UINT _checkDuration()
-	{
-		UINT uDuration = CAudioOpaque::checkDuration();
-		close();
-		return uDuration;
-	}
+    inline UINT checkDuration()
+    {
+        UINT uDuration = CAudioOpaque::checkDuration();
+        close();
+        return uDuration;
+    }
 
-	static UINT _checkDuration(cwstr strFile, bool bXmsc, int64_t& nFileSize);
+    static UINT _checkDuration(cwstr strFile, bool bXmsc, int64_t& nFileSize);
 
 public:
 #if __OnlineMediaLib
@@ -50,22 +54,30 @@ public:
     }
 #endif
 
-    int64_t openFile(cwstr strFile, bool bXmsc)
+    virtual void close() override;
+
+    inline int64_t open(cwstr strFile)
     {
-        return _openFile(strFile, bXmsc);
+        m_strFile = strFile;
+        auto nFileSize = fsutil::GetFileSize64(strFile);
+        setSize(nFileSize);
+        return nFileSize;
+    }
+
+    inline int64_t open(cwstr strFile, bool bXmsc)
+    {
+        return bXmsc ? _openXmsc(strFile) : open(strFile);
     }
 
     UINT checkFileDuration(cwstr strFile, int64_t& nFileSize)
     {
-        nFileSize = _openFile(strFile, false);
+        nFileSize = open(strFile);
         if (nFileSize <= 0)
         {
             return 0;
         }
-
-        return _checkDuration();
+        return checkDuration();
     }
-
     UINT checkFileDuration(cwstr strFile)
     {
         int64_t nFileSize = 0;
@@ -75,31 +87,29 @@ public:
 
     UINT checkMediaDuration(IMedia& media, int64_t& nFileSize)
     {
-        nFileSize = _openFile(media.GetAbsPath(), media.isXmsc());
+        nFileSize = open(media.GetAbsPath(), media.isXmsc());
         if (nFileSize <= 0)
         {
             return 0;
         }
-
-        return _checkDuration();
+        return checkDuration();
     }
-
     UINT checkMediaDuration(IMedia& media)
     {
-            int64_t nFileSize = 0;
-            return checkMediaDuration(media, nFileSize);
-            (void)nFileSize;
+        int64_t nFileSize = 0;
+        return checkMediaDuration(media, nFileSize);
+        (void)nFileSize;
     }
 
     static UINT checkDuration(cwstr strFile, int64_t& nFileSize)
     {
-            return _checkDuration(strFile, false, nFileSize);
+        return _checkDuration(strFile, false, nFileSize);
     }
     static UINT checkDuration(cwstr strFile)
     {
-            int64_t nFileSize = 0;
-            return checkDuration(strFile, nFileSize);
-            (void)nFileSize;
+        int64_t nFileSize = 0;
+        return checkDuration(strFile, nFileSize);
+        (void)nFileSize;
     }
 
     static UINT checkDuration(IMedia& media, int64_t& nFileSize)
@@ -108,16 +118,8 @@ public:
     }
     static UINT checkDuration(IMedia& media)
     {
-            int64_t nFileSize = 0;
-            return checkDuration(media, nFileSize);
-            (void)nFileSize;
+        int64_t nFileSize = 0;
+        return checkDuration(media, nFileSize);
+        (void)nFileSize;
     }
-
-    virtual void close() override;
-
-protected:
-    virtual int64_t seek(int64_t offset, int origin) override;
-    virtual int read(byte_p buf, UINT size) override;
-
-    void _decode(byte_p buf, int size);
 };
