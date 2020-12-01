@@ -95,17 +95,7 @@ public:
 
     void showLogo();
 
-    void preinit()
-    {
-        m_medialibDlg.preinit();
-
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        m_bkgDlg.preinit();
-    }
+    void preinit();
 
     void show();
 

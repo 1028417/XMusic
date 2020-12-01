@@ -264,6 +264,18 @@ void MainWindow::_showUpgradeProgress()
     });
 }
 
+void MainWindow::preinit()
+{
+    m_medialibDlg.preinit();
+
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
+    m_bkgDlg.preinit();
+}
+
 void MainWindow::_init()
 {
     qRegisterMetaType<QVariant>("QVariant");

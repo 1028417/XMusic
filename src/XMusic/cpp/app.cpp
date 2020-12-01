@@ -1,5 +1,5 @@
 
-#include "xmusic.h"
+#include "app.h"
 
 #include "networkWarnDlg.h"
 
