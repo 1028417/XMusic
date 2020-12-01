@@ -22,17 +22,11 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual wstring localFilePath() const
-    {
-        return L"";
-    }
+    virtual wstring localFilePath() const = 0;
 
     virtual int64_t size() const = 0;
 
-	virtual bool seekable() const
-	{
-		return true;
-	}
+    virtual bool seekable() const = 0;
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
@@ -51,8 +45,7 @@ private:
 
     FILE *m_pf = NULL;
 
-protected:
-    int64_t m_nFileSize = -1;
+    int64_t m_nFileSize = 0;
 	
 public:
 	void* decoder()
@@ -76,20 +69,33 @@ public:
 
 	uint64_t clock() const;
 
-public:
+private:
+    virtual wstring localFilePath() const override
+    {
+        return L"";
+    }
+
+    virtual bool seekable() const override
+    {
+        return true;
+    }
+
+protected:
+    void setSize(int64_t nFileSize)
+    {
+        m_nFileSize = nFileSize;
+    }
+
 	virtual int64_t size() const override
 	{
 	    return m_nFileSize;
 	}
 
-        virtual int64_t seek(int64_t offset, int origin) override;
+    virtual int64_t seek(int64_t offset, int origin) override;
+    virtual int read(byte_p buf, UINT size) override;
 
-        virtual int read(byte_p buf, UINT size) override;
-
-protected:
-        bool seekingFlag() const;
-
-        //bool probingFlag() const;
+    bool seekingFlag() const;
+    //bool probingFlag() const;
 };
 
 class __PlaySDKExt CPlayer

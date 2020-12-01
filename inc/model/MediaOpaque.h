@@ -115,12 +115,11 @@ public:
             (void)nFileSize;
     }
 
-    virtual int read(byte_p buf, UINT size) override;
-
-    virtual int64_t seek(int64_t offset, int origin) override;
-
     virtual void close() override;
 
 protected:
+    virtual int64_t seek(int64_t offset, int origin) override;
+    virtual int read(byte_p buf, UINT size) override;
+
     void _decode(byte_p buf, int size);
 };
