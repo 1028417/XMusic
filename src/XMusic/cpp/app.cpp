@@ -163,32 +163,34 @@ CApp::CApp()
     }, Qt::QueuedConnection);
 }
 
-static void _genMedialibDir(wstring& strMedialibDir)
+static wstring _genMedialibDir(cwstr strWorkDir)
 {
-#if __android
+/*#if __android
     if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
-        //strMedialibDir = __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
+        return __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
     }
 
-/*#elif __window
+#elif __window
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         CFolderDlg FolderDlg;
         cauto strDir = FolderDlg.Show(m_mainWnd.hwnd(), NULL, L" 设定媒体库路径", L"请选择媒体库目录");
         if (!strDir.empty())
         {
-            strMedialibDir = strDir;
+            return strDir;
         }
     }
 
 #elif __mac
-    strMedialibDir = fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
-
-    //#if __ios && TARGET_IPHONE_SIMULATOR
-    //    strMedialibDir = L"/Users/lhyuan/XMusic";
-    //#endif*/
+#if __ios && TARGET_IPHONE_SIMULATOR
+    //return L"/Users/lhyuan/XMusic";
 #endif
+
+    return fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
+#endif*/
+
+    return strWorkDir;
 }
 
 int CApp::run(cwstr strWorkDir)
@@ -196,8 +198,7 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     std::thread thrInit([=](){
-        auto strMedialibDir = strWorkDir;
-        _genMedialibDir(strMedialibDir);
+        auto strMedialibDir = _genMedialibDir(strWorkDir);
         if (!m_model.init(strWorkDir, strMedialibDir))
         {
             sync([&](){
