@@ -55,8 +55,6 @@ public:
         return _openFile(strFile, bXmsc);
     }
 
-    int64_t openFile(IMedia& media);
-
     UINT checkFileDuration(cwstr strFile, int64_t& nFileSize)
     {
         nFileSize = _openFile(strFile, false);

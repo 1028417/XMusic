@@ -198,7 +198,7 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     std::thread thrInit([=](){
-        auto strMedialibDir = _genMedialibDir(strWorkDir);
+        auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
         if (!m_model.init(strWorkDir, strMedialibDir))
         {
             sync([&](){

@@ -36,9 +36,7 @@ private:
 
     set<UINT> m_setPlayedIDs;
 
-	CPlayer m_Player;
-
-    wstring m_strFile;
+    CPlayer m_Player;
 
 private:
     void _refresh();
@@ -48,12 +46,11 @@ private:
 
     bool _clear();
 
-    bool _playNext(bool bNext, bool bManual);
-
     bool _play(CPlayItem& PlayItem);
 
     bool _play(uint64_t uStartPos = 0);
-    void _playStream();
+
+    bool _playNext(bool bNext, bool bManual);
 
     void _tryPause(cwstr strCheckPath, cfn_void_t<wstring&> cb);
 
@@ -106,9 +103,16 @@ public:
 
 	bool play(UINT uItem, bool bManual=true);
 
-	bool playNext(bool bManual=true);
-	void playPrev();
-	
+    bool playNext(bool bManual=true)
+    {
+        return _playNext(true, bManual);
+    }
+
+    void playPrev()
+    {
+        (void)_playNext(false, true);
+    }
+
 	void renameFile(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
 	void moveFile(cwstr strPath, cwstr strNewPath, cfn_bool cb);
 
