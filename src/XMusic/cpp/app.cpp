@@ -3,8 +3,6 @@
 
 #include "networkWarnDlg.h"
 
-#include <QFontDatabase>
-
 #include <QScreen>
 
 tagScreenInfo m_screen;
@@ -43,97 +41,7 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
     g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
     g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
 
-    setupFont();
-}
-
-static void _setupFont()
-{
-#if __windows
-    g_mapFontFamily[QFont::Weight::Light] = "微软雅黑 Light";
-    g_mapFontFamily[QFont::Weight::DemiBold] = "微软雅黑";
-    return;
-#endif
-
-    list<pair<int, QString>> plFontFile {
-        {QFont::Weight::Light, "msyhl-6.23.ttc"}
-        , {QFont::Weight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
-    };
-    for (auto& pr : plFontFile)
-    {
-        auto qsFontFile = "/font/" + pr.second;
-#if __android
-        qsFontFile = "assets:" +  qsFontFile;
-#else
-        qsFontFile = CApp::applicationDirPath() + qsFontFile;
-#endif
-
-        int fontId = QFontDatabase::addApplicationFont(qsFontFile);
-        if (-1 == fontId)
-        {
-            g_logger << "addFont fail: " >> qsFontFile;
-            continue;
-        }
-
-        cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
-        if (!qslst.empty())
-        {
-            g_logger << "addFont success: " << qsFontFile << " familyName: " >> qslst.front();
-            g_mapFontFamily[pr.first] = qslst.front();
-        }
-    }
-}
-
-void CAppInit::setupFont()
-{
-    cauto font = this->font();
-
-#if __ios
-    /*int nScreenSize = szScreen.width()*szScreen.height();
-    switch (nScreenSize)
-    {
-    case 320*568: // iPhoneSE
-        break;
-    case 375*667: // iPhone6 iPhone6S iPhone7 iPhone8
-        break;
-    case 414*736: // iPhone6plus iPhone6Splus iPhone7plus iPhone8plus
-        break;
-    case 375*812: // iPhoneX iPhoneXS ??
-        break;
-    case 414*896: // iPhoneXR iPhoneXSmax ??
-        break;
-    case 1024*1366: // iPadPro1_12.9 iPadPro2_12.9 iPadPro3_12.9
-        break;
-    case 834*1194: // iPadPro1_11
-        break;
-    case 834*1112: // iPadPro1_10.5
-        break;
-    case 768*1024: // iPadPro1_9.7 iPadAir2 iPadAir iPad6 iPad5
-        break;
-    default:        // iPadMini
-        break;
-    };*/
-
-    g_uDefFontSize = font.pointSize();
-    //g_uDefFontSize *= m_screen.szScreenMax/540.0f;
-
-#elif __mac
-    g_uDefFontSize = 28;
-
-#elif __windows
-    g_uDefFontSize = 22;
-
-    float fDPIRate = getDPIRate();
-    g_logger << "DPIRate: " >> fDPIRate;
-    g_uDefFontSize *= fDPIRate;
-
-#elif __android
-    g_uDefFontSize = 12;
-#endif
-
-    g_nDefFontWeight = QFont::Weight::Light;
-    g_mapFontFamily[QFont::Weight::Light] = g_mapFontFamily[QFont::Weight::DemiBold] = font.family();
-
-    _setupFont();
+    CFont::init(this->font());
 
     this->setFont(CFont());
 }

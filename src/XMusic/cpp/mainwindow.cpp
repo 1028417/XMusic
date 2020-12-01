@@ -1,8 +1,6 @@
 
 #include "xmusic.h"
 
-#include "widget.cpp"
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -133,8 +131,10 @@ void MainWindow::showLogo()
 #if __android || __ios
     fFontSizeOffset = 0.918f;
 #endif
-    ui.labelLogoTip->setFont(CFont(fFontSizeOffset, g_nDefFontWeight, true));
-    ui.labelLogoCompany->setFont(CFont(fFontSizeOffset));
+    CFont font(fFontSizeOffset);
+    ui.labelLogoCompany->setFont(font);
+    font.setItalic(true);
+    ui.labelLogoTip->setFont(font);
 
     CDialog::setWidgetTextColor(ui.labelLogoTip, QColor(__crLogoText));
     CDialog::setWidgetTextColor(ui.labelLogoCompany, QColor(__crLogoText, 0));

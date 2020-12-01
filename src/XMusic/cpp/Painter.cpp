@@ -1,5 +1,9 @@
 
+#include "xmusic.h"
+
 #include "painter.h"
+
+#include <QFontDatabase>
 
 #define __defThemeColor QRGB(130, 200, 255)
 #define __defTextColor QRGB(245, 255, 225)
@@ -7,11 +11,94 @@
 QColor g_crBkg(__defThemeColor);
 QColor g_crFore(__defTextColor);
 
-map<int, QString> g_mapFontFamily;
+int g_nDefFontWeight = QFont::Weight::Light;
 
-int g_nDefFontWeight = 0;
+list<pair<int, QString>> CFont::m_lstFontFamily;
+UINT CFont::g_uDefFontSize = 0;
 
-UINT g_uDefFontSize = 0;
+void CFont::init(const QFont& font)
+{
+#if __ios
+    /*int nScreenSize = szScreen.width()*szScreen.height();
+    switch (nScreenSize)
+    {
+    case 320*568: // iPhoneSE
+        break;
+    case 375*667: // iPhone6 iPhone6S iPhone7 iPhone8
+        break;
+    case 414*736: // iPhone6plus iPhone6Splus iPhone7plus iPhone8plus
+        break;
+    case 375*812: // iPhoneX iPhoneXS ??
+        break;
+    case 414*896: // iPhoneXR iPhoneXSmax ??
+        break;
+    case 1024*1366: // iPadPro1_12.9 iPadPro2_12.9 iPadPro3_12.9
+        break;
+    case 834*1194: // iPadPro1_11
+        break;
+    case 834*1112: // iPadPro1_10.5
+        break;
+    case 768*1024: // iPadPro1_9.7 iPadAir2 iPadAir iPad6 iPad5
+        break;
+    default:        // iPadMini
+        break;
+    };*/
+
+    g_uDefFontSize = font.pointSize();
+    //g_uDefFontSize *= m_screen.szScreenMax/540.0f;
+
+#elif __mac
+    g_uDefFontSize = 28;
+
+#elif __windows
+    g_uDefFontSize = 22;
+
+    float fDPIRate = getDPIRate();
+    g_logger << "DPIRate: " >> fDPIRate;
+    g_uDefFontSize *= fDPIRate;
+
+#elif __android
+    g_uDefFontSize = 12;
+#endif
+
+#if __windows
+    m_lstFontFamily.emplace_back(QFont::Weight::Light, "微软雅黑 Light");
+    m_lstFontFamily.emplace_back(QFont::Weight::DemiBold, "微软雅黑");
+    return;
+#endif
+
+    auto qsFontName = font.family();
+    list<pair<int, QString>> plFontFile {
+        {QFont::Weight::Light, "msyhl-6.23.ttc"}
+        , {QFont::Weight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
+    };
+    for (auto& pr : plFontFile)
+    {
+        auto qsFontFile = "/font/" + pr.second;
+#if __android
+        qsFontFile = "assets:" +  qsFontFile;
+#else
+        qsFontFile = CApp::applicationDirPath() + qsFontFile;
+#endif
+
+        int fontId = QFontDatabase::addApplicationFont(qsFontFile);
+        if (-1 != fontId)
+        {
+            cauto qslst = QFontDatabase::applicationFontFamilies(fontId);
+            if (!qslst.empty())
+            {
+                qsFontName =  qslst.front();
+                g_logger << "addFont: " << qsFontFile << ", familyName: " >> qsFontName;
+            }
+        }
+        else
+        {
+            g_logger << "addFont fail: " >> qsFontFile;
+        }
+
+        m_lstFontFamily.emplace_back(pr.first, qsFontName);
+    }
+}
 
 void CPainter::alphaPixmap(cqpm pmSrc, int alpha, QPixmap& pmDst)
 {

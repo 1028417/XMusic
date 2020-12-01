@@ -2,15 +2,16 @@
 rd /S /Q XMusic-win32\bin
 
 mkdir XMusic-win32\bin
-mkdir XMusic-win32\bin\font
+rem mkdir XMusic-win32\bin\font
+rem mkdir XMusic-win32\bin\iconengines
+mkdir XMusic-win32\bin\imageformats
+mkdir XMusic-win32\bin\platforms
+
 mkdir XMusic-win32\bin\bkg
 mkdir XMusic-win32\bin\bkg\hbkg
 mkdir XMusic-win32\bin\bkg\vbkg
 mkdir XMusic-win32\bin\bkg\hbkg\city
 mkdir XMusic-win32\bin\bkg\vbkg\city
-mkdir XMusic-win32\bin\iconengines
-mkdir XMusic-win32\bin\imageformats
-mkdir XMusic-win32\bin\platforms
 
 copy bkg\*				XMusic-win32\bin\bkg
 copy bkg\hbkg\*			XMusic-win32\bin\bkg\hbkg
@@ -36,9 +37,8 @@ copy /Y lib*.dll 		%~dp0XMusic-win32\bin
 copy /Y Qt5*.dll 		%~dp0XMusic-win32\bin
 
 rem copy font\msyhl-6.23.ttc %~dp0XMusic-win32\bin\font
-
-copy platforms\* 		%~dp0XMusic-win32\bin\platforms
-copy imageformats\* 	%~dp0XMusic-win32\bin\imageformats
 rem copy iconengines\* 	%~dp0XMusic-win32\bin\iconengines
+copy imageformats\* 	%~dp0XMusic-win32\bin\imageformats
+copy platforms\* 		%~dp0XMusic-win32\bin\platforms
 
 pause

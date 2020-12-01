@@ -11,8 +11,13 @@
 
 #include "util/util.h"
 
-extern QColor g_crBkg;
-extern QColor g_crFore;
+using cqcr = const QColor&;
+using cqrc = const QRect&;
+using cqpm = const QPixmap&;
+using cqbr = const QBrush&;
+
+#define __ShadowColor(alpha) QColor(128, 128, 128, 128*alpha/255)
+#define __ShadowAlpha 80
 
 #define __ColorOffset(cr1, cr2) (abs(cr1.red()-cr2.red()) + abs(cr1.green()-cr2.green()) \
     + abs(cr1.blue()-cr2.blue()))
@@ -20,27 +25,20 @@ extern QColor g_crFore;
 
 #define __OppAlpha(f) (255-(255*pow(__ColorOffsetAvg(g_crFore, g_crBkg)/255.0, f)))
 
-#define __ShadowColor(alpha) QColor(128, 128, 128, 128*alpha/255)
-
-#define __ShadowAlpha 80
-
-using cqcr = const QColor&;
-using cqrc = const QRect&;
-using cqpm = const QPixmap&;
-using cqbr = const QBrush&;
-
-extern map<int, QString> g_mapFontFamily;
+extern QColor g_crBkg;
+extern QColor g_crFore;
 
 extern int g_nDefFontWeight;
-
-extern UINT g_uDefFontSize;
 
 class CFont : public QFont
 {
 private:
-    inline QString _getFamily(int nWeight)
+    static UINT g_uDefFontSize;
+
+    static list<pair<int, QString>> m_lstFontFamily;
+    inline static cqstr _getFamily(int nWeight)
     {
-        for (cauto pr : g_mapFontFamily)
+        for (cauto pr : m_lstFontFamily)
         {
             if (pr.first >= nWeight)
             {
@@ -48,7 +46,7 @@ private:
             }
         }
 
-        return "";
+        return m_lstFontFamily.back().second;
     }
 
     inline void _setFamily()
@@ -78,12 +76,15 @@ public:
     CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
         : QFont(_getFamily(nWeight), g_uDefFontSize * fSizeOffset, nWeight)
     {
-        _setFamily();
+        //_setFamily();
 
         setItalic(bItalic);
 
         setUnderline(bUnderline);
     }
+
+public:
+    static void init(const QFont& font);
 
     inline void setWeight(int nWeight)
     {
