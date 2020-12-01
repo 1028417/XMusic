@@ -454,7 +454,7 @@ public:
 #if !__winvc
 		cwstr strWorkDir, cwstr strMedialibDir
 #endif
-	);
+    ) override;
 
     void close() override;
 
