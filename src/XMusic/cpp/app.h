@@ -1,7 +1,5 @@
 #pragma once
 
-#include "xmusic.h"
-
 #include <QApplication>
 
 struct tagScreenInfo
@@ -19,7 +17,7 @@ extern ITxtWriter& g_logger;
 
 #include "mainwindow.h"
 
-#include "msgbox.h"
+#include "dlg/msgbox.h"
 
 class CAppInit : public QApplication
 {

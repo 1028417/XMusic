@@ -1,7 +1,7 @@
 
-#include "app.h"
+#include "xmusic.h"
 
-#include "networkWarnDlg.h"
+#include "dlg/networkWarnDlg.h"
 
 #include <QScreen>
 
@@ -52,7 +52,7 @@ CApp::CApp()
     //, m_msgbox(m_mainWnd)
 {
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
-    connect(this, &CApp::signal_sync, this, [&](fn_void cb){
+    connect(this, &CApp::signal_sync, this, [](fn_void cb){
         cb();
     }, Qt::QueuedConnection);
 }

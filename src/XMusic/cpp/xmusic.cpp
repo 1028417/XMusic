@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
+#endif
 
 #if __windows
     extern void InitMinDump(const string&);
@@ -31,7 +32,6 @@ int main(int argc, char *argv[])
     //#if (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
     //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //#endif
-#endif
 #endif
 
 #if __android

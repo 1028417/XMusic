@@ -1,10 +1,6 @@
 
 #pragma once
 
-#include "dialog.h"
-
-#include "MLListView.h"
-
 struct tagBkgImg
 {
     tagBkgImg() = default;

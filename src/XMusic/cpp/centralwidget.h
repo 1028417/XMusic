@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "widget.h"
-
 #include "mainwindow.h"
 
 #define __cxBkg 1080

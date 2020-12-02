@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "dialog.h"
-
 class CSingerImgDlg : public CDialog
 {
 public:

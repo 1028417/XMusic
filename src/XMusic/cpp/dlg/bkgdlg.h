@@ -1,9 +1,7 @@
 
 #pragma once
 
-#include "dialog.h"
-
-#include "listview.h"
+#include "widget/listview.h"
 
 #include "addbkgdlg.h"
 

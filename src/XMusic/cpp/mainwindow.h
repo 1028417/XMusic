@@ -3,15 +3,15 @@
 
 #include <QMainWindow>
 
-#include "label.h"
+#include "widget/label.h"
 
-#include "button.h"
+#include "widget/button.h"
 
 #include "PlayingList.h"
 
-#include "medialibdlg.h"
+#include "dlg/mdl/medialibdlg.h"
 
-#include "bkgdlg.h"
+#include "dlg/bkgdlg.h"
 
 #define __crLogoText 100, 150, 255
 

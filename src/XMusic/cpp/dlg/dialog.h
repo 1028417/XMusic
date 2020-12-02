@@ -7,7 +7,7 @@
 
 #include <QEvent>
 
-#include "widget.h"
+#include "widget/widget.h"
 
 #define __titleFontSize 1.16f
 

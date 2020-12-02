@@ -3,9 +3,9 @@
 
 #include "colordlg.h"
 
-#include "colorbar.h"
+#include "widget/colorbar.h"
 
-#include "groupframe.h"
+#include "widget/groupframe.h"
 
 #include "ui_colordlg.h"
 
