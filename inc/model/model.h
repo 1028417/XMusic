@@ -290,7 +290,7 @@ public:
 class IModel
 {
 public:
-    virtual bool initMediaLib() = 0;
+    virtual bool initMediaLib(bool bNotify = true) = 0;
 
     virtual CDataMgr& getDataMgr() = 0;
 
@@ -402,7 +402,7 @@ public:
         return m_SingerImgMgr;
     }
 
-    bool initMediaLib() override;
+    bool initMediaLib(bool bNotify = true) override;
 
 #if __winvc
     CBackupMgr& getBackupMgr() override

@@ -12,12 +12,11 @@ UINT g_uPlaySeq = 0;
 
 void CXController::start()
 {
-	static auto& PlayMgr = m_model.getPlayMgr();
-
+    static auto& PlayMgr = m_model.getPlayMgr();
 #if __winvc
     (void)timerutil::setTimer(60000, [&]() {
         if (m_OptionMgr.checkAlarm())
-        {
+		{
             cauto vctAlarmmedia = m_model.getDataMgr().alarmmedias();
             if (!vctAlarmmedia.empty())
             {
@@ -50,24 +49,26 @@ void CXController::start()
 		}
 	});
 
-    __async([&]() {
-		auto& strRootDir = m_OptionMgr.getOption().strRootDir;
-		if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+	/*auto& strRootDir = m_OptionMgr.getOption().strRootDir;
+	if (strRootDir.empty() || !fsutil::existDir(strRootDir))
+	{
+		strRootDir.clear();
+		if (!setupMediaLib())
 		{
-			strRootDir.clear();
-			if (!setupMediaLib())
-			{
-				CMainApp::GetMainApp()->Quit();
-				return;
-			}
+			CMainApp::GetMainApp()->Quit();
+			return;
 		}
-        else
-        {
-            mtutil::thread([&](){
-                CFolderDlg::preInit();
-            });
-        }
+	}
+    else
+    {
+		//(void)m_model.initMediaLib();
 
+        mtutil::thread([&](){
+            CFolderDlg::preInit();
+        });
+    }
+
+	__async([&]() {
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {
@@ -76,7 +77,7 @@ void CXController::start()
         }
 
 		PlayMgr.tryPlay();
-	});
+	});*/
 
 #else
     m_threadPlayCtrl.start([&]()mutable {

@@ -30,11 +30,6 @@ private:
         UINT m_uAutoPlayNextSeq = 0;
 #endif
 
-#if __winvc
-protected:
-	bool setupMediaLib();
-#endif
-
 private:
 	void _moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir);
 
@@ -49,6 +44,8 @@ public:
         void stop();
 
 #if __winvc
+	bool setupMediaLib() override;
+
 	CMediaDir* attachDir(cwstr strDir) override;
 
 	bool renameMedia(const IMedia& media, cwstr strNewName) override;

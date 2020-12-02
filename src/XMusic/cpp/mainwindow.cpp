@@ -782,6 +782,11 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
     }
 }
 
+bool MainWindow::installApp(const CByteBuffer& bbfBuff)
+{
+    return ::installApp(bbfBuff);
+}
+
 #define ___singerImgElapse 8
 
 static UINT g_uSingerImgIdx = 0;

@@ -118,6 +118,8 @@ public:
 	virtual tagOption& getOption() = 0;
 
 #if __winvc
+	virtual bool setupMediaLib() = 0;
+
     virtual CMediaDir* attachDir(cwstr strDir) = 0;
 
     virtual bool renameMedia(const IMedia& media, cwstr strNewName) = 0;

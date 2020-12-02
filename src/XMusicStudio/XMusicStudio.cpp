@@ -67,7 +67,7 @@ bool CController::handleCommand(UINT uID)
 	case ID_MODIFY_ROOT:
 	{
 		CWaitCursor();
-		if (CXController::setupMediaLib())
+		if (setupMediaLib())
 		{
 			if (m_model.getPlayMgr().playingItems())
 			{

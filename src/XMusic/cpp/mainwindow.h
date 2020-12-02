@@ -140,8 +140,5 @@ private:
 
     void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
 
-    bool installApp(const CByteBuffer& bbfBuff) override
-    {
-        return ::installApp(bbfBuff);
-    }
+    bool installApp(const CByteBuffer& bbfBuff) override;
 };
