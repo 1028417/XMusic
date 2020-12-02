@@ -611,13 +611,6 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::addBkg(cwstr strFile)
 {
-    static bool bFlag = false;
-    if (bFlag)
-    {
-        return;
-    }
-    bFlag = true;
-
     auto& pm = m_bHLayout?m_pmHBkg:m_pmVBkg;
     (void)pm.load(__WS2Q(strFile));
     zoomoutPixmap(m_bHLayout, pm);
@@ -631,16 +624,6 @@ void CBkgDlg::addBkg(cwstr strFile)
     //update();
 
     _updateBkg(strFileName);
-
-#if __windows
-    m_addbkgDlg.close();
-    this->close();
-#else
-    this->close();
-    m_addbkgDlg.close();
-#endif
-
-    bFlag = false;
 }
 
 void CBkgDlg::_onClosed()

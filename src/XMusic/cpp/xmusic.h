@@ -8,9 +8,6 @@
 
 #define __pkgName L"com.musicrossoft.xmusic"
 
-#define __png(name)  ":/img/" #name ".png"
-#define __mdlPng(name) ":/img/medialib/" #name ".png"
-
 extern cwstr g_strWorkDir;
 
 #define __cyIPhoneXBangs __size(128)

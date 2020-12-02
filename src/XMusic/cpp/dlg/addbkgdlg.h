@@ -153,11 +153,6 @@ public:
         return m_uRowCount;
     }
 
-    class CBkgDlg& bkgDlg()
-    {
-        return m_bkgDlg;
-    }
-
     void init();
 
     void show();
@@ -166,4 +161,6 @@ public:
     {
         _relayout(width(), height());
     }
+
+    void addBkg(cwstr strFile);
 };

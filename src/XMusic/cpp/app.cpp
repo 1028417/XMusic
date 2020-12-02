@@ -1,7 +1,9 @@
 
-#include "xmusic.h"
+#include "app.h"
 
 #include "dlg/networkWarnDlg.h"
+
+#include "dlg/msgbox.h"
 
 #include <QScreen>
 

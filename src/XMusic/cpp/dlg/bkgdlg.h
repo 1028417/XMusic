@@ -121,9 +121,9 @@ private:
 public:
     static size_t caleRowCount(int cy);
 
-    void preinitBkg(bool bHLayout);
-
     void init();
+
+    void preinitBkg(bool bHLayout);
 
     cqpm hbkg() const
     {

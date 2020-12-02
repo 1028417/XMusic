@@ -6,8 +6,6 @@
 
 #include <QMovie>
 
-#include <QScreen>
-
 #define __demandplayitemPngCount 4
 
 Ui::MainWindow ui;

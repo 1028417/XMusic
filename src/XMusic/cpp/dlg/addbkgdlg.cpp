@@ -230,6 +230,28 @@ bool CAddBkgDlg::_handleReturn()
     return true;
 }
 
+void CAddBkgDlg::addBkg(cwstr strFile)
+{
+    static bool bFlag = false;
+    if (bFlag)
+    {
+        return;
+    }
+    bFlag = true;
+
+    m_bkgDlg.addBkg(strFile);
+
+#if __windows
+    this->close();
+    m_bkgDlg.close();
+#else
+    m_bkgDlg.close();
+    this->close();
+#endif
+
+    bFlag = false;
+}
+
 wstring CImgDir::displayName() const
 {
 #if __android
@@ -581,7 +603,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
         cauto strFilePath = m_pImgDir->imgPath(lvItem.uItem);
         if (!strFilePath.empty())
         {
-            m_addbkgDlg.bkgDlg().addBkg(strFilePath);
+            m_addbkgDlg.addBkg(strFilePath);
         }
     }
     else

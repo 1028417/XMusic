@@ -19,7 +19,7 @@ extern ITxtWriter& g_logger;
 
 #include "mainwindow.h"
 
-#include "dlg/msgbox.h"
+//#include "dlg/msgbox.h"
 
 class CAppInit : public QApplication
 {
