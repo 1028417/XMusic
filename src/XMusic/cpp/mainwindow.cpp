@@ -177,8 +177,8 @@ void MainWindow::_init()
 void MainWindow::preinit()
 {
     __app.sync([&](){
-        m_bkgDlg.init();
         m_medialibDlg.init();
+        m_bkgDlg.init();
         _init();
 
         _showLogo();

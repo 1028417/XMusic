@@ -135,11 +135,12 @@ void CPlayingList::updateList(UINT uPlayingItem)
     m_alPlayingItems.clear();
 
     tagPlayingItem playingItem;
-    __app.getPlayMgr().playingItems()([&](const CPlayItem& PlayItem){
+    for (cauto PlayItem : __app.getPlayMgr().playingItems())
+    {
         playingItem.uID = PlayItem.m_uID;
         playingItem.qsTitle = __WS2Q(PlayItem.GetTitle());
         m_alPlayingItems.add(playingItem);
-    });
+    }
 
     updatePlayingItem(uPlayingItem, false);
 }

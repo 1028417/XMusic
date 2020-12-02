@@ -52,8 +52,6 @@ public:
     MainWindow();
 
 private:
-    QBrush m_brBkg;
-
     class CPlayingList m_PlayingList;
 
     CMedialibDlg m_medialibDlg;
@@ -64,12 +62,13 @@ private:
 
     bool m_bHLayout = false;
 
+    QBrush m_brBkg;
     bool m_bDefaultBkg = false;
-
-    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
 
     int m_dxbkg = 0;
     int m_dybkg = 0;
+
+    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
