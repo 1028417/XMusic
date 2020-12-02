@@ -10,9 +10,18 @@
 
 Ui::MainWindow ui;
 
-static bool g_bFullScreen = true;
-
 QColor g_crLogoBkg(180, 220, 255);
+
+static E_LanguageType g_eDemandLanguage = E_LanguageType::LT_None;
+
+static E_SingerImgPos g_eSingerImgPos = E_SingerImgPos::SIP_Float;
+
+static bool g_bHLayout = false;
+
+static int g_dxBkg = 0;
+static int g_dyBkg = 0;
+
+static bool g_bFullScreen = true;
 
 #if __windows
 inline static void _fixWorkArea(QWidget& wnd)
@@ -496,16 +505,16 @@ void MainWindow::_relayout()
 {
     int cx = width();
     int cy = height();
-    m_bHLayout = cx > cy; // 橫屏
+    g_bHLayout = cx > cy; // 橫屏
 
     m_bDefaultBkg = false;
     if (!__app.getOption().bUseBkgColor)
     {
-        cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        cauto pmBkg = g_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
+    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, g_eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
 void MainWindow::_onPaint()
@@ -528,7 +537,7 @@ void MainWindow::_onPaint()
             cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawPixmapEx(rc, pmBkg, m_dxbkg, m_dybkg);
+               painter.drawPixmapEx(rc, pmBkg, g_dxBkg, g_dyBkg);
 
                //auto cx = ui.progressbar->width();
                //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
@@ -914,8 +923,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    m_dxbkg = 0;
-    m_dybkg = 0;
+    g_dxBkg = g_dyBkg = 0;
 
     _relayout();
 
@@ -937,10 +945,10 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 return;
             }
 
-            m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
-            if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
+            g_eSingerImgPos = E_SingerImgPos((int)g_eSingerImgPos+1);
+            if (g_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
-                m_eSingerImgPos = E_SingerImgPos::SIP_Float;
+                g_eSingerImgPos = E_SingerImgPos::SIP_Float;
             }
 
             _relayout();
@@ -1008,7 +1016,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else
     {
-        m_eDemandLanguage = E_LanguageType::LT_None;
+        g_eDemandLanguage = E_LanguageType::LT_None;
 
         PairList<CLabel*, E_LanguageType> plLabels {
             {ui.labelDemandCN, E_LanguageType::LT_CN}
@@ -1027,7 +1035,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             {
                 if (lbl == label)
                 {
-                    m_eDemandLanguage = eLanguage;
+                    g_eDemandLanguage = eLanguage;
                     lbl->setText(__qsCheck + text);
                 }
             }
@@ -1074,7 +1082,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, g_eDemandLanguage));
 }
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
@@ -1092,22 +1100,22 @@ void MainWindow::_handleTouchEnd(const CTouchEvent& te)
         {
             if (dx >= 3)
             {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
+                m_bkgDlg.switchBkg(g_bHLayout, false);
             }
             else if (dx <= -3)
             {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
+                m_bkgDlg.switchBkg(g_bHLayout, true);
             }
         }
         else
         {
             if (dy >= 3)
             {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
+                m_bkgDlg.switchBkg(g_bHLayout, false);
             }
             else if (dy <= -3)
             {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
+                m_bkgDlg.switchBkg(g_bHLayout, true);
             }
         }
     }
@@ -1134,8 +1142,8 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         mtutil::yield();
-        m_dxbkg -= te.dx();
-        m_dybkg -= te.dy();
+        g_dxBkg -= te.dx();
+        g_dyBkg -= te.dy();
         update();
     }
     else if (E_TouchEventType::TET_TouchEnd == type)

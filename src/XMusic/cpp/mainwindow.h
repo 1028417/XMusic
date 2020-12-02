@@ -52,25 +52,16 @@ public:
     MainWindow();
 
 private:
+    QBrush m_brBkg;
+    bool m_bDefaultBkg = false;
+
+    tagPlayingInfo m_PlayingInfo;
+
     class CPlayingList m_PlayingList;
 
     CMedialibDlg m_medialibDlg;
 
     CBkgDlg m_bkgDlg;
-
-    tagPlayingInfo m_PlayingInfo;
-
-    bool m_bHLayout = false;
-
-    QBrush m_brBkg;
-    bool m_bDefaultBkg = false;
-
-    int m_dxbkg = 0;
-    int m_dybkg = 0;
-
-    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
-
-    E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
 private slots:
     void slot_buttonClicked(CButton*);
