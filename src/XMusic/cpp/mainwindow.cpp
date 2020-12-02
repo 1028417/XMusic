@@ -273,7 +273,11 @@ void MainWindow::preinit()
         return;
     }
 
-    m_bkgDlg.preinit();
+    mtutil::concurrence([&](){
+        m_bkgDlg.preinitBkg(true);
+    }, [&](){
+        m_bkgDlg.preinitBkg(false);
+    });
 }
 
 void MainWindow::_init()

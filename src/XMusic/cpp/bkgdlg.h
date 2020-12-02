@@ -93,11 +93,15 @@ private:
     CColorDlg m_colorDlg;
 
 private:
-    wstring& _bkgDir();
+    inline wstring& _bkgDir()
+    {
+        return m_bHLayout?m_strHBkgDir:m_strVBkgDir;
+    }
 
-    vector<tagBkgFile>& _vecBkgFile();
-
-    void _preInitBkg(bool bHLayout);
+    inline vector<tagBkgFile>& _vecBkgFile()
+    {
+        return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
+    }
 
     CBkgBrush& _addbr(QPixmap& pm, bool bHLayout);
 
@@ -112,7 +116,7 @@ private:
 public:
     static size_t caleRowCount(int cy);
 
-    void preinit();
+    void preinitBkg(bool bHLayout);
 
     void init();
 

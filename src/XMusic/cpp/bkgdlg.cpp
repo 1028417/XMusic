@@ -6,6 +6,8 @@
 
 #define __snapshotRetain 6
 
+#define __ceilCount ((m_bkgDlg.bkgCount() <= 2) ? 2 : 3)
+
 static int g_xsize = 0;
 
 static Ui::BkgDlg ui;
@@ -17,7 +19,11 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
     (void)m_pmX.load(":/img/btnX.png");
 }
 
-#define __ceilCount ((m_bkgDlg.bkgCount() <= 2) ? 2 : 3)
+inline UINT CBkgView::margin()
+{
+#define __margin __size(40)
+    return __margin/(__ceilCount-1);
+}
 
 inline size_t CBkgView::getRowCount() const
 {
@@ -198,12 +204,6 @@ void CBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
     m_bkgDlg.handleLVClick(lvItem.uItem);
 }
 
-inline UINT CBkgView::margin()
-{
-#define __margin __size(40)
-    return __margin/(__ceilCount-1);
-}
-
 CBkgDlg::CBkgDlg(QWidget& parent) : CDialog(parent),
     m_option(__app.getOption()),
     m_lv(*this),
@@ -261,21 +261,17 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
     zoomoutPixmap(pm, cx, cy);
 }
 
-void CBkgDlg::preinit()
+inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm, bool bHLayout)
 {
-    m_strHBkgDir = g_strWorkDir + L"/hbkg/";
-    m_strVBkgDir = g_strWorkDir + L"/vbkg/";
-
-    mtutil::concurrence([&](){
-        _preInitBkg(true);
-    }, [&](){
-        _preInitBkg(false);
-    });
+    zoomoutPixmap(bHLayout, pm, 2.5f);
+    m_lstBr.emplace_back(pm);
+    return m_lstBr.back();
 }
 
-void CBkgDlg::_preInitBkg(bool bHLayout)
+void CBkgDlg::preinitBkg(bool bHLayout)
 {
-    cauto strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
+    auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
+    strBkgDir = g_strWorkDir + bHLayout?L"/hbkg/":L"/vbkg/";
     wstring strAppBkgDir = strBkgDir + __app.appVersion();
     if (!fsutil::existDir(strAppBkgDir))
     {
@@ -446,23 +442,6 @@ void CBkgDlg::_relayout(int cx, int cy)
         bHLayout = m_bHLayout;
         m_lv.scroll(0);
     }
-}
-
-inline wstring& CBkgDlg::_bkgDir()
-{
-    return m_bHLayout?m_strHBkgDir:m_strVBkgDir;
-}
-
-inline vector<tagBkgFile>& CBkgDlg::_vecBkgFile()
-{
-    return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
-}
-
-inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm, bool bHLayout)
-{
-    zoomoutPixmap(bHLayout, pm, 2.5f);
-    m_lstBr.emplace_back(pm);
-    return m_lstBr.back();
 }
 
 size_t CBkgDlg::bkgCount() const
