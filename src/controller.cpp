@@ -49,10 +49,10 @@ void CXController::start()
 		}
 	});
 
-	/*auto& strRootDir = m_OptionMgr.getOption().strRootDir;
+	/*cauto strRootDir = m_OptionMgr.getOption().strRootDir;
 	if (strRootDir.empty() || !fsutil::existDir(strRootDir))
 	{
-		strRootDir.clear();
+		//strRootDir.clear();
 		if (!setupMediaLib())
 		{
 			CMainApp::GetMainApp()->Quit();
@@ -61,7 +61,11 @@ void CXController::start()
 	}
     else
     {
-		//(void)m_model.initMediaLib();
+		if (!m_model.initMediaLib())
+		{
+			CMainApp::GetMainApp()->Quit();
+			return;
+		}
 
         mtutil::thread([&](){
             CFolderDlg::preInit();
