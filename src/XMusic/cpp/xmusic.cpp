@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
 #endif
 
-    int nRet = __app.run(m_strWorkDir);
+    auto nRet = __app.run(m_strWorkDir);
 
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 

@@ -271,7 +271,7 @@ inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm, bool bHLayout)
 void CBkgDlg::preinitBkg(bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
-    strBkgDir = g_strWorkDir + bHLayout?L"/hbkg/":L"/vbkg/";
+    strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
     wstring strAppBkgDir = strBkgDir + __app.appVersion();
     if (!fsutil::existDir(strAppBkgDir))
     {

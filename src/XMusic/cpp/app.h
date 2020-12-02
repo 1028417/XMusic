@@ -32,23 +32,22 @@ protected:
 Q_DECLARE_METATYPE(fn_void);
 
 template <typename T>
-struct tagSinglePtr
-{
-    tagSinglePtr(T*ptr) : ptr(ptr)
-    {
-    }
-
-    ~tagSinglePtr()
-    {
-        delete ptr;
-    }
-
-    T *ptr;
-};
-
-template <typename T>
 struct tagSingleTone
 {
+    struct tagSinglePtr
+    {
+        tagSinglePtr(T*ptr) : ptr(ptr)
+        {
+        }
+
+        ~tagSinglePtr()
+        {
+            delete ptr;
+        }
+
+        T *ptr;
+    };
+
     static T& inst()
     {
         static T *inst = NULL;
@@ -56,9 +55,8 @@ struct tagSingleTone
         {
             inst = (T*)malloc(sizeof(T));
             new (inst) T();
+            static tagSinglePtr SinglePtr(inst);
         }
-
-        static tagSinglePtr<T> SinglePtr(inst);
 
         return *inst;
     }
