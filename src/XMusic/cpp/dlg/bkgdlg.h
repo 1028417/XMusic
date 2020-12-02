@@ -17,7 +17,15 @@ public:
 private:    
     class CBkgDlg& m_bkgDlg;
 
-    cqpm m_pmDeleteBkg;
+    QPixmap m_pmX;
+
+public:
+    void init()
+    {
+        (void)m_pmX.load(__png(btnX));
+    }
+
+    UINT margin();
 
 private:
     size_t getRowCount() const override;
@@ -29,9 +37,6 @@ private:
     void _onPaintItem(CPainter&, tagLVItem&) override;
 
     void _onItemClick(tagLVItem&, const QMouseEvent&) override;
-
-public:
-    UINT margin();
 };
 
 class CBkgBrush : public QBrush

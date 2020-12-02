@@ -167,8 +167,6 @@ public:
         return m_uRowCount;
     }
 
-    void preinit();
-
     void init();
 
     void show();

@@ -76,15 +76,17 @@ const WString& mediaQualityString(E_MediaQuality eQuality)
 
 inline void async(UINT uDelayTime, cfn_void cb)
 {
-    if (g_bRunSignal)
+    if (!g_bRunSignal)
     {
-        __async(uDelayTime, [&, cb](){
-            if (g_bRunSignal)
-            {
-                cb();
-            }
-        });
+        return;
     }
+
+    __async(uDelayTime, [&, cb](){
+        if (g_bRunSignal)
+        {
+            cb();
+        }
+    });
 }
 
 void async(cfn_void cb)

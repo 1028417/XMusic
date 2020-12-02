@@ -20,6 +20,8 @@ public:
     }
 
 private:
+    QPixmap m_pmPlaying;
+
     UINT m_uPageRowCount = 0;
 
     ArrList<tagPlayingItem> m_alPlayingItems;

@@ -15,7 +15,6 @@ static Ui::BkgDlg ui;
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
     : CListView(&bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_pmDeleteBkg(__app.m_pmDeleteBkg)
 {
 }
 
@@ -106,7 +105,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                 painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
 
                 QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
-                painter.drawPixmap(rcX, m_pmDeleteBkg);
+                painter.drawPixmap(rcX, m_pmX);
 
                 static UINT s_uSequence = 0;
                 s_uSequence++;
@@ -210,6 +209,24 @@ CBkgDlg::CBkgDlg(QWidget& parent) : CDialog(parent),
     m_addbkgDlg(*this),
     m_colorDlg(*this)
 {
+}
+
+void CBkgDlg::init()
+{
+    m_colorDlg.init();
+    m_addbkgDlg.init();
+
+    m_lv.init();
+
+    ui.setupUi(this);
+
+    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
+        m_colorDlg.show();
+    });
 }
 
 void zoomoutPixmap(QPixmap& pm, int cx, int cy)
@@ -357,22 +374,6 @@ void CBkgDlg::preinitBkg(bool bHLayout)
     {
         (bHLayout?m_pmHBkg:m_pmVBkg).load(__WS2Q(strBkgDir + strBkg));
     }
-}
-
-void CBkgDlg::init()
-{    
-    m_colorDlg.init();
-    m_addbkgDlg.init();
-
-    ui.setupUi(this);
-
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
-
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
-
-    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
-        m_colorDlg.show();
-    });
 }
 
 size_t CBkgDlg::caleRowCount(int cy)

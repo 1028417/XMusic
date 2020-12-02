@@ -66,12 +66,15 @@ void MainWindow::switchFullScreen()
 #endif
 }
 
-MainWindow::MainWindow()
-    : m_brBkg(QPixmap(":/img/bkg.jpg"))
+MainWindow::MainWindow() :
+    QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint),
+     m_brBkg(QPixmap(":/img/bkg.jpg"))
     , m_PlayingList(this)
     , m_medialibDlg(*this)
     , m_bkgDlg(*this)
 {
+    //this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+
     ui.setupUi(this);
 
     ui.centralWidget->ctor();
@@ -108,13 +111,9 @@ MainWindow::MainWindow()
     ui.btnExit->raise();
 #endif
 
-    ui.btnPause->setVisible(false);
-
     ui.centralWidget->setVisible(false);
 
     //this->setStyleSheet("");
-
-    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
 }
 
 void MainWindow::showBlank()
@@ -125,7 +124,76 @@ void MainWindow::showBlank()
     this->setVisible(true);
 }
 
-void MainWindow::showLogo()
+void MainWindow::_init()
+{
+    qRegisterMetaType<QVariant>("QVariant");
+
+    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
+                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
+    for (auto label : lstLabels)
+    {
+        label->setFont(1.03f, QFont::Weight::DemiBold);
+    }
+    lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
+                , ui.labelProgress);
+    for (auto label : lstLabels)
+    {
+        connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
+    }
+
+    m_PlayingList.setFont(0.9f);
+
+    ui.labelSingerName->setFont(0.95f);
+
+    ui.labelPlayingfile->setFont(0.95f);
+
+    ui.labelDuration->setFont(0.8f);
+
+    ui.btnPause->setVisible(false);
+
+    if (__app.getOption().bRandomPlay)
+    {
+        ui.btnRandom->setVisible(true);
+        ui.btnOrder->setVisible(false);
+    }
+    else
+    {
+        ui.btnRandom->setVisible(false);
+        ui.btnOrder->setVisible(true);
+    }
+
+#if __android
+    g_fnAccelerometerNotify = [&](int x, int y, int z){
+        if (abs(x) >= abs(y) && abs(x) >= abs(z))
+        {
+            if (abs(x) >= 20)
+            {
+                vibrate();
+                slot_buttonClicked(ui.btnPlayNext);
+            }
+        }
+    };
+#endif
+}
+
+void MainWindow::preinit()
+{
+    __app.sync([&](){
+        m_bkgDlg.init();
+        m_medialibDlg.init();
+        _init();
+
+        _showLogo();
+    });
+
+    mtutil::concurrence([&](){
+        m_bkgDlg.preinitBkg(true);
+    }, [&](){
+        m_bkgDlg.preinitBkg(false);
+    });
+}
+
+void MainWindow::_showLogo()
 {
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
@@ -147,18 +215,16 @@ void MainWindow::showLogo()
     ui.labelLogo->setVisible(true);
 
     async(30, [&](){
-        auto labelLogoTip = ui.labelLogoTip;
-        labelLogoTip->setParent(this);
-        labelLogoTip->setVisible(true);
-        labelLogoTip->setText("播放器");
+        auto& labelLogoTip = *ui.labelLogoTip;
+        labelLogoTip.setParent(this);
+        labelLogoTip.setVisible(true);
+        labelLogoTip.setText("播放器");
 
-        async(600, [=](){
-            labelLogoTip->setText(labelLogoTip->text() + WString(__CNDot L"媒体库"));
-
-            async(600, [=](){
-                labelLogoTip->setText(labelLogoTip->text() + "  个性化定制");
-
-                async(2600, [=](){
+        async(500, [&](){
+            labelLogoTip.setText(labelLogoTip.text() + WString(__CNDot L"媒体库"));
+            async(500, [&](){
+                labelLogoTip.setText(labelLogoTip.text() + "  个性化定制");
+                async(2000, [&](){
                     _showUpgradeProgress();
                 });
             });
@@ -167,7 +233,6 @@ void MainWindow::showLogo()
 
     ui.labelLogoCompany->setParent(this);
     ui.labelLogoCompany->setVisible(true);
-
     _updateLogoCompany(5, [&](){
         _updateLogoCompany(-5, [&](){
             ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
@@ -183,7 +248,7 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     auto crCompany = peCompany.color(QPalette::WindowText);
     auto nAlpha = crCompany.alpha();
 
-    timerutil::setTimerEx(35, [=]()mutable{
+    timerutil::setTimerEx(25, [=]()mutable{
         nAlpha += nAlphaOffset;
         if (nAlpha < 5 || nAlpha > 255)
         {
@@ -214,7 +279,7 @@ void MainWindow::_showUpgradeProgress()
 
     UINT uDotCount = 0;
 
-    timerutil::setTimerEx(300, [=]()mutable{
+    timerutil::setTimerEx(200, [=]()mutable{
         if (!ui.labelLogoTip->isVisible())
         {
             return false;
@@ -264,79 +329,9 @@ void MainWindow::_showUpgradeProgress()
     });
 }
 
-void MainWindow::preinit()
-{
-    m_medialibDlg.preinit();
-
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    mtutil::concurrence([&](){
-        m_bkgDlg.preinitBkg(true);
-    }, [&](){
-        m_bkgDlg.preinitBkg(false);
-    });
-}
-
-void MainWindow::_init()
-{
-    qRegisterMetaType<QVariant>("QVariant");
-
-    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
-    for (auto label : lstLabels)
-    {
-        label->setFont(1.03f, QFont::Weight::DemiBold);
-    }
-    lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
-                , ui.labelProgress);
-    for (auto label : lstLabels)
-    {
-        connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
-    }
-
-    ui.labelSingerName->setFont(0.95f);
-
-    ui.labelPlayingfile->setFont(0.95f);
-
-    ui.labelDuration->setFont(0.8f);
-
-    m_PlayingList.setFont(0.9f);
-
-    if (__app.getOption().bRandomPlay)
-    {
-        ui.btnRandom->setVisible(true);
-        ui.btnOrder->setVisible(false);
-    }
-    else
-    {
-        ui.btnRandom->setVisible(false);
-        ui.btnOrder->setVisible(true);
-    }
-
-#if __android
-    g_fnAccelerometerNotify = [&](int x, int y, int z){
-        if (abs(x) >= abs(y) && abs(x) >= abs(z))
-        {
-            if (abs(x) >= 20)
-            {
-                vibrate();
-                slot_buttonClicked(ui.btnPlayNext);
-            }
-        }
-    };
-#endif
-}
-
 void MainWindow::show()
 {
-    m_bkgDlg.init();
-
-    m_medialibDlg.init();
-
-    _init();
+    m_PlayingList.init();
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
@@ -348,10 +343,6 @@ void MainWindow::show()
 
     ui.centralWidget->setVisible(true);
     _relayout();
-
-    m_PlayingList.init();
-
-    (void)startTimer(1000);
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
     UINT uOffset = 23;
@@ -369,6 +360,9 @@ void MainWindow::show()
         {
             g_crLogoBkg.setAlpha(0);
             update();
+
+            (void)startTimer(1000);
+
             return false;
         }
 

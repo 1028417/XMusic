@@ -21,7 +21,7 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
 {
 }
 
-void CMedialibView::preinit()
+void CMedialibView::initpm()
 {
     (void)m_pmSSFile.load(__mdlPng(media));
 

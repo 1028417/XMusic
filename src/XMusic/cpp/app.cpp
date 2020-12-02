@@ -134,21 +134,17 @@ int CApp::run(cwstr strWorkDir)
 
 void CApp::_startup()
 {
+    auto timeBegin = time(0);
+
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
         g_logger >> "loadMdlConfResource fail";
         return;
     }
-
-    sync(100, [&](){
-        m_mainWnd.showLogo();
-    });
-
-    auto timeBegin = time(0);
+    cauto ba = qf.readAll();
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]() {
-        cauto ba = qf.readAll();
         extern int g_nAppUpgradeProgress;
         E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
@@ -157,18 +153,16 @@ void CApp::_startup()
             return eUpgradeResult;
         }
 
-        auto time0 = time(0);
+        //auto time0 = time(0);
         if (!m_model.initMediaLib())
         {
             g_logger >> "initMediaLib fail";
             return E_UpgradeResult::UR_Fail;
         }
-        g_logger << "initMediaLib success " >> (time(0)-time0);
+        //g_logger << "initMediaLib success " >> (time(0)-time0);
 
         return E_UpgradeResult::UR_Success;
     }, [&](){
-        (void)m_pmPlaying.load(__png(btnPlay));
-        (void)m_pmDeleteBkg.load(__png(btnX));
         (void)m_pmForward.load(__png(btnForward));
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
         (void)m_pmLLDisk.load(__mdlPng(lldisk));
@@ -301,13 +295,3 @@ void CApp::setForeground()
     }
 }
 #endif
-
-void CApp::sync(cfn_void cb)
-{
-    if (g_bRunSignal)
-    {
-        //QVariant var;
-        //var.setValue(cb);
-        emit signal_sync(cb);
-    }
-}

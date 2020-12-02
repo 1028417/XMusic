@@ -13,15 +13,12 @@ CMedialibDlg::CMedialibDlg(QWidget& parent) : CDialog(parent)
 {
 }
 
-void CMedialibDlg::preinit()
-{
-    m_lv.preinit();
-}
-
 void CMedialibDlg::init()
 {
     m_wholeTrackDlg.init();
     m_singerImgDlg.init();
+
+    m_lv.initpm();
 
     ui.setupUi(this);
 

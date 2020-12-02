@@ -5,6 +5,8 @@
 
 void CPlayingList::init()
 {
+    (void)m_pmPlaying.load(__png(btnPlay));
+
     updateList(__app.getOption().uPlayingItem);
 
     this->startTimer(1000);
@@ -74,7 +76,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 //❥
 #define __szIcon __size(18)
         QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
-        painter.drawPixmap(rcIcon, __app.m_pmPlaying);
+        painter.drawPixmap(rcIcon, m_pmPlaying);
     }
 
     rc.setLeft(__size(35));

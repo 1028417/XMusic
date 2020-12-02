@@ -93,8 +93,6 @@ public:
 
     void showBlank();
 
-    void showLogo();
-
     void preinit();
 
     void show();
@@ -109,6 +107,8 @@ public:
 
 private:
     void _init();
+
+    void _showLogo();
 
     bool event(QEvent *) override;
 

@@ -72,9 +72,7 @@ private:
     friend tagSingleTone;
 
 public:
-    QPixmap m_pmPlaying; // 正在播放标志
     QPixmap m_pmForward; // 列表末端箭头
-    QPixmap m_pmDeleteBkg; // 删除背景
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;
 
@@ -121,7 +119,18 @@ public:
         return thr;
     }
 
-    void sync(cfn_void cb);
+    inline void sync(cfn_void cb)
+    {
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        //QVariant var;
+        //var.setValue(cb);
+        emit signal_sync(cb);
+    }
+
     void sync(UINT uDelayTime, cfn_void cb)
     {
         sync([=](){

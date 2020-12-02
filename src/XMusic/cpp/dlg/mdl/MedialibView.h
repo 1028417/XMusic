@@ -63,7 +63,7 @@ private:
     int m_nFlashItem = -1;
 
 public:
-    void preinit();
+    void initpm();
 
     void reset() override
     {
