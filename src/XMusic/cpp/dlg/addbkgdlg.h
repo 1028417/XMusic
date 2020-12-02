@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "dialog.h"
+
 struct tagBkgImg
 {
     tagBkgImg() = default;

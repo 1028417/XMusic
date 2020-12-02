@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "dialog.h"
+
 #include "widget/listview.h"
 
 #include "addbkgdlg.h"
@@ -71,7 +73,7 @@ public:
     CBkgDlg(QWidget& parent);
 
 private:
-    tagOption& m_option;
+    class tagOption& m_option;
 
     CBkgView m_lv;
 

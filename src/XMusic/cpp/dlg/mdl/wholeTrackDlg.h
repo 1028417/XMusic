@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "dlg/dialog.h"
+
 class CWholeTrackView : public CListView
 {
 public:

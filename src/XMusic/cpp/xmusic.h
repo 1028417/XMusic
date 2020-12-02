@@ -23,8 +23,4 @@ void async(UINT uDelayTime, cfn_void cb);
 
 bool installApp(const CByteBuffer& bbfData);
 
-#include "painter.h"
-#include "widget/widget.h"
-#include "dlg/dialog.h"
-
 #include "app.h"
