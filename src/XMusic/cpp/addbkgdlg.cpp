@@ -112,6 +112,10 @@ void CAddBkgDlg::show()
                 strAddBkgDir = fsutil::getHomeDir().toStdWString();
             //}
         }
+        //else {
+        mtutil::thread([&](){
+            CFolderDlg::preInit();
+        });
 
         _scanDir(strAddBkgDir);
 

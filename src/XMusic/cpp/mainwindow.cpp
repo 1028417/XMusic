@@ -363,13 +363,6 @@ void MainWindow::show()
         {
             g_crLogoBkg.setAlpha(0);
             update();
-
-#if __windows
-            mtutil::thread([&](){
-                CFolderDlg::preInit();
-            });
-#endif
-
             return false;
         }
 
