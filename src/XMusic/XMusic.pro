@@ -23,62 +23,61 @@ SOURCES += cpp/androidutil.cpp
 
 SOURCES += ../controller.cpp \
     ../OptionMgr.cpp \
-    cpp/MedialibView.cpp \
-    cpp/centralwidget.cpp \
-    cpp/painter.cpp \
-    cpp/button.cpp \
-    cpp/colordlg.cpp \
+    cpp/xmusic.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
+    cpp/centralwidget.cpp \
     cpp/PlayingList.cpp \
-    cpp/singerimgdlg.cpp \
-    cpp/widget.cpp \
-    cpp/bkgdlg.cpp \
-    cpp/listview.cpp \
-    cpp/medialibdlg.cpp \
-    cpp/addbkgdlg.cpp \
-    cpp/label.cpp \
-    cpp/dialog.cpp \
-    cpp/msgbox.cpp \
-    cpp/wholeTrackDlg.cpp \
-    cpp/MLListView.cpp \
-    cpp/networkWarnDlg.cpp \
-    cpp/xmusic.cpp
+    cpp/painter.cpp \
+    cpp/widget/widget.cpp \
+    cpp/widget/button.cpp \
+    cpp/widget/listview.cpp \
+    cpp/widget/label.cpp \
+    cpp/dlg/dialog.cpp \
+    cpp/dlg/msgbox.cpp \
+    cpp/dlg/networkWarnDlg.cpp \
+    cpp/dlg/bkgdlg.cpp \
+    cpp/dlg/addbkgdlg.cpp \
+    cpp/dlg/colordlg.cpp \
+    cpp/dlg/mdl/medialibdlg.cpp \
+    cpp/dlg/mdl/MedialibView.cpp \
+    cpp/dlg/mdl/MLListView.cpp \
+    cpp/dlg/mdl/singerimgdlg.cpp \
+    cpp/dlg/mdl/wholeTrackDlg.cpp
 
-HEADERS += cpp/app.h \
-    ../OptionMgr.h \
-    cpp/MedialibView.h \
-    cpp/groupframe.h \
-    cpp/painter.h \
-    cpp/colorbar.h \
-    cpp/colordlg.h \
-    cpp/mainwindow.h \
-    cpp/label.h \
-    cpp/PlayingList.h \
-    cpp/singerimgdlg.h \
-    cpp/widget.h \
-    cpp/button.h \
-    cpp/progressbar.h \
-    cpp/bkgdlg.h \
-    cpp/listview.h \
-    cpp/dialog.h \
-    cpp/medialibdlg.h \
-    cpp/addbkgdlg.h \
-    ../../inc/ControllerDef.h \
+HEADERS += ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
-    cpp/msgbox.h \
+    ../OptionMgr.h \
+    cpp/app.h \
+    cpp/xmusic.h \
+    cpp/mainwindow.h \
     cpp/centralwidget.h \
-    cpp/wholeTrackDlg.h \
-    cpp/MLListView.h \
-    cpp/networkWarnDlg.h \
-    cpp/xmusic.h
+    cpp/PlayingList.h \
+    cpp/painter.h \
+    cpp/widget/widget.h \
+    cpp/widget/button.h \
+    cpp/widget/progressbar.h \
+    cpp/widget/listview.h \
+    cpp/widget/groupframe.h \
+    cpp/widget/colorbar.h \
+    cpp/widget/label.h \
+    cpp/dlg/dialog.h \
+    cpp/dlg/msgbox.h \
+    cpp/dlg/bkgdlg.h \
+    cpp/dlg/addbkgdlg.h \
+    cpp/dlg/colordlg.h \
+    cpp/dlg/networkWarnDlg.h \
+    cpp/dlg/mdl/medialibdlg.h \
+    cpp/dlg/mdl/MedialibView.h \
+    cpp/dlg/mdl/MLListView.h \
+    cpp/dlg/mdl/wholeTrackDlg.h \
+    cpp/dlg/mdl/singerimgdlg.h
 
 RESOURCES += res.qrc
 
-FORMS += mainwindow.ui  msgbox.ui  networkWarnDlg.ui \
-         bkgdlg.ui  addbkgdlg.ui  colordlg.ui \
-         medialibdlg.ui  wholeTrackDlg.ui \
-         singerimgdlg.ui
+FORMS += ui/mainwindow.ui  ui/msgbox.ui  ui/networkWarnDlg.ui \
+         ui/bkgdlg.ui  ui/addbkgdlg.ui  ui/colordlg.ui \
+         ui/medialibdlg.ui  ui/wholeTrackDlg.ui  ui/singerimgdlg.ui
 
 INCLUDEPATH += ../../inc  cpp
 
