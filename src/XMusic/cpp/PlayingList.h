@@ -14,11 +14,12 @@ struct tagPlayingItem
 class CPlayingList : public CListView
 {
 public:
-    CPlayingList(QWidget *parent=NULL);
+    CPlayingList(QWidget *parent=NULL)
+        : CListView(parent)
+    {
+    }
 
 private:
-    QPixmap m_pmPlaying;
-
     UINT m_uPageRowCount = 0;
 
     ArrList<tagPlayingItem> m_alPlayingItems;
@@ -30,6 +31,8 @@ private:
     UINT m_uShadowWidth = 0;
 
 public:
+    void init();
+
     void setShadow(UINT uWidth=1)
     {
         m_uShadowWidth = uWidth;

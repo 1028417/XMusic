@@ -10,6 +10,10 @@ CSingerImgDlg::CSingerImgDlg(CMedialibDlg& medialibDlg)
     : CDialog(medialibDlg)
     , m_singerImgMgr(__app.getSingerImgMgr())
 {
+}
+
+void CSingerImgDlg::init()
+{
     ui.setupUi(this);
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 

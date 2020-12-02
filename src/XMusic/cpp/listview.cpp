@@ -5,6 +5,19 @@
 
 #define __cxBar __size(5)
 
+CListView::CListView(QWidget *parent, E_LVScrollBar eScrollBar)
+    : TWidget(parent)
+    , m_eScrollBar(eScrollBar)
+    , m_pmForward(__app.m_pmForward)
+{
+    setAttribute(Qt::WA_TranslucentBackground);
+
+    /*if (!lstGestureType.empty())
+    {
+        grabGesture(lstGestureType);
+    }*/
+}
+
 void CListView::showItem(UINT uItem, bool bToCenter)
 {
     auto uRow = uItem/getColCount();

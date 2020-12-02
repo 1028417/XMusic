@@ -47,9 +47,9 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
 }
 
 CApp::CApp()
-    : m_ctrl(*this, m_model),
-    m_model(m_mainWnd, m_ctrl.getOption()),
-    m_msgbox(m_mainWnd)
+    : m_ctrl(*this, m_model)
+    , m_model(m_mainWnd, m_ctrl.getOption())
+    //, m_msgbox(m_mainWnd)
 {
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [&](fn_void cb){
@@ -91,9 +91,7 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
-    m_mainWnd.showBlank();
-
-    std::thread thrInit([=](){
+    std::thread thrStartup([=](){
         auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
         if (!m_model.init(strWorkDir, strMedialibDir))
         {
@@ -103,22 +101,10 @@ int CApp::run(cwstr strWorkDir)
             return;
         }
 
-        sync(100, [&](){
-            m_mainWnd.showLogo();
-        });
-
-        E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]() {
-            return _init();
-        }, [&](){
-            (void)m_pmHDDisk.load(__mediaPng(hddisk));
-            (void)m_pmLLDisk.load(__mediaPng(lldisk));
-
-            m_mainWnd.preinit();
-        });
-        sync([=](){
-            _run(eUpgradeResult);
-        });
+        _startup();
     });
+
+    m_mainWnd.showBlank();
 
     auto nRet = exec();
     m_bRunSignal = false;
@@ -134,7 +120,7 @@ int CApp::run(cwstr strWorkDir)
     }
 
 #if !__android // TODO 规避5.6.1退出的bug
-    thrInit.join();
+    thrStartup.join();
 #endif
 
     g_logger >> "stop controller";
@@ -146,33 +132,49 @@ int CApp::run(cwstr strWorkDir)
     return nRet;
 }
 
-E_UpgradeResult CApp::_init()
+void CApp::_startup()
 {
-    auto timeBegin = time(0);
-
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
         g_logger >> "loadMdlConfResource fail";
-        return E_UpgradeResult::UR_Fail;
-    }
-    auto&& ba = qf.readAll();
-
-    extern int g_nAppUpgradeProgress;
-    E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
-                                                        , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
-    if (E_UpgradeResult::UR_Success != eUpgradeResult)
-    {
-        return eUpgradeResult;
+        return;
     }
 
-    auto time0 = time(0);
-    if (!m_model.initMediaLib())
-    {
-        g_logger >> "initMediaLib fail";
-        return E_UpgradeResult::UR_Fail;
-    }
-    g_logger << "initMediaLib success " >> (time(0)-time0);
+    sync(100, [&](){
+        m_mainWnd.showLogo();
+    });
+
+    auto timeBegin = time(0);
+
+    E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]() {
+        cauto ba = qf.readAll();
+        extern int g_nAppUpgradeProgress;
+        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
+                                                            , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
+        if (E_UpgradeResult::UR_Success != eUpgradeResult)
+        {
+            return eUpgradeResult;
+        }
+
+        auto time0 = time(0);
+        if (!m_model.initMediaLib())
+        {
+            g_logger >> "initMediaLib fail";
+            return E_UpgradeResult::UR_Fail;
+        }
+        g_logger << "initMediaLib success " >> (time(0)-time0);
+
+        return E_UpgradeResult::UR_Success;
+    }, [&](){
+        (void)m_pmPlaying.load(__png(btnPlay));
+        (void)m_pmDeleteBkg.load(__png(btnX));
+        (void)m_pmForward.load(__png(btnForward));
+        (void)m_pmHDDisk.load(__mdlPng(hddisk));
+        (void)m_pmLLDisk.load(__mdlPng(lldisk));
+
+        m_mainWnd.preinit();
+    });
 
     auto timeDiff = 6 - (time(0) - timeBegin);
     g_logger << "timeDiff: " >> timeDiff;
@@ -181,10 +183,12 @@ E_UpgradeResult CApp::_init()
         mtutil::usleep((UINT)timeDiff*1000);
     }
 
-    return E_UpgradeResult::UR_Success;
+    sync([=](){
+        _show(eUpgradeResult);
+    });
 }
 
-void CApp::_run(E_UpgradeResult eUpgradeResult)
+void CApp::_show(E_UpgradeResult eUpgradeResult)
 {
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
@@ -227,6 +231,7 @@ void CApp::_run(E_UpgradeResult eUpgradeResult)
 #elif __android
             vibrate();
 #endif
+            static CMsgBox m_msgbox(m_mainWnd);
             m_msgbox.show(qsErrMsg, [&](){
                 this->quit();
             });

@@ -8,7 +8,8 @@
 
 #define __pkgName L"com.musicrossoft.xmusic"
 
-#define __mediaPng(f) ":/img/medialib/" #f ".png"
+#define __png(name)  ":/img/" #name ".png"
+#define __mdlPng(name) ":/img/medialib/" #name ".png"
 
 extern cwstr g_strWorkDir;
 

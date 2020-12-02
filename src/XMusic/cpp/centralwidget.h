@@ -24,7 +24,7 @@ private:
     map<QWidget*, QRect> m_mapWidgetNewPos;
 
 public:
-    void init();
+    void ctor();
 
     void relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos eSingerImgPos
                   , const tagPlayingInfo& PlayingInfo, CPlayingList& PlayingList);

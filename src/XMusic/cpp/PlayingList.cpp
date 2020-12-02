@@ -3,16 +3,15 @@
 
 #include "PlayingList.h"
 
-CPlayingList::CPlayingList(QWidget *parent)
-    : CListView(parent)
+void CPlayingList::init()
 {
-#if __windows || __mac
-    this->setMouseTracking(true);
-#endif
+    updateList(__app.getOption().uPlayingItem);
 
     this->startTimer(1000);
 
-    (void)m_pmPlaying.load(":/img/btnPlay.png");
+#if __windows || __mac
+    this->setMouseTracking(true);
+#endif
 }
 
 size_t CPlayingList::getRowCount() const
@@ -75,7 +74,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 //❥
 #define __szIcon __size(18)
         QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
-        painter.drawPixmap(rcIcon, m_pmPlaying);
+        painter.drawPixmap(rcIcon, __app.m_pmPlaying);
     }
 
     rc.setLeft(__size(35));

@@ -36,7 +36,9 @@ private:
     CWholeTrackView m_lv;
 
 public:
-    void relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv);
+    void init();
 
     bool tryShow(IMedia& media);
+
+    void relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv);
 };

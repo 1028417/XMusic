@@ -12,6 +12,10 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg)
     : CDialog(medialibDlg)
     , m_lv(*this)
 {
+}
+
+void CWholeTrackDlg::init()
+{
     ui.setupUi(this);
 
     ui.labelDisk->setPixmapRound(0);
@@ -29,19 +33,6 @@ CWholeTrackDlg::CWholeTrackDlg(CMedialibDlg& medialibDlg)
             __app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
         }
     });
-}
-
-void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv)
-{
-     ui.btnReturn->setGeometry(rcBtnReturn);
-
-     ui.labelDisk->setGeometry(rcLabelDisk);
-
-     ui.btnPlay->setGeometry(rcBtnPlay);
-
-     ui.labelTitle->setGeometry(rcTitle);
-
-     m_lv.setGeometry(rcLv);
 }
 
 bool CWholeTrackDlg::tryShow(IMedia& media)
@@ -68,6 +59,18 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
     return true;
 }
 
+void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv)
+{
+     ui.btnReturn->setGeometry(rcBtnReturn);
+
+     ui.labelDisk->setGeometry(rcLabelDisk);
+
+     ui.btnPlay->setGeometry(rcBtnPlay);
+
+     ui.labelTitle->setGeometry(rcTitle);
+
+     m_lv.setGeometry(rcLv);
+}
 
 CWholeTrackView::CWholeTrackView(CWholeTrackDlg& WholeTrackDlg)
     : CListView(&WholeTrackDlg, E_LVScrollBar::LVSB_Right)

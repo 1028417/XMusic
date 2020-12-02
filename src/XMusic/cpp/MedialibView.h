@@ -25,6 +25,9 @@ private:
 
     CMediaDir &m_OuterDir;
 
+    cqpm m_pmHDDisk;
+    cqpm m_pmLLDisk;
+
     QPixmap m_pmSingerGroup;
     QPixmap m_pmAlbum;
 
@@ -60,7 +63,7 @@ private:
     int m_nFlashItem = -1;
 
 public:
-    void initpm();
+    void preinit();
 
     void reset() override
     {

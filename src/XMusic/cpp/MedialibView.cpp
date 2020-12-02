@@ -10,48 +10,50 @@
 
 #define __RemarkAlpha 200
 
-CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir) :
-    CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
+CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
+    : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(__app.getSingerMgr())
     , m_PlaylistLib(__app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
+    , m_pmHDDisk(__app.m_pmHDDisk)
+    , m_pmLLDisk(__app.m_pmLLDisk)
 {
 }
 
-void CMedialibView::initpm()
+void CMedialibView::preinit()
 {
-    (void)m_pmSSFile.load(__mediaPng(media));
+    (void)m_pmSSFile.load(__mdlPng(media));
 
-    (void)m_pmSingerGroup.load(__mediaPng(singergroup));
-    (void)m_pmDefaultSinger.load(__mediaPng(singerdefault));
-    (void)m_pmAlbum.load(__mediaPng(album));
+    (void)m_pmSingerGroup.load(__mdlPng(singergroup));
+    (void)m_pmDefaultSinger.load(__mdlPng(singerdefault));
+    (void)m_pmAlbum.load(__mdlPng(album));
 
-    (void)m_pmPlaylistSet.load(__mediaPng(playlistset));
-    (void)m_pmPlaylist.load(__mediaPng(playlist));
-    (void)m_pmPlayItem.load(__mediaPng(playitem));
+    (void)m_pmPlaylistSet.load(__mdlPng(playlistset));
+    (void)m_pmPlaylist.load(__mdlPng(playlist));
+    (void)m_pmPlayItem.load(__mdlPng(playitem));
 
-    (void)m_pmXmusicDir.load(__mediaPng(xmusicdir));
-    (void)m_pmSSDir.load(__mediaPng(ssdir));
+    (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
+    (void)m_pmSSDir.load(__mdlPng(ssdir));
 
-    (void)m_pmHires.load(__mediaPng(hires));
-    (void)m_pmDSD.load(__mediaPng(dsd));
-    (void)m_pmMQS.load(__mediaPng(mqs));
-    (void)m_pmDTS.load(__mediaPng(dts));
+    (void)m_pmHires.load(__mdlPng(hires));
+    (void)m_pmDSD.load(__mdlPng(dsd));
+    (void)m_pmMQS.load(__mdlPng(mqs));
+    (void)m_pmDTS.load(__mdlPng(dts));
 
 #if __android
-    (void)m_pmOuterDir.load(__mediaPng(tf));
+    (void)m_pmOuterDir.load(__mdlPng(tf));
 #elif __windows
-    (void)m_pmOuterDir.load(__mediaPng(windriver));
+    (void)m_pmOuterDir.load(__mdlPng(windriver));
 #endif
 
-    (void)m_pmDirLink.load(__mediaPng(dirLink));
-    (void)m_pmDir.load(__mediaPng(dir));
-    (void)m_pmFile.load(__mediaPng(file));
+    (void)m_pmDirLink.load(__mdlPng(dirLink));
+    (void)m_pmDir.load(__mdlPng(dir));
+    (void)m_pmFile.load(__mdlPng(file));
 
-    (void)m_pmPlay.load(":/img/btnPlay.png");
+    (void)m_pmPlay.load(__png(btnPlay));
     m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
-    (void)m_pmAddPlay.load(":/img/btnAddplay.png");
+    (void)m_pmAddPlay.load(__png(btnAddplay));
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
 }
 
@@ -409,11 +411,11 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 context.uIconRound = 0;
                 if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
                 {
-                    context.pmIcon = &__app.m_pmHDDisk;
+                    context.pmIcon = &m_pmHDDisk;
                 }
                 else
                 {
-                    context.pmIcon = &__app.m_pmLLDisk;
+                    context.pmIcon = &m_pmLLDisk;
                 }
             }
             else

@@ -15,11 +15,14 @@ CMedialibDlg::CMedialibDlg(QWidget& parent) : CDialog(parent)
 
 void CMedialibDlg::preinit()
 {
-    m_lv.initpm();
+    m_lv.preinit();
 }
 
 void CMedialibDlg::init()
 {
+    m_wholeTrackDlg.init();
+    m_singerImgDlg.init();
+
     ui.setupUi(this);
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);

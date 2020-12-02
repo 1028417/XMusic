@@ -76,25 +76,13 @@ enum class E_LVScrollBar
 class CListView : public TWidget<QWidget>
 {
 public:
-    CListView(QWidget *parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None)
-        : TWidget(parent)
-        , m_eScrollBar(eScrollBar)
-    {
-        setAttribute(Qt::WA_TranslucentBackground);
-
-        /*if (!lstGestureType.empty())
-        {
-            grabGesture(lstGestureType);
-        }*/
-
-        (void)m_pmForward.load(":/img/btnForward.png");
-    }
+    CListView(QWidget *parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None);
 
 protected:
     E_LVScrollBar m_eScrollBar = E_LVScrollBar::LVSB_None;
 
 private:
-    QPixmap m_pmForward;
+    cqpm m_pmForward;
 
     UINT m_uRowHeight = 1;
     UINT m_uTotalRows = 0;

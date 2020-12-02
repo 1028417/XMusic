@@ -29,3 +29,10 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     CDialog::show(cbClose);
 }
+
+void CMsgBox::show(QWidget& parent, cqstr qsMsg, cfn_void cbClose)
+{
+    ui.labelTip->setText(qsMsg);
+
+    CDialog::show(parent, cbClose);
+}

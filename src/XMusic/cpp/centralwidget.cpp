@@ -8,7 +8,7 @@ extern Ui::MainWindow ui;
 
 #define __round(f) (int)roundf(f)
 
-void CCentralWidget::init()
+void CCentralWidget::ctor() // 代替构造函数
 {
     setAttribute(Qt::WA_TranslucentBackground);
 

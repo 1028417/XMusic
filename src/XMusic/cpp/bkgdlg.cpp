@@ -13,10 +13,10 @@ static int g_xsize = 0;
 static Ui::BkgDlg ui;
 
 CBkgView::CBkgView(CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg),
-    m_bkgDlg(bkgDlg)
+    : CListView(&bkgDlg)
+    , m_bkgDlg(bkgDlg)
+    , m_pmDeleteBkg(__app.m_pmDeleteBkg)
 {
-    (void)m_pmX.load(":/img/btnX.png");
 }
 
 inline UINT CBkgView::margin()
@@ -106,7 +106,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                 painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
 
                 QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
-                painter.drawPixmap(rcX, m_pmX);
+                painter.drawPixmap(rcX, m_pmDeleteBkg);
 
                 static UINT s_uSequence = 0;
                 s_uSequence++;
@@ -360,7 +360,10 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 }
 
 void CBkgDlg::init()
-{
+{    
+    m_colorDlg.init();
+    m_addbkgDlg.init();
+
     ui.setupUi(this);
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
@@ -370,10 +373,6 @@ void CBkgDlg::init()
     connect(ui.btnColor, &CButton::signal_clicked, [&]() {
         m_colorDlg.show();
     });
-
-    m_colorDlg.init();
-
-    m_addbkgDlg.init();
 }
 
 size_t CBkgDlg::caleRowCount(int cy)

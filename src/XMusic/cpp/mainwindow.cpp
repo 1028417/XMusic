@@ -74,7 +74,7 @@ MainWindow::MainWindow()
 {
     ui.setupUi(this);
 
-    ui.centralWidget->init();
+    ui.centralWidget->ctor();
 
     for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
                 , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
@@ -332,9 +332,11 @@ void MainWindow::_init()
 
 void MainWindow::show()
 {
-    _init();
-    m_medialibDlg.init();
     m_bkgDlg.init();
+
+    m_medialibDlg.init();
+
+    _init();
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
@@ -347,7 +349,7 @@ void MainWindow::show()
     ui.centralWidget->setVisible(true);
     _relayout();
 
-    m_PlayingList.updateList(__app.getOption().uPlayingItem);
+    m_PlayingList.init();
 
     (void)startTimer(1000);
 

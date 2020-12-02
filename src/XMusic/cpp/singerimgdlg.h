@@ -21,6 +21,15 @@ private:
     UINT m_cyImg = 0;
     QBrush m_brush;
 
+public:
+    void init();
+
+    void show(cwstr strSingerName);
+
+    void relayout(cqrc rcBtnReturn);
+
+    void updateSingerImg();
+
 private:
     void _relayout(int cx, int cy) override;
 
@@ -29,11 +38,4 @@ private:
     void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te) override;
 
     void _showImg(int nOffset);
-
-public:
-    void show(cwstr strSingerName);
-
-    void relayout(cqrc rcBtnReturn);
-
-    void updateSingerImg();
 };

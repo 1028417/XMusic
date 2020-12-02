@@ -72,6 +72,9 @@ private:
     friend tagSingleTone;
 
 public:
+    QPixmap m_pmPlaying; // 正在播放标志
+    QPixmap m_pmForward; // 列表末端箭头
+    QPixmap m_pmDeleteBkg; // 删除背景
     QPixmap m_pmHDDisk;
     QPixmap m_pmLLDisk;
 
@@ -86,11 +89,9 @@ private:
 
     MainWindow m_mainWnd;
 
-    CMsgBox m_msgbox;
+    //CMsgBox m_msgbox;
 
 signals:
-    void signal_run(int nUpgradeResult);
-
     void signal_sync(fn_void cb);
 
 private:
@@ -101,7 +102,8 @@ private:
 
     E_UpgradeResult _init();
 
-    void _run(E_UpgradeResult eUpgradeResult);
+    void _startup();
+    void _show(E_UpgradeResult eUpgradeResult);
 
 public:
     XThread& thread()
