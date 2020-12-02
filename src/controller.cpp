@@ -1,9 +1,9 @@
 ﻿
-#if __winvc
-#include "stdafx.h"
-#endif
-
 #include "controller.h"
+
+#if !__winvc
+#include "xmusic.h"
+#endif
 
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName;// + __wcDot;
@@ -50,9 +50,7 @@ void CXController::start()
 		}
 	});
 
-	__async([&]() {
-		CFolderDlg::preInit();
-
+    __async([&]() {
 		auto& strRootDir = m_OptionMgr.getOption().strRootDir;
 		if (strRootDir.empty() || !fsutil::existDir(strRootDir))
 		{
@@ -63,12 +61,32 @@ void CXController::start()
 				return;
 			}
 		}
-	
+        else
+        {
+            mtutil::thread([&](){
+                CFolderDlg::preInit();
+            });
+        }
+
+        int nRet = CPlayer::InitSDK();
+        if (nRet != 0)
+        {
+            //g_logger << "initPlaySDK fail: " >> nRet;
+            return;
+        }
+
 		PlayMgr.tryPlay();
 	});
 
 #else
     m_threadPlayCtrl.start([&]()mutable {
+        int nRet = CPlayer::InitSDK();
+        if (nRet != 0)
+        {
+            g_logger << "initPlaySDK fail: " >> nRet;
+            return;
+        }
+
         PlayMgr.tryPlay();
 
         while (m_threadPlayCtrl.usleepex(100))
@@ -152,6 +170,8 @@ void CXController::stop()
     m_model.close();
 
     m_OptionMgr.saveOption();
+
+    CPlayer::QuitSDK();
 }
 
 #if __winvc

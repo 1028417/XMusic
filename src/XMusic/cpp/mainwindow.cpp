@@ -94,7 +94,7 @@ MainWindow::MainWindow()
     m_PlayingList.raise();
 
 #if __android || __ios
-    int nLogoWidth = g_szScreenMin*42/100;
+    int nLogoWidth = g_screen.szScreenMin*42/100;
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
     ui.labelLogo->setScaledContents(true);
 

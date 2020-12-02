@@ -142,6 +142,6 @@ private:
 
     bool installApp(const CByteBuffer& bbfBuff) override
     {
-        return installApp(bbfBuff);
+        return ::installApp(bbfBuff);
     }
 };

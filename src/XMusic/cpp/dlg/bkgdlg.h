@@ -73,7 +73,7 @@ public:
     CBkgDlg(QWidget& parent);
 
 private:
-    class tagOption& m_option;
+    struct tagOption& m_option;
 
     CBkgView m_lv;
 

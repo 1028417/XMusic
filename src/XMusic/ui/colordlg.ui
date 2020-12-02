@@ -614,12 +614,12 @@ gridline-color: rgb(255, 255, 255);</string>
   <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
-   <header location="global">widget/label.h</header>
+   <header>widget/label.h</header>
   </customwidget>
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
-   <header location="global">widget/button.h</header>
+   <header>widget/button.h</header>
   </customwidget>
   <customwidget>
    <class>CColorBar</class>

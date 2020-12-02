@@ -88,7 +88,7 @@
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>util.lib;Common.lib;model.lib;MediaLib.lib;../view/view.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>util.lib;Common.lib;model.lib;MediaLib.lib;PlaySDK.lib;../view/view.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../../../Common2.1/libs;../../../PlaySDK/libs;../../libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
@@ -133,7 +133,7 @@
     </ResourceCompile>
     <Link>
       <RegisterOutput>false</RegisterOutput>
-      <AdditionalDependencies>util.lib;Common.lib;model.lib;MediaLib.lib;../view/view.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>util.lib;Common.lib;model.lib;MediaLib.lib;PlaySDK.lib;../view/view.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>../../../Common2.1/libs;../../../PlaySDK/libs;../../libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
