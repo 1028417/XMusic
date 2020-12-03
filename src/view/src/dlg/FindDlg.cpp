@@ -72,7 +72,7 @@ BOOL CFindDlg::OnInitDialog()
 		}
 	}
 
-	async([&]() {
+	async([&]{
 		GetDlgItem(IDC_EDIT1)->SetFocus();
 	});
 	
@@ -81,7 +81,7 @@ BOOL CFindDlg::OnInitDialog()
 
 void CFindDlg::OnEnChangeEdit1()
 {
-	async(300, [&]() {
+	async(300, [&]{
 		CString cstrFind;
 		(void)m_wndEdit.GetWindowText(cstrFind);
 		(void)cstrFind.Trim();
@@ -195,7 +195,7 @@ void CFindDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	int iItem = lpNMList->iItem;
 	int iSubItem = lpNMList->iSubItem;
 
-	m_wndList.AsyncLButtondown([=]() {
+	m_wndList.AsyncLButtondown([=]{
 		m_MediaMixer.getMediaMixture([&](const CMediaMixture& MediaMixture) {
 			CRedrawLock RedrawLock(m_view.m_MainWnd, true);
 

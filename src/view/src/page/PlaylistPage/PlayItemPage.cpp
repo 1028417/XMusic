@@ -229,7 +229,7 @@ void CPlayItemPage::ShowPlaylist(CPlaylist *pPlaylist, bool bSetActive)
 
 	this->UpdateHead();
 
-	__async(10, [&]() {
+	__async(10, [&]{
 		if (m_pPlaylist)
 		{
 			m_wndList.AsyncTask(__AsyncTaskElapse + m_pPlaylist->playItems().size() / 10, [](CListObject& object) {
@@ -505,7 +505,7 @@ void CPlayItemPage::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		__Ensure(m_wndList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
-		m_wndList.AsyncLButtondown([=]() {
+		m_wndList.AsyncLButtondown([=]{
 			auto pPlayItem = (CPlayItem*)m_wndList.GetItemObject(iItem);
 			__Ensure(pPlayItem);
 			(void)pPlayItem->findRelatedMedia();

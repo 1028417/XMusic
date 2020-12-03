@@ -55,7 +55,7 @@ void CPlayCtrl::_handlePlaySpiritEvent(E_PlaySpiritEvent eEvent, UINT uButton, s
 			{
 				s_bMenuShowed = true;
 
-				__async([&]() {
+				__async([&]{
 					CMenuGuard MenuGuard(m_view.m_ResModule, IDR_PLAYSPIRIT, 180);
 					MenuGuard.Popup(&m_view.m_MainWnd, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 
@@ -109,7 +109,7 @@ void CPlayCtrl::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 		return;
 	}
 
-	__appSync([=]() {
+	__appSync([=]{
 		if (bPlayFinish)
 		{
 			(void)m_view.getPlayMgr().playNext(false);
@@ -119,7 +119,7 @@ void CPlayCtrl::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 			//CPlaySpirit::inst()->clear();
 
 			g_bFailRetry = true;
-			__async(2000, [&]() {
+			__async(2000, [&]{
 				if (g_bFailRetry)
 				{
 					(void)m_view.getPlayMgr().playNext(false);

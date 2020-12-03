@@ -450,7 +450,7 @@ void CAlbumPage::UpdateSingerImage()
 	static CWinTimer s_timer;
 	if (_playSingerImage(true))
 	{
-		s_timer.set(__PlaySingerImageElapse, [&]() {
+		s_timer.set(__PlaySingerImageElapse, [&]{
 			_playSingerImage(false);
 			return true;
 		});
@@ -1396,7 +1396,7 @@ void CAlbumPage::OnNMClickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 		__Ensure(m_wndAlbumItemList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
-		m_wndAlbumItemList.AsyncLButtondown([=]() {
+		m_wndAlbumItemList.AsyncLButtondown([=]{
 			auto pAlbumItem = (CAlbumItem*)m_wndAlbumItemList.GetItemObject(iItem);
 			__Ensure(pAlbumItem);
 			(void)pAlbumItem->findRelatedMedia();
@@ -1436,7 +1436,7 @@ void CAlbumPage::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSetChan
 
 void CAlbumPage::_asyncTask()
 {
-	__async(10, [&]() {
+	__async(10, [&]{
 		if (m_pAlbum)
 		{
 			m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_pAlbum->albumItems().size() / 10, [](CListObject& object) {

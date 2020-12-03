@@ -993,7 +993,7 @@ void CMediaResPanel::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		__Ensure(m_wndList.GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL));
 
 		int iItem = lpNMList->iItem;
-		m_wndList.AsyncLButtondown([=]() {
+		m_wndList.AsyncLButtondown([=]{
 			CMediaRes* pMediaRes = (CMediaRes*)m_wndList.GetItemObject(iItem);
 			__Ensure(pMediaRes);
 

@@ -186,7 +186,7 @@ void CSimilarFileDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMLISTVIEW lpNMList = (LPNMLISTVIEW)pNMHDR;
 	if (0 == lpNMList->iSubItem)
 	{
-		m_wndList.AsyncLButtondown([=]() {
+		m_wndList.AsyncLButtondown([=]{
 			OnBnClickedExplore();
 		});
 	}

@@ -38,19 +38,19 @@ bool __view::show()
 	bool bExistMedialib = (!strRootDir.empty() && fsutil::existDir(strRootDir));
 	if (bExistMedialib)
 	{
-		mtutil::thread([&]() {
+		mtutil::thread([&]{
 			if (!m_model.initMediaLib(false))
 			{
 				CMainApp::GetMainApp()->Quit();
 				return;
 			}
 
-			__appSync([&]() {
+			__appSync([&]{
 				initView();
 
 				m_model.getPlayMgr().tryPlay();
 
-				mtutil::thread([&]() {
+				mtutil::thread([&]{
 					CFolderDlg::preInit();
 				});
 			});
@@ -68,7 +68,7 @@ bool __view::show()
 
 	if (!bExistMedialib)
 	{
-		__async([=]() {
+		__async([=]{
 			if (!m_controller.setupMediaLib())
 			{
 				CMainApp::GetMainApp()->Quit();
@@ -115,8 +115,8 @@ bool __view::_create()
 void __view::initView()
 {
 	m_ImgMgr.clearSingerImg();
-	__async(50, [&](){
-		mtutil::thread([&](){
+	__async(50, [&]{
+		mtutil::thread([&]{
 			m_ImgMgr.initSingerImg();
 			m_PlayingPage.Invalidate();
 		});
@@ -449,7 +449,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		cauto strOldPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
 		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
 
-		m_model.getPlayMgr().moveFile(strOldPath, strNewPath, [&]() {
+		m_model.getPlayMgr().moveFile(strOldPath, strNewPath, [&]{
 			(void)fsutil::removeFile(strOldPath);
 
 			if (!fsutil::moveFile(strSrcPath, strNewPath))

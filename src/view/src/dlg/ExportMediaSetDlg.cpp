@@ -24,7 +24,7 @@ BOOL CExportMediaSetDlg::OnInitDialog()
 		_sumCheckedSize();
 	});
 
-	m_thread = thread([&]() {
+	m_thread = thread([&]{
 		_sumSize(m_MediaSet);
 	});
 
@@ -101,7 +101,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 		}
 
 		bool bChecked = false;
-		__appSync([&]() {
+		__appSync([&]{
 			bChecked = CS_Unchecked != m_wndTree.GetCheckState(*pSubSets);
 		});
 		if (bChecked)
@@ -114,7 +114,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 
 	if (0 != uSumSize)
 	{
-		__appSync([&]() {
+		__appSync([&]{
 			uint64_t uMB = uSumSize / __1e6;
 
 			m_mapSumSize[&MediaSet] = uSumSize;
@@ -142,7 +142,7 @@ void CExportMediaSetDlg::OnDestroy()
 	m_bClosing = true;
 	if (m_thread.joinable())
 	{
-		CMainApp::GetMainApp()->concurrence([&]() {
+		CMainApp::GetMainApp()->concurrence([&]{
 			m_thread.join();
 		});
 	}

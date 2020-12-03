@@ -368,7 +368,7 @@ BOOL CBackupCompareDlg::OnInitDialog()
 
 	m_wndSrcCombo.SetCurSel(uIdxSrc);
 
-	async(50, [&]() {
+	async(50, [&]{
 		_compare();
 	});
 
@@ -431,7 +431,7 @@ void CBackupCompareDlg::_compare()
 		m_BackupMgr.compareBackup(strSrcTag, strDstTag, [=](const tagCompareBackupResult& result) {
 			if (result.strSrcTag == strSrcTag && result.strDstTag == strDstTag && ::IsWindow(hWnd))
 			{
-				__appSync([&]() {
+				__appSync([&]{
 					_fillResult(result);
 				});
 			}

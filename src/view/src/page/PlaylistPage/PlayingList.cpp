@@ -492,7 +492,7 @@ BOOL CPlayingList::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT*
 				{
 					if (GetSelectedCount()<=1 && !CMainApp::getKeyState(VK_SHIFT) && !CMainApp::getKeyState(VK_CONTROL))
 					{
-						__super::AsyncLButtondown([=]() {
+						__super::AsyncLButtondown([=]{
 							m_view.getPlayMgr().playingItems().get(uItem, [&](cauto PlayItem) {
 								handleLinkClick(uItem, (CPlayItem&)PlayItem, m_vecItemLinks[uItem], eLinkType);
 							});

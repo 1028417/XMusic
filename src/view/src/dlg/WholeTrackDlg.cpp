@@ -85,7 +85,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 					pMediaRes = itr->second;
 				}
 
-				__appSync([&]() {
+				__appSync([&]{
 					showCueInfo(subDir.GetPath(), cueFile, pMediaRes);
 				});
 			}
@@ -98,7 +98,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 		if (plUnmatchFile)
 		{
-			__appSync([&]() {
+			__appSync([&]{
 				plUnmatchFile([&](CMediaRes *pMediaRes, cwstr strDir) {
 					showCueInfo(strDir, CCueFile::NoCue, pMediaRes);
 				});
@@ -230,7 +230,7 @@ void CWholeTrackDlg::OnCancel()
 {
 	if (m_thread.joinable())
 	{
-		CMainApp::GetMainApp()->concurrence([&]() {
+		CMainApp::GetMainApp()->concurrence([&]{
 			m_thread.cancel();
 		});
 	}

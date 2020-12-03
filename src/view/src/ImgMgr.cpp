@@ -115,19 +115,19 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 
 void CImgMgr::initSingerImg()
 {
-	CSignal sgn(false, true);
+	CSignal signal(true);
 	list<UINT> lstSingerID;
 	list<CImg> lstImg;
-	mtutil::concurrence([&]() {
+	mtutil::concurrence([&]{
 		auto paSinger = m_model.getSingerMgr().singers();		
 		function<void(UINT, UINT)> fn;	
 		fn = [&](UINT begin, UINT end) {
 			auto part = (end - begin) / 2;
 			if (part >= 50)
 			{
-				mtutil::concurrence([&]() {
+				mtutil::concurrence([&]{
 					fn(begin, begin+part);
-				}, [&]() {
+				}, [&]{
 					fn(begin+part, end);
 				});
 				return;
@@ -147,7 +147,7 @@ void CImgMgr::initSingerImg()
 						return;
 					}
 
-					sgn.set([&](){
+					signal.set([&]{
 						lstSingerID.push_back(singer.m_uID);
 						lstImg.emplace_back(img);
 					});
@@ -157,11 +157,11 @@ void CImgMgr::initSingerImg()
 		};
 		fn(0, paSinger.size());
 
-		sgn.stop();
-	}, [&]() {
+		signal.stop();
+	}, [&]{
 		list<UINT> t_lstSingerID;
 		list<CImg> t_lstImg;
-		while (sgn.wait([&]() {
+		while (signal.wait([&]{
 				t_lstSingerID.swap(lstSingerID);
 				t_lstImg.swap(lstImg);
 			}))

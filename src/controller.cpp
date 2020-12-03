@@ -14,7 +14,7 @@ void CXController::start()
 {
     static auto& PlayMgr = m_model.getPlayMgr();
 #if __winvc
-    (void)timerutil::setTimer(60000, [&]() {
+    (void)timerutil::setTimer(60000, [&]{
         if (m_OptionMgr.checkAlarm())
 		{
             cauto vctAlarmmedia = m_model.getDataMgr().alarmmedias();
@@ -67,12 +67,12 @@ void CXController::start()
 			return;
 		}
 
-        mtutil::thread([&](){
+        mtutil::thread([&]{
             CFolderDlg::preInit();
         });
     }
 
-	__async([&]() {
+	__async([&]{
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {
@@ -315,7 +315,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
     if (fsutil::existPath(strOldAbsPath, bDir))
 	{
 		bool bRet = false;
-        m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]() {
+        m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]{
 			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath))
 			{
                 m_view.msgBox(L"重命名失败: \n\n\t" + strOldAbsPath);
@@ -392,7 +392,7 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDi
 			}
 		}
 		
-		m_model.getPlayMgr().moveFile(media.GetAbsPath(), strDstAbsPath, [&]() {
+		m_model.getPlayMgr().moveFile(media.GetAbsPath(), strDstAbsPath, [&]{
 			(void)fsutil::removeFile(strDstAbsPath);
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{

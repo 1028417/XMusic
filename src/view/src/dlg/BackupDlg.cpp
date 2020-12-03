@@ -53,7 +53,7 @@ BOOL CBackupDlg::OnInitDialog()
 	auto& arrBackupTag = m_BackupMgr.getBackupTags();
 	if (arrBackupTag)
 	{
-		async([&]() {
+		async([&]{
 			m_wndList.SelectItem(0);
 			m_wndList.SetFocus();
 
@@ -134,7 +134,7 @@ void CBackupDlg::Refresh()
 		return;
 	}
 	
-	m_timer.set(500, [&]() {
+	m_timer.set(500, [&]{
 		prlist<wstring, wstring> plTask;
 		s_mapEmptyRow([&](auto& strTag, auto& pr) {
 			plTask.emplace_back(pr.second, strTag);
