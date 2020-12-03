@@ -46,7 +46,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 
 	(void)m_wndList.ModifyStyle(0, LVS_SINGLESEL);
 
-	m_thread.start([&](XT_RunSignal bRunSignal) {
+	m_thread.start([&](signal_t bRunSignal) {
 		PairList<CMediaRes*, wstring> plUnmatchFile;
 		CPath::scanDir(bRunSignal, __medialib, [&](CPath& dir, TD_XFileList& paSubFile) {
 			CMediaDir& subDir = (CMediaDir&)dir;

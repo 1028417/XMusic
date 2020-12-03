@@ -115,7 +115,7 @@ bool CImgMgr::_setSingerImg(cwstr strFile)
 
 void CImgMgr::initSingerImg()
 {
-	CSignal signal(true);
+	CSignal<true> signal;
 	list<UINT> lstSingerID;
 	list<CImg> lstImg;
 	mtutil::concurrence([&]{
