@@ -51,7 +51,7 @@ protected:
 	void async(UINT uDelayTime, cfn_void cb)
 	{
 		auto hWnd = m_hWnd;
-		__async(uDelayTime, [=]() {
+		__async(uDelayTime, [=]{
 			if (::IsWindow(hWnd))
 			{
 				cb();

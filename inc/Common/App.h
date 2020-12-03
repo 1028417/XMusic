@@ -130,7 +130,7 @@ public:
 			}
 		}
 
-		_sync([=]() {
+		_sync([=]{
 			fn();
 
 			if (bBlock)
@@ -149,7 +149,7 @@ public:
 	RET sync(const FN& fn, bool bBlock=true)
 	{
 		RET ret;
-		sync([&]() {
+		sync([&]{
 			ret = fn();
 		}, bBlock);
 
@@ -160,7 +160,7 @@ public:
 	void concurrence(const FN& fn)
 	{
 		bool bExit = false;
-		std::thread thr([&]() {
+		std::thread thr([&]{
 			fn();
 
 			bExit = true;
@@ -183,7 +183,7 @@ public:
 	RET concurrence(const FN& fn)
 	{
 		RET ret;
-		concurrence([&]() {
+		concurrence([&]{
 			ret = fn();
 		});
 

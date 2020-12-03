@@ -95,7 +95,7 @@ public:
 			hWndOwner = CMainApp::GetMainApp()->GetMainWnd()->GetSafeHwnd();
 		}
 
-		return CMainApp::GetMainApp()->concurrence([&]() {
+		return CMainApp::GetMainApp()->concurrence([&]{
 			return CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
 				, lpszOKButton, lpszCancelButton, uWidth, uHeight);
 		});
@@ -121,21 +121,21 @@ public:
 
 	wstring ShowSave()
 	{
-		return CMainApp::GetMainApp()->concurrence([&]() {
+		return CMainApp::GetMainApp()->concurrence([&]{
 			return CFileDlg::ShowSave();
 		});
 	}
 
 	wstring ShowOpenSingle()
 	{
-		return CMainApp::GetMainApp()->concurrence([&]() {
+		return CMainApp::GetMainApp()->concurrence([&]{
 			return CFileDlg::ShowOpenSingle();
 		});
 	}
 
 	wstring ShowOpenMulti(list<wstring>& lstFiles)
 	{
-		return CMainApp::GetMainApp()->concurrence([&]() {
+		return CMainApp::GetMainApp()->concurrence([&]{
 			return CFileDlg::ShowOpenMulti(lstFiles);
 		});
 	}

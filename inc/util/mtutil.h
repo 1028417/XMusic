@@ -55,7 +55,7 @@ public:
     static bool concurrence(cfn_bool& fn, cfn_bool& cbThread)
 	{
 		bool bRet = true;
-		std::thread thr([&]() {
+		std::thread thr([&]{
 			if (!cbThread())
 			{
 				bRet = false;
@@ -98,7 +98,7 @@ public:
 	static RET concurrence(const FN& fn, const CB& cbThread)
 	{
 		RET ret;
-                std::thread thr([&]() {
+                std::thread thr([&]{
                     ret = cbThread();
 		});
 
@@ -219,9 +219,7 @@ using XT_RunSignal = const bool&;
 class __UtilExt XThread
 {
 public:
-    XThread() : m_sgnRuning(false, false)
-    {
-    }
+    XThread() = default;
 
     virtual ~XThread()
     {
@@ -238,7 +236,7 @@ public:
     {
         m_mutex.lock();
 
-        m_thread = thread([=]() {
+        m_thread = thread([=]{
             m_sgnRuning.set();
             //mtutil::usleep(1);
             m_mutex.lock();
@@ -271,14 +269,14 @@ public:
 
     void start(cfn_void_t<XT_RunSignal> cb, UINT uMsLoop=0)
     {
-        start([&, cb]() {
+        start([&, cb]{
             cb(m_sgnRuning);
         }, uMsLoop);
     }
 
     void start(UINT uMsLoop, cfn_bool cb)
     {
-        start([&, cb](){
+        start([&, cb]{
             if (!cb())
             {
                 if (m_sgnRuning)
@@ -291,7 +289,7 @@ public:
 
     void start(UINT uMsLoop, cfn_bool_t<XT_RunSignal> cb)
     {
-        start([&, cb](){
+        start([&, cb]{
             if (!cb(m_sgnRuning))
             {
                 if (m_sgnRuning)

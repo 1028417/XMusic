@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <mutex>
 #include <condition_variable>
@@ -89,50 +89,95 @@ protected:
     T m_value;
 
 private:
+#if __winvc
+	template<class _Rep, class _Period>
+	inline xtime _To_xtime(const chrono::duration<_Rep, _Period>& _Rel_time)
+	{	// convert duration to xtime
+		xtime _Xt{ 0,0 };
+		if (_Rel_time > chrono::duration<_Rep, _Period>::zero())
+		{	// positive relative time, convert
+			chrono::nanoseconds _T0 = chrono::system_clock::now().time_since_epoch();
+			_T0 += chrono::duration_cast<chrono::nanoseconds>(_Rel_time);
+			_Xt.sec = chrono::duration_cast<chrono::seconds>(_T0).count();
+			_T0 -= chrono::seconds(_Xt.sec);
+			_Xt.nsec = (long)_T0.count();
+		}
+		return (_Xt);
+	}
+#endif
+
     using CB_CheckSignal = const function<bool(T& value)>&;
     inline bool _wait(CB_CheckSignal cbCheck, int nMs = -1)
     {
-        if (nMs >= 0)
+		if (m_bStop)
+		{
+			return false;
+		}
+
+		mutex_lock lock(m_mutex);
+		if (m_bStop)
+		{
+			return false;
+		}
+		if (cbCheck(m_value))
+		{
+			return true;
+		}
+
+		if (0 == nMs)
+		{
+			return false;
+		}
+
+        if (nMs > 0)
         {
-            mutex_lock lock(m_mutex);
-            if (m_bStop)
-            {
-                return false;
-            }
+			cauto duration = std::chrono::milliseconds(nMs);
+			/*if (cv_status::timeout == m_condition.wait_for(lock, duration))
+			{
+				return false;
+			}*/
 
-            if (cbCheck(m_value))
-            {
-                return true;
-            }
+			//被虚假唤醒后继续等够时间
+#if __winvc
+			auto xt = _To_xtime(duration);
+			auto t = &xt;
+#else
+			auto t = chrono::system_clock::now() + duration;
+#endif
+			do {
+				if (m_condition.wait_until(lock, t) == cv_status::timeout)
+				{
+					return !m_bStop && cbCheck(m_value);
+				}
 
-            if (cv_status::timeout == m_condition.wait_for(lock, std::chrono::milliseconds(nMs)))
-            {
-                return false;
-            }
-            if (m_bStop)
-            {
-                return false;
-            }
-
-            return cbCheck(m_value);
+				if (m_bStop)
+				{
+					return false;
+				}
+			} while (!cbCheck(m_value));
+			return true;			
         }
-        else
-        {
-            mutex_lock lock(m_mutex);
-            while (!m_bStop)
-            {
-                if (cbCheck(m_value))
-                {
-                    return true;
-                }
 
-                m_condition.wait(lock);
-            }
-            return false;
-        }
+		do {
+			m_condition.wait(lock);
+			if (m_bStop)
+			{
+				return false;
+			}
+		} while (!cbCheck(m_value));
+        return true;
     }
 
 public:
+    const T& value() const
+    {
+        return m_value;
+    }
+    operator const T&() const
+    {
+        return m_value;
+    }
+
     bool wait(CB_CheckSignal cbCheck)
     {
         return _wait(cbCheck);
@@ -143,57 +188,84 @@ public:
         return _wait(cbCheck, uMs);
     }
 
-	void set(const T& value)
+	void set(const T& value, bool bNotifyAll = false)
 	{
 		mutex_lock lock(m_mutex);
 		m_bStop = false;
 		m_value = value;
-		m_condition.notify_one();
+
+		if (bNotifyAll)
+		{
+			m_condition.notify_all();
+		}
+		else
+		{
+			m_condition.notify_one();
+		}
 	}
 
-    void set(const T& value, cfn_void fn)
+    void set(const T& value, cfn_void fn, bool bNotifyAll = false)
     {
         mutex_lock lock(m_mutex);
 		m_bStop = false;
         m_value = value;
 		fn();
-        m_condition.notify_one();
+
+		if (bNotifyAll)
+		{
+			m_condition.notify_all();
+		}
+		else
+		{
+			m_condition.notify_one();
+		}
     }
 
     void stop()
-    {
+	{
         mutex_lock lock(m_mutex);
 		m_bStop = true;
-        m_condition.notify_one();
+		m_condition.notify_all();
     }
 };
 
 class CSignal : public TSignal<bool>
 {
 public:
-    CSignal(bool bInitValue, bool bAutoReset)
-        : TSignal(bInitValue)
-		, m_bAutoReset(bAutoReset)
-    {
-    }
+	CSignal()
+		: TSignal(false)
+		, m_bAutoReset(true)
+	{
+	}
 
+	CSignal(bool bInitValue)
+		: TSignal(bInitValue)
+		, m_bAutoReset(true)
+	{
+	}
+
+	CSignal(bool bAutoReset, bool bInitValue)
+		: TSignal(bInitValue)
+		, m_bAutoReset(bAutoReset)
+	{
+	}
+	
 private:
 	bool m_bAutoReset;
 
 public:
-	bool operator !() const
-	{
-		return !m_value;
-	}
-
-	operator const bool&() const
-	{
-		return m_value;
-	}
-
     const bool& value() const
     {
         return m_value;
+    }    
+    operator const bool&() const
+    {
+            return m_value;
+    }
+
+    bool operator !() const
+    {
+            return !m_value;
     }
 
     bool wait(cfn_void cb=NULL)
@@ -240,14 +312,14 @@ public:
         });
     }
 
-    void set()
-    {
-        TSignal::set(true);
+    void set(bool bNotifyAll = false)
+	{
+        TSignal::set(true, bNotifyAll);
     }
 
-	void set(cfn_void fn)
+	void set(cfn_void fn, bool bNotifyAll = false)
 	{
-		TSignal::set(true, fn);
+		TSignal::set(true, fn, bNotifyAll);
 	}
 
     void reset()

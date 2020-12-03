@@ -220,17 +220,19 @@ struct tagSingerImg
 #if !__winvc
 enum class E_UpgradeResult
 {
-	UR_Success,
-	UR_Fail,
+    UR_Success,
+    UR_Fail,
 
-	UR_DownloadFail,
-	UR_MedialibInvalid,
-	UR_ReadMedialibFail,
+    UR_DownloadFail,
+    UR_MedialibInvalid,
+    UR_ReadMedialibFail,
 
     UR_MedialibUnmatch,
-	UR_MedialibUncompatible,
-	UR_AppUpgradeFail,
-	UR_AppUpgraded
+    UR_MedialibUncompatible,
+    UR_AppUpgradeFail,
+    UR_AppUpgraded,
+
+    UR_InitMediaLibFail
 };
 #endif
 

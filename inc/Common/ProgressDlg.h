@@ -41,7 +41,7 @@ public:
 	
 	int msgBox(cwstr strText, cwstr strTitle, UINT uType = 0)
 	{
-		return __appSync([&]() {
+		return __appSync([&]{
 			return TDialog::msgBox(strText.c_str(), strTitle.c_str(), uType);
 		});
 	}
