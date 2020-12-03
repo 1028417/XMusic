@@ -14,13 +14,17 @@ static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
 TSignal<bool> m_runSignal(true); //static bool m_bRunSignal = true;
-const bool& g_bRunSignal(m_runSignal);
+signal_t g_bRunSignal(m_runSignal);
 
-const bool& usleepex(UINT uMs)
+signal_t usleepex(UINT uMs)
 {
-    m_runSignal.wait(uMs, [](bool bRunSignal){
-        return false == bRunSignal;
-    });
+    if (g_bRunSignal)
+    {
+        m_runSignal.wait(uMs, [](bool bRunSignal){
+            return false == bRunSignal;
+        });
+    }
+
     return g_bRunSignal;
 }
 

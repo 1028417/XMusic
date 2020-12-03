@@ -20,19 +20,19 @@ struct tagBkgImg
 class CImgDir : public CPath
 {
 public:
-    CImgDir(XT_RunSignal bRunSignal)
+    CImgDir(signal_t bRunSignal)
         : m_bRunSignal(bRunSignal)
     {
     }
 
-    CImgDir(XT_RunSignal bRunSignal, const tagFileInfo& fileInfo)
+    CImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo)
         : CPath(fileInfo)
         , m_bRunSignal(bRunSignal)
     {
     }
 
 private:
-    XT_RunSignal m_bRunSignal;
+    signal_t m_bRunSignal;
 
     QPixmap m_pmSnapshot;
 

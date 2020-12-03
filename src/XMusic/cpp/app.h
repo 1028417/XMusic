@@ -15,7 +15,7 @@ struct tagScreenInfo
 };
 extern const tagScreenInfo& g_screen;
 
-extern const bool& g_bRunSignal;
+extern signal_t g_bRunSignal;
 
 #include "mainwindow.h"
 

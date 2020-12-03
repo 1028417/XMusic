@@ -16,7 +16,7 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
     , m_thrScan(__app.thread())
-    , m_rootImgDir(m_thrScan.runSignal())
+    , m_rootImgDir(m_thrScan.signal())
     , m_lv(*this, m_paImgDirs)
 {
 }
@@ -143,7 +143,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
     static UINT s_uSequence = 0;
     auto uSequence = ++s_uSequence;
 
-    m_thrScan.start([&, uSequence](XT_RunSignal bRunSignal){
+    m_thrScan.start([&, uSequence](signal_t bRunSignal){
         // TODO 显示正在扫描目录
 
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
