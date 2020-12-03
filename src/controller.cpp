@@ -12,8 +12,8 @@ UINT g_uPlaySeq = 0;
 
 void CXController::start()
 {
-    static auto& PlayMgr = m_model.getPlayMgr();
 #if __winvc
+    static auto& PlayMgr = m_model.getPlayMgr();
     (void)timerutil::setTimer(60000, [&]{
         if (m_OptionMgr.checkAlarm())
 		{
@@ -84,7 +84,8 @@ void CXController::start()
 	});*/
 
 #else
-    m_threadPlayCtrl.start([&]()mutable {
+    //m_threadPlayCtrl.start(
+    mtutil::thread([&]() {
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {
@@ -92,9 +93,10 @@ void CXController::start()
             return;
         }
 
+        auto& PlayMgr = m_model.getPlayMgr();
         PlayMgr.tryPlay();
 
-        while (m_threadPlayCtrl.usleepex(100))
+        while (usleepex(100)) //m_threadPlayCtrl.usleepex(100))
         {
             tagPlayCmd PlayCmd;
             m_mutex.lock();
@@ -168,9 +170,9 @@ void CXController::start()
 
 void CXController::stop()
 {
-#if !__winvc
+/*#if !__winvc
     m_threadPlayCtrl.cancel();
-#endif
+#endif*/
 
     m_model.close();
 

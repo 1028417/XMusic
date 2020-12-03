@@ -540,11 +540,12 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
     }
     else if (pHeadImg->bExist)
     {
-        m_lstSingerPixmap.emplace_back();
+        cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pHeadImg));
+        m_lstSingerPixmap.emplace_back(qsFile);
         pSingerPixmap = &m_lstSingerPixmap.back();
 
-        QPixmap pm(__WS2Q(__app.getSingerImgMgr().file(*pHeadImg)));
-/*#define __singerimgZoomout 128
+        /*QPixmap pm(qsFile);
+#define __singerimgZoomout 128
         if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
         {
             if (pm.width() < pm.height())
@@ -556,10 +557,10 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
                 *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
             }
         }
-        else*/
+        else
         {
             pSingerPixmap->swap(pm);
-        }
+        }*/
 
         return *pSingerPixmap;
     }

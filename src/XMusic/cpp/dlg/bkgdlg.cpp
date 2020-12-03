@@ -240,7 +240,7 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     {
         if (pm.width() > cx)
         {
-            auto&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
+            QPixmap&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
             pm.swap(temp);
         }
     }
@@ -248,7 +248,7 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     {
         if (pm.height() > cy)
         {
-            auto&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
+            QPixmap&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
             pm.swap(temp);
         }
     }

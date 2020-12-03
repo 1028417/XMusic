@@ -190,8 +190,14 @@ void MainWindow::preinit() // 工作线程
         m_medialibDlg.init();
         m_bkgDlg.init();
 
-        QPixmap pm(":/img/bkg.jpg");
-        m_brBkg.setTexture(pm);
+        QPixmap pmBkg(":/img/bkg.jpg");
+        m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
+
+#define __cyCDCover 825
+        auto rc = pmBkg.rect();
+        rc.setTop(rc.bottom() - __cyCDCover);
+        QPixmap&& pm = pmBkg.copy(rc);
+        m_pmCDCover.swap(pm);
 
         _init();
 
@@ -590,9 +596,9 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yr
         painter.setOpacity(0.06f);
     }
 
-    rcSrc.setWidth(__cxBkg);
-    QRect rcDst(rc.x()+xDst, rc.y(), cxDst, cyDst);
-    painter.drawPixmap(rcDst, m_brBkg, rcSrc);
+    auto yDst = cyDst - m_pmCDCover.height()*fBkgZoomRate;
+    QRect rcDst(rc.x()+xDst, yDst, cxDst, cyDst-yDst);
+    painter.drawPixmap(rcDst, m_pmCDCover);
 
     if (!bDrawDisk)
     {

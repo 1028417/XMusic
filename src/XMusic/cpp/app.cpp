@@ -108,6 +108,8 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
+    m_mainWnd.showBlank();
+
     //this->thread([=]{
     std::thread thrStartup([=]{
         auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
@@ -122,8 +124,6 @@ int CApp::run(cwstr strWorkDir)
         _startup();
     });
 
-    m_mainWnd.showBlank();
-
     auto nRet = exec();
     m_runSignal.reset(); //m_bRunSignal = false;
 
@@ -131,7 +131,6 @@ int CApp::run(cwstr strWorkDir)
     {
         thr.cancel(false);
     }
-
     for (auto& thr : m_lstThread)
     {
         thr.join();

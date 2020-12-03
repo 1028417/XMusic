@@ -331,10 +331,10 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
             return NULL;
         }
 
-        auto&& temp = m_pmSnapshot.width() < m_pmSnapshot.height()
+        QPixmap&& pm = m_pmSnapshot.width() < m_pmSnapshot.height()
                 ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
                 : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
-        m_pmSnapshot.swap(temp);
+        m_pmSnapshot.swap(pm);
     }
 
     return new XFile(fileInfo);

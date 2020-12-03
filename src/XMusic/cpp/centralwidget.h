@@ -3,9 +3,6 @@
 
 #include "mainwindow.h"
 
-#define __cxBkg 1080
-#define __cyBkg 2340
-
 class CCentralWidget : public TWidget<QWidget>
 {
 public:

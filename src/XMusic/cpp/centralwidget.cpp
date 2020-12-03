@@ -284,18 +284,15 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     ui.labelSingerName->setAlignment(Qt::AlignCenter);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
+    //((bool&)PlayingInfo.bWholeTrack) = true; //测试代码
     cauto pmSingerImg = PlayingInfo.bWholeTrack ?
                 ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD
                  ? __app.m_pmHDDisk : __app.m_pmLLDisk)
               : ui.labelSingerImg->pixmap();
     if (PlayingInfo.bWholeTrack)
-    {
+    {        
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
-
-        ui.labelSingerImg->setPixmapRound(0);
-        ui.labelSingerImg->setShadow(0);
-
-        ui.labelSingerName->setShadow(uShadowWidth);
+        //ui.labelSingerName->setShadow(uShadowWidth);
     }
     else
     {
@@ -329,7 +326,6 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
 
 #define __cylabelAlbumName __size(70)
-
     if (!bDefaultBkg)
     {
         int y_labelAlbumName = 0;
@@ -442,8 +438,9 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         if (PlayingInfo.bWholeTrack)
         {
-            cauto pm = pmSingerImg.scaledToWidth(rcSingerImg.width(), Qt::SmoothTransformation);
-            ui.labelSingerImg->setPixmap(pm);
+            ui.labelSingerImg->setPixmap(pmSingerImg);
+            ui.labelSingerImg->setPixmapRound(0);
+            ui.labelSingerImg->setShadow(0);
         }
     }
     else

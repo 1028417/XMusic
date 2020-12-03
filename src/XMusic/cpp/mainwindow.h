@@ -15,6 +15,9 @@
 
 #define __crLogoText 100, 150, 255
 
+#define __cxBkg 1080
+#define __cyBkg 2340
+
 struct tagPlayingInfo
 {
     QString qsTitle;
@@ -53,6 +56,7 @@ public:
 
 private:
     QBrush m_brBkg;
+    QPixmap m_pmCDCover;
     bool m_bDefaultBkg = false;
 
     tagPlayingInfo m_PlayingInfo;
