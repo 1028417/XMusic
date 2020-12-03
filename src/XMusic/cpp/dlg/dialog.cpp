@@ -69,7 +69,7 @@ void CDialog::_show(cfn_void cbClose)
 
     g_pFrontDlg = this;
 
-    connect(this, &QDialog::finished, [&, cbClose]() {
+    connect(this, &QDialog::finished, [&, cbClose]{
         g_pFrontDlg = dynamic_cast<CDialog*>(&m_parent);
 
         _onClosed();
@@ -143,10 +143,10 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     if (!m_bFullScreen)
     {
-    #if __android
+#if __android
         extern QColor g_crLogoBkg;
         painter.fillRect(rc, g_crLogoBkg);
-    #endif
+#endif
 
         painter.fillRectEx(rc, bkgColor(), __xround);
     }

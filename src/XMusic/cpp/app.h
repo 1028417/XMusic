@@ -4,6 +4,8 @@
 
 #include <QApplication>
 
+extern ITxtWriter& g_logger;
+
 struct tagScreenInfo
 {
     int szScreenMax = 0;
@@ -15,11 +17,11 @@ extern const tagScreenInfo& g_screen;
 
 extern const bool& g_bRunSignal;
 
-extern ITxtWriter& g_logger;
-
 #include "mainwindow.h"
 
 //#include "dlg/msgbox.h"
+
+const bool& usleepex(UINT uMs);
 
 class CAppInit : public QApplication
 {
@@ -119,24 +121,8 @@ public:
         return thr;
     }
 
-    inline void sync(cfn_void cb)
-    {
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        //QVariant var;
-        //var.setValue(cb);
-        emit signal_sync(cb);
-    }
-
-    void sync(UINT uDelayTime, cfn_void cb)
-    {
-        sync([=](){
-            async(uDelayTime, cb);
-        });
-    }
+    void sync(cfn_void cb);
+    void sync(UINT uDelayTime, cfn_void cb);
 
     tagOption& getOption()
     {

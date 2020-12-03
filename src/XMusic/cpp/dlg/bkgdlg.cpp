@@ -116,7 +116,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                     if (lvItem.uRow == uFloorRow)
                     {
                         auto uSequence = s_uSequence;
-                        async(300, [=](){
+                        async(300, [=]{
                             if (uSequence != s_uSequence || !isVisible())
                             {
                                 return;
@@ -224,7 +224,7 @@ void CBkgDlg::init()
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    connect(ui.btnColor, &CButton::signal_clicked, [&]() {
+    connect(ui.btnColor, &CButton::signal_clicked, [&]{
         m_colorDlg.show();
     });
 }
@@ -313,7 +313,10 @@ void CBkgDlg::preinitBkg(bool bHLayout)
             {
                 zoomoutPixmap(bHLayout, pm);
                 pm.save(__WS2Q(strDstFile), "JPG", 89);
-                mtutil::usleep(10);
+                if (!usleepex(10))
+                {
+                    return;
+                }
             }
 
             strBkg = strBkgSrc + (bHLayout?L"hbkg/":L"vbkg/") + wch + L".jpg";
@@ -361,9 +364,7 @@ void CBkgDlg::preinitBkg(bool bHLayout)
         QPixmap pm(strBkgDir + itr->strFile);
         itr->br = &_addbr(pm, bHLayout);
 
-        mtutil::usleep(10);
-
-        if (!g_bRunSignal)
+        if (!usleepex(10))
         {
             return;
         }

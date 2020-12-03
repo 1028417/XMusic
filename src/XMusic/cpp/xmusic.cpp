@@ -3,7 +3,7 @@
 
 #if __windows || __mac
 #include <QLockFile>
-QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
+static QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
 static wstring m_strWorkDir;
@@ -81,11 +81,13 @@ inline void async(UINT uDelayTime, cfn_void cb)
         return;
     }
 
-    __async(uDelayTime, [&, cb](){
-        if (g_bRunSignal)
+    __async(uDelayTime, [&, cb]{
+        if (!g_bRunSignal)
         {
-            cb();
+            return;
         }
+
+        cb();
     });
 }
 

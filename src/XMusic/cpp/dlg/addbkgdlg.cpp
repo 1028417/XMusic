@@ -30,7 +30,7 @@ void CAddBkgDlg::init()
 #if __windows
     ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
 
-    connect(ui.labelChooseDir, &CLabel::signal_click, [&](){
+    connect(ui.labelChooseDir, &CLabel::signal_click, [&]{
         if (!_chooseDir())
         {
             return;
@@ -113,7 +113,7 @@ void CAddBkgDlg::show()
             //}
         }
         //else {
-        mtutil::thread([&](){
+        mtutil::thread([&]{
             CFolderDlg::preInit();
         });
 
@@ -131,7 +131,7 @@ void CAddBkgDlg::show()
 #endif
     }
 
-    CDialog::show([&](){
+    CDialog::show([&]{
         (void)m_lv.handleReturn();
     });
 }
@@ -157,7 +157,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
                 return;
             }
 
-            __app.sync([&, uSequence](){
+            __app.sync([&, uSequence]{
                 if (uSequence != s_uSequence)
                 {
                     return;
@@ -303,7 +303,10 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-    mtutil::usleep(g_uMsScanYield);
+    if (!usleepex(g_uMsScanYield))
+    {
+        return NULL;
+    }
 
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (!g_setImgExtName.includes(strExtName))
@@ -319,7 +322,10 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
             {
                 return NULL;
             }
-            mtutil::usleep(g_uMsScanYield);
+            if (!usleepex(g_uMsScanYield))
+            {
+                return NULL;
+            }
 
             m_pmSnapshot = QPixmap();
             return NULL;
@@ -340,7 +346,10 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-    mtutil::usleep(g_uMsScanYield*3);
+    if (!usleepex(g_uMsScanYield*3))
+    {
+        return NULL;
+    }
 
     if (fileInfo.strName.front() == L'.')
     {
@@ -397,7 +406,7 @@ void CImgDir::genSubImgs(CAddBkgView& lv)
     {
         g_thrGenSubImg = &__app.thread(); //new XThread;
     }
-    g_thrGenSubImg->start([&](){
+    g_thrGenSubImg->start([&]{
         do {
             if (!_genSubImgs(lv))
             {
@@ -428,9 +437,9 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
 
         cauto strFile2 = file.path();
         QPixmap pm2;
-        mtutil::concurrence([&](){
+        mtutil::concurrence([&]{
             (void)_loadSubImg(strFile, pm);
-        }, [&](){
+        }, [&]{
             (void)_loadSubImg(strFile2, pm2);
         });
 
@@ -651,7 +660,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
 
     update();
 
-    async(30, [&](){
+    async(30, [&]{
         _genSubImgs();
     });
 }*/

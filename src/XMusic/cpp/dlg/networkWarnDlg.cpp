@@ -33,17 +33,17 @@ cqcr CNetworkWarnDlg::bkgColor() const
 
 void CNetworkWarnDlg::show(cfn_void cb)
 {
-    connect(ui.labelContinue, &CLabel::signal_click, [=](){
+    connect(ui.labelContinue, &CLabel::signal_click, [=]{
         close();
         cb();
     });
-    connect(ui.labelNeverWarn, &CLabel::signal_click, [=](){
+    connect(ui.labelNeverWarn, &CLabel::signal_click, [=]{
         close();
         __app.getOption().bNetworkWarn = false;
         cb();
     });
 
-    connect(ui.labelExit, &CLabel::signal_click, [&](){
+    connect(ui.labelExit, &CLabel::signal_click, [&]{
         close();
         __app.quit();
     });

@@ -183,9 +183,11 @@ void MainWindow::_init()
 #endif
 }
 
-void MainWindow::preinit()
+static UINT g_uShowLogoState = 0;
+
+void MainWindow::preinit() // 工作线程
 {
-    __app.sync([&](){
+    __app.sync([&]{
         m_medialibDlg.init();
         m_bkgDlg.init();
         _init();
@@ -193,11 +195,19 @@ void MainWindow::preinit()
         _showLogo();
     });
 
-    mtutil::concurrence([&](){
+    mtutil::concurrence([&]{
         m_bkgDlg.preinitBkg(true);
-    }, [&](){
+    }, [&]{
         m_bkgDlg.preinitBkg(false);
     });
+
+    while (g_uShowLogoState < 3)
+    {
+        if (!usleepex(100))
+        {
+            break;
+        }
+    }
 }
 
 void MainWindow::_showLogo()
@@ -221,17 +231,17 @@ void MainWindow::_showLogo()
     ui.labelLogo->setParent(this);
     ui.labelLogo->setVisible(true);
 
-    async(30, [&](){
+    async(30, [&]{
         auto& labelLogoTip = *ui.labelLogoTip;
         labelLogoTip.setParent(this);
         labelLogoTip.setVisible(true);
         labelLogoTip.setText("播放器");
 
-        async(500, [&](){
+        async(500, [&]{
             labelLogoTip.setText(labelLogoTip.text() + WString(__CNDot L"媒体库"));
-            async(500, [&](){
+            async(500, [&]{
                 labelLogoTip.setText(labelLogoTip.text() + "  个性化定制");
-                async(2000, [&](){
+                async(2000, [&]{
                     _showUpgradeProgress();
                 });
             });
@@ -240,10 +250,12 @@ void MainWindow::_showLogo()
 
     ui.labelLogoCompany->setParent(this);
     ui.labelLogoCompany->setVisible(true);
-    _updateLogoCompany(5, [&](){
-        _updateLogoCompany(-5, [&](){
+    _updateLogoCompany(5, [&]{
+        _updateLogoCompany(-5, [&]{
             ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
-            _updateLogoCompany(5);
+            _updateLogoCompany(5, [&]{
+                g_uShowLogoState++;
+            });
         });
     });
 }
@@ -315,6 +327,7 @@ void MainWindow::_showUpgradeProgress()
             if (uDotCount > 3)
             {
                 uDotCount = 0;
+                g_uShowLogoState++;
             }
 
             QString qsText(__logoTip);
@@ -631,7 +644,7 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
     (void)bSetActive;
-    __app.sync([=](){
+    __app.sync([=]{
         m_PlayingList.updateList(nPlayingItem);
     });
 }
@@ -691,7 +704,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         PlayingInfo.pRelatedMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
     }
 
-    __app.sync([=](){
+    __app.sync([=]{
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
@@ -725,7 +738,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-    __app.sync([=](){
+    __app.sync([=]{
         ui.progressbar->set(0, 0, 0, 0);
 
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
@@ -736,7 +749,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
             __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
 
             /*auto uPlaySeq = g_uPlaySeq;
-            async(1000, [=]() {
+            async(1000, [=]{
                 if (uPlaySeq == g_uPlaySeq)
                 {
                     _updatePlayPauseButton(false);
@@ -748,7 +761,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
             //_updatePlayPauseButton(false);
 
             auto uPlaySeq = g_uPlaySeq;
-            async(2000, [=]() {
+            async(2000, [=]{
                 if (uPlaySeq == g_uPlaySeq)
                 {
                     __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
@@ -762,7 +775,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 {
     if (m_medialibDlg.isVisible())
     {
-        __app.sync([&, strSingerName](){
+        __app.sync([&, strSingerName]{
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg(strSingerName, singerImg);
@@ -777,7 +790,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 
     if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
     {
-        __app.sync([&](){
+        __app.sync([&]{
             _playSingerImg();
         });
     }
@@ -1009,7 +1022,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         // TODO 增加按文件位置seek
         if (__app.getPlayMgr().player().Seek(uSeekPos))
         {
-            async(100, [&](){
+            async(100, [&]{
               _updateProgress();
             });
         }

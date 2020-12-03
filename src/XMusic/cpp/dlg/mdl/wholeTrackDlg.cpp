@@ -27,7 +27,7 @@ void CWholeTrackDlg::init()
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QWidget::close);
 
-    connect(ui.btnPlay, &CButton::signal_clicked, [&](){
+    connect(ui.btnPlay, &CButton::signal_clicked, [&]{
         if (m_pMedia)
         {
             __app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
@@ -52,7 +52,7 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
 
     m_lv.setCue(cue, media.duration());
 
-    CDialog::show([&](){
+    CDialog::show([&]{
         m_lv.reset();
     });
 

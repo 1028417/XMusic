@@ -27,7 +27,7 @@ void CMedialibDlg::init()
     m_lv.setFont(1.0f, QFont::Weight::Normal);
 
     ui.labelSingerImg->setPixmapRound(__szRound);
-    connect(ui.labelSingerImg, &CLabel::signal_click, [&](){
+    connect(ui.labelSingerImg, &CLabel::signal_click, [&]{
         auto pSinger = m_lv.currentSinger();
         if (pSinger)
         {
@@ -48,11 +48,11 @@ void CMedialibDlg::init()
 
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    connect(ui.btnUpward, &CButton::signal_clicked, [&](){
+    connect(ui.btnUpward, &CButton::signal_clicked, [&]{
         m_lv.upward();
     });
 
-    connect(ui.btnPlay, &CButton::signal_clicked, [&](){
+    connect(ui.btnPlay, &CButton::signal_clicked, [&]{
         m_lv.dselectItem();
 
         CMediaSet *pMediaSet = m_lv.currentMediaSet();
@@ -80,7 +80,7 @@ void CMedialibDlg::init()
 
 void CMedialibDlg::_show()
 {
-    CDialog::show([&](){
+    CDialog::show([&]{
         m_lv.cleanup();
 
         m_OuterDir.clear();
@@ -113,7 +113,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_lv.hittestFile((CMediaRes&)media);
     }
 
-    __app.sync([&]() {
+    __app.sync([&]{
         m_wholeTrackDlg.tryShow(media);
     });
 

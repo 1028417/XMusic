@@ -7,14 +7,22 @@
 
 #include <QScreen>
 
-tagScreenInfo m_screen;
-const tagScreenInfo& g_screen(m_screen);
-
-bool m_bRunSignal = true;
-const bool& g_bRunSignal(m_bRunSignal);
-
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
+
+static tagScreenInfo m_screen;
+const tagScreenInfo& g_screen(m_screen);
+
+TSignal<bool> m_runSignal(true); //static bool m_bRunSignal = true;
+const bool& g_bRunSignal(m_runSignal);
+
+const bool& usleepex(UINT uMs)
+{
+    m_runSignal.wait(uMs, [](bool bRunSignal){
+        return false == bRunSignal;
+    });
+    return g_bRunSignal;
+}
 
 extern int g_argc;
 extern char **g_argv;
@@ -55,6 +63,11 @@ CApp::CApp()
 {
     qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
     connect(this, &CApp::signal_sync, this, [](fn_void cb){
+        /*if (!g_bRunSignal)
+        {
+            return;
+        }*/
+
         cb();
     }, Qt::QueuedConnection);
 }
@@ -93,11 +106,12 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
-    std::thread thrStartup([=](){
+    //this->thread([=]{
+    std::thread thrStartup([=]{
         auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
         if (!m_model.init(strWorkDir, strMedialibDir))
         {
-            sync([&](){
+            sync([&]{
                 this->quit();
             });
             return;
@@ -109,7 +123,7 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     auto nRet = exec();
-    m_bRunSignal = false;
+    m_runSignal.set(false, true); //m_bRunSignal = false;
 
     for (auto& thr : m_lstThread)
     {
@@ -136,7 +150,7 @@ int CApp::run(cwstr strWorkDir)
 
 void CApp::_startup()
 {
-    auto timeBegin = time(0);
+    //auto timeBegin = time(0);
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
@@ -146,7 +160,8 @@ void CApp::_startup()
     }
     cauto ba = qf.readAll();
 
-    E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]() {
+    E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
+        auto time0 = time(0);
         extern int g_nAppUpgradeProgress;
         E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
@@ -154,17 +169,22 @@ void CApp::_startup()
         {
             return eUpgradeResult;
         }
+        g_logger << "upgradeMdl success " >> (time(0)-time0);
 
-        //auto time0 = time(0);
+        if (!g_bRunSignal)
+        {
+            return E_UpgradeResult::UR_Fail;
+        }
+
         if (!m_model.initMediaLib())
         {
             g_logger >> "initMediaLib fail";
-            return E_UpgradeResult::UR_Fail;
+            return E_UpgradeResult::UR_InitMediaLibFail;
         }
         //g_logger << "initMediaLib success " >> (time(0)-time0);
 
         return E_UpgradeResult::UR_Success;
-    }, [&](){
+    }, [&]{
         (void)m_pmForward.load(__png(btnForward));
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
         (void)m_pmLLDisk.load(__mdlPng(lldisk));
@@ -172,14 +192,17 @@ void CApp::_startup()
         m_mainWnd.preinit();
     });
 
-    auto timeDiff = 6 - (time(0) - timeBegin);
+    /*auto timeDiff = 6 - (time(0) - timeBegin);
     g_logger << "timeDiff: " >> timeDiff;
     if (timeDiff > 0)
     {
-        mtutil::usleep((UINT)timeDiff*1000);
-    }
+        if (!usleepex((UINT)timeDiff*1000))
+        {
+            return;
+        }
+    }*/
 
-    sync([=](){
+    sync([=]{
         _show(eUpgradeResult);
     });
 }
@@ -217,9 +240,13 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
             {
                 qsErrMsg = "更新App失败";
             }
-            else
+            else if (E_UpgradeResult::UR_InitMediaLibFail == eUpgradeResult)
             {
-                qsErrMsg = "更新媒体库失败";
+                qsErrMsg = "读取媒体库失败";
+            }
+            else //UR_Fail
+            {
+                qsErrMsg = "加载媒体库失败";
             }
 
 #if __windows
@@ -228,7 +255,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
             vibrate();
 #endif
             static CMsgBox m_msgbox(m_mainWnd);
-            m_msgbox.show(qsErrMsg, [&](){
+            m_msgbox.show(qsErrMsg, [&]{
                 this->quit();
             });
         }
@@ -256,7 +283,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
         vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd);
-        dlg.show([&](){
+        dlg.show([&]{
             m_mainWnd.show();
 
             m_ctrl.start();
@@ -275,9 +302,28 @@ void CApp::quit()
 {
     m_mainWnd.setVisible(false);
 
-    sync([&](){
-        m_bRunSignal = false;
+    sync([&]{
+        m_runSignal.set(false, true); //m_bRunSignal = false;
         QApplication::quit();
+    });
+}
+
+inline void CApp::sync(cfn_void cb)
+{
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
+    //QVariant var;
+    //var.setValue(cb);
+    emit signal_sync(cb);
+}
+
+void CApp::sync(UINT uDelayTime, cfn_void cb)
+{
+    sync([=]{
+        async(uDelayTime, cb);
     });
 }
 

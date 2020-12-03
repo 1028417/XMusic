@@ -17,10 +17,10 @@ void CSingerImgDlg::init()
     ui.setupUi(this);
     connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    connect(ui.btnBackward, &CButton::signal_clicked, [&](){
+    connect(ui.btnBackward, &CButton::signal_clicked, [&]{
         _showImg(-1);
     });
-    connect(ui.btnForward, &CButton::signal_clicked, [&](){
+    connect(ui.btnForward, &CButton::signal_clicked, [&]{
         _showImg(1);
     });
 }
@@ -125,7 +125,7 @@ void CSingerImgDlg::show(cwstr strSingerName)
 
     _showImg(0);
 
-    CDialog::show([&](){
+    CDialog::show([&]{
         m_brush = QBrush();
     });
 }
