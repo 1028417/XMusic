@@ -125,7 +125,7 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     auto nRet = exec();
-    m_runSignal.reset(true); //m_bRunSignal = false;
+    m_runSignal.reset(); //m_bRunSignal = false;
 
     for (auto& thr : m_lstThread)
     {
@@ -305,7 +305,7 @@ void CApp::quit()
     m_mainWnd.setVisible(false);
 
     sync([&]{
-        m_runSignal.reset(true); //m_bRunSignal = false;
+        m_runSignal.reset(); //m_bRunSignal = false;
         QApplication::quit();
     });
 }
