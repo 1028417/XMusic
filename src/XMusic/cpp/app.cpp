@@ -13,16 +13,14 @@ ITxtWriter& g_logger(m_logger);
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
-TSignal<bool> m_runSignal(true); //static bool m_bRunSignal = true;
+CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
 signal_t g_bRunSignal(m_runSignal);
 
 signal_t usleepex(UINT uMs)
 {
     if (g_bRunSignal)
     {
-        m_runSignal.wait(uMs, [](bool bRunSignal){
-            return false == bRunSignal;
-        });
+        (void)m_runSignal.wait_false(uMs);
     }
 
     return g_bRunSignal;
@@ -127,7 +125,7 @@ int CApp::run(cwstr strWorkDir)
     m_mainWnd.showBlank();
 
     auto nRet = exec();
-    m_runSignal.set(false, true); //m_bRunSignal = false;
+    m_runSignal.reset(true); //m_bRunSignal = false;
 
     for (auto& thr : m_lstThread)
     {
@@ -307,7 +305,7 @@ void CApp::quit()
     m_mainWnd.setVisible(false);
 
     sync([&]{
-        m_runSignal.set(false, true); //m_bRunSignal = false;
+        m_runSignal.reset(true); //m_bRunSignal = false;
         QApplication::quit();
     });
 }
