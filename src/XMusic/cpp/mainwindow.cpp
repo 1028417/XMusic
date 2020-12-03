@@ -75,7 +75,6 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint),
-     m_brBkg(QPixmap(":/img/bkg.jpg"))
     , m_PlayingList(this)
     , m_medialibDlg(*this)
     , m_bkgDlg(*this)
@@ -190,6 +189,8 @@ void MainWindow::preinit() // 工作线程
     __app.sync([&]{
         m_medialibDlg.init();
         m_bkgDlg.init();
+
+        m_brBkg.setTexture(QPixmap(":/img/bkg.jpg"));
         _init();
 
         _showLogo();
