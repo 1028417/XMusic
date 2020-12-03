@@ -120,6 +120,183 @@ public:
 };
 
 
+#include "mtlock.h"
+
+class __UtilExt XThread
+{
+public:
+    XThread()
+        : m_bRunSignal(m_runSignal)
+    {
+    }
+
+    virtual ~XThread()
+    {
+        cancel();
+    }
+
+private:
+    thread m_thread;
+    mutex m_mutex;
+
+    CSignal m_runSignal;
+    signal_t m_bRunSignal;
+
+private:
+    inline void _reset()
+    {
+        if (!m_bRunSignal)
+        {
+            return;
+        }
+        m_runSignal.reset();
+    }
+
+public:
+    signal_t signal() const
+    {
+        return m_bRunSignal;
+    }
+    operator signal_t() const
+    {
+        return m_bRunSignal;
+    }
+    bool operator !() const
+    {
+        return !m_bRunSignal;
+    }
+
+    signal_t usleepex(UINT uMs)
+    {
+        if (m_bRunSignal)
+        {
+            m_runSignal.wait_false(uMs);
+        }
+
+        return m_bRunSignal;
+    }
+
+    void start(cfn_void cb, UINT uMsLoop=0)
+    {
+        m_mutex.lock();
+
+        m_thread = thread([=]{
+            m_runSignal.set();
+
+            m_mutex.lock(); //mtutil::usleep(1); // 等待start函数返回，防止？？
+            m_mutex.unlock();
+
+            while (true)
+            {
+                cb();
+                if (0 == uMsLoop)
+                {
+                    break;
+                }
+
+                if (!this->usleepex(uMsLoop))
+                {
+                    return;
+                }
+            }
+
+            _reset();
+        });
+
+        m_runSignal.wait();
+
+        m_mutex.unlock();
+    }
+
+    void start(cfn_void_t<signal_t> cb, UINT uMsLoop=0)
+    {
+        start([&, cb]{
+            cb(m_bRunSignal);
+        }, uMsLoop);
+    }
+
+    void start(UINT uMsLoop, cfn_bool cb)
+    {
+        start([&, cb]{
+            if (!cb())
+            {
+                _reset();
+            }
+        }, uMsLoop);
+    }
+
+    void start(UINT uMsLoop, cfn_bool_t<signal_t> cb)
+    {
+        start([&, cb]{
+            if (!cb(m_bRunSignal))
+            {
+                _reset();
+            }
+        }, uMsLoop);
+    }
+
+    inline bool joinable() const
+    {
+        return m_thread.joinable();
+    }
+
+    void detach()
+    {
+        if (!joinable())
+        {
+            return;
+        }
+
+        m_mutex.lock();
+        if (joinable())
+        {
+            m_thread.detach();
+        }
+        m_mutex.unlock();
+    }
+
+    void join()
+    {
+        if (!joinable())
+        {
+            return;
+        }
+
+        if (m_bRunSignal)
+        {
+            m_runSignal.wait_false();
+        }
+
+        m_mutex.lock();
+        if (joinable())
+        {
+            m_thread.join();
+        }
+        m_mutex.unlock();
+    }
+
+    void cancel(bool bJoin = true)
+    {
+        if (!joinable())
+        {
+            return;
+        }
+
+        m_mutex.lock();
+        if (joinable())
+        {
+            _reset();
+
+            if (bJoin)
+            {
+                m_thread.join();
+            }
+        }
+        m_mutex.unlock();
+    }
+};
+
+
 class __UtilExt CThreadGroup
 {
 public:
@@ -136,7 +313,7 @@ private:
     bool m_bRunSignal = false;
 
 public:
-    const bool& runSignal() const
+    signal_t runSignal() const
 	{
 		return m_bRunSignal;
 	}
@@ -210,165 +387,4 @@ public:
 		CThreadGroup::startMultiTask(alTask, m_vecResult, uThreadCount, cb);
 		return m_vecResult;
 	}
-};
-
-
-#include "mtlock.h"
-using XT_RunSignal = const bool&;
-
-class __UtilExt XThread
-{
-public:
-    XThread() = default;
-
-    virtual ~XThread()
-    {
-        cancel();
-    }
-
-private:
-    mutex m_mutex;
-    CSignal m_sgnRuning;
-    thread m_thread;
-
-public:
-    void start(cfn_void cb, UINT uMsLoop=0)
-    {
-        m_mutex.lock();
-
-        m_thread = thread([=]{
-            m_sgnRuning.set();
-            //mtutil::usleep(1);
-            m_mutex.lock();
-            m_mutex.unlock();
-
-            while (true)
-            {
-                cb();
-                if (0 == uMsLoop)
-                {
-                    break;
-                }
-
-                if (!this->usleepex(uMsLoop))
-                {
-                    return;
-                }
-            }
-
-            if (m_sgnRuning)
-            {
-                m_sgnRuning.reset();
-            }
-        });
-
-        m_sgnRuning.wait();
-
-        m_mutex.unlock();
-    }
-
-    void start(cfn_void_t<XT_RunSignal> cb, UINT uMsLoop=0)
-    {
-        start([&, cb]{
-            cb(m_sgnRuning);
-        }, uMsLoop);
-    }
-
-    void start(UINT uMsLoop, cfn_bool cb)
-    {
-        start([&, cb]{
-            if (!cb())
-            {
-                if (m_sgnRuning)
-                {
-                    m_sgnRuning.reset();
-                }
-            }
-        }, uMsLoop);
-    }
-
-    void start(UINT uMsLoop, cfn_bool_t<XT_RunSignal> cb)
-    {
-        start([&, cb]{
-            if (!cb(m_sgnRuning))
-            {
-                if (m_sgnRuning)
-                {
-                    m_sgnRuning.reset();
-                }
-            }
-        }, uMsLoop);
-    }
-
-    XT_RunSignal runSignal() const
-    {
-        return m_sgnRuning.value();
-    }
-
-    bool usleepex(UINT uMs)
-    {
-        if (!m_sgnRuning)
-        {
-            return false;
-        }
-
-        (void)((TSignal<bool>&)m_sgnRuning).wait(uMs, [](bool bValue) {
-            return false == bValue;
-        });
-
-        return m_sgnRuning;
-    }
-
-    void detach()
-    {
-        if (m_thread.joinable())
-        {
-            m_mutex.lock();
-            m_thread.detach();
-            m_mutex.unlock();
-        }
-    }
-
-    bool joinable() const
-    {
-        return m_thread.joinable();
-    }
-
-    void join()
-    {
-        if (!m_thread.joinable())
-        {
-            return;
-        }
-
-        m_mutex.lock();
-        if (m_thread.joinable())
-        {
-            m_thread.join();
-        }
-        m_mutex.unlock();
-    }
-
-    void cancel(bool bJoin = true)
-    {
-        if (!m_thread.joinable())
-        {
-            return;
-        }
-
-        m_mutex.lock();
-        if (m_thread.joinable())
-        {
-            if (m_sgnRuning)
-            {
-                m_sgnRuning.reset();
-            }
-
-            if (bJoin)
-            {
-                m_thread.join();
-            }
-        }
-        m_mutex.unlock();
-    }
 };

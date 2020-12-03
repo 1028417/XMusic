@@ -341,7 +341,7 @@ public:
     virtual bool clearData() = 0;
 
 #else
-	virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool&bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
+    virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
 	virtual bool attachXPkg(const string& strFile) = 0;
 #endif
@@ -447,7 +447,7 @@ public:
     bool clearData() override;
 
 #else
-    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, const bool& bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
 	bool attachXPkg(const string& strFile) override;
 #endif
@@ -473,7 +473,7 @@ private:
     void _clear();
 
 #else
-    bool _upgradeApp(const bool& bRunSignal, UINT& uAppUpgradeProgress);
+    bool _upgradeApp(signal_t bRunSignal, UINT& uAppUpgradeProgress);
 
     E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif

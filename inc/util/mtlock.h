@@ -106,65 +106,66 @@ private:
 	}
 #endif
 
-    using CB_CheckSignal = const function<bool(T& value)>&;
+protected:
+    using CB_CheckSignal = const function<bool(const T& value)>&;
     inline bool _wait(CB_CheckSignal cbCheck, int nMs = -1)
     {
-		if (m_bStop)
-		{
-			return false;
-		}
+        if (m_bStop)
+        {
+            return false;
+        }
 
-		mutex_lock lock(m_mutex);
-		if (m_bStop)
-		{
-			return false;
-		}
-		if (cbCheck(m_value))
-		{
-			return true;
-		}
+        mutex_lock lock(m_mutex);
+        if (m_bStop)
+        {
+            return false;
+        }
+        if (cbCheck(m_value))
+        {
+            return true;
+        }
 
-		if (0 == nMs)
-		{
-			return false;
-		}
+        if (0 == nMs)
+        {
+            return false;
+        }
 
         if (nMs > 0)
         {
-			cauto duration = std::chrono::milliseconds(nMs);
-			/*if (cv_status::timeout == m_condition.wait_for(lock, duration))
-			{
-				return false;
-			}*/
+            cauto duration = std::chrono::milliseconds(nMs);
+            /*if (cv_status::timeout == m_condition.wait_for(lock, duration))
+            {
+                return false;
+            }*/
 
-			//被虚假唤醒后继续等够时间
+            //被虚假唤醒后继续等够时间
 #if __winvc
-			auto xt = _To_xtime(duration);
-			auto t = &xt;
+            auto xt = _To_xtime(duration);
+            auto t = &xt;
 #else
-			auto t = chrono::system_clock::now() + duration;
+            auto t = chrono::system_clock::now() + duration;
 #endif
-			do {
-				if (m_condition.wait_until(lock, t) == cv_status::timeout)
-				{
-					return !m_bStop && cbCheck(m_value);
-				}
+            do {
+                if (m_condition.wait_until(lock, t) == cv_status::timeout)
+                {
+                    return !m_bStop && cbCheck(m_value);
+                }
 
-				if (m_bStop)
-				{
-					return false;
-				}
-			} while (!cbCheck(m_value));
-			return true;			
+                if (m_bStop)
+                {
+                    return false;
+                }
+            } while (!cbCheck(m_value));
+            return true;
         }
 
-		do {
-			m_condition.wait(lock);
-			if (m_bStop)
-			{
-				return false;
-			}
-		} while (!cbCheck(m_value));
+        do {
+            m_condition.wait(lock);
+            if (m_bStop)
+            {
+                return false;
+            }
+        } while (!cbCheck(m_value));
         return true;
     }
 
@@ -182,13 +183,12 @@ public:
     {
         return _wait(cbCheck);
     }
-
     bool wait(UINT uMs, CB_CheckSignal cbCheck)
     {
         return _wait(cbCheck, uMs);
     }
 
-	void set(const T& value, bool bNotifyAll = false)
+    void set(const T& value, bool bNotifyAll = true)
 	{
 		mutex_lock lock(m_mutex);
 		m_bStop = false;
@@ -204,7 +204,7 @@ public:
 		}
 	}
 
-    void set(const T& value, cfn_void fn, bool bNotifyAll = false)
+    void set(const T& value, cfn_void fn, bool bNotifyAll = true)
     {
         mutex_lock lock(m_mutex);
 		m_bStop = false;
@@ -229,22 +229,17 @@ public:
     }
 };
 
+using signal_t = const bool&;
 class CSignal : public TSignal<bool>
 {
 public:
 	CSignal()
 		: TSignal(false)
-		, m_bAutoReset(true)
+        , m_bAutoReset(false)
 	{
 	}
 
-	CSignal(bool bInitValue)
-		: TSignal(bInitValue)
-		, m_bAutoReset(true)
-	{
-	}
-
-	CSignal(bool bAutoReset, bool bInitValue)
+    CSignal(bool bInitValue, bool bAutoReset)
 		: TSignal(bInitValue)
 		, m_bAutoReset(bAutoReset)
 	{
@@ -253,78 +248,97 @@ public:
 private:
 	bool m_bAutoReset;
 
+private:
+    inline bool _wait(bool bAutoReset, cfn_void cb, int nMs = -1)
+    {
+        return TSignal::_wait([=](bool bValue) {
+            if (!bValue)
+            {
+                return false;
+            }
+
+            if (bAutoReset)
+            {
+                m_value = false;
+            }
+
+            if (cb)
+            {
+                cb();
+            }
+
+            return true;
+        }, nMs);
+    }
+
+    inline bool _wait_false(cfn_void cb, int nMs = -1)
+    {
+        return TSignal::_wait([=](bool bValue) {
+            if (bValue)
+            {
+                return false;
+            }
+
+            if (cb)
+            {
+                cb();
+            }
+
+            return true;
+        }, nMs);
+    }
 public:
-    const bool& value() const
+    signal_t value() const
     {
         return m_value;
     }    
-    operator const bool&() const
+    operator signal_t() const
     {
-            return m_value;
+        return m_value;
     }
-
     bool operator !() const
     {
-            return !m_value;
+        return !m_value;
     }
 
-    bool wait(cfn_void cb=NULL)
+    bool wait(cfn_void cb = NULL)
     {
-		return TSignal::wait([=](bool bValue) {
-            if (bValue)
-            {
-                if (m_bAutoReset)
-                {
-                    m_value = false;
-                }
-
-				if (cb)
-				{
-					cb();
-				}
-
-                return true;
-            }
-
-            return false;
-        });
+        return _wait(m_bAutoReset, cb);
     }
-
     bool wait(UINT uMs, cfn_void cb = NULL)
     {
-        return TSignal::wait(uMs, [=](bool bValue) {
-           if (bValue)
-           {
-               if (m_bAutoReset)
-               {
-                   m_value = false;
-               }
-
-			   if (cb)
-			   {
-				   cb();
-			   }
-
-               return true;
-           }
-
-           return false;
-        });
+        return _wait(m_bAutoReset, cb, uMs);
     }
 
-    void set(bool bNotifyAll = false)
-	{
+    bool wait(bool bAutoReset, cfn_void cb = NULL)
+    {
+        return _wait(bAutoReset, cb);
+    }
+    bool wait(bool bAutoReset, UINT uMs, cfn_void cb = NULL)
+    {
+        return _wait(bAutoReset, cb, uMs);
+    }
+
+    bool wait_false(cfn_void cb = NULL)
+    {
+        return _wait_false(cb);
+    }
+    bool wait_false(UINT uMs, cfn_void cb = NULL)
+    {
+        return _wait_false(cb, uMs);
+    }
+
+    void set(bool bNotifyAll = true)
+    {
         TSignal::set(true, bNotifyAll);
     }
-
-	void set(cfn_void fn, bool bNotifyAll = false)
-	{
+    void set(cfn_void fn, bool bNotifyAll = true)
+    {
 		TSignal::set(true, fn, bNotifyAll);
 	}
-
-    void reset()
+    void reset(bool bNotifyAll = true)
     {
-        TSignal::set(false);
+        TSignal::set(false, bNotifyAll);
     }
 };
 
