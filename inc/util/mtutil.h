@@ -139,7 +139,7 @@ private:
     thread m_thread;
     mutex m_mutex;
 
-    CSignal m_runSignal;
+    CSignal<false> m_runSignal;
     signal_t m_bRunSignal;
 
 private:
@@ -170,7 +170,7 @@ public:
     {
         if (m_bRunSignal)
         {
-            m_runSignal.wait_false(uMs);
+            (void)m_runSignal.wait_false(uMs);
         }
 
         return m_bRunSignal;
@@ -264,7 +264,7 @@ public:
 
         if (m_bRunSignal)
         {
-            m_runSignal.wait_false();
+            (void)m_runSignal.wait_false();
         }
 
         m_mutex.lock();

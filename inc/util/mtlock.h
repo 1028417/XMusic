@@ -230,23 +230,15 @@ public:
 };
 
 using signal_t = const bool&;
+
+template <bool __AutoReset>
 class CSignal : public TSignal<bool>
 {
 public:
-	CSignal()
-		: TSignal(false)
-        , m_bAutoReset(false)
+    CSignal(bool bInitValue = false)
+        : TSignal(bInitValue)
 	{
 	}
-
-    CSignal(bool bInitValue, bool bAutoReset)
-		: TSignal(bInitValue)
-		, m_bAutoReset(bAutoReset)
-	{
-	}
-	
-private:
-	bool m_bAutoReset;
 
 private:
     inline bool _wait(bool bAutoReset, cfn_void cb, int nMs = -1)
@@ -303,11 +295,11 @@ public:
 
     bool wait(cfn_void cb = NULL)
     {
-        return _wait(m_bAutoReset, cb);
+        return _wait(__AutoReset, cb);
     }
     bool wait(UINT uMs, cfn_void cb = NULL)
     {
-        return _wait(m_bAutoReset, cb, uMs);
+        return _wait(__AutoReset, cb, uMs);
     }
 
     bool wait(bool bAutoReset, cfn_void cb = NULL)
