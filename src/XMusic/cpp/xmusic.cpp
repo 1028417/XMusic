@@ -9,6 +9,9 @@ static QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 static wstring m_strWorkDir;
 cwstr g_strWorkDir(m_strWorkDir);
 
+static CUTF8TxtWriter m_logger;
+ITxtWriter& g_logger(m_logger);
+
 int g_argc = 0;
 char **g_argv = NULL;
 
@@ -54,7 +57,15 @@ int main(int argc, char *argv[])
     fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
 #endif
 
+    m_logger.open("xmusic.log", true);
+#if __android
+    m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer;
+#endif
+
     auto nRet = __app.run(m_strWorkDir);
+
+    m_logger >> "app quit";
+    m_logger.close();
 
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 

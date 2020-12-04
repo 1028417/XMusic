@@ -10,6 +10,8 @@
 
 extern cwstr g_strWorkDir;
 
+extern ITxtWriter& g_logger;
+
 #define __cyIPhoneXBangs __size(128)
 bool checkIPhoneXBangs(int cx, int cy);
 

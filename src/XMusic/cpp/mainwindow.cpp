@@ -580,25 +580,25 @@ void MainWindow::_onPaint()
     }
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT xround, UINT yround, bool bDrawDisk)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT xround, UINT yround, bool bDrawDisk)
 {
-    int cxDst = rc.width();
-    int cyDst = rc.height();
+    int cxDst = rcDst.width();
+    int cyDst = rcDst.height();
     int xDst = 0;
     auto fBkgZoomRate = ui.centralWidget->caleBkgZoomRate(cxDst, cyDst, xDst);
 
     auto cySrc = cyDst/fBkgZoomRate;
     QRect rcSrc(0, __cyBkg-cySrc, 10, cySrc);
-    painter.drawPixmap(rc, m_brBkg, rcSrc, xround, yround);
+    painter.drawPixmap(rcDst, m_brBkg, rcSrc, xround, yround);
 
     if (!bDrawDisk)
     {
         painter.setOpacity(0.06f);
     }
 
-    auto yDst = cyDst - m_pmCDCover.height()*fBkgZoomRate;
-    QRect rcDst(rc.x()+xDst, yDst, cxDst, cyDst-yDst);
-    painter.drawPixmap(rcDst, m_pmCDCover);
+    cyDst = m_pmCDCover.height()*fBkgZoomRate;
+    QRect rcCDCover(rcDst.x()+xDst, rcDst.bottom()-cyDst, cxDst, cyDst);
+    painter.drawPixmap(rcCDCover, m_pmCDCover);
 
     if (!bDrawDisk)
     {

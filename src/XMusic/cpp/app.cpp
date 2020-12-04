@@ -7,9 +7,6 @@
 
 #include <QScreen>
 
-static CUTF8TxtWriter m_logger;
-ITxtWriter& g_logger(m_logger);
-
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
@@ -43,10 +40,6 @@ CAppInit::CAppInit() : QApplication(g_argc, g_argv)
     m_screen.fPixelRatio = screen->devicePixelRatio();
     m_screen.fDPI = screen->logicalDotsPerInch();
 
-    m_logger.open("xmusic.log", true);
-#if __android
-    g_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer;
-#endif
     g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin <<
                 ", DPR: " << m_screen.fPixelRatio << ", DPI: " >> m_screen.fDPI;
 
@@ -142,9 +135,6 @@ int CApp::run(cwstr strWorkDir)
 
     g_logger >> "stop controller";
     m_ctrl.stop();
-
-    g_logger >> "app quit";
-    m_logger.close();
 
     return nRet;
 }

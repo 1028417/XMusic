@@ -4,8 +4,6 @@
 
 #include <QApplication>
 
-extern ITxtWriter& g_logger;
-
 struct tagScreenInfo
 {
     int szScreenMax = 0;

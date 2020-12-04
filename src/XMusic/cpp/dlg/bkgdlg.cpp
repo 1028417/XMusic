@@ -6,6 +6,9 @@
 
 #define __snapshotRetain 6
 
+#define __thumbs L".thumbs"
+#define __thumbsFormat "JPG"
+
 #define __ceilCount ((m_bkgDlg.bkgCount() <= 2) ? 2 : 3)
 
 static int g_xsize = 0;
@@ -107,7 +110,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                 QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
                 painter.drawPixmap(rcX, m_pmX);
 
-                static UINT s_uSequence = 0;
+                /*或改为滚动停止处理static UINT s_uSequence = 0;
                 s_uSequence++;
                 if (lvItem.uCol == uColCount-1)
                 {
@@ -132,7 +135,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
                             }
                         });
                     }
-                }
+                }*/
 
                 return;
             }
@@ -254,19 +257,22 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     }
 }
 
-static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
+static void _zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
 {
+    auto szMax = MAX(g_screen.szScreenMax, __size(2340));
+    auto szMin = MAX(g_screen.szScreenMin, __size(1200));
+
     int cx = 0;
     int cy = 0;
     if (bHLayout)
     {
-        cx = g_screen.szScreenMax;
-        cy = g_screen.szScreenMin;
+        cx = szMax;
+        cy = szMin;
     }
     else
     {
-        cx = g_screen.szScreenMin;
-        cy = g_screen.szScreenMax;
+        cx = szMin;
+        cy = szMax;
     }
 
     if (fDiv > 1)
@@ -278,9 +284,28 @@ static void zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
     zoomoutPixmap(pm, cx, cy);
 }
 
-inline CBkgBrush& CBkgDlg::_addbr(QPixmap& pm, bool bHLayout)
+inline static void _saveThumbs(QPixmap& pm, bool bHLayout, cwstr strFile)
 {
-    zoomoutPixmap(bHLayout, pm, 2.5f);
+    _zoomoutPixmap(bHLayout, pm, 2.5f);
+    pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
+}
+
+inline CBkgBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
+{
+    _zoomoutPixmap(bHLayout, pm, 2.5f);
+    m_lstBr.emplace_back(pm);
+    return m_lstBr.back();
+}
+
+inline CBkgBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
+{
+    QPixmap pm;
+    if (!pm.load(strFile + __thumbs, __thumbsFormat))
+    {
+        pm.load(strFile);
+        _saveThumbs(pm, bHLayout, strFile);
+    }
+
     m_lstBr.emplace_back(pm);
     return m_lstBr.back();
 }
@@ -302,34 +327,29 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 #else
         wstring strBkgSrc = __app.applicationDirPath().toStdWString();
 #endif
-        strBkgSrc.append(L"/bkg/");
+
+        vector<const wchar_t*> lstSubDir {
+            L"/bkg/", bHLayout?L"hbkg/":L"vbkg/", L"city/"
+        };
 
         QPixmap pm;
-        for (wchar_t wch = L'a'; wch <= L'z'; wch++)
+        for (UINT uIdx = 0; uIdx < lstSubDir.size(); uIdx++)
         {
-            auto strBkg = strBkgSrc + wch + L".jpg";
-            auto strDstFile = strAppBkgDir + L"/0." + wch;
-            if (pm.load(__WS2Q(strBkg)))
+            strBkgSrc.append(lstSubDir[uIdx]);
+
+            for (wchar_t wch = L'a'; wch <= L'z'; wch++)
             {
-                zoomoutPixmap(bHLayout, pm);
-                pm.save(__WS2Q(strDstFile), "JPG", 89);
-                if (!usleepex(10))
+                auto strBkg = strBkgSrc + wch + L".jpg";
+                auto strDstFile = strAppBkgDir + L'/' + wchar_t('0'+uIdx) + L'.' + wch;
+                if (pm.load(__WS2Q(strBkg)))
                 {
-                    return;
+                    _saveThumbs(pm, bHLayout, strDstFile); // 确保先生成缩略图
+                    fsutil::copyFile(strBkg, strDstFile);
+                    if (!usleepex(10))
+                    {
+                        return;
+                    }
                 }
-            }
-
-            strBkg = strBkgSrc + (bHLayout?L"hbkg/":L"vbkg/") + wch + L".jpg";
-            strDstFile = strAppBkgDir + L"/1." + wch;
-            fsutil::copyFile(strBkg, strDstFile);
-
-            strBkg = strBkgSrc + (bHLayout?L"hbkg/city/":L"vbkg/city/") + wch + L".jpg";
-            strDstFile = strAppBkgDir + L"/2." + wch;
-            fsutil::copyFile(strBkg, strDstFile);
-
-            if (!g_bRunSignal)
-            {
-                return;
             }
         }
 
@@ -354,6 +374,11 @@ void CBkgDlg::preinitBkg(bool bHLayout)
         }
         else
         {
+            if (strutil::endWith(fileInfo.strName, __thumbs))
+            {
+                return;
+            }
+
             vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, fileInfo.strName));
         }
     });
@@ -361,8 +386,8 @@ void CBkgDlg::preinitBkg(bool bHLayout)
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
          && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
     {
-        QPixmap pm(strBkgDir + itr->strFile);
-        itr->br = &_addbr(pm, bHLayout);
+        cauto strFile = strBkgDir + itr->strFile;
+        itr->br = &_loadThumbs(strFile, bHLayout);
 
         if (!usleepex(10))
         {
@@ -464,9 +489,9 @@ CBkgBrush* CBkgDlg::brush(size_t uIdx)
         return bkgFile.br;
     }
 
-    QPixmap pm(_bkgDir() + bkgFile.strFile);
-    auto& br = _addbr(pm, m_bHLayout);
-    return bkgFile.br = &br;
+    cauto strFile = _bkgDir() + bkgFile.strFile;
+    bkgFile.br = &_loadThumbs(strFile, m_bHLayout);
+    return bkgFile.br;
 }
 
 bool CBkgDlg::_setBkg(int nIdx)
@@ -612,20 +637,21 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::addBkg(cwstr strFile)
 {
-    QPixmap pm(__WS2Q(strFile));
-    zoomoutPixmap(m_bHLayout, pm);
+    auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
+    (void)pmBkg.load(__WS2Q(strFile));
+    _zoomoutPixmap(m_bHLayout, pmBkg);
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
-    pm.save(__WS2Q(strDstFile), "JPG", 100);
 
-    auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
-    pmBkg = pm;
+    auto pm = pmBkg;
+    _saveThumbs(pm, m_bHLayout, strDstFile); // 确保先生成缩略图
+
+    pmBkg.save(__WS2Q(strDstFile), "JPG");
 
     auto& vecBkgFile = _vecBkgFile();
-    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_addbr(pm, m_bHLayout)));
+    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_genThumbs(pm, m_bHLayout)));
     //update();
-
     _updateBkg(strFileName);
 }
 

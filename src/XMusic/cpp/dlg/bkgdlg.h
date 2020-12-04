@@ -108,7 +108,8 @@ private:
         return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     }
 
-    CBkgBrush& _addbr(QPixmap& pm, bool bHLayout);
+    CBkgBrush& _genThumbs(QPixmap& pm, bool bHLayout);
+    CBkgBrush& _loadThumbs(const WString& strFile, bool bHLayout);
 
     void _relayout(int cx, int cy) override;
 
