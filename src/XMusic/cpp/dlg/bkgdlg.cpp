@@ -612,13 +612,15 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
 void CBkgDlg::addBkg(cwstr strFile)
 {
-    auto& pm = m_bHLayout?m_pmHBkg:m_pmVBkg;
-    (void)pm.load(__WS2Q(strFile));
+    QPixmap pm(__WS2Q(strFile));
     zoomoutPixmap(m_bHLayout, pm);
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
     pm.save(__WS2Q(strDstFile), "JPG", 100);
+
+    auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
+    pmBkg = pm;
 
     auto& vecBkgFile = _vecBkgFile();
     vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_addbr(pm, m_bHLayout)));
