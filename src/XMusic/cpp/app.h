@@ -1,7 +1,5 @@
 #pragma once
 
-#include "xmusic.h"
-
 #include "mainwindow.h"
 
 //#include "dlg/msgbox.h"

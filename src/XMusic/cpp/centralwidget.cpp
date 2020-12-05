@@ -11,9 +11,9 @@ void CCentralWidget::ctor() // 代替构造函数
     setAttribute(Qt::WA_TranslucentBackground);
 
     auto cy = __cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
-    m_fBkgHWRate = (double)cy/__cxBkg;
+    m_fBkgHWRate = (Double_T)cy/__cxBkg;
     auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();
-    m_fBkgTopReserve = (double)cyTop/(cyTop+cy);
+    m_fBkgTopReserve = (Double_T)cyTop/(cyTop+cy);
 
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
@@ -33,7 +33,7 @@ void CCentralWidget::ctor() // 代替构造函数
     }
 }
 
-double CCentralWidget::caleBkgZoomRate(double& cxDst, double cyDst, double& xDst)
+Double_T CCentralWidget::caleBkgZoomRate(Double_T& cxDst, Double_T cyDst, Double_T& xDst)
 {
     if (cxDst > cyDst)
     {
@@ -56,7 +56,7 @@ double CCentralWidget::caleBkgZoomRate(double& cxDst, double cyDst, double& xDst
         xDst = 0;
     }
 
-    return (double)cxDst / __cxBkg;
+    return (Double_T)cxDst / __cxBkg;
 }
 
 void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t_eSingerImgPos
@@ -93,8 +93,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
     }
 
-    double cxDst = cx;
-    double xBkgOffset = 0;
+    Double_T cxDst = cx;
+    Double_T xBkgOffset = 0;
     auto fBkgZoomRate = caleBkgZoomRate(cxDst, cy, xBkgOffset);
     auto fBkgZoomRateEx = fBkgZoomRate * g_screen.fPixelRatio;
 

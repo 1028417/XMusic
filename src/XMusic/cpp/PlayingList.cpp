@@ -56,11 +56,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     }
     if (rc.top() < 0)
     {
-        fAlpha *= pow((double)rc.bottom()/rc.height(),3.3);
+        fAlpha *= pow((float)rc.bottom()/rc.height(),3.3);
     }
     else if (rc.bottom() > cy)
     {
-        fAlpha *= pow(double(cy - rc.top())/rc.height(),3.3);
+        fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
     }
     UINT uTextAlpha = 255*fAlpha;
     UINT uShadowAlpha = __ShadowAlpha* pow(fAlpha,2.5);

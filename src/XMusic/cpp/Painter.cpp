@@ -152,8 +152,8 @@ void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yro
 {
     QTransform transform;
 
-    auto fWScaleRate = double(rc.width())/rcSrc.width();
-    auto fHScaleRate = double(rc.height())/rcSrc.height();
+    auto fWScaleRate = Double_T(rc.width())/rcSrc.width();
+    auto fHScaleRate = Double_T(rc.height())/rcSrc.height();
     transform.translate(rc.left()-rcSrc.left()*fWScaleRate, rc.top()-rcSrc.top()*fHScaleRate);
     transform.scale(fWScaleRate, fHScaleRate);
     br.setTransform(transform);

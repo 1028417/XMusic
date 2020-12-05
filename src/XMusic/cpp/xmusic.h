@@ -8,6 +8,37 @@
 
 #include <QApplication>
 
+using Double_T = float; //= double; // double_t与math.h冲突
+
+#define __pkgName L"com.musicrossoft.xmusic"
+
+extern cwstr g_strWorkDir;
+
+extern ITxtWriter& g_logger;
+
+struct tagScreenInfo
+{
+    int szScreenMax = 0;
+    int szScreenMin = 0;
+    float fPixelRatio = 1;
+    float fDPI = 0;
+};
+extern const tagScreenInfo& g_screen;
+
+#define __cyIPhoneXBangs __size(128)
+bool checkIPhoneXBangs(int cx, int cy);
+
+const WString& mediaQualityString(E_MediaQuality eQuality);
+
+extern signal_t g_bRunSignal;
+
+const bool& usleepex(UINT uMs);
+
+void async(cfn_void cb);
+void async(UINT uDelayTime, cfn_void cb);
+
+bool installApp(const CByteBuffer& bbfData);
+
 class CAppBase : public QApplication
 {
     Q_OBJECT
@@ -42,34 +73,5 @@ public:
         return thr;
     }
 };
-
-#define __pkgName L"com.musicrossoft.xmusic"
-
-extern cwstr g_strWorkDir;
-
-extern ITxtWriter& g_logger;
-
-struct tagScreenInfo
-{
-    int szScreenMax = 0;
-    int szScreenMin = 0;
-    float fPixelRatio = 1;
-    float fDPI = 0;
-};
-extern const tagScreenInfo& g_screen;
-
-#define __cyIPhoneXBangs __size(128)
-bool checkIPhoneXBangs(int cx, int cy);
-
-const WString& mediaQualityString(E_MediaQuality eQuality);
-
-extern signal_t g_bRunSignal;
-
-const bool& usleepex(UINT uMs);
-
-void async(cfn_void cb);
-void async(UINT uDelayTime, cfn_void cb);
-
-bool installApp(const CByteBuffer& bbfData);
 
 #include "app.h"

@@ -582,9 +582,9 @@ void MainWindow::_onPaint()
 
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT uRound, bool bDrawDisk)
 {
-    double cxDst = rcDst.width();
+    Double_T cxDst = rcDst.width();
     int cyDst = rcDst.height();
-    double xDst = 0;
+    Double_T xDst = 0;
     auto fBkgZoomRate = ui.centralWidget->caleBkgZoomRate(cxDst, cyDst, xDst);
 
     auto cySrc = cyDst/fBkgZoomRate;
