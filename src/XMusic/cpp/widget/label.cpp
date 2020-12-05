@@ -5,11 +5,9 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 {
     cauto rc = this->rect();
 
-    cauto pm = pixmap();
-    if (!pm.isNull())
+    if (m_cxPm > 0)
     {
-        painter.drawPixmapEx(rc, pm, m_szRound);
-
+        painter.drawPixmapEx(rc, m_br, QRect(0,0,m_cxPm,m_cyPm), m_szRound);
         if (m_uShadowWidth > 0)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
@@ -22,7 +20,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
             }
         }
 
-		return;
+        // 提速 return;
 	}
 
     QString qsText = this->text();

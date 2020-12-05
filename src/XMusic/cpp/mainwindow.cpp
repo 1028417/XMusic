@@ -569,7 +569,7 @@ void MainWindow::_onPaint()
             }
             else
             {
-                drawDefaultBkg(painter, rc, 0, !ui.labelSingerImg->pixmap().isNull());
+                drawDefaultBkg(painter, rc, 0, ui.labelSingerImg->pixmap());
             }
         }
     }
@@ -580,7 +580,7 @@ void MainWindow::_onPaint()
     }
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, bool bDrawDisk)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, bool bDrawCDCover)
 {
     Double_T cxDst = rcDst.width();
     int cyDst = rcDst.height();
@@ -591,7 +591,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, boo
     QRect rcSrc(0, round(__cyBkg-cySrc), 10, round(cySrc));
     painter.drawPixmap(rcDst, m_brBkg, rcSrc, szRound);
 
-    if (!bDrawDisk)
+    if (!bDrawCDCover)
     {
         painter.setOpacity(0.06f);
     }
@@ -600,7 +600,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, boo
     QRect rcCDCover(round(rcDst.x()+xDst), round(rcDst.y()+cyDst-cyCDCover), round(cxDst), round(cyCDCover));
     painter.drawPixmap(rcCDCover, m_pmCDCover);
 
-    if (!bDrawDisk)
+    if (!bDrawCDCover)
     {
         painter.setOpacity(1.0f);
     }
@@ -797,7 +797,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
         return;
     }
 
-    if (m_PlayingInfo.strSingerName == strSingerName && ui.labelSingerImg->pixmap().isNull())
+    if (m_PlayingInfo.strSingerName == strSingerName && !ui.labelSingerImg->pixmap())
     {
         __app.sync([&]{
             _playSingerImg();
@@ -861,10 +861,13 @@ void MainWindow::_playSingerImg()
         return;
     }
 
-    QPixmap pm;
-    (void)pm.load(__WS2Q(__app.getSingerImgMgr().file(*pSingerImg)));
-    ui.labelSingerImg->setPixmap(pm);
-    update();
+    cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pSingerImg));
+    QPixmap pm(qsFile);
+    if (!pm.isNull())
+    {
+        ui.labelSingerImg->setPixmap(pm);
+        update();
+    }
 
     //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
 
@@ -1148,7 +1151,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     static bool bTouchSingerImg = false;
     if (E_TouchEventType::TET_TouchBegin == type)
     {
-        bTouchSingerImg = !m_bDefaultBkg && !ui.labelSingerImg->pixmap().isNull()
+        bTouchSingerImg = !m_bDefaultBkg && ui.labelSingerImg->pixmap()
                 && ui.labelSingerImg->geometry().contains(te.x(), te.y());
     }
     else if (E_TouchEventType::TET_TouchMove == type)

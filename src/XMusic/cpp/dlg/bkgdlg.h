@@ -139,11 +139,11 @@ public:
 
     CBkgBrush* brush(size_t uIdx);
 
-    void switchBkg(bool bHLayout, bool bNext);
-
     void handleLVClick(size_t uItem);
+
+    void addBkg(cwstr strFile);
 
     void deleleBkg(size_t uIdx);
 
-    void addBkg(cwstr strFile);
+    void switchBkg(bool bHLayout, bool bNext);
 };

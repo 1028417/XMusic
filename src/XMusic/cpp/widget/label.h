@@ -23,10 +23,14 @@ public:
     }
 
 private:
+    QBrush m_br;
+    int m_cxPm = 0;
+    int m_cyPm = 0;
+
+    QColor m_crText;
     int m_flag = -1;
 
     bool m_bUseCustomColor = false;
-    QColor m_crText;
 
     UINT m_uShadowWidth = 1;
     UINT m_uShadowAlpha = __ShadowAlpha;
@@ -44,21 +48,30 @@ private:
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
 public:
+    bool pixmap() const
+    {
+        return m_cxPm > 0;
+    }
+
+    int pixmapWidth() const
+    {
+        return m_cxPm;
+    }
+    int pixmapHeight() const
+    {
+        return m_cyPm;
+    }
+
+    void setPixmap(cqpm pm)
+    {
+        m_br.setTexture(pm);
+        m_cxPm = pm.width();
+        m_cyPm = pm.height();
+    }
+
     void setPixmapRound(UINT szRound)
     {
         m_szRound = szRound;
-    }
-
-    inline cqpm pixmap() const
-    {
-        auto pm = QLabel::pixmap();
-        if (pm)
-        {
-            return *pm;
-        }
-
-        static QPixmap s_pixmap;
-        return s_pixmap;
     }
 
     void setText(const QString &qsText, int flag = -1)
@@ -72,5 +85,13 @@ public:
         m_uShadowWidth = uWidth;
         m_uShadowAlpha = uAlpha;
         update();
+    }
+
+    void clear()
+    {
+        QLabel::clear();
+
+        m_br = QBrush();
+        m_cxPm = m_cyPm = 0;
     }
 };

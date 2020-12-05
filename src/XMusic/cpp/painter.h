@@ -217,8 +217,22 @@ public:
     void drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
     void drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmap(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0);
-    void drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    {
+        if (xround > 0)
+        {
+            QBrush br(pm);
+            drawPixmap(rc, br, rcSrc, xround, yround);
+        }
+        else
+        {
+            QPainter::drawPixmap(rc, pm, rcSrc);
+        }
+    }
+    void drawPixmap(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0)
+    {
+        drawPixmap(rc, pm, pm.rect(), xround, yround);
+    }
 
     void drawPixmapEx(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0);
 

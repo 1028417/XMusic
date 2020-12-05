@@ -126,7 +126,7 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-inline static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
+static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
 {
     auto cxSrc = rcSrc.width();
     auto cySrc = rcSrc.height();
@@ -173,24 +173,6 @@ void CPainter::drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT y
     QRect t_rcSrc = rcSrc;
     _genSrcRect(rc, t_rcSrc);
     this->drawPixmap(rc, br, t_rcSrc, xround, yround);
-}
-
-void CPainter::drawPixmap(cqrc rc, cqpm pm, UINT xround, UINT yround)
-{
-    drawPixmap(rc, pm, pm.rect(), xround, yround);
-}
-
-void CPainter::drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround, UINT yround)
-{
-    if (xround > 0)
-    {
-        QBrush br(pm);
-        drawPixmap(rc, br, rcSrc, xround, yround);
-    }
-    else
-    {
-        QPainter::drawPixmap(rc, pm, rcSrc);
-    }
 }
 
 void CPainter::drawPixmapEx(cqrc rc, cqpm pm, UINT xround, UINT yround)

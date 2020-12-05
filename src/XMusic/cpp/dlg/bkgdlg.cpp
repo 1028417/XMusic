@@ -232,16 +232,42 @@ void CBkgDlg::init()
     });
 }
 
-void zoomoutPixmap(QPixmap& pm, int cx, int cy)
+void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut)
 {
-    if (pm.isNull())
+    auto cxPm = pm.width();
+    if (0 == cxPm)
     {
         return;
     }
+    auto cyPm = pm.height();
 
-    if ((float)pm.height()/pm.width() > (float)cy/cx)
+    if (bCut)
     {
-        if (pm.width() > cx)
+        if (cx > cy)
+        {
+            auto cyMax = cxPm*2/3;
+            if (cyPm > cyMax)
+            {
+                QPixmap&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
+                pm.swap(temp);
+                cyPm = cyMax;
+            }
+        }
+        else
+        {
+            auto cxMax = cyPm*2/3;
+            if (cxPm > cxMax)
+            {
+                QPixmap&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
+                pm.swap(temp);
+                cxPm = cxMax;
+            }
+        }
+    }
+
+    if ((float)cyPm/cxPm > (float)cy/cx)
+    {
+        if (cxPm > cx)
         {
             QPixmap&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
             pm.swap(temp);
@@ -249,7 +275,7 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     }
     else
     {
-        if (pm.height() > cy)
+        if (cyPm > cy)
         {
             QPixmap&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
             pm.swap(temp);
@@ -257,13 +283,9 @@ void zoomoutPixmap(QPixmap& pm, int cx, int cy)
     }
 }
 
-static void _zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
+static void _zoomoutPixmap(QPixmap& pm, bool bHLayout, int szMax, int szMin, bool bThumbs)
 {
-    auto szMax = MAX(g_screen.szScreenMax, __size(2340));
-    auto szMin = MAX(g_screen.szScreenMin, __size(1200));
-
-    int cx = 0;
-    int cy = 0;
+    int cx = 0, cy = 0;
     if (bHLayout)
     {
         cx = szMax;
@@ -275,24 +297,28 @@ static void _zoomoutPixmap(bool bHLayout, QPixmap& pm, float fDiv=0.f)
         cy = szMax;
     }
 
-    if (fDiv > 1)
+    if (bThumbs)
     {
-        cx /= fDiv;
-        cy /= fDiv;
+#define __thumbsRate 0.4f
+        cx *= __thumbsRate;
+        cy *= __thumbsRate;
     }
 
-    zoomoutPixmap(pm, cx, cy);
+    zoomoutPixmap(pm, cx, cy, bThumbs);
 }
+
+#define __szScreenMax __size(__cyBkg)
+#define __szScreenMin __size(1200)
 
 inline static void _saveThumbs(QPixmap& pm, bool bHLayout, cwstr strFile)
 {
-    _zoomoutPixmap(bHLayout, pm, 2.5f);
+    _zoomoutPixmap(pm, bHLayout, MAX(g_screen.szScreenMax, __szScreenMax), MAX(g_screen.szScreenMin, __szScreenMin), true);
     pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
 }
 
 inline CBkgBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
 {
-    _zoomoutPixmap(bHLayout, pm, 2.5f);
+    _zoomoutPixmap(pm, bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, true);
     m_lstBr.emplace_back(pm);
     return m_lstBr.back();
 }
@@ -304,6 +330,7 @@ inline CBkgBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
     {
         pm.load(strFile);
         _saveThumbs(pm, bHLayout, strFile);
+        return _genThumbs(pm, bHLayout);
     }
 
     m_lstBr.emplace_back(pm);
@@ -405,7 +432,7 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 size_t CBkgDlg::caleRowCount(int cy)
 {
     /*UINT uRowCount = 9;
-    if (cy >= __size(2340))
+    if (cy >= __size(__cyBkg))
     {
        uRowCount++;
     }
@@ -533,6 +560,84 @@ void CBkgDlg::_updateBkg(cwstr strFile)
     __app.mainWnd().updateBkg();
 }
 
+void CBkgDlg::handleLVClick(size_t uItem)
+{
+    if (0 == uItem)
+    {
+        m_addbkgDlg.show();
+    }
+    else if (1 == uItem)
+    {
+        _setBkg(-1);
+        close();
+    }
+    else
+    {
+        uItem-=2;
+        if (_setBkg(uItem))
+        {
+            close();
+        }
+        else
+        {
+            m_addbkgDlg.show();
+        }
+    }
+}
+
+void CBkgDlg::addBkg(cwstr strFile)
+{
+    auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
+    (void)pmBkg.load(__WS2Q(strFile));
+    _zoomoutPixmap(pmBkg, m_bHLayout, MAX(g_screen.szScreenMax, __szScreenMax), MAX(g_screen.szScreenMin, __szScreenMin), false);
+
+    cauto strFileName = to_wstring(time(0));
+    cauto strDstFile = _bkgDir() + strFileName;
+    auto pm = pmBkg;
+    _saveThumbs(pm, m_bHLayout, strDstFile); // 确保先生成缩略图
+
+    auto& vecBkgFile = _vecBkgFile();
+    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_genThumbs(pm, m_bHLayout)));
+    //update();
+
+    pmBkg.save(__WS2Q(strDstFile), "JPG");
+
+    _zoomoutPixmap(pmBkg, m_bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, false);
+    _updateBkg(strFileName);
+}
+
+void CBkgDlg::deleleBkg(size_t uIdx)
+{
+    auto& vecBkgFile = _vecBkgFile();
+    if (uIdx < vecBkgFile.size())
+    {
+        cauto bkgFile = vecBkgFile[uIdx];
+
+        cauto strBkg = m_bHLayout ? m_option.strHBkg : m_option.strVBkg;
+        if (strBkg == bkgFile.strFile)
+        {
+            _setBkg(-1);
+        }
+
+        if (bkgFile.br)
+        {
+            for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); ++itr)
+            {
+                if (&*itr == bkgFile.br)
+                {
+                    m_lstBr.erase(itr);
+                    break;
+                }
+            }
+        }
+
+        fsutil::removeFile(_bkgDir() + bkgFile.strFile);
+        vecBkgFile.erase(vecBkgFile.begin()+uIdx);
+
+        m_lv.update();
+    }
+}
+
 void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
 {
     m_bHLayout = bHLayout;
@@ -576,83 +681,6 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
     }
 
     _setBkg(nIdx);
-}
-
-void CBkgDlg::handleLVClick(size_t uItem)
-{
-    if (0 == uItem)
-    {
-        m_addbkgDlg.show();
-    }
-    else if (1 == uItem)
-    {
-        _setBkg(-1);
-        close();
-    }
-    else
-    {
-        uItem-=2;
-        if (_setBkg(uItem))
-        {
-            close();
-        }
-        else
-        {
-            m_addbkgDlg.show();
-        }
-    }
-}
-
-void CBkgDlg::deleleBkg(size_t uIdx)
-{
-    auto& vecBkgFile = _vecBkgFile();
-    if (uIdx < vecBkgFile.size())
-    {
-        cauto bkgFile = vecBkgFile[uIdx];
-
-        cauto strBkg = m_bHLayout ? m_option.strHBkg : m_option.strVBkg;
-        if (strBkg == bkgFile.strFile)
-        {
-            _setBkg(-1);
-        }
-
-        if (bkgFile.br)
-        {
-            for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); ++itr)
-            {
-                if (&*itr == bkgFile.br)
-                {
-                    m_lstBr.erase(itr);
-                    break;
-                }
-            }
-        }
-
-        fsutil::removeFile(_bkgDir() + bkgFile.strFile);
-        vecBkgFile.erase(vecBkgFile.begin()+uIdx);
-
-        m_lv.update();
-    }
-}
-
-void CBkgDlg::addBkg(cwstr strFile)
-{
-    auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
-    (void)pmBkg.load(__WS2Q(strFile));
-    _zoomoutPixmap(m_bHLayout, pmBkg);
-
-    cauto strFileName = to_wstring(time(0));
-    cauto strDstFile = _bkgDir() + strFileName;
-
-    auto pm = pmBkg;
-    _saveThumbs(pm, m_bHLayout, strDstFile); // 确保先生成缩略图
-
-    pmBkg.save(__WS2Q(strDstFile), "JPG");
-
-    auto& vecBkgFile = _vecBkgFile();
-    vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, strFileName, &_genThumbs(pm, m_bHLayout)));
-    //update();
-    _updateBkg(strFileName);
 }
 
 void CBkgDlg::_onClosed()

@@ -384,7 +384,7 @@ wstring CImgDir::imgPath(UINT uIdx) const
 }
 
 #define __szSubimgZoomout 500
-extern void zoomoutPixmap(QPixmap& pm, int cx, int cy);
+extern void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut);
 
 void CImgDir::genSubImgs(CAddBkgView& lv)
 {
@@ -505,7 +505,7 @@ void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
             {
                 for (auto& bkgImg : m_vecImgs)
                 {
-                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, true);
                 }
             }
         }
@@ -513,7 +513,7 @@ void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
         {
             for (auto& bkgImg : m_vecImgs)
             {
-                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout);
+                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, true);
             }
         }
     }
@@ -522,7 +522,7 @@ void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
         szZoomout /= 2;
     }
 
-    zoomoutPixmap(pm, szZoomout, szZoomout);
+    zoomoutPixmap(pm, szZoomout, szZoomout, true);
 
     m_vecImgs.emplace_back(pm, strFile);
 }

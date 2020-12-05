@@ -144,7 +144,7 @@ CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 size_t CMedialibDlg::caleRowCount(int cy)
 {
     /*UINT uRowCount = 10;
-    if (cy >= __size(2340))
+    if (cy >= __size(__cyBkg))
     {
        uRowCount++;
     }

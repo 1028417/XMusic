@@ -283,18 +283,17 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
     //((bool&)PlayingInfo.bWholeTrack) = true; //测试代码
-    cauto pmSingerImg = PlayingInfo.bWholeTrack ?
-                ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD
-                 ? __app.m_pmHDDisk : __app.m_pmLLDisk)
-              : ui.labelSingerImg->pixmap();
+    bool bSingerImgFlag = PlayingInfo.bWholeTrack || ui.labelSingerImg->pixmap();
+    //auto pmSingerImg = ui.labelSingerImg->pixmap();
     if (PlayingInfo.bWholeTrack)
-    {        
-        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
+    {
+        //pmSingerImg = ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD) ? &__app.m_pmHDDisk : &__app.m_pmLLDisk;
         //ui.labelSingerName->setShadow(uShadowWidth);
+        eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
     }
     else
     {
-        if (!pmSingerImg.isNull())
+        if (bSingerImgFlag) //pmSingerImg)// && !pmSingerImg.isNull())
         {
             eSingerImgPos = t_eSingerImgPos;
 
@@ -382,10 +381,11 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
                 cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
 
-                if (!pmSingerImg.isNull())
+                auto cyPm = ui.labelSingerImg->pixmapHeight();
+                if (cyPm > 0)
                 {
-                    //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg.width() / rcSingerImg.height();
-                    cx_SingerImg = cy_SingerImg * pmSingerImg.width() / pmSingerImg.height();
+                    //cx_SingerImg = cy_SingerImg*1.05; //cy_SingerImg * rcSingerImg->width() / rcSingerImg->height();
+                    cx_SingerImg = cy_SingerImg * ui.labelSingerImg->pixmapWidth() / cyPm;
                     cx_SingerImg = MIN(cx_SingerImg, cy_SingerImg*1.2f);
                     cx_SingerImg = MIN(cx_SingerImg, cx_progressbar);
                 }
@@ -404,7 +404,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             labelAlbumName.setGeometry(x, y_labelAlbumName, cx_progressbar, __cylabelAlbumName);
 
             int y_labelSingerName = y_labelAlbumName-ui.labelSingerName->height();
-            if (!pmSingerImg.isNull())
+            if (bSingerImgFlag) //pmSingerImg)// && !pmSingerImg.isNull())
             {
                 y_PlayingListMax = y_SingerImg - __size10;
             }
@@ -436,7 +436,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         if (PlayingInfo.bWholeTrack)
         {
-            ui.labelSingerImg->setPixmap(pmSingerImg);
+            cauto pm = ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmLLDisk;
+            ui.labelSingerImg->setPixmap(pm); //pmSingerImg);
             ui.labelSingerImg->setPixmapRound(0);
             ui.labelSingerImg->setShadow(0);
         }
@@ -448,7 +449,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             ui.labelSingerImg->clear();
         }
 
-        if (pmSingerImg.isNull())
+        if (!bSingerImgFlag) //NULL == pmSingerImg)// || pmSingerImg->isNull())
         {
             auto y = y_Playingfile;
             if (PlayingInfo.pRelatedMediaSet)
@@ -520,7 +521,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             uRowCount = 10;
             y_Margin += __size10;
 
-            if (pmSingerImg.isNull() || E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
+            if (!bSingerImgFlag //NULL == pmSingerImg //|| pmSingerImg->isNull()
+                    || E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
             {
                 y_Margin += __size10*2;
             }
