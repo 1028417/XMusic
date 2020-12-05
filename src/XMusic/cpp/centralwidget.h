@@ -11,8 +11,8 @@ public:
     }
 
 private:
-    float m_fBkgHWRate = .0f;
-    float m_fBkgTopReserve = .0f;
+    double m_fBkgHWRate = .0f;
+    double m_fBkgTopReserve = .0f;
 
     map<QWidget*, QRect> m_mapTopWidgetPos;
     map<QWidget*, QRect> m_mapWidgetPos;
@@ -24,7 +24,7 @@ public:
     void relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos eSingerImgPos
                   , const tagPlayingInfo& PlayingInfo, CPlayingList& PlayingList);
 
-    float caleBkgZoomRate(int& cxDst, int cyDst, int& xDst);
+    double caleBkgZoomRate(double& cxDst, double cyDst, double& xDst);
 
 private:
     void _onTouchEvent(E_TouchEventType type, const CTouchEvent& te) override

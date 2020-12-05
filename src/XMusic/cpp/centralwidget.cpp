@@ -6,16 +6,14 @@
 #include "ui_mainwindow.h"
 extern Ui::MainWindow ui;
 
-#define __round(f) (int)roundf(f)
-
 void CCentralWidget::ctor() // 代替构造函数
 {
     setAttribute(Qt::WA_TranslucentBackground);
 
     auto cy = __cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
-    m_fBkgHWRate = (float)cy/__cxBkg;
+    m_fBkgHWRate = (double)cy/__cxBkg;
     auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();
-    m_fBkgTopReserve = (float)cyTop/(cyTop+cy);
+    m_fBkgTopReserve = (double)cyTop/(cyTop+cy);
 
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
@@ -35,7 +33,7 @@ void CCentralWidget::ctor() // 代替构造函数
     }
 }
 
-float CCentralWidget::caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
+double CCentralWidget::caleBkgZoomRate(double& cxDst, double cyDst, double& xDst)
 {
     if (cxDst > cyDst)
     {
@@ -58,7 +56,7 @@ float CCentralWidget::caleBkgZoomRate(int& cxDst, int cyDst, int& xDst)
         xDst = 0;
     }
 
-    return (float)cxDst / __cxBkg;
+    return (double)cxDst / __cxBkg;
 }
 
 void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t_eSingerImgPos
@@ -95,12 +93,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
     }
 
-    auto cxDst = cx;
-    int xBkgOffset = 0;
+    double cxDst = cx;
+    double xBkgOffset = 0;
     auto fBkgZoomRate = caleBkgZoomRate(cxDst, cy, xBkgOffset);
     auto fBkgZoomRateEx = fBkgZoomRate * g_screen.fPixelRatio;
 
-    int cy_bkg = fBkgZoomRate * __cyBkg; //__round(fBkgZoomRate * __cyBkg);
+    int cy_bkg = fBkgZoomRate * __cyBkg; //round(fBkgZoomRate * __cyBkg);
     int dy_bkg = cy - cy_bkg;
 
     UINT uShadowWidth = bDefaultBkg?0:1;
@@ -131,8 +129,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         int height = pos.height();
         if (fBkgZoomRateEx < 1 || NULL == dynamic_cast<QPushButton*>(widgetPos.first))
         {
-            width = __round(width * fBkgZoomRate);
-            height =__round(height * fBkgZoomRate);
+            width = round(width * fBkgZoomRate);
+            height = round(height * fBkgZoomRate);
         }
 
         /*if (width%2==1)
@@ -144,8 +142,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             height++;
         }*/
 
-        newPos.setRect(xBkgOffset + __round(fBkgZoomRate*pos.center().x() - width/2.0f)
-                       , __round(fBkgZoomRate*pos.center().y() - height/2.0f) + dy_bkg, width, height);
+        newPos.setRect(xBkgOffset + round(fBkgZoomRate*pos.center().x() - width/2.0f)
+                       , round(fBkgZoomRate*pos.center().y() - height/2.0f) + dy_bkg, width, height);
         widgetPos.first->setGeometry(newPos);
     }
 
@@ -231,12 +229,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     if (!bDefaultBkg)
     {
 #define __dy __size(3)
-        int dy =  __round(fBkgZoomRate*__dy);
+        int dy =  round(fBkgZoomRate*__dy);
 
         if (fBkgZoomRateEx <= 1)
         {
 #define __offset __size(6)
-            int yOffset = __round((float)__offset/fBkgZoomRate);
+            int yOffset = round((float)__offset/fBkgZoomRate);
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);

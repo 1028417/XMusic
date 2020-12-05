@@ -2,32 +2,9 @@
 
 #include "xmusic.h"
 
-#include <QApplication>
-
-struct tagScreenInfo
-{
-    int szScreenMax = 0;
-    int szScreenMin = 0;
-    float fPixelRatio = 1;
-    float fDPI = 0;
-};
-extern const tagScreenInfo& g_screen;
-
-extern signal_t g_bRunSignal;
-
 #include "mainwindow.h"
 
 //#include "dlg/msgbox.h"
-
-const bool& usleepex(UINT uMs);
-
-class CAppInit : public QApplication
-{
-protected:
-    CAppInit();
-
-    void setupFont();
-};
 
 Q_DECLARE_METATYPE(fn_void);
 
@@ -64,9 +41,8 @@ struct tagSingleTone
 
 #define __app CApp::inst()
 
-class CApp : public CAppInit, private IPlayerView, public tagSingleTone<CApp>
+class CApp : public CAppBase, private IPlayerView, public tagSingleTone<CApp>
 {
-    Q_OBJECT
 private:
     CApp();
     friend tagSingleTone;
@@ -83,14 +59,9 @@ private:
 
     wstring m_strAppVersion;
 
-    list<XThread> m_lstThread;
-
     MainWindow m_mainWnd;
 
     //CMsgBox m_msgbox;
-
-signals:
-    void signal_sync(fn_void cb);
 
 private:
     IModelObserver& getModelObserver() override
@@ -98,30 +69,11 @@ private:
         return m_mainWnd;
     }
 
-    E_UpgradeResult _init();
-
     void _startup();
+
     void _show(E_UpgradeResult eUpgradeResult);
 
 public:
-    XThread& thread()
-    {
-        m_lstThread.emplace_back();
-        return m_lstThread.back();
-    }
-
-    template<typename... T>
-    XThread& thread(const T&... args)
-    {
-        m_lstThread.emplace_back();
-        auto& thr = m_lstThread.back();
-        thr.start(args...);
-        return thr;
-    }
-
-    void sync(cfn_void cb);
-    void sync(UINT uDelayTime, cfn_void cb);
-
     tagOption& getOption()
     {
         return m_ctrl.getOption();

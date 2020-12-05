@@ -1,6 +1,8 @@
 
 #include "xmusic.h"
 
+#include <QScreen>
+
 #if __windows || __mac
 #include <QLockFile>
 static QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
@@ -12,8 +14,137 @@ cwstr g_strWorkDir(m_strWorkDir);
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
-int g_argc = 0;
-char **g_argv = NULL;
+static tagScreenInfo m_screen;
+const tagScreenInfo& g_screen(m_screen);
+
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+const WString& mediaQualityString(E_MediaQuality eQuality)
+{
+    return g_lpQuality[(UINT)eQuality];
+}
+
+static CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
+signal_t g_bRunSignal(m_runSignal);
+
+signal_t usleepex(UINT uMs)
+{
+    if (g_bRunSignal)
+    {
+        (void)m_runSignal.wait_false(uMs);
+    }
+
+    return g_bRunSignal;
+}
+
+inline void async(UINT uDelayTime, cfn_void cb)
+{
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
+    __async(uDelayTime, [&, cb]{
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        cb();
+    });
+}
+
+void async(cfn_void cb)
+{
+    async(0, cb);
+}
+
+bool checkIPhoneXBangs(int cx, int cy)
+{
+    return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
+}
+
+static int g_argc = 0;
+static char **g_argv = NULL;
+
+CAppBase::CAppBase() : QApplication(g_argc, g_argv)
+{
+    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
+    connect(this, &CApp::signal_sync, this, [](fn_void cb){
+        /*if (!g_bRunSignal)
+        {
+            return;
+        }*/
+
+        cb();
+    }, Qt::QueuedConnection);
+
+    QScreen *screen = QApplication::primaryScreen();
+    cauto sz = screen->size();
+    m_screen.szScreenMax = sz.width();
+    m_screen.szScreenMin = sz.height();
+    if (m_screen.szScreenMax < m_screen.szScreenMin)
+    {
+        std::swap(m_screen.szScreenMax, m_screen.szScreenMin);
+    }
+
+    m_screen.fPixelRatio = screen->devicePixelRatio();
+    m_screen.fDPI = screen->logicalDotsPerInch();
+
+    g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin <<
+                ", DPR: " << m_screen.fPixelRatio << ", DPI: " >> m_screen.fDPI;
+
+    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
+    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
+
+    CFont::init(this->font());
+
+    this->setFont(CFont());
+}
+
+int CAppBase::exec()
+{
+    int nRet = QApplication::exec();
+
+    m_runSignal.reset(); //m_bRunSignal = false;
+
+    for (auto& thr : m_lstThread)
+    {
+        thr.cancel(false);
+    }
+    for (auto& thr : m_lstThread)
+    {
+        thr.join();
+    }
+
+    return nRet;
+}
+
+inline void CAppBase::sync(cfn_void cb)
+{
+    if (!g_bRunSignal)
+    {
+        return;
+    }
+
+    //QVariant var;
+    //var.setValue(cb);
+    emit signal_sync(cb);
+}
+
+void CAppBase::sync(UINT uDelayTime, cfn_void cb)
+{
+    sync([=]{
+        async(uDelayTime, cb);
+    });
+}
+
+void CAppBase::quit()
+{
+    m_runSignal.reset(); //m_bRunSignal = false;
+    QApplication::quit();
+}
 
 int main(int argc, char *argv[])
 {
@@ -70,41 +201,6 @@ int main(int argc, char *argv[])
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
     return nRet;
-}
-
-bool checkIPhoneXBangs(int cx, int cy)
-{
-    return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
-}
-
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
-};
-const WString& mediaQualityString(E_MediaQuality eQuality)
-{
-    return g_lpQuality[(UINT)eQuality];
-}
-
-inline void async(UINT uDelayTime, cfn_void cb)
-{
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    __async(uDelayTime, [&, cb]{
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        cb();
-    });
-}
-
-void async(cfn_void cb)
-{
-    async(0, cb);
 }
 
 #if __windows

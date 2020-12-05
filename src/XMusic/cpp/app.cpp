@@ -5,66 +5,11 @@
 
 #include "dlg/msgbox.h"
 
-#include <QScreen>
-
-static tagScreenInfo m_screen;
-const tagScreenInfo& g_screen(m_screen);
-
-CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
-signal_t g_bRunSignal(m_runSignal);
-
-signal_t usleepex(UINT uMs)
-{
-    if (g_bRunSignal)
-    {
-        (void)m_runSignal.wait_false(uMs);
-    }
-
-    return g_bRunSignal;
-}
-
-extern int g_argc;
-extern char **g_argv;
-
-CAppInit::CAppInit() : QApplication(g_argc, g_argv)
-{
-    QScreen *screen = QApplication::primaryScreen();
-    cauto sz = screen->size();
-    m_screen.szScreenMax = sz.width();
-    m_screen.szScreenMin = sz.height();
-    if (m_screen.szScreenMax < m_screen.szScreenMin)
-    {
-        std::swap(m_screen.szScreenMax, m_screen.szScreenMin);
-    }
-
-    m_screen.fPixelRatio = screen->devicePixelRatio();
-    m_screen.fDPI = screen->logicalDotsPerInch();
-
-    g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin <<
-                ", DPR: " << m_screen.fPixelRatio << ", DPI: " >> m_screen.fDPI;
-
-    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
-    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
-
-    CFont::init(this->font());
-
-    this->setFont(CFont());
-}
-
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
     //, m_msgbox(m_mainWnd)
 {
-    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
-    connect(this, &CApp::signal_sync, this, [](fn_void cb){
-        /*if (!g_bRunSignal)
-        {
-            return;
-        }*/
-
-        cb();
-    }, Qt::QueuedConnection);
 }
 
 #if 0
@@ -118,16 +63,6 @@ int CApp::run(cwstr strWorkDir)
     });
 
     auto nRet = exec();
-    m_runSignal.reset(); //m_bRunSignal = false;
-
-    for (auto& thr : m_lstThread)
-    {
-        thr.cancel(false);
-    }
-    for (auto& thr : m_lstThread)
-    {
-        thr.join();
-    }
 
 #if !__android // TODO 规避5.6.1退出的bug
     thrStartup.join();
@@ -294,27 +229,7 @@ void CApp::quit()
     m_mainWnd.setVisible(false);
 
     sync([&]{
-        m_runSignal.reset(); //m_bRunSignal = false;
-        QApplication::quit();
-    });
-}
-
-inline void CApp::sync(cfn_void cb)
-{
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    //QVariant var;
-    //var.setValue(cb);
-    emit signal_sync(cb);
-}
-
-void CApp::sync(UINT uDelayTime, cfn_void cb)
-{
-    sync([=]{
-        async(uDelayTime, cb);
+        CAppBase::quit();
     });
 }
 
