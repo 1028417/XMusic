@@ -17,14 +17,6 @@ ITxtWriter& g_logger(m_logger);
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
-};
-const WString& mediaQualityString(E_MediaQuality eQuality)
-{
-    return g_lpQuality[(UINT)eQuality];
-}
-
 static CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
 signal_t g_bRunSignal(m_runSignal);
 
@@ -89,14 +81,18 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
         std::swap(m_screen.szScreenMax, m_screen.szScreenMin);
     }
 
-    m_screen.fPixelRatio = screen->devicePixelRatio();
     m_screen.fDPI = screen->logicalDotsPerInch();
 
-    g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin <<
-                ", DPR: " << m_screen.fPixelRatio << ", DPI: " >> m_screen.fDPI;
+    m_screen.pixelRatio = screen->devicePixelRatio();
 
-    g_logger << "applicationDirPath: " >> CApp::applicationDirPath();
-    g_logger << "applicationFilePath: " >> CApp::applicationFilePath();
+    //提速 g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin << \
+                ", DPR: " << m_screen.pixelRatio << ", DPI: " >> m_screen.fDPI;
+
+#if __ios
+    m_screen.pixelRatio = MAX(m_screen.pixelRatio, 1);
+#endif
+
+    //提速 g_logger << "appDirPath: " << CApp::applicationDirPath() << ", appFilePath: " >> CApp::applicationFilePath();
 
     CFont::init(this->font());
 

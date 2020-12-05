@@ -20,15 +20,15 @@ struct tagScreenInfo
 {
     int szScreenMax = 0;
     int szScreenMin = 0;
-    float fPixelRatio = 1;
+
     float fDPI = 0;
+
+    UINT pixelRatio = 1; //float fPixelRatio = 1;
 };
 extern const tagScreenInfo& g_screen;
 
 #define __cyIPhoneXBangs __size(128)
 bool checkIPhoneXBangs(int cx, int cy);
-
-const WString& mediaQualityString(E_MediaQuality eQuality);
 
 extern signal_t g_bRunSignal;
 

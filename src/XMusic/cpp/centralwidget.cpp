@@ -96,7 +96,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     Double_T cxDst = cx;
     Double_T xBkgOffset = 0;
     auto fBkgZoomRate = caleBkgZoomRate(cxDst, cy, xBkgOffset);
-    auto fBkgZoomRateEx = fBkgZoomRate * g_screen.fPixelRatio;
+    auto fBkgZoomRateEx = fBkgZoomRate * g_screen.pixelRatio;
 
     int cy_bkg = fBkgZoomRate * __cyBkg; //round(fBkgZoomRate * __cyBkg);
     int dy_bkg = cy - cy_bkg;

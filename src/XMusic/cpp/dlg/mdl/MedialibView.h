@@ -7,6 +7,8 @@
 
 #define __playIconOffset __size10
 
+const WString& mediaQualityString(E_MediaQuality eQuality);
+
 class CMedialibView : public CMLListView
 {
     Q_OBJECT

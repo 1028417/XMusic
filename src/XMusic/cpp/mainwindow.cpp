@@ -580,7 +580,7 @@ void MainWindow::_onPaint()
     }
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT uRound, bool bDrawDisk)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, bool bDrawDisk)
 {
     Double_T cxDst = rcDst.width();
     int cyDst = rcDst.height();
@@ -589,7 +589,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT uRound, bool
 
     auto cySrc = cyDst/fBkgZoomRate;
     QRect rcSrc(0, round(__cyBkg-cySrc), 10, round(cySrc));
-    painter.drawPixmap(rcDst, m_brBkg, rcSrc, uRound);
+    painter.drawPixmap(rcDst, m_brBkg, rcSrc, szRound);
 
     if (!bDrawDisk)
     {

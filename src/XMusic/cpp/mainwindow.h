@@ -97,7 +97,7 @@ public:
 
     void handleTouchEvent(E_TouchEventType type, const CTouchEvent& te);
 
-    void drawDefaultBkg(CPainter& painter, cqrc rc, UINT uRound=0, bool bDrawDisk=true);
+    void drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound=0, bool bDrawDisk=true);
 
 private:
     void _init();

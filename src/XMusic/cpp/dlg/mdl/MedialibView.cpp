@@ -10,6 +10,14 @@
 
 #define __RemarkAlpha 200
 
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+const WString& mediaQualityString(E_MediaQuality eQuality)
+{
+    return g_lpQuality[(UINT)eQuality];
+}
+
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
