@@ -341,6 +341,7 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
     strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
+
     wstring strAppBkgDir = strBkgDir + __app.appVersion();
     if (!fsutil::existDir(strAppBkgDir))
     {
@@ -387,16 +388,20 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 
     auto& vecBkgFile = bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     fsutil::findSubFile(strAppBkgDir, [&](cwstr strSubFile) {
+        if (strutil::endWith(strSubFile, __thumbs))
+        {
+            return;
+        }
+
         vecBkgFile.emplace_back(false, __app.appVersion() + __wcPathSeparator + strSubFile);
     });
 
     fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
-        cauto strPath = strBkgDir+fileInfo.strName;
         if (fileInfo.bDir)
         {
             if (fileInfo.strName != __app.appVersion())
             {
-                (void)fsutil::removeDirTree(strPath);
+                (void)fsutil::removeDirTree(strBkgDir + fileInfo.strName);
             }
         }
         else
