@@ -59,7 +59,7 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
     return true;
 }
 
-void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv)
+void CWholeTrackDlg::relayoutTitle(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay, cqrc rcLv)
 {
      ui.btnReturn->setGeometry(rcBtnReturn);
 
@@ -67,6 +67,7 @@ void CWholeTrackDlg::relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, 
 
      ui.btnPlay->setGeometry(rcBtnPlay);
 
+     QRect rcTitle(rcLabelDisk.right(), 0, rcLv.y(), rcBtnPlay.x()-rcLabelDisk.right());
      ui.labelTitle->setGeometry(rcTitle);
 
      m_lv.setGeometry(rcLv);

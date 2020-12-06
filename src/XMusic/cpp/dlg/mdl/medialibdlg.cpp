@@ -197,7 +197,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
     QRect rcLv(0, y_MedialibView, cx, cy-y_MedialibView);
     m_lv.setGeometry(rcLv);
 
-    m_singerImgDlg.relayout(rcReturn);
+    m_singerImgDlg.relayoutTitle(rcReturn);
 }
 
 void CMedialibDlg::_relayoutTitle()
@@ -227,7 +227,7 @@ void CMedialibDlg::_relayoutTitle()
     QRect rcTitle(x_title, 0, cx_title, rcReturn.bottom() + rcReturn.top());
     ui.labelTitle->setGeometry(rcTitle);
 
-    m_wholeTrackDlg.relayout(rcReturn, rcUpward, rcTitle, ui.btnPlay->geometry(), m_lv.geometry());
+    m_wholeTrackDlg.relayoutTitle(rcReturn, rcUpward, ui.btnPlay->geometry(), m_lv.geometry());
 }
 
 void CMedialibDlg::updateHead(const WString& strTitle)

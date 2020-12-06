@@ -41,7 +41,7 @@ void CSingerImgDlg::_relayout(int cx, int cy)
     }
 }
 
-void CSingerImgDlg::relayout(cqrc rcBtnReturn)
+void CSingerImgDlg::relayoutTitle(cqrc rcBtnReturn)
 {
     ui.btnReturn->setGeometry(rcBtnReturn);
 }

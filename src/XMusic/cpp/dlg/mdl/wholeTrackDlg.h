@@ -40,5 +40,5 @@ public:
 
     bool tryShow(IMedia& media);
 
-    void relayout(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcTitle, cqrc rcBtnPlay, cqrc rcLv);
+    void relayoutTitle(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBtnPlay, cqrc rcLv);
 };

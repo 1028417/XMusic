@@ -26,7 +26,7 @@ public:
 
     void show(cwstr strSingerName);
 
-    void relayout(cqrc rcBtnReturn);
+    void relayoutTitle(cqrc rcBtnReturn);
 
     void updateSingerImg();
 
