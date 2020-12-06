@@ -19,7 +19,7 @@ private:
 
     UINT m_cxImg = 0;
     UINT m_cyImg = 0;
-    QBrush m_brush;
+    QBrush m_brImg;
 
 public:
     void init();
