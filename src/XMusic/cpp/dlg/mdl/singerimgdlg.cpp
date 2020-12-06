@@ -20,18 +20,34 @@ void CSingerImgDlg::init()
     connect(ui.btnBackward, &CButton::signal_clicked, [&]{
         _showImg(-1);
     });
+    connect(ui.btnBackward_v, &CButton::signal_clicked, [&]{
+        _showImg(-1);
+    });
     connect(ui.btnForward, &CButton::signal_clicked, [&]{
+        _showImg(1);
+    });
+    connect(ui.btnForward_v, &CButton::signal_clicked, [&]{
         _showImg(1);
     });
 }
 
 void CSingerImgDlg::_relayout(int cx, int cy)
 {
+    if (m_uImgCount <= 1)
+    {
+        ui.btnBackward->setVisible(false);
+        ui.btnForward->setVisible(false);
+        ui.btnBackward_v->setVisible(false);
+        ui.btnForward_v->setVisible(false);
+        return;
+    }
+
+    auto szBtn = ui.btnBackward->height();
     if (cx > cy)
     {
-        auto y = cy/2-ui.btnBackward->height()/2;
+        auto y = cy/2-szBtn/2;
         ui.btnBackward->move(ui.btnReturn->x(), y);
-        ui.btnForward->move(cx-ui.btnReturn->x()-ui.btnForward->width(), y);
+        ui.btnForward->move(cx-ui.btnReturn->x()-szBtn, y);
 
         ui.btnBackward->setVisible(true);
         ui.btnForward->setVisible(true);
@@ -40,16 +56,15 @@ void CSingerImgDlg::_relayout(int cx, int cy)
     }
     else
     {
-        auto x = cx/2-ui.btnBackward->width()/2;
+        auto x = cx/2-szBtn/2;
         ui.btnBackward_v->move(x, ui.btnReturn->y());
-        ui.btnForward_v->move(x, cy-ui.btnReturn->y()-ui.btnForward->height());
+        ui.btnForward_v->move(x, cy-ui.btnReturn->y()-szBtn);
 
         ui.btnBackward->setVisible(false);
         ui.btnForward->setVisible(false);
         ui.btnBackward_v->setVisible(true);
         ui.btnForward_v->setVisible(true);
     }
-
 }
 
 void CSingerImgDlg::relayoutTitle(cqrc rcBtnReturn)
@@ -125,13 +140,8 @@ void CSingerImgDlg::show(cwstr strSingerName)
         return;
     }
 
-    ui.btnBackward->setVisible(m_uImgCount>1);
-    ui.btnForward->setVisible(m_uImgCount>1);
-
     m_strSingerName = strSingerName;
-
     m_uImgIdx = 0;
-
     m_cxImg = m_cyImg = 0;
 
     _showImg(0);
