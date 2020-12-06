@@ -11,10 +11,9 @@
 QColor g_crBkg(__defThemeColor);
 QColor g_crFore(__defTextColor);
 
-int g_nDefFontWeight = QFont::Weight::Light;
-
+int CFont::g_nDefFontWeight = QFont::Weight::Light;
+UINT CFont::m_uDefFontSize = 0;
 list<pair<int, QString>> CFont::m_lstFontFamily;
-UINT CFont::g_uDefFontSize = 0;
 
 void CFont::init(const QFont& font)
 {
@@ -44,21 +43,21 @@ void CFont::init(const QFont& font)
         break;
     };*/
 
-    g_uDefFontSize = font.pointSize();
-    //g_uDefFontSize *= m_screen.szScreenMax/540.0f;
+    m_uDefFontSize = font.pointSize();
+    //m_uDefFontSize *= m_screen.szScreenMax/540.0f;
 
 #elif __mac
-    g_uDefFontSize = 28;
+    m_uDefFontSize = 28;
 
 #elif __windows
-    g_uDefFontSize = 22;
+    m_uDefFontSize = 22;
 
     float fDPIRate = getDPIRate();
     g_logger << "DPIRate: " >> fDPIRate;
-    g_uDefFontSize *= fDPIRate;
+    m_uDefFontSize *= fDPIRate;
 
 #elif __android
-    g_uDefFontSize = 12;
+    m_uDefFontSize = 12;
 #endif
 
 #if __windows

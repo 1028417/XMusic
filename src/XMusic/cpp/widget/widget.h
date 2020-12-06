@@ -192,7 +192,7 @@ public:
         T::setFont(font);
     }
 
-    void setFont(float fSizeOffset, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
+    void setFont(float fSizeOffset, int nWeight = CFont::g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
     {
         T::setFont(CFont(fSizeOffset, nWeight, bItalic, bUnderline));
     }

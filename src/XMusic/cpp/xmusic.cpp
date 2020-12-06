@@ -85,8 +85,8 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
 
     m_screen.pixelRatio = screen->devicePixelRatio();
 
-    //提速 g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin << \
-                ", DPR: " << m_screen.pixelRatio << ", DPI: " >> m_screen.fDPI;
+    //提速 g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin
+    //    << ", DPR: " << m_screen.pixelRatio << ", DPI: " >> m_screen.fDPI;
 
 #if __ios
     m_screen.pixelRatio = MAX(m_screen.pixelRatio, 1);

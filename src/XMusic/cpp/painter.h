@@ -28,12 +28,95 @@ using cqbr = const QBrush&;
 extern QColor g_crBkg;
 extern QColor g_crFore;
 
-extern int g_nDefFontWeight;
+class CBrush
+{
+public:
+    CBrush() = default;
+
+private:
+    QBrush m_br;
+    int m_cx = 0;
+    int m_cy = 0;
+
+public:
+    operator bool() const
+    {
+        return m_cx > 0;
+    }
+    bool operator !() const
+    {
+        return 0 == m_cx;
+    }
+
+    cqbr brush() const
+    {
+        return m_br;
+    }
+    QBrush& brush()
+    {
+        return m_br;
+    }
+
+    operator cqbr() const
+    {
+        return m_br;
+    }
+    operator QBrush&()
+    {
+        return m_br;
+    }
+
+    QBrush* operator->()
+    {
+        return &m_br;
+    }
+    const QBrush* operator->() const
+    {
+        return &m_br;
+    }
+
+    int width() const
+    {
+        return m_cx;
+    }
+    int height() const
+    {
+        return m_cy;
+    }
+
+    void setTexture(cqpm pm)
+    {
+        m_cx = pm.width();
+        if (0 == m_cx)
+        {
+            clear();
+            return;
+        }
+        m_cy = pm.height();
+
+        m_br.setTexture(pm);
+    }
+
+    void setTexture(cqstr qsFile)
+    {
+        setTexture(QPixmap(qsFile));
+    }
+
+    void clear()
+    {
+        QBrush br;
+        m_br.swap(br);
+        m_cx = m_cy = 0;
+    }
+};
 
 class CFont : public QFont
 {
+public:
+    static int g_nDefFontWeight;
+
 private:
-    static UINT g_uDefFontSize;
+    static UINT m_uDefFontSize;
 
     static list<pair<int, QString>> m_lstFontFamily;
     inline static cqstr _getFamily(int nWeight)
@@ -74,7 +157,7 @@ public:
     }
 
     CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
-        : QFont(_getFamily(nWeight), g_uDefFontSize * fSizeOffset, nWeight)
+        : QFont(_getFamily(nWeight), m_uDefFontSize * fSizeOffset, nWeight)
     {
         //_setFamily();
 
