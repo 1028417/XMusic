@@ -32,13 +32,24 @@ void CSingerImgDlg::_relayout(int cx, int cy)
         auto y = cy/2-ui.btnBackward->height()/2;
         ui.btnBackward->move(ui.btnReturn->x(), y);
         ui.btnForward->move(cx-ui.btnReturn->x()-ui.btnForward->width(), y);
+
+        ui.btnBackward->setVisible(true);
+        ui.btnForward->setVisible(true);
+        ui.btnBackward_v->setVisible(false);
+        ui.btnForward_v->setVisible(false);
     }
     else
     {
         auto x = cx/2-ui.btnBackward->width()/2;
-        ui.btnBackward->move(x, ui.btnReturn->y());
-        ui.btnForward->move(x, cy-ui.btnReturn->y()-ui.btnForward->height());
+        ui.btnBackward_v->move(x, ui.btnReturn->y());
+        ui.btnForward_v->move(x, cy-ui.btnReturn->y()-ui.btnForward->height());
+
+        ui.btnBackward->setVisible(false);
+        ui.btnForward->setVisible(false);
+        ui.btnBackward_v->setVisible(true);
+        ui.btnForward_v->setVisible(true);
     }
+
 }
 
 void CSingerImgDlg::relayoutTitle(cqrc rcBtnReturn)

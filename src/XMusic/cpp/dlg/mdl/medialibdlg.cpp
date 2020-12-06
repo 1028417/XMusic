@@ -165,22 +165,22 @@ void CMedialibDlg::_relayout(int cx, int cy)
     m_uRowCount = caleRowCount(cy);
     int sz = cy/(1.1f+m_uRowCount);
 
-    int cyMargin = sz/4;
-    int cxMargin = cyMargin;
+    int y = sz/4;
+    int cxMargin = y;
     if (cx > 1080)
     {
         cxMargin += __size(6);
     }
 
-    auto szBtn = sz-cyMargin*2;
-    QRect rcReturn(cxMargin, cyMargin, szBtn, szBtn);
+    auto szBtn = sz-y*2;
+    QRect rcReturn(cxMargin, y, szBtn, szBtn);
     if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
     {
         rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    QRect rcUpward(rcReturn.right() + cxMargin/2, rcReturn.top(), szBtn, szBtn);
+    QRect rcUpward(rcReturn.right() + cxMargin*.6f, rcReturn.top(), szBtn, szBtn);
     ui.btnUpward->setGeometry(rcUpward);
 
     auto& frameFilterLanguage = *ui.frameFilterLanguage;
