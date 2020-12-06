@@ -259,7 +259,6 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             /*if (PlayingInfo.uSingerID > 0)
             {
                 strMediaSet << PlayingInfo.strSingerName << __CNDot;
-                // TODO if ? ui.labelSingerName->clear();
             }
             else*/ if (E_MediaSetType::MST_Playlist == PlayingInfo.pRelatedMediaSet->m_eType)
             {

@@ -1022,7 +1022,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             }
         }
 
-        // TODO 增加按文件位置seek
+        // TODO 在线文件位置seek？？
         if (__app.getPlayMgr().player().Seek(uSeekPos))
         {
             async(100, [&]{
