@@ -31,10 +31,11 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
 
 void CMedialibView::initpm()
 {
+    (void)m_brNullSingerHead.setTexture(__mdlPng(singerdefault));
+
     (void)m_pmSSFile.load(__mdlPng(media));
 
     (void)m_pmSingerGroup.load(__mdlPng(singergroup));
-    (void)m_pmDefaultSinger.load(__mdlPng(singerdefault));
     (void)m_pmAlbum.load(__mdlPng(album));
 
     (void)m_pmPlaylistSet.load(__mdlPng(playlistset));
@@ -274,9 +275,11 @@ size_t CMedialibView::_getRootItemCount() const
     }
 }
 
+#define __IconSize __size100
+
 void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 {
-    context.nIconSize = __size100;
+    context.nIconSize = __IconSize;
     if (context.pMediaSet)
     {
         switch (context.pMediaSet->m_eType)
@@ -288,8 +291,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pmIcon = &m_pmAlbum;
             break;
         case E_MediaSetType::MST_Singer:
-            context.pmIcon = &genSingerHead(context.pMediaSet->m_uID, context.pMediaSet->m_strName);
-            break;
+        {
+            auto& brSingerHead = genSingerHead(context.pMediaSet->m_uID, context.pMediaSet->m_strName);
+            context.setIcon(brSingerHead, __IconSize);
+        }
+
+        break;
         case E_MediaSetType::MST_SingerGroup:
             context.pmIcon = &m_pmSingerGroup;
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
@@ -313,7 +320,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 cauto strSingerName = context.pMedia->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (!strSingerName.empty())
                 {
-                    context.pmIcon = &genSingerHead(uSingerID, strSingerName);
+                    auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
+                    context.setIcon(brSingerHead, __IconSize);
                 }
             }
         }
@@ -367,7 +375,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 auto uSingerID = pSnapshotMediaDir->singerID();
                 if (uSingerID > 0)
                 {
-                    context.pmIcon = &genSingerHead(uSingerID, pSnapshotMediaDir->singerName());
+                    auto& brSingerHead = genSingerHead(uSingerID, pSnapshotMediaDir->singerName());
+                    context.setIcon(brSingerHead, __IconSize);
                 }
             }
         }
@@ -533,24 +542,24 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
     }
 }
 
-cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
+CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
 {
-    auto& pSingerPixmap = m_mapSingerPixmap[uSingerID];
-    if (pSingerPixmap)
+    auto& pbrSingerHead = m_mapSingerHead[uSingerID];
+    if (pbrSingerHead)
     {
-        return *pSingerPixmap;
+        return *pbrSingerHead;
     }
 
     auto pHeadImg = __app.getSingerImgMgr().getSingerHead(strSingerName);
     if (NULL == pHeadImg)
     {
-        pSingerPixmap = &m_pmDefaultSinger;
+        pbrSingerHead = &m_brNullSingerHead;
     }
     else if (pHeadImg->bExist)
     {
         cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pHeadImg));
-        m_lstSingerPixmap.emplace_back(qsFile);
-        pSingerPixmap = &m_lstSingerPixmap.back();
+        m_lstSingerHead.emplace_back(qsFile);
+        pbrSingerHead = &m_lstSingerHead.back();
 
         /*QPixmap pm(qsFile);
 #define __singerimgZoomout 128
@@ -570,10 +579,10 @@ cqpm CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
             pSingerPixmap->swap(pm);
         }*/
 
-        return *pSingerPixmap;
+        return *pbrSingerHead;
     }
 
-    return m_pmDefaultSinger;
+    return m_brNullSingerHead;
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
@@ -879,8 +888,8 @@ void CMedialibView::cleanup()
 {
     //if (m_pthrFindRelated) m_pthrFindRelated->cancel(false);
 
-    m_mapSingerPixmap.clear();
-    m_lstSingerPixmap.clear();
+    m_lstSingerHead.clear();
+    m_mapSingerHead.clear();
 
     CMLListView::_cleanup();
 }

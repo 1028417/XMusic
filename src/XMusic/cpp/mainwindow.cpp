@@ -12,15 +12,6 @@ Ui::MainWindow ui;
 
 QColor g_crLogoBkg(180, 220, 255);
 
-static E_LanguageType g_eDemandLanguage = E_LanguageType::LT_None;
-
-static E_SingerImgPos g_eSingerImgPos = E_SingerImgPos::SIP_Float;
-
-static bool g_bHLayout = false;
-
-static int g_dxBkg = 0;
-static int g_dyBkg = 0;
-
 static bool g_bFullScreen = true;
 
 #if __windows
@@ -527,16 +518,16 @@ void MainWindow::_relayout()
 {
     int cx = width();
     int cy = height();
-    g_bHLayout = cx > cy; // 橫屏
+    m_bHLayout = cx > cy; // 橫屏
 
     m_bDefaultBkg = false;
     if (!__app.getOption().bUseBkgColor)
     {
-        cauto pmBkg = g_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, g_eSingerImgPos, m_PlayingInfo, m_PlayingList);
+    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
 void MainWindow::_onPaint()
@@ -559,7 +550,7 @@ void MainWindow::_onPaint()
             cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawPixmapEx(rc, pmBkg, g_dxBkg, g_dyBkg);
+               painter.drawPixmapEx(rc, pmBkg, m_dxBkg, m_dyBkg);
 
                //auto cx = ui.progressbar->width();
                //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
@@ -948,7 +939,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    g_dxBkg = g_dyBkg = 0;
+    m_dxBkg = m_dyBkg = 0;
 
     _relayout();
 
@@ -970,10 +961,10 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 return;
             }
 
-            g_eSingerImgPos = E_SingerImgPos((int)g_eSingerImgPos+1);
-            if (g_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
+            m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
+            if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
-                g_eSingerImgPos = E_SingerImgPos::SIP_Float;
+                m_eSingerImgPos = E_SingerImgPos::SIP_Float;
             }
 
             _relayout();
@@ -1041,7 +1032,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else
     {
-        g_eDemandLanguage = E_LanguageType::LT_None;
+        m_eDemandLanguage = E_LanguageType::LT_None;
 
         PairList<CLabel*, E_LanguageType> plLabels {
             {ui.labelDemandCN, E_LanguageType::LT_CN}
@@ -1060,7 +1051,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             {
                 if (lbl == label)
                 {
-                    g_eDemandLanguage = eLanguage;
+                    m_eDemandLanguage = eLanguage;
                     lbl->setText(__qsCheck + text);
                 }
             }
@@ -1107,7 +1098,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, g_eDemandLanguage));
+    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::_handleTouchEnd(const CTouchEvent& te)
@@ -1125,22 +1116,22 @@ void MainWindow::_handleTouchEnd(const CTouchEvent& te)
         {
             if (dx >= 3)
             {
-                m_bkgDlg.switchBkg(g_bHLayout, false);
+                m_bkgDlg.switchBkg(m_bHLayout, false);
             }
             else if (dx <= -3)
             {
-                m_bkgDlg.switchBkg(g_bHLayout, true);
+                m_bkgDlg.switchBkg(m_bHLayout, true);
             }
         }
         else
         {
             if (dy >= 3)
             {
-                m_bkgDlg.switchBkg(g_bHLayout, false);
+                m_bkgDlg.switchBkg(m_bHLayout, false);
             }
             else if (dy <= -3)
             {
-                m_bkgDlg.switchBkg(g_bHLayout, true);
+                m_bkgDlg.switchBkg(m_bHLayout, true);
             }
         }
     }
@@ -1167,8 +1158,8 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         mtutil::yield();
-        g_dxBkg -= te.dx();
-        g_dyBkg -= te.dy();
+        m_dxBkg -= te.dx();
+        m_dyBkg -= te.dy();
         update();
     }
     else if (E_TouchEventType::TET_TouchEnd == type)

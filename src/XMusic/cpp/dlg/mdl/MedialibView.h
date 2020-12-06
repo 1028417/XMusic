@@ -16,7 +16,7 @@ public:
     CMedialibView(class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
 
 public:
-    QPixmap m_pmDefaultSinger;
+    CBrush m_brNullSingerHead;
 
 private:
     class CMedialibDlg& m_medialibDlg;
@@ -59,8 +59,8 @@ private:
     QPixmap m_pmAddPlay;
     QPixmap m_pmAddPlayOpacity;
 
-    list<QPixmap> m_lstSingerPixmap;
-    map<UINT, QPixmap*> m_mapSingerPixmap;
+    list<CBrush> m_lstSingerHead;
+    map<UINT, CBrush*> m_mapSingerHead;
 
     int m_nFlashItem = -1;
 
@@ -93,7 +93,7 @@ public:
 
     CSinger *currentSinger() const;
 
-    cqpm genSingerHead(UINT uSingerID, cwstr strSingerName);
+    CBrush& genSingerHead(UINT uSingerID, cwstr strSingerName);
 
 private:
     void _onShowRoot() override;

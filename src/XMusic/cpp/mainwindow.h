@@ -55,9 +55,17 @@ public:
     MainWindow();
 
 private:
+    bool m_bHLayout = false;
+    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
+
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
     bool m_bDefaultBkg = false;
+
+    int m_dxBkg = 0;
+    int m_dyBkg = 0;
+
+    E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
     tagPlayingInfo m_PlayingInfo;
 

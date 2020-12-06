@@ -33,6 +33,16 @@ class CBrush
 public:
     CBrush() = default;
 
+    CBrush(cqpm pm)
+    {
+        setTexture(pm);
+    }
+
+    CBrush(cqstr qsFile)
+    {
+        setTexture(qsFile);
+    }
+
 private:
     QBrush m_br;
     int m_cx = 0;
