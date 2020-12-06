@@ -599,7 +599,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
             auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
-            context.setIcon(&imgDir.snapshot(), __size(-12));
+            context.setIcon(imgDir.snapshot(), __size(-12));
             _paintRow(painter, context);
         });
     }

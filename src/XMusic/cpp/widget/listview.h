@@ -40,15 +40,17 @@ struct tagLVItemContext
     {
     }
 
-    void setIcon(CBrush& br, int nSize)
+    void setIcon(CBrush& br, int nSize, UINT uRound = __size(6))
     {
         brIcon = &br;
         nIconSize = nSize;
+        uIconRound = uRound;
     }
-    void setIcon(cqpm pm, int nSize)
+    void setIcon(cqpm pm, int nSize, UINT uRound = __size(6))
     {
         pmIcon = &pm;
         nIconSize = nSize;
+        uIconRound = uRound;
     }
 
     tagLVItem* operator->()

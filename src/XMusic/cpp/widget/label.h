@@ -45,6 +45,15 @@ public:
         return m_br;
     }
 
+    QBrush* operator->()
+    {
+        return &m_br;
+    }
+    const QBrush* operator->() const
+    {
+        return &m_br;
+    }
+
     int width() const
     {
         return m_cx;
