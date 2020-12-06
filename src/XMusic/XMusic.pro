@@ -79,7 +79,7 @@ FORMS += ui/mainwindow.ui  ui/msgbox.ui  ui/networkWarnDlg.ui \
          ui/bkgdlg.ui  ui/addbkgdlg.ui  ui/colordlg.ui \
          ui/medialibdlg.ui  ui/wholeTrackDlg.ui  ui/singerimgdlg.ui
 
-INCLUDEPATH += ../../inc  cpp
+INCLUDEPATH += ../../inc  cpp  cpp/widget
 
 BuildDir = ../../../build
 

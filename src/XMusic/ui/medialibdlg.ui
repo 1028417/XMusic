@@ -259,12 +259,12 @@
   <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
-   <header location="global">widget/button.h</header>
+   <header location="global">button.h</header>
   </customwidget>
   <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
-   <header location="global">widget/label.h</header>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
