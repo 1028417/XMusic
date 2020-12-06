@@ -144,7 +144,8 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     QRect rc = context->rc;
     int cy = rc.height();
 
-    if (context.pmIcon && !context.pmIcon->isNull())
+    auto brIcon = context.brIcon;
+    if ((brIcon && *brIcon) || (context.pmIcon && !context.pmIcon->isNull()))
     {
         int szIcon = 0;
         if (context.nIconSize > 0)
@@ -168,7 +169,15 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
         int y_icon = rc.center().y()-szIcon/2;
         QRect rcPixmap(xIcon, y_icon, szIcon, szIcon);
-        painter.drawPixmapEx(rcPixmap, *context.pmIcon, context.uIconRound);
+
+        if (brIcon && brIcon)
+        {
+            painter.drawPixmapEx(rcPixmap, *brIcon, QRect(0,0,brIcon->width(),brIcon->height()), context.uIconRound);
+        }
+        else
+        {
+            painter.drawPixmapEx(rcPixmap, *context.pmIcon, context.uIconRound);
+        }
 
         rc.setLeft(xIcon + szIcon + __lvRowMargin);
     }

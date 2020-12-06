@@ -320,7 +320,7 @@ inline CThumbsBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
 {
     _zoomoutPixmap(pm, bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, true);
     m_lstThumbsBrush.emplace_back(pm);
-    return m_lstThumbsBrush back();
+    return m_lstThumbsBrush.back();
 }
 
 inline CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
