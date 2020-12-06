@@ -125,6 +125,26 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
+void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
+{
+    QTransform transform;
+
+    auto fWScaleRate = Double_T(rc.width())/rcSrc.width();
+    auto fHScaleRate = Double_T(rc.height())/rcSrc.height();
+    transform.translate(rc.left()-rcSrc.left()*fWScaleRate, rc.top()-rcSrc.top()*fHScaleRate);
+    transform.scale(fWScaleRate, fHScaleRate);
+    br.setTransform(transform);
+
+    this->save();
+
+    this->setBrush(br);
+    this->setPen(Qt::transparent);
+
+    this->drawRectEx(rc,xround,yround);
+
+    this->restore();
+}
+
 static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
 {
     auto cxSrc = rcSrc.width();
@@ -147,26 +167,6 @@ static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
     }
 }
 
-void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
-{
-    QTransform transform;
-
-    auto fWScaleRate = Double_T(rc.width())/rcSrc.width();
-    auto fHScaleRate = Double_T(rc.height())/rcSrc.height();
-    transform.translate(rc.left()-rcSrc.left()*fWScaleRate, rc.top()-rcSrc.top()*fHScaleRate);
-    transform.scale(fWScaleRate, fHScaleRate);
-    br.setTransform(transform);
-
-    this->save();
-
-    this->setBrush(br);
-    this->setPen(Qt::transparent);
-
-    this->drawRectEx(rc,xround,yround);
-
-    this->restore();
-}
-
 void CPainter::drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QRect t_rcSrc = rcSrc;
@@ -174,11 +174,11 @@ void CPainter::drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT y
     this->drawPixmap(rc, br, t_rcSrc, xround, yround);
 }
 
-void CPainter::drawPixmapEx(cqrc rc, cqpm pm, UINT xround, UINT yround)
+void CPainter::drawPixmapEx(cqrc rc, cqpm pm)//, UINT xround, UINT yround) // pm构造br有开销
 {
     QRect rcSrc = pm.rect();
     _genSrcRect(rc, rcSrc);
-    this->drawPixmap(rc, pm, rcSrc, xround, yround);
+    this->drawPixmap(rc, pm, rcSrc);//, xround, yround);
 }
 
 void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
