@@ -39,12 +39,12 @@ private:
     void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 };
 
-class CBkgBrush : public QBrush
+class CThumbsBrush : public QBrush
 {
 public:
-    CBkgBrush()=default;
+    CThumbsBrush()=default;
 
-    CBkgBrush(cqpm pm)
+    CThumbsBrush(cqpm pm)
         : QBrush(pm)
     {
         m_cx = pm.width();
@@ -59,7 +59,7 @@ struct tagBkgFile
 {
     tagBkgFile() = default;
 
-    tagBkgFile(bool bInner, cwstr strFile, CBkgBrush *br=NULL)
+    tagBkgFile(bool bInner, cwstr strFile, CThumbsBrush *br=NULL)
         : bInner(bInner)
         , strFile(strFile)
         , br(br)
@@ -68,7 +68,7 @@ struct tagBkgFile
 
     bool bInner = false;
     WString strFile;
-    CBkgBrush *br = NULL;
+    CThumbsBrush *br = NULL;
 };
 
 class CBkgDlg : public CDialog
@@ -88,7 +88,7 @@ private:
     vector<tagBkgFile> m_vecHBkgFile;
     vector<tagBkgFile> m_vecVBkgFile;
 
-    list<CBkgBrush> m_lstBr;
+    list<CThumbsBrush> m_lstThumbsBrush;
 
     QPixmap m_pmHBkg;
     QPixmap m_pmVBkg;
@@ -108,8 +108,8 @@ private:
         return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     }
 
-    CBkgBrush& _genThumbs(QPixmap& pm, bool bHLayout);
-    CBkgBrush& _loadThumbs(const WString& strFile, bool bHLayout);
+    CThumbsBrush& _genThumbs(QPixmap& pm, bool bHLayout);
+    CThumbsBrush& _loadThumbs(const WString& strFile, bool bHLayout);
 
     void _relayout(int cx, int cy) override;
 
@@ -137,7 +137,7 @@ public:
 
     size_t bkgCount() const;
 
-    CBkgBrush* brush(size_t uIdx);
+    CThumbsBrush* thumbsBrush(size_t uIdx);
 
     void handleLVClick(size_t uItem);
 

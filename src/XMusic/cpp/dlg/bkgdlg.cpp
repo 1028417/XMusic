@@ -4,7 +4,7 @@
 #include "bkgdlg.h"
 #include "ui_bkgdlg.h"
 
-#define __snapshotRetain 6
+#define __thumbsRetain 6
 
 #define __thumbs L".thumbs"
 #define __thumbsFormat "JPG"
@@ -102,7 +102,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     {
         if (lvItem.uItem >= 2)
         {
-            auto br = m_bkgDlg.brush(lvItem.uItem-2);
+            auto br = m_bkgDlg.thumbsBrush(lvItem.uItem-2);
             if (br)
             {
                 painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
@@ -316,14 +316,14 @@ inline static void _saveThumbs(QPixmap& pm, bool bHLayout, cwstr strFile)
     pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
 }
 
-inline CBkgBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
+inline CThumbsBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
 {
     _zoomoutPixmap(pm, bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, true);
-    m_lstBr.emplace_back(pm);
-    return m_lstBr.back();
+    m_lstThumbsBrush.emplace_back(pm);
+    return m_lstThumbsBrush back();
 }
 
-inline CBkgBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
+inline CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
 {
     QPixmap pm;
     if (!pm.load(strFile + __thumbs, __thumbsFormat))
@@ -333,8 +333,8 @@ inline CBkgBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
         return _genThumbs(pm, bHLayout);
     }
 
-    m_lstBr.emplace_back(pm);
-    return m_lstBr.back();
+    m_lstThumbsBrush.emplace_back(pm);
+    return m_lstThumbsBrush.back();
 }
 
 void CBkgDlg::preinitBkg(bool bHLayout)
@@ -416,7 +416,7 @@ void CBkgDlg::preinitBkg(bool bHLayout)
     });
 
     for (auto itr = vecBkgFile.begin(); itr != vecBkgFile.end()
-         && itr-vecBkgFile.begin() < __snapshotRetain; ++itr)
+         && itr-vecBkgFile.begin() < __thumbsRetain; ++itr)
     {
         cauto strFile = strBkgDir + itr->strFile;
         itr->br = &_loadThumbs(strFile, bHLayout);
@@ -507,7 +507,7 @@ size_t CBkgDlg::bkgCount() const
     return (m_bHLayout?m_vecHBkgFile:m_vecVBkgFile).size();
 }
 
-CBkgBrush* CBkgDlg::brush(size_t uIdx)
+CThumbsBrush* CBkgDlg::thumbsBrush(size_t uIdx)
 {
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx >= vecBkgFile.size())
@@ -626,11 +626,11 @@ void CBkgDlg::deleleBkg(size_t uIdx)
 
         if (bkgFile.br)
         {
-            for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); ++itr)
+            for (auto itr = m_lstThumbsBrush.begin(); itr != m_lstThumbsBrush.end(); ++itr)
             {
                 if (&*itr == bkgFile.br)
                 {
-                    m_lstBr.erase(itr);
+                    m_lstThumbsBrush.erase(itr);
                     break;
                 }
             }
@@ -690,30 +690,30 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
 
 void CBkgDlg::_onClosed()
 {
-    set<CBkgBrush*> setDeleleBrush;
-    if (m_vecHBkgFile.size() > __snapshotRetain)
+    set<CThumbsBrush*> setDeleleBrush;
+    if (m_vecHBkgFile.size() > __thumbsRetain)
     {
-        for (auto itr = m_vecHBkgFile.begin()+__snapshotRetain; itr != m_vecHBkgFile.end(); ++itr)
+        for (auto itr = m_vecHBkgFile.begin()+__thumbsRetain; itr != m_vecHBkgFile.end(); ++itr)
         {
             setDeleleBrush.insert(itr->br);
             itr->br = NULL;
         }
     }
 
-    if (m_vecVBkgFile.size() > __snapshotRetain)
+    if (m_vecVBkgFile.size() > __thumbsRetain)
     {
-        for (auto itr = m_vecVBkgFile.begin()+__snapshotRetain; itr != m_vecVBkgFile.end(); ++itr)
+        for (auto itr = m_vecVBkgFile.begin()+__thumbsRetain; itr != m_vecVBkgFile.end(); ++itr)
         {
             setDeleleBrush.insert(itr->br);
             itr->br = NULL;
         }
     }
 
-    for (auto itr = m_lstBr.begin(); itr != m_lstBr.end(); )
+    for (auto itr = m_lstThumbsBrush.begin(); itr != m_lstThumbsBrush.end(); )
     {
         if (setDeleleBrush.find(&*itr) != setDeleleBrush.end())
         {
-           itr = m_lstBr.erase(itr);
+           itr = m_lstThumbsBrush.erase(itr);
         }
         else
         {
