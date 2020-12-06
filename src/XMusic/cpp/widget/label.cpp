@@ -5,9 +5,9 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 {
     cauto rc = this->rect();
 
-    if (m_cxPm > 0)
+    if (m_br)
     {
-        painter.drawPixmapEx(rc, m_br, QRect(0,0,m_cxPm,m_cyPm), m_szRound);
+        painter.drawPixmapEx(rc, m_br, QRect(0,0,m_br.width(), m_br.height()), m_szRound);
         if (m_uShadowWidth > 0)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)

@@ -285,7 +285,7 @@ void CPainter::drawRectEx(cqrc rc, cqcr cr, UINT uWidth, Qt::PenStyle style, UIN
     this->restore();
 }
 
-void CPainter::fillRectEx(cqrc rc, const QBrush& br, UINT xround, UINT yround)
+void CPainter::fillRectEx(cqrc rc, cqbr br, UINT xround, UINT yround)
 {
     if (xround > 0)
     {

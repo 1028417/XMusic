@@ -7,6 +7,79 @@
 
 #include <QTextOption>
 
+class CBrush
+{
+public:
+    CBrush() = default;
+
+private:
+    QBrush m_br;
+    int m_cx = 0;
+    int m_cy = 0;
+
+public:
+    operator bool() const
+    {
+        return m_cx > 0;
+    }
+    bool operator !() const
+    {
+        return 0 == m_cx;
+    }
+
+    cqbr brush() const
+    {
+        return m_br;
+    }
+    QBrush& brush()
+    {
+        return m_br;
+    }
+
+    operator cqbr() const
+    {
+        return m_br;
+    }
+    operator QBrush&()
+    {
+        return m_br;
+    }
+
+    int width() const
+    {
+        return m_cx;
+    }
+    int height() const
+    {
+        return m_cy;
+    }
+
+    void setTexture(cqpm pm)
+    {
+        m_cx = pm.width();
+        if (0 == m_cx)
+        {
+            clear();
+            return;
+        }
+        m_cy = pm.height();
+
+        m_br.setTexture(pm);
+    }
+
+    void setTexture(cqstr qsFile)
+    {
+        setTexture(QPixmap(qsFile));
+    }
+
+    void clear()
+    {
+        QBrush br;
+        m_br.swap(br);
+        m_cx = m_cy = 0;
+    }
+};
+
 enum class E_LabelTextOption
 {
     LTO_AutoFit,
@@ -23,9 +96,7 @@ public:
     }
 
 private:
-    QBrush m_br;
-    int m_cxPm = 0;
-    int m_cyPm = 0;
+    CBrush m_br;
 
     QColor m_crText;
     int m_flag = -1;
@@ -50,23 +121,25 @@ private:
 public:
     bool pixmap() const
     {
-        return m_cxPm > 0;
+        return m_br.width() > 0;
     }
 
     int pixmapWidth() const
     {
-        return m_cxPm;
+        return m_br.width();
     }
     int pixmapHeight() const
     {
-        return m_cyPm;
+        return m_br.height();
     }
 
+    void setPixmap(const CBrush& br)
+    {
+        m_br = br;
+    }
     void setPixmap(cqpm pm)
     {
         m_br.setTexture(pm);
-        m_cxPm = pm.width();
-        m_cyPm = pm.height();
     }
 
     void setPixmapRound(UINT szRound)
@@ -91,7 +164,6 @@ public:
     {
         QLabel::clear();
 
-        m_br = QBrush();
-        m_cxPm = m_cyPm = 0;
+        m_br.clear();
     }
 };

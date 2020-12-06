@@ -243,7 +243,7 @@ public:
     void drawRectEx(cqrc rc, cqcr cr, UINT uWidth=1,
                    Qt::PenStyle style=Qt::SolidLine, UINT xround=0, UINT yround=0);
 
-    void fillRectEx(cqrc rc, const QBrush& br, UINT xround=0, UINT yround=0);
+    void fillRectEx(cqrc rc, cqbr br, UINT xround=0, UINT yround=0);
 
     void fillRectEx(cqrc rc, cqcr cr, UINT xround=0, UINT yround=0)
     {
