@@ -176,7 +176,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         }
         else
         {
-            painter.drawPixmapEx(rcPixmap, *context.pmIcon, context.uIconRound);
+            painter.drawPixmapEx(rcPixmap, *context.pmIcon);//, context.uIconRound);
         }
 
         rc.setLeft(xIcon + szIcon + __lvRowMargin);

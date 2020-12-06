@@ -46,7 +46,7 @@ struct tagLVItemContext
         nIconSize = nSize;
         uIconRound = uRound;
     }
-    void setIcon(cqpm pm, int nSize, UINT uRound = __size(6))
+    void setIcon(cqpm pm, int nSize, UINT uRound = 0)
     {
         pmIcon = &pm;
         nIconSize = nSize;
@@ -69,7 +69,7 @@ struct tagLVItemContext
     CBrush *brIcon = NULL;
     const QPixmap *pmIcon = NULL;
     int nIconSize = 0;
-    UINT uIconRound = __size(6);
+    UINT uIconRound = 0;
 
     WString strText;
 };
