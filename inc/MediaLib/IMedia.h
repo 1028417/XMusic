@@ -104,12 +104,12 @@ public:
 		return 0;
 	}
 
-	wstring fileSizeString(bool bIgnoreByte)
+	wstring fileSizeString(bool bIgnoreByte = false)
 	{
 		return genFileSizeString(fileSize(), bIgnoreByte);
 	}
 
-	static wstring genFileSizeString(int64_t nFileSize, bool bIgnoreByte);
+	static wstring genFileSizeString(int64_t nFileSize, bool bIgnoreByte = false);
 
 	virtual UINT duration() const
 	{

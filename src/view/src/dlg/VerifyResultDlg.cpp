@@ -159,9 +159,11 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 				<< L"\n原目录:  " << MatchMediaInfo->dir()
 				+ L"\n\n关联曲目:  ";
 
-			MatchMediaInfo.medias()([&](CMedia& media) {
-				strText.append(media.m_pParent->GetLogicPath() + L"\n           ");
-			});
+			for (auto pMedia : MatchMediaInfo.medias())
+			{
+				strText << '\n' << pMedia->m_pParent->GetLogicPath();
+				strText << L"\n大小:  " << pMedia->fileSizeString() << L"      时长:  " << pMedia->durationString();
+			}
 
 			int nRet = ProgressDlg.msgBox(strText->c_str(), L"匹配到新文件", MB_YESNOCANCEL);
 			if (IDCANCEL == nRet)

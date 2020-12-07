@@ -139,7 +139,7 @@ public:
 private:
 	bool _create();
 
-	bool _exportMedia(CWnd& wnd, cwstr strTitle
+	bool _exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
 	void _snapshotDir(CMediaRes& dir, cwstr strOutputFile);

@@ -108,7 +108,7 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 			strDir = pParent->GetPath();
 		}
 
-		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.fileSizeString(false)
+		m_wndList.InsertItemEx(uItem++, { strDir, mediaRes.GetName(), mediaRes.fileSizeString()
 			, L" ", mediaRes.fileTimeString(true) });
 		m_arrSimilarFileInfo.add({ group, idx });
 

@@ -480,13 +480,13 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
 }
 
-bool __view::_exportMedia(CWnd& wnd, cwstr strTitle
+bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 	, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport)
 {
 	m_ResModule.ActivateResource();
 
 	tagExportOption ExportOption;
-	CExportOptionDlg ExportOptionDlg(ExportOption);
+	CExportOptionDlg ExportOptionDlg(bForceActualMode, ExportOption);
 	__EnsureReturn(IDOK == ExportOptionDlg.DoModal(), false);
 
 	static CFolderDlgEx FolderDlg;
@@ -576,7 +576,7 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 		pWnd = &m_MainWnd;
 	}
 
-	(void)_exportMedia(*pWnd, L"导出曲目", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		if (ExportOption.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
@@ -621,7 +621,7 @@ void __view::exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd)
 		pWnd = &m_MainWnd;
 	}
 	
-	(void)_exportMedia(*pWnd, L"导出曲目", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		SMap<wstring, wstring> mapDirs;
 		map<wstring, TD_IMediaList> mapMedias;
 		lstMedias([&](IMedia& media) {
@@ -650,7 +650,7 @@ void __view::exportDir(CMediaDir& dir)
 	dir.clear();
 	CMediaResPanel::RefreshMediaResPanel();
 
-	_exportMedia(m_MainWnd, L"导出目录", [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
+	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
 			if (!ProgressDlg.checkStatus())
@@ -767,7 +767,7 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 					jFiles.append(strFileDesc);
 					//jFiles.append(jFile);
 
-					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString(false);
+					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString();
 					auto& strFileInfo = strPrfix + subFile.fileName() + L'\t' + strFileSize;
 					return TxtWriter.writeln(strFileInfo);
 				});

@@ -18,7 +18,7 @@ BOOL CExportOptionDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	auto pBtn = ((CButton*)GetDlgItem(IDC_ActualMode));
-	if (m_ExportOption.bActualMode)
+	if (m_bForceActualMode)
 	{
 		pBtn->SetCheck(TRUE);
 		pBtn->EnableWindow(FALSE);
