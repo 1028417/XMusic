@@ -1157,7 +1157,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             return;
         }
 
-        mtutil::yield();
+        __yield();
         m_dxBkg -= te.dx();
         m_dyBkg -= te.dy();
         update();

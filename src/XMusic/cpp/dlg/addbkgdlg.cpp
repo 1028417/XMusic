@@ -149,7 +149,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
             {
-                m_thrScan.usleepex(300);
+                m_thrScan.usleep(300);
             }
 
             if (!bRunSignal)
@@ -413,7 +413,7 @@ void CImgDir::genSubImgs(CAddBkgView& lv)
                 return;
             }
 
-        } while (g_thrGenSubImg->usleepex(30));
+        } while (g_thrGenSubImg->usleep(30));
     });
 }
 

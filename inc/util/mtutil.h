@@ -4,6 +4,9 @@
 
 //#include <future>
 
+#define __usleep(uMs) std::this_thread::sleep_for(chrono::milliseconds(uMs))
+#define __yield() std::this_thread::yield()
+
 class __UtilExt mtutil
 {
 #if __windows
@@ -106,16 +109,6 @@ public:
 		thr.join();
 
 		return ret;
-	}
-
-	inline static void usleep(UINT uMS = 0)
-	{
-		std::this_thread::sleep_for(chrono::milliseconds(uMS));
-	}
-
-	inline static void yield()
-    {
-        std::this_thread::yield();
     }
 };
 
@@ -161,12 +154,16 @@ public:
     {
         return m_bRunSignal;
     }
+    operator bool() const
+    {
+        return m_bRunSignal;
+    }
     bool operator !() const
     {
         return !m_bRunSignal;
     }
 
-    signal_t usleepex(UINT uMs)
+    inline signal_t usleep(UINT uMs)
     {
         if (m_bRunSignal)
         {
@@ -176,29 +173,17 @@ public:
         return m_bRunSignal;
     }
 
-    void start(cfn_void cb, UINT uMsLoop=0)
+    void start(cfn_void cb)
     {
         m_mutex.lock();
 
         m_thread = thread([=]{
             m_runSignal.set();
 
-            m_mutex.lock(); //mtutil::usleep(1); // 等待start函数返回，防止？？
+            m_mutex.lock(); //__usleep(1); // 等待start函数返回，防止？？
             m_mutex.unlock();
 
-            while (true)
-            {
-                cb();
-                if (0 == uMsLoop)
-                {
-                    break;
-                }
-
-                if (!this->usleepex(uMsLoop))
-                {
-                    return;
-                }
-            }
+            cb();
 
             _reset();
         });
@@ -206,33 +191,33 @@ public:
         m_runSignal.wait();
 
         m_mutex.unlock();
-    }
+    }    
 
-    void start(cfn_void_t<signal_t> cb, UINT uMsLoop=0)
+    void start(cfn_void_t<signal_t> cb)
     {
-        start([&, cb]{
+        start([=]{
             cb(m_bRunSignal);
-        }, uMsLoop);
+        });
     }
 
     void start(UINT uMsLoop, cfn_bool cb)
     {
-        start([&, cb]{
-            if (!cb())
-            {
-                _reset();
-            }
-        }, uMsLoop);
+        start([=]{
+            do {
+                if (!cb())
+                {
+                    _reset();
+                    break;
+                }
+            } while (this->usleep(uMsLoop));
+        });
     }
 
     void start(UINT uMsLoop, cfn_bool_t<signal_t> cb)
     {
-        start([&, cb]{
-            if (!cb(m_bRunSignal))
-            {
-                _reset();
-            }
-        }, uMsLoop);
+        start(uMsLoop, [=]{
+            return cb(m_bRunSignal);
+        });
     }
 
     inline bool joinable() const
@@ -293,6 +278,115 @@ public:
             }
         }
         m_mutex.unlock();
+    }
+};
+
+
+class __UtilExt cbthread
+{
+public:
+    cbthread() = default;
+
+private:
+    mutex m_mtx;
+    condition_variable m_cv;
+    thread m_thr;
+
+    bool m_bRunSignal = true;
+
+    bool m_bReset = false;
+
+    function<void(signal_t, const bool& bReset)> m_cb;
+
+public:
+    void start_loop()
+    {
+        unique_lock<mutex> lock(m_mtx);
+
+        m_thr = thread([&](){
+            while (m_bRunSignal)
+            {
+                unique_lock<mutex> lock(m_mtx);
+                if (!m_bRunSignal)
+                {
+                    break;
+                }
+
+                if (!m_bReset)
+                {
+                    m_cv.wait(lock);
+                    if (!m_bRunSignal)
+                    {
+                        break;
+                    }
+                }
+
+                m_bReset = false;
+                auto cb = m_cb;
+                lock.unlock();
+
+                cb(m_bRunSignal, m_bReset);
+            };
+        });
+    }
+
+    bool try_emit(const function<void(signal_t, const bool& bReset)>& cb)
+    {
+        unique_lock<mutex> lock(m_mtx);
+        if (!m_bRunSignal)
+        {
+            return false;
+        }
+        if (m_bReset)
+        {
+            return false;
+        }
+
+        m_bReset = true;
+        m_cb = cb;
+        m_cv.notify_one();
+
+        return true;
+    }
+
+    bool try_emit(cfn_void_t<signal_t> cb)
+    {
+        return try_emit([=](signal_t bRunSignal, const bool& bReset){
+            (void)bReset;
+            cb(bRunSignal);
+        });
+    }
+
+    bool try_emit(cfn_void cb)
+    {
+        return try_emit([=](signal_t bRunSignal, const bool& bReset){
+            (void)bRunSignal;
+            (void)bReset;
+            cb();
+        });
+    }
+
+    void quit(bool bJoin)
+    {
+        unique_lock<mutex> lock(m_mtx);
+        if (!m_thr.joinable())
+        {
+            return;
+        }
+
+        m_bRunSignal = false;
+        m_cv.notify_one();
+
+        if (!bJoin)
+        {
+            m_thr.detach();
+        }
+        m_mtx.unlock();
+
+        if (bJoin)
+        {
+            m_thr.join();
+        }
     }
 };
 

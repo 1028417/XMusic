@@ -96,7 +96,7 @@ void CXController::start()
         auto& PlayMgr = m_model.getPlayMgr();
         PlayMgr.tryPlay();
 
-        while (usleepex(100)) //m_threadPlayCtrl.usleepex(100))
+        while (usleepex(100)) //m_threadPlayCtrl.usleep(100))
         {
             tagPlayCmd PlayCmd;
             m_mutex.lock();

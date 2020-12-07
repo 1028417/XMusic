@@ -88,7 +88,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 			return 0;
 		}
 
-		mtutil::usleep(1);
+		__usleep(1);
 	}
 
 	TD_MediaSetList lstSubSets;
@@ -110,7 +110,7 @@ uint64_t CExportMediaSetDlg::_sumSize(CMediaSet& MediaSet)
 		}
 	}
 
-	mtutil::usleep(1);
+	__usleep(1);
 
 	if (0 != uSumSize)
 	{

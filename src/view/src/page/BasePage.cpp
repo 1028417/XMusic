@@ -169,7 +169,7 @@ bool CBasePage::DragScroll(CObjectList& wndList, LONG x, LONG y)
 			m_bDragScrolling = true;
 			(void)wndList.SendMessage(WM_HSCROLL, MAKELONG(SB_LINELEFT, 0));
 			m_bDragScrolling = false;
-			mtutil::usleep(50);
+			__usleep(50);
 			return true;
 		}
 		else
@@ -186,7 +186,7 @@ bool CBasePage::DragScroll(CObjectList& wndList, LONG x, LONG y)
 				m_bDragScrolling = true;
 				(void)wndList.SendMessage(WM_HSCROLL, MAKELONG(SB_LINERIGHT, 0));
 				m_bDragScrolling = false;
-				mtutil::usleep(50);
+				__usleep(50);
 				return true;
 			}
 		}
@@ -205,7 +205,7 @@ bool CBasePage::DragScroll(CObjectList& wndList, LONG x, LONG y)
 		m_bDragScrolling = true;
 		(void)wndList.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEUP, 0));
 		m_bDragScrolling = false;
-		mtutil::usleep(50);
+		__usleep(50);
 		return true;
 	}
 	else
@@ -222,7 +222,7 @@ bool CBasePage::DragScroll(CObjectList& wndList, LONG x, LONG y)
 			m_bDragScrolling = true;
 			(void)wndList.SendMessage(WM_VSCROLL, MAKELONG(SB_LINEDOWN, 0));
 			m_bDragScrolling = false;
-			mtutil::usleep(50);
+			__usleep(50);
 			return true;
 		}
 	}

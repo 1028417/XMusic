@@ -430,11 +430,11 @@ private:
 
                         if (0 == uSleepTime)
                         {
-                                mtutil::yield();
+                                __yield();
                         }
                         else
                         {
-                                mtutil::usleep(uSleepTime);
+                                __usleep(uSleepTime);
                         }
                 }
 

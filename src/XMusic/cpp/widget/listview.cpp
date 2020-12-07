@@ -355,7 +355,7 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
         if (bTouchBarArea)
         {
-            mtutil::yield();
+            __yield();
 
             UINT uRowCount = getRowCount();
 

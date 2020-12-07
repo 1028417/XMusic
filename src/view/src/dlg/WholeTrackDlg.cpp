@@ -54,7 +54,7 @@ BOOL CWholeTrackDlg::OnInitDialog()
 			map<LPCCueFile, CMediaRes*> mapCueFile;
 			for (auto pSubFile : paSubFile)
 			{
-				mtutil::yield();
+				__yield();
 
 				auto pMediaRes = (CMediaRes*)pSubFile;
 				auto& cueFile = pMediaRes->cueFile();
