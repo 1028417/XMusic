@@ -7,7 +7,7 @@ public:
 
 	CMediaResInfo(CMediaRes& MediaRes, const CSingerMatcher& SingerMatcher)
 		: m_FileTitle(MediaRes, SingerMatcher)
-		, m_strFileSize(MediaRes.fileSizeString(false))
+		, m_strFileSize(MediaRes.fileSizeString())
 		, m_strFileTime(MediaRes.fileTimeString(false))
 	{
 	}

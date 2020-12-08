@@ -30,6 +30,14 @@ private:
         return m_strFile;
     }
 
+    inline int64_t _open(cwstr strFile)
+    {
+        m_strFile = strFile;
+        auto nFileSize = fsutil::GetFileSize64(strFile);
+        setSize(nFileSize);
+        return nFileSize;
+    }
+
     int64_t _openXmsc(cwstr strFile);
 
     inline UINT checkDuration()
@@ -56,22 +64,21 @@ public:
 
     virtual void close() override;
 
-    inline int64_t open(cwstr strFile)
-    {
-        m_strFile = strFile;
-        auto nFileSize = fsutil::GetFileSize64(strFile);
-        setSize(nFileSize);
-        return nFileSize;
-    }
-
     inline int64_t open(cwstr strFile, bool bXmsc)
     {
-        return bXmsc ? _openXmsc(strFile) : open(strFile);
+        if (bXmsc)
+        {
+            return _openXmsc(strFile);
+        }
+        else
+        {
+            return _open(strFile);
+        }
     }
 
     UINT checkFileDuration(cwstr strFile, int64_t& nFileSize)
     {
-        nFileSize = open(strFile);
+        nFileSize = _open(strFile);
         if (nFileSize <= 0)
         {
             return 0;
