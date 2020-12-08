@@ -71,8 +71,6 @@ public:
 		return m_Playinglist.playItems();
 	}
 
-    bool init();
-
     const CMediaOpaque& mediaOpaque() const;
 
     CPlayer& player()
@@ -83,7 +81,9 @@ public:
     E_PlayStatus playStatus() const;
 
 	void SetPlayStatus(E_PlayStatus ePlayStatus);
-	
+
+    bool init();
+
 	bool clear();
 
     bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
