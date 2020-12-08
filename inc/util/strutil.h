@@ -123,22 +123,39 @@ public:
 
     static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
 
+	template <typename T>
+	inline static T lowerCase(T chr)
+	{
+		if (chr >= 'A' && chr <= 'Z')
+		{
+			return chr - 'A' + 'a';
+		}
+		return chr;
+	}
+	template <typename T>
+	inline static T upperCase(T chr)
+	{
+		if (chr >= 'a' && chr <= 'z')
+		{
+			return chr - 'a' + 'A';
+		}
+		return chr;
+	}
+
 	static void lowerCase(wstring& str)
 	{
 		for (auto& chr : str)
 		{
-			chr = ::towlower(chr);
+			chr = lowerCase(chr);
 		}
 	}
-
 	static void lowerCase(string& str)
 	{
 		for (auto& chr : str)
 		{
-			chr = ::tolower(chr);
+			chr = lowerCase(chr);
 		}
 	}
-
 	template <class S>
 	static S lowerCase_r(const S& str)
 	{
@@ -151,18 +168,16 @@ public:
 	{
 		for (auto& chr : str)
 		{
-			chr = ::towupper(chr);
+			chr = upperCase(chr);
 		}
 	}
-
 	static void upperCase(string& str)
 	{
 		for (auto& chr : str)
 		{
-			chr = ::toupper(chr);
+			chr = upperCase(chr);
 		}
 	}
-
 	template <class S>
 	static S upperCase_r(const S& str)
 	{
