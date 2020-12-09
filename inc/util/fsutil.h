@@ -101,11 +101,11 @@ struct __UtilExt tagFileInfo
 #define __cBackSlant '\\'
 
 #if __windows
-    #define __cPathSeparator	__cBackSlant
+#define __cPathSeparator    __cBackSlant
 #else
-    #define __cPathSeparator	__cSlant
+#define __cPathSeparator    __cSlant
 #endif
-#define     __wcPathSeparator	((wchar_t)__cPathSeparator)
+#define __wcPathSeparator   ((wchar_t)__cPathSeparator)
 
 #define __wcDot L'.'
 
@@ -135,12 +135,11 @@ public:
     template <class S>
     inline static void trimPathTail(S& strPath)
     {
-		if (checkPathTail(strPath))
-		{
+        if (checkPathTail(strPath))
+        {
             strPath.pop_back();
         }
     }
-
     template <class S>
     inline static S trimPathTail_r(const S& strPath)
 	{
@@ -151,7 +150,28 @@ public:
 
 		return strPath;
 	}
-	
+
+    template <class S>
+    inline static void appendPathTail(S& strPath)
+    {
+        if (!checkPathTail(strPath))
+        {
+            strPath.push_back(__cPathSeparator);
+        }
+    }
+    template <class S>
+    inline static S appendPathTail_r(const S& strPath)
+    {
+        if (!checkPathTail(strPath))
+        {
+            auto strRet = strPath;
+            strRet.push_back(__cPathSeparator);
+            return strRet;
+        }
+
+        return strPath;
+    }
+
     template <class S>
     inline static void transSeparator(S& strPath)
     {
