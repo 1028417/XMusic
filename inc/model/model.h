@@ -343,7 +343,7 @@ public:
 #else
     virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
-	virtual bool attachXPkg(const string& strFile) = 0;
+    virtual bool attachXPkg(cwstr strFile) = 0;
 #endif
 
 	virtual bool init(
@@ -449,7 +449,7 @@ public:
 #else
     E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
-	bool attachXPkg(const string& strFile) override;
+    bool attachXPkg(cwstr strFile) override;
 #endif
 
 	bool init(
