@@ -106,11 +106,11 @@ tagOption& COptionMgr::init()
     {
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
         {
-            string strAttachXPkg;
-            jsonutil::get(jValue[uIdx], strAttachXPkg);
-            if (!strAttachXPkg.empty())
+            wstring strXPkg;
+            jsonutil::get(jValue[uIdx], strXPkg);
+            if (!strXPkg.empty())
             {
-                m_Option.lstXPkg.push_back(strAttachXPkg);
+                m_Option.lstXPkg.push_back(strXPkg);
             }
         }
     }
@@ -177,9 +177,9 @@ void COptionMgr::saveOption()
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
 
     auto& jValue = jRoot[OI_XPkg];
-    for (cauto strAttachXPkg : m_Option.lstXPkg)
+    for (cauto strXPkg : m_Option.lstXPkg)
     {
-        jValue.append(JValue(strAttachXPkg));
+        jValue.append(JValue(strutil::toUtf8(strXPkg)));
     }
 #endif
 
