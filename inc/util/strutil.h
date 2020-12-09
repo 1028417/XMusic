@@ -5,7 +5,6 @@
 
 using cwstr = const wstring&;
 using cwchr_p = const wchar_t*;
-using cchr_p = const wchar_t*;
 
 #if !__winvc
 #include <QString>

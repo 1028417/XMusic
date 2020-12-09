@@ -29,6 +29,8 @@ using tagFileStat64 = struct _stat64;
 
 #else
 #if __android
+#define __sdcardDir L"/sdcard/"
+
 using tagFileStat64 = struct stat64;
 #else
 using tagFileStat64 = struct stat;

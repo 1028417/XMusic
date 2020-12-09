@@ -4,8 +4,6 @@
 #include "util/util.h"
 
 #if __android
-#define __sdcardDir L"/sdcard/"
-
 extern int g_jniVer;
 extern int g_androidSdkVer;
 

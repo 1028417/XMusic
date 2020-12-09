@@ -185,7 +185,7 @@ struct __ModelExt tagOption
 
     bool bNetworkWarn = true;
 
-    list<string> lstXPkg;
+    list<wstring> lstXPkg;
 #endif
 };
 
@@ -305,7 +305,7 @@ public:
 #if __winvc
     virtual CBackupMgr& getBackupMgr() = 0;
 
-    virtual void convertXmsc(const wstring& strFile) = 0;
+    virtual void convertXmsc(cwstr strFile) = 0;
 
     virtual bool setupMediaLib(cwstr strRootDir) = 0;
 
@@ -412,7 +412,7 @@ public:
         return m_BackupMgr;
     }
 
-    void convertXmsc(const wstring& strFile) override;
+    void convertXmsc(cwstr strFile) override;
 
     bool setupMediaLib(cwstr strRootDir) override;
 
