@@ -250,6 +250,11 @@ public:
     {
 		m_ofs.close();
     }
+
+    void flush()
+    {
+        m_ofs.flush();
+    }
 };
 
 #if __windows
