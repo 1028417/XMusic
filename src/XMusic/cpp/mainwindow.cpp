@@ -105,6 +105,7 @@ void MainWindow::_init()
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
 
+    m_PlayingList.setVisible(false);
     m_PlayingList.raise();
 
 #if __android || __ios
@@ -191,7 +192,7 @@ void MainWindow::preinit() // 工作线程
         m_pmCDCover.swap(pm);
 
         _init();
-
+        _relayout();
         _showLogo();
     });
 
@@ -351,7 +352,8 @@ void MainWindow::_showUpgradeProgress()
 
 void MainWindow::show()
 {
-    m_PlayingList.init();
+    m_PlayingList.init();    
+    m_PlayingList.setVisible(true);
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
