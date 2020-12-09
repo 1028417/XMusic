@@ -43,6 +43,11 @@ public:
         (void)open(ins, strPwd);
     }
 
+    CZipFile(IFStream& ifs, const string& strPwd = "")
+    {
+        (void)open(ifs, strPwd);
+    }
+
     virtual ~CZipFile()
     {
         close();
@@ -88,18 +93,8 @@ public:
         return _open(strFile.c_str());
     }
 
-    bool open(cwstr strFile, const string& strPwd = "")
-    {
-        m_strPwd = strPwd;
-#if __windows
-        cauto t_strFile = strutil::toGbk(strFile);
-#else
-        cauto t_strFile = strutil::toUtf8(strFile);
-#endif
-        return _open(t_strFile.c_str());
-    }
-
     bool open(Instream& ins, const string& strPwd = "");
+    bool open(IFStream& ifs, const string& strPwd = "");
 
     void close();
 
