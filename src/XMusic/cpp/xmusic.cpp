@@ -165,10 +165,10 @@ int main(int argc, char *argv[])
 #endif
 
 #if __android
-    //内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
+    // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
     m_strWorkDir = L"/data/data/" __pkgName;
     // = __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-    //m_strWorkDir = __sdcardDir __pkgName;
+    m_strWorkDir = __sdcardDir __pkgName;
 
 #else
     m_strWorkDir = fsutil::getHomeDir().toStdWString() + L"/" __pkgName;

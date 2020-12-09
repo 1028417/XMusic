@@ -16,12 +16,14 @@ CApp::CApp()
 static wstring _genMedialibDir(cwstr strWorkDir)
 {
 /*#if __android
-    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE")) // API 23以上动态申请读写权限
     {
-        return __sdcardDir L"XMusic"; //API 23以上需要动态申请读写权限
+        cauto strMdlDir = __sdcardDir L"XMusic"; // TODO 拷贝mdl
+        return strMdlDir;
     }
+#endif
 
-#elif __window
+#if __window
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         CFolderDlg FolderDlg;
@@ -31,8 +33,9 @@ static wstring _genMedialibDir(cwstr strWorkDir)
             return strDir;
         }
     }
+#endif
 
-#elif __mac
+#if __mac
 #if __ios && TARGET_IPHONE_SIMULATOR
     //return L"/Users/lhyuan/XMusic";
 #endif

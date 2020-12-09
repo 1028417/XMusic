@@ -71,7 +71,21 @@ MainWindow::MainWindow() :
     , m_bkgDlg(*this)
 {
     //this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
+    //this->setStyleSheet("");
 
+    //qRegisterMetaType<QVariant>("QVariant");
+}
+
+void MainWindow::showBlank()
+{
+    g_bFullScreen = __app.getOption().bFullScreen;
+    fixWorkArea(*this);
+
+    this->setVisible(true);
+}
+
+void MainWindow::_init()
+{
     ui.setupUi(this);
 
     ui.centralWidget->ctor();
@@ -110,20 +124,6 @@ MainWindow::MainWindow() :
 
     ui.centralWidget->setVisible(false);
 
-    //this->setStyleSheet("");
-}
-
-void MainWindow::showBlank()
-{
-    g_bFullScreen = __app.getOption().bFullScreen;
-    fixWorkArea(*this);
-
-    this->setVisible(true);
-}
-
-void MainWindow::_init()
-{
-    qRegisterMetaType<QVariant>("QVariant");
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
@@ -516,6 +516,11 @@ bool MainWindow::event(QEvent *ev)
 
 void MainWindow::_relayout()
 {
+    if (NULL == ui.centralWidget)
+    {
+        return;
+    }
+
     int cx = width();
     int cy = height();
     m_bHLayout = cx > cy; // 橫屏

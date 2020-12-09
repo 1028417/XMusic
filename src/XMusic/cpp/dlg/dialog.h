@@ -38,13 +38,13 @@ public:
         widget->setPalette(pe);
     }
 
-private:
+protected:
     QWidget& m_parent;
 
-    bool m_bFullScreen = true;
-
-protected:
     bool m_bHLayout = false;
+
+private:
+    bool m_bFullScreen = true;
 
 private:
     virtual cqcr bkgColor() const
