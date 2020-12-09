@@ -108,6 +108,7 @@ public:
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound=0, bool bDrawCDCover=true);
 
 private:
+    void _ctor();
     void _init();
 
     void _showLogo();

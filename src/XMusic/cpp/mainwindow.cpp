@@ -66,7 +66,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
-    , m_PlayingList(this)
+    //, m_PlayingList(this)
     , m_medialibDlg(*this)
     , m_bkgDlg(*this)
 {
@@ -78,13 +78,15 @@ MainWindow::MainWindow() :
 
 void MainWindow::showBlank()
 {
+    _ctor();
+
     g_bFullScreen = __app.getOption().bFullScreen;
     fixWorkArea(*this);
 
     this->setVisible(true);
 }
 
-void MainWindow::_init()
+void MainWindow::_ctor()
 {
     ui.setupUi(this);
 
@@ -105,9 +107,6 @@ void MainWindow::_init()
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
 
-    m_PlayingList.setVisible(false);
-    m_PlayingList.raise();
-
 #if __android || __ios
     int nLogoWidth = g_screen.szScreenMin*42/100;
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
@@ -118,14 +117,15 @@ void MainWindow::_init()
 
 #else
     ui.btnFullScreen->setParent(this);
-
     ui.btnExit->setParent(this);
-    ui.btnExit->raise();
 #endif
 
     ui.centralWidget->setVisible(false);
+    //m_PlayingList.setVisible(false);
+}
 
-
+void MainWindow::_init()
+{
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
@@ -352,8 +352,12 @@ void MainWindow::_showUpgradeProgress()
 
 void MainWindow::show()
 {
-    m_PlayingList.init();    
+    m_PlayingList.init();
+
+    m_PlayingList.setParent(this);
     m_PlayingList.setVisible(true);
+    m_PlayingList.raise();
+    ui.btnExit->raise();
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
@@ -416,7 +420,7 @@ bool MainWindow::event(QEvent *ev)
         break;
 #if __windows || __mac
     case QEvent::MouseButtonDblClick:
-        if (!m_PlayingList.geometry().contains(((QMouseEvent*)ev)->pos()))
+        if (!m_PlayingList.isVisible() || !m_PlayingList.geometry().contains(((QMouseEvent*)ev)->pos()))
         {
             switchFullScreen();
         }
@@ -518,11 +522,6 @@ bool MainWindow::event(QEvent *ev)
 
 void MainWindow::_relayout()
 {
-    if (NULL == ui.centralWidget)
-    {
-        return;
-    }
-
     int cx = width();
     int cy = height();
     m_bHLayout = cx > cy; // 橫屏
@@ -532,6 +531,11 @@ void MainWindow::_relayout()
     {
         cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
+    }
+
+    if (NULL == ui.centralWidget)
+    {
+        return;
     }
 
     ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
