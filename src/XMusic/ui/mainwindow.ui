@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1080</width>
-    <height>2340</height>
+    <width>4096</width>
+    <height>4096</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -801,7 +801,7 @@ gridline-color: rgb(255, 255, 255);</string>
   <customwidget>
    <class>CProgressBar</class>
    <extends>QWidget</extends>
-   <header location="global">progressbar.h</header>
+   <header location="global">widget/progressbar.h</header>
   </customwidget>
   <customwidget>
    <class>CCentralWidget</class>

@@ -78,17 +78,18 @@ MainWindow::MainWindow() :
 
 void MainWindow::showBlank()
 {
-    _ctor();
+    this->setVisible(true); //必须在前面，不然ole异常
 
     g_bFullScreen = __app.getOption().bFullScreen;
     fixWorkArea(*this);
-
-    this->setVisible(true);
 }
 
 void MainWindow::_ctor()
 {
+    //auto szPrev = size();
     ui.setupUi(this);
+    //resize(szPrev);
+    //repaint();
 
     ui.centralWidget->ctor();
 
@@ -118,14 +119,21 @@ void MainWindow::_ctor()
 #else
     ui.btnFullScreen->setParent(this);
     ui.btnExit->setParent(this);
+
+    ui.btnFullScreen->setVisible(true);
+    ui.btnExit->setVisible(true);
 #endif
 
     ui.centralWidget->setVisible(false);
     //m_PlayingList.setVisible(false);
+
+    _relayout();
 }
 
 void MainWindow::_init()
 {
+    _ctor();
+
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
@@ -192,7 +200,6 @@ void MainWindow::preinit() // 工作线程
         m_pmCDCover.swap(pm);
 
         _init();
-        _relayout();
         _showLogo();
     });
 
@@ -352,13 +359,6 @@ void MainWindow::_showUpgradeProgress()
 
 void MainWindow::show()
 {
-    m_PlayingList.init();
-
-    m_PlayingList.setParent(this);
-    m_PlayingList.setVisible(true);
-    m_PlayingList.raise();
-    ui.btnExit->raise();
-
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
     ui.labelLogo->clear();
@@ -368,6 +368,14 @@ void MainWindow::show()
     ui.btnFullScreen->setVisible(false);
 
     ui.centralWidget->setVisible(true);
+
+    m_PlayingList.setParent(this);
+    m_PlayingList.setVisible(true);
+    m_PlayingList.raise();
+    ui.btnExit->raise();
+
+    m_PlayingList.init();
+
     _relayout();
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
@@ -435,7 +443,7 @@ bool MainWindow::event(QEvent *ev)
             break;
         }
 
-        if (ui.labelLogo->isVisible())
+        if (NULL == ui.centralwidget || !ui.centralwidget->isVisible())
         {
             break;
         }
@@ -476,7 +484,7 @@ bool MainWindow::event(QEvent *ev)
             this->setWindowState(Qt::WindowMinimized); // Qt5.13.2 Windows弹窗后也有bug
 #endif
         }*/
-        else if (!ui.labelLogo->isVisible())
+        else if (m_PlayingList.isVisible())
         {
             // TODO 上下键滚动播放列表、左右键切换背景
             if (Qt::Key_Space == key)
@@ -533,11 +541,7 @@ void MainWindow::_relayout()
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    if (NULL == ui.centralWidget)
-    {
-        return;
-    }
-
+    if (NULL == ui.centralWidget) return;
     ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
