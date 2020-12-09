@@ -443,7 +443,7 @@ bool MainWindow::event(QEvent *ev)
             break;
         }
 
-        if (NULL == ui.centralwidget || !ui.centralwidget->isVisible())
+        if (NULL == ui.centralWidget || !ui.centralWidget->isVisible())
         {
             break;
         }
