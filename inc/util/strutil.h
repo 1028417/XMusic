@@ -4,6 +4,8 @@
 #include <string>
 
 using cwstr = const wstring&;
+using cwchr_p = const wchar_t*;
+using cchr_p = const wchar_t*;
 
 #if !__winvc
 #include <QString>
@@ -122,9 +124,10 @@ public:
 	static void split(const string& strText, char wcSplitor, vector<string>& vecRet);
 
     static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
+    static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = 0);
 
-	template <typename T>
-	inline static T lowerCase(T chr)
+    template <typename C>
+    inline static C lowerCase(C chr)
 	{
 		if (chr >= 'A' && chr <= 'Z')
 		{
@@ -132,8 +135,8 @@ public:
 		}
 		return chr;
 	}
-	template <typename T>
-	inline static T upperCase(T chr)
+    template <typename C>
+    inline static C upperCase(C chr)
 	{
 		if (chr >= 'a' && chr <= 'z')
 		{
