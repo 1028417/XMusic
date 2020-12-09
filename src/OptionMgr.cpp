@@ -107,7 +107,7 @@ tagOption& COptionMgr::init()
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
         {
             wstring strXPkg;
-            jsonutil::get(jValue[uIdx], strXPkg);
+            jsonutil::get(jValue[uIdx], true, strXPkg);
             if (!strXPkg.empty())
             {
                 m_Option.lstXPkg.push_back(strXPkg);

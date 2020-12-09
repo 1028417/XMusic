@@ -18,7 +18,7 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 /*#if __android
     if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
     {
-        return __sdcardDir __pkgName; //API 23以上需要动态申请读写权限
+        return __sdcardDir L"XMusic"; //API 23以上需要动态申请读写权限
     }
 
 #elif __window
