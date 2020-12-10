@@ -76,7 +76,9 @@ private:
     bool _write(cqstr qstr, bool bEndLine = false);
 #endif
 
-public:
+public:    
+    virtual void flush() const = 0;
+
 #if !__winvc
 	inline bool write(cqstr qstr)
 	{
@@ -251,7 +253,7 @@ public:
 		m_ofs.close();
     }
 
-    void flush()
+    void flush() const override
     {
         m_ofs.flush();
     }

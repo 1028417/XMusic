@@ -170,9 +170,10 @@ void CXController::start()
 
 void CXController::stop()
 {
-/*#if !__winvc
-    m_threadPlayCtrl.cancel();
-#endif*/
+#if !__winvc
+    g_logger >> "stop controller";
+    //m_threadPlayCtrl.cancel();
+#endif
 
     m_model.close();
 

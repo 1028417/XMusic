@@ -102,18 +102,9 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
 int CAppBase::exec()
 {
     int nRet = QApplication::exec();
+    m_logger << "exec quit: " >> nRet;
 
     m_runSignal.reset(); //m_bRunSignal = false;
-
-    m_logger >> "app quit";
-
-    for (auto& thr : m_lstThread)
-    {
-        thr.cancel(false);
-    }
-
-    m_logger >> "000000000000";
-    m_logger.flush();
 
     for (auto& thr : m_lstThread)
     {
@@ -121,6 +112,17 @@ int CAppBase::exec()
     }
 
     return nRet;
+}
+
+void CAppBase::quit()
+{
+    for (auto& thr : m_lstThread)
+    {
+        thr.cancel(false);
+    }
+
+    m_runSignal.reset(); //m_bRunSignal = false;
+    QApplication::quit();
 }
 
 inline void CAppBase::sync(cfn_void cb)
@@ -140,12 +142,6 @@ void CAppBase::sync(UINT uDelayTime, cfn_void cb)
     sync([=]{
         async(uDelayTime, cb);
     });
-}
-
-void CAppBase::quit()
-{
-    m_runSignal.reset(); //m_bRunSignal = false;
-    QApplication::quit();
 }
 
 int main(int argc, char *argv[])

@@ -396,7 +396,7 @@ public:
 
     virtual size_t write(const void *pData, size_t size, size_t count) = 0;
 
-    virtual void flush() = 0;
+    virtual void flush() const = 0;
 };
 
 class __UtilExt OFStream : public FStream, public Outstream
@@ -425,7 +425,7 @@ public:
         return _open(strFile, bTrunc?"wb":"ab");
     }
 
-    void flush() override
+    void flush() const override
     {
         (void)fflush(m_pf);
     }

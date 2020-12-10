@@ -69,11 +69,12 @@ int CApp::run(cwstr strWorkDir)
 
     auto nRet = exec();
 
-#if !__android // TODO 规避5.6.1退出的bug
+//#if __android // TODO 规避5.6.1退出的bug
+//    thrStartup.detach();
+//#else
     thrStartup.join();
-#endif
+//#endif
 
-    g_logger >> "stop controller";
     m_ctrl.stop();
 
     return nRet;
