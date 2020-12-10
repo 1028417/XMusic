@@ -325,7 +325,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     if (!bDefaultBkg)
     {
         int y_labelAlbumName = 0;
-        if (labelAlbumName.isVisible())
+        if (!labelAlbumName.text().isEmpty())
         {
             y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
         }

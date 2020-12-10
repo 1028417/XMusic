@@ -105,10 +105,16 @@ int CAppBase::exec()
 
     m_runSignal.reset(); //m_bRunSignal = false;
 
+    m_logger >> "app quit";
+
     for (auto& thr : m_lstThread)
     {
         thr.cancel(false);
     }
+
+    m_logger >> "000000000000";
+    m_logger.flush();
+
     for (auto& thr : m_lstThread)
     {
         thr.join();
@@ -191,7 +197,7 @@ int main(int argc, char *argv[])
 
     auto nRet = __app.run(m_strWorkDir);
 
-    m_logger >> "app quit";
+    m_logger >> "exit";
     m_logger.close();
 
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");

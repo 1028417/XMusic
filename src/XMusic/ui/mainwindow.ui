@@ -149,7 +149,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>1610</y>
+      <y>1615</y>
       <width>225</width>
       <height>70</height>
      </rect>

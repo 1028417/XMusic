@@ -49,7 +49,9 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 int CApp::run(cwstr strWorkDir)
 {
+#if !__android
     m_mainWnd.showBlank();
+#endif
 
     //this->thread([=]{
     std::thread thrStartup([=]{

@@ -86,10 +86,7 @@ void MainWindow::showBlank()
 
 void MainWindow::_ctor()
 {
-    //auto szPrev = size();
     ui.setupUi(this);
-    //resize(szPrev);
-    //repaint();
 
     ui.centralWidget->ctor();
 
@@ -126,6 +123,11 @@ void MainWindow::_ctor()
 
     ui.centralWidget->setVisible(false);
     //m_PlayingList.setVisible(false);
+
+#if __android
+    fixWorkArea(*this);
+    this->setVisible(true);
+#endif
 
     _relayout();
 }
@@ -167,19 +169,6 @@ void MainWindow::_init()
         ui.btnRandom->setVisible(false);
         ui.btnOrder->setVisible(true);
     }
-
-#if __android
-    g_fnAccelerometerNotify = [&](int x, int y, int z){
-        if (abs(x) >= abs(y) && abs(x) >= abs(z))
-        {
-            if (abs(x) >= 20)
-            {
-                vibrate();
-                slot_buttonClicked(ui.btnPlayNext);
-            }
-        }
-    };
-#endif
 }
 
 static UINT g_uShowLogoState = 0;
@@ -397,6 +386,18 @@ void MainWindow::show()
 
             (void)startTimer(1000);
 
+#if __android
+            g_fnAccelerometerNotify = [&](int x, int y, int z){
+                if (abs(x) >= abs(y) && abs(x) >= abs(z))
+                {
+                    if (abs(x) >= 20)
+                    {
+                        vibrate();
+                        slot_buttonClicked(ui.btnPlayNext);
+                    }
+                }
+            };
+#endif
             return false;
         }
 
