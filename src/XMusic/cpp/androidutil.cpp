@@ -10,6 +10,8 @@
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
 
+tagAndroidDevInfo g_androidDevInfo;
+
 /*static wstring g_strSDCardPath;
 static void checkSdcardPath()
 {
@@ -57,12 +59,45 @@ Java_xmusic_XActivity_accelerometerNotify(JNIEnv*, jclass
 }
 }
 
+#include <sys/system_properties.h>
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     (void)reserved;
 
-    g_androidSdkVer = QtAndroid::androidSdkVersion();
+    g_androidSdkVer = QtAndroid::androidSdkVersion(); //manifest中的api28？？
     //？？QAndroidJniObject::getStaticField<jshort>("android/os/Build/VERSION", "SDK_INT");
+
+    __system_property_get("ro.serialno", g_androidDevInfo.serialno);
+
+    __system_property_get("ro.board.platform", g_androidDevInfo.board_platform); //主板板卡型号 ro.board.platform=msm8916
+
+    char buf[128] = {0};
+    __system_property_get("ro.build.version.sdk", buf);
+    g_androidDevInfo.version_sdk = atoi(buf);
+
+    __system_property_get("ro.build.version.release", buf);
+    g_androidDevInfo.version_release = atoi(buf);
+
+    __system_property_get("ro.build.host", g_androidDevInfo.host); //系统主机名 ro.build.host=ubuntu-121-114
+    __system_property_get("ro.build.tags", g_androidDevInfo.tags); //系统标记 ro.build.tags=release-keys
+
+    //ro.build.display.full_id //显示标识，标识显示设备的完整版本号 ro.build.display.full_id=A31u_11_A.04_160613
+    //ro.build.display.id //显示标识 ro.build.display.id=KTU84P release-keys
+
+    //ro.build.date 系统编译时间 ro.build.date=Mon Jun 13 21:38:06 CST 2016
+    //ro.build.date.utc 系统编译时间（UTC版本） ro.build.date.utc=1465825086
+
+    __system_property_get("ro.product.brand", g_androidDevInfo.product_brand); //机器品牌 ro.product.brand=OPPO
+    __system_property_get("ro.product.model", g_androidDevInfo.product_model); //机器型号 ro.product.model=msm8916_32
+    __system_property_get("ro.product.device", g_androidDevInfo.product_device); //设备名 ro.product.device=A31u
+    __system_property_get("ro.product.name", g_androidDevInfo.product_name); //机器名
+    __system_property_get("ro.product.board", g_androidDevInfo.product_board); //主板名 ro.product.board=msm8916
+    __system_property_get("ro.product.manufacturer", g_androidDevInfo.product_manufacturer); //制造商 ro.product.manufacturer=OPPO
+
+    //ro.product.locale.language    zh
+    //ro.product.locale.region      CN
+
 
     JNIEnv* env = nullptr;
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_6) == JNI_OK)

@@ -12,4 +12,6 @@ public:
 
 private:
     cqcr bkgColor() const override;
+
+    bool _handleReturn() override {return true;}
 };
