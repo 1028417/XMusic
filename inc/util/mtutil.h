@@ -146,6 +146,11 @@ private:
     }
 
 public:
+    CSignal<false>& runSignal()
+    {
+        return m_runSignal;
+    }
+
     signal_t signal() const
     {
         return m_bRunSignal;
@@ -154,10 +159,7 @@ public:
     {
         return m_bRunSignal;
     }
-    operator bool() const
-    {
-        return m_bRunSignal;
-    }
+
     bool operator !() const
     {
         return !m_bRunSignal;

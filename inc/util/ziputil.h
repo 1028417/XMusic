@@ -64,7 +64,8 @@ private:
     const tagUnzSubFile *m_pCurrent = NULL;
 
 private:
-    bool _open(const char *szFile, void* pzlib_filefunc_def = NULL);
+    bool _open(const char *szFile, void *pzlib_filefunc_def, const string& strPwd);
+    bool _open(void *opaque, void *zread, void *ztell, void *zseek, void *zclose, const string& strPwd);
 
     bool _unzOpen(const tagUnzSubFile& unzSubFile) const;
     bool _unzOpen() const;
@@ -87,10 +88,22 @@ public:
         return m_mapSubfile;
     }
 
-    bool open(const string& strFile, const string& strPwd = "")
+    bool open(FILE *pf, const string& strPwd = "");
+
+    bool open(cwstr strFile, const string& strPwd = "")
     {
-        m_strPwd = strPwd;
-        return _open(strFile.c_str());
+        auto pf = fsutil::fopen(strFile, "rb");
+        if (NULL == pf)
+        {
+            return false;
+        }
+
+        return open(pf, strPwd);
+    }
+
+    bool open(const string& strFile, const string& strPwd = "") // 原生
+    {
+        return _open(strFile.c_str(), NULL, strPwd);
     }
 
     bool open(Instream& ins, const string& strPwd = "");
