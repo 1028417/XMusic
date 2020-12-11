@@ -131,13 +131,6 @@ bool CAppBase::_run()
              << "product_brand: " << g_androidInfo.product_brand << " product_model: " >> g_androidInfo.product_model
              << "product_device: " << g_androidInfo.product_device << " product_name: " >> g_androidInfo.product_name
              << "product_board: " << g_androidInfo.product_board << " product_manufacturer: " >> g_androidInfo.product_manufacturer;
-    if (fsutil::existDir(__sdcardDir))
-    {
-        g_logger >> "mmmmm";
-    }else
-    {
-        g_logger >> "nnnnnn";
-    }
 #endif
 
     sync([&](){

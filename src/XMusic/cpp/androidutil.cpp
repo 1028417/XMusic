@@ -10,8 +10,8 @@
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
 
-string g_strSecondaryStorage;
 string g_strExternalStorage;
+string g_strSecondaryStorage;
 
 tagAndroidInfo g_androidInfo;
 
@@ -59,14 +59,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     (void)reserved;
 
-    auto lpPath = getenv("SECONDARY_STORAGE");
-    if (lpPath)
-    {
-        g_strSecondaryStorage.append(lpPath);
-    }
-    if (lpPath = getenv("EXTERNAL_STORAGE"))
+    char *lpPath = NULL;
+    if (lpPath = getenv("EXTERNAL_STORAGE")) // 目前发现返回"/sdcard"
     {
         g_strExternalStorage.append(lpPath);
+    }
+    if (lpPath = getenv("SECONDARY_STORAGE"))
+    {
+        g_strSecondaryStorage.append(lpPath);
     }
 
     g_androidSdkVer = QtAndroid::androidSdkVersion(); //manifest中的api28？？
@@ -127,23 +127,24 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 bool requestAndroidPermission(cqstr qsPermission) //安卓6、API23以上需要动态申请权限
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
-    if(QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission))
+    if(QtAndroid::PermissionResult::Granted != QtAndroid::checkPermission(qsPermission))
     {
-        return true;
+        QtAndroid::requestPermissionsSync( QStringList() << qsPermission );
+        if (QtAndroid::PermissionResult::Granted != QtAndroid::checkPermission(qsPermission))
+        {
+            return false;
+        }
     }
-
-    QtAndroid::requestPermissionsSync( QStringList() << qsPermission );
-    return QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission);
 
 #else
     if (g_androidSdkVer >= 23 || g_androidInfo.version_sdk >= 23 || g_androidInfo.version_release >= 6)
     {
         return false;
     }
-
-    return fsutil::existDir(__sdcardDir);
-    //return true;
 #endif
+
+    //return true;
+    return fsutil::existDir(__sdcardDir);
 }
 
 static QAndroidJniObject _getService(const char *pszName)
