@@ -197,7 +197,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 #endif
 
 #if __android
-    if (option.bNetworkWarn && checkMobileConnected())
+    if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
     {
         vibrate();
 
