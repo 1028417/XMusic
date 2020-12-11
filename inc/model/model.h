@@ -184,8 +184,6 @@ struct __ModelExt tagOption
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;
-
-    list<wstring> lstXPkg;
 #endif
 };
 
@@ -343,7 +341,7 @@ public:
 #else
     virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
-    virtual bool attachXPkg(cwstr strFile) = 0;
+    virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
 #endif
 
 	virtual bool init(
@@ -449,7 +447,7 @@ public:
 #else
     E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
-    bool attachXPkg(cwstr strFile) override;
+    void localScan(cwstr strDir, E_AttachDirType eType) override;
 #endif
 
 	bool init(
