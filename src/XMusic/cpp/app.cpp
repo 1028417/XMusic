@@ -102,6 +102,16 @@ bool CApp::_startup(cwstr strWorkDir)
 
         return E_UpgradeResult::UR_Success;
     }, [&]{
+        cauto option = m_ctrl.getOption();
+        if (option.crBkg >= 0)
+        {
+            g_crBkg.setRgb((int)option.crBkg);
+        }
+        if (option.crFore >= 0)
+        {
+            g_crFore.setRgb((int)option.crFore);
+        }
+
         (void)m_pmForward.load(__png(btnForward));
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
         (void)m_pmLLDisk.load(__mdlPng(lldisk));
@@ -185,16 +195,6 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 #if __windows
     setForeground();
 #endif
-
-    cauto option = m_ctrl.getOption();
-    if (option.crBkg >= 0)
-    {
-        g_crBkg.setRgb((int)option.crBkg);
-    }
-    if (option.crFore >= 0)
-    {
-        g_crFore.setRgb((int)option.crFore);
-    }
 
 #if __android
     if (option.bNetworkWarn && checkMobileConnected())

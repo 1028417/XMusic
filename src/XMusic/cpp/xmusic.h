@@ -60,8 +60,11 @@ private:
 
     virtual bool _startup(cwstr strWorkDir) = 0;
 
+protected:
+    virtual int run();
+
 public:
-    int run();
+    int exec();
     void quit();
 
     void sync(cfn_void cb);

@@ -120,8 +120,7 @@ public:
         return m_strAppVersion;
     }
 
-    int run();
-
+    int run() override;
     void quit();
 
 #if __windows

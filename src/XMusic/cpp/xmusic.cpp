@@ -178,7 +178,14 @@ int CAppBase::run()
 //#endif
     }*/
 
-    m_logger >> "exit";
+    return nRet;
+}
+
+int CAppBase::exec()
+{
+    auto nRet = run();
+
+    m_logger << "exit: " >> nRet;
     m_logger.close();
     //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
@@ -241,7 +248,7 @@ int main(int argc, char *argv[])
     //#endif
 #endif
 
-    return __app.run();
+    return __app.exec();
 }
 
 #if __windows
