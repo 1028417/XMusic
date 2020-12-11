@@ -65,14 +65,16 @@ private:
         return m_mainWnd;
     }
 
+    int _exec() override;
+
     bool _startup(cwstr strWorkDir) override;
 
     void _show(E_UpgradeResult eUpgradeResult);
 
 public:
-    tagOption& getOption()
+    MainWindow& mainWnd()
     {
-        return m_ctrl.getOption();
+        return m_mainWnd;
     }
 
     IXController& getCtrl()
@@ -80,9 +82,9 @@ public:
         return m_ctrl;
     }
 
-    MainWindow& mainWnd()
+    tagOption& getOption()
     {
-        return m_mainWnd;
+        return m_ctrl.getOption();
     }
 
     IModel& getModel()
@@ -120,7 +122,6 @@ public:
         return m_strAppVersion;
     }
 
-    int run() override;
     void quit();
 
 #if __windows

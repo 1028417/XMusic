@@ -61,7 +61,7 @@ private:
     virtual bool _startup(cwstr strWorkDir) = 0;
 
 protected:
-    virtual int run();
+    virtual int _exec();
 
 public:
     int exec();

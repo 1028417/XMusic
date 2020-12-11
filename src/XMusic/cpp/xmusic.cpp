@@ -139,12 +139,12 @@ bool CAppBase::_run()
     return _startup(m_strWorkDir);
 }
 
-int CAppBase::run()
+int CAppBase::_exec()
 {
     //this->thread(
     //std::thread thrStartup(
     auto nRet = mtutil::concurrence([&]{
-        int nRet = exec();
+        int nRet = QApplication::exec();
         m_runSignal.reset(); //m_bRunSignal = false;
         //m_logger << "exec quit: " >> nRet;
 

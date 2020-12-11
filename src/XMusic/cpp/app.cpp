@@ -12,13 +12,13 @@ CApp::CApp()
 {
 }
 
-int CApp::run()
+int CApp::_exec()
 {
 #if !__android
     m_mainWnd.showBlank();
 #endif
 
-    auto nRet = CAppBase::run();
+    auto nRet = CAppBase::_exec();
 
     m_ctrl.stop();
 
