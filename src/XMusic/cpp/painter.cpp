@@ -18,7 +18,7 @@ list<pair<int, QString>> CFont::m_lstFontFamily;
 void CFont::init(const QFont& font)
 {
 #if __ios
-    /*int nScreenSize = szScreen.width()*szScreen.height();
+    /*int nScreenSize = g_screen.nMaxSide * g_screen.nMinSide;
     switch (nScreenSize)
     {
     case 320*568: // iPhoneSE
@@ -44,7 +44,7 @@ void CFont::init(const QFont& font)
     };*/
 
     m_uDefFontSize = font.pointSize();
-    //m_uDefFontSize *= m_screen.szScreenMax/540.0f;
+    //m_uDefFontSize *= g_screen.nMaxSide/540.0f;
 
 #elif __mac
     m_uDefFontSize = 28;

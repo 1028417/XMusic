@@ -492,7 +492,7 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
 void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
 {
     auto prevCount = m_vecImgs.size();
-    int szZoomout = g_screen.szScreenMax;
+    int szZoomout = g_screen.nMaxSide;
     if (prevCount >= 4)
     {
         szZoomout /= 3;

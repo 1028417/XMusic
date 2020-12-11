@@ -10,7 +10,7 @@
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
 
-tagAndroidDevInfo g_androidDevInfo;
+tagAndroidInfo g_androidInfo;
 
 /*static wstring g_strSDCardPath;
 static void checkSdcardPath()
@@ -68,19 +68,19 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     g_androidSdkVer = QtAndroid::androidSdkVersion(); //manifest中的api28？？
     //？？QAndroidJniObject::getStaticField<jshort>("android/os/Build/VERSION", "SDK_INT");
 
-    __system_property_get("ro.serialno", g_androidDevInfo.serialno);
+    __system_property_get("ro.serialno", g_androidInfo.serialno);
 
-    __system_property_get("ro.board.platform", g_androidDevInfo.board_platform); //主板板卡型号 ro.board.platform=msm8916
+    __system_property_get("ro.board.platform", g_androidInfo.board_platform); //主板板卡型号 ro.board.platform=msm8916
 
     char buf[128] = {0};
     __system_property_get("ro.build.version.sdk", buf);
-    g_androidDevInfo.version_sdk = atoi(buf);
+    g_androidInfo.version_sdk = atoi(buf);
 
     __system_property_get("ro.build.version.release", buf);
-    g_androidDevInfo.version_release = atoi(buf);
+    g_androidInfo.version_release = atoi(buf);
 
-    __system_property_get("ro.build.host", g_androidDevInfo.host); //系统主机名 ro.build.host=ubuntu-121-114
-    __system_property_get("ro.build.tags", g_androidDevInfo.tags); //系统标记 ro.build.tags=release-keys
+    __system_property_get("ro.build.host", g_androidInfo.host); //系统主机名 ro.build.host=ubuntu-121-114
+    __system_property_get("ro.build.tags", g_androidInfo.tags); //系统标记 ro.build.tags=release-keys
 
     //ro.build.display.full_id //显示标识，标识显示设备的完整版本号 ro.build.display.full_id=A31u_11_A.04_160613
     //ro.build.display.id //显示标识 ro.build.display.id=KTU84P release-keys
@@ -88,12 +88,12 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     //ro.build.date 系统编译时间 ro.build.date=Mon Jun 13 21:38:06 CST 2016
     //ro.build.date.utc 系统编译时间（UTC版本） ro.build.date.utc=1465825086
 
-    __system_property_get("ro.product.brand", g_androidDevInfo.product_brand); //机器品牌 ro.product.brand=OPPO
-    __system_property_get("ro.product.model", g_androidDevInfo.product_model); //机器型号 ro.product.model=msm8916_32
-    __system_property_get("ro.product.device", g_androidDevInfo.product_device); //设备名 ro.product.device=A31u
-    __system_property_get("ro.product.name", g_androidDevInfo.product_name); //机器名
-    __system_property_get("ro.product.board", g_androidDevInfo.product_board); //主板名 ro.product.board=msm8916
-    __system_property_get("ro.product.manufacturer", g_androidDevInfo.product_manufacturer); //制造商 ro.product.manufacturer=OPPO
+    __system_property_get("ro.product.brand", g_androidInfo.product_brand); //机器品牌 ro.product.brand=OPPO
+    __system_property_get("ro.product.model", g_androidInfo.product_model); //机器型号 ro.product.model=msm8916_32
+    __system_property_get("ro.product.device", g_androidInfo.product_device); //设备名 ro.product.device=A31u
+    __system_property_get("ro.product.name", g_androidInfo.product_name); //机器名
+    __system_property_get("ro.product.board", g_androidInfo.product_board); //主板名 ro.product.board=msm8916
+    __system_property_get("ro.product.manufacturer", g_androidInfo.product_manufacturer); //制造商 ro.product.manufacturer=OPPO
 
     //ro.product.locale.language    zh
     //ro.product.locale.region      CN
@@ -120,19 +120,27 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     return JNI_ERR;
 }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
-bool requestAndroidPermission(cqstr qsPermission) //API 23以上需要动态申请权限
+bool requestAndroidPermission(cqstr qsPermission) //安卓6、API23以上需要动态申请权限
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
     if(QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission))
     {
         return true;
     }
 
     QtAndroid::requestPermissionsSync( QStringList() << qsPermission );
-
     return QtAndroid::PermissionResult::Granted == QtAndroid::checkPermission(qsPermission);
-}
+
+#else
+    if (g_androidSdkVer >= 23 || g_androidInfo.version_sdk >= 23 || g_androidInfo.version_release >= 6)
+    {
+        return false;
+    }
+
+    return fsutil::existDir(__sdcardDir);
+    //return true;
 #endif
+}
 
 static QAndroidJniObject _getService(const char *pszName)
 {

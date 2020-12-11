@@ -18,8 +18,8 @@ extern ITxtWriter& g_logger;
 
 struct tagScreenInfo
 {
-    int szScreenMax = 0;
-    int szScreenMin = 0;
+    int nMaxSide = 0;
+    int nMinSide = 0;
 
     float fDPI = 0;
 
@@ -39,6 +39,8 @@ void async(UINT uDelayTime, cfn_void cb);
 
 bool installApp(const CByteBuffer& bbfData);
 
+Q_DECLARE_METATYPE(fn_void);
+
 class CAppBase : public QApplication
 {
     Q_OBJECT
@@ -51,8 +53,15 @@ private:
 signals:
     void signal_sync(fn_void cb);
 
+private:
+    void _init();
+
+    bool _run();
+
+    virtual bool _startup(cwstr strWorkDir) = 0;
+
 public:
-    int exec();
+    int run();
     void quit();
 
     void sync(cfn_void cb);

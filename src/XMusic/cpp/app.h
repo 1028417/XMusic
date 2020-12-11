@@ -4,8 +4,6 @@
 
 //#include "dlg/msgbox.h"
 
-Q_DECLARE_METATYPE(fn_void);
-
 template <typename T>
 struct tagSingleTone
 {
@@ -67,7 +65,7 @@ private:
         return m_mainWnd;
     }
 
-    void _startup();
+    bool _startup(cwstr strWorkDir) override;
 
     void _show(E_UpgradeResult eUpgradeResult);
 
@@ -122,7 +120,7 @@ public:
         return m_strAppVersion;
     }
 
-    int run(cwstr strWorkDir);
+    int run();
 
     void quit();
 

@@ -106,7 +106,7 @@ void MainWindow::_ctor()
     }
 
 #if __android || __ios
-    int nLogoWidth = g_screen.szScreenMin*42/100;
+    int nLogoWidth = g_screen.nMinSide*42/100;
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
     ui.labelLogo->setScaledContents(true);
 
@@ -169,6 +169,10 @@ void MainWindow::_init()
         ui.btnRandom->setVisible(false);
         ui.btnOrder->setVisible(true);
     }
+
+
+    m_medialibDlg.init();
+    m_bkgDlg.init();
 }
 
 static UINT g_uShowLogoState = 0;
@@ -176,21 +180,17 @@ static UINT g_uShowLogoState = 0;
 void MainWindow::preinit() // 工作线程
 {
     __app.sync([&]{
-        m_medialibDlg.init();
-        m_bkgDlg.init();
-
-        QPixmap pmBkg(":/img/bkg.jpg");
-        m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
-
-#define __cyCDCover 825
-        auto rc = pmBkg.rect();
-        rc.setTop(rc.bottom() - __cyCDCover);
-        QPixmap&& pm = pmBkg.copy(rc);
-        m_pmCDCover.swap(pm);
-
-        _init();
         _showLogo();
     });
+
+    QPixmap pmBkg(":/img/bkg.jpg");
+    m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
+
+#define __cyCDCover 825
+    auto rc = pmBkg.rect();
+    rc.setTop(rc.bottom() - __cyCDCover);
+    QPixmap&& pm = pmBkg.copy(rc);
+    m_pmCDCover.swap(pm);
 
     mtutil::concurrence([&]{
         m_bkgDlg.preinitBkg(true);
@@ -209,6 +209,8 @@ void MainWindow::preinit() // 工作线程
 
 void MainWindow::_showLogo()
 {
+    _init();
+
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
     fFontSizeOffset = 0.918f;
@@ -640,10 +642,10 @@ void MainWindow::_updateProgress()
         ui.labelDuration->setText(m_PlayingInfo.qsDuration);
     }
 
-    UINT uBuffer = UINT(mediaOpaque.downloadedSize()/1000);
-    if (uBuffer > 0)
+    auto uReadableSize = mediaOpaque.readableSize();
+    if (uReadableSize > 0)
     {
-        ui.progressbar->setBuffer(uBuffer, m_PlayingInfo.uFileSize);
+        ui.progressbar->setBuffer(UINT(uReadableSize/1000), m_PlayingInfo.uFileSize);
     }
 #endif
 

@@ -67,44 +67,120 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
         //if (!g_bRunSignal) return;
         cb();
     }, Qt::QueuedConnection);
+}
 
+void CAppBase::_init()
+{
     QScreen *screen = QApplication::primaryScreen();
     cauto sz = screen->size();
-    m_screen.szScreenMax = sz.width();
-    m_screen.szScreenMin = sz.height();
-    if (m_screen.szScreenMax < m_screen.szScreenMin)
+    m_screen.nMaxSide = sz.width();
+    m_screen.nMinSide = sz.height();
+    if (m_screen.nMaxSide < m_screen.nMinSide)
     {
-        std::swap(m_screen.szScreenMax, m_screen.szScreenMin);
+        std::swap(m_screen.nMaxSide, m_screen.nMinSide);
     }
 
     m_screen.fDPI = screen->logicalDotsPerInch();
 
     m_screen.pixelRatio = screen->devicePixelRatio();
 
-    //提速 g_logger << "screen: " << m_screen.szScreenMax << '*' << m_screen.szScreenMin
-    //    << ", DPR: " << m_screen.pixelRatio << ", DPI: " >> m_screen.fDPI;
+    g_logger << "screen: " << m_screen.nMaxSide << '*' >> m_screen.nMinSide
+             << "DPR: " << m_screen.pixelRatio << ", DPI: " >> m_screen.fDPI;
 
 #if __ios
     m_screen.pixelRatio = MAX(m_screen.pixelRatio, 1);
 #endif
 
-    //提速 g_logger << "appDirPath: " << CApp::applicationDirPath() << ", appFilePath: " >> CApp::applicationFilePath();
-
     CFont::init(this->font());
     this->setFont(CFont());
 }
 
-int CAppBase::exec()
+bool CAppBase::_run()
 {
-    int nRet = QApplication::exec();
-    m_runSignal.reset(); //m_bRunSignal = false;
-
-    //m_logger << "exec quit: " >> nRet;
-
-    for (auto& thr : m_lstThread)
+#if __android
+    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE")) // API 23以上动态申请读写权限
     {
-        thr.join();
-    }    
+        m_strWorkDir = __sdcardDir __pkgName;
+    }
+    else
+    {
+        // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
+        m_strWorkDir = L"/data/data/" __pkgName; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
+    }
+#else
+    m_strWorkDir = fsutil::getHomeDir().toStdWString() + __wcPathSeparator + __pkgName;
+#endif
+    if (!fsutil::createDir(m_strWorkDir))
+    {
+        return false;
+    }
+#if __windows
+    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
+#else
+    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
+#endif
+
+    m_logger.open("xmusic.log", true);
+    g_logger << "appDirPath: " >> CApp::applicationDirPath() << "appFilePath: " >> CApp::applicationFilePath();
+#if __android
+    m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer
+             << "version_sdk: " << g_androidInfo.version_sdk << " version_release: " >> g_androidInfo.version_release
+             << "serialno: " << g_androidInfo.serialno << " board_platform: " >> g_androidInfo.board_platform
+             << "host: " << g_androidInfo.host << " tags: " >> g_androidInfo.tags
+             << "product_brand: " << g_androidInfo.product_brand << " product_model: " >> g_androidInfo.product_model
+             << "product_device: " << g_androidInfo.product_device << " product_name: " >> g_androidInfo.product_name
+             << "product_board: " << g_androidInfo.product_board << " product_manufacturer: " >> g_androidInfo.product_manufacturer;
+#endif
+
+    sync([&](){
+        _init();
+    });
+
+    return _startup(m_strWorkDir);
+}
+
+int CAppBase::run()
+{
+    //this->thread(
+    //std::thread thrStartup(
+    auto nRet = mtutil::concurrence([&]{
+        int nRet = exec();
+        m_runSignal.reset(); //m_bRunSignal = false;
+        //m_logger << "exec quit: " >> nRet;
+
+        for (auto& thr : m_lstThread)
+        {
+            thr.cancel(false);
+        }
+        for (auto& thr : m_lstThread)
+        {
+            thr.join();
+        }
+
+        return nRet;
+    }, [=]{
+        if (!_run())
+        {
+            sync([&]{
+                this->quit();
+            });
+        }
+    });
+
+    /*auto nRet = exec();
+
+    if (thrStartup.joinable())
+    {
+//#if __android // TODO 规避5.6.1退出的bug
+//    thrStartup.detach();
+//#else
+    thrStartup.join();
+//#endif
+    }*/
+
+    m_logger >> "exit";
+    m_logger.close();
+    //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
     return nRet;
 }
@@ -116,10 +192,12 @@ void CAppBase::quit()
         thr.cancel(false);
     }
 
-    m_runSignal.reset(); //m_bRunSignal = false;
+    sync([&]{
+        m_runSignal.reset(); //m_bRunSignal = false;
 
-    //m_logger >> "quit";
-    QApplication::quit();
+        //m_logger >> "quit";
+        QApplication::quit();
+    });
 }
 
 inline void CAppBase::sync(cfn_void cb)
@@ -163,43 +241,7 @@ int main(int argc, char *argv[])
     //#endif
 #endif
 
-#if __android
-    // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-    m_strWorkDir = L"/data/data/" __pkgName; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-    //m_strWorkDir = __sdcardDir __pkgName;
-#else
-    m_strWorkDir = fsutil::getHomeDir().toStdWString() + L"/" __pkgName;
-#endif
-    if (!fsutil::createDir(m_strWorkDir))
-    {
-        return -1;
-    }
-
-#if __windows
-    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
-#else
-    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
-#endif
-
-    m_logger.open("xmusic.log", true);
-#if __android
-    m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer
-             << " version_sdk: " << g_androidDevInfo.version_sdk << " version_release: " >> g_androidDevInfo.version_release
-             << " serialno: " << g_androidDevInfo.serialno << " board_platform: " >> g_androidDevInfo.board_platform
-             << " host: " << g_androidDevInfo.host << " tags: " >> g_androidDevInfo.tags
-             << " product_brand: " << g_androidDevInfo.product_brand << " product_model: " >> g_androidDevInfo.product_model
-             << " product_device: " << g_androidDevInfo.product_device << " product_name: " >> g_androidDevInfo.product_name
-             << " product_board: " << g_androidDevInfo.product_board << " product_manufacturer: " >> g_androidDevInfo.product_manufacturer;
-#endif
-
-    auto nRet = __app.run(m_strWorkDir);
-
-    m_logger >> "exit";
-    m_logger.close();
-
-    //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
-
-    return nRet;
+    return __app.run();
 }
 
 #if __windows

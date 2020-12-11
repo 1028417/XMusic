@@ -7,7 +7,7 @@
 extern int g_jniVer;
 extern int g_androidSdkVer;
 
-struct tagAndroidDevInfo
+struct tagAndroidInfo
 {
     int version_sdk = 0;
     int version_release = 0;
@@ -25,15 +25,11 @@ struct tagAndroidDevInfo
     char product_board[256] = {0};
     char product_manufacturer[256] = {0};
 };
-extern tagAndroidDevInfo g_androidDevInfo;
+extern tagAndroidInfo g_androidInfo;
 
 extern function<void(int,int,int)> g_fnAccelerometerNotify;
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
-    bool requestAndroidPermission(cqstr qsPermission); //API 23以上需要动态申请权限
-#else
-#define requestAndroidPermission(qs) true
-#endif
+bool requestAndroidPermission(cqstr qsPermission);
 
 bool checkMobileConnected();
 

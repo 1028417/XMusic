@@ -51,7 +51,7 @@ private:
 
 public:
 #if __OnlineMediaLib
-    virtual uint64_t downloadedSize() const
+    virtual uint64_t readableSize() const
     {
         return 0;
     }

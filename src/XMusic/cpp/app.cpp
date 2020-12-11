@@ -12,6 +12,19 @@ CApp::CApp()
 {
 }
 
+int CApp::run()
+{
+#if !__android
+    m_mainWnd.showBlank();
+#endif
+
+    auto nRet = CAppBase::run();
+
+    m_ctrl.stop();
+
+    return nRet;
+}
+
 #if 0
 static wstring _genMedialibDir(cwstr strWorkDir)
 {
@@ -47,48 +60,20 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 }
 #endif
 
-int CApp::run(cwstr strWorkDir)
-{
-#if !__android
-    m_mainWnd.showBlank();
-#endif
-
-    //this->thread([=]{
-    std::thread thrStartup([=]{
-        auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
-        if (!m_model.init(strWorkDir, strMedialibDir))
-        {
-            sync([&]{
-                this->quit();
-            });
-            return;
-        }
-
-        _startup();
-    });
-
-    auto nRet = exec();
-
-//#if __android // TODO 规避5.6.1退出的bug
-//    thrStartup.detach();
-//#else
-    thrStartup.join();
-//#endif
-
-    m_ctrl.stop();
-
-    return nRet;
-}
-
-void CApp::_startup()
+bool CApp::_startup(cwstr strWorkDir)
 {
     //auto timeBegin = time(0);
+    auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
+    if (!m_model.init(strWorkDir, strMedialibDir))
+    {
+        return false;
+    }
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
         g_logger >> "loadMdlConfResource fail";
-        return;
+        return false;
     }
     cauto ba = qf.readAll();
 
@@ -137,6 +122,8 @@ void CApp::_startup()
     sync([=]{
         _show(eUpgradeResult);
     });
+
+    return true;
 }
 
 void CApp::_show(E_UpgradeResult eUpgradeResult)
@@ -234,9 +221,7 @@ void CApp::quit()
 {
     m_mainWnd.setVisible(false);
 
-    sync([&]{
-        CAppBase::quit();
-    });
+    CAppBase::quit();
 }
 
 #if __windows

@@ -312,13 +312,13 @@ static void _zoomoutPixmap(QPixmap& pm, bool bHLayout, int szMax, int szMin, boo
 
 inline static void _saveThumbs(QPixmap& pm, bool bHLayout, cwstr strFile)
 {
-    _zoomoutPixmap(pm, bHLayout, MAX(g_screen.szScreenMax, __szScreenMax), MAX(g_screen.szScreenMin, __szScreenMin), true);
+    _zoomoutPixmap(pm, bHLayout, MAX(g_screen.nMaxSide, __szScreenMax), MAX(g_screen.nMinSide, __szScreenMin), true);
     pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
 }
 
 inline CThumbsBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
 {
-    _zoomoutPixmap(pm, bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, true);
+    _zoomoutPixmap(pm, bHLayout, g_screen.nMaxSide, g_screen.nMinSide, true);
     m_lstThumbsBrush.emplace_back(pm);
     return m_lstThumbsBrush.back();
 }
@@ -594,7 +594,7 @@ void CBkgDlg::addBkg(cwstr strFile)
 {
     auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
     (void)pmBkg.load(__WS2Q(strFile));
-    _zoomoutPixmap(pmBkg, m_bHLayout, MAX(g_screen.szScreenMax, __szScreenMax), MAX(g_screen.szScreenMin, __szScreenMin), false);
+    _zoomoutPixmap(pmBkg, m_bHLayout, MAX(g_screen.nMaxSide, __szScreenMax), MAX(g_screen.nMinSide, __szScreenMin), false);
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
@@ -607,7 +607,7 @@ void CBkgDlg::addBkg(cwstr strFile)
 
     pmBkg.save(__WS2Q(strDstFile), "JPG");
 
-    _zoomoutPixmap(pmBkg, m_bHLayout, g_screen.szScreenMax, g_screen.szScreenMin, false);
+    _zoomoutPixmap(pmBkg, m_bHLayout, g_screen.nMaxSide, g_screen.nMinSide, false);
     _updateBkg(strFileName);
 }
 
