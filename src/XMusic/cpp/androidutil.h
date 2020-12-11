@@ -7,6 +7,9 @@
 extern int g_jniVer;
 extern int g_androidSdkVer;
 
+extern string g_strSecondaryStorage;
+extern string g_strExternalStorage;
+
 struct tagAndroidInfo
 {
     int version_sdk = 0;

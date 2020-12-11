@@ -10,27 +10,21 @@
 int g_jniVer = 0;
 int g_androidSdkVer = 0;
 
+string g_strSecondaryStorage;
+string g_strExternalStorage;
+
 tagAndroidInfo g_androidInfo;
+
+/*TelephonyManager telecomManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+String imei = telecomManager.getDeviceId();
+
+WifiManager  wifiMan = (WifiManager)context.getSystemService(Context.WIFI_SERVICE) ;
+WifiInfo wifiInf = wifiMan.getConnectionInfo();
+return wifiInf.getMacAddress();*/
 
 /*static wstring g_strSDCardPath;
 static void checkSdcardPath()
 {
-    cauto pszSdcardPath = getenv("SECONDARY_STORAGE");
-    if (NULL == pszSdcardPath)
-    {
-        pszSdcardPath = getenv("EXTERNAL_STORAGE");
-    }
-    if (pszSdcardPath)
-    {
-        while (*pszSdcardPath)
-        {
-            g_strSDCardPath.push_back(*pszSdcardPath);
-            pszSdcardPath++;
-        }
-        g_strSDCardPath.push_back('/');
-        return;
-    }
-
     g_strSDCardPath = L"/storage/emulated/0/";
     if (fsutil::existDir(g_strSDCardPath))
     {
@@ -64,6 +58,16 @@ Java_xmusic_XActivity_accelerometerNotify(JNIEnv*, jclass
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     (void)reserved;
+
+    auto lpPath = getenv("SECONDARY_STORAGE");
+    if (lpPath)
+    {
+        g_strSecondaryStorage.append(lpPath);
+    }
+    if (lpPath = getenv("EXTERNAL_STORAGE"))
+    {
+        g_strExternalStorage.append(lpPath);
+    }
 
     g_androidSdkVer = QtAndroid::androidSdkVersion(); //manifest中的api28？？
     //？？QAndroidJniObject::getStaticField<jshort>("android/os/Build/VERSION", "SDK_INT");

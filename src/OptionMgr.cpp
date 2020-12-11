@@ -37,8 +37,6 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
-#define OI_XPkg             "XPkg"
-
 tagOption& COptionMgr::init()
 {
     m_bInited = true;
@@ -101,7 +99,7 @@ tagOption& COptionMgr::init()
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
 
-    const JValue& jValue = jRoot[OI_XPkg];
+    /*const JValue& jValue = jRoot[OI_XPkg];
     if (jValue.isArray())
     {
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
@@ -113,7 +111,7 @@ tagOption& COptionMgr::init()
                 m_Option.lstXPkg.push_back(strXPkg);
             }
         }
-    }
+    }*/
 #endif
 
 	return m_Option;
@@ -176,11 +174,11 @@ void COptionMgr::saveOption()
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
 
-    auto& jValue = jRoot[OI_XPkg];
+    /*auto& jValue = jRoot[OI_XPkg];
     for (cauto strXPkg : m_Option.lstXPkg)
     {
         jValue.append(JValue(strutil::toUtf8(strXPkg)));
-    }
+    }*/
 #endif
 
 	jsonutil::writeFile(jRoot, fsutil::workDir() + __confFile, true);

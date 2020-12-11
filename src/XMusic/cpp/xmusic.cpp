@@ -124,12 +124,20 @@ bool CAppBase::_run()
     g_logger << "appDirPath: " >> CApp::applicationDirPath() << "appFilePath: " >> CApp::applicationFilePath();
 #if __android
     m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer
+             << "SecondaryStorage: " << g_strSecondaryStorage << ", ExternalStorage: " >> g_strExternalStorage
              << "version_sdk: " << g_androidInfo.version_sdk << " version_release: " >> g_androidInfo.version_release
              << "serialno: " << g_androidInfo.serialno << " board_platform: " >> g_androidInfo.board_platform
              << "host: " << g_androidInfo.host << " tags: " >> g_androidInfo.tags
              << "product_brand: " << g_androidInfo.product_brand << " product_model: " >> g_androidInfo.product_model
              << "product_device: " << g_androidInfo.product_device << " product_name: " >> g_androidInfo.product_name
              << "product_board: " << g_androidInfo.product_board << " product_manufacturer: " >> g_androidInfo.product_manufacturer;
+    if (fsutil::existDir(__sdcardDir))
+    {
+        g_logger >> "mmmmm";
+    }else
+    {
+        g_logger >> "nnnnnn";
+    }
 #endif
 
     sync([&](){
