@@ -183,7 +183,7 @@ int CAppBase::_exec()
 
 int CAppBase::exec()
 {
-    auto nRet = run();
+    auto nRet = _exec();
 
     m_logger << "exit: " >> nRet;
     m_logger.close();

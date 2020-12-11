@@ -32,9 +32,12 @@ private:
 
     inline int64_t _open(cwstr strFile)
     {
-        m_strFile = strFile;
         auto nFileSize = fsutil::GetFileSize64(strFile);
         setSize(nFileSize);
+        if (nFileSize > 0)
+        {
+            m_strFile = strFile;
+        }
         return nFileSize;
     }
 
