@@ -1,5 +1,36 @@
 #pragma once
 
+#define __hPiiicRate 1.4f
+#define __vPiiicRate 1.33f
+
+struct tagSingerImg
+{
+    tagSingerImg() = default;
+
+    tagSingerImg(cwstr strFile)
+        : strFile(strFile)
+        , bExist(true)
+    {
+    }
+
+    wstring strFile;
+    UINT uFileSize = 0;
+    UINT cx = 0;
+    UINT cy = 0;
+
+    bool bExist = false;
+
+    bool isSmall() const
+    {
+        return cx < 400 || cy < 400;
+    }
+
+    bool isPiiic() const
+    {
+        return cx > cy * __hPiiicRate || cy > cx * __vPiiicRate;
+    }
+};
+
 class __ModelExt CSingerImgMgr
 {
 public:

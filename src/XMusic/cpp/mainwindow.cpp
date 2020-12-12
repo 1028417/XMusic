@@ -872,12 +872,43 @@ void MainWindow::_playSingerImg()
 
     cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pSingerImg));
     QPixmap pm(qsFile);
-    if (!pm.isNull())
+
+#define __szSingerImg 700
+    auto cx = pm.width();
+    auto cy = pm.height();
+    if (cx > cy)
     {
-        ui.labelSingerImg->setPixmap(pm);
-        update();
+        if (cy > __szSingerImg)
+        {
+            QPixmap&& temp = pm.scaledToHeight(__szSingerImg, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+
+        auto cxMax = cy * __hPiiicRate;
+        if (cx > cxMax)
+        {
+            QPixmap&& temp = pm.copy((cx-cxMax)/2, 0, cxMax, cy);
+            pm.swap(temp);
+        }
+    }
+    else
+    {
+        if (cx > __szSingerImg)
+        {
+            QPixmap&& temp = pm.scaledToWidth(__szSingerImg, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+
+        auto cyMax = cx * __vPiiicRate;
+        if (cy > cyMax)
+        {
+            QPixmap&& temp = pm.copy(0, (cy-cyMax)/2, cx, cyMax);
+            pm.swap(temp);
+        }
     }
 
+    ui.labelSingerImg->setPixmap(pm);
+    update();
     //if (!ui.labelSingerImg->isVisible()) ui.labelSingerImg->setVisible(true);
 
     _relayout();

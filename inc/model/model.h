@@ -187,34 +187,6 @@ struct __ModelExt tagOption
 #endif
 };
 
-struct tagSingerImg
-{
-    tagSingerImg() = default;
-
-    tagSingerImg(cwstr strFile)
-        : strFile(strFile)
-        , bExist(true)
-    {
-    }
-
-    wstring strFile;
-	UINT uFileSize = 0;
-	UINT cx = 0;
-    UINT cy = 0;
-
-    bool bExist = false;
-
-    bool isSmall() const
-    {
-        return cx < 400 || cy < 400;
-    }
-
-    bool isPiiic() const
-    {
-        return cx > cy*1.4f || cy > cx*1.33f;
-    }
-};
-
 #if !__winvc
 enum class E_UpgradeResult
 {
@@ -282,7 +254,7 @@ public:
         return 0;
     }
 
-    virtual void onSingerImgDownloaded(cwstr, const tagSingerImg&) {}
+    virtual void onSingerImgDownloaded(cwstr, const struct tagSingerImg&) {}
 
     virtual bool installApp(const CByteBuffer&) {return true;}
 };
