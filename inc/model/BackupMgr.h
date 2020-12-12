@@ -43,7 +43,7 @@ public:
 
 	void close();
 
-	bool exportDB(cwstr strDstFile, bool bExportXmsc, const list<tagSingerImg>& lstSingerImg);
+	bool exportDB(cwstr strDstFile, bool bExportXmsc, const list<struct tagSingerImg>& lstSingerImg);
 
 	wstring backup();
 
