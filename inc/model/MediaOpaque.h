@@ -6,7 +6,7 @@
 
 class __ModelExt CMediaOpaque : public CAudioOpaque
 {
- public:
+public:
     CMediaOpaque() = default;
 
 protected:
