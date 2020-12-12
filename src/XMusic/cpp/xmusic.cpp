@@ -202,7 +202,6 @@ void CAppBase::quit()
 
     sync([&]{
         m_runSignal.reset(); //m_bRunSignal = false;
-
         //m_logger >> "quit";
         QApplication::quit();
     });

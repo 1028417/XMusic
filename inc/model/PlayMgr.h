@@ -62,6 +62,16 @@ private:
     int _demandMediaSet(TD_MediaSetList& arrMediaSets);
 
 public:
+    const CMediaOpaque& mediaOpaque() const;
+
+    CPlayer& player()
+    {
+        return m_Player;
+    }
+
+    E_PlayStatus playStatus() const;
+    void SetPlayStatus(E_PlayStatus ePlayStatus);
+
 	const ArrList<CPlayItem>& playingItems() const
 	{
 		return m_Playinglist.playItems();
@@ -71,16 +81,7 @@ public:
 		return m_Playinglist.playItems();
 	}
 
-    const CMediaOpaque& mediaOpaque() const;
-
-    CPlayer& player()
-    {
-        return m_Player;
-    }
-
-    E_PlayStatus playStatus() const;
-
-	void SetPlayStatus(E_PlayStatus ePlayStatus);
+    void close();
 
     bool init();
 

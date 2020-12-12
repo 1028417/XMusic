@@ -106,10 +106,10 @@ public:
     {
     }
 
-    ~CPlayer()
+    /*提速~CPlayer()
     {
         Stop();
-    }
+    }*/
 	
 private:
     CAudioOpaque& m_AudioOpaque;
