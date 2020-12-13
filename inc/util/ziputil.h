@@ -5,11 +5,14 @@ struct __UtilExt tagUnzSubFile
 {
     string strPath;
 
+    unsigned long compression_method = 0;
     unsigned long compressed_size = 0;
     unsigned long uncompressed_size = 0;
 
     unsigned long pos_in_zip_directory = 0;
     unsigned long num_of_file = 0;
+
+    uint64_t data_pos = 0;
 };
 
 struct tagUnzDir
@@ -61,13 +64,10 @@ private:
     list<string> m_lstSubDir;
     map<string, tagUnzSubFile> m_mapSubfile;
 
-    const tagUnzSubFile *m_pCurrent = NULL;
-
 private:
     bool _open(const char *szFile, void *pzlib_filefunc_def, const string& strPwd);
     bool _open(void *opaque, void *zread, void *ztell, void *zseek, void *zclose, const string& strPwd);
 
-    bool _unzOpen(const tagUnzSubFile& unzSubFile) const;
     bool _unzOpen() const;
 
     long _read(const tagUnzSubFile& unzSubFile, void *buf, size_t len) const;
@@ -111,11 +111,7 @@ public:
 
     void close();
 
-    const tagUnzSubFile* unzCurrent() const
-    {
-        return m_pCurrent;
-    }
-    bool unzOpen(const tagUnzSubFile& unzSubFile);
+    bool unzOpen(const tagUnzSubFile& unzSubFile) const;
     long unzRead(void *buf, size_t len) const;
     void unzClose();
 
