@@ -163,6 +163,9 @@ private:
 
 class __UtilExt IFBuffer : public Instream
 {
+protected:
+    IFBuffer() = default;
+
 public:
     virtual ~IFBuffer() = default;
 
@@ -265,6 +268,177 @@ public:
         return m_size;
     }
 };
+
+#if !__winvc
+class __UtilExt CFileMap
+{
+public:
+    CFileMap() = default;
+
+    CFileMap(cwstr strFile)
+        : m_qf(__WS2Q(strFile))
+    {
+    }
+
+    ~CFileMap()
+    {
+        close();
+    }
+
+private:
+    QFile m_qf;
+    uchar *m_ptr = NULL;
+
+private:
+    uchar* _resize(size_t size)
+    {
+        if (!m_qf.resize(size))
+        {
+            return NULL;
+        }
+
+        if (0 == size)
+        {
+            return NULL;
+        }
+
+        return m_qf.map(0, size);
+    }
+
+public:
+    bool isOpen() const
+    {
+        return m_qf.isOpen();
+    }
+    size_t size() const
+    {
+        return m_qf.size();
+    }
+
+    inline uchar* open()
+    {
+        if (!m_qf.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+        {
+            return NULL;
+        }
+
+        auto size = m_qf.size();
+        if (0 == size)
+        {
+            return NULL;
+        }
+
+        m_ptr = m_qf.map(0, size);
+        if (NULL == m_ptr)
+        {
+            close(true);
+        }
+        return m_ptr;
+    }
+
+    uchar* open(cwstr strFile)
+    {
+        m_qf.setFileName(__WS2Q(strFile));
+        return open();
+    }
+
+    inline uchar* create(size_t size)
+    {
+        if (!m_qf.open(QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate))
+        {
+            return NULL;
+        }
+
+        if (0 == size)
+        {
+            return NULL;
+        }
+
+        m_ptr = _resize(size);
+        if (NULL == m_ptr)
+        {
+            close(true);
+        }
+        return m_ptr;
+    }
+
+    uchar* create(cwstr strFile, size_t size)
+    {
+        m_qf.setFileName(__WS2Q(strFile));
+        return create(size);
+    }
+
+    uchar* resize(size_t size)
+    {
+        if (m_ptr)
+        {
+            (void)m_qf.unmap(m_ptr);
+            m_ptr = NULL;
+        }
+
+        m_ptr = _resize(size);
+        return m_ptr;
+    }
+
+    void close(bool bRemove = false)
+    {
+        if (m_ptr)
+        {
+            (void)m_qf.unmap(m_ptr);
+            m_ptr = NULL;
+        }
+
+        if (m_qf.isOpen())
+        {
+            m_qf.close();
+            if (bRemove)
+            {
+                m_qf.remove();
+            }
+        }
+    }
+};
+
+class __UtilExt IFBufferMap : public IFBuffer
+{
+public:
+    IFBufferMap() = default;
+
+    IFBufferMap(cwstr strFile)
+    {
+        (void)open(strFile);
+    }
+
+    ~IFBufferMap()
+    {
+        close();
+    }
+
+private:
+    CFileMap m_fileMap;
+
+public:
+    bool open(cwstr strFile)
+    {
+        m_ptr = m_fileMap.open(strFile);
+        if (NULL == m_ptr)
+        {
+            return false;
+        }
+
+        m_size = m_fileMap.size();
+
+        return true;
+    }
+
+    void close()
+    {
+        m_fileMap.close(false);
+        m_ptr = NULL;
+        m_size = 0;
+    }
+};
+#endif
 
 class __UtilExt IFStream : public FStream, public Instream
 {
