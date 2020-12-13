@@ -317,7 +317,7 @@ public:
 
     inline uchar* open()
     {
-        if (!m_qf.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+        if (!m_qf.open(QIODevice::ReadOnly | QIODevice::Unbuffered))
         {
             return NULL;
         }
@@ -331,7 +331,7 @@ public:
         m_ptr = m_qf.map(0, size);
         if (NULL == m_ptr)
         {
-            close(true);
+            close(false);
         }
         return m_ptr;
     }
