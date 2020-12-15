@@ -456,7 +456,7 @@ public:
         (void)open(strFile);
     }
 
-private:
+protected:
     uint64_t m_size = 0;
 
 private:
