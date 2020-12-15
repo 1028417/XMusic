@@ -265,7 +265,7 @@ public:
 		ParseCommandLine(cmdInfo);
 		if (!cmdInfo.m_strFileName.IsEmpty())
 		{
-			m_model.convertXmsc(wstring(cmdInfo.m_strFileName));
+			m_model.convertXPkg(wstring(cmdInfo.m_strFileName));
 			exit(0);
 		}
 
