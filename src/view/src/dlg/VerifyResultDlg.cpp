@@ -162,7 +162,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 			for (auto pMedia : MatchMediaInfo.medias())
 			{
 				strText << '\n' << pMedia->m_pParent->GetLogicPath();
-				strText << L"\n大小:  " << pMedia->fileSizeString() << L"      时长:  " << pMedia->durationString();
+				strText << L"\n大小:  " << pMedia->displayFileSizeString(false) << L"      时长:  " << pMedia->displayDurationString();
 			}
 
 			int nRet = ProgressDlg.msgBox(strText->c_str(), L"匹配到新文件", MB_YESNOCANCEL);

@@ -69,6 +69,11 @@ public:
 
 	uint64_t clock() const;
 
+    virtual int64_t size() const override
+    {
+        return m_nFileSize;
+    }
+
 private:
     virtual wstring localFilePath() const override
     {
@@ -85,11 +90,6 @@ protected:
     {
         m_nFileSize = nFileSize;
     }
-
-	virtual int64_t size() const override
-	{
-	    return m_nFileSize;
-	}
 
     virtual int64_t seek(int64_t offset, int origin) override;
     virtual int read(byte_p buf, UINT size) override;

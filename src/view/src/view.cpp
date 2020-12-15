@@ -964,9 +964,9 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 			uCount++;
 		});
 
-		ProgressDlg.SetStatusText((L"转换" + to_wstring(uCount) + L"个文件").c_str());
+		ProgressDlg.SetStatusText((L"格式化" + to_wstring(uCount) + L"个文件标题").c_str());
 	});
-	(void)ProgressDlg.DoModal(L"简体转换", &m_MainWnd);
+	(void)ProgressDlg.DoModal(L"标题格式化", &m_MainWnd);
 	
 	return uCount;
 }

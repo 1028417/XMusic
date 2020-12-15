@@ -245,7 +245,7 @@ BEGIN
         MENUITEM "导出",                          ID_EXPORT
         MENUITEM "快照",                          ID_Snapshot
         MENUITEM "检查相似文件",                      ID_CheckSimilar
-        MENUITEM "格式化文件名",                      ID_FormatTitle
+        MENUITEM "标题格式化",                      ID_FormatTitle
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_RENAME
