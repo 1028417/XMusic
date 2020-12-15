@@ -21,42 +21,6 @@ static const wstring __MediaFilter = L" 所有支持音频|*.mp3;*.flac;*.wav;*.dts;\
 
 bool __view::show()
 {
-	if (!CPlaySpirit::inst().Create())
-	{
-		CMainApp::msgBox(L"请先执行安装");
-		return false;
-	}
-
-	int nRet = CPlayer::InitSDK();
-	if (nRet != 0)
-	{
-		//g_logger << "initPlaySDK fail: " >> nRet;
-		return false;
-	}
-
-	auto& strRootDir = m_controller.getOption().strRootDir;
-	bool bExistMedialib = (!strRootDir.empty() && fsutil::existDir(strRootDir));
-	if (bExistMedialib)
-	{
-		mtutil::thread([&]{
-			if (!m_model.initMediaLib(false))
-			{
-				CMainApp::GetMainApp()->Quit();
-				return;
-			}
-
-			__appSync([&]{
-				initView();
-
-				m_model.getPlayMgr().tryPlay();
-
-				mtutil::thread([&]{
-					CFolderDlg::preInit();
-				});
-			});
-		});
-	}
-
 	m_globalSize.init();
 	__AssertReturn(m_ImgMgr.init(m_globalSize.m_uBigIconSize, m_globalSize.m_uSmallIconSize, m_globalSize.m_uTabHeight), false);
 
@@ -65,19 +29,6 @@ bool __view::show()
 	m_PlayCtrl.showPlaySpirit();
 
 	m_MainWnd.show();
-
-	if (!bExistMedialib)
-	{
-		__async([=]{
-			if (!m_controller.setupMediaLib())
-			{
-				CMainApp::GetMainApp()->Quit();
-				return;
-			}
-			
-			m_model.getPlayMgr().tryPlay();
-		});
-	}
 
 	return true;
 }

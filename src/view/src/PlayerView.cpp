@@ -27,16 +27,64 @@ __ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 	return inst;
 }
 
+static thread g_thread;
 CMainWnd* CPlayerView::show()
 {
+	auto& strRootDir = m_controller.getOption().strRootDir;
+	bool bExistMedialib = (!strRootDir.empty() && fsutil::existDir(strRootDir));
+	if (bExistMedialib)
+	{
+		thread thr([&] {
+			int nRet = CPlayer::InitSDK();
+			if (nRet != 0)
+			{
+				//g_logger << "initPlaySDK fail: " >> nRet;
+				return;
+			}
+
+			if (!m_model.initMediaLib(false))
+			{
+				CMainApp::GetMainApp()->Quit();
+				return;
+			}
+			
+			__appSync([&] {
+				m_view.initView();
+				m_model.getPlayMgr().tryPlay();
+			}, false);
+
+			CFolderDlg::preInit();
+		});
+		g_thread.swap(thr);
+	}
+
+	if (!CPlaySpirit::inst().Create())
+	{
+		CMainApp::msgBox(L"请先执行安装");
+		return NULL;
+	}
+
 	(void)AddFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
 	//(void)AddFontResourceExA(__lightFont, FR_PRIVATE, NULL);
-	
+
 	if (!m_view.show())
 	{
 		return NULL;
 	}
-	
+
+	if (!bExistMedialib)
+	{
+		__async([=] {
+			if (!m_controller.setupMediaLib())
+			{
+				CMainApp::GetMainApp()->Quit();
+				return;
+			}
+
+			m_model.getPlayMgr().tryPlay();
+		});
+	}
+
 	return &m_view.m_MainWnd;
 }
 
@@ -46,6 +94,11 @@ void CPlayerView::close()
 
 	(void)RemoveFontResourceExA(__semilightFont, FR_PRIVATE, NULL);
 	//(void)RemoveFontResourceExA(__lightFont, FR_PRIVATE, NULL);
+
+	if (g_thread.joinable())
+	{
+		g_thread.join();
+	}
 }
 
 bool CPlayerView::handleCommand(UINT uID)

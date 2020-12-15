@@ -8,12 +8,17 @@ class CPlayerView : public IPlayerView
 {
 public:
 	CPlayerView(IXController& controller, IModel& model)
-		: m_view(controller, model)
+		: m_controller(controller)
+		, m_model(model)
+		, m_view(controller, model)
 		, m_ModelObserver(m_view)
 	{
 	}
 
 private:
+	IXController& m_controller;
+	IModel& m_model;
+
 	__view m_view;
 
 	CModelObserver m_ModelObserver;
