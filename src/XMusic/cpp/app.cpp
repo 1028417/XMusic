@@ -75,12 +75,13 @@ bool CApp::_startup(cwstr strWorkDir)
         g_logger >> "loadMdlConfResource fail";
         return false;
     }
-    cauto ba = qf.readAll();
+    CByteBuffer bbfConf(qf.size());
+    qf.read((char*)bbfConf.ptr(), qf.size());
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         auto time0 = time(0);
         extern int g_nAppUpgradeProgress;
-        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl((byte_p)ba.data(), ba.size(), g_bRunSignal
+        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(bbfConf, g_bRunSignal
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
         if (E_UpgradeResult::UR_Success != eUpgradeResult)
         {

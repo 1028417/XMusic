@@ -312,7 +312,7 @@ public:
     virtual bool clearData() = 0;
 
 #else
-    virtual E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
+    virtual E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
     virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
 #endif
@@ -419,7 +419,7 @@ public:
     bool clearData() override;
 
 #else
-    E_UpgradeResult upgradeMdl(cbyte_p lpMdlConf, size_t size, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+    E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
     void localScan(cwstr strDir, E_AttachDirType eType) override;
 #endif
