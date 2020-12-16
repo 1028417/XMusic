@@ -275,6 +275,7 @@ public:
 			return;
 		}
 
+		(void)m_controller.initOption();
 		(void)m_model.init();
 	}
 

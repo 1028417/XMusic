@@ -37,14 +37,14 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
-tagOption& COptionMgr::init()
+bool COptionMgr::init()
 {
     m_bInited = true;
 
     JValue jRoot;
     if (!jsonutil::loadFile(fsutil::workDir() + __confFile, jRoot))
     {
-        return m_Option;
+        return false;
     }
 
 #if !__OnlineMediaLib
@@ -114,7 +114,7 @@ tagOption& COptionMgr::init()
     }*/
 #endif
 
-	return m_Option;
+    return true;
 }
 
 void COptionMgr::saveOption()

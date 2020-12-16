@@ -10,8 +10,7 @@ public:
 	CXController(IPlayerView& view, IModel& model)
 		: m_view(view)
 		, m_model(model)
-	{
-		m_OptionMgr.init();
+        {
 	}
 
 protected:
@@ -38,6 +37,11 @@ public:
 	{
 		return m_OptionMgr.getOption();
 	}
+
+        bool initOption()
+        {
+            return m_OptionMgr.init();
+        }
 
         void start();
 

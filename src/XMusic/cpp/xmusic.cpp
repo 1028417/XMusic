@@ -121,6 +121,10 @@ bool CAppBase::_run()
 #endif
 
     m_logger.open("xmusic.log", true);
+    sync([&](){
+        _init();
+    });
+
     g_logger << "appDirPath: " >> CApp::applicationDirPath() << "appFilePath: " >> CApp::applicationFilePath();
 #if __android
     m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer
@@ -132,10 +136,6 @@ bool CAppBase::_run()
              << "product_device: " << g_androidInfo.product_device << " product_name: " >> g_androidInfo.product_name
              << "product_board: " << g_androidInfo.product_board << " product_manufacturer: " >> g_androidInfo.product_manufacturer;
 #endif
-
-    sync([&](){
-        _init();
-    });
 
     return _startup(m_strWorkDir);
 }

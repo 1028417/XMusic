@@ -45,7 +45,7 @@ public:
     bool checkAlarm();
 #endif
 
-    tagOption& init();
+    bool init();
 
 	void saveOption();
 };
