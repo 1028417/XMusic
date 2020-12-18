@@ -502,8 +502,6 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 {
     CListView::_onPaint(painter, cx, cy);
 
-    // TODO if (currentDir()
-
     auto pMediaSet = currentMediaSet();
     if (NULL == pMediaSet)
     {

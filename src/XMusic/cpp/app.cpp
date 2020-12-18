@@ -8,7 +8,6 @@
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
-    //, m_msgbox(m_mainWnd)
 {
 }
 
@@ -28,15 +27,7 @@ int CApp::_exec()
 #if 0
 static wstring _genMedialibDir(cwstr strWorkDir)
 {
-/*#if __android
-    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE")) // API 23以上动态申请读写权限
-    {
-        cauto strMdlDir = __sdcardDir L"XMusic"; // TODO 拷贝mdl
-        return strMdlDir;
-    }
-#endif
-
-#if __window
+/*#if __window
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
     {
         CFolderDlg FolderDlg;
