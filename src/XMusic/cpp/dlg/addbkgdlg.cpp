@@ -140,24 +140,10 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
 {
     m_rootImgDir.setDir(strDir);
 
+    ui.labelTitle->setText("正在扫描...");
+
     static UINT s_uSequence = 0;
     auto uSequence = ++s_uSequence;
-
-    /*static bool bScaning = true;
-    bScaning = true;
-    timerutil::setTimerEx(333, [&]{
-        if (!bScaning || !this->isVisible())
-        {
-            if (NULL == m_lv.imgDir())
-            {
-                ui.labelTitle->setText("添加背景");
-            }
-            return false;
-        }
-
-       return true;
-    });*/
-
     m_thrScan.start([&, uSequence](signal_t bRunSignal){
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
@@ -180,6 +166,10 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
 
                 this->update();
             });
+        });
+
+        __app.sync([&](){
+            ui.labelTitle->setText("添加背景");
         });
     });
 }

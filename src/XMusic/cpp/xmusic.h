@@ -10,8 +10,6 @@
 
 using Double_T = float; //= double; // double_t与math.h冲突
 
-#define __pkgName L"com.musicrossoft.xmusic"
-
 extern cwstr g_strWorkDir;
 
 extern ITxtWriter& g_logger;

@@ -11,6 +11,8 @@
 
 #include "XMediaLib.h"
 
+#define __pkgName L"com.musicrossoft.xmusic"
+
 struct tagAddPlayItem
 {
     tagAddPlayItem() = default;

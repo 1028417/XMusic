@@ -19,7 +19,6 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
                 painter.drawRectEx(rcShadow, m_szRound);
             }
         }
-
         // 提速 return;
 	}
 
@@ -55,6 +54,12 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
             //qsText = painter.fontMetrics().elidedText(qsText, Qt::ElideRight, cx);
             flag |= m_flag;
         }
+
+        /*auto crFore = foreColor();
+        if (!this->isEnabled())
+        {
+            crFore.setAlpha(crFore.alpha()/2);
+        }*/
 
         m_rcText = painter.drawTextEx(rc, flag, qsText, foreColor(), m_uShadowWidth, m_uShadowAlpha);
     }
