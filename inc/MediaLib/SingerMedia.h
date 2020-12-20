@@ -174,8 +174,6 @@ public:
         return m_lstAlbums;
     }
 
-    void setAttachDir(list<tagSingerAttachDir>&& lstAttachDir);
-
     const list<tagSingerAttachDir>& attachDir() const
     {
         return m_lstAttachDir;
