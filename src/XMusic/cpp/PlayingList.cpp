@@ -7,7 +7,9 @@ void CPlayingList::init()
 {
     (void)m_pmPlaying.load(__png(btnPlay));
 
-    updateList(__app.getOption().uPlayingItem);
+    auto uPlayingItem = __app.getOption().uPlayingItem;
+    updateList(uPlayingItem);
+    CListView::showItem(uPlayingItem, true); // 规避后续歌手图片出现挤压的问题
 
     this->startTimer(1000);
 

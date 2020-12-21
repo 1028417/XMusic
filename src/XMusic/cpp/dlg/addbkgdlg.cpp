@@ -140,17 +140,36 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
 {
     m_rootImgDir.setDir(strDir);
 
-    ui.labelTitle->setText("正在扫描...");
+    UINT uDotCount = 0;
+    timerutil::setTimerEx(300, [=]()mutable{
+        if (!m_thrScan)
+        {
+            ui.labelTitle->setText("添加背景");
+            return false;
+        }
+
+        QString qsTitle = "正在扫描";
+        for (UINT uIdx = 1; uIdx <= uDotCount; uIdx++)
+        {
+            qsTitle.append('.');
+        }
+        ui.labelTitle->setText(qsTitle);
+        if (++uDotCount > 3)
+        {
+            uDotCount = 0;
+        }
+        return true;
+    });
 
     static UINT s_uSequence = 0;
     auto uSequence = ++s_uSequence;
     m_thrScan.start([&, uSequence](signal_t bRunSignal){
+        // TODO 内存优化，改为：scanDir(bRunSignal, strRootDir, [&, uSequence](strDir, lstFile
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
             {
                 m_thrScan.usleep(300);
             }
-
             if (!bRunSignal)
             {
                 return;
@@ -163,13 +182,8 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
                 }
 
                 m_paImgDirs.add((CImgDir&)dir);
-
                 this->update();
             });
-        });
-
-        __app.sync([&](){
-            ui.labelTitle->setText("添加背景");
         });
     });
 }
@@ -358,7 +372,12 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-    if (fileInfo.strName == __pkgName)
+
+    if (__pkgName == fileInfo.strName)
+    {
+        return NULL;
+    }
+    if (NULL == m_fi.pParent && L"Android" == fileInfo.strName) // TODO 改为并发扫
     {
         return NULL;
     }
@@ -670,6 +689,8 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
 
 bool CAddBkgView::handleReturn()
 {
+    reset();
+
     if (m_pImgDir)
     {
         if (g_thrGenSubImg)
@@ -679,16 +700,12 @@ bool CAddBkgView::handleReturn()
 
         m_pImgDir = NULL;
 
-        reset();
         m_eScrollBar = E_LVScrollBar::LVSB_Left;
         scrollToItem(_scrollRecord(NULL));
 
         g_uMsScanYield = 1;
-
         return true;
     }
-
-    g_uMsScanYield = 10;
 
     /*if (g_thrGenSubImg)
     {
@@ -697,5 +714,6 @@ bool CAddBkgView::handleReturn()
         g_thrGenSubImg = NULL;
     }*/
 
+    g_uMsScanYield = 10;
     return false;
 }

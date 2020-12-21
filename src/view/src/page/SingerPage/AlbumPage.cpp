@@ -1274,21 +1274,12 @@ DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, 
 	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
 	
 	DROPEFFECT dwRet = DROPEFFECT_MOVE;
-	handleDragOver(m_wndAlbumList, DragContext, [&](int& iDragOverPos) {
-		if (iDragOverPos < 1)
+	handleDragOver(m_wndAlbumList, DragContext, [&](UINT& uTargetPos) {
+		if (uTargetPos < 1)
 		{
-			dwRet = DROPEFFECT_NONE;
-			return false;
+			uTargetPos = 1;
 		}
-
-		if (iDragOverPos > nDragingItem)
-		{
-			iDragOverPos--;
-		}
-
-		return true;
 	});
-
 	return dwRet;
 }
 
@@ -1298,14 +1289,23 @@ BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragConte
 
 	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
-	
+
 	int nTargetPos = DragContext.uTargetPos;
-	nTargetPos--;
-	if (nTargetPos < 0)
+	if (nTargetPos > nDragingItem)
 	{
-		nTargetPos = 0;
+		nTargetPos--;
 	}
-	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, (UINT)nTargetPos);
+	__EnsureReturn(nTargetPos != nDragingItem, FALSE);
+	
+	CRedrawLock RedrawLock(*this);
+	_showAlbum(NULL);
+
+	int nNewPos = nTargetPos - 1;
+	if (nNewPos < 0)
+	{
+		nNewPos = 0;
+	}
+	CAlbum *pAlbum = m_view.getSingerMgr().RepositAlbum(*(CAlbum*)pMediaSet, (UINT)nNewPos);
 	__EnsureReturn(pAlbum, FALSE);
 
 	(void)m_wndAlbumList.DeleteItem(nDragingItem);

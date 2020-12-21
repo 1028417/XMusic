@@ -81,7 +81,7 @@ BOOL CBasePage::GetCtrlDragData(HWND hwndCtrl, const CPoint& point, LPVOID& pDra
 }
 
 void CBasePage::handleDragOver(CObjectList& wndList, CDragContext& DragContext
-	, const function<bool(int& uDragOverPos)>& cb)
+	, const function<void(UINT& uDragOverPos)>& cb)
 {
 	__Ensure(wndList.GetView() == E_ListViewType::LVT_Report);
 
@@ -90,63 +90,57 @@ void CBasePage::handleDragOver(CObjectList& wndList, CDragContext& DragContext
 		return;
 	}
 
-	int nDragOverPos = 0;
-	auto y = DragContext.y;
-
 	UINT uHeaderHeight = wndList.GetHeaderHeight();
-	if (0 == wndList.GetItemCount())
+	
+	UINT uTargetPos = 0;
+	if (0 != uHeaderHeight && DragContext.y <= (int)uHeaderHeight)
 	{
-		nDragOverPos = 0;
-		y = uHeaderHeight;
-	}
-	else if (0 != uHeaderHeight && y <= (int)uHeaderHeight)
-	{
-		nDragOverPos = wndList.HitTest(CPoint(5, uHeaderHeight + 5));
-		if (nDragOverPos < 0)
+		int nItem = wndList.HitTest(CPoint(5, uHeaderHeight + 5));
+		if (nItem > 0)
 		{
-			nDragOverPos = 0;
+			uTargetPos = (UINT)nItem;
 		}
-
-		y = uHeaderHeight;
 	}
-	else
+	else if (wndList.GetItemCount() > 0)
 	{
-		nDragOverPos = wndList.HitTest(CPoint(5, y));
-		if (nDragOverPos < 0)
+		int nItem = wndList.HitTest(CPoint(5, DragContext.y));
+		if (nItem < 0)
 		{
-			nDragOverPos = wndList.GetItemCount() - 1;
-		}
-
-		CRect rcItem;
-		(void)wndList.GetItemRect(nDragOverPos, &rcItem, LVIR_BOUNDS);
-		if (y < rcItem.CenterPoint().y)
-		{
-			y = rcItem.top;
+			uTargetPos = wndList.GetItemCount() - 1;
 		}
 		else
 		{
-			y = rcItem.bottom;
+			uTargetPos = (UINT)nItem;
+		}
 
-			nDragOverPos++;
+		CRect rcItem;
+		(void)wndList.GetItemRect(uTargetPos, &rcItem, LVIR_BOUNDS);
+		if (DragContext.y > rcItem.CenterPoint().y)
+		{
+			uTargetPos++;
 		}
 	}
-
+	
 	if (cb)
 	{
-		if (!cb(nDragOverPos))
-		{
-			return;
-		}
+		cb(uTargetPos);
 	}
-
-	DragContext.uTargetPos = (UINT)nDragOverPos;
 
 	if (DragScroll(wndList, DragContext.x, DragContext.y))
 	{
 		return;
 	}
-	
+
+	UINT y = uHeaderHeight;
+	if (uTargetPos > 0)
+	{
+		CRect rcItem;
+		(void)wndList.GetItemRect(uTargetPos - 1, &rcItem, LVIR_BOUNDS);
+		y = rcItem.bottom;
+	}			
 	DragContext.DrawDragOverHLine(y);
+
+	DragContext.uTargetPos = uTargetPos;
 }
 
 bool CBasePage::DragScroll(CObjectList& wndList, LONG x, LONG y)

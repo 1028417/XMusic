@@ -56,6 +56,29 @@ public:
         m_vecImgs.clear();
     }
 
+/*// TODO 好像一直不返回
+#if __android
+private:
+    CImgDir(signal_t bRunSignal, cwstr strDir)
+        : CPath(strDir)
+        , m_bRunSignal(bRunSignal)
+    {
+    }
+
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
+    {
+        if (NULL == m_fi.pParent)
+        {
+            auto strRoot = L"/storage/";
+            (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
+                paSubDir.addFront(new CImgDir(m_bRunSignal, strRoot + strSubDir));
+            });
+        }
+
+        CPath::_onFindFile(paSubDir, paSubFile);
+    }
+#endif*/
+
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;

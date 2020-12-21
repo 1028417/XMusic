@@ -412,13 +412,7 @@ DROPEFFECT CPlaylistPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSe
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
 
-	handleDragOver(m_wndList, DragContext, [&](int& iDragOverPos) {
-		if (iDragOverPos > nDragingItem)
-		{
-			iDragOverPos--;
-		}
-		return true;
-	});
+	handleDragOver(m_wndList, DragContext);
 	
 	return DROPEFFECT_MOVE;
 }
@@ -429,14 +423,23 @@ BOOL CPlaylistPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragCo
 
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
-	__EnsureReturn(DragContext.uTargetPos != nDragingItem, FALSE);
 
-	CPlaylist *pPlaylist = m_view.getPlaylistMgr().RepositPlaylist(pMediaSet->m_uID, DragContext.uTargetPos);
+	int nTargetPos = DragContext.uTargetPos;
+	if (nTargetPos > nDragingItem)
+	{
+		nTargetPos--;
+	}
+	__EnsureReturn(nTargetPos != nDragingItem, FALSE);
+
+	CRedrawLock RedrawLock(m_PlayItemPage.m_wndList);
+	m_PlayItemPage.ShowPlaylist(NULL);
+
+	CPlaylist *pPlaylist = m_view.getPlaylistMgr().RepositPlaylist(pMediaSet->m_uID, (UINT)nTargetPos);
 	__EnsureReturn(pPlaylist, FALSE);
 	
 	(void)m_wndList.DeleteItem(nDragingItem);
-	(void)m_wndList.InsertObject(*pPlaylist, DragContext.uTargetPos);
-	m_wndList.SelectItem(DragContext.uTargetPos);
+	(void)m_wndList.InsertObject(*pPlaylist, nTargetPos);
+	m_wndList.SelectItem(nTargetPos);
 
 	m_wndList.UpdateColumn(0);
 

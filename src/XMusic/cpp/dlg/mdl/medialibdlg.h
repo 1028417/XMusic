@@ -66,8 +66,9 @@ private:
 
         if (NULL == m_fi.pParent)
         {
-            (void)fsutil::findSubDir(L"/storage", [&](cwstr strSubDir) {
-                paSubDir.addFront(new COuterDir(L"/storage/" + strSubDir, this));
+            auto strRoot = L"/storage/";
+            (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
+                paSubDir.addFront(new COuterDir(strRoot + strSubDir, this));
             });
         }
     }

@@ -496,14 +496,13 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     UINT uRowCount = 0;
     if (bHLayout)
     {
-        UINT uMargin = x;
+        UINT uMargin = ui.progressbar->x();
         int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.5f;
         if (cx > __size(1920))
         {
             x_PlayingList += uMargin;
         }
-        int cx_PlayingList = cx - x_PlayingList;
-        PlayingList.setGeometry(x_PlayingList, uMargin-1, cx_PlayingList, cy-uMargin*2);
+        PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
         uRowCount = MAX(uRowCount,7);

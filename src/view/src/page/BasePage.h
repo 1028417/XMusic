@@ -38,7 +38,7 @@ protected:
 	virtual int GetTabImage() { return -1; }
 
 	void handleDragOver(CObjectList& wndList, CDragContext& DragContext
-		, const function<bool(int& uDragOverPos)>& cb=NULL);
+		, const function<void(UINT& uDragOverPos)>& cb=NULL);
 
 	bool DragScroll(CObjectList& wndList, LONG x, LONG y);
 

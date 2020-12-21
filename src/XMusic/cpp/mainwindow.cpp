@@ -296,7 +296,6 @@ void MainWindow::_showUpgradeProgress()
     }
 
     UINT uDotCount = 0;
-
     timerutil::setTimerEx(200, [=]()mutable{
         if (!ui.labelLogoTip->isVisible())
         {
@@ -306,24 +305,20 @@ void MainWindow::_showUpgradeProgress()
         if (g_nAppUpgradeProgress >= 0)
         {
             QString qsText;
-            if (0 == g_nAppUpgradeProgress)
-            {
-                qsText.append("下载升级包...");
-            }
-            else if (100 == g_nAppUpgradeProgress)
+            if (100 == g_nAppUpgradeProgress)
             {
                 qsText.append("准备安装...");
             }
             else
             {
+                //if (0 == g_nAppUpgradeProgress) qsText.append("下载升级包..."); else
                 qsText.sprintf("下载升级包:  %u%%", (UINT)g_nAppUpgradeProgress);
             }
             ui.labelLogoTip->setText(qsText);
         }
         else
         {
-            uDotCount++;
-            if (uDotCount > 3)
+            if (++uDotCount > 3)
             {
                 uDotCount = 0;
                 g_uShowLogoState++;
