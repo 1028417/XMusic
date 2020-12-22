@@ -141,7 +141,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
     m_rootImgDir.setDir(strDir);
 
     UINT uDotCount = 0;
-    timerutil::setTimerEx(300, [=]()mutable{
+    timerutil::setTimerEx(240, [=]()mutable{
         if (!m_thrScan)
         {
             ui.labelTitle->setText("添加背景");
