@@ -162,7 +162,7 @@ public:
     }
 
 public:
-    void attachToSinger(class CSinger& singer, const class tagSingerAttachDir& attachDir);
+    void attachToSinger(class CSinger& singer, const struct tagSingerAttachDir& attachDir);
 
     UINT singerID() const
     {
