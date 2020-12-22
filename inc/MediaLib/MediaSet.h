@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #define __CNLanguage		0x01
@@ -110,7 +110,15 @@ public:
 		, m_property(uLanguage, bDisableDemand, bDisableExport)
     {
 	}
-	
+
+#if !__winvc
+    CMediaSet(CMediaSet *pParent, E_MediaSetType eType) //CSnapshotMediaDir构造提速
+        : m_eType(eType)
+    {
+        m_pParent = pParent;
+    }
+#endif
+
 public:
 	E_MediaSetType m_eType;
 

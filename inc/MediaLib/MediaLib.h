@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 enum class E_AttachDirType
 {
@@ -157,17 +157,12 @@ class __MediaLibExt CSnapshotMediaDir : public CMediaDir, public CMediaSet
 public:
     CSnapshotMediaDir(cwstr strDir, CSnapshotMediaDir *pParent)
         : CMediaDir(strDir, pParent?(CMediaDir*)pParent:&__medialib)
-        , CMediaSet(L"", pParent, E_MediaSetType::MST_SnapshotMediaDir)
+        , CMediaSet(pParent, E_MediaSetType::MST_SnapshotMediaDir)
     {
     }
 
 public:
-    void attachToSinger(CMediaSet& singer, cwstr strAliasName)
-    {
-        m_pParent = &singer;
-        m_strName = strAliasName;
-        SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, singer.m_uID, singer.m_strName);
-    }
+    void attachToSinger(class CSinger& singer, const class tagSingerAttachDir& attachDir);
 
     UINT singerID() const
     {
@@ -183,9 +178,19 @@ public:
         return false;
     }
 
-    void GetMedias(TD_IMediaList&) override;
+    void GetMedias(TD_IMediaList &paMediaList) override
+    {
+        m_paSubFile([&](XFile& file){
+            paMediaList.add((CMediaRes*)&file);
+        });
+    }
 
-    void GetSubSets(TD_MediaSetList&) override;
+    void GetSubSets(TD_MediaSetList& paMediaSet) override
+    {
+        m_paSubDir([&](CPath&( dir)){
+            paMediaSet.add((CSnapshotMediaDir*)&dir);
+        });
+    }
 
     wstring name() const override
     {
