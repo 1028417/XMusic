@@ -703,11 +703,10 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         }
         else
         {
-            auto pSinger = __app.getSingerMgr().checkSingerDir(PlayingInfo.strPath, false);
-            if (pSinger)
+            PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+            if (PlayingInfo.uSingerID)
             {
-                PlayingInfo.uSingerID = pSinger->m_uID;
-                PlayingInfo.strSingerName = pSinger->m_strName;
+                PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 PlayingInfo.pRelatedMedia = __medialib.subFile(PlayingInfo.strPath);
             }
         }

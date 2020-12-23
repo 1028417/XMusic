@@ -16,6 +16,8 @@ public:
 class __ModelExt CFileTitle
 {
 public:
+    static bool simplifiedTrans(wstring& strTitle);
+
 	static wstring genCollateSingerName(cwstr strSingerName);
 
 	static void genCollateTitle(wstring& strFileTitle);

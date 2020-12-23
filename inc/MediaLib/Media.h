@@ -114,6 +114,14 @@ public:
 #endif
 	}
 
+#if !__winvc
+        void syncFileSizeDuration(const CMedia& media)
+        {
+            m_nFileSize = media.m_nFileSize;
+            m_uDuration = media.m_uDuration;
+        }
+#endif
+
 	UINT checkDuration();
 	
 	void SetDuration(UINT uDuration)
