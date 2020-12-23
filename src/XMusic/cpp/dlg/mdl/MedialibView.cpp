@@ -180,7 +180,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
                 for (auto pSubDir : dir.dirs())
                 {
-                    cauto strSingerName = pSubDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+                    cauto strSingerName = ((CMediaDir*)pSubDir)->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                     if (!strSingerName.empty())
                     {
                         plstSingerName->push_back(strSingerName);
@@ -393,11 +393,11 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
-                //auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
-                auto uSingerID = pMediaSet->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerID();
+                auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
+                auto uSingerID = pSnapshotMediaDir->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerID();
                 if (uSingerID > 0)
                 {
-                    cauto strSingerName = pMediaSet->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerName();
+                    cauto strSingerName = pSnapshotMediaDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerName();
                     auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
                     context.setIcon(brSingerHead, __IconSize);
                 }
