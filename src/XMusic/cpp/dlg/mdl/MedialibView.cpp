@@ -180,7 +180,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
                 for (auto pSubDir : dir.dirs())
                 {
-                    cauto strSingerName = ((CSnapshotMediaDir*)pSubDir)->singerName();
+                    cauto strSingerName = pSubDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                     if (!strSingerName.empty())
                     {
                         plstSingerName->push_back(strSingerName);
@@ -295,7 +295,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             auto& brSingerHead = genSingerHead(context.pMediaSet->m_uID, context.pMediaSet->m_strName);
             context.setIcon(brSingerHead, __IconSize);
         }
-
         break;
         case E_MediaSetType::MST_SingerGroup:
             context.pmIcon = &m_pmSingerGroup;
@@ -304,6 +303,29 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         default:
             context.pmIcon = &m_pmSSDir;
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
+
+            if (context.pMediaSet->m_pParent && E_MediaSetType::MST_SnapshotMediaDir == context.pMediaSet->m_eType)
+            {
+                cauto strName = context.pMediaSet->name();
+                cauto strType = strName.substr(0, strName.find(__wcPathSeparator));
+                if (strutil::matchIgnoreCase(strType, L"dsd"))
+                {
+                    context.pmIcon = &m_pmDSD;
+                }
+                else if (strutil::matchIgnoreCase(strType, L"hi-res"))
+                {
+                    context.pmIcon = &m_pmHires;
+                }
+                else if (strutil::matchIgnoreCase(strType, L"mqs"))
+                {
+                    context.pmIcon = &m_pmMQS;
+                }
+                else if (strutil::matchIgnoreCase(strType, L"dts"))
+                {
+                    context.pmIcon = &m_pmDTS;
+                }
+            }
+
             break;
         };
     }
@@ -371,11 +393,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
             else
             {
-                auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
-                auto uSingerID = pSnapshotMediaDir->singerID();
+                //auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
+                auto uSingerID = pMediaSet->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerID();
                 if (uSingerID > 0)
                 {
-                    auto& brSingerHead = genSingerHead(uSingerID, pSnapshotMediaDir->singerName());
+                    cauto strSingerName = pMediaSet->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerName();
+                    auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
                     context.setIcon(brSingerHead, __IconSize);
                 }
             }
@@ -680,7 +703,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                 strRemark << ' ';
             }
             strRemark << L"首";
-        }        
+        }
         else if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType)
         {
             auto pDir = (CSnapshotMediaDir*)mlContext.pMediaSet;

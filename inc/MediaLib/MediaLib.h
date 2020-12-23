@@ -166,11 +166,22 @@ public:
 
     UINT singerID() const
     {
-        return GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+        auto uSingerID = GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+        if (0 == uSingerID && m_pParent)
+        {
+            return ((CSnapshotMediaDir*)m_pParent)->singerID();;
+        }
+        return uSingerID;
     }
+
     cwstr singerName() const
     {
-        return GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+        cauto strSingerName = GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
+        if (strSingerName.empty() && m_pParent)
+        {
+            return ((CSnapshotMediaDir*)m_pParent)->singerName();
+        }
+        return strSingerName;
     }
 
     bool isLocal() const override
