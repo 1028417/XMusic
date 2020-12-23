@@ -199,7 +199,7 @@ public:
             return m_strName;
         }
 
-        return XFile::fileName();
+        return m_fi.strName;
     }
 
     class CMediaSet* mediaSet() const override
