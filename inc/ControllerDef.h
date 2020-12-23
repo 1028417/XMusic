@@ -70,17 +70,7 @@ struct tagAssignMediaSetCmd : tagPlayCmd
     tagAssignMediaSetCmd(CMediaSet& MediaSet)
         : tagPlayCmd(E_PlayCmd::PC_Assign)
     {
-        if (E_MediaSetType::MST_Singer == MediaSet.m_eType)
-        {
-            for (auto& album : ((CSinger&)MediaSet).albums())
-            {
-                paMedias.add(album.albumItems());
-            }
-        }
-        else
-        {
-            MediaSet.GetAllMedias(paMedias);
-        }
+        MediaSet.GetAllMedias(paMedias);
     }
 };
 
