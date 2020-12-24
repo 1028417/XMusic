@@ -77,18 +77,7 @@ public:
     void cleanup();
 
 #if __android
-    void showDir(CPath& dir) override
-    {
-        if (&dir == &m_OuterDir)
-        {
-            if (!requestAndroidSDPermission())
-            {
-                return;
-            }
-        }
-
-        CMLListView::showDir(dir);
-    }
+    void showDir(CPath& dir) override;
 #endif
 
     CSinger *currentSinger() const;

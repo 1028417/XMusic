@@ -915,3 +915,18 @@ void CMedialibView::cleanup()
 
     CMLListView::_cleanup();
 }
+
+#if __android
+void CMedialibView::showDir(CPath& dir)
+{
+    if (&dir == &m_OuterDir)
+    {
+        if (!requestAndroidSDPermission())
+        {
+            return;
+        }
+    }
+
+    CMLListView::showDir(dir);
+}
+#endif
