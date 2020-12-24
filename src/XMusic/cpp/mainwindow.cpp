@@ -907,6 +907,13 @@ void MainWindow::_playSingerImg()
 
     _relayout();
 
+#if __android
+    if (!g_bAndroidSDPermission)
+    {
+        return;
+    }
+#endif
+
     g_uSingerImgIdx++;
     (void)__app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
 }

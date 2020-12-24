@@ -81,7 +81,7 @@ public:
     {
         if (&dir == &m_OuterDir)
         {
-            if (!requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
+            if (!requestAndroidSDPermission())
             {
                 return;
             }

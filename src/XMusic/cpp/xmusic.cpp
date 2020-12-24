@@ -17,6 +17,17 @@ ITxtWriter& g_logger(m_logger);
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
+#if __android
+bool m_bAndroidSDPermission = false;
+const bool& g_bAndroidSDPermission(m_bAndroidSDPermission);
+
+bool requestAndroidSDPermission() // API 23以上动态申请读写权限
+{
+    m_bAndroidSDPermission = requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+    return m_bAndroidSDPermission;
+}
+#endif
+
 static CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
 signal_t g_bRunSignal(m_runSignal);
 
@@ -98,7 +109,7 @@ void CAppBase::_init()
 bool CAppBase::_run()
 {
 #if __android
-    if (requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE")) // API 23以上动态申请读写权限
+    if (requestAndroidSDPermission())
     {
         m_strWorkDir = __sdcardDir __pkgName;
     }

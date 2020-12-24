@@ -25,6 +25,11 @@ struct tagScreenInfo
 };
 extern const tagScreenInfo& g_screen;
 
+#if __android
+extern const bool& g_bAndroidSDPermission;
+extern bool requestAndroidSDPermission();
+#endif
+
 #define __cyIPhoneXBangs __size(128)
 bool checkIPhoneXBangs(int cx, int cy);
 
