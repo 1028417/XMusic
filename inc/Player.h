@@ -30,7 +30,7 @@ public:
 
     virtual int64_t seek(int64_t offset, int origin) = 0;
 
-    virtual int read(byte_p buf, UINT size) = 0;
+    virtual int read(byte_p buf, size_t size) = 0;
 };
 
 class __PlaySDKExt CAudioOpaque : private IAudioOpaque
@@ -92,7 +92,8 @@ protected:
     }
 
     virtual int64_t seek(int64_t offset, int origin) override;
-    virtual int read(byte_p buf, UINT size) override;
+
+    virtual int read(byte_p buf, size_t size) override;
 
     bool seekingFlag() const;
     //bool probingFlag() const;

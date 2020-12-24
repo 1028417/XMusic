@@ -9,20 +9,17 @@ class __ModelExt CMediaOpaque : public CAudioOpaque
 public:
     CMediaOpaque() = default;
 
-protected:
-    UINT m_uByteRate = 0;
-
 private:
+    wstring m_strFile;
+
     const void *m_pXmscCodec = NULL;
     size_t m_uXmscHeadLen = 0;
 
-    wstring m_strFile;
+    uint64_t m_uPos = 0;
 
 protected:
     virtual int64_t seek(int64_t offset, int origin) override;
-    virtual int read(byte_p buf, UINT size) override;
-
-    void _decode(byte_p buf, int size);
+    virtual int read(byte_p buf, size_t size) override;
 
 private:
     wstring localFilePath() const override
