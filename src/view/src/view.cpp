@@ -702,7 +702,7 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 					//jFile["name"] = strFileTitle;
 					//jFile.append(strFileTitle);
 					
-					auto uFileSize = ((CMediaRes&)subFile).fileSize();
+					auto uFileSize = ((CMediaRes&)subFile).fileSize(); ///100000;
 					strFileDesc.append(1, '|').append(to_string(uFileSize));
 					//jFile["size"] = uFileSize;
 					//jFile.append(uFileSize);

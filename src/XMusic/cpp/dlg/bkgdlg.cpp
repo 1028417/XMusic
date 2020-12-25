@@ -342,11 +342,22 @@ void CBkgDlg::preinitBkg(bool bHLayout)
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
     strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
 
-    wstring strAppBkgDir = strBkgDir + __app.appVersion();
-    if (!fsutil::existDir(strAppBkgDir))
+    if (!fsutil::existDir(strBkgDir))
     {
         (void)fsutil::createDir(strBkgDir);
 
+#if __android
+        WString strOrgDir;
+        strOrgDir << L"/data/data/" __pkgName << (bHLayout?L"/hbkg/":L"/vbkg/");
+        fsutil::findSubFile(strOrgDir, [&](cwstr strFile){
+            fsutil::copyFile(strOrgDir + strFile, strBkgDir + strFile);
+        });
+#endif
+    }
+
+    wstring strAppBkgDir = strBkgDir + __app.appVersion();
+    if (!fsutil::existDir(strAppBkgDir))
+    {
         strAppBkgDir.push_back('-');
         (void)fsutil::createDir(strAppBkgDir);
 
