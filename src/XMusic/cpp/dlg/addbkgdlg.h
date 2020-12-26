@@ -56,8 +56,7 @@ public:
         m_vecImgs.clear();
     }
 
-/*// TODO 好像一直不返回
-#if __android
+/*#if __android
 private:
     CImgDir(signal_t bRunSignal, cwstr strDir)
         : CPath(strDir)
@@ -67,7 +66,7 @@ private:
 
     void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
     {
-        if (NULL == m_fi.pParent)
+        if (__sdcardDir == m_fi.strName)
         {
             auto strRoot = L"/storage/";
             (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {

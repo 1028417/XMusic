@@ -138,8 +138,6 @@ void CAddBkgDlg::show()
 
 void CAddBkgDlg::_scanDir(cwstr strDir)
 {
-    m_rootImgDir.setDir(strDir);
-
     UINT uDotCount = 0;
     timerutil::setTimerEx(240, [=]()mutable{
         if (!m_thrScan)
@@ -162,8 +160,10 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
     });
 
     static UINT s_uSequence = 0;
-    auto uSequence = ++s_uSequence;
-    m_thrScan.start([&, uSequence](signal_t bRunSignal){
+    m_thrScan.start([&](signal_t bRunSignal){
+        auto uSequence = ++s_uSequence;
+        m_rootImgDir.setDir(strDir);
+
         // TODO 内存优化，改为：scanDir(bRunSignal, strRootDir, [&, uSequence](strDir, lstFile
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
@@ -176,13 +176,11 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
             }
 
             __app.sync([&, uSequence]{
-                if (uSequence != s_uSequence)
+                if (uSequence == s_uSequence)
                 {
-                    return;
+                    m_paImgDirs.add((CImgDir&)dir);
+                    this->update();
                 }
-
-                m_paImgDirs.add((CImgDir&)dir);
-                this->update();
             });
         });
     });
