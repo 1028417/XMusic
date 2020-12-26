@@ -45,7 +45,7 @@ void COptionMgr::init()
 #if __android
     if (!fsutil::existFile(strFile))
     {
-        fsutil::CopyFile(struitl::toUtf8(__pkgDir) + __confFile, strFile);
+        fsutil::copyFile(__WS2Q(__pkgDir) + __confFile, QString::fromStdString(strFile));
     }
 #endif
 
