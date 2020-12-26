@@ -53,11 +53,7 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 bool CApp::_startup(cwstr strWorkDir)
 {
-    if (!m_ctrl.initOption())
-    {
-        g_logger >> "initOption fail";
-        return false;
-    }
+    m_ctrl.initOption();
 
     //auto timeBegin = time(0);
     auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);

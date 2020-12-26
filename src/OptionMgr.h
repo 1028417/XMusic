@@ -45,7 +45,7 @@ public:
     bool checkAlarm();
 #endif
 
-    bool init();
+    void init();
 
 	void saveOption();
 };

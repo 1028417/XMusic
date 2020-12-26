@@ -67,7 +67,7 @@ public:
         return feof(m_pf);
     }
 
-    virtual void close()
+    void close()
     {
         if (m_pf)
         {
@@ -463,6 +463,7 @@ private:
 	template <class T>
 	bool _open(const T& strFile)
 	{
+        m_size = 0;
 		if (!FStream::_open(strFile, "rb"))
 		{
 			return false;
@@ -505,7 +506,7 @@ public:
         return ftell64(m_pf);
 	}
 
-	virtual void close() override
+    void close()
 	{
 		FStream::close();
 		m_size = 0;

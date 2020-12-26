@@ -37,14 +37,14 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
-bool COptionMgr::init()
+void COptionMgr::init()
 {
     m_bInited = true;
 
     JValue jRoot;
     if (!jsonutil::loadFile(fsutil::workDir() + __confFile, jRoot))
     {
-        return false;
+        return;
     }
 
 #if !__OnlineMediaLib
@@ -113,8 +113,6 @@ bool COptionMgr::init()
         }
     }*/
 #endif
-
-    return true;
 }
 
 void COptionMgr::saveOption()
@@ -181,7 +179,7 @@ void COptionMgr::saveOption()
     }*/
 #endif
 
-	jsonutil::writeFile(jRoot, fsutil::workDir() + __confFile, true);
+    jsonutil::writeFile(jRoot, fsutil::workDir() + __confFile, true);
 }
 
 #if __winvc

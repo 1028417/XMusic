@@ -38,9 +38,9 @@ public:
 		return m_OptionMgr.getOption();
 	}
 
-        bool initOption()
+        void initOption()
         {
-            return m_OptionMgr.init();
+            m_OptionMgr.init();
         }
 
         void start();
