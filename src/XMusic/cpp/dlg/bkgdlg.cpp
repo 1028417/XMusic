@@ -348,7 +348,7 @@ void CBkgDlg::preinitBkg(bool bHLayout)
 
 #if __android
         WString strOrgDir;
-        strOrgDir << L"/data/data/" __pkgName << (bHLayout?L"/hbkg/":L"/vbkg/");
+        strOrgDir << __pkgDir << (bHLayout?L"/hbkg/":L"/vbkg/");
         fsutil::findSubFile(strOrgDir, [&](cwstr strFile){
             fsutil::copyFile(strOrgDir + strFile, strBkgDir + strFile);
         });
@@ -647,7 +647,9 @@ void CBkgDlg::deleleBkg(size_t uIdx)
             }
         }
 
-        fsutil::removeFile(_bkgDir() + bkgFile.strFile);
+        cauto strFile = _bkgDir() + bkgFile.strFile;
+        fsutil::removeFile(strFile);
+        fsutil::removeFile(strFile + __thumbs);
         vecBkgFile.erase(vecBkgFile.begin()+uIdx);
 
         m_lv.update();

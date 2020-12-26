@@ -12,6 +12,7 @@
 #include "XMediaLib.h"
 
 #define __pkgName L"com.musicrossoft.xmusic"
+#define __pkgDir L"/data/data/" __pkgName
 
 struct tagAddPlayItem
 {

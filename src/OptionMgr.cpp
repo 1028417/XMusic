@@ -41,10 +41,18 @@ void COptionMgr::init()
 {
     m_bInited = true;
 
-    JValue jRoot;
-    if (!jsonutil::loadFile(fsutil::workDir() + __confFile, jRoot))
+    cauto strFile = fsutil::workDir() + __confFile;
+#if __android
+    if (!fsutil::existFile(strFile))
     {
-        return;
+        fsutil::CopyFile(struitl::toUtf8(__pkgDir) + __confFile, strFile);
+    }
+#endif
+
+    JValue jRoot;
+    if (!jsonutil::loadFile(strFile, jRoot))
+    {
+        return; //不能返回false
     }
 
 #if !__OnlineMediaLib
