@@ -160,7 +160,7 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
     });
 
     static UINT s_uSequence = 0;
-    m_thrScan.start([&](signal_t bRunSignal){
+    m_thrScan.start([&, strDir](signal_t bRunSignal){
         auto uSequence = ++s_uSequence;
         m_rootImgDir.setDir(strDir);
 
