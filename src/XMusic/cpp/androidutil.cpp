@@ -59,12 +59,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
 {
     (void)reserved;
 
-    char *lpPath = NULL;
-    if (lpPath = getenv("EXTERNAL_STORAGE")) // 目前发现返回"/sdcard"
+    char *lpPath = getenv("EXTERNAL_STORAGE"); // 目前发现返回"/sdcard"
+    if (lpPath)
     {
         g_strExternalStorage.append(lpPath);
     }
-    if (lpPath = getenv("SECONDARY_STORAGE"))
+    lpPath = getenv("SECONDARY_STORAGE");
+    if (lpPath)
     {
         g_strSecondaryStorage.append(lpPath);
     }
