@@ -87,6 +87,8 @@ private:
 
     virtual void clear() {}
 
+    int _syncDownload(const string& strUrl, UINT uRetryTime, CB_DownloadProgress cbProgress);
+
 public:
     const bool& status() const
     {
@@ -100,7 +102,8 @@ public:
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
-    void asyncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
+    void asyncDownload(const string& strUrl, UINT uRetryTime = 0
+            , CB_DownloadProgress cbProgress = NULL, cfn_void_t<int> cbError = NULL);
 
     uint64_t cancel();
 };

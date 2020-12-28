@@ -47,6 +47,42 @@ private:
         return len > 0;
     }
 
+    template <typename T, class C = basic_string<T, char_traits<T>, allocator<T>>, class RET>
+    static void _split(const C& strText, T wcSplitor, RET& vecRet)
+    {
+        /*auto fn = [&](const C& strSub) {
+            if (bTrim && wcSplitor != L' ')
+            {
+                cauto str = strutil::trim_r(strSub);
+                if (!str.empty())
+                {
+                    vecRet.push_back(str);
+                }
+            }
+            else
+            {
+                vecRet.push_back(strSub);
+            }
+        };*/
+
+        size_t pos = 0;
+        while ((pos = strText.find_first_not_of(wcSplitor, pos)) != C::npos)
+        {
+            auto nextPos = strText.find(wcSplitor, pos);
+            if (C::npos == nextPos)
+            {
+                cauto strSub = strText.substr(pos);
+                vecRet.push_back(strSub);  //fn(strSub);
+                break;
+            }
+
+            cauto strSub = strText.substr(pos, nextPos - pos);
+            vecRet.push_back(strSub);  //fn(strSub);
+
+            pos = nextPos + 1;
+        }
+    }
+
 public:
     static int collate(cwstr lhs, cwstr rhs);
     static int collate_cn(cwstr lhs, cwstr rhs);
@@ -119,8 +155,17 @@ public:
 		return strRet;
 	}
 
-    static void split(cwstr strText, wchar_t wcSplitor, vector<wstring>& vecRet);
-	static void split(const string& strText, char wcSplitor, vector<string>& vecRet);
+    template <class T>
+    static void split(cwstr strText, wchar_t wcSplitor, T& vecRet)
+    {
+        _split(strText, wcSplitor, vecRet);
+    }
+
+    template <class T>
+    static void split(const string& strText, char wcSplitor, T& vecRet)
+    {
+        _split(strText, wcSplitor, vecRet);
+    }
 
     static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
     static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = 0);

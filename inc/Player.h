@@ -63,7 +63,7 @@ public:
 
 	uint32_t duration() const;
 
-    uint32_t byteRate() const;
+    //uint32_t byteRate() const;
 
     int sampleRate() const;
 
