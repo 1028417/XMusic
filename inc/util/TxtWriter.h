@@ -349,12 +349,12 @@ public:
         return m_eHeadType;
 	}
 	
-    E_TxtHeadType read(Instream& ins, cfn_bool_t<const string&> cb)
+    E_TxtHeadType read(Instream& ins, cfn_bool_t<string&> cb)
 	{
 		_read(ins, cb);
         return m_eHeadType;
 	}
-    E_TxtHeadType read(Instream& ins, cfn_bool_t<cwstr> cb)
+    E_TxtHeadType read(Instream& ins, cfn_bool_t<wstring&> cb)
 	{
 		_read(ins, cb);
         return m_eHeadType;
@@ -375,7 +375,7 @@ private:
 	}
 
 	template <class T>
-	void _read(Instream& ins, cfn_bool_t<const T&> cb)
+    void _read(Instream& ins, cfn_bool_t<T&> cb)
 	{
 		T strText;
 		_read(ins, strText);
@@ -408,8 +408,9 @@ private:
 		}
 
 		if (prePos < strText.size())
-		{
-            cb(strText.substr(prePos));
+        {
+            auto strSub = strText.substr(prePos);
+            cb(strSub);
         }
 	}
 };
