@@ -162,7 +162,9 @@ public:
             return CZipFile(ins, strPwd).unzip(strDstDir);
     }
 
-    static int zCompress(const void* pData, size_t len, CByteBuffer& bbfBuff, int level=0);
+	static int zCompress(const void* pData, size_t len, CByteBuffer& bbfBuff, int level = 0);
+	static int zUncompress(const void* pData, size_t len, CByteBuffer& bbfBuff);
+
     static long zCompressFile(cwstr strSrcFile, cwstr strDstFile, int level=0);
     static long zUncompressFile(cwstr strSrcFile, cwstr strDstFile);
 
