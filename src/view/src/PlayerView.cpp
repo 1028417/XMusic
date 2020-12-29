@@ -200,6 +200,9 @@ bool CPlayerView::handleCommand(UINT uID)
 	case ID_CheckDuplicateTitle:
 		_checkDuplicateMedia(E_CheckDuplicateMode::CDM_SameTitle);
 		break;
+	case ID_CheckSimilarTitle:
+		_checkDuplicateMedia(E_CheckDuplicateMode::CDM_SimilarTitle);
+		break;
 
 	case ID_AddIn:		
 		_addInMedia();

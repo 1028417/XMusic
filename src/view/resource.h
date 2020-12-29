@@ -158,7 +158,7 @@
 #define ID_CheckDuplicate               32849
 #define ID_CheckDuplicateName           32854
 #define ID_CheckDuplicateTitle          32855
-#define ID_CheckSameName                32860
+#define ID_CheckSimilarTitle            32860
 #define ID_CheckSimilar                 32862
 #define ID_WholeTrack                   32869
 #define ID_CLOSE                        32872

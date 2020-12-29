@@ -87,6 +87,7 @@ enum class E_CheckDuplicateMode
     CDM_SamePath
     , CDM_SameName
     , CDM_SameTitle
+	, CDM_SimilarTitle
 };
 
 using CB_checkDuplicateMedia = cfn_bool_t<CMedia&>;

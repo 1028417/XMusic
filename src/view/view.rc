@@ -90,8 +90,9 @@ BEGIN
         POPUP "检查重复曲目"
         BEGIN
             MENUITEM "相同路径",                        ID_CheckDuplicate
-            MENUITEM "相同文件名",                       ID_CheckDuplicateName
-            MENUITEM "相同标题",                        ID_CheckDuplicateTitle
+            MENUITEM "相同文件名",                      ID_CheckDuplicateName
+	        MENUITEM "相同标题",						ID_CheckDuplicateTitle
+	        MENUITEM "相似标题",                        ID_CheckSimilarTitle
         END
         MENUITEM SEPARATOR
         MENUITEM "导出 Ctrl+E",                   ID_ExportMedia
@@ -1039,7 +1040,8 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 
