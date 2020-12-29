@@ -19,16 +19,36 @@ struct tagUnzDir
 {
     tagUnzDir() = default;
 
-    tagUnzDir(const string& strPath)
-        : strPath(strPath)
+    tagUnzDir(tagUnzDir& parent, const string& strName)
+        : parent(&parent)
+        , strName(strName)
     {
     }
 
-    string strPath;
+    tagUnzDir *parent = NULL;
 
-    list<tagUnzDir> lstSubDir;
+    string strName;
 
-    PtrArray<tagUnzSubFile> paSubFile;
+    map<string, tagUnzDir> mapSubDir;
+
+    map<string, tagUnzSubFile> mapSubFile;
+    //PtrArray<tagUnzSubFile*> paSubFile;
+
+    tagUnzDir& addDir(string strSubDir);
+    tagUnzSubFile& addFile(string strSubFile, const tagUnzSubFile& unzSubFile);
+
+    const tagUnzDir* subDir(string strSubDir) const;
+    const tagUnzSubFile* subFile(string strSubFile) const;
+
+    void clear()
+    {
+        strName.clear();
+
+        mapSubDir.clear();
+
+        //paSubFile.clear();
+        mapSubFile.clear();
+    }
 };
 
 class __UtilExt CZipFile
@@ -61,8 +81,10 @@ private:
 
     void* m_pfile = NULL;
 
-    list<string> m_lstSubDir;
-    map<string, tagUnzSubFile> m_mapSubfile;
+    tagUnzDir m_root;
+
+    map<string, tagUnzDir*> m_mapSubDir;
+    map<string, tagUnzSubFile*> m_mapSubfile;
 
 private:
     bool _open(const char *szFile, void *pzlib_filefunc_def, const string& strPwd);
@@ -78,12 +100,27 @@ public:
         return m_pfile != NULL;
     }
 
-    const list<string>& subDirList() const
+    const tagUnzDir& root() const
     {
-        return m_lstSubDir;
+        return m_root;
     }
 
-    const map<string, tagUnzSubFile>& subFileMap() const
+    const tagUnzDir* subDir(string strSubDir) const
+    {
+        return m_root.subDir(strSubDir);
+    }
+
+    const tagUnzSubFile* subFile(string strSubFile) const
+    {
+        return m_root.subFile(strSubFile);
+    }
+
+    const map<string, tagUnzDir*>& subDirMap() const
+    {
+        return m_mapSubDir;
+    }
+
+    const map<string, tagUnzSubFile*>& subFileMap() const
     {
         return m_mapSubfile;
     }
@@ -146,7 +183,7 @@ public:
             return -1;
         }
 
-        return unzip(itr->second, strDstFile);
+        return unzip(*itr->second, strDstFile);
     }
 };
 
