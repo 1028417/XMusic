@@ -20,7 +20,7 @@ public:
 
 	static wstring genCollateSingerName(cwstr strSingerName);
 
-	static void genCollateTitle(wstring& strFileTitle);
+    static bool genCollateTitle(wstring& strFileTitle);
 	static wstring genCollateTitle_r(cwstr strFileTitle);
 
     static bool formatFileTitle(wstring& strFileTitle, const wchar_t *pszSingerName=NULL);
