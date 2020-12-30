@@ -263,9 +263,9 @@ int main(int argc, char *argv[])
 }
 
 #if __windows
-static bool _cmdShell(const string& strCmd, bool bBlock = true)
+static bool _cmdShell(cwstr strCmd, bool bBlock = true)
 {
-    STARTUPINFOA si;
+    STARTUPINFOW si;
     memset(&si, 0, sizeof(si));
     si.cb = sizeof(si);
     si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);
@@ -273,7 +273,7 @@ static bool _cmdShell(const string& strCmd, bool bBlock = true)
 
     PROCESS_INFORMATION pi;
     memset(&pi, 0, sizeof(pi));
-    if(!CreateProcessA(NULL, (char*)strCmd.c_str(), NULL, NULL, FALSE
+    if(!CreateProcessW(NULL, (wchar_t*)strCmd.c_str(), NULL, NULL, FALSE
                       , CREATE_NO_WINDOW, NULL, NULL, &si, &pi))
     {
         return false;
@@ -365,10 +365,10 @@ bool installApp(const CByteBuffer& bbfData)
         return false;
     }
 
-    cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir()) + __cPathSeparator;
+    cauto strParentDir = fsutil::GetParentDir(fsutil::getModuleDir((const wchar_t *)NULL)) + __wcPathSeparator;
 
-    string strTempDir = strParentDir + "Upgrade";
-    cauto strCmd = "cmd /C rd /S /Q \"" + strTempDir + "\"";
+    auto strTempDir = strParentDir + L"Upgrade";
+    cauto strCmd = L"cmd /C rd /S /Q \"" + strTempDir + L"\"";
     if (!_cmdShell(strCmd))
     {
         g_logger << "cmdShell fail: " >> strCmd;
@@ -382,9 +382,9 @@ bool installApp(const CByteBuffer& bbfData)
     }
 
     strTempDir.push_back(__cPathSeparator);
-    for (cauto strSubDir : zipFile.subDirList())
+    for (cauto pr : zipFile.subDirMap())
     {
-        cauto t_strSubDir = strTempDir + strSubDir;
+        cauto t_strSubDir = strTempDir + pr.first;
         if (!fsutil::createDir(t_strSubDir))
         {
             g_logger << "createDir fail: " >> t_strSubDir;
@@ -392,8 +392,8 @@ bool installApp(const CByteBuffer& bbfData)
         }
     }
 
-#define __StartupFile "XMusicStartup.exe"
-    string strStartupFile;
+#define __StartupFile L"XMusicStartup.exe"
+    wstring strStartupFile;
     for (cauto pr : zipFile.subFileMap())
     {
         cauto strSubFile = strTempDir + pr.first;
@@ -402,7 +402,7 @@ bool installApp(const CByteBuffer& bbfData)
             strStartupFile = strSubFile;
         }
 
-        if (zipFile.unzip(pr.second, strSubFile) < 0)
+        if (zipFile.unzip(*pr.second, strSubFile) < 0)
         {
             g_logger << "unzip fail: " >> strSubFile;
             return false;
@@ -421,7 +421,7 @@ bool installApp(const CByteBuffer& bbfData)
         return false;
     }
 
-    if (!_cmdShell("\"" + strParentDir + __StartupFile "\" -upg", false))
+    if (!_cmdShell(L"\"" + strParentDir + __StartupFile L"\" -upg", false))
     {
         g_logger >> "shell StartupFile fail";
     }

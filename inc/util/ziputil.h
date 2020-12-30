@@ -1,9 +1,39 @@
 
 #pragma once
 
-struct __UtilExt tagUnzSubFile
+/*struct __UtilExt _tagUnzSubFile
 {
-    string strPath;
+    wstring strPath;
+
+    unsigned long compression_method = 0;
+    unsigned long compressed_size = 0;
+    unsigned long uncompressed_size = 0;
+
+    unsigned long pos_in_zip_directory = 0;
+    unsigned long num_of_file = 0;
+
+    uint64_t data_pos = 0;
+};*/
+
+struct __UtilExt tagUnzSubFile// : _tagUnzSubFile
+{
+    /*tagUnzSubFile(class CZipFile& zipFile, const struct tagUnzDir& parent)
+        : zipFile(zipFile)
+        , parent(parent)
+    {
+    }
+    tagUnzSubFile(const tagUnzSubFile& other)
+        : _tagUnzSubFile(other)
+        , zipFile(other.zipFile)
+        , parent(other.parent)
+    {
+        //(_tagUnzSubFile&)this) = other;
+    }
+
+    class CZipFile& zipFile;
+    const struct tagUnzDir& parent;*/
+
+    wstring strPath;
 
     unsigned long compression_method = 0;
     unsigned long compressed_size = 0;
@@ -15,30 +45,47 @@ struct __UtilExt tagUnzSubFile
     uint64_t data_pos = 0;
 };
 
-struct tagUnzDir
+struct __UtilExt tagUnzDir
 {
-    tagUnzDir() = default;
-
-    tagUnzDir(tagUnzDir& parent, const string& strName)
-        : parent(&parent)
+    /*tagUnzDir(class CZipFile& zipFile)
+        : zipFile(zipFile)
+    {
+    }
+    tagUnzDir(class CZipFile& zipFile, const tagUnzDir& parent, cwstr strName)
+        : zipFile(zipFile)
+        , parent(&parent)
         , strName(strName)
     {
     }
 
-    tagUnzDir *parent = NULL;
+    class CZipFile& zipFile;
+    const tagUnzDir *parent = NULL;*/
 
-    string strName;
+    wstring strName;
 
-    map<string, tagUnzDir> mapSubDir;
+    map<wstring, tagUnzDir> mapSubDir;
 
-    map<string, tagUnzSubFile> mapSubFile;
+    map<wstring, tagUnzSubFile> mapSubFile;
     //PtrArray<tagUnzSubFile*> paSubFile;
 
-    tagUnzDir& addDir(string strSubDir);
-    tagUnzSubFile& addFile(string strSubFile, const tagUnzSubFile& unzSubFile);
+    tagUnzDir& addDir(wstring strSubDir);
+    tagUnzSubFile& addFile(wstring strSubFile);
 
-    const tagUnzDir* subDir(string strSubDir) const;
-    const tagUnzSubFile* subFile(string strSubFile) const;
+    const tagUnzDir* subDir(wstring strSubDir) const;
+    const tagUnzSubFile* subFile(wstring strSubFile) const;
+
+    void enumSubFile(cfn_void_t<const tagUnzSubFile&> cb) const
+    {
+        for (cauto pr : mapSubFile)
+        {
+            cb(pr.second);
+        }
+
+        for (cauto pr : mapSubDir)
+        {
+            pr.second.enumSubFile(cb);
+        }
+    }
 
     void clear()
     {
@@ -54,19 +101,21 @@ struct tagUnzDir
 class __UtilExt CZipFile
 {
 public:
-    CZipFile() = default;
+    CZipFile()// : m_root(*this)
+    {
+    }
 
-    CZipFile(const string& strFile, const string& strPwd = "")
+    CZipFile(const string& strFile, const string& strPwd = "")// : m_root(*this)
     {
         (void)open(strFile, strPwd);
     }
 
-    CZipFile(Instream& ins, const string& strPwd = "")
+    CZipFile(Instream& ins, const string& strPwd = "")// : m_root(*this)
     {
         (void)open(ins, strPwd);
     }
 
-    CZipFile(IFStream& ifs, const string& strPwd = "")
+    CZipFile(IFStream& ifs, const string& strPwd = "")// : m_root(*this)
     {
         (void)open(ifs, strPwd);
     }
@@ -83,8 +132,8 @@ private:
 
     tagUnzDir m_root;
 
-    map<string, tagUnzDir*> m_mapSubDir;
-    map<string, tagUnzSubFile*> m_mapSubfile;
+    map<wstring, tagUnzDir*> m_mapSubDir;
+    map<wstring, tagUnzSubFile*> m_mapSubfile;
 
 private:
     bool _open(const char *szFile, void *pzlib_filefunc_def, const string& strPwd);
@@ -105,24 +154,55 @@ public:
         return m_root;
     }
 
-    const tagUnzDir* subDir(string strSubDir) const
+    const tagUnzDir* subDir(wstring strSubDir) const
     {
         return m_root.subDir(strSubDir);
     }
 
-    const tagUnzSubFile* subFile(string strSubFile) const
+    const tagUnzSubFile* subFile(wstring strSubFile) const
     {
         return m_root.subFile(strSubFile);
     }
 
-    const map<string, tagUnzDir*>& subDirMap() const
+    const map<wstring, tagUnzDir*>& subDirMap() const
     {
         return m_mapSubDir;
     }
 
-    const map<string, tagUnzSubFile*>& subFileMap() const
+    const map<wstring, tagUnzSubFile*>& subFileMap() const
     {
         return m_mapSubfile;
+    }
+
+    void enumRead(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
+    {
+        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
+            CByteBuffer bbfData;
+            if (read(unzSubFile, bbfData) > 0)
+            {
+                cb(unzSubFile, bbfData);
+            }
+        });
+    }
+    void enumRead(const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
+    {
+        enumRead(m_root, cb);
+    }
+
+    void enumRead(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
+    {
+        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
+            CByteBuffer bbfData;
+            if (read(unzSubFile, bbfData) > 0)
+            {
+                IFBuffer ifbData(bbfData);
+                cb(unzSubFile, ifbData);
+            }
+        });
+    }
+    void enumRead(const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
+    {
+        enumRead(m_root, cb);
     }
 
     bool open(FILE *pf, const string& strPwd = "");
@@ -173,9 +253,9 @@ public:
         return _read(unzSubFile, ptr, unzSubFile.uncompressed_size);
     }
 
-    bool unzip(const string& strDstDir) const;
-    long unzip(const tagUnzSubFile& unzSubFile, const string& strDstFile) const;
-    long unzip(const string& strSubFilePath, const string& strDstFile) const
+    bool unzip(cwstr strDstDir) const;
+    long unzip(const tagUnzSubFile& unzSubFile, cwstr strDstFile) const;
+    long unzip(cwstr strSubFilePath, cwstr strDstFile) const
     {
         auto itr = m_mapSubfile.find(strSubFilePath);
         if (itr == m_mapSubfile.end())
@@ -190,11 +270,11 @@ public:
 class __UtilExt ziputil
 {
 public:
-    static bool unzFile(const string& strZipFile, const string& strDstDir, const string& strPwd = "")
+    static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
             return CZipFile(strZipFile, strPwd).unzip(strDstDir);
     }
-    static bool unzFile(Instream& ins, const string& strDstDir, const string& strPwd = "")
+    static bool unzFile(Instream& ins, cwstr strDstDir, const string& strPwd = "")
     {
             return CZipFile(ins, strPwd).unzip(strDstDir);
     }
