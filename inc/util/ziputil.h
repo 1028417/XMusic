@@ -1,38 +1,8 @@
 
 #pragma once
 
-/*struct __UtilExt _tagUnzSubFile
+struct __UtilExt tagUnzSubFile
 {
-    wstring strPath;
-
-    unsigned long compression_method = 0;
-    unsigned long compressed_size = 0;
-    unsigned long uncompressed_size = 0;
-
-    unsigned long pos_in_zip_directory = 0;
-    unsigned long num_of_file = 0;
-
-    uint64_t data_pos = 0;
-};*/
-
-struct __UtilExt tagUnzSubFile// : _tagUnzSubFile
-{
-    /*tagUnzSubFile(class CZipFile& zipFile, const struct tagUnzDir& parent)
-        : zipFile(zipFile)
-        , parent(parent)
-    {
-    }
-    tagUnzSubFile(const tagUnzSubFile& other)
-        : _tagUnzSubFile(other)
-        , zipFile(other.zipFile)
-        , parent(other.parent)
-    {
-        //(_tagUnzSubFile&)this) = other;
-    }
-
-    class CZipFile& zipFile;
-    const struct tagUnzDir& parent;*/
-
     wstring strPath;
 
     unsigned long compression_method = 0;
@@ -47,26 +17,38 @@ struct __UtilExt tagUnzSubFile// : _tagUnzSubFile
 
 struct __UtilExt tagUnzDir
 {
-    /*tagUnzDir(class CZipFile& zipFile)
-        : zipFile(zipFile)
-    {
-    }
-    tagUnzDir(class CZipFile& zipFile, const tagUnzDir& parent, cwstr strName)
-        : zipFile(zipFile)
-        , parent(&parent)
+    /*tagUnzDir() = default;
+
+    tagUnzDir(const tagUnzDir& parent, cwstr strName)
+        : parent(&parent)
         , strName(strName)
     {
     }
 
-    class CZipFile& zipFile;
-    const tagUnzDir *parent = NULL;*/
+    wstring path() const
+    {
+        if (NULL == parent)
+        {
+            return L"";
+        }
 
-    wstring strName;
+        return parent.path() + L"/" + strName;
+    }
+
+    const tagUnzDir *parent = NULL;
+    wstring strName;*/
 
     map<wstring, tagUnzDir> mapSubDir;
-
     map<wstring, tagUnzSubFile> mapSubFile;
     //PtrArray<tagUnzSubFile*> paSubFile;
+
+    inline tagUnzDir& _addDir(cwstr strName)
+    {
+        auto& unzSubDir = mapSubDir[strName];
+        //unzSubDir.parent = this;
+        //unzSubDir.strName = strName;
+        return unzSubDir;
+    }
 
     tagUnzDir& addDir(wstring strSubDir);
     tagUnzSubFile& addFile(wstring strSubFile);
@@ -89,33 +71,28 @@ struct __UtilExt tagUnzDir
 
     void clear()
     {
-        strName.clear();
-
         mapSubDir.clear();
-
-        //paSubFile.clear();
         mapSubFile.clear();
+        //paSubFile.clear();
     }
 };
 
 class __UtilExt CZipFile
 {
 public:
-    CZipFile()// : m_root(*this)
-    {
-    }
+    CZipFile() = default;
 
-    CZipFile(const string& strFile, const string& strPwd = "")// : m_root(*this)
+    CZipFile(const string& strFile, const string& strPwd = "")
     {
         (void)open(strFile, strPwd);
     }
 
-    CZipFile(Instream& ins, const string& strPwd = "")// : m_root(*this)
+    CZipFile(Instream& ins, const string& strPwd = "")
     {
         (void)open(ins, strPwd);
     }
 
-    CZipFile(IFStream& ifs, const string& strPwd = "")// : m_root(*this)
+    CZipFile(IFStream& ifs, const string& strPwd = "")
     {
         (void)open(ifs, strPwd);
     }
