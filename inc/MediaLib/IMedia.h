@@ -7,15 +7,17 @@ enum class E_MediaFileType
 {
     MFT_Null = 0,
 
-	MFT_MP3, MFT_FLAC
+	MFT_MP3, MFT_FLAC,
 	
-	, MFT_WAV, MFT_DTS,
+	MFT_WAV, MFT_DTS,
 
 	MFT_DSF, MFT_DFF,
 
 	MFT_M4A, MFT_APE, MFT_AIFF,
 
 	MFT_WMA, MFT_AC3, MFT_AAC, MFT_OGG,
+
+	//MFT_MKV, MFT_MP4, MFT_RMVB, MFT_WMV,
 
     MFT_Max
 };

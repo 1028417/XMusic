@@ -184,7 +184,7 @@ public:
 	void GetAllMediaSets(E_MediaSetType eType, TD_MediaSetList& arrMediaSets);
 	void GetAllMediaSets(TD_MediaSetList& arrMediaSets);
 
-    void GetAllMedias(TD_IMediaList& lstMedias);
+    virtual void GetAllMedias(TD_IMediaList& lstMedias);
 
     CMediaSet* GetSubSet(E_MediaSetType eMediaSetType, UINT uMediaSetID);
 

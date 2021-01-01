@@ -217,6 +217,30 @@ private:
 			}
 		}
 	}
+
+#else
+    void GetAllMedias(TD_IMediaList& lstMedias) override
+    {
+        for (auto& album : m_lstAlbums)
+        {
+            lstMedias.add(album.albumItems());
+        }
+
+        for (cauto attachDir : m_lstAttachDir)
+        {
+            if (attachDir.pMediaSet)
+            {
+                for (auto file : attachDir.pMediaSet->files())
+                {
+                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)file;
+                    if (pSnapshotMediaRes->available)
+                    {
+                        lstMedias.add(pSnapshotMediaRes);
+                    }
+                }
+            }
+        }
+    }
 #endif
 };
 

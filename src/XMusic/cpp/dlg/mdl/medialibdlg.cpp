@@ -62,13 +62,29 @@ void CMedialibDlg::init()
             return;
         }
 
-        CPath *pDir = m_lv.currentDir();
+        auto pDir = (CMediaDir*)m_lv.currentDir();
         if (pDir)
         {
             TD_IMediaList paMedias;
-            pDir->files()([&](XFile& file){
-                paMedias.add((CMediaRes&)file);
-            });
+            if (!pDir->isLocal())
+            {
+                for (auto file : pDir->files())
+                {
+                    auto snapshotMediaRes = (CSnapshotMediaRes*)file;
+                    if (snapshotMediaRes->available)
+                    {
+                        paMedias.add(snapshotMediaRes);
+                    }
+                }
+            }
+            else
+            {
+                TD_MediaResList paMediasRes(pDir->files());
+                paMedias.add(paMediasRes);
+                /*pDir->files()([&](XFile& file){
+                    paMedias.add((CMediaRes&)file);
+                });*/
+            }
 
             if (paMedias)
             {
@@ -249,6 +265,15 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         else if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
         {
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
+
+            for (auto file : ((CSnapshotMediaDir*)pMediaSet)->files())
+            {
+                if (((CSnapshotMediaRes*)file)->available)
+                {
+                    bShowPlayButton = true;
+                    break;
+                }
+            }
         }
     }
     else
@@ -256,8 +281,23 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         auto pDir = m_lv.currentDir();
         if (pDir)
         {
+            if (!((CMediaDir*)pDir)->isLocal())
+            {
+                for (auto file : pDir->files())
+                {
+                    if (((CSnapshotMediaRes*)file)->available)
+                    {
+                        bShowPlayButton = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                bShowPlayButton = pDir->files();
+            }
+
             bShowUpwardButton = true;
-            bShowPlayButton = pDir->files();
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
         }
     }
@@ -279,8 +319,6 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     do {
         if (pSinger)
         {
-            bShowPlayButton = true;
-
             auto& brSingerHead = m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName);
             if (&brSingerHead != &m_lv.m_brNullSingerHead)
             {

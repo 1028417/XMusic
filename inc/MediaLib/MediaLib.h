@@ -111,14 +111,25 @@ public:
     }
 
 protected:
-	CMediaLib()
-	{
+    CMediaLib()
+    {
         if (NULL == m_pInst)
-		{
+        {
             m_pInst = this;
-		}
-	}
-	
+        }
+    }
+
+#if !__winvc
+protected:
+    CCueList m_cuelist;
+
+public:
+    const CCueList& cuelist() const
+    {
+        return m_cuelist;
+    }
+#endif
+
 public:
 	virtual const CMedia* findRelatedPlayItem(cwstr strPath)
         {
@@ -216,6 +227,52 @@ public:
     class CMediaSet* mediaSet() const override
     {
         return (CMediaSet*)this;
+    }
+};
+
+#define __wholeTrackDuration 60 * 10
+
+class __MediaLibExt CSnapshotMediaRes : public CMediaRes
+{
+public:
+    CSnapshotMediaRes(CSnapshotMediaDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
+        : CMediaRes(E_MediaFileType::MFT_Null, parent, strFileName, uFileSize)
+        , m_uDuration(uDuration)
+        , m_CueFile(uDuration>__wholeTrackDuration? __medialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
+    {
+    }
+
+    bool available = true;
+
+private:
+    UINT m_uDuration = 0;
+
+    CRCueFile m_CueFile;
+
+public:
+    bool isLocal() const override
+    {
+        return false;
+    }
+
+    UINT duration() const override
+    {
+        return m_uDuration;
+    }
+
+    CMediaSet* mediaSet() const override
+    {
+        if (m_fi.pParent)
+        {
+            return (CSnapshotMediaDir*)m_fi.pParent;
+        }
+
+        return NULL;
+    }
+
+    CRCueFile cueFile() override
+    {
+        return m_CueFile;
     }
 };
 #endif

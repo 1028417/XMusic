@@ -68,16 +68,40 @@ struct tagMLItemContext : public tagLVItemContext
         strText = file.fileName();
     }
 
-    bool playable() const
+    inline CSnapshotMediaRes* snapshotMediaRes() const
     {
-        if (pFile || pMedia || (pMediaSet && (E_MediaSetType::MST_Playlist == pMediaSet->m_eType
-             || E_MediaSetType::MST_Album == pMediaSet->m_eType
-             || E_MediaSetType::MST_Singer == pMediaSet->m_eType)))
+        if (pFile && !((CMediaRes*)pFile)->isLocal())
         {
-            return true;
+            return (CSnapshotMediaRes*)pFile;
         }
 
-        return false;
+        if (pMedia && pMedia->type() == E_MediaType::MT_MediaRes && !((CMediaRes*)pMedia)->isLocal())
+        {
+            return (CSnapshotMediaRes*)pMedia;
+        }
+
+        return NULL;
+    }
+
+    bool playable() const
+    {
+        if (pMediaSet)
+        {
+            if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType
+                 || E_MediaSetType::MST_Album == pMediaSet->m_eType
+                 || E_MediaSetType::MST_Singer == pMediaSet->m_eType)
+            {
+                return true;
+            }
+        }
+
+        auto pSnapshotMediaRes = snapshotMediaRes();
+        if (pSnapshotMediaRes)
+        {
+            return pSnapshotMediaRes->available;
+        }
+
+        return pFile || pMedia;
     }
 };
 

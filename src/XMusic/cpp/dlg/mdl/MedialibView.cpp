@@ -620,7 +620,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
     cauto mlContext = (tagMLItemContext&)context;
-
     if (mlContext.playable())
     {
         UINT cy = context->rc.height();
@@ -753,10 +752,19 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     uTextAlpha = 255;
     uShadowAlpha = __ShadowAlpha;
-    if ((int)mlContext->uItem == m_nFlashItem)
+    auto pSnapshotMediaRes = mlContext.snapshotMediaRes();
+    if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
     {
-        uTextAlpha = __FlashingAlpha;
-        uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+        uTextAlpha /= 2;
+        uShadowAlpha /= 2;
+    }
+    else
+    {
+        if ((int)mlContext->uItem == m_nFlashItem)
+        {
+            uTextAlpha = __FlashingAlpha;
+            uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+        }
     }
 
     if (mlContext.pDir && mlContext.pDir->parent() == &__medialib)
@@ -820,7 +828,27 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
 
 void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
 {
-    if (_hittestPlayIcon(tagMLItemContext(lvItem, media), me.x()))
+    if (me.x() <= (int)rowHeight())
+    {
+        if (media.type() == E_MediaType::MT_PlayItem)
+        {
+            auto pAlbumItem = media.findRelatedAlbumItem();
+            if (pAlbumItem)
+            {
+                hittestMedia(*pAlbumItem);
+                return;
+            }
+        }
+    }
+
+    tagMLItemContext context(lvItem, media);
+    auto pSnapshotMediaRes = context.snapshotMediaRes();
+    if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
+    {
+        return;
+    }
+
+    if (_hittestPlayIcon(context, me.x()))
     {
         _flashItem(lvItem.uItem);
 
@@ -838,19 +866,6 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
 
     selectItem(lvItem.uItem);
     _flashItem(lvItem.uItem);
-
-    if (me.x() <= (int)rowHeight())
-    {
-        if (media.type() == E_MediaType::MT_PlayItem)
-        {
-            auto pAlbumItem = media.findRelatedAlbumItem();
-            if (pAlbumItem)
-            {
-                hittestMedia(*pAlbumItem);
-                return;
-            }
-        }
-    }
 
     __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
 }
