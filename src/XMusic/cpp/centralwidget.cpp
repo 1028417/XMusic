@@ -375,7 +375,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
                 }
                 else
                 {
-                    y_SingerImg = cy/2+__size(150);
+                    y_SingerImg = cy/2+__size(160);
                 }
 
                 cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
