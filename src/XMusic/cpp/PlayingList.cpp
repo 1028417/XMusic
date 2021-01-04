@@ -144,7 +144,7 @@ void CPlayingList::updateList(UINT uPlayingItem)
         m_alPlayingItems.add(playingItem);
     }
 
-    updatePlayingItem(uPlayingItem, false);
+    updatePlayingItem(uPlayingItem, true);
 }
 
 void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem)

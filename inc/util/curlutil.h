@@ -81,6 +81,7 @@ private:
     time_t m_beginTime = 0;
 
     uint64_t m_uRecvSize = 0;
+    uint64_t m_uTotalSize = 0;
 
 private:
     virtual bool _onRecv(char *ptr, size_t size) = 0;
@@ -95,9 +96,14 @@ public:
         return m_bStatus;
     }
 
-    const uint64_t& recvSize() const
+    uint64_t recvSize() const
     {
         return m_uRecvSize;
+    }
+
+    uint64_t totalSize() const
+    {
+        return m_uTotalSize;
     }
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
