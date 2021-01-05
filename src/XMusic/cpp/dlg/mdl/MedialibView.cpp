@@ -117,7 +117,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             cauto singerMgr = __app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
-                auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath(), false);
+                auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
                 if (pSinger)
                 {
                     PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer

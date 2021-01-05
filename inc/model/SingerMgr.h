@@ -30,7 +30,7 @@ public:
 	BOOL Init();
 
     CSinger* matchSingerDir(cwstr strDir) const;
-    CSinger* checkSingerDir(cwstr strPath, bool bDir) const;
+    CSinger* checkSingerDir(cwstr strPath) const;
 
 	void GetSubSets(TD_MediaSetList& lstSubSets) override;
 
