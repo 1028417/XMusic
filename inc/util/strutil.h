@@ -414,11 +414,19 @@ public:
     {
         return string(str.begin(), str.end());
     }
+    static void toAsc(cwstr str, string& strRet)
+    {
+        strRet.assign(str.begin(), str.end());
+    }
 
     static wstring fromAsc(const char *pStr, int len = -1);
     static wstring fromAsc(const string& str)
     {
         return wstring(str.begin(), str.end());
+    }
+    static void fromAsc(const string& str, wstring& strRet)
+    {
+        strRet.assign(str.begin(), str.end());
     }
 
 	static wstring fromStr(const char *pStr, int len = -1);
