@@ -73,7 +73,7 @@ bool CApp::_startup(cwstr strWorkDir)
     qf.read((char*)bbfConf.ptr(), qf.size());
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
-        //auto time0 = time(0);
+        auto time0 = time(0);
         extern int g_nAppUpgradeProgress;
         E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(bbfConf, g_bRunSignal
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
@@ -85,10 +85,9 @@ bool CApp::_startup(cwstr strWorkDir)
             {
                 return E_UpgradeResult::UR_Success;
             }
-
             return eUpgradeResult;
         }
-        //g_logger << "upgradeMdl success " >> (time(0)-time0);
+        g_logger << "upgradeMdl success " >> (time(0)-time0);
 
         if (!g_bRunSignal)
         {
@@ -100,7 +99,7 @@ bool CApp::_startup(cwstr strWorkDir)
             g_logger >> "initMediaLib fail";
             return E_UpgradeResult::UR_InitMediaLibFail;
         }
-        //g_logger << "initMediaLib success " >> (time(0)-time0);
+        g_logger << "initMediaLib success " >> (time(0)-time0);
 
         return E_UpgradeResult::UR_Success;
     }, [&]{
