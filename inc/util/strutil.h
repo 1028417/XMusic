@@ -435,39 +435,6 @@ public:
 		return fromStr(str.c_str(), str.size());
 	}
 
-	inline static wchar_t transEndian(wchar_t wch)
-	{
-		return (wch << 8) | (wch >> 8);
-	}
-
-	static void transEndian(wstring& str)
-	{
-		for (auto& wch : str)
-		{
-			wch = transEndian(wch);
-		}
-	}
-
-    static void transEndian(wchar_t *pStr, int len = -1)
-    {
-        if (!_checkLen(pStr, len))
-        {
-            return;
-        }
-
-        for (; len > 0; len--, pStr++)
-        {
-            *pStr = transEndian(*pStr);
-        }
-	}
-
-    static wstring transEndian(const wchar_t *pStr, int len = -1)
-    {
-        wstring str(pStr, len);
-        transEndian(str);
-        return str;
-    }
-
 	template <typename T>
     static wstring ContainerToStr(const T& container, cwstr strSplitor)
 	{

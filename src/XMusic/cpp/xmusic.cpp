@@ -138,6 +138,7 @@ bool CAppBase::_run()
 
     static union {char c[4]; uint32_t l;} endian_test{{'l', '?', '?', 'b'}};
     g_logger << "endian: " >> (char(endian_test.l));
+    g_logger << "sizeof(wchar_t): " >> sizeof(wchar_t); //!!安卓/linux四字节
 
     g_logger << "appDirPath: " >> CApp::applicationDirPath() << "appFilePath: " >> CApp::applicationFilePath();
 #if __android

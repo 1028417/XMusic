@@ -65,12 +65,16 @@ private:
 	virtual bool _write(const void *ptr, size_t len, bool bEndLine) = 0;
 
     bool _write(const char *pStr, size_t len, bool bEndLine = false);
-
-    bool _write(char ch, bool bEndLine = false);
+    bool _write(char ch, bool bEndLine = false)
+    {
+        return _write(&ch, 1, bEndLine);
+    }
 
     bool _write(const wchar_t *pStr, size_t len, bool bEndLine = false);
-
-    bool _write(wchar_t wch, bool bEndLine = false);
+    bool _write(wchar_t wch, bool bEndLine = false)
+    {
+        return _write(&wch, 1, bEndLine);
+    }
 
 #if !__winvc
     bool _write(cqstr qstr, bool bEndLine = false);
