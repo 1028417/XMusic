@@ -136,6 +136,9 @@ bool CAppBase::_run()
         _init();
     });
 
+    static union {char c[4]; uint32_t l;} endian_test{{'l', '?', '?', 'b'}};
+    g_logger << "endian: " >> (char(endian_test.l));
+
     g_logger << "appDirPath: " >> CApp::applicationDirPath() << "appFilePath: " >> CApp::applicationFilePath();
 #if __android
     m_logger << "jniVer: " << g_jniVer << ", androidSdkVer: " >> g_androidSdkVer

@@ -231,7 +231,7 @@ public:
 	}
 
 	CCharBuffer(const string& strBuff)
-		: m_strBuff(strBuff.begin(), strBuff.end())
+        : m_strBuff(strBuff)
 	{
 	}
 	CCharBuffer operator=(const string& strBuff)

@@ -412,13 +412,13 @@ public:
     static string toAsc(const wchar_t *pStr, int len = -1);
     static string toAsc(cwstr str)
     {
-        return toAsc(str.c_str(), str.size());
+        return string(str.begin(), str.end());
     }
 
     static wstring fromAsc(const char *pStr, int len = -1);
     static wstring fromAsc(const string& str)
     {
-        return fromAsc(str.c_str(), str.size());
+        return wstring(str.begin(), str.end());
     }
 
 	static wstring fromStr(const char *pStr, int len = -1);
@@ -440,12 +440,25 @@ public:
 		}
 	}
 
-	static wstring transEndian(const wchar_t *pStr, int len = -1)
-	{
-		wstring str(pStr, len);
-		transEndian(str);
-		return str;
+    static void transEndian(wchar_t *pStr, int len = -1)
+    {
+        if (!_checkLen(pStr, len))
+        {
+            return;
+        }
+
+        for (; len > 0; len--, pStr++)
+        {
+            *pStr = transEndian(*pStr);
+        }
 	}
+
+    static wstring transEndian(const wchar_t *pStr, int len = -1)
+    {
+        wstring str(pStr, len);
+        transEndian(str);
+        return str;
+    }
 
 	template <typename T>
     static wstring ContainerToStr(const T& container, cwstr strSplitor)

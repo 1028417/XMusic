@@ -361,8 +361,8 @@ public:
 	}
 
 private:
-	void _readData(const char *lpData, size_t len, string& strText);
-	void _readData(const char *lpData, size_t len, wstring& strText);
+    void _readData(char *lpData, size_t len, string& strText);
+    void _readData(char *lpData, size_t len, wstring& strText);
 
 	template <class T>
     void _read(Instream& ins, T& strText)
@@ -370,7 +370,7 @@ private:
 		CCharBuffer cbfData;
 		if (ins.read(cbfData)>0)
 		{
-			_readData(cbfData, cbfData->size(), strText);
+            _readData((char*)cbfData, cbfData->size(), strText);
 		}
 	}
 
