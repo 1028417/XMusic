@@ -228,7 +228,7 @@ private:
 
         for (cauto attachDir : m_lstAttachDir)
         {
-            if (attachDir.pMediaSet)
+            if (attachDir.pSnapshotMediaDir)
             {
                 for (auto pSubFile : attachDir.pSnapshotMediaDir->files())
                 {
