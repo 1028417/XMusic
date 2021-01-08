@@ -82,9 +82,9 @@ private:
 #if __android
             if (NULL == m_fi.pParent)
             {
-                for (auto pDir : dirs())
+                for (auto pSubDir : dirs())
                 {
-                    auto pOuterDir = dynamic_cast<COuterDir*>(pDir);
+                    auto pOuterDir = dynamic_cast<COuterDir*>(pSubDir);
                     if (NULL == pOuterDir)
                     {
                         break;

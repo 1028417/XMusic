@@ -133,7 +133,7 @@ struct tagSingerAttachDir
     wstring strAliasName;
 
 #if !__winvc
-    class CSnapshotMediaDir* pMediaSet = NULL;
+    class CSnapshotMediaDir* pSnapshotMediaDir = NULL;
 #endif
 };
 
@@ -230,7 +230,7 @@ private:
         {
             if (attachDir.pMediaSet)
             {
-                for (auto pSubFile : attachDir.pMediaSet->files())
+                for (auto pSubFile : attachDir.pSnapshotMediaDir->files())
                 {
                     auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
                     if (pSnapshotMediaRes->available)
