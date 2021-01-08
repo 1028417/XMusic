@@ -230,9 +230,9 @@ private:
         {
             if (attachDir.pMediaSet)
             {
-                for (auto file : attachDir.pMediaSet->files())
+                for (auto pSubFile : attachDir.pMediaSet->files())
                 {
-                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)file;
+                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
                     if (pSnapshotMediaRes->available)
                     {
                         lstMedias.add(pSnapshotMediaRes);

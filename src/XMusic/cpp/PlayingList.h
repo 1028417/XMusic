@@ -59,6 +59,8 @@ private:
         return m_alPlayingItems.size();
     }
 
+    void _updateList(ArrList<tagPlayingItem>& alPlayingItems, UINT uPlayingItem);
+
     void _onPaintItem(CPainter&, tagLVItem&) override;
     void _onPaintItem(CPainter&, tagLVItem&, const tagPlayingItem&);
 

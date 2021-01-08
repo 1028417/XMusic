@@ -18,6 +18,37 @@ const WString& mediaQualityString(E_MediaQuality eQuality)
     return g_lpQuality[(UINT)eQuality];
 }
 
+static map<const IMedia*, wstring> g_mapDisplayName;
+
+void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
+{
+    auto& strTitle = g_mapDisplayName[pMedia];
+    if (strTitle.empty())
+    {
+        strTitle = pMedia->GetTitle();
+        CFileTitle::genDisplayTitle(strTitle, pstrSingerName);
+    }
+}
+
+cwstr getDisplayTitle(const IMedia* pMedia)
+{
+    return g_mapDisplayName[pMedia];
+}
+
+/*cwstr getDisplayTitle(const IMedia* pMedia, cwstr strSingerName)
+{
+    auto itr = g_mapDisplayName.find(pMedia);
+    if (itr != g_mapDisplayName.end())
+    {
+        return itr->second;
+    }
+
+    auto& strTitle = g_mapDisplayName[pMedia];
+    strTitle = pMedia->GetTitle();
+    CFileTitle::genDisplayTitle(strTitle, &strSingerName);
+    return strTitle;
+}*/
+
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
@@ -101,6 +132,42 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     m_medialibDlg.updateHead(strTitle);
 
+    if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
+    {
+        list<wstring> lstSingerName;
+        for (cauto singer : ((CSingerGroup&)MediaSet).singers())
+        {
+            lstSingerName.push_back(singer.m_strName);
+        }
+        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+        return;
+    }
+
+    if (E_MediaSetType::MST_Album == MediaSet.m_eType)
+    {
+        cauto strSingerName = ((CAlbum&)MediaSet).GetSinger().m_strName;
+        for (cauto AlbumItem : ((CAlbum&)MediaSet).albumItems())
+        {
+            genDisplayTitle(&AlbumItem, &strSingerName);
+        }
+        return;
+    }
+
+    if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
+    {
+        auto& snapshotMediaDir = (CSnapshotMediaDir&)MediaSet;
+        auto pstrSingerName = &snapshotMediaDir.singerName();
+        if (pstrSingerName->empty())
+        {
+            pstrSingerName = NULL;
+        }
+        for (auto pSubFile : snapshotMediaDir.files())
+        {
+            genDisplayTitle((CMediaRes*)pSubFile, pstrSingerName);
+        }
+        return;
+    }
+
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
         list<wstring> *plstSingerName = NULL;
@@ -126,6 +193,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                     {
                         plstSingerName->push_back(pSinger->m_strName);
                     }
+                    genDisplayTitle(&PlayItem, &pSinger->m_strName);
+                }
+                else
+                {
+                    genDisplayTitle(&PlayItem);
                 }
             }
         }
@@ -134,15 +206,6 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             __app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
         }
-    }
-    else if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
-    {
-        list<wstring> lstSingerName;
-        for (cauto singer : ((CSingerGroup&)MediaSet).singers())
-        {
-            lstSingerName.push_back(singer.m_strName);
-        }
-        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -160,11 +223,24 @@ void CMedialibView::_onShowDir(CPath& dir)
     else
     {
         strTitle = dir.fileName();
-        if (((CMediaDir&)dir).mediaSet())
+        auto pMediaSet = ((CMediaDir&)dir).mediaSet();
+        if (pMediaSet)
         {
-            if (dir.parent() == &__medialib)
+            if (dir.parent() == &__medialib) //NULL == pMediaSet->m_pParent)
             {
                 strTitle = __substr(strTitle,3);
+            }
+            else
+            {
+                auto pstrSingerName = &((CSnapshotMediaDir&)dir).singerName(); //&((CSnapshotMediaDir*)pMediaSet)->singerName();
+                if (pstrSingerName->empty())
+                {
+                    pstrSingerName = NULL;
+                }
+                for (auto pSubFile : dir.files())
+                {
+                    genDisplayTitle((CMediaRes*)pSubFile, pstrSingerName);
+                }
             }
 
             list<wstring> *plstSingerName = NULL;
@@ -351,6 +427,38 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         {
             context.pmIcon = &m_pmSSFile;
         }
+        context.strText = getDisplayTitle(context.pMedia);
+    }
+    else if (context.pFile)
+    {
+        auto pMediaRes = ((CMediaRes*)context.pFile);
+        if (pMediaRes->isLocal())
+        {
+            context.pmIcon = &m_pmFile;
+            context.strText = pMediaRes->fileName();
+        }
+        else
+        {
+            if (pMediaRes->duration() > __wholeTrackDuration)
+            {
+                context.uIconRound = 0;
+                if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
+                {
+                    context.pmIcon = &m_pmHDDisk;
+                }
+                else
+                {
+                    context.pmIcon = &m_pmLLDisk;
+                }
+            }
+            else
+            {
+                context.pmIcon = &m_pmSSFile;
+            }
+
+            //context.strText = pMediaRes->GetTitle();
+            context.strText = getDisplayTitle(pMediaRes);
+        }
     }
     else if (context.pDir)
     {
@@ -434,36 +542,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 }
             }
 #endif
-        }
-    }
-    else if (context.pFile)
-    {
-        auto pMediaRes = ((CMediaRes*)context.pFile);
-        if (pMediaRes->isLocal())
-        {
-            context.pmIcon = &m_pmFile;
-            context.strText = pMediaRes->fileName();
-        }
-        else
-        {
-            if (pMediaRes->duration() > __wholeTrackDuration)
-            {
-                context.uIconRound = 0;
-                if (pMediaRes->quality() >= E_MediaQuality::MQ_CD)
-                {
-                    context.pmIcon = &m_pmHDDisk;
-                }
-                else
-                {
-                    context.pmIcon = &m_pmLLDisk;
-                }
-            }
-            else
-            {
-                context.pmIcon = &m_pmSSFile;
-            }
-
-            context.strText = pMediaRes->GetTitle();
         }
     }
     else

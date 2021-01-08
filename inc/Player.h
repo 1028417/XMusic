@@ -130,6 +130,8 @@ public:
     bool Play(uint64_t uStartPos, bool bForce48KHz, const function<void(bool bPlayFinish)>& cbStop);
     void PlayStream(bool bForce48KHz, const function<void(bool bOpenSuccess, bool bPlayFinish)>& cbStop);
 
+    bool isOpen() const;
+
     bool Pause();
     bool Resume();
 

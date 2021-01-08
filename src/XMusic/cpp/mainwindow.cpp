@@ -657,15 +657,12 @@ void MainWindow::_updatePlayPauseButton(bool bPlaying)
 void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 {
     (void)bSetActive;
-    __app.sync([=]{
-        m_PlayingList.updateList(nPlayingItem);
-    });
+    m_PlayingList.updateList(nPlayingItem);
 }
 
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    PlayingInfo.qsTitle = __WS2Q(PlayItem.GetTitle());
     PlayingInfo.strPath = PlayItem.GetPath();
 
     UINT uDuration = PlayItem.duration();
@@ -715,6 +712,17 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     {
         PlayingInfo.pRelatedMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
     }
+
+    auto strTitle = PlayItem.GetTitle();
+    if (PlayingInfo.strSingerName.empty())
+    {
+        CFileTitle::genDisplayTitle(strTitle);
+    }
+    else
+    {
+        CFileTitle::genDisplayTitle(strTitle, &PlayingInfo.strSingerName);
+    }
+    PlayingInfo.qsTitle = __WS2Q(strTitle);
 
     __app.sync([=]{
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
@@ -1058,6 +1066,12 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return; // 播放停止
         }
 
+       auto& player = __app.getPlayMgr().player();
+       /*if (player.sampleRate() == 0) //!player.isOpen())
+       {
+           return;
+       }*/
+
         UINT uSeekPos = uMax*pos.x()/progressbar.width();
         UINT uValue = progressbar.value();
         if (uSeekPos > uValue)
@@ -1072,7 +1086,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             }
         }
 
-        if (__app.getPlayMgr().player().Seek(uSeekPos))
+        if (player.Seek(uSeekPos))
         {
             async(100, [&]{
               _updateProgress();

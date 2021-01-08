@@ -3,12 +3,40 @@
 
 #include "PlayingList.h"
 
+static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
+{
+    auto& singerMgr = __app.getSingerMgr();
+    tagPlayingItem playingItem;
+    for (cauto PlayItem : __app.getPlayMgr().playingItems())
+    {
+        playingItem.uID = PlayItem.m_uID;
+
+        auto strTitle = PlayItem.GetTitle();
+        auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
+        if (pSinger)
+        {
+            CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
+        }
+        else
+        {
+            CFileTitle::genDisplayTitle(strTitle);
+        }
+        playingItem.qsTitle = __WS2Q(strTitle);
+
+        alPlayingItems.add(playingItem);
+    }
+}
+
 void CPlayingList::init()
 {
     (void)m_pmPlaying.load(__png(btnPlay));
 
     auto uPlayingItem = __app.getOption().uPlayingItem;
-    updateList(uPlayingItem);
+
+    ArrList<tagPlayingItem> alPlayingItems;
+    _genPlayingItem(alPlayingItems);
+    _updateList(alPlayingItems, uPlayingItem);
+
     CListView::showItem(uPlayingItem, true); // 规避后续歌手图片出现挤压的问题
 
     this->startTimer(1000);
@@ -132,18 +160,19 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     }
 }
 
-void CPlayingList::updateList(UINT uPlayingItem)
+void CPlayingList::updateList(UINT uPlayingItem) //工作线程
 {
-    m_alPlayingItems.clear();
+    ArrList<tagPlayingItem> alPlayingItems;
+    _genPlayingItem(alPlayingItems);
 
-    tagPlayingItem playingItem;
-    for (cauto PlayItem : __app.getPlayMgr().playingItems())
-    {
-        playingItem.uID = PlayItem.m_uID;
-        playingItem.qsTitle = __WS2Q(PlayItem.GetTitle());
-        m_alPlayingItems.add(playingItem);
-    }
+    __app.sync([=]()mutable{
+        _updateList(alPlayingItems, uPlayingItem);
+    });
+}
 
+void CPlayingList::_updateList(ArrList<tagPlayingItem>& alPlayingItems, UINT uPlayingItem)
+{
+    m_alPlayingItems.swap(alPlayingItems);
     updatePlayingItem(uPlayingItem, true);
 }
 

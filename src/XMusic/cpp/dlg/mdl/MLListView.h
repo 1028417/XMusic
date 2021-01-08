@@ -32,18 +32,18 @@ struct tagMLItemContext : public tagLVItemContext
             if (MediaRes.isDir())
             {
                 pDir = &MediaRes;
+                strText = MediaRes.fileName();
             }
             else
             {
                 pFile = &MediaRes;
+                //strText = MediaRes.GetTitle();
             }
-
-            strText = MediaRes.fileName();
         }
         else*/
         {
             pMedia = (CMedia*)&media;
-            strText = media.GetTitle();
+            //strText = media.GetTitle();
         }
     }
 
@@ -65,7 +65,7 @@ struct tagMLItemContext : public tagLVItemContext
         tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pFile(&file)
     {
-        strText = file.fileName();
+        //strText = file.fileName();
     }
 
     inline CSnapshotMediaRes* snapshotMediaRes() const

@@ -66,14 +66,14 @@ void CMedialibDlg::init()
         if (pDir)
         {
             TD_IMediaList paMedias;
-            if (!pDir->isLocal())
+            if (pDir->mediaSet())
             {
-                for (auto file : pDir->files())
+                for (auto pSubFile : pDir->files())
                 {
-                    auto snapshotMediaRes = (CSnapshotMediaRes*)file;
-                    if (snapshotMediaRes->available)
+                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
+                    if (pSnapshotMediaRes->available)
                     {
-                        paMedias.add(snapshotMediaRes);
+                        paMedias.add(pSnapshotMediaRes);
                     }
                 }
             }
@@ -266,9 +266,9 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         {
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
 
-            for (auto file : ((CSnapshotMediaDir*)pMediaSet)->files())
+            for (auto pSubFile : ((CSnapshotMediaDir*)pMediaSet)->files())
             {
-                if (((CSnapshotMediaRes*)file)->available)
+                if (((CSnapshotMediaRes*)pSubFile)->available)
                 {
                     bShowPlayButton = true;
                     break;
@@ -281,11 +281,11 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         auto pDir = m_lv.currentDir();
         if (pDir)
         {
-            if (!((CMediaDir*)pDir)->isLocal())
+            if (((CMediaDir*)pDir)->mediaSet())
             {
-                for (auto file : pDir->files())
+                for (auto pSubFile : pDir->files())
                 {
-                    if (((CSnapshotMediaRes*)file)->available)
+                    if (((CSnapshotMediaRes*)pSubFile)->available)
                     {
                         bShowPlayButton = true;
                         break;

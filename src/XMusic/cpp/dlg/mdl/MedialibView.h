@@ -9,6 +9,9 @@
 
 const WString& mediaQualityString(E_MediaQuality eQuality);
 
+void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName = NULL);
+cwstr getDisplayTitle(const IMedia* pMedia);
+
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
