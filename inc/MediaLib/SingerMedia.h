@@ -118,7 +118,6 @@ private:
 #endif
 };
 
-
 struct tagSingerAttachDir
 {
     tagSingerAttachDir() = default;
@@ -133,7 +132,7 @@ struct tagSingerAttachDir
     wstring strAliasName;
 
 #if !__winvc
-    class CSnapshotMediaDir* pSnapshotMediaDir = NULL;
+    class CMediaSet* pMediaSet = NULL;
 #endif
 };
 
@@ -228,16 +227,9 @@ private:
 
         for (cauto attachDir : m_lstAttachDir)
         {
-            if (attachDir.pSnapshotMediaDir)
+            if (attachDir.pMediaSet)
             {
-                for (auto pSubFile : attachDir.pSnapshotMediaDir->files())
-                {
-                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
-                    if (pSnapshotMediaRes->available)
-                    {
-                        lstMedias.add(pSnapshotMediaRes);
-                    }
-                }
+                attachDir.pMediaSet->GetAllMedias(lstMedias);
             }
         }
     }
