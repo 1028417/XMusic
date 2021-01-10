@@ -230,19 +230,19 @@ void CMedialibView::_onShowDir(CPath& dir)
             {
                 strTitle = __substr(strTitle,3);
             }
-            else
+
+            //文件标题
+            auto pstrSingerName = &((CSnapshotMediaDir&)dir).singerName(); //&((CSnapshotMediaDir*)pMediaSet)->singerName();
+            if (pstrSingerName->empty())
             {
-                auto pstrSingerName = &((CSnapshotMediaDir&)dir).singerName(); //&((CSnapshotMediaDir*)pMediaSet)->singerName();
-                if (pstrSingerName->empty())
-                {
-                    pstrSingerName = NULL;
-                }
-                for (auto pSubFile : dir.files())
-                {
-                    genDisplayTitle((CMediaRes*)pSubFile, pstrSingerName);
-                }
+                pstrSingerName = NULL;
+            }
+            for (auto pSubFile : dir.files())
+            {
+                genDisplayTitle((CMediaRes*)pSubFile, pstrSingerName);
             }
 
+            //目录图标
             list<wstring> *plstSingerName = NULL;
             static map<const void*, std::list<wstring>> mapSingerName;
             cauto itr = mapSingerName.find(&dir);
@@ -828,22 +828,46 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
     }
 
-    uTextAlpha = 255;
-    uShadowAlpha = __ShadowAlpha;
-    auto pSnapshotMediaRes = mlContext.snapshotMediaRes();
-    if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
-    {
-        uTextAlpha /= 2;
-        uShadowAlpha /= 2;
-    }
-    else
-    {
+    //uTextAlpha = 255;
+    //uShadowAlpha = __ShadowAlpha;
+    do {
+        if (mlContext.pMediaSet)
+        {
+            if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType
+                && !((CSnapshotMediaDir*)mlContext.pMediaSet)->available)
+            {
+                uShadowAlpha /= 2;
+                uTextAlpha /= 2;
+                break;
+            }
+        }
+        else if (mlContext.pDir)
+        {
+            auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir*)mlContext.pDir)->mediaSet();
+            if (pSnapshotMediaDir && !pSnapshotMediaDir->available)
+            {
+                uShadowAlpha /= 2;
+                uTextAlpha /= 2;
+                break;
+            }
+        }
+        else
+        {
+            auto pSnapshotMediaRes = mlContext.snapshotMediaRes();
+            if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
+            {
+                uShadowAlpha /= 2;
+                uTextAlpha /= 2;
+                break;
+            }
+        }
+
         if ((int)mlContext->uItem == m_nFlashItem)
         {
-            uTextAlpha = __FlashingAlpha;
             uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+            uTextAlpha = __FlashingAlpha;
         }
-    }
+    } while(0);
 
     if (mlContext.pDir && mlContext.pDir->parent() == &__medialib)
     {
