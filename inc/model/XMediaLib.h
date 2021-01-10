@@ -88,12 +88,12 @@ public:
 
     CMediaSet* mediaSet() const override
     {
-        /*if (m_fi.pParent)
+        //崩溃return (CMediaSet*)(class CSnapshotMediaDir*)m_fi.pParent;
+        if (NULL == m_fi.pParent)
         {
-            return ((CMediaDir*)m_fi.pParent)->mediaSet();
+            return NULL;
         }
-        return NULL;*/
-        return (CMediaSet*)(class CSnapshotMediaDir*)m_fi.pParent;
+        return ((CMediaDir*)m_fi.pParent)->mediaSet();
     }
 
     CRCueFile cueFile() override

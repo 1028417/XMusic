@@ -22,11 +22,6 @@ inline static void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSing
     }
 }
 
-inline static cwstr getDisplayTitle(const IMedia* pMedia)
-{
-    return g_mapDisplayName[pMedia];
-}
-
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
@@ -82,6 +77,8 @@ void CMedialibView::_onShowRoot()
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
+    g_mapDisplayName.clear();
+
     WString strTitle;
     auto pSinger = currentSinger();
     if (pSinger && &MediaSet != pSinger)
@@ -189,6 +186,8 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
 void CMedialibView::_onShowDir(CPath& dir)
 {
+    g_mapDisplayName.clear();
+
     wstring strTitle;
     if (&dir == &__medialib)
     {
@@ -405,7 +404,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         {
             context.pmIcon = &m_pmSSFile;
         }
-        context.strText = getDisplayTitle(context.pMedia);
+        context.strText = g_mapDisplayName[context.pMedia];
     }
     else if (context.pFile)
     {
@@ -435,7 +434,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             }
 
             //context.strText = pMediaRes->GetTitle();
-            context.strText = getDisplayTitle(pMediaRes);
+            context.strText = g_mapDisplayName[pMediaRes];
         }
     }
     else if (context.pDir)
@@ -944,8 +943,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
         return;
     }
 
-    selectItem(lvItem.uItem);
-    _flashItem(lvItem.uItem);
+    _flashItem(lvItem.uItem);// selectItem(lvItem.uItem);
 
     __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
 }

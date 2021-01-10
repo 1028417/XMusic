@@ -114,14 +114,18 @@ void CMLListView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
     if (m_pMediaset)
     {
-        if (!m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
-                tagMLItemContext context(lvItem, mediaSet);
-                _genMLItemContext(context);
-                _paintRow(painter, context);
-            }))
+        if (lvItem.uItem >= m_lstSubSets.size())
         {
             m_lstSubMedias.get(lvItem.uItem - m_lstSubSets.size(), [&](IMedia& media) {
                 tagMLItemContext context(lvItem, media);
+                _genMLItemContext(context);
+                _paintRow(painter, context);
+            });
+        }
+        else
+        {
+            m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet) {
+                tagMLItemContext context(lvItem, mediaSet);
                 _genMLItemContext(context);
                 _paintRow(painter, context);
             });
@@ -162,16 +166,16 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
 {
     if (m_pMediaset)
     {
-        if (m_lstSubSets)
+        if (lvItem.uItem >= m_lstSubSets.size())
+        {
+            m_lstSubMedias.get(lvItem.uItem - m_lstSubSets.size(), [&](IMedia& media){
+                _onItemClick(lvItem, me, media);
+            });
+        }
+        else
         {
             m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet){
                 _onItemClick(lvItem, me, mediaSet);
-            });
-        }
-        else if (m_lstSubMedias)
-        {
-            m_lstSubMedias.get(lvItem.uItem, [&](IMedia& media){
-                _onItemClick(lvItem, me, media);
             });
         }
     }
