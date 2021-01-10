@@ -40,6 +40,8 @@ const bool& usleepex(UINT uMs);
 void async(cfn_void cb);
 void async(UINT uDelayTime, cfn_void cb);
 
+const WString& mediaQualityString(E_MediaQuality eQuality);
+
 bool installApp(const CByteBuffer& bbfData);
 
 Q_DECLARE_METATYPE(fn_void);

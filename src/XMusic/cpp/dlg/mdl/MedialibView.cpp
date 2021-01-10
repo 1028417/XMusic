@@ -10,17 +10,9 @@
 
 #define __RemarkAlpha 200
 
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
-};
-const WString& mediaQualityString(E_MediaQuality eQuality)
-{
-    return g_lpQuality[(UINT)eQuality];
-}
-
 static map<const IMedia*, wstring> g_mapDisplayName;
 
-void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
+inline static void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName = NULL)
 {
     auto& strTitle = g_mapDisplayName[pMedia];
     if (strTitle.empty())
@@ -30,24 +22,10 @@ void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
     }
 }
 
-cwstr getDisplayTitle(const IMedia* pMedia)
+inline static cwstr getDisplayTitle(const IMedia* pMedia)
 {
     return g_mapDisplayName[pMedia];
 }
-
-/*cwstr getDisplayTitle(const IMedia* pMedia, cwstr strSingerName)
-{
-    auto itr = g_mapDisplayName.find(pMedia);
-    if (itr != g_mapDisplayName.end())
-    {
-        return itr->second;
-    }
-
-    auto& strTitle = g_mapDisplayName[pMedia];
-    strTitle = pMedia->GetTitle();
-    CFileTitle::genDisplayTitle(strTitle, &strSingerName);
-    return strTitle;
-}*/
 
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)

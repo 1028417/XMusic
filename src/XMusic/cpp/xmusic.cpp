@@ -68,6 +68,14 @@ bool checkIPhoneXBangs(int cx, int cy)
     return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
 }
 
+static const WString g_lpQuality[] {
+    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+};
+const WString& mediaQualityString(E_MediaQuality eQuality)
+{
+    return g_lpQuality[(UINT)eQuality];
+}
+
 static int g_argc = 0;
 static char **g_argv = NULL;
 
