@@ -87,7 +87,7 @@ void CSingerMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		{
 			if (&*itr == pListObject)
 			{
-				__Ensure(m_view.getSingerMgr().DetachDir(*pSinger, itr->GetAbsPath()));
+				__Ensure(m_view.getSingerMgr().DetachDir(*pSinger, itr->m_strPath));
 
 				m_lstAttachDir.erase(itr);
 
