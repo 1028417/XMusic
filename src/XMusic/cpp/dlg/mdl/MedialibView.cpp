@@ -205,7 +205,7 @@ void CMedialibView::_onShowDir(CPath& dir)
         {
             if (dir.parent() == &__medialib) //NULL == pMediaSet->m_pParent)
             {
-                strTitle = __substr(strTitle,3);
+                strTitle.erase(0, 3);
             }
 
             //文件标题
@@ -449,7 +449,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             if (context.pDir->parent() == &__medialib)
             {
                 auto strDirName = context.pDir->fileName();
-                strDirName = __substr(strDirName,3);
+                strDirName.erase(0, 3);
                 context.strText = strDirName;
 
                 //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
@@ -468,12 +468,16 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strutil::matchIgnoreCase(strDirName, L"mqs"))
                 {
                     context.pmIcon = &m_pmMQS;
-                    context.strText = L"录音棚级别无损音乐\nMastering Quality Sound";
+                    context.strText = L"录音棚级别无损音乐(26Bit94KHz)\nMastering Quality Sound";
                 }
                 else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
                     context.strText = L"5.1声道\nDTSDigitalSurround";
+                }
+                else if (strutil::matchIgnoreCase(strDirName, L"sq+"))
+                {
+                    context.strText = L"24Bit48KHz";
                 }
             }
             else
