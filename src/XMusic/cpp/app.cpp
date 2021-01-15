@@ -203,19 +203,17 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
         vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd);
-        dlg.show([&]{
-            m_mainWnd.show();
-
+        dlg.show([&]{            
             m_ctrl.start();
+            m_mainWnd.show();
         });
 
         return;
     }
 #endif
 
-    m_mainWnd.show();
-
     m_ctrl.start();
+    m_mainWnd.show();
 }
 
 void CApp::quit()
