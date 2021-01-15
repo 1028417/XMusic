@@ -468,16 +468,16 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strutil::matchIgnoreCase(strDirName, L"mqs"))
                 {
                     context.pmIcon = &m_pmMQS;
-                    context.strText = L"录音棚级别无损音乐(26Bit94KHz)\nMastering Quality Sound";
+                    context.strText = L"录音棚级别无损 (24Bit96KHz)\nMastering Quality Sound";
                 }
                 else if (strutil::matchIgnoreCase(strDirName, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
-                    context.strText = L"5.1声道\nDTSDigitalSurround";
+                    context.strText = L"5.1声道 DTSDigitalSurround";
                 }
                 else if (strutil::matchIgnoreCase(strDirName, L"sq+"))
                 {
-                    context.strText = L"24Bit48KHz";
+                    context.strText = L"24位无损 (24Bit48KHz)";
                 }
             }
             else
