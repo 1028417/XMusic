@@ -114,8 +114,6 @@ public:
 public:
     void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir)
     {
-        m_pParent = &singer;
-
         if (!attachDir.strAliasName.empty())
         {
             m_strName = attachDir.strAliasName;
@@ -136,6 +134,7 @@ public:
             }
         }
 
+        m_pParent = &singer;
         SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, singer.m_uID, singer.m_strName);
     }
 
