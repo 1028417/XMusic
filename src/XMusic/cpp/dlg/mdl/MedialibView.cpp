@@ -446,36 +446,35 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         {
             context.pmIcon = &m_pmSSDir;
 
-            if (context.pDir->parent() == &__medialib)
+            if (NULL == pMediaSet->m_pParent)// context.pDir->parent() == &__medialib)
             {
-                auto strDirName = context.pDir->fileName();
-                strDirName.erase(0, 3);
-                context.strText = strDirName;
-
                 //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
                 context.nIconSize *= 1.13f;
 
-                if (strutil::matchIgnoreCase(strDirName, L"dsd"))
+                //auto strDirName = context.pDir->fileName();
+                //strDirName.erase(0, 3);
+                auto& strText = context.strText = pMediaSet->m_strName;// strDirName;
+                if (strutil::matchIgnoreCase(strText, L"dsd"))
                 {
                     context.pmIcon = &m_pmDSD;
                     context.strText = L"直接比特流数字编码\nDirect Stream Digital";
                 }
-                else if (strutil::matchIgnoreCase(strDirName, L"hi-res"))
+                else if (strutil::matchIgnoreCase(strText, L"hi-res"))
                 {
                     context.pmIcon = &m_pmHires;
                     context.strText = L"高解析音频\nHigh Resolution Audio";
                 }
-                else if (strutil::matchIgnoreCase(strDirName, L"mqs"))
+                else if (strutil::matchIgnoreCase(strText, L"mqs"))
                 {
                     context.pmIcon = &m_pmMQS;
                     context.strText = L"录音棚级别无损 (24Bit96KHz)\nMastering Quality Sound";
                 }
-                else if (strutil::matchIgnoreCase(strDirName, L"dts"))
+                else if (strutil::matchIgnoreCase(strText, L"dts"))
                 {
                     context.pmIcon = &m_pmDTS;
                     context.strText = L"5.1声道 DTSDigitalSurround";
                 }
-                else if (strutil::matchIgnoreCase(strDirName, L"sq+"))
+                else if (strutil::matchIgnoreCase(strText, L"sq+"))
                 {
                     context.strText = L"24位无损 (24Bit48KHz)";
                 }

@@ -124,9 +124,16 @@ public:
         {
             //m_strName = attachDir.strDir.substr(0, attachDir.strDir.find(__wcPathSeparator, 1));
             //m_strName.erase(0, 4);
+            //m_strName.append(fileName());
 
-            m_strName = __substr(attachDir.strDir, 4);
-            m_strName = m_strName.substr(0, m_strName.find(__wcPathSeparator)+1) + fsutil::GetFileName(m_strName);
+            for (CMediaSet *pMediaSet = this; ; pMediaSet = pMediaSet->m_pParent)
+            {
+                if (NULL == pMediaSet->m_pParent)
+                {
+                    m_strName = pMediaSet->m_strName + __wcPathSeparator + fileName();
+                    break;
+                }
+            }
         }
 
         SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, singer.m_uID, singer.m_strName);
