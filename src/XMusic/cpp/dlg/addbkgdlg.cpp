@@ -132,7 +132,7 @@ void CAddBkgDlg::show()
     }
 
     CDialog::show([&]{
-        (void)m_lv.handleReturn();
+        (void)m_lv.handleReturn(true);
     });
 }
 
@@ -232,8 +232,9 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (m_lv.handleReturn())
+    if (m_lv.imgDir())
     {
+        m_lv.handleReturn(false);
         relayout();
         repaint();
     }
@@ -615,7 +616,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
             auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
             tagLVItemContext context(lvItem, eStyle);
             context.strText = imgDir.displayName();
@@ -637,13 +638,13 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
             _showImgDir(imgDir);
         });
     }
 }
 
-void CAddBkgView::_showImgDir(CImgDir& imgDir)
+void CAddBkgView::_showImgDir(IImgDir& imgDir)
 {    
     g_uMsScanYield = 10;
 
@@ -656,7 +657,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     {
         if (pImgDir != m_pImgDir)
         {
-            m_pImgDir->cleanup();
+            pImgDir->cleanup();
         }
     }
 
@@ -685,7 +686,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     });
 }*/
 
-bool CAddBkgView::handleReturn()
+void CAddBkgView::handleReturn(bool bClose)
 {
     reset();
 
@@ -700,9 +701,6 @@ bool CAddBkgView::handleReturn()
 
         m_eScrollBar = E_LVScrollBar::LVSB_Left;
         scrollToItem(_scrollRecord(NULL));
-
-        g_uMsScanYield = 1;
-        return true;
     }
 
     /*if (g_thrGenSubImg)
@@ -712,6 +710,17 @@ bool CAddBkgView::handleReturn()
         g_thrGenSubImg = NULL;
     }*/
 
-    g_uMsScanYield = 10;
-    return false;
+    if (bClose)
+    {
+        for (auto pImgDir : m_paImgDirs)
+        {
+            pImgDir->cleanup();
+        }
+
+        g_uMsScanYield = 10;
+    }
+    else
+    {
+        g_uMsScanYield = 1;
+    }
 }

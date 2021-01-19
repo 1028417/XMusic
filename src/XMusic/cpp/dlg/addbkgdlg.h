@@ -17,7 +17,29 @@ struct tagBkgImg
     wstring strPath;
 };
 
-class CImgDir : public CPath
+class IImgDir
+{
+public:
+    IImgDir() = default;
+
+    virtual ~IImgDir() = default;
+
+    virtual void cleanup() = 0;
+
+    virtual wstring displayName() const = 0;
+
+    virtual cqpm snapshot() const = 0;
+
+    virtual size_t imgCount() const = 0;
+
+    virtual const QPixmap* img(UINT uIdx) const = 0;
+
+    virtual wstring imgPath(UINT uIdx) const = 0;
+
+    virtual void genSubImgs(class CAddBkgView& lv) = 0;
+};
+
+class CImgDir : public CPath, public IImgDir
 {
 public:
     CImgDir(signal_t bRunSignal)
@@ -38,23 +60,6 @@ private:
 
     UINT m_uPos = 0;
     vector<tagBkgImg> m_vecImgs;
-
-public:
-    void clear()
-    {
-        m_pmSnapshot = QPixmap();
-
-        m_uPos = 0;
-        m_vecImgs.clear();
-
-        CPath::clear();
-    }
-
-    void cleanup()
-    {
-        m_uPos = 0;
-        m_vecImgs.clear();
-    }
 
 /*#if __android
 private:
@@ -87,26 +92,42 @@ private:
     void _genSubImgs(cwstr strFile, QPixmap& pm);
 
 public:
+    /*void clear()
+    {
+        m_pmSnapshot = QPixmap();
+
+        m_uPos = 0;
+        m_vecImgs.clear();
+
+        CPath::clear();
+    }*/
+
+    void cleanup() override
+    {
+        m_uPos = 0;
+        m_vecImgs.clear();
+    }
+
     wstring displayName() const;
 
-    cqpm snapshot() const
+    cqpm snapshot() const override
     {
         return m_pmSnapshot;
     }
 
-    size_t imgCount() const
+    size_t imgCount() const override
     {
         return m_vecImgs.size();
     }
 
-    const QPixmap* img(UINT uIdx) const;
+    const QPixmap* img(UINT uIdx) const override;
 
-    wstring imgPath(UINT uIdx) const;
+    wstring imgPath(UINT uIdx) const override;
 
-    void genSubImgs(class CAddBkgView& lv);
+    void genSubImgs(class CAddBkgView& lv) override;
 };
 
-using TD_ImgDirList = PtrArray<CImgDir>;
+using TD_ImgDirList = PtrArray<IImgDir>;
 
 class CAddBkgView : public CListView
 {
@@ -118,7 +139,7 @@ private:
 
     const TD_ImgDirList& m_paImgDirs;
 
-    CImgDir *m_pImgDir = NULL;
+    IImgDir *m_pImgDir = NULL;
 
 private:
     size_t getColCount() const override;
@@ -131,15 +152,15 @@ private:
 
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
-    void _showImgDir(CImgDir& imgDir);
+    void _showImgDir(IImgDir& imgDir);
 
 public:
-    CImgDir* imgDir() const
+    IImgDir* imgDir() const
     {
         return m_pImgDir;
     }
 
-    bool handleReturn();
+    void handleReturn(bool bClose);
 };
 
 class CAddBkgDlg : public CDialog
