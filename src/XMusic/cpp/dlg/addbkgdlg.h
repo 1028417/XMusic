@@ -108,7 +108,7 @@ public:
         m_vecImgs.clear();
     }
 
-    wstring displayName() const;
+    wstring displayName() const override;
 
     cqpm snapshot() const override
     {

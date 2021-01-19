@@ -83,6 +83,7 @@ private:
 
 	wstring m_strFileSize;
 	wstring m_strFileTime;
+	wstring m_strDuration;
 
 public:
 	const CFileTitle& fileTitle() const
@@ -95,8 +96,9 @@ public:
 		return m_lstMedias;
 	}
 
-	wstring fileSizeString();
-	wstring fileTimeString();
+	cwstr fileSizeString();
+	cwstr fileTimeString();
+	cwstr durationString();
 };
 
 enum class E_MatchResult

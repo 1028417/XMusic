@@ -287,13 +287,13 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		};
 		fnGenTag(MediaResInfo->m_strPath);
 
-		cauto strMediaPath = __xmedialib.toAbsPath(MatchMediaInfo->m_strPath, false);
 		
 		strText << L"\n\n\n是否更新以下曲目？\n" << MatchMediaInfo->fileName()
 			<< L"\n日期:  " << MatchMediaInfo.fileTimeString()
-			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(strMediaPath))
+			<< L"      时长:  " << MatchMediaInfo.durationString()
 			<< L"      大小:  " << MatchMediaInfo.fileSizeString();
 
+		cauto strMediaPath = __xmedialib.toAbsPath(MatchMediaInfo->m_strPath, false);		
 		fnGenTag(strMediaPath);
 
 		strText << L"\n\n目录:  " << MatchMediaInfo->m_strPath
