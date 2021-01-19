@@ -22,6 +22,18 @@ inline static void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSing
     }
 }
 
+inline static void genDisplayTitle(const IMedia* pMedia, cwstr strSingerName)
+{
+    if (!strSingerName.empty())
+    {
+        genDisplayTitle(pMedia, &strSingerName);
+    }
+    else
+    {
+        genDisplayTitle(pMedia);
+    }
+}
+
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
@@ -131,14 +143,10 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
     {
         auto& snapshotMediaDir = (CSnapshotMediaDir&)MediaSet;
-        auto pstrSingerName = &snapshotMediaDir.singerName();
-        if (pstrSingerName->empty())
-        {
-            pstrSingerName = NULL;
-        }
+        cauto strSingerName = snapshotMediaDir.singerName();
         for (auto pSubFile : snapshotMediaDir.files())
         {
-            genDisplayTitle((CMediaRes*)pSubFile, pstrSingerName);
+            genDisplayTitle((CMediaRes*)pSubFile, strSingerName);
         }
         return;
     }
@@ -151,6 +159,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         if (itr != mapSingerName.end())
         {
             plstSingerName = &itr->second;
+
+            for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
+            {
+                genDisplayTitle(&PlayItem, PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer));
+            }
         }
         else
         {
