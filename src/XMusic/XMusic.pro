@@ -23,6 +23,7 @@ SOURCES += cpp/androidutil.cpp
 
 SOURCES += ../controller.cpp \
     ../OptionMgr.cpp \
+    cpp/dlg/imgdir.cpp \
     cpp/xmusic.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
@@ -49,6 +50,7 @@ HEADERS += ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
     ../OptionMgr.h \
     cpp/app.h \
+    cpp/dlg/imgdir.h \
     cpp/xmusic.h \
     cpp/mainwindow.h \
     cpp/centralwidget.h \
