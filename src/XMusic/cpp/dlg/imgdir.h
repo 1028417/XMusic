@@ -15,7 +15,7 @@ struct tagBkgImg
     wstring strPath;
 };
 
-class IImgDir
+/*class IImgDir
 {
 public:
     IImgDir() = default;
@@ -35,9 +35,11 @@ public:
     virtual wstring imgPath(UINT uIdx) const = 0;
 
     virtual void genSubImgs(class CAddBkgView& lv) = 0;
-};
+};*/
 
-class CImgDir : public CPath, public IImgDir
+#define IImgDir CImgDir
+
+class CImgDir : public CPath//, public IImgDir
 {
 public:
     CImgDir(signal_t bRunSignal)
@@ -68,7 +70,7 @@ private:
     }
 #endif*/
 
-    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+    //void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
@@ -88,27 +90,27 @@ public:
         CPath::clear();
     }*/
 
-    void cleanup() override
+    void cleanup()// override
     {
         m_uPos = 0;
         m_vecImgs.clear();
     }
 
-    wstring displayName() const override;
+    wstring displayName() const;// override;
 
-    cqpm snapshot() const override
+    cqpm snapshot() const// override
     {
         return m_pmSnapshot;
     }
 
-    size_t imgCount() const override
+    size_t imgCount() const// override
     {
         return m_vecImgs.size();
     }
 
-    const QPixmap* img(UINT uIdx) const override;
+    const QPixmap* img(UINT uIdx) const;// override;
 
-    wstring imgPath(UINT uIdx) const override;
+    wstring imgPath(UINT uIdx) const;// override;
 
-    void genSubImgs(class CAddBkgView& lv) override;
+    void genSubImgs(class CAddBkgView& lv);// override;
 };

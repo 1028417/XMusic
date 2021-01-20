@@ -21,27 +21,28 @@ public:
 
 };
 
-void CImgDir::_onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile)
+/*void CImgDir::_onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile)
 {
-/*#if __android
-    if (__sdcardDir == m_fi.strName)
-    {
-        auto strRoot = L"/storage/";
-        (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
-            paSubDir.addFront(new CImgDir(m_bRunSignal, strRoot + strSubDir));
-        });
-    }
-#endif*/
+//#if __android
+//    if (__sdcardDir == m_fi.strName)
+//    {
+//        auto strRoot = L"/storage/";
+//        (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
+//            paSubDir.addFront(new CImgDir(m_bRunSignal, strRoot + strSubDir));
+//        });
+//    }
+//#endif
 
     if (NULL == m_fi.pParent)
     {
         auto pOlImgDir = new COlImgDir(m_bRunSignal);
+        cauto strDir = g_strWorkDir + L"/bkg_ol/";
         pOlImgDir->setDir(strDir);
         paSubDir.add(pOlImgDir);
     }
 
     CPath::_onFindFile(paSubDir, paSubFile);
-}
+}*/
 
 wstring CImgDir::displayName() const
 {
