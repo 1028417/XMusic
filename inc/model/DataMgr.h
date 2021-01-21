@@ -10,19 +10,17 @@ private:
     vector<wstring> m_vctAlarmmedia;
 
 public:
-	bool clearData();
-
 	bool updateMediaSetName(CMediaSet& MediaSet, cwstr strName);
 	bool updateMediaSetProperty(CMediaSet& MediaSet, const CMediasetProperty& property);
 
 	void updateMediaSizeDuration(const TD_MediaList& lstMedias);
 
-	bool initAlarmmedia();
-	
-	bool addAlarmmedia(const TD_IMediaList& lstMedias);
-	
-	bool removeAlarmmedia(UINT uIndex);
+#if __winvc
+    bool clearData();
 
+	bool initAlarmmedia();
+	bool addAlarmmedia(const TD_IMediaList& lstMedias);	
+	bool removeAlarmmedia(UINT uIndex);
 	bool clearAlarmmedia();
 
     const vector<wstring>& alarmmedias() const
@@ -33,4 +31,5 @@ public:
     bool queryPlayRecordMaxTime(mediatime_t& tTime);
     bool queryPlayRecord(mediatime_t tTime, prvector<wstring, int>& vecPlayRecord);
 	bool clearPlayRecord();
+#endif
 };
