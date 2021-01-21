@@ -95,10 +95,10 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
             auto br = m_bkgDlg.thumbsBrush(lvItem.uItem-2);
             if (br)
             {
-                painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
+                painter.drawImgEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
 
                 QRect rcX(rc.right()-m_szButton-__size(5), rc.top()+__size(5), m_szButton, m_szButton);
-                painter.drawPixmap(rcX, m_pmX);
+                painter.drawImg(rcX, m_pmX);
 
                 /*或改为滚动停止处理static UINT s_uSequence = 0;
                 s_uSequence++;

@@ -1,8 +1,8 @@
 
 #pragma once
 
-//using TD_Img = QImage;
-using TD_Img = QPixmap;
+using TD_Img = QImage;
+//using TD_Img = QPixmap;
 
 /*class IImgDir
 {

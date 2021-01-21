@@ -172,11 +172,11 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
         if (brIcon && brIcon)
         {
-            painter.drawPixmapEx(rcPixmap, *brIcon, QRect(0,0,brIcon->width(),brIcon->height()), context.uIconRound);
+            painter.drawImgEx(rcPixmap, *brIcon, QRect(0,0,brIcon->width(),brIcon->height()), context.uIconRound);
         }
         else
         {
-            painter.drawPixmapEx(rcPixmap, *context.pmIcon);//, context.uIconRound);
+            painter.drawImgEx(rcPixmap, *context.pmIcon);//, context.uIconRound);
         }
 
         rc.setLeft(xIcon + szIcon + __lvRowMargin);
@@ -193,7 +193,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         int x_righttip = rc.right()-sz_righttip;
         int y_righttip = rc.center().y()-sz_righttip/2;
         QRect rcRighttip(x_righttip, y_righttip, sz_righttip, sz_righttip);
-        painter.drawPixmap(rcRighttip, m_pmForward);
+        painter.drawImg(rcRighttip, m_pmForward);
 
         rc.setRight(x_righttip - __lvRowMargin);
     }

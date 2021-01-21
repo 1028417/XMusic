@@ -235,6 +235,38 @@ public:
     {
     }
 
+private:
+    inline void _drawImg(cqrc rc, cqpm pm, cqrc rcSrc)
+    {
+        QPainter::drawPixmap(rc, pm, rcSrc);
+    }
+    inline void _drawImg(cqrc rc, const QImage& img, cqrc rcSrc)
+    {
+        QPainter::drawImage(rc, img, rcSrc);
+    }
+
+    void _genSrcRect(cqrc rcDst, QRect& rcSrc)
+    {
+        auto cxSrc = rcSrc.width();
+        auto cySrc = rcSrc.height();
+        if (cxSrc > 0 && cySrc > 0)
+        {
+            float fHWRate = (float)rcDst.height()/rcDst.width();
+            if ((float)cySrc/cxSrc > fHWRate)
+            {
+                int dy = (cySrc - cxSrc*fHWRate)/2;
+                rcSrc.setTop(rcSrc.top()+dy);
+                rcSrc.setBottom(rcSrc.bottom()-dy);
+            }
+            else
+            {
+                int dx = (cxSrc - cySrc/fHWRate)/2;
+                rcSrc.setLeft(rcSrc.left()+dx);
+                rcSrc.setRight(rcSrc.right()-dx);
+            }
+        }
+    }
+
 public:
     static UINT oppTextAlpha(UINT uMinAlpha, float fPow = 0.1f)
     {
@@ -307,28 +339,36 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
-    void drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    void drawPixmap(cqrc rc, cqpm pm, cqrc rcSrc)//, UINT xround=0, UINT yround=0) // pm构造br有开销
+    template <class T>
+    void drawImg(cqrc rc, const T& pm, cqrc rcSrc)//, UINT xround=0, UINT yround=0) // pm构造br有开销
     {
         /*if (xround > 0)
         {
             QBrush br(pm);
-            drawPixmap(rc, br, rcSrc, xround, yround);
+            drawImg(rc, br, rcSrc, xround, yround);
             return
         }*/
 
-        QPainter::drawPixmap(rc, pm, rcSrc);
+        _drawImg(rc, pm, rcSrc);
     }
-    void drawPixmap(cqrc rc, cqpm pm)//, UINT xround=0, UINT yround=0)
+
+    void drawImg(cqrc rc, cqpm pm)//, UINT xround=0, UINT yround=0)
     {
-        drawPixmap(rc, pm, pm.rect());//, xround, yround);
+        drawImg(rc, pm, pm.rect());//, xround, yround);
     }
 
-    void drawPixmapEx(cqrc rc, cqpm pm);//, UINT xround=0, UINT yround=0);
+    template <class T>
+    void drawImgEx(cqrc rc, const T& pm)//, UINT xround=0, UINT yround=0) // 构造br有开销
+    {
+        QRect rcSrc = pm.rect();
+        _genSrcRect(rc, rcSrc);
+        this->drawImg(rc, pm, rcSrc);//, xround, yround);
+    }
 
-    void drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);
+    void drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);
 
     void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 

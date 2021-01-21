@@ -717,7 +717,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         cauto pm = mlContext.pMediaSet
                 ?(bFlash?m_pmPlayOpacity:m_pmPlay)
                :(bFlash?m_pmAddPlayOpacity:m_pmAddPlay);
-        painter.drawPixmap(rcPlayIcon, pm);
+        painter.drawImg(rcPlayIcon, pm);
 
         rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }

@@ -563,13 +563,13 @@ void MainWindow::_onPaint()
             cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawPixmapEx(rc, pmBkg, m_dxBkg, m_dyBkg);
+               painter.drawImgEx(rc, pmBkg, m_dxBkg, m_dyBkg);
 
                //auto cx = ui.progressbar->width();
                //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
                //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
                //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
-               //painter.drawPixmap(rcDst, m_pmDiskFace);
+               //painter.drawImg(rcDst, m_pmDiskFace);
             }
             else
             {
@@ -593,7 +593,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, boo
 
     auto cySrc = cyDst/fBkgZoomRate;
     QRect rcSrc(0, round(__cyBkg-cySrc), 10, round(cySrc));
-    painter.drawPixmap(rcDst, m_brBkg, rcSrc, szRound);
+    painter.drawImg(rcDst, m_brBkg, rcSrc, szRound);
 
     if (!bDrawCDCover)
     {
@@ -602,7 +602,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, boo
 
     auto cyCDCover = m_pmCDCover.height()*fBkgZoomRate;
     QRect rcCDCover(round(rcDst.x()+xDst), round(rcDst.y()+cyDst-cyCDCover), round(cxDst), round(cyCDCover));
-    painter.drawPixmap(rcCDCover, m_pmCDCover);
+    painter.drawImg(rcCDCover, m_pmCDCover);
 
     if (!bDrawCDCover)
     {

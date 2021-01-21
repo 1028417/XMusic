@@ -327,7 +327,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         if (pm)
         {
             QRect rcFrame(lvItem.rc);
-            painter.drawPixmapEx(rcFrame, *pm);
+            painter.drawImgEx(rcFrame, *pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);

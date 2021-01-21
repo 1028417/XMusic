@@ -7,7 +7,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
 
     if (m_br)
     {
-        painter.drawPixmapEx(rc, m_br, QRect(0,0,m_br.width(), m_br.height()), m_szRound);
+        painter.drawImgEx(rc, m_br, QRect(0,0,m_br.width(), m_br.height()), m_szRound);
         if (m_uShadowWidth > 0)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)

@@ -125,7 +125,7 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
+void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QTransform transform;
 
@@ -145,43 +145,14 @@ void CPainter::drawPixmap(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yro
     this->restore();
 }
 
-static void _genSrcRect(cqrc rcDst, QRect& rcSrc)
-{
-    auto cxSrc = rcSrc.width();
-    auto cySrc = rcSrc.height();
-    if (cxSrc > 0 && cySrc > 0)
-    {
-        float fHWRate = (float)rcDst.height()/rcDst.width();
-        if ((float)cySrc/cxSrc > fHWRate)
-        {
-            int dy = (cySrc - cxSrc*fHWRate)/2;
-            rcSrc.setTop(rcSrc.top()+dy);
-            rcSrc.setBottom(rcSrc.bottom()-dy);
-        }
-        else
-        {
-            int dx = (cxSrc - cySrc/fHWRate)/2;
-            rcSrc.setLeft(rcSrc.left()+dx);
-            rcSrc.setRight(rcSrc.right()-dx);
-        }
-    }
-}
-
-void CPainter::drawPixmapEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
+void CPainter::drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QRect t_rcSrc = rcSrc;
     _genSrcRect(rc, t_rcSrc);
-    this->drawPixmap(rc, br, t_rcSrc, xround, yround);
+    this->drawImg(rc, br, t_rcSrc, xround, yround);
 }
 
-void CPainter::drawPixmapEx(cqrc rc, cqpm pm)//, UINT xround, UINT yround) // pm构造br有开销
-{
-    QRect rcSrc = pm.rect();
-    _genSrcRect(rc, rcSrc);
-    this->drawPixmap(rc, pm, rcSrc);//, xround, yround);
-}
-
-void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
+void CPainter::drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
 {
     QRect rcSrc = pm.rect();
     _genSrcRect(rc, rcSrc);
@@ -250,7 +221,7 @@ void CPainter::drawPixmapEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
         }
     }
 
-    this->drawPixmap(rc, pm, rcSrc);
+    this->drawImg(rc, pm, rcSrc);
 }
 
 void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)

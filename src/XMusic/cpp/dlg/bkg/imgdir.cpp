@@ -70,7 +70,8 @@ wstring CImgDir::displayName() const
 
 #define __szSubIngFilter 640
 
-inline static bool _loadSubImg(cwstr strFile, QPixmap& pm)
+template  <class T=QPixmap>
+inline static bool _loadSubImg(cwstr strFile, T& pm)
 {
     if (!pm.load(__WS2Q(strFile)))
     {
@@ -166,7 +167,6 @@ const TD_Img* CImgDir::img(UINT uIdx) const
     {
         return &m_vecImgs[uIdx].pm;
     }
-
     return NULL;
 }
 
@@ -176,7 +176,6 @@ wstring CImgDir::imgPath(UINT uIdx) const
     {
         return m_vecImgs[uIdx].strPath;
     }
-
     return L"";
 }
 
@@ -223,14 +222,14 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
 
     m_uPos++;
 
-    QPixmap pm;
+    TD_Img pm;
 
 #if __windows || __mac
     if (m_paSubFile.get(m_uPos, [&](XFile& file){
         m_uPos++;
 
         cauto strFile2 = file.path();
-        QPixmap pm2;
+        TD_Img pm2;
         mtutil::concurrence([&]{
             (void)_loadSubImg(strFile, pm);
         }, [&]{
@@ -283,7 +282,7 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
     return true;
 }
 
-void CImgDir::_genSubImgs(cwstr strFile, QPixmap& pm)
+void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
 {
     auto prevCount = m_vecImgs.size();
     int szZoomout = g_screen.nMaxSide;
