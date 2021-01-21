@@ -9,281 +9,10 @@
 #define __thumbs L".thumbs"
 #define __thumbsFormat "JPG"
 
-#define __ceilCount ((m_bkgDlg.bkgCount() <= 2) ? 2 : 3)
-
-static int g_xsize = 0;
-
 static Ui::BkgDlg ui;
 
-CBkgView::CBkgView(CBkgDlg& bkgDlg)
-    : CListView(&bkgDlg)
-    , m_bkgDlg(bkgDlg)
-{
-}
-
-inline UINT CBkgView::margin()
-{
-#define __margin __size(40)
-    return __margin/(__ceilCount-1);
-}
-
-inline size_t CBkgView::getRowCount() const
-{
-    return __ceilCount;
-}
-
-inline size_t CBkgView::getColCount() const
-{
-    return __ceilCount;
-}
-
-size_t CBkgView::getItemCount() const
-{
-    auto uItemCount = 2+m_bkgDlg.bkgCount();
-    auto uColCount = getColCount();
-    auto nMod = uItemCount%uColCount;
-    if (0 == nMod)
-    {
-        uItemCount += uColCount;
-    }
-    else
-    {
-        uItemCount += (uColCount-nMod);
-    }
-
-    return uItemCount;
-}
-
-void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
-{
-    size_t uColCount = getColCount();
-
-    int nMargin = margin();
-
-    QRect rc = lvItem.rc;
-    if (rc.width() > rc.height())
-    {
-        nMargin /= 2;
-        rc.setLeft(rc.left() + nMargin);
-        rc.setTop(rc.top() + nMargin);
-        rc.setRight(rc.right() - nMargin);
-        rc.setBottom(rc.bottom() - nMargin);
-    }
-    else
-    {
-        int cy = rc.height()-nMargin;
-        int cx = 0;
-
-        if (2 == uColCount)
-        {
-            cx = cy*m_bkgDlg.width()/m_bkgDlg.height();
-            cx = MIN(cx, rc.width()-nMargin/2);
-        }
-        else
-        {
-            cx = rc.width()-nMargin;
-        }
-
-        if (0 == lvItem.uCol)
-        {
-            rc.setRect(rc.right()-nMargin/2-cx, rc.top(), cx, cy);
-        }
-        else
-        {
-            rc.setRect(rc.left()+nMargin/2, rc.top(), cx, cy);
-        }
-    }
-
-    if (1 == lvItem.uItem)
-    {
-        __app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
-    }
-    else
-    {
-        if (lvItem.uItem >= 2)
-        {
-            auto br = m_bkgDlg.thumbsBrush(lvItem.uItem-2);
-            if (br)
-            {
-                painter.drawPixmapEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
-
-                QRect rcX(rc.right()-g_xsize-5, rc.top()+5, g_xsize, g_xsize);
-                painter.drawPixmap(rcX, m_pmX);
-
-                /*或改为滚动停止处理static UINT s_uSequence = 0;
-                s_uSequence++;
-                if (lvItem.uCol == uColCount-1)
-                {
-                    auto uPageRowCount = getRowCount();
-                    UINT uFloorRow = ceil(scrollPos()+uPageRowCount-1);
-                    if (lvItem.uRow == uFloorRow)
-                    {
-                        auto uSequence = s_uSequence;
-                        async(300, [=]{
-                            if (uSequence != s_uSequence || !isVisible())
-                            {
-                                return;
-                            }
-
-                            for (UINT uCol=0; uCol<uColCount; uCol++)
-                            {
-                                auto uItem = (uFloorRow+1) * uColCount + uCol;
-                                if (uItem >= 2)
-                                {
-                                    m_bkgDlg.brush(uItem-2);
-                                }
-                            }
-                        });
-                    }
-                }*/
-
-                return;
-            }
-
-            if (lvItem.uItem < 9)
-            {
-                return;
-            }
-        }
-
-        rc.setLeft(rc.left()+2);
-        rc.setRight(rc.right()-1);
-
-        /*int r = g_crBkg.red();
-        int g = g_crBkg.green();
-        int b = g_crBkg.blue();
-        QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
-        int d = abs(cr.red()+cr.green()+cr.blue()-g_crBkg.red()-g_crBkg.green()-g_crBkg.blue());
-        if (abs(d) == 128)
-        {
-            cr.setAlpha(100);
-        }
-        else
-        {
-            cr.setAlpha(50);
-        }*/
-        auto cr = g_crFore;
-        cr.setAlpha(100);
-
-        painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
-
-        cr.setAlpha(128);
-
-        int len = MIN(rc.width(), rc.height())/4;
-#define __szAdd __size(4)
-        cauto pt = rc.center();
-        rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
-        painter.fillRectEx(rc, cr, __szAdd/2);
-
-        rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
-        painter.fillRect(rc, g_crBkg);
-        painter.fillRectEx(rc, cr, __szAdd/2);
-    }
-}
-
-void CBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
-{
-    if (lvItem.uItem >= 2)
-    {
-        auto uIdx = lvItem.uItem-2;
-        if (uIdx < m_bkgDlg.bkgCount())
-        {
-            if (me.pos().x() > lvItem.rc.width()-g_xsize && me.pos().y() < g_xsize)
-            {
-                m_bkgDlg.deleleBkg(uIdx);
-                return;
-            }
-        }
-        else
-        {
-            if (lvItem.uItem<9)
-            {
-                return;
-            }
-        }
-    }
-
-    m_bkgDlg.handleLVClick(lvItem.uItem);
-}
-
-CBkgDlg::CBkgDlg(QWidget& parent) : CDialog(parent),
-    m_option(__app.getOption()),
-    m_lv(*this),
-    m_addbkgDlg(*this),
-    m_colorDlg(*this)
-{
-}
-
-void CBkgDlg::init()
-{
-    m_colorDlg.init();
-    m_addbkgDlg.init();
-
-    m_lv.init();
-
-    ui.setupUi(this);
-
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
-
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
-
-    connect(ui.btnColor, &CButton::signal_clicked, [&]{
-        m_colorDlg.show();
-    });
-}
-
-void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut)
-{
-    auto cxPm = pm.width();
-    if (0 == cxPm)
-    {
-        return;
-    }
-    auto cyPm = pm.height();
-
-    if (bCut)
-    {
-        if (cx > cy)
-        {
-            auto cyMax = cxPm*2/3;
-            if (cyPm > cyMax)
-            {
-                QPixmap&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
-                pm.swap(temp);
-                cyPm = cyMax;
-            }
-        }
-        else
-        {
-            auto cxMax = cyPm*2/3;
-            if (cxPm > cxMax)
-            {
-                QPixmap&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
-                pm.swap(temp);
-                cxPm = cxMax;
-            }
-        }
-    }
-
-    if ((float)cyPm/cxPm > (float)cy/cx)
-    {
-        if (cxPm > cx)
-        {
-            QPixmap&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-    else
-    {
-        if (cyPm > cy)
-        {
-            QPixmap&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-}
-
-static void _zoomoutPixmap(QPixmap& pm, bool bHLayout, int szMax, int szMin, bool bThumbs)
+template <class T=QPixmap>
+static void _zoomoutPixmap(T& pm, bool bHLayout, int szMax, int szMin, bool bThumbs)
 {
     int cx = 0, cy = 0;
     if (bHLayout)
@@ -310,22 +39,23 @@ static void _zoomoutPixmap(QPixmap& pm, bool bHLayout, int szMax, int szMin, boo
 #define __szScreenMax __size(__cyBkg)
 #define __szScreenMin __size(1200)
 
-inline static void _saveThumbs(QPixmap& pm, bool bHLayout, cwstr strFile)
+template <class T=QPixmap>
+inline static void _saveThumbs(T& pm, bool bHLayout, cwstr strFile)
 {
     _zoomoutPixmap(pm, bHLayout, MAX(g_screen.nMaxSide, __szScreenMax), MAX(g_screen.nMinSide, __szScreenMin), true);
     pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
 }
 
-inline CThumbsBrush& CBkgDlg::_genThumbs(QPixmap& pm, bool bHLayout)
+CBkgDlg::CThumbsBrush& CBkgDlg::_genThumbs(TD_Bkg& pm, bool bHLayout)
 {
     _zoomoutPixmap(pm, bHLayout, g_screen.nMaxSide, g_screen.nMinSide, true);
     m_lstThumbsBrush.emplace_back(pm);
     return m_lstThumbsBrush.back();
 }
 
-inline CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
+CBkgDlg::CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
 {
-    QPixmap pm;
+    TD_Bkg pm;
     if (!pm.load(strFile + __thumbs, __thumbsFormat))
     {
         pm.load(strFile);
@@ -335,6 +65,32 @@ inline CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayout)
 
     m_lstThumbsBrush.emplace_back(pm);
     return m_lstThumbsBrush.back();
+}
+
+CBkgDlg::CBkgDlg(QWidget& parent) : CDialog(parent),
+    m_option(__app.getOption()),
+    m_lv(*this),
+    m_addbkgDlg(*this),
+    m_colorDlg(*this)
+{
+}
+
+void CBkgDlg::init()
+{
+    m_colorDlg.init();
+    m_addbkgDlg.init();
+
+    m_lv.init();
+
+    ui.setupUi(this);
+
+    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+
+    connect(ui.btnColor, &CButton::signal_clicked, [&]{
+        m_colorDlg.show();
+    });
 }
 
 void CBkgDlg::preinitBkg(bool bHLayout)
@@ -476,7 +232,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     ui.btnReturn->setGeometry(rcReturn);
 
     auto szBtn = rcReturn.width();
-    g_xsize = szBtn-__size(5);
+    m_lv.setButtonSize(szBtn-__size(5));
 
     if (m_bHLayout)
     {
@@ -518,7 +274,7 @@ size_t CBkgDlg::bkgCount() const
     return (m_bHLayout?m_vecHBkgFile:m_vecVBkgFile).size();
 }
 
-CThumbsBrush* CBkgDlg::thumbsBrush(size_t uIdx)
+CBkgDlg::CThumbsBrush* CBkgDlg::thumbsBrush(size_t uIdx)
 {
     auto& vecBkgFile = _vecBkgFile();
     if (uIdx >= vecBkgFile.size())
@@ -609,6 +365,8 @@ void CBkgDlg::addBkg(cwstr strFile)
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;
+
+    //auto pm = pmBkg.toImage();
     auto pm = pmBkg;
     _saveThumbs(pm, m_bHLayout, strDstFile); // 确保先生成缩略图
 

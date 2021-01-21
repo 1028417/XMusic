@@ -108,7 +108,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 
     if (m_paSubFile.empty())
     {
-        if (!_loadSubImg(XFile(fileInfo).path(), m_pmSnapshot))
+        if (!_loadSubImg(XFile(fileInfo).path(), m_pmIcon))
         {
             if (!m_bRunSignal)
             {
@@ -119,14 +119,14 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
                 return NULL;
             }
 
-            m_pmSnapshot = QPixmap();
+            m_pmIcon = QPixmap();
             return NULL;
         }
 
-        QPixmap&& pm = m_pmSnapshot.width() < m_pmSnapshot.height()
-                ? m_pmSnapshot.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
-                : m_pmSnapshot.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
-        m_pmSnapshot.swap(pm);
+        QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
+                ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+                : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+        m_pmIcon.swap(pm);
     }
 
     return new XFile(fileInfo);
@@ -160,7 +160,7 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
-const QPixmap* CImgDir::img(UINT uIdx) const
+const TD_Img* CImgDir::img(UINT uIdx) const
 {
     if (uIdx < m_vecImgs.size())
     {
@@ -179,9 +179,6 @@ wstring CImgDir::imgPath(UINT uIdx) const
 
     return L"";
 }
-
-#define __szSubimgZoomout 500
-extern void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut);
 
 void CImgDir::genSubImgs(CAddBkgView& lv)
 {

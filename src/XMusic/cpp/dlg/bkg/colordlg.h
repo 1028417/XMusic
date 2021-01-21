@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "dialog.h"
+#include "dlg/dialog.h"
 
 class CColorDlg : public CDialog
 {

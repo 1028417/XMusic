@@ -11,7 +11,7 @@
 
 #include "dlg/mdl/medialibdlg.h"
 
-#include "dlg/bkgdlg.h"
+#include "dlg/bkg/bkgdlg.h"
 
 #define __crLogoText 100, 150, 255
 

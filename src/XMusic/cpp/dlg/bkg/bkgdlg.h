@@ -1,79 +1,55 @@
 
 #pragma once
 
-#include "dialog.h"
+#include "dlg/dialog.h"
 
-#include "widget/listview.h"
+#include "bkgview.h"
 
 #include "addbkgdlg.h"
 
 #include "colordlg.h"
 
-class CBkgView : public CListView
-{
-public:
-    CBkgView(class CBkgDlg& bkgDlg);
-
-private:    
-    class CBkgDlg& m_bkgDlg;
-
-    QPixmap m_pmX;
-
-public:
-    void init()
-    {
-        (void)m_pmX.load(__png(btnX));
-    }
-
-    UINT margin();
-
-private:
-    size_t getRowCount() const override;
-
-    size_t getColCount() const override;
-
-    size_t getItemCount() const override;
-
-    void _onPaintItem(CPainter&, tagLVItem&) override;
-
-    void _onItemClick(tagLVItem&, const QMouseEvent&) override;
-};
-
-class CThumbsBrush : public QBrush
-{
-public:
-    CThumbsBrush()=default;
-
-    CThumbsBrush(cqpm pm)
-        : QBrush(pm)
-    {
-        m_cx = pm.width();
-        m_cy = pm.height();
-    }
-
-    int m_cx = 0;
-    int m_cy = 0;
-};
-
-struct tagBkgFile
-{
-    tagBkgFile() = default;
-
-    tagBkgFile(bool bInner, cwstr strFile, CThumbsBrush *br=NULL)
-        : bInner(bInner)
-        , strFile(strFile)
-        , br(br)
-    {
-    }
-
-    bool bInner = false;
-    WString strFile;
-    CThumbsBrush *br = NULL;
-};
-
 class CBkgDlg : public CDialog
 {
     Q_OBJECT
+
+public:
+    //using TD_Bkg = QImage;
+    using TD_Bkg = QPixmap;
+
+    class CThumbsBrush : public QBrush
+    {
+    public:
+        CThumbsBrush()=default;
+
+        CThumbsBrush(const TD_Bkg& pm)
+            : QBrush(pm)
+        {
+            m_cx = pm.width();
+            m_cy = pm.height();
+        }
+
+        int m_cx = 0;
+        int m_cy = 0;
+    };
+
+private:
+    struct tagBkgFile
+    {
+        tagBkgFile() = default;
+
+        tagBkgFile(bool bInner, cwstr strFile, CThumbsBrush *br=NULL)
+            : bInner(bInner)
+            , strFile(strFile)
+            , br(br)
+        {
+        }
+
+        bool bInner = false;
+        WString strFile;
+        CThumbsBrush *br = NULL;
+    };
+
 public:
     CBkgDlg(QWidget& parent);
 
@@ -108,7 +84,7 @@ private:
         return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     }
 
-    CThumbsBrush& _genThumbs(QPixmap& pm, bool bHLayout);
+    CThumbsBrush& _genThumbs(TD_Bkg& pm, bool bHLayout);
     CThumbsBrush& _loadThumbs(const WString& strFile, bool bHLayout);
 
     void _relayout(int cx, int cy) override;
