@@ -23,7 +23,6 @@ SOURCES += cpp/androidutil.cpp
 
 SOURCES += ../controller.cpp \
     ../OptionMgr.cpp \
-    cpp/dlg/imgdir.cpp \
     cpp/xmusic.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
@@ -37,9 +36,11 @@ SOURCES += ../controller.cpp \
     cpp/dlg/dialog.cpp \
     cpp/dlg/msgbox.cpp \
     cpp/dlg/networkWarnDlg.cpp \
-    cpp/dlg/bkgdlg.cpp \
-    cpp/dlg/addbkgdlg.cpp \
-    cpp/dlg/colordlg.cpp \
+    cpp/dlg/bkg/bkgdlg.cpp \
+    cpp/dlg/bkg/bkgview.cpp \
+    cpp/dlg/bkg/addbkgdlg.cpp \
+    cpp/dlg/bkg/imgdir.cpp \
+    cpp/dlg/bkg/colordlg.cpp \
     cpp/dlg/mdl/medialibdlg.cpp \
     cpp/dlg/mdl/MedialibView.cpp \
     cpp/dlg/mdl/MLListView.cpp \
@@ -50,7 +51,6 @@ HEADERS += ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
     ../OptionMgr.h \
     cpp/app.h \
-    cpp/dlg/imgdir.h \
     cpp/xmusic.h \
     cpp/mainwindow.h \
     cpp/centralwidget.h \
@@ -65,9 +65,11 @@ HEADERS += ../../inc/ControllerDef.h \
     cpp/widget/label.h \
     cpp/dlg/dialog.h \
     cpp/dlg/msgbox.h \
-    cpp/dlg/bkgdlg.h \
-    cpp/dlg/addbkgdlg.h \
-    cpp/dlg/colordlg.h \
+    cpp/dlg/bkg/bkgdlg.h \
+    cpp/dlg/bkg/bkgview.h \
+    cpp/dlg/bkg/addbkgdlg.h \
+    cpp/dlg/bkg/imgdir.h \
+    cpp/dlg/bkg/colordlg.h \
     cpp/dlg/networkWarnDlg.h \
     cpp/dlg/mdl/medialibdlg.h \
     cpp/dlg/mdl/MedialibView.h \

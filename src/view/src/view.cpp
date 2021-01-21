@@ -631,7 +631,6 @@ void __view::exportDir(CMediaDir& dir)
 }
 
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
-
 static const wstring __snapshotExt = L"snapshot";
 
 void __view::snapshotDir(CMediaDir& dir)
@@ -639,7 +638,7 @@ void __view::snapshotDir(CMediaDir& dir)
 	tagFileDlgOpt FileDlgOpt;
 	FileDlgOpt.strTitle = L"选择保存快照路径";
 	FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
-	FileDlgOpt.strFileName = dir.GetName() + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
+	FileDlgOpt.strFileName = dir.GetName();// + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
 	CFileDlgEx fileDlg(FileDlgOpt);
 
 	wstring strFile = fileDlg.ShowSave();
