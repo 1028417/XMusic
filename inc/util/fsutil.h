@@ -48,7 +48,7 @@ using tagFileStat64 = struct stat;
 #define fseek64 _fseeki64
 #define ftell64 _ftelli64
 #define lseek64 _lseeki64
-#define lseek(fno, offset, origin) (long)lseek64(fno, offset, origin)
+//#define lseek(fno, offset, origin) (long)lseek64(fno, offset, origin)
 
 #else
 #define fseek64 fseeko

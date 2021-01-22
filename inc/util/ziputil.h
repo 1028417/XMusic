@@ -244,9 +244,18 @@ public:
     }
 };
 
+enum E_ZMethod
+{
+	ZM_None = 0,
+	ZM_Deflated,
+	ZM_BZip2ed
+};
+
 class __UtilExt ziputil
 {
 public:
+	static bool zipDir(const string& strSrcDir, const string& strDstFile, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0);
+
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
             return CZipFile(strZipFile, strPwd).unzip(strDstDir);

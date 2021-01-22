@@ -163,7 +163,6 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
         auto uSequence = ++s_uSequence;
         m_rootImgDir.setDir(strDir);
 
-        // TODO 内存优化，改为：scanDir(bRunSignal, strRootDir, [&, uSequence](strDir, lstFile
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_lv.imgDir() || !this->isVisible())
             {
