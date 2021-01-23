@@ -631,40 +631,41 @@ void __view::exportDir(CMediaDir& dir)
 }
 
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
-static const wstring __snapshotExt = L"snapshot";
+static const wstring __snapshotExt = L"json";
 
 void __view::snapshotDir(CMediaDir& dir)
 {
 	tagFileDlgOpt FileDlgOpt;
 	FileDlgOpt.strTitle = L"选择保存快照路径";
-	FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
+	//FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
 	FileDlgOpt.strFileName = dir.GetName();// + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
+	FileDlgOpt.strInitialDir = getOption().strRootDir + L"\\mdl\\snapshot";
 	CFileDlgEx fileDlg(FileDlgOpt);
 
-	wstring strFile = fileDlg.ShowSave();
-	if (!strFile.empty())
+	wstring strDstFile = fileDlg.ShowSave();
+	if (!strDstFile.empty())
 	{
-		if (strutil::lowerCase_r(fsutil::GetFileExtName(strFile)) != __snapshotExt)
+		if (strutil::lowerCase_r(fsutil::GetFileExtName(strDstFile)) != __snapshotExt)
 		{
-			strFile.append(__wcDot + __snapshotExt);
+			strDstFile.append(__wcDot + __snapshotExt);
 		}
 		
-		_snapshotDir(dir, strFile);
+		_snapshotDir(dir, strDstFile);
 	}
 }
 
-void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
+void __view::_snapshotDir(CMediaRes& dir, cwstr strDstFile)
 {
-	CUTF8TxtWriter TxtWriter;
-	if (!TxtWriter.open(strOutputFile, true))
+	/*CUTF8TxtWriter writer;
+	if (!TxtWriter.open(strDstFile, true))
 	{
 		return;
-	}
+	}*/
 
 	bool bGenDuration = &dir != &__medialib;
 
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		wstring strPrfix;
+		//wstring strPrfix;
 
 		function<bool(CPath&, JValue&)> fnSnapshot;
 		fnSnapshot = [&](CPath& dir, JValue& jRoot) {
@@ -673,13 +674,12 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 				return false;
 			}
 
-			auto& strDirInfo = wstring(strPrfix.size(), L'-') + dir.fileName();
-			if (!TxtWriter.writeln(strDirInfo))
+			/*cauto strDirInfo = wstring(strPrfix.size(), L'-') + dir.fileName();
+			if (!writer.writeln(strDirInfo))
 			{
 				return false;
 			}
-
-			strPrfix.append(L"  ");
+			strPrfix.append(L"  ");*/
 
 			cauto paSubDir = dir.dirs();
 
@@ -717,9 +717,13 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 					jFiles.append(strFileDesc);
 					//jFiles.append(jFile);
 
-					auto& strFileSize = ((CMediaRes&)subFile).fileSizeString();
-					auto& strFileInfo = strPrfix + subFile.fileName() + L'\t' + strFileSize;
-					return TxtWriter.writeln(strFileInfo);
+					/*cauto strFileSize = ((CMediaRes&)subFile).fileSizeString();
+					cauto strFileInfo = strPrfix + subFile.fileName() + L'\t' + strFileSize;
+					if (!writer.writeln(strFileInfo))
+					{
+						return false;
+					}*/
+					return true;
 				});
 			}
 			ProgressDlg.ForwardProgress();
@@ -739,8 +743,7 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 				});
 			}
 
-			strPrfix = strPrfix.substr(0, strPrfix.size() - 2);
-
+			//strPrfix = strPrfix.substr(0, strPrfix.size() - 2);
 			return true;
 		};
 
@@ -749,7 +752,7 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strOutputFile)
 		if (fnSnapshot(dir, *pJRoot))
 		{
 			CUTF8TxtWriter TxtWriter(false);
-			if (TxtWriter.open(strOutputFile + L".json", true))
+			if (TxtWriter.open(strDstFile, true))
 			{
 				string str = Json::FastWriter().write(*pJRoot);
 				TxtWriter.writeln(str);
