@@ -444,7 +444,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 	WString strExportPath = FolderDlg.Show(strTitle, L"请选择导出位置", wnd.m_hWnd);
 	__EnsureReturn(!strExportPath->empty(), false);
 
-	strExportPath << (ExportOption.bActualMode ? L"/XMusic" : L"/XMusicExport");
+	strExportPath << (ExportOption.bActualMode ? L"\\XMusic" : L"\\XMusicExport");
 	if (!__xmedialib.checkIndependentDir(strExportPath, true))
 	{
 		CMainApp::msgBox(L"请选择与根目录不相关的目录?", L"导出曲目", &wnd);

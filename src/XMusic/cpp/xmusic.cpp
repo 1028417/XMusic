@@ -281,7 +281,12 @@ static bool _cmdShell(cwstr strCmd, bool bBlock = true)
     memset(&si, 0, sizeof(si));
     si.cb = sizeof(si);
     si.hStdInput=GetStdHandle(STD_INPUT_HANDLE);
-    si.wShowWindow = SW_HIDE;
+
+    /*if (nCmdSow)
+    {
+        si.wShowWindow = nCmdSow;
+        si.dwFlags = STARTF_USESHOWWINDOW;
+    }*/
 
     PROCESS_INFORMATION pi;
     memset(&pi, 0, sizeof(pi));
@@ -294,6 +299,7 @@ static bool _cmdShell(cwstr strCmd, bool bBlock = true)
     if (bBlock)
     {
         WaitForSingleObject(pi.hProcess,INFINITE);
+        //GetExitCodeProcess
     }
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
