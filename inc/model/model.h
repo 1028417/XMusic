@@ -445,8 +445,7 @@ private:
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
     bool _exportDB(cwstr strWebDir, const CB_exportorMedia& cb);
-	void _exportSingerImg(bool bCancel, cwstr strSingerName, cwstr strDstDir
-		, const list<tagSingerImg>& lstSrcSingerImg, list<tagSingerImg>& lstSingerImg);
+	bool _exportSingerImg(cwstr strDstDir, const CB_exportorMedia& cb, list<tagSingerImg>& lstSingerImg);
 
     void _clear();
 
