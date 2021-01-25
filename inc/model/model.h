@@ -308,7 +308,10 @@ public:
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
     using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
-    virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
+	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
+
+	using CB_syncArti = function<bool(cwstr strMsg, UINT uProgress, UINT uTotal)>;
+	virtual UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) = 0;
 
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
@@ -416,6 +419,7 @@ public:
     void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
     UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
+	UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) override;
 
     wstring backupDB() override;
     bool restoreDB(cwstr strTag) override;
@@ -445,6 +449,8 @@ private:
 
 #if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
+
+	bool _syncArti(CMediaDir& dir, const CB_syncArti& cb, UINT uCount);
 
     bool _exportDB(cwstr strWebDir, list<tagSingerImg>& lstSingerImg);
 	bool _exportSingerImg(cwstr strDstDir, const CB_exportorMedia& cb, list<tagSingerImg>& lstSingerImg);
