@@ -331,58 +331,44 @@ enum class E_TxtHeadType
 class __UtilExt CTxtReader
 {
 public:
-    CTxtReader() = default;
-
-private:
-	E_TxtHeadType m_eHeadType = E_TxtHeadType::THT_None;
-
-public:
-	E_TxtHeadType headType() const
-	{
-		return m_eHeadType;
+    static E_TxtHeadType read(Instream& ins, string& strText)
+    {
+        return _read(ins, strText);
+	}
+	static E_TxtHeadType read(Instream& ins, wstring& strText)
+    {
+        return _read(ins, strText);
 	}
 	
-    E_TxtHeadType read(Instream& ins, string& strText)
-    {
-        _read(ins, strText);
-        return m_eHeadType;
-	}
-    E_TxtHeadType read(Instream& ins, wstring& strText)
-    {
-        _read(ins, strText);
-        return m_eHeadType;
-	}
-	
-    E_TxtHeadType read(Instream& ins, cfn_bool_t<string&> cb)
+	static E_TxtHeadType read(Instream& ins, cfn_bool_t<string&> cb)
 	{
-		_read(ins, cb);
-        return m_eHeadType;
+		return _read(ins, cb);
 	}
-    E_TxtHeadType read(Instream& ins, cfn_bool_t<wstring&> cb)
+	static E_TxtHeadType read(Instream& ins, cfn_bool_t<wstring&> cb)
 	{
-		_read(ins, cb);
-        return m_eHeadType;
+		return _read(ins, cb);
 	}
 
 private:
-    void _readData(char *lpData, size_t len, string& strText);
-    void _readData(char *lpData, size_t len, wstring& strText);
+	static E_TxtHeadType _readData(char *lpData, size_t len, string& strText);
+	static E_TxtHeadType _readData(char *lpData, size_t len, wstring& strText);
 
 	template <class T>
-    void _read(Instream& ins, T& strText)
+	static E_TxtHeadType _read(Instream& ins, T& strText)
     {
 		CCharBuffer cbfData;
 		if (ins.read(cbfData)>0)
 		{
-            _readData((char*)cbfData, cbfData->size(), strText);
+            return _readData((char*)cbfData, cbfData->size(), strText);
 		}
+		return E_TxtHeadType::THT_None;
 	}
 
 	template <class T>
-    void _read(Instream& ins, cfn_bool_t<T&> cb)
+	static E_TxtHeadType _read(Instream& ins, cfn_bool_t<T&> cb)
 	{
 		T strText;
-		_read(ins, strText);
+		E_TxtHeadType eHeadType = _read(ins, strText);
 
 		size_t prePos = 0;
 		size_t pos = 0;
@@ -405,7 +391,7 @@ private:
 
 			if (!cb(strSub))
             {
-                return;
+                return eHeadType;
 			}
 
 			prePos = pos + 1;
@@ -416,5 +402,7 @@ private:
             auto strSub = strText.substr(prePos);
             cb(strSub);
         }
+
+		return eHeadType;
 	}
 };

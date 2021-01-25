@@ -20,7 +20,7 @@ public:
 	static bool loadFile(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
 	{
 		string strText;
-        CTxtReader().read(ins, strText);
+        CTxtReader::read(ins, strText);
 
 		return loadData(strText, jRoot, bStrictRoot);
 	}

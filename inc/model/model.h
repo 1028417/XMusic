@@ -439,12 +439,14 @@ public:
 private:
 	wstring _medialibPath(cwstr strSubPath = L"");
 
+	bool _initMediaLib(cwstr strDBFile);
+
     bool _initData(cwstr strDBFile);
 
 #if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
-    bool _exportDB(cwstr strWebDir, const CB_exportorMedia& cb);
+    bool _exportDB(cwstr strWebDir, list<tagSingerImg>& lstSingerImg);
 	bool _exportSingerImg(cwstr strDstDir, const CB_exportorMedia& cb, list<tagSingerImg>& lstSingerImg);
 
     void _clear();
