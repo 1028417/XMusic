@@ -14,6 +14,22 @@
 #if __windows
 #include <direct.h>
 
+#if !__winvc
+#define _SH_DENYRW      0x10    // deny read/write mode
+#define _SH_DENYWR      0x20    // deny write mode
+#define _SH_DENYRD      0x30    // deny read mode
+#define _SH_DENYNO      0x40    // deny none mode
+#define _SH_SECURE      0x80    // secure mode
+#endif
+enum class E_ShareFalg
+{
+	 deny = _SH_DENYRW,
+	 denyW = _SH_DENYWR,
+	 denyR = _SH_DENYRD,
+	 share = _SH_DENYNO,
+	 secure = _SH_SECURE
+};
+
 #include <sys/utime.h>
 #else
 #include <utime.h>
@@ -189,6 +205,18 @@ public:
         transSeparator(t_strPath);
         return t_strPath;
     }
+
+#if __windows
+	static FILE* fsopen(cwstr strFile, const string& strMode, E_ShareFalg _ShFlag = E_ShareFalg::denyW)
+	{
+		auto t_strMode = strutil::fromAsc(strMode);
+		return _wfsopen(strFile.c_str(), t_strMode.c_str(), (int)_ShFlag);
+	}
+	static FILE* fsopen(const string& strFile, const string& strMode, E_ShareFalg _ShFlag = E_ShareFalg::denyW)
+	{
+		return _fsopen(strFile.c_str(), strMode.c_str(), (int)_ShFlag);
+	}
+#endif
 
     static FILE* fopen(cwstr strFile, const string& strMode);
 	static FILE* fopen(const string& strFile, const string& strMode);
