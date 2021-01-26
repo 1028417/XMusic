@@ -777,10 +777,16 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 void CMediaResPanel::_syncArti(CMediaDir& dir)
 {
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		m_view.getModel().syncArti(dir, [&](cwstr strMsg, UINT uProgress, UINT uTotal) {
+		UINT uCount = m_view.getModel().syncArti(dir, [&](cwstr strPath, UINT uProgress, UINT uTotal) {
+			if (!ProgressDlg.checkStatus())
+			{
+				return false;
+			}
+			ProgressDlg.SetStatusText((L"正在发布" + strPath).c_str());
+			ProgressDlg.SetProgress(uProgress, uTotal);
 			return true;
 		});
-		ProgressDlg.SetStatusText(L"已完成制品发布");
+		ProgressDlg.SetStatusText((L"已发布制品" + to_wstring(uCount) + L'个').c_str());
 	};
 
 	CProgressDlg ProgressDlg(cb);
