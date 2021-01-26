@@ -274,6 +274,9 @@ public:
 		return __fileTitle_r(strFileName);
 	}
 
+	static bool MatchPath(cwstr strPath1, cwstr strPath2);
+	static bool MatchPath(const string& strPath1, const string& strPath2);
+
 	static bool CheckSubPath(cwstr strDir, cwstr strSubPath);
 	static wstring GetOppPath(const wstring strBaseDir, cwstr strSubPath);
 
