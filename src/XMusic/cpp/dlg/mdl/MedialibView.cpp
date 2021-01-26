@@ -475,12 +475,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 else if (strutil::matchIgnoreCase(strText, L"hi-res"))
                 {
                     context.pmIcon = &m_pmHires;
-                    context.strText = L"高解析音频\nHigh Resolution Audio";
+                    context.strText = L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio";
                 }
                 else if (strutil::matchIgnoreCase(strText, L"mqs"))
                 {
                     context.pmIcon = &m_pmMQS;
-                    context.strText = L"录音棚级别无损 (24Bit96KHz)\nMastering Quality Sound";
+                    context.strText = L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound";
                 }
                 else if (strutil::matchIgnoreCase(strText, L"dts"))
                 {
@@ -489,7 +489,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
                 }
                 else if (strutil::matchIgnoreCase(strText, L"sq+"))
                 {
-                    context.strText = L"24位无损 (24Bit48KHz)";
+                    context.strText = L"24位无损 24Bit/48KHz";
                 }
             }
             else
