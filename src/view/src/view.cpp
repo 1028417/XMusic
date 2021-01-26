@@ -598,9 +598,6 @@ void __view::exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd)
 
 void __view::exportDir(CMediaDir& dir)
 {
-	dir.clear();
-	CMediaResPanel::RefreshMediaResPanel();
-
 	_exportMedia(m_MainWnd, L"导出目录", true, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		UINT uCount = 0;
 		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
@@ -639,23 +636,20 @@ void __view::snapshotDir(CMediaDir& dir)
 	FileDlgOpt.strTitle = L"选择保存快照路径";
 	//FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
 	FileDlgOpt.strFileName = dir.GetName();// + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
-	FileDlgOpt.strInitialDir = getOption().strRootDir + L"\\mdl\\snapshot";
+	FileDlgOpt.strInitialDir = getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
 	CFileDlgEx fileDlg(FileDlgOpt);
 
 	wstring strDstFile = fileDlg.ShowSave();
-	if (!strDstFile.empty())
+	if (strDstFile.empty())
 	{
-		if (strutil::lowerCase_r(fsutil::GetFileExtName(strDstFile)) != __snapshotExt)
-		{
-			strDstFile.append(__wcDot + __snapshotExt);
-		}
-		
-		_snapshotDir(dir, strDstFile);
+		return;
 	}
-}
 
-void __view::_snapshotDir(CMediaRes& dir, cwstr strDstFile)
-{
+	if (strutil::lowerCase_r(fsutil::GetFileExtName(strDstFile)) != __snapshotExt)
+	{
+		strDstFile.append(__wcDot + __snapshotExt);
+	}
+	
 	/*CUTF8TxtWriter writer;
 	if (!TxtWriter.open(strDstFile, true))
 	{
@@ -666,7 +660,6 @@ void __view::_snapshotDir(CMediaRes& dir, cwstr strDstFile)
 
 	auto cb = [&](CProgressDlg& ProgressDlg) {
 		//wstring strPrfix;
-
 		function<bool(CPath&, JValue&)> fnSnapshot;
 		fnSnapshot = [&](CPath& dir, JValue& jRoot) {
 			if (!ProgressDlg.checkStatus())

@@ -158,6 +158,8 @@ bool CPlayerView::handleCommand(UINT uID)
 		CMediaDir *pDir = m_view.showChooseDirDlg(L"选择导出目录");
 		__EnsureBreak(pDir);
 
+		pDir->clear();
+		CMediaResPanel::RefreshMediaResPanel();
 		m_view.exportDir(*pDir);
 	}
 	

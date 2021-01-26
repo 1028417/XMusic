@@ -142,8 +142,6 @@ private:
 	bool _exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 		, const function<UINT(CProgressDlg& ProgressDlg, tagExportOption& ExportOption)>& fnExport);
 
-	void _snapshotDir(CMediaRes& dir, cwstr strOutputFile);
-
 	void _checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult)>& fnWork);
 
 public:

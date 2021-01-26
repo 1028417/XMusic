@@ -32,7 +32,7 @@ class CMediaResPanel : public CBasePage
 
 public:
 	static void RefreshMediaResPanel();
-	
+		
 public:
 	CMediaResPanel(__view& view, bool bSingerPanel=false);
 
@@ -77,7 +77,6 @@ protected:
 		return m_pCurrDir;
 	}
 
-protected:
 	BOOL OnInitDialog() override;
 
 	virtual void UpdateTitle(cwstr strTitle)
@@ -135,6 +134,14 @@ private:
 	void _showDir(CMediaDir *pRootDir, CMediaDir *pCurrDir = NULL, CMediaRes *pHitestItem = NULL);
 
 	void _asyncTask();
+
+	void _syncArti(CMediaDir& dir);
+
+	void _RefreshMediaResPanel(CMediaDir& dir)
+	{
+		dir.clear();
+		RefreshMediaResPanel();
+	}
 
 private:
 	afx_msg void OnSize(UINT nType, int cx, int cy);

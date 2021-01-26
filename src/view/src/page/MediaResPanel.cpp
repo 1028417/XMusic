@@ -582,8 +582,18 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 {
 	TD_ListObjectList lstObjects;
 	m_wndList.GetSelObjects(lstObjects);
-
 	TD_MediaResList lstMediaRes(lstObjects);
+
+	CMediaDir *pMediaDir = NULL;
+	if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
+		if (MediaRes.isDir())
+		{
+			pMediaDir = (CMediaDir*)&MediaRes;
+		}
+	}))
+	{
+		pMediaDir = m_pCurrDir;
+	}
 
 	switch (uID)
 	{
@@ -620,36 +630,30 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_EXPORT:
-		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.isDir())
-			{
-				m_view.exportDir((CMediaDir&)MediaRes);
-			}
-			else
-			{
-				m_view.exportMedia(TD_IMediaList(lstMediaRes));
-			}
-		}))
+		if (pMediaDir)
 		{
-			if (NULL != m_pCurrDir)
-			{
-				m_view.exportDir(*m_pCurrDir);
-			}
+			_RefreshMediaResPanel(*pMediaDir);
+			m_view.exportDir(*pMediaDir);
+		}
+		else if (lstMediaRes)
+		{
+			m_view.exportMedia(TD_IMediaList(lstMediaRes));
 		}
 
 		break;
-	case ID_Snapshot:
-		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.isDir())
-			{
-				m_view.snapshotDir((CMediaDir&)MediaRes);
-			}
-		}))
+	case ID_DEPLOY:
+		if (pMediaDir)
 		{
-			if (NULL != m_pCurrDir)
-			{
-				m_view.snapshotDir(*m_pCurrDir);
-			}
+			_RefreshMediaResPanel(*pMediaDir);
+			_syncArti(*pMediaDir);
+		}
+		
+		break;
+	case ID_Snapshot:
+		if (pMediaDir)
+		{
+			_RefreshMediaResPanel(*pMediaDir);
+			m_view.snapshotDir(*pMediaDir);
 		}
 
 		break;
@@ -660,48 +664,36 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_EXPLORE:
-		if (lstMediaRes.size()==1)
+		if (pMediaDir)
+		{
+			m_view.exploreMedia(*pMediaDir, false);
+		}
+		else
 		{
 			lstMediaRes.front([&](CMediaRes& MediaRes) {
 				m_view.exploreMedia(MediaRes);
 			});
 		}
-		else if (NULL != m_pCurrDir)
-		{
-			m_view.exploreMedia(*m_pCurrDir, false);
-		}
-
+		
 		break;
 	case ID_FIND:
-		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			m_view.findMedia(MediaRes.GetPath(), MediaRes.isDir());
-		}))
+		if (pMediaDir)
 		{
-			if (NULL != m_pCurrDir)
-			{
-				m_view.findMedia(m_strCurrDir, true);
-			}
+			m_view.findMedia(pMediaDir->GetPath(), true);
+		}
+		else
+		{
+			lstMediaRes.front([&](CMediaRes& MediaRes) {
+				m_view.findMedia(MediaRes.GetPath(), MediaRes.isDir());
+			});
 		}
 
 		break;
 	case ID_CheckSimilar:
-		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.isDir())
-			{
-				MediaRes.clear();
-				CMediaResPanel::RefreshMediaResPanel();
-
-				m_view.checkSimilarFile((CMediaDir&)MediaRes);
-			}
-		}))
+		if (pMediaDir)
 		{
-			if (NULL != m_pCurrDir)
-			{
-				m_pCurrDir->clear();
-				CMediaResPanel::RefreshMediaResPanel();
-
-				m_view.checkSimilarFile(*m_pCurrDir);
-			}
+			_RefreshMediaResPanel(*pMediaDir);
+			m_view.checkSimilarFile(*pMediaDir);
 		}
 
 		break;
@@ -760,8 +752,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_REFRESH:
 		if (m_pCurrDir)
 		{
-			m_pCurrDir->clear();
-			CMediaResPanel::RefreshMediaResPanel();
+			_RefreshMediaResPanel(*m_pCurrDir);
 		}
 		else
 		{
@@ -770,29 +761,30 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 		break;
 	case ID_FormatTitle:
-		if (!lstMediaRes.front([&](CMediaRes& MediaRes) {
-			if (MediaRes.isDir())
-			{
-				if (m_view.formatFileTitle((CMediaDir&)MediaRes) > 0)
-				{
-					MediaRes.clear();
-					CMediaResPanel::RefreshMediaResPanel();
-				}
-			}
-		}))
+		if (pMediaDir)
 		{
-			if (m_pCurrDir)
+			_RefreshMediaResPanel(*pMediaDir);
+			if (m_view.formatFileTitle(*pMediaDir) > 0)
 			{
-				if (m_view.formatFileTitle(*m_pCurrDir) > 0)
-				{
-					m_pCurrDir->clear();
-					CMediaResPanel::RefreshMediaResPanel();
-				}
+				_RefreshMediaResPanel(*pMediaDir);
 			}
 		}
 
 		break;
 	}
+}
+
+void CMediaResPanel::_syncArti(CMediaDir& dir)
+{
+	auto cb = [&](CProgressDlg& ProgressDlg) {
+		m_view.getModel().syncArti(dir, [&](cwstr strMsg, UINT uProgress, UINT uTotal) {
+			return true;
+		});
+		ProgressDlg.SetStatusText(L"已完成制品发布");
+	};
+
+	CProgressDlg ProgressDlg(cb);
+	(void)ProgressDlg.DoModal(L"发布制品", this);
 }
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)

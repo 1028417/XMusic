@@ -238,13 +238,15 @@
 #define ID_Menu32974                    32974
 #define ID_ATTACH_DIR                   32975
 #define ID_ATTACH_WHOLETRACK            32976
+#define ID__32977                       32977
+#define ID_DEPLOY                       32978
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32977
+#define _APS_NEXT_COMMAND_VALUE         32979
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif
