@@ -441,7 +441,16 @@ public:
     void close() override;
 
 private:
-	wstring _medialibPath(cwstr strSubPath = L"");
+	inline cwstr _medialibPath()
+	{
+		return m_Option.strRootDir;
+	}
+	wstring _medialibPath(cwstr strSubPath);
+
+#if __winvc
+	wstring _mdlPath();
+	wstring _mdlPath(cwstr strSubPath);
+#endif
 
 	bool _initMediaLib(cwstr strDBFile);
 
