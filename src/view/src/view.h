@@ -153,7 +153,26 @@ public:
 	CMediaDir* showChooseDirDlg(cwstr strTitle, bool bShowRoot = true);
 
 	void showFindDlg(cwstr strFind, bool bQuickHittest=false);
-	
+
+	bool showProgressDlg(const wchar_t *pszTitle, const FN_Work& fnWork, CWnd *pWnd = NULL)
+	{
+		if (NULL == pWnd)
+		{
+			pWnd = &m_MainWnd;
+		}
+		CProgressDlg ProgressDlg(fnWork);
+		return IDOK == ProgressDlg.DoModal(pszTitle, pWnd);
+	}
+	bool showProgressDlg(const wchar_t *pszTitle, const FN_Work& fnWork, UINT uMaxProgress, CWnd *pWnd = NULL)
+	{
+		if (NULL == pWnd)
+		{
+			pWnd = &m_MainWnd;
+		}
+		CProgressDlg ProgressDlg(fnWork, uMaxProgress);
+		return IDOK == ProgressDlg.DoModal(pszTitle, pWnd);
+	}
+
 	void findMedia(cwstr strFindPath, bool bDir, cwstr strSingerName = L"");
 
 	void verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd = NULL

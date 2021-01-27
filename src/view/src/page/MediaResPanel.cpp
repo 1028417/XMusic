@@ -641,11 +641,11 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_Deploy:
+	case ID_DeployArti:
 		if (pMediaDir)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
-			_syncArti(*pMediaDir);
+			_deployArti(*pMediaDir);
 		}
 		
 		break;
@@ -774,10 +774,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 }
 
-void CMediaResPanel::_syncArti(CMediaDir& dir)
+void CMediaResPanel::_deployArti(CMediaDir& dir)
 {
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		UINT uCount = m_view.getModel().syncArti(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
+		UINT uCount = m_view.getModel().deployArti(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
 			if (!ProgressDlg.checkStatus())
 			{
 				return false;
@@ -796,9 +796,8 @@ void CMediaResPanel::_syncArti(CMediaDir& dir)
 		});
 		ProgressDlg.SetStatusText((L"已发布制品" + to_wstring(uCount) + L'个').c_str());
 	};
-
-	CProgressDlg ProgressDlg(cb);
-	(void)ProgressDlg.DoModal(L"发布制品", this);
+	
+	(void)m_view.showProgressDlg(L"发布制品", cb, this);
 }
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)
@@ -899,7 +898,7 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 {
 	m_MenuGuard.EnableItem({ ID_Open, ID_CopyTitle, ID_Renme, ID_Delete, ID_Detach, ID_Attach
-		, ID_Find, ID_FormatTitle, ID_Export, ID_Snapshot, ID_Deploy }, FALSE);
+		, ID_Find, ID_FormatTitle, ID_Export, ID_Snapshot, ID_DeployArti }, FALSE);
 
 	if (pSubDir)
 	{
@@ -912,7 +911,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
 		m_MenuGuard.EnableItem(ID_Export, TRUE);
 		m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
-		m_MenuGuard.EnableItem(ID_Deploy, TRUE);
+		m_MenuGuard.EnableItem(ID_DeployArti, TRUE);
 
 		//if (pSubDir->rootDir() == m_pRootDir)
 		if (pSubDir->parent())
@@ -949,7 +948,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 			m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
 			m_MenuGuard.EnableItem(ID_Export, TRUE);
 			m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
-			m_MenuGuard.EnableItem(ID_Deploy, TRUE);
+			m_MenuGuard.EnableItem(ID_DeployArti, TRUE);
 		}
 	}
 

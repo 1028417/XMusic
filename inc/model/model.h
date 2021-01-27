@@ -307,11 +307,12 @@ public:
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
-    using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
-	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
+    using CB_Export = function<bool(UINT uProgressOffset, cwstr strTip)>;
+	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_Export& cb) = 0;
+	virtual bool deployMdl(const CB_Export& cb) = 0;
 
-	using CB_syncArti = function<bool(cwstr strTip, UINT uProgress, bool bFail)>;
-	virtual UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) = 0;
+	using CB_deployArti = function<bool(cwstr strTip, UINT uProgress, bool bFail)>;
+	virtual UINT deployArti(CMediaDir& dir, const CB_deployArti& cb) = 0;
 
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
@@ -418,8 +419,10 @@ public:
     void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
     void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
-    UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) override;
-	UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) override;
+    UINT exportMedia(const tagExportOption& ExportOption, const CB_Export& cb) override;
+	bool deployMdl(const CB_Export& cb) override;
+
+	UINT deployArti(CMediaDir& dir, const CB_deployArti& cb) override;
 
     wstring backupDB() override;
     bool restoreDB(cwstr strTag) override;
@@ -459,10 +462,10 @@ private:
 #if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
-	bool _syncArti(CMediaDir& dir, const CB_syncArti& cb, UINT& uCount);
+	bool _deployArti(CMediaDir& dir, const CB_deployArti& cb, UINT& uCount);
 
-	bool _exportSingerImg(cwstr strDstDir, const CB_exportorMedia& cb, list<tagSingerImg>& lstSingerImg);
-	bool _exportMdl(cwstr strWebDir, const CB_exportorMedia& cb);
+	bool _exportSingerImg(cwstr strDstDir, const CB_Export& cb, list<tagSingerImg>& lstSingerImg);
+	bool _exportMdl(const CB_Export& cb);
 
     void _clear();
 

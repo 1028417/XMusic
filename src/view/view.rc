@@ -63,18 +63,19 @@ IDR_MAINDLG MENU
 BEGIN
     POPUP "系统"
     BEGIN
-        MENUITEM "设定根目录",                       ID_MODIFY_ROOT
+        MENUITEM "设置",                          ID_Setting
         MENUITEM SEPARATOR
         MENUITEM "播放记录 Ctrl+R",                 ID_PlayRecord
         MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
         MENUITEM SEPARATOR
-        MENUITEM "设置",                          ID_Setting
+        MENUITEM "生成快照",                        ID_Snapshot
+        MENUITEM "发布媒体库",                       ID_DeployMdl
     END
     POPUP "媒体库"
     BEGIN
+        MENUITEM "设定根目录",                       ID_MODIFY_ROOT
         MENUITEM "挂载目录",                        ID_AttachDir
         MENUITEM "导出目录",                        ID_ExportDir
-        MENUITEM "生成快照",                        ID_Snapshot
         MENUITEM SEPARATOR
         MENUITEM "检查相似文件",                      ID_CheckSimilar
         MENUITEM "查找整轨",                        ID_WholeTrack
@@ -245,7 +246,7 @@ BEGIN
         MENUITEM "浏览",                          ID_EXPLORE
         MENUITEM "导出",                          ID_Export
         MENUITEM "快照",                          ID_Snapshot
-        MENUITEM "发布",                          ID_Deploy
+        MENUITEM "发布",                          ID_DeployArti
         MENUITEM "检查相似文件",                      ID_CheckSimilar
         MENUITEM "标题格式化",                       ID_FormatTitle
         MENUITEM SEPARATOR
@@ -1041,8 +1042,7 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
-
+#endif
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

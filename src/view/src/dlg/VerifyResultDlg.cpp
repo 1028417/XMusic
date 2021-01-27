@@ -184,22 +184,27 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		
 		ProgressDlg.SetStatusText((L"自动匹配结束，更新" + to_wstring(mapUpdateMedias.size()) + L"个曲目").c_str());
 	};
-	CProgressDlg ProgressDlg(cbAutoMatch, paInvalidMedia.size());
-	if (IDOK == ProgressDlg.DoModal(L"自动匹配曲目", this) && !mapUpdateMedias.empty())
+
+	if (!m_view.showProgressDlg(L"自动匹配曲目", cbAutoMatch, paInvalidMedia.size(), this))
 	{
-		CMedia* pMedia = NULL;
-		m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
-			if (mapUpdateMedias.find(&media) != mapUpdateMedias.end())
-			{
-				m_VerifyResult.paUpdateMedia.add(media);
-
-				(void)media.checkDuration();
-				UpdateItem(uIdx, media);
-
-				(void)CMainApp::GetMainApp()->DoEvents();
-			}
-		});
+		return;
 	}
+	if (mapUpdateMedias.empty())
+	{
+		return;
+	}
+	CMedia* pMedia = NULL;
+	m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
+		if (mapUpdateMedias.find(&media) != mapUpdateMedias.end())
+		{
+			m_VerifyResult.paUpdateMedia.add(media);
+
+			(void)media.checkDuration();
+			UpdateItem(uIdx, media);
+
+			(void)CMainApp::GetMainApp()->DoEvents();
+		}
+	});
 }
 
 void CVerifyResultDlg::OnBnClickedLink()

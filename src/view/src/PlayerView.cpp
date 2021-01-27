@@ -109,8 +109,27 @@ bool CPlayerView::handleCommand(UINT uID)
 		m_view.m_MainWnd.setForeground();
 
 		break;
-	case ID_AttachDir:
-		m_view.m_MediaResPage.attachDir();
+	case ID_PlayRecord:
+		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
+		m_view.m_ResModule.ActivateResource();
+		(void)CPlayRecordDlg(m_view).DoModal();
+
+		break;
+	case ID_Backup:
+	{
+		m_view.m_ResModule.ActivateResource();
+		CBackupDlg BackupDlg(m_view);
+		(void)BackupDlg.DoModal();
+	}
+
+	break;
+	case ID_DeployMdl:
+		m_view.showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
+			m_model.deployMdl([&](UINT, cwstr strTip) {
+				ProgressDlg.SetStatusText(strTip.c_str());
+				return ProgressDlg.checkStatus();
+			});
+		});
 
 		break;
 	case ID_Setting:
@@ -129,18 +148,8 @@ bool CPlayerView::handleCommand(UINT uID)
 	}
 
 	break;
-	case ID_Backup:
-	{
-		m_view.m_ResModule.ActivateResource();
-		CBackupDlg BackupDlg(m_view);
-		(void)BackupDlg.DoModal();
-	}
-	
-	break;
-	case ID_PlayRecord:
-		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
-		m_view.m_ResModule.ActivateResource();
-		(void)CPlayRecordDlg(m_view).DoModal();
+	case ID_AttachDir:
+		m_view.m_MediaResPage.attachDir();
 
 		break;
 	case ID_WholeTrack:
@@ -322,8 +331,11 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 		}
 	};
 
-	CProgressDlg ProgressDlg(fnCheck, lstPlayItems.size() + lstAlbumItems.size());
-	if (IDOK == ProgressDlg.DoModal(L"检查重复曲目", &m_view.m_MainWnd) && arrResult)
+	if (!m_view.showProgressDlg(L"检查重复曲目", fnCheck, lstPlayItems.size() + lstAlbumItems.size()))
+	{
+		return;
+	}
+	if (arrResult)
 	{
 		CResGuard ResGuard(m_view.m_ResModule);
 		CDuplicateMediaDlg dlg(m_view, arrResult);
@@ -391,11 +403,10 @@ void CPlayerView::_addInMedia()
 		CMainApp::msgBox(L"请选择 " + strRootDir + L" 以外的文件！");
 		return;
 	}
-
-	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
+	
+	(void)m_view.showProgressDlg(L"合入外部文件", [&](CProgressDlg& ProgressDlg) {
 		m_view.addInMedia(lstFiles, ProgressDlg);
 	}, lstFiles.size());
-	(void)ProgressDlg.DoModal(L"合入外部文件");
 }
 
 bool CPlayerView::msgBox(cwstr strMsg, bool bWarning)

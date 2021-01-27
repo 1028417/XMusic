@@ -111,7 +111,7 @@
 #define ID_MODIFY_MEDIALIB              32777
 #define ID_ADD_GROUP                    32777
 #define ID_CREATE_MEDIALIB              32778
-#define ID_Renme                       32779
+#define ID_Renme                        32779
 #define ID_MODIFY_ROOT                  32780
 #define ID_Export                       32782
 #define ID_BACKWARD                     32782
@@ -239,14 +239,16 @@
 #define ID_ATTACH_DIR                   32975
 #define ID_ATTACH_WHOLETRACK            32976
 #define ID__32977                       32977
-#define ID_Deploy                       32978
+#define ID_DeployArti                   32978
+#define ID_Menu32979                    32979
+#define ID_DeployMdl                    32980
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32979
+#define _APS_NEXT_COMMAND_VALUE         32981
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

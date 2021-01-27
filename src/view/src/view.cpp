@@ -156,11 +156,6 @@ void __view::findMedia(cwstr strFindPath, bool bDir, cwstr strSingerName)
 
 void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<const tagVerifyResult&> cb)
 {
-	if (NULL == pWnd)
-	{
-		pWnd = &m_MainWnd;
-	}
-
 	if (!lstMedias)
 	{
 		return;
@@ -224,8 +219,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		}
 	};
 
-	CProgressDlg ProgressDlg(fnVerify, mapMedias.size());
-	__Ensure(IDOK == ProgressDlg.DoModal(L"检测曲目", pWnd));
+	__Ensure(showProgressDlg(L"检测曲目", fnVerify, mapMedias.size(), pWnd));
 	
 	if (VerifyResult.paInvalidMedia)
 	{
@@ -484,8 +478,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 		ProgressDlg.SetStatusText((L"成功导出文件: " + to_wstring(uRet)).c_str());
 	};
 
-	CProgressDlg ProgressDlg(cb);
-	return IDOK == ProgressDlg.DoModal(strTitle, &wnd);
+	return showProgressDlg(strTitle.c_str(), cb, &wnd);
 }
 
 void __view::exportMediaSet(CMediaSet& MediaSet)
@@ -757,15 +750,14 @@ void __view::snapshotDir(CMediaDir& dir)
 		ProgressDlg.SetStatusText(L"已生成快照");
 	};
 
-	CProgressDlg ProgressDlg(cb);
-	(void)ProgressDlg.DoModal(L"生成快照", &m_MainWnd);
+	(void)showProgressDlg(L"生成快照", cb);
 }
 
 void __view::_checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult)>& fnWork)
 {
 	TD_SimilarFile arrResult;
 
-	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
+	cauto cb = [&](CProgressDlg& ProgressDlg) {
 		fnWork(ProgressDlg, arrResult);
 
 		if (!arrResult)
@@ -776,8 +768,12 @@ void __view::_checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD
 		{
 			ProgressDlg.Close();
 		}
-	});
-	if (IDOK == ProgressDlg.DoModal(L"检查相似文件", &m_MainWnd) && arrResult)
+	};
+	if (!showProgressDlg(L"检查相似文件", cb))
+	{
+		return;
+	}
+	if (arrResult)
 	{
 		CResGuard ResGuard(m_ResModule);
 		CSimilarFileDlg SimilarFileDlg(*this, arrResult);
@@ -878,7 +874,7 @@ void __view::checkSimilarFile(CMediaDir& dir)
 UINT __view::formatFileTitle(CMediaDir& dir)
 {
 	UINT uCount = 0;
-	CProgressDlg ProgressDlg([&](CProgressDlg& ProgressDlg) {
+	(void)showProgressDlg(L"标题格式化", [&](CProgressDlg& ProgressDlg) {
 		TD_MediaResList lstMediaRes;
 		CPath::scanDir(ProgressDlg.runSignal(), dir, [&](CPath& dir, TD_XFileList& paSubFile) {
 			if (!ProgressDlg.checkStatus())
@@ -912,7 +908,6 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 
 		ProgressDlg.SetStatusText((L"格式化" + to_wstring(uCount) + L"个文件标题").c_str());
 	});
-	(void)ProgressDlg.DoModal(L"标题格式化", &m_MainWnd);
 	
 	return uCount;
 }

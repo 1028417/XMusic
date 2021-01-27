@@ -135,7 +135,7 @@ private:
 
 	void _asyncTask();
 
-	void _syncArti(CMediaDir& dir);
+	void _deployArti(CMediaDir& dir);
 
 	void _RefreshMediaResPanel(CMediaDir& dir)
 	{
