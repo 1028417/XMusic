@@ -467,12 +467,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 				ProgressDlg.ForwardProgress(uProgressOffset);
 			}
 
-			if (!ProgressDlg.checkStatus())
-			{
-				return false;
-			}
-
-			return true;
+			return ProgressDlg.checkStatus();
 		});
 
 		ProgressDlg.SetStatusText((L"成功导出文件: " + to_wstring(uRet)).c_str());
