@@ -28,8 +28,8 @@ void CController::start()
 
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_F5, E_HotkeyFlag::HKF_Null, ID_REFRESH_ROOT));
 
-	CMainApp::RegHotkey(tagHotkeyInfo(VK_F3, E_HotkeyFlag::HKF_Null, ID_FIND));
-	CMainApp::RegHotkey(tagHotkeyInfo('F', E_HotkeyFlag::HKF_Control, ID_FIND));
+	CMainApp::RegHotkey(tagHotkeyInfo(VK_F3, E_HotkeyFlag::HKF_Null, ID_Find));
+	CMainApp::RegHotkey(tagHotkeyInfo('F', E_HotkeyFlag::HKF_Control, ID_Find));
 
 	CMainApp::RegHotkey(tagHotkeyInfo('D', E_HotkeyFlag::HKF_Control, ID_VERIFY));
 	CMainApp::RegHotkey(tagHotkeyInfo('E', E_HotkeyFlag::HKF_Control, ID_ExportMedia));

@@ -40,7 +40,7 @@ BOOL CPlayingPage::OnInitDialog()
 		return true;
 	});
 
-	__super::RegMenuHotkey(m_wndList, VK_F2, ID_RENAME);
+	__super::RegMenuHotkey(m_wndList, VK_F2, ID_Renme);
 	__super::RegMenuHotkey(m_wndList, VK_DELETE, ID_REMOVE);
 
 	return TRUE;
@@ -69,7 +69,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 	
 	break;
-	case ID_FIND:
+	case ID_Find:
 		arrSelPlayItem.front([&](auto& playItem) {
 			m_view.findMedia(playItem.GetPath(), false);
 		});
@@ -103,7 +103,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		});
 
 		break;
-	case ID_EXPORT:
+	case ID_Export:
 		if (arrSelPlayItem)
 		{
 			m_view.exportMedia(TD_IMediaList(arrSelPlayItem));
@@ -115,7 +115,7 @@ void CPlayingPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_RENAME:
+	case ID_Renme:
 		m_wndList.rename();
 	
 		break;
@@ -271,15 +271,15 @@ void CPlayingPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 	if (1 != nSelCount)
 	{
-		m_MenuGuard.EnableItem(ID_FIND, false);
+		m_MenuGuard.EnableItem(ID_Find, false);
 		m_MenuGuard.EnableItem(ID_HITTEST, false);
 
 		m_MenuGuard.EnableItem(ID_CopyTitle, false);
 		m_MenuGuard.EnableItem(ID_EXPLORE, false);
-		m_MenuGuard.EnableItem(ID_RENAME, false);
+		m_MenuGuard.EnableItem(ID_Renme, false);
 	}
 
-	m_MenuGuard.EnableItem(ID_EXPORT, (m_wndList.GetItemCount() > 0));
+	m_MenuGuard.EnableItem(ID_Export, (m_wndList.GetItemCount() > 0));
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }

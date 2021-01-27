@@ -172,9 +172,9 @@ BOOL CMediaResPanel::OnInitDialog()
 
 	(void)__super::RegDropableCtrl(m_wndList);
 
-	__super::RegMenuHotkey(m_wndList, VK_RETURN, ID_OPEN);
-	__super::RegMenuHotkey(m_wndList, VK_F2, ID_RENAME);
-	__super::RegMenuHotkey(m_wndList, VK_DELETE, ID_DELETE);
+	__super::RegMenuHotkey(m_wndList, VK_RETURN, ID_Open);
+	__super::RegMenuHotkey(m_wndList, VK_F2, ID_Renme);
+	__super::RegMenuHotkey(m_wndList, VK_DELETE, ID_Delete);
 	__super::RegMenuHotkey(m_wndList, VK_BACK, ID_Upward);
 
 	g_lstMediaResPanels.push_back(this);
@@ -603,7 +603,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		_showDir(m_pRootDir, m_pCurrDir->parent(), m_pCurrDir);
 		
 		break;
-	case ID_OPEN:
+	case ID_Open:
 		if (0==uVkKey && !lstMediaRes)
 		{
 			TD_ListObjectList lstAllObject;
@@ -629,7 +629,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		});
 
 		break;
-	case ID_EXPORT:
+	case ID_Export:
 		if (pMediaDir)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
@@ -641,7 +641,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_DEPLOY:
+	case ID_Deploy:
 		if (pMediaDir)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
@@ -676,7 +676,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 		
 		break;
-	case ID_FIND:
+	case ID_Find:
 		if (pMediaDir)
 		{
 			m_view.findMedia(pMediaDir->GetPath(), true);
@@ -697,7 +697,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_RENAME:
+	case ID_Renme:
 		__EnsureBreak(1 == lstObjects.size());
 
 		lstObjects.front([&](CListObject& ListObject) {
@@ -705,7 +705,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		});
 		
 		break;
-	case ID_DELETE:
+	case ID_Delete:
 		__Ensure(m_pCurrDir);
 
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
@@ -777,13 +777,19 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 void CMediaResPanel::_syncArti(CMediaDir& dir)
 {
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		UINT uCount = m_view.getModel().syncArti(dir, [&](cwstr strPath, UINT uProgress, UINT uTotal) {
+		UINT uCount = m_view.getModel().syncArti(dir, [&](cwstr strPath, UINT uProgress, bool bFail) {
 			if (!ProgressDlg.checkStatus())
 			{
 				return false;
 			}
+
 			ProgressDlg.SetStatusText((L"正在发布" + strPath).c_str());
-			ProgressDlg.SetProgress(uProgress, uTotal);
+			ProgressDlg.SetProgress(uProgress, uProgress);
+
+			if (!bFail)
+			{
+				return ProgressDlg.confirmBox(L"发布失败，是否继续？");
+			}
 			return true;
 		});
 		ProgressDlg.SetStatusText((L"已发布制品" + to_wstring(uCount) + L'个').c_str());
@@ -829,7 +835,7 @@ void CMediaResPanel::OnNMDBblClkList(NMHDR *pNMHDR, LRESULT *pResult)
 		
 		CMediaRes *pMediaRes = (CMediaRes*)m_wndList.GetItemObject(pNMLV->iItem);
 
-		this->OnMenuCommand(ID_OPEN);
+		this->OnMenuCommand(ID_Open);
 
 		if (NULL != pMediaRes)
 		{
@@ -890,29 +896,32 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 {
-	m_MenuGuard.EnableItem({ ID_OPEN, ID_FIND, ID_CopyTitle, ID_RENAME, ID_DELETE, ID_Detach, ID_Attach, ID_FormatTitle }, FALSE);
+	m_MenuGuard.EnableItem({ ID_Open, ID_CopyTitle, ID_Renme, ID_Delete, ID_Detach, ID_Attach
+		, ID_Find, ID_FormatTitle, ID_Export, ID_Snapshot, ID_Deploy }, FALSE);
 
 	if (pSubDir)
 	{
-		m_MenuGuard.SetItemText(ID_OPEN, _T("打开"));
-		m_MenuGuard.EnableItem(ID_OPEN, TRUE);
-
-		m_MenuGuard.EnableItem(ID_FIND, TRUE);
+		m_MenuGuard.SetItemText(ID_Open, _T("打开"));
+		m_MenuGuard.EnableItem(ID_Open, TRUE);
 
 		m_MenuGuard.EnableItem(ID_CopyTitle, TRUE);
 
+		m_MenuGuard.EnableItem(ID_Find, TRUE);
 		m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
+		m_MenuGuard.EnableItem(ID_Export, TRUE);
+		m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
+		m_MenuGuard.EnableItem(ID_Deploy, TRUE);
 
 		//if (pSubDir->rootDir() == m_pRootDir)
 		if (pSubDir->parent())
 		{
-			m_MenuGuard.EnableItem(ID_RENAME, TRUE);
+			m_MenuGuard.EnableItem(ID_Renme, TRUE);
 		}
 		else
 		{
 			if (m_bSingerPanel)
 			{
-				m_MenuGuard.EnableItem(ID_RENAME, TRUE);
+				m_MenuGuard.EnableItem(ID_Renme, TRUE);
 			}
 
 			m_MenuGuard.EnableItem(ID_Detach, TRUE);
@@ -920,22 +929,13 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 	}
 	else
 	{
-		m_MenuGuard.SetItemText(ID_OPEN, _T("播放"));
-
-		if (m_pCurrDir)
-		{
-			m_MenuGuard.EnableItem(ID_OPEN, m_pCurrDir->files());
-		}
-
-		m_MenuGuard.EnableItem(ID_FIND, m_pCurrDir && m_pCurrDir != &__medialib);
+		m_MenuGuard.SetItemText(ID_Open, _T("播放"));		
+		m_MenuGuard.EnableItem(ID_Open, m_pCurrDir && m_pCurrDir->files());
 
 		m_MenuGuard.EnableItem(ID_EXPLORE, m_pCurrDir);
 
-		bool bFlag = m_wndList.GetItemCount()>0;
-		m_MenuGuard.EnableItem(ID_EXPORT, m_pCurrDir && bFlag);
-		m_MenuGuard.EnableItem(ID_Snapshot, m_pCurrDir && bFlag);
-		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir && bFlag);
-		
+		m_MenuGuard.EnableItem(ID_CheckSimilar, m_pCurrDir);
+
 		if (m_pCurrDir == m_pRootDir)
 		{
 			m_MenuGuard.EnableItem(ID_Attach, TRUE);
@@ -943,7 +943,11 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 		if (m_pCurrDir && m_pCurrDir != &__medialib)
 		{
-			m_MenuGuard.EnableItem(ID_FormatTitle, m_pCurrDir && bFlag);
+			m_MenuGuard.EnableItem(ID_Find, TRUE);
+			m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
+			m_MenuGuard.EnableItem(ID_Export, TRUE);
+			m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
+			m_MenuGuard.EnableItem(ID_Deploy, TRUE);
 		}
 	}
 
@@ -954,7 +958,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 
 void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 {
-	UINT lpIDMenuItem[] { ID_FIND, ID_ViewTrack, ID_CopyTitle, ID_RENAME };
+	UINT lpIDMenuItem[] { ID_Find, ID_ViewTrack, ID_CopyTitle, ID_Renme };
 	for (UINT uIndex = 0; uIndex < sizeof(lpIDMenuItem) / sizeof(lpIDMenuItem[0]); uIndex++)
 	{
 		m_FileMenuGuard.EnableItem(lpIDMenuItem[uIndex], FALSE);
@@ -962,7 +966,7 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 
 	if (1 == lstMediaRes.size())
 	{
-		m_FileMenuGuard.EnableItem(ID_FIND, TRUE);
+		m_FileMenuGuard.EnableItem(ID_Find, TRUE);
 
 		lstMediaRes.front([&](CMediaRes& subFile) {
 			if (subFile.cueFile())
@@ -973,7 +977,7 @@ void CMediaResPanel::_showFileMenu(TD_MediaResList& lstMediaRes)
 
 		m_FileMenuGuard.EnableItem(ID_CopyTitle, TRUE);
 
-		m_FileMenuGuard.EnableItem(ID_RENAME, TRUE);
+		m_FileMenuGuard.EnableItem(ID_Renme, TRUE);
 	}
 
 	m_FileMenuGuard.EnableItem(ID_Upward, m_pCurrDir != m_pRootDir);

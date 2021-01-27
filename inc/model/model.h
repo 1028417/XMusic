@@ -310,7 +310,7 @@ public:
     using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
 	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
-	using CB_syncArti = function<bool(cwstr strPath, UINT uProgress, UINT uTotal)>;
+	using CB_syncArti = function<bool(cwstr strPath, UINT uProgress, bool bFail)>;
 	virtual UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) = 0;
 
     virtual wstring backupDB() = 0;
@@ -459,7 +459,7 @@ private:
 #if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 
-	bool _syncArti(CMediaDir& dir, const CB_syncArti& cb, UINT uCount);
+	bool _syncArti(CMediaDir& dir, const CB_syncArti& cb, UINT& uCount);
 
 	bool _exportSingerImg(cwstr strDstDir, const CB_exportorMedia& cb, list<tagSingerImg>& lstSingerImg);
 	bool _exportMdl(cwstr strWebDir, const CB_exportorMedia& cb);

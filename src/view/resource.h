@@ -104,27 +104,27 @@
 #define ID_EXIT                         32773
 #define ID_REFRESH                      32773
 #define ID_Menu                         32774
-#define ID_DELETE                       32774
+#define ID_Delete                       32774
 #define ID_ADD_SINGER                   32774
 #define ID_EXPLORE                      32775
 #define ID_SETALARMCLOCK                32776
 #define ID_MODIFY_MEDIALIB              32777
 #define ID_ADD_GROUP                    32777
 #define ID_CREATE_MEDIALIB              32778
-#define ID_RENAME                       32779
+#define ID_Renme                       32779
 #define ID_MODIFY_ROOT                  32780
-#define ID_EXPORT                       32782
+#define ID_Export                       32782
 #define ID_BACKWARD                     32782
 #define ID_OPTION                       32784
 #define ID_REMOVE_ALBUM                 32784
 #define ID_ADD_PLAYLIST                 32785
-#define ID_FIND                         32786
+#define ID_Find                         32786
 #define ID_QUIT                         32788
 #define ID_REFRESH_ROOT                 32790
 #define ID_SETTIMER                     32792
 #define ID_SETALARM                     32794
 #define ID_PlayRecord                   32796
-#define ID_OPEN                         32796
+#define ID_Open                         32796
 #define ID_PLAY                         32796
 #define ID_VERIFY                       32798
 #define IDC_BTN_EXPLORE                 32799
@@ -239,7 +239,7 @@
 #define ID_ATTACH_DIR                   32975
 #define ID_ATTACH_WHOLETRACK            32976
 #define ID__32977                       32977
-#define ID_DEPLOY                       32978
+#define ID_Deploy                       32978
 
 // Next default values for new objects
 // 

@@ -76,7 +76,7 @@ BOOL CSingerPage::OnInitDialog()
 	});
 
 	__super::RegMenuHotkey(m_wndTree, VK_RETURN, ID_PLAY);
-	__super::RegMenuHotkey(m_wndTree, VK_F2, ID_RENAME);
+	__super::RegMenuHotkey(m_wndTree, VK_F2, ID_Renme);
 	__super::RegMenuHotkey(m_wndTree, VK_DELETE, ID_REMOVE);
 
 	(void)this->RefreshTree();
@@ -208,7 +208,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		m_view.verifyMedia(*pSingerObject);
 
 		break;
-	case ID_EXPORT:
+	case ID_Export:
 		__Assert(pSingerObject);
 		m_view.exportMediaSet(*pSingerObject);
 
@@ -249,7 +249,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		m_view.m_PlayCtrl.addPlayingItem(*(CSinger*)pSingerObject);
 		
 		break;
-	case ID_RENAME:
+	case ID_Renme:
 		__EnsureBreak(pSingerObject);
 		(void)m_wndTree.EditObject(*pSingerObject);
 
@@ -296,7 +296,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 
 	break;
-	case ID_FIND:
+	case ID_Find:
 		m_view.findMedia(((CSinger*)pSingerObject)->dir(), true, pSingerObject->m_strName);
 		
 		break;
@@ -590,9 +590,9 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 	BOOL bSinger = (pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
 	m_MenuGuard.EnableItem(ID_ADD_IMAGE, bSinger);
 
-	m_MenuGuard.EnableItem(ID_FIND, bSinger);
+	m_MenuGuard.EnableItem(ID_Find, bSinger);
 
-	m_MenuGuard.EnableItem(ID_RENAME, NULL != pSingerObject);
+	m_MenuGuard.EnableItem(ID_Renme, NULL != pSingerObject);
 	m_MenuGuard.EnableItem(ID_REMOVE, NULL != pSingerObject);
 
 	m_MenuGuard.EnableItem(ID_DisableDemand, NULL != pSingerObject);

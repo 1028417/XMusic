@@ -174,7 +174,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	}
 	
 	break;
-	case ID_FIND:
+	case ID_Find:
 	{
 		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
 

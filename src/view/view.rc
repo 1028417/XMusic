@@ -83,7 +83,7 @@ BEGIN
     END
     POPUP "曲目"
     BEGIN
-        MENUITEM "查找 Ctrl+F",                   ID_FIND
+        MENUITEM "查找 Ctrl+F",                   ID_Find
         MENUITEM "查看新曲目",                       ID_ViewNewSong
         MENUITEM SEPARATOR
         MENUITEM "检测 Ctrl+D",                   ID_VERIFY
@@ -240,18 +240,18 @@ IDR_MENU_Dir MENU
 BEGIN
     POPUP " "
     BEGIN
-        MENUITEM "打开",                          ID_OPEN
-        MENUITEM "查找",                          ID_FIND
+        MENUITEM "打开",                          ID_Open
+        MENUITEM "查找",                          ID_Find
         MENUITEM "浏览",                          ID_EXPLORE
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "导出",                          ID_Export
         MENUITEM "快照",                          ID_Snapshot
-        MENUITEM "发布",                          ID_DEPLOY
+        MENUITEM "发布",                          ID_Deploy
         MENUITEM "检查相似文件",                      ID_CheckSimilar
         MENUITEM "标题格式化",                       ID_FormatTitle
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
-        MENUITEM "重命名",                         ID_RENAME
-        MENUITEM "删除",                          ID_DELETE
+        MENUITEM "重命名",                         ID_Renme
+        MENUITEM "删除",                          ID_Delete
         MENUITEM "卸载",                          ID_Detach
         MENUITEM "挂载",                          ID_Attach
         MENUITEM SEPARATOR
@@ -266,11 +266,11 @@ BEGIN
     BEGIN
         MENUITEM "播放",                          ID_PLAY
         MENUITEM "检测",                          ID_VERIFY
-        MENUITEM "查找",                          ID_FIND
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "查找",                          ID_Find
+        MENUITEM "导出",                          ID_Export
         MENUITEM SEPARATOR
         MENUITEM "添加头像",                        ID_ADD_IMAGE
-        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除",                          ID_REMOVE
         MENUITEM SEPARATOR
         MENUITEM "新建组",                         ID_ADD_GROUP
@@ -344,10 +344,10 @@ BEGIN
     BEGIN
         MENUITEM "播放",                          ID_PLAY
         MENUITEM "检测",                          ID_VERIFY
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "导出",                          ID_Export
         MENUITEM SEPARATOR
         MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
-        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除歌单",                        ID_REMOVE
         MENUITEM "新建歌单",                        ID_ADD_PLAYLIST
         MENUITEM SEPARATOR
@@ -371,13 +371,13 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "查找",                          ID_FIND
+        MENUITEM "查找",                          ID_Find
         MENUITEM "定位",                          ID_HITTEST
         MENUITEM "浏览",                          ID_EXPLORE
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "导出",                          ID_Export
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
-        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除曲目",                        ID_REMOVE
         MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
     END
@@ -388,13 +388,13 @@ BEGIN
     POPUP " "
     BEGIN
         MENUITEM "播放",                          ID_PLAY
-        MENUITEM "查找",                          ID_FIND
+        MENUITEM "查找",                          ID_Find
         MENUITEM "定位",                          ID_HITTEST
         MENUITEM "浏览",                          ID_EXPLORE
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "导出",                          ID_Export
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
-        MENUITEM "重命名",                         ID_RENAME
+        MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除",                          ID_REMOVE
         MENUITEM "清空",                          ID_CLEAR
     END
@@ -404,15 +404,15 @@ IDR_MENU_File MENU
 BEGIN
     POPUP " "
     BEGIN
-        MENUITEM "播放",                          ID_OPEN
-        MENUITEM "查找",                          ID_FIND
+        MENUITEM "播放",                          ID_Open
+        MENUITEM "查找",                          ID_Find
         MENUITEM "浏览",                          ID_EXPLORE
-        MENUITEM "导出",                          ID_EXPORT
+        MENUITEM "导出",                          ID_Export
         MENUITEM "查看分轨",                        ID_ViewTrack
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
-        MENUITEM "重命名",                         ID_RENAME
-        MENUITEM "删除",                          ID_DELETE
+        MENUITEM "重命名",                         ID_Renme
+        MENUITEM "删除",                          ID_Delete
         MENUITEM SEPARATOR
         MENUITEM "刷新",                          ID_REFRESH
         MENUITEM "返回",                          ID_Upward
@@ -1041,7 +1041,8 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

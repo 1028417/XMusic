@@ -121,7 +121,7 @@ BOOL CPlaylistPage::OnInitDialog()
 	});
 	
 	__super::RegMenuHotkey(m_wndList, VK_RETURN, ID_PLAY);
-	__super::RegMenuHotkey(m_wndList, VK_F2, ID_RENAME);
+	__super::RegMenuHotkey(m_wndList, VK_F2, ID_Renme);
 	__super::RegMenuHotkey(m_wndList, VK_DELETE, ID_REMOVE);
 
 	this->RefreshList();
@@ -193,7 +193,7 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		m_view.verifyMedia(*pPlaylist);
 
 		break;
-	case ID_EXPORT:
+	case ID_Export:
 		__Assert(pPlaylist);
 		m_view.exportMediaSet(*pPlaylist);
 
@@ -219,7 +219,7 @@ void CPlaylistPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		m_wndList.EditLabel(nItem);
 		
 		break;
-	case ID_RENAME:
+	case ID_Renme:
 		__EnsureBreak(nItem >= 0);
 		m_wndList.EditLabel(nItem);
 
@@ -331,7 +331,7 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 	BOOL bEnable = (lpNM->iItem >= 0);
 
 	m_MenuGuard.EnableItem(ID_ADD_PLAYITEM, bEnable);	
-	m_MenuGuard.EnableItem(ID_RENAME, bEnable);
+	m_MenuGuard.EnableItem(ID_Renme, bEnable);
 	m_MenuGuard.EnableItem(ID_REMOVE, bEnable);
 
 	m_MenuGuard.EnableItem(ID_DisableDemand, bEnable);
@@ -367,7 +367,7 @@ void CPlaylistPage::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 
 	m_MenuGuard.EnableItem(ID_PLAY, bAvalible);
 	m_MenuGuard.EnableItem(ID_VERIFY, bAvalible);
-	m_MenuGuard.EnableItem(ID_EXPORT, bAvalible);
+	m_MenuGuard.EnableItem(ID_Export, bAvalible);
 
 	(void)m_MenuGuard.Popup(this, m_view.m_globalSize.m_uMenuItemHeight, m_view.m_globalSize.m_fMidFontSize);
 }
