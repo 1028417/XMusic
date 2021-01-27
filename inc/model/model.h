@@ -310,7 +310,7 @@ public:
     using CB_exportorMedia = function<bool(UINT uProgressOffset, cwstr strDstFile)>;
 	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_exportorMedia& cb) = 0;
 
-	using CB_syncArti = function<bool(cwstr strPath, UINT uProgress, bool bFail)>;
+	using CB_syncArti = function<bool(cwstr strTip, UINT uProgress, bool bFail)>;
 	virtual UINT syncArti(CMediaDir& dir, const CB_syncArti& cb) = 0;
 
     virtual wstring backupDB() = 0;
