@@ -242,13 +242,15 @@
 #define ID_DeployArti                   32978
 #define ID_Menu32979                    32979
 #define ID_DeployMdl                    32980
+#define ID_32981                        32981
+#define ID_DeployMedias                 32982
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32981
+#define _APS_NEXT_COMMAND_VALUE         32983
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

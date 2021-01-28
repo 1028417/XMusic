@@ -65,8 +65,6 @@ bool CController::handleCommand(UINT uID)
 
 		break;
 	case ID_MODIFY_ROOT:
-	{
-		CWaitCursor();
 		if (setupMediaLib())
 		{
 			if (m_model.getPlayMgr().playingItems())
@@ -74,9 +72,8 @@ bool CController::handleCommand(UINT uID)
 				m_model.getPlayMgr().SetPlayStatus(E_PlayStatus::PS_Play);
 			}
 		}
-	}
-	
-	break;
+		
+		break;
 	case ID_REFRESH_ROOT:
 	{
 		__waitCursor;

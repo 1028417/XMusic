@@ -109,6 +109,22 @@ bool CPlayerView::handleCommand(UINT uID)
 		m_view.m_MainWnd.setForeground();
 
 		break;
+	case ID_Setting:
+	{
+		m_view.m_ResModule.ActivateResource();
+		COptionDlg OptionDlg(m_view);
+		(void)OptionDlg.DoModal();
+
+		m_view.m_MainWnd.showMenu(!m_view.getOption().bHideMenuBar);
+
+		//CDockView *pDockView = m_view.m_MainWnd.GetView(E_DockViewType::DVT_DockCenter);
+		//if (NULL != pDockView)
+		//{
+		//	pDockView->SetTabStyle(m_bShowMenu? E_TabStyle::TS_Bottom:E_TabStyle::TS_Top);
+		//}
+	}
+
+	break;
 	case ID_PlayRecord:
 		__EnsureBreak(m_view.m_MainWnd.IsWindowEnabled());
 		m_view.m_ResModule.ActivateResource();
@@ -132,22 +148,35 @@ bool CPlayerView::handleCommand(UINT uID)
 		});
 
 		break;
-	case ID_Setting:
-	{
-		m_view.m_ResModule.ActivateResource();
-		COptionDlg OptionDlg(m_view);
-		(void)OptionDlg.DoModal();
+	case ID_DeployMedias:
+		m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
+			TD_IMediaList paMedias;
+			__xmedialib.GetAllMedias(paMedias);
+			auto uTotalProgress = paMedias.size();
+			auto uCount = m_model.deployArti(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
+				if (!ProgressDlg.checkStatus())
+				{
+					return false;
+				}
 
-		m_view.m_MainWnd.showMenu(!m_view.getOption().bHideMenuBar);
+				if (bFail)
+				{
+					return ProgressDlg.confirmBox(strTip + L"，是否继续？");
+				}
+				else
+				{
+					ProgressDlg.SetStatusText((L"正在发布: " + strTip).c_str());
+					ProgressDlg.SetProgress(uProgress, uTotalProgress);
+					return true;
+				}
+			});
 
-		//CDockView *pDockView = m_view.m_MainWnd.GetView(E_DockViewType::DVT_DockCenter);
-		//if (NULL != pDockView)
-		//{
-		//	pDockView->SetTabStyle(m_bShowMenu? E_TabStyle::TS_Bottom:E_TabStyle::TS_Top);
-		//}
-	}
+			CString cstrTip;
+			cstrTip.Format(L"已发布 %d 个文件", uCount);
+			ProgressDlg.SetStatusText(cstrTip);
+		});
 
-	break;
+		break;
 	case ID_AttachDir:
 		m_view.m_MediaResPage.attachDir();
 

@@ -108,9 +108,8 @@ enum class E_MatchResult
 	, MR_Ignore
 };
 
-using CB_AutoMatchConfirm = function<E_MatchResult(CMatchMediaInfo&, CMediaResInfo&)>;
-
 using CB_AutoMatchProgress = function<bool(cwstr strDir)>;
+using CB_AutoMatchConfirm = function<E_MatchResult(CMatchMediaInfo&, CMediaResInfo&)>;
 
 class __ModelExt CAutoMatch
 {

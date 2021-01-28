@@ -117,8 +117,6 @@ struct __ModelExt tagExportOption
 
     bool bDeleteOther = true;
 
-    bool bExportDB = false;
-
     wstring strExportPath;
 
     list<tagExportMedia> lstExportMedias;
@@ -263,6 +261,8 @@ public:
     virtual bool installApp(const CByteBuffer&) {return true;}
 };
 
+using CB_deployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFail)>&;
+
 class IModel
 {
 public:
@@ -307,12 +307,12 @@ public:
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
     virtual void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) = 0;
 
-    using CB_Export = function<bool(UINT uProgressOffset, cwstr strTip)>;
-	virtual UINT exportMedia(const tagExportOption& ExportOption, const CB_Export& cb) = 0;
-	virtual bool deployMdl(const CB_Export& cb) = 0;
+    using CB_Export = const function<bool(UINT uProgressOffset, cwstr strTip)>&;
+	virtual UINT exportMedia(const tagExportOption& ExportOption, CB_Export cb) = 0;
+	virtual bool deployMdl(CB_Export cb) = 0;
 
-	using CB_deployArti = function<bool(cwstr strTip, UINT uProgress, bool bFail)>;
-	virtual UINT deployArti(CMediaDir& dir, const CB_deployArti& cb) = 0;
+	virtual UINT deployArti(const TD_IMediaList& paMedias, CB_deployArti cb) = 0;
+	virtual UINT deployArti(CMediaDir& dir, CB_deployArti cb) = 0;
 
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
@@ -419,12 +419,13 @@ public:
     void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
     void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
-    UINT exportMedia(const tagExportOption& ExportOption, const CB_Export& cb) override;
-	bool deployMdl(const CB_Export& cb) override;
+    UINT exportMedia(const tagExportOption& ExportOption, CB_Export cb) override;
+	bool deployMdl(CB_Export cb) override;
 
-	UINT deployArti(CMediaDir& dir, const CB_deployArti& cb) override;
-
-    wstring backupDB() override;
+	UINT deployArti(const TD_IMediaList& paMedias, CB_deployArti cb) override;
+	UINT deployArti(CMediaDir& dir, CB_deployArti cb) override;
+    
+	wstring backupDB() override;
     bool restoreDB(cwstr strTag) override;
 
     bool clearData() override;
@@ -444,6 +445,10 @@ public:
     void close() override;
 
 private:
+	bool _initMediaLib(cwstr strDBFile);
+
+	bool _initData(cwstr strDBFile);
+
 	inline cwstr _medialibPath()
 	{
 		return m_Option.strRootDir;
@@ -453,19 +458,13 @@ private:
 #if __winvc
 	wstring _mdlPath();
 	wstring _mdlPath(cwstr strSubPath);
-#endif
 
-	bool _initMediaLib(cwstr strDBFile);
-
-    bool _initData(cwstr strDBFile);
-
-#if __winvc
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
+	
+	bool _deployArti(CMediaDir& dir, CB_deployArti cb, UINT& uCount);
 
-	bool _deployArti(CMediaDir& dir, const CB_deployArti& cb, UINT& uCount);
-
-	bool _exportSingerImg(cwstr strDstDir, const CB_Export& cb, list<tagSingerImg>& lstSingerImg);
-	bool _exportMdl(const CB_Export& cb);
+	bool _exportSingerImg(cwstr strDstDir, CB_Export cb, list<tagSingerImg>& lstSingerImg);
+	bool _exportMdl(CB_Export cb);
 
     void _clear();
 

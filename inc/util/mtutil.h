@@ -414,8 +414,8 @@ public:
 		return m_bRunSignal;
 	}
 
-    using CB_WorkThread = function<void(UINT uThreadIndex)>;
-    void start(UINT uThreadCount, const CB_WorkThread& cb, bool bBlock);
+    using CB_WorkThread = const function<void(UINT uThreadIndex)>&;
+    void start(UINT uThreadCount, CB_WorkThread cb, bool bBlock);
 
     bool checkStatus();
 

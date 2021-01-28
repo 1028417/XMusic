@@ -176,6 +176,8 @@ __UtilExt float getDPIRate();
 //__UtilExt BOOL EnablePerMonitorDialogScaling();
 
 __UtilExt const RECT& getWorkArea(bool bFullScreen);
+
+__UtilExt bool execBat(cwstr strBatFile, bool bBlock = true, int nShow = SW_SHOW, const wchar_t *pszDir = NULL);
 #endif
 
 #include "timerutil.h"

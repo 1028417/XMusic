@@ -794,7 +794,10 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 				return true;
 			}
 		});
-		ProgressDlg.SetStatusText((L"已发布制品" + to_wstring(uCount) + L'个').c_str());
+
+		CString cstrTip;
+		cstrTip.Format(L"已发布 %d 个文件", uCount);
+		ProgressDlg.SetStatusText(cstrTip);
 	};
 	
 	(void)m_view.showProgressDlg(L"发布制品", cb, this);

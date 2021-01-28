@@ -90,8 +90,6 @@ void CExportOptionDlg::OnBnClickedOK()
 	}
 
 	m_ExportOption.bDeleteOther = ((CButton*)GetDlgItem(IDC_DeleteOther))->GetCheck();
-
-	m_ExportOption.bExportDB = ((CButton*)GetDlgItem(IDC_ExportDB))->GetCheck();
-	
+		
 	CDialog::OnOK();
 }
