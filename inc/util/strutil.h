@@ -27,67 +27,76 @@ using cqstr = const QString&;
 class __UtilExt strutil
 {
 private:
-    inline static bool _checkLen(const wchar_t *pStr, int& len)
-    {
-        if (-1 == len)
-        {
-            len = wcslen(pStr);
-        }
+	template <typename T>
+	inline static size_t _checkLen(const T *pStr)
+	{
+		size_t len = 0;
+		while (*pStr++)
+		{
+			len++;
+		}
+		return len;
+	}
 
-        return len > 0;
-    }
+	inline static size_t _checkLen(const wchar_t *pStr, int& len)
+	{
+		if (-1 == len)
+		{
+			len = _checkLen(pStr);
+		}
+		return len;
+	}
 
-    inline static bool _checkLen(const char *pStr, int& len)
-    {
-        if (-1 == len)
-        {
-            len = strlen(pStr);
-        }
+	inline static size_t _checkLen(const char *pStr, int& len)
+	{
+		if (-1 == len)
+		{
+			len = _checkLen(pStr);
+		}
+		return len;
+	}
 
-        return len > 0;
-    }
+	template <typename T, class C = basic_string<T, char_traits<T>, allocator<T>>, class RET>
+	static void _split(const C& strText, T wcSplitor, RET& vecRet)
+	{
+		/*auto fn = [&](const C& strSub) {
+			if (bTrim && wcSplitor != L' ')
+			{
+				cauto str = strutil::trim_r(strSub);
+				if (!str.empty())
+				{
+					vecRet.push_back(str);
+				}
+			}
+			else
+			{
+				vecRet.push_back(strSub);
+			}
+		};*/
 
-    template <typename T, class C = basic_string<T, char_traits<T>, allocator<T>>, class RET>
-    static void _split(const C& strText, T wcSplitor, RET& vecRet)
-    {
-        /*auto fn = [&](const C& strSub) {
-            if (bTrim && wcSplitor != L' ')
-            {
-                cauto str = strutil::trim_r(strSub);
-                if (!str.empty())
-                {
-                    vecRet.push_back(str);
-                }
-            }
-            else
-            {
-                vecRet.push_back(strSub);
-            }
-        };*/
+		size_t pos = 0;
+		while ((pos = strText.find_first_not_of(wcSplitor, pos)) != C::npos)
+		{
+			auto nextPos = strText.find(wcSplitor, pos);
+			if (C::npos == nextPos)
+			{
+				cauto strSub = strText.substr(pos);
+				vecRet.push_back(strSub);  //fn(strSub);
+				break;
+			}
 
-        size_t pos = 0;
-        while ((pos = strText.find_first_not_of(wcSplitor, pos)) != C::npos)
-        {
-            auto nextPos = strText.find(wcSplitor, pos);
-            if (C::npos == nextPos)
-            {
-                cauto strSub = strText.substr(pos);
-                vecRet.push_back(strSub);  //fn(strSub);
-                break;
-            }
+			cauto strSub = strText.substr(pos, nextPos - pos);
+			vecRet.push_back(strSub);  //fn(strSub);
 
-            cauto strSub = strText.substr(pos, nextPos - pos);
-            vecRet.push_back(strSub);  //fn(strSub);
-
-            pos = nextPos + 1;
-        }
-    }
+			pos = nextPos + 1;
+		}
+	}
 
 public:
-    static int collate(cwstr lhs, cwstr rhs);
-    static int collate_cn(cwstr lhs, cwstr rhs);
+	static int collate(cwstr lhs, cwstr rhs);
+	static int collate_cn(cwstr lhs, cwstr rhs);
 
-    static UINT checkWordCount(cwstr str);
+	static UINT checkWordCount(cwstr str);
 
 	template <class S>
 	static S substr(const S& str, size_t pos, size_t len = -1)
@@ -100,8 +109,8 @@ public:
 		return str.substr(pos, len);
 	}
 
-        static bool endWith(cwstr str, cwstr strEnd);
-        static bool endWith(const string& str, const string& strEnd);
+	static bool endWith(cwstr str, cwstr strEnd);
+	static bool endWith(const string& str, const string& strEnd);
 
 	template <class S, typename T = decltype(*S().c_str())>
 	inline static void ltrim(S& str, T t = ' ')
@@ -118,12 +127,12 @@ public:
 		{
 			return S();
 		}
-		
+
 		if (pos > 0)
 		{
 			return str.substr(pos);
 		}
-		
+
 		return str;
 	}
 
@@ -131,13 +140,13 @@ public:
 	inline static void rtrim(S& str, T t = ' ')
 	{
 		auto pos = str.find_last_not_of(t);
-		str.erase(pos+1);
+		str.erase(pos + 1);
 	}
 	template <class S, typename T = decltype(*S().c_str())>
 	static S rtrim_r(const S& str, T t = ' ')
 	{
 		auto pos = str.find_last_not_of(t);
-		return str.substr(0, pos+1);
+		return str.substr(0, pos + 1);
 	}
 
 	template <class S, typename T = decltype(*S().c_str())>
@@ -155,23 +164,23 @@ public:
 		return strRet;
 	}
 
-    template <class T>
-    static void split(cwstr strText, wchar_t wcSplitor, T& vecRet)
-    {
-        _split(strText, wcSplitor, vecRet);
-    }
+	template <class T>
+	static void split(cwstr strText, wchar_t wcSplitor, T& vecRet)
+	{
+		_split(strText, wcSplitor, vecRet);
+	}
 
-    template <class T>
-    static void split(const string& strText, char wcSplitor, T& vecRet)
-    {
-        _split(strText, wcSplitor, vecRet);
-    }
+	template <class T>
+	static void split(const string& strText, char wcSplitor, T& vecRet)
+	{
+		_split(strText, wcSplitor, vecRet);
+	}
 
-    static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
-    static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = 0);
+	static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
+	static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = 0);
 
-    template <typename C>
-    inline static C lowerCase(C chr)
+	template <typename C>
+	inline static C lowerCase(C chr)
 	{
 		if (chr >= 'A' && chr <= 'Z')
 		{
@@ -179,8 +188,8 @@ public:
 		}
 		return chr;
 	}
-    template <typename C>
-    inline static C upperCase(C chr)
+	template <typename C>
+	inline static C upperCase(C chr)
 	{
 		if (chr >= 'a' && chr <= 'z')
 		{
@@ -233,10 +242,10 @@ public:
 		return strRet;
 	}
 
-    static UINT replace(wstring& str, cwstr strFind, const wchar_t *pszReplace = NULL);
+	static UINT replace(wstring& str, cwstr strFind, const wchar_t *pszReplace = NULL);
 	static UINT replace(string& str, const string& strFind, const char *pszReplace = NULL);
 
-    static UINT replace(wstring& str, cwstr strFind, cwstr strReplace);
+	static UINT replace(wstring& str, cwstr strFind, cwstr strReplace);
 	static UINT replace(string& str, const string& strFind, const string& strReplace);
 
 	template <class S, typename T = decltype(S().c_str())>
@@ -254,9 +263,9 @@ public:
 		replace(strRet, strFind, strReplace);
 		return strRet;
 	}
-	
-	template <class S, typename T=decltype(S()[0])>
-    static UINT replaceChar(S& str, T chrFind, T chrReplace)
+
+	template <class S, typename T = decltype(S()[0])>
+	static UINT replaceChar(S& str, T chrFind, T chrReplace)
 	{
 		UINT uRet = 0;
 		for (auto& chr : str)
@@ -271,15 +280,15 @@ public:
 		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
-    static S replaceChar_r(const S& str, T chrFind, T chrReplace)
-    {
-        auto strRet = str;
-        replaceChar(strRet, chrFind, chrReplace);
-        return strRet;
-    }
+	static S replaceChar_r(const S& str, T chrFind, T chrReplace)
+	{
+		auto strRet = str;
+		replaceChar(strRet, chrFind, chrReplace);
+		return strRet;
+	}
 
 	template <class S, typename T = decltype(S()[0])>
-    static UINT replaceChars(S& str, const S& strFindChars, T chrReplace)
+	static UINT replaceChars(S& str, const S& strFindChars, T chrReplace)
 	{
 		UINT uRet = 0;
 		for (auto& chr : str)
@@ -294,12 +303,12 @@ public:
 		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
-    static S replaceChars_r(const S& str, const S& strFindChars, T chrReplace)
-    {
-        auto strRet = str;
-        replaceChars(strRet, strFindChars, chrReplace);
-        return strRet;
-    }
+	static S replaceChars_r(const S& str, const S& strFindChars, T chrReplace)
+	{
+		auto strRet = str;
+		replaceChars(strRet, strFindChars, chrReplace);
+		return strRet;
+	}
 
 	template <class S, typename T = decltype(S()[0])>
 	static UINT eraseChar(S& str, T chrFind)
@@ -321,60 +330,73 @@ public:
 		return uRet;
 	}
 	template <class S, typename T = decltype(S()[0])>
-    static S eraseChar_r(const S& str, T chrFind)
-    {
-        auto strRet = str;
-        eraseChar(strRet, chrFind);
-        return strRet;
-    }
+	static S eraseChar_r(const S& str, T chrFind)
+	{
+		auto strRet = str;
+		eraseChar(strRet, chrFind);
+		return strRet;
+	}
 
-    template <class S>
-    static UINT eraseChars(S& str, const S& strFindChars)
-    {
+	template <class S>
+	static UINT eraseChars(S& str, const S& strFindChars)
+	{
 		UINT uRet = 0;
-        for (auto itr=str.begin(); itr!=str.end(); )
-        {
-            if (S::npos != strFindChars.find(*itr))
-            {
-                itr = str.erase(itr);
+		for (auto itr = str.begin(); itr != str.end(); )
+		{
+			if (S::npos != strFindChars.find(*itr))
+			{
+				itr = str.erase(itr);
 				uRet++;
-            }
-            else
-            {
-                ++itr;
-            }
-        }
+			}
+			else
+			{
+				++itr;
+			}
+		}
 
 		return uRet;
-    }
-    template <class S>
-    static S eraseChars_r(const S& str, const S& strFindChars)
-    {
-        auto strRet = str;
-        eraseChars(strRet, strFindChars);
-        return strRet;
-    }
+	}
+	template <class S>
+	static S eraseChars_r(const S& str, const S& strFindChars)
+	{
+		auto strRet = str;
+		eraseChars(strRet, strFindChars);
+		return strRet;
+	}
 
 	static string base64_encode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
 	static string base64_encode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)
 	{
-		return base64_encode(pStr, (size_t)strlen(pStr), pszBase, chrTail);
+		return base64_encode(pStr, _checkLen(pStr), pszBase, chrTail);
 	}
 	static string base64_encode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
-        return base64_encode(str.c_str(), str.size(), pszBase, chrTail);
+		return base64_encode(str.c_str(), str.size(), pszBase, chrTail);
 	}
 
 	static string base64_decode(const char *pStr, size_t len, const char *pszBase = NULL, char chrTail = 0);
 	static string base64_decode(const char *pStr, const char *pszBase = NULL, char chrTail = 0)
 	{
-		return base64_decode(pStr, (size_t)strlen(pStr), pszBase, chrTail);
+		return base64_decode(pStr, _checkLen(pStr), pszBase, chrTail);
 	}
 	static string base64_decode(const string& str, const char *pszBase = NULL, char chrTail = 0)
 	{
-        return base64_decode(str.c_str(), str.size(), pszBase, chrTail);
+		return base64_decode(str.c_str(), str.size(), pszBase, chrTail);
 	}
-	
+
+#if __windows
+	static string toMbs(UINT uCodePage, const wchar_t *pStr, int len = -1);
+	static string toMbs(UINT uCodePage, cwstr str)
+	{
+		return toMbs(uCodePage, str.c_str(), str.size());
+	}
+	static wstring fromMbs(UINT uCodePage, const char *pStr, int len = -1);
+	static wstring fromMbs(UINT uCodePage, const string& str)
+	{
+		return fromMbs(uCodePage, str.c_str(), str.size());
+	}
+#endif
+
 	static bool checkUtf8(const char *pStr, int len = -1);
 	static bool checkUtf8(const string& str)
 	{
