@@ -245,13 +245,15 @@ BEGIN
         MENUITEM "打开",                          ID_Open
         MENUITEM "查找",                          ID_Find
         MENUITEM "浏览",                          ID_EXPLORE
+        MENUITEM SEPARATOR
+        MENUITEM "复制标题",                        ID_CopyTitle
+        MENUITEM "标题格式化",                       ID_FormatTitle
+        MENUITEM "检查相似文件",                      ID_CheckSimilar
+        MENUITEM SEPARATOR
         MENUITEM "导出",                          ID_Export
         MENUITEM "快照",                          ID_Snapshot
         MENUITEM "发布",                          ID_DeployArti
-        MENUITEM "检查相似文件",                      ID_CheckSimilar
-        MENUITEM "标题格式化",                       ID_FormatTitle
         MENUITEM SEPARATOR
-        MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_Renme
         MENUITEM "删除",                          ID_Delete
         MENUITEM "卸载",                          ID_Detach
@@ -271,12 +273,11 @@ BEGIN
         MENUITEM "查找",                          ID_Find
         MENUITEM "导出",                          ID_Export
         MENUITEM SEPARATOR
+        MENUITEM "新建组",                         ID_ADD_GROUP
+        MENUITEM "新建歌手",                        ID_ADD_SINGER
         MENUITEM "添加头像",                        ID_ADD_IMAGE
         MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除",                          ID_REMOVE
-        MENUITEM SEPARATOR
-        MENUITEM "新建组",                         ID_ADD_GROUP
-        MENUITEM "新建歌手",                        ID_ADD_SINGER
         MENUITEM SEPARATOR
         POPUP "属性"
         BEGIN
@@ -317,8 +318,8 @@ BEGIN
         MENUITEM "播放",                          ID_PLAY_ALBUM
         MENUITEM "检测",                          ID_VERIFY_ALBUM
         MENUITEM "导出",                          ID_EXPORT_ALBUM
-        MENUITEM SEPARATOR
         MENUITEM "添加曲目",                        ID_ADD_ALBUMITEM
+        MENUITEM SEPARATOR
         MENUITEM "重命名",                         ID_RENAME_ALBUM
         MENUITEM "移除专辑",                        ID_REMOVE_ALBUM
         MENUITEM "新建专辑",                        ID_ADD_ALBUM
@@ -347,8 +348,8 @@ BEGIN
         MENUITEM "播放",                          ID_PLAY
         MENUITEM "检测",                          ID_VERIFY
         MENUITEM "导出",                          ID_Export
-        MENUITEM SEPARATOR
         MENUITEM "添加曲目",                        ID_ADD_PLAYITEM
+        MENUITEM SEPARATOR
         MENUITEM "重命名",                         ID_Renme
         MENUITEM "移除歌单",                        ID_REMOVE
         MENUITEM "新建歌单",                        ID_ADD_PLAYLIST
@@ -410,12 +411,12 @@ BEGIN
         MENUITEM "查找",                          ID_Find
         MENUITEM "浏览",                          ID_EXPLORE
         MENUITEM "导出",                          ID_Export
-        MENUITEM "查看分轨",                        ID_ViewTrack
         MENUITEM SEPARATOR
         MENUITEM "复制标题",                        ID_CopyTitle
         MENUITEM "重命名",                         ID_Renme
         MENUITEM "删除",                          ID_Delete
         MENUITEM SEPARATOR
+        MENUITEM "查看分轨",                        ID_ViewTrack
         MENUITEM "刷新",                          ID_REFRESH
         MENUITEM "返回",                          ID_Upward
     END
