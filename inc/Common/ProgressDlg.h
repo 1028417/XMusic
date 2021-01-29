@@ -22,19 +22,15 @@ private:
 	FN_Work m_fnWork;
 
 	wstring m_strTitle;
-
+	
+	CProgressCtrl m_wndProgressCtrl;
 	UINT m_uMaxProgress = 0;
-
 	UINT m_uProgress = 0;
 
 	CCASLock m_csLock;
-	mutex m_mtx;
-	
-	bool m_bFinished = false;
-
 	CString m_cstrStatusText;
 
-	CProgressCtrl m_wndProgressCtrl;
+	bool m_bFinished = false;
 
 public:
 	virtual INT_PTR DoModal(cwstr strTitle, CWnd *pWndParent=NULL);
