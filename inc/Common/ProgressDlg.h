@@ -27,7 +27,7 @@ private:
 	UINT m_uMaxProgress = 0;
 	UINT m_uProgress = 0;
 
-	CCASLock m_csLock;
+	mutex m_mutex;
 	wstring m_strStatusText;
 
 	bool m_bFinished = false;
