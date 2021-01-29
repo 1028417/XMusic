@@ -6,6 +6,8 @@
 using cwstr = const wstring&;
 using cwchr_p = const wchar_t*;
 
+#define __size_max size_t(-1)
+
 #if __windows
 #define CP_GBK 936u
 #endif
@@ -44,7 +46,7 @@ private:
 
 	inline static size_t _checkLen(const wchar_t *pStr, size_t& len)
 	{
-		if (size_t(-1) == len)
+		if (__size_max == len)
 		{
 			len = _checkLen(pStr);
 		}
@@ -103,7 +105,7 @@ public:
 	static UINT checkWordCount(cwstr str);
 
 	template <class S>
-	static S substr(const S& str, size_t pos, size_t len = size_t(-1))
+	static S substr(const S& str, size_t pos, size_t len = __size_max)
 	{
 		if (str.length() < pos)
 		{
@@ -180,8 +182,8 @@ public:
 		_split(strText, wcSplitor, vecRet);
 	}
 
-	static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = 0);
-	static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = 0);
+	static bool matchIgnoreCase(cwstr str1, cwstr str2, size_t maxlen = __size_max);
+	static bool matchIgnoreCase(cwchr_p pstr1, cwchr_p pstr2, size_t maxlen = __size_max);
 
 	template <typename C>
 	inline static C lowerCase(C chr)
@@ -410,31 +412,31 @@ public:
 	}
 #endif
 
-	static bool checkUtf8(const char *pStr, size_t len = size_t(-1));
+	static bool checkUtf8(const char *pStr, size_t len = __size_max);
 	static bool checkUtf8(const string& str)
 	{
 		return checkUtf8(str.c_str(), str.size());
 	}
 
-	static wstring fromUtf8(const char *pStr, size_t len = size_t(-1));
+	static wstring fromUtf8(const char *pStr, size_t len = __size_max);
 	static wstring fromUtf8(const string& str)
 	{
 		return fromUtf8(str.c_str(), str.size());
 	}
 
-	static string toUtf8(const wchar_t *pStr, size_t len = size_t(-1));
+	static string toUtf8(const wchar_t *pStr, size_t len = __size_max);
     static string toUtf8(cwstr str)
 	{
 		return toUtf8(str.c_str(), str.size());
 	}
 	
-    static wstring fromGbk(const char *pStr, size_t len = size_t(-1));
+    static wstring fromGbk(const char *pStr, size_t len = __size_max);
     static wstring fromGbk(const string& str)
     {
         return fromGbk(str.c_str(), str.size());
     }
 
-    static string toGbk(const wchar_t *pStr, size_t len = size_t(-1));
+    static string toGbk(const wchar_t *pStr, size_t len = __size_max);
     static string toGbk(cwstr str)
     {
         return toGbk(str.c_str(), str.size());
@@ -444,7 +446,7 @@ public:
     static string toGbk(cqstr qs);
 #endif
 
-    static string toAsc(const wchar_t *pStr, size_t len = size_t(-1));
+    static string toAsc(const wchar_t *pStr, size_t len = __size_max);
     static string toAsc(cwstr str)
     {
         return string(str.begin(), str.end());
@@ -454,7 +456,7 @@ public:
         strRet.assign(str.begin(), str.end());
     }
 
-    static wstring fromAsc(const char *pStr, size_t len = size_t(-1));
+    static wstring fromAsc(const char *pStr, size_t len = __size_max);
     static wstring fromAsc(const string& str)
     {
         return wstring(str.begin(), str.end());
@@ -464,7 +466,7 @@ public:
         strRet.assign(str.begin(), str.end());
     }
 
-	static wstring fromStr(const char *pStr, size_t len = size_t(-1));
+	static wstring fromStr(const char *pStr, size_t len = __size_max);
 	static wstring fromStr(const string& str)
 	{
 		return fromStr(str.c_str(), str.size());
