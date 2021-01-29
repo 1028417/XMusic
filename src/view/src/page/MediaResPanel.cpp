@@ -580,7 +580,7 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 
 inline static bool _checkCatDir(CPath& dir)
 {
-	if (dir.parent() == &__medialib)
+	if (dir.parent() == &__medialib || dynamic_cast<CAttachDir*>(&dir))
 	{
 		if (dir.fileName().front() == L'#')
 		{
@@ -590,14 +590,14 @@ inline static bool _checkCatDir(CPath& dir)
 	return false;
 }
 
-void CMediaResPanel::_snapshotDir(CPath& dir)
+bool CMediaResPanel::_snapshotDir(CPath& dir)
 {
-	wstring strDstDir;
+	wstring strDstFile;
 	if (_checkCatDir(dir))
 	{
-		strDstDir = m_view.getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
+		strDstFile = m_view.getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot\\" + dir.fileName();
 	}
-	m_view.snapshotDir(dir, strDstDir);
+	return m_view.snapshotDir(dir, strDstFile);
 }
 
 void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
@@ -671,7 +671,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_DeployArti:
+	case ID_DeployDir:
 		if (pMediaDir)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
@@ -684,13 +684,16 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			do {
 				if (_checkCatDir(*pDir))
 				{
-					_snapshotDir(*pDir);
+					if (!_snapshotDir(*pDir))
+					{
+						return;
+					}
 					break;
 				}
 				pDir = pDir->parent();
 			} while (pDir);
 
-			m_view.deployMdl();
+			m_view.deployMdl(false);
 		}
 		
 		break;
@@ -938,7 +941,7 @@ void CMediaResPanel::OnNMRclickList(NMHDR *pNMHDR, LRESULT *pResult)
 void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 {
 	m_MenuGuard.EnableItem({ ID_Open, ID_CopyTitle, ID_Renme, ID_Delete, ID_Detach, ID_Attach
-		, ID_Find, ID_FormatTitle, ID_Export, ID_Snapshot, ID_DeployArti }, FALSE);
+		, ID_Find, ID_FormatTitle, ID_Export, ID_Snapshot, ID_DeployDir }, FALSE);
 
 	if (pSubDir)
 	{
@@ -951,7 +954,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 		m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
 		m_MenuGuard.EnableItem(ID_Export, TRUE);
 		m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
-		m_MenuGuard.EnableItem(ID_DeployArti, TRUE);
+		m_MenuGuard.EnableItem(ID_DeployDir, TRUE);
 
 		//if (pSubDir->rootDir() == m_pRootDir)
 		if (pSubDir->parent())
@@ -988,7 +991,7 @@ void CMediaResPanel::_showDirMenu(CMediaDir *pSubDir)
 			m_MenuGuard.EnableItem(ID_FormatTitle, TRUE);
 			m_MenuGuard.EnableItem(ID_Export, TRUE);
 			m_MenuGuard.EnableItem(ID_Snapshot, TRUE);
-			m_MenuGuard.EnableItem(ID_DeployArti, TRUE);
+			m_MenuGuard.EnableItem(ID_DeployDir, TRUE);
 		}
 	}
 

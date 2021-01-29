@@ -135,7 +135,7 @@ private:
 
 	void _asyncTask();
 
-	void _snapshotDir(CPath& dir);
+	bool _snapshotDir(CPath& dir);
 
 	UINT _deployXmsc(CMediaDir& dir);
 

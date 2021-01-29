@@ -140,13 +140,16 @@ bool CPlayerView::handleCommand(UINT uID)
 
 	break;
 	case ID_DeployMdl:
-		m_view.deployMdl();
-		
-		break;
+	{
+		bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
+		m_view.deployMdl(bDeploySingerImg);
+	}
+	
+	break;
 	case ID_DeployMedias:
 	{
 		UINT uCount = 0;
-		m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
+		bool bRet = m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
 			TD_IMediaList paMedias;
 			__xmedialib.GetAllMedias(paMedias);
 			auto uTotalProgress = paMedias.size();
@@ -171,9 +174,9 @@ bool CPlayerView::handleCommand(UINT uID)
 			ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
 		});
 
-		__EnsureBreak(uCount);
+		__EnsureBreak(bRet && uCount);
 		__EnsureBreak(__mainApp->confirmBox(L"是否发布媒体库？"));
-		m_view.deployMdl();
+		m_view.deployMdl(false);
 	}
 
 	break;

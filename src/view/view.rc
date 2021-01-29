@@ -252,7 +252,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "导出",                          ID_Export
         MENUITEM "快照",                          ID_Snapshot
-        MENUITEM "发布",                          ID_DeployArti
+        MENUITEM "发布",                          ID_DeployDir
         MENUITEM SEPARATOR
         MENUITEM "重命名",                         ID_Renme
         MENUITEM "删除",                          ID_Delete
@@ -1043,7 +1043,8 @@ LANGUAGE 4, 2
 #pragma code_page(936)
 #include "res\Player.rc2"  // 非 Microsoft Visual C++ 编辑的资源
 #include "afxres.rc"     // 标准组件
-#endif
+#endif
+
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

@@ -239,7 +239,7 @@
 #define ID_ATTACH_DIR                   32975
 #define ID_ATTACH_WHOLETRACK            32976
 #define ID__32977                       32977
-#define ID_DeployArti                   32978
+#define ID_DeployDir                   32978
 #define ID_Menu32979                    32979
 #define ID_DeployMdl                    32980
 #define ID_32981                        32981

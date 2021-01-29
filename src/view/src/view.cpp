@@ -618,7 +618,7 @@ void __view::exportDir(CMediaDir& dir)
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
 static const wstring __snapshotExt = L"json";
 
-void __view::snapshotDir(CPath& dir, wstring strDstFile)
+bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 {
 	if (strDstFile.empty())
 	{
@@ -632,7 +632,7 @@ void __view::snapshotDir(CPath& dir, wstring strDstFile)
 		strDstFile = fileDlg.ShowSave();
 		if (strDstFile.empty())
 		{
-			return;
+			return false;
 		}
 	}
 
@@ -715,14 +715,10 @@ void __view::snapshotDir(CPath& dir, wstring strDstFile)
 			if (paSubDir)
 			{
 				auto& jDirs = jRoot["dirs"];
-
 				paSubDir([&](CPath& subDir, size_t uIdx) {
 					jDirs.append(JValue());
-
 					bool bRet = fnSnapshot(subDir, jDirs[uIdx]);
-
 					ProgressDlg.ForwardProgress();
-
 					return bRet;
 				});
 			}
@@ -742,18 +738,16 @@ void __view::snapshotDir(CPath& dir, wstring strDstFile)
 				TxtWriter.writeln(str);
 			}
 		}
-
 		delete pJRoot;
 
 		ProgressDlg.SetStatusText(L"已生成快照");
 	};
 
-	(void)showProgressDlg(L"生成快照", cb);
+	return showProgressDlg(L"生成快照", cb);
 }
 
-void __view::deployMdl()
+void __view::deployMdl(bool bDeploySingerImg)
 {
-	bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
 	showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
 		bool bRet = m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
 			ProgressDlg.SetStatusText(strTip.c_str());
