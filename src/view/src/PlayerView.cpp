@@ -143,10 +143,11 @@ bool CPlayerView::handleCommand(UINT uID)
 	{
 		bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
 		m_view.showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
-			m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
+			bool bRet = m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
 				ProgressDlg.SetStatusText(strTip.c_str());
 				return ProgressDlg.checkStatus();
 			});
+			ProgressDlg.SetStatusText(bRet?L"发布媒体库成功":L"发布媒体库失败");
 		});
 	}
 
