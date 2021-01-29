@@ -827,7 +827,7 @@ void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 		}
 
 		ProgressDlg.Close();
-	});
+	};
 	if (!m_view.showProgressDlg(L"·¢²¼Ä¿Â¼", cb, this) || 0 == uCount)
 	{
 		return;
