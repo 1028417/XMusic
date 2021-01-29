@@ -789,7 +789,7 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 			}
 			else
 			{
-				ProgressDlg.SetStatusText((L"正在发布: " + strTip).c_str());
+				ProgressDlg.SetStatusText(strTip.c_str());
 				ProgressDlg.SetProgress(uProgress, 0);
 				return true;
 			}
@@ -798,7 +798,7 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 		ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
 	};
 	
-	(void)m_view.showProgressDlg(L"发布制品", cb, this);
+	(void)m_view.showProgressDlg(L"发布目录", cb, this);
 }
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)

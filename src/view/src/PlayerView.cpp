@@ -140,14 +140,17 @@ bool CPlayerView::handleCommand(UINT uID)
 
 	break;
 	case ID_DeployMdl:
+	{
+		bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
 		m_view.showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
-			m_model.deployMdl([&](UINT, cwstr strTip) {
+			m_model.deployMdl(bDeploySingerImg, [&](UINT, cwstr strTip) {
 				ProgressDlg.SetStatusText(strTip.c_str());
 				return ProgressDlg.checkStatus();
 			});
 		});
+	}
 
-		break;
+	break;
 	case ID_DeployMedias:
 		m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
 			TD_IMediaList paMedias;
