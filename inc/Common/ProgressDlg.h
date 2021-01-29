@@ -72,5 +72,4 @@ private:
 
 private:
 	void _updateProgress();
-	void _endProgress();
 };

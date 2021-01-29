@@ -632,7 +632,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 		strDstFile = fileDlg.ShowSave();
 		if (strDstFile.empty())
 		{
-			return;
+			return false;
 		}
 	}
 
