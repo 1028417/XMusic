@@ -144,11 +144,13 @@ bool CPlayerView::handleCommand(UINT uID)
 		
 		break;
 	case ID_DeployMedias:
+	{
+		UINT uCount = 0;
 		m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
 			TD_IMediaList paMedias;
 			__xmedialib.GetAllMedias(paMedias);
 			auto uTotalProgress = paMedias.size();
-			auto uCount = m_model.deployArti(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
+			uCount = m_model.deployArti(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
 				if (!ProgressDlg.checkStatus())
 				{
 					return false;
@@ -167,13 +169,14 @@ bool CPlayerView::handleCommand(UINT uID)
 			});
 
 			ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
-
-			__EnsureBreak(uCount);
-			__EnsureBreak(this->confirmBox(L"是否发布媒体库？"));
-			m_view.deployMdl();
 		});
 
-		break;
+		__EnsureBreak(uCount);
+		__EnsureBreak(__mainApp->confirmBox(L"是否发布媒体库？"));
+		m_view.deployMdl();
+	}
+
+	break;
 	case ID_AttachDir:
 		m_view.m_MediaResPage.attachDir();
 
