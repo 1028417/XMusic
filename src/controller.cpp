@@ -319,7 +319,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 	{
 		bool bRet = false;
         m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]{
-			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath))
+			if (!fsutil::moveFile(strOldAbsPath, strNewAbsPath)) //rename(toGbk().c_str(), );
 			{
                 m_view.msgBox(L"重命名失败: \n\n\t" + strOldAbsPath);
 				return false;

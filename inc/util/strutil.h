@@ -6,7 +6,10 @@
 using cwstr = const wstring&;
 using cwchr_p = const wchar_t*;
 
-#if !__winvc
+#if __winvc
+#define CP_GBK 936u
+
+#else
 #include <QString>
 using cqstr = const QString&;
 
@@ -38,18 +41,18 @@ private:
 		return len;
 	}
 
-	inline static size_t _checkLen(const wchar_t *pStr, int& len)
+	inline static size_t _checkLen(const wchar_t *pStr, size_t& len)
 	{
-		if (-1 == len)
+		if (size_t(-1) == len)
 		{
 			len = _checkLen(pStr);
 		}
 		return len;
 	}
 
-	inline static size_t _checkLen(const char *pStr, int& len)
+	inline static size_t _checkLen(const char *pStr, size_t& len)
 	{
-		if (-1 == len)
+		if (size_t (-1) == len)
 		{
 			len = _checkLen(pStr);
 		}
@@ -99,7 +102,7 @@ public:
 	static UINT checkWordCount(cwstr str);
 
 	template <class S>
-	static S substr(const S& str, size_t pos, size_t len = -1)
+	static S substr(const S& str, size_t pos, size_t len = size_t(-1))
 	{
 		if (str.length() < pos)
 		{
@@ -385,43 +388,52 @@ public:
 	}
 
 #if __windows
-	static string toMbs(UINT uCodePage, const wchar_t *pStr, int len = -1);
-	static string toMbs(UINT uCodePage, cwstr str)
+	static string toMbs(const wchar_t *pStr, size_t len, UINT uCodePage = CP_ACP);
+	static string toMbs(const wchar_t *pStr, UINT uCodePage = CP_ACP)
 	{
-		return toMbs(uCodePage, str.c_str(), str.size());
+		return toMbs(pStr, _checkLen(pStr), uCodePage);
 	}
-	static wstring fromMbs(UINT uCodePage, const char *pStr, int len = -1);
-	static wstring fromMbs(UINT uCodePage, const string& str)
+	static string toMbs(cwstr str, UINT uCodePage = CP_ACP)
 	{
-		return fromMbs(uCodePage, str.c_str(), str.size());
+		return toMbs(str.c_str(), str.size(), uCodePage);
+	}
+
+	static wstring fromMbs(const char *pStr, size_t len, UINT uCodePage = CP_ACP);
+	static wstring fromMbs(const char *pStr, UINT uCodePage = CP_ACP)
+	{
+		return fromMbs(pStr, _checkLen(pStr), uCodePage);
+	}
+	static wstring fromMbs(const string& str, UINT uCodePage = CP_ACP)
+	{
+		return fromMbs(str.c_str(), str.size(), uCodePage);
 	}
 #endif
 
-	static bool checkUtf8(const char *pStr, int len = -1);
+	static bool checkUtf8(const char *pStr, size_t len = size_t(-1));
 	static bool checkUtf8(const string& str)
 	{
 		return checkUtf8(str.c_str(), str.size());
 	}
 
-	static wstring fromUtf8(const char *pStr, int len = -1);
+	static wstring fromUtf8(const char *pStr, size_t len = size_t(-1));
 	static wstring fromUtf8(const string& str)
 	{
 		return fromUtf8(str.c_str(), str.size());
 	}
 
-	static string toUtf8(const wchar_t *pStr, int len = -1);
+	static string toUtf8(const wchar_t *pStr, size_t len = size_t(-1));
     static string toUtf8(cwstr str)
 	{
 		return toUtf8(str.c_str(), str.size());
 	}
 	
-    static wstring fromGbk(const char *pStr, int len = -1);
+    static wstring fromGbk(const char *pStr, size_t len = size_t(-1));
     static wstring fromGbk(const string& str)
     {
         return fromGbk(str.c_str(), str.size());
     }
 
-    static string toGbk(const wchar_t *pStr, int len = -1);
+    static string toGbk(const wchar_t *pStr, size_t len = size_t(-1));
     static string toGbk(cwstr str)
     {
         return toGbk(str.c_str(), str.size());
@@ -431,7 +443,7 @@ public:
     static string toGbk(cqstr qs);
 #endif
 
-    static string toAsc(const wchar_t *pStr, int len = -1);
+    static string toAsc(const wchar_t *pStr, size_t len = size_t(-1));
     static string toAsc(cwstr str)
     {
         return string(str.begin(), str.end());
@@ -441,7 +453,7 @@ public:
         strRet.assign(str.begin(), str.end());
     }
 
-    static wstring fromAsc(const char *pStr, int len = -1);
+    static wstring fromAsc(const char *pStr, size_t len = size_t(-1));
     static wstring fromAsc(const string& str)
     {
         return wstring(str.begin(), str.end());
@@ -451,7 +463,7 @@ public:
         strRet.assign(str.begin(), str.end());
     }
 
-	static wstring fromStr(const char *pStr, int len = -1);
+	static wstring fromStr(const char *pStr, size_t len = size_t(-1));
 	static wstring fromStr(const string& str)
 	{
 		return fromStr(str.c_str(), str.size());

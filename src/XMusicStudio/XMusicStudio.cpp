@@ -54,6 +54,9 @@ void CController::start()
 void CController::stop()
 {
 	CXController::stop();
+#if __isdebug
+	exit(0);
+#endif
 }
 
 bool CController::handleCommand(UINT uID)

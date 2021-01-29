@@ -158,6 +158,11 @@ using UINT = unsigned int;
 
 #include "buffer.h"
 
+#if __windows
+//#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#endif
+
 #include "strutil.h"
 
 #include "tmutil.h"
@@ -165,9 +170,6 @@ using UINT = unsigned int;
 #include "fsutil.h"
 
 #if __windows
-//#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
 #include "winfsutil.h"
 #include "winfsdlg.h"
 //#include "ProFile.h"
