@@ -144,8 +144,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 	map<CMedia*, wstring> mapUpdateMedias;
 	auto cbAutoMatch = [&](CProgressDlg& ProgressDlg) {
 		auto cbProgress = [&](cwstr strDir) {
-			ProgressDlg.SetStatusText(strDir.c_str());
-			
+			ProgressDlg.SetStatusText(strDir);			
 			return ProgressDlg.checkStatus();
 		};
 
@@ -183,7 +182,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		__Ensure(m_view.getController().autoMatchMedia(*pDir, paInvalidMedia, cbProgress, cbConfirm, mapUpdateMedias));
 		
 		cauto strTip = L"自动匹配结束，更新 " + to_wstring(mapUpdateMedias.size()) + L" 曲目";
-		ProgressDlg.SetStatusText(strTip.c_str());
+		ProgressDlg.SetStatusText(strTip);
 	};
 
 	if (!m_view.showProgressDlg(L"自动匹配曲目", cbAutoMatch, paInvalidMedia.size(), this))

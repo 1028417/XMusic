@@ -165,13 +165,13 @@ bool CPlayerView::handleCommand(UINT uID)
 				}
 				else
 				{
-					ProgressDlg.SetStatusText(strTip.c_str());
+					ProgressDlg.SetStatusText(strTip);
 					ProgressDlg.SetProgress(uProgress, uTotalProgress);
 					return true;
 				}
 			});
 
-			ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
+			ProgressDlg.SetStatusText(L"已发布 " + to_wstring(uCount) + L" 个文件");
 		});
 
 		__EnsureBreak(bRet && uCount);
@@ -346,7 +346,7 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 				return false;
 			}
 
-			ProgressDlg.SetStatusText(media.GetPath().c_str(), 1);
+			ProgressDlg.SetStatusText(media.GetPath(), 1);
 
 			return true;
 		};

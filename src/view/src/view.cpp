@@ -178,7 +178,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		cauto vecVerifyResult = multiTask.start(plMedias, uThreadCount
 			, [&](UINT taskIdx, auto& prTask, auto& prGroup) {
 			cauto strFile = prTask.first;
-			ProgressDlg.SetStatusText(strFile.c_str(), 1);
+			ProgressDlg.SetStatusText(strFile, 1);
 
 			auto nFileSize = fsutil::GetFileSize64(strFile);
 			auto uDuration = prGroup.first.checkDuration(strFile);
@@ -338,7 +338,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	prlist<wstring, CMatchMediaInfo> lstMatchResult;
 	for (auto& strFile : lstFiles)
 	{
-		ProgressDlg.SetStatusText((L"比对文件: " + strFile).c_str(), 1);
+		ProgressDlg.SetStatusText(L"比对文件: " + strFile, 1);
 		if (!ProgressDlg.checkStatus())
 		{
 			return;
@@ -384,7 +384,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	{
 		cauto strSrcPath = pr.first;
 		cauto strSrcFileName = fsutil::GetFileName(strSrcPath);
-		ProgressDlg.SetStatusText((L"合入文件: " + strSrcFileName).c_str(), 1);
+		ProgressDlg.SetStatusText(L"合入文件: " + strSrcFileName, 1);
 		if (!ProgressDlg.checkStatus())
 		{
 			return;
@@ -422,7 +422,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 	}
 
 	cauto strTip = L"匹配结束, 更新 " + to_wstring(mapUpdatedMedias.size()) + L" 曲目";
-	ProgressDlg.SetStatusText(strTip.c_str());
+	ProgressDlg.SetStatusText(strTip);
 }
 
 bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
@@ -459,7 +459,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 		UINT uRet = m_model.exportMedia(ExportOption, [&](UINT uProgressOffset, cwstr strDstFile) {
 			if (!strDstFile.empty())
 			{
-				ProgressDlg.SetStatusText(strDstFile.c_str());
+				ProgressDlg.SetStatusText(strDstFile);
 			}
 
 			if (uProgressOffset != 0)
@@ -470,7 +470,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 			return ProgressDlg.checkStatus();
 		});
 
-		ProgressDlg.SetStatusText((L"成功导出 " + to_wstring(uRet) + L" 个文件: ").c_str());
+		ProgressDlg.SetStatusText(L"成功导出 " + to_wstring(uRet) + L" 个文件: ");
 	};
 
 	return showProgressDlg(strTitle.c_str(), cb, &wnd);
@@ -668,7 +668,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
-			ProgressDlg.SetStatusText((L"正在扫描目录: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText(L"正在扫描目录: " + dir.path());
 
 			jRoot["name"] = strutil::toUtf8(dir.fileName());
 			
@@ -760,7 +760,7 @@ void __view::deployMdl(bool bDeploySingerImg)
 {
 	showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
 		bool bRet = m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
-			ProgressDlg.SetStatusText(strTip.c_str());
+			ProgressDlg.SetStatusText(strTip);
 			return ProgressDlg.checkStatus();
 		});
 		ProgressDlg.SetStatusText(bRet ? L"发布媒体库成功" : L"发布媒体库失败");
@@ -807,7 +807,7 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 
 			lstMediaRes1.add(paSubFile);
 
-			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText(L"扫描子目录: " + dir.path());
 		});
 
 		if (!lstMediaRes1)
@@ -827,7 +827,7 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 			
 			lstMediaRes2.add(paSubFile);
 
-			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText(L"扫描子目录: " + dir.path());
 		});
 
 		if (!lstMediaRes2)
@@ -844,7 +844,7 @@ void __view::checkSimilarFile(CMediaDir& dir1, CMediaDir& dir2)
 				return false;
 			}
 
-			ProgressDlg.SetStatusText(MediaRes.GetPath().c_str(), 1);
+			ProgressDlg.SetStatusText(MediaRes.GetPath(), 1);
 
 			return true;
 		}, arrResult);
@@ -863,7 +863,7 @@ void __view::checkSimilarFile(CMediaDir& dir)
 			
 			lstMediaRes.add(paSubFile);
 
-			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText(L"扫描子目录: " + dir.path());
 		});
 
 		if (!lstMediaRes)
@@ -878,7 +878,7 @@ void __view::checkSimilarFile(CMediaDir& dir)
 				return false;
 			}
 
-			ProgressDlg.SetStatusText(MediaRes.GetPath().c_str(), 1);
+			ProgressDlg.SetStatusText(MediaRes.GetPath(), 1);
 
 			return true;
 		}, arrResult);
@@ -898,7 +898,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 
 			lstMediaRes.add(paSubFile);
 
-			ProgressDlg.SetStatusText((L"扫描子目录: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText(L"扫描子目录: " + dir.path());
 		});
 
 		lstMediaRes([&](CMediaRes& MediaRes) {
@@ -920,7 +920,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 			uCount++;
 		});
 
-		ProgressDlg.SetStatusText((L"格式化 " + to_wstring(uCount) + L" 个文件标题").c_str());
+		ProgressDlg.SetStatusText(L"格式化 " + to_wstring(uCount) + L" 个文件标题");
 	});
 	
 	return uCount;

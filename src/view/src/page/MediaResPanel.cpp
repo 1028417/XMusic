@@ -813,7 +813,7 @@ void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 			}
 			else
 			{
-				ProgressDlg.SetStatusText(strTip.c_str());
+				ProgressDlg.SetStatusText(strTip);
 				ProgressDlg.SetProgress(uProgress, 0);
 				return true;
 			}
@@ -822,7 +822,7 @@ void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 		strTip = L"已发布 " + to_wstring(uCount) + L" 个文件";
 		if (0 == uCount)
 		{
-			ProgressDlg.SetStatusText(strTip.c_str());
+			ProgressDlg.SetStatusText(strTip);
 			return;
 		}
 
