@@ -149,12 +149,6 @@ public:
 		return false;
 	}
 
-	virtual UINT checkDuration(IMedia&, int64_t& nFileSize)
-	{
-		(void)nFileSize;
-		return 0;
-	}
-
 	virtual UINT getSingerImgPos(UINT uSingerID)
 	{
 		(void)uSingerID;

@@ -66,7 +66,7 @@ BOOL CTrackDetailDlg::OnInitDialog()
 			{
 				if (m_pMediaRes)
 				{
-					UINT uDuration = CMediaOpaque::checkDuration(*m_pMediaRes);
+					UINT uDuration = __checkDuration(m_pMediaRes->GetAbsPath());
 					nTrackDuration = (int)uDuration - trackInfo.uMsBegin / 1000;
 				}
 			}

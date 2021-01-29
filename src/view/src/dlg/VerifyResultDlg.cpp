@@ -125,7 +125,7 @@ void CVerifyResultDlg::OnBnClickedVerify()
 {
 	m_wndList.AsyncTask(__AsyncTaskElapse + m_wndList.GetItemCount()/10, [&](UINT uItem) {
 		m_VerifyResult.paInvalidMedia.get(uItem, [&](CMedia& media) {
-			(void)media.checkDuration();
+			__checkMediamedia);
 			UpdateItem(uItem, media);
 		});
 	});
@@ -199,7 +199,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		{
 			m_VerifyResult.paUpdateMedia.add(media);
 
-			(void)media.checkDuration();
+			__checkMediamedia);
 			UpdateItem(uIdx, media);
 
 			(void)CMainApp::GetMainApp()->DoEvents();
@@ -279,7 +279,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 
 		if (strutil::matchIgnoreCase(strNewPath, media.GetAbsPath()))
 		{
-			if (media.checkDuration() == 0)
+			if (__checkMediamedia) == 0)
 			{
 				msgBox(L"请选择新的文件！", __Title);
 				continue;
@@ -291,7 +291,7 @@ void CVerifyResultDlg::LinkMedia(int nItem, CMedia& media)
 
 	__Assert(m_view.getModel().updateMediaPath({ { &media, strNewOppPath } }));
 
-	(void)media.checkDuration();
+	__checkMediamedia);
 	UpdateItem(nItem, media);
 
 	m_VerifyResult.paUpdateMedia.add(media);

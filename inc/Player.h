@@ -22,8 +22,6 @@ enum class E_DecodeStatus
 class IAudioOpaque
 {
 public:
-    virtual wstring localFilePath() const = 0;
-
     virtual int64_t size() const = 0;
 
     virtual bool seekable() const = 0;
@@ -58,6 +56,7 @@ public:
     int64_t open(cwstr strFile);
 
 	uint32_t checkDuration();
+	uint32_t checkDuration(cwstr strFile);
 
     const E_DecodeStatus& decodeStatus() const;
 
@@ -69,15 +68,15 @@ public:
 
 	uint64_t clock() const;
 
+public:
+	virtual wstring localFilePath() const
+	{
+		return L"";
+	}
+
     virtual int64_t size() const override
     {
         return m_nFileSize;
-    }
-
-private:
-    virtual wstring localFilePath() const override
-    {
-        return L"";
     }
 
     virtual bool seekable() const override
@@ -102,8 +101,8 @@ protected:
 class __PlaySDKExt CPlayer
 {
 public:
-    CPlayer(CAudioOpaque& AudioOpaque)
-        : m_AudioOpaque(AudioOpaque)
+    CPlayer(CAudioOpaque& opaque)
+        : m_audioOpaque(opaque)
     {
     }
 
@@ -113,10 +112,8 @@ public:
     }*/
 	
 private:
-    CAudioOpaque& m_AudioOpaque;
-	
+    CAudioOpaque& m_audioOpaque;	
     mutex m_mutex;
-
     thread m_thread;
 
 private:
@@ -140,4 +137,8 @@ public:
     void SetVolume(UINT uVolume);
 
     bool packetQueueEmpty() const;
+
+    static UINT CheckDuration(cwstr strFile);
 };
+
+#define __checkDuration(file) CPlayer::CheckDuration(file)

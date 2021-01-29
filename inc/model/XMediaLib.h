@@ -12,6 +12,8 @@
 
 #define __xmedialib ((XMediaLib&)__medialib)
 
+#define __checkMedia(media) __xmedialib.CheckMedia(media)
+
 class __ModelExt XMediaLib : public CMediaLib, public CMediaSet
 {
 public:
@@ -40,6 +42,8 @@ private:
 public:
 	void FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 
+	UINT CheckMedia(CMedia& media);
+	
 private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 
@@ -49,8 +53,6 @@ private:
     const CMedia* findRelatedAlbumItem(cwstr strPath, const CSinger*& pRelatedSinger) override;
 
 	bool renameMedia(IMedia& media, cwstr strNewName) override;
-
-	UINT checkDuration(IMedia& media, int64_t& nFileSize) override;
 
 	UINT getSingerImgPos(UINT uSingerID) override;
 };

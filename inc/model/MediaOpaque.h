@@ -40,15 +40,6 @@ private:
 
     int64_t _openXmsc(cwstr strFile);
 
-    inline UINT checkDuration()
-    {
-        UINT uDuration = CAudioOpaque::checkDuration();
-        close();
-        return uDuration;
-    }
-
-    static UINT _checkDuration(cwstr strFile, bool bXmsc, int64_t& nFileSize);
-
 public:
 #if __OnlineMediaLib
     virtual uint64_t readableSize() const
@@ -74,59 +65,5 @@ public:
         {
             return _open(strFile);
         }
-    }
-
-    UINT checkFileDuration(cwstr strFile, int64_t& nFileSize)
-    {
-        nFileSize = _open(strFile);
-        if (nFileSize <= 0)
-        {
-            return 0;
-        }
-        return checkDuration();
-    }
-    UINT checkFileDuration(cwstr strFile)
-    {
-        int64_t nFileSize = 0;
-        return checkDuration(strFile, nFileSize);
-        (void)nFileSize;
-    }
-
-    UINT checkMediaDuration(IMedia& media, int64_t& nFileSize)
-    {
-        nFileSize = open(media.GetAbsPath(), media.isXmsc());
-        if (nFileSize <= 0)
-        {
-            return 0;
-        }
-        return checkDuration();
-    }
-    UINT checkMediaDuration(IMedia& media)
-    {
-        int64_t nFileSize = 0;
-        return checkMediaDuration(media, nFileSize);
-        (void)nFileSize;
-    }
-
-    static UINT checkDuration(cwstr strFile, int64_t& nFileSize)
-    {
-        return _checkDuration(strFile, false, nFileSize);
-    }
-    static UINT checkDuration(cwstr strFile)
-    {
-        int64_t nFileSize = 0;
-        return checkDuration(strFile, nFileSize);
-        (void)nFileSize;
-    }
-
-    static UINT checkDuration(IMedia& media, int64_t& nFileSize)
-    {
-        return _checkDuration(media.GetAbsPath(), media.isXmsc(), nFileSize);
-    }
-    static UINT checkDuration(IMedia& media)
-    {
-        int64_t nFileSize = 0;
-        return checkDuration(media, nFileSize);
-        (void)nFileSize;
     }
 };

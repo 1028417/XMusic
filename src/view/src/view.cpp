@@ -177,10 +177,11 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		CMultiTask<pair<wstring, TD_MediaList>, pair<CMediaOpaque, TD_MediaList>> multiTask;
 		cauto vecVerifyResult = multiTask.start(plMedias, uThreadCount
 			, [&](UINT taskIdx, auto& prTask, auto& prGroup) {
-			ProgressDlg.SetStatusText(prTask.first.c_str(), 1);
+			cauto strFile = prTask.first;
+			ProgressDlg.SetStatusText(strFile.c_str(), 1);
 
-			int64_t nFileSize = 0;
-			UINT uDuration = prGroup.first.checkFileDuration(prTask.first, nFileSize);
+			auto nFileSize = fsutil::GetFileSize64(strFile);
+			auto uDuration = prGroup.first.checkDuration(strFile);
 			prTask.second([&](CMedia& media) {
 				media.SetFileSize(nFileSize);
 				media.SetDuration(uDuration);
@@ -253,7 +254,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		WString strText;
 		strText << fsutil::GetFileName(MediaResInfo->m_strPath)
 			<< L"\n日期:  " << MediaResInfo.fileTimeString()
-			<< L"      时长:  " << CMedia::genDurationString(CMediaOpaque::checkDuration(MediaResInfo->m_strPath))
+			<< L"      时长:  " << CMedia::genDurationString(__checkDuration(MediaResInfo->m_strPath))
 			<< L"      大小:  " << MediaResInfo.fileSizeString();
 
 		cauto fnGenTag = [&](cwstr strPath) {
@@ -689,7 +690,7 @@ void __view::snapshotDir(CMediaDir& dir)
 
 					if (bGenDuration)
 					{
-						auto uDuration = CMediaOpaque::checkDuration((CMediaRes&)subFile);
+						auto uDuration = __checkDuration(subFile.path());
 						strFileDesc.append(1, '|').append(to_string(uDuration));
 						//jFile["duration"] = uDuration;
 						//jFile.append(uDuration);

@@ -1440,7 +1440,7 @@ void CAlbumPage::_asyncTask()
 		if (m_pAlbum)
 		{
 			m_wndAlbumItemList.AsyncTask(__AsyncTaskElapse + m_pAlbum->albumItems().size() / 10, [](CListObject& object) {
-				((CMedia&)object).checkDuration();
+				__checkMedia((CMedia&)object);
 				return false;
 			});
 		}

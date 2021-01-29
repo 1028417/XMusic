@@ -115,15 +115,13 @@ public:
 	}
 
 #if !__winvc
-        void syncFileSizeDuration(const CMedia& media)
-        {
-            m_nFileSize = media.m_nFileSize;
-            m_uDuration = media.m_uDuration;
-        }
+    void syncFileSizeDuration(const CMedia& media)
+    {
+        m_nFileSize = media.m_nFileSize;
+        m_uDuration = media.m_uDuration;
+    }
 #endif
 
-	UINT checkDuration();
-	
 	void SetDuration(UINT uDuration)
 	{
 		m_uDuration = uDuration;
@@ -166,7 +164,7 @@ public:
 	}
 
 	CRCueFile cueFile() override;
-
+	
     void UpdatePath(cwstr strPath);
 	
 	virtual const CMedia* findRelatedMedia() { return NULL; }
