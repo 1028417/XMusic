@@ -6,10 +6,11 @@
 using cwstr = const wstring&;
 using cwchr_p = const wchar_t*;
 
-#if __winvc
+#if __windows
 #define CP_GBK 936u
+#endif
 
-#else
+#if !__winvc
 #include <QString>
 using cqstr = const QString&;
 
