@@ -152,8 +152,8 @@ void CSimilarFileDlg::Refresh(UINT uPos)
 				auto index = pr.second;
 
 				m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
-					arrSimilarFile.get(index, [&](auto& pr) {
-					    cauto strDuration = CMedia::genDurationString(__checkDuration(*pr.first));
+					arrSimilarFile.get(index, [&](cauto pr) {
+					    cauto strDuration = CMedia::genDurationString(__checkDuration(pr.first->GetAbsPath()));
 						m_wndList.SetItemText(uItem, 3, (L" " + strDuration).c_str());
 					});
 				});
