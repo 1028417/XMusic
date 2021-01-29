@@ -135,9 +135,9 @@ private:
 
 	void _asyncTask();
 
-	bool _snapshotDir(CPath& dir);
+	void _snapshotDir(const CPath& dir, bool bDeployMdl);
 
-	UINT _deployXmsc(CMediaDir& dir);
+	void _deployXmsc(CMediaDir& dir);
 
 	void _RefreshMediaResPanel(CMediaDir& dir)
 	{
@@ -145,6 +145,9 @@ private:
 		RefreshMediaResPanel();
 	}
 
+	bool _checkCatDir(const CPath& dir);
+	wstring _genCatSnapshotPath(const CPath& dir);
+	
 private:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	

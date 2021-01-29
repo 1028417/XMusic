@@ -230,7 +230,7 @@ void CWholeTrackDlg::OnCancel()
 {
 	if (m_thread.joinable())
 	{
-		__mainApp->concurrence([&]{
+		__app->concurrence([&]{
 			m_thread.cancel();
 		});
 	}

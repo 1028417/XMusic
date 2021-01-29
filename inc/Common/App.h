@@ -246,6 +246,6 @@ public:
 	}
 	static bool confirmBox(cwstr strMsg, CWnd *pWnd = NULL)
 	{
-		return confirmBox(strMsg, L"¾¯¸ז", pWnd);
+		return confirmBox(strMsg, L"ÌבÊ¾", pWnd);
 	}
 };

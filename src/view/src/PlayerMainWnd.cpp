@@ -114,7 +114,7 @@ void CPlayerMainWnd::OnSysCommand(UINT nID, LPARAM lParam)
 			return;
 		}
 
-		(void)__mainApp->Quit();
+		(void)__app->Quit();
 		return;
 	}
 	

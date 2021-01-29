@@ -618,7 +618,7 @@ void __view::exportDir(CMediaDir& dir)
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
 static const wstring __snapshotExt = L"json";
 
-bool __view::snapshotDir(CPath& dir, wstring strDstFile)
+void __view::snapshotDir(CPath& dir, wstring strDstFile, cfn_void cb)
 {
 	if (strDstFile.empty())
 	{
@@ -632,7 +632,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 		strDstFile = fileDlg.ShowSave();
 		if (strDstFile.empty())
 		{
-			return false;
+			return;
 		}
 	}
 
@@ -649,7 +649,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 
 	bool bGenDuration = &dir != &__medialib;
 
-	auto cb = [&](CProgressDlg& ProgressDlg) {
+	auto fnWork = [&](CProgressDlg& ProgressDlg) {
 		//wstring strPrfix;
 		function<bool(CPath&, JValue&)> fnSnapshot;
 		fnSnapshot = [&](CPath& dir, JValue& jRoot) {
@@ -676,7 +676,6 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 			if (paSubFile)
 			{
 				JValue& jFiles = jRoot["files"];
-
 				paSubFile([&](XFile& subFile) {
 					cauto strFileTitle = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
 					auto strFileDesc = strFileTitle;
@@ -706,8 +705,8 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 					if (!writer.writeln(strFileInfo))
 					{
 						return false;
-					}*/
-					return true;
+					}
+					return true;*/
 				});
 			}
 			ProgressDlg.ForwardProgress();
@@ -715,12 +714,15 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 			if (paSubDir)
 			{
 				auto& jDirs = jRoot["dirs"];
-				paSubDir([&](CPath& subDir, size_t uIdx) {
-					jDirs.append(JValue());
-					bool bRet = fnSnapshot(subDir, jDirs[uIdx]);
+				for (auto pSubDir : paSubDir)
+				{
+					bool bRet = fnSnapshot(*pSubDir, jDirs.append(JValue()));
 					ProgressDlg.ForwardProgress();
-					return bRet;
-				});
+					if (!bRet)
+					{
+						return false;
+					}
+				}
 			}
 
 			//strPrfix = strPrfix.substr(0, strPrfix.size() - 2);
@@ -729,21 +731,30 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile)
 
 		JValue *pJRoot = new JValue;
 		(*pJRoot)["type"] = ".xmsc";
-		if (fnSnapshot(dir, *pJRoot))
+		bool bRet = fnSnapshot(dir, *pJRoot);
+		if (!bRet)
 		{
-			CUTF8TxtWriter TxtWriter(false);
-			if (TxtWriter.open(strDstFile, true))
-			{
-				string str = Json::FastWriter().write(*pJRoot);
-				TxtWriter.writeln(str);
-			}
+			delete pJRoot;
+			return;
+		}
+		CUTF8TxtWriter TxtWriter(false);
+		if (TxtWriter.open(strDstFile, true))
+		{
+			string str = Json::FastWriter().write(*pJRoot);
+			TxtWriter.writeln(str);
 		}
 		delete pJRoot;
 
 		ProgressDlg.SetStatusText(L"已生成快照");
+		
+		if (cb)
+		{
+			ProgressDlg.Close();
+			cb();
+		}
 	};
 
-	return showProgressDlg(L"生成快照", cb);
+	showProgressDlg(L"生成快照", fnWork);
 }
 
 void __view::deployMdl(bool bDeploySingerImg)

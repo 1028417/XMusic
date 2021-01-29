@@ -44,7 +44,7 @@ CMainWnd* CPlayerView::show()
 
 			if (!m_model.initMediaLib(false))
 			{
-				__mainApp->Quit();
+				__app->Quit();
 				return;
 			}
 			
@@ -77,7 +77,7 @@ CMainWnd* CPlayerView::show()
 		__async([=] {
 			if (!m_controller.setupMediaLib())
 			{
-				__mainApp->Quit();
+				__app->Quit();
 				return;
 			}
 
@@ -175,7 +175,7 @@ bool CPlayerView::handleCommand(UINT uID)
 		});
 
 		__EnsureBreak(bRet && uCount);
-		__EnsureBreak(__mainApp->confirmBox(L"是否发布媒体库？"));
+		__EnsureBreak(__app->confirmBox(L"是否发布媒体库？"));
 		m_view.deployMdl(false);
 	}
 
