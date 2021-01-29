@@ -676,7 +676,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
 
-			auto uCount = _deployArti(*pMediaDir);
+			auto uCount = _deployXmsc(*pMediaDir);
 			__EnsureBreak(uCount);
 			__EnsureBreak(this->confirmBox(L"是否发布媒体库？"));
 			
@@ -811,11 +811,11 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 }
 
-UINT CMediaResPanel::_deployArti(CMediaDir& dir)
+UINT CMediaResPanel::_deployXmsc(CMediaDir& dir)
 {
 	UINT uCount = 0;
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		uCount = m_view.getModel().deployArti(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
+		uCount = m_view.getModel().deployXmsc(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
 			if (!ProgressDlg.checkStatus())
 			{
 				return false;

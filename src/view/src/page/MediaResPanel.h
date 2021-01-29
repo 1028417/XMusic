@@ -137,7 +137,7 @@ private:
 
 	void _snapshotDir(CPath& dir);
 
-	UINT _deployArti(CMediaDir& dir);
+	UINT _deployXmsc(CMediaDir& dir);
 
 	void _RefreshMediaResPanel(CMediaDir& dir)
 	{

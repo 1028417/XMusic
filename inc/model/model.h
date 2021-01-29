@@ -313,8 +313,8 @@ public:
 	using CB_DeployMdl = const function<bool(cwstr strTip)>&;
 	virtual bool deployMdl(bool bDeploySingerImg, CB_DeployMdl cb) = 0;
 
-	virtual UINT deployArti(const TD_IMediaList& paMedias, CB_DeployArti cb) = 0;
-	virtual UINT deployArti(CMediaDir& dir, CB_DeployArti cb) = 0;
+	virtual UINT deployXmsc(const TD_IMediaList& paMedias, CB_DeployArti cb) = 0;
+	virtual UINT deployXmsc(CMediaDir& dir, CB_DeployArti cb) = 0;
 
     virtual wstring backupDB() = 0;
     virtual bool restoreDB(cwstr strTag) = 0;
@@ -425,8 +425,8 @@ public:
 
 	bool deployMdl(bool bDeploySingerImg, CB_DeployMdl cb) override;
 
-	UINT deployArti(const TD_IMediaList& paMedias, CB_DeployArti cb) override;
-	UINT deployArti(CMediaDir& dir, CB_DeployArti cb) override;
+	UINT deployXmsc(const TD_IMediaList& paMedias, CB_DeployArti cb) override;
+	UINT deployXmsc(CMediaDir& dir, CB_DeployArti cb) override;
     
 	wstring backupDB() override;
     bool restoreDB(cwstr strTag) override;
@@ -464,9 +464,9 @@ private:
 
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 	
-	bool _deployArti(CMediaDir& dir, CB_DeployArti cb, UINT& uCount);
+	bool _deployXmsc(CMediaDir& dir, CB_DeployArti cb, UINT& uCount);
 
-	bool _exportSingerImg(cwstr strDstDir, CB_DeployMdl cb, list<tagSingerImg>& lstSingerImg);
+	bool _deploySingerImg(cwstr strDstDir, CB_DeployMdl cb, list<tagSingerImg>& lstSingerImg);
 
     void _clear();
 

@@ -150,7 +150,7 @@ bool CPlayerView::handleCommand(UINT uID)
 			TD_IMediaList paMedias;
 			__xmedialib.GetAllMedias(paMedias);
 			auto uTotalProgress = paMedias.size();
-			uCount = m_model.deployArti(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
+			uCount = m_model.deployXmsc(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
 				if (!ProgressDlg.checkStatus())
 				{
 					return false;
