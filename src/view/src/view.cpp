@@ -396,8 +396,6 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
 
 		m_model.getPlayMgr().moveFile(strOldPath, strNewPath, [&]{
-			(void)fsutil::removeFile(strOldPath);
-
 			if (!fsutil::moveFile(strSrcPath, strNewPath))
 			{
 				CMainApp::msgBox(L"¸´ÖÆÎÄ¼þÊ§°Ü: \n\n\t" + strNewPath);
