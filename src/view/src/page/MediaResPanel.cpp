@@ -578,10 +578,22 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 	});
 }
 
-void CMediaResPanel::_snapshotDir(CMediaDir& dir)
+inline static bool _checkCatDir(CPath& dir)
+{
+	if (dir.parent() == &__medialib)
+	{
+		if (dir.fileName().front() == L'#')
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void CMediaResPanel::_snapshotDir(CPath& dir)
 {
 	wstring strDstDir;
-	if (dir.parent() == &__medialib && dir.fileName().front() == L'#')
+	if (_checkCatDir(dir))
 	{
 		strDstDir = m_view.getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
 	}
@@ -668,7 +680,15 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 			__EnsureBreak(uCount);
 			__EnsureBreak(this->confirmBox(L"是否发布媒体库？"));
 			
-			_snapshotDir(*pMediaDir);
+			auto pDir = pMediaDir;
+			do {
+				if (_checkCatDir(*pDir))
+				{
+					_snapshotDir(*pDir);
+					break;
+				}
+				pDir = pDir->parent();
+			} while (pDir);
 
 			m_view.deployMdl();
 		}

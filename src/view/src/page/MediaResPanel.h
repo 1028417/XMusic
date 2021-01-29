@@ -135,7 +135,7 @@ private:
 
 	void _asyncTask();
 
-	void _snapshotDir(CMediaDir& dir);
+	void _snapshotDir(CPath& dir);
 
 	UINT _deployArti(CMediaDir& dir);
 
