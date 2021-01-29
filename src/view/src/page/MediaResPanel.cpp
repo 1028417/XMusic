@@ -798,8 +798,10 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 
 void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 {
+	UINT uCount = 0;
+	wstring strTip;
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		auto uCount = m_view.getModel().deployXmsc(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
+		uCount = m_view.getModel().deployXmsc(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
 			if (!ProgressDlg.checkStatus())
 			{
 				return false;
@@ -817,7 +819,7 @@ void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 			}
 		});
 
-		cauto strTip = L"已发布 " + to_wstring(uCount) + L" 个文件";
+		strTip = L"已发布 " + to_wstring(uCount) + L" 个文件";
 		if (0 == uCount)
 		{
 			ProgressDlg.SetStatusText(strTip.c_str());
@@ -825,30 +827,29 @@ void CMediaResPanel::_deployXmsc(CMediaDir& dir)
 		}
 
 		ProgressDlg.Close();
-
-		__app->sync([&, strTip] {
-			__Ensure(__app->confirmBox(strTip + L"，是否发布媒体库？"));
-
-			auto pDir = (CPath*)&dir;
-			do {
-				cauto strDstFile = _genCatSnapshotPath(*pDir);
-				if (!strDstFile.empty())
-				{
-					m_view.snapshotDir(*pDir, strDstFile, [&] {
-						__app->sync([&] {
-							m_view.deployMdl(false);
-						}, false);
-					});
-					return;
-				}
-				pDir = pDir->parent();
-			} while (pDir);
-
-			m_view.deployMdl(false);
-		}, false);
-	};
+	});
+	if (!m_view.showProgressDlg(L"发布目录", cb, this) || 0 == uCount)
+	{
+		return;
+	}
 	
-	(void)m_view.showProgressDlg(L"发布目录", cb, this);
+	__Ensure(this->confirmBox(strTip + L"，是否发布媒体库？"));
+
+	auto pDir = (CPath*)&dir;
+	do {
+		cauto strDstFile = _genCatSnapshotPath(*pDir);
+		if (!strDstFile.empty())
+		{
+			if (m_view.snapshotDir(*pDir, strDstFile, true))
+			{
+				m_view.deployMdl(false);
+			}
+			return;
+		}
+		pDir = pDir->parent();
+	} while (pDir);
+
+	m_view.deployMdl(false);	
 }
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)

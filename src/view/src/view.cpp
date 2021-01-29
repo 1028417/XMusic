@@ -618,7 +618,7 @@ void __view::exportDir(CMediaDir& dir)
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
 static const wstring __snapshotExt = L"json";
 
-void __view::snapshotDir(CPath& dir, wstring strDstFile, cfn_void cb)
+bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 {
 	if (strDstFile.empty())
 	{
@@ -744,17 +744,16 @@ void __view::snapshotDir(CPath& dir, wstring strDstFile, cfn_void cb)
 			TxtWriter.writeln(str);
 		}
 		delete pJRoot;
-
-		ProgressDlg.SetStatusText(L"已生成快照");
-		
-		if (cb)
+				
+		if (bAutoClose)
 		{
 			ProgressDlg.Close();
-			cb();
+			return;
 		}
+		ProgressDlg.SetStatusText(L"已生成快照");
 	};
 
-	showProgressDlg(L"生成快照", fnWork);
+	return showProgressDlg(L"生成快照", fnWork);
 }
 
 void __view::deployMdl(bool bDeploySingerImg)

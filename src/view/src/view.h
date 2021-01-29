@@ -186,7 +186,7 @@ public:
 	void exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd = NULL);
 	void exportDir(CMediaDir& dir);
 	
-	void snapshotDir(CPath& dir, wstring strDstFile=L"", cfn_void cb = NULL);
+	bool snapshotDir(CPath& dir, wstring strDstFile=L"", bool bAutoClose = false);
 	void deployMdl(bool bDeploySingerImg);
 
 	void checkSimilarFile(CMediaDir& dir);
