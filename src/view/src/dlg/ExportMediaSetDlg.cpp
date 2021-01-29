@@ -142,7 +142,7 @@ void CExportMediaSetDlg::OnDestroy()
 	m_bClosing = true;
 	if (m_thread.joinable())
 	{
-		CMainApp::GetMainApp()->concurrence([&]{
+		__mainApp->concurrence([&]{
 			m_thread.join();
 		});
 	}

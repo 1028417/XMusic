@@ -620,19 +620,22 @@ void __view::exportDir(CMediaDir& dir)
 #define __SnapshotTimeFormat L"%Y.%m.%d_%H.%M.%S"
 static const wstring __snapshotExt = L"json";
 
-void __view::snapshotDir(CMediaDir& dir)
+void __view::snapshotDir(CMediaDir& dir, wstring strDstFile)
 {
-	tagFileDlgOpt FileDlgOpt;
-	FileDlgOpt.strTitle = L"选择保存快照路径";
-	//FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
-	FileDlgOpt.strFileName = dir.GetName();// + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
-	FileDlgOpt.strInitialDir = getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
-	CFileDlgEx fileDlg(FileDlgOpt);
-
-	wstring strDstFile = fileDlg.ShowSave();
 	if (strDstFile.empty())
 	{
-		return;
+		tagFileDlgOpt FileDlgOpt;
+		FileDlgOpt.strTitle = L"选择保存快照路径";
+		//FileDlgOpt.strFilter = L"快照文件(*." + __snapshotExt + L")|*." + __snapshotExt + L"|";
+		FileDlgOpt.strFileName = dir.GetName();// + L'_' + tmutil::formatTime(__SnapshotTimeFormat, time(0));
+											   //FileDlgOpt.strInitialDir = getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
+		CFileDlgEx fileDlg(FileDlgOpt);
+
+		strDstFile = fileDlg.ShowSave();
+		if (strDstFile.empty())
+		{
+			return;
+		}
 	}
 
 	if (strutil::lowerCase_r(fsutil::GetFileExtName(strDstFile)) != __snapshotExt)
@@ -748,6 +751,18 @@ void __view::snapshotDir(CMediaDir& dir)
 	};
 
 	(void)showProgressDlg(L"生成快照", cb);
+}
+
+void __view::deployMdl()
+{
+	bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
+	showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
+		bool bRet = m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
+			ProgressDlg.SetStatusText(strTip.c_str());
+			return ProgressDlg.checkStatus();
+		});
+		ProgressDlg.SetStatusText(bRet ? L"发布媒体库成功" : L"发布媒体库失败");
+	});
 }
 
 void __view::_checkSimilarFile(const function<void(CProgressDlg& ProgressDlg, TD_SimilarFile& arrResult)>& fnWork)

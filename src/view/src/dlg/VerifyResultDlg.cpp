@@ -203,7 +203,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 			__checkMedia(media);
 			UpdateItem(uIdx, media);
 
-			(void)CMainApp::GetMainApp()->DoEvents();
+			(void)__mainApp->DoEvents();
 		}
 	});
 }

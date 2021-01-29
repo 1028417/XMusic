@@ -280,7 +280,7 @@ void CPlayItemPage::UpdateHead()
 	
 	UpdateHead();
 	
-	CMainApp::GetMainApp()->DoEvents();
+	__mainApp->DoEvents();
 	
 	m_wndList.UpdateColumn(0);
 }*/

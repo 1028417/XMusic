@@ -578,6 +578,16 @@ void CMediaResPanel::UpdateRelated(E_RelatedMediaSet eRmsType, const tagMediaSet
 	});
 }
 
+void CMediaResPanel::_snapshotDir(CMediaDir& dir)
+{
+	wstring strDstDir;
+	if (dir.parent() == &__medialib && dir.fileName().front() == L'#')
+	{
+		strDstDir = m_view.getOption().strRootDir + L"\\.xmusic\\mdl\\snapshot";
+	}
+	m_view.snapshotDir(dir, strDstDir);
+}
+
 void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 {
 	TD_ListObjectList lstObjects;
@@ -641,21 +651,28 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 		}
 
 		break;
-	case ID_DeployArti:
-		if (pMediaDir)
-		{
-			_RefreshMediaResPanel(*pMediaDir);
-			_deployArti(*pMediaDir);
-		}
-		
-		break;
 	case ID_Snapshot:
 		if (pMediaDir)
 		{
 			_RefreshMediaResPanel(*pMediaDir);
-			m_view.snapshotDir(*pMediaDir);
+			_snapshotDir(*pMediaDir);
 		}
 
+		break;
+	case ID_DeployArti:
+		if (pMediaDir)
+		{
+			_RefreshMediaResPanel(*pMediaDir);
+
+			auto uCount = _deployArti(*pMediaDir);
+			__EnsureBreak(uCount);
+			__EnsureBreak(this->confirmBox(L"是否发布媒体库？"));
+			
+			_snapshotDir(*pMediaDir);
+
+			m_view.deployMdl();
+		}
+		
 		break;
 	case ID_CopyTitle:
 		lstMediaRes.front([&](CMediaRes& MediaRes) {
@@ -774,10 +791,11 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 	}
 }
 
-void CMediaResPanel::_deployArti(CMediaDir& dir)
+UINT CMediaResPanel::_deployArti(CMediaDir& dir)
 {
+	UINT uCount = 0;
 	auto cb = [&](CProgressDlg& ProgressDlg) {
-		UINT uCount = m_view.getModel().deployArti(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
+		uCount = m_view.getModel().deployArti(dir, [&](cwstr strTip, UINT uProgress, bool bFail) {
 			if (!ProgressDlg.checkStatus())
 			{
 				return false;
@@ -799,6 +817,7 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 	};
 	
 	(void)m_view.showProgressDlg(L"发布目录", cb, this);
+	return uCount;
 }
 
 //void CMediaResPanel::OnDeleteDir(CMediaRes& dir)

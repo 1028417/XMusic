@@ -44,7 +44,7 @@ CMainWnd* CPlayerView::show()
 
 			if (!m_model.initMediaLib(false))
 			{
-				CMainApp::GetMainApp()->Quit();
+				__mainApp->Quit();
 				return;
 			}
 			
@@ -77,7 +77,7 @@ CMainWnd* CPlayerView::show()
 		__async([=] {
 			if (!m_controller.setupMediaLib())
 			{
-				CMainApp::GetMainApp()->Quit();
+				__mainApp->Quit();
 				return;
 			}
 
@@ -140,18 +140,9 @@ bool CPlayerView::handleCommand(UINT uID)
 
 	break;
 	case ID_DeployMdl:
-	{
-		bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
-		m_view.showProgressDlg(L"发布媒体库", [&](CProgressDlg& ProgressDlg) {
-			bool bRet = m_model.deployMdl(bDeploySingerImg, [&](cwstr strTip) {
-				ProgressDlg.SetStatusText(strTip.c_str());
-				return ProgressDlg.checkStatus();
-			});
-			ProgressDlg.SetStatusText(bRet?L"发布媒体库成功":L"发布媒体库失败");
-		});
-	}
-
-	break;
+		m_view.deployMdl();
+		
+		break;
 	case ID_DeployMedias:
 		m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
 			TD_IMediaList paMedias;
@@ -176,6 +167,10 @@ bool CPlayerView::handleCommand(UINT uID)
 			});
 
 			ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
+
+			__EnsureBreak(uCount);
+			__EnsureBreak(this->confirmBox(L"是否发布媒体库？"));
+			m_view.deployMdl();
 		});
 
 		break;

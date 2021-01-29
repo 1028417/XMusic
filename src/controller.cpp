@@ -55,7 +55,7 @@ void CXController::start()
 		//strRootDir.clear();
 		if (!setupMediaLib())
 		{
-			CMainApp::GetMainApp()->Quit();
+			__mainApp->Quit();
 			return;
 		}
 	}
@@ -63,7 +63,7 @@ void CXController::start()
     {
 		if (!m_model.initMediaLib())
 		{
-			CMainApp::GetMainApp()->Quit();
+			__mainApp->Quit();
 			return;
 		}
 

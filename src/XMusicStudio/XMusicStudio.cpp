@@ -64,7 +64,7 @@ bool CController::handleCommand(UINT uID)
 	switch (uID)
 	{
 	case ID_QUIT:
-		CMainApp::GetMainApp()->Quit();
+		__mainApp->Quit();
 
 		break;
 	case ID_MODIFY_ROOT:
