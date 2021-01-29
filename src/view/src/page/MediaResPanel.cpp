@@ -782,7 +782,7 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 			{
 				return false;
 			}
-			
+
 			if (bFail)
 			{
 				return ProgressDlg.confirmBox(strTip + L"，是否继续？");
@@ -795,9 +795,7 @@ void CMediaResPanel::_deployArti(CMediaDir& dir)
 			}
 		});
 
-		CString cstrTip;
-		cstrTip.Format(L"已发布 %d 个文件", uCount);
-		ProgressDlg.SetStatusText(cstrTip);
+		ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
 	};
 	
 	(void)m_view.showProgressDlg(L"发布制品", cb, this);

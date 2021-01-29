@@ -165,15 +165,13 @@ bool CPlayerView::handleCommand(UINT uID)
 				}
 				else
 				{
-					ProgressDlg.SetStatusText((L"正在发布: " + strTip).c_str());
+					ProgressDlg.SetStatusText(strTip.c_str());
 					ProgressDlg.SetProgress(uProgress, uTotalProgress);
 					return true;
 				}
 			});
 
-			CString cstrTip;
-			cstrTip.Format(L"已发布 %d 个文件", uCount);
-			ProgressDlg.SetStatusText(cstrTip);
+			ProgressDlg.SetStatusText((L"已发布 " + to_wstring(uCount) + L" 个文件").c_str());
 		});
 
 		break;

@@ -423,7 +423,8 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		m_model.refreshMediaLib();
 	}
 
-	ProgressDlg.SetStatusText((L"匹配结束, 更新" + to_wstring(mapUpdatedMedias.size()) + L"个曲目").c_str());
+	cauto strTip = L"匹配结束, 更新 " + to_wstring(mapUpdatedMedias.size()) + L" 曲目";
+	ProgressDlg.SetStatusText(strTip.c_str());
 }
 
 bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
@@ -471,7 +472,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 			return ProgressDlg.checkStatus();
 		});
 
-		ProgressDlg.SetStatusText((L"成功导出文件: " + to_wstring(uRet)).c_str());
+		ProgressDlg.SetStatusText((L"成功导出 " + to_wstring(uRet) + L" 个文件: ").c_str());
 	};
 
 	return showProgressDlg(strTitle.c_str(), cb, &wnd);
@@ -666,7 +667,7 @@ void __view::snapshotDir(CMediaDir& dir)
 			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
-			ProgressDlg.SetStatusText((L"正在生成目录快照: " + dir.path()).c_str());
+			ProgressDlg.SetStatusText((L"正在扫描目录: " + dir.path()).c_str());
 
 			jRoot["name"] = strutil::toUtf8(dir.fileName());
 			
@@ -902,7 +903,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 			uCount++;
 		});
 
-		ProgressDlg.SetStatusText((L"格式化" + to_wstring(uCount) + L"个文件标题").c_str());
+		ProgressDlg.SetStatusText((L"格式化 " + to_wstring(uCount) + L" 个文件标题").c_str());
 	});
 	
 	return uCount;
