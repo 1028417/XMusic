@@ -5,7 +5,7 @@
 
 #define __waitCursor CWaitCursor WaitCursor
 
-#define __appSync __mainApp->sync
+#define __appSync __app->sync
 
 class IView
 {
@@ -63,7 +63,7 @@ enum class E_DoEventsResult
 	, DER_Quit
 };
 
-#define __mainApp CMainApp::GetMainApp()
+#define __app CMainApp::GetMainApp()
 
 class __CommonExt CMainApp : public CModuleApp, public IController
 {

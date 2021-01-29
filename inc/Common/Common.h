@@ -92,10 +92,10 @@ public:
 	{
 		if (NULL == hWndOwner)
 		{
-			hWndOwner = __mainApp->GetMainWnd()->GetSafeHwnd();
+			hWndOwner = __app->GetMainWnd()->GetSafeHwnd();
 		}
 
-		return __mainApp->concurrence([&]{
+		return __app->concurrence([&]{
 			return CFolderDlg::Show(hWndOwner, lpszInitialDir, lpszTitle, lpszTip
 				, lpszOKButton, lpszCancelButton, uWidth, uHeight);
 		});
@@ -114,28 +114,28 @@ public:
 	{
 		if (NULL == opt.hWndOwner)
 		{
-			opt.hWndOwner = __mainApp->GetMainWnd()->GetSafeHwnd();
+			opt.hWndOwner = __app->GetMainWnd()->GetSafeHwnd();
 		}
 		_setOpt(opt);
 	}
 
 	wstring ShowSave()
 	{
-		return __mainApp->concurrence([&]{
+		return __app->concurrence([&]{
 			return CFileDlg::ShowSave();
 		});
 	}
 
 	wstring ShowOpenSingle()
 	{
-		return __mainApp->concurrence([&]{
+		return __app->concurrence([&]{
 			return CFileDlg::ShowOpenSingle();
 		});
 	}
 
 	wstring ShowOpenMulti(list<wstring>& lstFiles)
 	{
-		return __mainApp->concurrence([&]{
+		return __app->concurrence([&]{
 			return CFileDlg::ShowOpenMulti(lstFiles);
 		});
 	}
