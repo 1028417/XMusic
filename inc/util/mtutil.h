@@ -401,11 +401,16 @@ public:
     {
     }
 
+	virtual ~CThreadGroup()
+	{
+		join();
+	}
+
 private:
+	list<thread*> m_lstThread;
     vector<BOOL> m_vecThreadStatus;
 
     volatile bool m_bPause = false;
-
     bool m_bRunSignal = false;
 
 public:
@@ -419,12 +424,24 @@ public:
 
     bool checkStatus();
 
+	void wait();
+
 protected:
     void pause(bool bPause = true);
 
     void cancel();
 
     UINT getActiveCount();
+
+	void join()
+	{
+		for (auto pthr : m_lstThread)
+		{
+			pthr->join();
+			delete pthr;
+		}
+		m_lstThread.clear();
+	}
 
 public:
     template <typename T, typename R>
