@@ -180,16 +180,39 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			cauto strFile = prTask.first;
 			ProgressDlg.SetStatusText(strFile, 1);
 
+			UINT uDuration = 0;
 			auto nFileSize = fsutil::GetFileSize64(strFile);
-			auto uDuration = prGroup.first.checkDuration(strFile);
-			prTask.second([&](CMedia& media) {
-				media.SetFileSize(nFileSize);
-				media.SetDuration(uDuration);
-				if (0 == uDuration)
+			if (nFileSize > 0)
+			{
+				for (auto itr = prTask.second.begin(); ; ++itr)
 				{
-					prGroup.second.add(media);
+					if (itr == prTask.second.end())
+					{
+						uDuration = prGroup.first.checkDuration(strFile);
+						break;
+					}
+
+					auto pMedia = *itr;
+					if ((uint64_t)nFileSize == pMedia->fileSize())
+					{
+						uDuration = pMedia->duration();
+						if (uDuration)
+						{
+							break;
+						}
+					}
 				}
-			});
+			}
+
+			/*for (cauto pMedia : prTask.second)
+			{
+				pMedia->SetFileSize(nFileSize);
+				pMedia->SetDuration(uDuration);
+			}*/
+			if (0 == uDuration)
+			{
+				prGroup.second.add(prTask.second);
+			}
 
 			if (!ProgressDlg.checkStatus())
 			{
