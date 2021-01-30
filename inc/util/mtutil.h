@@ -437,7 +437,10 @@ protected:
 	{
 		for (auto pthr : m_lstThread)
 		{
-			pthr->join();
+			if (pthr->joinable())
+			{
+				pthr->join();
+			}
 			delete pthr;
 		}
 		m_lstThread.clear();
