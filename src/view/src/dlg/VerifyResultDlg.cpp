@@ -185,7 +185,7 @@ void CVerifyResultDlg::OnBnClickedAutoMatch()
 		ProgressDlg.SetStatusText(strTip);
 	};
 
-	if (!m_view.showProgressDlg(L"自动匹配曲目", cbAutoMatch, paInvalidMedia.size(), this))
+	if (!m_view.showProgressDlg(L"自动匹配曲目", paInvalidMedia.size(), cbAutoMatch, this))
 	{
 		return;
 	}

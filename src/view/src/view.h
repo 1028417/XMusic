@@ -163,13 +163,13 @@ public:
 		CProgressDlg ProgressDlg(fnWork);
 		return IDOK == ProgressDlg.DoModal(pszTitle, pWnd);
 	}
-	bool showProgressDlg(const wchar_t *pszTitle, const FN_Work& fnWork, UINT uMaxProgress, CWnd *pWnd = NULL)
+	bool showProgressDlg(const wchar_t *pszTitle, UINT uMaxProgress, const FN_Work& fnWork, CWnd *pWnd = NULL)
 	{
 		if (NULL == pWnd)
 		{
 			pWnd = &m_MainWnd;
 		}
-		CProgressDlg ProgressDlg(fnWork, uMaxProgress);
+		CProgressDlg ProgressDlg(uMaxProgress, fnWork);
 		return IDOK == ProgressDlg.DoModal(pszTitle, pWnd);
 	}
 

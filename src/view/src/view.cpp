@@ -220,7 +220,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		}
 	};
 
-	__Ensure(showProgressDlg(L"¼ì²âÇúÄ¿", fnVerify, mapMedias.size(), pWnd));
+	__Ensure(showProgressDlg(L"¼ì²âÇúÄ¿", mapMedias.size(), fnVerify, pWnd));
 	
 	if (VerifyResult.paInvalidMedia)
 	{

@@ -148,11 +148,11 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_DeployMedias:
 	{
+		TD_IMediaList paMedias;
+		__xmedialib.GetAllMedias(paMedias);
+
 		UINT uCount = 0;
-		bool bRet = m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
-			TD_IMediaList paMedias;
-			__xmedialib.GetAllMedias(paMedias);
-			auto uTotalProgress = paMedias.size();
+		bool bRet = m_view.showProgressDlg(L"发布曲目", paMedias.size(), [&](CProgressDlg& ProgressDlg) {
 			uCount = m_model.deployXmsc(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
 				if (!ProgressDlg.checkStatus())
 				{
@@ -165,8 +165,7 @@ bool CPlayerView::handleCommand(UINT uID)
 				}
 				else
 				{
-					ProgressDlg.SetStatusText(strTip);
-					ProgressDlg.SetProgress(uProgress, uTotalProgress);
+					ProgressDlg.SetStatusText(strTip, 1);
 					return true;
 				}
 			});
@@ -363,7 +362,7 @@ void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)
 		}
 	};
 
-	if (!m_view.showProgressDlg(L"检查重复曲目", fnCheck, lstPlayItems.size() + lstAlbumItems.size()))
+	if (!m_view.showProgressDlg(L"检查重复曲目", lstPlayItems.size() + lstAlbumItems.size(), fnCheck))
 	{
 		return;
 	}
@@ -436,9 +435,9 @@ void CPlayerView::_addInMedia()
 		return;
 	}
 	
-	(void)m_view.showProgressDlg(L"合入外部文件", [&](CProgressDlg& ProgressDlg) {
+	(void)m_view.showProgressDlg(L"合入外部文件", lstFiles.size(), [&](CProgressDlg& ProgressDlg) {
 		m_view.addInMedia(lstFiles, ProgressDlg);
-	}, lstFiles.size());
+	});
 }
 
 bool CPlayerView::msgBox(cwstr strMsg, bool bWarning)

@@ -7,7 +7,12 @@ using FN_Work = fn_void_t<class CProgressDlg&>;
 class __CommonExt CProgressDlg : public TDialog<>, public CThreadGroup
 {
 public:
-	CProgressDlg(const FN_Work& fnWork, UINT uMaxProgress=0)
+	CProgressDlg(const FN_Work& fnWork)
+		: m_fnWork(fnWork)
+	{
+	}
+
+	CProgressDlg(UINT uMaxProgress, const FN_Work& fnWork)
 		: m_fnWork(fnWork)
 		, m_uMaxProgress(uMaxProgress)
 	{
@@ -21,14 +26,15 @@ protected:
 private:
 	FN_Work m_fnWork;
 
-	wstring m_strTitle;
-	
-	CProgressCtrl m_wndProgressCtrl;
 	UINT m_uMaxProgress = 0;
 	UINT m_uProgress = 0;
 
 	mutex m_mutex;
 	wstring m_strStatusText;
+
+	wstring m_strTitle;
+
+	CProgressCtrl m_wndProgressCtrl;
 
 	bool m_bFinished = false;
 
