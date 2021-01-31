@@ -19,7 +19,6 @@ void CVerifyResultDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_wndList);
 }
 
-
 BEGIN_MESSAGE_MAP(CVerifyResultDlg, CDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CVerifyResultDlg::OnLvnItemchangedList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CVerifyResultDlg::OnNMDBLClickList1)
@@ -28,7 +27,6 @@ BEGIN_MESSAGE_MAP(CVerifyResultDlg, CDialog)
 	ON_BN_CLICKED(IDC_BTN_VERIFY, &CVerifyResultDlg::OnBnClickedVerify)
 	ON_BN_CLICKED(IDC_BTN_REMOVE, &CVerifyResultDlg::OnBnClickedRemove)
 END_MESSAGE_MAP()
-
 
 // CVerifyResultDlg 消息处理程序
 
@@ -48,10 +46,7 @@ BOOL CVerifyResultDlg::OnInitDialog()
 
 	CString strRet;
 	m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
-		media.SetDuration(0);
-
 		(void)m_wndList.InsertItem(uIdx, L"");
-
 		UpdateItem(uIdx, media);
 	});
 

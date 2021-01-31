@@ -199,19 +199,24 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 				if (0 == uDuration)
 				{
 					uDuration = prGroup.first.checkDuration(strFile);
-					if (uDuration)
+					for (cauto pMedia : prTask.second)
 					{
-						for (cauto pMedia : prTask.second)
+						pMedia->SetDuration(uDuration);
+						if (0 == uDuration)
 						{
-							pMedia->SetDuration(uDuration);
+							prGroup.second.add(pMedia);
 						}
 					}
 				}
 			}
-
-			if (0 == uDuration)
+			else
 			{
-				prGroup.second.add(prTask.second);
+				for (auto pMedia : prTask.second)
+				{
+					pMedia->SetFileSize(0);
+					pMedia->SetDuration(0);
+					prGroup.second.add(pMedia);
+				}
 			}
 
 			if (!ProgressDlg.checkStatus())
