@@ -48,6 +48,8 @@ BOOL CVerifyResultDlg::OnInitDialog()
 
 	CString strRet;
 	m_VerifyResult.paInvalidMedia([&](CMedia& media, UINT uIdx) {
+		media.SetDuration(0);
+
 		(void)m_wndList.InsertItem(uIdx, L"");
 
 		UpdateItem(uIdx, media);

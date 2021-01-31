@@ -184,31 +184,31 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 			auto nFileSize = fsutil::GetFileSize64(strFile);
 			if (nFileSize > 0)
 			{
-				for (auto itr = prTask.second.begin(); ; ++itr)
+				for (auto pMedia : prTask.second)
 				{
-					if (itr == prTask.second.end())
-					{
-						uDuration = prGroup.first.checkDuration(strFile);
-						break;
-					}
-
-					auto pMedia = *itr;
 					if ((uint64_t)nFileSize == pMedia->fileSize())
 					{
 						uDuration = pMedia->duration();
-						if (uDuration)
+					}
+					else
+					{
+						pMedia->SetFileSize(nFileSize);
+					}
+				}
+
+				if (0 == uDuration)
+				{
+					uDuration = prGroup.first.checkDuration(strFile);
+					if (uDuration)
+					{
+						for (cauto pMedia : prTask.second)
 						{
-							break;
+							pMedia->SetDuration(uDuration);
 						}
 					}
 				}
 			}
 
-			/*for (cauto pMedia : prTask.second)
-			{
-				pMedia->SetFileSize(nFileSize);
-				pMedia->SetDuration(uDuration);
-			}*/
 			if (0 == uDuration)
 			{
 				prGroup.second.add(prTask.second);
@@ -691,7 +691,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 			cauto paSubDir = dir.dirs();
 
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
-			ProgressDlg.SetStatusText(L"正在扫描目录: " + dir.path());
+			ProgressDlg.SetStatusText(L"扫描目录: " + dir.path());
 
 			jRoot["name"] = strutil::toUtf8(dir.fileName());
 			

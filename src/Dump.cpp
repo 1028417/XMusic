@@ -40,8 +40,17 @@ static inline void CreateMiniDump(PEXCEPTION_POINTERS pep, const string& strFile
 	}
 }
 
+
+bool g_bDisableDump = false;
+
 static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 {
+	if (g_bDisableDump)
+	{
+		return EXCEPTION_EXECUTE_HANDLER;
+	}
+	g_bDisableDump = true;
+
 	EXCEPTION_RECORD& exceptionRecord = *pExceptionInfo->ExceptionRecord;
 	char pszExceptionInfo[128];
 	memset(pszExceptionInfo, 0, sizeof(pszExceptionInfo));
@@ -51,7 +60,7 @@ static LONG MyUnhandledExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
     cauto strDumpFile = g_strDumpFileName + tmutil::formatTime("%Y%m%d_%H%M%S", time(0)) + ".dmp";
 	CreateMiniDump(pExceptionInfo, fsutil::getModuleSubPath(strDumpFile));
 	
-    //exit(0);
+    exit(0);
 
 	return EXCEPTION_EXECUTE_HANDLER;
 }

@@ -15,7 +15,15 @@ public:
 public:
 	void start() override;
 
-	void stop() override;
+	void stop()
+	{
+		CXController::stop();
+#if __isdebug
+		extern bool g_bDisableDump;
+		g_bDisableDump = true;
+		exit(0);
+#endif
+	}
 
 	bool handleCommand(UINT uID) override;
 };
@@ -49,14 +57,6 @@ void CController::start()
 	CMainApp::RegHotkey(tagHotkeyInfo(VK_DOWN, E_HotkeyFlag::HKF_Alt, true));
 	
 	CXController::start();
-}
-
-void CController::stop()
-{
-	CXController::stop();
-#if __isdebug
-	exit(0);
-#endif
 }
 
 bool CController::handleCommand(UINT uID)
