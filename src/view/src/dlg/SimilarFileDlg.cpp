@@ -19,11 +19,11 @@ BEGIN_MESSAGE_MAP(CSimilarFileDlg, CDialog)
 	ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSimilarFileDlg::OnNMClickList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSimilarFileDlg::OnNMDblclkList1)
 
-	ON_BN_CLICKED(IDC_BTN_REMOVE, &CSimilarFileDlg::OnBnClickedRemove)
 
 	ON_BN_CLICKED(IDC_BTN_PLAY, &CSimilarFileDlg::OnBnClickedPlay)
-
-	ON_BN_CLICKED(IDC_BTN_EXPLORE, &CSimilarFileDlg::OnBnClickedExplore)	
+	ON_BN_CLICKED(IDC_BTN_EXPLORE, &CSimilarFileDlg::OnBnClickedExplore)
+	ON_BN_CLICKED(IDC_BTN_ADDIN, &CSimilarFileDlg::OnBnClickedAddin)
+	ON_BN_CLICKED(IDC_BTN_REMOVE, &CSimilarFileDlg::OnBnClickedRemove)
 END_MESSAGE_MAP()
 
 #define __crFlag RGB(245, 252, 255)
@@ -63,7 +63,6 @@ BOOL CSimilarFileDlg::OnInitDialog()
 	_genPercent();
 
 	Refresh(100);
-
 	return true;
 }
 
@@ -205,36 +204,79 @@ void CSimilarFileDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
 	OnBnClickedPlay();
 }
 
-void CSimilarFileDlg::OnBnClickedRemove()
+void CSimilarFileDlg::OnBnClickedAddin()
 {
-	set<CMediaRes*> setDelFile;
-
 	list<UINT> lstItems;
 	m_wndList.GetSelItems(lstItems);
+	__Ensure(!lstItems.empty());
+
+	auto nRet = this->msgBox(L"是否保留原文件名？", L"提示", MB_YESNOCANCEL);
+	if (IDCANCEL == nRet)
+	{
+		return;
+	}
+	bool bUseNewName = (IDNO == nRet);
+
+	__waitCursor;
+
+	TD_MediaResList paMediaRes;
+	map<CMediaRes*, CMediaRes*> mapMoveMediaRes;
 	for (auto uItem : lstItems)
 	{
 		m_arrSimilarFileInfo.get(uItem, [&](auto& pr) {
 			auto group = pr.first;
 			auto index = pr.second;
 
-			m_arrSimilarFile.get(group, [&](auto& arrSimilarFile){
+			m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
 				arrSimilarFile.get(index, [&](auto& pr) {
-					setDelFile.insert(pr.first);
+					auto pSrcMediaRes = pr.first;
+					arrSimilarFile.get(0 == index ? 1 : 0, [&](auto& pr) {
+						paMediaRes.add(pSrcMediaRes);
+						mapMoveMediaRes[pSrcMediaRes] = pr.first;
+					});
+				});
+			});
+		});
+	}
+	
+	if (!mapMoveMediaRes.empty())
+	{
+		_removeMediaRes(paMediaRes);
+		__Ensure(m_view.getController().moveMediaRes(mapMoveMediaRes, bUseNewName));
+	}
+}
+
+void CSimilarFileDlg::OnBnClickedRemove()
+{
+	list<UINT> lstItems;
+	m_wndList.GetSelItems(lstItems);
+	__Ensure(!lstItems.empty());
+	__Ensure(confirmBox(L"确认删除所选曲目?"));
+
+	__waitCursor;
+
+	TD_MediaResList paMediaRes;
+	for (auto uItem : lstItems)
+	{
+		m_arrSimilarFileInfo.get(uItem, [&](auto& pr) {
+			auto group = pr.first;
+			auto index = pr.second;
+
+			m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
+				arrSimilarFile.get(index, [&](auto& pr) {
+					paMediaRes.add(pr.first);
 				});
 			});
 		});
 	}
 
-	__Ensure(!setDelFile.empty());
-	
-	__Ensure(confirmBox(L"确认删除所选曲目?"));
+	_removeMediaRes(paMediaRes);
+	__Ensure(m_view.getController().removeMediaRes(paMediaRes));
+}
 
-	__waitCursor;
-
-	TD_MediaResList arrDelFile(setDelFile);
-	__Ensure(m_view.getController().removeMediaRes(arrDelFile));
-	
-	for (CMediaRes *pMediaRes : setDelFile)
+void CSimilarFileDlg::_removeMediaRes(const TD_MediaResList& paMediaRes)
+{
+	for (auto pMediaRes : paMediaRes)
 	{
 		m_arrSimilarFile.del([&](auto& arrSimilarFile) {
 			arrSimilarFile.del([&](auto& pr) {

@@ -38,6 +38,8 @@ private:
 
 	void OnClose(bool bCancel) override;
 
+	void _removeMediaRes(const TD_MediaResList& paMediaRes);
+
 public:
 	BOOL OnInitDialog() override;
 
@@ -49,9 +51,11 @@ public:
 
 	void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 
-	void OnBnClickedRemove();
-
 	void OnBnClickedPlay();
 
 	void OnBnClickedExplore();
+
+	void OnBnClickedAddin();
+
+	void OnBnClickedRemove();
 };

@@ -4,6 +4,8 @@
 //
 #define IDD_PAGE_SINGER                 1
 #define IDC_BTN_PLAY                    3
+#define IDC_BTN_PLAY2                   4
+#define IDC_BTN_ADDIN                   4
 #define IDD_DLG_ChooseDir               1000
 #define IDI_MAINWND                     2000
 #define IDC_LIST_BROWSE                 2000
@@ -239,7 +241,7 @@
 #define ID_ATTACH_DIR                   32975
 #define ID_ATTACH_WHOLETRACK            32976
 #define ID__32977                       32977
-#define ID_DeployDir                   32978
+#define ID_DeployDir                    32978
 #define ID_Menu32979                    32979
 #define ID_DeployMdl                    32980
 #define ID_32981                        32981

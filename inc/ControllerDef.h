@@ -116,7 +116,8 @@ public:
 
     virtual void moveMediaFile(const TD_IMediaList& lstMedias, cwstr strDir) = 0;
 
-    virtual bool removeMediaRes(const TD_MediaResList& lstMediaRes) = 0;
+	virtual bool moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaRes, bool bUseNewName) = 0;
+    virtual bool removeMediaRes(const TD_MediaResList& paMediaRes) = 0;
 
     virtual int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) = 0;
 

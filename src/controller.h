@@ -56,7 +56,7 @@ public:
 
 	void moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir) override;
 
-	bool removeMediaRes(const TD_MediaResList& lstMediaRes) override;
+	bool removeMediaRes(const TD_MediaResList& paMediaRes) override;
 
 	int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) override;
 	
@@ -65,6 +65,7 @@ public:
 		
 	E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, cwstr strNewName) override;
 
+	bool moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaRes, bool bUseNewName) override;
 	bool removeMediaSet(CMediaSet& MediaSet) override;
 
 	bool autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress

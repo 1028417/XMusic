@@ -405,47 +405,79 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDi
 			}
 		}
 		
-		m_model.getPlayMgr().moveFile(media.GetAbsPath(), strDstAbsPath, [&]{
+		m_model.getPlayMgr().moveFile(strSrcAbsPath, strDstAbsPath, [&]{
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
                 m_view.msgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
 				return false;
 			}
 
-			mapMovedFiles.insert(strSrcPath, strDstPath);
-			
+			mapMovedFiles.insert(strSrcPath, strDstPath);			
 			return true;
 		});
 	});
 
 	__Ensure(!mapMovedFiles.empty());
-
 	(void)m_model.moveFiles(strOppDir, mapMovedFiles);
-
 	m_model.refreshMediaLib();
 }
 
-bool CXController::removeMediaRes(const TD_MediaResList& lstMediaRes)
+bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaRes, bool bUseNewName)
+{
+	std::set<wstring> setFiles;
+	for (cauto pr : mapMoveMediaRes)
+	{
+		auto pSrcMediaRes = pr.first;
+		cauto strPath = strutil::lowerCase_r(pSrcMediaRes->GetPath());
+		if (setFiles.find(strPath) != setFiles.end())
+		{
+			continue;
+		}
+
+		cauto strSrcAbsPath = pSrcMediaRes->GetAbsPath();
+		auto pDstMediaRes = pr.second;
+		cauto strDstAbsPath = pDstMediaRes->GetAbsPath();
+		m_model.getPlayMgr().moveFile(strSrcAbsPath, strDstAbsPath, [&] {
+			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			{
+				return false;
+			}
+			if (bUseNewName)
+			{
+				(void)renameMedia(*pDstMediaRes, pSrcMediaRes->fileName());
+				return false;
+			}
+			return true;
+		});
+	}
+
+	//__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
+	//__EnsureReturn(m_model.removeFiles(setFiles), false);
+	return true;
+}
+
+bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes)
 {
     std::set<wstring> setFiles;
-	lstMediaRes([&](CMediaRes& MediaRes) {
-		setFiles.insert(strutil::lowerCase_r(MediaRes.GetPath()));
-	});
+	for (auto pMediaRes : paMediaRes)
+	{
+		cauto strPath = strutil::lowerCase_r(pMediaRes->GetPath());
+		if (setFiles.find(strPath) != setFiles.end())
+		{
+			continue;
+		}
+
+		if (!fsutil::removeFile(pMediaRes->GetAbsPath()))
+		{
+			m_view.msgBox(L"删除文件失败: \n\n\t" + pMediaRes->GetAbsPath());
+			continue;
+		}
+
+		setFiles.insert(strPath);
+	}
+
 	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
-
-	lstMediaRes([&](CMediaRes& MediaRes) {
-		if (fsutil::removeFile(MediaRes.GetAbsPath()))
-		{
-            MediaRes.remove();
-		}
-		else
-		{
-            m_view.msgBox(L"删除文件失败: \n\n\t" + MediaRes.GetAbsPath());
-		}
-	});
-
 	__EnsureReturn(m_model.removeFiles(setFiles), false);
-
 	return true;
 }
 
