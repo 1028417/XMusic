@@ -148,11 +148,24 @@ bool CPlayerView::handleCommand(UINT uID)
 	break;
 	case ID_DeployMedias:
 	{
-		TD_IMediaList paMedias;
-		__xmedialib.GetAllMedias(paMedias);
-
 		UINT uCount = 0;
-		bool bRet = m_view.showProgressDlg(L"发布曲目", paMedias.size(), [&](CProgressDlg& ProgressDlg) {
+		bool bRet = m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
+			TD_IMediaList paMedias;
+			__xmedialib.GetAllMedias(paMedias);
+			set<wstring> setFiles;
+			for (auto itr = paMedias.begin(); itr != paMedias.end(); )
+			{
+				if (setFiles.insert((*itr)->GetPath()).second)
+				{
+					++itr;
+				}
+				else
+				{
+					itr = paMedias.erase(itr);
+				}
+			}
+			ProgressDlg.SetProgress(0, paMedias.size());
+
 			uCount = m_model.deployXmsc(paMedias, [&](cwstr strTip, UINT uProgress, bool bFail) {
 				if (!ProgressDlg.checkStatus())
 				{
