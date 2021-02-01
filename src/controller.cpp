@@ -431,11 +431,15 @@ bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaR
 		m_model.getPlayMgr().moveFile(strSrcAbsPath, strDstAbsPath, [&] {
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
+				m_view.msgBox(L"移动文件失败: \n\n\t" + strSrcAbsPath);
 				return false;
 			}
 			if (bUseNewName)
 			{
-				(void)renameMedia(*pDstMediaRes, pSrcMediaRes->GetTitle());
+				if (!renameMedia(*pDstMediaRes, pSrcMediaRes->GetTitle()))
+				{
+					m_view.msgBox(L"重命名文件失败: \n\n\t" + strDstAbsPath);
+				}
 				return false;
 			}
 			return true;
