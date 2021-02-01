@@ -312,19 +312,20 @@ void CPlayerView::_verifyMedia()
 {
 	m_view.m_ResModule.ActivateResource();
 
-	TD_MediaSetList lstMediaSets;
-	CMediaSetDlg MediaSetDlg(m_view, __xmedialib, lstMediaSets, L"选择检测项");
+	TD_MediaSetList paMediaSets;
+	CMediaSetDlg MediaSetDlg(m_view, __xmedialib, paMediaSets, L"选择检测项");
 	if (IDOK != MediaSetDlg.DoModal())
 	{
 		return;
 	}
 
-	TD_IMediaList lstMedias;
-	lstMediaSets([&](CMediaSet& MediaSet){
-		MediaSet.GetMedias(lstMedias);
-	});
+	TD_IMediaList paMedias;
+	for (auto pMediaSet : paMediaSets)
+	{
+		pMediaSet->GetMedias(paMedias);
+	}
 
-	m_view.verifyMedia(TD_MediaList(lstMedias));
+	m_view.verifyMedia(TD_MediaList(paMedias));
 }
 
 void CPlayerView::_checkDuplicateMedia(E_CheckDuplicateMode eMode)

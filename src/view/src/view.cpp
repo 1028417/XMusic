@@ -161,15 +161,16 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		return;
 	}
 
-	map<wstring, TD_MediaList> mapMedias;
-	for (auto pMedia : lstMedias)
-	{
-		mapMedias[pMedia->GetAbsPath()].add(pMedia);
-	}
-
 	tagVerifyResult VerifyResult;
 
 	auto fnVerify = [&](CProgressDlg& ProgressDlg) {
+		map<wstring, TD_MediaList> mapMedias;
+		for (auto pMedia : lstMedias)
+		{
+			mapMedias[pMedia->GetAbsPath()].add(pMedia);
+		}
+		ProgressDlg.SetProgress(0, mapMedias.size());
+
 		PairList<wstring, TD_MediaList> plMedias(mapMedias);
 
 		UINT uThreadCount = plMedias.size() / 300;
@@ -249,7 +250,7 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 		}
 	};
 
-	__Ensure(showProgressDlg(L"¼ì²âÇúÄ¿", mapMedias.size(), fnVerify, pWnd));
+	__Ensure(showProgressDlg(L"¼ì²âÇúÄ¿", fnVerify, pWnd));
 	
 	if (VerifyResult.paInvalidMedia)
 	{
