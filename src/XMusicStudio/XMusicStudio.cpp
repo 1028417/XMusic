@@ -18,9 +18,10 @@ public:
 	void stop()
 	{
 		CXController::stop();
-#if __isdebug
+
 		extern bool g_bDisableDump;
 		g_bDisableDump = true;
+#if __isdebug
 		exit(0);
 #endif
 	}
