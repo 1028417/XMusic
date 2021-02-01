@@ -149,6 +149,7 @@ bool CPlayerView::handleCommand(UINT uID)
 	case ID_DeployMedias:
 	{
 		UINT uCount = 0;
+		wstring strTip;
 		bool bRet = m_view.showProgressDlg(L"发布曲目", [&](CProgressDlg& ProgressDlg) {
 			TD_IMediaList paMedias;
 			__xmedialib.GetAllMedias(paMedias);
@@ -183,11 +184,17 @@ bool CPlayerView::handleCommand(UINT uID)
 				}
 			});
 
-			ProgressDlg.SetStatusText(L"已发布 " + to_wstring(uCount) + L" 个文件");
+			strTip = L"已发布 " + to_wstring(uCount) + L" 个文件";
+			if (0 == uCount)
+			{
+				ProgressDlg.SetStatusText(strTip);
+				return;
+			}
+			ProgressDlg.Close();
 		});
 
 		__EnsureBreak(bRet && uCount);
-		__EnsureBreak(__app->confirmBox(L"是否发布媒体库？"));
+		__EnsureBreak(__app->confirmBox(strTip + L"，是否发布媒体库？"));
 		m_view.deployMdl(false);
 	}
 

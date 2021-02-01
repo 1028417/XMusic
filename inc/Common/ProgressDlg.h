@@ -65,10 +65,8 @@ public:
 
 private:
 	virtual BOOL OnInitDialog();
-
-	LRESULT OnSetStatusText(WPARAM wParam, LPARAM lParam);
-
-	LRESULT OnSetProgress(WPARAM wParam, LPARAM lParam);
+	
+	LRESULT OnUpateStatus(WPARAM wParam, LPARAM lParam);
 
 	virtual void OnCancel();
 

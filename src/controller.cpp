@@ -435,7 +435,7 @@ bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaR
 			}
 			if (bUseNewName)
 			{
-				(void)renameMedia(*pDstMediaRes, pSrcMediaRes->fileName());
+				(void)renameMedia(*pDstMediaRes, pSrcMediaRes->GetTitle());
 				return false;
 			}
 			return true;

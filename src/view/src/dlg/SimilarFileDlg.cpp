@@ -171,9 +171,11 @@ void CSimilarFileDlg::OnLvnItemchangedList1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	*pResult = 0;
 
-	(void)this->GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(m_wndList.GetSelectedCount() > 0);
-	(void)this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(m_wndList.GetSelectedCount() > 0);
-	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(m_wndList.GetSelectedCount() == 1);
+	auto selCount = m_wndList.GetSelectedCount();
+	(void)this->GetDlgItem(IDC_BTN_PLAY)->EnableWindow(selCount > 0);
+	(void)this->GetDlgItem(IDC_BTN_EXPLORE)->EnableWindow(1 == selCount);	
+	(void)this->GetDlgItem(IDC_BTN_ADDIN)->EnableWindow(selCount > 0);
+	(void)this->GetDlgItem(IDC_BTN_REMOVE)->EnableWindow(selCount > 0);
 }
 
 void CSimilarFileDlg::OnNMClickList1(NMHDR *pNMHDR, LRESULT *pResult)
