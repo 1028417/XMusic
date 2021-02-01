@@ -830,11 +830,11 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 	case ID_EXPORT_ALBUMITEM:
 		if (lstAlbumItems)
 		{
-			m_view.exportMedia(TD_IMediaList(lstAlbumItems));
+			m_view.exportMedia(TD_MediaList(lstAlbumItems));
 		}
 		else
 		{
-			TD_IMediaList paMedias((ArrList<CAlbumItem>&)m_pAlbum->albumItems());
+			TD_MediaList paMedias((ArrList<CAlbumItem>&)m_pAlbum->albumItems());
 			m_view.exportMedia(paMedias);
 		}
 

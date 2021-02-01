@@ -162,9 +162,10 @@ void __view::verifyMedia(const TD_MediaList& lstMedias, CWnd *pWnd, cfn_void_t<c
 	}
 
 	map<wstring, TD_MediaList> mapMedias;
-	lstMedias([&](CMedia& media) {
-		mapMedias[media.GetAbsPath()].add(media);
-	});
+	for (auto pMedia : lstMedias)
+	{
+		mapMedias[pMedia->GetAbsPath()].add(pMedia);
+	}
 
 	tagVerifyResult VerifyResult;
 
@@ -542,17 +543,17 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 	{
 		pWnd = &m_MainWnd;
 	}
-
+	
 	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
 		if (ExportOption.bActualMode)
 		{
 			SMap<wstring, wstring> mapDirs;
 			map<wstring, TD_IMediaList> mapMedias;
-			lstMedias([&](CMedia& media) {
-				auto strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(media.GetPath());
-				mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
-			});
-
+			for (auto pMedia : lstMedias)
+			{
+				cauto strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(pMedia->GetPath());
+				mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(pMedia);
+			}
 			for (auto& pr : mapMedias)
 			{
 				tagExportMedia ExportMedia;
@@ -564,9 +565,10 @@ void __view::exportMedia(const TD_MediaList& lstMedias, CWnd *pWnd)
 		else
 		{
 			map<CMediaSet*, TD_IMediaList> mapMediaList;
-			lstMedias([&](auto& media) {
-				mapMediaList[media.m_pParent].add(media);
-			});
+			for (auto pMedia : lstMedias)
+			{
+				mapMediaList[pMedia->m_pParent].add(pMedia);
+			}
 
 			for (auto& pr : mapMediaList)
 			{
@@ -589,25 +591,31 @@ void __view::exportMedia(const TD_IMediaList& lstMedias, CWnd *pWnd)
 	}
 	
 	(void)_exportMedia(*pWnd, L"导出曲目", false, [&](CProgressDlg& ProgressDlg, tagExportOption& ExportOption) {
-		SMap<wstring, wstring> mapDirs;
-		map<wstring, TD_IMediaList> mapMedias;
-		lstMedias([&](IMedia& media) {
-			auto strDstDir = ExportOption.strExportPath;
-			if (ExportOption.bActualMode)
+		if (ExportOption.bActualMode)
+		{
+			SMap<wstring, wstring> mapDirs;
+			map<wstring, TD_IMediaList> mapMedias;
+			for (auto pMedia : lstMedias)
 			{
-				strDstDir.append(fsutil::GetParentDir(media.GetPath()));
+				cauto strDstDir = ExportOption.strExportPath + fsutil::GetParentDir(pMedia->GetPath());
+				mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(pMedia);
 			}
-			mapMedias[mapDirs.insert(strutil::lowerCase_r(strDstDir), strDstDir)].add(media);
-		});
-
-		for (auto& pr : mapMedias)
+			for (auto& pr : mapMedias)
+			{
+				tagExportMedia ExportMedia;
+				ExportMedia.strDstDir = pr.first;
+				ExportMedia.paMedias.swap(pr.second);
+				ExportOption.lstExportMedias.push_back(ExportMedia);
+			}
+		}
+		else
 		{
 			tagExportMedia ExportMedia;
-			ExportMedia.strDstDir = pr.first;
-			ExportMedia.paMedias.swap(pr.second);
+			ExportMedia.strDstDir = ExportOption.strExportPath;
+			ExportMedia.paMedias.add(lstMedias);
 			ExportOption.lstExportMedias.push_back(ExportMedia);
 		}
-		
+				
 		return lstMedias.size();
 	});
 }
