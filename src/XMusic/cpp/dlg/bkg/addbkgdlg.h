@@ -63,7 +63,7 @@ private:
     bool _handleReturn() override;    
 
 #if __windows
-    bool _chooseDir();
+    wstring _chooseDir();
 #endif
 
     void _scanDir(cwstr strDir);

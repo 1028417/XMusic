@@ -30,7 +30,8 @@ void CAddBkgDlg::init()
     ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
 
     connect(ui.labelChooseDir, &CLabel::signal_click, [&]{
-        if (!_chooseDir())
+        cwstr strDir = _chooseDir();
+        if (strDir.empty())
         {
             return;
         }
@@ -50,7 +51,7 @@ void CAddBkgDlg::init()
         m_paImgDirs.clear();
         update();
 
-        _scanDir(__app.getOption().strAddBkgDir);
+        _scanDir(strDir);
     });
 #endif
 
@@ -73,7 +74,7 @@ void CAddBkgDlg::init()
     }*/
 
 #if __windows
-bool CAddBkgDlg::_chooseDir()
+wstring CAddBkgDlg::_chooseDir()
 {
     auto& strAddBkgDir = __app.getOption().strAddBkgDir;
 
@@ -81,17 +82,17 @@ bool CAddBkgDlg::_chooseDir()
     cauto strDir = FolderDlg.Show(hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
     if (strDir.empty())
     {
-        return false;
+        return L"";
     }
 
-    if (strutil::matchIgnoreCase(strDir, strAddBkgDir))
+    if (fsutil::MatchPath(strDir, strAddBkgDir))
     {
-        return false;
+        return L"";
     }
 
     strAddBkgDir = strDir;
 
-    return true;
+    return strAddBkgDir;
 }
 #endif
 
@@ -101,33 +102,33 @@ void CAddBkgDlg::show()
 
     if (!m_thrScan.joinable())
     {
+        wstring strAddBkgDir;
 #if __windows
-        auto& strAddBkgDir = __app.getOption().strAddBkgDir;
+        strAddBkgDir = __app.getOption().strAddBkgDir;
         if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
         {
-            //if (!_chooseDir())
+            //strAddBkgDir = _chooseDir();
+            //if (strAddBkgDir.empty())
             //{
                 //return;
                 strAddBkgDir = fsutil::getHomeDir().toStdWString();
             //}
         }
-        //else {
         mtutil::thread([&]{
             CFolderDlg::preInit();
         });
-
-        _scanDir(strAddBkgDir);
 
 #elif __android
         if (!requestAndroidSDPermission())
         {
             return;
         }
-        _scanDir(__sdcardDir);
+        strAddBkgDir = __sdcardDir;
 
 #else
-        _scanDir(fsutil::getHomeDir().toStdWString());
+        strAddBkgDir = fsutil::getHomeDir().toStdWString();
 #endif
+        _scanDir(strAddBkgDir);
     }
 
     CDialog::show([&]{
