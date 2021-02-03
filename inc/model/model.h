@@ -339,113 +339,113 @@ public:
 class __ModelExt CModel : public IModel
 {
 public:
-    CModel(IModelObserver& ModelObserver, tagOption& Option);
+	CModel(IModelObserver& ModelObserver, tagOption& Option);
 
 private:
-    IModelObserver& m_ModelObserver;
-    tagOption& m_Option;
+	IModelObserver& m_ModelObserver;
+	tagOption& m_Option;
 
-    XMediaLib m_MediaLib;
+	XMediaLib m_MediaLib;
 
-    CDataMgr m_DataMgr;
+	CDataMgr m_DataMgr;
 
 #if __winvc
-    CBackupMgr m_BackupMgr;
+	CBackupMgr m_BackupMgr;
 #endif
 
-    CSingerMgr m_SingerMgr;
-    CSingerImgMgr m_SingerImgMgr;
+	CSingerMgr m_SingerMgr;
+	CSingerImgMgr m_SingerImgMgr;
 
-    CPlaylistMgr m_PlaylistMgr;
-    CPlayMgr m_PlayMgr;
+	CPlaylistMgr m_PlaylistMgr;
+	CPlayMgr m_PlayMgr;
 
 public:
-    CDataMgr& getDataMgr() override
-    {
-            return m_DataMgr;
-    }
+	CDataMgr& getDataMgr() override
+	{
+		return m_DataMgr;
+	}
 
-    CPlaylistMgr& getPlaylistMgr() override
-    {
-        return m_PlaylistMgr;
-    }
+	CPlaylistMgr& getPlaylistMgr() override
+	{
+		return m_PlaylistMgr;
+	}
 
-    CPlayMgr& getPlayMgr() override
-    {
-        return m_PlayMgr;
-    }
+	CPlayMgr& getPlayMgr() override
+	{
+		return m_PlayMgr;
+	}
 
-    CSingerMgr& getSingerMgr() override
-    {
-        return m_SingerMgr;
-    }
+	CSingerMgr& getSingerMgr() override
+	{
+		return m_SingerMgr;
+	}
 
-    CSingerImgMgr& getSingerImgMgr() override
-    {
-        return m_SingerImgMgr;
-    }
+	CSingerImgMgr& getSingerImgMgr() override
+	{
+		return m_SingerImgMgr;
+	}
 
-    bool initMediaLib(bool bNotify = true) override;
+	bool initMediaLib(bool bNotify = true) override;
 
 #if __winvc
-    CBackupMgr& getBackupMgr() override
-    {
-        return m_BackupMgr;
-    }
+	CBackupMgr& getBackupMgr() override
+	{
+		return m_BackupMgr;
+	}
 
 	void convertXPkg(cwstr strFile) override;
 	void convertXmsc(cwstr strFile) override;
 
-    bool setupMediaLib(cwstr strRootDir) override;
+	bool setupMediaLib(cwstr strRootDir) override;
 
-    void refreshMediaLib() override;
+	void refreshMediaLib() override;
 
-    CMediaDir* attachDir(cwstr strDir) override;
-    void detachDir(cwstr strDir) override;
+	CMediaDir* attachDir(cwstr strDir) override;
+	void detachDir(cwstr strDir) override;
 
-    bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
+	bool renameMedia(cwstr strOldOppPath, cwstr strNewOppPath, bool bDir) override;
 
-    bool removeMedia(const TD_MediaList& lstMedias) override;
+	bool removeMedia(const TD_MediaList& lstMedias) override;
 
-    bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
+	bool moveFiles(cwstr strDir, const SMap<wstring, wstring>& mapUpdateFiles) override;
 
-    bool removeFiles(const std::set<wstring>& setFiles) override;
+	bool removeFiles(const std::set<wstring>& setFiles) override;
 
-    bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) override;
+	bool updateMediaPath(const map<CMedia*, wstring>& mapUpdateMedias) override;
 
-    bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
+	bool updateFile(const map<wstring, wstring>& mapUpdateFiles) override;
 
-    void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
-        , CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
+	void checkDuplicateMedia(E_CheckDuplicateMode eMode, const TD_MediaList& lstMedias
+		, CB_checkDuplicateMedia cb, SArray<TD_MediaList>& arrResult) override;
 
-    void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
-    void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
+	void checkSimilarFile(TD_MediaResList& lstMediaRes, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
+	void checkSimilarFile(TD_MediaResList& lstMediaRes1, TD_MediaResList& lstMediaRes2, CB_checkSimilarFile cb, TD_SimilarFile& arrResult) override;
 
-    UINT exportMedia(const tagExportOption& ExportOption, CB_ExportMedia cb) override;
+	UINT exportMedia(const tagExportOption& ExportOption, CB_ExportMedia cb) override;
 
 	bool deployMdl(bool bDeploySingerImg, CB_DeployMdl cb) override;
 
 	UINT deployXmsc(const TD_IMediaList& paMedias, CB_DeployArti cb) override;
 	UINT deployXmsc(CMediaDir& dir, CB_DeployArti cb) override;
-    
-	wstring backupDB() override;
-    bool restoreDB(cwstr strTag) override;
 
-    bool clearData() override;
+	wstring backupDB() override;
+	bool restoreDB(cwstr strTag) override;
+
+	bool clearData() override;
 
 #else
-    E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+	E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
-    void localScan(cwstr strDir, E_AttachDirType eType) override;
+	void localScan(cwstr strDir, E_AttachDirType eType) override;
 #endif
 
 	bool init(
 #if !__winvc
 		cwstr strWorkDir, cwstr strMedialibDir
 #endif
-    ) override;
+	) override;
 
-    void close() override;
+	void close() override;
 
 private:
 	bool _initMediaLib(cwstr strDBFile);
@@ -462,11 +462,16 @@ private:
 	wstring _mdlPath();
 	wstring _mdlPath(cwstr strSubPath);
 
+	wstring _deployPath();
+	wstring _deployPath(cwstr strSubPath);
+
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 	
 	bool _deployXmsc(CMediaDir& dir, CB_DeployArti cb, UINT& uCount);
 
-	bool _deploySingerImg(cwstr strDstDir, CB_DeployMdl cb, list<tagSingerImg>& lstSingerImg);
+	bool _deploySingerImg(CB_DeployMdl cb, list<tagSingerImg>& lstSingerImg);
+
+	bool _deployBkg(cwstr strDstFile);
 
     void _clear();
 

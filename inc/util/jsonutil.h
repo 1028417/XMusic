@@ -17,24 +17,27 @@ public:
 		return JReader(features).parse(strData, jRoot, false);
 	}
 
-	static bool loadFile(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
+	static bool loadStream(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
 	{
 		string strText;
         CTxtReader::read(ins, strText);
 
 		return loadData(strText, jRoot, bStrictRoot);
 	}
-	static bool loadFile(const string& strFile, JValue& jRoot, bool bStrictRoot = true)
+
+	template <typename T>
+	static bool loadFile(const T& file, JValue& jRoot, bool bStrictRoot = true)
 	{
-		IFStream ifs(strFile);
+		IFStream ifs(file);
 		__EnsureReturn(ifs, false);
-		return loadFile(ifs, jRoot, bStrictRoot);
+		return loadStream(ifs, jRoot, bStrictRoot);
 	}
 
-	static bool writeFile(const JValue& jRoot, const string& strFile, bool bStyled=false)
+	template <typename T>
+	static bool writeFile(const JValue& jRoot, const T& file, bool bStyled=false)
 	{
 		CUTF8TxtWriter TxtWriter(false);
-		if (!TxtWriter.open(strFile, true))
+		if (!TxtWriter.open(file, true))
 		{
 			return false;
 		}
