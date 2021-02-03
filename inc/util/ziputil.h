@@ -151,37 +151,6 @@ public:
         return m_mapSubfile;
     }
 
-    void enumRead(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
-    {
-        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
-            CByteBuffer bbfData;
-            if (read(unzSubFile, bbfData) > 0)
-            {
-                cb(unzSubFile, bbfData);
-            }
-        });
-    }
-    void enumRead(const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
-    {
-        enumRead(m_root, cb);
-    }
-
-    void enumRead(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
-    {
-        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
-            CByteBuffer bbfData;
-            if (read(unzSubFile, bbfData) > 0)
-            {
-                IFBuffer ifbData(bbfData);
-                cb(unzSubFile, ifbData);
-            }
-        });
-    }
-    void enumRead(const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
-    {
-        enumRead(m_root, cb);
-    }
-
     bool open(FILE *pf, const string& strPwd = "");
 
     bool open(cwstr strFile, const string& strPwd = "")
@@ -228,6 +197,61 @@ public:
 
         auto ptr = cbfBuff.resizeMore(unzSubFile.uncompressed_size);
         return _read(unzSubFile, ptr, unzSubFile.uncompressed_size);
+    }
+    template <class T>
+    long read(cwstr strSubFile, T& buff) const
+    {
+        auto pUnzFile = this->subFile(strSubFile);
+        if (NULL == pUnzFile)
+        {
+            return -1;
+        }
+        return read(*pUnzFile, buff);
+    }
+
+    void readDir(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
+    {
+        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
+            CByteBuffer bbfData;
+            if (read(unzSubFile, bbfData) > 0)
+            {
+                cb(unzSubFile, bbfData);
+            }
+        });
+    }
+    void readDir(const tagUnzDir& unzDir, const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
+    {
+        unzDir.enumSubFile([&](const tagUnzSubFile& unzSubFile){
+            CByteBuffer bbfData;
+            if (read(unzSubFile, bbfData) > 0)
+            {
+                IFBuffer ifbData(bbfData);
+                cb(unzSubFile, ifbData);
+            }
+        });
+    }
+
+    void readSubDir(cwstr strSubDir, const function<void(const tagUnzSubFile&, CByteBuffer&)>& cb) const
+    {
+        auto pUnzDir = this->subDir(strSubDir);
+        if (pUnzDir)
+        {
+            readDir(*pUnzDir, cb);
+        }
+    }
+    void readSubDir(cwstr strSubDir, const function<void(const tagUnzSubFile&, IFBuffer&)>& cb) const
+    {
+        auto pUnzDir = this->subDir(strSubDir);
+        if (pUnzDir)
+        {
+            readDir(*pUnzDir, cb);
+        }
+    }
+
+    template <class T>
+    void readAllFile(const T& cb) const
+    {
+        readDir(m_root, cb);
     }
 
     bool unzip(cwstr strDstDir) const;

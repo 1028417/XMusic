@@ -31,6 +31,16 @@ struct tagSingerImg
     }
 };
 
+struct tagOlBkg
+{
+    wstring catName;
+    wstring accName;
+    wstring prjName;
+    wstring artiName;
+
+    list<string> lstFiles;
+};
+
 class __ModelExt CSingerImgMgr
 {
 public:
@@ -51,6 +61,9 @@ private:
     map<wstring, list<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
+    list<CUpgradeUrl> m_lstUpgradeUrl;
+    list<tagOlBkg> m_lstOlBkg;
+
     set<tagSingerImg*> m_setOnlineFile;
     list<tagSingerImg*> m_lstDownloadFile;
     mutex m_mutex;
@@ -89,6 +102,12 @@ public:
 	void clearSingerImg();
 
 #if __OnlineMediaLib
+    void setOlBkg(const list<CUpgradeUrl>& lstUpgradeUrl, const list<tagOlBkg>& lstOlBkg)
+    {
+        m_lstUpgradeUrl = lstUpgradeUrl;
+        m_lstOlBkg = lstOlBkg;
+    }
+
     UINT getSingerImgCount(cwstr strSingerName);
 
     void downloadSingerHead(const list<wstring>& lstSingerName);

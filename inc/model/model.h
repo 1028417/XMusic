@@ -190,6 +190,43 @@ struct __ModelExt tagOption
 };
 
 #if !__winvc
+class CUpgradeUrl
+{
+public:
+    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
+        : m_strBaseUrl(strBaseUrl)
+        , m_strPostFix(strPostFix)
+    {
+    }
+
+private:
+    string m_strBaseUrl;
+    string m_strPostFix;
+
+public:
+    string mdlconf() const;
+
+    string mdl() const;
+
+    string singerimg(const string& strFile) const;
+
+    string app() const;
+};
+
+struct tagMdlConf
+{
+    string strAppVersion;
+
+    UINT uMdlVersion = 0;
+
+    UINT uCompatibleCode = 0;
+
+    list<CUpgradeUrl> lstUpgradeUrl;
+
+    //list<string> lstOnlineHBkg;
+    //list<string> lstOnlineVBkg;
+};
+
 enum class E_UpgradeResult
 {
     UR_Success,
@@ -476,9 +513,9 @@ private:
     void _clear();
 
 #else
-    bool _upgradeApp(signal_t bRunSignal, UINT& uAppUpgradeProgress);
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
 
-    E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
+    E_UpgradeResult _loadMdl(const tagMdlConf& MdlConf, CByteBuffer& bbfMdl, bool bUpgradeDB);
 #endif
 
     void _close();
