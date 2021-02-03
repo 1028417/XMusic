@@ -243,6 +243,16 @@ enum class E_UpgradeResult
 
     UR_InitMediaLibFail
 };
+
+struct tagOlBkg
+{
+    wstring catName;
+    string accName;
+    string prjName;
+    string artiName;
+
+    list<string> lstFiles;
+};
 #endif
 
 #include "DataMgr.h"
@@ -361,6 +371,8 @@ public:
 #else
     virtual E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
+    virtual const list<tagOlBkg>& getOlBkgList() const = 0;
+
     virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
 #endif
 
@@ -388,6 +400,8 @@ private:
 
 #if __winvc
 	CBackupMgr m_BackupMgr;
+#else
+    list<tagOlBkg> m_lstOlBkg;
 #endif
 
 	CSingerMgr m_SingerMgr;
@@ -472,6 +486,11 @@ public:
 
 #else
 	E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+
+    const list<tagOlBkg>& getOlBkgList() const override
+    {
+        return m_lstOlBkg;
+    }
 
 	void localScan(cwstr strDir, E_AttachDirType eType) override;
 #endif
