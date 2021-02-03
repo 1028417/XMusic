@@ -141,12 +141,12 @@ protected:
 
 	virtual int _sort(const XFile& lhs, const XFile& rhs) const;
 
-	size_t count() const
-	{
-		return m_paSubDir.size() + m_paSubFile.size();
-	}
-
 public:
+        size_t count() const
+        {
+                return m_paSubDir.size() + m_paSubFile.size();
+        }
+
     void setDir(cwstr strDir)
 	{
         clear();
