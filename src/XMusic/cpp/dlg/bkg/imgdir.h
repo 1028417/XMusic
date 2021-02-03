@@ -57,13 +57,17 @@ public:
     {
     }
 
-private:
+protected:
     signal_t m_bRunSignal;
 
+private:
     QPixmap m_pmIcon;
 
     UINT m_uPos = 0;
     vector<tagBkgImg> m_vecImgs;
+
+protected:
+    bool _genIcon(cwstr strFile);
 
 private:
 /*#if __android
@@ -72,9 +76,19 @@ private:
         , m_bRunSignal(bRunSignal)
     {
     }
-#endif*/
 
-    //void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+    virtual void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+    {
+        if (__sdcardDir == m_fi.strName)
+        {
+            auto strRoot = L"/storage/";
+            (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
+                paSubDir.addFront(new CImgDir(m_bRunSignal, strRoot + strSubDir));
+            });
+        }
+        CPath::_onFindFile(paSubDir, paSubFile);
+    }
+#endif*/
 
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
@@ -100,7 +114,7 @@ public:
         m_vecImgs.clear();
     }
 
-    wstring displayName() const;// override;
+    virtual wstring displayName() const;// override;
 
     cqpm icon() const// override
     {
@@ -117,6 +131,26 @@ public:
     wstring imgPath(UINT uIdx) const;// override;
 
     void genSubImgs(class CAddBkgView& lv);// override;
+};
+
+class COlImgDir : public CImgDir
+{
+public:
+    COlImgDir(signal_t bRunSignal)
+        : CImgDir(bRunSignal)
+    {
+    }
+
+    COlImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const list<string>& lstFiles);
+
+private:
+    wstring displayName() const override
+    {
+        return L"线上";
+    }
+
+public:
+    void init();
 };
 
 template <class T=QPixmap>

@@ -10,12 +10,16 @@ using TD_ImgDirList = PtrArray<IImgDir>;
 class CAddBkgView : public CListView
 {
 public:
-    CAddBkgView(class CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir);
+    CAddBkgView(class CAddBkgDlg& addbkgDlg);
 
 private:
     class CAddBkgDlg& m_addbkgDlg;
 
-    const TD_ImgDirList& m_paImgDirs;
+    XThread& m_thrScan;
+    CImgDir m_rootImgDir;
+    COlImgDir m_olImgDir;
+
+    TD_ImgDirList m_paImgDirs;
 
     IImgDir *m_pImgDir = NULL;
 
@@ -32,7 +36,14 @@ private:
 
     void _showImgDir(IImgDir& imgDir);
 
-public:
+public:    
+    XThread& thrScan()
+    {
+        return m_thrScan;
+    }
+
+    void scanDir(cwstr strDir);
+
     IImgDir* imgDir() const
     {
         return m_pImgDir;
@@ -49,10 +60,6 @@ public:
 private:
     class CBkgDlg& m_bkgDlg;
 
-    XThread& m_thrScan;
-    CImgDir m_rootImgDir;
-    TD_ImgDirList m_paImgDirs;
-
     CAddBkgView m_lv;
 
     size_t m_uRowCount = 0;
@@ -65,9 +72,6 @@ private:
 #if __windows
     wstring _chooseDir();
 #endif
-
-    void _scanDir(cwstr strDir);
-
 public:
     size_t rowCount() const
     {

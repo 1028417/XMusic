@@ -14,9 +14,7 @@ extern UINT g_uMsScanYield;
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
-    , m_thrScan(__app.thread())
-    , m_rootImgDir(m_thrScan.signal())
-    , m_lv(*this, m_paImgDirs)
+    , m_lv(*this)
 {
 }
 
@@ -41,17 +39,15 @@ void CAddBkgDlg::init()
             g_thrGenSubImg->cancel(false);
         }
 
-        m_thrScan.cancel();
+        m_lv.thrScan().cancel();
 
         if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel();
         }
 
-        m_paImgDirs.clear();
+        m_lv.scanDir(strDir);
         update();
-
-        _scanDir(strDir);
     });
 #endif
 
@@ -100,7 +96,7 @@ void CAddBkgDlg::show()
 {
     g_uMsScanYield = 1;
 
-    if (!m_thrScan.joinable())
+    if (!m_lv.thrScan().joinable())
     {
         wstring strAddBkgDir;
 #if __windows
@@ -128,19 +124,17 @@ void CAddBkgDlg::show()
 #else
         strAddBkgDir = fsutil::getHomeDir().toStdWString();
 #endif
-        _scanDir(strAddBkgDir);
+        m_lv.scanDir(strAddBkgDir);
     }
 
-    CDialog::show([&]{
-        (void)m_lv.handleReturn(true);
-    });
-}
-
-void CAddBkgDlg::_scanDir(cwstr strDir)
-{
     UINT uDotCount = 0;
     timerutil::setTimerEx(240, [=]()mutable{
-        if (!m_thrScan)
+        if (!this->isVisible())
+        {
+            return false;
+        }
+
+        if (!m_lv.thrScan())
         {
             ui.labelTitle->setText("添加背景");
             return false;
@@ -159,29 +153,8 @@ void CAddBkgDlg::_scanDir(cwstr strDir)
         return true;
     });
 
-    static UINT s_uSequence = 0;
-    m_thrScan.start([&, strDir](signal_t bRunSignal){
-        auto uSequence = ++s_uSequence;
-        m_rootImgDir.setDir(strDir);
-
-        CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
-            if (m_lv.imgDir() || !this->isVisible())
-            {
-                m_thrScan.usleep(300);
-            }
-            if (!bRunSignal)
-            {
-                return;
-            }
-
-            __app.sync([&, uSequence]{
-                if (uSequence == s_uSequence)
-                {
-                    m_paImgDirs.add((CImgDir&)dir);
-                    this->update();
-                }
-            });
-        });
+    CDialog::show([&]{
+        (void)m_lv.handleReturn(true);
     });
 }
 
@@ -268,10 +241,12 @@ void CAddBkgDlg::addBkg(cwstr strFile)
 }
 
 
-CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg, const TD_ImgDirList& paImgDir) :
+CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
-    , m_paImgDirs(paImgDir)
+    , m_thrScan(__app.thread())
+    , m_rootImgDir(m_thrScan.signal())
+    , m_olImgDir(m_thrScan.signal())
 {
 }
 
@@ -443,4 +418,37 @@ void CAddBkgView::handleReturn(bool bClose)
     {
         g_uMsScanYield = 1;
     }
+}
+
+void CAddBkgView::scanDir(cwstr strDir)
+{
+    m_paImgDirs.clear();
+
+    //m_olImgDir.init();
+    //m_paImgDirs.add(m_olImgDir);
+
+    static UINT s_uSequence = 0;
+    m_thrScan.start([&, strDir](signal_t bRunSignal){
+        auto uSequence = ++s_uSequence;
+        m_rootImgDir.setDir(strDir);
+
+        CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
+            if (this->imgDir() || !m_addbkgDlg.isVisible())
+            {
+                m_thrScan.usleep(300);
+            }
+            if (!bRunSignal)
+            {
+                return;
+            }
+
+            __app.sync([&, uSequence]{
+                if (uSequence == s_uSequence)
+                {
+                    m_paImgDirs.add((CImgDir&)dir);
+                    this->update();
+                }
+            });
+        });
+    });
 }

@@ -6,44 +6,6 @@
 XThread *g_thrGenSubImg = NULL;
 UINT g_uMsScanYield = 1;
 
-class COlImgDir : public CImgDir
-{
-public:
-    COlImgDir(signal_t bRunSignal)
-        : CImgDir(bRunSignal)
-    {
-    }
-
-    COlImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo)
-        : CImgDir(bRunSignal, fileInfo)
-    {
-    }
-
-};
-
-/*void CImgDir::_onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile)
-{
-//#if __android
-//    if (__sdcardDir == m_fi.strName)
-//    {
-//        auto strRoot = L"/storage/";
-//        (void)fsutil::findSubDir(strRoot, [&](cwstr strSubDir) {
-//            paSubDir.addFront(new CImgDir(m_bRunSignal, strRoot + strSubDir));
-//        });
-//    }
-//#endif
-
-    if (NULL == m_fi.pParent)
-    {
-        auto pOlImgDir = new COlImgDir(m_bRunSignal);
-        cauto strDir = g_strWorkDir + L"/bkg_ol/";
-        pOlImgDir->setDir(strDir);
-        paSubDir.add(pOlImgDir);
-    }
-
-    CPath::_onFindFile(paSubDir, paSubFile);
-}*/
-
 wstring CImgDir::displayName() const
 {
 #if __android
@@ -90,6 +52,21 @@ static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpe", L"jp
 
 #define __szSnapshot 160
 
+inline bool CImgDir::_genIcon(cwstr strFile)
+{
+    if (!_loadSubImg(strFile, m_pmIcon))
+    {
+        m_pmIcon = QPixmap();
+        return false;
+    }
+
+    QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
+            ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+            : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+    m_pmIcon.swap(pm);
+    return true;
+}
+
 XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
 {
     if (!m_bRunSignal)
@@ -107,27 +84,13 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
         return NULL;
     }
 
-    if (m_paSubFile.empty())
+    if (m_pmIcon.isNull())//if (m_paSubFile.empty())
     {
-        if (!_loadSubImg(XFile(fileInfo).path(), m_pmIcon))
+        cauto strFile = path()+__wcPathSeparator+fileInfo.strName;
+        if (!_genIcon(strFile))
         {
-            if (!m_bRunSignal)
-            {
-                return NULL;
-            }
-            if (!usleepex(g_uMsScanYield))
-            {
-                return NULL;
-            }
-
-            m_pmIcon = QPixmap();
             return NULL;
         }
-
-        QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
-                ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
-                : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
-        m_pmIcon.swap(pm);
     }
 
     return new XFile(fileInfo);
@@ -318,4 +281,35 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
     zoomoutPixmap(pm, szZoomout, szZoomout, true);
 
     m_vecImgs.emplace_back(pm, strFile);
+}
+
+COlImgDir::COlImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const list<string>& lstFiles)
+    : CImgDir(bRunSignal, fileInfo)
+{
+    for (cauto strFile : lstFiles)
+    {
+        tagFileInfo fi(*this, strutil::fromAsc(strFile));
+        auto pSubFile = new XFile(fi);
+        m_paSubFile.add(pSubFile);
+    }
+
+    m_paSubFile.front([&](XFile& file){
+        (void)_genIcon(file.path());
+    });
+}
+
+void COlImgDir::init()
+{
+    cauto strDir = g_strWorkDir + L"/bkg_ol";
+    setDir(strDir);
+
+    cauto lstOlBkg = __app.getModel().getOlBkgList();
+    for (cauto olBkg : lstOlBkg)
+    {
+        tagFileInfo fileInfo;
+        fileInfo.pParent = this;
+        fileInfo.strName = olBkg.catName;
+        auto pSubDir = new COlImgDir(m_bRunSignal, fileInfo, olBkg.lstFiles);
+        m_paSubDir.add(pSubDir);
+    }
 }
