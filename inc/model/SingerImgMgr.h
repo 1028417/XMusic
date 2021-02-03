@@ -102,6 +102,11 @@ public:
 	void clearSingerImg();
 
 #if __OnlineMediaLib
+	const list<tagOlBkg>& olBkg() const
+	{
+		return m_lstOlBkg;
+	}
+
     void setOlBkg(const list<CUpgradeUrl>& lstUpgradeUrl, const list<tagOlBkg>& lstOlBkg)
     {
         m_lstUpgradeUrl = lstUpgradeUrl;
