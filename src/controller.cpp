@@ -318,7 +318,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
     if (fsutil::existPath(strOldAbsPath, bDir))
 	{
 		bool bRet = false;
-        m_model.getPlayMgr().renameFile(bDir, strOldAbsPath, strNewAbsPath, [&]{
+        m_model.getPlayMgr().pause_rename(bDir, strOldAbsPath, strNewAbsPath, [&]{
 			if (fsutil::MatchPath(strOldAbsPath, strNewAbsPath))
 			{
 				bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath + L".temp")
@@ -396,7 +396,7 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDi
 			}
 		}
 		
-		m_model.getPlayMgr().moveFile(strSrcAbsPath, strDstAbsPath, [&]{
+		m_model.getPlayMgr().pause_move(strSrcAbsPath, strDstAbsPath, [&]{
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
                 m_view.msgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
@@ -428,7 +428,7 @@ bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaR
 		cauto strSrcAbsPath = pSrcMediaRes->GetAbsPath();
 		auto pDstMediaRes = pr.second;
 		cauto strDstAbsPath = pDstMediaRes->GetAbsPath();
-		m_model.getPlayMgr().moveFile(strSrcAbsPath, strDstAbsPath, [&] {
+		m_model.getPlayMgr().pause_move(strSrcAbsPath, strDstAbsPath, [&] {
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
 				m_view.msgBox(L"移动文件失败: \n\n\t" + strSrcAbsPath);
@@ -446,12 +446,10 @@ bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaR
 		});
 	}
 
-	//__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
-	//__EnsureReturn(m_model.removeFiles(setFiles), false);
 	return true;
 }
 
-bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes)
+bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes, bool bRemoveMedia)
 {
     std::set<wstring> setFiles;
 	for (auto pMediaRes : paMediaRes)
@@ -462,7 +460,12 @@ bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes)
 			continue;
 		}
 
-		if (!fsutil::removeFile(pMediaRes->GetAbsPath()))
+		bool bRet = false;
+		m_model.getPlayMgr().pause_remove(pMediaRes->GetAbsPath(), [&] {
+			bRet = fsutil::removeFile(pMediaRes->GetAbsPath());
+			return bRet;
+		});
+		if (!bRet)
 		{
 			m_view.msgBox(L"删除文件失败: \n\n\t" + pMediaRes->GetAbsPath());
 			continue;
@@ -472,7 +475,10 @@ bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes)
 	}
 
 	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
-	__EnsureReturn(m_model.removeFiles(setFiles), false);
+	if (bRemoveMedia)
+	{
+		__EnsureReturn(m_model.removeFiles(setFiles), false);
+	}
 	return true;
 }
 

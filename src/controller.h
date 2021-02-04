@@ -56,7 +56,7 @@ public:
 
 	void moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDir) override;
 
-	bool removeMediaRes(const TD_MediaResList& paMediaRes) override;
+	bool removeMediaRes(const TD_MediaResList& paMediaRes, bool bRemoveMedia=false) override;
 
 	int AddPlayItems(const list<wstring>& lstFiles, CPlaylist& Playlist) override;
 	
