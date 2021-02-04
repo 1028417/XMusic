@@ -736,7 +736,7 @@ void CMediaResPanel::OnMenuCommand(UINT uID, UINT uVkKey)
 				__Ensure(confirmBox(L"确认删除所选文件?"));
 
 				__waitCursor;
-				(void)m_view.getController().removeMediaRes(lstMediaRes);
+				(void)m_view.getController().removeMediaRes(lstMediaRes, true);
 			}
 		});
 

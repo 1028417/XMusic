@@ -425,7 +425,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 		cauto strOldPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
 		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
 
-		m_model.getPlayMgr().moveFile(strOldPath, strNewPath, [&]{
+		m_model.getPlayMgr().pause_move(strOldPath, strNewPath, [&]{
 			if (!fsutil::moveFile(strSrcPath, strNewPath))
 			{
 				CMainApp::msgBox(L"¸´ÖÆÎÄ¼þÊ§°Ü: \n\n\t" + strNewPath);
