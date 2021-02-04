@@ -249,6 +249,9 @@ void CAppBase::sync(UINT uDelayTime, cfn_void cb)
     });
 }
 
+static char g_lpApp[sizeof(CApp)];
+CApp& __app(*(CApp*)g_lpApp);
+
 int main(int argc, char *argv[])
 {
     g_argc = argc;
@@ -271,6 +274,8 @@ int main(int argc, char *argv[])
     //#endif
 #endif
 
+    memset(g_lpApp, 0, sizeof(g_lpApp));
+    new (g_lpApp) CApp();
     return __app.exec();
 }
 

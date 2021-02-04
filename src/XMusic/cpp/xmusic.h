@@ -92,3 +92,5 @@ public:
 };
 
 #include "app.h"
+
+extern CApp& __app;

@@ -93,6 +93,11 @@ public:
     }
 #endif
 
+    CBkgDlg& bkgDlg()
+    {
+        return m_bkgDlg;
+    }
+
     void showBlank();
 
     void preinit();

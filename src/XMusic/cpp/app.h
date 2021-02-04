@@ -4,7 +4,7 @@
 
 //#include "dlg/msgbox.h"
 
-template <typename T>
+/*template <typename T>
 struct tagSingleTone
 {
     struct tagSinglePtr
@@ -33,15 +33,15 @@ struct tagSingleTone
 
         return *inst;
     }
-};
+};*/
 
-#define __app CApp::inst()
+//#define __app CApp::inst()
 
-class CApp : public CAppBase, private IPlayerView, public tagSingleTone<CApp>
+class CApp : public CAppBase, private IPlayerView//, public tagSingleTone<CApp>
 {
-private:
+public:
     CApp();
-    friend tagSingleTone;
+    //friend tagSingleTone;
 
 public:
     QPixmap m_pmForward; // 列表末端箭头
