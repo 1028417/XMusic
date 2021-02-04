@@ -114,8 +114,9 @@ public:
         (void)_playNext(false, true);
     }
 
-	void renameFile(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
-	void moveFile(cwstr strPath, cwstr strNewPath, cfn_bool cb);
+	void pause_rename(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
+	void pause_move(cwstr strPath, cwstr strNewPath, cfn_bool cb);
+	void pause_remove(cwstr strPath, cfn_bool cb);
 
 	void replay();
 	
