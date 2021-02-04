@@ -34,13 +34,15 @@ struct tagSingerImg
 class __ModelExt CSingerImgMgr
 {
 public:
-    CSingerImgMgr(class CSingerMgr& SingerMgr, IModelObserver& ModelObserver)
-        : m_SingerMgr(SingerMgr)
+    CSingerImgMgr(class CModel& model, class CSingerMgr& SingerMgr, IModelObserver& ModelObserver)
+        : m_model(model)
+        , m_SingerMgr(SingerMgr)
         , m_ModelObserver(ModelObserver)
     {
     }
 
 private:
+    class CModel& m_model;
     class CSingerMgr& m_SingerMgr;
 
     IModelObserver& m_ModelObserver;
@@ -51,8 +53,6 @@ private:
     map<wstring, list<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
-    list<CUpgradeUrl> m_lstUpgradeUrl;
-
     set<tagSingerImg*> m_setOnlineFile;
     list<tagSingerImg*> m_lstDownloadFile;
     mutex m_mutex;
@@ -91,11 +91,6 @@ public:
 	void clearSingerImg();
 
 #if __OnlineMediaLib
-    void setUpgradeUrl(const list<CUpgradeUrl>& lstUpgradeUrl)
-    {
-        m_lstUpgradeUrl = lstUpgradeUrl;
-    }
-
     UINT getSingerImgCount(cwstr strSingerName);
 
     void downloadSingerHead(const list<wstring>& lstSingerName);

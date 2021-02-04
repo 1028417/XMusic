@@ -371,7 +371,9 @@ public:
 #else
     virtual E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
-    virtual const list<tagOlBkg>& getOlBkgList() const = 0;
+    virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
+
+    virtual const list<tagOlBkg>& olBkg() const = 0;
 
     virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
 #endif
@@ -401,6 +403,7 @@ private:
 #if __winvc
 	CBackupMgr m_BackupMgr;
 #else
+    list<CUpgradeUrl> m_lstUpgradeUrl;
     list<tagOlBkg> m_lstOlBkg;
 #endif
 
@@ -487,7 +490,12 @@ public:
 #else
 	E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
-    const list<tagOlBkg>& getOlBkgList() const override
+    const list<CUpgradeUrl>& upgradeUrl() const override
+    {
+        return m_lstUpgradeUrl;
+    }
+
+    const list<tagOlBkg>& olBkg() const override
     {
         return m_lstOlBkg;
     }
