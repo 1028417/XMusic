@@ -305,7 +305,7 @@ string COlBkgDir::url(XFile& file)
             + m_olBkg.prjName + "/" + m_olBkg.artiName + "/" + strutil::toAsc(file.fileName());
 }
 
-void COlBkgDir::tryAdd(COlBkgDir& dir)
+void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
 {
     if (!dir.icon().isNull())
     {
@@ -317,7 +317,7 @@ void COlBkgDir::tryAdd(COlBkgDir& dir)
         {
             __app.sync([&]{
                 m_paSubDir.add(dir);
-                __app.mainWnd().bkgDlg().update();
+                lv.update();
             });
         }
     });

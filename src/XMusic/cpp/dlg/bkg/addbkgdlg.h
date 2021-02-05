@@ -40,7 +40,7 @@ private:
 
     void _showImgDir(IImgDir& imgDir);
 
-    void _downloadBkg();
+    void _downloadBkg(signal_t bRunSignal);
 
 public:    
     XThread& thrScan()

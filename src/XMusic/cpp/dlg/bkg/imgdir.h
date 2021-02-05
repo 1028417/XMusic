@@ -157,7 +157,7 @@ private:
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
 public:
-    void tryAdd(COlBkgDir& dir);
+    void tryAdd(COlBkgDir& dir, class CAddBkgView& lv);
 
     string url(XFile& file);
 };

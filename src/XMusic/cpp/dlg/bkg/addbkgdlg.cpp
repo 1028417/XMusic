@@ -358,6 +358,17 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     else
     {
         m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
+            if (0 == lvItem.uItem)
+            {
+                if (NULL == m_thrDownload)
+                {
+                    m_thrDownload = &__app.thread();
+                    m_thrDownload->start([&](signal_t bRunSignal) {
+                        _downloadBkg(bRunSignal);
+                    });
+                }
+            }
+
             _showImgDir(imgDir);
         });
     }
@@ -469,8 +480,6 @@ void CAddBkgView::scanDir(cwstr strDir)
 
     static UINT s_uSequence = 0;
     m_thrScan.start([&, strDir](signal_t bRunSignal){
-        _downloadBkg();
-
         auto uSequence = ++s_uSequence;
         m_rootImgDir.setDir(strDir);
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
@@ -496,13 +505,8 @@ void CAddBkgView::scanDir(cwstr strDir)
 
 #include "../../../Common2.1/3rd/curl/include/curl/curl.h"
 
-void CAddBkgView::_downloadBkg()
+void CAddBkgView::_downloadBkg(signal_t bRunSignal)
 {
-    if (m_thrDownload)
-    {
-        return;
-    }
-
     cauto lstOlBkg = __app.getModel().olBkg();
     for (cauto olBkg : lstOlBkg)
     {
@@ -526,62 +530,57 @@ void CAddBkgView::_downloadBkg()
         return;
     }
 
-    m_thrDownload = &__app.thread();
-    m_thrDownload->start([&](signal_t bRunSignal) {
-        tagCurlOpt curlOpt(true);
-        CDownloader downloader(curlOpt);
+    tagCurlOpt curlOpt(true);
+    CDownloader downloader(curlOpt);
+    while (bRunSignal)
+    {
+        auto itr = m_mapOlBkg.begin();
+        auto pDir = itr->first;
+        auto& lstFiles = itr->second;
+        auto pFile = lstFiles.front();
 
-        auto& bkgDlg = __app.mainWnd().bkgDlg();
-        while (bRunSignal)
+        cauto strUrl = pDir->url(*pFile);
+        CByteBuffer bbfBkg;
+        int nRet = downloader.syncDownload(bRunSignal, strUrl, bbfBkg);
+        if (!bRunSignal)
         {
-            auto itr = m_mapOlBkg.begin();
-            auto pDir = itr->first;
-            auto& lstFiles = itr->second;
-            auto pFile = lstFiles.front();
+            break;
+        }
 
-            cauto strUrl = pDir->url(*pFile);
-            CByteBuffer bbfBkg;
-            int nRet = downloader.syncDownload(bRunSignal, strUrl, bbfBkg);
-            if (!bRunSignal)
+        if (0 == nRet)
+        {
+            cauto strFile = pFile->path();
+            if (OFStream::writefilex(strFile, true, bbfBkg))
+            {
+                __app.sync([&, pDir]{
+                    m_olBkgDir.tryAdd(*pDir);
+                    this->update();
+                });
+            }
+        }
+        else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
+                || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
+                || CURLcode::CURLE_COULDNT_CONNECT == nRet)
+        {
+            if (!m_thrDownload->usleep(5000))
             {
                 break;
             }
+            continue;
+        }
 
-            if (0 == nRet)
+        auto itrFile = std::find(lstFiles.begin(), lstFiles.end(), pFile);
+        if (itrFile != lstFiles.end())
+        {
+            lstFiles.erase(itrFile);
+            if (lstFiles.empty())
             {
-                cauto strFile = pFile->path();
-                if (OFStream::writefilex(strFile, true, bbfBkg))
-                {
-                    __app.sync([&, pDir]{
-                        m_olBkgDir.tryAdd(*pDir);
-                        bkgDlg.update();
-                    });
-                }
-            }
-            else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
-                    || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
-                    || CURLcode::CURLE_COULDNT_CONNECT == nRet)
-            {
-                if (!m_thrDownload->usleep(5000))
+                itr = m_mapOlBkg.erase(itr);
+                if (itr == m_mapOlBkg.end())
                 {
                     break;
                 }
-                continue;
-            }
-
-            auto itrFile = std::find(lstFiles.begin(), lstFiles.end(), pFile);
-            if (itrFile != lstFiles.end())
-            {
-                lstFiles.erase(itrFile);
-                if (lstFiles.empty())
-                {
-                    itr = m_mapOlBkg.erase(itr);
-                    if (itr == m_mapOlBkg.end())
-                    {
-                        break;
-                    }
-                }
             }
         }
-    });
+    }
 }

@@ -102,6 +102,11 @@ public:
 
     void preinitBkg(bool bHLayout);
 
+    CAddBkgDlg& addBkgDlg()
+    {
+        return m_addbkgDlg;
+    }
+
     cqpm hbkg() const
     {
         return m_pmHBkg;
