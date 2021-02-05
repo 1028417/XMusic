@@ -514,7 +514,7 @@ void CAddBkgView::_downloadBkg(signal_t bRunSignal)
         fileInfo.pParent = &m_olBkgDir;
         fileInfo.strName = olBkg.catName;
         auto pDir = new COlBkgDir(m_thrDownload, fileInfo, olBkg);
-        m_olBkgDir.tryAdd(*pDir);
+        m_olBkgDir.tryAdd(*pDir, *this);
 
         for (auto pFile : pDir->files())
         {
@@ -552,10 +552,7 @@ void CAddBkgView::_downloadBkg(signal_t bRunSignal)
             cauto strFile = pFile->path();
             if (OFStream::writefilex(strFile, true, bbfBkg))
             {
-                __app.sync([&, pDir]{
-                    m_olBkgDir.tryAdd(*pDir);
-                    this->update();
-                });
+                m_olBkgDir.tryAdd(*pDir, *this);
             }
         }
         else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
