@@ -232,9 +232,20 @@ void CSimilarFileDlg::OnBnClickedAddin()
 			m_arrSimilarFile.get(group, [&](auto& arrSimilarFile) {
 				arrSimilarFile.get(index, [&](auto& pr) {
 					auto pSrcMediaRes = pr.first;
-					arrSimilarFile.get(0 == index ? 1 : 0, [&](auto& pr) {
-						paMediaRes.add(pSrcMediaRes);
-						mapMoveMediaRes[pSrcMediaRes] = pr.first;
+					m_arrPercent.get(m_uPos, [&](UINT uPercent) {
+						for (cauto pr : arrSimilarFile)
+						{
+							if (pr.first == pSrcMediaRes)
+							{
+								continue;
+							}
+							if (pr.second == uPercent)
+							{
+								paMediaRes.add(pSrcMediaRes);
+								mapMoveMediaRes[pSrcMediaRes] = pr.first;
+								break;
+							}
+						}
 					});
 				});
 			});
