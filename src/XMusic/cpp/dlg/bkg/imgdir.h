@@ -60,9 +60,9 @@ public:
 protected:
     signal_t m_bRunSignal;
 
-private:
     QPixmap m_pmIcon;
 
+private:
     UINT m_uPos = 0;
     vector<tagBkgImg> m_vecImgs;
 
@@ -133,74 +133,34 @@ public:
     void genSubImgs(class CAddBkgView& lv);// override;
 };
 
-class COlImgDir : public CImgDir
+class COlBkgDir : public CImgDir
 {
 public:
-    COlImgDir(signal_t bRunSignal)
+    COlBkgDir(signal_t bRunSignal)
         : CImgDir(bRunSignal)
+        , m_olBkg(s_olBkg)
     {
     }
 
-    COlImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const list<string>& lstFiles);
+    COlBkgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const struct tagOlBkg& olBkg);
+
+private:
+    static const struct tagOlBkg s_olBkg;
+    const struct tagOlBkg& m_olBkg;
 
 private:
     wstring displayName() const override
     {
-        return L"线上";
+        return fileName();
     }
+
+    void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
 public:
-    void init();
+    void tryAdd(COlBkgDir& dir);
+
+    string url(XFile& file);
 };
 
-template <class T=QPixmap>
-static void zoomoutPixmap(T& pm, int cx, int cy, bool bCut)
-{
-    auto cxPm = pm.width();
-    if (0 == cxPm)
-    {
-        return;
-    }
-    auto cyPm = pm.height();
-
-    if (bCut)
-    {
-        if (cx > cy)
-        {
-            auto cyMax = cxPm*2/3;
-            if (cyPm > cyMax)
-            {
-                T&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
-                pm.swap(temp);
-                cyPm = cyMax;
-            }
-        }
-        else
-        {
-            auto cxMax = cyPm*2/3;
-            if (cxPm > cxMax)
-            {
-                T&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
-                pm.swap(temp);
-                cxPm = cxMax;
-            }
-        }
-    }
-
-    if ((float)cyPm/cxPm > (float)cy/cx)
-    {
-        if (cxPm > cx)
-        {
-            T&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-    else
-    {
-        if (cyPm > cy)
-        {
-            T&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-}
+void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut);
+void zoomoutPixmap(QImage& img, int cx, int cy, bool bCut);

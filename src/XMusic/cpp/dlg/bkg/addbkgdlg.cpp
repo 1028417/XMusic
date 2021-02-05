@@ -176,20 +176,23 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     ui.labelChooseDir->setVisible(false);
 
     int y_addbkgView = 0;
-    if (m_lv.imgDir() == NULL)
+    if (m_lv.displayMode())
+    {
+        ui.labelTitle->setVisible(false);
+    }
+    else
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
         ui.labelTitle->setVisible(true);
 
 #if __windows
-        ui.labelChooseDir->setVisible(true);
-        ui.labelChooseDir->move(cx-ui.labelChooseDir->width()-cxMargin
-                                        , rcReturn.center().y()-ui.labelChooseDir->height()/2);
+        if (m_lv.inRoot())
+        {
+            ui.labelChooseDir->setVisible(true);
+            ui.labelChooseDir->move(cx-ui.labelChooseDir->width()-cxMargin
+                    , rcReturn.center().y()-ui.labelChooseDir->height()/2);
+        }
 #endif
-    }
-    else
-    {
-        ui.labelTitle->setVisible(false);
     }
 
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
@@ -204,9 +207,8 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 bool CAddBkgDlg::_handleReturn()
 {
-    if (m_lv.imgDir())
+    if (m_lv.handleReturn(false))
     {
-        m_lv.handleReturn(false);
         relayout();
         repaint();
     }
@@ -214,7 +216,6 @@ bool CAddBkgDlg::_handleReturn()
     {
         close();
     }
-
     return true;
 }
 
@@ -246,13 +247,13 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_addbkgDlg(addbkgDlg)
     , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.signal())
-    , m_olImgDir(m_thrScan.signal())
+    , m_olBkgDir(m_thrScan.signal())
 {
 }
 
 size_t CAddBkgView::getColCount() const
 {
-    if (m_pImgDir)
+    if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
         if (m_pImgDir->imgCount() <= 4)
         {
@@ -276,7 +277,7 @@ size_t CAddBkgView::getColCount() const
 
 size_t CAddBkgView::getRowCount() const
 {
-    if (m_pImgDir)
+    if (imgDir())
     {
         return getColCount();
     }
@@ -286,17 +287,38 @@ size_t CAddBkgView::getRowCount() const
 
 size_t CAddBkgView::getItemCount() const
 {
-    if (m_pImgDir)
+    if (m_pImgDir == &m_olBkgDir)
+    {
+        return m_olBkgDir.count();
+    }
+    else if (m_pImgDir)
     {
         return m_pImgDir->imgCount();
     }
+    else
+    {
+        return m_paImgDirs.size();
+    }
+}
 
-    return m_paImgDirs.size();
+void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, IImgDir& imgDir)
+{
+    auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
+    tagLVItemContext context(lvItem, eStyle);
+    context.strText = imgDir.displayName();
+    context.setIcon(imgDir.icon(), __size(-12));
+    CListView::_paintRow(painter, context);
 }
 
 void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    if (m_pImgDir)
+    if (m_pImgDir == &m_olBkgDir)
+    {
+        m_pImgDir->dirs().get(lvItem.uItem, [&](CPath& subDir){
+            _paintRow(painter, lvItem, (IImgDir&)subDir);
+        });
+    }
+    else if (m_pImgDir)
     {
         auto pm = m_pImgDir->img(lvItem.uItem);
         if (pm)
@@ -312,18 +334,20 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     else
     {
         m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
-            auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
-            tagLVItemContext context(lvItem, eStyle);
-            context.strText = imgDir.displayName();
-            context.setIcon(imgDir.icon(), __size(-12));
-            _paintRow(painter, context);
+            _paintRow(painter, lvItem, imgDir);
         });
     }
 }
 
 void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
 {
-    if (m_pImgDir)
+    if (m_pImgDir == &m_olBkgDir)
+    {
+        m_olBkgDir.dirs().get(lvItem.uItem, [&](CPath& subDir){
+            _showImgDir((IImgDir&)subDir);
+        });
+    }
+    else if (m_pImgDir)
     {
         cauto strFilePath = m_pImgDir->imgPath(lvItem.uItem);
         if (!strFilePath.empty())
@@ -381,21 +405,34 @@ void CAddBkgView::_showImgDir(IImgDir& imgDir)
     });
 }*/
 
-void CAddBkgView::handleReturn(bool bClose)
+bool CAddBkgView::handleReturn(bool bClose)
 {
     reset();
 
+    bool bRet = false;
     if (m_pImgDir)
     {
-        if (g_thrGenSubImg)
-        {
-            g_thrGenSubImg->cancel(false);
-        }
+        bRet = true;
 
-        m_pImgDir = NULL;
+        if (m_pImgDir != &m_olBkgDir)
+        {
+            if (g_thrGenSubImg)
+            {
+                g_thrGenSubImg->cancel(false);
+            }
+        }
 
         m_eScrollBar = E_LVScrollBar::LVSB_Left;
         scrollToItem(_scrollRecord(NULL));
+
+        if (m_pImgDir->parent() == &m_olBkgDir)
+        {
+            m_pImgDir = &m_olBkgDir;
+        }
+        else
+        {
+            m_pImgDir = NULL;
+        }
     }
 
     /*if (g_thrGenSubImg)
@@ -418,20 +455,24 @@ void CAddBkgView::handleReturn(bool bClose)
     {
         g_uMsScanYield = 1;
     }
+    return bRet;
 }
 
 void CAddBkgView::scanDir(cwstr strDir)
 {
     m_paImgDirs.clear();
 
-    //m_olImgDir.init();
-    //m_paImgDirs.add(m_olImgDir);
+    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"线上";
+    fsutil::createDir(strOlBkgDir);
+    m_olBkgDir.setDir(strOlBkgDir);
+    m_paImgDirs.add(m_olBkgDir);
 
     static UINT s_uSequence = 0;
     m_thrScan.start([&, strDir](signal_t bRunSignal){
+        _downloadBkg();
+
         auto uSequence = ++s_uSequence;
         m_rootImgDir.setDir(strDir);
-
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (this->imgDir() || !m_addbkgDlg.isVisible())
             {
@@ -450,5 +491,97 @@ void CAddBkgView::scanDir(cwstr strDir)
                 }
             });
         });
+    });
+}
+
+#include "../../../Common2.1/3rd/curl/include/curl/curl.h"
+
+void CAddBkgView::_downloadBkg()
+{
+    if (m_thrDownload)
+    {
+        return;
+    }
+
+    cauto lstOlBkg = __app.getModel().olBkg();
+    for (cauto olBkg : lstOlBkg)
+    {
+        tagFileInfo fileInfo;
+        fileInfo.pParent = &m_olBkgDir;
+        fileInfo.strName = olBkg.catName;
+        auto pDir = new COlBkgDir(m_thrDownload, fileInfo, olBkg);
+        m_olBkgDir.tryAdd(*pDir);
+
+        for (auto pFile : pDir->files())
+        {
+            if (!fsutil::existFile(pFile->path()))
+            {
+                m_mapOlBkg[pDir].push_back(pFile);
+            }
+        }
+    }
+
+    if (m_mapOlBkg.empty())
+    {
+        return;
+    }
+
+    m_thrDownload = &__app.thread();
+    m_thrDownload->start([&](signal_t bRunSignal) {
+        tagCurlOpt curlOpt(true);
+        CDownloader downloader(curlOpt);
+
+        auto& bkgDlg = __app.mainWnd().bkgDlg();
+        while (bRunSignal)
+        {
+            auto itr = m_mapOlBkg.begin();
+            auto pDir = itr->first;
+            auto& lstFiles = itr->second;
+            auto pFile = lstFiles.front();
+
+            cauto strUrl = pDir->url(*pFile);
+            CByteBuffer bbfBkg;
+            int nRet = downloader.syncDownload(bRunSignal, strUrl, bbfBkg);
+            if (!bRunSignal)
+            {
+                break;
+            }
+
+            if (0 == nRet)
+            {
+                cauto strFile = pFile->path();
+                if (OFStream::writefilex(strFile, true, bbfBkg))
+                {
+                    __app.sync([&, pDir]{
+                        m_olBkgDir.tryAdd(*pDir);
+                        bkgDlg.update();
+                    });
+                }
+            }
+            else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
+                    || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
+                    || CURLcode::CURLE_COULDNT_CONNECT == nRet)
+            {
+                if (!m_thrDownload->usleep(5000))
+                {
+                    break;
+                }
+                continue;
+            }
+
+            auto itrFile = std::find(lstFiles.begin(), lstFiles.end(), pFile);
+            if (itrFile != lstFiles.end())
+            {
+                lstFiles.erase(itrFile);
+                if (lstFiles.empty())
+                {
+                    itr = m_mapOlBkg.erase(itr);
+                    if (itr == m_mapOlBkg.end())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     });
 }

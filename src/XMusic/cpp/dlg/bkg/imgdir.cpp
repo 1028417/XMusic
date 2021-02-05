@@ -283,33 +283,104 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
     m_vecImgs.emplace_back(pm, strFile);
 }
 
-COlImgDir::COlImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const list<string>& lstFiles)
+const tagOlBkg COlBkgDir::s_olBkg;
+
+COlBkgDir::COlBkgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const tagOlBkg& olBkg)
     : CImgDir(bRunSignal, fileInfo)
+    , m_olBkg(olBkg)
 {
-    for (cauto strFile : lstFiles)
+    fsutil::createDir(path());
+
+    for (cauto strFile : m_olBkg.lstFiles)
     {
         tagFileInfo fi(*this, strutil::fromAsc(strFile));
         auto pSubFile = new XFile(fi);
         m_paSubFile.add(pSubFile);
     }
+}
 
-    m_paSubFile.front([&](XFile& file){
-        (void)_genIcon(file.path());
+string COlBkgDir::url(XFile& file)
+{
+    return "https://" + m_olBkg.accName + "-generic.pkg.coding.net/"
+            + m_olBkg.prjName + "/" + m_olBkg.artiName + "/" + strutil::toAsc(file.fileName());
+}
+
+void COlBkgDir::tryAdd(COlBkgDir& dir)
+{
+    if (!dir.icon().isNull())
+    {
+        return;
+    }
+
+    dir.files().front([&](XFile& file){
+        if (dir._genIcon(file.path()))
+        {
+            __app.sync([&]{
+                m_paSubDir.add(dir);
+                __app.mainWnd().bkgDlg().update();
+            });
+        }
     });
 }
 
-void COlImgDir::init()
+template <class T=QPixmap>
+inline static void _zoomoutPixmap(T& pm, int cx, int cy, bool bCut)
 {
-    cauto strDir = g_strWorkDir + L"/bkg_ol";
-    setDir(strDir);
-
-    cauto lstOlBkg = __app.getModel().getOlBkgList();
-    for (cauto olBkg : lstOlBkg)
+    auto cxPm = pm.width();
+    if (0 == cxPm)
     {
-        tagFileInfo fileInfo;
-        fileInfo.pParent = this;
-        fileInfo.strName = olBkg.catName;
-        auto pSubDir = new COlImgDir(m_bRunSignal, fileInfo, olBkg.lstFiles);
-        m_paSubDir.add(pSubDir);
+        return;
     }
+    auto cyPm = pm.height();
+
+    if (bCut)
+    {
+        if (cx > cy)
+        {
+            auto cyMax = cxPm*2/3;
+            if (cyPm > cyMax)
+            {
+                T&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
+                pm.swap(temp);
+                cyPm = cyMax;
+            }
+        }
+        else
+        {
+            auto cxMax = cyPm*2/3;
+            if (cxPm > cxMax)
+            {
+                T&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
+                pm.swap(temp);
+                cxPm = cxMax;
+            }
+        }
+    }
+
+    if ((float)cyPm/cxPm > (float)cy/cx)
+    {
+        if (cxPm > cx)
+        {
+            T&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+    else
+    {
+        if (cyPm > cy)
+        {
+            T&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+}
+
+void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut)
+{
+    _zoomoutPixmap(pm, cx, cy, bCut);
+}
+
+void zoomoutPixmap(QImage& img, int cx, int cy, bool bCut)
+{
+    _zoomoutPixmap(img, cx, cy, bCut);
 }
