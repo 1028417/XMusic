@@ -447,14 +447,14 @@ bool CXController::replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRe
 			}
 			else
 			{
-				strDstAbsPath.append(fsutil::getFileTitle(strSrcAbsPath)).append(fsutil::GetFileExtName(strSrcAbsPath));
+				strDstAbsPath.append(fsutil::getFileTitle(strSrcAbsPath) + L'.' + fsutil::GetFileExtName(strSrcAbsPath));
 			}
 			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
 			{
 				m_view.msgBox(L"移动源文件失败: \n\n\t" + strSrcAbsPath);
 				return false;
 			}
-			return m_model.renameMedia(pDstMediaRes->GetAbsPath(), strDstAbsPath, false);
+			return m_model.renameMedia(pDstMediaRes->GetPath(), __medialib.toOppPath(strDstAbsPath), false);
 		});
 	}
 
