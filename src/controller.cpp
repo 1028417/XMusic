@@ -413,36 +413,48 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDi
 	m_model.refreshMediaLib();
 }
 
-bool CXController::moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaRes, bool bUseNewName)
+bool CXController::replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRes, bool bUseNewName)
 {
 	std::set<wstring> setFiles;
-	for (cauto pr : mapMoveMediaRes)
+	for (cauto pr : mapMediaRes)
 	{
 		auto pSrcMediaRes = pr.first;
+		cauto strSrcAbsPath = pSrcMediaRes->GetAbsPath();
+		auto pDstMediaRes = pr.second;
+		auto strDstAbsPath = pDstMediaRes->GetAbsPath();
+		if (fsutil::MatchPath(strSrcAbsPath, strDstAbsPath))
+		{
+			continue;
+		}
+
 		cauto strPath = strutil::lowerCase_r(pSrcMediaRes->GetPath());
 		if (setFiles.find(strPath) != setFiles.end())
 		{
 			continue;
 		}
 
-		cauto strSrcAbsPath = pSrcMediaRes->GetAbsPath();
-		auto pDstMediaRes = pr.second;
-		cauto strDstAbsPath = pDstMediaRes->GetAbsPath();
 		m_model.getPlayMgr().pause_move(strSrcAbsPath, strDstAbsPath, [&] {
-			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			if (!fsutil::removeFile(strDstAbsPath))
 			{
-				m_view.msgBox(L"移动文件失败: \n\n\t" + strSrcAbsPath);
+				m_view.msgBox(L"删除目标文件失败: \n\n\t" + strDstAbsPath);
 				return false;
 			}
+
+			strDstAbsPath = fsutil::GetParentDir(strDstAbsPath) + L'\\';
 			if (bUseNewName)
 			{
-				if (!renameMedia(*pDstMediaRes, pSrcMediaRes->GetTitle()))
-				{
-					m_view.msgBox(L"重命名文件失败: \n\n\t" + strDstAbsPath);
-				}
+				strDstAbsPath.append(fsutil::GetFileName(strSrcAbsPath));
+			}
+			else
+			{
+				strDstAbsPath.append(fsutil::getFileTitle(strSrcAbsPath)).append(fsutil::GetFileExtName(strSrcAbsPath));
+			}
+			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			{
+				m_view.msgBox(L"移动源文件失败: \n\n\t" + strSrcAbsPath);
 				return false;
 			}
-			return true;
+			return m_model.renameMedia(pDstMediaRes->GetAbsPath(), strDstAbsPath, false);
 		});
 	}
 

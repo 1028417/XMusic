@@ -65,7 +65,7 @@ public:
 		
 	E_RenameRetCode renameMediaSet(CMediaSet& MediaSet, cwstr strNewName) override;
 
-	bool moveMediaRes(const map<CMediaRes*, CMediaRes*>& mapMoveMediaRes, bool bUseNewName) override;
+	bool replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRes, bool bUseNewName) override;
 	bool removeMediaSet(CMediaSet& MediaSet) override;
 
 	bool autoMatchMedia(CMediaRes& SrcPath, const TD_MediaList& lstMedias, const CB_AutoMatchProgress& cbProgress

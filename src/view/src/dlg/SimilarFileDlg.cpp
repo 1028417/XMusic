@@ -222,7 +222,7 @@ void CSimilarFileDlg::OnBnClickedAddin()
 	__waitCursor;
 
 	TD_MediaResList paMediaRes;
-	map<CMediaRes*, CMediaRes*> mapMoveMediaRes;
+	map<CMediaRes*, CMediaRes*> mapMediaRes;
 	for (auto uItem : lstItems)
 	{
 		m_arrSimilarFileInfo.get(uItem, [&](auto& pr) {
@@ -241,8 +241,18 @@ void CSimilarFileDlg::OnBnClickedAddin()
 							}
 							if (pr.second == uPercent)
 							{
+								/*tagFileStat64 stat;
+								memzero(stat);
+								if (fsutil::lStat64(pSrcMediaRes->path(), stat))
+								{
+									_utimbuf timbuf{ (time_t)stat.st_atime, (time_t)stat.st_mtime };
+									(void)_wutime(pr.first->path().c_str(), &timbuf);
+								}
+								fsutil::removeFile(pSrcMediaRes->path());
+								break;*/
+
 								paMediaRes.add(pSrcMediaRes);
-								mapMoveMediaRes[pSrcMediaRes] = pr.first;
+								mapMediaRes[pSrcMediaRes] = pr.first;
 								break;
 							}
 						}
@@ -252,10 +262,10 @@ void CSimilarFileDlg::OnBnClickedAddin()
 		});
 	}
 	
-	if (!mapMoveMediaRes.empty())
+	if (!mapMediaRes.empty())
 	{
 		_removeMediaRes(paMediaRes);
-		__Ensure(m_view.getController().moveMediaRes(mapMoveMediaRes, bUseNewName));
+		__Ensure(m_view.getController().replaceMediaRes(mapMediaRes, bUseNewName));
 	}
 }
 
