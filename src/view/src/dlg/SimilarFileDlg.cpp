@@ -233,13 +233,15 @@ void CSimilarFileDlg::OnBnClickedAddin()
 				arrSimilarFile.get(index, [&](auto& pr) {
 					auto pSrcMediaRes = pr.first;
 					m_arrPercent.get(m_uPos, [&](UINT uPercent) {
+						UINT uIdx = 0;
 						for (cauto pr : arrSimilarFile)
 						{
+							uIdx++;
 							if (pr.first == pSrcMediaRes)
 							{
 								continue;
 							}
-							if (pr.second == uPercent)
+							if (1 == uIdx || pr.second == uPercent)
 							{
 								/*tagFileStat64 stat;
 								memzero(stat);
