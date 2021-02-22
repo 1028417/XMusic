@@ -62,8 +62,9 @@ protected:
 
     QPixmap m_pmIcon;
 
-private:
     UINT m_uPos = 0;
+
+private:
     vector<tagBkgImg> m_vecImgs;
 
 protected:
@@ -93,8 +94,9 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    bool _genSubImgs(class CAddBkgView& lv);
+    virtual bool _genSubImgs(class CAddBkgView& lv);
 
+protected:
     void _genSubImgs(cwstr strFile, TD_Img& pm);
 
 public:
@@ -155,6 +157,8 @@ private:
     }
 
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
+
+    bool _genSubImgs(class CAddBkgView& lv) override;
 
 public:
     void tryAdd(COlBkgDir& dir, class CAddBkgView& lv);

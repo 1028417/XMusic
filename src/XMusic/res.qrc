@@ -49,5 +49,6 @@
         <file>img/medialib/windriver.png</file>
         <file>img/btnBackward_v.png</file>
         <file>img/btnForward_v.png</file>
+        <file>img/olBkg.png</file>
     </qresource>
 </RCC>

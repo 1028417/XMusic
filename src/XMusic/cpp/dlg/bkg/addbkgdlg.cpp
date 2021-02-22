@@ -175,15 +175,12 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     ui.labelChooseDir->setVisible(false);
 
+    ui.labelTitle->setVisible(m_lv.inRoot());
+
     int y_addbkgView = 0;
-    if (m_lv.displayMode())
-    {
-        ui.labelTitle->setVisible(false);
-    }
-    else
+    if (!m_lv.displayMode())
     {
         y_addbkgView = rcReturn.bottom() + rcReturn.top();
-        ui.labelTitle->setVisible(true);
 
 #if __windows
         if (m_lv.inRoot())
@@ -249,6 +246,7 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_rootImgDir(m_thrScan.signal())
     , m_olBkgDir(m_thrScan.signal())
 {
+    m_pmOlBkg.load(":/img/olBkg.png");
 }
 
 size_t CAddBkgView::getColCount() const
@@ -306,7 +304,8 @@ void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, IImgDir& imgDi
     auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
     tagLVItemContext context(lvItem, eStyle);
     context.strText = imgDir.displayName();
-    context.setIcon(imgDir.icon(), __size(-12));
+    cqpm pm = (&imgDir == &m_olBkgDir)?m_pmOlBkg:imgDir.icon();
+    context.setIcon(pm, __size(-12));
     CListView::_paintRow(painter, context);
 }
 
@@ -380,14 +379,24 @@ void CAddBkgView::_showImgDir(IImgDir& imgDir)
 
     _saveScrollRecord(NULL);
 
-    m_eScrollBar = E_LVScrollBar::LVSB_None;
-
     m_pImgDir = &imgDir;
-    for (auto pImgDir : m_paImgDirs)
+    if (m_pImgDir != &m_olBkgDir)
     {
-        if (pImgDir != m_pImgDir)
+        m_eScrollBar = E_LVScrollBar::LVSB_None;
+
+        for (auto pDir : m_olBkgDir.dirs())
         {
-            pImgDir->cleanup();
+            if (pDir != m_pImgDir)
+            {
+                ((IImgDir*)pDir)->cleanup();
+            }
+        }
+        for (auto pImgDir : m_paImgDirs)
+        {
+            if (pImgDir != m_pImgDir)
+            {
+                pImgDir->cleanup();
+            }
         }
     }
 
@@ -455,6 +464,10 @@ bool CAddBkgView::handleReturn(bool bClose)
 
     if (bClose)
     {
+        for (auto pDir : m_olBkgDir.dirs())
+        {
+            ((IImgDir*)pDir)->cleanup();
+        }
         for (auto pImgDir : m_paImgDirs)
         {
             pImgDir->cleanup();
@@ -473,7 +486,7 @@ void CAddBkgView::scanDir(cwstr strDir)
 {
     m_paImgDirs.clear();
 
-    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"线上";
+    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"在线背景";
     fsutil::createDir(strOlBkgDir);
     m_olBkgDir.setDir(strOlBkgDir);
     m_paImgDirs.add(m_olBkgDir);
@@ -552,7 +565,20 @@ void CAddBkgView::_downloadBkg(signal_t bRunSignal)
             cauto strFile = pFile->path();
             if (OFStream::writefilex(strFile, true, bbfBkg))
             {
-                m_olBkgDir.tryAdd(*pDir, *this);
+                if (m_pImgDir == pDir)
+                {
+                    __app.sync([=]{
+		                if (m_pImgDir == pDir)
+		                {
+	                        pDir->genSubImgs(*this);
+	                        this->update();
+                        }
+                    });
+                }
+                else
+                {
+                    m_olBkgDir.tryAdd(*pDir, *this);
+                }
             }
         }
         else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet

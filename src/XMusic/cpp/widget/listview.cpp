@@ -170,7 +170,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         int y_icon = rc.center().y()-szIcon/2;
         QRect rcPixmap(xIcon, y_icon, szIcon, szIcon);
 
-        if (brIcon && brIcon)
+        if (brIcon && *brIcon)
         {
             painter.drawImgEx(rcPixmap, *brIcon, QRect(0,0,brIcon->width(),brIcon->height()), context.uIconRound);
         }

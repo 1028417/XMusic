@@ -26,6 +26,8 @@ private:
 
     IImgDir *m_pImgDir = NULL;
 
+    QPixmap m_pmOlBkg;
+
 private:
     size_t getColCount() const override;
 

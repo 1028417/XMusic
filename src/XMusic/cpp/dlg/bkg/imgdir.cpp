@@ -184,14 +184,12 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
     }
 
     m_uPos++;
-
     TD_Img pm;
 
 #if __windows || __mac
     if (m_paSubFile.get(m_uPos, [&](XFile& file){
-        m_uPos++;
-
         cauto strFile2 = file.path();
+        m_uPos++;
         TD_Img pm2;
         mtutil::concurrence([&]{
             (void)_loadSubImg(strFile, pm);
@@ -321,6 +319,42 @@ void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
             });
         }
     });
+}
+
+bool COlBkgDir::_genSubImgs(CAddBkgView& lv)
+{
+    wstring strFile;
+    if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+        strFile = file.path();
+    }))
+    {
+        return false;
+    }
+
+    if (!fsutil::existFile(strFile))
+    {
+        return false;
+    }
+
+    m_uPos++;
+    TD_Img pm;
+
+    if (_loadSubImg(strFile, pm))
+    {
+        __app.sync([&, strFile, pm]()mutable{
+            if (this != lv.imgDir())
+            {
+                m_uPos--;
+                return;
+            }
+
+            CImgDir::_genSubImgs(strFile, pm);
+
+            lv.update();
+        });
+    }
+
+    return true;
 }
 
 template <class T=QPixmap>
