@@ -259,7 +259,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
             {
                 for (auto& bkgImg : m_vecImgs)
                 {
-                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, true);
+                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
                 }
             }
         }
@@ -267,7 +267,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
         {
             for (auto& bkgImg : m_vecImgs)
             {
-                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, true);
+                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
             }
         }
     }
@@ -276,7 +276,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
         szZoomout /= 2;
     }
 
-    zoomoutPixmap(pm, szZoomout, szZoomout, true);
+    zoomoutPixmap(pm, szZoomout, szZoomout, false);
 
     m_vecImgs.emplace_back(pm, strFile);
 }

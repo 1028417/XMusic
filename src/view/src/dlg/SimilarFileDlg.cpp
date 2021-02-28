@@ -18,8 +18,7 @@ BEGIN_MESSAGE_MAP(CSimilarFileDlg, CDialog)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST1, &CSimilarFileDlg::OnLvnItemchangedList1)
 	ON_NOTIFY(NM_CLICK, IDC_LIST1, &CSimilarFileDlg::OnNMClickList1)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSimilarFileDlg::OnNMDblclkList1)
-
-
+	
 	ON_BN_CLICKED(IDC_BTN_PLAY, &CSimilarFileDlg::OnBnClickedPlay)
 	ON_BN_CLICKED(IDC_BTN_EXPLORE, &CSimilarFileDlg::OnBnClickedExplore)
 	ON_BN_CLICKED(IDC_BTN_ADDIN, &CSimilarFileDlg::OnBnClickedAddin)
