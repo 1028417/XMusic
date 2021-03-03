@@ -484,6 +484,7 @@ bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes, bool bRemov
 		}
 
 		setFiles.insert(strPath);
+		pMediaRes->remove();
 	}
 
 	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
