@@ -124,34 +124,38 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
-const TD_Img* CImgDir::img(UINT uIdx) const
+const TD_Img* CImgDir::img(bool bHLayout, UINT uIdx) const
 {
-    if (uIdx < m_vecImgs.size())
+    auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
+    if (uIdx < vecImgs.size())
     {
-        return &m_vecImgs[uIdx].pm;
+        return &vecImgs[uIdx].pm;
     }
     return NULL;
 }
 
-wstring CImgDir::imgPath(UINT uIdx) const
+wstring CImgDir::imgPath(bool bHLayout, UINT uIdx) const
 {
-    if (uIdx < m_vecImgs.size())
+    auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
+    if (uIdx < vecImgs.size())
     {
-        return m_vecImgs[uIdx].strPath;
+        return vecImgs[uIdx].strPath;
     }
     return L"";
 }
 
-void CImgDir::genSubImgs(CAddBkgView& lv)
+void CImgDir::genSubImgs(CAddBkgView& lv, bool bHLayout)
 {
-    if (m_uPos >= m_paSubFile.size())
+    auto& uPos = bHLayout?m_uHPos:m_uVPos;
+    if (uPos >= m_paSubFile.size())
     {
         return;
     }
 
-    if (m_vecImgs.capacity() == 0)
+    if (m_vecHImgs.capacity() == 0)
     {
-        m_vecImgs.reserve(m_paSubFile.size());
+        m_vecHImgs.reserve(m_paSubFile.size());
+        m_vecVImgs.reserve(m_paSubFile.size());
     }
 
     if (g_thrGenSubImg)
@@ -162,9 +166,9 @@ void CImgDir::genSubImgs(CAddBkgView& lv)
     {
         g_thrGenSubImg = &__app.thread(); //new XThread;
     }
-    g_thrGenSubImg->start([&]{
+    g_thrGenSubImg->start([&, bHLayout]{
         do {
-            if (!_genSubImgs(lv))
+            if (!_genSubImgs(lv, bHLayout))
             {
                 return;
             }
@@ -173,23 +177,25 @@ void CImgDir::genSubImgs(CAddBkgView& lv)
     });
 }
 
-bool CImgDir::_genSubImgs(CAddBkgView& lv)
+bool CImgDir::_genSubImgs(CAddBkgView& lv, bool bHLayout)
 {
     wstring strFile;
-    if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+    if (!m_paSubFile.get(m_uHPos, [&](XFile& file){
         strFile = file.path();
     }))
     {
         return false;
     }
 
-    m_uPos++;
+    m_uHPos++;
+    m_uVPos++;
     TD_Img pm;
 
 #if __windows || __mac
-    if (m_paSubFile.get(m_uPos, [&](XFile& file){
+    if (m_paSubFile.get(m_uHPos, [&](XFile& file){
         cauto strFile2 = file.path();
-        m_uPos++;
+        m_uHPos++;
+        m_uVPos++;
         TD_Img pm2;
         mtutil::concurrence([&]{
             (void)_loadSubImg(strFile, pm);
@@ -202,7 +208,8 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
             __app.sync([&, strFile, pm, strFile2, pm2]()mutable{
                 if (this != lv.imgDir())
                 {
-                     m_uPos-=2;
+                     m_uHPos-=2;
+                     m_uVPos-=2;
                      return;
                 }
 
@@ -230,7 +237,8 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
         __app.sync([&, strFile, pm]()mutable{
             if (this != lv.imgDir())
             {
-                m_uPos--;
+                m_uHPos--;
+                m_uVPos--;
                 return;
             }
 
@@ -245,7 +253,8 @@ bool CImgDir::_genSubImgs(CAddBkgView& lv)
 
 void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
 {
-    auto prevCount = m_vecImgs.size();
+    auto& vecImgs = pm.width()>pm.height()?m_vecHImgs:m_vecVImgs;
+    auto prevCount = vecImgs.size();
     int szZoomout = g_screen.nMaxSide;
     if (prevCount >= 4)
     {
@@ -257,7 +266,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
             szZoomout /= pow(n, 0.3);
             if (prevCount % 18 == 0)
             {
-                for (auto& bkgImg : m_vecImgs)
+                for (auto& bkgImg : vecImgs)
                 {
                     zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
                 }
@@ -265,7 +274,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
         }
         else if (4 == prevCount)
         {
-            for (auto& bkgImg : m_vecImgs)
+            for (auto& bkgImg : vecImgs)
             {
                 zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
             }
@@ -278,7 +287,7 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
 
     zoomoutPixmap(pm, szZoomout, szZoomout, false);
 
-    m_vecImgs.emplace_back(pm, strFile);
+    vecImgs.emplace_back(pm, strFile);
 }
 
 const tagOlBkg COlBkgDir::s_olBkg;
@@ -321,10 +330,11 @@ void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
     });
 }
 
-bool COlBkgDir::_genSubImgs(CAddBkgView& lv)
+bool COlBkgDir::_genSubImgs(CAddBkgView& lv, bool bHLayout)
 {
+    auto& uPos = bHLayout?m_uHPos:m_uVPos;
     wstring strFile;
-    if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+    if (!m_paSubFile.get(uPos, [&](XFile& file){
         strFile = file.path();
     }))
     {
@@ -336,7 +346,7 @@ bool COlBkgDir::_genSubImgs(CAddBkgView& lv)
         return false;
     }
 
-    m_uPos++;
+    uPos++;
     TD_Img pm;
 
     if (_loadSubImg(strFile, pm))
@@ -344,7 +354,7 @@ bool COlBkgDir::_genSubImgs(CAddBkgView& lv)
         __app.sync([&, strFile, pm]()mutable{
             if (this != lv.imgDir())
             {
-                m_uPos--;
+                uPos--;
                 return;
             }
 

@@ -253,7 +253,7 @@ size_t CAddBkgView::getColCount() const
 {
     if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
-        if (m_pImgDir->imgCount() <= 4)
+        if (m_pImgDir->imgCount(m_addbkgDlg.isHLayout()) <= 4)
         {
             return 2;
         }
@@ -291,7 +291,7 @@ size_t CAddBkgView::getItemCount() const
     }
     else if (m_pImgDir)
     {
-        return m_pImgDir->imgCount();
+        return m_pImgDir->imgCount(m_addbkgDlg.isHLayout());
     }
     else
     {
@@ -299,7 +299,7 @@ size_t CAddBkgView::getItemCount() const
     }
 }
 
-void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, IImgDir& imgDir)
+void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, CImgDir& imgDir)
 {
     auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
     tagLVItemContext context(lvItem, eStyle);
@@ -314,12 +314,12 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     if (m_pImgDir == &m_olBkgDir)
     {
         m_pImgDir->dirs().get(lvItem.uItem, [&](CPath& subDir){
-            _paintRow(painter, lvItem, (IImgDir&)subDir);
+            _paintRow(painter, lvItem, (CImgDir&)subDir);
         });
     }
     else if (m_pImgDir)
     {
-        auto pm = m_pImgDir->img(lvItem.uItem);
+        auto pm = m_pImgDir->img(m_addbkgDlg.isHLayout(), lvItem.uItem);
         if (pm)
         {
             QRect rcFrame(lvItem.rc);
@@ -332,7 +332,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             _paintRow(painter, lvItem, imgDir);
         });
     }
@@ -343,12 +343,12 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     if (m_pImgDir == &m_olBkgDir)
     {
         m_olBkgDir.dirs().get(lvItem.uItem, [&](CPath& subDir){
-            _showImgDir((IImgDir&)subDir);
+            _showImgDir((CImgDir&)subDir);
         });
     }
     else if (m_pImgDir)
     {
-        cauto strFilePath = m_pImgDir->imgPath(lvItem.uItem);
+        cauto strFilePath = m_pImgDir->imgPath(m_addbkgDlg.isHLayout(), lvItem.uItem);
         if (!strFilePath.empty())
         {
             m_addbkgDlg.addBkg(strFilePath);
@@ -356,7 +356,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](IImgDir& imgDir){
+        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             if (0 == lvItem.uItem)
             {
                 if (NULL == m_thrDownload)
@@ -373,7 +373,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
 }
 
-void CAddBkgView::_showImgDir(IImgDir& imgDir)
+void CAddBkgView::_showImgDir(CImgDir& imgDir)
 {    
     g_uMsScanYield = 10;
 
@@ -388,7 +388,7 @@ void CAddBkgView::_showImgDir(IImgDir& imgDir)
         {
             if (pDir != m_pImgDir)
             {
-                ((IImgDir*)pDir)->cleanup();
+                ((CImgDir*)pDir)->cleanup();
             }
         }
         for (auto pImgDir : m_paImgDirs)
@@ -403,7 +403,7 @@ void CAddBkgView::_showImgDir(IImgDir& imgDir)
     m_addbkgDlg.relayout();
     m_addbkgDlg.repaint(); //update();
 
-    m_pImgDir->genSubImgs(*this); //_genSubImgs();
+    m_pImgDir->genSubImgs(*this, m_addbkgDlg.isHLayout()); //_genSubImgs();
 }
 
 /*void CAddBkgView::_genSubImgs()
@@ -466,7 +466,7 @@ bool CAddBkgView::handleReturn(bool bClose)
     {
         for (auto pDir : m_olBkgDir.dirs())
         {
-            ((IImgDir*)pDir)->cleanup();
+            ((CImgDir*)pDir)->cleanup();
         }
         for (auto pImgDir : m_paImgDirs)
         {
@@ -569,8 +569,8 @@ void CAddBkgView::_downloadBkg(signal_t bRunSignal)
                 {
                     __app.sync([=]{
 		                if (m_pImgDir == pDir)
-		                {
-	                        pDir->genSubImgs(*this);
+                        {
+                            pDir->genSubImgs(*this, m_addbkgDlg.isHLayout());
 	                        this->update();
                         }
                     });

@@ -4,31 +4,7 @@
 //using TD_Img = QImage;
 using TD_Img = QPixmap;
 
-/*class IImgDir
-{
-public:
-    IImgDir() = default;
-
-    virtual ~IImgDir() = default;
-
-    virtual void cleanup() = 0;
-
-    virtual wstring displayName() const = 0;
-
-    virtual cqpm icon() const = 0;
-
-    virtual size_t imgCount() const = 0;
-
-    virtual const TD_Img* img(UINT uIdx) const = 0;
-
-    virtual wstring imgPath(UINT uIdx) const = 0;
-
-    virtual void genSubImgs(class CAddBkgView& lv) = 0;
-};*/
-
-#define IImgDir CImgDir
-
-class CImgDir : public CPath//, public IImgDir
+class CImgDir : public CPath//, public CImgDir
 {
 private:
     struct tagBkgImg
@@ -62,10 +38,12 @@ protected:
 
     QPixmap m_pmIcon;
 
-    UINT m_uPos = 0;
+    UINT m_uHPos = 0;
+    UINT m_uVPos = 0;
 
 private:
-    vector<tagBkgImg> m_vecImgs;
+    vector<tagBkgImg> m_vecHImgs;
+    vector<tagBkgImg> m_vecVImgs;
 
 protected:
     bool _genIcon(cwstr strFile);
@@ -94,7 +72,7 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    virtual bool _genSubImgs(class CAddBkgView& lv);
+    virtual bool _genSubImgs(class CAddBkgView& lv, bool bHLayout);
 
 protected:
     void _genSubImgs(cwstr strFile, TD_Img& pm);
@@ -112,27 +90,29 @@ public:
 
     void cleanup()// override
     {
-        m_uPos = 0;
-        m_vecImgs.clear();
+        m_uHPos = 0;
+        m_uVPos = 0;
+        m_vecHImgs.clear();
+        m_vecVImgs.clear();
     }
 
-    virtual wstring displayName() const;// override;
+    virtual wstring displayName() const;
 
-    cqpm icon() const// override
+    cqpm icon() const
     {
         return m_pmIcon;
     }
 
-    size_t imgCount() const// override
+    size_t imgCount(bool bHLayout) const
     {
-        return m_vecImgs.size();
+        return (bHLayout?m_vecHImgs:m_vecVImgs).size();
     }
 
-    const TD_Img* img(UINT uIdx) const;// override;
+    const TD_Img* img(bool bHLayout, UINT uIdx) const;
 
-    wstring imgPath(UINT uIdx) const;// override;
+    wstring imgPath(bool bHLayout, UINT uIdx) const;
 
-    void genSubImgs(class CAddBkgView& lv);// override;
+    void genSubImgs(class CAddBkgView& lv, bool bHLayout);
 };
 
 class COlBkgDir : public CImgDir
@@ -158,7 +138,7 @@ private:
 
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
-    bool _genSubImgs(class CAddBkgView& lv) override;
+    bool _genSubImgs(class CAddBkgView& lv, bool bHLayout) override;
 
 public:
     void tryAdd(COlBkgDir& dir, class CAddBkgView& lv);

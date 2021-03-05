@@ -5,7 +5,7 @@
 
 #include "imgdir.h"
 
-using TD_ImgDirList = PtrArray<IImgDir>;
+using TD_ImgDirList = PtrArray<CImgDir>;
 
 class CAddBkgView : public CListView
 {
@@ -24,7 +24,7 @@ private:
 
     TD_ImgDirList m_paImgDirs;
 
-    IImgDir *m_pImgDir = NULL;
+    CImgDir *m_pImgDir = NULL;
 
     QPixmap m_pmOlBkg;
 
@@ -36,11 +36,11 @@ private:
     size_t getItemCount() const override;
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
-    void _paintRow(CPainter& painter, tagLVItem& lvItem, IImgDir& imgDir);
+    void _paintRow(CPainter& painter, tagLVItem& lvItem, CImgDir& imgDir);
 
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
-    void _showImgDir(IImgDir& imgDir);
+    void _showImgDir(CImgDir& imgDir);
 
     void _downloadBkg(signal_t bRunSignal);
 
@@ -70,7 +70,7 @@ public:
         return NULL == m_pImgDir;
     }
 
-    IImgDir* imgDir() const
+    CImgDir* imgDir() const
     {
         if (m_pImgDir == &m_olBkgDir)
         {
