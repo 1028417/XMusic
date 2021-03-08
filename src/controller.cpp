@@ -421,7 +421,7 @@ bool CXController::replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRe
 		auto pSrcMediaRes = pr.first;
 		cauto strSrcAbsPath = pSrcMediaRes->GetAbsPath();
 		auto pDstMediaRes = pr.second;
-		auto strDstAbsPath = pDstMediaRes->GetAbsPath();
+		cauto strDstAbsPath = pDstMediaRes->GetAbsPath();
 		if (fsutil::MatchPath(strSrcAbsPath, strDstAbsPath))
 		{
 			continue;
@@ -440,21 +440,21 @@ bool CXController::replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRe
 				return false;
 			}
 
-			strDstAbsPath = fsutil::GetParentDir(strDstAbsPath) + L'\\';
+			auto strNewAbsPath = fsutil::GetParentDir(strDstAbsPath) + L'\\';
 			if (bUseNewName)
 			{
-				strDstAbsPath.append(fsutil::GetFileName(strSrcAbsPath));
+				strNewAbsPath.append(fsutil::GetFileName(strSrcAbsPath));
 			}
 			else
 			{
-				strDstAbsPath.append(fsutil::getFileTitle(strSrcAbsPath) + L'.' + fsutil::GetFileExtName(strSrcAbsPath));
+				strNewAbsPath.append(fsutil::getFileTitle(strDstAbsPath) + L'.' + fsutil::GetFileExtName(strSrcAbsPath));
 			}
-			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			if (!fsutil::moveFile(strSrcAbsPath, strNewAbsPath))
 			{
-				m_view.msgBox(L"移动源文件失败: \n\n\t" + strSrcAbsPath);
+				m_view.msgBox(L"移动源文件失败: \n\n\t" + strNewAbsPath);
 				return false;
 			}
-			return m_model.renameMedia(pDstMediaRes->GetPath(), __medialib.toOppPath(strDstAbsPath), false);
+			return m_model.renameMedia(pDstMediaRes->GetPath(), __medialib.toOppPath(strNewAbsPath), false);
 		});
 	}
 
@@ -487,11 +487,12 @@ bool CXController::removeMediaRes(const TD_MediaResList& paMediaRes, bool bRemov
 		pMediaRes->remove();
 	}
 
-	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
 	if (bRemoveMedia)
 	{
-		__EnsureReturn(m_model.removeFiles(setFiles), false);
+		__EnsureReturn(m_model.removeFiles(setFiles), false); // 必须先执行，不然CMediaResPanel自绘崩溃
 	}
+	__EnsureReturn(m_model.getPlayMgr().remove(setFiles), false);
+
 	return true;
 }
 
