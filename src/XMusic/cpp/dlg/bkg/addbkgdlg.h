@@ -80,6 +80,8 @@ public:
     }
 
     bool handleReturn(bool bClose);
+
+    bool isHLayout() const;
 };
 
 class CAddBkgDlg : public CDialog

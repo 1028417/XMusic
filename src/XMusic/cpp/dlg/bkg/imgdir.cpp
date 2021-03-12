@@ -3,7 +3,6 @@
 
 #include "imgdir.h"
 
-XThread *g_thrGenSubImg = NULL;
 UINT g_uMsScanYield = 1;
 
 wstring CImgDir::displayName() const
@@ -30,7 +29,7 @@ wstring CImgDir::displayName() const
 #endif
 }
 
-#define __szSubIngFilter 640
+#define __BKG_MIN 1800
 
 template  <class T=QPixmap>
 inline static bool _loadSubImg(cwstr strFile, T& pm)
@@ -40,12 +39,16 @@ inline static bool _loadSubImg(cwstr strFile, T& pm)
         return false;
     }
 
-    if (pm.width()<__szSubIngFilter || pm.height()<__szSubIngFilter)
+    if (pm.width()>=__BKG_MIN && pm.height()>=800)
     {
-        return false;
+        return true;
+    }
+    if (pm.width()>=800 && pm.height()>=__BKG_MIN)
+    {
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpe", L"jpeg", L"jfif", L"png", L"bmp");
@@ -144,118 +147,76 @@ wstring CImgDir::imgPath(bool bHLayout, UINT uIdx) const
     return L"";
 }
 
-void CImgDir::genSubImgs(CAddBkgView& lv, bool bHLayout)
+bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
 {
-    auto& uPos = bHLayout?m_uHPos:m_uVPos;
-    if (uPos >= m_paSubFile.size())
-    {
-        return;
-    }
-
-    if (m_vecHImgs.capacity() == 0)
-    {
-        m_vecHImgs.reserve(m_paSubFile.size());
-        m_vecVImgs.reserve(m_paSubFile.size());
-    }
-
-    if (g_thrGenSubImg)
-    {
-        g_thrGenSubImg->cancel();
-    }
-    else
-    {
-        g_thrGenSubImg = &__app.thread(); //new XThread;
-    }
-    g_thrGenSubImg->start([&, bHLayout]{
-        do {
-            if (!_genSubImgs(lv, bHLayout))
-            {
-                return;
-            }
-
-        } while (g_thrGenSubImg->usleep(30));
-    });
-}
-
-bool CImgDir::_genSubImgs(CAddBkgView& lv, bool bHLayout)
-{
-    wstring strFile;
-    if (!m_paSubFile.get(m_uHPos, [&](XFile& file){
-        strFile = file.path();
-    }))
+    auto bHLayout = lv.isHLayout();
+    auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
+    auto prevCount = vecImgs.size();
+    if (prevCount >= uGenCount)
     {
         return false;
     }
 
-    m_uHPos++;
-    m_uVPos++;
+    wstring strFile;
     TD_Img pm;
 
-#if __windows || __mac
-    if (m_paSubFile.get(m_uHPos, [&](XFile& file){
-        cauto strFile2 = file.path();
-        m_uHPos++;
-        m_uVPos++;
-        TD_Img pm2;
-        mtutil::concurrence([&]{
-            (void)_loadSubImg(strFile, pm);
-        }, [&]{
-            (void)_loadSubImg(strFile2, pm2);
-        });
-
-        if (!pm.isNull() || !pm2.isNull())
+    cauto vecPos = bHLayout?m_vecHPos:m_vecVPos;
+    if (vecPos.size() > prevCount)
+    {
+        if (!m_paSubFile.get(vecPos[prevCount], [&](XFile& file){
+            strFile = file.path();
+        }))
         {
-            __app.sync([&, strFile, pm, strFile2, pm2]()mutable{
-                if (this != lv.imgDir())
-                {
-                     m_uHPos-=2;
-                     m_uVPos-=2;
-                     return;
-                }
-
-                if (!pm.isNull())
-                {
-                    _genSubImgs(strFile, pm);
-                }
-
-                if (!pm2.isNull())
-                {
-                    _genSubImgs(strFile2, pm2);
-                }
-
-                lv.update();
-            });
+            return false;
         }
-    }))
-    {
-        return true;
+        if (!_loadSubImg(strFile, pm))
+        {
+            return true;
+        }
     }
-#endif
-
-    if (_loadSubImg(strFile, pm))
+    else
     {
-        __app.sync([&, strFile, pm]()mutable{
-            if (this != lv.imgDir())
+        if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+            strFile = file.path();
+        }))
+        {
+            return false;
+        }
+        m_uPos++;
+
+        if (!_loadSubImg(strFile, pm))
+        {
+            return true;
+        }
+        if (bHLayout)
+        {
+            if (pm.height() >= __BKG_MIN)
             {
-                m_uHPos--;
-                m_uVPos--;
-                return;
+                m_vecVPos.push_back(m_uPos-1);
             }
-
-            _genSubImgs(strFile, pm);
-
-            lv.update();
-        });
+            if (pm.width() < __BKG_MIN)
+            {
+                return true;
+            }
+            m_vecHPos.push_back(m_uPos-1);
+        }
+        else
+        {
+            if (pm.width() >= __BKG_MIN)
+            {
+                m_vecHPos.push_back(m_uPos-1);
+            }
+            if (pm.height() < __BKG_MIN)
+            {
+                return true;
+            }
+            m_vecVPos.push_back(m_uPos-1);
+        }
     }
 
-    return true;
-}
-
-void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
-{
-    auto& vecImgs = pm.width()>pm.height()?m_vecHImgs:m_vecVImgs;
-    auto prevCount = vecImgs.size();
+    bool bZoomout = false;
     int szZoomout = g_screen.nMaxSide;
+
     if (prevCount >= 4)
     {
         szZoomout /= 3;
@@ -266,18 +227,12 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
             szZoomout /= pow(n, 0.3);
             if (prevCount % 18 == 0)
             {
-                for (auto& bkgImg : vecImgs)
-                {
-                    zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
-                }
+                bZoomout = true;
             }
         }
         else if (4 == prevCount)
         {
-            for (auto& bkgImg : vecImgs)
-            {
-                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
-            }
+            bZoomout = true;
         }
     }
     else
@@ -287,7 +242,33 @@ void CImgDir::_genSubImgs(cwstr strFile, TD_Img& pm)
 
     zoomoutPixmap(pm, szZoomout, szZoomout, false);
 
-    vecImgs.emplace_back(pm, strFile);
+    __app.sync([&, bHLayout, bZoomout, szZoomout, strFile, pm]()mutable{
+        if (lv.imgDir() != this || lv.isHLayout() != bHLayout)
+        {
+            m_uPos--;
+            return;
+        }
+
+        auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
+        if (vecImgs.capacity() == 0)
+        {
+            vecImgs.reserve(m_paSubFile.size());
+        }
+
+        if (bZoomout)
+        {
+            for (auto& bkgImg : vecImgs)
+            {
+                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
+            }
+        }
+
+        vecImgs.emplace_back(pm, strFile);
+
+        lv.update();
+    });
+
+    return true;
 }
 
 const tagOlBkg COlBkgDir::s_olBkg;
@@ -328,43 +309,6 @@ void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
             });
         }
     });
-}
-
-bool COlBkgDir::_genSubImgs(CAddBkgView& lv, bool bHLayout)
-{
-    auto& uPos = bHLayout?m_uHPos:m_uVPos;
-    wstring strFile;
-    if (!m_paSubFile.get(uPos, [&](XFile& file){
-        strFile = file.path();
-    }))
-    {
-        return false;
-    }
-
-    if (!fsutil::existFile(strFile))
-    {
-        return false;
-    }
-
-    uPos++;
-    TD_Img pm;
-
-    if (_loadSubImg(strFile, pm))
-    {
-        __app.sync([&, strFile, pm]()mutable{
-            if (this != lv.imgDir())
-            {
-                uPos--;
-                return;
-            }
-
-            CImgDir::_genSubImgs(strFile, pm);
-
-            lv.update();
-        });
-    }
-
-    return true;
 }
 
 template <class T=QPixmap>

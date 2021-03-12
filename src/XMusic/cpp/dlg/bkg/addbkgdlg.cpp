@@ -8,7 +8,7 @@
 
 static Ui::AddBkgDlg ui;
 
-extern XThread *g_thrGenSubImg;
+XThread *g_thrGenSubImg = NULL;
 extern UINT g_uMsScanYield;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
@@ -34,16 +34,17 @@ void CAddBkgDlg::init()
             return;
         }
 
-        if (g_thrGenSubImg)
+        /*if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel(false);
-        }
+        }*/
 
         m_lv.thrScan().cancel();
 
         if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel();
+            //g_thrGenSubImg = NULL;
         }
 
         m_lv.scanDir(strDir);
@@ -403,27 +404,45 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     m_addbkgDlg.relayout();
     m_addbkgDlg.repaint(); //update();
 
-    m_pImgDir->genSubImgs(*this, m_addbkgDlg.isHLayout()); //_genSubImgs();
+    //m_pImgDir->genSubImg(*this, m_addbkgDlg.isHLayout(), 3); //_genSubImg();
+
+    if (m_pImgDir != &m_olBkgDir)
+    {
+        if (g_thrGenSubImg)
+        {
+            g_thrGenSubImg->cancel();
+        }
+        else
+        {
+            g_thrGenSubImg = &__app.thread();
+        }
+        g_thrGenSubImg->start([&]{
+            do {
+                auto pImgDir = m_pImgDir;
+                if (NULL == pImgDir || pImgDir == &m_olBkgDir)
+                {
+                    break;
+                }
+
+                auto uGenCount = (this->scrollPos()+4)*3;
+                if (pImgDir->genSubImg(*this, uGenCount))
+                {
+                    if (!g_thrGenSubImg->usleep(10))
+                    {
+                        break;
+                    }
+                    continue;
+                }
+            }
+            while (g_thrGenSubImg->usleep(100));
+        });
+    }
 }
 
-/*void CAddBkgView::_genSubImgs()
+bool CAddBkgView::isHLayout() const
 {
-    if (NULL == m_pImgDir)
-    {
-        return;
-    }
-
-    if (!m_pImgDir->genSubImgs())
-    {
-        return;
-    }
-
-    update();
-
-    async(30, [&]{
-        _genSubImgs();
-    });
-}*/
+    return m_addbkgDlg.isHLayout();
+}
 
 bool CAddBkgView::handleReturn(bool bClose)
 {
@@ -570,7 +589,7 @@ void CAddBkgView::_downloadBkg(signal_t bRunSignal)
                     __app.sync([=]{
 		                if (m_pImgDir == pDir)
                         {
-                            pDir->genSubImgs(*this, m_addbkgDlg.isHLayout());
+                            //pDir->genSubImg(*this);
 	                        this->update();
                         }
                     });
