@@ -33,14 +33,13 @@ public:
     {
     }
 
-protected:
+private:
     signal_t m_bRunSignal;
 
     QPixmap m_pmIcon;
 
     UINT m_uPos = 0;
 
-private:
     vector<UINT> m_vecHPos;
     vector<UINT> m_vecVPos;
 

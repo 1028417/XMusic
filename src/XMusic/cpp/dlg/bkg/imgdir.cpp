@@ -94,7 +94,8 @@ wstring CImgDir::displayName() const
 #endif
 }
 
-#define __BKG_MIN 1800
+#define __BKG_MaxSide (g_screen.nMaxSide*4/5) //1800
+#define __BKG_MinSide (g_screen.nMinSide*4/5) //800
 
 template  <class T=QPixmap>
 inline static bool _loadSubImg(cwstr strFile, T& pm)
@@ -104,11 +105,11 @@ inline static bool _loadSubImg(cwstr strFile, T& pm)
         return false;
     }
 
-    if (pm.width()>=__BKG_MIN && pm.height()>=800)
+    if (pm.width()>=__BKG_MaxSide && pm.height()>=__BKG_MinSide)
     {
         return true;
     }
-    if (pm.width()>=800 && pm.height()>=__BKG_MIN)
+    if (pm.width()>=__BKG_MinSide && pm.height()>=__BKG_MaxSide)
     {
         return true;
     }
@@ -127,6 +128,16 @@ inline bool CImgDir::_genIcon(cwstr strFile)
         m_pmIcon = QPixmap();
         return false;
     }
+
+    if (m_pmIcon.width() >= __BKG_MaxSide)
+    {
+        m_vecHPos.push_back(0);
+    }
+    if (m_pmIcon.height() >= __BKG_MaxSide)
+    {
+        m_vecVPos.push_back(0);
+    }
+    m_uPos = 1;
 
     /*QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
             ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
@@ -250,19 +261,27 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             return false;
         }
-        m_uPos++;
-
         if (!_loadSubImg(strFile, pm))
         {
-            return true;
+            if (fsutil::existFile(strFile))
+            {
+                m_uPos++;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
+        m_uPos++;
+
         if (bHLayout)
         {
-            if (pm.height() >= __BKG_MIN)
+            if (pm.height() >= __BKG_MaxSide)
             {
                 m_vecVPos.push_back(m_uPos-1);
             }
-            if (pm.width() < __BKG_MIN)
+            if (pm.width() < __BKG_MaxSide)
             {
                 return true;
             }
@@ -270,11 +289,11 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         }
         else
         {
-            if (pm.width() >= __BKG_MIN)
+            if (pm.width() >= __BKG_MaxSide)
             {
                 m_vecHPos.push_back(m_uPos-1);
             }
-            if (pm.height() < __BKG_MIN)
+            if (pm.height() < __BKG_MaxSide)
             {
                 return true;
             }
