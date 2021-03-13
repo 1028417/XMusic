@@ -34,17 +34,11 @@ void CAddBkgDlg::init()
             return;
         }
 
-        /*if (g_thrGenSubImg)
-        {
-            g_thrGenSubImg->cancel(false);
-        }*/
-
         m_lv.thrScan().cancel();
 
         if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel();
-            //g_thrGenSubImg = NULL;
         }
 
         m_lv.scanDir(strDir);
@@ -402,9 +396,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     }
 
     m_addbkgDlg.relayout();
-    m_addbkgDlg.repaint(); //update();
-
-    //m_pImgDir->genSubImg(*this, m_addbkgDlg.isHLayout(), 3); //_genSubImg();
+    m_addbkgDlg.repaint();
 
     if (m_pImgDir != &m_olBkgDir)
     {
@@ -474,13 +466,6 @@ bool CAddBkgView::handleReturn(bool bClose)
         }
     }
 
-    /*if (g_thrGenSubImg)
-    {
-        g_thrGenSubImg->join();
-        delete g_thrGenSubImg;
-        g_thrGenSubImg = NULL;
-    }*/
-
     if (bClose)
     {
         for (auto pDir : m_olBkgDir.dirs())
@@ -505,7 +490,7 @@ void CAddBkgView::scanDir(cwstr strDir)
 {
     m_paImgDirs.clear();
 
-    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"在线背景";
+    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"网上图库";
     fsutil::createDir(strOlBkgDir);
     m_olBkgDir.setDir(strOlBkgDir);
     m_paImgDirs.add(m_olBkgDir);

@@ -289,12 +289,12 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         std::swap(cx, cy);
     }
 
-    float fZoomoutRate = 2.0f;
+    float fZoomoutRate = 2.2f;
     UINT uZoomoutAll = 0;
 
     if (prevCount >= 4)
     {
-        fZoomoutRate = 3;
+        fZoomoutRate = 3.3f;
 
         auto n = prevCount/18;
         if (n > 1)
