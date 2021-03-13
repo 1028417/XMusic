@@ -14,16 +14,11 @@ static Ui::BkgDlg ui;
 template <class T=QPixmap>
 static void _zoomoutBkg(T& pm, bool bHLayout, int szMax, int szMin, bool bThumbs)
 {
-    int cx = 0, cy = 0;
-    if (bHLayout)
+    int cx = szMax;
+    int cy = szMin;
+    if (!bHLayout)
     {
-        cx = szMax;
-        cy = szMin;
-    }
-    else
-    {
-        cx = szMin;
-        cy = szMax;
+        std::swap(cx, cy);
     }
 
     if (bThumbs)

@@ -5,6 +5,68 @@
 
 UINT g_uMsScanYield = 1;
 
+template <class T=QPixmap>
+inline static void _zoomoutPixmap(T& pm, int cx, int cy, bool bCut)
+{
+    auto cxPm = pm.width();
+    if (0 == cxPm)
+    {
+        return;
+    }
+    auto cyPm = pm.height();
+
+    if (bCut)
+    {
+        if (cx > cy)
+        {
+            auto cyMax = cxPm*2/3;
+            if (cyPm > cyMax)
+            {
+                T&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
+                pm.swap(temp);
+                cyPm = cyMax;
+            }
+        }
+        else
+        {
+            auto cxMax = cyPm*2/3;
+            if (cxPm > cxMax)
+            {
+                T&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
+                pm.swap(temp);
+                cxPm = cxMax;
+            }
+        }
+    }
+
+    if ((float)cyPm/cxPm > (float)cy/cx)
+    {
+        if (cxPm > cx)
+        {
+            T&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+    else
+    {
+        if (cyPm > cy)
+        {
+            T&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
+            pm.swap(temp);
+        }
+    }
+}
+
+void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut)
+{
+    _zoomoutPixmap(pm, cx, cy, bCut);
+}
+
+void zoomoutPixmap(QImage& img, int cx, int cy, bool bCut)
+{
+    _zoomoutPixmap(img, cx, cy, bCut);
+}
+
 wstring CImgDir::displayName() const
 {
 #if __android
@@ -63,10 +125,7 @@ inline bool CImgDir::_genIcon(cwstr strFile)
         return false;
     }
 
-    QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
-            ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
-            : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
-    m_pmIcon.swap(pm);
+    _zoomoutPixmap(m_pmIcon, __szSnapshot, __szSnapshot, true);
     return true;
 }
 
@@ -214,35 +273,38 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         }
     }
 
-    bool bZoomout = false;
-    int szZoomout = g_screen.nMaxSide;
+    int cx = g_screen.nMaxSide;
+    int cy = g_screen.nMinSide;
+    if (!bHLayout)
+    {
+        std::swap(cx, cy);
+    }
+
+    float fZoomoutRate = 2.0f;
+    UINT uZoomoutAll = 0;
 
     if (prevCount >= 4)
     {
-        szZoomout /= 3;
+        fZoomoutRate = 3;
 
         auto n = prevCount/18;
         if (n > 1)
         {
-            szZoomout /= pow(n, 0.3);
+            fZoomoutRate += pow(n, 0.3);
             if (prevCount % 18 == 0)
             {
-                bZoomout = true;
+                uZoomoutAll = cx/fZoomoutRate;
             }
         }
         else if (4 == prevCount)
         {
-            bZoomout = true;
+            uZoomoutAll = cx/fZoomoutRate;
         }
     }
-    else
-    {
-        szZoomout /= 2;
-    }
 
-    zoomoutPixmap(pm, szZoomout, szZoomout, false);
+    _zoomoutPixmap(pm, cx/fZoomoutRate, cy/fZoomoutRate, true);
 
-    __app.sync([&, bHLayout, bZoomout, szZoomout, strFile, pm]()mutable{
+    __app.sync([&, bHLayout, uZoomoutAll, pm, strFile]()mutable{
         if (lv.imgDir() != this || lv.isHLayout() != bHLayout)
         {
             m_uPos--;
@@ -254,12 +316,15 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             vecImgs.reserve(m_paSubFile.size());
         }
-
-        if (bZoomout)
+        else
         {
-            for (auto& bkgImg : vecImgs)
+            if (uZoomoutAll)
             {
-                zoomoutPixmap(bkgImg.pm, szZoomout, szZoomout, false);
+                for (auto& bkgImg : vecImgs)
+                {
+                    decltype(bkgImg.pm)&& temp = bkgImg.pm.scaledToWidth(uZoomoutAll, Qt::SmoothTransformation);
+                    bkgImg.pm.swap(temp);
+                }
             }
         }
 
@@ -309,66 +374,4 @@ void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
             });
         }
     });
-}
-
-template <class T=QPixmap>
-inline static void _zoomoutPixmap(T& pm, int cx, int cy, bool bCut)
-{
-    auto cxPm = pm.width();
-    if (0 == cxPm)
-    {
-        return;
-    }
-    auto cyPm = pm.height();
-
-    if (bCut)
-    {
-        if (cx > cy)
-        {
-            auto cyMax = cxPm*2/3;
-            if (cyPm > cyMax)
-            {
-                T&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
-                pm.swap(temp);
-                cyPm = cyMax;
-            }
-        }
-        else
-        {
-            auto cxMax = cyPm*2/3;
-            if (cxPm > cxMax)
-            {
-                T&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
-                pm.swap(temp);
-                cxPm = cxMax;
-            }
-        }
-    }
-
-    if ((float)cyPm/cxPm > (float)cy/cx)
-    {
-        if (cxPm > cx)
-        {
-            T&& temp = pm.scaledToWidth(cx, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-    else
-    {
-        if (cyPm > cy)
-        {
-            T&& temp = pm.scaledToHeight(cy, Qt::SmoothTransformation);
-            pm.swap(temp);
-        }
-    }
-}
-
-void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut)
-{
-    _zoomoutPixmap(pm, cx, cy, bCut);
-}
-
-void zoomoutPixmap(QImage& img, int cx, int cy, bool bCut)
-{
-    _zoomoutPixmap(img, cx, cy, bCut);
 }
