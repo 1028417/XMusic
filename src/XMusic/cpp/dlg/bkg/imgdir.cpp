@@ -6,38 +6,41 @@
 UINT g_uMsScanYield = 1;
 
 template <class T=QPixmap>
+inline static void _cutPixmap(T& pm, float fHWRate)
+{
+    auto cx = pm.width();
+    auto cy = pm.height();
+
+    auto cyMax = cx * fHWRate;
+    if (cy - cyMax > cyMax/10)
+    {
+        T&& temp = pm.copy(0, (cy-cyMax)/2, cx, cyMax);
+        pm.swap(temp);
+        return;
+    }
+
+    auto cxMax = cy / fHWRate;
+    if (cx - cxMax > cxMax/10)
+    {
+        T&& temp = pm.copy((cx-cxMax)/2, 0, cxMax, cy);
+        pm.swap(temp);
+    }
+}
+
+template <class T=QPixmap>
 inline static void _zoomoutPixmap(T& pm, int cx, int cy, bool bCut)
 {
+    if (bCut)
+    {
+        _cutPixmap(pm, (float)cy/cx);
+    }
+
     auto cxPm = pm.width();
     if (0 == cxPm)
     {
         return;
     }
     auto cyPm = pm.height();
-
-    if (bCut)
-    {
-        if (cx > cy)
-        {
-            auto cyMax = cxPm*2/3;
-            if (cyPm > cyMax)
-            {
-                T&& temp = pm.copy(0, (cyPm-cyMax)/2, cxPm, cyMax);
-                pm.swap(temp);
-                cyPm = cyMax;
-            }
-        }
-        else
-        {
-            auto cxMax = cyPm*2/3;
-            if (cxPm > cxMax)
-            {
-                T&& temp = pm.copy((cxPm-cxMax)/2, 0, cxMax, cyPm);
-                pm.swap(temp);
-                cxPm = cxMax;
-            }
-        }
-    }
 
     if ((float)cyPm/cxPm > (float)cy/cx)
     {
@@ -124,6 +127,12 @@ inline bool CImgDir::_genIcon(cwstr strFile)
         m_pmIcon = QPixmap();
         return false;
     }
+
+    /*QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
+            ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
+            : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+    m_pmIcon.swap(pm);
+    _cutPixmap(m_pmIcon, 1.0f);*/
 
     _zoomoutPixmap(m_pmIcon, __szSnapshot, __szSnapshot, true);
     return true;

@@ -12,7 +12,7 @@
 static Ui::BkgDlg ui;
 
 template <class T=QPixmap>
-static void _zoomoutBkg(T& pm, bool bHLayout, int szMax, int szMin, bool bThumbs)
+static void _zoomoutBkg(T& pm, bool bHLayout, int szMax, int szMin, bool bCut)
 {
     int cx = szMax;
     int cy = szMin;
@@ -20,30 +20,26 @@ static void _zoomoutBkg(T& pm, bool bHLayout, int szMax, int szMin, bool bThumbs
     {
         std::swap(cx, cy);
     }
-
-    if (bThumbs)
-    {
-#define __thumbsRate 0.4f
-        cx *= __thumbsRate;
-        cy *= __thumbsRate;
-    }
-
-    zoomoutPixmap(pm, cx, cy, bThumbs);
+    zoomoutPixmap(pm, cx, cy, bCut);
 }
 
 #define __szScreenMax __size(__cyBkg)
 #define __szScreenMin __size(1200)
 
+#define __thumbsRate 0.4f
+
 template <class T=QPixmap>
 inline static void _saveThumbs(T& pm, bool bHLayout, cwstr strFile)
 {
-    _zoomoutBkg(pm, bHLayout, MAX(g_screen.nMaxSide, __szScreenMax), MAX(g_screen.nMinSide, __szScreenMin), true);
+    int szMax = MAX(g_screen.nMaxSide, __szScreenMax);
+    int szMin = MAX(g_screen.nMinSide, __szScreenMin);
+    _zoomoutBkg(pm, bHLayout, szMax * __thumbsRate, szMin * __thumbsRate, true);
     pm.save(__WS2Q(strFile + __thumbs), __thumbsFormat);
 }
 
 CBkgDlg::CThumbsBrush& CBkgDlg::_genThumbs(TD_Bkg& pm, bool bHLayout)
 {
-    _zoomoutBkg(pm, bHLayout, g_screen.nMaxSide, g_screen.nMinSide, true);
+    _zoomoutBkg(pm, bHLayout, g_screen.nMaxSide * __thumbsRate, g_screen.nMinSide * __thumbsRate, false);
     m_lstThumbsBrush.emplace_back(pm);
     return m_lstThumbsBrush.back();
 }
@@ -356,7 +352,9 @@ void CBkgDlg::addBkg(cwstr strFile)
 {
     auto& pmBkg = m_bHLayout?m_pmHBkg:m_pmVBkg;
     (void)pmBkg.load(__WS2Q(strFile));
-    _zoomoutBkg(pmBkg, m_bHLayout, MAX(g_screen.nMaxSide, __szScreenMax), MAX(g_screen.nMinSide, __szScreenMin), false);
+    int szMax = MAX(g_screen.nMaxSide, __szScreenMax);
+    int szMin = MAX(g_screen.nMinSide, __szScreenMin);
+    _zoomoutBkg(pmBkg, m_bHLayout, szMax, szMin, false);
 
     cauto strFileName = to_wstring(time(0));
     cauto strDstFile = _bkgDir() + strFileName;

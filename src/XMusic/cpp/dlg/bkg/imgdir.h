@@ -142,5 +142,5 @@ public:
     string url(XFile& file);
 };
 
-void zoomoutPixmap(QPixmap& pm, int cx, int cy, bool bCut);
+void zoomoutPixmap(QPixmap& pm, int cx, int cy,  bool bCut);
 void zoomoutPixmap(QImage& img, int cx, int cy, bool bCut);
