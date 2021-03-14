@@ -40,8 +40,8 @@ private:
 
     UINT m_uPos = 0;
 
-    vector<UINT> m_vecHPos;
-    vector<UINT> m_vecVPos;
+    list<UINT> m_lstHPos;
+    list<UINT> m_lstVPos;
 
     vector<tagBkgImg> m_vecHImgs;
     vector<tagBkgImg> m_vecVImgs;
@@ -87,8 +87,8 @@ public:
     void cleanup()// override
     {
         m_uPos = 0;
-        m_vecHPos.clear();
-        m_vecVPos.clear();
+        m_lstHPos.clear();
+        m_lstVPos.clear();
         m_vecHImgs.clear(); // m_vecHImgs = vector<tagBkgImg>();
         m_vecVImgs.clear(); // m_vecVImgs = vector<tagBkgImg>();
     }

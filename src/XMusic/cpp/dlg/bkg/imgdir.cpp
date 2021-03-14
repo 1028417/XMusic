@@ -131,11 +131,11 @@ inline bool CImgDir::_genIcon(cwstr strFile)
 
     if (m_pmIcon.width() >= __BKG_MaxSide)
     {
-        m_vecHPos.push_back(0);
+        m_lstHPos.push_back(0);
     }
     if (m_pmIcon.height() >= __BKG_MaxSide)
     {
-        m_vecVPos.push_back(0);
+        m_lstVPos.push_back(0);
     }
     m_uPos = 1;
 
@@ -239,10 +239,12 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
     wstring strFile;
     TD_Img pm;
 
-    cauto vecPos = bHLayout?m_vecHPos:m_vecVPos;
-    if (vecPos.size() > prevCount)
+    auto& lstPos = bHLayout?m_lstHPos:m_lstVPos;
+    if (!lstPos.empty())
     {
-        if (!m_paSubFile.get(vecPos[prevCount], [&](XFile& file){
+        auto uPos = lstPos.front();
+        lstPos.pop_front();
+        if (!m_paSubFile.get(uPos, [&](XFile& file){
             strFile = file.path();
         }))
         {
@@ -279,25 +281,23 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             if (pm.height() >= __BKG_MaxSide)
             {
-                m_vecVPos.push_back(m_uPos-1);
+                m_lstVPos.push_back(m_uPos-1);
             }
             if (pm.width() < __BKG_MaxSide)
             {
                 return true;
             }
-            m_vecHPos.push_back(m_uPos-1);
         }
         else
         {
             if (pm.width() >= __BKG_MaxSide)
             {
-                m_vecHPos.push_back(m_uPos-1);
+                m_lstHPos.push_back(m_uPos-1);
             }
             if (pm.height() < __BKG_MaxSide)
             {
                 return true;
             }
-            m_vecVPos.push_back(m_uPos-1);
         }
     }
 
