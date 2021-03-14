@@ -374,6 +374,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMTVDISPINFO pTVDispInfo = reinterpret_cast<LPNMTVDISPINFO>(pNMHDR);
 
 	wstring strNewName = pTVDispInfo->item.pszText;
+	strutil::trim(strNewName);
 
 	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(pTVDispInfo->item.hItem);
 	__Assert(pSingerObject);
