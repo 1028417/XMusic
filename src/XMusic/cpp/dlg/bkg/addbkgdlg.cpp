@@ -408,25 +408,14 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         {
             g_thrGenSubImg = &__app.thread();
         }
-        g_thrGenSubImg->start([&]{
-            do {
-                auto pImgDir = m_pImgDir;
-                if (NULL == pImgDir || pImgDir == &m_olBkgDir)
-                {
-                    break;
-                }
-
-                auto uGenCount = (this->scrollPos()+4)*3;
-                if (pImgDir->genSubImg(*this, uGenCount))
-                {
-                    if (!g_thrGenSubImg->usleep(10))
-                    {
-                        break;
-                    }
-                    continue;
-                }
+        auto pImgDir = m_pImgDir;
+        g_thrGenSubImg->start(10, [&, pImgDir]{
+            auto uGenCount = (this->scrollPos()+4)*3;
+            if (!pImgDir->genSubImg(*this, uGenCount, *g_thrGenSubImg))
+            {
+                g_thrGenSubImg->usleep(100);
             }
-            while (g_thrGenSubImg->usleep(100));
+            return true;
         });
     }
 }

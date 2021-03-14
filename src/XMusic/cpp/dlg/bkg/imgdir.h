@@ -40,14 +40,16 @@ private:
 
     UINT m_uPos = 0;
 
-    list<UINT> m_lstHPos;
-    list<UINT> m_lstVPos;
+    list<wstring> m_lstHPos;
+    list<wstring> m_lstVPos;
 
     vector<tagBkgImg> m_vecHImgs;
     vector<tagBkgImg> m_vecVImgs;
 
 protected:
     bool _genIcon(cwstr strFile);
+
+    virtual bool _loadSubImg(cwstr strFile, TD_Img& pm);
 
 private:
 /*#if __android
@@ -109,7 +111,7 @@ public:
 
     wstring imgPath(bool bHLayout, UINT uIdx) const;
 
-    bool genSubImg(class CAddBkgView& lv, UINT uGenCount);
+    bool genSubImg(class CAddBkgView& lv, UINT uGenCount, XThread& thread);
 };
 
 class COlBkgDir : public CImgDir
@@ -134,6 +136,8 @@ private:
     }
 
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
+
+    bool _loadSubImg(cwstr strFile, TD_Img& pm) override;
 
 public:
     void tryAdd(COlBkgDir& dir, class CAddBkgView& lv);

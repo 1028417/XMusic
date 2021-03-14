@@ -98,7 +98,7 @@ wstring CImgDir::displayName() const
 #define __BKG_MinSide (g_screen.nMinSide*4/5) //800
 
 template  <class T=QPixmap>
-inline static bool _loadSubImg(cwstr strFile, T& pm)
+inline static bool _loadBkg(cwstr strFile, T& pm)
 {
     if (!pm.load(__WS2Q(strFile)))
     {
@@ -123,7 +123,7 @@ static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpe", L"jp
 
 inline bool CImgDir::_genIcon(cwstr strFile)
 {
-    if (!_loadSubImg(strFile, m_pmIcon))
+    if (!_loadBkg(strFile, m_pmIcon))
     {
         m_pmIcon = QPixmap();
         return false;
@@ -131,11 +131,11 @@ inline bool CImgDir::_genIcon(cwstr strFile)
 
     if (m_pmIcon.width() >= __BKG_MaxSide)
     {
-        m_lstHPos.push_back(0);
+        m_lstHPos.push_back(strFile);
     }
     if (m_pmIcon.height() >= __BKG_MaxSide)
     {
-        m_lstVPos.push_back(0);
+        m_lstVPos.push_back(strFile);
     }
     m_uPos = 1;
 
@@ -226,7 +226,7 @@ wstring CImgDir::imgPath(bool bHLayout, UINT uIdx) const
     return L"";
 }
 
-bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
+bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
 {
     auto bHLayout = lv.isHLayout();
     auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
@@ -242,15 +242,9 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
     auto& lstPos = bHLayout?m_lstHPos:m_lstVPos;
     if (!lstPos.empty())
     {
-        auto uPos = lstPos.front();
+        strFile = lstPos.front();
         lstPos.pop_front();
-        if (!m_paSubFile.get(uPos, [&](XFile& file){
-            strFile = file.path();
-        }))
-        {
-            return false;
-        }
-        if (!_loadSubImg(strFile, pm))
+        if (!_loadBkg(strFile, pm))
         {
             return true;
         }
@@ -263,17 +257,10 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             return false;
         }
+
         if (!_loadSubImg(strFile, pm))
         {
-            if (fsutil::existFile(strFile))
-            {
-                m_uPos++;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         m_uPos++;
 
@@ -281,7 +268,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             if (pm.height() >= __BKG_MaxSide)
             {
-                m_lstVPos.push_back(m_uPos-1);
+                m_lstVPos.push_back(strFile);
             }
             if (pm.width() < __BKG_MaxSide)
             {
@@ -292,7 +279,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         {
             if (pm.width() >= __BKG_MaxSide)
             {
-                m_lstHPos.push_back(m_uPos-1);
+                m_lstHPos.push_back(strFile);
             }
             if (pm.height() < __BKG_MaxSide)
             {
@@ -332,10 +319,21 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
 
     _zoomoutPixmap(pm, cx/fZoomoutRate, cy/fZoomoutRate, true);
 
+    if (!thread)
+    {
+        return false;
+    }
+
     __app.sync([&, bHLayout, uZoomoutAll, pm, strFile]()mutable{
-        if (lv.imgDir() != this || lv.isHLayout() != bHLayout)
+        if (lv.imgDir() != this)
         {
-            m_uPos--;
+            return;
+        }
+
+        if (lv.isHLayout() != bHLayout)
+        {
+            auto& lstPos = bHLayout?m_lstHPos:m_lstVPos;
+            lstPos.push_front(strFile);
             return;
         }
 
@@ -361,6 +359,12 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount)
         lv.update();
     });
 
+    return true;
+}
+
+bool CImgDir::_loadSubImg(cwstr strFile, TD_Img& pm)
+{
+    (void)_loadBkg(strFile, pm);
     return true;
 }
 
@@ -402,4 +406,15 @@ void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
             });
         }
     });
+}
+
+bool COlBkgDir::_loadSubImg(cwstr strFile, TD_Img& pm)
+{
+    if (!fsutil::existFile(strFile))
+    {
+        return false;
+    }
+
+    (void)_loadBkg(strFile, pm);
+    return true;
 }
