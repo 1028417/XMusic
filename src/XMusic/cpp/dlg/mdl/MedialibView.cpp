@@ -83,25 +83,25 @@ void CMedialibView::initpm()
 
     QMatrix matrix;
     matrix.rotate(-10);
-
+#define __languageIconAlpha 185
     (void)m_pmCN.load(__mdlPng(cn));
-    m_pmCN = CPainter::alphaPixmap(m_pmCN, 128);
+    m_pmCN = CPainter::alphaPixmap(m_pmCN, __languageIconAlpha);
     m_pmCN = m_pmCN.transformed(matrix, Qt::SmoothTransformation);
 
     (void)m_pmHK.load(__mdlPng(hk));
-    m_pmHK = CPainter::alphaPixmap(m_pmHK, 128);
+    m_pmHK = CPainter::alphaPixmap(m_pmHK, __languageIconAlpha);
     m_pmHK = m_pmHK.transformed(matrix, Qt::SmoothTransformation);
 
     (void)m_pmKR.load(__mdlPng(kr));
-    m_pmKR = CPainter::alphaPixmap(m_pmKR, 128);
+    m_pmKR = CPainter::alphaPixmap(m_pmKR, __languageIconAlpha);
     m_pmKR = m_pmKR.transformed(matrix, Qt::SmoothTransformation);
 
     (void)m_pmJP.load(__mdlPng(jp));
-    m_pmJP = CPainter::alphaPixmap(m_pmJP, 128);
+    m_pmJP = CPainter::alphaPixmap(m_pmJP, __languageIconAlpha);
     m_pmJP = m_pmJP.transformed(matrix, Qt::SmoothTransformation);
 
     (void)m_pmEN.load(__mdlPng(en));
-    m_pmEN = CPainter::alphaPixmap(m_pmEN, 128);
+    m_pmEN = CPainter::alphaPixmap(m_pmEN, __languageIconAlpha);
     m_pmEN = m_pmEN.transformed(matrix, Qt::SmoothTransformation);
 }
 
@@ -711,8 +711,8 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
     {
         return;
     }
-
-    QRect rcLanguage(rc.right()-__size(24), rc.y()-__size(18), __size(50), __size(50));
+#define __szLanguageIcon __size(54)
+    QRect rcLanguage(rc.right()-__szLanguageIcon/2, rc.y()-__szLanguageIcon/3, __szLanguageIcon, __szLanguageIcon);
     painter.drawImg(rcLanguage, *pmLanguage);
 }
 
