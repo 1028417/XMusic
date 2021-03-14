@@ -80,6 +80,29 @@ void CMedialibView::initpm()
     m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
     (void)m_pmAddPlay.load(__png(btnAddplay));
     m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
+
+    QMatrix matrix;
+    matrix.rotate(-10);
+
+    (void)m_pmCN.load(__mdlPng(cn));
+    m_pmCN = CPainter::alphaPixmap(m_pmCN, 128);
+    m_pmCN = m_pmCN.transformed(matrix, Qt::SmoothTransformation);
+
+    (void)m_pmHK.load(__mdlPng(hk));
+    m_pmHK = CPainter::alphaPixmap(m_pmHK, 128);
+    m_pmHK = m_pmHK.transformed(matrix, Qt::SmoothTransformation);
+
+    (void)m_pmKR.load(__mdlPng(kr));
+    m_pmKR = CPainter::alphaPixmap(m_pmKR, 128);
+    m_pmKR = m_pmKR.transformed(matrix, Qt::SmoothTransformation);
+
+    (void)m_pmJP.load(__mdlPng(jp));
+    m_pmJP = CPainter::alphaPixmap(m_pmJP, 128);
+    m_pmJP = m_pmJP.transformed(matrix, Qt::SmoothTransformation);
+
+    (void)m_pmEN.load(__mdlPng(en));
+    m_pmEN = CPainter::alphaPixmap(m_pmEN, 128);
+    m_pmEN = m_pmEN.transformed(matrix, Qt::SmoothTransformation);
 }
 
 void CMedialibView::_onShowRoot()
@@ -635,47 +658,62 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
     }
 }
 
-CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
+void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
 {
-    auto& pbrSingerHead = m_mapSingerHead[uSingerID];
-    if (pbrSingerHead)
-    {
-        return *pbrSingerHead;
-    }
+    CListView::_paintIcon(context, painter, rc);
 
-    auto pHeadImg = __app.getSingerImgMgr().getSingerHead(strSingerName);
-    if (NULL == pHeadImg)
+    wstring strLanguage;
+    cauto mlContext = (tagMLItemContext&)context;
+    if (mlContext.pMediaSet)
     {
-        pbrSingerHead = &m_brNullSingerHead;
-    }
-    else if (pHeadImg->bExist)
-    {
-        cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pHeadImg));
-        m_lstSingerHead.emplace_back(qsFile);
-        pbrSingerHead = &m_lstSingerHead.back();
-
-        /*QPixmap pm(qsFile);
-#define __singerimgZoomout 128
-        if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
+        if (mlContext.pMediaSet->m_pParent != &m_SingerLib && mlContext.pMediaSet->m_pParent != &m_PlaylistLib)
         {
-            if (pm.width() < pm.height())
-            {
-                *pSingerPixmap = pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation);
-            }
-            else
-            {
-                *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
-            }
+            return;
         }
-        else
+        strLanguage = mlContext.pMediaSet->m_strName.substr(0, 2);
+    }
+    else if (mlContext.pDir)
+    {
+        auto pParent = mlContext.pDir->parent();
+        if (NULL == pParent || pParent->parent() != &__medialib)
         {
-            pSingerPixmap->swap(pm);
-        }*/
-
-        return *pbrSingerHead;
+            return;
+        }
+        strLanguage = mlContext.pDir->fileName().substr(0, 2);
+    }
+    else
+    {
+        return;
     }
 
-    return m_brNullSingerHead;
+    const QPixmap *pmLanguage = NULL;
+    if (L"国语" == strLanguage || L"华语" == strLanguage)
+    {
+        pmLanguage = &m_pmCN;
+    }
+    else if (L"粤语" == strLanguage)
+    {
+        pmLanguage = &m_pmHK;
+    }
+    else if (L"韩语" == strLanguage)
+    {
+        pmLanguage = &m_pmKR;
+    }
+    else if (L"日语" == strLanguage)
+    {
+        pmLanguage = &m_pmJP;
+    }
+    else if (L"英文" == strLanguage)
+    {
+        pmLanguage = &m_pmEN;
+    }
+    else
+    {
+        return;
+    }
+
+    QRect rcLanguage(rc.right()-__size(24), rc.y()-__size(18), __size(50), __size(50));
+    painter.drawImg(rcLanguage, *pmLanguage);
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
@@ -690,10 +728,12 @@ inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
 cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
+    cauto rcRow = context->rc;
+
     cauto mlContext = (tagMLItemContext&)context;
     if (mlContext.playable())
     {
-        UINT cy = context->rc.height();
+        UINT cy = rcRow.height();
 
         int szMargin = 0;
         int szIcon = 0;
@@ -709,8 +749,8 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             szMargin = (cy - szIcon)/2;
         }
 
-        int xIcon = context->rc.right() + __playIconOffset - szIcon;
-        int yIcon = context->rc.top()+szMargin;
+        int xIcon = rcRow.right() + __playIconOffset - szIcon;
+        int yIcon = rcRow.top()+szMargin;
         QRect rcPlayIcon(xIcon, yIcon, szIcon, szIcon);
 
         bool bFlash = (int)mlContext->uItem == m_nFlashItem;
@@ -894,6 +934,49 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     }
 
     return rcRet;
+}
+
+CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
+{
+    auto& pbrSingerHead = m_mapSingerHead[uSingerID];
+    if (pbrSingerHead)
+    {
+        return *pbrSingerHead;
+    }
+
+    auto pHeadImg = __app.getSingerImgMgr().getSingerHead(strSingerName);
+    if (NULL == pHeadImg)
+    {
+        pbrSingerHead = &m_brNullSingerHead;
+    }
+    else if (pHeadImg->bExist)
+    {
+        cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pHeadImg));
+        m_lstSingerHead.emplace_back(qsFile);
+        pbrSingerHead = &m_lstSingerHead.back();
+
+        /*QPixmap pm(qsFile);
+#define __singerimgZoomout 128
+        if (pm.width() > __singerimgZoomout && pm.height() > __singerimgZoomout)
+        {
+            if (pm.width() < pm.height())
+            {
+                *pSingerPixmap = pm.scaledToWidth(__singerimgZoomout, Qt::SmoothTransformation);
+            }
+            else
+            {
+                *pSingerPixmap = pm.scaledToHeight(__singerimgZoomout, Qt::SmoothTransformation);
+            }
+        }
+        else
+        {
+            pSingerPixmap->swap(pm);
+        }*/
+
+        return *pbrSingerHead;
+    }
+
+    return m_brNullSingerHead;
 }
 
 inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)

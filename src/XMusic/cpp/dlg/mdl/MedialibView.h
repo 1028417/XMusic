@@ -57,6 +57,12 @@ private:
     QPixmap m_pmAddPlay;
     QPixmap m_pmAddPlayOpacity;
 
+    QPixmap m_pmCN;
+    QPixmap m_pmHK;
+    QPixmap m_pmKR;
+    QPixmap m_pmJP;
+    QPixmap m_pmEN;
+
     list<CBrush> m_lstSingerHead;
     map<UINT, CBrush*> m_mapSingerHead;
 
@@ -95,7 +101,7 @@ private:
     void _genMLItemContext(tagMLItemContext&) override;
 
     void _onPaint(CPainter& painter, int cx, int cy) override;
-
+    void _paintIcon(tagLVItemContext&, CPainter&, cqrc) override;
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 
     void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;

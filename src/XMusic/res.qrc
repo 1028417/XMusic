@@ -50,5 +50,10 @@
         <file>img/btnBackward_v.png</file>
         <file>img/btnForward_v.png</file>
         <file>img/olBkg.png</file>
+        <file>img/medialib/cn.png</file>
+        <file>img/medialib/hk.png</file>
+        <file>img/medialib/jp.png</file>
+        <file>img/medialib/en.png</file>
+        <file>img/medialib/kr.png</file>
     </qresource>
 </RCC>

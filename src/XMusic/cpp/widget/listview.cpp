@@ -144,8 +144,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     QRect rc = context->rc;
     int cy = rc.height();
 
-    auto brIcon = context.brIcon;
-    if ((brIcon && *brIcon) || (context.pmIcon && !context.pmIcon->isNull()))
+    if ((context.brIcon && *context.brIcon) || (context.pmIcon && !context.pmIcon->isNull()))
     {
         int szIcon = 0;
         if (context.nIconSize > 0)
@@ -168,17 +167,8 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         }
 
         int y_icon = rc.center().y()-szIcon/2;
-        QRect rcPixmap(xIcon, y_icon, szIcon, szIcon);
-
-        if (brIcon && *brIcon)
-        {
-            painter.drawImgEx(rcPixmap, *brIcon, QRect(0,0,brIcon->width(),brIcon->height()), context.uIconRound);
-        }
-        else
-        {
-            painter.drawImgEx(rcPixmap, *context.pmIcon);//, context.uIconRound);
-        }
-
+        QRect rcIcon(xIcon, y_icon, szIcon, szIcon);
+        _paintIcon(context, painter, rcIcon);
         rc.setLeft(xIcon + szIcon + __lvRowMargin);
     }
 
@@ -221,6 +211,18 @@ void CListView::_paintBottonLine(CPainter& painter, QRect& rc)
     cr.setAlpha(CPainter::oppTextAlpha(20));
     painter.drawRectEx(QRect(rc.left(), rc.bottom(), rc.width(), 1), cr);
     rc.setBottom(rc.bottom()-3);
+}
+
+void CListView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
+{
+    if (context.brIcon)
+    {
+        painter.drawImgEx(rc, *context.brIcon, QRect(0,0,context.brIcon->width(),context.brIcon->height()), context.uIconRound);
+    }
+    else
+    {
+        painter.drawImgEx(rc, *context.pmIcon);//, context.uIconRound);
+    }
 }
 
 cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
