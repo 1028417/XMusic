@@ -182,7 +182,9 @@ struct __ModelExt tagOption
     int64_t crFore = -1;
 
     wstring strHBkg;
+    pair<int, int> prHBkgOffset;
     wstring strVBkg;
+    pair<int, int> prVBkgOffset;
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;

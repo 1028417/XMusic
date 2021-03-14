@@ -50,6 +50,7 @@ SOURCES += ../controller.cpp \
 HEADERS += ../../inc/ControllerDef.h \
     ../../inc/viewdef.h \
     ../OptionMgr.h \
+    ../controller.h \
     cpp/app.h \
     cpp/xmusic.h \
     cpp/mainwindow.h \

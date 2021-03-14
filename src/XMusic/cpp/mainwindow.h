@@ -62,8 +62,8 @@ private:
     QPixmap m_pmCDCover;
     bool m_bDefaultBkg = false;
 
-    int m_dxBkg = 0;
-    int m_dyBkg = 0;
+    pair<int, int>& m_prHBkgOffset;
+    pair<int, int>& m_prVBkgOffset;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 

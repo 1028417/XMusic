@@ -32,7 +32,11 @@
 #define OI_ForeColor        "ForeColor"
 
 #define OI_HBkg				"HBkg"
+#define OI_HBkgX		    "HBkgX"
+#define OI_HBkgY		    "HBkgY"
 #define OI_VBkg				"VBkg"
+#define OI_VBkgX		    "VBkgX"
+#define OI_VBkgY		    "VBkgY"
 #define OI_AddBkgDir		"AddBkgDir"
 
 #define OI_NetworkWarn      "NetworkWarn"
@@ -102,7 +106,11 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_ForeColor], m_Option.crFore);
 
     jsonutil::get(jRoot[OI_HBkg], true, m_Option.strHBkg);
+    jsonutil::get(jRoot[OI_HBkgX], m_Option.prHBkgOffset.first);
+    jsonutil::get(jRoot[OI_HBkgY], m_Option.prHBkgOffset.second);
     jsonutil::get(jRoot[OI_VBkg], true, m_Option.strVBkg);
+    jsonutil::get(jRoot[OI_VBkgX], m_Option.prVBkgOffset.first);
+    jsonutil::get(jRoot[OI_VBkgY], m_Option.prVBkgOffset.second);
     jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
@@ -175,7 +183,11 @@ void COptionMgr::saveOption()
     }
 
     jRoot[OI_HBkg] = strutil::toAsc(m_Option.strHBkg);
+    jRoot[OI_HBkgX] = m_Option.prHBkgOffset.first;
+    jRoot[OI_HBkgY] = m_Option.prHBkgOffset.second;
     jRoot[OI_VBkg] = strutil::toAsc(m_Option.strVBkg);
+    jRoot[OI_VBkgX] = m_Option.prVBkgOffset.first;
+    jRoot[OI_VBkgY] = m_Option.prVBkgOffset.second;
     jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;

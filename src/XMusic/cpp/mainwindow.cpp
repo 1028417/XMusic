@@ -66,7 +66,9 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
-    //, m_PlayingList(this)
+    , m_prHBkgOffset(__app.getOption().prHBkgOffset)
+    , m_prVBkgOffset(__app.getOption().prVBkgOffset)
+  //, m_PlayingList(this)
     , m_medialibDlg(*this)
     , m_bkgDlg(*this)
 {
@@ -563,13 +565,14 @@ void MainWindow::_onPaint()
             cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-               painter.drawImgEx(rc, pmBkg, m_dxBkg, m_dyBkg);
+                auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+                painter.drawImgEx(rc, pmBkg, prBkgOffset.first, prBkgOffset.second);
 
-               //auto cx = ui.progressbar->width();
-               //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
-               //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
-               //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
-               //painter.drawImg(rcDst, m_pmDiskFace);
+                //auto cx = ui.progressbar->width();
+                //auto cy = cx * m_pmDiskFace.height()/m_pmDiskFace.width();
+                //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
+                //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
+                //painter.drawImg(rcDst, m_pmDiskFace);
             }
             else
             {
@@ -997,7 +1000,9 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    m_dxBkg = m_dyBkg = 0;
+    auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+    prBkgOffset.first = 0;
+    prBkgOffset.second = 0;
 
     _relayout();
 
@@ -1221,8 +1226,9 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         __yield();
-        m_dxBkg -= te.dx();
-        m_dyBkg -= te.dy();
+        auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+        prBkgOffset.first -= te.dx();
+        prBkgOffset.second -= te.dy();
         update();
     }
     else if (E_TouchEventType::TET_TouchEnd == type)
