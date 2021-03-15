@@ -251,14 +251,12 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
     }
     else
     {
-        if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+        bool bRet = false;
+        m_paSubFile.get(m_uPos, [&](XFile& file){
             strFile = file.path();
-        }))
-        {
-            return false;
-        }
-
-        if (!_loadSubImg(strFile, pm))
+            bRet = _loadSubImg(file, pm, thread);
+        });
+        if (!bRet)
         {
             return false;
         }
@@ -362,16 +360,14 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
     return true;
 }
 
-bool CImgDir::_loadSubImg(cwstr strFile, TD_Img& pm)
+bool CImgDir::_loadSubImg(XFile& file, TD_Img& pm, XThread&)
 {
-    (void)_loadBkg(strFile, pm);
+    (void)_loadBkg(file.path(), pm);
     return true;
 }
 
-const tagOlBkg COlBkgDir::s_olBkg;
-
-COlBkgDir::COlBkgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const tagOlBkg& olBkg)
-    : CImgDir(bRunSignal, fileInfo)
+COlBkgDir::COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkg& olBkg)
+    : CImgDir(m_bRunsignal, fileInfo)
     , m_olBkg(olBkg)
 {
     fsutil::createDir(path());
@@ -390,29 +386,107 @@ string COlBkgDir::url(XFile& file)
             + m_olBkg.prjName + "/" + m_olBkg.artiName + "/" + strutil::toAsc(file.fileName());
 }
 
-void COlBkgDir::tryAdd(COlBkgDir& dir, CAddBkgView& lv)
+#include "../../../Common2.1/3rd/curl/include/curl/curl.h"
+
+void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
-    if (!dir.icon().isNull())
+    static bool s_bFlag = false;
+    if (s_bFlag)
+    {
+        return;
+    }
+    s_bFlag = true;
+
+    list<XFile*> lstFiles;
+
+    for (cauto olBkg : __app.getModel().olBkg())
+    {
+        tagFileInfo fileInfo;
+        fileInfo.pParent = this;
+        fileInfo.strName = olBkg.catName;
+        auto pDir = new COlBkgDir(fileInfo, olBkg);
+
+        for (auto pFile : pDir->files())
+        {
+            cauto strFile = pFile->path();
+            if (!fsutil::existFile(strFile))
+            {
+                lstFiles.push_back(pFile);
+            }
+            else
+            {
+                (void)pDir->_genIcon(strFile);
+                m_paSubDir.add(pDir);
+            }
+            break;
+        }
+    }
+
+    if (lstFiles.empty())
     {
         return;
     }
 
-    dir.files().front([&](XFile& file){
-        if (dir._genIcon(file.path()))
+    auto thread = &__app.thread();
+    thread->start(10, [&, thread, lstFiles]()mutable {
+        auto pFile = lstFiles.front();
+        if (_downloadSubImg(*pFile, *thread))
         {
-            __app.sync([&]{
-                m_paSubDir.add(dir);
+            auto pDir = (COlBkgDir*)pFile->parent();
+            pDir->_genIcon(pFile->path());
+            __app.sync([&, pDir]{
+                m_paSubDir.add(pDir);
                 lv.update();
             });
+
+            lstFiles.pop_front();
+            if (lstFiles.empty())
+            {
+                return false;
+            }
         }
+        return true;
     });
 }
 
-bool COlBkgDir::_loadSubImg(cwstr strFile, TD_Img& pm)
+bool COlBkgDir::_downloadSubImg(XFile& file, XThread& thread)
 {
-    if (!fsutil::existFile(strFile))
+    auto pDir = (COlBkgDir*)file.parent();
+    cauto strFile = file.path();
+    cauto strUrl = pDir->url(file);
+
+    tagCurlOpt curlOpt(true);
+    CDownloader downloader(curlOpt);
+    CByteBuffer bbfBkg;
+    int nRet = downloader.syncDownload(thread, strUrl, bbfBkg);
+    if (nRet != 0)
+    {
+        if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
+            || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
+            || CURLcode::CURLE_COULDNT_CONNECT == nRet)
+        {
+            (void)thread.usleep(5000);
+        }
+        return false;
+    }
+
+    if (!OFStream::writefilex(strFile, true, bbfBkg))
     {
         return false;
+    }
+
+    return true;
+}
+
+bool COlBkgDir::_loadSubImg(XFile& file, TD_Img& pm, XThread& thread)
+{
+    cauto strFile = file.path();
+    if (!fsutil::existFile(strFile))
+    {
+        if (!_downloadSubImg(file, thread))
+        {
+            return false;
+        }
     }
 
     (void)_loadBkg(strFile, pm);

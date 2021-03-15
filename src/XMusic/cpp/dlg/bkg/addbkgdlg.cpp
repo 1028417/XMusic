@@ -239,7 +239,6 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_addbkgDlg(addbkgDlg)
     , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.signal())
-    , m_olBkgDir(m_thrScan.signal())
 {
     m_pmOlBkg.load(":/img/olBkg.png");
 }
@@ -354,13 +353,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
         m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             if (0 == lvItem.uItem)
             {
-                if (NULL == m_thrDownload)
-                {
-                    m_thrDownload = &__app.thread();
-                    m_thrDownload->start([&](signal_t bRunSignal) {
-                        _downloadBkg(bRunSignal);
-                    });
-                }
+                m_olBkgDir.initOlBkg(*this);
             }
 
             _showImgDir(imgDir);
@@ -507,96 +500,4 @@ void CAddBkgView::scanDir(cwstr strDir)
             });
         });
     });
-}
-
-#include "../../../Common2.1/3rd/curl/include/curl/curl.h"
-
-void CAddBkgView::_downloadBkg(signal_t bRunSignal)
-{
-    cauto lstOlBkg = __app.getModel().olBkg();
-    for (cauto olBkg : lstOlBkg)
-    {
-        tagFileInfo fileInfo;
-        fileInfo.pParent = &m_olBkgDir;
-        fileInfo.strName = olBkg.catName;
-        auto pDir = new COlBkgDir(m_thrDownload, fileInfo, olBkg);
-        m_olBkgDir.tryAdd(*pDir, *this);
-
-        for (auto pFile : pDir->files())
-        {
-            if (!fsutil::existFile(pFile->path()))
-            {
-                m_mapOlBkg[pDir].push_back(pFile);
-            }
-        }
-    }
-
-    if (m_mapOlBkg.empty())
-    {
-        return;
-    }
-
-    tagCurlOpt curlOpt(true);
-    CDownloader downloader(curlOpt);
-    while (bRunSignal)
-    {
-        auto itr = m_mapOlBkg.begin();
-        auto pDir = itr->first;
-        auto& lstFiles = itr->second;
-        auto pFile = lstFiles.front();
-
-        cauto strUrl = pDir->url(*pFile);
-        CByteBuffer bbfBkg;
-        int nRet = downloader.syncDownload(bRunSignal, strUrl, bbfBkg);
-        if (!bRunSignal)
-        {
-            break;
-        }
-
-        if (0 == nRet)
-        {
-            cauto strFile = pFile->path();
-            if (OFStream::writefilex(strFile, true, bbfBkg))
-            {
-                if (m_pImgDir == pDir)
-                {
-                    __app.sync([=]{
-		                if (m_pImgDir == pDir)
-                        {
-                            //pDir->genSubImg(*this);
-	                        this->update();
-                        }
-                    });
-                }
-                else
-                {
-                    m_olBkgDir.tryAdd(*pDir, *this);
-                }
-            }
-        }
-        else if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
-                || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
-                || CURLcode::CURLE_COULDNT_CONNECT == nRet)
-        {
-            if (!m_thrDownload->usleep(5000))
-            {
-                break;
-            }
-            continue;
-        }
-
-        auto itrFile = std::find(lstFiles.begin(), lstFiles.end(), pFile);
-        if (itrFile != lstFiles.end())
-        {
-            lstFiles.erase(itrFile);
-            if (lstFiles.empty())
-            {
-                itr = m_mapOlBkg.erase(itr);
-                if (itr == m_mapOlBkg.end())
-                {
-                    break;
-                }
-            }
-        }
-    }
 }

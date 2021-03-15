@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "model/model.h"
+
 //using TD_Img = QImage;
 using TD_Img = QPixmap;
 
@@ -22,6 +24,11 @@ private:
     };
 
 public:
+    CImgDir()
+        : m_bRunSignal(__bRunSignal)
+    {
+    }
+
     CImgDir(signal_t bRunSignal)
         : m_bRunSignal(bRunSignal)
     {
@@ -34,6 +41,7 @@ public:
     }
 
 private:
+    bool __bRunSignal = false;
     signal_t m_bRunSignal;
 
     QPixmap m_pmIcon;
@@ -49,7 +57,7 @@ private:
 protected:
     bool _genIcon(cwstr strFile);
 
-    virtual bool _loadSubImg(cwstr strFile, TD_Img& pm);
+    virtual bool _loadSubImg(XFile& file, TD_Img& pm, XThread&);
 
 private:
 /*#if __android
@@ -117,17 +125,12 @@ public:
 class COlBkgDir : public CImgDir
 {
 public:
-    COlBkgDir(signal_t bRunSignal)
-        : CImgDir(bRunSignal)
-        , m_olBkg(s_olBkg)
-    {
-    }
+    COlBkgDir() = default;
 
-    COlBkgDir(signal_t bRunSignal, const tagFileInfo& fileInfo, const struct tagOlBkg& olBkg);
+    COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkg& olBkg);
 
 private:
-    static const struct tagOlBkg s_olBkg;
-    const struct tagOlBkg& m_olBkg;
+    tagOlBkg m_olBkg;
 
 private:
     wstring displayName() const override
@@ -137,10 +140,11 @@ private:
 
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
-    bool _loadSubImg(cwstr strFile, TD_Img& pm) override;
+    bool _downloadSubImg(XFile& file, XThread& thread);
+    bool _loadSubImg(XFile& file, TD_Img& pm, XThread&) override;
 
 public:
-    void tryAdd(COlBkgDir& dir, class CAddBkgView& lv);
+    void initOlBkg(class CAddBkgView& lv);
 
     string url(XFile& file);
 };

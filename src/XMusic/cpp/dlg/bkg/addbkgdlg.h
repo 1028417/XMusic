@@ -19,8 +19,6 @@ private:
     CImgDir m_rootImgDir;
 
     COlBkgDir m_olBkgDir;
-    map<COlBkgDir*, list<XFile*>> m_mapOlBkg;
-    XThread *m_thrDownload = NULL;
 
     TD_ImgDirList m_paImgDirs;
 
@@ -41,8 +39,6 @@ private:
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent&) override;
 
     void _showImgDir(CImgDir& imgDir);
-
-    void _downloadBkg(signal_t bRunSignal);
 
 public:    
     XThread& thrScan()

@@ -1,4 +1,6 @@
 
+#include "xmusic.h"
+
 #include "MLListView.h"
 
 size_t CMLListView::getItemCount() const
