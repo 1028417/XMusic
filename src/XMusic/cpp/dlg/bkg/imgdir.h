@@ -24,11 +24,6 @@ private:
     };
 
 public:
-    CImgDir()
-        : m_bRunSignal(__bRunSignal)
-    {
-    }
-
     CImgDir(signal_t bRunSignal)
         : m_bRunSignal(bRunSignal)
     {
@@ -37,6 +32,18 @@ public:
     CImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo)
         : CPath(fileInfo)
         , m_bRunSignal(bRunSignal)
+    {
+    }
+
+protected:
+    CImgDir()
+        : m_bRunSignal(__bRunSignal)
+    {
+    }
+
+    CImgDir(const tagFileInfo& fileInfo)
+        : CPath(fileInfo)
+        , m_bRunSignal(__bRunSignal)
     {
     }
 

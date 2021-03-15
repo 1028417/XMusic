@@ -367,7 +367,7 @@ bool CImgDir::_loadSubImg(XFile& file, TD_Img& pm, XThread&)
 }
 
 COlBkgDir::COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkg& olBkg)
-    : CImgDir(m_bRunsignal, fileInfo)
+    : CImgDir(fileInfo)
     , m_olBkg(olBkg)
 {
     fsutil::createDir(path());
