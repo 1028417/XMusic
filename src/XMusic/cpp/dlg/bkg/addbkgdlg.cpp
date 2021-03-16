@@ -6,6 +6,10 @@
 #include "addbkgdlg.h"
 #include "ui_addbkgdlg.h"
 
+#include <QMovie>
+
+#define __olBkgDir L"网上图库"
+
 static Ui::AddBkgDlg ui;
 
 XThread *g_thrGenSubImg = NULL;
@@ -21,6 +25,16 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
 void CAddBkgDlg::init()
 {
     ui.setupUi(this);
+
+    auto movie = new QMovie(this);
+    movie->setFileName(":/img/loading.gif");
+    ui.labelLoading->setMovie(movie);
+    ui.labelLoading->resize(200,200);
+    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 255, 255, 128); \
+                                   border-top-left-radius:8px; border-top-right-radius:8px; \
+                                   border-bottom-left-radius:8px; border-bottom-right-radius:8px;}");
+    ui.labelLoading->setVisible(false);
+    ui.labelLoading->raise();
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
@@ -41,7 +55,7 @@ void CAddBkgDlg::init()
             g_thrGenSubImg->cancel();
         }
 
-        m_lv.scanDir(strDir);
+        m_lv.scanDir(strDir, ui.labelLoading);
         update();
     });
 #endif
@@ -119,38 +133,20 @@ void CAddBkgDlg::show()
 #else
         strAddBkgDir = fsutil::getHomeDir().toStdWString();
 #endif
-        m_lv.scanDir(strAddBkgDir);
+        m_lv.scanDir(strAddBkgDir, ui.labelLoading);
     }
-
-    UINT uDotCount = 0;
-    timerutil::setTimerEx(240, [=]()mutable{
-        if (!this->isVisible())
-        {
-            return false;
-        }
-
-        if (!m_lv.thrScan())
-        {
-            ui.labelTitle->setText("添加背景");
-            return false;
-        }
-
-        QString qsTitle = "正在扫描";
-        for (UINT uIdx = 1; uIdx <= uDotCount; uIdx++)
-        {
-            qsTitle.append('.');
-        }
-        ui.labelTitle->setText(qsTitle);
-        if (++uDotCount > 3)
-        {
-            uDotCount = 0;
-        }
-        return true;
-    });
 
     CDialog::show([&]{
         (void)m_lv.handleReturn(true);
     });
+}
+
+void CAddBkgDlg::onShowImgDir()
+{
+    ui.labelLoading->movie()->stop();
+    ui.labelLoading->setVisible(false);
+
+    _relayout(width(), height());
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -167,10 +163,24 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     ui.btnReturn->setGeometry(rcReturn);
 
     ui.labelTitle->move(rcReturn.right() + cxMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
+    if (m_lv.displayMode() == 0)
+    {
+        ui.labelTitle->setVisible(true);
+        if (m_lv.inRoot())
+        {
+            ui.labelTitle->setText("添加背景");
+        }
+        else
+        {
+            ui.labelTitle->setText(__WS2Q(__olBkgDir));
+        }
+    }
+    else
+    {
+        ui.labelTitle->setVisible(false);
+    }
 
     ui.labelChooseDir->setVisible(false);
-
-    ui.labelTitle->setVisible(m_lv.inRoot());
 
     int y_addbkgView = 0;
     if (!m_lv.displayMode())
@@ -189,6 +199,9 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
+    ui.labelLoading->move((cx-ui.labelLoading->width())/2
+                          , y_addbkgView+(m_lv.height()-ui.labelLoading->height())/2);
+
     /*static BOOL bHLayout = -1;
     if (bHLayout != (BOOL)m_bHLayout)
     {
@@ -201,7 +214,7 @@ bool CAddBkgDlg::_handleReturn()
 {
     if (m_lv.handleReturn(false))
     {
-        relayout();
+        _relayout(width(), height());
         repaint();
     }
     else
@@ -388,7 +401,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         }
     }
 
-    m_addbkgDlg.relayout();
+    m_addbkgDlg.onShowImgDir();
     m_addbkgDlg.repaint();
 
     if (m_pImgDir != &m_olBkgDir)
@@ -468,23 +481,26 @@ bool CAddBkgView::handleReturn(bool bClose)
     return bRet;
 }
 
-void CAddBkgView::scanDir(cwstr strDir)
+void CAddBkgView::scanDir(cwstr strDir, QLabel *labelLoading)
 {
+    labelLoading->movie()->start();
+    labelLoading->setVisible(true);
+
     m_paImgDirs.clear();
 
-    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + L"网上图库";
+    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     fsutil::createDir(strOlBkgDir);
     m_olBkgDir.setDir(strOlBkgDir);
     m_paImgDirs.add(m_olBkgDir);
 
     static UINT s_uSequence = 0;
-    m_thrScan.start([&, strDir](signal_t bRunSignal){
+    m_rootImgDir.setDir(strDir);
+    m_thrScan.start([&, labelLoading](signal_t bRunSignal){
         auto uSequence = ++s_uSequence;
-        m_rootImgDir.setDir(strDir);
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (this->imgDir() || !m_addbkgDlg.isVisible())
             {
-                m_thrScan.usleep(300);
+                m_thrScan.usleep(100);
             }
             if (!bRunSignal)
             {
@@ -498,6 +514,16 @@ void CAddBkgView::scanDir(cwstr strDir)
                     this->update();
                 }
             });
+        });
+
+        m_thrScan.usleep(100);
+        if (!bRunSignal)
+        {
+            return;
+        }
+        __app.sync([labelLoading]{
+            labelLoading->movie()->stop();
+            labelLoading->setVisible(false);
         });
     });
 }

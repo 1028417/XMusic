@@ -46,7 +46,7 @@ public:
         return m_thrScan;
     }
 
-    void scanDir(cwstr strDir);
+    void scanDir(cwstr strDir, class QLabel *labelLoading);
 
     UINT displayMode() const
     {
@@ -110,10 +110,7 @@ public:
 
     void show();
 
-    void relayout()
-    {
-        _relayout(width(), height());
-    }
+    void onShowImgDir();
 
     void addBkg(cwstr strFile);
 };

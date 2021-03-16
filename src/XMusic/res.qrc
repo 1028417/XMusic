@@ -55,5 +55,6 @@
         <file>img/medialib/jp.png</file>
         <file>img/medialib/en.png</file>
         <file>img/medialib/kr.png</file>
+        <file>img/loading.gif</file>
     </qresource>
 </RCC>
