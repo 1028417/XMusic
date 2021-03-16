@@ -30,7 +30,7 @@ void CAddBkgDlg::init()
     movie->setFileName(":/img/loading.gif");
     ui.labelLoading->setMovie(movie);
     ui.labelLoading->resize(200,200);
-    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 255, 255, 128); \
+    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(250, 250, 250, 138); \
                                    border-top-left-radius:8px; border-top-right-radius:8px; \
                                    border-bottom-left-radius:8px; border-bottom-right-radius:8px;}");
     ui.labelLoading->setVisible(false);
@@ -55,7 +55,7 @@ void CAddBkgDlg::init()
             g_thrGenSubImg->cancel();
         }
 
-        m_lv.scanDir(strDir, ui.labelLoading);
+        m_lv.scanDir(strDir);
         update();
     });
 #endif
@@ -133,20 +133,12 @@ void CAddBkgDlg::show()
 #else
         strAddBkgDir = fsutil::getHomeDir().toStdWString();
 #endif
-        m_lv.scanDir(strAddBkgDir, ui.labelLoading);
+        m_lv.scanDir(strAddBkgDir);
     }
 
     CDialog::show([&]{
         (void)m_lv.handleReturn(true);
     });
-}
-
-void CAddBkgDlg::onShowImgDir()
-{
-    ui.labelLoading->movie()->stop();
-    ui.labelLoading->setVisible(false);
-
-    _relayout(width(), height());
 }
 
 void CAddBkgDlg::_relayout(int cx, int cy)
@@ -208,6 +200,19 @@ void CAddBkgDlg::_relayout(int cx, int cy)
         bHLayout = m_bHLayout;
         m_lv.scroll(m_lv.scrollPos());
     }*/
+}
+
+void CAddBkgDlg::showLoading(bool bShow)
+{
+    if (bShow)
+    {
+        ui.labelLoading->movie()->start();
+    }
+    else
+    {
+        ui.labelLoading->movie()->stop();
+    }
+    ui.labelLoading->setVisible(bShow);
 }
 
 bool CAddBkgDlg::_handleReturn()
@@ -366,7 +371,12 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
         m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
             if (0 == lvItem.uItem)
             {
-                m_olBkgDir.initOlBkg(*this);
+                static bool s_bFlag = false;
+                if (!s_bFlag)
+                {
+                    s_bFlag = true;
+                    m_olBkgDir.initOlBkg(*this);
+                }
             }
 
             _showImgDir(imgDir);
@@ -401,6 +411,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         }
     }
 
+    showLoading(false);
     m_addbkgDlg.onShowImgDir();
     m_addbkgDlg.repaint();
 
@@ -463,6 +474,8 @@ bool CAddBkgView::handleReturn(bool bClose)
 
     if (bClose)
     {
+        showLoading(false);
+
         for (auto pDir : m_olBkgDir.dirs())
         {
             ((CImgDir*)pDir)->cleanup();
@@ -477,14 +490,20 @@ bool CAddBkgView::handleReturn(bool bClose)
     else
     {
         g_uMsScanYield = 1;
+
+        showLoading(NULL == m_pImgDir && m_thrScan);
     }
     return bRet;
 }
 
-void CAddBkgView::scanDir(cwstr strDir, QLabel *labelLoading)
+void CAddBkgView::showLoading(bool bShow)
 {
-    labelLoading->movie()->start();
-    labelLoading->setVisible(true);
+    m_addbkgDlg.showLoading(bShow);
+}
+
+void CAddBkgView::scanDir(cwstr strDir)
+{
+    showLoading(true);
 
     m_paImgDirs.clear();
 
@@ -495,7 +514,7 @@ void CAddBkgView::scanDir(cwstr strDir, QLabel *labelLoading)
 
     static UINT s_uSequence = 0;
     m_rootImgDir.setDir(strDir);
-    m_thrScan.start([&, labelLoading](signal_t bRunSignal){
+    m_thrScan.start([&](signal_t bRunSignal){
         auto uSequence = ++s_uSequence;
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (this->imgDir() || !m_addbkgDlg.isVisible())
@@ -521,9 +540,8 @@ void CAddBkgView::scanDir(cwstr strDir, QLabel *labelLoading)
         {
             return;
         }
-        __app.sync([labelLoading]{
-            labelLoading->movie()->stop();
-            labelLoading->setVisible(false);
+        __app.sync([&]{
+            showLoading(false);
         });
     });
 }

@@ -46,7 +46,7 @@ public:
         return m_thrScan;
     }
 
-    void scanDir(cwstr strDir, class QLabel *labelLoading);
+    void scanDir(cwstr strDir);
 
     UINT displayMode() const
     {
@@ -78,6 +78,8 @@ public:
     bool handleReturn(bool bClose);
 
     bool isHLayout() const;
+
+    void showLoading(bool bShow);
 };
 
 class CAddBkgDlg : public CDialog
@@ -110,7 +112,12 @@ public:
 
     void show();
 
-    void onShowImgDir();
+    void onShowImgDir()
+    {
+        _relayout(width(), height());
+    }
+
+    void showLoading(bool bShow);
 
     void addBkg(cwstr strFile);
 };

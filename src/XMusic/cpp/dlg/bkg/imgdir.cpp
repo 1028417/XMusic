@@ -3,6 +3,8 @@
 
 #include "imgdir.h"
 
+#include <QMovie>
+
 UINT g_uMsScanYield = 1;
 
 template <class T=QPixmap>
@@ -390,13 +392,6 @@ string COlBkgDir::url(XFile& file)
 
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
-    static bool s_bFlag = false;
-    if (s_bFlag)
-    {
-        return;
-    }
-    s_bFlag = true;
-
     list<XFile*> lstFiles;
 
     for (cauto olBkg : __app.getModel().olBkg())
@@ -427,6 +422,8 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
         return;
     }
 
+    lv.showLoading(true);
+
     auto thread = &__app.thread();
     thread->start(10, [&, thread, lstFiles]()mutable {
         auto pFile = lstFiles.front();
@@ -442,6 +439,15 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
             lstFiles.pop_front();
             if (lstFiles.empty())
             {
+                if (lv.imgDir() == this)
+                {
+                    __app.sync([&]{
+                        if (lv.imgDir() == this)
+                        {
+                            lv.showLoading(false);
+                        }
+                    });
+                }
                 return false;
             }
         }
