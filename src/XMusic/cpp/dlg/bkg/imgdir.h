@@ -137,6 +137,8 @@ public:
     COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkg& olBkg);
 
 private:
+    bool m_bDownloading = false;
+
     tagOlBkg m_olBkg;
 
 private:
@@ -151,6 +153,11 @@ private:
     bool _loadSubImg(XFile& file, TD_Img& pm, XThread&) override;
 
 public:
+    bool downloading() const
+    {
+        return m_bDownloading;
+    }
+
     void initOlBkg(class CAddBkgView& lv);
 
     string url(XFile& file);

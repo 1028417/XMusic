@@ -423,6 +423,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     }
 
     lv.showLoading(true);
+    m_bDownloading = true;
 
     auto thread = &__app.thread();
     thread->start(10, [&, thread, lstFiles]()mutable {
@@ -448,6 +449,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
                         }
                     });
                 }
+                m_bDownloading = false;
                 return false;
             }
         }

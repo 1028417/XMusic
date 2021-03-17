@@ -29,8 +29,8 @@ void CAddBkgDlg::init()
     auto movie = new QMovie(this);
     movie->setFileName(":/img/loading.gif");
     ui.labelLoading->setMovie(movie);
-    ui.labelLoading->resize(200,200);
-    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(250, 250, 250, 138); \
+    ui.labelLoading->resize(250,250);
+    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 255, 255, 127); \
                                    border-top-left-radius:8px; border-top-right-radius:8px; \
                                    border-bottom-left-radius:8px; border-bottom-right-radius:8px;}");
     ui.labelLoading->setVisible(false);
@@ -105,7 +105,11 @@ void CAddBkgDlg::show()
 {
     g_uMsScanYield = 1;
 
-    if (!m_lv.thrScan().joinable())
+    if (m_lv.thrScan())
+    {
+        showLoading(true);
+    }
+    else if (!m_lv.thrScan().joinable())
     {
         wstring strAddBkgDir;
 #if __windows
@@ -411,12 +415,17 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         }
     }
 
-    showLoading(false);
     m_addbkgDlg.onShowImgDir();
     m_addbkgDlg.repaint();
 
-    if (m_pImgDir != &m_olBkgDir)
+    if (m_pImgDir == &m_olBkgDir)
     {
+        showLoading(m_olBkgDir.downloading());
+    }
+    else
+    {
+        showLoading(false);
+
         if (g_thrGenSubImg)
         {
             g_thrGenSubImg->cancel();
@@ -491,7 +500,14 @@ bool CAddBkgView::handleReturn(bool bClose)
     {
         g_uMsScanYield = 1;
 
-        showLoading(NULL == m_pImgDir && m_thrScan);
+        if (m_pImgDir) // == &m_olBkgDir)
+        {
+            showLoading(m_olBkgDir.downloading());
+        }
+        else
+        {
+            showLoading(m_thrScan);
+        }
     }
     return bRet;
 }
