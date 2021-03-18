@@ -242,7 +242,8 @@ void CSimilarFileDlg::OnBnClickedAddin()
 							}
 							if (1 == uIdx || pr.second == uPercent)
 							{
-								/*tagFileStat64 stat;
+#if 1
+								tagFileStat64 stat;
 								memzero(stat);
 								if (fsutil::lStat64(pSrcMediaRes->path(), stat))
 								{
@@ -250,8 +251,8 @@ void CSimilarFileDlg::OnBnClickedAddin()
 									(void)_wutime(pr.first->path().c_str(), &timbuf);
 								}
 								fsutil::removeFile(pSrcMediaRes->path());
-								break;*/
-
+								break;
+#endif
 								paMediaRes.add(pSrcMediaRes);
 								mapMediaRes[pSrcMediaRes] = pr.first;
 								break;
