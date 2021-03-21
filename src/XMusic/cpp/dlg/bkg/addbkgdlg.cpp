@@ -29,10 +29,10 @@ void CAddBkgDlg::init()
     auto movie = new QMovie(this);
     movie->setFileName(":/img/loading.gif");
     ui.labelLoading->setMovie(movie);
-    ui.labelLoading->resize(250,250);
-    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 255, 255, 127); \
-                                   border-top-left-radius:8px; border-top-right-radius:8px; \
-                                   border-bottom-left-radius:8px; border-bottom-right-radius:8px;}");
+    ui.labelLoading->resize(400,330);
+    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 225, 31, 100); \
+                                   border-top-left-radius:10px; border-top-right-radius:10px; \
+                                   border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
     ui.labelLoading->setVisible(false);
     ui.labelLoading->raise();
 

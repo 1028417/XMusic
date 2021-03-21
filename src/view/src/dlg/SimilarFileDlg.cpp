@@ -242,7 +242,7 @@ void CSimilarFileDlg::OnBnClickedAddin()
 							}
 							if (1 == uIdx || pr.second == uPercent)
 							{
-#if 1
+#if 0
 								tagFileStat64 stat;
 								memzero(stat);
 								if (fsutil::lStat64(pSrcMediaRes->path(), stat))
