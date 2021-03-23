@@ -99,6 +99,10 @@ private:
     size_t _getRootItemCount() const override;
 
     void _genMLItemContext(tagMLItemContext&) override;
+    void _genMLItemContext(tagMLItemContext& context, CMediaSet& MediaSet);
+    void _genMLItemContext(tagMLItemContext& context, IMedia& Media);
+    void _genMLItemContext(tagMLItemContext& context, XFile& file);
+    void _genMLItemContext(tagMLItemContext& context, CPath& dir);
 
     void _onPaint(CPainter& painter, int cx, int cy) override;
     void _paintIcon(tagLVItemContext&, CPainter&, cqrc) override;
