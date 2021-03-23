@@ -924,7 +924,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     if (!qsMediaQuality.isEmpty())
     {
-        CPainterFontGuard fontGuard(painter, 0.7, QFont::Weight::Thin);
+        CPainterFontGuard fontGuard(painter, 0.69, QFont::Weight::Thin);
 
         auto rcPos = rcRet;
         rcPos.setLeft(rcPos.right() + __size(20));

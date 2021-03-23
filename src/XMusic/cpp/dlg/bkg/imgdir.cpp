@@ -228,8 +228,10 @@ wstring CImgDir::imgPath(bool bHLayout, UINT uIdx) const
     return L"";
 }
 
-bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
+bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
 {
+    UINT uGenCount = 12+3*lv.scrollPos(); // +3*ceil(lv.scrollPos());
+
     auto bHLayout = lv.isHLayout();
     auto& vecImgs = bHLayout?m_vecHImgs:m_vecVImgs;
     auto prevCount = vecImgs.size();
@@ -256,7 +258,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
         bool bRet = false;
         m_paSubFile.get(m_uPos, [&](XFile& file){
             strFile = file.path();
-            bRet = _loadSubImg(file, pm, thread);
+            bRet = _loadSubImg(thread, file, pm);
         });
         if (!bRet)
         {
@@ -362,7 +364,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, UINT uGenCount, XThread& thread)
     return true;
 }
 
-bool CImgDir::_loadSubImg(XFile& file, TD_Img& pm, XThread&)
+bool CImgDir::_loadSubImg(XThread&, XFile& file, TD_Img& pm)
 {
     (void)_loadBkg(file.path(), pm);
     return true;
@@ -486,7 +488,7 @@ bool COlBkgDir::_downloadSubImg(XFile& file, XThread& thread)
     return true;
 }
 
-bool COlBkgDir::_loadSubImg(XFile& file, TD_Img& pm, XThread& thread)
+bool COlBkgDir::_loadSubImg(XThread& thread, XFile& file, TD_Img& pm)
 {
     cauto strFile = file.path();
     if (!fsutil::existFile(strFile))

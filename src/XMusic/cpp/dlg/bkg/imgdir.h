@@ -64,7 +64,7 @@ private:
 protected:
     bool _genIcon(cwstr strFile);
 
-    virtual bool _loadSubImg(XFile& file, TD_Img& pm, XThread&);
+    virtual bool _loadSubImg(XThread&, XFile&, TD_Img&);
 
 private:
 /*#if __android
@@ -126,7 +126,7 @@ public:
 
     wstring imgPath(bool bHLayout, UINT uIdx) const;
 
-    bool genSubImg(class CAddBkgView& lv, UINT uGenCount, XThread& thread);
+    bool genSubImg(class CAddBkgView&, XThread&);
 };
 
 class COlBkgDir : public CImgDir
@@ -150,7 +150,7 @@ private:
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
     bool _downloadSubImg(XFile& file, XThread& thread);
-    bool _loadSubImg(XFile& file, TD_Img& pm, XThread&) override;
+    bool _loadSubImg(XThread&, XFile&, TD_Img&) override;
 
 public:
     bool downloading() const

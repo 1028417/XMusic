@@ -436,8 +436,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         }
         auto pImgDir = m_pImgDir;
         g_thrGenSubImg->start(10, [&, pImgDir]{
-            auto uGenCount = (this->scrollPos()+4)*3;
-            if (!pImgDir->genSubImg(*this, uGenCount, *g_thrGenSubImg))
+            if (!pImgDir->genSubImg(*this, *g_thrGenSubImg))
             {
                 g_thrGenSubImg->usleep(100);
             }
