@@ -269,7 +269,7 @@ size_t CAddBkgView::getColCount() const
 {
     if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
-        if (m_pImgDir->imgCount(m_addbkgDlg.isHLayout()) <= 4)
+        if (m_pImgDir->vecImg(m_addbkgDlg.isHLayout()).size() <= 4)
         {
             return 2;
         }
@@ -291,7 +291,7 @@ size_t CAddBkgView::getColCount() const
 
 size_t CAddBkgView::getRowCount() const
 {
-    if (imgDir())
+    if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
         return getColCount();
     }
@@ -307,7 +307,7 @@ size_t CAddBkgView::getItemCount() const
     }
     else if (m_pImgDir)
     {
-        return m_pImgDir->imgCount(m_addbkgDlg.isHLayout());
+        return m_pImgDir->vecImg(m_addbkgDlg.isHLayout()).size();
     }
     else
     {
@@ -335,11 +335,13 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else if (m_pImgDir)
     {
-        auto pm = m_pImgDir->img(m_addbkgDlg.isHLayout(), lvItem.uItem);
-        if (pm)
+        cauto vecImg = m_pImgDir->vecImg(m_addbkgDlg.isHLayout());
+        if (lvItem.uItem < vecImg.size())
         {
+            cauto pm = vecImg[lvItem.uItem].pm;
+
             QRect rcFrame(lvItem.rc);
-            painter.drawImgEx(rcFrame, *pm);
+            painter.drawImgEx(rcFrame, pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
@@ -364,10 +366,10 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else if (m_pImgDir)
     {
-        cauto strFilePath = m_pImgDir->imgPath(m_addbkgDlg.isHLayout(), lvItem.uItem);
-        if (!strFilePath.empty())
+        cauto vecImg = m_pImgDir->vecImg(m_addbkgDlg.isHLayout());
+        if (lvItem.uItem < vecImg.size())
         {
-            m_addbkgDlg.addBkg(strFilePath);
+            m_addbkgDlg.addBkg(vecImg[lvItem.uItem].strPath);
         }
     }
     else
@@ -435,10 +437,10 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
             g_thrGenSubImg = &__app.thread();
         }
         auto pImgDir = m_pImgDir;
-        g_thrGenSubImg->start(10, [&, pImgDir]{
+        g_thrGenSubImg->start(100, [&, pImgDir]{
             if (!pImgDir->genSubImg(*this, *g_thrGenSubImg))
             {
-                g_thrGenSubImg->usleep(100);
+                g_thrGenSubImg->usleep(300);
             }
             return true;
         });
@@ -532,7 +534,7 @@ void CAddBkgView::scanDir(cwstr strDir)
     m_thrScan.start([&](signal_t bRunSignal){
         auto uSequence = ++s_uSequence;
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
-            if (this->imgDir() || !m_addbkgDlg.isVisible())
+            if (m_pImgDir || !m_addbkgDlg.isVisible())
             {
                 m_thrScan.usleep(100);
             }

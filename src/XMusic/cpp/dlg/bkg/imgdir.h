@@ -8,7 +8,7 @@ using TD_Img = QPixmap;
 
 class CImgDir : public CPath//, public CImgDir
 {
-private:
+protected:
     struct tagBkgImg
     {
         tagBkgImg() = default;
@@ -51,20 +51,19 @@ private:
     bool __bRunSignal = false;
     signal_t m_bRunSignal;
 
-    QPixmap m_pmIcon;
-
     UINT m_uPos = 0;
 
-    list<wstring> m_lstHPos;
-    list<wstring> m_lstVPos;
+    list<wstring> m_lstHFile;
+    list<wstring> m_lstVFile;
 
-    vector<tagBkgImg> m_vecHImgs;
-    vector<tagBkgImg> m_vecVImgs;
+    vector<tagBkgImg> m_vecHImg;
+    vector<tagBkgImg> m_vecVImg;
+
+protected:
+    QPixmap m_pmIcon;
 
 protected:
     bool _genIcon(cwstr strFile);
-
-    virtual bool _loadSubImg(XThread&, XFile&, TD_Img&);
 
 private:
 /*#if __android
@@ -90,6 +89,8 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
+    virtual wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&);
+
 public:
     /*void clear()
     {
@@ -104,10 +105,10 @@ public:
     void cleanup()// override
     {
         m_uPos = 0;
-        m_lstHPos.clear();
-        m_lstVPos.clear();
-        m_vecHImgs.clear(); // m_vecHImgs = vector<tagBkgImg>();
-        m_vecVImgs.clear(); // m_vecVImgs = vector<tagBkgImg>();
+        m_lstHFile.clear();
+        m_lstVFile.clear();
+        m_vecHImg.clear(); // m_vecHImg = vector<tagBkgImg>();
+        m_vecVImg.clear(); // m_vecVImg = vector<tagBkgImg>();
     }
 
     virtual wstring displayName() const;
@@ -117,16 +118,18 @@ public:
         return m_pmIcon;
     }
 
-    size_t imgCount(bool bHLayout) const
+    bool genSubImg(class CAddBkgView&, XThread&);
+
+    inline const vector<tagBkgImg>& vecImg(bool bHLayout) const
     {
-        return (bHLayout?m_vecHImgs:m_vecVImgs).size();
+        return bHLayout?m_vecHImg:m_vecVImg;
     }
 
-    const TD_Img* img(bool bHLayout, UINT uIdx) const;
-
-    wstring imgPath(bool bHLayout, UINT uIdx) const;
-
-    bool genSubImg(class CAddBkgView&, XThread&);
+protected:
+    inline vector<tagBkgImg>& _vecImg(bool bHLayout)
+    {
+        return bHLayout?m_vecHImg:m_vecVImg;
+    }
 };
 
 class COlBkgDir : public CImgDir
@@ -134,12 +137,15 @@ class COlBkgDir : public CImgDir
 public:
     COlBkgDir() = default;
 
-    COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkg& olBkg);
+    COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkgList& olBkgList);
 
 private:
     bool m_bDownloading = false;
 
-    tagOlBkg m_olBkg;
+    tagOlBkgList m_olBkgList;
+
+    vector<wstring> m_vecHFile;
+    vector<wstring> m_vecVFile;
 
 private:
     wstring displayName() const override
@@ -149,8 +155,20 @@ private:
 
     void _onFindFile(TD_PathList&, TD_XFileList&) override {}
 
-    bool _downloadSubImg(XFile& file, XThread& thread);
-    bool _loadSubImg(XThread&, XFile&, TD_Img&) override;
+    wstring _iconFile() const
+    {
+        if (m_olBkgList.lstBkg.empty())
+        {
+            return L"";
+        }
+        return this->path() + __wcPathSeparator + m_olBkgList.lstBkg.front().strFile;
+    }
+
+    bool _genIcon();
+
+    wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&) override;
+
+    bool _downloadSubImg(cwstr strFile, XThread& thread);
 
 public:
     bool downloading() const
@@ -159,8 +177,6 @@ public:
     }
 
     void initOlBkg(class CAddBkgView& lv);
-
-    string url(XFile& file);
 };
 
 void zoomoutPixmap(QPixmap& pm, int cx, int cy,  bool bCut);

@@ -81,11 +81,17 @@ static char **g_argv = NULL;
 
 CAppBase::CAppBase() : QApplication(g_argc, g_argv)
 {
-    qRegisterMetaType<fn_void>("fn_void"); //qRegisterMetaType<QVariant>("QVariant");
+    qRegisterMetaType<fn_void>("fn_void");
+
     connect(this, &CApp::signal_sync, this, [](fn_void cb){
         //if (!g_bRunSignal) return;
         cb();
     }, Qt::QueuedConnection);
+
+    connect(this, &CApp::signal_syncex, this, [](fn_void cb){
+        //if (!g_bRunSignal) return;
+        cb();
+    }, Qt::BlockingQueuedConnection);
 }
 
 void CAppBase::_init()
@@ -228,18 +234,6 @@ void CAppBase::quit()
         //m_logger >> "quit";
         QApplication::quit();
     });
-}
-
-inline void CAppBase::sync(cfn_void cb)
-{
-    if (!g_bRunSignal)
-    {
-        return;
-    }
-
-    //QVariant var;
-    //var.setValue(cb);
-    emit signal_sync(cb);
 }
 
 void CAppBase::sync(UINT uDelayTime, cfn_void cb)

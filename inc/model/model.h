@@ -248,12 +248,24 @@ enum class E_UpgradeResult
 
 struct tagOlBkg
 {
+    tagOlBkg() = default;
+    tagOlBkg(cwstr strFile, UINT cx, UINT cy)
+        : strFile(strFile), cx(cx), cy(cy)
+    {
+    }
+    wstring strFile;
+    UINT cx = 0;
+    UINT cy = 0;
+};
+
+struct tagOlBkgList
+{
     wstring catName;
     string accName;
     string prjName;
     string artiName;
 
-    list<string> lstFiles;
+    list<tagOlBkg> lstBkg;
 };
 #endif
 
@@ -375,7 +387,7 @@ public:
 
     virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
 
-    virtual const list<tagOlBkg>& olBkg() const = 0;
+    virtual const list<tagOlBkgList>& olBkg() const = 0;
 
     virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
 #endif
@@ -406,7 +418,7 @@ private:
 	CBackupMgr m_BackupMgr;
 #else
     list<CUpgradeUrl> m_lstUpgradeUrl;
-    list<tagOlBkg> m_lstOlBkg;
+    list<tagOlBkgList> m_lstOlBkg;
 #endif
 
 	CSingerMgr m_SingerMgr;
@@ -497,7 +509,7 @@ public:
         return m_lstUpgradeUrl;
     }
 
-    const list<tagOlBkg>& olBkg() const override
+    const list<tagOlBkgList>& olBkg() const override
     {
         return m_lstOlBkg;
     }

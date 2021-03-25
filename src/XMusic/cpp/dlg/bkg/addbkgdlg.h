@@ -68,10 +68,6 @@ public:
 
     CImgDir* imgDir() const
     {
-        if (m_pImgDir == &m_olBkgDir)
-        {
-            return NULL;
-        }
         return m_pImgDir;
     }
 

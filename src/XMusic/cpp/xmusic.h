@@ -57,6 +57,7 @@ private:
 
 signals:
     void signal_sync(fn_void cb);
+    void signal_syncex(fn_void cb);
 
 private:
     void _init();
@@ -72,7 +73,26 @@ public:
     int exec();
     void quit();
 
-    void sync(cfn_void cb);
+    inline void syncex(cfn_void cb)
+    {
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        emit signal_syncex(cb);
+    }
+
+    inline void sync(cfn_void cb)
+    {
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        emit signal_sync(cb);
+    }
+
     void sync(UINT uDelayTime, cfn_void cb);
 
     XThread& thread()
