@@ -269,7 +269,7 @@ size_t CAddBkgView::getColCount() const
 {
     if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
-        if (m_pImgDir->vecImg(m_addbkgDlg.isHLayout()).size() <= 4)
+        if (m_pImgDir->imgCount(m_addbkgDlg.isHLayout()) <= 4)
         {
             return 2;
         }
@@ -307,7 +307,7 @@ size_t CAddBkgView::getItemCount() const
     }
     else if (m_pImgDir)
     {
-        return m_pImgDir->vecImg(m_addbkgDlg.isHLayout()).size();
+        return m_pImgDir->imgCount(m_addbkgDlg.isHLayout());
     }
     else
     {
@@ -335,13 +335,11 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else if (m_pImgDir)
     {
-        cauto vecImg = m_pImgDir->vecImg(m_addbkgDlg.isHLayout());
-        if (lvItem.uItem < vecImg.size())
+        auto bkgImg = m_pImgDir->img(m_addbkgDlg.isHLayout(), lvItem.uItem);
+        if (bkgImg)
         {
-            cauto pm = vecImg[lvItem.uItem].pm;
-
             QRect rcFrame(lvItem.rc);
-            painter.drawImgEx(rcFrame, pm);
+            painter.drawImgEx(rcFrame, bkgImg->pm);
 
             rcFrame.setLeft(rcFrame.left()-1);
             rcFrame.setTop(rcFrame.top()-1);
@@ -366,10 +364,10 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else if (m_pImgDir)
     {
-        cauto vecImg = m_pImgDir->vecImg(m_addbkgDlg.isHLayout());
-        if (lvItem.uItem < vecImg.size())
+        auto bkgImg = m_pImgDir->img(m_addbkgDlg.isHLayout(), lvItem.uItem);
+        if (bkgImg)
         {
-            m_addbkgDlg.addBkg(vecImg[lvItem.uItem].strPath);
+            m_addbkgDlg.addBkg(bkgImg->strPath);
         }
     }
     else

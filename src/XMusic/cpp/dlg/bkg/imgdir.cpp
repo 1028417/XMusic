@@ -253,11 +253,11 @@ wstring CImgDir::_genSubImg(CAddBkgView&, XThread&, bool bHLayout, TD_Img& pm)
         }
     }
 
-    auto& vecImg = _vecImg(bHLayout);
+    /*auto& vecImg = _vecImg(bHLayout);
     if (vecImg.capacity() == 0)
     {
         vecImg.reserve(m_paSubFile.size());
-    }
+    }*/
 
     return strFile;
 }
@@ -267,7 +267,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
     UINT uGenCount = 12+3*lv.scrollPos(); // +3*ceil(lv.scrollPos());
 
     auto bHLayout = lv.isHLayout();
-    auto prevCount = vecImg(bHLayout).size();
+    auto prevCount = _vecImg(bHLayout).size();
     if (prevCount >= uGenCount)
     {
         return false;
@@ -330,7 +330,9 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         }
 
         auto& vecImg = _vecImg(bHLayout);
-        vecImg.emplace_back(pm, strFile);
+        auto& bkgImg = vecImg.add(tagBkgImg());//vecImg.emplace_back(pm, strFile);
+        bkgImg.pm.swap(pm);
+        bkgImg.strPath = strFile;
         lv.repaint(); //lv.update();
 
         if (uZoomoutAll)
@@ -373,8 +375,8 @@ COlBkgDir::COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkgList& olBkgList)
         }
     }
 
-    _vecImg(true).reserve(m_vecHFile.size());
-    _vecImg(false).reserve(m_vecVFile.size());
+    //_vecImg(true).reserve(m_vecHFile.size());
+    //_vecImg(false).reserve(m_vecVFile.size());
 }
 
 bool COlBkgDir::_genIcon()
@@ -483,7 +485,7 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 
 wstring COlBkgDir::_genSubImg(CAddBkgView&, XThread& thread, bool bHLayout, TD_Img& pm)
 {
-    auto uCount = vecImg(bHLayout).size();
+    auto uCount = _vecImg(bHLayout).size();
     auto& vecFile = bHLayout?m_vecHFile:m_vecVFile;
     if (uCount >= vecFile.size())
     {

@@ -6,23 +6,22 @@
 //using TD_Img = QImage;
 using TD_Img = QPixmap;
 
+struct tagBkgImg
+{
+    tagBkgImg() = default;
+
+    tagBkgImg(TD_Img& pm, cwstr strPath)
+        : strPath(strPath)
+    {
+        this->pm.swap(pm);
+    }
+
+    TD_Img pm;
+    wstring strPath;
+};
+
 class CImgDir : public CPath//, public CImgDir
 {
-protected:
-    struct tagBkgImg
-    {
-        tagBkgImg() = default;
-
-        tagBkgImg(TD_Img& pm, cwstr strPath)
-            : strPath(strPath)
-        {
-            this->pm.swap(pm);
-        }
-
-        TD_Img pm;
-        wstring strPath;
-    };
-
 public:
     CImgDir(signal_t bRunSignal)
         : m_bRunSignal(bRunSignal)
@@ -56,14 +55,23 @@ private:
     list<wstring> m_lstHFile;
     list<wstring> m_lstVFile;
 
-    vector<tagBkgImg> m_vecHImg;
-    vector<tagBkgImg> m_vecVImg;
+    SArray<tagBkgImg> m_vecHImg;
+    SArray<tagBkgImg> m_vecVImg;
 
 protected:
     QPixmap m_pmIcon;
 
 protected:
     bool _genIcon(cwstr strFile);
+
+    inline SArray<tagBkgImg>& _vecImg(bool bHLayout)
+    {
+        return bHLayout?m_vecHImg:m_vecVImg;
+    }
+    inline const SArray<tagBkgImg>& _vecImg(bool bHLayout) const
+    {
+        return bHLayout?m_vecHImg:m_vecVImg;
+    }
 
 private:
 /*#if __android
@@ -120,15 +128,18 @@ public:
 
     bool genSubImg(class CAddBkgView&, XThread&);
 
-    inline const vector<tagBkgImg>& vecImg(bool bHLayout) const
+    size_t imgCount(bool bHLayout) const
     {
-        return bHLayout?m_vecHImg:m_vecVImg;
+        return _vecImg(bHLayout).size();
     }
 
-protected:
-    inline vector<tagBkgImg>& _vecImg(bool bHLayout)
+    const tagBkgImg* img(bool bHLayout, UINT uIdx)
     {
-        return bHLayout?m_vecHImg:m_vecVImg;
+        const tagBkgImg* pRet = NULL;
+        _vecImg(bHLayout).get(uIdx, [&](const tagBkgImg& bkgImg){
+            pRet = &bkgImg;
+        });
+        return pRet;
     }
 };
 
