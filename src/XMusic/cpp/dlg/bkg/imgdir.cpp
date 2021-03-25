@@ -228,7 +228,35 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         cauto qsFile = __WS2Q(strFile);
         if (!pm.load(qsFile))
         {
-            if (!_downloadSubImg(strFile, thread))
+            if (bHLayout)
+            {
+                m_bHDownloading = true;
+            }
+            else
+            {
+                m_bVDownloading = true;
+            }
+            __app.sync([&]{
+                lv.update();
+            });
+
+            bool bRet = _downloadSubImg(strFile, thread);
+            if (uCount+1 == vecFile.size())
+            {
+                if (bHLayout)
+                {
+                    m_bHDownloading = false;
+                }
+                else
+                {
+                    m_bVDownloading = false;
+                }
+                __app.sync(100, [&]{
+                    lv.update();
+                });
+            }
+
+            if (!bRet)
             {
                 return false;
             }

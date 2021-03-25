@@ -21,7 +21,6 @@ private:
     COlBkgDir m_olBkgDir;
 
     TD_ImgDirList m_paImgDirs;
-
     CImgDir *m_pImgDir = NULL;
 
     QPixmap m_pmOlBkg;
@@ -32,6 +31,8 @@ private:
     size_t getRowCount() const override;
 
     size_t getItemCount() const override;
+
+    void _onPaint(CPainter& painter, int cx, int cy) override;
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
     void _paintRow(CPainter& painter, tagLVItem& lvItem, CImgDir& imgDir);

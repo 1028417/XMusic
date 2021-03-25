@@ -44,6 +44,9 @@ private:
     SArray<TD_Img> m_vecHImg;
     SArray<TD_Img> m_vecVImg;
 
+    bool m_bHDownloading = false;
+    bool m_bVDownloading = false;
+
 protected:
     QPixmap m_pmIcon;
 
@@ -51,6 +54,10 @@ protected:
     bool _genIcon(cwstr strFile);
 
     inline vector<wstring>& _vecFile(bool bHLayout)
+    {
+        return bHLayout?m_vecHFile:m_vecVFile;
+    }
+    inline const vector<wstring>& _vecFile(bool bHLayout) const
     {
         return bHLayout?m_vecHFile:m_vecVFile;
     }
@@ -132,6 +139,11 @@ public:
         }
         return vecFile[uIdx];
     }
+
+    bool downloading(bool bHLayout) const
+    {
+        return bHLayout?m_bHDownloading:m_bVDownloading;
+    }
 };
 
 class COlBkgDir : public CImgDir
@@ -174,6 +186,11 @@ public:
     }
 
     void initOlBkg(class CAddBkgView& lv);
+
+    size_t bkgMaxCount(bool bHLayout) const
+    {
+        return _vecFile(bHLayout).size();
+    }
 };
 
 void zoomoutPixmap(QPixmap& pm, int cx, int cy,  bool bCut);

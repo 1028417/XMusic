@@ -269,7 +269,7 @@ size_t CAddBkgView::getColCount() const
 {
     if (m_pImgDir && m_pImgDir != &m_olBkgDir)
     {
-        if (m_pImgDir->bkgCount(m_addbkgDlg.isHLayout()) <= 4)
+        if (m_pImgDir->bkgCount(isHLayout()) <= 4)
         {
             return 2;
         }
@@ -280,7 +280,7 @@ size_t CAddBkgView::getColCount() const
     }
     else
     {
-        if (m_addbkgDlg.isHLayout() && getItemCount() > getRowCount())
+        if (isHLayout() && getItemCount() > getRowCount())
         {
             return 2;
         }
@@ -307,7 +307,7 @@ size_t CAddBkgView::getItemCount() const
     }
     else if (m_pImgDir)
     {
-        return m_pImgDir->bkgCount(m_addbkgDlg.isHLayout());
+        return m_pImgDir->bkgCount(isHLayout());
     }
     else
     {
@@ -315,14 +315,26 @@ size_t CAddBkgView::getItemCount() const
     }
 }
 
-void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, CImgDir& imgDir)
+void CAddBkgView::_onPaint(CPainter& painter, int cx, int cy)
 {
-    auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
-    tagLVItemContext context(lvItem, eStyle);
-    context.strText = imgDir.displayName();
-    cqpm pm = (&imgDir == &m_olBkgDir)?m_pmOlBkg:imgDir.icon();
-    context.setIcon(pm, __size(-12));
-    CListView::_paintRow(painter, context);
+    CListView::_onPaint(painter, cx, cy);
+
+    if (NULL == m_pImgDir || m_pImgDir == &m_olBkgDir)
+    {
+        return;
+    }
+
+    auto uCol = getColCount(); //= m_pImgDir->bkgCount()>=9?3:2;
+    auto uExpectCount = UINT(ceil(this->scrollPos())+uCol)*uCol;
+    auto uCount = getItemCount();
+    if (uCount < uExpectCount && m_pImgDir->downloading(isHLayout()))
+    {
+        showLoading(true);
+    }
+    else
+    {
+        showLoading(false);
+    }
 }
 
 void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
@@ -335,7 +347,7 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
     else if (m_pImgDir)
     {
-        auto pImg = m_pImgDir->bkgImg(m_addbkgDlg.isHLayout(), lvItem.uItem);
+        auto pImg = m_pImgDir->bkgImg(isHLayout(), lvItem.uItem);
         if (pImg)
         {
             QRect rcFrame(lvItem.rc);
@@ -354,6 +366,16 @@ void CAddBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
+void CAddBkgView::_paintRow(CPainter& painter, tagLVItem& lvItem, CImgDir& imgDir)
+{
+    auto eStyle = E_LVItemStyle::IS_ForwardButton | E_LVItemStyle::IS_BottomLine;
+    tagLVItemContext context(lvItem, eStyle);
+    context.strText = imgDir.displayName();
+    cqpm pm = (&imgDir == &m_olBkgDir)?m_pmOlBkg:imgDir.icon();
+    context.setIcon(pm, __size(-12));
+    CListView::_paintRow(painter, context);
+}
+
 void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     if (m_pImgDir == &m_olBkgDir)
@@ -364,7 +386,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else if (m_pImgDir)
     {
-        cauto strFile = m_pImgDir->bkgFile(m_addbkgDlg.isHLayout(), lvItem.uItem);
+        cauto strFile = m_pImgDir->bkgFile(isHLayout(), lvItem.uItem);
         if (!strFile.empty())
         {
             m_addbkgDlg.addBkg(strFile);
