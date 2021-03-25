@@ -169,11 +169,11 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
         }        
         if (m_pmIcon.width() >= __BKG_MaxSide)
         {
-            m_lstHFile.push_back(strFile);
+            m_vecHFile.push_back(strFile);
         }
         if (m_pmIcon.height() >= __BKG_MaxSide)
         {
-            m_lstVFile.push_back(strFile);
+            m_vecVFile.push_back(strFile);
         }
     }
 
@@ -208,15 +208,23 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
-wstring CImgDir::_genSubImg(CAddBkgView&, XThread&, bool bHLayout, TD_Img& pm)
+wstring CImgDir::_genSubImg(CAddBkgView&, XThread& thread, bool bHLayout, TD_Img& pm)
 {
     wstring strFile;
-    auto& lstFile = bHLayout?m_lstHFile:m_lstVFile;
-    if (!lstFile.empty())
+    auto uCount = bkgCount(bHLayout);
+    cauto vecFile = _vecFile(bHLayout);
+    if (uCount < vecFile.size())
     {
-        strFile = lstFile.front();
-        lstFile.pop_front();
-        (void)_loadBkg(strFile, pm);
+        strFile = vecFile[uCount];
+        cauto qsFile = __WS2Q(strFile);
+        if (!pm.load(qsFile))
+        {
+            if (!_downloadSubImg(strFile, thread))
+            {
+                return L"";
+            }
+            (void)pm.load(qsFile);
+        }
     }
     else
     {
@@ -233,23 +241,25 @@ wstring CImgDir::_genSubImg(CAddBkgView&, XThread&, bool bHLayout, TD_Img& pm)
         {
             if (pm.height() >= __BKG_MaxSide)
             {
-                m_lstVFile.push_back(strFile);
+                m_vecVFile.push_back(strFile);
             }
             if (pm.width() < __BKG_MaxSide)
             {
                 return L"";
             }
+            m_vecHFile.push_back(strFile);
         }
         else
         {
             if (pm.width() >= __BKG_MaxSide)
             {
-                m_lstHFile.push_back(strFile);
+                m_vecHFile.push_back(strFile);
             }
             if (pm.height() < __BKG_MaxSide)
             {
                 return L"";
             }
+            m_vecVFile.push_back(strFile);
         }
     }
 
@@ -330,9 +340,8 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         }
 
         auto& vecImg = _vecImg(bHLayout);
-        auto& bkgImg = vecImg.add(tagBkgImg());//vecImg.emplace_back(pm, strFile);
-        bkgImg.pm.swap(pm);
-        bkgImg.strPath = strFile;
+        auto& img = vecImg.add(TD_Img());//vecImg.emplace_back(pm);
+        img.swap(pm);
         lv.repaint(); //lv.update();
 
         if (uZoomoutAll)
@@ -340,8 +349,8 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
             auto itr = vecImg.rbegin();
             for (++itr; itr != vecImg.rend(); ++itr)
             {
-                TD_Img&& temp = itr->pm.scaledToWidth(uZoomoutAll, Qt::SmoothTransformation);
-                itr->pm.swap(temp);
+                TD_Img&& temp = itr->scaledToWidth(uZoomoutAll, Qt::SmoothTransformation);
+                itr->swap(temp);
             }
         }
     });
@@ -366,12 +375,12 @@ COlBkgDir::COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkgList& olBkgList)
 
         if (olBkg.cx >= olBkg.cy || (int)olBkg.cx >= __BKG_MaxSide)
         {
-            m_vecHFile.push_back(strFile);
+            _vecFile(true).push_back(strFile);
         }
 
         if (olBkg.cx <= olBkg.cy || (int)olBkg.cy >= __BKG_MaxSide)
         {
-            m_vecVFile.push_back(strFile);
+            _vecFile(false).push_back(strFile);
         }
     }
 
@@ -481,36 +490,4 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
     }
 
     return true;
-}
-
-wstring COlBkgDir::_genSubImg(CAddBkgView&, XThread& thread, bool bHLayout, TD_Img& pm)
-{
-    auto uCount = _vecImg(bHLayout).size();
-    auto& vecFile = bHLayout?m_vecHFile:m_vecVFile;
-    if (uCount >= vecFile.size())
-    {
-        return L"";
-    }
-
-    thread.usleep(100);
-
-    cauto strFile = vecFile[uCount];
-    if (!fsutil::existFile(strFile))
-    {
-//        __app.sync([&]{
-//            lv.update();
-//        });
-
-        if (!_downloadSubImg(strFile, thread))
-        {
-            return L"";
-        }
-
-//        __app.sync([&]{
-//            lv.update();
-//        });
-    }
-
-    (void)_loadBkg(strFile, pm);
-    return strFile;
 }

@@ -6,20 +6,6 @@
 //using TD_Img = QImage;
 using TD_Img = QPixmap;
 
-struct tagBkgImg
-{
-    tagBkgImg() = default;
-
-    tagBkgImg(TD_Img& pm, cwstr strPath)
-        : strPath(strPath)
-    {
-        this->pm.swap(pm);
-    }
-
-    TD_Img pm;
-    wstring strPath;
-};
-
 class CImgDir : public CPath//, public CImgDir
 {
 public:
@@ -52,11 +38,11 @@ private:
 
     UINT m_uPos = 0;
 
-    list<wstring> m_lstHFile;
-    list<wstring> m_lstVFile;
+    vector<wstring> m_vecHFile;
+    vector<wstring> m_vecVFile;
 
-    SArray<tagBkgImg> m_vecHImg;
-    SArray<tagBkgImg> m_vecVImg;
+    SArray<TD_Img> m_vecHImg;
+    SArray<TD_Img> m_vecVImg;
 
 protected:
     QPixmap m_pmIcon;
@@ -64,11 +50,16 @@ protected:
 protected:
     bool _genIcon(cwstr strFile);
 
-    inline SArray<tagBkgImg>& _vecImg(bool bHLayout)
+    inline vector<wstring>& _vecFile(bool bHLayout)
+    {
+        return bHLayout?m_vecHFile:m_vecVFile;
+    }
+
+    inline SArray<TD_Img>& _vecImg(bool bHLayout)
     {
         return bHLayout?m_vecHImg:m_vecVImg;
     }
-    inline const SArray<tagBkgImg>& _vecImg(bool bHLayout) const
+    inline const SArray<TD_Img>& _vecImg(bool bHLayout) const
     {
         return bHLayout?m_vecHImg:m_vecVImg;
     }
@@ -97,26 +88,18 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    virtual wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&);
+    wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&);
+
+    virtual bool _downloadSubImg(cwstr, XThread&) {return false;}
 
 public:
-    /*void clear()
-    {
-        m_pmIcon = QPixmap();
-
-        m_uPos = 0;
-        m_vecImgs.clear();
-
-        CPath::clear();
-    }*/
-
-    void cleanup()// override
+    void cleanup()
     {
         m_uPos = 0;
-        m_lstHFile.clear();
-        m_lstVFile.clear();
-        m_vecHImg.clear(); // m_vecHImg = vector<tagBkgImg>();
-        m_vecVImg.clear(); // m_vecVImg = vector<tagBkgImg>();
+        //m_lstHFile.clear();
+        //m_lstVFile.clear();
+        m_vecHImg.clear(); // m_vecHImg = vector<TD_Img>();
+        m_vecVImg.clear(); // m_vecVImg = vector<TD_Img>();
     }
 
     virtual wstring displayName() const;
@@ -128,18 +111,28 @@ public:
 
     bool genSubImg(class CAddBkgView&, XThread&);
 
-    size_t imgCount(bool bHLayout) const
+    size_t bkgCount(bool bHLayout) const
     {
         return _vecImg(bHLayout).size();
     }
 
-    const tagBkgImg* img(bool bHLayout, UINT uIdx)
+    const TD_Img* bkgImg(bool bHLayout, UINT uIdx)
     {
-        const tagBkgImg* pRet = NULL;
-        _vecImg(bHLayout).get(uIdx, [&](const tagBkgImg& bkgImg){
-            pRet = &bkgImg;
+        const TD_Img* pImg = NULL;
+        _vecImg(bHLayout).get(uIdx, [&](const TD_Img& img){
+            pImg = &img;
         });
-        return pRet;
+        return pImg;
+    }
+
+    wstring bkgFile(bool bHLayout, UINT uIdx)
+    {
+        cauto vecFile = _vecFile(bHLayout);
+        if (uIdx >= vecFile.size())
+        {
+            return L"";
+        }
+        return vecFile[uIdx];
     }
 };
 
@@ -154,9 +147,6 @@ private:
     bool m_bDownloading = false;
 
     tagOlBkgList m_olBkgList;
-
-    vector<wstring> m_vecHFile;
-    vector<wstring> m_vecVFile;
 
 private:
     wstring displayName() const override
@@ -177,9 +167,7 @@ private:
 
     bool _genIcon();
 
-    wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&) override;
-
-    bool _downloadSubImg(cwstr strFile, XThread& thread);
+    bool _downloadSubImg(cwstr strFile, XThread& thread) override;
 
 public:
     bool downloading() const
