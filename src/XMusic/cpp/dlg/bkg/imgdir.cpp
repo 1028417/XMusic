@@ -208,70 +208,6 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
-wstring CImgDir::_genSubImg(CAddBkgView&, XThread& thread, bool bHLayout, TD_Img& pm)
-{
-    wstring strFile;
-    auto uCount = bkgCount(bHLayout);
-    cauto vecFile = _vecFile(bHLayout);
-    if (uCount < vecFile.size())
-    {
-        strFile = vecFile[uCount];
-        cauto qsFile = __WS2Q(strFile);
-        if (!pm.load(qsFile))
-        {
-            if (!_downloadSubImg(strFile, thread))
-            {
-                return L"";
-            }
-            (void)pm.load(qsFile);
-        }
-    }
-    else
-    {
-        if (!m_paSubFile.get(m_uPos, [&](XFile& file){
-            strFile = file.path();
-            (void)_loadBkg(strFile, pm);
-        }))
-        {
-            return L"";
-        }
-        m_uPos++;
-
-        if (bHLayout)
-        {
-            if (pm.height() >= __BKG_MaxSide)
-            {
-                m_vecVFile.push_back(strFile);
-            }
-            if (pm.width() < __BKG_MaxSide)
-            {
-                return L"";
-            }
-            m_vecHFile.push_back(strFile);
-        }
-        else
-        {
-            if (pm.width() >= __BKG_MaxSide)
-            {
-                m_vecHFile.push_back(strFile);
-            }
-            if (pm.height() < __BKG_MaxSide)
-            {
-                return L"";
-            }
-            m_vecVFile.push_back(strFile);
-        }
-    }
-
-    /*auto& vecImg = _vecImg(bHLayout);
-    if (vecImg.capacity() == 0)
-    {
-        vecImg.reserve(m_paSubFile.size());
-    }*/
-
-    return strFile;
-}
-
 bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
 {
     UINT uGenCount = 12+3*lv.scrollPos(); // +3*ceil(lv.scrollPos());
@@ -284,11 +220,59 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
     }
 
     TD_Img pm;
-    cauto strFile = _genSubImg(lv, thread, bHLayout, pm);
-    if (strFile.empty())
+    auto uCount = bkgCount(bHLayout);
+    cauto vecFile = _vecFile(bHLayout);
+    if (uCount < vecFile.size())
     {
-        return false;
+        cauto strFile = vecFile[uCount];
+        cauto qsFile = __WS2Q(strFile);
+        if (!pm.load(qsFile))
+        {
+            if (!_downloadSubImg(strFile, thread))
+            {
+                return false;
+            }
+            (void)pm.load(qsFile);
+        }
     }
+    else
+    {
+        wstring strFile;
+        if (!m_paSubFile.get(m_uPos, [&](XFile& file){
+            strFile = file.path();
+            (void)_loadBkg(strFile, pm);
+        }))
+        {
+            return false;
+        }
+        m_uPos++;
+
+        if (bHLayout)
+        {
+            if (pm.height() >= __BKG_MaxSide)
+            {
+                m_vecVFile.push_back(strFile);
+            }
+            if (pm.width() < __BKG_MaxSide)
+            {
+                return true;
+            }
+            m_vecHFile.push_back(strFile);
+        }
+        else
+        {
+            if (pm.width() >= __BKG_MaxSide)
+            {
+                m_vecHFile.push_back(strFile);
+            }
+            if (pm.height() < __BKG_MaxSide)
+            {
+                return true;
+            }
+            m_vecVFile.push_back(strFile);
+        }
+    }
+
 
     int cx = g_screen.nMaxSide;
     int cy = g_screen.nMinSide;
@@ -326,7 +310,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         return false;
     }
 
-    __app.sync([&, bHLayout, uZoomoutAll, pm, strFile]()mutable{
+    __app.sync([&, bHLayout, uZoomoutAll, pm]()mutable{
         if (lv.imgDir() != this)
         {
             return;
@@ -334,8 +318,6 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
 
         if (lv.isHLayout() != bHLayout)
         {
-            //auto& lstFile = bHLayout?m_lstHFile:m_lstVFile;
-            //lstFile.push_front(strFile);
             return;
         }
 
@@ -414,7 +396,6 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
 
         if (pDir->_genIcon())
         {
-            _zoomoutPixmap(m_pmIcon, __szSnapshot, __szSnapshot, true);
             m_paSubDir.add(pDir);
         }
         else

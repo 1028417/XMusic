@@ -88,8 +88,6 @@ private:
     CPath* _newSubDir(const tagFileInfo& fileInfo) override;
     XFile* _newSubFile(const tagFileInfo& fileInfo) override;
 
-    wstring _genSubImg(class CAddBkgView&, XThread&, bool bHLayout, TD_Img&);
-
     virtual bool _downloadSubImg(cwstr, XThread&) {return false;}
 
 public:
@@ -98,8 +96,8 @@ public:
         m_uPos = 0;
         //m_lstHFile.clear();
         //m_lstVFile.clear();
-        m_vecHImg.clear(); // m_vecHImg = vector<TD_Img>();
-        m_vecVImg.clear(); // m_vecVImg = vector<TD_Img>();
+        m_vecHImg.clear();
+        m_vecVImg.clear();
     }
 
     virtual wstring displayName() const;
