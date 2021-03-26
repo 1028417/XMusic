@@ -545,7 +545,6 @@ void CAddBkgView::scanDir(cwstr strDir)
     m_paImgDirs.clear();
 
     cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
-    fsutil::createDir(strOlBkgDir);
     m_olBkgDir.setDir(strOlBkgDir);
     m_paImgDirs.add(m_olBkgDir);
 

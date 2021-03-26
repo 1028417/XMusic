@@ -145,31 +145,31 @@ void CBkgDlg::preinitBkg(bool bHLayout)
     }
 
     auto& vecBkgFile = bHLayout?m_vecHBkgFile:m_vecVBkgFile;
-    fsutil::findSubFile(strAppBkgDir, [&](cwstr strSubFile) {
-        if (strutil::endWith(strSubFile, __thumbs))
+    fsutil::findSubFile(strAppBkgDir, [&](tagFileInfo& fi) {
+        if (strutil::endWith(fi.strName, __thumbs))
         {
             return;
         }
 
-        vecBkgFile.emplace_back(false, __app.appVersion() + __wcPathSeparator + strSubFile);
+        vecBkgFile.emplace_back(false, __app.appVersion() + __wcPathSeparator + fi.strName);
     });
 
-    fsutil::findFile(strBkgDir, [&](const tagFileInfo& fileInfo) {
-        if (fileInfo.bDir)
+    fsutil::findFile(strBkgDir, [&](tagFileInfo& fi) {
+        if (fi.bDir)
         {
-            if (fileInfo.strName != __app.appVersion())
+            if (fi.strName != __app.appVersion())
             {
-                (void)fsutil::removeDirTree(strBkgDir + fileInfo.strName);
+                (void)fsutil::removeDirTree(strBkgDir + fi.strName);
             }
         }
         else
         {
-            if (strutil::endWith(fileInfo.strName, __thumbs))
+            if (strutil::endWith(fi.strName, __thumbs))
             {
                 return;
             }
 
-            vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, fileInfo.strName));
+            vecBkgFile.insert(vecBkgFile.begin(), tagBkgFile(false, fi.strName));
         }
     });
 
