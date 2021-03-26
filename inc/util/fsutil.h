@@ -328,24 +328,24 @@ public:
 	static bool findFile(cwstr strDir, CB_FindFile cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL);
 	
-	static bool findSubDir(cwstr strDir, cfn_void_t<cwstr> cb
+        static bool findSubDir(cwstr strDir, CB_FindFile cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return findFile(strDir, [&](tagFileInfo& fileInfo) {
 			if (fileInfo.bDir)
 			{
-				cb(fileInfo.strName);
+                                cb(fileInfo);
 			}
 		}, eFilter, pstrFilter);
 	}
 
-	static bool findSubFile(cwstr strDir, cfn_void_t<cwstr> cb
+        static bool findSubFile(cwstr strDir, CB_FindFile cb
 		, E_FindFindFilter eFilter = E_FindFindFilter::FFP_None, const wchar_t *pstrFilter = NULL)
 	{
 		return findFile(strDir, [&](tagFileInfo& fileInfo) {
 			if (!fileInfo.bDir)
 			{
-				cb(fileInfo.strName);
+                                cb(fileInfo);
 			}
 		}, eFilter, pstrFilter);
 	}

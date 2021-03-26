@@ -249,13 +249,14 @@ enum class E_UpgradeResult
 struct tagOlBkg
 {
     tagOlBkg() = default;
-    tagOlBkg(cwstr strFile, UINT cx, UINT cy)
-        : strFile(strFile), cx(cx), cy(cy)
+    tagOlBkg(cwstr strFile, UINT cx, UINT cy, uint64_t uFileSize)
+        : strFile(strFile), cx(cx), cy(cy), uFileSize(uFileSize)
     {
     }
     wstring strFile;
     UINT cx = 0;
     UINT cy = 0;
+    uint64_t uFileSize = 0;
 };
 
 struct tagOlBkgList
