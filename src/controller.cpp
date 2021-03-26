@@ -326,7 +326,14 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 			}
 			else
 			{
-				bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath, false);
+				if (fsutil::existFile(strNewAbsPath))
+				{
+					m_view.msgBox(L"存在同名文件！");
+				}
+				else
+				{
+					bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath);
+				}
 			}
 			return bRet;
 		});

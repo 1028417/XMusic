@@ -153,7 +153,7 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
         auto t_strAppBkgDir = strAppBkgDir;
         strAppBkgDir.pop_back();
 
-        QDir::rename(__WS2Q(t_strAppBkgDir), __WS2Q(strAppBkgDir));
+        QFile::rename(__WS2Q(t_strAppBkgDir), __WS2Q(strAppBkgDir));
     }
 
     auto& vecBkgFile = bHLayout?m_vecHBkgFile:m_vecVBkgFile;

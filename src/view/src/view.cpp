@@ -422,17 +422,23 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 
 		CMatchMediaInfo& MatchMediaInfo = pr.second;
 		cauto srcMediaDir = __xmedialib.toAbsPath(fsutil::GetParentDir(MatchMediaInfo->m_strPath), true);
-		cauto strOldPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
-		cauto strNewPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
-
-		m_model.getPlayMgr().pause_move(strOldPath, strNewPath, [&]{
-			if (!fsutil::moveFile(strSrcPath, strNewPath))
+		cauto strPrevPath = srcMediaDir + __wcPathSeparator + fsutil::GetFileName(MatchMediaInfo->m_strPath);
+		
+		m_model.getPlayMgr().pause_move(strSrcPath, strPrevPath, [&]{
+			if (!fsutil::removeFile(strPrevPath))
 			{
-				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strNewPath);
+				CMainApp::msgBox(L"删除原文件失败: \n\n\t" + strPrevPath);
 				return false;
 			}
 
-			wstring strOppPath = __xmedialib.toOppPath(strNewPath);
+			cauto strDstPath = srcMediaDir + __wcPathSeparator + strSrcFileName;
+			if (!fsutil::moveFile(strSrcPath, strDstPath))
+			{
+				CMainApp::msgBox(L"复制文件失败: \n\n\t" + strDstPath);
+				return false;
+			}
+
+			wstring strOppPath = __xmedialib.toOppPath(strDstPath);
 			mapUpdateFiles.set(MatchMediaInfo->m_strPath, strOppPath);
 
 			MatchMediaInfo.medias()([&](CMedia& media) {
