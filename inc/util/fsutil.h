@@ -303,7 +303,7 @@ public:
     static bool removeDir(cwstr strDir);
     static bool removeFile(cwstr strFile);
 
-	static bool moveFile(cwstr strSrcFile, cwstr strDstFile);
+	static bool moveFile(cwstr strSrcFile, cwstr strDstFile, bool bReplaceExisting=false);
 
     static long fSeekTell(FILE *pf, long offset, int origin);
     static long long fSeekTell64(FILE *pf, long long offset, int origin);
