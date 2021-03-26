@@ -194,11 +194,7 @@ void MainWindow::preinit() // 工作线程
     QPixmap&& pm = pmBkg.copy(rc);
     m_pmCDCover.swap(pm);
 
-    mtutil::concurrence([&]{
-        m_bkgDlg.preinitBkg(true);
-    }, [&]{
-        m_bkgDlg.preinitBkg(false);
-    });
+    m_bkgDlg.preInit();
 
     while (g_uShowLogoState < 3)
     {

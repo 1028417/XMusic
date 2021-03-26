@@ -47,6 +47,13 @@ public:
         return m_thrScan;
     }
 
+    void preInit()
+    {
+        m_pmOlBkg.load(":/img/olBkg.png");
+
+        m_olBkgDir.preInit();
+    }
+
     void scanDir(cwstr strDir);
 
     UINT displayMode() const
@@ -104,6 +111,8 @@ public:
     {
         return m_uRowCount;
     }
+
+    void preInit();
 
     void init();
 

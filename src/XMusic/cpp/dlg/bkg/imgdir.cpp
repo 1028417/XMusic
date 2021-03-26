@@ -219,6 +219,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         return false;
     }
 
+    auto& bVDownloading = bHLayout?m_bHDownloading:m_bVDownloading;
     TD_Img pm;
     auto uCount = bkgCount(bHLayout);
     cauto vecFile = _vecFile(bHLayout);
@@ -228,43 +229,39 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         cauto qsFile = __WS2Q(strFile);
         if (!pm.load(qsFile))
         {
-            if (bHLayout)
+            if (!bVDownloading)
             {
-                m_bHDownloading = true;
-            }
-            else
-            {
-                m_bVDownloading = true;
-            }
-            __app.sync([&]{
-                lv.update();
-            });
-
-            bool bRet = _downloadSubImg(strFile, thread);
-            if (uCount+1 == vecFile.size())
-            {
-                if (bHLayout)
-                {
-                    m_bHDownloading = false;
-                }
-                else
-                {
-                    m_bVDownloading = false;
-                }
-                __app.sync(100, [&]{
+                bVDownloading = true;
+                __app.sync([&]{
                     lv.update();
                 });
             }
 
-            if (!bRet)
+            if (!_downloadSubImg(strFile, thread))
             {
                 return false;
             }
             (void)pm.load(qsFile);
+
+            if (uCount + 1 == vecFile.size())
+            {
+                bVDownloading = false;
+                __app.sync([&]{
+                    lv.update();
+                });
+            }
         }
     }
     else
     {
+        if (bVDownloading)
+        {
+            bVDownloading = false;
+            __app.sync([&]{
+                lv.update();
+            });
+        }
+
         wstring strFile;
         if (!m_paSubFile.get(m_uPos, [&](XFile& file){
             strFile = file.path();
@@ -411,10 +408,45 @@ bool COlBkgDir::_genIcon()
 
 #include "../../../Common2.1/3rd/curl/include/curl/curl.h"
 
+void COlBkgDir::preInit()
+{
+    auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
+    fsutil::createDir(strOlBkgDir);
+    this->setDir(strOlBkgDir);
+
+    strOlBkgDir.push_back(__wcPathSeparator);
+
+    set<wstring> setDir;
+    for (cauto olBkg : __app.getModel().olBkg())
+    {
+        setDir.insert(strutil::lowerCase_r(olBkg.catName));
+
+        map<wstring, uint64_t> mapFile;
+        for (cauto olBkg : olBkg.lstBkg)
+        {
+            mapFile[strutil::lowerCase_r(olBkg.strFile)] = olBkg.uFileSize;
+        }
+        auto catDir = strOlBkgDir + olBkg.catName + __wcPathSeparator;
+        fsutil::findSubFile(catDir, [&](tagFileInfo& fi) {
+            auto itr = mapFile.find(strutil::lowerCase_r(fi.strName));
+            if (itr == mapFile.end() || itr->second != fi.uFileSize)
+            {
+                fsutil::removeFile(catDir + fi.strName);
+            }
+        });
+    }
+
+    fsutil::findSubDir(strOlBkgDir, [&](tagFileInfo& fi) {
+        if (setDir.find(strutil::lowerCase_r(fi.strName)) == setDir.end())
+        {
+            (void)fsutil::removeDirTree(strOlBkgDir + fi.strName);
+        }
+    });
+}
+
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
     list<COlBkgDir*> lstDir;
-
     for (cauto olBkg : __app.getModel().olBkg())
     {
         tagFileInfo fileInfo;

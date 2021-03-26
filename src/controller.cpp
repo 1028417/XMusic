@@ -326,7 +326,7 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 			}
 			else
 			{
-				bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath);
+				bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath, false);
 			}
 			return bRet;
 		});
@@ -397,7 +397,7 @@ void CXController::_moveMediaFile(const TD_IMediaList& lstMedias, cwstr strOppDi
 		}
 		
 		m_model.getPlayMgr().pause_move(strSrcAbsPath, strDstAbsPath, [&]{
-			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath))
+			if (!fsutil::moveFile(strSrcAbsPath, strDstAbsPath, true))
 			{
                 m_view.msgBox(L"移动文件失败: \n\n\t" + strDstAbsPath);
 				return false;

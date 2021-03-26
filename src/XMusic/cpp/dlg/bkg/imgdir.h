@@ -146,6 +146,8 @@ public:
     }
 };
 
+#define __olBkgDir L"网上图库"
+
 class COlBkgDir : public CImgDir
 {
 public:
@@ -184,6 +186,8 @@ public:
     {
         return m_bDownloading;
     }
+
+    void preInit();
 
     void initOlBkg(class CAddBkgView& lv);
 

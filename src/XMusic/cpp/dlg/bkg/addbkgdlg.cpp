@@ -8,8 +8,6 @@
 
 #include <QMovie>
 
-#define __olBkgDir L"网上图库"
-
 static Ui::AddBkgDlg ui;
 
 XThread *g_thrGenSubImg = NULL;
@@ -20,6 +18,11 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
     , m_bkgDlg(bkgDlg)
     , m_lv(*this)
 {
+}
+
+void CAddBkgDlg::preInit()
+{
+    m_lv.preInit();
 }
 
 void CAddBkgDlg::init()
@@ -262,7 +265,6 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.signal())
 {
-    m_pmOlBkg.load(":/img/olBkg.png");
 }
 
 size_t CAddBkgView::getColCount() const
@@ -543,9 +545,6 @@ void CAddBkgView::scanDir(cwstr strDir)
     showLoading(true);
 
     m_paImgDirs.clear();
-
-    cauto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
-    m_olBkgDir.setDir(strOlBkgDir);
     m_paImgDirs.add(m_olBkgDir);
 
     static UINT s_uSequence = 0;

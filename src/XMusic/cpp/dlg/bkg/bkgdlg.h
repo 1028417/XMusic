@@ -84,6 +84,8 @@ private:
         return m_bHLayout?m_vecHBkgFile:m_vecVBkgFile;
     }
 
+    void _preinitBkg(bool bHLayout);
+
     CThumbsBrush& _genThumbs(TD_Bkg& pm, bool bHLayout);
     CThumbsBrush& _loadThumbs(const WString& strFile, bool bHLayout);
 
@@ -98,9 +100,9 @@ private:
 public:
     static size_t caleRowCount(int cy);
 
-    void init();
+    void preInit();
 
-    void preinitBkg(bool bHLayout);
+    void init();
 
     CAddBkgDlg& addBkgDlg()
     {
