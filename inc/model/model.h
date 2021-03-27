@@ -555,9 +555,11 @@ private:
     void _clear();
 
 #else
-    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
-
     E_UpgradeResult _loadMdl(const tagMdlConf& MdlConf, CByteBuffer& bbfMdl, bool bUpgradeDB);
+
+    void _initOlBkg(CByteBuffer& bbfOlBkg);
+
+    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
 #endif
 
     void _close();

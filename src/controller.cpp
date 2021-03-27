@@ -317,25 +317,32 @@ bool CXController::renameMedia(const IMedia& media, cwstr strNewName)
 	cauto strNewAbsPath = fsutil::GetParentDir(strOldAbsPath) + __wcPathSeparator + strNewName + strExtName;
     if (fsutil::existPath(strOldAbsPath, bDir))
 	{
+		bool bPathMatch = false;
+		if (fsutil::MatchPath(strOldAbsPath, strNewAbsPath))
+		{
+			bPathMatch = true;
+		}
+		else
+		{
+			if (fsutil::existFile(strNewAbsPath))
+			{
+				m_view.msgBox(L"存在同名文件！");
+				return false;
+			}
+		}
+
 		bool bRet = false;
         m_model.getPlayMgr().pause_rename(bDir, strOldAbsPath, strNewAbsPath, [&]{
-			if (fsutil::MatchPath(strOldAbsPath, strNewAbsPath))
+			if (bPathMatch)
 			{
-				bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath + L".temp")
-					& fsutil::moveFile(strNewAbsPath + L".temp", strNewAbsPath);
+                bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath + L".temp")
+					&& fsutil::moveFile(strNewAbsPath + L".temp", strNewAbsPath);
 			}
 			else
 			{
-				if (fsutil::existFile(strNewAbsPath))
-				{
-					m_view.msgBox(L"存在同名文件！");
-				}
-				else
-				{
-					bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath);
-				}
+                bRet = fsutil::moveFile(strOldAbsPath, strNewAbsPath);
 			}
-			return bRet;
+            return bRet;
 		});
 		if (!bRet)
 		{

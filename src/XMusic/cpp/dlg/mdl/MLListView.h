@@ -70,12 +70,12 @@ struct tagMLItemContext : public tagLVItemContext
 
     inline CSnapshotMediaRes* snapshotMediaRes() const
     {
-        if (pFile && !((CMediaRes*)pFile)->isLocal())
+        if (pFile && ((CMediaRes*)pFile)->mediaSet())
         {
             return (CSnapshotMediaRes*)pFile;
         }
 
-        if (pMedia && pMedia->type() == E_MediaType::MT_MediaRes && !((CMediaRes*)pMedia)->isLocal())
+        if (pMedia && pMedia->type() == E_MediaType::MT_MediaRes && ((CMediaRes*)pMedia)->mediaSet())
         {
             return (CSnapshotMediaRes*)pMedia;
         }

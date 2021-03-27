@@ -90,13 +90,6 @@ public:
 		return m_fi.uFileSize;
 	}
 
-#if !__winvc
-    virtual bool isLocal() const
-    {
-        return true;
-    }
-#endif
-
     class CMediaDir* parent() const;
 
 	wstring fileTimeString(bool bNewLine) const

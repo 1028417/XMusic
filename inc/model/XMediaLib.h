@@ -60,6 +60,16 @@ private:
 #if !__winvc
 #define __wholeTrackDuration 60 * 10
 
+enum class E_SSCatType
+{
+    CT_None,
+    CT_DSD,
+    CT_Hires,
+    CT_MQS,
+    CT_DTS,
+    CT_Disc,
+};
+
 class __ModelExt CSnapshotMediaRes : public CMediaRes
 {
 public:
@@ -78,10 +88,7 @@ private:
     CRCueFile m_CueFile;
 
 public:
-    bool isLocal() const override
-    {
-        return false;
-    }
+    E_SSCatType catType() const;
 
     UINT duration() const override
     {
@@ -90,11 +97,7 @@ public:
 
     CMediaSet* mediaSet() const override
     {
-        //崩溃return (CMediaSet*)(class CSnapshotMediaDir*)m_fi.pParent;
-        if (NULL == m_fi.pParent)
-        {
-            return NULL;
-        }
+        //崩溃return (class CSnapshotMediaDir*)m_fi.pParent;
         return ((CMediaDir*)m_fi.pParent)->mediaSet();
     }
 
@@ -114,6 +117,8 @@ public:
     }
 
 public:
+    E_SSCatType catType() const;
+
     void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir)
     {
         if (!attachDir.strAliasName.empty())
@@ -160,11 +165,6 @@ public:
         return strSingerName;
     }
 
-    bool isLocal() const override
-    {
-        return false;
-    }
-
     void GetSubSets(TD_MediaSetList& paMediaSet) override
     {
         for (auto pSubDir : m_paSubDir)
@@ -208,7 +208,7 @@ public:
         return m_fi.strName;
     }
 
-    class CMediaSet* mediaSet() const override
+    CMediaSet* mediaSet() const override
     {
         return (CMediaSet*)this;
     }

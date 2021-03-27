@@ -669,7 +669,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     if (uDuration > __wholeTrackDuration)
     {
         auto pMediaRes = __medialib.subFile(PlayingInfo.strPath);
-        if (pMediaRes && !pMediaRes->isLocal())
+        if (pMediaRes && pMediaRes->mediaSet())
         {
             PlayingInfo.bWholeTrack = true;
         }

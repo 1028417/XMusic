@@ -483,12 +483,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, IMedia& Media)
 void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
 {
     auto& MediaRes = ((CMediaRes&)file);
-    if (MediaRes.isLocal())
-    {
-        context.pmIcon = &m_pmFile;
-        context.strText = MediaRes.fileName();
-    }
-    else
+    if (MediaRes.mediaSet())
     {
         if (MediaRes.duration() > __wholeTrackDuration)
         {
@@ -507,8 +502,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
             context.pmIcon = &m_pmSSFile;
         }
 
-        //context.strText = pMediaRes->GetTitle();
         context.strText = g_mapDisplayName[&MediaRes];
+    }
+    else
+    {
+        context.pmIcon = &m_pmFile;
+        context.strText = MediaRes.fileName();
     }
 }
 
