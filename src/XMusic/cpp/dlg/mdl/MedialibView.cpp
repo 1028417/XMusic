@@ -270,16 +270,16 @@ void CMedialibView::_onShowDir(CPath& dir)
     else
     {
         strTitle = dir.fileName();
-        auto pMediaSet = ((CMediaDir&)dir).mediaSet();
-        if (pMediaSet)
+        auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
+        if (pSnapshotMediaDir)
         {
-            if (dir.parent() == &__medialib) //NULL == pMediaSet->m_pParent)
+            if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
             {
                 strTitle.erase(0, 3);
             }
 
             //文件标题
-            cauto strSingerName = ((CSnapshotMediaDir&)dir).singerName(); //((CSnapshotMediaDir*)pMediaSet)->singerName();
+            cauto strSingerName = pSnapshotMediaDir->singerName();
             if (strSingerName.empty())
             {
                 for (auto pSubFile : dir.files())
@@ -519,18 +519,17 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 {
     context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-    auto pMediaSet = ((CMediaDir&)dir).mediaSet();
-    if (pMediaSet)
+    auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
+    if (pSnapshotMediaDir)
     {
         context.pmIcon = &m_pmSSDir;
 
-        if (NULL == pMediaSet->m_pParent)// dir.parent() == &__medialib)
+        if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
         {
             //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
             context.nIconSize *= 1.13f;
 
-            auto catType = ((CSnapshotMediaDir*)pMediaSet)->catType();
-            switch (catType)
+            switch (pSnapshotMediaDir->catType())
             {
             case E_SSCatType::CT_DSD:
                 context.pmIcon = &m_pmDSD;
@@ -555,12 +554,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
                 context.strText = L"24位无损 24Bit/48KHz";
                 break;
             default:
+                context.strText = pSnapshotMediaDir->name();// pSnapshotMediaDir->catName();
                 break;
             }
         }
         else
         {
-            auto pSnapshotMediaDir = (CSnapshotMediaDir*)pMediaSet;
             auto uSingerID = pSnapshotMediaDir->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerID();
             if (uSingerID > 0)
             {

@@ -122,31 +122,12 @@ public:
 public:
     E_SSCatType catType() const;
 
-    void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir)
+    wstring catName() const
     {
-        if (!attachDir.strAliasName.empty())
-        {
-            m_strName = attachDir.strAliasName;
-        }
-        else// if (strutil::matchIgnoreCase(m_fi.strName, singer.m_strName))
-        {
-            //m_strName = attachDir.strDir.substr(0, attachDir.strDir.find(__wcPathSeparator, 1));
-            //m_strName.erase(0, 4);
-            //m_strName.append(fileName());
-
-            for (CMediaSet *pMediaSet = this; ; pMediaSet = pMediaSet->m_pParent)
-            {
-                if (NULL == pMediaSet->m_pParent)
-                {
-                    m_strName = pMediaSet->m_strName + __wcPathSeparator + fileName();
-                    break;
-                }
-            }
-        }
-
-        m_pParent = &singer;
-        SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, singer.m_uID, singer.m_strName);
+        return getPathCatName(GetPath());
     }
+
+    void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir);
 
     UINT singerID() const
     {
@@ -168,6 +149,13 @@ public:
         return strSingerName;
     }
 
+    CMediaSet* mediaSet() const override
+    {
+        return (CMediaSet*)this;
+    }
+
+    wstring name() const override;
+
     void GetSubSets(TD_MediaSetList& paMediaSet) override
     {
         for (auto pSubDir : m_paSubDir)
@@ -184,60 +172,11 @@ public:
         }
     }
 
-    void GetAllMedias(TD_IMediaList& paMedia) override
-    {
-        for (auto pSubFile : m_paSubFile)
-        {
-            auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
-            if (pSnapshotMediaRes->available)
-            {
-                paMedia.add(pSnapshotMediaRes);
-            }
-        }
+    void GetAllMedias(TD_IMediaList& paMedia) override;
 
-        for (auto pSubDir : m_paSubDir)
-        {
-            ((CSnapshotMediaDir*)pSubDir)->GetAllMedias(paMedia);
-        }
-    }
+    bool scanAvailable();
 
-    wstring name() const override
-    {
-        if (!m_strName.empty())
-        {
-            return m_strName;
-        }
-
-        return m_fi.strName;
-    }
-
-    CMediaSet* mediaSet() const override
-    {
-        return (CMediaSet*)this;
-    }
-
+public:
     bool available = false;
-
-    bool scanAvailable()
-    {
-        for (auto pSubFile : m_paSubFile)
-        {
-            if (((CSnapshotMediaRes*)pSubFile)->available)
-            {
-                available = true;
-                break;
-            }
-        }
-
-        for (auto pSubDir : m_paSubDir)
-        {
-            if (((CSnapshotMediaDir*)pSubDir)->scanAvailable())
-            {
-                available = true;
-            }
-        }
-
-        return available;
-    }
 };
 #endif
