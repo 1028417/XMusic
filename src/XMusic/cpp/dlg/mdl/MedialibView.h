@@ -25,9 +25,6 @@ private:
 
     CMediaDir &m_OuterDir;
 
-    cqpm m_pmHDDisk;
-    cqpm m_pmLLDisk;
-
     QPixmap m_pmSingerGroup;
     QPixmap m_pmAlbum;
 
@@ -43,6 +40,10 @@ private:
     QPixmap m_pmDSD;
     QPixmap m_pmMQS;
     QPixmap m_pmDTS;
+
+    QPixmap m_pmDiskDir;
+    cqpm m_pmHDDisk;
+    cqpm m_pmLLDisk;
 
 #if __android || __windows
     QPixmap m_pmOuterDir;

@@ -68,7 +68,10 @@ enum class E_SSCatType
     CT_MQS,
     CT_DTS,
     CT_Disc,
+    CT_SQ24,
 };
+
+wstring getPathCatName(cwstr strPath);
 
 class __ModelExt CSnapshotMediaRes : public CMediaRes
 {

@@ -78,6 +78,7 @@ void CMedialibView::initpm()
     (void)m_pmDSD.load(__mdlPng(dsd));
     (void)m_pmMQS.load(__mdlPng(mqs));
     (void)m_pmDTS.load(__mdlPng(dts));
+    (void)m_pmDiskDir.load(__mdlPng(diskdir));
 
 #if __android
     (void)m_pmOuterDir.load(__mdlPng(tf));
@@ -429,25 +430,28 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
         context.pmIcon = &m_pmSSDir;
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-        if (MediaSet.m_pParent && E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
+        if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
         {
-            cauto strName = context.pMediaSet->name();
-            cauto strType = strName.substr(0, strName.find(__wcPathSeparator));
-            if (strutil::matchIgnoreCase(strType, L"dsd"))
+            auto catType = ((CSnapshotMediaDir&)MediaSet).catType();
+            switch (catType)
             {
+            case E_SSCatType::CT_DSD:
                 context.pmIcon = &m_pmDSD;
-            }
-            else if (strutil::matchIgnoreCase(strType, L"hi-res"))
-            {
+                break;
+            case E_SSCatType::CT_Hires:
                 context.pmIcon = &m_pmHires;
-            }
-            else if (strutil::matchIgnoreCase(strType, L"mqs"))
-            {
+                break;
+            case E_SSCatType::CT_MQS:
                 context.pmIcon = &m_pmMQS;
-            }
-            else if (strutil::matchIgnoreCase(strType, L"dts"))
-            {
+                break;
+            case E_SSCatType::CT_DTS:
                 context.pmIcon = &m_pmDTS;
+                break;
+            case E_SSCatType::CT_Disc:
+                context.pmIcon = &m_pmDiskDir;
+                break;
+            default:
+                break;
             }
         }
 
@@ -520,37 +524,38 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     {
         context.pmIcon = &m_pmSSDir;
 
-        if (NULL == pMediaSet->m_pParent)// context.pDir->parent() == &__medialib)
+        if (NULL == pMediaSet->m_pParent)// dir.parent() == &__medialib)
         {
             //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
             context.nIconSize *= 1.13f;
 
-            //auto strDirName = context.pDir->fileName();
-            //strDirName.erase(0, 3);
-            auto& strText = context.strText = pMediaSet->m_strName;// strDirName;
-            if (strutil::matchIgnoreCase(strText, L"dsd"))
+            auto catType = ((CSnapshotMediaDir*)pMediaSet)->catType();
+            switch (catType)
             {
+            case E_SSCatType::CT_DSD:
                 context.pmIcon = &m_pmDSD;
                 context.strText = L"直接比特流数字编码\nDirect Stream Digital";
-            }
-            else if (strutil::matchIgnoreCase(strText, L"hi-res"))
-            {
+                break;
+            case E_SSCatType::CT_Hires:
                 context.pmIcon = &m_pmHires;
                 context.strText = L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio";
-            }
-            else if (strutil::matchIgnoreCase(strText, L"mqs"))
-            {
+                break;
+            case E_SSCatType::CT_MQS:
                 context.pmIcon = &m_pmMQS;
                 context.strText = L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound";
-            }
-            else if (strutil::matchIgnoreCase(strText, L"dts"))
-            {
+                break;
+            case E_SSCatType::CT_DTS:
                 context.pmIcon = &m_pmDTS;
                 context.strText = L"5.1声道 DTSDigitalSurround";
-            }
-            else if (strutil::matchIgnoreCase(strText, L"sq+"))
-            {
+                break;
+            case E_SSCatType::CT_Disc:
+                context.pmIcon = &m_pmDiskDir;
+                break;
+            case E_SSCatType::CT_SQ24:
                 context.strText = L"24位无损 24Bit/48KHz";
+                break;
+            default:
+                break;
             }
         }
         else
@@ -569,10 +574,10 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     {
         context.pmIcon = &m_pmDir;
 
-        auto pParentDir = context.pDir->parent();
+        auto pParentDir = dir.parent();
         if (NULL == pParentDir)
         {
-            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(context.pDir);
+            CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&dir);
             if (pAttachDir)
             {
                 context.pmIcon = &m_pmDirLink;
@@ -590,7 +595,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 #if __android || __windows
         else
         {
-            if (pParentDir == &m_OuterDir && dynamic_cast<COuterDir*>(context.pDir))
+            if (pParentDir == &m_OuterDir && dynamic_cast<COuterDir*>(&dir))
             {
                 context.pmIcon = &m_pmOuterDir;
             }
