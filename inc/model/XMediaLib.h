@@ -64,7 +64,7 @@ wstring getPathCatName(cwstr strPath);
 
 enum class E_SSCatType
 {
-    CT_DSD,
+    CT_DSD = 0,
     CT_Hires,
     CT_MQS,
     CT_DTS,
@@ -73,7 +73,7 @@ enum class E_SSCatType
     CT_SQ,
     CT_SQ24,
     CT_Pure,
-    CT_None, // 必须放最后
+    CT_Max
 };
 
 class __ModelExt CSnapshotMediaRes : public CMediaRes

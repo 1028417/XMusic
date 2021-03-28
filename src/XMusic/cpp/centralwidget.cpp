@@ -282,15 +282,15 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
     //((E_TrackType&)PlayingInfo.eTrackType) = E_TrackType::; //测试代码
-    bool bSingerImgFlag = E_TrackType::TT_Single != PlayingInfo.eTrackType || ui.labelSingerImg->pixmap();
+    bool bSingerImgFlag = ui.labelSingerImg->pixmap();// || E_TrackType::TT_Single != PlayingInfo.eTrackType;
     //auto pmSingerImg = ui.labelSingerImg->pixmap();
-    if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
+    /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
     {
         //pmSingerImg = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? &__app.m_pmHDDisk : &__app.m_pmSQDisk;
         //ui.labelSingerName->setShadow(uShadowWidth);
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
     }
-    else
+    else*/
     {
         if (bSingerImgFlag) //pmSingerImg)// && !pmSingerImg.isNull())
         {
@@ -341,12 +341,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
         {
             int y_SingerName = y_labelAlbumName - cy_Playingfile;
-            if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
+            /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
             {
                 cy_SingerImg = __size(70);
                 y_SingerImg = y_Playingfile+cy_Playingfile - cy_SingerImg;
             }
-            else
+            else*/
             {
                 y_SingerImg = y_SingerName + __size(6);
                 cy_SingerImg = y_Playingfile+cy_Playingfile - y_SingerImg - __size(4);

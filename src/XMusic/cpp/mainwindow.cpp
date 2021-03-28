@@ -664,6 +664,10 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     tagPlayingInfo PlayingInfo;
     PlayingInfo.strPath = PlayItem.GetPath();
 
+#if __OnlineMediaLib
+    PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
+#endif
+
     UINT uDuration = PlayItem.duration();
     PlayingInfo.qsDuration = __WS2Q(CMedia::genDurationString(uDuration));
     if (uDuration > __wholeTrackDuration)
@@ -674,10 +678,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
             PlayingInfo.eTrackType = pMediaRes->trackType();
         }
     }
-
-#if __OnlineMediaLib
-    PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
-#endif
 
     // TODO 获取音频流码率 if (!__app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
     PlayingInfo.qsQuality = mediaQualityString(PlayItem.quality());
@@ -1013,11 +1013,11 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (!m_bDefaultBkg)
         {
-            if (E_TrackType::TT_Single != m_PlayingInfo.eTrackType)
+            /*if (E_TrackType::TT_Single != m_PlayingInfo.eTrackType)
             {
                 slot_labelClick(ui.labelPlayingfile, pos);
                 return;
-            }
+            }*/
 
             m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
             if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
