@@ -3,12 +3,22 @@
 
 #include "MedialibView.h"
 
-#define __XMusicDirName L"XMusic"
-#define __LocalDirName  L" 本机"
-
 #define __FlashingAlpha 170
 
 #define __RemarkAlpha 200
+
+#define __XSingerName   L" 歌手"
+#define __XPlaylistName L" 歌单"
+#define __XMusicDirName L"XMusic"
+#define __LocalDirName  L" 本机"
+
+#define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
+#define __catHires  L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio"
+#define __catMQS    L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound"
+#define __catDTS    L"5.1声道 DTSDigitalSurround"
+#define __catDisc   L"DISC整轨"
+#define __catCD     L"CD分轨 标准1411Kbps"
+#define __catSQ24   L"24位无损 24Bit/48KHz"
 
 static map<const IMedia*, wstring> g_mapDisplayName;
 
@@ -571,25 +581,29 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
             {
             case E_SSCatType::CT_DSD:
                 context.pmIcon = &m_pmDSD;
-                context.strText = L"直接比特流数字编码\nDirect Stream Digital";
+                context.strText = __catDSD;
                 break;
             case E_SSCatType::CT_Hires:
                 context.pmIcon = &m_pmHires;
-                context.strText = L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio";
+                context.strText = __catHires;
                 break;
             case E_SSCatType::CT_MQS:
                 context.pmIcon = &m_pmMQS;
-                context.strText = L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound";
+                context.strText = __catMQS;
                 break;
             case E_SSCatType::CT_DTS:
                 context.pmIcon = &m_pmDTS;
-                context.strText = L"5.1声道 DTSDigitalSurround";
+                context.strText = __catDTS;
                 break;
             case E_SSCatType::CT_Disc:
                 context.pmIcon = &m_pmDiskDir;
+                context.strText = __catDisc;
+                break;
+            case E_SSCatType::CT_CD:
+                context.strText = __catCD;
                 break;
             case E_SSCatType::CT_SQ24:
-                context.strText = L"24位无损 24Bit/48KHz";
+                context.strText = __catSQ24;
                 break;
             default:
                 context.strText = pSnapshotMediaDir->name();// pSnapshotMediaDir->catName();
@@ -675,13 +689,13 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
         {
             context.pmIcon = &m_pmSingerGroup;
-            context.strText = L" 歌手";
+            context.strText = __XSingerName;
             context.pMediaSet = &m_SingerLib;
         }
         else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
         {
             context.pmIcon = &m_pmPlaylistSet;
-            context.strText = L" 歌单";
+            context.strText = __XPlaylistName;
             context.pMediaSet = &m_PlaylistLib;
         }
         else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
@@ -1078,7 +1092,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
     }
     else
     {
-        if (m_medialibDlg.tryShowWholeTrack(*pSnapshotMediaRes))
+        if (m_medialibDlg.tryShowWholeTrack(media))
         {
             selectItem(lvItem.uItem);
             return;

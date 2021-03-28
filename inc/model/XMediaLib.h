@@ -70,6 +70,7 @@ enum class E_SSCatType
     CT_MQS,
     CT_DTS,
     CT_Disc,
+    CT_CD,
     CT_SQ24,
 };
 
