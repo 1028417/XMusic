@@ -36,6 +36,9 @@
 
 #define __szRound __size10
 
+#define __png(name)  ":/img/" #name ".png"
+#define __mdlPng(name) ":/img/medialib/" #name ".png"
+
 enum class E_MouseEventType
 {
     MET_Move,

@@ -12,21 +12,9 @@
 #define __XMusicDirName L"XMusic"
 #define __LocalDirName  L" 本机"
 
-#define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
-#define __catHires  L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio"
-#define __catMQS    L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound"
-#define __catDTS    L"5.1声道 DTSDigitalSurround"
-#define __catDisc   L"DISC整轨"
-#define __catCD     L"CD分轨 标准1411Kbps码率"
-#define __catSQ     L"无损"
-#define __catSQ24   L"24位无损 24Bit/48KHz"
-#define __catPure   L"纯音乐"
-
-static map<const IMedia*, wstring> g_mapDisplayName;
-
-inline static void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
+inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
 {
-    auto& strTitle = g_mapDisplayName[pMedia];
+    auto& strTitle = m_mapDisplayName[pMedia];
     if (strTitle.empty())
     {
         strTitle = pMedia->GetTitle();
@@ -34,9 +22,9 @@ inline static void genDisplayTitle(const IMedia* pMedia, const wstring *pstrSing
     }
 }
 
-inline static void genDisplayTitle(const IMedia* pMedia)
+inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia)
 {
-    auto& strTitle = g_mapDisplayName[pMedia];
+    auto& strTitle = m_mapDisplayName[pMedia];
     if (strTitle.empty())
     {
         strTitle = pMedia->GetTitle();
@@ -44,9 +32,9 @@ inline static void genDisplayTitle(const IMedia* pMedia)
     }
 }
 
-inline static void genDisplayTitle(const CAlbumItem& AlbumItem, cwstr strSingerName)
+inline void CMedialibView::_genDisplayTitle(const CAlbumItem& AlbumItem, cwstr strSingerName)
 {
-    auto& strTitle = g_mapDisplayName[&AlbumItem];
+    auto& strTitle = m_mapDisplayName[&AlbumItem];
     if (strTitle.empty())
     {
         strTitle = AlbumItem.GetTitle();
@@ -84,19 +72,6 @@ void CMedialibView::initpm()
     (void)m_pmPlayItem.load(__mdlPng(playitem));
 
     (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
-
-    m_vecCatItem.assign({
-                     {__mdlPng(dsd), __catDSD},
-                     {__mdlPng(hires), __catHires},
-                     {__mdlPng(mqs), __catMQS},
-                     {__mdlPng(dts), __catDTS},
-                     {__mdlPng(diskdir), __catDisc},
-                     {__mdlPng(compactDisc), __catCD},
-                     {__mdlPng(sq), __catSQ},
-                     {__mdlPng(sq), __catSQ24},
-                     {__mdlPng(pure), __catPure},
-                     {__mdlPng(ssdir), L""}
-                 });
 
 #if __android
     (void)m_pmOuterDir.load(__mdlPng(tf));
@@ -139,14 +114,14 @@ void CMedialibView::initpm()
 
 void CMedialibView::_onShowRoot()
 {
-    g_mapDisplayName.clear();
+    m_mapDisplayName.clear();
 
     m_medialibDlg.updateHead(L"媒体库");
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    g_mapDisplayName.clear();
+    m_mapDisplayName.clear();
 
     WString strTitle;
     auto pSinger = currentSinger();
@@ -192,7 +167,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         cauto strSingerName = ((CAlbum&)MediaSet).GetSinger().m_strName;
         for (cauto AlbumItem : ((CAlbum&)MediaSet).albumItems())
         {
-            genDisplayTitle(AlbumItem, strSingerName);
+            _genDisplayTitle(AlbumItem, strSingerName);
         }
         return;
     }
@@ -205,14 +180,14 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             for (auto pSubFile : snapshotMediaDir.files())
             {
-                genDisplayTitle((CMediaRes*)pSubFile);
+                _genDisplayTitle((CMediaRes*)pSubFile);
             }
         }
         else
         {
             for (auto pSubFile : snapshotMediaDir.files())
             {
-                genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
+                _genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
             }
         }
         return;
@@ -232,11 +207,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                 cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (strSingerName.empty())
                 {
-                    genDisplayTitle(&PlayItem);
+                    _genDisplayTitle(&PlayItem);
                 }
                 else
                 {
-                    genDisplayTitle(&PlayItem, &strSingerName);
+                    _genDisplayTitle(&PlayItem, &strSingerName);
                 }
             }
         }
@@ -256,11 +231,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                     {
                         plstSingerName->push_back(pSinger->m_strName);
                     }
-                    genDisplayTitle(&PlayItem, &pSinger->m_strName);
+                    _genDisplayTitle(&PlayItem, &pSinger->m_strName);
                 }
                 else
                 {
-                    genDisplayTitle(&PlayItem);
+                    _genDisplayTitle(&PlayItem);
                 }
             }
         }
@@ -274,7 +249,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
 void CMedialibView::_onShowDir(CPath& dir)
 {
-    g_mapDisplayName.clear();
+    m_mapDisplayName.clear();
 
     wstring strTitle;
     if (&dir == &__medialib)
@@ -302,14 +277,14 @@ void CMedialibView::_onShowDir(CPath& dir)
             {
                 for (auto pSubFile : dir.files())
                 {
-                    genDisplayTitle((CMediaRes*)pSubFile);
+                    _genDisplayTitle((CMediaRes*)pSubFile);
                 }
             }
             else
             {
                 for (auto pSubFile : dir.files())
                 {
-                    genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
+                    _genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
                 }
             }
 
@@ -489,7 +464,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
             auto catType = ((CSnapshotMediaDir&)MediaSet).catType();
-            context.setIcon(m_vecCatItem[(UINT)catType].pm);
+            context.setIcon(_catIcon(catType));
 
             auto uCount = ((CSnapshotMediaDir&)MediaSet).count();
             //if (uCount > 0)
@@ -524,7 +499,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, IMedia& Media)
     {
         context.setIcon(m_pmSSFile);
     }
-    context.strText = g_mapDisplayName[&Media];
+    context.strText = m_mapDisplayName[&Media];
 }
 
 void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
@@ -533,7 +508,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
     if (MediaRes.mediaSet())
     {
         context.setIcon(m_pmSSFile);
-        context.strText = g_mapDisplayName[&MediaRes];
+        context.strText = m_mapDisplayName[&MediaRes];
     }
     else
     {
@@ -558,16 +533,14 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
     if (pSnapshotMediaDir)
     {
-        cauto catItem = m_vecCatItem[(UINT)pSnapshotMediaDir->catType()];
-        context.setIcon(catItem.pm);
+        auto catType = pSnapshotMediaDir->catType();
+        context.setIcon(_catIcon(catType));
 
         if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
         {
             //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
             context.nIconSize *= 1.13f;
-
-            context.setIcon(catItem.pm);
-            context.strText = catItem.strText;
+            context.strText = _catText(catType);
         }
         else
         {
@@ -1105,7 +1078,7 @@ void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 
 void CMedialibView::cleanup()
 {
-    g_mapDisplayName.clear();
+    m_mapDisplayName.clear();
 
     m_lstSingerHead.clear();
     m_mapSingerHead.clear();

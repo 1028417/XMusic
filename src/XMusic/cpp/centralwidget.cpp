@@ -281,12 +281,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     ui.labelSingerName->setAlignment(Qt::AlignCenter);
 
     E_SingerImgPos eSingerImgPos = E_SingerImgPos::SIP_Float;
-    //((bool&)PlayingInfo.bWholeTrack) = true; //测试代码
-    bool bSingerImgFlag = PlayingInfo.bWholeTrack || ui.labelSingerImg->pixmap();
+    //((E_TrackType&)PlayingInfo.eTrackType) = E_TrackType::; //测试代码
+    bool bSingerImgFlag = E_TrackType::TT_Single != PlayingInfo.eTrackType || ui.labelSingerImg->pixmap();
     //auto pmSingerImg = ui.labelSingerImg->pixmap();
-    if (PlayingInfo.bWholeTrack)
+    if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
     {
-        //pmSingerImg = ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD) ? &__app.m_pmHDDisk : &__app.m_pmSQDisk;
+        //pmSingerImg = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? &__app.m_pmHDDisk : &__app.m_pmSQDisk;
         //ui.labelSingerName->setShadow(uShadowWidth);
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
     }
@@ -341,7 +341,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         if (E_SingerImgPos::SIP_Zoomout == eSingerImgPos)
         {
             int y_SingerName = y_labelAlbumName - cy_Playingfile;
-            if (PlayingInfo.bWholeTrack)
+            if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
             {
                 cy_SingerImg = __size(70);
                 y_SingerImg = y_Playingfile+cy_Playingfile - cy_SingerImg;
@@ -433,19 +433,19 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         rcSingerImg.setRect(x_SingerImg, y_SingerImg, cx_SingerImg, cy_SingerImg);
         ui.labelSingerImg->setGeometry(rcSingerImg);
 
-        if (PlayingInfo.bWholeTrack)
+        /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
         {
-            cauto pm = ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmSQDisk;
+            cauto pm = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? __app.m_pmHDDisk : __app.m_pmSQDisk;
             ui.labelSingerImg->setPixmap(pm, 0);
             ui.labelSingerImg->setShadow(0);
-        }
+        }*/
     }
     else
     {
-        if (PlayingInfo.bWholeTrack)
+        /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
         {
             ui.labelSingerImg->clear();
-        }
+        }*/
 
         if (!bSingerImgFlag) //NULL == pmSingerImg)// || pmSingerImg->isNull())
         {

@@ -11,9 +11,6 @@
 
 #define __titleFontSize 1.16f
 
-#define __png(name)  ":/img/" #name ".png"
-#define __mdlPng(name) ":/img/medialib/" #name ".png"
-
 class CDialog : public TWidget<QDialog>
 {
 public:

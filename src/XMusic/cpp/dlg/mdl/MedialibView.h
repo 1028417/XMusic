@@ -7,6 +7,16 @@
 
 #define __playIconOffset __size10
 
+#define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
+#define __catHires  L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio"
+#define __catMQS    L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound"
+#define __catDTS    L"5.1声道 DTSDigitalSurround"
+#define __catDisc   L"DISC整轨"
+#define __catCD     L"CD分轨 标准1411Kbps码率"
+#define __catSQ     L"无损"
+#define __catSQ24   L"24位无损 24Bit/48KHz"
+#define __catPure   L"纯音乐"
+
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
@@ -36,18 +46,27 @@ private:
 
     struct tagCatItem
     {
-        tagCatItem() = default;
         tagCatItem(cqstr qsPng, const wchar_t *pszText)
-            : pm(qsPng)
+            : pmIcon(qsPng)
             , strText(pszText)
         {
         }
 
-        QPixmap pm;
+        QPixmap pmIcon;
         wstring strText;
     };
-
-    vector<tagCatItem> m_vecCatItem;
+    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1] {
+        {__mdlPng(dsd), __catDSD},
+        {__mdlPng(hires), __catHires},
+        {__mdlPng(mqs), __catMQS},
+        {__mdlPng(dts), __catDTS},
+        {__mdlPng(diskdir), __catDisc},
+        {__mdlPng(compactDisc), __catCD},
+        {__mdlPng(sq), __catSQ},
+        {__mdlPng(sq), __catSQ24},
+        {__mdlPng(pure), __catPure},
+        {__mdlPng(ssdir), L""}
+    };
 
     QPixmap m_pmSSFile;
 
@@ -78,6 +97,8 @@ private:
 
     int m_nFlashItem = -1;
 
+    map<const IMedia*, wstring> m_mapDisplayName;
+
 public:
     void initpm();
 
@@ -99,6 +120,19 @@ public:
     CBrush& genSingerHead(UINT uSingerID, cwstr strSingerName);
 
 private:
+    void _genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName);
+    void _genDisplayTitle(const IMedia* pMedia);
+    void _genDisplayTitle(const CAlbumItem& AlbumItem, cwstr strSingerName);
+
+    inline cqpm _catIcon(E_SSCatType catType) const
+     {
+         return m_lpCatItem[(UINT)catType].pmIcon;
+     }
+    inline cwstr _catText(E_SSCatType catType) const
+     {
+         return m_lpCatItem[(UINT)catType].strText;
+     }
+
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
     void _onShowDir(CPath&) override;
