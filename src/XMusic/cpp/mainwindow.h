@@ -24,12 +24,12 @@ struct tagPlayingInfo
 
     wstring strPath;
 
-    QString qsDuration = 0;
-    E_TrackType eTrackType = E_TrackType::TT_Single;
-
 #if __OnlineMediaLib
     UINT uFileSize = 0;
 #endif
+
+    QString qsDuration = 0;
+    E_TrackType eTrackType = E_TrackType::TT_Single;
 
     QString qsQuality;
 
