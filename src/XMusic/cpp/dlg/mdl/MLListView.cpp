@@ -187,7 +187,7 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
         if (lvItem.uItem >= paSubDirs.size())
         {
             m_pDir->files().get(lvItem.uItem-paSubDirs.size(), [&](XFile& subFile) {
-                _onItemClick(lvItem, me, (CPath&)subFile);
+                _onItemClick(lvItem, me, (CMediaRes&)subFile);
             });
         }
         else

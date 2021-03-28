@@ -110,13 +110,14 @@ private:
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 
     void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
-
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;
-
-    void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path) override;
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
     CPath* _onUpward(CPath& currentDir) override;
 
-    void _flashItem(UINT uItem, UINT uMSDelay=300);
+    void _flashItem(UINT uItem, bool bSelect = false)
+    {
+        _flashItem(300, uItem, bSelect);
+    }
+    void _flashItem(UINT uMSDelay, UINT uItem, bool bSelect = false);
 };

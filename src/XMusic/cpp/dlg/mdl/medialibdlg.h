@@ -179,9 +179,9 @@ public:
 
     void updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg);
 
-    bool tryShowWholeTrack(CMediaRes& mediaRes)
+    bool tryShowWholeTrack(IMedia& media)
     {
-        return m_wholeTrackDlg.tryShow(mediaRes);
+        return m_wholeTrackDlg.tryShow(media);
     }
 
 private:

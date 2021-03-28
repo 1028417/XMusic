@@ -412,20 +412,59 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
     {
     case E_MediaSetType::MST_Playlist:
         context.pmIcon = &m_pmPlaylist;
+        context.strRemark << ((CPlaylist&)MediaSet).size() << L" 首";
+
         break;
     case E_MediaSetType::MST_Album:
+    {
         context.pmIcon = &m_pmAlbum;
-        break;
+
+        cauto strLanguageName = MediaSet.languageName();
+        if (!strLanguageName.empty())
+        {
+            context.strRemark << strLanguageName << '\n';
+        }
+
+        auto uCount = ((CAlbum&)MediaSet).albumItems().size();
+        context.strRemark << uCount;
+        if (uCount < 10)
+        {
+            context.strRemark << ' ';
+        }
+        context.strRemark << L"首";
+    }
+
+    break;
     case E_MediaSetType::MST_Singer:
     {
         auto& brSingerHead = genSingerHead(MediaSet.m_uID, MediaSet.m_strName);
         context.setIcon(brSingerHead, __IconSize);
+
+        auto& lstAlbum = ((CSinger&)MediaSet).albums();
+        size_t uAlbumItemCount = 0;
+        for (auto& album : lstAlbum)
+        {
+            uAlbumItemCount += album.albumItems().size();
+        }
+        context.strRemark << lstAlbum.size() << L" 专辑\n" << uAlbumItemCount << L" 曲目";
     }
+
     break;
     case E_MediaSetType::MST_SingerGroup:
+    {
         context.pmIcon = &m_pmSingerGroup;
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
-        break;
+
+        cauto lstSingers = ((CSingerGroup&)MediaSet).singers();
+        size_t uAlbumCount = 0;
+        for (cauto singer : lstSingers)
+        {
+            uAlbumCount += singer.albums().size();
+        }
+        context.strRemark << lstSingers.size() << L" 歌手\n" << uAlbumCount << L" 专辑";
+    }
+
+    break;
     default:
         context.pmIcon = &m_pmSSDir;
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
@@ -452,6 +491,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
                 break;
             default:
                 break;
+            }
+
+            auto uCount = ((CSnapshotMediaDir&)MediaSet).count();
+            //if (uCount > 0)
+            {
+                context.strRemark << uCount << L" 项";
             }
         }
 
@@ -489,23 +534,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
     auto& MediaRes = ((CMediaRes&)file);
     if (MediaRes.mediaSet())
     {
-        if (MediaRes.duration() > __wholeTrackDuration)
-        {
-            context.uIconRound = 0;
-            if (MediaRes.quality() >= E_MediaQuality::MQ_CD)
-            {
-                context.pmIcon = &m_pmHDDisk;
-            }
-            else
-            {
-                context.pmIcon = &m_pmLLDisk;
-            }
-        }
-        else
-        {
-            context.pmIcon = &m_pmSSFile;
-        }
-
+        context.pmIcon = &m_pmSSFile;
         context.strText = g_mapDisplayName[&MediaRes];
     }
     else
@@ -518,6 +547,15 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
 void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 {
     context.uStyle |= E_LVItemStyle::IS_ForwardButton;
+
+    if (&dir != &__medialib && &dir != &m_OuterDir)
+    {
+        auto uCount = dir.count();// dir.dirs().size() + dir.files().size();
+        if (uCount > 0)
+        {
+            context.strRemark << uCount << L" 项";
+        }
+    }
 
     auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
     if (pSnapshotMediaDir)
@@ -659,6 +697,24 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
             context.pDir = &m_OuterDir;
         }
     }
+
+    auto pSnapshotMediaRes = context.snapshotMediaRes();
+    if (pSnapshotMediaRes)
+    {
+        auto eTrackType = pSnapshotMediaRes->trackType();
+        if (E_TrackType::TT_Single != eTrackType)
+        {
+            context.pmIcon = E_TrackType::TT_HDWhole == eTrackType ? &m_pmHDDisk : &m_pmLLDisk;
+            context.uIconRound = 0;
+
+            cauto cue = pSnapshotMediaRes->cueFile();
+            if (cue)
+            {
+                context.strRemark << cue.m_alTrackInfo.size() << L" 首\n";
+            }
+            context.strRemark << pSnapshotMediaRes->durationString();
+        }
+    }
 }
 
 CSinger *CMedialibView::currentSinger() const
@@ -780,13 +836,6 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
 
-inline static cqrc _paintRemark(CPainter& painter, cqrc rc, cqstr qsRemark)
-{
-    CPainterFontGuard fontGuard(painter, 0.81, QFont::Weight::ExtraLight);
-    UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
-    return painter.drawTextEx(rc, __rAlign, qsRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
-}
-
 cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
                                , int flags, UINT uShadowAlpha, UINT uTextAlpha)
 {
@@ -824,7 +873,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }
 
-    WString strRemark;
     if (mlContext.pMedia)
     {
         if (mlContext.pMedia->type() == E_MediaType::MT_AlbumItem)
@@ -832,86 +880,12 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             rc.setLeft(rc.left() + __size10);
         }
     }
-    else if (mlContext.pMediaSet)
-    {
-        if (E_MediaSetType::MST_Playlist == mlContext.pMediaSet->m_eType)
-        {
-            auto pPlaylist = (CPlaylist*)mlContext.pMediaSet;
-            strRemark << pPlaylist->size() << L" 首";
-        }
-        else if (E_MediaSetType::MST_SingerGroup == mlContext.pMediaSet->m_eType)
-        {
-            auto pSingerGroup = (CSingerGroup*)mlContext.pMediaSet;
-            size_t uAlbumCount = 0;
-            cauto lstSingers = pSingerGroup->singers();
-            for (cauto singer : lstSingers)
-            {
-                uAlbumCount += singer.albums().size();
-            }
-            strRemark << lstSingers.size() << L" 歌手\n" << uAlbumCount << L" 专辑";
-        }
-        else if (E_MediaSetType::MST_Singer == mlContext.pMediaSet->m_eType)
-        {
-            auto& lstAlbum = ((CSinger*)mlContext.pMediaSet)->albums();
-            size_t uAlbumItemCount = 0;
-            for (CAlbum& album : lstAlbum)
-            {
-                uAlbumItemCount += album.albumItems().size();
-            }
-            strRemark << lstAlbum.size() << L" 专辑\n" << uAlbumItemCount << L" 曲目";
-        }
-        else if (E_MediaSetType::MST_Album == mlContext.pMediaSet->m_eType)
-        {
-            cauto strLanguageName = mlContext.pMediaSet->languageName();
-            if (!strLanguageName.empty())
-            {
-                strRemark << strLanguageName << '\n';
-            }
 
-            auto uCount = ((CAlbum*)mlContext.pMediaSet)->albumItems().size();
-            strRemark << uCount;
-            if (uCount < 10)
-            {
-                strRemark << ' ';
-            }
-            strRemark << L"首";
-        }
-        else if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType)
-        {
-            auto pDir = (CSnapshotMediaDir*)mlContext.pMediaSet;
-            auto uCount = pDir->dirs().size() + pDir->files().size();
-            if (uCount > 0)
-            {
-                strRemark << uCount << L" 项";
-            }
-        }
-    }
-    else if (mlContext.pFile)
+    if (!mlContext.strRemark->empty())
     {
-        auto pMediaRes = (CMediaRes*)mlContext.pFile;
-        auto duration = pMediaRes->duration();
-        if (duration > __wholeTrackDuration)
-        {
-            cauto cue = pMediaRes->cueFile();
-            if (cue)
-            {
-                strRemark << cue.m_alTrackInfo.size() << L" 首\n";
-            }
-            strRemark << IMedia::genDurationString(duration);
-        }
-    }
-    else if (mlContext.pDir && mlContext.pDir != &__medialib && mlContext.pDir != &m_OuterDir)
-    {
-        auto uCount = mlContext.pDir->dirs().size() + mlContext.pDir->files().size();
-        if (uCount > 0)
-        {
-            strRemark << uCount << L" 项";
-        }
-    }
-
-    if (!strRemark->empty())
-    {
-        cauto rcRet = _paintRemark(painter, rc, strRemark);
+        CPainterFontGuard fontGuard(painter, 0.81, QFont::Weight::ExtraLight);
+        UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
+        cauto rcRet = painter.drawTextEx(rc, __rAlign, mlContext.strRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
         rc.setRight(rcRet.x() - __size(20));
     }
 
@@ -1083,13 +1057,14 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
 
     tagMLItemContext context(lvItem, media);
     auto pSnapshotMediaRes = context.snapshotMediaRes();
-    if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
-    {
-        return;
-    }
 
     if (_hittestPlayIcon(context, me.x()))
     {
+        if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
+        {
+            return;
+        }
+
         _flashItem(lvItem.uItem);
 
         if (__app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
@@ -1100,28 +1075,24 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
         {
             __app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
         }
-
-        return;
     }
-
-    _flashItem(lvItem.uItem);// selectItem(lvItem.uItem);
-
-    __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
-}
-
-void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& path)
-{
-    auto& mediaRes = (CMediaRes&)path;
-    if (!_hittestPlayIcon(tagMLItemContext(lvItem, (IMedia&)mediaRes), me.x()))
+    else
     {
-        if (m_medialibDlg.tryShowWholeTrack(mediaRes))
+        if (m_medialibDlg.tryShowWholeTrack(*pSnapshotMediaRes))
         {
             selectItem(lvItem.uItem);
             return;
         }
-    }
 
-    _onItemClick(lvItem, me, (IMedia&)mediaRes);
+        if (pSnapshotMediaRes && !pSnapshotMediaRes->available)
+        {
+            return;
+        }
+
+        _flashItem(lvItem.uItem, true);
+
+        __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+    }
 }
 
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
@@ -1147,12 +1118,17 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
     return CMLListView::_onUpward(currentDir);
 }
 
-void CMedialibView::_flashItem(UINT uItem, UINT uMSDelay)
+void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 {
+    dselectItem();
     m_nFlashItem = uItem;
     update();
 
-    async(uMSDelay, [&]{
+    async(uMSDelay, [=]{
+        if (bSelect)
+        {
+            selectItem(m_nFlashItem);
+        }
         m_nFlashItem = -1;
         update();
     });

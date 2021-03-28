@@ -57,6 +57,8 @@ private:
 	UINT getSingerImgPos(UINT uSingerID) override;
 };
 
+wstring getPathCatName(cwstr strPath);
+
 #if !__winvc
 #define __wholeTrackDuration 60 * 10
 
@@ -70,8 +72,6 @@ enum class E_SSCatType
     CT_Disc,
     CT_SQ24,
 };
-
-wstring getPathCatName(cwstr strPath);
 
 class __ModelExt CSnapshotMediaRes : public CMediaRes
 {
@@ -98,15 +98,28 @@ public:
         return m_uDuration;
     }
 
-    CMediaSet* mediaSet() const override
+    E_TrackType trackType() const override
     {
-        //崩溃return (class CSnapshotMediaDir*)m_fi.pParent;
-        return ((CMediaDir*)m_fi.pParent)->mediaSet();
+        if (m_uDuration > __wholeTrackDuration)
+        {
+            if (quality() >= E_MediaQuality::MQ_CD)
+            {
+                return E_TrackType::TT_HDWhole;
+            }
+            return E_TrackType::TT_LLWhole;
+        }
+        return E_TrackType::TT_Single;
     }
 
     CRCueFile cueFile() override
     {
         return m_CueFile;
+    }
+
+    CMediaSet* mediaSet() const override
+    {
+        //崩溃return (class CSnapshotMediaDir*)m_fi.pParent;
+        return ((CMediaDir*)m_fi.pParent)->mediaSet();
     }
 };
 

@@ -13,6 +13,8 @@ struct tagMLItemContext : public tagLVItemContext
     CPath *pDir = NULL;
     XFile *pFile = NULL;
 
+    WString strRemark;
+
     operator bool() const
     {
         return pMediaSet || pMedia || pDir || pFile;
@@ -159,8 +161,7 @@ private:
 
     void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 
-    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, IMedia&){}
-    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CPath&){}
+    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, IMedia&) {}
 
     inline void _saveScrollRecord()
     {
