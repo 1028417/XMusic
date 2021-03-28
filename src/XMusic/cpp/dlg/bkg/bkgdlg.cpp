@@ -107,8 +107,8 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
 #if __android
         WString strOrgDir;
         strOrgDir << __pkgDir << (bHLayout?L"/hbkg/":L"/vbkg/");
-        fsutil::findSubFile(strOrgDir, [&](cwstr strFile){
-            fsutil::copyFile(strOrgDir + strFile, strBkgDir + strFile);
+        fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
+            fsutil::copyFile(strOrgDir + fi.strName, strBkgDir + fi.strName);
         });
 #endif
     }
