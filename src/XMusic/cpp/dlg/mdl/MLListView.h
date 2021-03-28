@@ -70,9 +70,14 @@ struct tagMLItemContext : public tagLVItemContext
         //strText = file.fileName();
     }
 
+    void setIcon(QPixmap& pm, int nSize = __size100)
+    {
+        tagLVItemContext::setIcon(pm, nSize);
+    }
+
     void setSingerIcon(CBrush& br, int nSize = __size100, UINT uRound = __size(6))
     {
-        setIcon(br, nSize, uRound);
+        tagLVItemContext::setIcon(br, nSize, uRound);
     }
 
     inline CSnapshotMediaRes* snapshotMediaRes() const

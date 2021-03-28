@@ -422,13 +422,13 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
     switch (MediaSet.m_eType)
     {
     case E_MediaSetType::MST_Playlist:
-        context.pmIcon = &m_pmPlaylist;
+        context.setIcon(m_pmPlaylist);
         context.strRemark << ((CPlaylist&)MediaSet).size() << L" 首";
 
         break;
     case E_MediaSetType::MST_Album:
     {
-        context.pmIcon = &m_pmAlbum;
+        context.setIcon(m_pmAlbum);
 
         cauto strLanguageName = MediaSet.languageName();
         if (!strLanguageName.empty())
@@ -463,7 +463,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
     break;
     case E_MediaSetType::MST_SingerGroup:
     {
-        context.pmIcon = &m_pmSingerGroup;
+        context.setIcon(m_pmSingerGroup);
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
         cauto lstSingers = ((CSingerGroup&)MediaSet).singers();
@@ -477,7 +477,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
 
     break;
     default:
-        context.pmIcon = &m_pmSSDir;
+        context.setIcon(m_pmSSDir);
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
         if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
@@ -486,22 +486,22 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
             switch (catType)
             {
             case E_SSCatType::CT_DSD:
-                context.pmIcon = &m_pmDSD;
+                context.setIcon(m_pmDSD);
                 break;
             case E_SSCatType::CT_Hires:
-                context.pmIcon = &m_pmHires;
+                context.setIcon(m_pmHires);
                 break;
             case E_SSCatType::CT_MQS:
-                context.pmIcon = &m_pmMQS;
+                context.setIcon(m_pmMQS);
                 break;
             case E_SSCatType::CT_DTS:
-                context.pmIcon = &m_pmDTS;
+                context.setIcon(m_pmDTS);
                 break;
             case E_SSCatType::CT_Disc:
-                context.pmIcon = &m_pmDiskDir;
+                context.setIcon(m_pmDiskDir);
                 break;
             case E_SSCatType::CT_CD:
-                context.pmIcon = &m_pmCD;
+                context.setIcon(m_pmCD);
                 break;
             default:
                 break;
@@ -523,7 +523,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, IMedia& Media)
     auto eMediaType = Media.type();
     if (E_MediaType::MT_PlayItem == eMediaType)
     {
-        context.pmIcon = &m_pmPlayItem;
+        context.setIcon(m_pmPlayItem);
 
         UINT uSingerID = Media.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         if (uSingerID > 0)
@@ -538,7 +538,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, IMedia& Media)
     }
     else if (E_MediaType::MT_MediaRes == eMediaType)
     {
-        context.pmIcon = &m_pmSSFile;
+        context.setIcon(m_pmSSFile);
     }
     context.strText = g_mapDisplayName[&Media];
 }
@@ -548,12 +548,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
     auto& MediaRes = ((CMediaRes&)file);
     if (MediaRes.mediaSet())
     {
-        context.pmIcon = &m_pmSSFile;
+        context.setIcon(m_pmSSFile);
         context.strText = g_mapDisplayName[&MediaRes];
     }
     else
     {
-        context.pmIcon = &m_pmFile;
+        context.setIcon(m_pmFile);
         context.strText = MediaRes.fileName();
     }
 }
@@ -574,7 +574,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
     if (pSnapshotMediaDir)
     {
-        context.pmIcon = &m_pmSSDir;
+        context.setIcon(m_pmSSDir);
 
         if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
         {
@@ -584,26 +584,27 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
             switch (pSnapshotMediaDir->catType())
             {
             case E_SSCatType::CT_DSD:
-                context.pmIcon = &m_pmDSD;
+                context.setIcon(m_pmDSD);
                 context.strText = __catDSD;
                 break;
             case E_SSCatType::CT_Hires:
-                context.pmIcon = &m_pmHires;
+                context.setIcon(m_pmHires);
                 context.strText = __catHires;
                 break;
             case E_SSCatType::CT_MQS:
-                context.pmIcon = &m_pmMQS;
+                context.setIcon(m_pmMQS);
                 context.strText = __catMQS;
                 break;
             case E_SSCatType::CT_DTS:
-                context.pmIcon = &m_pmDTS;
+                context.setIcon(m_pmDTS);
                 context.strText = __catDTS;
                 break;
             case E_SSCatType::CT_Disc:
-                context.pmIcon = &m_pmDiskDir;
+                context.setIcon(m_pmDiskDir);
                 context.strText = __catDisc;
                 break;
             case E_SSCatType::CT_CD:
+                context.setIcon(m_pmCD);
                 context.strText = __catCD;
                 break;
             case E_SSCatType::CT_SQ24:
@@ -627,7 +628,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     }
     else
     {
-        context.pmIcon = &m_pmDir;
+        context.setIcon(m_pmDir);
 
         auto pParentDir = dir.parent();
         if (NULL == pParentDir)
@@ -635,7 +636,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
             CAttachDir *pAttachDir = dynamic_cast<CAttachDir*>(&dir);
             if (pAttachDir)
             {
-                context.pmIcon = &m_pmDirLink;
+                context.setIcon(m_pmDirLink);
 
                 /*if (E_AttachDirType::ADT_TF == pAttachDir->m_eType)
                 {
@@ -652,7 +653,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
         {
             if (pParentDir == &m_OuterDir && dynamic_cast<COuterDir*>(&dir))
             {
-                context.pmIcon = &m_pmOuterDir;
+                context.setIcon(m_pmOuterDir);
             }
         }
 #endif
@@ -689,25 +690,25 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         cauto uRow = context->uRow;
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
         {
-            context.pmIcon = &m_pmSingerGroup;
+            context.setIcon(m_pmSingerGroup);
             context.strText = __XSingerName;
             context.pMediaSet = &m_SingerLib;
         }
         else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
         {
-            context.pmIcon = &m_pmPlaylistSet;
+            context.setIcon(m_pmPlaylistSet);
             context.strText = __XPlaylistName;
             context.pMediaSet = &m_PlaylistLib;
         }
         else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
         {
-            context.pmIcon = &m_pmXmusicDir;
+            context.setIcon(m_pmXmusicDir);
             context.strText = __XMusicDirName;
             context.pDir = &__medialib;
         }
         else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
         {
-            context.pmIcon = &m_pmDir;
+            context.setIcon(m_pmDir);
             context.strText << ' ' << __LocalDirName;
             context.pDir = &m_OuterDir;
         }
@@ -719,7 +720,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         auto eTrackType = pSnapshotMediaRes->trackType();
         if (E_TrackType::TT_Single != eTrackType)
         {
-            context.pmIcon = E_TrackType::TT_HDWhole == eTrackType ? &m_pmHDDisk : &m_pmLLDisk;
+            context.setIcon(E_TrackType::TT_HDWhole == eTrackType ? &m_pmHDDisk : &m_pmLLDisk);
 
             cauto cue = pSnapshotMediaRes->cueFile();
             if (cue)
