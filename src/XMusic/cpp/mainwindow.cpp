@@ -669,9 +669,9 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     if (uDuration > __wholeTrackDuration)
     {
         auto pMediaRes = __medialib.subFile(PlayingInfo.strPath);
-        if (pMediaRes && pMediaRes->mediaSet())
+        if (pMediaRes)
         {
-            PlayingInfo.bWholeTrack = true;
+            PlayingInfo.eTrackType = pMediaRes->trackType();
         }
     }
 
@@ -680,8 +680,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 #endif
 
     // TODO 获取音频流码率 if (!__app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
-    PlayingInfo.eQuality = PlayItem.quality();
-    PlayingInfo.qsQuality = mediaQualityString(PlayingInfo.eQuality);
+    PlayingInfo.qsQuality = mediaQualityString(PlayItem.quality());
 
     auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
     if (uAlbumItemID > 0)
@@ -1014,7 +1013,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (!m_bDefaultBkg)
         {
-            if (m_PlayingInfo.bWholeTrack)
+            if (E_TrackType::TT_Single != m_PlayingInfo.eTrackType)
             {
                 slot_labelClick(ui.labelPlayingfile, pos);
                 return;

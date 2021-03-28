@@ -25,13 +25,12 @@ struct tagPlayingInfo
     wstring strPath;
 
     QString qsDuration = 0;
-    bool bWholeTrack = false;
+    E_TrackType eTrackType = E_TrackType::TT_Single;
 
 #if __OnlineMediaLib
     UINT uFileSize = 0;
 #endif
 
-    E_MediaQuality eQuality = E_MediaQuality::MQ_None;
     QString qsQuality;
 
     UINT uSingerID = 0;
