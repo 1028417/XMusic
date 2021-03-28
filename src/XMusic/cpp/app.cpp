@@ -115,7 +115,7 @@ bool CApp::_startup(cwstr strWorkDir)
 
         (void)m_pmForward.load(__png(btnForward));
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
-        (void)m_pmLLDisk.load(__mdlPng(lldisk));
+        (void)m_pmSQDisk.load(__mdlPng(sqdisk));
 
         m_mainWnd.preinit();
     });

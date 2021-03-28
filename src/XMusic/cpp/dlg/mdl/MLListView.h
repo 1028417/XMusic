@@ -70,7 +70,7 @@ struct tagMLItemContext : public tagLVItemContext
         //strText = file.fileName();
     }
 
-    void setIcon(QPixmap& pm, int nSize = __size100)
+    void setIcon(cqpm pm, int nSize = __size100)
     {
         tagLVItemContext::setIcon(pm, nSize);
     }

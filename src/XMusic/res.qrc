@@ -37,7 +37,7 @@
         <file>img/medialib/hires.png</file>
         <file>img/medialib/dsd.png</file>
         <file>img/medialib/hddisk.png</file>
-        <file>img/medialib/lldisk.png</file>
+        <file>img/medialib/sqdisk.png</file>
         <file>img/medialib/dir.png</file>
         <file>img/medialib/attachdir.png</file>
         <file>img/medialib/file.png</file>
@@ -58,5 +58,7 @@
         <file>img/loading.gif</file>
         <file>img/medialib/diskdir.png</file>
         <file>img/medialib/compactDisc.png</file>
+        <file>img/medialib/sq.png</file>
+        <file>img/medialib/pure.png</file>
     </qresource>
 </RCC>

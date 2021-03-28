@@ -71,7 +71,9 @@ enum class E_SSCatType
     CT_DTS,
     CT_Disc,
     CT_CD,
+    CT_SQ,
     CT_SQ24,
+    CT_Pure,
 };
 
 class __ModelExt CSnapshotMediaRes : public CMediaRes
@@ -107,7 +109,7 @@ public:
             {
                 return E_TrackType::TT_HDWhole;
             }
-            return E_TrackType::TT_LLWhole;
+            return E_TrackType::TT_SQWhole;
         }
         return E_TrackType::TT_Single;
     }

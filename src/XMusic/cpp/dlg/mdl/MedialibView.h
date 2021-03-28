@@ -43,9 +43,11 @@ private:
 
     QPixmap m_pmDiskDir;
     cqpm m_pmHDDisk;
-    cqpm m_pmLLDisk;
+    cqpm m_pmSQDisk;
 
     QPixmap m_pmCD;
+    QPixmap m_pmSQ;
+    QPixmap m_pmPure;
 
 #if __android || __windows
     QPixmap m_pmOuterDir;

@@ -18,7 +18,9 @@
 #define __catDTS    L"5.1声道 DTSDigitalSurround"
 #define __catDisc   L"DISC整轨"
 #define __catCD     L"CD分轨 标准1411Kbps码率"
+#define __catSQ     L"无损"
 #define __catSQ24   L"24位无损 24Bit/48KHz"
+#define __catPure   L"纯音乐"
 
 static map<const IMedia*, wstring> g_mapDisplayName;
 
@@ -64,7 +66,7 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     , m_PlaylistLib(__app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
     , m_pmHDDisk(__app.m_pmHDDisk)
-    , m_pmLLDisk(__app.m_pmLLDisk)
+    , m_pmSQDisk(__app.m_pmSQDisk)
 {
 }
 
@@ -90,6 +92,8 @@ void CMedialibView::initpm()
     (void)m_pmDTS.load(__mdlPng(dts));
     (void)m_pmDiskDir.load(__mdlPng(diskdir));
     (void)m_pmCD.load(__mdlPng(compactDisc));
+    (void)m_pmSQ.load(__mdlPng(sq));
+    (void)m_pmPure.load(__mdlPng(pure));
 
 #if __android
     (void)m_pmOuterDir.load(__mdlPng(tf));
@@ -503,6 +507,13 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
             case E_SSCatType::CT_CD:
                 context.setIcon(m_pmCD);
                 break;
+            case E_SSCatType::CT_SQ:
+            case E_SSCatType::CT_SQ24:
+                context.setIcon(m_pmSQ);
+                break;
+            case E_SSCatType::CT_Pure:
+                context.setIcon(m_pmPure);
+                break;
             default:
                 break;
             }
@@ -607,8 +618,17 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
                 context.setIcon(m_pmCD);
                 context.strText = __catCD;
                 break;
+            case E_SSCatType::CT_SQ:
+                context.setIcon(m_pmSQ);
+                context.strText = __catSQ;
+                break;
             case E_SSCatType::CT_SQ24:
+                context.setIcon(m_pmSQ);
                 context.strText = __catSQ24;
+                break;
+            case E_SSCatType::CT_Pure:
+                context.setIcon(m_pmPure);
+                context.strText = __catPure;
                 break;
             default:
                 context.strText = pSnapshotMediaDir->name();// pSnapshotMediaDir->catName();
@@ -720,7 +740,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         auto eTrackType = pSnapshotMediaRes->trackType();
         if (E_TrackType::TT_Single != eTrackType)
         {
-            context.setIcon(E_TrackType::TT_HDWhole == eTrackType ? &m_pmHDDisk : &m_pmLLDisk);
+            context.setIcon(E_TrackType::TT_HDWhole == eTrackType ? m_pmHDDisk : m_pmSQDisk);
 
             cauto cue = pSnapshotMediaRes->cueFile();
             if (cue)

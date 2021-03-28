@@ -46,7 +46,7 @@ public:
 public:
     QPixmap m_pmForward; // 列表末端箭头
     QPixmap m_pmHDDisk;
-    QPixmap m_pmLLDisk;
+    QPixmap m_pmSQDisk;
 
 private:
     CXController m_ctrl;

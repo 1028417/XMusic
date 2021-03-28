@@ -12,7 +12,7 @@ enum class E_TrackType
 {
     TT_Single,
     TT_HDWhole,
-    TT_LLWhole
+    TT_SQWhole
 };
 
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject

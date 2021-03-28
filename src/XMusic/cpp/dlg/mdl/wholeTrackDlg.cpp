@@ -45,7 +45,7 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
 
     m_pMedia = &media;
 
-    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmLLDisk;
+    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmSQDisk;
     ui.labelDisk->setPixmap(pm);
 
     ui.labelTitle->setText(__WS2Q(media.GetTitle()));
