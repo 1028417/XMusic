@@ -436,8 +436,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         if (PlayingInfo.bWholeTrack)
         {
             cauto pm = ((int)PlayingInfo.eQuality>=(int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmSQDisk;
-            ui.labelSingerImg->setPixmap(pm); //pmSingerImg);
-            ui.labelSingerImg->setPixmapRound(0);
+            ui.labelSingerImg->setPixmap(pm, 0);
             ui.labelSingerImg->setShadow(0);
         }
     }

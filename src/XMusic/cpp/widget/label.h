@@ -64,9 +64,20 @@ public:
     {
         m_br = br;
     }
+    void setPixmap(const CBrush& br, UINT szRound)
+    {
+        m_br = br;
+        m_szRound = szRound;
+    }
+
     void setPixmap(cqpm pm)
     {
         m_br.setTexture(pm);
+    }
+    void setPixmap(cqpm pm, UINT szRound)
+    {
+        m_br.setTexture(pm);
+        m_szRound = szRound;
     }
 
     void setPixmapRound(UINT szRound)
