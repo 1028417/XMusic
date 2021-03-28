@@ -90,7 +90,7 @@ void CMedialibView::initpm()
                      {__mdlPng(hires), __catHires},
                      {__mdlPng(mqs), __catMQS},
                      {__mdlPng(dts), __catDTS},
-                     {__mdlPng(disc), __catDisc},
+                     {__mdlPng(diskdir), __catDisc},
                      {__mdlPng(compactDisc), __catCD},
                      {__mdlPng(sq), __catSQ},
                      {__mdlPng(sq), __catSQ24},
