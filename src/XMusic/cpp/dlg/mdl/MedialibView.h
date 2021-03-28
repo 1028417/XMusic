@@ -33,21 +33,26 @@ private:
     QPixmap m_pmPlayItem;
 
     QPixmap m_pmXmusicDir;
-    QPixmap m_pmSSDir;
+
+    struct tagCatItem
+    {
+        tagCatItem() = default;
+        tagCatItem(cqstr qsPng, const wchar_t *pszText)
+            : pm(qsPng)
+            , strText(pszText)
+        {
+        }
+
+        QPixmap pm;
+        wstring strText;
+    };
+
+    vector<tagCatItem> m_vecCatItem;
+
     QPixmap m_pmSSFile;
 
-    QPixmap m_pmHires;
-    QPixmap m_pmDSD;
-    QPixmap m_pmMQS;
-    QPixmap m_pmDTS;
-
-    QPixmap m_pmDiskDir;
     cqpm m_pmHDDisk;
     cqpm m_pmSQDisk;
-
-    QPixmap m_pmCD;
-    QPixmap m_pmSQ;
-    QPixmap m_pmPure;
 
 #if __android || __windows
     QPixmap m_pmOuterDir;
