@@ -40,20 +40,29 @@ struct tagLVItemContext
     {
     }
 
-    void setIcon(cqpm pm, int nSize, UINT uRound = 0)
+    inline void setIcon(cqpm pm, int nSize)
     {
         brIcon = NULL;
 
         pmIcon = &pm;
         nIconSize = nSize;
+    }
+    void setIcon(cqpm pm, int nSize, UINT uRound)
+    {
+        setIcon(pm, nSize);
         uIconRound = uRound;
     }
-    void setIcon(CBrush& br, int nSize, UINT uRound = __size(6))
+
+    inline void setIcon(CBrush& br, int nSize)
     {
         pmIcon = NULL;
 
         brIcon = &br;
         nIconSize = nSize;
+    }
+    void setIcon(CBrush& br, int nSize, UINT uRound)
+    {
+        setIcon(br, nSize);
         uIconRound = uRound;
     }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#define __singerimgDir L"/singerimg"
+
 #define __hPiiicRate 1.4f
 #define __vPiiicRate 1.33f
 

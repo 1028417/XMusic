@@ -70,6 +70,11 @@ struct tagMLItemContext : public tagLVItemContext
         //strText = file.fileName();
     }
 
+    void setSingerIcon(CBrush& br, int nSize = __size100, UINT uRound = __size(6))
+    {
+        setIcon(br, nSize, uRound);
+    }
+
     inline CSnapshotMediaRes* snapshotMediaRes() const
     {
         if (pFile && ((CMediaRes*)pFile)->mediaSet())

@@ -17,7 +17,7 @@
 #define __catMQS    L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound"
 #define __catDTS    L"5.1声道 DTSDigitalSurround"
 #define __catDisc   L"DISC整轨"
-#define __catCD     L"CD分轨 标准1411Kbps"
+#define __catCD     L"CD分轨 标准1411Kbps码率"
 #define __catSQ24   L"24位无损 24Bit/48KHz"
 
 static map<const IMedia*, wstring> g_mapDisplayName;
@@ -89,6 +89,7 @@ void CMedialibView::initpm()
     (void)m_pmMQS.load(__mdlPng(mqs));
     (void)m_pmDTS.load(__mdlPng(dts));
     (void)m_pmDiskDir.load(__mdlPng(diskdir));
+    (void)m_pmCD.load(__mdlPng(compactDisc));
 
 #if __android
     (void)m_pmOuterDir.load(__mdlPng(tf));
@@ -448,7 +449,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
     case E_MediaSetType::MST_Singer:
     {
         auto& brSingerHead = genSingerHead(MediaSet.m_uID, MediaSet.m_strName);
-        context.setIcon(brSingerHead, __IconSize);
+        context.setSingerIcon(brSingerHead);
 
         auto& lstAlbum = ((CSinger&)MediaSet).albums();
         size_t uAlbumItemCount = 0;
@@ -499,6 +500,9 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
             case E_SSCatType::CT_Disc:
                 context.pmIcon = &m_pmDiskDir;
                 break;
+            case E_SSCatType::CT_CD:
+                context.pmIcon = &m_pmCD;
+                break;
             default:
                 break;
             }
@@ -528,7 +532,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, IMedia& Media)
             if (!strSingerName.empty())
             {
                 auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
-                context.setIcon(brSingerHead, __IconSize);
+                context.setSingerIcon(brSingerHead);
             }
         }
     }
@@ -617,7 +621,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
             {
                 cauto strSingerName = pSnapshotMediaDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerName();
                 auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
-                context.setIcon(brSingerHead, __IconSize);
+                context.setSingerIcon(brSingerHead);
             }
         }
     }
@@ -657,7 +661,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 
 void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 {
-    context.nIconSize = __IconSize;
     if (context.pMediaSet)
     {
         _genMLItemContext(context,*context.pMediaSet);
@@ -682,8 +685,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
 
         //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
         context.nIconSize *= 1.15f;
-
-        context.uIconRound = 0;
 
         cauto uRow = context->uRow;
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
@@ -719,7 +720,6 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         if (E_TrackType::TT_Single != eTrackType)
         {
             context.pmIcon = E_TrackType::TT_HDWhole == eTrackType ? &m_pmHDDisk : &m_pmLLDisk;
-            context.uIconRound = 0;
 
             cauto cue = pSnapshotMediaRes->cueFile();
             if (cue)

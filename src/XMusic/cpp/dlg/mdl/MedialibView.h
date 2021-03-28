@@ -45,6 +45,8 @@ private:
     cqpm m_pmHDDisk;
     cqpm m_pmLLDisk;
 
+    QPixmap m_pmCD;
+
 #if __android || __windows
     QPixmap m_pmOuterDir;
 #endif

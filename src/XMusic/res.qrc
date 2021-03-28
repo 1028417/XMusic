@@ -57,5 +57,6 @@
         <file>img/medialib/kr.png</file>
         <file>img/loading.gif</file>
         <file>img/medialib/diskdir.png</file>
+        <file>img/medialib/compactDisc.png</file>
     </qresource>
 </RCC>
