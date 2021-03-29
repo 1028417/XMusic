@@ -433,7 +433,13 @@ void COlBkgDir::preInit()
         }
 
         cauto catDir = strOlBkgDir + olBkg.catName + __wcPathSeparator;
-        if (!fsutil::existDir(catDir))
+        bool bRet = fsutil::findSubFile(catDir, [&](tagFileInfo& fi) {
+            if (!fnCheck(fi))
+            {
+                fsutil::removeFile(catDir + fi.strName);
+            }
+        });
+        if (!bRet)
         {
             (void)fsutil::createDir(catDir);
 
@@ -450,15 +456,6 @@ void COlBkgDir::preInit()
                 }
             });
 #endif
-        }
-        else
-        {
-            fsutil::findSubFile(catDir, [&](tagFileInfo& fi) {
-                if (!fnCheck(fi))
-                {
-                    fsutil::removeFile(catDir + fi.strName);
-                }
-            });
         }
     }
 
