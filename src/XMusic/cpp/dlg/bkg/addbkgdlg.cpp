@@ -20,13 +20,10 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
 {
 }
 
-void CAddBkgDlg::preInit()
-{
-    m_lv.preInit();
-}
-
 void CAddBkgDlg::init()
 {
+    m_lv.init();
+
     ui.setupUi(this);
 
     auto movie = new QMovie(this);

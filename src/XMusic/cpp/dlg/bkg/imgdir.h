@@ -187,7 +187,7 @@ public:
         return m_bDownloading;
     }
 
-    void preInit();
+    void init();
 
     void initOlBkg(class CAddBkgView& lv);
 

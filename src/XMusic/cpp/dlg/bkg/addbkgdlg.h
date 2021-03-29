@@ -47,11 +47,11 @@ public:
         return m_thrScan;
     }
 
-    void preInit()
+    void init()
     {
         m_pmOlBkg.load(":/img/olBkg.png");
 
-        m_olBkgDir.preInit();
+        m_olBkgDir.init();
     }
 
     void scanDir(cwstr strDir);
@@ -111,8 +111,6 @@ public:
     {
         return m_uRowCount;
     }
-
-    void preInit();
 
     void init();
 
