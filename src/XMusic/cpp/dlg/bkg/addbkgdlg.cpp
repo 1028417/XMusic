@@ -22,8 +22,6 @@ CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
 
 void CAddBkgDlg::init()
 {
-    m_lv.init();
-
     ui.setupUi(this);
 
     auto movie = new QMovie(this);
@@ -262,6 +260,7 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.signal())
 {
+    m_pmOlBkg.load(__png(olBkg.png));
 }
 
 size_t CAddBkgView::getColCount() const
@@ -393,17 +392,7 @@ void CAddBkgView::_onItemClick(tagLVItem& lvItem, const QMouseEvent&)
     }
     else
     {
-        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir){
-            if (0 == lvItem.uItem)
-            {
-                static bool s_bFlag = false;
-                if (!s_bFlag)
-                {
-                    s_bFlag = true;
-                    m_olBkgDir.initOlBkg(*this);
-                }
-            }
-
+        m_paImgDirs.get(lvItem.uItem, [&](CImgDir& imgDir) {
             _showImgDir(imgDir);
         });
     }
@@ -544,10 +533,14 @@ void CAddBkgView::scanDir(cwstr strDir)
     m_paImgDirs.clear();
     m_paImgDirs.add(m_olBkgDir);
 
-    static UINT s_uSequence = 0;
     m_rootImgDir.setDir(strDir);
+
+    static UINT s_uSequence = 0;
     m_thrScan.start([&](signal_t bRunSignal){
         auto uSequence = ++s_uSequence;
+
+        m_olBkgDir.initOlBkg(*this);
+
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_pImgDir || !m_addbkgDlg.isVisible())
             {

@@ -47,13 +47,6 @@ public:
         return m_thrScan;
     }
 
-    void init()
-    {
-        m_pmOlBkg.load(":/img/olBkg.png");
-
-        m_olBkgDir.init();
-    }
-
     void scanDir(cwstr strDir);
 
     UINT displayMode() const

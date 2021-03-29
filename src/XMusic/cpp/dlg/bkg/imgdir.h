@@ -187,8 +187,6 @@ public:
         return m_bDownloading;
     }
 
-    void init();
-
     void initOlBkg(class CAddBkgView& lv);
 
     size_t bkgMaxCount(bool bHLayout) const

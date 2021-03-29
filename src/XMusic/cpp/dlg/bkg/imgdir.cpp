@@ -408,8 +408,15 @@ bool COlBkgDir::_genIcon()
 
 #include "../../../Common2.1/3rd/curl/include/curl/curl.h"
 
-void COlBkgDir::init()
+void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
+    static bool s_bFlag = false;
+    if (s_bFlag)
+    {
+        return;
+    }
+    s_bFlag = true;
+
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
     (void)fsutil::createDir(strOlBkgDir);
@@ -421,6 +428,7 @@ void COlBkgDir::init()
         return itr != mapFile.end() && itr->second == fi.uFileSize;
     };
 
+    list<COlBkgDir*> lstDir;
     set<wstring> setCatName;
     for (cauto olBkg : __app.getModel().olBkg())
     {
@@ -457,21 +465,7 @@ void COlBkgDir::init()
             });
 #endif
         }
-    }
 
-    fsutil::findSubDir(strOlBkgDir, [&](tagFileInfo& fi) {
-        if (setCatName.find(strutil::lowerCase_r(fi.strName)) == setCatName.end())
-        {
-            (void)fsutil::removeDirTree(strOlBkgDir + fi.strName);
-        }
-    });
-}
-
-void COlBkgDir::initOlBkg(CAddBkgView& lv)
-{
-    list<COlBkgDir*> lstDir;
-    for (cauto olBkg : __app.getModel().olBkg())
-    {
         tagFileInfo fileInfo;
         fileInfo.pParent = this;
         fileInfo.strName = olBkg.catName;
@@ -486,6 +480,13 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
             lstDir.push_back(pDir);
         }
     }
+
+    fsutil::findSubDir(strOlBkgDir, [&](tagFileInfo& fi) {
+        if (setCatName.find(strutil::lowerCase_r(fi.strName)) == setCatName.end())
+        {
+            (void)fsutil::removeDirTree(strOlBkgDir + fi.strName);
+        }
+    });
 
     if (lstDir.empty())
     {
