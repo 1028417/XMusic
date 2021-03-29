@@ -12,6 +12,16 @@
 #define __XMusicDirName L"XMusic"
 #define __LocalDirName  L" 本机"
 
+#define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
+#define __catHires  L"高解析音频  24~32Bit/96~192KHz\nHigh Resolution Audio"
+#define __catMQS    L"录音棚级别无损  24Bit/96KHz\nMastering Quality Sound"
+#define __catDTS    L"5.1声道  DTSDigitalSurround"
+#define __catDisc   L"整轨"
+#define __catCD     L"CD分轨  标准1411Kbps码率"
+#define __catSQ     L"无损"
+#define __catSQ24   L"24位无损  24Bit/48KHz"
+#define __catPure   L"纯音乐"
+
 inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
 {
     auto& strTitle = m_mapDisplayName[pMedia];
@@ -53,6 +63,18 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     , m_SingerLib(__app.getSingerMgr())
     , m_PlaylistLib(__app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
+    , m_lpCatItem {
+        {__mdlPng(dsd), __catDSD},
+        {__mdlPng(hires), __catHires},
+        {__mdlPng(mqs), __catMQS},
+        {__mdlPng(dts), __catDTS},
+        {__mdlPng(diskdir), __catDisc},
+        {__mdlPng(compactDisc), __catCD},
+        {__mdlPng(sq), __catSQ},
+        {__mdlPng(sq), __catSQ24},
+        {__mdlPng(pure), __catPure},
+        {__mdlPng(ssdir), L""}
+    }
     , m_pmHDDisk(__app.m_pmHDDisk)
     , m_pmSQDisk(__app.m_pmSQDisk)
 {
@@ -612,30 +634,30 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         bool bHLayout = m_medialibDlg.isHLayout();
 
         //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
-        context.nIconSize *= 1.15f;
+#define __szIcon __size100 * 1.15
 
         cauto uRow = context->uRow;
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
         {
-            context.setIcon(m_pmSingerGroup);
+            context.setIcon(m_pmSingerGroup, __szIcon);
             context.strText = __XSingerName;
             context.pMediaSet = &m_SingerLib;
         }
         else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
         {
-            context.setIcon(m_pmPlaylistSet);
+            context.setIcon(m_pmPlaylistSet, __szIcon);
             context.strText = __XPlaylistName;
             context.pMediaSet = &m_PlaylistLib;
         }
         else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
         {
-            context.setIcon(m_pmXmusicDir);
+            context.setIcon(m_pmXmusicDir, __szIcon);
             context.strText = __XMusicDirName;
             context.pDir = &__medialib;
         }
         else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
         {
-            context.setIcon(m_pmDir);
+            context.setIcon(m_pmDir, __szIcon);
             context.strText << ' ' << __LocalDirName;
             context.pDir = &m_OuterDir;
         }
@@ -815,14 +837,6 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }
 
-    if (mlContext.pMedia)
-    {
-        if (mlContext.pMedia->type() == E_MediaType::MT_AlbumItem)
-        {
-            rc.setLeft(rc.left() + __size10);
-        }
-    }
-
     if (!mlContext.strRemark->empty())
     {
         CPainterFontGuard fontGuard(painter, 0.81, QFont::Weight::ExtraLight);
@@ -832,11 +846,19 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     }
 
     QString qsMediaQuality;
-    auto pMedia = mlContext.pMedia;// ? (IMedia*)mlContext.pMedia : (CMediaRes*)mlContext.pFile;
-    if (pMedia)
+    if (mlContext.pMedia)
     {
-        qsMediaQuality = mediaQualityString(pMedia->quality());
-        rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
+        auto eType = mlContext.pMedia->type();
+        if (E_MediaType::MT_AlbumItem == eType)
+        {
+            rc.setLeft(rc.left() + __size10);
+        }
+
+        if (E_MediaType::MT_MediaRes == eType)
+        {
+            qsMediaQuality = mediaQualityString(mlContext.pMedia->quality());
+            rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
+        }
     }
 
     //uTextAlpha = 255;

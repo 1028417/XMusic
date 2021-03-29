@@ -27,44 +27,26 @@ struct tagMLItemContext : public tagLVItemContext
 
     tagMLItemContext(tagLVItem& lvItem, IMedia& media)
         : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
+        , pMedia(&media)
     {
-        /*if (media.type() == E_MediaType::MT_MediaRes)
-        {
-            auto& MediaRes = (CMediaRes&)media;
-            if (MediaRes.isDir())
-            {
-                pDir = &MediaRes;
-                strText = MediaRes.fileName();
-            }
-            else
-            {
-                pFile = &MediaRes;
-                //strText = MediaRes.GetTitle();
-            }
-        }
-        else*/
-        {
-            pMedia = (CMedia*)&media;
-            //strText = media.GetTitle();
-        }
     }
 
-    tagMLItemContext(tagLVItem& lvItem, CMediaSet& MediaSet) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, CMediaSet& MediaSet)
+        : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pMediaSet(&MediaSet)
     {
         strText = MediaSet.name();
     }
 
-    tagMLItemContext(tagLVItem& lvItem, CPath& dir) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, CPath& dir)
+        : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pDir(&dir)
     {
         strText = dir.fileName();
     }
 
-    tagMLItemContext(tagLVItem& lvItem, XFile& file) :
-        tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
+    tagMLItemContext(tagLVItem& lvItem, XFile& file)
+        : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pFile(&file)
     {
         //strText = file.fileName();

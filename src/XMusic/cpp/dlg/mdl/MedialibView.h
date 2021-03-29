@@ -7,16 +7,6 @@
 
 #define __playIconOffset __size10
 
-#define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
-#define __catHires  L"高解析音频 24~32Bit/96~192KHz\nHigh Resolution Audio"
-#define __catMQS    L"录音棚级别无损 24Bit/96KHz\nMastering Quality Sound"
-#define __catDTS    L"5.1声道 DTSDigitalSurround"
-#define __catDisc   L"DISC整轨"
-#define __catCD     L"CD分轨 标准1411Kbps码率"
-#define __catSQ     L"无损"
-#define __catSQ24   L"24位无损 24Bit/48KHz"
-#define __catPure   L"纯音乐"
-
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
@@ -55,18 +45,7 @@ private:
         QPixmap pmIcon;
         wstring strText;
     };
-    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1] {
-        {__mdlPng(dsd), __catDSD},
-        {__mdlPng(hires), __catHires},
-        {__mdlPng(mqs), __catMQS},
-        {__mdlPng(dts), __catDTS},
-        {__mdlPng(diskdir), __catDisc},
-        {__mdlPng(compactDisc), __catCD},
-        {__mdlPng(sq), __catSQ},
-        {__mdlPng(sq), __catSQ24},
-        {__mdlPng(pure), __catPure},
-        {__mdlPng(ssdir), L""}
-    };
+    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
 
     QPixmap m_pmSSFile;
 
