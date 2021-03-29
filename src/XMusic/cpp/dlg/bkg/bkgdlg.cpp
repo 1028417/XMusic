@@ -91,8 +91,6 @@ void CBkgDlg::preInit()
     }, [&]{
         _preinitBkg(false);
     });
-
-    m_addbkgDlg.preInit();
 }
 
 void CBkgDlg::_preinitBkg(bool bHLayout)
