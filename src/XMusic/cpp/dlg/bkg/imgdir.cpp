@@ -408,7 +408,7 @@ bool COlBkgDir::_genIcon()
 
 #include "../../../Common2.1/3rd/curl/include/curl/curl.h"
 
-void COlBkgDir::initIn()
+void COlBkgDir::init()
 {
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
