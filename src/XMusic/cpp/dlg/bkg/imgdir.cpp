@@ -371,7 +371,7 @@ COlBkgDir::COlBkgDir(const tagFileInfo& fileInfo, const tagOlBkgList& olBkgList)
     , m_olBkgList(olBkgList)
 {
     cauto strDir = this->path() + __wcPathSeparator;
-    fsutil::createDir(strDir);
+    //fsutil::createDir(strDir);
 
     for (cauto olBkg : m_olBkgList.lstBkg)
     {
@@ -412,42 +412,58 @@ void COlBkgDir::preInit()
 {
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
-
+    (void)fsutil::createDir(strOlBkgDir);
     strOlBkgDir.push_back(__wcPathSeparator);
-    if (!fsutil::existDir(strOlBkgDir))
-    {
-        (void)fsutil::createDir(strOlBkgDir);
 
-#if __android // 安卓背景图片迁移
-        cauto strOrgDir = __app.getModel().androidOrgPath(__olBkgDir) + L'/';
-        fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
-            fsutil::copyFile(strOrgDir + fi.strName, strOlBkgDir + fi.strName);
-        });
-#endif
-    }
+    map<wstring, uint64_t> mapFile;
+    auto fnCheck = [&](const tagFileInfo& fi) {
+        auto itr = mapFile.find(strutil::lowerCase_r(fi.strName));
+        return itr != mapFile.end() && itr->second == fi.uFileSize;
+    };
 
-    set<wstring> setDir;
+    set<wstring> setCatName;
     for (cauto olBkg : __app.getModel().olBkg())
     {
-        setDir.insert(strutil::lowerCase_r(olBkg.catName));
+        setCatName.insert(strutil::lowerCase_r(olBkg.catName));
 
-        map<wstring, uint64_t> mapFile;
+        mapFile.clear();
         for (cauto olBkg : olBkg.lstBkg)
         {
             mapFile[strutil::lowerCase_r(olBkg.strFile)] = olBkg.uFileSize;
         }
-        auto catDir = strOlBkgDir + olBkg.catName + __wcPathSeparator;
-        fsutil::findSubFile(catDir, [&](tagFileInfo& fi) {
-            auto itr = mapFile.find(strutil::lowerCase_r(fi.strName));
-            if (itr == mapFile.end() || itr->second != fi.uFileSize)
-            {
-                fsutil::removeFile(catDir + fi.strName);
-            }
-        });
+
+        cauto catDir = strOlBkgDir + olBkg.catName + __wcPathSeparator;
+        if (!fsutil::existDir(catDir))
+        {
+            (void)fsutil::createDir(catDir);
+
+#if __android // 安卓背景图片迁移
+            cauto strOrgDir = __app.getModel().androidOrgPath(__olBkgDir) + olBkg.catName + L'/';
+            fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi) {
+                if (!fnCheck(fi))
+                {
+                    fsutil::removeFile(strOrgDir + fi.strName);
+                }
+                else
+                {
+                    fsutil::moveFile(strOrgDir + fi.strName, catDir + fi.strName);
+                }
+            });
+#endif
+        }
+        else
+        {
+            fsutil::findSubFile(catDir, [&](tagFileInfo& fi) {
+                if (!fnCheck(fi))
+                {
+                    fsutil::removeFile(catDir + fi.strName);
+                }
+            });
+        }
     }
 
     fsutil::findSubDir(strOlBkgDir, [&](tagFileInfo& fi) {
-        if (setDir.find(strutil::lowerCase_r(fi.strName)) == setDir.end())
+        if (setCatName.find(strutil::lowerCase_r(fi.strName)) == setCatName.end())
         {
             (void)fsutil::removeDirTree(strOlBkgDir + fi.strName);
         }
