@@ -854,7 +854,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             rc.setLeft(rc.left() + __size10);
         }
 
-        if (E_MediaType::MT_MediaRes == eType)
+        if (E_MediaType::MT_MediaRes != eType)
         {
             qsMediaQuality = mediaQualityString(mlContext.pMedia->quality());
             rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
