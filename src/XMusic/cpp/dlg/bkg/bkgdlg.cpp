@@ -99,14 +99,12 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
     strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
-
     if (!fsutil::existDir(strBkgDir))
     {
         (void)fsutil::createDir(strBkgDir);
 
-#if __android
-        WString strOrgDir;
-        strOrgDir << __pkgDir << (bHLayout?L"/hbkg/":L"/vbkg/");
+#if __android // 安卓背景图片迁移
+        cauto strOrgDir = __app.getModel().androidOrgPath(bHLayout?L"hbkg/":L"vbkg/");
         fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
             fsutil::copyFile(strOrgDir + fi.strName, strBkgDir + fi.strName);
         });

@@ -12,7 +12,8 @@
 #include "XMediaLib.h"
 
 #define __pkgName L"com.musicrossoft.xmusic"
-#define __pkgDir L"/data/data/" __pkgName
+
+#define __androidOrgPath L"/data/data/" __pkgName
 
 struct tagAddPlayItem
 {
@@ -384,6 +385,10 @@ public:
     virtual bool clearData() = 0;
 
 #else
+#if __android
+    virtual wstring androidOrgPath(cwstr strSubPath) = 0;
+#endif
+
     virtual E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
     virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
@@ -503,6 +508,10 @@ public:
 	bool clearData() override;
 
 #else
+#if __android
+    wstring androidOrgPath(cwstr strSubPath) override;
+#endif
+
 	E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
     const list<CUpgradeUrl>& upgradeUrl() const override

@@ -49,7 +49,8 @@ void COptionMgr::init()
 #if __android
     if (!fsutil::existFile(strFile))
     {
-        fsutil::copyFile(__WS2Q(__pkgDir) + __confFile, QString::fromStdString(strFile));
+        // 安卓配置迁移
+        fsutil::copyFile(__androidOrgPath __confFile, strutil::fromAsc(strFile));
     }
 #endif
 

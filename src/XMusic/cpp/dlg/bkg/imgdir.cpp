@@ -411,10 +411,20 @@ bool COlBkgDir::_genIcon()
 void COlBkgDir::preInit()
 {
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
-    fsutil::createDir(strOlBkgDir);
     this->setDir(strOlBkgDir);
 
     strOlBkgDir.push_back(__wcPathSeparator);
+    if (!fsutil::existDir(strOlBkgDir))
+    {
+        (void)fsutil::createDir(strOlBkgDir);
+
+#if __android // 安卓背景图片迁移
+        cauto strOrgDir = __app.getModel().androidOrgPath(__olBkgDir) + L'/';
+        fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
+            fsutil::copyFile(strOrgDir + fi.strName, strOlBkgDir + fi.strName);
+        });
+#endif
+    }
 
     set<wstring> setDir;
     for (cauto olBkg : __app.getModel().olBkg())
