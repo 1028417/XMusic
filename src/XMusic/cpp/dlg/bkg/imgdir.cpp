@@ -410,13 +410,6 @@ bool COlBkgDir::_genIcon()
 
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
-    static bool s_bFlag = false;
-    if (s_bFlag)
-    {
-        return;
-    }
-    s_bFlag = true;
-
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
     (void)fsutil::createDir(strOlBkgDir);
@@ -479,6 +472,13 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
         {
             lstDir.push_back(pDir);
         }
+    }
+
+    if (m_paSubDir)
+    {
+        __app.sync([&]{
+            lv.update();
+        });
     }
 
     fsutil::findSubDir(strOlBkgDir, [&](tagFileInfo& fi) {

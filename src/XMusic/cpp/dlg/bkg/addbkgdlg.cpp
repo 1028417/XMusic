@@ -260,7 +260,7 @@ CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     , m_thrScan(__app.thread())
     , m_rootImgDir(m_thrScan.signal())
 {
-    m_pmOlBkg.load(__png(olBkg.png));
+    m_pmOlBkg.load(__png(olBkg));
 }
 
 size_t CAddBkgView::getColCount() const
@@ -537,9 +537,12 @@ void CAddBkgView::scanDir(cwstr strDir)
 
     static UINT s_uSequence = 0;
     m_thrScan.start([&](signal_t bRunSignal){
-        auto uSequence = ++s_uSequence;
+        if (0 == s_uSequence)
+        {
+            m_olBkgDir.initOlBkg(*this);
+        }
 
-        m_olBkgDir.initOlBkg(*this);
+        auto uSequence = ++s_uSequence;
 
         CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (m_pImgDir || !m_addbkgDlg.isVisible())
