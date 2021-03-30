@@ -236,13 +236,6 @@ void CAppBase::quit()
     });
 }
 
-void CAppBase::sync(UINT uDelayTime, cfn_void cb)
-{
-    sync([=]{
-        async(uDelayTime, cb);
-    });
-}
-
 static char g_lpApp[sizeof(CApp)];
 CApp& __app(*(CApp*)g_lpApp);
 

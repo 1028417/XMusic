@@ -73,16 +73,6 @@ public:
     int exec();
     void quit();
 
-    inline void syncex(cfn_void cb)
-    {
-        if (!g_bRunSignal)
-        {
-            return;
-        }
-
-        emit signal_syncex(cb);
-    }
-
     inline void sync(cfn_void cb)
     {
         if (!g_bRunSignal)
@@ -91,9 +81,46 @@ public:
         }
 
         emit signal_sync(cb);
+    }    
+    void sync(cfn_void cb, const UINT *pSeq)
+    {
+        auto seq = *pSeq;
+        sync([=]{
+            if (seq != *pSeq)
+            {
+                return;
+            }
+            cb();
+        });
     }
 
-    void sync(UINT uDelayTime, cfn_void cb);
+    inline void sync(UINT uDelayTime, cfn_void cb)
+    {
+        sync([=]{
+            async(uDelayTime, cb);
+        });
+    }
+    void sync(UINT uDelayTime, cfn_void cb, const UINT *pSeq)
+    {
+        auto seq = *pSeq;
+        sync(uDelayTime, [=]{
+            if (seq != *pSeq)
+            {
+                return;
+            }
+            cb();
+        });
+    }
+
+    void syncex(cfn_void cb) //阻塞式的，使用时要避免死锁
+    {
+        if (!g_bRunSignal)
+        {
+            return;
+        }
+
+        emit signal_syncex(cb);
+    }
 
     XThread& thread()
     {

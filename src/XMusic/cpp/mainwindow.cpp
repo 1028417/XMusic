@@ -722,7 +722,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
     PlayingInfo.qsTitle = __WS2Q(strTitle);
 
-    __app.sync([=]{
+    __app.sync([&, PlayingInfo]{
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
@@ -754,39 +754,29 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     });
 }
 
+extern UINT g_uPlaySeq;
+
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
     __app.sync([=]{
         ui.progressbar->set(0, 0, 0, 0);
+        ui.labelDuration->setText(m_PlayingInfo.qsDuration); //防止还显示正在缓冲
+    });
 
-        ui.labelDuration->setText(m_PlayingInfo.qsDuration);
-
-        extern UINT g_uPlaySeq;
-        if (bPlayFinish)
+    // 绝不可以sync或async，安卓切后台不响应
+    if (bPlayFinish)
+    {
+        __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+    }
+    else if (!bOpenSuccess)
+    {
+        auto uPlaySeq = g_uPlaySeq;
+        __usleep(2000);
+        if (uPlaySeq == g_uPlaySeq)
         {
             __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
-
-            /*auto uPlaySeq = g_uPlaySeq;
-            async(1000, [=]{
-                if (uPlaySeq == g_uPlaySeq)
-                {
-                    _updatePlayPauseButton(false);
-                }
-            });*/
         }
-        else if (!bOpenSuccess)
-        {
-            //_updatePlayPauseButton(false);
-
-            auto uPlaySeq = g_uPlaySeq;
-            async(2000, [=]{
-                if (uPlaySeq == g_uPlaySeq)
-                {
-                    __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
-                }
-            });
-        }
-    });
+    }
 }
 
 void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& singerImg)

@@ -335,7 +335,17 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         return false;
     }
 
-    __app.sync([&, bHLayout, uZoomoutAll, pm]()mutable{
+#if __android
+#define __syncImg __app.syncex //规避安卓切后台问题，理论上会出现死锁。或改为vecImg直接add
+#else
+#define __syncImg __app.sync //非阻塞，cb必须在100毫秒内
+#endif
+    __syncImg([&, bHLayout, uZoomoutAll, pm]()mutable{
+        if (!thread)
+        {
+            return;
+        }
+
         if (lv.imgDir() != this)
         {
             return;
