@@ -722,7 +722,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
     PlayingInfo.qsTitle = __WS2Q(strTitle);
 
-    __app.sync([&, PlayingInfo]{
+    __app.sync([=]{
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
@@ -754,8 +754,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     });
 }
 
-extern UINT g_uPlaySeq;
-
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
     __app.sync([=]{
@@ -770,6 +768,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
     }
     else if (!bOpenSuccess)
     {
+        extern UINT g_uPlaySeq;
         auto uPlaySeq = g_uPlaySeq;
         __usleep(2000);
         if (uPlaySeq == g_uPlaySeq)

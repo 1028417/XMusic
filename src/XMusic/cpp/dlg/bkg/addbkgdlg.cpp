@@ -477,9 +477,6 @@ bool CAddBkgView::handleReturn(bool bClose)
             }
         }
 
-        m_eScrollBar = E_LVScrollBar::LVSB_Left;
-        scrollToItem(_scrollRecord(NULL));
-
         if (m_pImgDir->parent() == &m_olBkgDir)
         {
             m_pImgDir = &m_olBkgDir;
@@ -488,6 +485,9 @@ bool CAddBkgView::handleReturn(bool bClose)
         {
             m_pImgDir = NULL;
         }
+
+        m_eScrollBar = E_LVScrollBar::LVSB_Left;
+        scrollToItem(_scrollRecord(NULL));
     }
 
     if (bClose)

@@ -341,11 +341,6 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
 #define __syncImg __app.sync //非阻塞，cb必须在100毫秒内
 #endif
     __syncImg([&, bHLayout, uZoomoutAll, pm]()mutable{
-        if (!thread)
-        {
-            return;
-        }
-
         if (lv.imgDir() != this)
         {
             return;
