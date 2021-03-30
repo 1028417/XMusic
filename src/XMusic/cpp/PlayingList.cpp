@@ -93,7 +93,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
     }
     UINT uTextAlpha = 255*fAlpha;
-    UINT uShadowAlpha = __ShadowAlpha* pow(fAlpha,2.5);
+    UINT uShadowAlpha = __ShadowAlpha * pow(fAlpha,2.5);
 
     bool bPlayingItem = lvItem.uItem == m_uPlayingItem;
     if (bPlayingItem)

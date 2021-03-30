@@ -123,7 +123,7 @@ public:
 
     const TD_Img* bkgImg(bool bHLayout, UINT uIdx)
     {
-        const TD_Img* pImg = NULL;
+        const TD_Img *pImg = NULL;
         _vecImg(bHLayout).get(uIdx, [&](const TD_Img& img){
             pImg = &img;
         });

@@ -132,7 +132,7 @@ struct tagSingerAttachDir
     wstring strAliasName;
 
 #if !__winvc
-    class CMediaSet* pMediaSet = NULL;
+    CMediaSet *pSnapshotMediaDir = NULL;
 #endif
 };
 
@@ -227,9 +227,9 @@ private:
 
         for (cauto attachDir : m_lstAttachDir)
         {
-            if (attachDir.pMediaSet)
+            if (attachDir.pSnapshotMediaDir)
             {
-                attachDir.pMediaSet->GetAllMedias(lstMedias);
+                attachDir.pSnapshotMediaDir->GetAllMedias(lstMedias);
             }
         }
     }

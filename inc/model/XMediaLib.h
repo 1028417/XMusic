@@ -145,24 +145,13 @@ public:
 
     void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir);
 
-    UINT singerID() const
+    CSinger* singer()
     {
-        auto uSingerID = GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
-        if (0 == uSingerID && m_pParent)
+        if (m_pParent && E_MediaSetType::MST_Singer == m_pParent->m_eType)
         {
-            return ((CSnapshotMediaDir*)m_pParent)->singerID();
+            return (CSinger*)m_pParent;
         }
-        return uSingerID;
-    }
-
-    cwstr singerName() const
-    {
-        cauto strSingerName = GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-        if (strSingerName.empty() && m_pParent)
-        {
-            return ((CSnapshotMediaDir*)m_pParent)->singerName();
-        }
-        return strSingerName;
+        return NULL;
     }
 
     CMediaSet* mediaSet() const override

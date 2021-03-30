@@ -625,7 +625,7 @@ public:
         return writex(&data, sizeof(data));
     }
     template <typename T>
-    size_t write(const T* pData, size_t count)
+    size_t write(const T *pData, size_t count)
     {
         return write(pData, sizeof(T), count);
     }

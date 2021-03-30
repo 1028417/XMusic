@@ -99,9 +99,9 @@ public:
     CBrush& genSingerHead(UINT uSingerID, cwstr strSingerName);
 
 private:
-    void _genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName);
-    void _genDisplayTitle(const IMedia* pMedia);
-    void _genDisplayTitle(const CAlbumItem& AlbumItem, cwstr strSingerName);
+    void _genDisplayTitle(const IMedia *pMedia, const wstring *pstrSingerName);
+    void _genDisplayTitle(const IMedia *pMedia);
+    void _genSingerMediaTitle(const IMedia *pMedia, cwstr strSingerName);
 
     inline cqpm _catIcon(E_SSCatType catType) const
      {

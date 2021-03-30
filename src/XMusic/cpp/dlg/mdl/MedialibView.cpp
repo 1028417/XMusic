@@ -22,7 +22,7 @@
 #define __catSQ24   L"24位无损  24Bit/48KHz"
 #define __catPure   L"纯音乐"
 
-inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia, const wstring *pstrSingerName)
+inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia, const wstring *pstrSingerName)
 {
     auto& strTitle = m_mapDisplayName[pMedia];
     if (strTitle.empty())
@@ -32,7 +32,7 @@ inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia, const wstring 
     }
 }
 
-inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia)
+inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia)
 {
     auto& strTitle = m_mapDisplayName[pMedia];
     if (strTitle.empty())
@@ -42,12 +42,12 @@ inline void CMedialibView::_genDisplayTitle(const IMedia* pMedia)
     }
 }
 
-inline void CMedialibView::_genDisplayTitle(const CAlbumItem& AlbumItem, cwstr strSingerName)
+inline void CMedialibView::_genSingerMediaTitle(const IMedia *pMedia, cwstr strSingerName)
 {
-    auto& strTitle = m_mapDisplayName[&AlbumItem];
+    auto& strTitle = m_mapDisplayName[pMedia];
     if (strTitle.empty())
     {
-        strTitle = AlbumItem.GetTitle();
+        strTitle = pMedia->GetTitle();
         CFileTitle::genDisplayTitle(strTitle, &strSingerName);
         auto len = strSingerName.size()+3;
         if (strTitle.substr(0, len) == strSingerName + L" - ")
@@ -189,27 +189,19 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         cauto strSingerName = ((CAlbum&)MediaSet).GetSinger().m_strName;
         for (cauto AlbumItem : ((CAlbum&)MediaSet).albumItems())
         {
-            _genDisplayTitle(AlbumItem, strSingerName);
+            _genSingerMediaTitle(&AlbumItem, strSingerName);
         }
         return;
     }
 
     if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
     {
-        auto& snapshotMediaDir = (CSnapshotMediaDir&)MediaSet;
-        cauto strSingerName = snapshotMediaDir.singerName();
-        if (strSingerName.empty())
+        auto pSinger = currentSinger();
+        if (pSinger)
         {
-            for (auto pSubFile : snapshotMediaDir.files())
+            for (auto pSubFile : ((CSnapshotMediaDir&)MediaSet).files())
             {
-                _genDisplayTitle((CMediaRes*)pSubFile);
-            }
-        }
-        else
-        {
-            for (auto pSubFile : snapshotMediaDir.files())
-            {
-                _genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
+                _genSingerMediaTitle((CMediaRes*)pSubFile, pSinger->m_strName);
             }
         }
         return;
@@ -294,19 +286,19 @@ void CMedialibView::_onShowDir(CPath& dir)
             }
 
             //文件标题
-            cauto strSingerName = pSnapshotMediaDir->singerName();
-            if (strSingerName.empty())
+            auto pSinger = pSnapshotMediaDir->singer();
+            if (pSinger)
             {
                 for (auto pSubFile : dir.files())
                 {
-                    _genDisplayTitle((CMediaRes*)pSubFile);
+                    _genDisplayTitle((CMediaRes*)pSubFile, &pSinger->m_strName);
                 }
             }
             else
             {
                 for (auto pSubFile : dir.files())
                 {
-                    _genDisplayTitle((CMediaRes*)pSubFile, &strSingerName);
+                    _genDisplayTitle((CMediaRes*)pSubFile);
                 }
             }
 
@@ -566,11 +558,10 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
         }
         else
         {
-            auto uSingerID = pSnapshotMediaDir->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerID();
-            if (uSingerID > 0)
+            auto pSinger = pSnapshotMediaDir->singer();
+            if (pSinger)
             {
-                cauto strSingerName = pSnapshotMediaDir->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer); //pSnapshotMediaDir->singerName();
-                auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
+                auto& brSingerHead = genSingerHead(pSinger->m_uID, pSinger->m_strName);
                 context.setSingerIcon(brSingerHead);
             }
         }

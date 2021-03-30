@@ -184,12 +184,12 @@ protected:
 
     virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
 
-    float _scrollRecord(void* p)
+    float _scrollRecord(void *p)
     {
         return m_mapScrollRecord[p];
     }
 
-    void _saveScrollRecord(void* p)
+    void _saveScrollRecord(void *p)
     {
         m_mapScrollRecord[p] = m_fTopItem;
 
