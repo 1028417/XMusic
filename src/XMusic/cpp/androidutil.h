@@ -34,6 +34,11 @@ extern function<void(int,int,int)> g_fnAccelerometerNotify;
 
 bool requestAndroidPermission(cqstr qsPermission);
 
+void fullScreen(bool bSet);
+
+void showTranslucentStatusBar(bool bShow);
+void showTransparentStatusBar(bool bShow);
+
 bool checkMobileConnected();
 
 void vibrate();

@@ -175,6 +175,63 @@ jfloat      F
 jdouble     D
 jobject     L*/
 
+void fullScreen(bool bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
+{
+    QtAndroid::runOnAndroidThread([=]() {
+        QtAndroid::androidActivity().callMethod<void>("fullScreen", "(Z)V", jboolean(bSet));
+    });
+}
+
+void showTranslucentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示半透明状态栏，实际上只需调用一次true
+{
+    QtAndroid::runOnAndroidThread([=]() {
+        QtAndroid::androidActivity().callMethod<void>("showStatusBar", "(Z)V", jboolean(bShow));
+    });
+}
+
+void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示透明状态栏
+{
+    QtAndroid::runOnAndroidThread([=]() {
+        QtAndroid::androidActivity().callMethod<void>("showTransparentStatusBar", "(Z)V", jboolean(bShow));
+    });
+}
+
+/*这段只作为QAndroidJniObject语法参考
+#include <QColor>
+void setStatusBar(const QColor& cr, bool bLight)
+{
+    if (QtAndroid::androidSdkVersion() < 23)
+    {
+        return;
+    }
+
+// WindowManager.LayoutParams
+#define FLAG_TRANSLUCENT_STATUS 0x04000000
+#define FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS 0x80000000
+// View
+#define SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 0x00002000
+
+    QtAndroid::runOnAndroidThread([=]() {
+        QAndroidJniObject window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
+        window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
+
+        //window.callMethod<void>("setStatusBarColor", "(I)V", cr.rgba());
+
+        QAndroidJniObject view = window.callObjectMethod("getDecorView", "()Landroid/view/View;");
+        int visibility = view.callMethod<int>("getSystemUiVisibility", "()I");
+        if (bLight)
+        {
+            visibility |= SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+        else
+        {
+            visibility &= ~SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+        view.callMethod<void>("setSystemUiVisibility", "(I)V", visibility);
+    });
+}*/
+
 bool checkMobileConnected()
 {
     return QtAndroid::androidActivity().callMethod<jboolean>("checkMobileConnected");
