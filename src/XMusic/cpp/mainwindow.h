@@ -97,6 +97,10 @@ public:
         return m_bkgDlg;
     }
 
+#if !__android
+    void showBlank();
+#endif
+
     void showLogo();
 
     void preinit();

@@ -13,6 +13,22 @@ CApp::CApp()
 
 int CApp::_exec()
 {
+    m_ctrl.initOption();
+    cauto option = m_ctrl.getOption();
+    g_bFullScreen = option.bFullScreen;
+    if (option.crBkg >= 0)
+    {
+        g_crBkg.setRgb((int)option.crBkg);
+    }
+    if (option.crFore >= 0)
+    {
+        g_crFore.setRgb((int)option.crFore);
+    }
+
+#if !__android
+    m_mainWnd.showBlank();
+#endif
+
     auto nRet = CAppBase::_exec();
 
     m_ctrl.stop();
@@ -49,17 +65,6 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 
 bool CApp::_startup(cwstr strWorkDir)
 {
-    m_ctrl.initOption();
-    cauto option = m_ctrl.getOption();
-    g_bFullScreen = option.bFullScreen;
-    if (option.crBkg >= 0)
-    {
-        g_crBkg.setRgb((int)option.crBkg);
-    }
-    if (option.crFore >= 0)
-    {
-        g_crFore.setRgb((int)option.crFore);
-    }
     __app.sync([&]{
         m_mainWnd.showLogo();
     });
@@ -127,16 +132,6 @@ bool CApp::_startup(cwstr strWorkDir)
 
         m_mainWnd.preinit();
     });
-
-    /*auto timeDiff = 6 - (time(0) - timeBegin);
-    g_logger << "timeDiff: " >> timeDiff;
-    if (timeDiff > 0)
-    {
-        if (!usleepex((UINT)timeDiff*1000))
-        {
-            return;
-        }
-    }*/
 
     sync([=]{
         _show(eUpgradeResult);

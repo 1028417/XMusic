@@ -88,6 +88,14 @@ MainWindow::MainWindow() :
     //qRegisterMetaType<QVariant>("QVariant");
 }
 
+#if !__android
+void MainWindow::showBlank()
+{
+    fixWorkArea(*this);
+    this->setVisible(true); //必须在前面？？不然ole异常？？
+}
+#endif
+
 void MainWindow::_ctor()
 {
     ui.setupUi(this);
@@ -132,13 +140,6 @@ void MainWindow::_ctor()
 
     ui.centralWidget->setVisible(false);
     //m_PlayingList.setVisible(false);
-
-/*#if __android
-    //fullScreen(true);
-    showTransparentStatusBar(true); //改为java构造中调用
-#endif*/
-
-    _relayout();
 }
 
 void MainWindow::_init()
@@ -212,8 +213,12 @@ void MainWindow::showLogo()
 {
     _init();
 
+#if __android
     fixWorkArea(*this);
     this->setVisible(true);
+#else
+    _relayout();
+#endif
 
     float fFontSizeOffset = 1.072f;
 #if __android || __ios

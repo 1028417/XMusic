@@ -93,6 +93,8 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
 
 void CAppBase::_init()
 {
+    m_logger.open("xmusic.log", true);
+
     QScreen *screen = QApplication::primaryScreen();
     cauto sz = screen->size();
     m_screen.nMaxSide = sz.width();
@@ -103,7 +105,6 @@ void CAppBase::_init()
     }
 
     m_screen.fDPI = screen->logicalDotsPerInch();
-
     m_screen.pixelRatio = screen->devicePixelRatio();
 
     g_logger << "screen: " << m_screen.nMaxSide << '*' >> m_screen.nMinSide
@@ -112,40 +113,6 @@ void CAppBase::_init()
 #if __ios
     m_screen.pixelRatio = MAX(m_screen.pixelRatio, 1);
 #endif
-
-    CFont::init(this->font());
-    this->setFont(CFont());
-}
-
-bool CAppBase::_run()
-{
-#if __android
-    if (requestAndroidSDPermission())
-    {
-        m_strWorkDir = __sdcardDir __pkgName;
-    }
-    else
-    {
-        // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-        m_strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
-    }
-#else
-    m_strWorkDir = fsutil::getHomeDir().toStdWString() + __wcPathSeparator + __pkgName;
-#endif
-    if (!fsutil::createDir(m_strWorkDir))
-    {
-        return false;
-    }
-#if __windows
-    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
-#else
-    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
-#endif
-
-    m_logger.open("xmusic.log", true);
-    sync([&](){
-        _init();
-    });
 
     static union {char c[4]; uint32_t l;} endian_test{{'l', '?', '?', 'b'}};
     g_logger << "endian: " >> (char(endian_test.l));
@@ -162,11 +129,9 @@ bool CAppBase::_run()
              << "product_device: " << g_androidInfo.product_device << " product_name: " >> g_androidInfo.product_name
              << "product_board: " << g_androidInfo.product_board << " product_manufacturer: " >> g_androidInfo.product_manufacturer;
 #endif
-
-    return _startup(m_strWorkDir);
 }
 
-int CAppBase::_exec()
+int CAppBase::_exec() // 派生将显示空白页
 {
     //this->thread(
     //std::thread thrStartup(
@@ -186,7 +151,13 @@ int CAppBase::_exec()
 
         return nRet;
     }, [=]{
-        if (!_run())
+        _init(); //如果同步跑会影响空白页屏幕旋转
+        sync([&](){
+            CFont::init(this->font());
+            this->setFont(CFont());
+        });
+
+        if (!_startup(m_strWorkDir)) //派生将显示logo窗口
         {
             sync([&]{
                 this->quit();
@@ -210,6 +181,29 @@ int CAppBase::_exec()
 
 int CAppBase::exec()
 {
+#if __android
+    if (requestAndroidSDPermission())
+    {
+        m_strWorkDir = __sdcardDir __pkgName;
+    }
+    else
+    {
+        // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
+        m_strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
+    }
+#else
+    m_strWorkDir = fsutil::getHomeDir().toStdWString() + __wcPathSeparator + __pkgName;
+#endif
+    if (!fsutil::createDir(m_strWorkDir))
+    {
+        return -1;
+    }
+#if __windows
+    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
+#else
+    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
+#endif
+
     auto nRet = _exec();
 
     m_logger << "exit: " >> nRet;

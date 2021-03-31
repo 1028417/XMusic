@@ -88,9 +88,6 @@ signals:
 
 private:
     void _init();
-
-    bool _run();
-
     virtual bool _startup(cwstr strWorkDir) = 0;
 
 protected:
