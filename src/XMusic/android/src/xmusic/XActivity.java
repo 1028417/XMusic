@@ -26,6 +26,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
+import android.view.View;
+import android.graphics.Color;
+
 public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
     private PowerManager.WakeLock wakeLock = null;
@@ -55,7 +60,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
     {
         super.onCreate(savedInstanceState);
 
-        getWindow().setFlags(0x400, 0x400);
+        //fullScreen(true);
 
         PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
@@ -70,7 +75,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
             }
         }
 
-        /*//API 23以上需要运行时申请权限
+        /*//安卓6(API 23)以上需要运行时申请权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (PackageManager.PERMISSION_GRANTED != checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE"))
@@ -78,6 +83,61 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
                 requestPermissions(new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
             }
         }*/
+    }
+
+    public void fullScreen(boolean bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
+    {
+        Window window = getWindow();
+        if (bSet)
+        {
+            window.addFlags(LayoutParams.FLAG_FULLSCREEN); //window.setFlags(LayoutParams.FLAG_FULLSCREEN, LayoutParams.FLAG_FULLSCREEN);
+        }
+        else
+        {
+            window.clearFlags(LayoutParams.FLAG_FULLSCREEN); //window.setFlags(LayoutParams.FLAG_FULLSCREEN, 0);
+        }
+    }
+
+    public void showTranslucentStatusBar(boolean bShow) //Qt WindowMaximized状态下，显示半透明状态栏，实际上只需调用一次true
+    {
+        Window window = getWindow();
+        if (bShow)
+        {
+            window.addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setFitsSystemWindows(true);
+        }
+        else
+        {
+            window.getDecorView().setFitsSystemWindows(false);
+            window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
+    public void showTransparentStatusBar(boolean bShow) //Qt WindowMaximized状态下，显示透明状态栏
+    {
+        int visibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) // SYSTEM_UI_FLAG_LIGHT_STATUS_BAR状态栏字体设置为深色
+        {
+            visibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        }
+
+        Window window = getWindow();
+        if (!bShow)
+        {
+            window.clearFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            visibility = window.getDecorView().getSystemUiVisibility() & (~visibility);
+            window.getDecorView().setSystemUiVisibility(visibility);
+            return;
+        }
+
+        // 在Qt不设全屏时，jni实现半沉浸全屏
+        //window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        visibility |= window.getDecorView().getSystemUiVisibility();
+        window.getDecorView().setSystemUiVisibility(visibility);
+
+        // 部分机型会有半透明黑色背景，所以用透明色绘制
+        window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
     }
 
     public boolean checkMobileConnected()
@@ -104,7 +164,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 
         File file = new File(filePath);
         Uri uri;
-        // 安卓7需要通过FileProvider共享路径
+        // 安卓7(API 24)需要通过FileProvider共享路径
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
             uri = FileProvider.getUriForFile(this, "com.musicrossoft.xmusic.fileProvider", file);
