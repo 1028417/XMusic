@@ -39,6 +39,8 @@ void fullScreen(bool bSet);
 void showTranslucentStatusBar(bool bShow);
 void showTransparentStatusBar(bool bShow);
 
+void showQuitToast();
+
 bool checkMobileConnected();
 
 void vibrate();

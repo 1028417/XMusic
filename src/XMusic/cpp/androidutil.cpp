@@ -196,6 +196,13 @@ void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示
     });
 }
 
+void showQuitToast()
+{
+    QtAndroid::runOnAndroidThread([=]() {
+        QtAndroid::androidActivity().callMethod<void>("showQuitToast", "()V");
+    });
+}
+
 /*这段只作为QAndroidJniObject语法参考
 #include <QColor>
 void setStatusBar(const QColor& cr, bool bLight)

@@ -148,11 +148,21 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     m_uRowCount = CBkgDlg::caleRowCount(cy);
 
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
-    int cxMargin = sz/4;
-    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    int cyMargin = sz/4;
+    int cxMargin = cyMargin;
+    QRect rcReturn(cxMargin, cyMargin, sz-cxMargin*2, sz-cyMargin*2);
+    UINT cyBangs = checkIPhoneXBangs(cx, cy);
+    if (cyBangs)
     {
-        rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
+        rcReturn.moveTop(cyBangs - cyMargin);
+    }
+    else
+    {
+        UINT cyStatusBar = checkAndroidStatusBar();
+        if (cyStatusBar)
+        {
+            rcReturn.moveTop(cyMargin + cyStatusBar);
+        }
     }
     ui.btnReturn->setGeometry(rcReturn);
 
@@ -179,7 +189,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
     int y_addbkgView = 0;
     if (!m_lv.displayMode())
     {
-        y_addbkgView = rcReturn.bottom() + rcReturn.top();
+        y_addbkgView = rcReturn.bottom() + cyMargin;
 
 #if __windows
         if (m_lv.inRoot())

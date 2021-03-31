@@ -222,20 +222,30 @@ size_t CBkgDlg::caleRowCount(int cy)
 void CBkgDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
-    int cxMargin = sz/4;
-    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    int cyMargin = sz/4;
+    int cxMargin = cyMargin;
+    QRect rcReturn(cxMargin, cyMargin, sz-cxMargin*2, sz-cyMargin*2);
+    UINT cyBangs = checkIPhoneXBangs(cx, cy);
+    if (cyBangs)
     {
-        rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
+        rcReturn.moveTop(cyBangs - cyMargin);
+    }
+    else
+    {
+        UINT cyStatusBar = checkAndroidStatusBar();
+        if (cyStatusBar)
+        {
+            rcReturn.moveTop(cyMargin + cyStatusBar);
+        }
     }
     ui.btnReturn->setGeometry(rcReturn);
 
     auto szBtn = rcReturn.width();
     m_lv.setButtonSize(szBtn-__size(5));
 
-    if (m_bHLayout)
+    if (cx > cy)
     {
-        ui.btnColor->setGeometry(cxMargin, cy - rcReturn.top() - szBtn, szBtn, szBtn);
+        ui.btnColor->setGeometry(cxMargin, cy - cxMargin - szBtn, szBtn, szBtn);
 
         int x_bkgView = rcReturn.right()+cxMargin;
         int cx_bkgView = cx-x_bkgView;
@@ -243,7 +253,7 @@ void CBkgDlg::_relayout(int cx, int cy)
         m_lv.setGeometry(x_bkgView - m_lv.margin()/2
                               , (cy-cy_bkgView)/2, cx_bkgView, cy_bkgView);
 
-        ui.labelTitle->setGeometry(0, 0, x_bkgView, cy);
+        ui.labelTitle->setGeometry(0, rcReturn.bottom(), x_bkgView, ui.btnColor->y()- rcReturn.bottom());
         ui.labelTitle->setWordWrap(true);
         ui.labelTitle->setText("设\n置\n背\n景");
     }
@@ -251,12 +261,12 @@ void CBkgDlg::_relayout(int cx, int cy)
     {
         ui.btnColor->setGeometry(cx-cxMargin-szBtn, rcReturn.top(), szBtn, szBtn);
 
-        int y_bkgView = rcReturn.bottom() + rcReturn.top();
+        int y_bkgView = rcReturn.bottom() + cyMargin;
         int cy_bkgView = cy-y_bkgView;
         int cx_bkgView = cy_bkgView*cx/cy;
         m_lv.setGeometry((cx-cx_bkgView)/2, y_bkgView, cx_bkgView, cy_bkgView);
 
-        ui.labelTitle->setGeometry(0, 0, cx, y_bkgView);
+        ui.labelTitle->setGeometry(0, rcReturn.top(), cx, rcReturn.height());
         ui.labelTitle->setText("设置背景");
     }
 

@@ -66,17 +66,27 @@ void CColorDlg::show()
 void CColorDlg::_relayout(int cx, int cy)
 {
     int sz = MAX(cx, cy)/(CBkgDlg::caleRowCount(MAX(cx, cy))+1.6f);
-    int cxMargin = sz/4;
-    QRect rcReturn(cxMargin, cxMargin, sz-cxMargin*2, sz-cxMargin*2);
-    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    int cyMargin = sz/4;
+    int cxMargin = cyMargin;
+    QRect rcReturn(cxMargin, cyMargin, sz-cxMargin*2, sz-cyMargin*2);
+    UINT cyBangs = checkIPhoneXBangs(cx, cy);
+    if (cyBangs)
     {
-        rcReturn.moveTop(__cyIPhoneXBangs - rcReturn.top());
+        rcReturn.moveTop(cyBangs - cyMargin);
+    }
+    else
+    {
+        UINT cyStatusBar = checkAndroidStatusBar();
+        if (cyStatusBar)
+        {
+            rcReturn.moveTop(cyMargin + cyStatusBar);
+        }
     }
     ui.btnReturn->setGeometry(rcReturn);
 
     ui.labelTitle->move(rcReturn.right() + cxMargin, rcReturn.center().y() - ui.labelTitle->height()/2);
 
-    cauto yClient = rcReturn.bottom() + cxMargin;
+    cauto yClient = rcReturn.bottom() + cyMargin;
 
     int xFrame = cxMargin * 2;
     if (cy > cx)

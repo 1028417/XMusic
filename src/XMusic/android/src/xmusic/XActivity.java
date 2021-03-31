@@ -31,6 +31,8 @@ import android.view.WindowManager.LayoutParams;
 import android.view.View;
 import android.graphics.Color;
 
+import android.widget.Toast;
+
 public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 {
     private PowerManager.WakeLock wakeLock = null;
@@ -138,6 +140,11 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         // 部分机型会有半透明黑色背景，所以用透明色绘制
         window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.TRANSPARENT);
+    }
+
+    public void showQuitToast()
+    {
+        Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
     }
 
     public boolean checkMobileConnected()

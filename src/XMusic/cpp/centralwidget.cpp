@@ -179,23 +179,34 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
 
     int y_frameDemand = __size(20);
-    if (checkIPhoneXBangs(cx, cy)) // 针对全面屏刘海作偏移
+    UINT cyBangs = checkIPhoneXBangs(cx, cy);
+    if (cyBangs)
     {
-        y_frameDemand = __cyIPhoneXBangs-y_frameDemand;
+        y_frameDemand = cyBangs - y_frameDemand;
     }
-    else if (cy > __size(1920))
+    else
     {
-        y_frameDemand = __size(36);
-    }
-    else if (__size(1920) == cy)
-    {
-        y_frameDemand = __size(28);
-    }
-    else if (cy < __size(1000))
-    {
-        if (bDefaultBkg)
+        if (cy > __size(1920))
         {
-            y_frameDemand = __size(12);
+            y_frameDemand = __size(36);
+        }
+        else if (__size(1920) == cy)
+        {
+            y_frameDemand = __size(28);
+        }
+        else if (cy < __size(1000))
+        {
+            if (bDefaultBkg)
+            {
+                y_frameDemand = __size(12);
+            }
+        }
+
+        UINT cyStatusBar = checkAndroidStatusBar();
+        if (cyStatusBar)
+        {
+            y_frameDemand += cyStatusBar;
+            ui.btnFullScreen->move(ui.btnFullScreen->x(), y_frameDemand);
         }
     }
 
