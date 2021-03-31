@@ -25,6 +25,8 @@ struct tagScreenInfo
 };
 extern const tagScreenInfo& g_screen;
 
+extern bool g_bFullScreen;
+
 #if __android
 extern const bool& g_bAndroidSDPermission;
 bool requestAndroidSDPermission();
@@ -34,7 +36,7 @@ bool requestAndroidSDPermission();
 #define __cyIPhoneXBangs __size(128)
 inline static UINT checkIPhoneXBangs(int cx, int cy)
 {
-    if ((375 == cx && 812 == cy) || (414 == cx && 896 == cy))
+    if ((375 == cx && 812 == cy) || (414 == cx && 896 == cy)) // 暂时只考虑竖屏
     {
         return __cyIPhoneXBangs;
     }
@@ -48,7 +50,6 @@ inline static UINT checkIPhoneXBangs(int cx, int cy)
 #define __cyAndroidStatusBar 30
 inline static UINT checkAndroidStatusBar()
 {
-    extern bool g_bFullScreen;
     if (!g_bFullScreen)
     {
         return __cyAndroidStatusBar;

@@ -13,10 +13,6 @@ CApp::CApp()
 
 int CApp::_exec()
 {
-#if !__android
-    m_mainWnd.showBlank();
-#endif
-
     auto nRet = CAppBase::_exec();
 
     m_ctrl.stop();
@@ -54,6 +50,19 @@ static wstring _genMedialibDir(cwstr strWorkDir)
 bool CApp::_startup(cwstr strWorkDir)
 {
     m_ctrl.initOption();
+    cauto option = m_ctrl.getOption();
+    g_bFullScreen = option.bFullScreen;
+    if (option.crBkg >= 0)
+    {
+        g_crBkg.setRgb((int)option.crBkg);
+    }
+    if (option.crFore >= 0)
+    {
+        g_crFore.setRgb((int)option.crFore);
+    }
+    __app.sync([&]{
+        m_mainWnd.showLogo();
+    });
 
     //auto timeBegin = time(0);
     auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
@@ -71,6 +80,15 @@ bool CApp::_startup(cwstr strWorkDir)
     }
     CByteBuffer bbfConf(qf.size());
     qf.read((char*)bbfConf.ptr(), qf.size());
+
+    /*string strUrl = "https://xmusic-generic.pkg.coding.net/xmusic/user/xmusic";
+    CByteBuffer bbfUserProfile;
+    CDownloader downloader(3, 30, 1, 3);
+    int nRet = downloader.syncDownload(g_bRunSignal, strUrl, bbfUserProfile, 1);
+    if (0 != nRet)
+    {
+        return E_UpgradeResult::UR_Fail;
+    }*/
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         auto time0 = time(0);
@@ -103,16 +121,6 @@ bool CApp::_startup(cwstr strWorkDir)
 
         return E_UpgradeResult::UR_Success;
     }, [&]{
-        cauto option = m_ctrl.getOption();
-        if (option.crBkg >= 0)
-        {
-            g_crBkg.setRgb((int)option.crBkg);
-        }
-        if (option.crFore >= 0)
-        {
-            g_crFore.setRgb((int)option.crFore);
-        }
-
         (void)m_pmForward.load(__png(btnForward));
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
         (void)m_pmSQDisk.load(__mdlPng(sqdisk));

@@ -17,6 +17,8 @@ ITxtWriter& g_logger(m_logger);
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
+bool g_bFullScreen = false;
+
 #if __android
 bool m_bAndroidSDPermission = false;
 const bool& g_bAndroidSDPermission(m_bAndroidSDPermission);

@@ -183,7 +183,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
 
     int cyMargin = sz/4;
     int cxMargin = cyMargin;
-    if (cx > 1080)
+    if (cx > __size(1080))
     {
         cxMargin += __size(6);
     }

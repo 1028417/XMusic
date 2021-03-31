@@ -97,7 +97,7 @@ public:
         return m_bkgDlg;
     }
 
-    void showBlank();
+    void showLogo();
 
     void preinit();
 
@@ -114,8 +114,6 @@ public:
 private:
     void _ctor();
     void _init();
-
-    void _showLogo();
 
     bool event(QEvent *) override;
 
