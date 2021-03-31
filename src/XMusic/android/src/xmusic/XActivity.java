@@ -60,7 +60,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
     {
         super.onCreate(savedInstanceState);
 
-        //fullScreen(true);
+        fullScreen(true);
 
         PowerManager powerManager = (PowerManager)getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK

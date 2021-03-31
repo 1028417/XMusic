@@ -88,6 +88,7 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_RandomPlay], m_Option.bRandomPlay);
     jsonutil::get(jRoot[OI_Force48KHz], m_Option.bForce48KHz);
 
+    m_Option.bFullScreen = true; // 默认开启全屏
     jsonutil::get(jRoot[OI_FullScreen], m_Option.bFullScreen);
 
 #if __winvc

@@ -30,8 +30,34 @@ extern const bool& g_bAndroidSDPermission;
 bool requestAndroidSDPermission();
 #endif
 
+#if __ios
 #define __cyIPhoneXBangs __size(128)
-bool checkIPhoneXBangs(int cx, int cy);
+inline static UINT checkIPhoneXBangs(int cx, int cy)
+{
+    if ((375 == cx && 812 == cy) || (414 == cx && 896 == cy))
+    {
+        return __cyIPhoneXBangs;
+    }
+    return 0;
+}
+#else
+#define checkIPhoneXBangs(cx, cy) 0u
+#endif
+
+#if __android
+#define __cyAndroidStatusBar 30
+inline static UINT checkAndroidStatusBar()
+{
+    extern bool g_bFullScreen;
+    if (!g_bFullScreen)
+    {
+        return __cyAndroidStatusBar;
+    }
+    return 0;
+}
+#else
+#define checkAndroidStatusBar() 0u
+#endif
 
 extern signal_t g_bRunSignal;
 

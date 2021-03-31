@@ -21,7 +21,7 @@ const tagScreenInfo& g_screen(m_screen);
 bool m_bAndroidSDPermission = false;
 const bool& g_bAndroidSDPermission(m_bAndroidSDPermission);
 
-bool requestAndroidSDPermission() // API 23以上动态申请读写权限
+bool requestAndroidSDPermission() // 安卓6(API 23)以上动态申请读写权限
 {
     m_bAndroidSDPermission = requestAndroidPermission("android.permission.WRITE_EXTERNAL_STORAGE");
     return m_bAndroidSDPermission;
@@ -61,11 +61,6 @@ inline void async(UINT uDelayTime, cfn_void cb)
 void async(cfn_void cb)
 {
     async(0, cb);
-}
-
-bool checkIPhoneXBangs(int cx, int cy)
-{
-    return __ios && ((375 == cx && 812 == cy) || (414 == cx && 896 == cy));
 }
 
 static const WString g_lpQuality[] {
