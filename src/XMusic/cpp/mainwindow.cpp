@@ -12,8 +12,6 @@ Ui::MainWindow ui;
 
 QColor g_crLogoBkg(180, 220, 255);
 
-static bool g_bFullScreen = true;
-
 #if __windows
 inline static void _fixWorkArea(QWidget& wnd)
 {
@@ -30,13 +28,25 @@ inline static void _fixWorkArea(QWidget& wnd)
 
 void fixWorkArea(QWidget& wnd)
 {
+#if __android
+    //wnd.setWindowState((g_bFullScreen?Qt::WindowFullScreen:Qt::WindowMaximized));// | Qt::WindowActive);
+    //java构造函数全屏效果更好，所以统一用jni控制
+    fullScreen(g_bFullScreen);
+    wnd.setWindowState(Qt::WindowMaximized);// | Qt::WindowActive);
+    if (!g_bFullScreen)
+    {
+        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
+    }
+    return;
+#endif
+
     if (__android || __ios || g_bFullScreen)
     {
         wnd.setWindowState(Qt::WindowFullScreen | Qt::WindowActive); // Mac需要WindowActive
     }
     else
     {
-        wnd.setWindowState(Qt::WindowMaximized | Qt::WindowActive);
+        wnd.setWindowState(Qt::WindowMaximized);// | Qt::WindowActive);
     }
 
     _fixWorkArea(wnd);
@@ -78,14 +88,6 @@ MainWindow::MainWindow() :
     //qRegisterMetaType<QVariant>("QVariant");
 }
 
-void MainWindow::showBlank()
-{
-    this->setVisible(true); //必须在前面，不然ole异常
-
-    g_bFullScreen = __app.getOption().bFullScreen;
-    fixWorkArea(*this);
-}
-
 void MainWindow::_ctor()
 {
     ui.setupUi(this);
@@ -112,24 +114,29 @@ void MainWindow::_ctor()
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
     ui.labelLogo->setScaledContents(true);
 
+#if __android
+    ui.btnFullScreen->setParent(this);
+    ui.btnFullScreen->setVisible(true);
+#else
     ui.btnFullScreen->setVisible(false);
+#endif
     ui.btnExit->setVisible(false);
 
 #else
     ui.btnFullScreen->setParent(this);
-    ui.btnExit->setParent(this);
-
     ui.btnFullScreen->setVisible(true);
+
+    ui.btnExit->setParent(this);
     ui.btnExit->setVisible(true);
 #endif
 
     ui.centralWidget->setVisible(false);
     //m_PlayingList.setVisible(false);
 
-#if __android
-    fixWorkArea(*this);
-    this->setVisible(true);
-#endif
+/*#if __android
+    //fullScreen(true);
+    showTransparentStatusBar(true); //改为java构造中调用
+#endif*/
 
     _relayout();
 }
@@ -181,10 +188,6 @@ static UINT g_uShowLogoState = 0;
 
 void MainWindow::preinit() // 工作线程
 {
-    __app.sync([&]{
-        _showLogo();
-    });
-
     QPixmap pmBkg(":/img/bkg.jpg");
     m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
 
@@ -205,9 +208,12 @@ void MainWindow::preinit() // 工作线程
     }
 }
 
-void MainWindow::_showLogo()
+void MainWindow::showLogo()
 {
     _init();
+
+    fixWorkArea(*this);
+    this->setVisible(true);
 
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
@@ -446,10 +452,11 @@ bool MainWindow::event(QEvent *ev)
 
         static time_t prevTime = 0;
         time_t currTime = time(0);
-        if (currTime - prevTime > 3)
+        if (currTime - prevTime > 2)
         {
 #if __android
             vibrate();
+            showQuitToast();
 #endif
             prevTime = currTime;
             return true;
@@ -530,6 +537,8 @@ void MainWindow::_relayout()
     int cy = height();
     m_bHLayout = cx > cy; // 橫屏
 
+    if (NULL == ui.centralWidget) return;
+
     m_bDefaultBkg = false;
     if (!__app.getOption().bUseBkgColor)
     {
@@ -537,7 +546,6 @@ void MainWindow::_relayout()
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    if (NULL == ui.centralWidget) return;
     ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
@@ -917,7 +925,22 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnFullScreen)
     {
+        UINT cyStatusBar = checkAndroidStatusBar();
+
         switchFullScreen();
+
+        if (cyStatusBar)
+        {
+            ui.btnFullScreen->move(ui.btnFullScreen->x(), ui.btnFullScreen->y()-cyStatusBar);
+        }
+        else
+        {
+            cyStatusBar = checkAndroidStatusBar();
+            if (cyStatusBar)
+            {
+                ui.btnFullScreen->move(ui.btnFullScreen->x(), ui.btnFullScreen->y()+cyStatusBar);
+            }
+        }
     }
     else if (button == ui.btnExit)
     {
