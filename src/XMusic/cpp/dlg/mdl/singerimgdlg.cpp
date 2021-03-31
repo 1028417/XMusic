@@ -261,12 +261,26 @@ void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
         }
     }
 
-    if (te.x() < rect().center().x()-__size100)
+    if (m_bHLayout)
     {
-        _showImg(-1);
+        if (te.x() < rect().center().x()-__size100)
+        {
+            _showImg(-1);
+        }
+        else
+        {
+            _showImg(1);
+        }
     }
     else
     {
-        _showImg(1);
+        if (te.y() < rect().center().y()-__size100)
+        {
+            _showImg(-1);
+        }
+        else
+        {
+            _showImg(1);
+        }
     }
 }
