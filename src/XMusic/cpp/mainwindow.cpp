@@ -573,7 +573,7 @@ void MainWindow::_onPaint()
         {
             painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
-            cauto pmBkg = rc.width()>rc.height() ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
+            /*cauto pmBkg = m_bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
                 auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
@@ -584,8 +584,8 @@ void MainWindow::_onPaint()
                 //cauto rcSingerImg = m_mapWidgetNewPos[ui.labelSingerImg];
                 //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
                 //painter.drawImg(rcDst, m_pmDiskFace);
-            }
-            else
+            }*/
+            if (!drawBkg(m_bHLayout, painter, rc))
             {
                 drawDefaultBkg(painter, rc, 0, ui.labelSingerImg->pixmap());
             }
@@ -596,6 +596,19 @@ void MainWindow::_onPaint()
     {
         painter.fillRect(rc, g_crLogoBkg);
     }
+}
+
+bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
+{
+    cauto pmBkg = bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
+    if (pmBkg.isNull())
+    {
+        return false;
+    }
+
+    auto& prBkgOffset = bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+    painter.drawImgEx(rc, pmBkg, prBkgOffset.first, prBkgOffset.second);
+    return true;
 }
 
 void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, bool bDrawCDCover)

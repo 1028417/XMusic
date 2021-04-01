@@ -142,6 +142,11 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         window.setStatusBarColor(Color.TRANSPARENT);
     }
 
+    public void showLoginToast(boolean bSuccess)
+    {
+        Toast.makeText(getApplicationContext(), bSuccess?"登录成功":"登录失败", Toast.LENGTH_LONG).show();
+    }
+
     public void showQuitToast()
     {
         Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();

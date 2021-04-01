@@ -41,7 +41,7 @@ void CSingerMediaResPanel::SetSinger(const CSinger& singer)
 	m_lstAttachDir.clear();
 	for (cauto attachDir : singer.attachDir())
 	{
-		m_lstAttachDir.emplace_back(attachDir.strDir, attachDir.strAliasName);
+		m_lstAttachDir.emplace_back(attachDir.strDir);//;, attachDir.strAliasName);
 	}
 }
 
@@ -111,17 +111,17 @@ bool CSingerMediaResPanel::OnListItemRename(UINT uItem, CListObject *pObject, cw
 		return false;
 	}
 
+	if (!__super::OnListItemRename(uItem, pObject, strNewName))
+	{
+		return false;
+	}
+
 	auto pSingerAttachDir = dynamic_cast<CSingerAttachDir*>(pObject);
 	if (pSingerAttachDir)
 	{
-		if (!m_view.getSingerMgr().UpdateAttachName(*pSinger, pSingerAttachDir->m_strPath, strNewName))
-		{
-			return false;
-		}
-		
-		pSingerAttachDir->m_strName = strNewName;
-		return true;
+		(void)m_view.getSingerMgr().UpdateAttachName(*pSinger, pSingerAttachDir->m_strPath, strNewName);
+		//pSingerAttachDir->m_strName = strNewName;
 	}
 
-	return __super::OnListItemRename(uItem, pObject, strNewName);
+	return true;
 }

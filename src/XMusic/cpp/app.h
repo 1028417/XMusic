@@ -125,6 +125,8 @@ public:
     void quit();
 
 #if __windows
-    void setForeground();
+    void _setForeground();
 #endif
+
+    void asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb=NULL);
 };

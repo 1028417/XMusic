@@ -186,6 +186,8 @@ void hideSplashScreen(UINT uMs) //渐变时间
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
     QtAndroid::hideSplashScreen(uMs);
+#else
+    hideSplashScreen();
 #endif
 }
 
@@ -207,6 +209,13 @@ void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示
 {
     QtAndroid::runOnAndroidThread([=]() {
         QtAndroid::androidActivity().callMethod<void>("showTransparentStatusBar", "(Z)V", jboolean(bShow));
+    });
+}
+
+void showLoginToast(bool bSuccess)
+{
+    QtAndroid::runOnAndroidThread([=]() {
+        QtAndroid::androidActivity().callMethod<void>("showLoginToast", "(Z)V", jboolean(bSuccess));
     });
 }
 

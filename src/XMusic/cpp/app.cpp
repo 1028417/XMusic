@@ -14,15 +14,15 @@ CApp::CApp()
 int CApp::_exec()
 {
     m_ctrl.initOption();
-    cauto option = m_ctrl.getOption();
-    g_bFullScreen = option.bFullScreen;
-    if (option.crBkg >= 0)
+    cauto opt = m_ctrl.getOption();
+    g_bFullScreen = opt.bFullScreen;
+    if (opt.crBkg >= 0)
     {
-        g_crBkg.setRgb((int)option.crBkg);
+        g_crBkg.setRgb((int)opt.crBkg);
     }
-    if (option.crFore >= 0)
+    if (opt.crFore >= 0)
     {
-        g_crFore.setRgb((int)option.crFore);
+        g_crFore.setRgb((int)opt.crFore);
     }
 
 #if !__android
@@ -138,6 +138,25 @@ bool CApp::_startup(cwstr strWorkDir)
     return true;
 }
 
+#if __windows
+void CApp::_setForeground()
+{
+    auto hwnd = m_mainWnd.hwnd();
+    if (IsIconic(hwnd))
+    {
+        ::ShowWindow(hwnd, SW_RESTORE);
+    }
+    else
+    {
+        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
+        ::SetForegroundWindow(hwnd);
+    }
+}
+#else
+#define _setForeground()
+#endif
+
 void CApp::_show(E_UpgradeResult eUpgradeResult)
 {
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
@@ -180,9 +199,8 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
                 qsErrMsg = "加载媒体库失败";
             }
 
-#if __windows
-            setForeground();
-#elif __android
+            _setForeground();
+#if __android
             vibrate();
 #endif
             static CMsgBox m_msgbox(m_mainWnd);
@@ -194,9 +212,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
         return;
     }
 
-#if __windows
-    setForeground();
-#endif
+    _setForeground();
 
 #if __android
     if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
@@ -213,8 +229,54 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     }
 #endif
 
+    cauto opt = __app.getOption();
+    if (opt.strUser.empty())
+    {
+        //return;
+    }
+
+    asyncLogin(opt.strUser, opt.strPwd, [](E_LoginReult eRet){
+        if (E_LoginReult::LR_Success != eRet)
+        {
+            return;
+        }
+
+#if __android
+        showLoginToast(true);
+#endif
+    });
+
     m_ctrl.start();
     m_mainWnd.show();
+}
+
+void CApp::asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb)
+{
+    static auto& thr = this->thread();
+    if (thr)
+    {
+        mtutil::thread([=]{
+            thr.cancel();
+            thr.start([=]{
+               auto eRet = m_model.syncLogin(thr, strUser, strPwd);
+               if (cb)
+               {
+                   cb(eRet);
+               }
+            });
+        });
+    }
+    else
+    {
+        thr.join();
+        thr.start([=]{
+           auto eRet = m_model.syncLogin(thr, strUser, strPwd);
+           if (cb)
+           {
+               cb(eRet);
+           }
+        });
+    }
 }
 
 void CApp::quit()
@@ -223,20 +285,3 @@ void CApp::quit()
 
     CAppBase::quit();
 }
-
-#if __windows
-void CApp::setForeground()
-{
-    auto hwnd = m_mainWnd.hwnd();
-    if (IsIconic(hwnd))
-    {
-        ::ShowWindow(hwnd, SW_RESTORE);
-    }
-    else
-    {
-        //::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        //::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE);
-        ::SetForegroundWindow(hwnd);
-    }
-}
-#endif

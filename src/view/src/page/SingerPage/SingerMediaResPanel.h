@@ -9,16 +9,16 @@ class CSingerAttachDir : public CMediaDir
 public:
 	CSingerAttachDir() = default;
 
-	CSingerAttachDir(cwstr strPath, cwstr strName=L"")
+	CSingerAttachDir(cwstr strPath)//, cwstr strName=L"")
 		: CMediaDir(__medialib.toAbsPath(strPath, true))
 		, m_strPath(strPath)
-		, m_strName(strName)
+		//, m_strName(strName)
 	{
 	}
 
 public:
 	wstring m_strPath;
-	wstring m_strName;
+	//wstring m_strName;
 
 private:
 	int getImage() override
@@ -34,7 +34,7 @@ private:
 	wstring GetDisplayTitle() const override
 	{
 		cauto strDirName = fsutil::GetFileName(m_strPath);
-		if (m_strName.empty() || m_strName == strDirName)
+		//if (m_strName.empty() || m_strName == strDirName)
 		{
 			cauto strParentDir = fsutil::GetParentDir(m_strPath);
 			if (strParentDir.empty())
@@ -45,16 +45,16 @@ private:
 			return strDirName + L" | " + strParentDir;
 		}
 
-		return m_strName + L" | " + m_strPath;
+		//return m_strName + L" | " + m_strPath;
 	}
 
 	bool GetRenameText(wstring& strRenameText) const override
 	{
-		if (!m_strName.empty())
+		/*if (!m_strName.empty())
 		{
 			strRenameText = m_strName;
 		}
-		else
+		else*/
 		{
 			strRenameText = fileName();
 		}

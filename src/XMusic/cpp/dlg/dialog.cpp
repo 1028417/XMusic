@@ -1,7 +1,7 @@
 
 #include "dialog.h"
 
-#include <QBitmap>
+#include "xmusic.h"
 
 static CDialog* g_pFrontDlg = NULL;
 
@@ -152,6 +152,15 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
     }
     else
     {
-        painter.fillRect(rc, bkgColor());
+        if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
+        {
+            auto cr = bkgColor();
+            cr.setAlpha(246);
+            painter.fillRect(rc, cr);
+        }
+        else
+        {
+            painter.fillRect(rc, bkgColor());
+        }
     }
 }

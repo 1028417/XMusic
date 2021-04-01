@@ -153,6 +153,94 @@ struct __ModelExt tagTimerOperateOpt
     int nHour = 0;
     int nMinute = 0;
 };
+
+using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFail)>&;
+
+#else
+class CUpgradeUrl
+{
+public:
+    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
+        : m_strBaseUrl(strBaseUrl)
+        , m_strPostFix(strPostFix)
+    {
+    }
+
+private:
+    string m_strBaseUrl;
+    string m_strPostFix;
+
+public:
+    string mdlconf() const;
+
+    string mdl() const;
+
+    string singerimg(const string& strFile) const;
+
+    string app() const;
+};
+
+struct tagMdlConf
+{
+    string strAppVersion;
+
+    UINT uMdlVersion = 0;
+
+    UINT uCompatibleCode = 0;
+
+    list<CUpgradeUrl> lstUpgradeUrl;
+
+    //list<string> lstOnlineHBkg;
+    //list<string> lstOnlineVBkg;
+};
+
+struct tagOlBkg
+{
+    tagOlBkg() = default;
+    tagOlBkg(cwstr strFile, UINT cx, UINT cy, uint64_t uFileSize)
+        : strFile(strFile), cx(cx), cy(cy), uFileSize(uFileSize)
+    {
+    }
+    wstring strFile;
+    UINT cx = 0;
+    UINT cy = 0;
+    uint64_t uFileSize = 0;
+};
+
+struct tagOlBkgList
+{
+    wstring catName;
+    string accName;
+    string prjName;
+    string artiName;
+
+    list<tagOlBkg> lstBkg;
+};
+
+enum class E_UpgradeResult
+{
+    UR_Success,
+    UR_Fail,
+
+    UR_DownloadFail,
+    UR_MedialibInvalid,
+    UR_ReadMedialibFail,
+
+    UR_MedialibUnmatch,
+    UR_MedialibUncompatible,
+    UR_AppUpgradeFail,
+    UR_AppUpgraded,
+
+    UR_InitMediaLibFail
+};
+
+enum class E_LoginReult
+{
+    LR_Success,
+    LR_NetworkError,
+    LR_UserInvalid,
+    LR_PwdWrong,
+};
 #endif
 
 struct __ModelExt tagOption
@@ -194,85 +282,6 @@ struct __ModelExt tagOption
     string strPwd;
 #endif
 };
-
-#if !__winvc
-class CUpgradeUrl
-{
-public:
-    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
-        : m_strBaseUrl(strBaseUrl)
-        , m_strPostFix(strPostFix)
-    {
-    }
-
-private:
-    string m_strBaseUrl;
-    string m_strPostFix;
-
-public:
-    string mdlconf() const;
-
-    string mdl() const;
-
-    string singerimg(const string& strFile) const;
-
-    string app() const;
-};
-
-struct tagMdlConf
-{
-    string strAppVersion;
-
-    UINT uMdlVersion = 0;
-
-    UINT uCompatibleCode = 0;
-
-    list<CUpgradeUrl> lstUpgradeUrl;
-
-    //list<string> lstOnlineHBkg;
-    //list<string> lstOnlineVBkg;
-};
-
-enum class E_UpgradeResult
-{
-    UR_Success,
-    UR_Fail,
-
-    UR_DownloadFail,
-    UR_MedialibInvalid,
-    UR_ReadMedialibFail,
-
-    UR_MedialibUnmatch,
-    UR_MedialibUncompatible,
-    UR_AppUpgradeFail,
-    UR_AppUpgraded,
-
-    UR_InitMediaLibFail
-};
-
-struct tagOlBkg
-{
-    tagOlBkg() = default;
-    tagOlBkg(cwstr strFile, UINT cx, UINT cy, uint64_t uFileSize)
-        : strFile(strFile), cx(cx), cy(cy), uFileSize(uFileSize)
-    {
-    }
-    wstring strFile;
-    UINT cx = 0;
-    UINT cy = 0;
-    uint64_t uFileSize = 0;
-};
-
-struct tagOlBkgList
-{
-    wstring catName;
-    string accName;
-    string prjName;
-    string artiName;
-
-    list<tagOlBkg> lstBkg;
-};
-#endif
 
 #include "DataMgr.h"
 
@@ -326,8 +335,6 @@ public:
 
     virtual bool installApp(const CByteBuffer&) {return true;}
 };
-
-using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFail)>&;
 
 class IModel
 {
@@ -406,7 +413,7 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual bool syncLogin(signal_t, const string& strUser, const string& strPwd) = 0;
+    virtual E_LoginReult syncLogin(signal_t, const string& strUser, const string& strPwd) = 0;
 #endif
 };
 
@@ -535,7 +542,7 @@ public:
         return m_lstOlBkg;
     }
 
-    bool syncLogin(signal_t, const string& strUser, const string& strPwd) override;
+    E_LoginReult syncLogin(signal_t, const string& strUser, const string& strPwd) override;
 #endif
 
 private:

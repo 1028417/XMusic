@@ -113,6 +113,7 @@ public:
 
     void handleTouchEvent(E_TouchEventType type, const CTouchEvent& te);
 
+    bool drawBkg(bool bHLayout, CPainter& painter, cqrc rc);
     void drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound=0, bool bDrawCDCover=true);
 
 private:
