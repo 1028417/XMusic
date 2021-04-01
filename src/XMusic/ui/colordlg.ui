@@ -320,7 +320,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>120</x>
       <y>200</y>
-      <width>160</width>
+      <width>200</width>
       <height>80</height>
      </rect>
     </property>
@@ -331,7 +331,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <string notr="true"/>
     </property>
     <property name="text">
-     <string>应用</string>
+     <string>设为桌面</string>
     </property>
     <property name="iconSize">
      <size>

@@ -10,9 +10,6 @@
 
 static Ui::AddBkgDlg ui;
 
-XThread *g_thrGenSubImg = NULL;
-extern UINT g_uMsScanYield;
-
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
     : CDialog(bkgDlg)
     , m_bkgDlg(bkgDlg)
@@ -44,13 +41,6 @@ void CAddBkgDlg::init()
         if (strDir.empty())
         {
             return;
-        }
-
-        m_lv.thrScan().cancel();
-
-        if (g_thrGenSubImg)
-        {
-            g_thrGenSubImg->cancel();
         }
 
         m_lv.scanDir(strDir);
@@ -99,16 +89,17 @@ wstring CAddBkgDlg::_chooseDir()
 }
 #endif
 
+extern UINT g_uMsScanYield;
+
 void CAddBkgDlg::show()
 {
     g_uMsScanYield = 1;
 
-    if (m_lv.thrScan())
+    static bool s_bFlag = false;
+    if (!s_bFlag)
     {
-        showLoading(true);
-    }
-    else if (!m_lv.thrScan().joinable())
-    {
+        s_bFlag = true;
+
         wstring strAddBkgDir;
 #if __windows
         strAddBkgDir = __app.getOption().strAddBkgDir;
@@ -121,9 +112,9 @@ void CAddBkgDlg::show()
                 strAddBkgDir = fsutil::getHomeDir().toStdWString();
             //}
         }
-        mtutil::thread([&]{
+        /*卡mtutil::thread([&]{
             CFolderDlg::preInit();
-        });
+        });*/
 
 #elif __android
         if (!requestAndroidSDPermission())
@@ -136,6 +127,13 @@ void CAddBkgDlg::show()
         strAddBkgDir = fsutil::getHomeDir().toStdWString();
 #endif
         m_lv.scanDir(strAddBkgDir);
+    }
+    else
+    {
+        if (m_lv.thrScan())
+        {
+            showLoading(true);
+        }
     }
 
     CDialog::show([&]{
@@ -446,19 +444,19 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
     {
         showLoading(false);
 
-        if (g_thrGenSubImg)
+        if (m_thrGenSubImg)
         {
-            g_thrGenSubImg->cancel();
+            m_thrGenSubImg->cancel();
         }
         else
         {
-            g_thrGenSubImg = &__app.thread();
+            m_thrGenSubImg = &__app.thread();
         }
         auto pImgDir = m_pImgDir;
-        g_thrGenSubImg->start(100, [&, pImgDir]{
-            if (!pImgDir->genSubImg(*this, *g_thrGenSubImg))
+        m_thrGenSubImg->start(100, [&, pImgDir]{
+            if (!pImgDir->genSubImg(*this, *m_thrGenSubImg))
             {
-                g_thrGenSubImg->usleep(300);
+                m_thrGenSubImg->usleep(300);
             }
             return true;
         });
@@ -481,9 +479,9 @@ bool CAddBkgView::handleReturn(bool bClose)
 
         if (m_pImgDir != &m_olBkgDir)
         {
-            if (g_thrGenSubImg)
+            if (m_thrGenSubImg)
             {
-                g_thrGenSubImg->cancel(false);
+                m_thrGenSubImg->cancel(false);
             }
         }
 
@@ -540,6 +538,13 @@ void CAddBkgView::scanDir(cwstr strDir)
 {
     showLoading(true);
 
+    m_thrScan.cancel();
+
+    if (m_thrGenSubImg)
+    {
+        m_thrGenSubImg->cancel();
+    }
+
     m_paImgDirs.clear();
     m_paImgDirs.add(m_olBkgDir);
 
@@ -573,7 +578,7 @@ void CAddBkgView::scanDir(cwstr strDir)
             });
         });
 
-        m_thrScan.usleep(100);
+        m_thrScan.usleep(100); //空目录视觉效果
         if (!bRunSignal)
         {
             return;

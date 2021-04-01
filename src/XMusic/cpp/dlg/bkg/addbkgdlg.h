@@ -25,6 +25,8 @@ private:
 
     QPixmap m_pmOlBkg;
 
+    XThread *m_thrGenSubImg = NULL;
+
 private:
     size_t getColCount() const override;
 

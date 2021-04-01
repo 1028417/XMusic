@@ -189,6 +189,9 @@ struct __ModelExt tagOption
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;
+
+    string strUser;
+    string strPwd;
 #endif
 };
 
@@ -403,7 +406,7 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual bool syncLogin(signal_t, cwstr strUser, cwstr strPwd) = 0;
+    virtual bool syncLogin(signal_t, const string& strUser, const string& strPwd) = 0;
 #endif
 };
 
@@ -532,7 +535,7 @@ public:
         return m_lstOlBkg;
     }
 
-    bool syncLogin(signal_t, cwstr strUser, cwstr strPwd) override;
+    bool syncLogin(signal_t, const string& strUser, const string& strPwd) override;
 #endif
 
 private:

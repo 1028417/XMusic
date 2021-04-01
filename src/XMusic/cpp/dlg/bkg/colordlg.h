@@ -15,8 +15,6 @@ private:
 private:
     void _relayout(int cx, int cy) override;
 
-    void applyBkgColor();
-
 private slots:
     void slot_buttonClicked(class CButton *pButton);
 

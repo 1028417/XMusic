@@ -211,29 +211,22 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     }
     else if (ui.btnApplyBkgColor == pButton)
     {
-        applyBkgColor();
-        m_bkgDlg.close();
+        if (!__app.getOption().bUseBkgColor)
+        {
+            __app.getOption().bUseBkgColor = true;
+
+            __app.mainWnd().updateBkg();
+        }
+        else
+        {
+            __app.mainWnd().update();
+        }
+
+        /*m_bkgDlg.close();
         this->close();
 #if __windows
         __app.setForeground();
-#endif
-    }
-}
-
-void CColorDlg::applyBkgColor()
-{
-    this->update();
-    m_bkgDlg.update();
-
-    if (!__app.getOption().bUseBkgColor)
-    {
-        __app.getOption().bUseBkgColor = true;
-
-        __app.mainWnd().updateBkg();
-    }
-    else
-    {
-        __app.mainWnd().update();
+#endif*/
     }
 }
 
@@ -247,7 +240,8 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
         g_crBkg.setRgb(crBkg);
         __app.getOption().crBkg = (UINT)crBkg;
 
-        applyBkgColor();
+        this->update();
+        m_bkgDlg.update();
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {

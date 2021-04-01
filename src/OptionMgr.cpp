@@ -41,6 +41,9 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
+#define OI_User             "user"
+#define OI_Pwd              "pwd"
+
 void COptionMgr::init()
 {
     m_bInited = true;
@@ -116,6 +119,9 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
+
+    jsonutil::get(jRoot[OI_User], m_Option.strUser);
+    jsonutil::get(jRoot[OI_Pwd], m_Option.strPwd);
 
     /*const JValue& jValue = jRoot[OI_XPkg];
     if (jValue.isArray())
@@ -193,6 +199,9 @@ void COptionMgr::saveOption()
     jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
+
+    jRoot[OI_User] = m_Option.strUser;
+    jRoot[OI_Pwd] = m_Option.strPwd;
 
     /*auto& jValue = jRoot[OI_XPkg];
     for (cauto strXPkg : m_Option.lstXPkg)
