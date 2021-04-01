@@ -232,12 +232,16 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     cauto opt = __app.getOption();
     if (opt.strUser.empty())
     {
+        ((string&)opt.strUser) = "xmusic";
         //return;
     }
 
-    asyncLogin(opt.strUser, opt.strPwd, [](E_LoginReult eRet){
+    asyncLogin(opt.strUser, opt.strPwd, [&](E_LoginReult eRet){
         if (E_LoginReult::LR_Success != eRet)
         {
+#if __android
+            vibrate();
+#endif
             return;
         }
 

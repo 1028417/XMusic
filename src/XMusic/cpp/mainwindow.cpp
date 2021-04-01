@@ -587,7 +587,7 @@ void MainWindow::_onPaint()
             }*/
             if (!drawBkg(m_bHLayout, painter, rc))
             {
-                drawDefaultBkg(painter, rc, 0, ui.labelSingerImg->pixmap());
+                drawDefaultBkg(painter, rc, 0, ui.labelSingerImg->pixmap()?1.0f:0.06f);
             }
         }
     }
@@ -611,30 +611,24 @@ bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
     return true;
 }
 
-void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rcDst, UINT szRound, bool bDrawCDCover)
+void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound, float fCDCover)
 {
-    Double_T cxDst = rcDst.width();
-    int cyDst = rcDst.height();
+    Double_T cxDst = rc.width();
+    int cyDst = rc.height();
     Double_T xDst = 0;
     auto fBkgZoomRate = ui.centralWidget->caleBkgZoomRate(cxDst, cyDst, xDst);
 
     auto cySrc = cyDst/fBkgZoomRate;
     QRect rcSrc(0, round(__cyBkg-cySrc), 10, round(cySrc));
-    painter.drawImg(rcDst, m_brBkg, rcSrc, szRound);
+    painter.drawImg(rc, m_brBkg, rcSrc, szRound);
 
-    if (!bDrawCDCover)
-    {
-        painter.setOpacity(0.06f);
-    }
+    painter.setOpacity(fCDCover);
 
     auto cyCDCover = m_pmCDCover.height()*fBkgZoomRate;
-    QRect rcCDCover(round(rcDst.x()+xDst), round(rcDst.y()+cyDst-cyCDCover), round(cxDst), round(cyCDCover));
+    QRect rcCDCover(round(rc.x()+xDst), round(rc.y()+cyDst-cyCDCover), round(cxDst), round(cyCDCover));
     painter.drawImg(rcCDCover, m_pmCDCover);
 
-    if (!bDrawCDCover)
-    {
-        painter.setOpacity(1.0f);
-    }
+    painter.setOpacity(1.0f);
 }
 
 void MainWindow::_updateProgress()

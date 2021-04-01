@@ -152,15 +152,20 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
     }
     else
     {
-        if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
-        {
-            auto cr = bkgColor();
-            cr.setAlpha(246);
-            painter.fillRect(rc, cr);
-        }
-        else
+        if (!__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
         {
             painter.fillRect(rc, bkgColor());
+
+            /*__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
+            auto cr = bkgColor();
+            cr.setAlpha(205);
+            painter.fillRect(rc, cr);*/
+
+            return;
         }
+
+        auto cr = bkgColor();
+        cr.setAlpha(246);
+        painter.fillRect(rc, cr);
     }
 }
