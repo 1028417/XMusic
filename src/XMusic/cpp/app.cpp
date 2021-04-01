@@ -67,6 +67,13 @@ bool CApp::_startup(cwstr strWorkDir)
 {
     __app.sync([&]{
         m_mainWnd.showLogo();
+/*#if __android
+#if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
+        async([]{
+            hideSplashScreen(); //启动页延时关闭防止闪烁
+        });
+#endif
+#endif*/
     });
 
     //auto timeBegin = time(0);
@@ -85,15 +92,6 @@ bool CApp::_startup(cwstr strWorkDir)
     }
     CByteBuffer bbfConf(qf.size());
     qf.read((char*)bbfConf.ptr(), qf.size());
-
-    /*string strUrl = "https://xmusic-generic.pkg.coding.net/xmusic/user/xmusic";
-    CByteBuffer bbfUserProfile;
-    CDownloader downloader(3, 30, 1, 3);
-    int nRet = downloader.syncDownload(g_bRunSignal, strUrl, bbfUserProfile, 1);
-    if (0 != nRet)
-    {
-        return E_UpgradeResult::UR_Fail;
-    }*/
 
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         auto time0 = time(0);

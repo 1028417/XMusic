@@ -30,9 +30,11 @@ void fixWorkArea(QWidget& wnd)
 {
 #if __android
     //wnd.setWindowState((g_bFullScreen?Qt::WindowFullScreen:Qt::WindowMaximized));// | Qt::WindowActive);
+
     //java构造函数全屏效果更好，所以统一用jni控制
     fullScreen(g_bFullScreen);
     wnd.setWindowState(Qt::WindowMaximized);// | Qt::WindowActive);
+
     if (!g_bFullScreen)
     {
         showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）

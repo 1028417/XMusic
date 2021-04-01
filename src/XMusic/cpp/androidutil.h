@@ -34,6 +34,9 @@ extern function<void(int,int,int)> g_fnAccelerometerNotify;
 
 bool requestAndroidPermission(cqstr qsPermission);
 
+void hideSplashScreen();
+void hideSplashScreen(UINT uMs);
+
 void fullScreen(bool bSet);
 
 void showTranslucentStatusBar(bool bShow);

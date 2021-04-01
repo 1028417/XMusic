@@ -175,6 +175,20 @@ jfloat      F
 jdouble     D
 jobject     L*/
 
+void hideSplashScreen()
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
+    QtAndroid::hideSplashScreen();
+#endif
+}
+
+void hideSplashScreen(UINT uMs) //渐变时间
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0)) // Qt5.10以上
+    QtAndroid::hideSplashScreen(uMs);
+#endif
+}
+
 void fullScreen(bool bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
 {
     QtAndroid::runOnAndroidThread([=]() {

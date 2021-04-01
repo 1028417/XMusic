@@ -329,8 +329,6 @@ using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFa
 class IModel
 {
 public:
-    virtual bool initMediaLib(bool bNotify = true) = 0;
-
     virtual CDataMgr& getDataMgr() = 0;
 
     virtual CPlaylistMgr& getPlaylistMgr() = 0;
@@ -338,6 +336,16 @@ public:
 
     virtual CSingerMgr& getSingerMgr() = 0;
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
+
+    virtual bool init(
+#if !__winvc
+        cwstr strWorkDir, cwstr strMedialibDir
+#endif
+    ) = 0;
+
+    virtual void close() = 0;
+
+    virtual bool initMediaLib(bool bNotify = true) = 0;
 
 #if __winvc
     virtual CBackupMgr& getBackupMgr() = 0;
@@ -395,16 +403,8 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual void localScan(cwstr strDir, E_AttachDirType eType) = 0;
+    virtual bool syncLogin(signal_t, cwstr strUser, cwstr strPwd) = 0;
 #endif
-
-	virtual bool init(
-#if !__winvc
-		cwstr strWorkDir, cwstr strMedialibDir
-#endif
-	) = 0;
-
-    virtual void close() = 0;
 };
 
 class __ModelExt CModel : public IModel
@@ -458,6 +458,14 @@ public:
 	{
 		return m_SingerImgMgr;
 	}
+
+    bool init(
+#if !__winvc
+        cwstr strWorkDir, cwstr strMedialibDir
+#endif
+    ) override;
+
+    void close() override;
 
 	bool initMediaLib(bool bNotify = true) override;
 
@@ -524,16 +532,8 @@ public:
         return m_lstOlBkg;
     }
 
-	void localScan(cwstr strDir, E_AttachDirType eType) override;
+    bool syncLogin(signal_t, cwstr strUser, cwstr strPwd) override;
 #endif
-
-	bool init(
-#if !__winvc
-		cwstr strWorkDir, cwstr strMedialibDir
-#endif
-	) override;
-
-	void close() override;
 
 private:
 	bool _initMediaLib(cwstr strDBFile);
@@ -569,6 +569,8 @@ private:
     void _initOlBkg(CByteBuffer& bbfOlBkg);
 
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
+
+    void _localScan(cwstr strDir, E_AttachDirType eType);
 #endif
 
     void _close();
