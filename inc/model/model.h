@@ -406,8 +406,8 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual string user() = 0;
-    virtual E_LoginReult login(signal_t, const string& strUser) = 0;//, const string& strPwd) = 0;
+    virtual cwstr user() = 0;
+    virtual E_LoginReult login(signal_t, cwstr strUser) = 0;//, const string& strPwd) = 0;
 #endif
 };
 
@@ -530,8 +530,8 @@ public:
         return m_lstOlBkg;
     }
 
-    string user() override;
-    E_LoginReult login(signal_t, const string& strUser) override;//, const string& strPwd) override;
+    cwstr user() override;
+    E_LoginReult login(signal_t, cwstr strUser) override;//, const string& strPwd) override;
 #endif
 
 private:

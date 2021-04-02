@@ -255,7 +255,7 @@ void CApp::_showLoginDlg()
     });
 }
 
-void CApp::asyncLogin(const string& strUser)
+void CApp::asyncLogin(cwstr strUser)
 {
     static auto& thr = this->thread();
     cauto fn = [=]{

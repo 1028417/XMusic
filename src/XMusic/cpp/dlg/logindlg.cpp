@@ -14,7 +14,7 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
 
     connect(ui.btnLogin, &CButton::signal_clicked, [&]{
         close();
-        cauto strUser = ui.editUser->text().trimmed().toStdString();
+        cauto strUser = ui.editUser->text().trimmed().toStdWString();
         __app.asyncLogin(strUser);
     });
 }

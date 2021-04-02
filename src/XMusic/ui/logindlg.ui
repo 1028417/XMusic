@@ -22,6 +22,9 @@
      <height>80</height>
     </rect>
    </property>
+   <property name="maxLength">
+    <number>20</number>
+   </property>
   </widget>
   <widget class="CButton" name="btnLogin">
    <property name="geometry">

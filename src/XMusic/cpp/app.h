@@ -130,5 +130,5 @@ public:
 
     void quit();
 
-    void asyncLogin(const string& strUser);
+    void asyncLogin(cwstr strUser);
 };
