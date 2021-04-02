@@ -88,15 +88,15 @@ signals:
 
 private:
     void _init();
-    virtual bool _startup(cwstr strWorkDir) = 0;
+
+    virtual bool _startup() = 0;
 
 protected:
-    virtual int _exec();
-
-public:
     int exec();
+
     void quit();
 
+public:
     inline void sync(cfn_void cb)
     {
         if (!g_bRunSignal)

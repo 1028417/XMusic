@@ -65,9 +65,7 @@ private:
         return m_mainWnd;
     }
 
-    int _exec() override;
-
-    bool _startup(cwstr strWorkDir) override;
+    bool _startup() override;
 
     void _show(E_UpgradeResult eUpgradeResult);
 
@@ -122,11 +120,13 @@ public:
         return m_strAppVersion;
     }
 
+    int exec();
+
     void quit();
 
 #if __windows
     void _setForeground();
 #endif
 
-    void asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb=NULL);
+    void asyncLogin(const string& strUser, cfn_void_t<E_LoginReult> cb=NULL);
 };

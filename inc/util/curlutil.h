@@ -31,6 +31,18 @@ struct __UtilExt tagCurlOpt
 using CB_CURLWrite = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
 using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
+struct __UtilExt tagCURlToolHook
+{
+    tagCURlToolHook(CB_CURLWrite& fnWrite, CB_CURLProgress& fnProgress)
+        : fnWrite(fnWrite)
+        , fnProgress(fnProgress)
+    {
+    }
+
+    CB_CURLWrite fnWrite;
+    CB_CURLProgress fnProgress;
+};
+
 class __UtilExt curlutil
 {
 public:
@@ -39,8 +51,7 @@ public:
 
     static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL);
 
-    static int curlToolPerform(const list<string>& lstParams);
-    static int curlToolDownload(const string& strURL, CB_CURLWrite& cbWrite);
+    static int curlToolPerform(const list<string>& lstParams, tagCURlToolHook *pCURLToolHook = NULL);
 
     static string getCurlErrMsg(UINT uCurlCode);
 };

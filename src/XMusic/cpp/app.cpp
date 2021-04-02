@@ -11,10 +11,10 @@ CApp::CApp()
 {
 }
 
-int CApp::_exec()
+int CApp::exec()
 {
     m_ctrl.initOption();
-    cauto opt = m_ctrl.getOption();
+    auto& opt = m_ctrl.getOption();
     g_bFullScreen = opt.bFullScreen;
     if (opt.crBkg >= 0)
     {
@@ -24,12 +24,15 @@ int CApp::_exec()
     {
         g_crFore.setRgb((int)opt.crFore);
     }
+#if !__winvc
+    opt.strRootDir = g_strWorkDir;
+#endif
 
 #if !__android
     m_mainWnd.showBlank();
 #endif
 
-    auto nRet = CAppBase::_exec();
+    auto nRet = CAppBase::exec();
 
     m_ctrl.stop();
 
@@ -37,7 +40,7 @@ int CApp::_exec()
 }
 
 #if 0
-static wstring _genMedialibDir(cwstr strWorkDir)
+static wstring _genMedialibDir()
 {
 /*#if __window
     if (strRootDir.empty() || !fsutil::existDir(strRootDir))
@@ -59,11 +62,11 @@ static wstring _genMedialibDir(cwstr strWorkDir)
     return fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
 #endif*/
 
-    return strWorkDir;
+    return L"";
 }
 #endif
 
-bool CApp::_startup(cwstr strWorkDir)
+bool CApp::_startup()
 {
     __app.sync([&]{
         m_mainWnd.showLogo();
@@ -77,12 +80,7 @@ bool CApp::_startup(cwstr strWorkDir)
     });
 
     //auto timeBegin = time(0);
-    auto strMedialibDir = strWorkDir; //_genMedialibDir(strWorkDir);
-    if (!m_model.init(strWorkDir, strMedialibDir))
-    {
-        g_logger >> "initModel fail";
-        return false;
-    }
+    //cauto strMedialibDir = _genMedialibDir();
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
@@ -229,32 +227,30 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     }
 #endif
 
-    cauto opt = __app.getOption();
-    if (opt.strUser.empty())
+    cauto strUser = m_model.user();
+    if (!strUser.empty())
     {
-        ((string&)opt.strUser) = "xmusic";
-        //return;
+        m_ctrl.start();
+        m_mainWnd.show();
+
+        asyncLogin(strUser, [&](E_LoginReult eRet){
+            if (E_LoginReult::LR_Success != eRet)
+            {
+#if __android
+                vibrate();
+#endif
+                return;
+            }
+
+#if __android
+            showLoginToast(true);
+#endif
+        });
+        return;
     }
-
-    asyncLogin(opt.strUser, opt.strPwd, [&](E_LoginReult eRet){
-        if (E_LoginReult::LR_Success != eRet)
-        {
-#if __android
-            vibrate();
-#endif
-            return;
-        }
-
-#if __android
-        showLoginToast(true);
-#endif
-    });
-
-    m_ctrl.start();
-    m_mainWnd.show();
 }
 
-void CApp::asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb)
+void CApp::asyncLogin(const string& strUser, cfn_void_t<E_LoginReult> cb)
 {
     static auto& thr = this->thread();
     if (thr)
@@ -262,7 +258,7 @@ void CApp::asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_
         mtutil::thread([=]{
             thr.cancel();
             thr.start([=]{
-               auto eRet = m_model.syncLogin(thr, strUser, strPwd);
+               auto eRet = m_model.login(thr, strUser);
                if (cb)
                {
                    cb(eRet);
@@ -274,7 +270,7 @@ void CApp::asyncLogin(const string& strUser, const string& strPwd, cfn_void_t<E_
     {
         thr.join();
         thr.start([=]{
-           auto eRet = m_model.syncLogin(thr, strUser, strPwd);
+           auto eRet = m_model.login(thr, strUser);
            if (cb)
            {
                cb(eRet);

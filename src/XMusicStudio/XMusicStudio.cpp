@@ -277,7 +277,6 @@ public:
 		}
 
 		(void)m_controller.initOption();
-		(void)m_model.init();
 	}
 
 	IView& getView() override

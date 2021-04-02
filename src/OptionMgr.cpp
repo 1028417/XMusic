@@ -41,9 +41,6 @@
 
 #define OI_NetworkWarn      "NetworkWarn"
 
-#define OI_User             "user"
-#define OI_Pwd              "pwd"
-
 void COptionMgr::init()
 {
     m_bInited = true;
@@ -64,8 +61,6 @@ void COptionMgr::init()
     }
 
 #if !__OnlineMediaLib
-    jsonutil::get(jRoot[OI_RootDir], true, m_Option.strRootDir);
-
     const JValue& jValue = jRoot[OI_AttachDir];
     if (jValue.isArray())
     {
@@ -95,6 +90,8 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_FullScreen], m_Option.bFullScreen);
 
 #if __winvc
+    jsonutil::get(jRoot[OI_RootDir], true, m_Option.strRootDir);
+
     jsonutil::get(jRoot[OI_HideMenuBar], m_Option.bHideMenuBar);
 
     jsonutil::get(jRoot[OI_PlaySpiritSkin], true, m_Option.PlaySpiritOption.strSkinName);
@@ -119,9 +116,6 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
-
-    jsonutil::get(jRoot[OI_User], m_Option.strUser);
-    jsonutil::get(jRoot[OI_Pwd], m_Option.strPwd);
 
     /*const JValue& jValue = jRoot[OI_XPkg];
     if (jValue.isArray())
@@ -149,8 +143,6 @@ void COptionMgr::saveOption()
     JValue jRoot;
 
 #if !__OnlineMediaLib
-    jRoot[OI_RootDir] = strutil::toUtf8(m_Option.strRootDir);
-
     if (m_Option.plAttachDir)
     {
         auto& jValue = jRoot[OI_AttachDir];
@@ -169,6 +161,8 @@ void COptionMgr::saveOption()
     jRoot[OI_FullScreen] = m_Option.bFullScreen;
 
 #if __winvc
+    jRoot[OI_RootDir] = strutil::toUtf8(m_Option.strRootDir);
+
     jRoot[OI_HideMenuBar] = m_Option.bHideMenuBar;
 
     jRoot[OI_PlaySpiritSkin] = strutil::toAsc(m_Option.PlaySpiritOption.strSkinName);
@@ -199,9 +193,6 @@ void COptionMgr::saveOption()
     jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
-
-    jRoot[OI_User] = m_Option.strUser;
-    jRoot[OI_Pwd] = m_Option.strPwd;
 
     /*auto& jValue = jRoot[OI_XPkg];
     for (cauto strXPkg : m_Option.lstXPkg)
