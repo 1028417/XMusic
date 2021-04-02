@@ -31,23 +31,36 @@ struct __UtilExt tagCurlOpt
 using CB_CURL = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
 using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
-struct __UtilExt tagCURlToolHook
+class tagCURlToolHook
 {
-    tagCURlToolHook(CB_CURL& fnWrite, CB_CURLProgress& fnProgress = NULL)
-        : fnWrite(fnWrite)
-        , fnProgress(fnProgress)
-    {
-    }
-
-    tagCURlToolHook(CB_CURLProgress& fnProgress, CB_CURL& fnRead = NULL)
+protected:
+    tagCURlToolHook(CB_CURLProgress& fnProgress, CB_CURL& fnWrite, CB_CURL& fnRead)
         : fnProgress(fnProgress)
+        , fnWrite(fnWrite)
         , fnRead(fnRead)
     {
     }
 
-    CB_CURL fnWrite;
+public:
     CB_CURLProgress fnProgress;
+    CB_CURL fnWrite;
     CB_CURL fnRead;
+};
+
+class __UtilExt tagCURlToolDownloadHook : public tagCURlToolHook
+{
+    tagCURlToolDownloadHook(CB_CURLProgress& fnProgress, CB_CURL& fnWrite=NULL)
+        : tagCURlToolHook(fnProgress, fnWrite, NULL)
+    {
+    }
+};
+
+class __UtilExt tagCURlToolUploadHook : public tagCURlToolHook
+{
+    tagCURlToolUploadHook(CB_CURLProgress& fnProgress, CB_CURL& fnRead=NULL)
+        : tagCURlToolHook(fnProgress, NULL, fnRead)
+    {
+    }
 };
 
 class __UtilExt curlutil
