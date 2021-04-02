@@ -8,24 +8,21 @@ static Ui::MsgBox ui;
 
 CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 {
+    ui.setupUi(this);
+
+    ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
+    ui.labelTip->setForeColor(__crLogoText);
+
+    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
 }
 
 cqcr CMsgBox::bkgColor() const
 {
-    static QColor crBkg(195, 230, 255);
-    return crBkg;
+    return QColor(195, 230, 255);
 }
 
 void CMsgBox::show(QWidget& parent, cqstr qsMsg, cfn_void cbClose)
 {
-    ui.setupUi(this);
-
-    QColor crText(__crLogoText);
-    ui.labelTip->setForeColor(crText);
-    ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
-
-    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
-
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(parent, cbClose);

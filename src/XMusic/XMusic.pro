@@ -23,6 +23,7 @@ SOURCES += cpp/androidutil.cpp
 
 SOURCES += ../controller.cpp \
     ../OptionMgr.cpp \
+    cpp/dlg/logindlg.cpp \
     cpp/xmusic.cpp \
     cpp/app.cpp \
     cpp/mainwindow.cpp \
@@ -52,6 +53,7 @@ HEADERS += ../../inc/ControllerDef.h \
     ../OptionMgr.h \
     ../controller.h \
     cpp/app.h \
+    cpp/dlg/logindlg.h \
     cpp/xmusic.h \
     cpp/mainwindow.h \
     cpp/centralwidget.h \
@@ -82,6 +84,7 @@ RESOURCES += res.qrc
 
 FORMS += ui/mainwindow.ui  ui/msgbox.ui  ui/networkWarnDlg.ui \
          ui/bkgdlg.ui  ui/addbkgdlg.ui  ui/colordlg.ui \
+         ui/logindlg.ui \
          ui/medialibdlg.ui  ui/wholeTrackDlg.ui  ui/singerimgdlg.ui
 
 INCLUDEPATH += ../../inc  cpp  cpp/widget

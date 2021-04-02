@@ -30,12 +30,28 @@ void CColorDlg::init()
 
     ui.btnApplyBkgColor->setFont(font);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+    connect(ui.btnApplyBkgColor, &CButton::signal_clicked, [&]{
+        if (!__app.getOption().bUseBkgColor)
+        {
+            __app.getOption().bUseBkgColor = true;
+
+            __app.mainWnd().updateBkg();
+        }
+        else
+        {
+            __app.mainWnd().update();
+        }
+
+        /*m_bkgDlg.close();
+        this->close();
+#if __windows
+        __app.setForeground();
+#endif*/
+    });
 
     for (auto pButton : SList<CButton*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
-                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnApplyBkgColor
-                                        , ui.btnSubFontRed, ui.btnAddFontRed, ui.btnSubFontGreen, ui.btnAddFontGreen
-                                        , ui.btnSubFontBlue, ui.btnAddFontBlue}))
+                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
+                                        , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubFontBlue, ui.btnAddFontBlue}))
     {
         connect(pButton, &CButton::signal_clicked, this, &CColorDlg::slot_buttonClicked);
     }
@@ -45,10 +61,14 @@ void CColorDlg::init()
     {
         connect(pBar, &CColorBar::signal_valueChanged, this, &CColorDlg::slot_barValueChanged);
     }
+
+    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 }
 
 void CColorDlg::show()
 {
+    ui.btnApplyBkgColor->setVisible(!__app.getOption().bUseBkgColor);
+
     setWidgetTextColor(ui.groupBkgColor, g_crFore);
     setWidgetTextColor(ui.groupFontColor, g_crFore);
 
@@ -208,25 +228,6 @@ void CColorDlg::slot_buttonClicked(CButton *pButton)
     else if (ui.btnAddFontBlue == pButton)
     {
         _modifyColor(ui.barFontBlue, 1);
-    }
-    else if (ui.btnApplyBkgColor == pButton)
-    {
-        if (!__app.getOption().bUseBkgColor)
-        {
-            __app.getOption().bUseBkgColor = true;
-
-            __app.mainWnd().updateBkg();
-        }
-        else
-        {
-            __app.mainWnd().update();
-        }
-
-        /*m_bkgDlg.close();
-        this->close();
-#if __windows
-        __app.setForeground();
-#endif*/
     }
 }
 

@@ -5,6 +5,8 @@
 
 #include "dlg/msgbox.h"
 
+#include "dlg/LoginDlg.h"
+
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
@@ -68,7 +70,7 @@ static wstring _genMedialibDir()
 
 bool CApp::_startup()
 {
-    __app.sync([&]{
+    sync([&]{
         m_mainWnd.showLogo();
 /*#if __android
 #if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
@@ -227,42 +229,54 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     }
 #endif
 
+    m_ctrl.start();
+    m_mainWnd.show();
+
     cauto strUser = m_model.user();
     if (!strUser.empty())
     {
-        m_ctrl.start();
-        m_mainWnd.show();
-
-        asyncLogin(strUser, [&](E_LoginReult eRet){
-            if (E_LoginReult::LR_Success != eRet)
-            {
-#if __android
-                vibrate();
-#endif
-                return;
-            }
-
-#if __android
-            showLoginToast(true);
-#endif
-        });
-        return;
+        asyncLogin(strUser);
+    }
+    else
+    {
+        _showLoginDlg();
     }
 }
 
-void CApp::asyncLogin(const string& strUser, cfn_void_t<E_LoginReult> cb)
+void CApp::_showLoginDlg()
+{
+    sync(3000, [&]{
+        _setForeground();
+    #if __android
+        vibrate();
+    #endif
+        static CLoginDlg dlg(m_mainWnd);
+        dlg.show();
+    });
+}
+
+void CApp::asyncLogin(const string& strUser)
 {
     static auto& thr = this->thread();
+    cauto fn = [=]{
+        auto eRet = m_model.login(thr, strUser);
+        if (E_LoginReult::LR_Success == eRet)
+        {
+#if __android
+            showLoginToast(true);
+#endif
+            return;
+        }
+
+        _showLoginDlg();
+    };
+
     if (thr)
     {
         mtutil::thread([=]{
             thr.cancel();
             thr.start([=]{
-               auto eRet = m_model.login(thr, strUser);
-               if (cb)
-               {
-                   cb(eRet);
-               }
+                fn();
             });
         });
     }
@@ -270,11 +284,7 @@ void CApp::asyncLogin(const string& strUser, cfn_void_t<E_LoginReult> cb)
     {
         thr.join();
         thr.start([=]{
-           auto eRet = m_model.login(thr, strUser);
-           if (cb)
-           {
-               cb(eRet);
-           }
+            fn();
         });
     }
 }

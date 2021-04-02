@@ -69,6 +69,12 @@ private:
 
     void _show(E_UpgradeResult eUpgradeResult);
 
+#if __windows
+    void _setForeground();
+#endif
+
+    void _showLoginDlg();
+
 public:
     MainWindow& mainWnd()
     {
@@ -124,9 +130,5 @@ public:
 
     void quit();
 
-#if __windows
-    void _setForeground();
-#endif
-
-    void asyncLogin(const string& strUser, cfn_void_t<E_LoginReult> cb=NULL);
+    void asyncLogin(const string& strUser);
 };
