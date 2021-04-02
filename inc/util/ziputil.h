@@ -254,14 +254,15 @@ public:
         readDir(m_root, cb);
     }
 
-    bool unzip(cwstr strDstDir) const;
+    bool unzipAll(cwstr strDstDir) const;
+
     long unzip(const tagUnzSubFile& unzSubFile, cwstr strDstFile) const;
-    long unzip(cwstr strSubFilePath, cwstr strDstFile) const
+    long unzip(cwstr strSubFile, cwstr strDstFile) const
     {
-        auto itr = m_mapSubfile.find(strSubFilePath);
+        auto itr = m_mapSubfile.find(strSubFile);
         if (itr == m_mapSubfile.end())
         {
-            return -1;
+            return false;
         }
 
         return unzip(*itr->second, strDstFile);
@@ -282,11 +283,11 @@ public:
 
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
-            return CZipFile(strZipFile, strPwd).unzip(strDstDir);
+            return CZipFile(strZipFile, strPwd).unzipAll(strDstDir);
     }
     static bool unzFile(Instream& ins, cwstr strDstDir, const string& strPwd = "")
     {
-            return CZipFile(ins, strPwd).unzip(strDstDir);
+            return CZipFile(ins, strPwd).unzipAll(strDstDir);
     }
 
     static int zCompress(const void *pData, size_t len, CByteBuffer& bbfBuff, int level = 0);

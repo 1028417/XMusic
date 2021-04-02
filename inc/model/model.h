@@ -237,6 +237,7 @@ enum class E_UpgradeResult
 enum class E_LoginReult
 {
     LR_Success,
+    LR_ProfileInvalid,
     LR_NetworkError,
     LR_UserInvalid,
     LR_PwdWrong,
@@ -246,6 +247,7 @@ enum class E_LoginReult
 struct __ModelExt tagOption
 {
     wstring strRootDir;
+
     PairList<wstring, E_AttachDirType> plAttachDir;
 
     UINT uPlayingItem = 0;
@@ -277,9 +279,6 @@ struct __ModelExt tagOption
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;
-
-    string strUser;
-    string strPwd;
 #endif
 };
 
@@ -347,12 +346,6 @@ public:
     virtual CSingerMgr& getSingerMgr() = 0;
     virtual CSingerImgMgr& getSingerImgMgr() = 0;
 
-    virtual bool init(
-#if !__winvc
-        cwstr strWorkDir, cwstr strMedialibDir
-#endif
-    ) = 0;
-
     virtual void close() = 0;
 
     virtual bool initMediaLib(bool bNotify = true) = 0;
@@ -413,7 +406,8 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual E_LoginReult syncLogin(signal_t, const string& strUser, const string& strPwd) = 0;
+    virtual E_LoginReult login(signal_t bRunSignal) = 0;
+    virtual E_LoginReult login(signal_t, const string& strUser) = 0;//, const string& strPwd) = 0;
 #endif
 };
 
@@ -468,12 +462,6 @@ public:
 	{
 		return m_SingerImgMgr;
 	}
-
-    bool init(
-#if !__winvc
-        cwstr strWorkDir, cwstr strMedialibDir
-#endif
-    ) override;
 
     void close() override;
 
@@ -542,7 +530,8 @@ public:
         return m_lstOlBkg;
     }
 
-    E_LoginReult syncLogin(signal_t, const string& strUser, const string& strPwd) override;
+    E_LoginReult login(signal_t bRunSignal) override;
+    E_LoginReult login(signal_t, const string& strUser) override;//, const string& strPwd) override;
 #endif
 
 private:
@@ -550,14 +539,10 @@ private:
 
 	bool _initData(cwstr strDBFile);
 
-	inline cwstr _medialibPath()
-	{
-		return m_Option.strRootDir;
-	}
-	wstring _medialibPath(cwstr strSubPath);
+    wstring _medialibPath(cwstr strSubPath=L"");
 
 #if __winvc
-	wstring _mdlPath();
+    wstring _mdlDir();
 	wstring _mdlPath(cwstr strSubPath);
 
 	wstring _deployPath();

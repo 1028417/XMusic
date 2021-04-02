@@ -677,7 +677,20 @@ public:
 	template <typename S>
     inline static bool writefilex(const S& strFile, bool bTrunc, const void *pData, size_t size)
 	{
-        return writefile(strFile, bTrunc, pData, size, 1) == 1;
+        OFStream ofs(strFile, bTrunc);
+        __EnsureReturn(ofs, false);
+
+        if (size)
+        {
+            if (!ofs.writex(pData, size))
+            {
+                ofs.close();
+                fsutil::removeFile(strFile);
+                return false;
+            }
+        }
+
+        return true;
 	}
 
 	template <typename S, typename T>
