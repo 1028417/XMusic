@@ -157,7 +157,7 @@ struct __ModelExt tagTimerOperateOpt
 using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFail)>&;
 
 #else
-class CUpgradeUrl
+class __ModelExt CUpgradeUrl
 {
 public:
     CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
@@ -180,7 +180,7 @@ public:
     string app() const;
 };
 
-struct tagMdlConf
+struct __ModelExt tagMdlConf
 {
     string strAppVersion;
 
@@ -189,12 +189,9 @@ struct tagMdlConf
     UINT uCompatibleCode = 0;
 
     list<CUpgradeUrl> lstUpgradeUrl;
-
-    //list<string> lstOnlineHBkg;
-    //list<string> lstOnlineVBkg;
 };
 
-struct tagOlBkg
+struct __ModelExt tagOlBkg
 {
     tagOlBkg() = default;
     tagOlBkg(cwstr strFile, UINT cx, UINT cy, uint64_t uFileSize)
@@ -207,7 +204,7 @@ struct tagOlBkg
     uint64_t uFileSize = 0;
 };
 
-struct tagOlBkgList
+struct __ModelExt tagOlBkgList
 {
     wstring catName;
     string accName;
@@ -215,6 +212,8 @@ struct tagOlBkgList
     string artiName;
 
     list<tagOlBkg> lstBkg;
+
+    string url();
 };
 
 enum class E_UpgradeResult

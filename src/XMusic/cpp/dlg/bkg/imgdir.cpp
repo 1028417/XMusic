@@ -534,9 +534,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
 
 bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 {
-    cauto strUrl = "https://" + m_olBkgList.accName + "-generic.pkg.coding.net/"
-            + m_olBkgList.prjName + "/" + m_olBkgList.artiName + "/"
-            + strutil::toAsc(fsutil::GetFileName(strFile));
+    cauto strUrl = m_olBkgList.url() + strutil::toAsc(fsutil::GetFileName(strFile));
 
     tagCurlOpt curlOpt(true);
     CDownloader downloader(curlOpt);
