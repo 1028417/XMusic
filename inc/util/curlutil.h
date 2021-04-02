@@ -28,19 +28,26 @@ struct __UtilExt tagCurlOpt
     string strUserAgent = "curl/7.66.0";
 };
 
-using CB_CURLWrite = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
+using CB_CURL = const function<size_t(char *ptr, size_t size, size_t nmemb)>;
 using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
 struct __UtilExt tagCURlToolHook
 {
-    tagCURlToolHook(CB_CURLWrite& fnWrite, CB_CURLProgress& fnProgress)
+    tagCURlToolHook(CB_CURL& fnWrite, CB_CURLProgress& fnProgress = NULL)
         : fnWrite(fnWrite)
         , fnProgress(fnProgress)
     {
     }
 
-    CB_CURLWrite fnWrite;
+    tagCURlToolHook(CB_CURLProgress& fnProgress, CB_CURL& fnRead = NULL)
+        : fnProgress(fnProgress)
+        , fnRead(fnRead)
+    {
+    }
+
+    CB_CURL fnWrite;
     CB_CURLProgress fnProgress;
+    CB_CURL fnRead;
 };
 
 class __UtilExt curlutil
@@ -49,7 +56,7 @@ public:
     static int initCurl(string& strVerInfo);
     static void freeCurl();
 
-    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURLWrite& cbWrite, CB_CURLProgress& cbProgress = NULL);
+    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURL& cbWrite, CB_CURLProgress& cbProgress = NULL);
 
     static int curlToolPerform(const list<string>& lstParams, tagCURlToolHook *pCURLToolHook = NULL);
 
