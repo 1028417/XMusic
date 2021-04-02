@@ -16,9 +16,9 @@
   <widget class="QLineEdit" name="editUser">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>90</y>
-     <width>620</width>
+     <x>100</x>
+     <y>100</y>
+     <width>600</width>
      <height>80</height>
     </rect>
    </property>
@@ -26,10 +26,10 @@
   <widget class="CButton" name="btnLogin">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>230</y>
-     <width>160</width>
-     <height>80</height>
+     <x>400</x>
+     <y>240</y>
+     <width>120</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -57,10 +57,10 @@
   <widget class="CButton" name="btnCancel">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>230</y>
-     <width>160</width>
-     <height>80</height>
+     <x>580</x>
+     <y>240</y>
+     <width>120</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="autoFillBackground">

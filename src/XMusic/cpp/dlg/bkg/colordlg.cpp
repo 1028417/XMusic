@@ -31,22 +31,10 @@ void CColorDlg::init()
     ui.btnApplyBkgColor->setFont(font);
 
     connect(ui.btnApplyBkgColor, &CButton::signal_clicked, [&]{
-        if (!__app.getOption().bUseBkgColor)
-        {
-            __app.getOption().bUseBkgColor = true;
+        ui.btnApplyBkgColor->setVisible(false);
 
-            __app.mainWnd().updateBkg();
-        }
-        else
-        {
-            __app.mainWnd().update();
-        }
-
-        /*m_bkgDlg.close();
-        this->close();
-#if __windows
-        __app.setForeground();
-#endif*/
+        __app.getOption().bUseBkgColor = true;
+        __app.mainWnd().updateBkg();
     });
 
     for (auto pButton : SList<CButton*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
