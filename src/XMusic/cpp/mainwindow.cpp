@@ -1190,58 +1190,29 @@ void MainWindow::_demand(CButton* btnDemand)
     __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
-void MainWindow::_handleTouchEnd(const CTouchEvent& te)
+void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
+    if (__app.getOption().bUseBkgColor)
+    {
+        return;
+    }
+
     if (g_crLogoBkg.alpha() > 0)
     {
         return;
     }
 
-    if (te.dt() < __fastTouchDt)
-    {
-        auto dx = te.dx();
-        auto dy = te.dy();
-        if (abs(dx) > abs(dy))
-        {
-            if (dx >= 3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
-            }
-            else if (dx <= -3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
-            }
-        }
-        else
-        {
-            if (dy >= 3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, false);
-            }
-            else if (dy <= -3)
-            {
-                m_bkgDlg.switchBkg(m_bHLayout, true);
-            }
-        }
-    }
-}
-
-void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
-{
     static bool bTouchSingerImg = false;
     if (E_TouchEventType::TET_TouchBegin == type)
     {
         bTouchSingerImg = !m_bDefaultBkg && ui.labelSingerImg->pixmap()
                 && ui.labelSingerImg->geometry().contains(te.x(), te.y());
+        return;
     }
-    else if (E_TouchEventType::TET_TouchMove == type)
-    {
-        if (m_bDefaultBkg || __app.getOption().bUseBkgColor)
-        {
-            return;
-        }
 
-        if (g_crLogoBkg.alpha() > 0)
+    if (E_TouchEventType::TET_TouchMove == type)
+    {
+        if (m_bDefaultBkg)
         {
             return;
         }
@@ -1260,6 +1231,32 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             return;
         }
 
-        _handleTouchEnd(te);
+        if (te.dt() < __fastTouchDt)
+        {
+            auto dx = te.dx();
+            auto dy = te.dy();
+            if (abs(dx) > abs(dy))
+            {
+                if (dx >= 3)
+                {
+                    m_bkgDlg.switchBkg(m_bHLayout, false);
+                }
+                else if (dx <= -3)
+                {
+                    m_bkgDlg.switchBkg(m_bHLayout, true);
+                }
+            }
+            else
+            {
+                if (dy >= 3)
+                {
+                    m_bkgDlg.switchBkg(m_bHLayout, false);
+                }
+                else if (dy <= -3)
+                {
+                    m_bkgDlg.switchBkg(m_bHLayout, true);
+                }
+            }
+        }
     }
 }

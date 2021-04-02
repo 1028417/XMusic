@@ -136,8 +136,6 @@ private:
 
     void _demand(CButton* btnDemand);
 
-    void _handleTouchEnd(const CTouchEvent& te);
-
     void _playSingerImg(bool bReset);
     void _playSingerImg();
 
