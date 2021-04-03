@@ -25,8 +25,8 @@ void CDialog::_setPos()
 {
     if (m_bFullScreen)
     {
-        extern void fixWorkArea(QWidget& wnd);
-        fixWorkArea(*this);
+        extern void fixScreen(QWidget& wnd);
+        fixScreen(*this);
     }
     else
     {
@@ -45,26 +45,12 @@ void CDialog::_setPos()
 
 void CDialog::_show(cfn_void cbClose)
 {
-    // 主要mac需要
-    setAttribute(Qt::WA_TranslucentBackground);
-    setAttribute(Qt::WA_NoSystemBackground);
-
-//#if !__android
     if (!m_bFullScreen)
     {
-        QBitmap bmp(this->size());
-        bmp.fill();
-
-        CPainter painter(&bmp);
-        painter.setPen(Qt::transparent);
-        painter.setBrush(Qt::black);
-        painter.drawRectEx(bmp.rect(), __dlgRound);
-        painter.end();
-
-        //setAutoFillBackground(true);
-        this->setMask(bmp);
+        // 主要mac需要
+        setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(Qt::WA_NoSystemBackground);
     }
-//#endif
 
     _setPos();
 

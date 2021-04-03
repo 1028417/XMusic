@@ -202,12 +202,9 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             }
         }
 
-        UINT cyStatusBar = checkAndroidStatusBar();
-        if (cyStatusBar)
-        {
-            y_frameDemand += cyStatusBar;
-            ui.btnFullScreen->move(ui.btnFullScreen->x(), y_frameDemand);
-        }
+        y_frameDemand += checkAndroidStatusBar();
+
+        ui.btnFullScreen->move(ui.btnFullScreen->x(), y_frameDemand);
     }
 
     int x_frameDemand = 0;

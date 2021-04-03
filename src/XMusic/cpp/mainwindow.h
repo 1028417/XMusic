@@ -55,7 +55,8 @@ public:
 
 private:
     bool m_bHLayout = false;
-    E_SingerImgPos m_eSingerImgPos = E_SingerImgPos::SIP_Float;
+    E_SingerImgPos m_eHSingerImgPos = E_SingerImgPos::SIP_Float;
+    E_SingerImgPos m_eVSingerImgPos = E_SingerImgPos::SIP_Float;
 
     QBrush m_brBkg;
     QPixmap m_pmCDCover;

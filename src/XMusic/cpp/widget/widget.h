@@ -391,10 +391,10 @@ protected:
         m_bClicking = false;
     }
 
+    virtual void _onPaint(CPainter&, cqrc rc);
+
 private:
     void paintEvent(QPaintEvent *pe) override;
-
-    virtual void _onPaint(CPainter&, cqrc rc);
 
     void _handleTouchBegin(const CTouchEvent&);
     void _handleTouchEnd(CTouchEvent);
