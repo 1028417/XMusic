@@ -23,7 +23,7 @@ signals:
     void signal_clicked(CButton*);
 
 private:
-    bool event(QEvent *ev) override;
+    void _onPaint(CPainter& painter, cqrc rc) override;
 
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent&) override;
 };

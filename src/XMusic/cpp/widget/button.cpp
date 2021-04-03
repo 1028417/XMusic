@@ -3,38 +3,31 @@
 
 #include "button.h"
 
-bool CButton::event(QEvent *ev)
+void CButton::_onPaint(CPainter& painter, cqrc rc)
 {
-    if (ev->type() == QEvent::Paint)
+    cauto qsText = this->text();
+    if (!qsText.isEmpty())
     {
-        cauto qsText = this->text();
-        if (!qsText.isEmpty())
-        {
-            CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
-            cauto rc = rect();
-            QColor cr = foreColor();
+        CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
+        QColor cr = foreColor();
 
-            cr.setAlpha(13);
-            auto szRound = height()/2;
-            painter.fillRectEx(rc, cr, szRound);
+        cr.setAlpha(13);
+        auto szRound = height()/4;///2;
+        painter.fillRectEx(rc, cr, szRound);
 
-            cr.setAlpha(CPainter::oppTextAlpha(130));
-            painter.drawRectEx(rc, cr, 1, Qt::PenStyle::SolidLine, szRound);
-            painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText, cr);
-
-            return true;
-        }
-        else
-        {
-            if (!m_bPressing)
-            {
-                //unsetOpacityEffect();
-                this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
-            }
-        }
+        cr.setAlpha(CPainter::oppTextAlpha(130));
+        painter.drawRectEx(rc, cr, 1, Qt::PenStyle::SolidLine, szRound);
+        painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText, cr);
     }
-
-    return TWidget::event(ev);
+    else
+    {
+        if (!m_bPressing)
+        {
+            //unsetOpacityEffect();
+            this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
+        }
+        TWidget::_onPaint(painter, rc);
+    }
 }
 
 void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)

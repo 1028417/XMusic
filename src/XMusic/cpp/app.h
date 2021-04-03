@@ -2,6 +2,8 @@
 
 #include "mainwindow.h"
 
+#include "dlg/logindlg.h"
+
 //#include "dlg/msgbox.h"
 
 /*template <typename T>
@@ -57,6 +59,8 @@ private:
 
     MainWindow m_mainWnd;
 
+    CLoginDlg m_loginDlg;
+
     //CMsgBox m_msgbox;
 
 private:
@@ -72,8 +76,6 @@ private:
 #if __windows
     void _setForeground();
 #endif
-
-    void _showLoginDlg();
 
 public:
     MainWindow& mainWnd()

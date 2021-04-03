@@ -5,11 +5,10 @@
 
 #include "dlg/msgbox.h"
 
-#include "dlg/logindlg.h"
-
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
+    , m_loginDlg(m_mainWnd)
 {
 }
 
@@ -232,34 +231,25 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     m_ctrl.start();
     m_mainWnd.show();
 
-    cauto strUser = m_model.user();
-    if (!strUser.empty())
-    {
-        asyncLogin(strUser);
-    }
-    else
-    {
-        _showLoginDlg();
-    }
-}
-
-void CApp::_showLoginDlg()
-{
-    static CLoginDlg dlg(m_mainWnd);
-    sync(3000, [&]{
-        _setForeground();
-    #if __android
-        vibrate();
-    #endif
-        dlg.show();
+    __async(3000, [&]{
+        login(L"");
     });
 }
 
-void CApp::asyncLogin(cwstr strUser)
+void CApp::login(cwstr strUser)
 {
-    static auto& thr = this->thread();
-    cauto fn = [=]{
-        auto eRet = m_model.login(thr, strUser);
+/*#define __artiUrl(acc, prj, arti) (string("https://") + acc + "-generic.pkg.coding.net/" + prj + '/' + arti + '/')
+#define __urlUser __artiUrl("xmusic", "xmusic", "user")
+#define __userBase64(strUser) strutil::base64_encode(strutil::toUtf8(strUser))
+
+    CByteBuffer bbfUserProfile;
+    static CDownloader downloader(4, 8);
+    downloader.syncDownload(g_bRunSignal, __urlUser + __userBase64(strUser), bbfUserProfile, 1);
+    showLoginToast(true);
+
+    return;*/
+
+    m_model.asyncLogin(g_bRunSignal, strUser, [&](E_LoginReult eRet){
         if (E_LoginReult::LR_Success == eRet)
         {
 #if __android
@@ -268,7 +258,33 @@ void CApp::asyncLogin(cwstr strUser)
             return;
         }
 
-        _showLoginDlg();
+        sync(3000, [&]{
+            _setForeground();
+#if __android
+            vibrate();
+#endif
+            m_loginDlg.show();
+        });
+    });
+}
+/*    static auto& thr = this->thread();
+    cauto fn = [=]{
+        auto eRet = m_model.syncLogin(thr, strUser);
+        if (E_LoginReult::LR_Success == eRet)
+        {
+#if __android
+            showLoginToast(true);
+#endif
+            return;
+        }
+
+        sync(3000, [&]{
+            _setForeground();
+#if __android
+            vibrate();
+#endif
+            m_loginDlg.show();
+        });
     };
 
     if (thr)
@@ -287,7 +303,7 @@ void CApp::asyncLogin(cwstr strUser)
             fn();
         });
     }
-}
+}*/
 
 void CApp::quit()
 {
