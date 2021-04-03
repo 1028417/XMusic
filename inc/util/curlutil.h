@@ -144,7 +144,7 @@ public:
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
     void asyncDownload(const string& strUrl, UINT uRetryTime = 0
-            , CB_DownloadProgress cbProgress = NULL, cfn_void_t<int> cbError = NULL);
+            , CB_DownloadProgress cbProgress = NULL, cfn_void_t<int> cbFinish = NULL);
 
     uint64_t cancel();
 };

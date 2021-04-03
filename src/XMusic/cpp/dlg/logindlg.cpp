@@ -19,6 +19,6 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
             return;
         }
         close();
-        __app.asyncLogin(strUser);
+        __app.login(strUser);
     });
 }
