@@ -405,8 +405,6 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual cwstr user() = 0;
-
     virtual void asyncLogin(signal_t bRunSignal, cwstr strUser, cfn_void_t<E_LoginReult> cb) = 0;//, const string& strPwd) = 0;
     virtual E_LoginReult syncLogin(signal_t, cwstr strUser) = 0;//, const string& strPwd) = 0;
 #endif
@@ -531,8 +529,6 @@ public:
         return m_lstOlBkg;
     }
 
-    cwstr user() override;
-
     void asyncLogin(signal_t bRunSignal, cwstr strUser, cfn_void_t<E_LoginReult> cb) override;//, const string& strPwd) override;
     E_LoginReult syncLogin(signal_t, cwstr strUser) override;//, const string& strPwd) override;
 #endif
@@ -569,6 +565,9 @@ private:
     bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
 
     void _localScan(cwstr strDir, E_AttachDirType eType);
+
+    string _getUserBase64(cwstr strUser);
+    E_LoginReult _login(signal_t bRunSignal, CByteBuffer& bbfUserProfile, cwstr strUser);
 #endif
 
     void _close();
