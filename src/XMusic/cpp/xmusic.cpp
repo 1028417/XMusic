@@ -152,7 +152,7 @@ int CAppBase::exec() // 派生将显示空白页
         return nRet;
     }, [=]{
         _init(); //如果同步跑会影响空白页屏幕旋转
-        sync([&](){
+        sync([&]{
             CFont::init(this->font());
             this->setFont(CFont());
         });

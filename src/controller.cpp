@@ -85,7 +85,7 @@ void CXController::start()
 
 #else
     //m_threadPlayCtrl.start(
-    mtutil::thread([&]() {
+    mtutil::thread([&]{
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {

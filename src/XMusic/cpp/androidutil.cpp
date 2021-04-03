@@ -193,35 +193,35 @@ void hideSplashScreen(UINT uMs) //渐变时间
 
 void fullScreen(bool bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
 {
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([=] {
         QtAndroid::androidActivity().callMethod<void>("fullScreen", "(Z)V", jboolean(bSet));
     });
 }
 
 void showTranslucentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示半透明状态栏，实际上只需调用一次true
 {
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([=] {
         QtAndroid::androidActivity().callMethod<void>("showStatusBar", "(Z)V", jboolean(bShow));
     });
 }
 
 void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示透明状态栏
 {
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([=] {
         QtAndroid::androidActivity().callMethod<void>("showTransparentStatusBar", "(Z)V", jboolean(bShow));
     });
 }
 
 void showLoginToast(bool bSuccess)
 {
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([=] {
         QtAndroid::androidActivity().callMethod<void>("showLoginToast", "(Z)V", jboolean(bSuccess));
     });
 }
 
 void showQuitToast()
 {
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([]{
         QtAndroid::androidActivity().callMethod<void>("showQuitToast", "()V");
     });
 }
@@ -241,7 +241,7 @@ void setStatusBar(const QColor& cr, bool bLight)
 // View
 #define SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 0x00002000
 
-    QtAndroid::runOnAndroidThread([=]() {
+    QtAndroid::runOnAndroidThread([=]{
         QAndroidJniObject window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
         window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
