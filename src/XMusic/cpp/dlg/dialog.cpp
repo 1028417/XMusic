@@ -5,8 +5,6 @@
 
 static CDialog* g_pFrontDlg = NULL;
 
-#define __xround 15
-
 void CDialog::resetPos()
 {
     list<CDialog*> lstDlgs;
@@ -43,13 +41,15 @@ void CDialog::_setPos()
     _relayout(cx, cy);
 }
 
+#include <QBitmap>
+
 void CDialog::_show(cfn_void cbClose)
 {
     // 主要mac需要
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_NoSystemBackground);
 
-/*#if !__android
+//#if !__android
     if (!m_bFullScreen)
     {
         QBitmap bmp(this->size());
@@ -58,12 +58,13 @@ void CDialog::_show(cfn_void cbClose)
         CPainter painter(&bmp);
         painter.setPen(Qt::transparent);
         painter.setBrush(Qt::black);
-        painter.drawRectEx(bmp.rect(), __xround);
+        painter.drawRectEx(bmp.rect(), __dlgRound);
         painter.end();
 
+        //setAutoFillBackground(true);
         this->setMask(bmp);
     }
-#endif*/
+//#endif
 
     _setPos();
 
@@ -87,9 +88,7 @@ void CDialog::_show(cfn_void cbClose)
     return;
 #endif
 
-#if !__android //??安卓好像有问题
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
-#endif
 
     this->setVisible(true);
 }
@@ -125,9 +124,16 @@ bool CDialog::event(QEvent *ev)
         break;
 #if __android || __ios
 	case QEvent::KeyRelease:
+#if __android
+        if (Qt::Key_Back != ((QKeyEvent*)ev)->key())
+        {
+            break;
+        }
+#endif
+
         if (!_handleReturn())
         {
-            close(); // 相比5.6.3，5.13.2有bug，必须这样手动clode
+            close(); // 相比5.6.3，5.13.2有bug，必须这样手动close
         }
 
         return true;
@@ -144,11 +150,11 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
     if (!m_bFullScreen)
     {
 #if __android
-        extern QColor g_crLogoBkg;
-        painter.fillRect(rc, g_crLogoBkg);
+        painter.fillRect(rc, bkgColor());
+        return;
 #endif
 
-        painter.fillRectEx(rc, bkgColor(), __xround);
+        painter.fillRectEx(rc, bkgColor(), __dlgRound);
     }
     else
     {

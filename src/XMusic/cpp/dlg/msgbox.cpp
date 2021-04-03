@@ -18,7 +18,8 @@ CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
 
 cqcr CMsgBox::bkgColor() const
 {
-    return QColor(195, 230, 255);
+    static QColor cr(195, 230, 255);
+    return cr;
 }
 
 void CMsgBox::show(QWidget& parent, cqstr qsMsg, cfn_void cbClose)
@@ -26,4 +27,15 @@ void CMsgBox::show(QWidget& parent, cqstr qsMsg, cfn_void cbClose)
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(parent, cbClose);
+}
+
+void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
+{
+#if __android
+    extern QColor g_crLogoBkg;
+    painter.fillRect(rc, g_crLogoBkg);
+    painter.fillRectEx(rc, bkgColor(), __dlgRound);
+    return;
+#endif
+    CDialog::_onPaint(painter, rc);
 }

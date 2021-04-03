@@ -447,10 +447,12 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::KeyRelease:
     {
 #if __android || __ios
-        if (__android && Qt::Key_Back != ((QKeyEvent*)ev)->key())
+#if __android
+        if (Qt::Key_Back != ((QKeyEvent*)ev)->key())
         {
             break;
         }
+#endif
 
         if (NULL == ui.centralWidget || !ui.centralWidget->isVisible())
         {

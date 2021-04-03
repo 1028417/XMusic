@@ -5,7 +5,7 @@
 
 #include "dlg/msgbox.h"
 
-#include "dlg/LoginDlg.h"
+#include "dlg/logindlg.h"
 
 CApp::CApp()
     : m_ctrl(*this, m_model)

@@ -11,6 +11,8 @@
 
 #define __titleFontSize 1.16f
 
+#define __dlgRound 16
+
 class CDialog : public TWidget<QDialog>
 {
 public:

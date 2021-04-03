@@ -27,7 +27,8 @@ CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent)
 
 cqcr CNetworkWarnDlg::bkgColor() const
 {
-    return QColor(195, 230, 255);
+    static QColor cr(195, 230, 255);
+    return cr;
 }
 
 void CNetworkWarnDlg::show(cfn_void cb)

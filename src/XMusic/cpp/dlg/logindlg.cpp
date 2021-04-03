@@ -13,8 +13,12 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
     connect(ui.btnCancel, &CButton::signal_clicked, this, &QDialog::close);
 
     connect(ui.btnLogin, &CButton::signal_clicked, [&]{
-        close();
         cauto strUser = ui.editUser->text().trimmed().toStdWString();
+        if (strUser.empty())
+        {
+            return;
+        }
+        close();
         __app.asyncLogin(strUser);
     });
 }
