@@ -245,12 +245,12 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 
 void CApp::_showLoginDlg()
 {
+    static CLoginDlg dlg(m_mainWnd);
     sync(3000, [&]{
         _setForeground();
     #if __android
         vibrate();
     #endif
-        static CLoginDlg dlg(m_mainWnd);
         dlg.show();
     });
 }

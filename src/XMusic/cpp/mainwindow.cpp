@@ -13,7 +13,7 @@ Ui::MainWindow ui;
 QColor g_crLogoBkg(180, 220, 255);
 
 #if __windows
-inline static void _fixWorkArea(QWidget& wnd)
+static void _fixWorkArea(QWidget& wnd)
 {
     const RECT& rcWorkArea = getWorkArea(g_bFullScreen);
 
@@ -22,27 +22,19 @@ inline static void _fixWorkArea(QWidget& wnd)
     wnd.setGeometry(rcWorkArea.left, rcWorkArea.top, cx, cy);
     ::MoveWindow((HWND)wnd.winId(), rcWorkArea.left, rcWorkArea.top, cx, cy, TRUE);
 }
-#else
-#define _fixWorkArea(wnd)
 #endif
 
-void fixWorkArea(QWidget& wnd)
+void fixScreen(QWidget& wnd)
 {
 #if __android
     //wnd.setWindowState((g_bFullScreen?Qt::WindowFullScreen:Qt::WindowMaximized));// | Qt::WindowActive);
 
-    //java构造函数全屏效果更好，所以统一用jni控制
-    fullScreen(g_bFullScreen);
     wnd.setWindowState(Qt::WindowMaximized);// | Qt::WindowActive);
 
-    if (!g_bFullScreen)
-    {
-        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
-    }
     return;
 #endif
 
-    if (__android || __ios || g_bFullScreen)
+    if (__ios || g_bFullScreen)
     {
         wnd.setWindowState(Qt::WindowFullScreen | Qt::WindowActive); // Mac需要WindowActive
     }
@@ -51,11 +43,30 @@ void fixWorkArea(QWidget& wnd)
         wnd.setWindowState(Qt::WindowMaximized);// | Qt::WindowActive);
     }
 
+#if __windows
     _fixWorkArea(wnd);
+#endif
 }
+
+#if __android
+static void _fullScreen()
+{
+    //java构造函数全屏效果更好，所以统一用jni控制
+    fullScreen(g_bFullScreen);
+
+    if (!g_bFullScreen)
+    {
+        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
+    }
+}
+#endif
 
 void MainWindow::switchFullScreen()
 {
+#if __ios
+    return;
+#endif
+
     g_bFullScreen = !g_bFullScreen;
     __app.getOption().bFullScreen = g_bFullScreen;
 
@@ -66,7 +77,15 @@ void MainWindow::switchFullScreen()
     }
 #endif
 
-    fixWorkArea(*this);
+    fixScreen(*this);
+
+#if __android
+    _fullScreen();
+
+    //__async([&]{
+        _relayout();
+    //});
+#endif
 
 #if __windows
     if (g_bFullScreen)
@@ -93,7 +112,7 @@ MainWindow::MainWindow() :
 #if !__android
 void MainWindow::showBlank()
 {
-    fixWorkArea(*this);
+    fixScreen(*this);
     this->setVisible(true); //必须在前面？？不然ole异常？？
 }
 #endif
@@ -213,10 +232,14 @@ void MainWindow::preinit() // 工作线程
 
 void MainWindow::showLogo()
 {
+#if __android
+    _fullScreen();
+#endif
+
     _init();
 
 #if __android
-    fixWorkArea(*this);
+    fixScreen(*this);
     this->setVisible(true);
 #else
     _relayout();
@@ -423,8 +446,9 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Resize:
         if (this->windowState() != Qt::WindowMinimized)
         {
+#if __windows
             _fixWorkArea(*this);
-
+#endif
             _relayout();
 
             CDialog::resetPos();
@@ -435,7 +459,6 @@ bool MainWindow::event(QEvent *ev)
         _onPaint();
 
         break;
-#if __windows || __mac
     case QEvent::MouseButtonDblClick:
         if (!m_PlayingList.isVisible() || !m_PlayingList.geometry().contains(((QMouseEvent*)ev)->pos()))
         {
@@ -443,7 +466,6 @@ bool MainWindow::event(QEvent *ev)
         }
 
         break;
-#endif
     case QEvent::KeyRelease:
     {
 #if __android || __ios
@@ -555,7 +577,8 @@ void MainWindow::_relayout()
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, m_eSingerImgPos, m_PlayingInfo, m_PlayingList);
+    auto& eSingerImgPos = m_bHLayout?m_eHSingerImgPos:m_eVSingerImgPos;
+    ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
 void MainWindow::_onPaint()
@@ -941,22 +964,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 {
     if (button == ui.btnFullScreen)
     {
-        UINT cyStatusBar = checkAndroidStatusBar();
-
         switchFullScreen();
-
-        if (cyStatusBar)
-        {
-            ui.btnFullScreen->move(ui.btnFullScreen->x(), ui.btnFullScreen->y()-cyStatusBar);
-        }
-        else
-        {
-            cyStatusBar = checkAndroidStatusBar();
-            if (cyStatusBar)
-            {
-                ui.btnFullScreen->move(ui.btnFullScreen->x(), ui.btnFullScreen->y()+cyStatusBar);
-            }
-        }
     }
     else if (button == ui.btnExit)
     {
@@ -1047,10 +1055,11 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 return;
             }*/
 
-            m_eSingerImgPos = E_SingerImgPos((int)m_eSingerImgPos+1);
-            if (m_eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
+            auto& eSingerImgPos = m_bHLayout?m_eHSingerImgPos:m_eVSingerImgPos;
+            eSingerImgPos = E_SingerImgPos((int)eSingerImgPos+1);
+            if (eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
-                m_eSingerImgPos = E_SingerImgPos::SIP_Float;
+                eSingerImgPos = E_SingerImgPos::SIP_Float;
             }
 
             _relayout();
