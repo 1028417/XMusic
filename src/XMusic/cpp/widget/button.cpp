@@ -12,7 +12,7 @@ void CButton::_onPaint(CPainter& painter, cqrc rc)
         QColor cr = foreColor();
 
         cr.setAlpha(13);
-        auto szRound = height()/4;///2;
+        auto szRound = height()/3;///2;
         painter.fillRectEx(rc, cr, szRound);
 
         cr.setAlpha(CPainter::oppTextAlpha(130));

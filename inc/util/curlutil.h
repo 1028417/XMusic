@@ -195,13 +195,17 @@ private:
         }
 
         auto ptr = buff.resizeMore(uReadSize);
-        size_t size = (size_t)MAX(0, getData((byte_p)ptr, uReadSize));
-        if (size < uReadSize)
+        auto size = getData((byte_p)ptr, uReadSize);
+        if (size < 0)
         {
-            buff.resizeLess(uReadSize - size);
+            size = 0;
+        }
+        if ((size_t)size < uReadSize)
+        {
+            buff.resizeLess(uReadSize - (size_t)size);
         }
 
-        return size;
+        return (size_t)size;
     }
 
 public:

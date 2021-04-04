@@ -23,7 +23,8 @@ void CListView::showItem(UINT uItem, bool bToCenter)
     auto uRow = uItem/getColCount();
     if (bToCenter)
     {
-        auto fPos = MAX(.0f, (float)uRow - (getRowCount()-1)/2);
+        auto fPos = (float)uRow - (getRowCount()-1)/2;
+        fPos = MAX(.0f, fPos);
         scroll(fPos);
     }
     else

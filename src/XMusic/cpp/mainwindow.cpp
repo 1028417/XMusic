@@ -625,6 +625,11 @@ void MainWindow::_onPaint()
 
 bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
 {
+    if (__app.getOption().bUseBkgColor)
+    {
+        return false;
+    }
+
     cauto pmBkg = bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
     if (pmBkg.isNull())
     {
