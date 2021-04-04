@@ -131,16 +131,33 @@ bool CDialog::event(QEvent *ev)
     return TWidget::event(ev);
 }
 
+inline static void _crRevert(QColor& cr, int alpha=10)
+{
+    cr.setRed(255-cr.red());
+    cr.setGreen(255-cr.green());
+    cr.setBlue(255-cr.blue());
+    cr.setAlpha(alpha);
+}
+
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     if (!m_bFullScreen)
     {
+        auto cr = bkgColor();
+
 #if __android
-        painter.fillRect(rc, bkgColor());
+        painter.fillRect(rc, cr);
+
+        _crRevert(cr);
+        painter.drawRect(rc, cr);
+
         return;
 #endif
 
-        painter.fillRectEx(rc, bkgColor(), __dlgRound);
+        painter.fillRectEx(rc, cr, __dlgRound);
+
+        _crRevert(cr);
+        painter.drawRectEx(rc, cr, __dlgRound);
     }
     else
     {
