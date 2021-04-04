@@ -399,7 +399,7 @@ public:
     virtual wstring androidOrgPath(cwstr strSubPath) = 0;
 #endif
 
-    virtual E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
+    virtual E_UpgradeResult upgradeMdl(signal_t bRunSignal, CByteBuffer& bbfConf, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
 
     virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
 
@@ -517,7 +517,7 @@ public:
     wstring androidOrgPath(cwstr strSubPath) override;
 #endif
 
-	E_UpgradeResult upgradeMdl(CByteBuffer& bbfConf, signal_t bRunSignal, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
+    E_UpgradeResult upgradeMdl(signal_t bRunSignal, CByteBuffer& bbfConf, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
 
     const list<CUpgradeUrl>& upgradeUrl() const override
     {
@@ -562,7 +562,7 @@ private:
 
     void _initOlBkg(CByteBuffer& bbfOlBkg);
 
-    bool _upgradeApp(const list<CUpgradeUrl>& lstUpgradeUrl, signal_t bRunSignal, UINT& uAppUpgradeProgress);
+    bool _upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
 
     void _localScan(cwstr strDir, E_AttachDirType eType);
 

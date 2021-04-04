@@ -95,7 +95,7 @@ bool CApp::_startup()
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         auto time0 = time(0);
         extern int g_nAppUpgradeProgress;
-        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(bbfConf, g_bRunSignal
+        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(g_bRunSignal, bbfConf
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
         if (E_UpgradeResult::UR_Success != eUpgradeResult)
         {
@@ -238,17 +238,6 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 
 void CApp::login(cwstr strUser)
 {
-/*#define __artiUrl(acc, prj, arti) (string("https://") + acc + "-generic.pkg.coding.net/" + prj + '/' + arti + '/')
-#define __urlUser __artiUrl("xmusic", "xmusic", "user")
-#define __userBase64(strUser) strutil::base64_encode(strutil::toUtf8(strUser))
-
-    CByteBuffer bbfUserProfile;
-    static CDownloader downloader(4, 8);
-    downloader.syncDownload(g_bRunSignal, __urlUser + __userBase64(strUser), bbfUserProfile, 1);
-    showLoginToast(true);
-
-    return;*/
-
     m_model.asyncLogin(g_bRunSignal, strUser, [&](E_LoginReult eRet){
         if (E_LoginReult::LR_Success == eRet)
         {
