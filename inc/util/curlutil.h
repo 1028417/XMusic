@@ -143,8 +143,8 @@ public:
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);
 
-    void asyncDownload(const string& strUrl, UINT uRetryTime = 0
-            , CB_DownloadProgress cbProgress = NULL, cfn_void_t<int> cbFinish = NULL);
+    void asyncDownload(const string& strUrl, UINT uRetryTime, cfn_void_t<int> cbFinish
+            , CB_DownloadProgress cbProgress = NULL);
 
     uint64_t cancel();
 };
@@ -215,12 +215,9 @@ public:
         return _syncDownload(strUrl, bbfData, uRetryTime, cbProgress);
     }
 
-    int syncDownload(const bool& bRunSiganl, const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0)
+    int syncDownload(signal_t bRunSiganl, const string& strUrl, CByteBuffer& bbfData, UINT uRetryTime = 0)
     {
-        return _syncDownload(strUrl, bbfData, uRetryTime, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
-            (void)beginTime;
-            (void)dltotal;
-            (void)dlnow;
+        return _syncDownload(strUrl, bbfData, uRetryTime, [&](time_t, int64_t, int64_t){
             return bRunSiganl;
         });
     }
@@ -231,12 +228,23 @@ public:
         return _syncDownload(strUrl, cbfData, uRetryTime, cbProgress);
     }
 
-    int syncDownload(const bool& bRunSiganl, const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0)
+    int syncDownload(signal_t bRunSiganl, const string& strUrl, CCharBuffer& cbfData, UINT uRetryTime = 0)
     {
-        return _syncDownload(strUrl, cbfData, uRetryTime, [&](time_t beginTime, int64_t dltotal, int64_t dlnow){
-            (void)beginTime;
-            (void)dltotal;
-            (void)dlnow;
+        return _syncDownload(strUrl, cbfData, uRetryTime, [&](time_t, int64_t, int64_t){
+            return bRunSiganl;
+        });
+    }
+
+    void asyncDownload(const string& strUrl, UINT uRetryTime, cfn_void_t<int> cbFinish
+            , CB_DownloadProgress cbProgress = NULL)
+    {
+        CCurlDownload::asyncDownload(strUrl, uRetryTime, cbFinish, cbProgress);
+    }
+
+    void asyncDownload(signal_t bRunSiganl, const string& strUrl, UINT uRetryTime
+            , cfn_void_t<int> cbFinish)
+    {
+        CCurlDownload::asyncDownload(strUrl, uRetryTime, cbFinish, [&](time_t, int64_t, int64_t){
             return bRunSiganl;
         });
     }
