@@ -131,11 +131,11 @@ bool CDialog::event(QEvent *ev)
     return TWidget::event(ev);
 }
 
-QColor _crOffset(cqcr cr, UINT uOffset, int alpha=255)
+QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 {
-    auto r = cr.red() > 127 ? cr.red()-uOffset : cr.red()+uOffset;
-    auto g = cr.green() > 127 ? cr.green()-uOffset : cr.green()+uOffset;
-    auto b = cr.blue() > 127 ? cr.blue()-uOffset : cr.blue()+uOffset;
+    auto r = cr.red() > 127 ? (cr.red()-uOffset) : (cr.red()+uOffset);
+    auto g = cr.green() > 127 ? (cr.green()-uOffset) : (cr.green()+uOffset);
+    auto b = cr.blue() > 127 ? (cr.blue()-uOffset) : (cr.blue()+uOffset);
 
     return QColor(r,g,b,alpha);
 }
@@ -144,8 +144,7 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     if (!m_bFullScreen)
     {
-        auto crBorder = bkgColor();
-        _crOffset(crBorder, 15, 100);
+        cauto crBorder = _crOffset(bkgColor(), 13);
 
 #if __android
         painter.fillRect(rc, bkgColor());

@@ -139,11 +139,11 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        extern QColor _crOffset(cqcr cr, UINT uOffset, int alpha);
-        auto cr = _crOffset(g_crFore, 30, 100);
+        extern QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha);
+        auto cr = _crOffset(g_crBkg, 13, 255);
         painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
 
-        cr.setAlpha(128);
+        //cr.setAlpha(cr.alpha()/2);
 
         int len = MIN(rc.width(), rc.height())/4;
 #define __szAdd __size(4)

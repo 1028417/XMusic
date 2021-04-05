@@ -231,7 +231,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     m_ctrl.start();
     m_mainWnd.show();
 
-    __async(3000, [&]{
+    __async(2000, [&]{
         login();
     });
 }
