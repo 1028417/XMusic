@@ -566,7 +566,7 @@ private:
 
     void _localScan(cwstr strDir, E_AttachDirType eType);
 
-    wstring _getUser(cwstr strUser);
+    wstring _getUser(cwstr strUser, string& strPwd);
     E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfUserProfile, cwstr strUser, const string& strPwd);
 #endif
 

@@ -232,7 +232,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     m_mainWnd.show();
 
     __async(3000, [&]{
-        login(L"");
+        login(L"", "");
     });
 }
 
