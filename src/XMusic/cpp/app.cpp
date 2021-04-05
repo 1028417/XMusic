@@ -219,7 +219,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
         vibrate();
 
         static CNetworkWarnDlg dlg(m_mainWnd);
-        dlg.show([&]{            
+        dlg.show([&]{
             m_ctrl.start();
             m_mainWnd.show();
         });
