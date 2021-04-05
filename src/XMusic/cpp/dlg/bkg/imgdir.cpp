@@ -411,8 +411,6 @@ bool COlBkgDir::_genIcon()
     return true;
 }
 
-#include "../../../Common2.1/3rd/curl/include/curl/curl.h"
-
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
     auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
@@ -532,6 +530,8 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     });
 }
 
+//#include "../../../Common2.1/3rd/curl/include/curl/curl.h"
+
 bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 {
     cauto strUrl = m_olBkgList.url() + strutil::toAsc(fsutil::GetFileName(strFile));
@@ -542,13 +542,17 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
     int nRet = downloader.syncDownload(thread, strUrl, bbfBkg);
     if (nRet != 0)
     {
-        if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
-            || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
-            || CURLcode::CURLE_COULDNT_CONNECT == nRet)
+        if (-404 == nRet)
         {
+            g_logger << "bkg not exist: " >> strUrl;
+        }
+        else /*if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
+            || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
+            || CURLcode::CURLE_COULDNT_CONNECT == nRet)*/
+        {
+            g_logger << "dowloadBkg fail: " >> strUrl;
             (void)thread.usleep(5000);
         }
-        g_logger << "dowloadBkg fail: " >> strUrl;
         return false;
     }
 

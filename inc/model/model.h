@@ -236,9 +236,9 @@ enum class E_UpgradeResult
 enum class E_LoginReult
 {
     LR_Success,
-    LR_ProfileInvalid,
     LR_NetworkError,
     LR_UserInvalid,
+    LR_ProfileInvalid,
     LR_PwdWrong,
     LR_MutiLogin
 };

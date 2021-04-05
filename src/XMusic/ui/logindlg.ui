@@ -117,7 +117,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>用户</string>
+    <string>账号</string>
    </property>
   </widget>
   <widget class="CLabel" name="labelPwd">
@@ -133,7 +133,7 @@
     <string>密码</string>
    </property>
   </widget>
-  <widget class="CLabel" name="labelUser_2">
+  <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
      <x>90</x>
