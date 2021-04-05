@@ -267,7 +267,7 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
                 {
                     return;
                 }
-                login(L"", "", true);
+                (void)login(L"", "", true);
             });
 #if __android
             if (!bRelogin)

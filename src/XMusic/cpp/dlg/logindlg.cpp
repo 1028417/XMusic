@@ -23,6 +23,6 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
 
         close();
 
-        __app.login(strUser, strPwd);
+        (void)__app.login(strUser, strPwd);
     });
 }
