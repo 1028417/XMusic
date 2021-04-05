@@ -132,5 +132,5 @@ public:
 
     void quit();
 
-    void login(cwstr strUser);
+    void login(cwstr strUser, const string& strPwd);
 };

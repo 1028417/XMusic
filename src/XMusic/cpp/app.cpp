@@ -236,9 +236,9 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     });
 }
 
-void CApp::login(cwstr strUser)
+void CApp::login(cwstr strUser, const string& strPwd)
 {
-    m_model.asyncLogin(g_bRunSignal, strUser, [&](E_LoginReult eRet){
+    m_model.asyncLogin(g_bRunSignal, strUser, strPwd, [&](E_LoginReult eRet){
         if (E_LoginReult::LR_Success == eRet)
         {
 #if __android
@@ -258,7 +258,7 @@ void CApp::login(cwstr strUser)
 }
 /*    static auto& thr = this->thread();
     cauto fn = [=]{
-        auto eRet = m_model.syncLogin(thr, strUser);
+        auto eRet = m_model.syncLogin(thr, strUser, strPwd);
         if (E_LoginReult::LR_Success == eRet)
         {
 #if __android

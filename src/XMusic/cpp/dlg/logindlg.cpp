@@ -18,7 +18,11 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
         {
             return;
         }
+
+        cauto strPwd = ui.editPwd->text().trimmed().toStdString();
+
         close();
-        __app.login(strUser);
+
+        __app.login(strUser, strPwd);
     });
 }
