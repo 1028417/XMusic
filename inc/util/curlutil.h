@@ -33,9 +33,7 @@ using CB_CURLProgress = const function<int(int64_t dltotal, int64_t dlnow)>;
 
 class tagCURlToolHook
 {
-    friend class tagCURlToolDownloadHook;
-    friend class tagCURlToolUploadHook;
-private:
+protected:
     tagCURlToolHook(CB_CURLProgress& fnProgress, CB_CURL& fnWrite, CB_CURL& fnRead)
         : fnProgress(fnProgress)
         , fnWrite(fnWrite)
@@ -56,6 +54,13 @@ public:
         : tagCURlToolHook(fnProgress, fnWrite, NULL)
     {
     }
+
+    tagCURlToolDownloadHook(signal_t bRunSignal, CB_CURL& fnWrite=NULL)
+        : tagCURlToolHook([&](int64_t, int64_t){
+        return bRunSignal;
+    }, fnWrite, NULL)
+    {
+    }
 };
 
 class __UtilExt tagCURlToolUploadHook : public tagCURlToolHook
@@ -63,6 +68,13 @@ class __UtilExt tagCURlToolUploadHook : public tagCURlToolHook
 public:
     tagCURlToolUploadHook(CB_CURLProgress& fnProgress, CB_CURL& fnRead=NULL)
         : tagCURlToolHook(fnProgress, NULL, fnRead)
+    {
+    }
+
+    tagCURlToolUploadHook(signal_t bRunSignal, CB_CURL& fnRead=NULL)
+        : tagCURlToolHook([&](int64_t, int64_t){
+        return bRunSignal;
+    }, NULL, fnRead)
     {
     }
 };

@@ -247,7 +247,7 @@ void CApp::_showLoginDlg(E_LoginReult eRet)
     _setForeground();
 #endif
 
-    m_loginDlg.show();
+    m_loginDlg.show(eRet);
 }
 
 bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)

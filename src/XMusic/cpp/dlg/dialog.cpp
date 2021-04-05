@@ -144,7 +144,7 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     if (!m_bFullScreen)
     {
-        cauto crBorder = _crOffset(bkgColor(), 13);
+        cauto crBorder = _crOffset(bkgColor(), 14);
 
 #if __android
         painter.fillRect(rc, bkgColor());

@@ -26,3 +26,8 @@ CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
         (void)__app.login(strUser, strPwd);
     });
 }
+
+void CLoginDlg::show(E_LoginReult eRet)
+{
+    CDialog::show();
+}
