@@ -406,7 +406,7 @@ public:
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
-    virtual void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) = 0;
+    virtual bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) = 0;
 #endif
 };
 
@@ -529,7 +529,7 @@ public:
         return m_lstOlBkg;
     }
 
-    void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) override;
+    bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) override;
 #endif
 
 private:
