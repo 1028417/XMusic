@@ -240,6 +240,7 @@ enum class E_LoginReult
     LR_NetworkError,
     LR_UserInvalid,
     LR_PwdWrong,
+    LR_MutiLogin
 };
 #endif
 
@@ -406,7 +407,6 @@ public:
     virtual const list<tagOlBkgList>& olBkg() const = 0;
 
     virtual void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) = 0;
-    virtual E_LoginReult syncLogin(signal_t, cwstr strUser, const string& strPwd) = 0;
 #endif
 };
 
@@ -530,7 +530,6 @@ public:
     }
 
     void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) override;
-    E_LoginReult syncLogin(signal_t, cwstr strUser, const string& strPwd) override;
 #endif
 
 private:
@@ -566,8 +565,7 @@ private:
 
     void _localScan(cwstr strDir, E_AttachDirType eType);
 
-    wstring _getUser(cwstr strUser, string& strPwd);
-    E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfUserProfile, cwstr strUser, const string& strPwd);
+    E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfProfile, cwstr strUser, const string& strPwd);
 #endif
 
     void _close();

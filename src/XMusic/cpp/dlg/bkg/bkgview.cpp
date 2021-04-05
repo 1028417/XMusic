@@ -139,22 +139,8 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        /*int r = g_crBkg.red();
-        int g = g_crBkg.green();
-        int b = g_crBkg.blue();
-        QColor cr(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128);
-        int d = abs(cr.red()+cr.green()+cr.blue()-g_crBkg.red()-g_crBkg.green()-g_crBkg.blue());
-        if (abs(d) == 128)
-        {
-            cr.setAlpha(100);
-        }
-        else
-        {
-            cr.setAlpha(50);
-        }*/
-        auto cr = g_crFore;
-        cr.setAlpha(100);
-
+        extern QColor _crOffset(cqcr cr, UINT uOffset, int alpha);
+        auto cr = _crOffset(g_crFore, 30, 100);
         painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
 
         cr.setAlpha(128);

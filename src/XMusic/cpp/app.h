@@ -132,5 +132,5 @@ public:
 
     void quit();
 
-    void login(cwstr strUser, const string& strPwd);
+    void login(cwstr strUser=L"", const string& strPwd="", bool bRelogin=false);
 };

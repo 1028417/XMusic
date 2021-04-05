@@ -232,28 +232,51 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     m_mainWnd.show();
 
     __async(3000, [&]{
-        login(L"", "");
+        login();
     });
 }
 
-void CApp::login(cwstr strUser, const string& strPwd)
+void CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 {
-    m_model.asyncLogin(g_bRunSignal, strUser, strPwd, [&](E_LoginReult eRet){
-        if (E_LoginReult::LR_Success == eRet)
+    static UINT s_uSeq = 0;
+    auto uSeq = ++s_uSeq;
+    m_model.asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
+        if (uSeq != s_uSeq)
         {
-#if __android
-            showLoginToast(true);
-#endif
             return;
         }
 
-        sync(3000, [&]{
-            _setForeground();
+        if (E_LoginReult::LR_Success == eRet)
+        {
+            sync(6e5, [=]{
+                if (uSeq != s_uSeq)
+                {
+                    return;
+                }
+                login(L"", "", true);
+            });
 #if __android
-            vibrate();
+            if (!bRelogin)
+            {
+                showLoginToast(true);
+                vibrate();
+            }
 #endif
-            m_loginDlg.show();
-        });
+        }
+        else
+        {
+            sync(3000, [=]{
+                if (uSeq != s_uSeq)
+                {
+                    return;
+                }
+                _setForeground();
+                m_loginDlg.show();
+#if __android
+                vibrate();
+#endif
+            });
+        }
     });
 }
 /*    static auto& thr = this->thread();

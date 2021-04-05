@@ -131,57 +131,30 @@ bool CDialog::event(QEvent *ev)
     return TWidget::event(ev);
 }
 
-static void _crOffset(QColor& cr, int alpha=128)
+QColor _crOffset(cqcr cr, UINT uOffset, int alpha=255)
 {
-    if (cr.red() > 127)
-    {
-        cr.setRed(cr.red()-10);
-    }
-    else
-    {
-        cr.setRed(cr.red()+10);
-    }
+    auto r = cr.red() > 127 ? cr.red()-uOffset : cr.red()+uOffset;
+    auto g = cr.green() > 127 ? cr.green()-uOffset : cr.green()+uOffset;
+    auto b = cr.blue() > 127 ? cr.blue()-uOffset : cr.blue()+uOffset;
 
-    if (cr.green() > 127)
-    {
-        cr.setGreen(cr.green()-10);
-    }
-    else
-    {
-        cr.setGreen(cr.green()+10);
-    }
-
-    if (cr.blue() > 127)
-    {
-        cr.setBlue(cr.blue()-10);
-    }
-    else
-    {
-        cr.setBlue(cr.blue()+10);
-    }
-
-    cr.setAlpha(alpha);
+    return QColor(r,g,b,alpha);
 }
 
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     if (!m_bFullScreen)
     {
-        auto cr = bkgColor();
+        auto crBorder = bkgColor();
+        _crOffset(crBorder, 15, 100);
 
 #if __android
-        painter.fillRect(rc, cr);
-
-        _crOffset(cr);
-        painter.drawRectEx(rc, cr);
-
+        painter.fillRect(rc, bkgColor());
+        painter.drawRectEx(rc, crBorder);
         return;
 #endif
 
-        painter.fillRectEx(rc, cr, __dlgRound);
-
-        _crOffset(cr);
-        painter.drawRectEx(rc, cr, 1, Qt::SolidLine, __dlgRound);
+        painter.fillRectEx(rc, bkgColor(), __dlgRound);
+        painter.drawRectEx(rc, crBorder, 1, Qt::SolidLine, __dlgRound);
     }
     else
     {
