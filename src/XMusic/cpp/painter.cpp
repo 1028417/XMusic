@@ -245,8 +245,8 @@ void CPainter::drawRectEx(cqrc rc, cqcr cr, UINT uWidth, Qt::PenStyle style, UIN
     this->save();
 
     QPen pen;
-    pen.setWidth(uWidth);
     pen.setColor(cr);
+    pen.setWidth(uWidth);
     pen.setStyle(style);
     this->setPen(pen);
 

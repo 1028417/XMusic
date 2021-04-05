@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>400</height>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>100</y>
-     <width>600</width>
+     <y>140</y>
+     <width>400</width>
      <height>80</height>
     </rect>
    </property>
@@ -32,10 +32,10 @@
   <widget class="CButton" name="btnLogin">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>240</y>
-     <width>120</width>
-     <height>70</height>
+     <x>570</x>
+     <y>140</y>
+     <width>140</width>
+     <height>80</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -60,32 +60,29 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="CButton" name="btnCancel">
+  <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>240</y>
-     <width>120</width>
-     <height>70</height>
+     <x>710</x>
+     <y>10</y>
+     <width>80</width>
+     <height>85</height>
     </rect>
    </property>
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">border-image: url(:/img/btnX.png);</string>
    </property>
    <property name="text">
-    <string>取消</string>
+    <string/>
    </property>
    <property name="iconSize">
     <size>
      <width>100</width>
      <height>100</height>
     </size>
-   </property>
-   <property name="checkable">
-    <bool>false</bool>
    </property>
    <property name="flat">
     <bool>false</bool>

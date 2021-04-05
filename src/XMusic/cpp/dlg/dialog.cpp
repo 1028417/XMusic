@@ -131,11 +131,35 @@ bool CDialog::event(QEvent *ev)
     return TWidget::event(ev);
 }
 
-inline static void _crRevert(QColor& cr, int alpha=10)
+static void _crOffset(QColor& cr, int alpha=128)
 {
-    cr.setRed(255-cr.red());
-    cr.setGreen(255-cr.green());
-    cr.setBlue(255-cr.blue());
+    if (cr.red() > 127)
+    {
+        cr.setRed(cr.red()-10);
+    }
+    else
+    {
+        cr.setRed(cr.red()+10);
+    }
+
+    if (cr.green() > 127)
+    {
+        cr.setGreen(cr.green()-10);
+    }
+    else
+    {
+        cr.setGreen(cr.green()+10);
+    }
+
+    if (cr.blue() > 127)
+    {
+        cr.setBlue(cr.blue()-10);
+    }
+    else
+    {
+        cr.setBlue(cr.blue()+10);
+    }
+
     cr.setAlpha(alpha);
 }
 
@@ -148,16 +172,16 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
 #if __android
         painter.fillRect(rc, cr);
 
-        _crRevert(cr);
-        painter.drawRect(rc, cr);
+        _crOffset(cr);
+        painter.drawRectEx(rc, cr);
 
         return;
 #endif
 
         painter.fillRectEx(rc, cr, __dlgRound);
 
-        _crRevert(cr);
-        painter.drawRectEx(rc, cr, __dlgRound);
+        _crOffset(cr);
+        painter.drawRectEx(rc, cr, 1, Qt::SolidLine, __dlgRound);
     }
     else
     {
