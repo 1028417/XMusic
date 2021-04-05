@@ -57,7 +57,11 @@ public:
 
     tagCURlToolDownloadHook(signal_t bRunSignal, CB_CURL& fnWrite=NULL)
         : tagCURlToolHook([&](int64_t, int64_t){
-        return bRunSignal;
+        if (!bRunSignal)
+        {
+            return -1;
+        }
+        return 0;
     }, fnWrite, NULL)
     {
     }
@@ -73,7 +77,11 @@ public:
 
     tagCURlToolUploadHook(signal_t bRunSignal, CB_CURL& fnRead=NULL)
         : tagCURlToolHook([&](int64_t, int64_t){
-        return bRunSignal;
+        if (!bRunSignal)
+        {
+            return -1;
+        }
+        return 0;
     }, NULL, fnRead)
     {
     }
