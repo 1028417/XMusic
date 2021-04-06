@@ -397,6 +397,8 @@ public:
     }
 
 #else
+	wstring deployPath(cwstr strSubPath);
+
 	CBackupMgr& getBackupMgr() override
 	{
 		return m_BackupMgr;
@@ -455,10 +457,7 @@ private:
 #if __winvc
     wstring _mdlDir();
 	wstring _mdlPath(cwstr strSubPath);
-
-	wstring _deployPath();
-	wstring _deployPath(cwstr strSubPath);
-
+	
     bool _updateDir(cwstr strOldPath, cwstr strNewPath);
 	
 	bool _deployXmsc(CMediaDir& dir, CB_DeployArti cb, UINT& uCount);
