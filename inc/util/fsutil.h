@@ -301,6 +301,9 @@ public:
 	static bool removeDirTree(cwstr strDir);
 
     static bool removeDir(cwstr strDir);
+    static bool removeDir(const string& strDir);
+
+    static bool removeFile(const string& strFile);
     static bool removeFile(cwstr strFile);
 
 	static bool moveFile(cwstr strSrcFile, cwstr strDstFile, bool bReplaceExisting=false);

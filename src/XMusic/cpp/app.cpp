@@ -254,7 +254,7 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 {
     static UINT s_uSeq = 0;
     auto uSeq = ++s_uSeq;
-    return m_model.asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
+    return m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
         if (uSeq != s_uSeq)
         {
             return;
@@ -262,7 +262,7 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 
         if (E_LoginReult::LR_Success == eRet)
         {
-            sync(6e4, [=]{
+            sync(6e5, [=]{
                 if (uSeq != s_uSeq)
                 {
                     return;

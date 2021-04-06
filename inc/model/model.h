@@ -232,16 +232,6 @@ enum class E_UpgradeResult
 
     UR_InitMediaLibFail
 };
-
-enum class E_LoginReult
-{
-    LR_Success,
-    LR_NetworkError,
-    LR_UserInvalid,
-    LR_ProfileInvalid,
-    LR_PwdWrong,
-    LR_MutiLogin
-};
 #endif
 
 struct __ModelExt tagOption
@@ -304,6 +294,8 @@ struct __ModelExt tagOption
 
 #include "SingerImgMgr.h"
 
+#include "UserMgr.h"
+
 class IModelObserver
 {
 public:
@@ -338,6 +330,8 @@ public:
 class IModel
 {
 public:
+	virtual CUserMgr& getUserMgr() = 0;
+
     virtual CDataMgr& getDataMgr() = 0;
 
     virtual CPlaylistMgr& getPlaylistMgr() = 0;
@@ -405,8 +399,6 @@ public:
     virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
 
     virtual const list<tagOlBkgList>& olBkg() const = 0;
-
-    virtual bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) = 0;
 #endif
 };
 
@@ -426,8 +418,8 @@ private:
 #if __winvc
 	CBackupMgr m_BackupMgr;
 #else
-    list<CUpgradeUrl> m_lstUpgradeUrl;
-    list<tagOlBkgList> m_lstOlBkg;
+	list<CUpgradeUrl> m_lstUpgradeUrl;
+	list<tagOlBkgList> m_lstOlBkg;
 #endif
 
 	CSingerMgr m_SingerMgr;
@@ -436,7 +428,14 @@ private:
 	CPlaylistMgr m_PlaylistMgr;
 	CPlayMgr m_PlayMgr;
 
+	CUserMgr m_UserMgr;
+
 public:
+	CUserMgr& getUserMgr() override
+	{
+		return m_UserMgr;
+	}
+
 	CDataMgr& getDataMgr() override
 	{
 		return m_DataMgr;
@@ -528,8 +527,6 @@ public:
     {
         return m_lstOlBkg;
     }
-
-    bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb) override;
 #endif
 
 private:
@@ -562,8 +559,6 @@ private:
     void _initOlBkg(CByteBuffer& bbfOlBkg);
 
     bool _upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
-
-    void _localScan(cwstr strDir, E_AttachDirType eType);
 
     E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfProfile, cwstr strUser, const string& strPwd);
 #endif
