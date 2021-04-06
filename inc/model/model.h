@@ -155,83 +155,6 @@ struct __ModelExt tagTimerOperateOpt
 };
 
 using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFail)>&;
-
-#else
-class __ModelExt CUpgradeUrl
-{
-public:
-    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
-        : m_strBaseUrl(strBaseUrl)
-        , m_strPostFix(strPostFix)
-    {
-    }
-
-private:
-    string m_strBaseUrl;
-    string m_strPostFix;
-
-public:
-    string mdlconf() const;
-
-    string mdl() const;
-
-    string singerimg(const string& strFile) const;
-
-    string app() const;
-};
-
-struct __ModelExt tagMdlConf
-{
-    string strAppVersion;
-
-    UINT uMdlVersion = 0;
-
-    UINT uCompatibleCode = 0;
-
-    list<CUpgradeUrl> lstUpgradeUrl;
-};
-
-struct __ModelExt tagOlBkg
-{
-    tagOlBkg() = default;
-    tagOlBkg(cwstr strFile, UINT cx, UINT cy, uint64_t uFileSize)
-        : strFile(strFile), cx(cx), cy(cy), uFileSize(uFileSize)
-    {
-    }
-    wstring strFile;
-    UINT cx = 0;
-    UINT cy = 0;
-    uint64_t uFileSize = 0;
-};
-
-struct __ModelExt tagOlBkgList
-{
-    wstring catName;
-    string accName;
-    string prjName;
-    string artiName;
-
-    list<tagOlBkg> lstBkg;
-
-    string url();
-};
-
-enum class E_UpgradeResult
-{
-    UR_Success,
-    UR_Fail,
-
-    UR_DownloadFail,
-    UR_MedialibInvalid,
-    UR_ReadMedialibFail,
-
-    UR_MedialibUnmatch,
-    UR_MedialibUncompatible,
-    UR_AppUpgradeFail,
-    UR_AppUpgraded,
-
-    UR_InitMediaLibFail
-};
 #endif
 
 struct __ModelExt tagOption
@@ -282,6 +205,9 @@ struct __ModelExt tagOption
 #include "MediaMixer.h"
 
 #include "BackupMgr.h"
+
+#else
+#include "MdlMgr.h"
 #endif
 
 #include "MediaOpaque.h"
@@ -344,7 +270,10 @@ public:
 
     virtual bool initMediaLib(bool bNotify = true) = 0;
 
-#if __winvc
+#if !__winvc
+    virtual CMdlMgr& getMdlMgr() = 0;
+
+#else
     virtual CBackupMgr& getBackupMgr() = 0;
 
 	virtual void convertXPkg(cwstr strFile) = 0;
@@ -388,17 +317,10 @@ public:
     virtual bool restoreDB(cwstr strTag) = 0;
 
     virtual bool clearData() = 0;
-
-#else
-#if __android
-    virtual wstring androidOrgPath(cwstr strSubPath) = 0;
 #endif
 
-    virtual E_UpgradeResult upgradeMdl(signal_t bRunSignal, CByteBuffer& bbfConf, UINT& uAppUpgradeProgress, wstring& strAppVersion) = 0;
-
-    virtual const list<CUpgradeUrl>& upgradeUrl() const = 0;
-
-    virtual const list<tagOlBkgList>& olBkg() const = 0;
+#if __android
+    virtual wstring androidOrgPath(cwstr strSubPath) = 0;
 #endif
 };
 
@@ -418,8 +340,7 @@ private:
 #if __winvc
 	CBackupMgr m_BackupMgr;
 #else
-	list<CUpgradeUrl> m_lstUpgradeUrl;
-	list<tagOlBkgList> m_lstOlBkg;
+    CMdlMgr m_MdlMgr;
 #endif
 
 	CSingerMgr m_SingerMgr;
@@ -465,7 +386,17 @@ public:
 
 	bool initMediaLib(bool bNotify = true) override;
 
-#if __winvc
+    wstring medialibPath(cwstr strSubPath=L"");
+
+#if !__winvc
+    bool upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
+
+    CMdlMgr& getMdlMgr() override
+    {
+        return m_MdlMgr;
+    }
+
+#else
 	CBackupMgr& getBackupMgr() override
 	{
 		return m_BackupMgr;
@@ -510,31 +441,16 @@ public:
 	bool restoreDB(cwstr strTag) override;
 
 	bool clearData() override;
-
-#else
-#if __android
-    wstring androidOrgPath(cwstr strSubPath) override;
 #endif
 
-    E_UpgradeResult upgradeMdl(signal_t bRunSignal, CByteBuffer& bbfConf, UINT& uAppUpgradeProgress, wstring& strAppVersion) override;
-
-    const list<CUpgradeUrl>& upgradeUrl() const override
-    {
-        return m_lstUpgradeUrl;
-    }
-
-    const list<tagOlBkgList>& olBkg() const override
-    {
-        return m_lstOlBkg;
-    }
+#if __android
+    wstring androidOrgPath(cwstr strSubPath) override;
 #endif
 
 private:
 	bool _initMediaLib(cwstr strDBFile);
 
 	bool _initData(cwstr strDBFile);
-
-    wstring _medialibPath(cwstr strSubPath=L"");
 
 #if __winvc
     wstring _mdlDir();
@@ -554,12 +470,6 @@ private:
     void _clear();
 
 #else
-    E_UpgradeResult _loadMdl(const tagMdlConf& MdlConf, CByteBuffer& bbfMdl, bool bUpgradeDB);
-
-    void _initOlBkg(CByteBuffer& bbfOlBkg);
-
-    bool _upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
-
     E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfProfile, cwstr strUser, const string& strPwd);
 #endif
 
