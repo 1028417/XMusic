@@ -4,7 +4,6 @@
 //
 #define IDD_PAGE_SINGER                 1
 #define IDC_BTN_PLAY                    3
-#define IDC_BTN_PLAY2                   4
 #define IDC_BTN_ADDIN                   4
 #define IDD_DLG_ChooseDir               1000
 #define IDI_MAINWND                     2000
@@ -246,13 +245,17 @@
 #define ID_DeployMdl                    32980
 #define ID_32981                        32981
 #define ID_DeployMedias                 32982
+#define ID_32983                        32983
+#define ID_32984                        32984
+#define ID_SignupUser                   32985
+#define ID_DeployUser                   32986
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32983
+#define _APS_NEXT_COMMAND_VALUE         32987
 #define _APS_NEXT_CONTROL_VALUE         2043
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

@@ -70,6 +70,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "生成快照",                        ID_Snapshot
         MENUITEM "发布媒体库",                       ID_DeployMdl
+        MENUITEM SEPARATOR
+        MENUITEM "配置用户",                        ID_SignupUser
+        MENUITEM "发布用户",                        ID_DeployUser
     END
     POPUP "媒体库"
     BEGIN
