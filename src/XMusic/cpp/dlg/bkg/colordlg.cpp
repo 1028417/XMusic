@@ -11,8 +11,8 @@
 
 static Ui::ColorDlg ui;
 
-CColorDlg::CColorDlg(CBkgDlg& bkgDlg) : CDialog(bkgDlg)
-  , m_bkgDlg(bkgDlg)
+CColorDlg::CColorDlg(CBkgDlg& bkgDlg) : //CDialog(bkgDlg),
+    m_bkgDlg(bkgDlg)
 {
 }
 

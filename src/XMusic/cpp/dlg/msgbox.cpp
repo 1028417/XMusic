@@ -6,7 +6,7 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox(QWidget& parent) : CDialog(parent, false)
+CMsgBox::CMsgBox() : CDialog(false)
 {
     ui.setupUi(this);
 
@@ -22,11 +22,11 @@ cqcr CMsgBox::bkgColor() const
     return cr;
 }
 
-void CMsgBox::show(QWidget& parent, cqstr qsMsg, cfn_void cbClose)
+void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 {
     ui.labelTip->setText(qsMsg);
 
-    CDialog::show(parent, cbClose);
+    CDialog::show(cbClose);
 }
 
 void CMsgBox::_onPaint(CPainter& painter, cqrc rc)

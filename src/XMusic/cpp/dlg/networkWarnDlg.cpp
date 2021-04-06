@@ -6,8 +6,7 @@
 
 static Ui::networkWarnDlg ui;
 
-CNetworkWarnDlg::CNetworkWarnDlg(QWidget& parent)
-    : CDialog(parent, false)
+CNetworkWarnDlg::CNetworkWarnDlg() : CDialog(false)
 {
     ui.setupUi(this);
 

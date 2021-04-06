@@ -5,7 +5,7 @@
 class CNetworkWarnDlg : private CDialog
 {
  public:
-    CNetworkWarnDlg(QWidget& parent);
+    CNetworkWarnDlg();
 
 public:
     void show(cfn_void cb);

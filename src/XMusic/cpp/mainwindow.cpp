@@ -99,9 +99,9 @@ MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_prHBkgOffset(__app.getOption().prHBkgOffset)
     , m_prVBkgOffset(__app.getOption().prVBkgOffset)
-  //, m_PlayingList(this)
-    , m_medialibDlg(*this)
-    , m_bkgDlg(*this)
+    //, m_PlayingList(this)
+    //, m_medialibDlg(*this)
+    //, m_bkgDlg(*this)
 {
     //this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
     //this->setStyleSheet("");
@@ -1208,11 +1208,6 @@ void MainWindow::_demand(CButton* btnDemand)
 
 void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 {
-    if (__app.getOption().bUseBkgColor)
-    {
-        return;
-    }
-
     if (g_crLogoBkg.alpha() > 0)
     {
         return;
@@ -1228,7 +1223,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (m_bDefaultBkg)
+        if (m_bDefaultBkg || __app.getOption().bUseBkgColor)
         {
             return;
         }
@@ -1247,7 +1242,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             return;
         }
 
-        if (te.dt() < __fastTouchDt)
+        if (te.dt() < __fastTouchDt)// && !__app.getOption().bUseBkgColor)
         {
             auto dx = te.dx();
             auto dy = te.dy();

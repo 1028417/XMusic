@@ -3,19 +3,11 @@
 
 #include "xmusic.h"
 
-static CDialog* g_pFrontDlg = NULL;
+static list<CDialog*> g_lstDlg;
 
 void CDialog::resetPos()
 {
-    list<CDialog*> lstDlgs;
-    for (auto pDlg = g_pFrontDlg; pDlg; )
-    {
-        lstDlgs.push_front(pDlg);
-
-        pDlg = dynamic_cast<CDialog*>(&pDlg->m_parent);
-    }
-
-    for (auto pDlg : lstDlgs)
+    for (auto pDlg : g_lstDlg)
     {
         pDlg->_setPos();
     }
@@ -30,7 +22,7 @@ void CDialog::_setPos()
     }
     else
     {
-        cauto ptCenter = m_parent.geometry().center();
+        cauto ptCenter = __app.mainWnd().geometry().center();
         move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
     }
 
@@ -43,8 +35,20 @@ void CDialog::_setPos()
 
 #include <QBitmap>
 
-void CDialog::_show(cfn_void cbClose)
+void CDialog::show(cfn_void cbClose)
 {
+    auto flags = windowFlags();// | Qt::Dialog;
+    QWidget *parent = NULL;
+    if (!g_lstDlg.empty())
+    {
+        parent = g_lstDlg.front();
+    }
+    else
+    {
+        parent = &__app.mainWnd();
+    }
+    setParent(parent, flags);
+
     if (!m_bFullScreen)
     {
         // 主要mac需要
@@ -54,10 +58,14 @@ void CDialog::_show(cfn_void cbClose)
 
     _setPos();
 
-    g_pFrontDlg = this;
+    g_lstDlg.push_front(this);
 
     connect(this, &QDialog::finished, [&, cbClose]{
-        g_pFrontDlg = dynamic_cast<CDialog*>(&m_parent);
+        auto itr = std::find(g_lstDlg.begin(), g_lstDlg.end(), this);
+        if (itr != g_lstDlg.end())
+        {
+            g_lstDlg.erase(itr);
+        }
 
         _onClosed();
 
@@ -77,19 +85,6 @@ void CDialog::_show(cfn_void cbClose)
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
 
     this->setVisible(true);
-}
-
-void CDialog::show(cfn_void cbClose)
-{
-    show(m_parent, cbClose);
-}
-
-void CDialog::show(QWidget& parent, cfn_void cbClose)
-{
-    auto flags = windowFlags();// | Qt::Dialog;
-    setParent(&parent, flags);
-
-    _show(cbClose);
 }
 
 bool CDialog::event(QEvent *ev)

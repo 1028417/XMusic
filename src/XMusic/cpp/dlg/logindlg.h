@@ -5,7 +5,7 @@
 class CLoginDlg : public CDialog
 {
  public:
-    CLoginDlg(QWidget& parent);
+    CLoginDlg();
 
     void show(E_LoginReult eRet);
 };

@@ -10,10 +10,9 @@
 
 static Ui::AddBkgDlg ui;
 
-CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg)
-    : CDialog(bkgDlg)
-    , m_bkgDlg(bkgDlg)
-    , m_lv(*this)
+CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) : //CDialog(bkgDlg),
+    m_bkgDlg(bkgDlg),
+    m_lv(*this)
 {
 }
 

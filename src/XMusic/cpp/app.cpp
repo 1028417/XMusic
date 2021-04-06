@@ -8,7 +8,7 @@
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
-    , m_loginDlg(m_mainWnd)
+    //, m_loginDlg(m_mainWnd)
 {
 }
 
@@ -202,7 +202,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 #if __android
             vibrate();
 #endif
-            static CMsgBox m_msgbox(m_mainWnd);
+            static CMsgBox m_msgbox;//(m_mainWnd);
             m_msgbox.show(qsErrMsg, [&]{
                 this->quit();
             });
@@ -218,7 +218,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     {
         vibrate();
 
-        static CNetworkWarnDlg dlg(m_mainWnd);
+        static CNetworkWarnDlg dlg;
         dlg.show([&]{
             m_ctrl.start();
             m_mainWnd.show();

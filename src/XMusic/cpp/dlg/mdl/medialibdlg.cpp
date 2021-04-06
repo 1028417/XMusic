@@ -6,10 +6,10 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg(QWidget& parent) : CDialog(parent)
-  , m_lv(*this, m_OuterDir)
-  , m_wholeTrackDlg(*this)
-  , m_singerImgDlg(*this)
+CMedialibDlg::CMedialibDlg() : //CDialog(parent),
+  m_lv(*this, m_OuterDir)
+  //, m_wholeTrackDlg(*this)
+  //, m_singerImgDlg(*this)
 {
 }
 

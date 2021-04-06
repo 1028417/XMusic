@@ -6,7 +6,7 @@
 
 static Ui::LoginDlg ui;
 
-CLoginDlg::CLoginDlg(QWidget& parent) : CDialog(parent, false)
+CLoginDlg::CLoginDlg() : CDialog(false)
 {
     ui.setupUi(this);
 

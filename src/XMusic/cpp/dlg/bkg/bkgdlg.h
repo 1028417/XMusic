@@ -51,7 +51,7 @@ private:
     };
 
 public:
-    CBkgDlg(QWidget& parent);
+    CBkgDlg();
 
 private:
     struct tagOption& m_option;

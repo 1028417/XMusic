@@ -16,19 +16,23 @@
 class CDialog : public TWidget<QDialog>
 {
 public:
-    CDialog(QWidget& parent, bool bFullScreen = true)
+    CDialog(bool bFullScreen = true)
         : TWidget(NULL, Qt::FramelessWindowHint)
-        , m_parent(parent)
+        , m_bFullScreen(bFullScreen)
+    {
+    }
+
+    /*CDialog(QWidget& parent, bool bFullScreen = true)
+        : TWidget(NULL, Qt::FramelessWindowHint)
         , m_bFullScreen(bFullScreen)
     {
     }
 
     CDialog(CDialog& parent, bool bFullScreen = true)
         : TWidget(NULL, Qt::FramelessWindowHint)
-        , m_parent(parent)
         , m_bFullScreen(bFullScreen)
     {
-    }
+    }*/
 
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
     {
@@ -38,8 +42,6 @@ public:
     }
 
 protected:
-    QWidget& m_parent;
-
     bool m_bHLayout = false;
 
 private:
@@ -82,5 +84,4 @@ public:
 #endif
 
     void show(cfn_void cbClose = NULL);
-    void show(QWidget& parent, cfn_void cbClose = NULL);
 };

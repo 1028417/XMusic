@@ -144,7 +144,7 @@ class CMedialibDlg : public CDialog
 {
     Q_OBJECT
 public:
-    CMedialibDlg(QWidget& parent);
+    CMedialibDlg();
 
 private:
     COuterDir m_OuterDir;

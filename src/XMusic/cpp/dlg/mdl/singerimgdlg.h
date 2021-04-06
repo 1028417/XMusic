@@ -6,7 +6,7 @@
 class CSingerImgDlg : public CDialog
 {
 public:
-    CSingerImgDlg(class CMedialibDlg& medialibDlg);
+    CSingerImgDlg();
 
 private:
     CSingerImgMgr& m_singerImgMgr;
