@@ -426,7 +426,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
 
     list<COlBkgDir*> lstDir;
     set<wstring> setCatName;
-    for (cauto olBkg : __app.getModel().olBkg())
+    for (cauto olBkg : __app.getModel().getMdlMgr().olBkg())
     {
         setCatName.insert(strutil::lowerCase_r(olBkg.catName));
 

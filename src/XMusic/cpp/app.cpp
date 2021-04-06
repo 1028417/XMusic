@@ -95,7 +95,7 @@ bool CApp::_startup()
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         auto time0 = time(0);
         extern int g_nAppUpgradeProgress;
-        E_UpgradeResult eUpgradeResult = m_model.upgradeMdl(g_bRunSignal, bbfConf
+        E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(g_bRunSignal, bbfConf
                                                             , (UINT&)g_nAppUpgradeProgress, m_strAppVersion);
         if (E_UpgradeResult::UR_Success != eUpgradeResult)
         {
