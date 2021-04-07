@@ -217,11 +217,11 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     static bool bFlag = false;
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (abs(te.dy()) < abs(te.dx())
+        if (getItemCount() <= getRowCount()
+                || abs(te.dy()) < abs(te.dx())
                 //|| (te.dy() > 0 && scrollPos() == 0)
                 //|| (te.dy() < 0 && scrollPos() + getRowCount() == getItemCount())
-                || getItemCount() <= getRowCount())
-        {
+        ) {
             ((MainWindow*)parent())->handleTouchEvent(type, te);
             bFlag = true;
             return;

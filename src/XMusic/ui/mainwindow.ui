@@ -321,7 +321,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandAlbum">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>540</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -349,7 +349,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandAlbumItem">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>720</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -377,7 +377,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandPlaylist">
      <property name="geometry">
       <rect>
-       <x>730</x>
+       <x>180</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -405,7 +405,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandSinger">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>360</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -433,7 +433,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandPlayItem">
      <property name="geometry">
       <rect>
-       <x>550</x>
+       <x>0</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
