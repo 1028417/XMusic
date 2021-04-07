@@ -26,8 +26,6 @@ private:
     CModel& m_model;
 
 #if !__winvc
-    uint64_t m_tLogin = 0;
-
 	E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfProfile, cwstr strUser, const string& strPwd);
 
     void _relogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
@@ -41,7 +39,7 @@ public:
 
     bool removeUser(cwstr strUser);
 
-    bool deployUser();
+    UINT deployUser();
 #else
 
     bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
