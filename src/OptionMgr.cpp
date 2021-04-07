@@ -39,6 +39,9 @@
 #define OI_VBkgY		    "VBkgY"
 #define OI_AddBkgDir		"AddBkgDir"
 
+#define OI_HSingerImgPos    "HSingerImgPos"
+#define OI_VSingerImgPos    "VSingerImgPos"
+
 #define OI_NetworkWarn      "NetworkWarn"
 
 void COptionMgr::init()
@@ -114,6 +117,9 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_VBkgX], m_Option.prVBkgOffset.first);
     jsonutil::get(jRoot[OI_VBkgY], m_Option.prVBkgOffset.second);
     jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
+
+    jsonutil::get(jRoot[OI_HSingerImgPos], m_Option.uHSingerImgPos);
+    jsonutil::get(jRoot[OI_VSingerImgPos], m_Option.uVSingerImgPos);
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
 
@@ -191,6 +197,9 @@ void COptionMgr::saveOption()
     jRoot[OI_VBkgX] = m_Option.prVBkgOffset.first;
     jRoot[OI_VBkgY] = m_Option.prVBkgOffset.second;
     jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
+
+    jRoot[OI_HSingerImgPos] = m_Option.uHSingerImgPos;
+    jRoot[OI_VSingerImgPos] = m_Option.uVSingerImgPos;
 
     jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
 

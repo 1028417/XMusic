@@ -68,7 +68,7 @@ void MainWindow::switchFullScreen()
 #endif
 
     g_bFullScreen = !g_bFullScreen;
-    __app.getOption().bFullScreen = g_bFullScreen;
+    m_opt.bFullScreen = g_bFullScreen;
 
 #if __windows
     if (g_bFullScreen)
@@ -97,8 +97,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
-    , m_prHBkgOffset(__app.getOption().prHBkgOffset)
-    , m_prVBkgOffset(__app.getOption().prVBkgOffset)
+    , m_opt(__app.getOption())
     //, m_PlayingList(this)
     //, m_medialibDlg(*this)
     //, m_bkgDlg(*this)
@@ -190,7 +189,7 @@ void MainWindow::_init()
 
     ui.btnPause->setVisible(false);
 
-    if (__app.getOption().bRandomPlay)
+    if (m_opt.bRandomPlay)
     {
         ui.btnRandom->setVisible(true);
         ui.btnOrder->setVisible(false);
@@ -406,7 +405,7 @@ void MainWindow::show()
         uOffset = 1;
     }
 #endif
-    UINT uDelayTime = __app.getOption().bUseBkgColor?50:30;
+    UINT uDelayTime = m_opt.bUseBkgColor?50:30;
     timerutil::setTimerEx(uDelayTime, [=]()mutable{
         uOffset+=1;
         nLogoBkgAlpha -= uOffset;
@@ -571,13 +570,13 @@ void MainWindow::_relayout()
     if (NULL == ui.centralWidget) return;
 
     m_bDefaultBkg = false;
-    if (!__app.getOption().bUseBkgColor)
+    if (!m_opt.bUseBkgColor)
     {
         cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    auto& eSingerImgPos = m_bHLayout?m_eHSingerImgPos:m_eVSingerImgPos;
+    auto eSingerImgPos = (E_SingerImgPos)(m_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
     ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
@@ -590,7 +589,7 @@ void MainWindow::_onPaint()
     auto nBkgAlpha = 255-nLogoAlpha;
     if (nBkgAlpha > 0)
     {
-        if (__app.getOption().bUseBkgColor)
+        if (m_opt.bUseBkgColor)
         {
             painter.fillRect(rc, g_crBkg);
         }
@@ -601,7 +600,7 @@ void MainWindow::_onPaint()
             /*cauto pmBkg = m_bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-                auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+                auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
                 painter.drawImgEx(rc, pmBkg, prBkgOffset.first, prBkgOffset.second);
 
                 //auto cx = ui.progressbar->width();
@@ -625,7 +624,7 @@ void MainWindow::_onPaint()
 
 bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
 {
-    if (__app.getOption().bUseBkgColor)
+    if (m_opt.bUseBkgColor)
     {
         return false;
     }
@@ -636,7 +635,7 @@ bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
         return false;
     }
 
-    auto& prBkgOffset = bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+    auto& prBkgOffset = bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
     painter.drawImgEx(rc, pmBkg, prBkgOffset.first, prBkgOffset.second);
     return true;
 }
@@ -1003,7 +1002,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
         if (E_PlayStatus::PS_Stop == __app.getPlayMgr().playStatus())
         {
-            __app.getCtrl().callPlayCmd(tagPlayIndexCmd(__app.getCtrl().getOption().uPlayingItem));
+            __app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_opt.uPlayingItem));
             return;
         }
 
@@ -1022,7 +1021,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
-        auto& bRandomPlay = __app.getOption().bRandomPlay;
+        auto& bRandomPlay = m_opt.bRandomPlay;
         bRandomPlay = !bRandomPlay;
 
         ui.btnRandom->setVisible(bRandomPlay);
@@ -1036,7 +1035,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+    auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
     prBkgOffset.first = 0;
     prBkgOffset.second = 0;
 
@@ -1060,7 +1059,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 return;
             }*/
 
-            auto& eSingerImgPos = m_bHLayout?m_eHSingerImgPos:m_eVSingerImgPos;
+            auto& eSingerImgPos = (E_SingerImgPos&)(m_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
             eSingerImgPos = E_SingerImgPos((int)eSingerImgPos+1);
             if (eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
@@ -1223,13 +1222,13 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
     if (E_TouchEventType::TET_TouchMove == type)
     {
-        if (m_bDefaultBkg || __app.getOption().bUseBkgColor)
+        if (m_bDefaultBkg || m_opt.bUseBkgColor)
         {
             return;
         }
 
         __yield();
-        auto& prBkgOffset = m_bHLayout?m_prHBkgOffset:m_prVBkgOffset;
+        auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
         prBkgOffset.first -= te.dx();
         prBkgOffset.second -= te.dy();
         update();
@@ -1242,7 +1241,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             return;
         }
 
-        if (te.dt() < __fastTouchDt)// && !__app.getOption().bUseBkgColor)
+        if (te.dt() < __fastTouchDt)// && !m_opt.bUseBkgColor)
         {
             auto dx = te.dx();
             auto dy = te.dy();

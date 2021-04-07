@@ -192,6 +192,9 @@ struct __ModelExt tagOption
     wstring strAddBkgDir;
 
     bool bNetworkWarn = true;
+
+    UINT uHSingerImgPos = 0;
+    UINT uVSingerImgPos = 0;
 #endif
 };
 

@@ -198,10 +198,10 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
                 qsErrMsg = "加载媒体库失败";
             }
 
-            _setForeground();
 #if __android
             vibrate();
 #endif
+            _setForeground();
             static CMsgBox m_msgbox;//(m_mainWnd);
             m_msgbox.show(qsErrMsg, [&]{
                 this->quit();
@@ -211,15 +211,15 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
         return;
     }
 
-    _setForeground();
-
 #if __android
     if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
     {
         vibrate();
+        _setForeground();
 
         static CNetworkWarnDlg dlg;
-        dlg.show([&]{
+        dlg.show([&]{            
+            (void)login();
             m_ctrl.start();
             m_mainWnd.show();
         });
@@ -228,15 +228,10 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     }
 #endif
 
+    (void)login();
+    _setForeground();
     m_ctrl.start();
     m_mainWnd.show();
-
-    __async(3000, [&]{
-        if (!login())
-        {
-            _showLoginDlg();
-        }
-    });
 }
 
 void CApp::_showLoginDlg(E_LoginReult eRet)
@@ -254,7 +249,7 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 {
     static UINT s_uSeq = 0;
     auto uSeq = ++s_uSeq;
-    return m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
+    bool bRet = m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
         if (uSeq != s_uSeq)
         {
             return;
@@ -272,8 +267,8 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 #if __android
             if (!bRelogin)
             {
-                showLoginToast(true);
                 vibrate();
+                showLoginToast(true);
             }
 #endif
         }
@@ -288,6 +283,16 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
             });
         }
     });
+
+    if (!bRet)
+    {
+        __async(3000, [&]{
+            _showLoginDlg();
+        });
+        return false;
+    }
+
+    return true;
 }
 /*    static auto& thr = this->thread();
     cauto fn = [=]{
@@ -301,10 +306,10 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
         }
 
         sync(3000, [&]{
-            _setForeground();
 #if __android
             vibrate();
 #endif
+            _setForeground();
             m_loginDlg.show();
         });
     };

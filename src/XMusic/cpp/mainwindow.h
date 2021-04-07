@@ -53,17 +53,14 @@ class MainWindow : public QMainWindow, public IModelObserver
 public:
     MainWindow();
 
-private:
+private:    
+    tagOption& m_opt;
+
     bool m_bHLayout = false;
-    E_SingerImgPos m_eHSingerImgPos = E_SingerImgPos::SIP_Float;
-    E_SingerImgPos m_eVSingerImgPos = E_SingerImgPos::SIP_Float;
 
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
     bool m_bDefaultBkg = false;
-
-    pair<int, int>& m_prHBkgOffset;
-    pair<int, int>& m_prVBkgOffset;
 
     E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 

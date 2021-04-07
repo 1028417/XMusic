@@ -139,6 +139,14 @@ bool CPlayerView::handleCommand(UINT uID)
 	}
 
 	break;
+	case ID_SignupUser:
+		m_model.getUserMgr().signupUser(L"梁华林", "", 0, 0);
+
+		break;
+	case ID_DeployUser:
+		m_model.getUserMgr().deployUser();
+
+		break;
 	case ID_DeployMdl:
 	{
 		bool bDeploySingerImg = CMainApp::confirmBox(L"是否发布歌手图片");
