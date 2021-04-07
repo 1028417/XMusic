@@ -8,11 +8,9 @@ enum class E_LoginReult
 	LR_UserInvalid,
 	LR_ProfileInvalid,
 	LR_PwdWrong,
-	LR_MutiLogin
+	LR_MultiLogin
 };
 #endif
-
-#define UA_MutiDev 1
 
 class __ModelExt CUserMgr
 {
@@ -26,9 +24,8 @@ private:
     CModel& m_model;
 
 #if !__winvc
-	E_LoginReult _login(signal_t bRunSignal, const CByteBuffer& bbfProfile, cwstr strUser, const string& strPwd);
-
-    void _relogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
+    wstring m_strUser;
+    string m_strPwd;
 #endif
 
 public:
@@ -40,8 +37,18 @@ public:
     bool removeUser(cwstr strUser);
 
     UINT deployUser();
-#else
 
-    bool asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
+#else
+    cwstr user() const
+    {
+        return m_strUser;
+    }
+
+    const string& pwd() const
+    {
+        return m_strPwd;
+    }
+
+    void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
 #endif
 };

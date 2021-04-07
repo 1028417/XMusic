@@ -219,7 +219,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
 
         static CNetworkWarnDlg dlg;
         dlg.show([&]{            
-            (void)login();
+            _login();
             m_ctrl.start();
             m_mainWnd.show();
         });
@@ -228,10 +228,24 @@ void CApp::_show(E_UpgradeResult eUpgradeResult)
     }
 #endif
 
-    (void)login();
+    _login();
     _setForeground();
     m_ctrl.start();
     m_mainWnd.show();
+}
+
+void CApp::_login()
+{
+    cauto strUser = m_model.getUserMgr().user();
+    if (strUser.empty())
+    {
+        __async(3000, [&]{
+            _showLoginDlg();
+        });
+        return;
+    }
+
+    login(strUser, m_model.getUserMgr().pwd());
 }
 
 void CApp::_showLoginDlg(E_LoginReult eRet)
@@ -245,11 +259,11 @@ void CApp::_showLoginDlg(E_LoginReult eRet)
     m_loginDlg.show(eRet);
 }
 
-bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
+void CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
 {
     static UINT s_uSeq = 0;
     auto uSeq = ++s_uSeq;
-    bool bRet = m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
+    m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
         if (uSeq != s_uSeq)
         {
             return;
@@ -262,7 +276,7 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
                 {
                     return;
                 }
-                (void)login(L"", "", true);
+                (void)login(strUser, strPwd, true);
             });
 #if __android
             if (!bRelogin)
@@ -283,16 +297,6 @@ bool CApp::login(cwstr strUser, const string& strPwd, bool bRelogin)
             });
         }
     });
-
-    if (!bRet)
-    {
-        __async(3000, [&]{
-            _showLoginDlg();
-        });
-        return false;
-    }
-
-    return true;
 }
 /*    static auto& thr = this->thread();
     cauto fn = [=]{

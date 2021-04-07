@@ -44,7 +44,7 @@ void CLoginDlg::show(E_LoginReult eRet)
     case E_LoginReult::LR_PwdWrong:
         qsTitle = "密码错误，请重新输入";
         break;
-    case E_LoginReult::LR_MutiLogin:
+    case E_LoginReult::LR_MultiLogin:
         qsTitle = "账号已在其他设备登录";
         break;
     default:

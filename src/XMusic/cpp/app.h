@@ -77,6 +77,8 @@ private:
     void _setForeground();
 #endif
 
+    void _login();
+
     void _showLoginDlg(E_LoginReult eRet=E_LoginReult::LR_Success);
 
 public:
@@ -134,5 +136,5 @@ public:
 
     void quit();
 
-    bool login(cwstr strUser=L"", const string& strPwd="", bool bRelogin=false);
+    void login(cwstr strUser=L"", const string& strPwd="", bool bRelogin=false);
 };
