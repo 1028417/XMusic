@@ -43,7 +43,6 @@
 #define IDR_MENU_ALBUMITEM              2010
 #define IDC_DeleteOther2                2010
 #define IDC_ExportXmsc                  2010
-#define IDC_EDIT3                       2010
 #define IDC_EDIT_User                   2010
 #define IDC_BUTTON1                     2011
 #define IDC_BTN_FIND                    2011
@@ -55,6 +54,7 @@
 #define IDC_DeleteOther3                2012
 #define IDC_ExportDB                    2012
 #define IDC_EDIT_Timeout                2012
+#define IDC_EDIT_VipDays                2012
 #define IDD_DLG_ALARMCLOCK              2013
 #define IDR_MENU_PLAYITEM               2013
 #define IDC_COMBO_OPERATE               2014
