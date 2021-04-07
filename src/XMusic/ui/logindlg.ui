@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>460</height>
+    <width>600</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QLineEdit" name="editUser">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>130</y>
-     <width>360</width>
+     <x>160</x>
+     <y>140</y>
+     <width>370</width>
      <height>70</height>
     </rect>
    </property>
@@ -32,8 +32,8 @@
   <widget class="CButton" name="btnLogin">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>350</y>
+     <x>390</x>
+     <y>380</y>
      <width>140</width>
      <height>70</height>
     </rect>
@@ -63,7 +63,7 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>510</x>
      <y>10</y>
      <width>80</width>
      <height>80</height>
@@ -91,9 +91,9 @@
   <widget class="QLineEdit" name="editPwd">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>240</y>
-     <width>360</width>
+     <x>160</x>
+     <y>250</y>
+     <width>370</width>
      <height>70</height>
     </rect>
    </property>
@@ -110,8 +110,8 @@
   <widget class="CLabel" name="labelUser">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>130</y>
+     <x>60</x>
+     <y>140</y>
      <width>100</width>
      <height>70</height>
     </rect>
@@ -123,8 +123,8 @@
   <widget class="CLabel" name="labelPwd">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>240</y>
+     <x>60</x>
+     <y>250</y>
      <width>100</width>
      <height>70</height>
     </rect>
@@ -138,7 +138,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>530</width>
+     <width>520</width>
      <height>80</height>
     </rect>
    </property>
