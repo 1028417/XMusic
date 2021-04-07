@@ -55,9 +55,9 @@ BOOL COptionDlg::OnInitDialog()
 	}
 	(void)m_wndSkbCombo.SelectString(0, m_view.getOption().PlaySpiritOption.strSkinName.c_str());
 
-	__EnsureReturn(m_TimingWnd.Create(this, 13, 130), FALSE);
+	__EnsureReturn(m_TimingWnd.Create(this, 13, 150), FALSE);
 
-	__EnsureReturn(m_AlarmClockWnd.Create(this, 13, 240), FALSE);
+	__EnsureReturn(m_AlarmClockWnd.Create(this, 13, 280), FALSE);
 
 	return TRUE;
 }

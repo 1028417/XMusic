@@ -156,6 +156,7 @@
     <ClCompile Include="src\dlg\BackupCompareDlg.cpp" />
     <ClCompile Include="src\dlg\ExportMediaSetDlg.cpp" />
     <ClCompile Include="src\dlg\option\ExportOptionDlg.cpp" />
+    <ClCompile Include="src\dlg\UserDlg.cpp" />
     <ClCompile Include="src\page\SingerPage\SingerMediaResPanel.cpp" />
     <ClCompile Include="src\QuickFindDlg.cpp" />
     <ClCompile Include="src\dlg\SimilarFileDlg.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="src\dlg\ExportMediaSetDlg.h" />
     <ClInclude Include="src\dlg\option\ExportOptionDlg.h" />
     <ClInclude Include="src\dlg\SimilarFileDlg.h" />
+    <ClInclude Include="src\dlg\UserDlg.h" />
     <ClInclude Include="src\QuickFindDlg.h" />
     <ClInclude Include="src\dlg\DuplicateMediaDlg.h" />
     <ClInclude Include="src\dlg\TrackDetailDlg.h" />

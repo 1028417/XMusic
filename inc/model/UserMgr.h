@@ -1,5 +1,7 @@
 #pragma once
 
+#define UA_MultiLogin 1
+
 #if !__winvc
 enum class E_LoginReult
 {
@@ -34,6 +36,8 @@ public:
     void init();
 
 #if __winvc
+	bool qurryUser(cwstr strUser, string& strPwd, uint64_t& tVip, UINT& uAuth);
+
     bool signupUser(cwstr strUser, const string& strPwd, uint64_t tVip, UINT uAuth);
 
     bool removeUser(cwstr strUser);

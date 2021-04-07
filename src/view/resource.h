@@ -24,6 +24,7 @@
 #define IDC_CHECK_BEGIN                 2006
 #define IDR_MENU_PlayingPage            2006
 #define IDC_HideMenuBar                 2006
+#define IDC_CHECK_MultiLogin            2006
 #define IDD_DLG_MEDIASET                2007
 #define IDC_CHECK_END                   2007
 #define IDC_CompareFileSize             2007
@@ -42,6 +43,8 @@
 #define IDR_MENU_ALBUMITEM              2010
 #define IDC_DeleteOther2                2010
 #define IDC_ExportXmsc                  2010
+#define IDC_EDIT3                       2010
+#define IDC_EDIT_User                   2010
 #define IDC_BUTTON1                     2011
 #define IDC_BTN_FIND                    2011
 #define IDC_EDIT_MINUTE                 2011
@@ -51,6 +54,7 @@
 #define IDC_EDIT2                       2012
 #define IDC_DeleteOther3                2012
 #define IDC_ExportDB                    2012
+#define IDC_EDIT_Timeout                2012
 #define IDD_DLG_ALARMCLOCK              2013
 #define IDR_MENU_PLAYITEM               2013
 #define IDC_COMBO_OPERATE               2014
@@ -101,7 +105,12 @@
 #define IDC_BTN_RESTORE2                2039
 #define IDC_ActualMode                  2041
 #define IDC_BTN_ClearAllMedia           2042
+#define IDC_BTN_DelUser                 2043
+#define IDC_BTN_SignupUser              2044
+#define IDC_BTN_Signup                  2044
+#define IDC_EDIT_Pwd                    2045
 #define IDD_DLG_ExportOption            20322
+#define IDD_DLG_User                    20323
 #define ID_EXIT                         32773
 #define ID_REFRESH                      32773
 #define ID_Menu                         32774
@@ -256,7 +265,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
 #define _APS_NEXT_COMMAND_VALUE         32987
-#define _APS_NEXT_CONTROL_VALUE         2043
+#define _APS_NEXT_CONTROL_VALUE         2046
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif
 #endif

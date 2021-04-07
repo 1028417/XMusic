@@ -136,6 +136,9 @@
     <ClCompile Include="src\page\SingerPage\SingerMediaResPanel.cpp">
       <Filter>src\page\SingerPage</Filter>
     </ClCompile>
+    <ClCompile Include="src\dlg\UserDlg.cpp">
+      <Filter>src\dlg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -256,6 +259,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\inc\ControllerDef.h" />
     <ClInclude Include="..\..\inc\viewdef.h" />
+    <ClInclude Include="src\dlg\UserDlg.h">
+      <Filter>src\dlg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="view.rc" />

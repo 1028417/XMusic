@@ -18,6 +18,8 @@
 
 #include "dlg/WholeTrackDlg.h"
 
+#include "dlg/UserDlg.h"
+
 #define __semilightFont "./font/Microsoft-YaHei-Semilight-11.0.ttc"
 //#define __lightFont "./font/msyhl-6.23.ttc"
 
@@ -140,9 +142,13 @@ bool CPlayerView::handleCommand(UINT uID)
 
 	break;
 	case ID_SignupUser:
-		m_model.getUserMgr().signupUser(L"Áº»ªÁÖ", "", 0, 0);
-
-		break;
+	{
+		m_view.m_ResModule.ActivateResource();
+		CUserDlg UserDlg(m_view);
+		(void)UserDlg.DoModal();
+	}
+	
+	break;
 	case ID_DeployUser:
 		m_model.getUserMgr().deployUser();
 
