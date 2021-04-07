@@ -31,7 +31,7 @@ private:
 	CPlaylistMgr& m_PlaylistMgr;
     CPlaylist& m_Playinglist;
 
-	tagOption& m_Option;
+    tagOption& m_opt;
 	UINT& m_uPlayingItem;
 
     set<UINT> m_setPlayedIDs;

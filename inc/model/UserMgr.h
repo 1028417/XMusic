@@ -26,6 +26,8 @@ private:
 #if !__winvc
     wstring m_strUser;
     string m_strPwd;
+
+    void _login(signal_t bRunSignal, cwstr strUser, uint64_t tLogin);
 #endif
 
 public:

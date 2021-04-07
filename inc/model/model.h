@@ -334,7 +334,7 @@ public:
 
 private:
 	IModelObserver& m_ModelObserver;
-	tagOption& m_Option;
+    tagOption& m_opt;
 
 	XMediaLib m_MediaLib;
 
@@ -389,15 +389,18 @@ public:
 
 	bool initMediaLib(bool bNotify = true) override;
 
-    wstring medialibPath(cwstr strSubPath=L"");
+    wstring medialibPath(cwstr strSubPath=L"") const;
 
 #if !__winvc
-    bool upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
+    cwstr rootDir() const;
+    wstring rootPath(cwstr strSubPath) const;
 
     CMdlMgr& getMdlMgr() override
     {
         return m_MdlMgr;
     }
+
+    bool upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
 
 #else
 	wstring deployPath(cwstr strSubPath);

@@ -73,7 +73,7 @@ void COptionMgr::init()
             jsonutil::get(jValue[uIdx], true, strAttachDir);
             if (!strAttachDir.empty())
             {
-                m_Option.plAttachDir.add(strAttachDir, E_AttachDirType::ADT_Internal);
+                m_opt.plAttachDir.add(strAttachDir, E_AttachDirType::ADT_Internal);
             }
         }
     }
@@ -83,45 +83,45 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_PlayingItem], nPlayingItem);
     if (nPlayingItem >= 0)
     {
-        m_Option.uPlayingItem = (UINT)nPlayingItem;
+        m_opt.uPlayingItem = (UINT)nPlayingItem;
     }
 
-    jsonutil::get(jRoot[OI_RandomPlay], m_Option.bRandomPlay);
-    jsonutil::get(jRoot[OI_Force48KHz], m_Option.bForce48KHz);
+    jsonutil::get(jRoot[OI_RandomPlay], m_opt.bRandomPlay);
+    jsonutil::get(jRoot[OI_Force48KHz], m_opt.bForce48KHz);
 
-    m_Option.bFullScreen = true; // 默认开启全屏
-    jsonutil::get(jRoot[OI_FullScreen], m_Option.bFullScreen);
+    m_opt.bFullScreen = true; // 默认开启全屏
+    jsonutil::get(jRoot[OI_FullScreen], m_opt.bFullScreen);
 
 #if __winvc
-    jsonutil::get(jRoot[OI_RootDir], true, m_Option.strRootDir);
+    jsonutil::get(jRoot[OI_RootDir], true, m_opt.strRootDir);
 
-    jsonutil::get(jRoot[OI_HideMenuBar], m_Option.bHideMenuBar);
+    jsonutil::get(jRoot[OI_HideMenuBar], m_opt.bHideMenuBar);
 
-    jsonutil::get(jRoot[OI_PlaySpiritSkin], true, m_Option.PlaySpiritOption.strSkinName);
-    jsonutil::get(jRoot[OI_PlaySpiritLeft], m_Option.PlaySpiritOption.nPosX);
-    jsonutil::get(jRoot[OI_PlaySpiritTop], m_Option.PlaySpiritOption.nPosY);
-    jsonutil::get(jRoot[OI_PlaySpiritVolum], m_Option.PlaySpiritOption.uVolume);
+    jsonutil::get(jRoot[OI_PlaySpiritSkin], true, m_opt.PlaySpiritOption.strSkinName);
+    jsonutil::get(jRoot[OI_PlaySpiritLeft], m_opt.PlaySpiritOption.nPosX);
+    jsonutil::get(jRoot[OI_PlaySpiritTop], m_opt.PlaySpiritOption.nPosY);
+    jsonutil::get(jRoot[OI_PlaySpiritVolum], m_opt.PlaySpiritOption.uVolume);
 
-    jsonutil::get(jRoot[OI_AlarmHour], m_Option.nAlarmHour);
-    jsonutil::get(jRoot[OI_AlarmMinute], m_Option.nAlarmMinute);
+    jsonutil::get(jRoot[OI_AlarmHour], m_opt.nAlarmHour);
+    jsonutil::get(jRoot[OI_AlarmMinute], m_opt.nAlarmMinute);
 
 #else
-    jsonutil::get(jRoot[OI_UseBkgColor], m_Option.bUseBkgColor);
-    jsonutil::get(jRoot[OI_BkgColor], m_Option.crBkg);
-    jsonutil::get(jRoot[OI_ForeColor], m_Option.crFore);
+    jsonutil::get(jRoot[OI_UseBkgColor], m_opt.bUseBkgColor);
+    jsonutil::get(jRoot[OI_BkgColor], m_opt.crBkg);
+    jsonutil::get(jRoot[OI_ForeColor], m_opt.crFore);
 
-    jsonutil::get(jRoot[OI_HBkg], true, m_Option.strHBkg);
-    jsonutil::get(jRoot[OI_HBkgX], m_Option.prHBkgOffset.first);
-    jsonutil::get(jRoot[OI_HBkgY], m_Option.prHBkgOffset.second);
-    jsonutil::get(jRoot[OI_VBkg], true, m_Option.strVBkg);
-    jsonutil::get(jRoot[OI_VBkgX], m_Option.prVBkgOffset.first);
-    jsonutil::get(jRoot[OI_VBkgY], m_Option.prVBkgOffset.second);
-    jsonutil::get(jRoot[OI_AddBkgDir], true, m_Option.strAddBkgDir);
+    jsonutil::get(jRoot[OI_HBkg], true, m_opt.strHBkg);
+    jsonutil::get(jRoot[OI_HBkgX], m_opt.prHBkgOffset.first);
+    jsonutil::get(jRoot[OI_HBkgY], m_opt.prHBkgOffset.second);
+    jsonutil::get(jRoot[OI_VBkg], true, m_opt.strVBkg);
+    jsonutil::get(jRoot[OI_VBkgX], m_opt.prVBkgOffset.first);
+    jsonutil::get(jRoot[OI_VBkgY], m_opt.prVBkgOffset.second);
+    jsonutil::get(jRoot[OI_AddBkgDir], true, m_opt.strAddBkgDir);
 
-    jsonutil::get(jRoot[OI_HSingerImgPos], m_Option.uHSingerImgPos);
-    jsonutil::get(jRoot[OI_VSingerImgPos], m_Option.uVSingerImgPos);
+    jsonutil::get(jRoot[OI_HSingerImgPos], m_opt.uHSingerImgPos);
+    jsonutil::get(jRoot[OI_VSingerImgPos], m_opt.uVSingerImgPos);
 
-    jsonutil::get(jRoot[OI_NetworkWarn], m_Option.bNetworkWarn);
+    jsonutil::get(jRoot[OI_NetworkWarn], m_opt.bNetworkWarn);
 
     /*const JValue& jValue = jRoot[OI_XPkg];
     if (jValue.isArray())
@@ -132,7 +132,7 @@ void COptionMgr::init()
             jsonutil::get(jValue[uIdx], true, strXPkg);
             if (!strXPkg.empty())
             {
-                m_Option.lstXPkg.push_back(strXPkg);
+                m_opt.lstXPkg.push_back(strXPkg);
             }
         }
     }*/
@@ -149,62 +149,62 @@ void COptionMgr::saveOption()
     JValue jRoot;
 
 #if !__OnlineMediaLib
-    if (m_Option.plAttachDir)
+    if (m_opt.plAttachDir)
     {
         auto& jValue = jRoot[OI_AttachDir];
-        for (cauto pr : m_Option.plAttachDir)
+        for (cauto pr : m_opt.plAttachDir)
         {
             jValue.append(JValue(strutil::toUtf8(pr.first)));
         }
     }
 #endif
 
-    jRoot[OI_PlayingItem] = m_Option.uPlayingItem;
+    jRoot[OI_PlayingItem] = m_opt.uPlayingItem;
 
-    jRoot[OI_RandomPlay] = m_Option.bRandomPlay;
-    jRoot[OI_Force48KHz] = m_Option.bForce48KHz;
+    jRoot[OI_RandomPlay] = m_opt.bRandomPlay;
+    jRoot[OI_Force48KHz] = m_opt.bForce48KHz;
 
-    jRoot[OI_FullScreen] = m_Option.bFullScreen;
+    jRoot[OI_FullScreen] = m_opt.bFullScreen;
 
 #if __winvc
-    jRoot[OI_RootDir] = strutil::toUtf8(m_Option.strRootDir);
+    jRoot[OI_RootDir] = strutil::toUtf8(m_opt.strRootDir);
 
-    jRoot[OI_HideMenuBar] = m_Option.bHideMenuBar;
+    jRoot[OI_HideMenuBar] = m_opt.bHideMenuBar;
 
-    jRoot[OI_PlaySpiritSkin] = strutil::toAsc(m_Option.PlaySpiritOption.strSkinName);
-    jRoot[OI_PlaySpiritLeft] = m_Option.PlaySpiritOption.nPosX;
-    jRoot[OI_PlaySpiritTop] = m_Option.PlaySpiritOption.nPosY;
-    jRoot[OI_PlaySpiritVolum] = m_Option.PlaySpiritOption.uVolume;
+    jRoot[OI_PlaySpiritSkin] = strutil::toAsc(m_opt.PlaySpiritOption.strSkinName);
+    jRoot[OI_PlaySpiritLeft] = m_opt.PlaySpiritOption.nPosX;
+    jRoot[OI_PlaySpiritTop] = m_opt.PlaySpiritOption.nPosY;
+    jRoot[OI_PlaySpiritVolum] = m_opt.PlaySpiritOption.uVolume;
 
-    jRoot[OI_AlarmHour] = m_Option.nAlarmHour;
-    jRoot[OI_AlarmMinute] = m_Option.nAlarmMinute;
+    jRoot[OI_AlarmHour] = m_opt.nAlarmHour;
+    jRoot[OI_AlarmMinute] = m_opt.nAlarmMinute;
 
 #else
-    jRoot[OI_UseBkgColor] = m_Option.bUseBkgColor;
-    if (m_Option.crBkg >= 0)
+    jRoot[OI_UseBkgColor] = m_opt.bUseBkgColor;
+    if (m_opt.crBkg >= 0)
     {
-        jRoot[OI_BkgColor] = m_Option.crBkg;
+        jRoot[OI_BkgColor] = m_opt.crBkg;
     }
-    if (m_Option.crFore >= 0)
+    if (m_opt.crFore >= 0)
     {
-        jRoot[OI_ForeColor] = m_Option.crFore;
+        jRoot[OI_ForeColor] = m_opt.crFore;
     }
 
-    jRoot[OI_HBkg] = strutil::toAsc(m_Option.strHBkg);
-    jRoot[OI_HBkgX] = m_Option.prHBkgOffset.first;
-    jRoot[OI_HBkgY] = m_Option.prHBkgOffset.second;
-    jRoot[OI_VBkg] = strutil::toAsc(m_Option.strVBkg);
-    jRoot[OI_VBkgX] = m_Option.prVBkgOffset.first;
-    jRoot[OI_VBkgY] = m_Option.prVBkgOffset.second;
-    jRoot[OI_AddBkgDir] = strutil::toAsc(m_Option.strAddBkgDir);
+    jRoot[OI_HBkg] = strutil::toAsc(m_opt.strHBkg);
+    jRoot[OI_HBkgX] = m_opt.prHBkgOffset.first;
+    jRoot[OI_HBkgY] = m_opt.prHBkgOffset.second;
+    jRoot[OI_VBkg] = strutil::toAsc(m_opt.strVBkg);
+    jRoot[OI_VBkgX] = m_opt.prVBkgOffset.first;
+    jRoot[OI_VBkgY] = m_opt.prVBkgOffset.second;
+    jRoot[OI_AddBkgDir] = strutil::toAsc(m_opt.strAddBkgDir);
 
-    jRoot[OI_HSingerImgPos] = m_Option.uHSingerImgPos;
-    jRoot[OI_VSingerImgPos] = m_Option.uVSingerImgPos;
+    jRoot[OI_HSingerImgPos] = m_opt.uHSingerImgPos;
+    jRoot[OI_VSingerImgPos] = m_opt.uVSingerImgPos;
 
-    jRoot[OI_NetworkWarn] = m_Option.bNetworkWarn;
+    jRoot[OI_NetworkWarn] = m_opt.bNetworkWarn;
 
     /*auto& jValue = jRoot[OI_XPkg];
-    for (cauto strXPkg : m_Option.lstXPkg)
+    for (cauto strXPkg : m_opt.lstXPkg)
     {
         jValue.append(JValue(strutil::toUtf8(strXPkg)));
     }*/
@@ -219,7 +219,7 @@ E_TimerOperate COptionMgr::checkTimerOperate()
     int nHour = 0, nMinute = 0;
     tmutil::getCurrentTime(nHour, nMinute);
 
-    auto& TimerOption = m_Option.TimerOption;
+    auto& TimerOption = m_opt.TimerOption;
     if (TO_Null != TimerOption.eTimerOperate)
     {
         if (nHour == TimerOption.nHour && nMinute == TimerOption.nMinute)
@@ -239,6 +239,6 @@ bool COptionMgr::checkAlarm()
     int nHour = 0, nMinute = 0;
     tmutil::getCurrentTime(nHour, nMinute);
 
-    return nHour == m_Option.nAlarmHour && nMinute == m_Option.nAlarmMinute;
+    return nHour == m_opt.nAlarmHour && nMinute == m_opt.nAlarmMinute;
 }
 #endif

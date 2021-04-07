@@ -54,7 +54,7 @@ public:
     CBkgDlg();
 
 private:
-    struct tagOption& m_option;
+    struct tagOption& m_opt;
 
     CBkgView m_lv;
 

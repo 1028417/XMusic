@@ -38,9 +38,10 @@ public:
 		return m_OptionMgr.getOption();
 	}
 
-        void initOption()
+        tagOption& initOption()
         {
             m_OptionMgr.init();
+            return m_OptionMgr.getOption();
         }
 
         void start();

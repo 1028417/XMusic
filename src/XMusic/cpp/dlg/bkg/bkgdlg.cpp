@@ -59,7 +59,7 @@ CBkgDlg::CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayou
 }
 
 CBkgDlg::CBkgDlg() : //CDialog(parent),
-    m_option(__app.getOption()),
+    m_opt(__app.getOption()),
     m_lv(*this),
     m_addbkgDlg(*this),
     m_colorDlg(*this)
@@ -193,7 +193,7 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
         }
     }
 
-    cauto strBkg = bHLayout?m_option.strHBkg:m_option.strVBkg;
+    cauto strBkg = bHLayout?m_opt.strHBkg:m_opt.strVBkg;
     if (!strBkg.empty())
     {
         (bHLayout?m_pmHBkg:m_pmVBkg).load(__WS2Q(strBkgDir + strBkg));
@@ -328,14 +328,14 @@ bool CBkgDlg::_setBkg(int nIdx)
 
 void CBkgDlg::_updateBkg(cwstr strFile)
 {
-    m_option.bUseBkgColor = false;
+    m_opt.bUseBkgColor = false;
     if (m_bHLayout)
     {
-        m_option.strHBkg = strFile;
+        m_opt.strHBkg = strFile;
     }
     else
     {
-        m_option.strVBkg = strFile;
+        m_opt.strVBkg = strFile;
     }
 
     __app.mainWnd().updateBkg();
@@ -398,7 +398,7 @@ void CBkgDlg::deleleBkg(size_t uIdx)
     {
         cauto bkgFile = vecBkgFile[uIdx];
 
-        cauto strBkg = m_bHLayout ? m_option.strHBkg : m_option.strVBkg;
+        cauto strBkg = m_bHLayout ? m_opt.strHBkg : m_opt.strVBkg;
         if (strBkg == bkgFile.strFile)
         {
             _setBkg(-1);
@@ -430,7 +430,7 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
     m_bHLayout = bHLayout;
     cauto vecBkgFile = _vecBkgFile();
 
-    cauto strFile = bHLayout ? m_option.strHBkg : m_option.strVBkg;
+    cauto strFile = bHLayout ? m_opt.strHBkg : m_opt.strVBkg;
     int nIdx = -1;
     if (!strFile.empty())
     {
@@ -444,7 +444,7 @@ void CBkgDlg::switchBkg(bool bHLayout, bool bNext)
         }
     }
 
-    if (!m_option.bUseBkgColor)
+    if (!m_opt.bUseBkgColor)
     {
         if (bNext)
         {

@@ -14,8 +14,7 @@ CApp::CApp()
 
 int CApp::exec()
 {
-    m_ctrl.initOption();
-    auto& opt = m_ctrl.getOption();
+    auto& opt = m_ctrl.initOption();
     g_bFullScreen = opt.bFullScreen;
     if (opt.crBkg >= 0)
     {
