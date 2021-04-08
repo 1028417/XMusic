@@ -201,17 +201,17 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     {
         if (cy > __size(1920))
         {
-            y_frameDemand = __size(36);
+            y_frameDemand = __size(30);
         }
         else if (__size(1920) == cy)
         {
-            y_frameDemand = __size(28);
+            y_frameDemand = __size(25);
         }
-        else if (cy < __size(1000))
+        else if (cy < __size(1080))
         {
             if (bDefaultBkg)
             {
-                y_frameDemand = __size(12);
+                y_frameDemand = __size(15);
             }
         }
 
@@ -237,7 +237,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     ui.btnFullScreen->setVisible(true);
 #endif
 
-    int x_FullScreen = __size(30);
+    int x_FullScreen = __size(32);
     int x_btnMore = x_FullScreen;
     if (bHLayout)
     {
