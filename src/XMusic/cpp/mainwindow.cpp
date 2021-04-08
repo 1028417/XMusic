@@ -379,6 +379,7 @@ void MainWindow::show()
     m_PlayingList.setParent(this);
     m_PlayingList.setVisible(true);
     m_PlayingList.raise();
+    ui.btnFullScreen->raise();
     ui.btnExit->raise();
 
     m_PlayingList.init();
