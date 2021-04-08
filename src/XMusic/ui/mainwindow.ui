@@ -461,9 +461,9 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="QFrame" name="frameDemandLanguage">
      <property name="geometry">
       <rect>
-       <x>-25</x>
+       <x>-27</x>
        <y>120</y>
-       <width>790</width>
+       <width>810</width>
        <height>50</height>
       </rect>
      </property>
@@ -573,7 +573,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <rect>
         <x>650</x>
         <y>0</y>
-        <width>140</width>
+        <width>160</width>
         <height>50</height>
        </rect>
       </property>
