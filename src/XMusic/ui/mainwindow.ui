@@ -308,7 +308,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <rect>
       <x>110</x>
       <y>0</y>
-      <width>840</width>
+      <width>790</width>
       <height>170</height>
      </rect>
     </property>
@@ -321,7 +321,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandAlbum">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>510</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -349,7 +349,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandAlbumItem">
      <property name="geometry">
       <rect>
-       <x>720</x>
+       <x>680</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -377,7 +377,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandPlaylist">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>170</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -405,7 +405,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="CButton" name="btnDemandSinger">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>340</x>
        <y>0</y>
        <width>110</width>
        <height>110</height>
@@ -461,7 +461,7 @@ gridline-color: rgb(255, 255, 255);</string>
     <widget class="QFrame" name="frameDemandLanguage">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>0</x>
        <y>120</y>
        <width>790</width>
        <height>60</height>
@@ -573,7 +573,7 @@ gridline-color: rgb(255, 255, 255);</string>
        <rect>
         <x>630</x>
         <y>0</y>
-        <width>160</width>
+        <width>158</width>
         <height>60</height>
        </rect>
       </property>

@@ -48,6 +48,8 @@ void COptionMgr::init()
 {
     m_bInited = true;
 
+    m_opt.bFullScreen = true; // 默认开启全屏
+
     cauto strFile = fsutil::workDir() + __confFile;
 #if __android
     if (!fsutil::existFile(strFile))
@@ -89,7 +91,6 @@ void COptionMgr::init()
     jsonutil::get(jRoot[OI_RandomPlay], m_opt.bRandomPlay);
     jsonutil::get(jRoot[OI_Force48KHz], m_opt.bForce48KHz);
 
-    m_opt.bFullScreen = true; // 默认开启全屏
     jsonutil::get(jRoot[OI_FullScreen], m_opt.bFullScreen);
 
 #if __winvc

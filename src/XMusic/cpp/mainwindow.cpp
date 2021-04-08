@@ -98,11 +98,7 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(__app.getOption())
-    //, m_PlayingList(this)
-    //, m_medialibDlg(*this)
-    //, m_bkgDlg(*this)
 {
-    //this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint);
     //this->setStyleSheet("");
 
     //qRegisterMetaType<QVariant>("QVariant");
@@ -137,23 +133,16 @@ void MainWindow::_ctor()
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
 
+    ui.btnFullScreen->setParent(this);
+    ui.btnFullScreen->setVisible(true);
+
 #if __android || __ios
     int nLogoWidth = g_screen.nMinSide*42/100;
     ui.labelLogo->resize(nLogoWidth, nLogoWidth/4);
     ui.labelLogo->setScaledContents(true);
 
-#if __android
-    ui.btnFullScreen->setParent(this);
-    ui.btnFullScreen->setVisible(true);
-#else
-    ui.btnFullScreen->setVisible(false);
-#endif
     ui.btnExit->setVisible(false);
-
 #else
-    ui.btnFullScreen->setParent(this);
-    ui.btnFullScreen->setVisible(true);
-
     ui.btnExit->setParent(this);
     ui.btnExit->setVisible(true);
 #endif
@@ -384,7 +373,6 @@ void MainWindow::show()
     ui.labelLogo->setVisible(false);
     ui.labelLogoTip->setVisible(false);
     ui.labelLogoCompany->setVisible(false);
-    ui.btnFullScreen->setVisible(false);
 
     ui.centralWidget->setVisible(true);
 

@@ -15,6 +15,19 @@ void CCentralWidget::ctor() // 代替构造函数
     auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();
     m_fBkgTopReserve = (Double_T)cyTop/(cyTop+cy);
 
+#if 1
+    ui.btnDemandAlbumItem->setVisible(false);
+    int x = __size(40);
+    auto dx = (ui.frameDemand->width()-ui.btnDemandAlbumItem->width()-x*2)/3;
+    ui.btnDemandPlayItem->move(x, 0);
+    x += dx;
+    ui.btnDemandPlaylist->move(x, 0);
+    x += dx;
+    ui.btnDemandSinger->move(x, 0);
+    x += dx;
+    ui.btnDemandAlbum->move(x, 0);
+#endif
+
     for (auto pWidget : SList<QWidget*>(
              ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
@@ -203,8 +216,6 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         }
 
         y_frameDemand += checkAndroidStatusBar();
-
-        ui.btnFullScreen->move(ui.btnFullScreen->x(), y_frameDemand);
     }
 
     int x_frameDemand = 0;
@@ -220,16 +231,50 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
-    int y_btnMore = ui.frameDemand->y() + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
-    int x_btnMore = __size(27);
-
-#if __android || __ios
-     if (!bHLayout)
-     {
-         x_btnMore = cx - __size(25) - ui.btnMore->width();
-     }
+#if __ios
+    ui.btnFullScreen->setVisible(false);
+#else
+    ui.btnFullScreen->setVisible(true);
 #endif
-    ui.btnMore->move(x_btnMore, y_btnMore);
+
+    int x_FullScreen = __size(27);
+    int x_btnMore = x_FullScreen;
+    if (bHLayout)
+    {
+        if (ui.btnExit->isVisible())
+        {
+            if (ui.btnFullScreen->isVisible())
+            {
+                x_btnMore += x_frameDemand + ui.frameDemand->width();
+            }
+        }
+        else
+        {
+            if (ui.btnFullScreen->isVisible())
+            {
+                x_FullScreen = cx - x_FullScreen - ui.btnMore->width();
+            }
+        }
+    }
+    else
+    {
+        if (ui.btnExit->isVisible())
+        {
+            ui.btnFullScreen->setVisible(false);
+        }
+        else
+        {
+            if (ui.btnFullScreen->isVisible())
+            {
+                x_btnMore = cx - x_btnMore - ui.btnMore->width();
+            }
+        }
+    }
+
+    int y_btnMore = y_frameDemand + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
+    ui.btnMore->move(x_btnMore, y_btnMore);    
+
+    ui.btnFullScreen->move(x_FullScreen, y_btnMore);
 
     int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
     ui.btnExit->move(x_btnExit, y_btnMore);
