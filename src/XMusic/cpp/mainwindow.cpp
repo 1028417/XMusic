@@ -1033,8 +1033,6 @@ void MainWindow::updateBkg()
     this->repaint();
 }
 
-static const QString __qsCheck(QChar(L'√'));
-
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
 {
     if (label == ui.labelSingerImg)
@@ -1124,6 +1122,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else
     {
+#define __wcCheck L'√'
         m_eDemandLanguage = E_LanguageType::LT_None;
 
         PairList<CLabel*, E_LanguageType> plLabels {
@@ -1135,16 +1134,16 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
         plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {
             cauto text = lbl->text();
-            if (text.startsWith(__qsCheck))
+            if (text.startsWith(__wcCheck))
             {
-                lbl->setText(text.mid(__qsCheck.length()));
+                lbl->setText(text.mid(1));
             }
             else
             {
                 if (lbl == label)
                 {
                     m_eDemandLanguage = eLanguage;
-                    lbl->setText(__qsCheck + text);
+                    lbl->setText(QChar(__wcCheck) + text);
                 }
             }
         });
