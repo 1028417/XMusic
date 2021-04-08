@@ -714,10 +714,10 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnFullScreen">
     <property name="geometry">
      <rect>
-      <x>35</x>
-      <y>25</y>
-      <width>80</width>
-      <height>80</height>
+      <x>20</x>
+      <y>90</y>
+      <width>90</width>
+      <height>90</height>
      </rect>
     </property>
     <property name="autoFillBackground">

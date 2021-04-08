@@ -271,7 +271,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         }
     }
 
-    int y_btnMore = y_frameDemand + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
+    int y_btnMore = y_frameDemand - __size(3) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
     ui.btnMore->move(x_btnMore, y_btnMore);    
 
     ui.btnFullScreen->move(x_FullScreen, y_btnMore);
