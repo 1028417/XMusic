@@ -55,7 +55,8 @@ private:
 
     CModel m_model;
 
-    wstring m_strAppVersion;
+    tagMdlConf m_orgMdlConf;
+    wstring m_strAppVer;
 
     MainWindow m_mainWnd;
 
@@ -86,6 +87,11 @@ private:
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 
 public:
+    cwstr appVer() const
+    {
+        return m_strAppVer;
+    }
+
     MainWindow& mainWnd()
     {
         return m_mainWnd;
@@ -104,6 +110,11 @@ public:
     IModel& getModel()
     {
         return m_model;
+    }
+
+    CUserMgr& getUserMgr()
+    {
+        return m_model.getUserMgr();
     }
 
     CDataMgr& getDataMgr()
@@ -131,9 +142,9 @@ public:
         return m_model.getSingerImgMgr();
     }
 
-    wstring appVersion() const
+    CMdlMgr& getMdlMgr()
     {
-        return m_strAppVersion;
+        return m_model.getMdlMgr();
     }
 
     int exec();
