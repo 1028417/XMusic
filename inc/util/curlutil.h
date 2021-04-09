@@ -93,11 +93,81 @@ public:
     static int initCurl(string& strVerInfo);
     static void freeCurl();
 
-    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURL& cbWrite, CB_CURLProgress& cbProgress = NULL);
-
     static int curlToolPerform(const list<string>& lstParams, tagCURlToolHook *pCURLToolHook = NULL);
 
     static string getCurlErrMsg(UINT uCurlCode);
+
+    template <class T>
+    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, T t, CB_CURLProgress& cbProgress = NULL)
+    {
+        return _curlDownload(curlOpt, strURL, t, cbProgress);
+    }
+
+    template <class T>
+    static int curlDownload(signal_t bRunSignal, const tagCurlOpt& curlOpt, const string& strUrl, T t)
+    {
+        return _curlDownload(curlOpt, strUrl, t, [&](int64_t, int64_t){
+            if (!bRunSignal)
+            {
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+    template <class T>
+    static int curlDownload(CB_CURLProgress& cbProgress, const string& strUrl, T t
+                     , unsigned long timeout, unsigned long connectTimeout = 3)
+    {
+        tagCurlOpt curlOpt(false);
+        curlOpt.connectTimeout = connectTimeout;
+        curlOpt.timeout = timeout;
+        return curlDownload(curlOpt, strUrl, t, cbProgress);
+    }
+
+    template <class T>
+    static int curlDownload(signal_t bRunSignal, const string& strUrl, T t
+                     , unsigned long timeout, unsigned long connectTimeout = 3)
+    {
+        tagCurlOpt curlOpt(false);
+        curlOpt.connectTimeout = connectTimeout;
+        curlOpt.timeout = timeout;
+        return curlDownload(bRunSignal, curlOpt, strUrl, t);
+    }
+
+private:
+    static int _curlDownload(const tagCurlOpt& curlOpt, const string& strURL, CB_CURL& cbWrite
+                             , CB_CURLProgress& cbProgress);
+
+    // 适合下载短文件，可以忽略cbfProfile->append的开销
+    static int _curlDownload(const tagCurlOpt& curlOpt, const string& strUrl, CCharBuffer& cbfProfile
+                     , CB_CURLProgress& cbProgress);
+
+    inline static int _curlDownload(const tagCurlOpt& curlOpt, const string& strUrl, FILE *pf
+                            , CB_CURLProgress& cbProgress)
+    {
+        if (NULL == pf)
+        {
+            return -1;
+        }
+
+        return _curlDownload(curlOpt, strUrl, [&](char *ptr, size_t size, size_t nmemb){
+            return fwrite(ptr, size, nmemb, pf);
+        }, cbProgress);
+    }
+
+    static int _curlDownload(const tagCurlOpt& curlOpt, const string& strUrl, cwstr strFile
+                            , CB_CURLProgress& cbProgress)
+    {
+        auto pf = fsutil::fopen(strFile, "wb");
+        return _curlDownload(curlOpt, strUrl, pf, cbProgress);
+    }
+    static int _curlDownload(const tagCurlOpt& curlOpt, const string& strUrl, const string& strFile
+                            , CB_CURLProgress& cbProgress)
+    {
+        auto pf = fsutil::fopen(strFile, "wb");
+        return _curlDownload(curlOpt, strUrl, pf, cbProgress);
+    }
 };
 
 //using CB_DownloadRecv = const function<bool(char *ptr, size_t size)>&;

@@ -728,9 +728,21 @@ public:
         return writefile(strFile, bTrunc, cbfData, cbfData->size());
 	}
 
-	template <typename S>
+    template <typename S>
     static bool writefilex(const S& strFile, bool bTrunc, const CCharBuffer& cbfData)
-	{
+    {
         return writefilex(strFile, bTrunc, cbfData, cbfData->size());
-	}
+    }
+
+    template <typename S, typename T>
+    static bool writefilex(const S& strFile, bool bTrunc, const T& buff, const S& strTempFile)
+    {
+        if (!writefilex(strTempFile, bTrunc, buff))
+        {
+            fsutil::removeFile(strTempFile);
+            return false;
+        }
+
+        return fsutil::moveFile(strTempFile, strFile, true);
+    }
 };

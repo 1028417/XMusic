@@ -26,17 +26,14 @@ private:
     CModel& m_model;
 
 #if !__winvc
-    wstring m_strUser;
-    string m_strPwd;
-
     template <typename T>
     E_LoginReult _login(signal_t bRunSignal, cwstr strUser, const string& strPwd, int nRet, const T& bfProfile);
 #endif
 
 public:
+#if __winvc
     void init();
 
-#if __winvc
 	bool qurryUser(cwstr strUser, string& strPwd, uint64_t& tVip, UINT& uAuth);
 
     bool signupUser(cwstr strUser, const string& strPwd, uint64_t tVip, UINT uAuth);
@@ -46,17 +43,10 @@ public:
     UINT deployUser();
 
 #else
-    cwstr user() const
-    {
-        return m_strUser;
-    }
-
-    const string& pwd() const
-    {
-        return m_strPwd;
-    }
+    wstring loadProfile(string& strPwd);
 
     E_LoginReult syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd);
+
     void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
 #endif
 };
