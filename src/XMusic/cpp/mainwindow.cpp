@@ -48,19 +48,6 @@ void fixScreen(QWidget& wnd)
 #endif
 }
 
-#if __android
-static void _fullScreen()
-{
-    //java构造函数全屏效果更好，所以统一用jni控制
-    fullScreen(g_bFullScreen);
-
-    if (!g_bFullScreen)
-    {
-        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
-    }
-}
-#endif
-
 void MainWindow::switchFullScreen()
 {
 #if __ios
@@ -80,7 +67,7 @@ void MainWindow::switchFullScreen()
     fixScreen(*this);
 
 #if __android
-    _fullScreen();
+    androidFullScreen();
 
     //__async([&]{
         _relayout();
@@ -220,10 +207,6 @@ void MainWindow::preinit() // 工作线程
 
 void MainWindow::showLogo()
 {
-#if __android
-    _fullScreen();
-#endif
-
     _init();
 
 #if __android

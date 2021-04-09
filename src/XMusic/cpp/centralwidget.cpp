@@ -29,7 +29,8 @@ void CCentralWidget::ctor() // 代替构造函数
 #endif
 
     for (auto pWidget : SList<QWidget*>(
-             ui.btnExit, ui.frameDemand, ui.btnMore, ui.btnDemandSinger, ui.btnDemandAlbum
+             ui.btnExit, ui.btnFullScreen, ui.btnMore
+             , ui.frameDemand, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
              , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
              , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR))
@@ -271,7 +272,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         }
     }
 
-    int y_btnMore = y_frameDemand - __size(3) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
+    int y_btnMore = y_frameDemand - __size(6) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
     ui.btnMore->move(x_btnMore, y_btnMore);    
 
     ui.btnFullScreen->move(x_FullScreen, y_btnMore);

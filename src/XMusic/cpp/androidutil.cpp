@@ -191,6 +191,13 @@ void hideSplashScreen(UINT uMs) //渐变时间
 #endif
 }
 
+void fullScreenex(bool bSet) //合并成一次调用
+{
+    QtAndroid::runOnAndroidThread([=] {
+        QtAndroid::androidActivity().callMethod<void>("fullScreenex", "(Z)V", jboolean(bSet));
+    });
+}
+
 void fullScreen(bool bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
 {
     QtAndroid::runOnAndroidThread([=] {

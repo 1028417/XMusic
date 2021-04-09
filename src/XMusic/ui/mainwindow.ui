@@ -598,8 +598,8 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="labelLogo">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>210</y>
+      <x>90</x>
+      <y>230</y>
       <width>400</width>
       <height>100</height>
      </rect>
@@ -686,8 +686,8 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnMore">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>0</y>
+      <x>120</x>
+      <y>160</y>
       <width>90</width>
       <height>90</height>
      </rect>
@@ -714,8 +714,8 @@ gridline-color: rgb(255, 255, 255);</string>
    <widget class="CButton" name="btnFullScreen">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>90</y>
+      <x>30</x>
+      <y>160</y>
       <width>90</width>
       <height>90</height>
      </rect>

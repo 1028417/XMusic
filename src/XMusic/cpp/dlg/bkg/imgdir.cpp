@@ -536,8 +536,7 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 {
     cauto strUrl = m_olBkgList.url() + strutil::toAsc(fsutil::GetFileName(strFile));
 
-    tagCurlOpt curlOpt(true);
-    CDownloader downloader(curlOpt);
+    CDownloader downloader;
     CByteBuffer bbfBkg;
     int nRet = downloader.syncDownload(thread, strUrl, bbfBkg);
     if (nRet != 0)

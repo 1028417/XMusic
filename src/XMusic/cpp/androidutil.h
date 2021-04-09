@@ -37,6 +37,7 @@ bool requestAndroidPermission(cqstr qsPermission);
 void hideSplashScreen();
 void hideSplashScreen(UINT uMs);
 
+void fullScreenex(bool bSet); //合并成一次调用
 void fullScreen(bool bSet);
 
 void showTranslucentStatusBar(bool bShow);

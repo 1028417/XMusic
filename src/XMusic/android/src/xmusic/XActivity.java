@@ -87,6 +87,15 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         }*/
     }
 
+    void fullScreenex(boolean bSet) //合并成一次调用
+    {
+        fullScreen(bSet);
+        if (!bSet)
+        {
+            showTransparentStatusBar(true);
+        }
+    }
+
     public void fullScreen(boolean bSet) //普通全屏控制，qt WindowFullScreen就已经可以实现
     {
         Window window = getWindow();
