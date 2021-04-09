@@ -5,7 +5,9 @@
 class CNetworkWarnDlg : private CDialog
 {
  public:
-    CNetworkWarnDlg();
+    CNetworkWarnDlg() : CDialog(false)
+    {
+    }
 
 public:
     void show(cfn_void cb);

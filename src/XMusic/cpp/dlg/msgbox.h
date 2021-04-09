@@ -5,7 +5,9 @@
 class CMsgBox : private CDialog
 {
  public:
-    CMsgBox();
+    CMsgBox() : CDialog(false)
+    {
+    }
 
 public:
     void show(cqstr qsMsg, cfn_void cbClose);

@@ -5,7 +5,9 @@
 class CLoginDlg : public CDialog
 {
  public:
-    CLoginDlg();
+    CLoginDlg() : CDialog(false)
+    {
+    }
 
     void show(E_LoginReult eRet);
 };
