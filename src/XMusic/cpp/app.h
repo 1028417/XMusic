@@ -72,17 +72,17 @@ private:
 
     bool _startup() override;
 
-    void _show(E_UpgradeResult eUpgradeResult);
+    void _show(E_UpgradeResult eUpgradeResult, cwstr strUser);
+
+    void _show(cwstr strUser);
 
 #if __windows
     void _setForeground();
 #endif
 
-    void _login();
-
     void _showLoginDlg(E_LoginReult eRet=E_LoginReult::LR_Success);
 
-    void _syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, bool bRelogin=false);
+    E_LoginReult _syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, bool bRelogin=false);
 
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 

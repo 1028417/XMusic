@@ -37,7 +37,6 @@ void CDialog::_setPos()
 
 void CDialog::show(cfn_void cbClose)
 {
-    auto flags = windowFlags();// | Qt::Dialog;
     QWidget *parent = NULL;
     if (!g_lstDlg.empty())
     {
@@ -47,6 +46,7 @@ void CDialog::show(cfn_void cbClose)
     {
         parent = &__app.mainWnd();
     }
+    auto flags = windowFlags();// | Qt::Dialog;
     setParent(parent, flags);
 
     if (!m_bFullScreen)
@@ -86,6 +86,31 @@ void CDialog::show(cfn_void cbClose)
 
     this->setVisible(true);
 }
+
+/*static QWidget *g_pMask = NULL;
+static CDialog *g_pDlg = NULL;
+
+void showMask(cqcr crMask, cfn_void cbClose)
+{
+    QWidget *parent = &__app.mainWnd();
+    if (NULL == g_pMask)
+    {
+        g_pMask = new QWidget(parent);
+    }
+
+    if (!g_lstDlg.empty())
+    {
+        parent = g_lstDlg.front();
+    }
+
+    g_pMask->setParent(parent);
+    g_pMask->raise();
+
+    auto flags = windowFlags() & (~Qt::Dialog);
+    setParent(g_pMask, flags);
+
+    g_pDlg = this;
+}*/
 
 bool CDialog::event(QEvent *ev)
 {

@@ -84,4 +84,10 @@ public:
 #endif
 
     void show(cfn_void cbClose = NULL);
+
+    /*void showMask(cqcr crMask, cfn_void cbClose = NULL);
+    void showMask(cfn_void cbClose = NULL)
+    {
+        showMask(QColor(0,0,0,0), cbClose);
+    }*/
 };
