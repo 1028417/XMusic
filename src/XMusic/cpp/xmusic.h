@@ -28,8 +28,22 @@ extern const tagScreenInfo& g_screen;
 extern bool g_bFullScreen;
 
 #if __android
+extern void androidFullScreen();
+
 extern const bool& g_bAndroidSDPermission;
 bool requestAndroidSDPermission();
+
+#define __cyAndroidStatusBar 30
+inline static UINT checkAndroidStatusBar()
+{
+    if (!g_bFullScreen)
+    {
+        return __cyAndroidStatusBar;
+    }
+    return 0;
+}
+#else
+#define checkAndroidStatusBar() 0u
 #endif
 
 #if __ios
@@ -44,20 +58,6 @@ inline static UINT checkIPhoneXBangs(int cx, int cy)
 }
 #else
 #define checkIPhoneXBangs(cx, cy) 0u
-#endif
-
-#if __android
-#define __cyAndroidStatusBar 30
-inline static UINT checkAndroidStatusBar()
-{
-    if (!g_bFullScreen)
-    {
-        return __cyAndroidStatusBar;
-    }
-    return 0;
-}
-#else
-#define checkAndroidStatusBar() 0u
 #endif
 
 extern signal_t g_bRunSignal;

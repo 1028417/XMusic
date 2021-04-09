@@ -9,7 +9,7 @@ static QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
 #endif
 
 static wstring m_strWorkDir;
-cwstr g_strWorkDir(m_strWorkDir);
+cwstr g_strWorkDir = m_strWorkDir;
 
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
@@ -20,6 +20,19 @@ const tagScreenInfo& g_screen(m_screen);
 bool g_bFullScreen = false;
 
 #if __android
+void androidFullScreen()
+{
+    /*//java构造函数全屏效果更好，所以统一用jni控制
+    fullScreen(g_bFullScreen);
+
+    if (!g_bFullScreen)
+    {
+        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
+    }*/
+
+    fullScreenex(g_bFullScreen);// 合并成一次调用
+}
+
 bool m_bAndroidSDPermission = false;
 const bool& g_bAndroidSDPermission(m_bAndroidSDPermission);
 
@@ -151,11 +164,7 @@ int CAppBase::exec() // 派生将显示空白页
 
         return nRet;
     }, [=]{
-        _init(); //如果同步跑会影响空白页屏幕旋转
-        sync([&]{
-            CFont::init(this->font());
-            this->setFont(CFont());
-        });
+        _init();
 
         if (!_startup()) //派生将显示logo窗口
         {
@@ -207,7 +216,6 @@ int main(int argc, char *argv[])
     {
         return -1;
     }
-#endif
 
 #if __windows
     extern void InitMinDump(const string&);
@@ -216,6 +224,7 @@ int main(int argc, char *argv[])
     //#if (QT_VERSION >= QT_VERSION_CHECK(5,6,0))
     //    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //#endif
+#endif
 #endif
 
 #if __android
@@ -247,7 +256,7 @@ int main(int argc, char *argv[])
 
     m_logger << "exit: " >> nRet;
     m_logger.close();
-    //fsutil::copyFile(m_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
+    //fsutil::copyFile(g_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
     return nRet;
 }
 
@@ -288,7 +297,7 @@ static bool _cmdShell(cwstr strCmd, bool bBlock = true)
 bool installApp(const CByteBuffer& bbfData)
 {
 #if __android
-    cauto strApkFile = m_strWorkDir + L"/upgrade.apk";
+    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
     if (!OFStream::writefilex(strApkFile, true, bbfData))
     {
         g_logger << "save appPackage fail: " >> strApkFile;
