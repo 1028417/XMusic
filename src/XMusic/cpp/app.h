@@ -81,6 +81,10 @@ private:
 
     void _showLoginDlg(E_LoginReult eRet=E_LoginReult::LR_Success);
 
+    void _syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, bool bRelogin=false);
+
+    void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
+
 public:
     MainWindow& mainWnd()
     {
@@ -136,5 +140,5 @@ public:
 
     void quit();
 
-    void login(cwstr strUser=L"", const string& strPwd="", bool bRelogin=false);
+    void asyncLogin(cwstr strUser=L"", const string& strPwd="", bool bRelogin=false);
 };

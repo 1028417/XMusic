@@ -23,7 +23,7 @@ CLoginDlg::CLoginDlg() : CDialog(false)
 
         close();
 
-        (void)__app.login(strUser, strPwd);
+        (void)__app.asyncLogin(strUser, strPwd);
     });
 }
 

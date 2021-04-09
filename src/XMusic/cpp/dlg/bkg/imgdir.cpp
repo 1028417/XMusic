@@ -536,11 +536,12 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 {
     cauto strUrl = m_olBkgList.url() + strutil::toAsc(fsutil::GetFileName(strFile));
 
-    CDownloader downloader;
-    CByteBuffer bbfBkg;
-    int nRet = downloader.syncDownload(thread, strUrl, bbfBkg);
+    auto t_strFile = strFile + L".temp";
+    int nRet = curlutil::curlDownload(thread, strUrl, t_strFile, 0, 4);
     if (nRet != 0)
     {
+        fsutil::removeFile(t_strFile);
+
         if (-404 == nRet)
         {
             g_logger << "bkg not exist: " >> strUrl;
@@ -555,10 +556,7 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
         return false;
     }
 
-    if (!OFStream::writefilex(strFile, true, bbfBkg))
-    {
-        return false;
-    }
+    fsutil::moveFile(t_strFile, strFile);
 
     return true;
 }
