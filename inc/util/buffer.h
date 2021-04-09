@@ -5,7 +5,7 @@ template<typename T>
 struct TBuffer
 {
 public:
-        TBuffer(size_t count, const T *lpSrc=NULL)
+    TBuffer(size_t count, const T *lpSrc=NULL)
 	{
 		m_count = MAX(1, count);
 		m_size = m_count * sizeof(T);

@@ -108,6 +108,7 @@ class __UtilExt CCurlDownload
 public:
     virtual ~CCurlDownload() = default;
 
+protected:
     CCurlDownload(bool bShare = false, unsigned long connectTimeout = 3, unsigned long timeout = 0
             , unsigned long lowSpeedLimit = 0, unsigned long lowSpeedLimitTime = 0, unsigned long maxSpeedLimit = 0)
         : m_curlOpt(bShare)

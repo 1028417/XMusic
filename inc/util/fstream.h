@@ -175,9 +175,14 @@ public:
     {
     }
 
-    IFBuffer(const CByteBuffer& bbfBuff)
-        : m_ptr(bbfBuff)
-        , m_size(bbfBuff->size())
+    IFBuffer(const CByteBuffer& bbf)
+        : m_ptr(bbf)
+        , m_size(bbf->size())
+    {
+    }
+    IFBuffer(const CCharBuffer& cbf)
+        : m_ptr((byte_p)cbf.ptr())
+        , m_size(cbf->size())
     {
     }
 

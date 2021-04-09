@@ -29,7 +29,8 @@ private:
     wstring m_strUser;
     string m_strPwd;
 
-    void _login(signal_t bRunSignal, cwstr strUser, uint64_t tLogin);
+    template <typename T>
+    E_LoginReult _login(signal_t bRunSignal, cwstr strUser, const string& strPwd, int nRet, const T& bfProfile);
 #endif
 
 public:
@@ -55,6 +56,7 @@ public:
         return m_strPwd;
     }
 
+    E_LoginReult syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd);
     void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
 #endif
 };

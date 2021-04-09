@@ -159,8 +159,6 @@ using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFa
 
 struct __ModelExt tagOption
 {
-    wstring strRootDir;
-
     PairList<wstring, E_AttachDirType> plAttachDir;
 
     UINT uPlayingItem = 0;
@@ -171,6 +169,8 @@ struct __ModelExt tagOption
     bool bFullScreen = false;
 
 #if __winvc
+    wstring strRootDir;
+
     bool bHideMenuBar = false;
 
     tagPlaySpiritOption PlaySpiritOption;
@@ -274,6 +274,8 @@ public:
     virtual bool initMediaLib(bool bNotify = true) = 0;
 
 #if !__winvc
+    virtual void init(cwstr strRootDir) = 0;
+
     virtual CMdlMgr& getMdlMgr() = 0;
 
 #else
@@ -338,13 +340,18 @@ private:
 
 	XMediaLib m_MediaLib;
 
-	CDataMgr m_DataMgr;
-
 #if __winvc
+    wstring& m_strRootDir;
+
 	CBackupMgr m_BackupMgr;
-#else
+
+#else    
+    wstring m_strRootDir;
+
     CMdlMgr m_MdlMgr;
 #endif
+
+    CDataMgr m_DataMgr;
 
 	CSingerMgr m_SingerMgr;
 	CSingerImgMgr m_SingerImgMgr;
@@ -394,6 +401,8 @@ public:
 #if !__winvc
     cwstr rootDir() const;
     wstring rootPath(cwstr strSubPath) const;
+
+    void init(cwstr strRootDir) override;
 
     CMdlMgr& getMdlMgr() override
     {
