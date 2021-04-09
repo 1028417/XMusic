@@ -110,7 +110,8 @@ bool CApp::_startup()
         strUser = m_model.getUserMgr().loadProfile(strPwd);
         if (!strUser.empty())
         {
-            (void)_syncLogin(g_bRunSignal, strUser, strPwd);
+            //_syncLogin(g_bRunSignal, strUser, strPwd);
+            asyncLogin(strUser, strPwd);
         }
 
         E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(g_bRunSignal, m_orgMdlConf);
@@ -256,7 +257,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
     _show(strUser);
 }
 
-static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success);
+static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success)
 {
 #if __android
     vibrate();

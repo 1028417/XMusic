@@ -33,8 +33,6 @@ void CDialog::_setPos()
     _relayout(cx, cy);
 }
 
-#include <QBitmap>
-
 void CDialog::show(cfn_void cbClose)
 {
     QWidget *parent = NULL;
