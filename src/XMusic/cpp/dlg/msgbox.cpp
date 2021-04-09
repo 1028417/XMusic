@@ -6,16 +6,6 @@
 
 static Ui::MsgBox ui;
 
-CMsgBox::CMsgBox() : CDialog(false)
-{
-    ui.setupUi(this);
-
-    ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
-    ui.labelTip->setForeColor(__crLogoText);
-
-    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
-}
-
 cqcr CMsgBox::bkgColor() const
 {
     static QColor cr(195, 230, 255);
@@ -24,6 +14,19 @@ cqcr CMsgBox::bkgColor() const
 
 void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 {
+    static bool s_bFlag = false;
+    if (!s_bFlag)
+    {
+        s_bFlag = true;
+
+        ui.setupUi(this);
+
+        ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
+        ui.labelTip->setForeColor(__crLogoText);
+    }
+
+    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
+
     ui.labelTip->setText(qsMsg);
 
     CDialog::show(cbClose);

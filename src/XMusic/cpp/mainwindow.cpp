@@ -216,6 +216,13 @@ void MainWindow::showLogo()
     _relayout();
 #endif
 
+    auto movie = new QMovie(this);
+    movie->setFileName(":/img/logo.gif");
+    ui.labelLogo->setMovie(movie);
+    ui.labelLogo->movie()->start();
+    ui.labelLogo->setParent(this);
+    ui.labelLogo->setVisible(true);
+
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
     fFontSizeOffset = 0.918f;
@@ -228,17 +235,10 @@ void MainWindow::showLogo()
     CDialog::setWidgetTextColor(ui.labelLogoTip, QColor(__crLogoText));
     CDialog::setWidgetTextColor(ui.labelLogoCompany, QColor(__crLogoText, 0));
 
-    auto movie = new QMovie(this);
-    movie->setFileName(":/img/logo.gif");
-    ui.labelLogo->setMovie(movie);
-    ui.labelLogo->movie()->start();
-    ui.labelLogo->setParent(this);
-    ui.labelLogo->setVisible(true);
-
+    auto& labelLogoTip = *ui.labelLogoTip;
+    labelLogoTip.setParent(this);
+    labelLogoTip.setVisible(true);
     async(30, [&]{
-        auto& labelLogoTip = *ui.labelLogoTip;
-        labelLogoTip.setParent(this);
-        labelLogoTip.setVisible(true);
         labelLogoTip.setText("播放器");
 
         async(500, [&]{
@@ -252,11 +252,12 @@ void MainWindow::showLogo()
         });
     });
 
-    ui.labelLogoCompany->setParent(this);
-    ui.labelLogoCompany->setVisible(true);
+    auto& labelLogoCompany = *ui.labelLogoCompany;
+    labelLogoCompany.setParent(this);
+    labelLogoCompany.setVisible(true);
     _updateLogoCompany(5, [&]{
         _updateLogoCompany(-5, [&]{
-            ui.labelLogoCompany->setText(__WS2Q(L"v" + __app.appVersion()));
+            labelLogoCompany.setText(__WS2Q(L"v" + __app.appVer()));
             _updateLogoCompany(5, [&]{
                 g_uShowLogoState++;
             });
@@ -290,11 +291,10 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     });
 }
 
-int g_nAppUpgradeProgress = -1;
-
 void MainWindow::_showUpgradeProgress()
 {
-    if (-1 == g_nAppUpgradeProgress)
+    cauto nAppUpgradeProgress = __app.getMdlMgr().appUpgradeProgress();
+    if (-1 == nAppUpgradeProgress)
     {
 #define __logoTip "更新媒体库"
         ui.labelLogoTip->setText(__logoTip);
@@ -307,17 +307,17 @@ void MainWindow::_showUpgradeProgress()
             return false;
         }
 
-        if (g_nAppUpgradeProgress >= 0)
+        if (nAppUpgradeProgress >= 0)
         {
             QString qsText;
-            if (100 == g_nAppUpgradeProgress)
+            if (100 == nAppUpgradeProgress)
             {
                 qsText.append("准备安装...");
             }
             else
             {
                 //if (0 == g_nAppUpgradeProgress) qsText.append("下载升级包..."); else
-                qsText.sprintf("下载升级包:  %u%%", (UINT)g_nAppUpgradeProgress);
+                qsText.sprintf("下载升级包:  %u%%", (UINT)nAppUpgradeProgress);
             }
             ui.labelLogoTip->setText(qsText);
         }

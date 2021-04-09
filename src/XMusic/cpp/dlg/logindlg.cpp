@@ -6,29 +6,32 @@
 
 static Ui::LoginDlg ui;
 
-CLoginDlg::CLoginDlg() : CDialog(false)
-{
-    ui.setupUi(this);
-
-    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
-
-    connect(ui.btnLogin, &CButton::signal_clicked, [&]{
-        cauto strUser = ui.editUser->text().trimmed().toStdWString();
-        if (strUser.empty())
-        {
-            return;
-        }
-
-        cauto strPwd = ui.editPwd->text().trimmed().toStdString();
-
-        close();
-
-        (void)__app.asyncLogin(strUser, strPwd);
-    });
-}
-
 void CLoginDlg::show(E_LoginReult eRet)
 {
+    static bool s_bFlag = false;
+    if (!s_bFlag)
+    {
+        s_bFlag = true;
+
+        ui.setupUi(this);
+
+        connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
+
+        connect(ui.btnLogin, &CButton::signal_clicked, [&]{
+            cauto strUser = ui.editUser->text().trimmed().toStdWString();
+            if (strUser.empty())
+            {
+                return;
+            }
+
+            cauto strPwd = ui.editPwd->text().trimmed().toStdString();
+
+            close();
+
+            (void)__app.asyncLogin(strUser, strPwd);
+        });
+    }
+
     QString qsTitle;
     switch (eRet)
     {

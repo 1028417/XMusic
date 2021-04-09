@@ -109,7 +109,8 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
 #endif
     }
 
-    wstring strAppBkgDir = strBkgDir + __app.appVersion();
+    cauto strAppVer = __app.appVer();
+    wstring strAppBkgDir = strBkgDir + strAppVer;
     if (!fsutil::existDir(strAppBkgDir))
     {
         strAppBkgDir.push_back('-');
@@ -159,13 +160,13 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
             return;
         }
 
-        vecBkgFile.emplace_back(false, __app.appVersion() + __wcPathSeparator + fi.strName);
+        vecBkgFile.emplace_back(false, strAppVer + __wcPathSeparator + fi.strName);
     });
 
     fsutil::findFile(strBkgDir, [&](tagFileInfo& fi) {
         if (fi.bDir)
         {
-            if (fi.strName != __app.appVersion())
+            if (fi.strName != strAppVer)
             {
                 (void)fsutil::removeDirTree(strBkgDir + fi.strName);
             }
