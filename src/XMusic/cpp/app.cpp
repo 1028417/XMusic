@@ -8,7 +8,6 @@
 CApp::CApp()
     : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
-    //, m_loginDlg(m_mainWnd)
 {
 }
 
@@ -166,9 +165,9 @@ bool CApp::_startup()
 }
 
 #if __windows
-void CApp::_setForeground()
+static void _setForeground()
 {
-    auto hwnd = m_mainWnd.hwnd();
+    auto hwnd = __app.mainWnd().hwnd();
     if (IsIconic(hwnd))
     {
         ::ShowWindow(hwnd, SW_RESTORE);
@@ -257,6 +256,18 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
     _show(strUser);
 }
 
+static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success);
+{
+#if __android
+    vibrate();
+#else
+    _setForeground();
+#endif
+
+    static CLoginDlg m_loginDlg;
+    m_loginDlg.show(strUser, strPwd, eRet);
+}
+
 void CApp::_show(cwstr strUser)
 {
     if (strUser.empty())
@@ -268,17 +279,6 @@ void CApp::_show(cwstr strUser)
 
     m_ctrl.start();
     m_mainWnd.show();
-}
-
-void CApp::_showLoginDlg(E_LoginReult eRet)
-{
-#if __android
-    vibrate();
-#else
-    _setForeground();
-#endif
-
-    m_loginDlg.show(eRet);
 }
 
 //static UINT s_uSeq = 0;
@@ -295,7 +295,7 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
         if (!bRelogin)
         {
             vibrate();
-            showLoginToast(true);
+            showToast("登录成功！Hi，" + __WS2Q(strUser), true);
         }
 #endif
     }
@@ -303,7 +303,7 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
     {
         sync(3000, [=]{
             //if (uSeq != s_uSeq) return;
-            _showLoginDlg(eRet);
+            _showLoginDlg(strUser, strPwd, eRet);
         });
     }
 }

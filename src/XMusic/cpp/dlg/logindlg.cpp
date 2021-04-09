@@ -6,7 +6,7 @@
 
 static Ui::LoginDlg ui;
 
-void CLoginDlg::show(E_LoginReult eRet)
+void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 {
     static bool s_bFlag = false;
     if (!s_bFlag)
@@ -31,6 +31,10 @@ void CLoginDlg::show(E_LoginReult eRet)
             (void)__app.asyncLogin(strUser, strPwd);
         });
     }
+
+
+    ui.editUser->setText(__WS2Q(strUser));
+    ui.editPwd->setText(__WS2Q(strutil::fromAsc(strPwd)));
 
     QString qsTitle;
     switch (eRet)

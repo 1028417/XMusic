@@ -458,7 +458,7 @@ bool MainWindow::event(QEvent *ev)
         {
 #if __android
             vibrate();
-            showQuitToast();
+            showToast("再按一次退出程序", false);
 #endif
             prevTime = currTime;
             return true;

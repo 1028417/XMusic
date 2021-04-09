@@ -9,5 +9,5 @@ class CLoginDlg : public CDialog
     {
     }
 
-    void show(E_LoginReult eRet);
+    void show(cwstr strUser, const string& strPwd, E_LoginReult eRet);
 };

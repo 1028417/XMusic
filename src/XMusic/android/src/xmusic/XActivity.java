@@ -151,14 +151,9 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         window.setStatusBarColor(Color.TRANSPARENT);
     }
 
-    public void showLoginToast(boolean bSuccess)
+    public void showToast(String tip, boolean bLongTime)
     {
-        Toast.makeText(getApplicationContext(), bSuccess?"登录成功":"登录失败", Toast.LENGTH_LONG).show();
-    }
-
-    public void showQuitToast()
-    {
-        Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), tip, bLongTime?Toast.LENGTH_LONG:Toast.LENGTH_SHORT).show();
     }
 
     public boolean checkMobileConnected()

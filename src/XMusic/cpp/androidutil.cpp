@@ -219,21 +219,17 @@ void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示
     });
 }
 
-void showLoginToast(bool bSuccess)
+void showToast(cqstr qsTip, bool bLongTime)
 {
     QtAndroid::runOnAndroidThread([=] {
-        QtAndroid::androidActivity().callMethod<void>("showLoginToast", "(Z)V", jboolean(bSuccess));
+        cauto jsTip = QAndroidJniObject::fromString(qsTip);
+        QtAndroid::androidActivity().callMethod<void>("showToast",
+                    "(Ljava/lang/String;Z)V",
+                    jsTip.object<jstring>(), jboolean(bLongTime));
     });
 }
 
-void showQuitToast()
-{
-    QtAndroid::runOnAndroidThread([]{
-        QtAndroid::androidActivity().callMethod<void>("showQuitToast", "()V");
-    });
-}
-
-/*这段只作为QAndroidJniObject语法参考
+/*这段仅供QAndroidJniObject语法参考
 #include <QColor>
 void setStatusBar(const QColor& cr, bool bLight)
 {

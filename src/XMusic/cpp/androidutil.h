@@ -43,8 +43,7 @@ void fullScreen(bool bSet);
 void showTranslucentStatusBar(bool bShow);
 void showTransparentStatusBar(bool bShow);
 
-void showLoginToast(bool bSuccess);
-void showQuitToast();
+void showToast(cqstr qsTip, bool bLongTime);
 
 bool checkMobileConnected();
 
