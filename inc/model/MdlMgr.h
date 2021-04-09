@@ -87,7 +87,9 @@ public:
 private:
     CModel& m_model;
 
-	list<CUpgradeUrl> m_lstUpgradeUrl;
+    int m_nAppUpgradeProgress = -1;
+
+    list<CUpgradeUrl> m_lstUpgradeUrl;
 	
 	list<tagOlBkgList> m_lstOlBkg;
 
@@ -97,7 +99,14 @@ private:
     void _initOlBkg(CByteBuffer& bbfOlBkg);
 
 public:
-    E_UpgradeResult upgradeMdl(signal_t bRunSignal, CByteBuffer& bbfConf, UINT& uAppUpgradeProgress, wstring& strAppVersion);
+    const int& appUpgradeProgress() const
+    {
+        return m_nAppUpgradeProgress;
+    }
+
+    bool loadMdlConf(CByteBuffer& bbfMdlConf, tagMdlConf& mdlConf);
+
+    E_UpgradeResult upgradeMdl(signal_t bRunSignal, const tagMdlConf& orgMdlConf);
 
     const list<CUpgradeUrl>& upgradeUrl() const
     {

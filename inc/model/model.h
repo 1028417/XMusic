@@ -409,7 +409,7 @@ public:
         return m_MdlMgr;
     }
 
-    bool upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, UINT& uAppUpgradeProgress);
+    bool upgradeApp(signal_t bRunSignal, const list<CUpgradeUrl>& lstUpgradeUrl, int& nAppUpgradeProgress);
 
 #else
 	wstring deployPath(cwstr strSubPath);
