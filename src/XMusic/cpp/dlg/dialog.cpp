@@ -148,7 +148,7 @@ void CMaskDlg::showMask(cqcr crMask, cfn_void cbClose)
     m_crMask = crMask;
 
     auto prevFlags = m_child.windowFlags();
-    auto flags = prevFlags & (~(Qt::Dialog |Qt::WindowCloseButtonHint |Qt::WindowSystemMenuHint));
+    auto flags = prevFlags & (~(Qt::Dialog | Qt::Window));
     m_child.setParent(this, flags);
 
     m_child.onUISignal(&QDialog::finished, [&]{

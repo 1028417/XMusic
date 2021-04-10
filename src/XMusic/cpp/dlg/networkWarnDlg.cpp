@@ -62,6 +62,6 @@ void CNetworkWarnDlg::show(cfn_void cb)
         __app.quit();
     });
 
-    CDialog::show(cbClose); //CDialogEx::show();
+    CDialog::show(); //CDialogEx::show();
 }
 #endif
