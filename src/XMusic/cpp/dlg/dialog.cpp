@@ -33,6 +33,11 @@ void CDialog::_setPos()
     _relayout(cx, cy);
 }
 
+void CDialog::connect_dlgClose(CButton *btn)
+{
+    btn->connect_dlgClose(this);
+}
+
 void CDialog::show(cfn_void cbClose)
 {
     QWidget *parent = NULL;
@@ -58,7 +63,7 @@ void CDialog::show(cfn_void cbClose)
 
     g_lstDlg.push_front(this);
 
-    connect(this, &QDialog::finished, [&, cbClose]{
+    onUISignal(&QDialog::finished, [&, cbClose]{
         auto itr = std::find(g_lstDlg.begin(), g_lstDlg.end(), this);
         if (itr != g_lstDlg.end())
         {
@@ -85,30 +90,32 @@ void CDialog::show(cfn_void cbClose)
     this->setVisible(true);
 }
 
-/*static QWidget *g_pMask = NULL;
-static CDialog *g_pDlg = NULL;
-
-void showMask(cqcr crMask, cfn_void cbClose)
+void CDialog::showMask(cqcr crMask, cfn_void cbClose)
 {
-    QWidget *parent = &__app.mainWnd();
-    if (NULL == g_pMask)
+    if (m_bFullScreen)
     {
-        g_pMask = new QWidget(parent);
+        show(cbClose);
+        return;
     }
 
-    if (!g_lstDlg.empty())
+    if (NULL == m_pDlgMask)
     {
-        parent = g_lstDlg.front();
+        m_pDlgMask = new CDialog;
     }
-
-    g_pMask->setParent(parent);
-    g_pMask->raise();
 
     auto flags = windowFlags() & (~Qt::Dialog);
-    setParent(g_pMask, flags);
+    setParent(m_pDlgMask, flags);
 
-    g_pDlg = this;
-}*/
+    m_pDlgMask->show([=]{
+        if (cbClose)
+        {
+            cbClose();
+        }
+
+        auto flags = windowFlags() | Qt::Dialog;
+        setParent(NULL, flags);
+    });
+}
 
 bool CDialog::event(QEvent *ev)
 {

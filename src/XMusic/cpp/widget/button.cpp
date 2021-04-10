@@ -3,6 +3,13 @@
 
 #include "button.h"
 
+void CButton::connect_dlgClose(CDialog *dlg)
+{
+    onClicked([=]{
+        dlg->close();
+    });
+}
+
 void CButton::_onPaint(CPainter& painter, cqrc rc)
 {
     cauto qsText = this->text();

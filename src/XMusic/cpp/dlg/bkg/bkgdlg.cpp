@@ -77,9 +77,9 @@ void CBkgDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+    ui.btnReturn->connect_dlgClose(this);
 
-    connect(ui.btnColor, &CButton::signal_clicked, [&]{
+    ui.btnColor->onClicked([&]{
         m_colorDlg.show();
     });
 }

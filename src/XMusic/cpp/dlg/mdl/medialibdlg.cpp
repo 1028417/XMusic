@@ -27,7 +27,7 @@ void CMedialibDlg::init()
     m_lv.setFont(1.0f, QFont::Weight::Normal);
 
     ui.labelSingerImg->setPixmapRound(__szRound);
-    connect(ui.labelSingerImg, &CLabel::signal_click, [&]{
+    ui.labelSingerImg->onClicked([&]{
         auto pSinger = m_lv.currentSinger();
         if (pSinger)
         {
@@ -43,16 +43,16 @@ void CMedialibDlg::init()
     {
         label->setFont(1.08f, QFont::Weight::Normal, false, true);
 
-        connect(label, &CLabel::signal_click, this, &CMedialibDlg::slot_labelClick);
+        label->onClicked(this, &CMedialibDlg::slot_labelClick);
     }
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+    ui.btnReturn->connect_dlgClose(this);
 
-    connect(ui.btnUpward, &CButton::signal_clicked, [&]{
+    ui.btnUpward->onClicked([&]{
         m_lv.upward();
     });
 
-    connect(ui.btnPlay, &CButton::signal_clicked, [&]{
+    ui.btnPlay->onClicked([&]{
         m_lv.dselectItem();
 
         CMediaSet *pMediaSet = m_lv.currentMediaSet();

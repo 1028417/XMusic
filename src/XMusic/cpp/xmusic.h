@@ -8,6 +8,8 @@
 
 #include <QApplication>
 
+#include "widget/widget.h"
+
 using Double_T = float; //= double; // double_t与math.h冲突
 
 extern cwstr g_strWorkDir;
@@ -73,7 +75,7 @@ bool installApp(const CByteBuffer& bbfData);
 
 Q_DECLARE_METATYPE(fn_void);
 
-class CAppBase : public QApplication
+class CAppBase : public QApplication, private CXObj
 {
     Q_OBJECT
 public:

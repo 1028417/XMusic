@@ -35,17 +35,17 @@ void CNetworkWarnDlg::show(cfn_void cb)
         ui.labelExit->setText(__space + ui.labelExit->text() + __space);
     }
 
-    connect(ui.labelContinue, &CLabel::signal_click, [=]{
+    ui.labelContinue->onClicked([=]{
         close();
         cb();
     });
-    connect(ui.labelNeverWarn, &CLabel::signal_click, [=]{
+    ui.labelNeverWarn->onClicked([=]{
         close();
         __app.getOption().bNetworkWarn = false;
         cb();
     });
 
-    connect(ui.labelExit, &CLabel::signal_click, [&]{
+    ui.labelExit->onClicked([&]{
         close();
         __app.quit();
     });

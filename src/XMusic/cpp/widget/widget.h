@@ -134,8 +134,97 @@ public:
     }
 };
 
+template <typename T>
+using TD_XObj = const typename QtPrivate::FunctionPointer<T>::Object*;
+
+class CXObj
+{
+protected:
+    CXObj() = default;
+
+public:
+    template <typename _sgn, typename _fn>
+    inline void onSignal(Qt::ConnectionType connType, _sgn sgn, _fn fn)
+    {
+        auto ths = (TD_XObj<_sgn>)this;
+        QObject::connect(ths, sgn, ths, std::move(fn), connType);
+    }
+
+    template <typename _sgn, typename _fn>
+    inline void onUISignal(_sgn sgn, _fn fn)
+    {
+        Qt::ConnectionType connType = Qt::DirectConnection;
+        connType = Qt::ConnectionType(connType | Qt::UniqueConnection);
+        onSignal(connType, sgn, fn);
+    }
+
+    template <typename _sgn, typename _slot>
+    inline void onSignal(Qt::ConnectionType connType, _sgn sgn, TD_XObj<_slot> recv, _slot slot)
+    {
+        auto ths = (TD_XObj<_sgn>)this;
+        QObject::connect(ths, sgn, recv, slot, connType);
+    }
+
+    template <typename _sgn, typename _slot>
+    inline void onUISignal(_sgn sgn, TD_XObj<_slot> recv, _slot slot)
+    {
+        Qt::ConnectionType connType = Qt::DirectConnection;
+        connType = Qt::ConnectionType(connType | Qt::UniqueConnection);
+        onSignal(connType, sgn, recv, slot);
+    }
+
+public:
+    template <typename _slot, typename _sgn>
+    inline void regSlot(Qt::ConnectionType connType,_slot slot, _sgn sgn, TD_XObj<_sgn> sender)
+    {
+        QObject::connect(sender, sgn, (TD_XObj<_slot>)this, slot, connType);
+    }
+    template <typename _slot, typename _sgn>
+    inline void regSlot(Qt::ConnectionType connType, _slot slot, _sgn sgn
+                        , const initializer_list<TD_XObj<_sgn>>& senders)
+    {
+        for (auto sender : senders)
+        {
+            regSlot(connType, slot, sgn, sender);
+        }
+    }
+    template <typename _slot, typename _sgn>
+    inline void regSlot(Qt::ConnectionType connType, _slot slot, _sgn sgn
+                        , const SList<TD_XObj<_sgn>>& senders)
+    {
+        for (auto sender : senders)
+        {
+            regSlot(connType, slot, sgn, sender);
+        }
+    }
+
+    template <typename _slot, typename _sgn>
+    inline void regUISlot(_slot slot, _sgn sgn, TD_XObj<_sgn> sender)
+    {
+        Qt::ConnectionType connType = Qt::DirectConnection;
+        connType = Qt::ConnectionType(connType | Qt::UniqueConnection);
+        regSlot(connType, slot, sgn, sender);
+    }
+    template <typename _slot, typename _sgn>
+    inline void regUISlot(_slot slot, _sgn sgn, const initializer_list<TD_XObj<_sgn>>& senders)
+    {
+        for (auto sender : senders)
+        {
+            regUISlot(slot, sgn, sender);
+        }
+    }
+    template <typename _slot, typename _sgn, class T>
+    inline void regUISlot(_slot slot, _sgn sgn, const SList<T>& senders)
+    {
+        for (auto sender : senders)
+        {
+            regUISlot(slot, sgn, sender);
+        }
+    }
+};
+
 template <class T>
-class TWidget : public T
+class TWidget : public T, public CXObj
 {
 public:
     TWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints)

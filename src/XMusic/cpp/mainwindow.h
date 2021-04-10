@@ -47,7 +47,7 @@ enum class E_SingerImgPos
     SIP_Zoomout
 };
 
-class MainWindow : public QMainWindow, public IModelObserver
+class MainWindow : public QMainWindow, public IModelObserver, private CXObj
 {
     Q_OBJECT
 public:

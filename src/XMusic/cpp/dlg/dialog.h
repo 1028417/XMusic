@@ -22,17 +22,13 @@ public:
     {
     }
 
-    /*CDialog(QWidget& parent, bool bFullScreen = true)
-        : TWidget(NULL, Qt::FramelessWindowHint)
-        , m_bFullScreen(bFullScreen)
+    virtual ~CDialog()
     {
+        if (m_pDlgMask)
+        {
+            delete m_pDlgMask;
+        }
     }
-
-    CDialog(CDialog& parent, bool bFullScreen = true)
-        : TWidget(NULL, Qt::FramelessWindowHint)
-        , m_bFullScreen(bFullScreen)
-    {
-    }*/
 
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
     {
@@ -46,6 +42,8 @@ protected:
 
 private:
     bool m_bFullScreen = true;
+
+    CDialog *m_pDlgMask = NULL;
 
 private:
     virtual cqcr bkgColor() const
@@ -83,11 +81,13 @@ public:
     }
 #endif
 
+    void connect_dlgClose(class CButton *btn);
+
     void show(cfn_void cbClose = NULL);
 
-    /*void showMask(cqcr crMask, cfn_void cbClose = NULL);
+    void showMask(cqcr crMask, cfn_void cbClose = NULL);
     void showMask(cfn_void cbClose = NULL)
     {
         showMask(QColor(0,0,0,0), cbClose);
-    }*/
+    }
 };

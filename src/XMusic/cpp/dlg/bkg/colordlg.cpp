@@ -30,7 +30,7 @@ void CColorDlg::init()
 
     ui.btnApplyBkgColor->setFont(font);
 
-    connect(ui.btnApplyBkgColor, &CButton::signal_clicked, [&]{
+    ui.btnApplyBkgColor->onClicked([&]{
         ui.btnApplyBkgColor->setVisible(false);
 
         __app.getOption().bUseBkgColor = true;
@@ -40,20 +40,18 @@ void CColorDlg::init()
         __app.mainWnd().updateBkg();
     });
 
-    for (auto pButton : SList<CButton*>({ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
-                                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
-                                        , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubFontBlue, ui.btnAddFontBlue}))
-    {
-        connect(pButton, &CButton::signal_clicked, this, &CColorDlg::slot_buttonClicked);
-    }
+    this->regUISlot(&CColorDlg::slot_buttonClicked, &CButton::signal_clicked, {
+                        ui.btnSubBkgRed, ui.btnAddBkgRed, ui.btnSubBkgGreen, ui.btnAddBkgGreen
+                        , ui.btnSubBkgBlue, ui.btnAddBkgBlue, ui.btnSubFontRed, ui.btnAddFontRed
+                        , ui.btnSubFontGreen, ui.btnAddFontGreen, ui.btnSubFontBlue, ui.btnAddFontBlue
+                    });
 
-    for (auto pBar : SList<CColorBar*>({ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
-                                       , ui.barFontRed, ui.barFontGreen, ui.barFontBlue}))
-    {
-        connect(pBar, &CColorBar::signal_valueChanged, this, &CColorDlg::slot_barValueChanged);
-    }
+    this->regUISlot(&CColorDlg::slot_barValueChanged, &CColorBar::signal_valueChanged, {
+                        ui.barBkgRed, ui.barBkgGreen, ui.barBkgBlue
+                        , ui.barFontRed, ui.barFontGreen, ui.barFontBlue
+                    });
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
+    ui.btnReturn->connect_dlgClose(this);
 }
 
 void CColorDlg::show()

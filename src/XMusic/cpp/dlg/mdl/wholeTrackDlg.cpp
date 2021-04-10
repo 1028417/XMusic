@@ -25,9 +25,9 @@ void CWholeTrackDlg::init()
 
     m_lv.setFont(1.0f, QFont::Weight::Normal);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QWidget::close);
+    ui.btnReturn->connect_dlgClose(this);
 
-    connect(ui.btnPlay, &CButton::signal_clicked, [&]{
+    ui.btnPlay->onClicked([&]{
         if (m_pMedia)
         {
             __app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));

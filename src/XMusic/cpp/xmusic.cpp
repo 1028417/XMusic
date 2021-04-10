@@ -93,15 +93,15 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
 {
     qRegisterMetaType<fn_void>("fn_void");
 
-    connect(this, &CApp::signal_sync, this, [](fn_void cb){
+    onSignal(Qt::QueuedConnection, &CApp::signal_sync, [](fn_void cb){
         //if (!g_bRunSignal) return;
         cb();
-    }, Qt::QueuedConnection);
+    });
 
-    connect(this, &CApp::signal_syncex, this, [](fn_void cb){
+    onSignal(Qt::BlockingQueuedConnection, &CApp::signal_syncex, [](fn_void cb){
         //if (!g_bRunSignal) return;
         cb();
-    }, Qt::BlockingQueuedConnection);
+    });
 }
 
 void CAppBase::_init()

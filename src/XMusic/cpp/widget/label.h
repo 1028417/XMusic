@@ -22,6 +22,18 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
+    template <typename _slot>
+    void onClicked(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CLabel::signal_clicked, recv, slot);
+    }
+
+    void onClicked(cfn_void fn)
+    {
+        //connect(this, &CLabel::signal_clicked, fn);
+        onUISignal(&CLabel::signal_clicked, fn);
+    }
+
 private:
     CBrush m_br;
 
@@ -38,7 +50,7 @@ private:
     QRect m_rcText;
 
 signals:
-    void signal_click(CLabel*, const QPoint& pos);
+    void signal_clicked(CLabel*, const QPoint& pos);
 
 private:
     void _onPaint(CPainter& painter, cqrc rc) override;

@@ -105,14 +105,13 @@ void MainWindow::_ctor()
 
     ui.centralWidget->ctor();
 
-    for (auto button : SList<CButton*>(ui.btnFullScreen, ui.btnExit, ui.btnMore
-                , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
-                , ui.btnDemandPlayItem, ui.btnDemandPlaylist
-                , ui.btnSetting, ui.btnOrder, ui.btnRandom
-                , ui.btnPause, ui.btnPlay, ui.btnPlayPrev, ui.btnPlayNext))
-    {
-        connect(button, &CButton::signal_clicked, this, &MainWindow::slot_buttonClicked);
-    }
+    this->regUISlot(&MainWindow::slot_buttonClicked, &CButton::signal_clicked, {
+                        ui.btnFullScreen, ui.btnExit, ui.btnMore
+                        , ui.btnDemandSinger, ui.btnDemandAlbum, ui.btnDemandAlbumItem
+                        , ui.btnDemandPlayItem, ui.btnDemandPlaylist
+                        , ui.btnSetting, ui.btnOrder, ui.btnRandom
+                        , ui.btnPause, ui.btnPlay, ui.btnPlayPrev, ui.btnPlayNext
+                    });
 
     for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
                                        , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
@@ -150,10 +149,7 @@ void MainWindow::_init()
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelProgress);
-    for (auto label : lstLabels)
-    {
-        connect(label, &CLabel::signal_click, this, &MainWindow::slot_labelClick);
-    }
+    this->regUISlot(&MainWindow::slot_labelClick, &CLabel::signal_clicked, lstLabels);
 
     m_PlayingList.setFont(0.9f);
 

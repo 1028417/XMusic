@@ -15,9 +15,9 @@ void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 
         ui.setupUi(this);
 
-        connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
+        this->connect_dlgClose(ui.btnX);
 
-        connect(ui.btnLogin, &CButton::signal_clicked, [&]{
+        ui.btnLogin->onClicked([&]{
             cauto strUser = ui.editUser->text().trimmed().toStdWString();
             if (strUser.empty())
             {

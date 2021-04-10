@@ -16,6 +16,20 @@ public:
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
     }
 
+    template <typename _slot>
+    void onClicked(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CButton::signal_clicked, recv, slot);
+    }
+
+    void onClicked(cfn_void fn)
+    {
+        //connect(this, &CButton::signal_clicked, fn);
+        onUISignal(&CButton::signal_clicked, fn);
+    }
+
+    void connect_dlgClose(class CDialog *dlg);
+
 private:
     bool m_bPressing = false;
 

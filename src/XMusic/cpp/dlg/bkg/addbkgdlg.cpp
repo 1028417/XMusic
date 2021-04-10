@@ -20,22 +20,10 @@ void CAddBkgDlg::init()
 {
     ui.setupUi(this);
 
-    auto movie = new QMovie(this);
-    movie->setFileName(":/img/loading.gif");
-    ui.labelLoading->setMovie(movie);
-    ui.labelLoading->resize(400,330);
-    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 225, 31, 100); \
-                                   border-top-left-radius:10px; border-top-right-radius:10px; \
-                                   border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
-    ui.labelLoading->setVisible(false);
-    ui.labelLoading->raise();
-
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+    ui.btnReturn->onClicked(this, &CAddBkgDlg::_handleReturn);
 
 #if __windows
-    ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
-
-    connect(ui.labelChooseDir, &CLabel::signal_click, [&]{
+    ui.labelChooseDir->onClicked([&]{
         cwstr strDir = _chooseDir();
         if (strDir.empty())
         {
@@ -45,11 +33,23 @@ void CAddBkgDlg::init()
         m_lv.scanDir(strDir);
         update();
     });
+
+    ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
 #endif
+
+    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
 
     m_lv.setFont(1.0f, QFont::Weight::Normal);
 
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &CAddBkgDlg::_handleReturn);
+    auto movie = new QMovie(this);
+    movie->setFileName(":/img/loading.gif");
+    ui.labelLoading->setMovie(movie);
+    ui.labelLoading->resize(400,330);
+    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 225, 31, 100); \
+                                   border-top-left-radius:10px; border-top-right-radius:10px; \
+                                   border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
+    ui.labelLoading->setVisible(false);
+    ui.labelLoading->raise();
 }
 
 /*#define __MediaFilter L"所有支持格式|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \

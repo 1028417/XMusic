@@ -56,6 +56,8 @@ static wstring _genMedialibDir()
 
 bool CApp::_startup()
 {
+    auto time0 = time(0);
+
     CFont::init(this->font());
     sync([&]{
         this->setFont(CFont());
@@ -94,7 +96,6 @@ bool CApp::_startup()
                  << " CompatibleCode: " << m_orgMdlConf.uCompatibleCode
                  << " MedialibVersion: " >> m_orgMdlConf.uMdlVersion;
 
-        auto time0 = time(0);
         m_model.init(g_strWorkDir);
 
         string strVerInfo;
@@ -110,8 +111,8 @@ bool CApp::_startup()
         strUser = m_model.getUserMgr().loadProfile(strPwd);
         if (!strUser.empty())
         {
-            //_syncLogin(g_bRunSignal, strUser, strPwd);
-            asyncLogin(strUser, strPwd);
+            _syncLogin(g_bRunSignal, strUser, strPwd);
+            //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
         }
 
         E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(g_bRunSignal, m_orgMdlConf);
@@ -156,6 +157,8 @@ bool CApp::_startup()
         (void)m_pmSQDisk.load(__mdlPng(sqdisk));
 
         m_mainWnd.preinit();
+
+        g_logger << "preinit success " >> (time(0)-time0);
     });
 
     sync([=]{

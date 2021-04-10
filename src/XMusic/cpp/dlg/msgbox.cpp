@@ -25,7 +25,7 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
         ui.labelTip->setForeColor(__crLogoText);
     }
 
-    connect(ui.btnX, &CButton::signal_clicked, this, &QDialog::close);
+    this->connect_dlgClose(ui.btnX);
 
     ui.labelTip->setText(qsMsg);
 

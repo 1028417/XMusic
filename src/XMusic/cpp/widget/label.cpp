@@ -74,6 +74,6 @@ void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             return;
         }
 
-        emit signal_click(this, me.pos());
+        emit signal_clicked(this, me.pos());
 	}
 }

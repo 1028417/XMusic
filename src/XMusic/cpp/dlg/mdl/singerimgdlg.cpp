@@ -14,18 +14,19 @@ CSingerImgDlg::CSingerImgDlg() : //CDialog(medialibDlg),
 void CSingerImgDlg::init()
 {
     ui.setupUi(this);
-    connect(ui.btnReturn, &CButton::signal_clicked, this, &QDialog::close);
 
-    connect(ui.btnBackward, &CButton::signal_clicked, [&]{
+    ui.btnReturn->connect_dlgClose(this);
+
+    ui.btnBackward->onClicked([&]{
         _showImg(-1);
     });
-    connect(ui.btnBackward_v, &CButton::signal_clicked, [&]{
+    ui.btnBackward_v->onClicked([&]{
         _showImg(-1);
     });
-    connect(ui.btnForward, &CButton::signal_clicked, [&]{
+    ui.btnForward->onClicked([&]{
         _showImg(1);
     });
-    connect(ui.btnForward_v, &CButton::signal_clicked, [&]{
+    ui.btnForward_v->onClicked([&]{
         _showImg(1);
     });
 }
