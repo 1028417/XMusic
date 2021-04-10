@@ -8,6 +8,11 @@ static Ui::LoginDlg ui;
 
 void CLoginDlg::_setupUi()
 {
+    if (m_bInit)
+    {
+        return;
+    }
+
     ui.setupUi(this);
 
     this->connect_dlgClose(ui.btnX);
@@ -29,6 +34,8 @@ void CLoginDlg::_setupUi()
 
 void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 {
+    _setupUi();
+
     ui.editUser->setText(__WS2Q(strUser));
     ui.editPwd->setText(__WS2Q(strutil::fromAsc(strPwd)));
 

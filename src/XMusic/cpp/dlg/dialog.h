@@ -131,8 +131,8 @@ public:
 private:
     CMaskDlg *m_pDlgMask = NULL;
 
+protected:
     bool m_bInit = false;
-    virtual void _setupUi() = 0;
 
 protected:
     virtual void _setPos() override;

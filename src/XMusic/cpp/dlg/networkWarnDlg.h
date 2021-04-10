@@ -19,7 +19,7 @@ public:
     void show(cfn_void cb);
 
 private:
-    void _setupUi() override;
+    void _setupUi();
 
     cqcr bkgColor() const override;
 

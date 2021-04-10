@@ -25,6 +25,11 @@ void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
 
 void CMsgBox::_setupUi()
 {
+    if (m_bInit)
+    {
+        return;
+    }
+
     ui.setupUi(this);
 
     this->connect_dlgClose(ui.btnX);
@@ -35,6 +40,8 @@ void CMsgBox::_setupUi()
 
 void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 {
+    _setupUi();
+
     ui.labelTip->setText(qsMsg);
 
 #if __android

@@ -22,7 +22,10 @@ void CNetworkWarnDlg::_onPaint(CPainter& painter, cqrc rc)
 
 void CNetworkWarnDlg::_setupUi()
 {
-    s_bFlag = true;
+    if (m_bInit)
+    {
+        return;
+    }
 
     ui.setupUi(this);
 
@@ -42,6 +45,8 @@ void CNetworkWarnDlg::_setupUi()
 
 void CNetworkWarnDlg::show(cfn_void cb)
 {
+    _setupUi();
+
     ui.labelContinue->onClicked([=]{
         close();
         cb();

@@ -10,5 +10,5 @@ class CLoginDlg : public CDialogEx
     void show(cwstr strUser, const string& strPwd, E_LoginReult eRet);
 
 private:
-    void _setupUi() override;
+    void _setupUi();
 };

@@ -11,7 +11,7 @@ public:
     void show(cqstr qsMsg, cfn_void cbClose);
 
 private:
-    void _setupUi() override;
+    void _setupUi();
 
     cqcr bkgColor() const override;
 
