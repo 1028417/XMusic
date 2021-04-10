@@ -16,15 +16,6 @@ void CDialog::resetPos()
 void CDialog::_setPos()
 {
     setGeometry(__app.mainWnd().geometry());
-
-    /*extern void fixScreen(QWidget& wnd);
-    fixScreen(*this);
-
-    auto cx = width();
-    auto cy = height();
-    m_bHLayout = cx > cy;
-
-    _relayout(cx, cy);*/
 }
 
 void CDialog::connect_dlgClose(CButton *btn)
@@ -126,20 +117,18 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
-    if (!__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
+    auto cr = bkgColor();
+    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
     {
-        painter.fillRect(rc, bkgColor());
-
-        /*__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
-        auto cr = bkgColor();
-        cr.setAlpha(205);
-        painter.fillRect(rc, cr);*/
-
+        cr.setAlpha(246);
+        painter.fillRect(rc, cr);
         return;
     }
 
-    auto cr = bkgColor();
-    cr.setAlpha(246);
+    //__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
+    //cr.setAlpha(205);
+
+
     painter.fillRect(rc, cr);
 }
 
@@ -169,6 +158,11 @@ void CMaskDlg::_onPaint(CPainter& painter, cqrc rc)
     painter.fillRect(rc, m_crMask);
 }
 
+CDialogEx::CDialogEx() :
+    m_bHLayout(__app.mainWnd().isHLayout())
+{
+}
+
 void CDialogEx::show(cqcr crMask, cfn_void cbClose)
 {
     m_bInit = true;
@@ -190,26 +184,52 @@ void CDialogEx::show(cfn_void cbClose)
     return;
 #endif
 
-    show(QColor(0,0,0,64), cbClose);
+    show(QColor(0,0,0,85), cbClose);
 }
 
 void CDialogEx::_setPos()
 {
-    cauto ptCenter = (m_pDlgMask?m_pDlgMask->rect():__app.mainWnd().geometry()).center();
+    cauto rc = m_pDlgMask?m_pDlgMask->rect():__app.mainWnd().geometry();
+    //m_bHLayout = rc.width() > rc.height();
+
+    cauto ptCenter = rc.center();
     move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
 }
 
 void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
 {
     cauto cr = bkgColor();
-    cauto crBorder = _crOffset(cr, 14);
 
 #if __android
-    painter.fillRect(rc, cr);
-    painter.drawRectEx(rc, crBorder);
-    return;
+    UINT uRound = 0;
+
+#else
+    UINT uRound = __dlgRound;
+    //painter.fillRectEx(rc, QColor(cr.red(), cr.green(), cr.blue(), 246), uRound);
 #endif
 
-    painter.fillRectEx(rc, cr, __dlgRound);
-    painter.drawRectEx(rc, crBorder, __dlgRound);
+    CPainterClipGuard guard(painter, rc, uRound);
+    painter.fillRect(rc, cr);
+
+    painter.setOpacity(0.05f);
+
+    QRect rcDst = __app.mainWnd().rect();
+    QPoint ptOffset;
+    if (NULL == m_pDlgMask)
+    {
+        ptOffset = __app.mainWnd().pos();
+    }
+    rcDst.moveLeft(ptOffset.x()-this->x());
+    rcDst.moveTop(ptOffset.y()-this->y());
+    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rcDst))
+    {
+        return;
+    }
+    guard.restore();
+
+    if (NULL == m_pDlgMask)
+    {
+        cauto crBorder = _crOffset(cr, 14);
+        painter.drawRectEx(rc, crBorder, uRound);
+    }
 }

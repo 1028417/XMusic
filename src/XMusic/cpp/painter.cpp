@@ -125,6 +125,8 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
+#define __painterRestoreGuard CPainterRestoreGuard _guard(*this)
+
 void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QTransform transform;
@@ -135,14 +137,12 @@ void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround
     transform.scale(fWScaleRate, fHScaleRate);
     br.setTransform(transform);
 
-    this->save();
+    __painterRestoreGuard;
 
     this->setBrush(br);
     this->setPen(Qt::transparent);
 
     _drawRectEx(rc, xround, yround);
-
-    this->restore();
 }
 
 void CPainter::drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
@@ -242,7 +242,7 @@ void CPainter::_drawRectEx(cqrc rc, UINT xround, UINT yround)
 
 void CPainter::drawRectEx(cqrc rc, cqcr cr, Qt::PenStyle style, UINT uWidth, UINT xround, UINT yround)
 {
-    this->save();
+    __painterRestoreGuard;
 
     QPen pen;
     pen.setColor(cr);
@@ -251,8 +251,6 @@ void CPainter::drawRectEx(cqrc rc, cqcr cr, Qt::PenStyle style, UINT uWidth, UIN
     this->setPen(pen);
 
     _drawRectEx(rc, xround, yround);
-
-    this->restore();
 }
 
 void CPainter::fillRectEx(cqrc rc, cqbr br, UINT xround, UINT yround)
@@ -264,14 +262,12 @@ void CPainter::fillRectEx(cqrc rc, cqbr br, UINT xround, UINT yround)
             yround = xround;
         }
 
-        this->save();
+        __painterRestoreGuard;
 
         this->setPen(Qt::transparent);
         this->setBrush(br);
 
         this->drawRoundedRect(rc, xround, yround);
-
-        this->restore();
     }
     else
     {
@@ -295,7 +291,7 @@ static QRect g_rcDrawTextRet;
 cqrc CPainter::drawTextEx(cqrc rc, int flags, cqstr qsText, cqcr crText
                           , UINT uShadowWidth, UINT uShadowAlpha, UINT uTextAlpha)
 {
-    this->save();
+    __painterRestoreGuard;
 
     if (uShadowWidth > 0 && uShadowAlpha > 0)
     {
@@ -322,8 +318,6 @@ cqrc CPainter::drawTextEx(cqrc rc, int flags, cqstr qsText, cqcr crText
     t_crText.setAlpha(uTextAlpha);
     this->setPen(t_crText);
     QPainter::drawText(rc, flags, qsText, &g_rcDrawTextRet);
-
-    this->restore();
 
     return g_rcDrawTextRet;
 }

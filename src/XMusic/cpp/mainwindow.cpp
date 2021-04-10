@@ -24,7 +24,7 @@ static void _fixWorkArea(QWidget& wnd)
 }
 #endif
 
-void fixScreen(QWidget& wnd)
+static void _fixScreen(QWidget& wnd)
 {
 #if __android
     //wnd.setWindowState((g_bFullScreen?Qt::WindowFullScreen:Qt::WindowMaximized));// | Qt::WindowActive);
@@ -64,7 +64,7 @@ void MainWindow::switchFullScreen()
     }
 #endif
 
-    fixScreen(*this);
+    _fixScreen(*this);
 
 #if __android
     androidFullScreen();
@@ -94,7 +94,7 @@ MainWindow::MainWindow() :
 #if !__android
 void MainWindow::showBlank()
 {
-    fixScreen(*this);
+    _fixScreen(*this);
     this->setVisible(true); //必须在前面？？不然ole异常？？
 }
 #endif
@@ -206,7 +206,7 @@ void MainWindow::showLogo()
     _init();
 
 #if __android
-    fixScreen(*this);
+    _fixScreen(*this);
     this->setVisible(true);
 #else
     _relayout();

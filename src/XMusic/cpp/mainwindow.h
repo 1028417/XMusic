@@ -78,6 +78,11 @@ private slots:
     void slot_labelClick(CLabel*, const QPoint&);
 
 public:
+    const bool& isHLayout() const //关联CDialogEx中的常引用
+    {
+        return m_bHLayout;
+    }
+
     const tagPlayingInfo& playingInfo() const
     {
         return m_PlayingInfo;

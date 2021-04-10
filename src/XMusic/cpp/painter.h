@@ -218,6 +218,56 @@ public:
     }
 };
 
+class CPainterRestoreGuard
+{
+protected:
+    QPainter& m_painter;
+
+    bool m_bRestored = false;
+
+public:
+    CPainterRestoreGuard(QPainter& painter)
+        : m_painter(painter)
+    {
+        painter.save();
+    }
+
+    ~CPainterRestoreGuard()
+    {
+        restore();
+    }
+
+    void restore()
+    {
+        if (!m_bRestored)
+        {
+            m_bRestored = true;
+            m_painter.restore();
+        }
+    }
+};
+
+class CPainterClipGuard : public CPainterRestoreGuard
+{
+public:
+    CPainterClipGuard(QPainter& painter, cqrc rc, UINT xround=0, UINT yround=0)
+        : CPainterRestoreGuard(painter)
+    {
+        if (xround)
+        {
+            if (0 == yround)
+            {
+                yround = xround;
+            }
+        }
+
+        QPainterPath path;
+        path.addRoundedRect(rc, xround, yround);
+        painter.setClipPath(path);
+        painter.setClipping(true);
+    }
+};
+
 #define __defRenderHints (QPainter::Antialiasing | QPainter::TextAntialiasing \
     | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing)
 
@@ -236,15 +286,6 @@ public:
     }
 
 private:
-    inline void _drawImg(cqrc rc, cqpm pm, cqrc rcSrc)
-    {
-        QPainter::drawPixmap(rc, pm, rcSrc);
-    }
-    inline void _drawImg(cqrc rc, const QImage& img, cqrc rcSrc)
-    {
-        QPainter::drawImage(rc, img, rcSrc);
-    }
-
     void _drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
 
     void _genSrcRect(cqrc rcDst, QRect& rcSrc)
@@ -344,30 +385,30 @@ public:
     void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
     void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
-    template <class T>
-    void drawImg(cqrc rc, const T& pm, cqrc rcSrc)//, UINT xround=0, UINT yround=0) // pm构造br有开销
+    void _drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
     {
-        /*if (xround > 0)
-        {
-            QBrush br(pm);
-            drawImg(rc, br, rcSrc, xround, yround);
-            return
-        }*/
+        CPainterClipGuard guard(*this, rc, xround, yround);
 
-        _drawImg(rc, pm, rcSrc);
+        QPainter::drawPixmap(rc, pm, rcSrc);
+    }
+    void _drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    {
+        CPainterClipGuard guard(*this, rc, xround, yround);
+
+        QPainter::drawImage(rc, img, rcSrc);
     }
 
-    void drawImg(cqrc rc, cqpm pm)//, UINT xround=0, UINT yround=0)
+    void drawImg(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0)
     {
-        drawImg(rc, pm, pm.rect());//, xround, yround);
+        drawImg(rc, pm, pm.rect(), xround, yround);
     }
 
     template <class T>
-    void drawImgEx(cqrc rc, const T& pm)//, UINT xround=0, UINT yround=0) // 构造br有开销
+    void drawImgEx(cqrc rc, const T& pm, UINT xround=0, UINT yround=0)
     {
         QRect rcSrc = pm.rect();
         _genSrcRect(rc, rcSrc);
-        this->drawImg(rc, pm, rcSrc);//, xround, yround);
+        this->drawImg(rc, pm, rcSrc, xround, yround);
     }
 
     void drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);

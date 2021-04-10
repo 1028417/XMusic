@@ -118,7 +118,7 @@ private:
 class CDialogEx : public CDialog
 {
 public:
-    CDialogEx() = default;
+    CDialogEx();
 
     virtual ~CDialogEx()
     {
@@ -128,11 +128,13 @@ public:
         }
     }
 
-private:
-    CMaskDlg *m_pDlgMask = NULL;
-
 protected:
     bool m_bInit = false;
+
+    const bool& m_bHLayout;
+
+private:
+    CMaskDlg *m_pDlgMask = NULL;
 
 protected:
     virtual void _setPos() override;
