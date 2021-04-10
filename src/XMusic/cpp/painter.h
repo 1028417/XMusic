@@ -382,26 +382,23 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
-    void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
-
-    void _drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    void drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
     {
         CPainterClipGuard guard(*this, rc, xround, yround);
-
         QPainter::drawPixmap(rc, pm, rcSrc);
     }
-    void _drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    void drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
     {
         CPainterClipGuard guard(*this, rc, xround, yround);
-
         QPainter::drawImage(rc, img, rcSrc);
     }
-
     void drawImg(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0)
     {
         drawImg(rc, pm, pm.rect(), xround, yround);
     }
+
+    void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
     template <class T>
     void drawImgEx(cqrc rc, const T& pm, UINT xround=0, UINT yround=0)
