@@ -203,10 +203,10 @@ void CDialogEx::show(cqcr crMask, cfn_void cbClose)
 
 void CDialogEx::show(cfn_void cbClose)
 {
-//#if __android
-    show(QColor(255,255,255,100), cbClose);
-    return;
-//#endif
-
+#if __android
     CDialog::show(cbClose);
+    return;
+#endif
+
+    show(QColor(0,0,0,64), cbClose);
 }
