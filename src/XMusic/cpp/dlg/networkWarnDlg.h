@@ -3,7 +3,7 @@
 #if __android
 #include "dialog.h"
 
-class CNetworkWarnDlg : private CDialog
+class CNetworkWarnDlg : private CDialogEx
 {
 public:
     static CNetworkWarnDlg& inst()
@@ -13,7 +13,7 @@ public:
     }
 
 private:
-    CNetworkWarnDlg() : CDialog(false)
+    CNetworkWarnDlg()
     {
     }
 

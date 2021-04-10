@@ -59,5 +59,5 @@ void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
     }
     ui.labelTitle->setText(qsTitle);
 
-    CDialog::show();
+    CDialogEx::show();
 }

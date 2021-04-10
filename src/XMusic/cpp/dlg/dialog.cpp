@@ -38,14 +38,8 @@ void CDialog::connect_dlgClose(CButton *btn)
     btn->connect_dlgClose(this);
 }
 
-void CDialog::_show(cfn_void cbClose)
+void CDialog::show(cfn_void cbClose)
 {
-    if (!m_bFullScreen)
-    {
-        setAttribute(Qt::WA_TranslucentBackground);
-        setAttribute(Qt::WA_NoSystemBackground);
-    }
-
     QWidget *parent = NULL;
     if (!g_lstDlg.empty())
     {
@@ -88,16 +82,6 @@ void CDialog::_show(cfn_void cbClose)
     this->setVisible(true);
 }
 
-void CDialog::showMask(cqcr crMask, cfn_void cbClose)
-{
-    if (NULL == m_pDlgMask)
-    {
-        m_pDlgMask = new CMaskDlg(*this);
-    }
-
-    ((CMaskDlg*)m_pDlgMask)->show(crMask, cbClose);
-}
-
 bool CDialog::event(QEvent *ev)
 {
 	switch (ev->type())
@@ -122,8 +106,6 @@ bool CDialog::event(QEvent *ev)
             break;
         }
 #endif
-
-        //if (m_pDlgMask) break;
 
         if (!_handleReturn())
         {
@@ -154,11 +136,11 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
     {
         cauto crBorder = _crOffset(bkgColor(), 14);
 
-#if __android
+/*#if __android
         painter.fillRect(rc, bkgColor());
         painter.drawRectEx(rc, crBorder);
         return;
-#endif
+#endif*/
 
         painter.fillRectEx(rc, bkgColor(), __dlgRound);
         painter.drawRectEx(rc, crBorder, 1, Qt::SolidLine, __dlgRound);
@@ -183,32 +165,24 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
     }
 }
 
-void CMaskDlg::show(cqcr crMask, cfn_void cbClose)
+void CMaskDlg::showMask(cqcr crMask, cfn_void cbClose)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-    setAttribute(Qt::WA_NoSystemBackground);
-
     m_crMask = crMask;
 
     auto prevFlags = windowFlags();
-    auto flags = prevFlags & (~(Qt::Dialog |Qt::WindowCloseButtonHint
-                                |Qt::WindowSystemMenuHint |Qt::WindowOverridesSystemGestures));
+    //auto flags = prevFlags & (~(Qt::Dialog |Qt::WindowCloseButtonHint
+    //                            |Qt::WindowSystemMenuHint |Qt::WindowOverridesSystemGestures));
     m_child.setParent(this);//, flags);
 
     m_child.onUISignal(&QDialog::finished, [&]{
         this->close();
     });
 
-    CDialog::_show([=]{
+    CDialog::show([=]{
         if (cbClose)
         {
             cbClose();
         }
         m_child.setParent(NULL, prevFlags);
     });
-}
-
-void CMaskDlg::_onPaint(CPainter& painter, cqrc rc)
-{
-    painter.fillRect(rc, m_crMask);
 }

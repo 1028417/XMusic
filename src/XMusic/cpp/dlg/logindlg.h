@@ -2,12 +2,10 @@
 
 #include "dialog.h"
 
-class CLoginDlg : public CDialog
+class CLoginDlg : public CDialogEx
 {
  public:
-    CLoginDlg() : CDialog(false)
-    {
-    }
+    CLoginDlg() = default;
 
     void show(cwstr strUser, const string& strPwd, E_LoginReult eRet);
 };

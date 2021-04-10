@@ -29,7 +29,7 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     ui.labelTip->setText(qsMsg);
 
-    CDialog::show(cbClose);
+    CDialogEx::show(cbClose);
 }
 
 void CMsgBox::_onPaint(CPainter& painter, cqrc rc)

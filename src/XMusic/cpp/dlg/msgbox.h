@@ -2,12 +2,10 @@
 
 #include "dialog.h"
 
-class CMsgBox : private CDialog
+class CMsgBox : private CDialogEx
 {
  public:
-    CMsgBox() : CDialog(false)
-    {
-    }
+    CMsgBox() = default;
 
 public:
     void show(cqstr qsMsg, cfn_void cbClose);

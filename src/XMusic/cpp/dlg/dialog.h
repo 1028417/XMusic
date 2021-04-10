@@ -28,14 +28,8 @@ public:
         : TWidget(NULL, Qt::FramelessWindowHint)
         , m_bFullScreen(bFullScreen)
     {
-    }
-
-    virtual ~CDialog()
-    {
-        if (m_pDlgMask)
-        {
-            delete m_pDlgMask;
-        }
+        setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(Qt::WA_NoSystemBackground);
     }
 
 protected:
@@ -44,15 +38,11 @@ protected:
 private:
     bool m_bFullScreen = true;
 
-    CDialog *m_pDlgMask = NULL;
-
 private:
     virtual cqcr bkgColor() const
     {
         return g_crBkg;
     }
-
-    void _show(cfn_void cbClose);
 
     void _setPos();
 
@@ -84,29 +74,12 @@ public:
 
     void connect_dlgClose(class CButton *btn);
 
-    void show(cfn_void cbClose = NULL)
-    {
-//#if __android
-        if (!m_bFullScreen)
-        {
-            showMask(cbClose);
-            return;
-        }
-//#endif
-        _show(cbClose);
-    }
-
-    void showMask(cqcr crMask, cfn_void cbClose = NULL);
-
-    void showMask(cfn_void cbClose = NULL)
-    {
-        showMask(QColor(0,0,0,0), cbClose);
-    }
+    void show(cfn_void cbClose = NULL);
 };
 
 class CMaskDlg : public CDialog
 {
-    friend class CDialog;
+    friend class CDialogEx;
 private:
     CMaskDlg(CDialog& child)
         : CDialog(true)
@@ -120,17 +93,65 @@ private:
     QColor m_crMask;
 
 private:
-    void show(cqcr crMask, cfn_void cbClose);
+    void showMask(cqcr crMask, cfn_void cbClose);
 
     void _relayout(int cx, int cy) override
     {
         m_child.move((cx-m_child.width())/2, (cy-m_child.height())/2);
     }
 
-    void _onPaint(CPainter&, cqrc) override;
+    void _onPaint(CPainter& painter, cqrc rc) override
+    {
+        painter.fillRect(rc, m_crMask);
+    }
 
     bool _handleReturn() override
     {
         return m_child._handleReturn();
+    }
+
+    virtual void _onClosed() override
+    {
+        m_child._onClosed();
+    }
+};
+
+class CDialogEx : public CDialog
+{
+public:
+    CDialogEx() : CDialog(false)
+    {
+    }
+
+    virtual ~CDialogEx()
+    {
+        if (m_pDlgMask)
+        {
+            delete m_pDlgMask;
+        }
+    }
+
+private:
+    CMaskDlg *m_pDlgMask = NULL;
+
+public:
+    void show(cqcr crMask, cfn_void cbClose = NULL)
+    {
+        if (NULL == m_pDlgMask)
+        {
+            m_pDlgMask = new CMaskDlg(*this);
+        }
+
+        m_pDlgMask->showMask(crMask, cbClose);
+    }
+
+    void show(cfn_void cbClose = NULL)
+    {
+//#if __android
+        show(QColor(0,0,0,0), cbClose);
+        return;
+//#endif
+
+        CDialog::show(cbClose);
     }
 };
