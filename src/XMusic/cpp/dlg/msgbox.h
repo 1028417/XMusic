@@ -15,5 +15,5 @@ public:
 private:
     cqcr bkgColor() const override;
 
-    void _onPaint(CPainter& painter, cqrc rc) override;
+    void _onPaint(CPainter&, cqrc) override;
 };

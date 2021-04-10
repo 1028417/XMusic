@@ -33,7 +33,7 @@ public:
 private:
     void _relayout(int cx, int cy) override;
 
-    void _onPaint(CPainter& painter, cqrc rc) override;
+    void _onPaint(CPainter&, cqrc) override;
 
     void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te) override;
 
