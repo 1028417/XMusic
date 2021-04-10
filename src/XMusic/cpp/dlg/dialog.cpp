@@ -15,14 +15,16 @@ void CDialog::resetPos()
 
 void CDialog::_setPos()
 {
-    extern void fixScreen(QWidget& wnd);
+    setGeometry(__app.mainWnd().geometry());
+
+    /*extern void fixScreen(QWidget& wnd);
     fixScreen(*this);
 
     auto cx = width();
     auto cy = height();
     m_bHLayout = cx > cy;
 
-    _relayout(cx, cy);
+    _relayout(cx, cy);*/
 }
 
 void CDialog::connect_dlgClose(CButton *btn)
@@ -189,7 +191,7 @@ void CDialogEx::show(cfn_void cbClose)
 
 void CDialogEx::_setPos()
 {
-    cauto ptCenter = __app.mainWnd().geometry().center();
+    cauto ptCenter = (m_pDlgMask?m_pDlgMask->rect():__app.mainWnd().geometry()).center();
     move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
 }
 

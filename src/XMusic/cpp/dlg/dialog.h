@@ -91,9 +91,14 @@ private:
 private:
     void showMask(cqcr crMask, cfn_void cbClose);
 
-    void _setPos() override
+    /*void _setPos() override
     {
         CDialog::_setPos();
+        m_child._setPos();
+    }*/
+
+    void _relayout(int cx, int cy) override
+    {
         m_child._setPos();
     }
 
@@ -104,7 +109,7 @@ private:
         return m_child._handleReturn();
     }
 
-    virtual void _onClosed() override
+    void _onClosed() override
     {
         m_child._onClosed();
     }
