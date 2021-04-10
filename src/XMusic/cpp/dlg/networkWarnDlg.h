@@ -13,12 +13,14 @@ public:
     }
 
 private:
-    CNetworkWarnDlg() = default;o
+    CNetworkWarnDlg() = default;
 
 public:
     void show(cfn_void cb);
 
 private:
+    void _setupUi() override;
+
     cqcr bkgColor() const override;
 
     void _onPaint(CPainter& painter, cqrc rc) override;

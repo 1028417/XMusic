@@ -23,21 +23,18 @@ void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
 #endif
 }
 
-void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
+void CMsgBox::_setupUi()
 {
-    static bool s_bFlag = false;
-    if (!s_bFlag)
-    {
-        s_bFlag = true;
-
-        ui.setupUi(this);
-
-        ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
-        ui.labelTip->setForeColor(__crLogoText);
-    }
+    ui.setupUi(this);
 
     this->connect_dlgClose(ui.btnX);
 
+    ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
+    ui.labelTip->setForeColor(__crLogoText);
+}
+
+void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
+{
     ui.labelTip->setText(qsMsg);
 
 #if __android

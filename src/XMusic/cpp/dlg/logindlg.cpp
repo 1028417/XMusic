@@ -6,33 +6,29 @@
 
 static Ui::LoginDlg ui;
 
+void CLoginDlg::_setupUi()
+{
+    ui.setupUi(this);
+
+    this->connect_dlgClose(ui.btnX);
+
+    ui.btnLogin->onClicked([&]{
+        cauto strUser = ui.editUser->text().trimmed().toStdWString();
+        if (strUser.empty())
+        {
+            return;
+        }
+
+        cauto strPwd = ui.editPwd->text().trimmed().toStdString();
+
+        close();
+
+        (void)__app.asyncLogin(strUser, strPwd);
+    });
+}
+
 void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 {
-    static bool s_bFlag = false;
-    if (!s_bFlag)
-    {
-        s_bFlag = true;
-
-        ui.setupUi(this);
-
-        this->connect_dlgClose(ui.btnX);
-
-        ui.btnLogin->onClicked([&]{
-            cauto strUser = ui.editUser->text().trimmed().toStdWString();
-            if (strUser.empty())
-            {
-                return;
-            }
-
-            cauto strPwd = ui.editPwd->text().trimmed().toStdString();
-
-            close();
-
-            (void)__app.asyncLogin(strUser, strPwd);
-        });
-    }
-
-
     ui.editUser->setText(__WS2Q(strUser));
     ui.editPwd->setText(__WS2Q(strutil::fromAsc(strPwd)));
 
