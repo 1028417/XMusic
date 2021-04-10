@@ -15,13 +15,9 @@ cqcr CNetworkWarnDlg::bkgColor() const
 
 void CNetworkWarnDlg::_onPaint(CPainter& painter, cqrc rc)
 {
-#if __android
     extern QColor g_crLogoBkg;
     painter.fillRect(rc, g_crLogoBkg);
     painter.fillRectEx(rc, bkgColor(), __dlgRound);
-    return;
-#endif
-    CDialog::_onPaint(painter, rc);
 }
 
 void CNetworkWarnDlg::show(cfn_void cb)
@@ -41,7 +37,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         ui.labelNeverWarn->setForeColor(crText);
         ui.labelExit->setForeColor(crText);
 
-    #define __space "                         "
+#define __space "                         "
         ui.labelContinue->setText(__space + ui.labelContinue->text() + __space);
         ui.labelNeverWarn->setText(__space + ui.labelNeverWarn->text() + __space);
         ui.labelExit->setText(__space + ui.labelExit->text() + __space);
@@ -62,6 +58,6 @@ void CNetworkWarnDlg::show(cfn_void cb)
         __app.quit();
     });
 
-    CDialogEx::show();
+    CDialog::show(cbClose); //CDialogEx::show();
 }
 #endif

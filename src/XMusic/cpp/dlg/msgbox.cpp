@@ -18,9 +18,9 @@ void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
     extern QColor g_crLogoBkg;
     painter.fillRect(rc, g_crLogoBkg);
     painter.fillRectEx(rc, bkgColor(), __dlgRound);
-    return;
-#endif
+#else
     CDialog::_onPaint(painter, rc);
+#endif
 }
 
 void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
@@ -40,5 +40,9 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     ui.labelTip->setText(qsMsg);
 
+#if __android
+    CDialog::show(cbClose);
+#else
     CDialogEx::show(cbClose);
+#endif
 }
