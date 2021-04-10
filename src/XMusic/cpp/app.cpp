@@ -247,8 +247,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
     {
         vibrate();
 
-        static CNetworkWarnDlg dlg;
-        dlg.show([&, strUser]{
+        CNetworkWarnDlg::inst().show([&, strUser]{
             _show(strUser);
         });
 

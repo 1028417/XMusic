@@ -1,6 +1,7 @@
 
 #include "xmusic.h"
 
+#if __android
 #include "networkWarnDlg.h"
 #include "ui_networkWarnDlg.h"
 
@@ -52,3 +53,4 @@ void CNetworkWarnDlg::show(cfn_void cb)
 
     CDialog::show();
 }
+#endif

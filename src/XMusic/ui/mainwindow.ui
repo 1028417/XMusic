@@ -13,13 +13,7 @@
   <property name="windowTitle">
    <string>XMusic</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <widget class="CCentralWidget" name="centralWidget">
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
    <widget class="CProgressBar" name="progressbar" native="true">
     <property name="geometry">
      <rect>

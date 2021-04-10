@@ -1,10 +1,18 @@
 #pragma once
 
+#if __android
 #include "dialog.h"
 
 class CNetworkWarnDlg : private CDialog
 {
- public:
+public:
+    static CNetworkWarnDlg& inst()
+    {
+        static CNetworkWarnDlg inst;
+        return inst;
+    }
+
+private:
     CNetworkWarnDlg() : CDialog(false)
     {
     }
@@ -17,3 +25,4 @@ private:
 
     bool _handleReturn() override {return true;}
 };
+#endif
