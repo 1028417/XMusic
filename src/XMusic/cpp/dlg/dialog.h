@@ -97,7 +97,7 @@ private:
         m_child._setPos();
     }*/
 
-    void _relayout(int cx, int cy) override
+    void _relayout(int, int) override
     {
         m_child._setPos();
     }
