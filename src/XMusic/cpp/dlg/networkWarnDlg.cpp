@@ -13,6 +13,17 @@ cqcr CNetworkWarnDlg::bkgColor() const
     return cr;
 }
 
+void CNetworkWarnDlg::_onPaint(CPainter& painter, cqrc rc)
+{
+#if __android
+    extern QColor g_crLogoBkg;
+    painter.fillRect(rc, g_crLogoBkg);
+    painter.fillRectEx(rc, bkgColor(), __dlgRound);
+    return;
+#endif
+    CDialog::_onPaint(painter, rc);
+}
+
 void CNetworkWarnDlg::show(cfn_void cb)
 {
     static bool s_bFlag = false;

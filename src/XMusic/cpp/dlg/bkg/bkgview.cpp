@@ -141,7 +141,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 
         extern QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha);
         auto cr = _crOffset(g_crBkg, 25, 255);
-        painter.drawRectEx(rc, cr, 2, Qt::PenStyle::DotLine, __szRound);
+        painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 2, __szRound);
 
         //cr.setAlpha(200);
 

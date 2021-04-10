@@ -205,5 +205,5 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
 #endif
 
     painter.fillRectEx(rc, cr, __dlgRound);
-    painter.drawRectEx(rc, crBorder, 1, Qt::SolidLine, __dlgRound);
+    painter.drawRectEx(rc, crBorder, __dlgRound);
 }

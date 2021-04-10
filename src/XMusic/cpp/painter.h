@@ -245,6 +245,8 @@ private:
         QPainter::drawImage(rc, img, rcSrc);
     }
 
+    void _drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
+
     void _genSrcRect(cqrc rcDst, QRect& rcSrc)
     {
         auto cxSrc = rcSrc.width();
@@ -370,10 +372,12 @@ public:
 
     void drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);
 
-    void drawRectEx(cqrc rc, UINT xround=0, UINT yround=0);
+    void drawRectEx(cqrc rc, cqcr cr, UINT xround=0, UINT yround=0)
+    {
+        drawRectEx(rc, cr, Qt::SolidLine, 1, xround, yround);
+    }
 
-    void drawRectEx(cqrc rc, cqcr cr, UINT uWidth=1,
-                   Qt::PenStyle style=Qt::SolidLine, UINT xround=0, UINT yround=0);
+    void drawRectEx(cqrc rc, cqcr cr, Qt::PenStyle style, UINT uWidth = 1, UINT xround=0, UINT yround=0);
 
     void fillRectEx(cqrc rc, cqbr br, UINT xround=0, UINT yround=0);
 

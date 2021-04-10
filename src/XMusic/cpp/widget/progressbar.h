@@ -137,6 +137,6 @@ private:
             }
         }
 
-        painter.drawRectEx(rc, QColor(255,255,255,50), 1, Qt::SolidLine, xround);
+        painter.drawRectEx(rc, QColor(255,255,255,50), xround);
     }
 };

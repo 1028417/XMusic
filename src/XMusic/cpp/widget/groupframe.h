@@ -92,7 +92,7 @@ private:
 
         auto cr = g_crFore;
         cr.setAlpha(CPainter::oppTextAlpha(100));
-        painter.drawRectEx(rc, cr, 1, Qt::SolidLine, __szRound);
+        painter.drawRectEx(rc, cr, __szRound);
 
         //painter.fillRect(rcTitle, g_crBkg); //对话框上显示有背景图水印，覆盖效果不好
         painter.drawTextEx(rcTitle, nAlign, title());

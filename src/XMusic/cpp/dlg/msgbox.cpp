@@ -12,6 +12,17 @@ cqcr CMsgBox::bkgColor() const
     return cr;
 }
 
+void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
+{
+#if __android
+    extern QColor g_crLogoBkg;
+    painter.fillRect(rc, g_crLogoBkg);
+    painter.fillRectEx(rc, bkgColor(), __dlgRound);
+    return;
+#endif
+    CDialog::_onPaint(painter, rc);
+}
+
 void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 {
     static bool s_bFlag = false;
@@ -30,15 +41,4 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
     ui.labelTip->setText(qsMsg);
 
     CDialogEx::show(cbClose);
-}
-
-void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
-{
-#if __android
-    extern QColor g_crLogoBkg;
-    painter.fillRect(rc, g_crLogoBkg);
-    painter.fillRectEx(rc, bkgColor(), __dlgRound);
-    return;
-#endif
-    CDialog::_onPaint(painter, rc);
 }

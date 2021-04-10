@@ -13,10 +13,9 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)
             {
                 UINT uAlpha = m_uShadowAlpha * (m_uShadowWidth-uIdx)/m_uShadowWidth;
-                painter.setPen(__ShadowColor(uAlpha));
 
                 QRect rcShadow(uIdx, uIdx, rc.right()-uIdx*2, rc.bottom()-uIdx*2);
-                painter.drawRectEx(rcShadow, m_szRound);
+                painter.drawRectEx(rcShadow, __ShadowColor(uAlpha), m_szRound);
             }
         }
         // 提速 return;

@@ -23,7 +23,7 @@ void CButton::_onPaint(CPainter& painter, cqrc rc)
         painter.fillRectEx(rc, cr, szRound);
 
         cr.setAlpha(CPainter::oppTextAlpha(130));
-        painter.drawRectEx(rc, cr, 1, Qt::PenStyle::SolidLine, szRound);
+        painter.drawRectEx(rc, cr, szRound);
         painter.drawTextEx(rc, Qt::AlignCenter|Qt::AlignVCenter, qsText, cr);
     }
     else

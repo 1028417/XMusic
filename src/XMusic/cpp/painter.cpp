@@ -140,7 +140,7 @@ void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround
     this->setBrush(br);
     this->setPen(Qt::transparent);
 
-    this->drawRectEx(rc,xround,yround);
+    _drawRectEx(rc, xround, yround);
 
     this->restore();
 }
@@ -224,7 +224,7 @@ void CPainter::drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
     this->drawImg(rc, pm, rcSrc);
 }
 
-void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
+void CPainter::_drawRectEx(cqrc rc, UINT xround, UINT yround)
 {
     if (xround > 0)
     {
@@ -240,7 +240,7 @@ void CPainter::drawRectEx(cqrc rc, UINT xround, UINT yround)
     }
 }
 
-void CPainter::drawRectEx(cqrc rc, cqcr cr, UINT uWidth, Qt::PenStyle style, UINT xround, UINT yround)
+void CPainter::drawRectEx(cqrc rc, cqcr cr, Qt::PenStyle style, UINT uWidth, UINT xround, UINT yround)
 {
     this->save();
 
@@ -250,7 +250,7 @@ void CPainter::drawRectEx(cqrc rc, cqcr cr, UINT uWidth, Qt::PenStyle style, UIN
     pen.setStyle(style);
     this->setPen(pen);
 
-    this->drawRectEx(rc, xround, yround);
+    _drawRectEx(rc, xround, yround);
 
     this->restore();
 }
