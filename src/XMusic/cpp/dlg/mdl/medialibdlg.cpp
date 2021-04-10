@@ -6,7 +6,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg() : //CDialog(parent),
+CMedialibDlg::CMedialibDlg() :
   m_lv(*this, m_OuterDir)
   //, m_wholeTrackDlg(*this)
   //, m_singerImgDlg(*this)

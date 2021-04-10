@@ -58,7 +58,7 @@ CBkgDlg::CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayou
     return m_lstThumbsBrush.back();
 }
 
-CBkgDlg::CBkgDlg() : //CDialog(parent),
+CBkgDlg::CBkgDlg() :
     m_opt(__app.getOption()),
     m_lv(*this),
     m_addbkgDlg(*this),

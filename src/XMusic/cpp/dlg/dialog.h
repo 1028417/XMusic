@@ -15,8 +15,11 @@
 
 class CDialog : public TWidget<QDialog>
 {
+    friend class CDialogEx;
     friend class CMaskDlg;
 public:
+    static void resetPos();
+
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
     {
         QPalette pe = widget->palette();
@@ -24,9 +27,8 @@ public:
         widget->setPalette(pe);
     }
 
-    CDialog(bool bFullScreen = true)
+    CDialog()
         : TWidget(NULL, Qt::FramelessWindowHint)
-        , m_bFullScreen(bFullScreen)
     {
         setAttribute(Qt::WA_TranslucentBackground);
         setAttribute(Qt::WA_NoSystemBackground);
@@ -36,14 +38,6 @@ protected:
     bool m_bHLayout = false;
 
 private:
-    bool m_bFullScreen = true;
-
-private:
-    virtual cqcr bkgColor() const
-    {
-        return g_crBkg;
-    }
-
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
 
     virtual bool _handleReturn() {return false;}
@@ -51,15 +45,18 @@ private:
     virtual void _onClosed(){}
 
 protected:
+    virtual void _setPos();
+
     virtual bool event(QEvent *ev) override;
 
     virtual void _onPaint(CPainter&, cqrc) override;
 
-    virtual void _setPos();
+    virtual cqcr bkgColor() const
+    {
+        return g_crBkg;
+    }
 
 public:
-    static void resetPos();
-
     bool isHLayout() const
     {
         return m_bHLayout;
@@ -82,8 +79,7 @@ class CMaskDlg : public CDialog
     friend class CDialogEx;
 private:
     CMaskDlg(CDialog& child)
-        : CDialog(true)
-        , m_child(child)
+        : m_child(child)
     {
     }
 
@@ -95,9 +91,10 @@ private:
 private:
     void showMask(cqcr crMask, cfn_void cbClose);
 
-    void _relayout(int cx, int cy) override
+    void _setPos() override
     {
-        m_child.move((cx-m_child.width())/2, (cy-m_child.height())/2);
+        CDialog::_setPos();
+        m_child._setPos();
     }
 
     void _onPaint(CPainter&, cqrc) override;
@@ -116,9 +113,7 @@ private:
 class CDialogEx : public CDialog
 {
 public:
-    CDialogEx() : CDialog(false)
-    {
-    }
+    CDialogEx() = default;
 
     virtual ~CDialogEx()
     {
@@ -130,6 +125,11 @@ public:
 
 private:
     CMaskDlg *m_pDlgMask = NULL;
+
+protected:
+    virtual void _setPos() override;
+
+    virtual void _onPaint(CPainter&, cqrc) override;
 
 public:
     void show(cqcr crMask, cfn_void cbClose = NULL);

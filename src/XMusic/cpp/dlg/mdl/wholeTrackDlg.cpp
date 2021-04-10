@@ -8,8 +8,7 @@
 
 static Ui::WholeTrackDlg ui;
 
-CWholeTrackDlg::CWholeTrackDlg()
-    : //CDialog(medialibDlg),
+CWholeTrackDlg::CWholeTrackDlg() :
     m_lv(*this)
 {
 }

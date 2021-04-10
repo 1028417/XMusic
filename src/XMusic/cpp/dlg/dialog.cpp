@@ -15,16 +15,8 @@ void CDialog::resetPos()
 
 void CDialog::_setPos()
 {
-    if (m_bFullScreen)
-    {
-        extern void fixScreen(QWidget& wnd);
-        fixScreen(*this);
-    }
-    else
-    {
-        cauto ptCenter = __app.mainWnd().geometry().center();
-        move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
-    }
+    extern void fixScreen(QWidget& wnd);
+    fixScreen(*this);
 
     auto cx = width();
     auto cy = height();
@@ -132,37 +124,21 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
-    if (!m_bFullScreen)
+    if (!__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
     {
-        cauto crBorder = _crOffset(bkgColor(), 14);
-
-#if __android
         painter.fillRect(rc, bkgColor());
-        painter.drawRectEx(rc, crBorder);
-        return;
-#endif
 
-        painter.fillRectEx(rc, bkgColor(), __dlgRound);
-        painter.drawRectEx(rc, crBorder, 1, Qt::SolidLine, __dlgRound);
-    }
-    else
-    {
-        if (!__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
-        {
-            painter.fillRect(rc, bkgColor());
-
-            /*__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
-            auto cr = bkgColor();
-            cr.setAlpha(205);
-            painter.fillRect(rc, cr);*/
-
-            return;
-        }
-
+        /*__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
         auto cr = bkgColor();
-        cr.setAlpha(246);
-        painter.fillRect(rc, cr);
+        cr.setAlpha(205);
+        painter.fillRect(rc, cr);*/
+
+        return;
     }
+
+    auto cr = bkgColor();
+    cr.setAlpha(246);
+    painter.fillRect(rc, cr);
 }
 
 void CMaskDlg::showMask(cqcr crMask, cfn_void cbClose)
@@ -209,4 +185,25 @@ void CDialogEx::show(cfn_void cbClose)
 #endif
 
     show(QColor(0,0,0,64), cbClose);
+}
+
+void CDialogEx::_setPos()
+{
+    cauto ptCenter = __app.mainWnd().geometry().center();
+    move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+}
+
+void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
+{
+    cauto cr = bkgColor();
+    cauto crBorder = _crOffset(cr, 14);
+
+#if __android
+    painter.fillRect(rc, cr);
+    painter.drawRectEx(rc, crBorder);
+    return;
+#endif
+
+    painter.fillRectEx(rc, cr, __dlgRound);
+    painter.drawRectEx(rc, crBorder, 1, Qt::SolidLine, __dlgRound);
 }
