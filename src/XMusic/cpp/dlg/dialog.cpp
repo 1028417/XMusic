@@ -38,8 +38,14 @@ void CDialog::connect_dlgClose(CButton *btn)
     btn->connect_dlgClose(this);
 }
 
-void CDialog::show(cfn_void cbClose)
+void CDialog::_show(cfn_void cbClose)
 {
+    if (!m_bFullScreen)
+    {
+        setAttribute(Qt::WA_TranslucentBackground);
+        setAttribute(Qt::WA_NoSystemBackground);
+    }
+
     QWidget *parent = NULL;
     if (!g_lstDlg.empty())
     {
@@ -49,15 +55,7 @@ void CDialog::show(cfn_void cbClose)
     {
         parent = &__app.mainWnd();
     }
-    auto flags = windowFlags();// | Qt::Dialog;
-    setParent(parent, flags);
-
-    if (!m_bFullScreen)
-    {
-        // 主要mac需要
-        setAttribute(Qt::WA_TranslucentBackground);
-        setAttribute(Qt::WA_NoSystemBackground);
-    }
+    setParent(parent, windowFlags()); //| Qt::Dialog);
 
     _setPos();
 
@@ -92,29 +90,12 @@ void CDialog::show(cfn_void cbClose)
 
 void CDialog::showMask(cqcr crMask, cfn_void cbClose)
 {
-    if (m_bFullScreen)
-    {
-        show(cbClose);
-        return;
-    }
-
     if (NULL == m_pDlgMask)
     {
-        m_pDlgMask = new CDialog;
+        m_pDlgMask = new CMaskDlg(*this);
     }
 
-    auto flags = windowFlags() & (~Qt::Dialog);
-    setParent(m_pDlgMask, flags);
-
-    m_pDlgMask->show([=]{
-        if (cbClose)
-        {
-            cbClose();
-        }
-
-        auto flags = windowFlags() | Qt::Dialog;
-        setParent(NULL, flags);
-    });
+    ((CMaskDlg*)m_pDlgMask)->show(crMask, cbClose);
 }
 
 bool CDialog::event(QEvent *ev)
@@ -136,11 +117,13 @@ bool CDialog::event(QEvent *ev)
 #if __android || __ios
 	case QEvent::KeyRelease:
 #if __android
-        if (Qt::Key_Back != ((QKeyEvent*)ev)->key())
+        if (Qt::Key_Back != ((QKeyEvent*)ev)->key()) // TODO ios
         {
             break;
         }
 #endif
+
+        //if (m_pDlgMask) break;
 
         if (!_handleReturn())
         {
@@ -198,4 +181,34 @@ void CDialog::_onPaint(CPainter& painter, cqrc rc)
         cr.setAlpha(246);
         painter.fillRect(rc, cr);
     }
+}
+
+void CMaskDlg::show(cqcr crMask, cfn_void cbClose)
+{
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoSystemBackground);
+
+    m_crMask = crMask;
+
+    auto prevFlags = windowFlags();
+    auto flags = prevFlags & (~(Qt::Dialog |Qt::WindowCloseButtonHint
+                                |Qt::WindowSystemMenuHint |Qt::WindowOverridesSystemGestures));
+    m_child.setParent(this);//, flags);
+
+    m_child.onUISignal(&QDialog::finished, [&]{
+        this->close();
+    });
+
+    CDialog::_show([=]{
+        if (cbClose)
+        {
+            cbClose();
+        }
+        m_child.setParent(NULL, prevFlags);
+    });
+}
+
+void CMaskDlg::_onPaint(CPainter& painter, cqrc rc)
+{
+    painter.fillRect(rc, m_crMask);
 }
