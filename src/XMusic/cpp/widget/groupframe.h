@@ -20,6 +20,7 @@ public:
     CGroupFrame(QWidget *parent)
         : TWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
     {
+        setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:

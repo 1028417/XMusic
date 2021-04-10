@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #include <QDialog>
@@ -44,8 +44,6 @@ private:
         return g_crBkg;
     }
 
-    void _setPos();
-
     virtual void _relayout(int cx, int cy) {(void)cx;(void)cy;}
 
     virtual bool _handleReturn() {return false;}
@@ -56,6 +54,8 @@ protected:
     virtual bool event(QEvent *ev) override;
 
     virtual void _onPaint(CPainter&, cqrc) override;
+
+    virtual void _setPos();
 
 public:
     static void resetPos();
@@ -100,10 +100,7 @@ private:
         m_child.move((cx-m_child.width())/2, (cy-m_child.height())/2);
     }
 
-    void _onPaint(CPainter& painter, cqrc rc) override
-    {
-        painter.fillRect(rc, m_crMask);
-    }
+    void _onPaint(CPainter&, cqrc) override;
 
     bool _handleReturn() override
     {
@@ -135,23 +132,7 @@ private:
     CMaskDlg *m_pDlgMask = NULL;
 
 public:
-    void show(cqcr crMask, cfn_void cbClose = NULL)
-    {
-        if (NULL == m_pDlgMask)
-        {
-            m_pDlgMask = new CMaskDlg(*this);
-        }
+    void show(cqcr crMask, cfn_void cbClose = NULL);
 
-        m_pDlgMask->showMask(crMask, cbClose);
-    }
-
-    void show(cfn_void cbClose = NULL)
-    {
-//#if __android
-        show(QColor(0,0,0,0), cbClose);
-        return;
-//#endif
-
-        CDialog::show(cbClose);
-    }
+    void show(cfn_void cbClose = NULL);
 };

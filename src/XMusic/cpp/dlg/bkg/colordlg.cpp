@@ -24,9 +24,7 @@ void CColorDlg::init()
 
     CFont font(1.08f);
     ui.groupBkgColor->setFont(font);
-    ui.groupBkgColor->setAttribute(Qt::WA_TranslucentBackground);
     ui.groupFontColor->setFont(font);
-    ui.groupFontColor->setAttribute(Qt::WA_TranslucentBackground);
 
     ui.btnApplyBkgColor->setFont(font);
 
