@@ -48,7 +48,7 @@ void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
     case E_LoginReult::LR_ResponseError:
         qsTitle = "登录失败：服务器异常";
         break;
-    case E_LoginReult::LR_UserInvalid:
+    case E_LoginReult::LR_UserNotExist:
         qsTitle = "登录失败：账号不存在";
         break;
     case E_LoginReult::LR_ProfileInvalid:
