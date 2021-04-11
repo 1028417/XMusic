@@ -338,7 +338,7 @@ void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
         mtutil::thread([=]{
             thr.cancel();
             thr.start([=]{
-                auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
+                auto eRet = m_model.getUserMgr().syncLogin(thr, strUser, strPwd);
                 _cbLogin(eRet, strUser, strPwd, bRelogin);
             });
         });
@@ -347,7 +347,7 @@ void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
     {
         thr.join();
         thr.start([=]{
-            auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
+            auto eRet = m_model.getUserMgr().syncLogin(thr, strUser, strPwd);
             _cbLogin(eRet, strUser, strPwd, bRelogin);
         });
     }
