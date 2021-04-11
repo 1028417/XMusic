@@ -11,8 +11,6 @@
 
 #define __titleFontSize 1.16f
 
-#define __dlgRound 16
-
 class CDialog : public TWidget<QDialog>
 {
     friend class CDialogEx;
@@ -54,6 +52,13 @@ protected:
     virtual cqcr bkgColor() const
     {
         return g_crBkg;
+    }
+
+    QColor bkgColor(UINT alpha) const
+    {
+        auto cr = bkgColor();
+        cr.setAlpha(alpha);
+        return cr;
     }
 
 public:
@@ -114,6 +119,8 @@ private:
         m_child._onClosed();
     }
 };
+
+#define __dlgRound 16
 
 class CDialogEx : public CDialog
 {

@@ -115,20 +115,12 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
     return QColor(r,g,b,alpha);
 }
 
+#define __dlgAlpha 246
+
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
-    auto cr = bkgColor();
-    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
-    {
-        cr.setAlpha(246);
-        painter.fillRect(rc, cr);
-        return;
-    }
-
-    //__app.mainWnd().drawDefaultBkg(painter, rc, 0, 0.1f);
-    //cr.setAlpha(205);
-
-
+    cauto cr = bkgColor(__dlgAlpha);
+    (void)__app.mainWnd().drawBkg(m_bHLayout, painter, rc);
     painter.fillRect(rc, cr);
 }
 
@@ -198,20 +190,15 @@ void CDialogEx::_setPos()
 
 void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
 {
-    cauto cr = bkgColor();
-
-#if __android
-    UINT uRound = 0;
-
-#else
     UINT uRound = __dlgRound;
-    //painter.fillRectEx(rc, QColor(cr.red(), cr.green(), cr.blue(), 246), uRound);
+#if __android
+    uRound = 0;
+    auto cr = bkgColor();
+#else
+    auto cr = bkgColor(__dlgAlpha);
 #endif
 
     CPainterClipGuard guard(painter, rc, uRound);
-    painter.fillRect(rc, cr);
-
-    painter.setOpacity(0.05f);
 
     QRect rcDst = __app.mainWnd().rect();
     QPoint ptOffset;
@@ -223,12 +210,16 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     rcDst.moveTop(ptOffset.y()-this->y());
     if (__app.mainWnd().drawBkg(m_bHLayout, painter, rcDst))
     {
+        cr.setAlpha(__dlgAlpha);
+        painter.fillRect(rc, cr);
         return;
     }
-    guard.restore();
+
+    painter.fillRect(rc, cr);
 
     if (NULL == m_pDlgMask)
     {
+        guard.restore();
         cauto crBorder = _crOffset(cr, 14);
         painter.drawRectEx(rc, crBorder, uRound);
     }
