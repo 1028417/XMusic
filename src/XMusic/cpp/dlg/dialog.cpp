@@ -227,7 +227,7 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     }
 
 #else
-    cr.setAlpha(__dlgAlpha*8/9);
+    cr.setAlpha(__dlgAlpha*10/11);
 #endif
 
     painter.fillRect(rc, cr);

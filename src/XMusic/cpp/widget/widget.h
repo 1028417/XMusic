@@ -462,6 +462,24 @@ public:
         }
     }
 
+    void setX(int x)
+    {
+        this->move(x, this->y());
+    }
+    void setY(int y)
+    {
+        this->move(this->x(), y);
+    }
+
+    void setWidth(UINT cx)
+    {
+        this->resize(cx, this->height());
+    }
+    void setHeight(UINT cy)
+    {
+        this->resize(this->width(), cy);
+    }
+
 protected:
     virtual bool event(QEvent *ev) override;
 

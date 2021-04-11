@@ -21,6 +21,8 @@ public:
 private:
     void _setupUi();
 
+    void _setPos() override;
+
     cqcr bkgColor() const override;
 
     void _onPaint(CPainter& painter, cqrc rc) override;
