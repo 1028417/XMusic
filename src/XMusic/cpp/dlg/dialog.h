@@ -121,7 +121,7 @@ private:
     }
 };
 
-#define __dlgRound 16
+#define __dlgRound 20
 
 class CDialogEx : public CDialog
 {
