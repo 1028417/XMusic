@@ -125,7 +125,7 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
-void CPainter::drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
+void CPainter::drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround, UINT yround)
 {
     if (xround)
     {
@@ -143,7 +143,7 @@ void CPainter::drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=
     }
 }
 
-void CPainter::drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
+void CPainter::drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround, UINT yround)
 {
     if (xround)
     {
