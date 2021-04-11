@@ -105,6 +105,7 @@ public:
 #endif
 
     void showLogo();
+    void stopLogo();
 
     void preinit();
 

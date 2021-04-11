@@ -55,7 +55,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>不再提示</string>
+    <string>不 再 提 示</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -287,12 +287,13 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
     });
 }
 
+#define __logoTip "更新媒体库"
+
 void MainWindow::_showUpgradeProgress()
 {
     cauto nAppUpgradeProgress = __app.getMdlMgr().appUpgradeProgress();
     if (-1 == nAppUpgradeProgress)
     {
-#define __logoTip "更新媒体库"
         ui.labelLogoTip->setText(__logoTip);
     }
 
@@ -344,13 +345,20 @@ void MainWindow::_showUpgradeProgress()
     });
 }
 
+void MainWindow::stopLogo()
+{
+    ui.labelLogoTip->setVisible(false);
+}
+
 void MainWindow::show()
 {
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
     ui.labelLogo->clear();
     ui.labelLogo->setVisible(false);
+
     ui.labelLogoTip->setVisible(false);
+
     ui.labelLogoCompany->setVisible(false);
 
     ui.centralWidget->setVisible(true);
