@@ -27,6 +27,6 @@ private:
 
     bool _handleReturn() override {return true;}
 
-    void _checkUnMobileConnected();
+    void _checkWifiConnected();
 };
 #endif

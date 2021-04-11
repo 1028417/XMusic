@@ -3,8 +3,6 @@
 
 #include "MLListView.h"
 
-#include "androidutil.h"
-
 #define __playIconOffset __size10
 
 class CMedialibView : public CMLListView

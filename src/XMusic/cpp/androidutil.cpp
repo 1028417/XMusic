@@ -270,9 +270,9 @@ bool checkMobileConnected()
     return QtAndroid::androidActivity().callMethod<jboolean>("checkMobileConnected");
 }
 
-bool checkUnMobileConnected()
+bool checkWifiConnected()
 {
-    return QtAndroid::androidActivity().callMethod<jboolean>("checkUnMobileConnected");
+    return QtAndroid::androidActivity().callMethod<jboolean>("checkWifiConnected");
 }
 
 void vibrate()

@@ -46,7 +46,7 @@ void showTransparentStatusBar(bool bShow);
 void showToast(cqstr qsTip, bool bLongTime);
 
 bool checkMobileConnected();
-bool checkUnMobileConnected();
+bool checkWifiConnected();
 
 void vibrate();
 

@@ -43,7 +43,7 @@ void CNetworkWarnDlg::_setupUi()
     ui.labelExit->setText(__space + ui.labelExit->text() + __space);
 }
 
-void CNetworkWarnDlg::_checkUnMobileConnected()
+void CNetworkWarnDlg::_checkWifiConnected()
 {
     __async(1000, [&]{
         if (!this->isVisible())
@@ -51,15 +51,18 @@ void CNetworkWarnDlg::_checkUnMobileConnected()
             return;
         }
 
-        if (checkUnMobileConnected())
+        if (checkWifiConnected())
         {
             __async(3000, [&]{
-                this->close();
+                if (checkWifiConnected())
+                {
+                    ui.labelContinue->performClick();
+                }
             });
             return;
         }
 
-        _checkUnMobileConnected();
+        _checkWifiConnected();
     });
 }
 
@@ -82,7 +85,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         __app.quit();
     });
 
-    _checkUnMobileConnected();
+    _checkWifiConnected();
 
     CDialog::show(); //CDialogEx::show();
 }

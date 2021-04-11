@@ -16,6 +16,12 @@ public:
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
     }
 
+public:
+    void performClick()
+    {
+        emit signal_clicked(this);
+    }
+
     template <typename _slot>
     void onClicked(TD_XObj<_slot> recv, _slot slot)
     {
