@@ -67,7 +67,7 @@ void CFont::init(const QFont& font)
 #endif
 
     auto qsFontName = font.family();
-    list<pair<int, QString>> plFontFile {
+    list<pair<TD_FontWeight, QString>> plFontFile {
         {TD_FontWeight::Light, "msyhl-6.23.ttc"}
         , {TD_FontWeight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
     };
