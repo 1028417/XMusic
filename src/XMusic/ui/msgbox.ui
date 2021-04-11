@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>140</y>
+     <y>135</y>
      <width>660</width>
      <height>80</height>
     </rect>
@@ -32,10 +32,10 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>690</x>
+     <x>700</x>
      <y>10</y>
-     <width>100</width>
-     <height>100</height>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">

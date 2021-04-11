@@ -63,10 +63,10 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>490</x>
+     <x>500</x>
      <y>10</y>
-     <width>100</width>
-     <height>100</height>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -138,8 +138,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>500</width>
-     <height>100</height>
+     <width>510</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="text">
