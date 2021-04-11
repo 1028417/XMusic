@@ -64,9 +64,9 @@
    <property name="geometry">
     <rect>
      <x>490</x>
-     <y>20</y>
-     <width>90</width>
-     <height>90</height>
+     <y>0</y>
+     <width>110</width>
+     <height>110</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -136,10 +136,10 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>490</width>
-     <height>90</height>
+     <x>0</x>
+     <y>0</y>
+     <width>520</width>
+     <height>110</height>
     </rect>
    </property>
    <property name="text">
