@@ -68,8 +68,7 @@ void CMsgBox::_setPos()
         this->move(0, __app.mainWnd().height()-height());
     }
 
-    auto xOffset = cx - s_cxPrev;
-    ui.labelTip->setWidth(ui.labelTip->width()+xOffset);
-    ui.btnX->setX(ui.btnX->x()+xOffset);
+    ui.labelTip->setWidth(cx-ui.labelTip->x());
+    ui.btnX->setX(cx-ui.btnX.y()-ui.btnX->width());
 }
 #endif

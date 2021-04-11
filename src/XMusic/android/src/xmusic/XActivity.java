@@ -187,7 +187,7 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
             return false;
         }
 
-        return networkInfo.getType() != ConnectivityManager.TYPE_WIFI;
+        return networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     public void installApk(String filePath)

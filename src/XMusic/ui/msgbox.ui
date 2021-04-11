@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>320</height>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>125</y>
+     <y>130</y>
      <width>660</width>
      <height>80</height>
     </rect>
@@ -32,10 +32,10 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>710</x>
-     <y>5</y>
-     <width>80</width>
-     <height>80</height>
+     <x>690</x>
+     <y>20</y>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -60,14 +60,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">button.h</header>
-  </customwidget>
-  <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">button.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

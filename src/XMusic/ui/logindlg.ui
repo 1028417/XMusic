@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>520</height>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QLineEdit" name="editUser">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>140</y>
-     <width>350</width>
+     <x>180</x>
+     <y>160</y>
+     <width>330</width>
      <height>70</height>
     </rect>
    </property>
@@ -32,8 +32,8 @@
   <widget class="CButton" name="btnLogin">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>380</y>
+     <x>370</x>
+     <y>390</y>
      <width>140</width>
      <height>70</height>
     </rect>
@@ -63,10 +63,10 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>10</y>
-     <width>80</width>
-     <height>80</height>
+     <x>490</x>
+     <y>20</y>
+     <width>90</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -91,9 +91,9 @@
   <widget class="QLineEdit" name="editPwd">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>250</y>
-     <width>350</width>
+     <x>180</x>
+     <y>270</y>
+     <width>330</width>
      <height>70</height>
     </rect>
    </property>
@@ -110,8 +110,8 @@
   <widget class="CLabel" name="labelUser">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>140</y>
+     <x>80</x>
+     <y>160</y>
      <width>100</width>
      <height>70</height>
     </rect>
@@ -123,8 +123,8 @@
   <widget class="CLabel" name="labelPwd">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>250</y>
+     <x>80</x>
+     <y>270</y>
      <width>100</width>
      <height>70</height>
     </rect>
@@ -136,10 +136,10 @@
   <widget class="CLabel" name="labelTitle">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>520</width>
-     <height>80</height>
+     <x>20</x>
+     <y>20</y>
+     <width>490</width>
+     <height>90</height>
     </rect>
    </property>
    <property name="text">
@@ -149,17 +149,24 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <zorder>editUser</zorder>
+  <zorder>btnLogin</zorder>
+  <zorder>editPwd</zorder>
+  <zorder>labelUser</zorder>
+  <zorder>labelPwd</zorder>
+  <zorder>labelTitle</zorder>
+  <zorder>btnX</zorder>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>CButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">button.h</header>
-  </customwidget>
   <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
    <header location="global">label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">button.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
