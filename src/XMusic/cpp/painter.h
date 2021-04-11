@@ -247,7 +247,7 @@ public:
     }
 };
 
-class CPainterClipGuard : public CPainterRestoreGuard
+class CPainterClipGuard : public CPainterRestoreGuard //据说裁剪慢
 {
 public:
     CPainterClipGuard(QPainter& painter, cqrc rc, UINT xround=0, UINT yround=0)
@@ -382,30 +382,26 @@ public:
         QPainter::setFont(font);
     }
 
-    void drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    void drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0);
+
+    void drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0);
+
+    template <class T>
+    inline void drawImg(cqrc rc, const T& img, UINT xround=0, UINT yround=0)
     {
-        CPainterClipGuard guard(*this, rc, xround, yround);
-        QPainter::drawPixmap(rc, pm, rcSrc);
-    }
-    void drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
-    {
-        CPainterClipGuard guard(*this, rc, xround, yround);
-        QPainter::drawImage(rc, img, rcSrc);
-    }
-    void drawImg(cqrc rc, cqpm pm, UINT xround=0, UINT yround=0)
-    {
-        drawImg(rc, pm, pm.rect(), xround, yround);
+        drawImg(rc, img, img.rect(), xround, yround);
     }
 
     void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+
     void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
 
     template <class T>
-    void drawImgEx(cqrc rc, const T& pm, UINT xround=0, UINT yround=0)
+    void drawImgEx(cqrc rc, const T& t, UINT xround=0, UINT yround=0)
     {
-        QRect rcSrc = pm.rect();
+        QRect rcSrc = t.rect();
         _genSrcRect(rc, rcSrc);
-        this->drawImg(rc, pm, rcSrc, xround, yround);
+        this->drawImg(rc, t, rcSrc, xround, yround);
     }
 
     void drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);

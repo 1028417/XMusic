@@ -125,6 +125,42 @@ QColor CPainter::mixColor(cqcr crSrc, cqcr crDst, UINT uAlpha)
     return QColor(r,g,b,uAlpha);
 }
 
+void CPainter::drawImg(cqrc rc, cqpm pm, cqrc rcSrc, UINT xround=0, UINT yround=0)
+{
+    if (xround)
+    {
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+
+        CPainterClipGuard guard(*this, rc, xround, yround);
+        QPainter::drawPixmap(rc, pm, rcSrc);
+    }
+    else
+    {
+        QPainter::drawPixmap(rc, pm, rcSrc);
+    }
+}
+
+void CPainter::drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
+{
+    if (xround)
+    {
+        if (0 == yround)
+        {
+            yround = xround;
+        }
+
+        CPainterClipGuard guard(*this, rc, xround, yround);
+        QPainter::drawImage(rc, img, rcSrc);
+    }
+    else
+    {
+        QPainter::drawImage(rc, img, rcSrc);
+    }
+}
+
 #define __painterRestoreGuard CPainterRestoreGuard _guard(*this)
 
 void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
@@ -226,7 +262,7 @@ void CPainter::drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)
 
 void CPainter::_drawRectEx(cqrc rc, UINT xround, UINT yround)
 {
-    if (xround > 0)
+    if (xround)
     {
         if (0 == yround)
         {
@@ -255,7 +291,7 @@ void CPainter::drawRectEx(cqrc rc, cqcr cr, Qt::PenStyle style, UINT uWidth, UIN
 
 void CPainter::fillRectEx(cqrc rc, cqbr br, UINT xround, UINT yround)
 {
-    if (xround > 0)
+    if (xround)
     {
         if (0 == yround)
         {
