@@ -16,6 +16,7 @@ class CDialog : public TWidget<QDialog>
     friend class CDialogEx;
     friend class CMaskDlg;
 public:
+    static CDialog* frontDlg();
     static void resetPos();
 
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
@@ -125,7 +126,7 @@ private:
 class CDialogEx : public CDialog
 {
 public:
-    CDialogEx();
+    CDialogEx() = default;
 
     virtual ~CDialogEx()
     {
@@ -138,9 +139,9 @@ public:
 protected:
     bool m_bInit = false;
 
-    const bool& m_bHLayout;
-
 private:
+    bool m_bHLayout = false; //隐藏基类成员，因为对非全屏窗口没意义
+
     CMaskDlg *m_pDlgMask = NULL;
 
 protected:

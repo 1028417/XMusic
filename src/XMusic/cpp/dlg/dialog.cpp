@@ -5,6 +5,15 @@
 
 static list<CDialog*> g_lstDlg;
 
+CDialog* CDialog::frontDlg()
+{
+    if (g_lstDlg.empty())
+    {
+        return NULL;
+    }
+    return g_lstDlg.front();
+}
+
 void CDialog::resetPos()
 {
     for (auto pDlg : g_lstDlg)
@@ -25,16 +34,12 @@ void CDialog::connect_dlgClose(CButton *btn)
 
 void CDialog::show(cfn_void cbClose)
 {
-    QWidget *parent = NULL;
-    if (!g_lstDlg.empty())
-    {
-        parent = g_lstDlg.front();
-    }
-    else
+    QWidget *parent = frontDlg();
+    if (NULL == parent)
     {
         parent = &__app.mainWnd();
     }
-    setParent(parent, windowFlags()); //| Qt::Dialog);
+    setParent(parent, windowFlags());
 
     _setPos();
 
@@ -62,7 +67,9 @@ void CDialog::show(cfn_void cbClose)
     return;
 #endif
 
+//#if !__android
     this->setModal(true); //this->setWindowModality(Qt::ApplicationModal);
+//#endif
 
     this->setVisible(true);
 }
@@ -119,8 +126,11 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
-    cauto cr = bkgColor(__dlgAlpha);
-    (void)__app.mainWnd().drawBkg(m_bHLayout, painter, rc);
+    auto cr = bkgColor();
+    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
+    {
+        cr.setAlpha(__dlgAlpha);
+    }
     painter.fillRect(rc, cr);
 }
 
@@ -136,6 +146,9 @@ void CMaskDlg::showMask(cqcr crMask, cfn_void cbClose)
         this->close();
     });
 
+/*#if __android
+    this->setWindowFlags(flags);
+#endif*/
     CDialog::show([=]{
         if (cbClose)
         {
@@ -150,10 +163,6 @@ void CMaskDlg::_onPaint(CPainter& painter, cqrc rc)
     painter.fillRect(rc, m_crMask);
 }
 
-CDialogEx::CDialogEx() :
-    m_bHLayout(__app.mainWnd().isHLayout())
-{
-}
 
 void CDialogEx::show(cqcr crMask, cfn_void cbClose)
 {
@@ -190,37 +199,36 @@ void CDialogEx::_setPos()
 
 void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
 {
-    UINT uRound = __dlgRound;
 #if __android
-    uRound = 0;
-    auto cr = bkgColor();
+    UINT uround = 0;
 #else
-    auto cr = bkgColor(__dlgAlpha);
+    UINT uround = __dlgRound;
 #endif
 
-    CPainterClipGuard guard(painter, rc, uRound);
+    CPainterClipGuard guard(painter, rc, uround);
 
-    QRect rcDst = __app.mainWnd().rect();
+    cauto mainWnd = __app.mainWnd();
+    QRect rcDst = mainWnd.rect();
     QPoint ptOffset;
     if (NULL == m_pDlgMask)
     {
-        ptOffset = __app.mainWnd().pos();
+        ptOffset = mainWnd.pos();
     }
     rcDst.moveLeft(ptOffset.x()-this->x());
     rcDst.moveTop(ptOffset.y()-this->y());
-    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rcDst))
+    if (mainWnd.drawBkg(mainWnd.isHLayout(), painter, rcDst))
     {
-        cr.setAlpha(__dlgAlpha);
-        painter.fillRect(rc, cr);
+        painter.fillRect(rc, bkgColor(__dlgAlpha));
         return;
     }
 
+    cauto cr = bkgColor();
     painter.fillRect(rc, cr);
 
     if (NULL == m_pDlgMask)
     {
         guard.restore();
         cauto crBorder = _crOffset(cr, 14);
-        painter.drawRectEx(rc, crBorder, uRound);
+        painter.drawRectEx(rc, crBorder, uround);
     }
 }

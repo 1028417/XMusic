@@ -44,9 +44,5 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     ui.labelTip->setText(qsMsg);
 
-#if __android
-    CDialog::show(cbClose);
-#else
     CDialogEx::show(cbClose);
-#endif
 }

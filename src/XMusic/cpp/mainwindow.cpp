@@ -590,7 +590,7 @@ void MainWindow::_onPaint()
     }
 }
 
-bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc)
+bool MainWindow::drawBkg(bool bHLayout, CPainter& painter, cqrc rc) const
 {
     if (m_opt.bUseBkgColor)
     {
