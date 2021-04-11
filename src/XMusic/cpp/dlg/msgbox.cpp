@@ -6,23 +6,6 @@
 
 static Ui::MsgBox ui;
 
-cqcr CMsgBox::bkgColor() const
-{
-    static QColor cr(195, 230, 255);
-    return cr;
-}
-
-void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
-{
-#if __android
-    extern QColor g_crLogoBkg;
-    painter.fillRect(rc, g_crLogoBkg);
-    painter.fillRectEx(rc, bkgColor(), __dlgRound);
-#else
-    CDialog::_onPaint(painter, rc);
-#endif
-}
-
 void CMsgBox::_setupUi()
 {
     if (m_bInit)
@@ -44,7 +27,16 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     ui.labelTip->setText(qsMsg);
 
-    CDialogEx::show(cbClose);
+    CDialog::show(cbClose); //CDialogEx::show(cbClose);
+}
+
+void CMsgBox::_relayout(int cx, int cy)
+{
+    auto x = cx-ui.btnX->y()-ui.btnX->width();
+    ui.btnX->setX(x);
+
+    ui.labelTip->setX(0);
+    ui.labelTip->setWidth(cx-x);
 }
 
 #if __android
@@ -52,26 +44,32 @@ void CMsgBox::_setPos()
 {
     static auto s_cxPrev = width();
 
-    int cx = 0;
     if (__app.mainWnd().isHLayout())
     {
         this->setWidth(s_cxPrev);
-        cx = s_cxPrev;
-
         CDialogEx::_setPos();
     }
     else
     {
-        cx = __app.mainWnd().width();
-        this->setWidth(cx);
-
         this->move(0, __app.mainWnd().height()-height());
+        this->setWidth(__app.mainWnd().width());
     }
-
-    auto x = cx-ui.btnX->y()-ui.btnX->width();
-    ui.btnX->setX(x);
-
-    ui.labelTip->setX(0);
-    ui.labelTip->setWidth(cx-x);
 }
 #endif
+
+cqcr CMsgBox::bkgColor() const
+{
+    static QColor cr(195, 230, 255);
+    return cr;
+}
+
+void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
+{
+#if __android
+    extern QColor g_crLogoBkg;
+    painter.fillRect(rc, g_crLogoBkg);
+    painter.fillRectEx(rc, bkgColor(), __dlgRound);
+#else
+    CDialogEx::_onPaint(painter, rc);
+#endif
+}

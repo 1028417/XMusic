@@ -7,19 +7,6 @@
 
 static Ui::networkWarnDlg ui;
 
-cqcr CNetworkWarnDlg::bkgColor() const
-{
-    static QColor cr(195, 230, 255);
-    return cr;
-}
-
-void CNetworkWarnDlg::_onPaint(CPainter& painter, cqrc rc)
-{
-    extern QColor g_crLogoBkg;
-    painter.fillRect(rc, g_crLogoBkg);
-    painter.fillRectEx(rc, bkgColor(), __dlgRound);
-}
-
 void CNetworkWarnDlg::_setupUi()
 {
     if (m_bInit)
@@ -114,5 +101,18 @@ void CNetworkWarnDlg::_setPos()
     ui.labelContinue->setWidth(cx);
     ui.labelNeverWarn->setWidth(cx);
     ui.labelExit->setWidth(cx);
+}
+
+cqcr CNetworkWarnDlg::bkgColor() const
+{
+    static QColor cr(195, 230, 255);
+    return cr;
+}
+
+void CNetworkWarnDlg::_onPaint(CPainter& painter, cqrc rc)
+{
+    extern QColor g_crLogoBkg;
+    painter.fillRect(rc, g_crLogoBkg);
+    painter.fillRectEx(rc, bkgColor(), __dlgRound);
 }
 #endif

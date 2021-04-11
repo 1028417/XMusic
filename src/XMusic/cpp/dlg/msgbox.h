@@ -17,6 +17,8 @@ private:
     void _setPos() override;
 #endif
 
+    void _relayout(int cx, int cy) override;
+
     cqcr bkgColor() const override;
 
     void _onPaint(CPainter&, cqrc) override;
