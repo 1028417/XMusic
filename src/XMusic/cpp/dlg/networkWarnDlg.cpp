@@ -92,16 +92,23 @@ void CNetworkWarnDlg::show(cfn_void cb)
 
 void CNetworkWarnDlg::_setPos()
 {
-    auto cx = __app.mainWnd().width();
-    auto cy = __app.mainWnd().height();
-    if (cx > cy)
-    {
-        CDialogEx::_setPos();
-        return;
-    }
+    static auto s_cxPrev = width();
 
-    this->move(0, cy-height());
-    this->setWidth(cx);
+    int cx = 0;
+    if (__app.mainWnd().isHLayout())
+    {
+        this->setWidth(s_cxPrev);
+        cx = s_cxPrev;
+
+        CDialogEx::_setPos();
+    }
+    else
+    {
+        cx = __app.mainWnd().width();
+        this->setWidth(cx);
+
+        this->move(0, __app.mainWnd().height()-height());
+    }
 
     ui.labelTip->setWidth(cx);
     ui.labelContinue->setWidth(cx);

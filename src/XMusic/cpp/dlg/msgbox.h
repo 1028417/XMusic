@@ -13,6 +13,10 @@ public:
 private:
     void _setupUi();
 
+#if __android
+    void _setPos() override;
+#endif
+
     cqcr bkgColor() const override;
 
     void _onPaint(CPainter&, cqrc) override;

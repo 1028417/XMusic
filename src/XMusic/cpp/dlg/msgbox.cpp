@@ -46,3 +46,30 @@ void CMsgBox::show(cqstr qsMsg, cfn_void cbClose)
 
     CDialogEx::show(cbClose);
 }
+
+#if __android
+void CMsgBox::_setPos()
+{
+    static auto s_cxPrev = width();
+
+    int cx = 0;
+    if (__app.mainWnd().isHLayout())
+    {
+        this->setWidth(s_cxPrev);
+        cx = s_cxPrev;
+
+        CDialogEx::_setPos();
+    }
+    else
+    {
+        cx = __app.mainWnd().width();
+        this->setWidth(cx);
+
+        this->move(0, __app.mainWnd().height()-height());
+    }
+
+    auto xOffset = cx - s_cxPrev;
+    ui.labelTip->setWidth(ui.labelTip->width()+xOffset);
+    ui.btnX->setX(ui.btnX->x()+xOffset);
+}
+#endif
