@@ -22,6 +22,12 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
     }
 
+public:
+    void performClick()
+    {
+        emit signal_clicked(this, {0,0});
+    }
+
     template <typename _slot>
     void onClicked(TD_XObj<_slot> recv, _slot slot)
     {
