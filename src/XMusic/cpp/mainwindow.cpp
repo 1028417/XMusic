@@ -145,7 +145,7 @@ void MainWindow::_init()
                 , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1.03f, QFont::Weight::DemiBold);
+        label->setFont(1.03f, TD_FontWeight::DemiBold);
     }
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
                 , ui.labelProgress);

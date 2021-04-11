@@ -11,9 +11,9 @@
 QColor g_crBkg(__defThemeColor);
 QColor g_crFore(__defTextColor);
 
-int CFont::g_nDefFontWeight = QFont::Weight::Light;
+TD_FontWeight CFont::g_eDefFontWeight = TD_FontWeight::Light;
 UINT CFont::m_uDefFontSize = 0;
-list<pair<int, QString>> CFont::m_lstFontFamily;
+list<pair<TD_FontWeight, QString>> CFont::m_lstFontFamily;
 
 void CFont::init(const QFont& font)
 {
@@ -61,15 +61,15 @@ void CFont::init(const QFont& font)
 #endif
 
 #if __windows
-    m_lstFontFamily.emplace_back(QFont::Weight::Light, "微软雅黑 Light");
-    m_lstFontFamily.emplace_back(QFont::Weight::DemiBold, "微软雅黑");
+    m_lstFontFamily.emplace_back(TD_FontWeight::Light, "微软雅黑 Light");
+    m_lstFontFamily.emplace_back(TD_FontWeight::DemiBold, "微软雅黑");
     return;
 #endif
 
     auto qsFontName = font.family();
     list<pair<int, QString>> plFontFile {
-        {QFont::Weight::Light, "msyhl-6.23.ttc"}
-        , {QFont::Weight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
+        {TD_FontWeight::Light, "msyhl-6.23.ttc"}
+        , {TD_FontWeight::DemiBold, "Microsoft-YaHei-Regular-11.0.ttc"}
     };
     for (auto& pr : plFontFile)
     {

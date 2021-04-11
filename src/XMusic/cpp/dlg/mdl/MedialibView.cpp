@@ -830,7 +830,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     if (!mlContext.strRemark->empty())
     {
-        CPainterFontGuard fontGuard(painter, 0.81, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.81, TD_FontWeight::ExtraLight);
         UINT uAlpha = CPainter::oppTextAlpha(__RemarkAlpha);
         cauto rcRet = painter.drawTextEx(rc, __rAlign, mlContext.strRemark, 1, __ShadowAlpha*uAlpha/255, uAlpha);
         rc.setRight(rcRet.x() - __size(20));
@@ -915,7 +915,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     if (!qsMediaQuality.isEmpty())
     {
-        CPainterFontGuard fontGuard(painter, 0.69, QFont::Weight::Thin);
+        CPainterFontGuard fontGuard(painter, 0.69, TD_FontWeight::Thin);
 
         auto rcPos = rcRet;
         rcPos.setLeft(rcPos.right() + __size(20));

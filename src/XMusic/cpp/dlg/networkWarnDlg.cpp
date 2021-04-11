@@ -29,7 +29,7 @@ void CNetworkWarnDlg::_setupUi()
 
     ui.setupUi(this);
 
-    ui.labelTip->setFont(1.0f, QFont::Weight::DemiBold);
+    ui.labelTip->adjustFont(TD_FontWeight::DemiBold);
 
     QColor crText(__crLogoText);
     ui.labelTip->setForeColor(crText);

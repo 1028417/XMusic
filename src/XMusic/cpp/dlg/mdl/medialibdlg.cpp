@@ -22,9 +22,9 @@ void CMedialibDlg::init()
 
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
-    m_lv.setFont(1.0f, QFont::Weight::Normal);
+    m_lv.adjustFont(TD_FontWeight::Normal);
 
     ui.labelSingerImg->setPixmapRound(__szRound);
     ui.labelSingerImg->onClicked([&]{
@@ -41,7 +41,7 @@ void CMedialibDlg::init()
                 , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
     for (auto label : lstLabels)
     {
-        label->setFont(1.08f, QFont::Weight::Normal, false, true);
+        label->setFont(1.08f, TD_FontWeight::Normal, false, true);
 
         label->onClicked(this, &CMedialibDlg::slot_labelClick);
     }

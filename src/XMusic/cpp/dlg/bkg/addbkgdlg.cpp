@@ -34,12 +34,12 @@ void CAddBkgDlg::init()
         update();
     });
 
-    ui.labelChooseDir->setFont(1.08, QFont::Weight::Normal, false, true);
+    ui.labelChooseDir->setFont(1.08, TD_FontWeight::Normal, false, true);
 #endif
 
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
-    m_lv.setFont(1.0f, QFont::Weight::Normal);
+    m_lv.adjustFont(TD_FontWeight::Normal);
 
     auto movie = new QMovie(this);
     movie->setFileName(":/img/loading.gif");

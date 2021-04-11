@@ -284,29 +284,34 @@ public:
         T::setFont(font);
     }
 
-    void setFont(float fSizeOffset, int nWeight = CFont::g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
+    void setFont()
     {
-        T::setFont(CFont(fSizeOffset, nWeight, bItalic, bUnderline));
+        T::setFont(CFont());
     }
 
-    void adjustFont(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    void setFont(float fSizeOffset, TD_FontWeight eWeight = CFont::g_eDefFontWeight, bool bItalic=false, bool bUnderline=false)
+    {
+        T::setFont(CFont(fSizeOffset, eWeight, bItalic, bUnderline));
+    }
+
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight, bool bItalic, bool bUnderline)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight, bItalic, bUnderline);
+        font.adjust(fSizeOffset, eWeight, bItalic, bUnderline);
         T::setFont(font);
     }
 
-    void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight, bool bItalic)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight, bItalic);
+        font.adjust(fSizeOffset, eWeight, bItalic);
         T::setFont(font);
     }
 
-    void adjustFont(float fSizeOffset, int nWeight)
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight);
+        font.adjust(fSizeOffset, eWeight);
         T::setFont(font);
     }
 
@@ -317,10 +322,10 @@ public:
         T::setFont(font);
     }
 
-    void adjustFont(int nWeight)
+    void adjustFont(TD_FontWeight eWeight)
     {
         CFont font(*this);
-        font.setWeight(nWeight);
+        font.setWeight(eWeight);
         T::setFont(font);
     }
 

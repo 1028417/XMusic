@@ -20,9 +20,9 @@ void CWholeTrackDlg::init()
     ui.labelDisk->setPixmapRound(0);
     ui.labelDisk->setShadow(0);
 
-    ui.labelTitle->setFont(__titleFontSize, QFont::Weight::DemiBold);
+    ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
-    m_lv.setFont(1.0f, QFont::Weight::Normal);
+    m_lv.adjustFont(TD_FontWeight::Normal);
 
     ui.btnReturn->connect_dlgClose(this);
 
@@ -136,7 +136,7 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
     {
         cauto qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
 
-        CPainterFontGuard fontGuard(painter, 0.9f, QFont::Weight::ExtraLight);
+        CPainterFontGuard fontGuard(painter, 0.9f, TD_FontWeight::ExtraLight);
         painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration);
     }
 

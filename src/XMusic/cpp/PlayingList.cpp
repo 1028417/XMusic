@@ -99,7 +99,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     if (bPlayingItem)
     {
 /*#if __android || __ios
-        CPainterFontGuard fontGuard(painter, 0.6f, QFont::Weight::Thin);
+        CPainterFontGuard fontGuard(painter, 0.6f, TD_FontWeight::Thin);
 #endif
         painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, "▶"
                            , m_uShadowWidth, uShadowAlpha, uTextAlpha);*/
@@ -125,7 +125,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        painter.adjustFont(1.05f, QFont::Weight::Normal);
+        painter.adjustFont(1.05f, TD_FontWeight::Normal);
     }
     else if (__app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
@@ -140,7 +140,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     if (bPlayingItem)
     {
-        painter.adjustFont(0.65, QFont::Weight::Thin);
+        painter.adjustFont(0.65, TD_FontWeight::Thin);
 
         cauto qsQuality = __app.mainWnd().playingInfo().qsQuality;
 

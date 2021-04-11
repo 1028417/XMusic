@@ -120,15 +120,17 @@ public:
     }
 };
 
+using TD_FontWeight = QFont::Weight;
+
 class CFont : public QFont
 {
 public:
-    static int g_nDefFontWeight;
+    static TD_FontWeight g_eDefFontWeight;
 
 private:
     static UINT m_uDefFontSize;
 
-    static list<pair<int, QString>> m_lstFontFamily;
+    static list<pair<TD_FontWeight, QString>> m_lstFontFamily;
     inline static cqstr _getFamily(int nWeight)
     {
         for (cauto pr : m_lstFontFamily)
@@ -166,8 +168,8 @@ public:
         _setFamily();
     }
 
-    CFont(float fSizeOffset=1.0f, int nWeight = g_nDefFontWeight, bool bItalic=false, bool bUnderline=false)
-        : QFont(_getFamily(nWeight), m_uDefFontSize * fSizeOffset, nWeight)
+    CFont(float fSizeOffset=1.0f, TD_FontWeight eWeight = g_eDefFontWeight, bool bItalic=false, bool bUnderline=false)
+        : QFont(_getFamily(eWeight), m_uDefFontSize * fSizeOffset, eWeight)
     {
         //_setFamily();
 
@@ -179,9 +181,9 @@ public:
 public:
     static void init(const QFont& font);
 
-    inline void setWeight(int nWeight)
+    inline void setWeight(TD_FontWeight eWeight)
     {
-        QFont::setWeight(nWeight);
+        QFont::setWeight(eWeight);
         _setFamily();
     }
 
@@ -196,23 +198,23 @@ public:
         setPointSizeF(pointSizeF() * fSizeOffset);
     }
 
-    inline void adjust(float fSizeOffset, int nWeight)
+    inline void adjust(float fSizeOffset, TD_FontWeight eWeight)
     {
         adjust(fSizeOffset);
 
-        setWeight(nWeight);
+        setWeight(eWeight);
     }
 
-    inline void adjust(float fSizeOffset, int nWeight, bool bItalic)
+    inline void adjust(float fSizeOffset, TD_FontWeight eWeight, bool bItalic)
     {
-        adjust(fSizeOffset, nWeight);
+        adjust(fSizeOffset, eWeight);
 
         setItalic(bItalic);
     }
 
-    void adjust(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    void adjust(float fSizeOffset, TD_FontWeight eWeight, bool bItalic, bool bUnderline)
     {
-        adjust(fSizeOffset, nWeight, bItalic);
+        adjust(fSizeOffset, eWeight, bItalic);
 
         setUnderline(bUnderline);
     }
@@ -332,24 +334,24 @@ public:
         setPen(QColor(r,g,b,a));
     }
 
-    void adjustFont(float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight, bool bItalic, bool bUnderline)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight, bItalic, bUnderline);
+        font.adjust(fSizeOffset, eWeight, bItalic, bUnderline);
         QPainter::setFont(font);
     }
 
-    void adjustFont(float fSizeOffset, int nWeight, bool bItalic)
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight, bool bItalic)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight, bItalic);
+        font.adjust(fSizeOffset, eWeight, bItalic);
         QPainter::setFont(font);
     }
 
-    void adjustFont(float fSizeOffset, int nWeight)
+    void adjustFont(float fSizeOffset, TD_FontWeight eWeight)
     {
         CFont font(*this);
-        font.adjust(fSizeOffset, nWeight);
+        font.adjust(fSizeOffset, eWeight);
         QPainter::setFont(font);
     }
 
@@ -360,10 +362,10 @@ public:
         QPainter::setFont(font);
     }
 
-    void adjustFont(int nWeight)
+    void adjustFont(TD_FontWeight eWeight)
     {
         CFont font(*this);
-        font.setWeight(nWeight);
+        font.setWeight(eWeight);
         QPainter::setFont(font);
     }
 
@@ -443,28 +445,28 @@ public:
         m_painter.restore();
     }
 
-    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight, bool bItalic, bool bUnderline)
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, TD_FontWeight eWeight, bool bItalic, bool bUnderline)
         : m_painter(painter)
     {
         painter.save();
 
-        painter.adjustFont(fSizeOffset, nWeight, bItalic, bUnderline);
+        painter.adjustFont(fSizeOffset, eWeight, bItalic, bUnderline);
     }
 
-    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight, bool bItalic)
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, TD_FontWeight eWeight, bool bItalic)
         : m_painter(painter)
     {
         painter.save();
 
-        painter.adjustFont(fSizeOffset, nWeight, bItalic);
+        painter.adjustFont(fSizeOffset, eWeight, bItalic);
     }
 
-    CPainterFontGuard(CPainter& painter, float fSizeOffset, int nWeight)
+    CPainterFontGuard(CPainter& painter, float fSizeOffset, TD_FontWeight eWeight)
         : m_painter(painter)
     {
         painter.save();
 
-        painter.adjustFont(fSizeOffset, nWeight);
+        painter.adjustFont(fSizeOffset, eWeight);
     }
 
     CPainterFontGuard(CPainter& painter, float fSizeOffset)
@@ -475,12 +477,12 @@ public:
         painter.adjustFont(fSizeOffset);
     }
 
-    CPainterFontGuard(CPainter& painter, int nWeight)
+    CPainterFontGuard(CPainter& painter, TD_FontWeight eWeight)
         : m_painter(painter)
     {
         painter.save();
 
-        painter.adjustFont(nWeight);
+        painter.adjustFont(eWeight);
     }
 
     CPainterFontGuard(CPainter& painter, bool bItalic)

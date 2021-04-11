@@ -34,7 +34,7 @@ void CMsgBox::_setupUi()
 
     this->connect_dlgClose(ui.btnX);
 
-    ui.labelTip->setFont(1.15f, QFont::Weight::DemiBold);
+    ui.labelTip->setFont(1.15f, TD_FontWeight::DemiBold);
     ui.labelTip->setForeColor(__crLogoText);
 }
 
