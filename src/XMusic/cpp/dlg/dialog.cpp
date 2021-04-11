@@ -206,8 +206,11 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     UINT uround = __dlgRound;
 #endif
 
+    auto cr = bkgColor();
+{
     CPainterClipGuard guard(painter, rc, uround);
 
+#if __android
     cauto mainWnd = __app.mainWnd();
     QRect rcDst = mainWnd.rect();
     QPoint ptOffset;
@@ -217,18 +220,21 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     }
     rcDst.moveLeft(ptOffset.x()-this->x());
     rcDst.moveTop(ptOffset.y()-this->y());
+
     if (mainWnd.drawBkg(m_bHLayout, painter, rcDst))
     {
-        painter.fillRect(rc, bkgColor(__dlgAlpha));
-        return;
+        cr.setAlpha(__dlgAlpha);
     }
 
-    cauto cr = bkgColor();
+#else
+    cr.setAlpha(__dlgAlpha*8/9);
+#endif
+
     painter.fillRect(rc, cr);
+}
 
     if (NULL == m_pDlgMask)
     {
-        guard.restore();
         cauto crBorder = _crOffset(cr, 14);
         painter.drawRectEx(rc, crBorder, uround);
     }
