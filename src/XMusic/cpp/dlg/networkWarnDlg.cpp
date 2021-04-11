@@ -82,7 +82,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         __app.quit();
     });
 
-    _recheck();
+    _checkUnMobileConnected();
 
     CDialog::show(); //CDialogEx::show();
 }
