@@ -72,8 +72,6 @@ private:
 
     void _show(cwstr strUser);
 
-    E_LoginReult _syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, bool bRelogin=false);
-
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 
 public:

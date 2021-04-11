@@ -64,12 +64,15 @@ enum class E_UpgradeResult
     UR_Success,
     UR_Fail,
 
-    UR_DownloadFail,
-    UR_MedialibInvalid,
-    UR_ReadMedialibFail,
+    UR_NetworkError,
+    UR_ResponseError,
 
     UR_MedialibUnmatch,
     UR_MedialibUncompatible,
+
+    UR_MedialibInvalid,
+    UR_ReadMedialibFail,
+
     UR_AppUpgradeFail,
     UR_AppUpgraded,
 

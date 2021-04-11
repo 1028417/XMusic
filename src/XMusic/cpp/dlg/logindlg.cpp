@@ -43,16 +43,19 @@ void CLoginDlg::show(cwstr strUser, const string& strPwd, E_LoginReult eRet)
     switch (eRet)
     {
     case E_LoginReult::LR_NetworkError:
-        qsTitle = "网络异常，请重试";
+        qsTitle = "登录失败：网络异常";
+        break;
+    case E_LoginReult::LR_ResponseError:
+        qsTitle = "登录失败：服务器异常";
         break;
     case E_LoginReult::LR_UserInvalid:
-        qsTitle = "账号不存在，请重新输入";
+        qsTitle = "登录失败：账号不存在";
         break;
     case E_LoginReult::LR_ProfileInvalid:
-        qsTitle = "账号异常，请使用其他账号";
+        qsTitle = "登录失败：账号异常";
         break;
     case E_LoginReult::LR_PwdWrong:
-        qsTitle = "密码错误，请重新输入";
+        qsTitle = "登录失败：密码错误";
         break;
     case E_LoginReult::LR_MultiLogin:
         qsTitle = "账号已在其他设备登录";

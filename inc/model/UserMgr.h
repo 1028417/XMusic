@@ -5,9 +5,10 @@
 #if !__winvc
 enum class E_LoginReult
 {
-	LR_Success,
-	LR_NetworkError,
-	LR_UserInvalid,
+    LR_Success,
+    LR_NetworkError,
+    LR_ResponseError,
+    LR_UserNotExist,
 	LR_ProfileInvalid,
 	LR_PwdWrong,
 	LR_MultiLogin

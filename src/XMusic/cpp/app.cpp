@@ -111,8 +111,13 @@ bool CApp::_startup()
         strUser = m_model.getUserMgr().loadProfile(strPwd);
         if (!strUser.empty())
         {
-            _syncLogin(g_bRunSignal, strUser, strPwd);
-            //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
+            auto eRet = m_model.getUserMgr().syncLogin(g_bRunSignal, strUser, strPwd);
+            if (E_LoginReult::LR_NetworkError == eRet)
+            {
+                return E_UpgradeResult::UR_NetworkError;
+            }
+            _cbLogin(eRet, strUser, strPwd, false);
+            //_syncLogin(g_bRunSignal, strUser, strPwd); //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
         }
 
         E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(g_bRunSignal, m_orgMdlConf);
@@ -200,9 +205,13 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
         else
         {
             QString qsErrMsg;
-            if (E_UpgradeResult::UR_DownloadFail == eUpgradeResult)
+            if (E_UpgradeResult::UR_NetworkError == eUpgradeResult)
             {
                 qsErrMsg = "更新媒体库失败:  网络异常";
+            }
+            else if (E_UpgradeResult::UR_ResponseError == eUpgradeResult)
+            {
+                qsErrMsg = "更新媒体库失败:  服务器异常";
             }
             else if (E_UpgradeResult::UR_MedialibInvalid == eUpgradeResult)
             {
@@ -314,15 +323,6 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
     }
 }
 
-E_LoginReult CApp::_syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, bool bRelogin)
-{
-    //auto uSeq = ++s_uSeq;
-
-    auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
-    _cbLogin(eRet, strUser, strPwd, bRelogin);
-    return eRet;
-}
-
 void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
 {
     //auto uSeq = ++s_uSeq;
@@ -338,7 +338,8 @@ void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
         mtutil::thread([=]{
             thr.cancel();
             thr.start([=]{
-                (void)_syncLogin(thr, strUser, strPwd, bRelogin);
+                auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
+                _cbLogin(eRet, strUser, strPwd, bRelogin);
             });
         });
     }
@@ -346,7 +347,8 @@ void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
     {
         thr.join();
         thr.start([=]{
-            (void)_syncLogin(thr, strUser, strPwd, bRelogin);
+            auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
+            _cbLogin(eRet, strUser, strPwd, bRelogin);
         });
     }
 }
