@@ -270,6 +270,11 @@ bool checkMobileConnected()
     return QtAndroid::androidActivity().callMethod<jboolean>("checkMobileConnected");
 }
 
+bool checkUnMobileConnected()
+{
+    return QtAndroid::androidActivity().callMethod<jboolean>("checkUnMobileConnected");
+}
+
 void vibrate()
 {
     cauto jniService = _getService("VIBRATOR_SERVICE");

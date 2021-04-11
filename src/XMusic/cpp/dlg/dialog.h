@@ -140,8 +140,6 @@ protected:
     bool m_bInit = false;
 
 private:
-    bool m_bHLayout = false; //隐藏基类成员，因为对非全屏窗口没意义
-
     CMaskDlg *m_pDlgMask = NULL;
 
 protected:

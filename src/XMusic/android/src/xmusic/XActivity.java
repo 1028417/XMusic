@@ -173,6 +173,23 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
         return networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
+    public boolean checkUnMobileConnected()
+    {
+        ConnectivityManager connManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        if (networkInfo == null)
+        {
+            return false;
+        }
+
+        if (!networkInfo.isAvailable())
+        {
+            return false;
+        }
+
+        return networkInfo.getType() != ConnectivityManager.TYPE_MOBILE;
+    }
+
     public void installApk(String filePath)
     {
         Intent intent = new Intent();

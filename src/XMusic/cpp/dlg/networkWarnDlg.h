@@ -3,10 +3,10 @@
 #if __android
 #include "dialog.h"
 
-class CNetworkWarnDlg : private CDialogEx
+class CNetworkWarnDlg : public CDialogEx
 {
 public:
-    static CNetworkWarnDlg& inst()
+    static CNetworkWarnDlg& inst() //_checkUnMobileConnected要求持久化的对象
     {
         static CNetworkWarnDlg inst;
         return inst;
@@ -26,5 +26,7 @@ private:
     void _onPaint(CPainter& painter, cqrc rc) override;
 
     bool _handleReturn() override {return true;}
+
+    void _checkUnMobileConnected();
 };
 #endif

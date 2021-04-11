@@ -191,10 +191,11 @@ void CDialogEx::show(cfn_void cbClose)
 void CDialogEx::_setPos()
 {
     cauto rc = m_pDlgMask?m_pDlgMask->rect():__app.mainWnd().geometry();
-    //m_bHLayout = rc.width() > rc.height();
+    m_bHLayout = rc.width() > rc.height();
 
     cauto ptCenter = rc.center();
     move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
+    this->update();//for安卓横屏竖屏切换
 }
 
 void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
@@ -216,7 +217,7 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     }
     rcDst.moveLeft(ptOffset.x()-this->x());
     rcDst.moveTop(ptOffset.y()-this->y());
-    if (mainWnd.drawBkg(mainWnd.isHLayout(), painter, rcDst))
+    if (mainWnd.drawBkg(m_bHLayout, painter, rcDst))
     {
         painter.fillRect(rc, bkgColor(__dlgAlpha));
         return;
