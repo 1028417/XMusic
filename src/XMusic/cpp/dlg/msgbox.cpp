@@ -40,21 +40,18 @@ void CMsgBox::_setPos()
 #if __android
     static auto s_cxPrev = width();
 
-    if (__app.mainWnd().isHLayout())
-    {
-        this->setWidth(s_cxPrev);
-        CDialogEx::_setPos();
-    }
-    else
+    if (!__app.mainWnd().isHLayout())
     {
         this->move(0, __app.mainWnd().height()-height());
         this->setWidth(__app.mainWnd().width());
+        return;
     }
 
-#else
+    this->setWidth(s_cxPrev);
+#endif
+
     cauto ptCenter = __app.mainWnd().geometry().center();
     move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
-#endif
 }
 
 void CMsgBox::_onPaint(CPainter& painter, cqrc rc)
