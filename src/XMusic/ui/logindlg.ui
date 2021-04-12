@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>530</height>
+    <width>610</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,10 +63,10 @@
   <widget class="CButton" name="btnX">
    <property name="geometry">
     <rect>
-     <x>500</x>
+     <x>490</x>
      <y>0</y>
-     <width>100</width>
-     <height>100</height>
+     <width>120</width>
+     <height>120</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -138,8 +138,8 @@
     <rect>
      <x>10</x>
      <y>0</y>
-     <width>510</width>
-     <height>90</height>
+     <width>500</width>
+     <height>120</height>
     </rect>
    </property>
    <property name="text">

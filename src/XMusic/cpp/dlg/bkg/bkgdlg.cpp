@@ -242,7 +242,7 @@ void CBkgDlg::_relayout(int cx, int cy)
     ui.btnReturn->setGeometry(rcReturn);
 
     auto szBtn = rcReturn.width();
-    m_lv.setButtonSize(szBtn);
+    m_lv.setButtonSize(szBtn+__size(6));
 
     if (cx > cy)
     {
