@@ -104,7 +104,7 @@ CAppBase::CAppBase() : QApplication(g_argc, g_argv)
     });
 }
 
-void CAppBase::_init()
+void CAppBase::init()
 {
     m_logger.open("xmusic.log", true);
 
@@ -146,54 +146,28 @@ void CAppBase::_init()
 
 int CAppBase::exec() // 派生将显示空白页
 {
-    //this->thread(
-    //std::thread thrStartup(
-    auto nRet = mtutil::concurrence([&]{
-        int nRet = QApplication::exec();
-        m_runSignal.reset(); //m_bRunSignal = false;
-        //m_logger << "exec quit: " >> nRet;
+    int nRet = QApplication::exec();
+    m_runSignal.reset(); //m_bRunSignal = false;
+    //m_logger << "exec quit: " >> nRet;
 
-        for (auto& thr : m_lstThread)
-        {
-            thr.cancel(false);
-        }
-        for (auto& thr : m_lstThread)
-        {
-            thr.join();
-        }
-
-        return nRet;
-    }, [=]{
-        _init();
-
-        if (!_startup()) //派生将显示logo窗口
-        {
-            sync([&]{
-                this->quit();
-            });
-        }
-    });
-
-    /*auto nRet = exec();
-
-    if (thrStartup.joinable())
+    for (auto& thr : m_lstThread)
     {
-//#if __android // TODO 规避5.6.1退出的bug
-//    thrStartup.detach();
-//#else
-    thrStartup.join();
-//#endif
-    }*/
+        thr.cancel(false);
+    }
+    for (auto& thr : m_lstThread)
+    {
+        thr.join();
+    }
 
     return nRet;
 }
 
 void CAppBase::quit()
 {
-    for (auto& thr : m_lstThread)
+    /*for (auto& thr : m_lstThread)
     {
         thr.cancel(false);
-    }
+    }*/
 
     sync([&]{
         m_runSignal.reset(); //m_bRunSignal = false;

@@ -5,15 +5,6 @@
 
 static list<CDialog*> g_lstDlg;
 
-CDialog* CDialog::frontDlg()
-{
-    if (g_lstDlg.empty())
-    {
-        return NULL;
-    }
-    return g_lstDlg.front();
-}
-
 void CDialog::resetPos()
 {
     for (auto pDlg : g_lstDlg)
@@ -34,8 +25,12 @@ void CDialog::connect_dlgClose(CButton *btn)
 
 void CDialog::show(cfn_void cbClose)
 {
-    QWidget *parent = frontDlg();
-    if (NULL == parent)
+    QWidget *parent = NULL;
+    if (!g_lstDlg.empty())
+    {
+        parent = g_lstDlg.front();
+    }
+    else
     {
         parent = &__app.mainWnd();
     }

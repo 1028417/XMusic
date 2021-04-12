@@ -66,11 +66,9 @@ private:
         return m_mainWnd;
     }
 
-    bool _startup() override;
+    bool _startup();
 
     void _show(E_UpgradeResult eUpgradeResult, cwstr strUser);
-
-    void _show(cwstr strUser);
 
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 

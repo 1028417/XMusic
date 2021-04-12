@@ -16,11 +16,59 @@ int CApp::exec()
     g_bFullScreen = m_ctrl.initOption().bFullScreen;
 #if __android
     androidFullScreen();
+
+    init();
+    CFont::init(this->font());
+    this->setFont(CFont());
+    m_mainWnd.showLogo();
+
+    if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
+    {
+        async([&]{
+            vibrate();
+
+            CNetworkWarnDlg::inst().show([&]{
+                m_mainWnd.startLogo();
+                (void)this->thread([=]{
+                   (void)_startup();
+               });
+            });
+        });
+    }
+    else
+    {
+        m_mainWnd.startLogo();
+        (void)this->thread([=]{
+            (void)_startup();
+        });
+    }
+
 #else
     m_mainWnd.showBlank();
-#endif
+    async([&]{
+        (void)this->thread([=]{
+            init();
+            CFont::init(this->font());
+            sync([&]{
+                this->setFont(CFont());
+                m_mainWnd.showLogo();
+                m_mainWnd.startLogo();
+            });
 
+            (void)_startup();
+        });
+    });
+#endif
     auto nRet = CAppBase::exec();
+
+    /*if (thrStartup.joinable())
+    {
+//#if __android // TODO 规避5.6.1退出的bug
+//    thrStartup.detach();
+//#else
+    thrStartup.join();
+//#endif
+    }*/
 
     m_ctrl.stop();
 
@@ -57,23 +105,6 @@ static wstring _genMedialibDir()
 bool CApp::_startup()
 {
     auto time0 = time(0);
-
-    CFont::init(this->font());
-    sync([&]{
-        this->setFont(CFont());
-
-        m_mainWnd.showLogo();
-/*#if __android
-#if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
-        async([]{
-            hideSplashScreen(); //启动页延时关闭防止闪烁
-        });
-#endif
-#endif*/
-    });
-
-    //auto timeBegin = time(0);
-    //cauto strMedialibDir = _genMedialibDir();
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
@@ -192,6 +223,18 @@ static void _setForeground()
 #define _setForeground()
 #endif
 
+static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success)
+{
+#if __android
+    vibrate();
+#else
+    _setForeground();
+#endif
+
+    static CLoginDlg m_loginDlg;
+    m_loginDlg.show(strUser, strPwd, eRet);
+}
+
 void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
 {
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
@@ -253,38 +296,6 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
         return;
     }
 
-#if __android
-    if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
-    {
-        vibrate();
-
-        m_mainWnd.stopLogo();
-        CNetworkWarnDlg::inst().show([&, strUser]{
-            _show(strUser);
-        });
-
-        return;
-    }
-#endif
-
-    _setForeground();
-    _show(strUser);
-}
-
-static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success)
-{
-#if __android
-    vibrate();
-#else
-    _setForeground();
-#endif
-
-    static CLoginDlg m_loginDlg;
-    m_loginDlg.show(strUser, strPwd, eRet);
-}
-
-void CApp::_show(cwstr strUser)
-{
     if (strUser.empty())
     {
         async(2000, [&]{
@@ -293,6 +304,8 @@ void CApp::_show(cwstr strUser)
     }
 
     m_ctrl.start();
+
+    _setForeground();
     m_mainWnd.show();
 }
 

@@ -28,7 +28,7 @@ void CMsgBox::_relayout(int cx, int cy)
 {
     (void)cy;
 
-    auto x = cx-ui.btnX->y()-ui.btnX->width();
+    auto x = cx-ui.btnX->width();
     ui.btnX->setX(x);
 
     ui.labelTip->setX(0);
@@ -37,7 +37,7 @@ void CMsgBox::_relayout(int cx, int cy)
 
 void CMsgBox::_setPos()
 {
-#if __android
+#if 0//__android
     static auto s_cxPrev = width();
 
     if (!__app.mainWnd().isHLayout())

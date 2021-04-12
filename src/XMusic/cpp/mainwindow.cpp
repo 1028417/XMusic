@@ -91,14 +91,6 @@ MainWindow::MainWindow() :
     //qRegisterMetaType<QVariant>("QVariant");
 }
 
-#if !__android
-void MainWindow::showBlank()
-{
-    _fixScreen(*this);
-    this->setVisible(true); //必须在前面？？不然ole异常？？
-}
-#endif
-
 void MainWindow::_ctor()
 {
     ui.setupUi(this);
@@ -201,16 +193,23 @@ void MainWindow::preinit() // 工作线程
     }
 }
 
+void MainWindow::showBlank()
+{
+    _fixScreen(*this);
+    this->setVisible(true); //必须在前面？？不然ole异常？？
+}
+
 void MainWindow::showLogo()
 {
-    _init();
-
-#if __android
-    _fixScreen(*this);
-    this->setVisible(true);
-#else
-    _relayout();
+/*#if __android
+#if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
+    async([]{
+        hideSplashScreen(); //启动页延时关闭防止闪烁
+    });
 #endif
+#endif*/
+
+    _init();
 
     auto movie = new QMovie(this);
     movie->setFileName(":/img/logo.gif");
@@ -219,6 +218,16 @@ void MainWindow::showLogo()
     ui.labelLogo->setParent(this);
     ui.labelLogo->setVisible(true);
 
+#if __android
+    _fixScreen(*this);
+    this->setVisible(true);
+#else
+    _relayout();
+#endif
+}
+
+void MainWindow::startLogo()
+{
     float fFontSizeOffset = 1.072f;
 #if __android || __ios
     fFontSizeOffset = 0.918f;
@@ -234,16 +243,15 @@ void MainWindow::showLogo()
     auto& labelLogoTip = *ui.labelLogoTip;
     labelLogoTip.setParent(this);
     labelLogoTip.setVisible(true);
-    async(30, [&]{
-        labelLogoTip.setText("播放器");
 
+    labelLogoTip.setText("播放器");
+
+    async(500, [&]{
+        labelLogoTip.setText(labelLogoTip.text() + WString(__CNDot L"媒体库"));
         async(500, [&]{
-            labelLogoTip.setText(labelLogoTip.text() + WString(__CNDot L"媒体库"));
-            async(500, [&]{
-                labelLogoTip.setText(labelLogoTip.text() + "  个性化定制");
-                async(2000, [&]{
-                    _showUpgradeProgress();
-                });
+            labelLogoTip.setText(labelLogoTip.text() + "  个性化定制");
+            async(2000, [&]{
+                _showUpgradeProgress();
             });
         });
     });

@@ -16,7 +16,6 @@ class CDialog : public TWidget<QDialog>
     friend class CDialogEx;
     friend class CMaskDlg;
 public:
-    static CDialog* frontDlg();
     static void resetPos();
 
     static void setWidgetTextColor(QWidget *widget, cqcr cr)
@@ -121,7 +120,7 @@ private:
     }
 };
 
-#define __dlgRound 20
+#define __dlgRound __size(18)
 
 class CDialogEx : public CDialog
 {

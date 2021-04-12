@@ -88,12 +88,9 @@ signals:
     void signal_sync(fn_void cb);
     void signal_syncex(fn_void cb);
 
-private:
-    void _init();
-
-    virtual bool _startup() = 0;
-
 protected:
+    void init();
+
     int exec();
 
     void quit();
@@ -155,12 +152,17 @@ public:
     }
 
     template<typename... T>
-    XThread& thread(const T&... args)
+    XThread* thread(const T&... args)
     {
+        if (!g_bRunSignal)
+        {
+            return NULL;
+        }
+
         m_lstThread.emplace_back();
         auto& thr = m_lstThread.back();
         thr.start(args...);
-        return thr;
+        return &thr;
     }
 };
 

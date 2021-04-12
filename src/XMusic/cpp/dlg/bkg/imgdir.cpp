@@ -499,10 +499,10 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     lv.showLoading(true);
     m_bDownloading = true;
 
-    auto thread = &__app.thread();
-    thread->start(10, [&, thread, lstDir]()mutable {
+    auto& thread = __app.thread();
+    thread.start(10, [&, lstDir]()mutable {
         auto pDir = lstDir.front();
-        if (pDir->_downloadSubImg(pDir->_iconFile(), *thread))
+        if (pDir->_downloadSubImg(pDir->_iconFile(), thread))
         {
             pDir->_genIcon();
             __app.sync([&, pDir]{

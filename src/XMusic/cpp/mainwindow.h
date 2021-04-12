@@ -100,11 +100,10 @@ public:
         return m_bkgDlg;
     }
 
-#if !__android
     void showBlank();
-#endif
 
     void showLogo();
+    void startLogo();
     void stopLogo();
 
     void preinit();
