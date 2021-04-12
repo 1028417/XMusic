@@ -258,6 +258,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
     {
         vibrate();
 
+        m_mainWnd.stopLogo();
         CNetworkWarnDlg::inst().show([&, strUser]{
             _show(strUser);
         });
