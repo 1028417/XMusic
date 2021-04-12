@@ -288,6 +288,7 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 }
 
 #define __logoTip "更新媒体库"
+static bool g_bStopLogo = false;
 
 void MainWindow::_showUpgradeProgress()
 {
@@ -298,8 +299,8 @@ void MainWindow::_showUpgradeProgress()
     }
 
     UINT uDotCount = 0;
-    timerutil::setTimerEx(200, [=]()mutable{
-        if (!ui.labelLogoTip->isVisible())
+    timerutil::setTimerEx(200, [&, uDotCount]()mutable{
+        if (g_bStopLogo)
         {
             return false;
         }
@@ -347,11 +348,15 @@ void MainWindow::_showUpgradeProgress()
 
 void MainWindow::stopLogo()
 {
-    ui.labelLogoTip->setVisible(false);
+    g_bStopLogo = true;
+
+    ui.labelLogoTip->setText(WString(L"播发器" __CNDot L"媒体库 个性化定制"));
 }
 
 void MainWindow::show()
 {
+    g_bStopLogo = true;
+
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
     ui.labelLogo->clear();

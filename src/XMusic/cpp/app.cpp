@@ -194,8 +194,6 @@ static void _setForeground()
 
 void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
 {
-    m_mainWnd.stopLogo();
-
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
         if (E_UpgradeResult::UR_AppUpgraded == eUpgradeResult)
@@ -245,6 +243,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
 #endif
             _setForeground();
 
+            m_mainWnd.stopLogo();
             static CMsgBox m_msgbox;//(m_mainWnd);
             m_msgbox.show(qsErrMsg, [&]{
                 this->quit();
