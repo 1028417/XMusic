@@ -32,7 +32,7 @@ void CNetworkWarnDlg::_setupUi()
 
 void CNetworkWarnDlg::_checkWifiConnected()
 {
-    __async(1000, [&]{
+    async(1000, [&]{
         if (!this->isVisible())
         {
             return;
@@ -40,7 +40,7 @@ void CNetworkWarnDlg::_checkWifiConnected()
 
         if (checkWifiConnected())
         {
-            __async(3000, [&]{
+            async(3000, [&]{
                 if (checkWifiConnected())
                 {
                     ui.labelContinue->performClick();

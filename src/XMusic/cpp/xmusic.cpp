@@ -56,7 +56,7 @@ signal_t usleepex(UINT uMs)
     return g_bRunSignal;
 }
 
-inline void async(UINT uDelayTime, cfn_void cb)
+void async(UINT uDelayTime, cfn_void cb)
 {
     if (!g_bRunSignal)
     {

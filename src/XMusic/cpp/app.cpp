@@ -287,7 +287,7 @@ void CApp::_show(cwstr strUser)
 {
     if (strUser.empty())
     {
-        __async(2000, [&]{
+        async(2000, [&]{
             _showLoginDlg();
         });
     }

@@ -69,7 +69,7 @@ void MainWindow::switchFullScreen()
 #if __android
     androidFullScreen();
 
-    //__async([&]{
+    //async([&]{
         _relayout();
     //});
 #endif

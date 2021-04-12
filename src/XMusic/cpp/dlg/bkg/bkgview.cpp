@@ -11,7 +11,7 @@ CBkgView::CBkgView(CBkgDlg& bkgDlg)
 {
 }
 
-inline UINT CBkgView::margin()
+UINT CBkgView::margin()
 {
 #define __margin __size(40)
     return __margin/(__ceilCount-1);
