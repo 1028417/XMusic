@@ -84,8 +84,7 @@ void CXController::start()
 	});*/
 
 #else
-    //m_threadPlayCtrl.start(
-    mtutil::thread([&]{
+    __app.thread([&](XThread& thr){
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {
@@ -96,7 +95,7 @@ void CXController::start()
         auto& PlayMgr = m_model.getPlayMgr();
         PlayMgr.tryPlay();
 
-        while (usleepex(100)) //m_threadPlayCtrl.usleep(100))
+        while (thr.usleep(100))
         {
             tagPlayCmd PlayCmd;
             m_mutex.lock();
@@ -170,11 +169,6 @@ void CXController::start()
 
 void CXController::stop()
 {
-#if !__winvc
-    g_logger >> "stop controller";
-    //m_threadPlayCtrl.cancel();
-#endif
-
     m_model.close();
 
     m_OptionMgr.saveOption();

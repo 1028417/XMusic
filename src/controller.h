@@ -22,7 +22,6 @@ protected:
 
 #if !__winvc
 private:
-        //XThread m_threadPlayCtrl;
         tagPlayCmd m_PlayCmd;
         mutex m_mutex;
 

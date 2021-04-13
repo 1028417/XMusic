@@ -84,16 +84,7 @@ void CBkgDlg::init()
     });
 }
 
-void CBkgDlg::preInit()
-{
-    mtutil::concurrence([&]{
-        _preinitBkg(true);
-    }, [&]{
-        _preinitBkg(false);
-    });
-}
-
-void CBkgDlg::_preinitBkg(bool bHLayout)
+void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
     strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
@@ -139,7 +130,7 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
                 {
                     _saveThumbs(pm, bHLayout, strDstFile); // 确保先生成缩略图
                     fsutil::copyFile(strBkg, strDstFile);
-                    if (!usleepex(10))
+                    if (!thr.usleep(10))
                     {
                         return;
                     }
@@ -188,7 +179,7 @@ void CBkgDlg::_preinitBkg(bool bHLayout)
         cauto strFile = strBkgDir + itr->strFile;
         itr->br = &_loadThumbs(strFile, bHLayout);
 
-        if (!usleepex(10))
+        if (!thr.usleep(10))
         {
             return;
         }

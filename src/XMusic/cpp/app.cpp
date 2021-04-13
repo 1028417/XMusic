@@ -13,6 +13,14 @@ CApp::CApp()
 
 int CApp::exec()
 {
+    cauto fnStartup = [&]{
+        m_mainWnd.startLogo();
+
+        (void)this->thread([=](XThread& thr){
+           (void)_startup(thr);
+        });
+    };
+
     g_bFullScreen = m_ctrl.initOption().bFullScreen;
 #if __android
     androidFullScreen();
@@ -24,51 +32,31 @@ int CApp::exec()
 
     if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
     {
-        async([&]{
+        async([=]{
             vibrate();
 
-            CNetworkWarnDlg::inst().show([&]{
-                m_mainWnd.startLogo();
-                (void)this->thread([=]{
-                   (void)_startup();
-               });
+            CNetworkWarnDlg::inst().show([=]{
+                fnStartup();
             });
         });
     }
     else
     {
-        m_mainWnd.startLogo();
-        (void)this->thread([=]{
-            (void)_startup();
-        });
+        fnStartup();
     }
 
 #else
     m_mainWnd.showBlank();
-    async([&]{
-        (void)this->thread([=]{
-            init();
-            CFont::init(this->font());
-            sync([&]{
-                this->setFont(CFont());
-                m_mainWnd.showLogo();
-                m_mainWnd.startLogo();
-            });
+    async([=]{
+        init();
+        CFont::init(this->font());
+        this->setFont(CFont());
+        m_mainWnd.showLogo();
 
-            (void)_startup();
-        });
+        fnStartup();
     });
 #endif
     auto nRet = CAppBase::exec();
-
-    /*if (thrStartup.joinable())
-    {
-//#if __android // TODO 规避5.6.1退出的bug
-//    thrStartup.detach();
-//#else
-    thrStartup.join();
-//#endif
-    }*/
 
     m_ctrl.stop();
 
@@ -102,7 +90,7 @@ static wstring _genMedialibDir()
 }
 #endif
 
-bool CApp::_startup()
+bool CApp::_startup(XThread& thr)
 {
     auto time0 = time(0);
 
@@ -138,25 +126,26 @@ bool CApp::_startup()
         }
         g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
+        signal_t bRunSignal = thr;
         string strPwd;
         strUser = m_model.getUserMgr().loadProfile(strPwd);
         if (!strUser.empty())
         {
-            auto eRet = m_model.getUserMgr().syncLogin(g_bRunSignal, strUser, strPwd);
+            auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
             if (E_LoginReult::LR_NetworkError == eRet)
             {
                 return E_UpgradeResult::UR_NetworkError;
             }
             _cbLogin(eRet, strUser, strPwd, false);
-            //_syncLogin(g_bRunSignal, strUser, strPwd); //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
+            //_syncLogin(bRunSignal, strUser, strPwd); //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
         }
 
-        E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(g_bRunSignal, m_orgMdlConf);
+        E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(bRunSignal, m_orgMdlConf);
         if (E_UpgradeResult::UR_Success != eUpgradeResult)
         {
             g_logger << "upgradeMdl fail: " >> (int)eUpgradeResult;
 
-            if (g_bRunSignal && m_model.initMediaLib())
+            if (bRunSignal && m_model.initMediaLib())
             {
                 return E_UpgradeResult::UR_Success;
             }
@@ -164,7 +153,7 @@ bool CApp::_startup()
         }
         g_logger << "upgradeMdl success " >> (time(0)-time0);
 
-        if (!g_bRunSignal)
+        if (!bRunSignal)
         {
             return E_UpgradeResult::UR_Fail;
         }
@@ -192,7 +181,7 @@ bool CApp::_startup()
         (void)m_pmHDDisk.load(__mdlPng(hddisk));
         (void)m_pmSQDisk.load(__mdlPng(sqdisk));
 
-        m_mainWnd.preinit();
+        m_mainWnd.preinit(thr);
 
         g_logger << "preinit success " >> (time(0)-time0);
     });

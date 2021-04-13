@@ -577,11 +577,7 @@ void CAddBkgView::scanDir(cwstr strDir)
             });
         });
 
-        m_thrScan.usleep(100); //空目录视觉效果
-        if (!bRunSignal)
-        {
-            return;
-        }
+        (void)m_thrScan.usleep(100); //空目录视觉效果
         __app.sync([&]{
             showLoading(false);
         });

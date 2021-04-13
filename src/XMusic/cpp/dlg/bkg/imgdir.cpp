@@ -149,10 +149,7 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-    if (!usleepex(g_uMsScanYield))
-    {
-        return NULL;
-    }
+    __usleep(g_uMsScanYield);
 
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
     if (!g_setImgExtName.includes(strExtName))
@@ -186,10 +183,7 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
-    if (!usleepex(g_uMsScanYield*3))
-    {
-        return NULL;
-    }
+    __usleep(g_uMsScanYield*3);
 
     if (fileInfo.strName.front() == L'.')
     {
@@ -499,10 +493,9 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     lv.showLoading(true);
     m_bDownloading = true;
 
-    auto& thread = __app.thread();
-    thread.start(10, [&, lstDir]()mutable {
+    __app.thread(10, [&, lstDir](XThread& thr)mutable {
         auto pDir = lstDir.front();
-        if (pDir->_downloadSubImg(pDir->_iconFile(), thread))
+        if (pDir->_downloadSubImg(pDir->_iconFile(), thr))
         {
             pDir->_genIcon();
             __app.sync([&, pDir]{

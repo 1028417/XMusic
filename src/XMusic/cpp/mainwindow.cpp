@@ -171,7 +171,7 @@ void MainWindow::_init()
 
 static UINT g_uShowLogoState = 0;
 
-void MainWindow::preinit() // 工作线程
+void MainWindow::preinit(XThread& thr) // 工作线程
 {
     QPixmap pmBkg(":/img/bkg.jpg");
     m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
@@ -182,11 +182,15 @@ void MainWindow::preinit() // 工作线程
     QPixmap&& pm = pmBkg.copy(rc);
     m_pmCDCover.swap(pm);
 
-    m_bkgDlg.preInit();
+    mtutil::concurrence([&]{
+        m_bkgDlg.preinitBkg(thr, true);
+    }, [&]{
+        m_bkgDlg.preinitBkg(thr, false);
+    });
 
     while (g_uShowLogoState < 3)
     {
-        if (!usleepex(100))
+        if (!thr.usleep(100))
         {
             break;
         }
@@ -389,6 +393,7 @@ void MainWindow::show()
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
     UINT uOffset = 23;
 #if __windows || __mac
+    uOffset = 20;
     if (std::thread::hardware_concurrency() > 4)
     {
         uOffset = 1;
@@ -431,6 +436,7 @@ void MainWindow::quit(cfn_void cb)
     int nAlpha = 255;
     UINT uOffset = 23;
 #if __windows || __mac
+    uOffset = 20;
     if (std::thread::hardware_concurrency() > 4)
     {
         uOffset = 1;

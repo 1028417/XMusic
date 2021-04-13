@@ -106,7 +106,7 @@ public:
     void startLogo();
     void stopLogo();
 
-    void preinit();
+    void preinit(XThread& thr);
 
     void show();
 

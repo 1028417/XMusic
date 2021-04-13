@@ -66,7 +66,7 @@ private:
         return m_mainWnd;
     }
 
-    bool _startup();
+    bool _startup(XThread& thr);
 
     void _show(E_UpgradeResult eUpgradeResult, cwstr strUser);
 

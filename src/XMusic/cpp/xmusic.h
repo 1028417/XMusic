@@ -160,10 +160,8 @@ public:
             return NULL;
         }
 
-        m_lstThread.emplace_back();
-        auto& thr = m_lstThread.back();
-        thr.start(args...);
-        return &thr;
+        m_lstThread.emplace_back(args...);
+        return &m_lstThread.back();
     }
 };
 
