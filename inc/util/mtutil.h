@@ -118,9 +118,18 @@ public:
 class __UtilExt XThread
 {
 public:
-    XThread()
-        : m_bRunSignal(m_runSignal)
+    XThread() = default;
+
+    template<typename T>
+    XThread(const T& t)
     {
+        start(t);
+    }
+
+    template<typename T>
+    XThread(UINT uMsLoop, const T& t)
+    {
+        start(uMsLoop, t);
     }
 
     virtual ~XThread()
@@ -133,7 +142,7 @@ private:
     mutex m_mutex;
 
     CSignal<false> m_runSignal;
-    signal_t m_bRunSignal;
+    signal_t m_bRunSignal = m_runSignal;
 
 private:
     inline void _reset()
@@ -195,10 +204,10 @@ public:
         m_mutex.unlock();
     }    
 
-    void start(cfn_void_t<signal_t> cb)
+    void start(cfn_void_t<XThread&> cb)
     {
         start([=]{
-            cb(m_bRunSignal);
+            cb(*this);
         });
     }
 
@@ -215,10 +224,10 @@ public:
         });
     }
 
-    void start(UINT uMsLoop, cfn_bool_t<signal_t> cb)
+    void start(UINT uMsLoop, cfn_bool_t<XThread&> cb)
     {
         start(uMsLoop, [=]{
-            return cb(m_bRunSignal);
+            return cb(*this);
         });
     }
 
