@@ -254,6 +254,7 @@ public:
     virtual void onSingerImgDownloaded(cwstr, const struct tagSingerImg&) {}
 
     virtual bool installApp(const CByteBuffer&) {return true;}
+    virtual bool installApp(const string&) {return true;}
 };
 
 class IModel

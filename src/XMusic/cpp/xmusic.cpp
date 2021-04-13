@@ -263,77 +263,9 @@ static bool _cmdShell(cwstr strCmd, bool bBlock = true)
 
     return true;
 }
-#endif
 
-bool installApp(const CByteBuffer& bbfData)
+static bool _installWinZip(CZipFile& zipFile)
 {
-#if __android
-    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
-    if (!OFStream::writefilex(strApkFile, true, bbfData))
-    {
-        g_logger << "save appPackage fail: " >> strApkFile;
-        return false;
-    }
-
-    installApk(__WS2Q(strApkFile));
-
-#elif __mac
-    cauto strWorkDir = fsutil::workDir();
-    cauto strUpgradeFile = strWorkDir + "/upgrade.zip";
-    if (!OFStream::writefilex(strUpgradeFile, true, bbfData))
-    {
-        g_logger << "save appPackage fail: " >> strUpgradeFile;
-        return false;
-    }
-
-    cauto strUpgradeDir = strWorkDir + "/XMusic.app";
-#define system(x) system((x).c_str())
-    (void)system("rm -rf " + strUpgradeDir);
-
-    auto nRet = system("tar -xf " + strUpgradeFile);
-    if (nRet)
-    {
-        g_logger << "unpack app fail: " >> nRet;
-        return false;
-    }
-    (void)system("rm -f " + strUpgradeFile);
-
-    auto strAppDir = QApplication::applicationDirPath().toStdString();
-    strAppDir = fsutil::GetParentDir(strAppDir);
-    strAppDir = fsutil::GetParentDir(strAppDir);
-    strutil::replace(strAppDir, " ", "\\ ");
-
-    cauto strBakDir = strAppDir + ".bak";
-    (void)system("rm -rf " + strBakDir);
-
-    nRet = system("mv " + strAppDir + " " + strBakDir);
-    if (nRet)
-    {
-        g_logger << "backupApp fail: " >> nRet;
-        return false;
-    }
-
-    nRet = system("mv " + strUpgradeDir + " " + strAppDir);
-    if (nRet)
-    {
-        g_logger << "upgradeApp fail: " >> nRet;
-        return false;
-    }
-
-    (void)system("rm -rf " + strBakDir);
-
-    g_logger << "appUpgrade success, restart: " >> strAppDir;
-    g_lf.unlock();
-
-    nRet = system("open -n " + strAppDir);
-    if (nRet)
-    {
-        g_logger << "restartApp fail: " >> nRet;
-    }
-
-#elif __windows
-    IFBuffer ifbData(bbfData);
-    CZipFile zipFile(ifbData);
     if (!zipFile)
     {
         g_logger >> "invalid appData";
@@ -400,6 +332,109 @@ bool installApp(const CByteBuffer& bbfData)
     {
         g_logger >> "shell StartupFile fail";
     }
-#endif
+
     return true;
+}
+
+#elif __mac
+static bool _installMacApp(const string& strUpgradeFile)
+{
+
+    cauto strUpgradeDir = strWorkDir + "/XMusic.app";
+#define system(x) system((x).c_str())
+    (void)system("rm -rf " + strUpgradeDir);
+
+    auto nRet = system("tar -xf " + strUpgradeFile);
+    if (nRet)
+    {
+        g_logger << "unpack app fail: " >> nRet;
+        return false;
+    }
+    (void)system("rm -f " + strUpgradeFile);
+
+    auto strAppDir = QApplication::applicationDirPath().toStdString();
+    strAppDir = fsutil::GetParentDir(strAppDir);
+    strAppDir = fsutil::GetParentDir(strAppDir);
+    strutil::replace(strAppDir, " ", "\\ ");
+
+    cauto strBakDir = strAppDir + ".bak";
+    (void)system("rm -rf " + strBakDir);
+
+    nRet = system("mv " + strAppDir + " " + strBakDir);
+    if (nRet)
+    {
+        g_logger << "backupApp fail: " >> nRet;
+        return false;
+    }
+
+    nRet = system("mv " + strUpgradeDir + " " + strAppDir);
+    if (nRet)
+    {
+        g_logger << "upgradeApp fail: " >> nRet;
+        return false;
+    }
+
+    (void)system("rm -rf " + strBakDir);
+
+    g_logger << "appUpgrade success, restart: " >> strAppDir;
+    g_lf.unlock();
+
+    nRet = system("open -n " + strAppDir);
+    if (nRet)
+    {
+        g_logger << "restartApp fail: " >> nRet;
+    }
+
+    return true;
+}
+#endif
+
+bool installApp(const string& strUpgradeFile)
+{
+#if __android
+    installApk(__WS2Q(strutil::fromAsc(strUpgradeFile));
+    return true;
+
+#elif __mac
+    return _installMacApp(strUpgradeFile);
+
+#elif __windows
+    CZipFile zipFile(strUpgradeFile);
+    return _installWinZip();
+#endif
+
+    return false;
+}
+
+bool installApp(const CByteBuffer& bbfUpgradeFile)
+{
+#if __android
+    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
+    if (!OFStream::writefilex(strApkFile, true, bbfUpgradeFile))
+    {
+        g_logger << "save appPackage fail: " >> strApkFile;
+        return false;
+    }
+
+    installApk(__WS2Q(strApkFile));
+    return true;
+
+#elif __mac
+    cauto strWorkDir = fsutil::workDir();
+    cauto strUpgradeFile = strWorkDir + "/upgrade.zip";
+    if (!OFStream::writefilex(strUpgradeFile, true, bbfData))
+    {
+        g_logger << "save appPackage fail: " >> strUpgradeFile;
+        return false;
+    }
+
+    return _installMacApp(strUpgradeFile);
+
+#elif __windows
+    IFBuffer ifbData(bbfData);
+    CZipFile zipFile(ifbData);
+    return _installWinZip(zipFile);
+#endif
+
+    return false;
 }

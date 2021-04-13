@@ -71,7 +71,8 @@ void async(UINT uDelayTime, cfn_void cb);
 
 const WString& mediaQualityString(E_MediaQuality eQuality);
 
-bool installApp(const CByteBuffer& bbfData);
+bool installApp(const CByteBuffer& bbfUpgradeFile);
+bool installApp(const string& strUpgradeFile);
 
 Q_DECLARE_METATYPE(fn_void);
 

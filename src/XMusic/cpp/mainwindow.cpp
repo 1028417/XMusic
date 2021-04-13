@@ -869,9 +869,14 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
     }
 }
 
-bool MainWindow::installApp(const CByteBuffer& bbfBuff)
+bool MainWindow::installApp(const CByteBuffer& bbfUpgradeFile)
 {
-    return ::installApp(bbfBuff);
+    return ::installApp(bbfUpgradeFile);
+}
+
+bool MainWindow::installApp(const string& strUpgradeFile)
+{
+    return ::installApp(strUpgradeFile);
 }
 
 #define ___singerImgElapse 8

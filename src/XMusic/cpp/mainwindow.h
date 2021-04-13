@@ -154,4 +154,5 @@ private:
     void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
 
     bool installApp(const CByteBuffer& bbfBuff) override;
+    bool installApp(const string& strFile) override;
 };
