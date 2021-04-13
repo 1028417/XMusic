@@ -64,20 +64,20 @@ BEGIN
     POPUP "系统"
     BEGIN
         MENUITEM "设置",                          ID_Setting
-        MENUITEM SEPARATOR
         MENUITEM "播放记录 Ctrl+R",                 ID_PlayRecord
-        MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
-        MENUITEM SEPARATOR
-        MENUITEM "生成快照",                        ID_Snapshot
-        MENUITEM "发布媒体库",                       ID_DeployMdl
         MENUITEM SEPARATOR
         MENUITEM "配置用户",                        ID_SignupUser
         MENUITEM "发布用户",                        ID_DeployUser
+        MENUITEM SEPARATOR
+        MENUITEM "发布曲目",                        ID_DeployMedias
+        MENUITEM "发布媒体库",                       ID_DeployMdl
     END
     POPUP "媒体库"
     BEGIN
         MENUITEM "设定根目录",                       ID_MODIFY_ROOT
         MENUITEM "挂载目录",                        ID_AttachDir
+        MENUITEM SEPARATOR
+        MENUITEM "生成快照",                        ID_Snapshot
         MENUITEM "导出目录",                        ID_ExportDir
         MENUITEM SEPARATOR
         MENUITEM "检查相似文件",                      ID_CheckSimilar
@@ -101,7 +101,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "导入",                          ID_AddIn
         MENUITEM "导出 Ctrl+E",                   ID_ExportMedia
-        MENUITEM "发布",                          ID_DeployMedias
+        MENUITEM "备份/恢复 Ctrl+B",                ID_Backup
     END
     POPUP "点播"
     BEGIN
