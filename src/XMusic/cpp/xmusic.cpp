@@ -400,7 +400,7 @@ bool installApp(const string& strUpgradeFile)
 
 #elif __windows
     CZipFile zipFile(strUpgradeFile);
-    return _installWinZip();
+    return _installWinZip(zipFile);
 #endif
 
     return false;
@@ -431,8 +431,8 @@ bool installApp(const CByteBuffer& bbfUpgradeFile)
     return _installMacApp(strUpgradeFile);
 
 #elif __windows
-    IFBuffer ifbData(bbfData);
-    CZipFile zipFile(ifbData);
+    IFBuffer ifUpgradeFile(bbfUpgradeFile);
+    CZipFile zipFile(ifUpgradeFile);
     return _installWinZip(zipFile);
 #endif
 
