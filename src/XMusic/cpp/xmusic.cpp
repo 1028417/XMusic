@@ -162,18 +162,15 @@ int CAppBase::exec() // 派生将显示空白页
     return nRet;
 }
 
-void CAppBase::quit()
+void CAppBase::_quit()
 {
     /*for (auto& thr : m_lstThread)
     {
         thr.cancel(false);
     }*/
 
-    sync([&]{
-        m_runSignal.reset(); //m_bRunSignal = false;
-        //m_logger >> "quit";
-        QApplication::quit();
-    });
+    m_runSignal.reset();
+    QApplication::quit();
 }
 
 static char g_lpApp[sizeof(CApp)];

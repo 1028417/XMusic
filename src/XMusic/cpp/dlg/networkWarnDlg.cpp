@@ -69,7 +69,10 @@ void CNetworkWarnDlg::show(cfn_void cb)
 
     ui.labelExit->onClicked([&]{
         close();
-        __app.quit();
+
+        async([]{
+            __app.quit();
+        });
     });
 
     _checkWifiConnected();

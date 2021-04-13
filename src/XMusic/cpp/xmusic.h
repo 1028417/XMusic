@@ -93,7 +93,7 @@ protected:
 
     int exec();
 
-    void quit();
+    void _quit();
 
 public:
     inline void sync(cfn_void cb)

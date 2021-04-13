@@ -139,20 +139,32 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        extern QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha);
-        auto cr = _crOffset(g_crBkg, 25, 255);
-        painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 2, __szRound);
+        auto cr = g_crFore;
 
-        //cr.setAlpha(200);
+        int r = cr.red();
+        int g = cr.green();
+        int b = cr.blue();
+        QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, __ShadowAlpha/3);
+
+        painter.drawRectEx(rc, crShadow, Qt::PenStyle::DotLine, 3, __szRound);
+        painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 1, __szRound);
+
+        //cr.setAlpha(170);
 
         int len = MIN(rc.width(), rc.height())/4;
-#define __szAdd __size(4)
+#define __szAdd __size(5)
         cauto pt = rc.center();
         rc.setRect(pt.x()-len/2, pt.y()-__szAdd/2, len, __szAdd);
+
+        painter.fillRectEx(rc, crShadow, __szAdd/2);
+        rc.adjust(1,1,-1,-1);
         painter.fillRectEx(rc, cr, __szAdd/2);
 
         rc.setRect(pt.x()-__szAdd/2, pt.y()-len/2, __szAdd, len);
-        painter.fillRect(rc, g_crBkg);
+
+        painter.fillRectEx(rc, crShadow, __szAdd/2);
+        rc.adjust(1,1,-1,-1);
+        //painter.fillRect(rc, g_crBkg);
         painter.fillRectEx(rc, cr, __szAdd/2);
     }
 }

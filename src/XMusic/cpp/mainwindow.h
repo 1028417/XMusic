@@ -110,6 +110,8 @@ public:
 
     void show();
 
+    void quit(cfn_void cb);
+
     void switchFullScreen();
 
     void updateBkg();

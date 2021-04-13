@@ -289,7 +289,9 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
             m_mainWnd.stopLogo();
             static CMsgBox m_msgbox;//(m_mainWnd);
             m_msgbox.show(qsErrMsg, [&]{
-                this->quit();
+                async([&]{
+                    this->quit();
+                });
             });
         }
 
@@ -368,7 +370,13 @@ void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
 
 void CApp::quit()
 {
-    m_mainWnd.setVisible(false);
-
-    CAppBase::quit();
+#if __android
+    this->_quit();
+#else
+    m_mainWnd.quit([&]{
+        async([&]{
+            this->_quit();
+        });
+    });
+#endif
 }

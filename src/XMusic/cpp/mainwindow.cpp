@@ -426,6 +426,32 @@ void MainWindow::show()
     });
 }
 
+void MainWindow::quit(cfn_void cb)
+{
+    int nAlpha = 255;
+    UINT uOffset = 23;
+#if __windows || __mac
+    if (std::thread::hardware_concurrency() > 4)
+    {
+        uOffset = 1;
+    }
+#endif
+    UINT uDelayTime = m_opt.bUseBkgColor?50:30;
+    timerutil::setTimerEx(uDelayTime, [=]()mutable{
+        uOffset+=1;
+        nAlpha -= uOffset;
+        if (nAlpha <= 0)
+        {
+            this->setVisible(false);
+            cb();
+            return false;
+        }
+
+        this->setWindowOpacity(nAlpha/255.0f);
+        return true;
+    });
+}
+
 bool MainWindow::event(QEvent *ev)
 {
     switch (ev->type())
