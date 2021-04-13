@@ -3,24 +3,26 @@
 class __ModelExt CUpgradeUrl
 {
 public:
-    CUpgradeUrl(const string& strBaseUrl, const string& strPostFix)
-        : m_strBaseUrl(strBaseUrl)
-        , m_strPostFix(strPostFix)
+    CUpgradeUrl(const string& strMdlUrl, const string& strSimgUrl, const string& strAppUrl)
+        : m_strMdlUrl(strMdlUrl)
+        , m_strSimgUrl(strSimgUrl)
+        , m_strAppUrl(strAppUrl)
     {
     }
 
 private:
-    string m_strBaseUrl;
-    string m_strPostFix;
+    string m_strMdlUrl;
+    string m_strSimgUrl;
+    string m_strAppUrl;
 
 public:
-    string mdlconf() const;
+    string mdlconfUrl() const;
 
-    string mdl() const;
+    string mdlUrl() const;
 
-    string singerimg(const string& strFile) const;
+    const string& simgUrl() const;
 
-    string app() const;
+    string appUrl() const;
 };
 
 struct __ModelExt tagMdlConf
