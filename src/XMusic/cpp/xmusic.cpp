@@ -392,7 +392,7 @@ static bool _installMacApp(const string& strUpgradeFile)
 bool installApp(const string& strUpgradeFile)
 {
 #if __android
-    installApk(__WS2Q(strutil::fromAsc(strUpgradeFile));
+    installApk(__WS2Q(strutil::fromAsc(strUpgradeFile)));
     return true;
 
 #elif __mac
