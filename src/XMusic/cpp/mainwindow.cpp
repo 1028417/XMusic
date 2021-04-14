@@ -567,7 +567,7 @@ bool MainWindow::event(QEvent *ev)
     break;
     /*case QEvent::Close:
         __app.quit();
-
+        return true;
         break;*/
     case QEvent::Timer:
         _updateProgress();

@@ -50,7 +50,7 @@ signal_t usleepex(UINT uMs)
 {
     if (g_bRunSignal)
     {
-        (void)m_runSignal.wait_false(uMs);
+        (void)m_runSignal.wait_false(uMs); //注意，此处独占，会阻塞其他线程
     }
 
     return g_bRunSignal;
@@ -147,13 +147,16 @@ void CAppBase::init()
 int CAppBase::exec() // 派生将显示空白页
 {
     int nRet = QApplication::exec();
-    m_runSignal.reset(); //m_bRunSignal = false;
-    //m_logger << "exec quit: " >> nRet;
 
     for (auto& thr : m_lstThread)
     {
         thr.cancel(false);
     }
+
+    m_runSignal.reset();
+
+    //m_logger << "exec quit: " >> nRet;
+
     for (auto& thr : m_lstThread)
     {
         thr.join();
@@ -164,12 +167,8 @@ int CAppBase::exec() // 派生将显示空白页
 
 void CAppBase::_quit()
 {
-    /*for (auto& thr : m_lstThread)
-    {
-        thr.cancel(false);
-    }*/
-
     m_runSignal.reset();
+
     QApplication::quit();
 }
 
@@ -339,7 +338,6 @@ static bool _installWinZip(CZipFile& zipFile)
 #elif __mac
 static bool _installMacApp(const string& strUpgradeFile)
 {
-
     cauto strUpgradeDir = strWorkDir + "/XMusic.app";
 #define system(x) system((x).c_str())
     (void)system("rm -rf " + strUpgradeDir);

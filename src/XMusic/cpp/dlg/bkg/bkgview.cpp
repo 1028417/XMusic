@@ -146,8 +146,8 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         int b = cr.blue();
         QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, __ShadowAlpha/3);
 
-        painter.drawRectEx(rc, crShadow, Qt::PenStyle::DotLine, 3, __szRound);
-        painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 1, __szRound);
+        painter.drawRectEx(rc, crShadow, Qt::PenStyle::DotLine, 4, __szRound);
+        painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 2, __szRound);
 
         //cr.setAlpha(170);
 
