@@ -713,7 +713,9 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 			ProgressDlg.SetProgress(0, paSubDir.size() + 1);
 			ProgressDlg.SetStatusText(L"É¨ÃèÄ¿Â¼: " + dir.path());
 
-			jRoot["name"] = strutil::toUtf8(dir.fileName());
+			auto strDirName = dir.fileName();
+            CFileTitle::simplifiedTrans(strDirName);
+			jRoot["name"] = strutil::toUtf8(strDirName);
 			
 			cauto paSubFile = dir.files();
 			if (paSubFile)
