@@ -139,12 +139,12 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
         rc.setLeft(rc.left()+2);
         rc.setRight(rc.right()-1);
 
-        auto cr = g_crFore;
+        QColor cr(255,255,255,180);// = g_crFore;
 
-        int r = cr.red();
-        int g = cr.green();
-        int b = cr.blue();
-        QColor crShadow(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, __ShadowAlpha/3);
+        //int r = cr.red();
+        //int g = cr.green();
+        //int b = cr.blue();
+        QColor crShadow(128,128,128,__ShadowAlpha/3);//(r<128?r+128:r-128, g<128?g+128:g-128, b<128?b+128:b-128, __ShadowAlpha/3);
 
         painter.drawRectEx(rc, crShadow, Qt::PenStyle::DotLine, 4, __szRound);
         painter.drawRectEx(rc, cr, Qt::PenStyle::DotLine, 2, __szRound);
