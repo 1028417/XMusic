@@ -536,11 +536,10 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
 {
     cauto strUrl = m_olBkgList.url() + strutil::toAsc(fsutil::GetFileName(strFile));
 
-    auto t_strFile = strFile + L".temp";
-    int nRet = curlutil::curlDownload(thread, strUrl, t_strFile, 0, 4);
+    int nRet = curlutil::curlDownload(thread, strUrl, strFile, 0, 4);
     if (nRet != 0)
     {
-        fsutil::removeFile(t_strFile);
+        fsutil::removeFile(strFile);
 
         g_logger << "downloadSubImg fail: " << nRet << ", url: " >> strUrl;
         if (-404 != nRet) /*if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
@@ -552,8 +551,6 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
         }
         return false;
     }
-
-    fsutil::moveFile(t_strFile, strFile);
 
     return true;
 }
