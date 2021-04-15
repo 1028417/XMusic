@@ -160,13 +160,17 @@ private:
                             , CB_CURLProgress& cbProgress)
     {
         auto pf = fsutil::fopen(strFile, "wb");
-        return _curlDownload(curlOpt, strUrl, pf, cbProgress);
+        auto nRet = _curlDownload(curlOpt, strUrl, pf, cbProgress);
+        (void)::fclose(pf);
+        return nRet;
     }
     static int _curlDownload(const tagCurlOpt& curlOpt, const string& strUrl, const string& strFile
                             , CB_CURLProgress& cbProgress)
     {
         auto pf = fsutil::fopen(strFile, "wb");
-        return _curlDownload(curlOpt, strUrl, pf, cbProgress);
+        auto nRet = _curlDownload(curlOpt, strUrl, pf, cbProgress);
+        (void)::fclose(pf);
+        return nRet;
     }
 };
 
