@@ -98,14 +98,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 #define __LogoCompanyMargin __size(50)
     int y_LogoCompany = cy - __LogoCompanyMargin - ui.labelLogoCompany->height();
     ui.labelLogoCompany->setGeometry(__LogoCompanyMargin, y_LogoCompany, cx-__LogoCompanyMargin*2, ui.labelLogoCompany->height());
-    if (bHLayout)
-    {
-        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
-    }
-    else
-    {
-        ui.labelLogoCompany->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignHCenter);
-    }
+    ui.labelLogoCompany->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);//Qt::AlignBottom | (bHLayout? Qt::AlignRight : Qt::AlignHCenter));
 
     Double_T cxDst = cx;
     Double_T xBkgOffset = 0;

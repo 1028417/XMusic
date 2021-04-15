@@ -149,6 +149,13 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
     {
         return NULL;
     }
+
+    if (fileInfo.uFileSize < 50000)
+    {
+        __yield();
+        return NULL;
+    }
+
     __usleep(g_uMsScanYield);
 
     cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));

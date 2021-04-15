@@ -98,13 +98,13 @@ public:
     static string getCurlErrMsg(UINT uCurlCode);
 
     template <class T>
-    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, T t, CB_CURLProgress& cbProgress = NULL)
+    static int curlDownload(const tagCurlOpt& curlOpt, const string& strURL, T& t, CB_CURLProgress& cbProgress = NULL)
     {
         return _curlDownload(curlOpt, strURL, t, cbProgress);
     }
 
     template <class T>
-    static int curlDownload(signal_t bRunSignal, const tagCurlOpt& curlOpt, const string& strUrl, T t)
+    static int curlDownload(signal_t bRunSignal, const tagCurlOpt& curlOpt, const string& strUrl, T& t)
     {
         return _curlDownload(curlOpt, strUrl, t, [&](int64_t, int64_t){
             if (!bRunSignal)
@@ -116,7 +116,7 @@ public:
     }
 
     template <class T>
-    static int curlDownload(CB_CURLProgress& cbProgress, const string& strUrl, T t
+    static int curlDownload(CB_CURLProgress& cbProgress, const string& strUrl, T& t
                      , unsigned long timeout, unsigned long connectTimeout = 3)
     {
         tagCurlOpt curlOpt(false);
@@ -126,7 +126,7 @@ public:
     }
 
     template <class T>
-    static int curlDownload(signal_t bRunSignal, const string& strUrl, T t
+    static int curlDownload(signal_t bRunSignal, const string& strUrl, T& t
                      , unsigned long timeout, unsigned long connectTimeout = 3)
     {
         tagCurlOpt curlOpt(false);

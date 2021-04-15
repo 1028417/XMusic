@@ -300,13 +300,15 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
     m_mainWnd.show();
 }
 
+#define __loginCheck 6e5
+
 //static UINT s_uSeq = 0;
 void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin)
 {
     //if (uSeq != s_uSeq) return;
     if (E_LoginReult::LR_Success == eRet)
     {
-        sync(6e5, [=]{
+        sync(__loginCheck, [=]{
             //if (uSeq != s_uSeq) return;
             (void)asyncLogin(strUser, strPwd, true);
         });
