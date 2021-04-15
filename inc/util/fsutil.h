@@ -324,7 +324,7 @@ public:
 #endif
 
 #if !__winvc
-    static QString getHomeDir();
+    static wstring getHomeDir();
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;

@@ -5,7 +5,7 @@
 
 #if __windows || __mac
 #include <QLockFile>
-static QLockFile g_lf(fsutil::getHomeDir() + "/xmusic.lock");
+static QLockFile g_lf(__WS2Q(fsutil::getHomeDir()) + "/xmusic.lock");
 #endif
 
 static wstring m_strWorkDir;
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
         m_strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
     }
 #else
-    m_strWorkDir = fsutil::getHomeDir().toStdWString() + __wcPathSeparator + __pkgName;
+    m_strWorkDir = fsutil::getHomeDir() + __wcPathSeparator + __pkgName;
 #endif
     if (!fsutil::createDir(m_strWorkDir))
     {

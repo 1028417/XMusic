@@ -108,7 +108,7 @@ void CAddBkgDlg::show()
             //if (strAddBkgDir.empty())
             //{
                 //return;
-                strAddBkgDir = fsutil::getHomeDir().toStdWString();
+                strAddBkgDir = fsutil::getHomeDir();
             //}
         }
         /*卡mtutil::thread([&]{
@@ -123,7 +123,7 @@ void CAddBkgDlg::show()
         strAddBkgDir = __sdcardDir;
 
 #else
-        strAddBkgDir = fsutil::getHomeDir().toStdWString();
+        strAddBkgDir = fsutil::getHomeDir();
 #endif
         m_lv.scanDir(strAddBkgDir);
     }

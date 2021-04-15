@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "fsutil.h"
-
 //CPath
 class XFile;
 using TD_XFileList = PtrArray<XFile>;

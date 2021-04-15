@@ -83,7 +83,7 @@ static wstring _genMedialibDir()
     //return L"/Users/lhyuan/XMusic";
 #endif
 
-    return fsutil::getHomeDir() + __WS2Q(L"/XMusic")).toStdWString();
+    return fsutil::getHomeDir() + L"/XMusic";
 #endif*/
 
     return L"";
