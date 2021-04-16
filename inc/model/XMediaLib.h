@@ -1,8 +1,11 @@
 
 #pragma once
 
+wstring getPathCatName(cwstr strPath);
+
 #if !__winvc
 #define __OnlineMediaLib 1
+
 #if __OnlineMediaLib
 #define __arti 1
 //#define __xurl 0
@@ -23,20 +26,24 @@ private:
     class CModel& m_model;
     class IModelObserver& m_ModelObserver;
 
-#if __OnlineMediaLib
-private:
-    list<JValue> m_lstSnapshot;
+#if !__winvc
+protected:
+    CCueList m_cuelist;
 
 public:
-    bool loadXSnapshot(Instream& ins);
+    const CCueList& cuelist() const
+    {
+        return m_cuelist;
+    }
 
     bool loadXCue(Instream& ins, cwstr strFileTitle)
     {
         return m_cuelist.load(ins, strFileTitle);
     }
 
-private:
-    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override;
+    bool loadXSnapshot(Instream& ins);
+
+    void check();
 #endif
 
 public:
@@ -56,8 +63,6 @@ private:
 
 	UINT getSingerImgPos(UINT uSingerID) override;
 };
-
-wstring getPathCatName(cwstr strPath);
 
 #if !__winvc
 #define __wholeTrackDuration 60 * 10
@@ -82,7 +87,7 @@ public:
     CSnapshotMediaRes(class CSnapshotMediaDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
         : CMediaRes(E_MediaFileType::MFT_Null, (CMediaDir&)parent, strFileName, uFileSize)
         , m_uDuration(uDuration)
-        , m_CueFile(uDuration>__wholeTrackDuration? __medialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
+        , m_CueFile(uDuration>__wholeTrackDuration? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
     {
     }
 

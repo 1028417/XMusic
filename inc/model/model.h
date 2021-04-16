@@ -282,7 +282,7 @@ public:
 #else
     virtual CBackupMgr& getBackupMgr() = 0;
 
-	virtual void convertXPkg(cwstr strFile) = 0;
+    virtual void convertXpk(cwstr strFile) = 0;
     virtual void convertXmsc(cwstr strFile) = 0;
 
     virtual bool setupMediaLib(cwstr strRootDir) = 0;
@@ -420,7 +420,7 @@ public:
 		return m_BackupMgr;
 	}
 
-	void convertXPkg(cwstr strFile) override;
+    void convertXpk(cwstr strFile) override;
 	void convertXmsc(cwstr strFile) override;
 
 	bool setupMediaLib(cwstr strRootDir) override;

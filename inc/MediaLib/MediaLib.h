@@ -120,17 +120,6 @@ protected:
         }
     }
 
-#if !__winvc
-protected:
-    CCueList m_cuelist;
-
-public:
-    const CCueList& cuelist() const
-    {
-        return m_cuelist;
-    }
-#endif
-
 public:
 	virtual const CMedia* findRelatedPlayItem(cwstr strPath)
         {
