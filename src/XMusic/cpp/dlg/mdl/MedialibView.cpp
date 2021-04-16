@@ -60,8 +60,8 @@ inline void CMedialibView::_genSingerMediaTitle(const IMedia *pMedia, cwstr strS
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
-    , m_SingerLib(__app.getSingerMgr())
-    , m_PlaylistLib(__app.getPlaylistMgr())
+    , m_SingerLib( g_app.getSingerMgr())
+    , m_PlaylistLib( g_app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
     , m_lpCatItem {
         {__mdlPng(dsd), __catDSD},
@@ -75,8 +75,8 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
         {__mdlPng(pure), __catPure},
         {__mdlPng(ssdir), L""}
     }
-    , m_pmHDDisk(__app.m_pmHDDisk)
-    , m_pmSQDisk(__app.m_pmSQDisk)
+    , m_pmHDDisk( g_app.m_pmHDDisk)
+    , m_pmSQDisk( g_app.m_pmSQDisk)
 {
 }
 
@@ -180,7 +180,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             lstSingerName.push_back(singer.m_strName);
         }
-        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+         g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
         return;
     }
 
@@ -210,9 +210,8 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
         list<wstring> *plstSingerName = NULL;
-        static map<const void*, std::list<wstring>> mapSingerName;
-        cauto itr = mapSingerName.find(&MediaSet);
-        if (itr != mapSingerName.end())
+        cauto itr = m_PlaylistSinger.find(&MediaSet);
+        if (itr != m_PlaylistSinger.end())
         {
             plstSingerName = &itr->second;
 
@@ -231,9 +230,9 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         }
         else
         {
-            plstSingerName = &mapSingerName[&MediaSet];
+            plstSingerName = &m_PlaylistSinger[&MediaSet];
 
-            cauto singerMgr = __app.getSingerMgr();
+            cauto singerMgr =  g_app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
                 auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
@@ -256,7 +255,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
         if (!plstSingerName->empty())
         {
-            __app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+             g_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
         }
     }
 }
@@ -304,9 +303,8 @@ void CMedialibView::_onShowDir(CPath& dir)
 
             //目录图标
             list<wstring> *plstSingerName = NULL;
-            static map<const void*, std::list<wstring>> mapSingerName;
-            cauto itr = mapSingerName.find(&dir);
-            if (itr != mapSingerName.end())
+            cauto itr = m_mapDirSinger.find(&dir);
+            if (itr != m_mapDirSinger.end())
             {
                 plstSingerName = &itr->second;
             }
@@ -326,7 +324,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
             if (!plstSingerName->empty())
             {
-                __app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+                 g_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
             }
         }
     }
@@ -714,7 +712,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 
         if (!lstSingerName.empty())
         {
-            __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+             g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
@@ -727,7 +725,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
                 lstSingerName.push_back(singer.m_strName);
             });
         }
-        __app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+         g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
     }
 }
 
@@ -935,14 +933,14 @@ CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pbrSingerHead;
     }
 
-    auto pHeadImg = __app.getSingerImgMgr().getSingerHead(strSingerName);
+    auto pHeadImg =  g_app.getSingerImgMgr().getSingerHead(strSingerName);
     if (NULL == pHeadImg)
     {
         pbrSingerHead = &m_brNullSingerHead;
     }
     else if (pHeadImg->bExist)
     {
-        cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pHeadImg));
+        cauto qsFile = __WS2Q( g_app.getSingerImgMgr().file(*pHeadImg));
         m_lstSingerHead.emplace_back(qsFile);
         pbrSingerHead = &m_lstSingerHead.back();
 
@@ -987,7 +985,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
     {
         _flashItem(lvItem.uItem);
 
-        __app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
+         g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
 
         return;
     }
@@ -1022,13 +1020,13 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
 
         _flashItem(lvItem.uItem);
 
-        if (__app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+        if ( g_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
-            __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+             g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
         }
         else
         {
-            __app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
+             g_app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
         }
     }
     else
@@ -1046,7 +1044,7 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
 
         _flashItem(lvItem.uItem, true);
 
-        __app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+         g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
     }
 }
 

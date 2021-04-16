@@ -233,7 +233,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
             if (!bVDownloading)
             {
                 bVDownloading = true;
-                __app.sync([&]{
+                 g_app.sync([&]{
                     lv.update();
                 });
             }
@@ -247,7 +247,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
             if (uCount + 1 == vecFile.size())
             {
                 bVDownloading = false;
-                __app.sync([&]{
+                 g_app.sync([&]{
                     lv.update();
                 });
             }
@@ -258,7 +258,7 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
         if (bVDownloading)
         {
             bVDownloading = false;
-            __app.sync([&]{
+             g_app.sync([&]{
                 lv.update();
             });
         }
@@ -337,9 +337,9 @@ bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
     }
 
 #if __android
-#define __syncImg __app.syncex //规避安卓切后台问题，理论上会出现死锁。或改为vecImg直接add
+#define __syncImg  g_app.syncex //规避安卓切后台问题，理论上会出现死锁。或改为vecImg直接add
 #else
-#define __syncImg __app.sync //非阻塞，cb必须在100毫秒内
+#define __syncImg  g_app.sync //非阻塞，cb必须在100毫秒内
 #endif
     __syncImg([&, bHLayout, uZoomoutAll, pm]()mutable{
         if (lv.imgDir() != this)
@@ -414,7 +414,7 @@ bool COlBkgDir::_genIcon()
 
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
-    auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
+    auto strOlBkgDir = g_app.workDir() + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
     (void)fsutil::createDir(strOlBkgDir);
     strOlBkgDir.push_back(__wcPathSeparator);
@@ -427,7 +427,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
 
     list<COlBkgDir*> lstDir;
     set<wstring> setCatName;
-    for (cauto olBkg : __app.getMdlMgr().olBkg())
+    for (cauto olBkg :  g_app.getMdlMgr().olBkg())
     {
         setCatName.insert(strutil::lowerCase_r(olBkg.catName));
 
@@ -449,7 +449,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
             (void)fsutil::createDir(catDir);
 
 #if __android // 安卓背景图片迁移
-            cauto strOrgDir = __app.getModel().androidOrgPath(__olBkgDir) + olBkg.catName + L'/';
+            cauto strOrgDir =  g_app.getModel().androidOrgPath(__olBkgDir) + olBkg.catName + L'/';
             fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi) {
                 if (!fnCheck(fi))
                 {
@@ -480,7 +480,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
 
     if (m_paSubDir)
     {
-        __app.sync([&]{
+         g_app.sync([&]{
             lv.update();
         });
     }
@@ -500,12 +500,12 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     lv.showLoading(true);
     m_bDownloading = true;
 
-    __app.thread(10, [&, lstDir](XThread& thr)mutable {
+     g_app.thread(10, [&, lstDir](XThread& thr)mutable {
         auto pDir = lstDir.front();
         if (pDir->_downloadSubImg(pDir->_iconFile(), thr))
         {
             pDir->_genIcon();
-            __app.sync([&, pDir]{
+             g_app.sync([&, pDir]{
                 m_paSubDir.add(pDir);
                 lv.update();
             });
@@ -515,7 +515,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
             {
                 if (lv.imgDir() == this)
                 {
-                    __app.sync([&]{
+                     g_app.sync([&]{
                         if (lv.imgDir() == this)
                         {
                             lv.showLoading(false);
@@ -546,8 +546,7 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
             || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
             || CURLcode::CURLE_COULDNT_CONNECT == nRet)*/
         {
-            g_logger << "dowloadBkg fail: " >> strUrl;
-            (void)thread.usleep(5000);
+            (void)thread.usleep(3000);
         }
         return false;
     }

@@ -5,9 +5,9 @@
 
 static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
 {
-    auto& singerMgr = __app.getSingerMgr();
+    auto& singerMgr =  g_app.getSingerMgr();
     tagPlayingItem playingItem;
-    for (cauto PlayItem : __app.getPlayMgr().playingItems())
+    for (cauto PlayItem :  g_app.getPlayMgr().playingItems())
     {
         playingItem.uID = PlayItem.m_uID;
 
@@ -23,6 +23,12 @@ static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
         }
         playingItem.qsTitle = __WS2Q(strTitle);
 
+        auto duration = PlayItem.duration();
+        if (duration > __wholeTrackDuration)
+        {
+            playingItem.qsDuration = __WS2Q(IMedia::genDurationString(duration));
+        }
+
         alPlayingItems.add(playingItem);
     }
 }
@@ -31,11 +37,11 @@ void CPlayingList::init()
 {
     (void)m_pmPlaying.load(__png(btnPlay));
 
-    auto uPlayingItem = __app.getOption().uPlayingItem;
+    auto uPlayingItem =  g_app.getOption().uPlayingItem;
 
     ArrList<tagPlayingItem> alPlayingItems;
-    _genPlayingItem(alPlayingItems);
-    _updateList(alPlayingItems, uPlayingItem);
+    _genPlayingItem(m_alPlayingItems);
+    updatePlayingItem(uPlayingItem, true);
 
     CListView::showItem(uPlayingItem, true); // 规避后续歌手图片出现挤压的问题
 
@@ -82,7 +88,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     if (0 == m_nActiveTime)
     {
         fAlpha = 0.4f;
-        //if (__app.getOption().bUseThemeColor) fAlpha += 0.1f;
+        //if ( g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
     }
     if (rc.top() < 0)
     {
@@ -127,9 +133,16 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         painter.adjustFont(1.05f, TD_FontWeight::Normal);
     }
-    else if (__app.getPlayMgr().checkPlayedID(playingItem.uID))
+    else if ( g_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
+    }
+
+    if (!playingItem.qsDuration.isEmpty())
+    {
+        auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, playingItem.qsDuration
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+        rc.setRight(rcPos.x() - __size(30));
     }
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
@@ -142,7 +155,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     {
         painter.adjustFont(0.65, TD_FontWeight::Thin);
 
-        cauto qsQuality = __app.mainWnd().playingInfo().qsQuality;
+        cauto qsQuality =  g_app.mainWnd().playingInfo().qsQuality;
 
         int nRight = rcPos.right() + __size(35);
 #if __android || __ios
@@ -165,15 +178,10 @@ void CPlayingList::updateList(UINT uPlayingItem) //工作线程
     ArrList<tagPlayingItem> alPlayingItems;
     _genPlayingItem(alPlayingItems);
 
-    __app.sync([=]()mutable{
-        _updateList(alPlayingItems, uPlayingItem);
+     g_app.sync([=]()mutable{
+        m_alPlayingItems.swap(alPlayingItems);
+        updatePlayingItem(uPlayingItem, true);
     });
-}
-
-void CPlayingList::_updateList(ArrList<tagPlayingItem>& alPlayingItems, UINT uPlayingItem)
-{
-    m_alPlayingItems.swap(alPlayingItems);
-    updatePlayingItem(uPlayingItem, true);
 }
 
 void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem)
@@ -203,13 +211,13 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         //updatePlayingItem(lvItem.uItem, false);
 
-        __app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
+         g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
     }
 }
 
 void CPlayingList::_onBlankDblClick(const QMouseEvent&)
 {
-    __app.mainWnd().switchFullScreen();
+     g_app.mainWnd().switchFullScreen();
 }
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)

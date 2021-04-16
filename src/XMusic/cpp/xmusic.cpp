@@ -8,9 +8,6 @@
 static QLockFile g_lf(__WS2Q(fsutil::getHomeDir()) + "/xmusic.lock");
 #endif
 
-static wstring m_strWorkDir;
-cwstr g_strWorkDir = m_strWorkDir;
-
 static CUTF8TxtWriter m_logger;
 ITxtWriter& g_logger(m_logger);
 
@@ -43,7 +40,7 @@ bool requestAndroidSDPermission() // 安卓6(API 23)以上动态申请读写权�
 }
 #endif
 
-static CSignal<false> m_runSignal(true); //static bool m_bRunSignal = true;
+static CSignal<false> m_runSignal(true);
 signal_t g_bRunSignal(m_runSignal);
 
 signal_t usleepex(UINT uMs)
@@ -173,7 +170,7 @@ void CAppBase::_quit()
 }
 
 static char g_lpApp[sizeof(CApp)];
-CApp& __app(*(CApp*)g_lpApp);
+CApp&  g_app(*(CApp*)g_lpApp);
 
 int main(int argc, char *argv[])
 {
@@ -197,36 +194,37 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
+    wstring strWorkDir;
 #if __android
     if (requestAndroidSDPermission())
     {
-        m_strWorkDir = __sdcardDir __pkgName;
+        strWorkDir = __sdcardDir __pkgName;
     }
     else
     {
         // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-        m_strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
+        strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
     }
 #else
-    m_strWorkDir = fsutil::getHomeDir() + __wcPathSeparator + __pkgName;
+    strWorkDir = fsutil::getHomeDir() + __wcPathSeparator + __pkgName;
 #endif
-    if (!fsutil::createDir(m_strWorkDir))
+    if (!fsutil::createDir(strWorkDir))
     {
         return -1;
     }
 #if __windows
-    fsutil::setWorkDir(strutil::toGbk(m_strWorkDir));
+    fsutil::setWorkDir(strutil::toGbk(strWorkDir));
 #else
-    fsutil::setWorkDir(strutil::toUtf8(m_strWorkDir));
+    fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
 #endif
 
     memset(g_lpApp, 0, sizeof(g_lpApp));
-    new (g_lpApp) CApp();
-    auto nRet = __app.exec();
+    new (g_lpApp) CApp(strWorkDir);
+    auto nRet =  g_app.exec();
 
     m_logger << "exit: " >> nRet;
     m_logger.close();
-    //fsutil::copyFile(g_strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
+    //fsutil::copyFile(strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
     return nRet;
 }
 
@@ -407,7 +405,7 @@ bool installApp(const string& strUpgradeFile)
 bool installApp(const CByteBuffer& bbfUpgradeFile)
 {
 #if __android
-    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
+    cauto strApkFile = g_app.workDir() + L"/upgrade.apk";
     if (!OFStream::writefilex(strApkFile, true, bbfUpgradeFile))
     {
         g_logger << "save appPackage fail: " >> strApkFile;

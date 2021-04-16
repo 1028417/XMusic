@@ -38,6 +38,8 @@ private:
 
     CPlayer m_Player;
 
+    wstring m_strFile;
+
 private:
     void _refresh();
 
@@ -45,6 +47,10 @@ private:
     bool _insert(const T& t, bool bPlay, int nPos = -1);
 
     bool _clear();
+
+    int64_t _openFile(cwstr strFile, bool bXmsc);
+
+    int64_t _openFile(CPlayItem& PlayItem);
 
     bool _play(CPlayItem& PlayItem);
 

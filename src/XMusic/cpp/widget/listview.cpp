@@ -8,7 +8,7 @@
 CListView::CListView(QWidget *parent, E_LVScrollBar eScrollBar)
     : TWidget(parent)
     , m_eScrollBar(eScrollBar)
-    , m_pmForward(__app.m_pmForward)
+    , m_pmForward( g_app.m_pmForward)
 {
     setAttribute(Qt::WA_TranslucentBackground);
 

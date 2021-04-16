@@ -15,7 +15,7 @@ void CDialog::resetPos()
 
 void CDialog::_setPos()
 {
-    setGeometry(__app.mainWnd().geometry());
+    setGeometry( g_app.mainWnd().geometry());
 }
 
 void CDialog::connect_dlgClose(CButton *btn)
@@ -32,7 +32,7 @@ void CDialog::show(cfn_void cbClose)
     }
     else
     {
-        parent = &__app.mainWnd();
+        parent = & g_app.mainWnd();
     }
     setParent(parent, windowFlags());
 
@@ -122,7 +122,7 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     auto cr = bkgColor();
-    if (__app.mainWnd().drawBkg(m_bHLayout, painter, rc))
+    if ( g_app.mainWnd().drawBkg(m_bHLayout, painter, rc))
     {
         cr.setAlpha(__dlgAlpha);
     }
@@ -185,7 +185,7 @@ void CDialogEx::show(cfn_void cbClose)
 
 void CDialogEx::_setPos()
 {
-    cauto rc = m_pDlgMask?m_pDlgMask->rect():__app.mainWnd().geometry();
+    cauto rc = m_pDlgMask?m_pDlgMask->rect(): g_app.mainWnd().geometry();
     m_bHLayout = rc.width() > rc.height();
 
     cauto ptCenter = rc.center();
@@ -206,7 +206,7 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     CPainterClipGuard guard(painter, rc, uround);
 
 #if __android
-    cauto mainWnd = __app.mainWnd();
+    cauto mainWnd =  g_app.mainWnd();
     QRect rcDst = mainWnd.rect();
     QPoint ptOffset;
     if (NULL == m_pDlgMask)

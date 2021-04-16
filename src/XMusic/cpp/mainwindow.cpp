@@ -84,7 +84,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
-    , m_opt(__app.getOption())
+    , m_opt( g_app.getOption())
 {
     //this->setStyleSheet("");
 
@@ -169,8 +169,6 @@ void MainWindow::_init()
     m_bkgDlg.init();
 }
 
-static UINT g_uShowLogoState = 0;
-
 void MainWindow::preinit(XThread& thr) // 工作线程
 {
     QPixmap pmBkg(":/img/bkg.jpg");
@@ -188,7 +186,7 @@ void MainWindow::preinit(XThread& thr) // 工作线程
         m_bkgDlg.preinitBkg(thr, false);
     });
 
-    while (g_uShowLogoState < 3)
+    while (m_uShowLogoState < 3)
     {
         if (!thr.usleep(100))
         {
@@ -203,7 +201,7 @@ void MainWindow::showBlank()
     this->setVisible(true); //必须在前面？？不然ole异常？？
 }
 
-void MainWindow::showLogo()
+void MainWindow::showLogo() // TODO 广告
 {
 /*#if __android
 #if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
@@ -265,9 +263,9 @@ void MainWindow::startLogo()
     labelLogoCompany.setVisible(true);
     _updateLogoCompany(5, [&]{
         _updateLogoCompany(-5, [&]{
-            labelLogoCompany.setText(__WS2Q(L"v" + __app.appVer()));
+            labelLogoCompany.setText(__WS2Q(L"v" +  g_app.appVer()));
             _updateLogoCompany(5, [&]{
-                g_uShowLogoState++;
+                m_uShowLogoState++;
             });
         });
     });
@@ -300,11 +298,10 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 }
 
 #define __logoTip "更新媒体库"
-static bool g_bStopLogo = false;
 
 void MainWindow::_showUpgradeProgress()
 {
-    cauto nAppUpgradeProgress = __app.getMdlMgr().appUpgradeProgress();
+    cauto nAppUpgradeProgress =  g_app.getMdlMgr().appUpgradeProgress();
     if (-1 == nAppUpgradeProgress)
     {
         ui.labelLogoTip->setText(__logoTip);
@@ -312,7 +309,7 @@ void MainWindow::_showUpgradeProgress()
 
     UINT uDotCount = 0;
     timerutil::setTimerEx(200, [&, uDotCount]()mutable{
-        if (g_bStopLogo)
+        if (m_bStopLogo)
         {
             return false;
         }
@@ -336,7 +333,7 @@ void MainWindow::_showUpgradeProgress()
             if (++uDotCount > 3)
             {
                 uDotCount = 0;
-                g_uShowLogoState++;
+                m_uShowLogoState++;
             }
 
             QString qsText(__logoTip);
@@ -360,14 +357,14 @@ void MainWindow::_showUpgradeProgress()
 
 void MainWindow::stopLogo()
 {
-    g_bStopLogo = true;
+    m_bStopLogo = true;
 
     ui.labelLogoTip->setText(WString(L"播发器" __CNDot L"媒体库 个性化定制"));
 }
 
 void MainWindow::show()
 {
-    g_bStopLogo = true;
+    m_bStopLogo = true;
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
@@ -543,7 +540,7 @@ bool MainWindow::event(QEvent *ev)
             // TODO 上下键滚动播放列表、左右键切换背景
             if (Qt::Key_Space == key)
             {
-                if (E_PlayStatus::PS_Play == __app.getPlayMgr().playStatus())
+                if (E_PlayStatus::PS_Play ==  g_app.getPlayMgr().playStatus())
                 {
                     slot_buttonClicked(ui.btnPause);
                 }
@@ -566,7 +563,7 @@ bool MainWindow::event(QEvent *ev)
 
     break;
     /*case QEvent::Close:
-        __app.quit();
+         g_app.quit();
         return true;
         break;*/
     case QEvent::Timer:
@@ -683,7 +680,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound, float 
 
 void MainWindow::_updateProgress()
 {
-    auto& mediaOpaque = __app.getPlayMgr().mediaOpaque();
+    auto& mediaOpaque =  g_app.getPlayMgr().mediaOpaque();
     E_DecodeStatus eDecodeStatus = mediaOpaque.decodeStatus();
     _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for see
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
@@ -699,7 +696,7 @@ void MainWindow::_updateProgress()
     }
 
 #if __OnlineMediaLib
-    if (mediaOpaque.waitingFlag() && __app.getPlayMgr().player().packetQueueEmpty())
+    if (mediaOpaque.waitingFlag() &&  g_app.getPlayMgr().player().packetQueueEmpty())
     {
         ui.labelDuration->setText("正在缓冲");
     }
@@ -751,13 +748,13 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         }
     }
 
-    // TODO 获取音频流码率 if (!__app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
+    // TODO 获取音频流码率 if (! g_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率
     PlayingInfo.qsQuality = mediaQualityString(PlayItem.quality());
 
     auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
     if (uAlbumItemID > 0)
     {
-        PlayingInfo.pRelatedMedia = __app.getSingerMgr().GetMedia(uAlbumItemID);
+        PlayingInfo.pRelatedMedia =  g_app.getSingerMgr().GetMedia(uAlbumItemID);
         PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         PlayingInfo.strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
     }
@@ -766,7 +763,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         auto uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
         if (uPlayItemID > 0)
         {
-            PlayingInfo.pRelatedMedia = __app.getPlaylistMgr().GetMedia(uPlayItemID);
+            PlayingInfo.pRelatedMedia =  g_app.getPlaylistMgr().GetMedia(uPlayItemID);
         }
         else
         {
@@ -794,7 +791,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
     PlayingInfo.qsTitle = __WS2Q(strTitle);
 
-    __app.sync([=]{
+     g_app.sync([=]{
         auto uPrevSingerID = m_PlayingInfo.uSingerID;
         m_PlayingInfo = PlayingInfo;
 
@@ -828,7 +825,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-    __app.sync([=]{
+     g_app.sync([=]{
         ui.progressbar->set(0, 0, 0, 0);
         ui.labelDuration->setText(m_PlayingInfo.qsDuration); //防止还显示正在缓冲
     });
@@ -836,7 +833,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
     // 绝不可以sync或async，安卓切后台不响应
     if (bPlayFinish)
     {
-        __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+         g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
     }
     else if (!bOpenSuccess)
     {
@@ -845,7 +842,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
         __usleep(2000);
         if (uPlaySeq == g_uPlaySeq)
         {
-            __app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+             g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
         }
     }
 }
@@ -854,7 +851,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 {
     if (m_medialibDlg.isVisible())
     {
-        __app.sync([&, strSingerName]{
+         g_app.sync([&, strSingerName]{
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg(strSingerName, singerImg);
@@ -869,7 +866,7 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
 
     if (m_PlayingInfo.strSingerName == strSingerName && !ui.labelSingerImg->pixmap())
     {
-        __app.sync([&]{
+         g_app.sync([&]{
             _playSingerImg();
         });
     }
@@ -887,8 +884,6 @@ bool MainWindow::installApp(const string& strUpgradeFile)
 
 #define ___singerImgElapse 8
 
-static UINT g_uSingerImgIdx = 0;
-
 void MainWindow::_playSingerImg(bool bReset)
 {
     if (0 == m_PlayingInfo.uSingerID)
@@ -900,7 +895,7 @@ void MainWindow::_playSingerImg(bool bReset)
     if (bReset)
     {
         uTickCount = 0;
-        g_uSingerImgIdx = 0;
+        m_uSingerImgIdx = 0;
     }
     else
     {
@@ -920,10 +915,10 @@ void MainWindow::_playSingerImg(bool bReset)
 
 void MainWindow::_playSingerImg()
 {
-    auto pSingerImg = __app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    auto pSingerImg =  g_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, m_uSingerImgIdx, true);
     if (NULL == pSingerImg)
     {
-        if (g_uSingerImgIdx > 1)
+        if (m_uSingerImgIdx > 1)
         {
             _playSingerImg(true);
         }
@@ -936,7 +931,7 @@ void MainWindow::_playSingerImg()
         return;
     }
 
-    cauto qsFile = __WS2Q(__app.getSingerImgMgr().file(*pSingerImg));
+    cauto qsFile = __WS2Q( g_app.getSingerImgMgr().file(*pSingerImg));
     QPixmap pm(qsFile);
 
 #define __szSingerImg 700
@@ -986,8 +981,8 @@ void MainWindow::_playSingerImg()
     }
 #endif
 
-    g_uSingerImgIdx++;
-    (void)__app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, g_uSingerImgIdx, true);
+    m_uSingerImgIdx++;
+    (void) g_app.getSingerImgMgr().getSingerImg(m_PlayingInfo.strSingerName, m_uSingerImgIdx, true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)
@@ -998,7 +993,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnExit)
     {
-        __app.quit();
+         g_app.quit();
     }
     else if (button == ui.btnMore)
     {
@@ -1010,40 +1005,40 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        //if (__app.getPlayMgr().mediaOpaque().byteRate())
+        //if ( g_app.getPlayMgr().mediaOpaque().byteRate())
         //{
-        //    __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
-        if (__app.getPlayMgr().player().Pause())
+        //     g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
+        if ( g_app.getPlayMgr().player().Pause())
         {
             _updatePlayPauseButton(false);
         }
     }
     else if (button == ui.btnPlay)
     {
-        /*if (E_PlayStatus::PS_Pause == __app.getPlayMgr().playStatus())
+        /*if (E_PlayStatus::PS_Pause ==  g_app.getPlayMgr().playStatus())
         {
             _updatePlayPauseButton(true);
         }
-        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
+         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
 
-        if (E_PlayStatus::PS_Stop == __app.getPlayMgr().playStatus())
+        if (E_PlayStatus::PS_Stop ==  g_app.getPlayMgr().playStatus())
         {
-            __app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_opt.uPlayingItem));
+             g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_opt.uPlayingItem));
             return;
         }
 
-        if (__app.getPlayMgr().player().Resume())
+        if ( g_app.getPlayMgr().player().Resume())
         {
             _updatePlayPauseButton(true);
         }
     }
     else if (button == ui.btnPlayPrev)
     {
-        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
+         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
     }
     else if (button == ui.btnPlayNext)
     {
-        __app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
+         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
@@ -1097,7 +1092,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.uSingerID != 0)
         {
-            CMediaSet *pMediaSet = __app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
+            CMediaSet *pMediaSet =  g_app.getSingerMgr().GetSubSet(E_MediaSetType::MST_Singer, m_PlayingInfo.uSingerID);
             if (pMediaSet)
             {
                 m_medialibDlg.showMediaSet(*pMediaSet);
@@ -1131,7 +1126,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return; // 播放停止
         }
 
-       auto& player = __app.getPlayMgr().player();
+       auto& player =  g_app.getPlayMgr().player();
        /*if (player.sampleRate() == 0) //!player.isOpen())
        {
            return;
@@ -1227,7 +1222,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-    __app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+     g_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)

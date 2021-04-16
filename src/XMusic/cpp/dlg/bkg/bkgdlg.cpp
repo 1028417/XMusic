@@ -59,7 +59,7 @@ CBkgDlg::CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayou
 }
 
 CBkgDlg::CBkgDlg() :
-    m_opt(__app.getOption()),
+    m_opt( g_app.getOption()),
     m_lv(*this),
     m_addbkgDlg(*this),
     m_colorDlg(*this)
@@ -87,20 +87,20 @@ void CBkgDlg::init()
 void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
-    strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
+    strBkgDir = g_app.workDir() + (bHLayout?L"/hbkg/":L"/vbkg/");
     if (!fsutil::existDir(strBkgDir))
     {
         (void)fsutil::createDir(strBkgDir);
 
 #if __android // 安卓背景图片迁移
-        cauto strOrgDir = __app.getModel().androidOrgPath(bHLayout?L"hbkg/":L"vbkg/");
+        cauto strOrgDir =  g_app.getModel().androidOrgPath(bHLayout?L"hbkg/":L"vbkg/");
         fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
             fsutil::copyFile(strOrgDir + fi.strName, strBkgDir + fi.strName);
         });
 #endif
     }
 
-    cauto strAppVer = __app.appVer();
+    cauto strAppVer =  g_app.appVer();
     wstring strAppBkgDir = strBkgDir + strAppVer;
     if (!fsutil::existDir(strAppBkgDir))
     {
@@ -110,7 +110,7 @@ void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
 #if __android
         wstring strBkgSrc = L"assets:";
 #else
-        wstring strBkgSrc = __app.applicationDirPath().toStdWString();
+        wstring strBkgSrc =  g_app.applicationDirPath().toStdWString();
 #endif
 
         vector<const wchar_t*> lstSubDir {
@@ -330,7 +330,7 @@ void CBkgDlg::_updateBkg(cwstr strFile)
         m_opt.strVBkg = strFile;
     }
 
-    __app.mainWnd().updateBkg();
+     g_app.mainWnd().updateBkg();
 }
 
 void CBkgDlg::handleLVClick(size_t uItem)

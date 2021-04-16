@@ -5,8 +5,9 @@
 
 #include "dlg/msgbox.h"
 
-CApp::CApp()
-    : m_ctrl(*this, m_model)
+CApp::CApp(cwstr strWorkDir)
+    : m_strWorkDir(strWorkDir)
+    , m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
 {
 }
@@ -115,7 +116,7 @@ bool CApp::_startup(XThread& thr)
                  << " CompatibleCode: " << m_orgMdlConf.uCompatibleCode
                  << " MedialibVersion: " >> m_orgMdlConf.uMdlVersion;
 
-        m_model.init(g_strWorkDir);
+        m_model.init(g_app.workDir());
 
         string strVerInfo;
         int nRet = curlutil::initCurl(strVerInfo);
@@ -196,7 +197,7 @@ bool CApp::_startup(XThread& thr)
 #if __windows
 static void _setForeground()
 {
-    auto hwnd = __app.mainWnd().hwnd();
+    auto hwnd =  g_app.mainWnd().hwnd();
     if (IsIconic(hwnd))
     {
         ::ShowWindow(hwnd, SW_RESTORE);

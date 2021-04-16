@@ -76,6 +76,9 @@ private:
 
     map<const IMedia*, wstring> m_mapDisplayName;
 
+    map<const void*, std::list<wstring>> m_PlaylistSinger;
+    map<const void*, std::list<wstring>> m_mapDirSinger;
+
 public:
     void initpm();
 

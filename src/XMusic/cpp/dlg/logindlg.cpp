@@ -28,7 +28,7 @@ void CLoginDlg::_setupUi()
 
         close();
 
-        (void)__app.asyncLogin(strUser, strPwd);
+        (void) g_app.asyncLogin(strUser, strPwd);
     });
 }
 

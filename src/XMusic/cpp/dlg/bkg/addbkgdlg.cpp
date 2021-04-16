@@ -68,7 +68,7 @@ void CAddBkgDlg::init()
 #if __windows
 wstring CAddBkgDlg::_chooseDir()
 {
-    auto& strAddBkgDir = __app.getOption().strAddBkgDir;
+    auto& strAddBkgDir =  g_app.getOption().strAddBkgDir;
 
     CFolderDlg FolderDlg;
     cauto strDir = FolderDlg.Show(hwnd(), strAddBkgDir.c_str(), L" 请选择图片目录");
@@ -101,7 +101,7 @@ void CAddBkgDlg::show()
 
         wstring strAddBkgDir;
 #if __windows
-        strAddBkgDir = __app.getOption().strAddBkgDir;
+        strAddBkgDir =  g_app.getOption().strAddBkgDir;
         if (strAddBkgDir.empty() || !fsutil::existDir(strAddBkgDir))
         {
             //strAddBkgDir = _chooseDir();
@@ -264,7 +264,7 @@ void CAddBkgDlg::addBkg(cwstr strFile)
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
-    , m_thrScan(__app.thread())
+    , m_thrScan( g_app.thread())
     , m_rootImgDir(m_thrScan.signal())
 {
     m_pmOlBkg.load(__png(olBkg));
@@ -449,7 +449,7 @@ void CAddBkgView::_showImgDir(CImgDir& imgDir)
         }
         else
         {
-            m_thrGenSubImg = &__app.thread();
+            m_thrGenSubImg = & g_app.thread();
         }
         auto pImgDir = m_pImgDir;
         m_thrGenSubImg->start(100, [&, pImgDir]{
@@ -568,7 +568,7 @@ void CAddBkgView::scanDir(cwstr strDir)
                 return;
             }
 
-            __app.sync([&, uSequence]{
+             g_app.sync([&, uSequence]{
                 if (uSequence == s_uSequence)
                 {
                     m_paImgDirs.add((CImgDir&)dir);
@@ -578,7 +578,7 @@ void CAddBkgView::scanDir(cwstr strDir)
         });
 
         (void)m_thrScan.usleep(100); //空目录视觉效果
-        __app.sync([&]{
+         g_app.sync([&]{
             showLoading(false);
         });
     });

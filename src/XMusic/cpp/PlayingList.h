@@ -9,6 +9,7 @@ struct tagPlayingItem
 {
     UINT uID = 0;
     QString qsTitle;
+    QString qsDuration;
 };
 
 class CPlayingList : public CListView
@@ -58,8 +59,6 @@ private:
     {
         return m_alPlayingItems.size();
     }
-
-    void _updateList(ArrList<tagPlayingItem>& alPlayingItems, UINT uPlayingItem);
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
     void _onPaintItem(CPainter&, tagLVItem&, const tagPlayingItem&);

@@ -107,6 +107,7 @@ public:
         }
 
         static CMediaLib inst;
+        m_pInst = &inst;
         return inst;
     }
 

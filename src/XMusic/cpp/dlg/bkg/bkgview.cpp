@@ -86,7 +86,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 
     if (1 == lvItem.uItem)
     {
-        __app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
+         g_app.mainWnd().drawDefaultBkg(painter, rc, __szRound);
     }
     else
     {

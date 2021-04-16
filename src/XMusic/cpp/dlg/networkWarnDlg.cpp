@@ -16,7 +16,11 @@ void CNetworkWarnDlg::_setupUi()
 
     ui.setupUi(this);
 
-    ui.labelTip->adjustFont(TD_FontWeight::DemiBold);
+#define __fontSize 1.03f
+    ui.labelTip->adjustFont(__fontSize, TD_FontWeight::DemiBold);
+    ui.labelContinue->adjustFont(__fontSize);
+    ui.labelNeverWarn->adjustFont(__fontSize);
+    ui.labelExit->adjustFont(__fontSize);
 
     QColor crText(__crLogoText);
     ui.labelTip->setForeColor(crText);
@@ -63,7 +67,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
     });
     ui.labelNeverWarn->onClicked([=]{
         close();
-        __app.getOption().bNetworkWarn = false;
+         g_app.getOption().bNetworkWarn = false;
         cb();
     });
 
@@ -71,7 +75,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         close();
 
         async([]{
-            __app.quit();
+             g_app.quit();
         });
     });
 
@@ -85,7 +89,7 @@ void CNetworkWarnDlg::_setPos()
     static auto s_cxPrev = width();
 
     int cx = 0;
-    if (__app.mainWnd().isHLayout())
+    if ( g_app.mainWnd().isHLayout())
     {
         this->setWidth(s_cxPrev);
         cx = s_cxPrev;
@@ -94,10 +98,10 @@ void CNetworkWarnDlg::_setPos()
     }
     else
     {
-        cx = __app.mainWnd().width();
+        cx =  g_app.mainWnd().width();
         this->setWidth(cx);
 
-        this->move(0, __app.mainWnd().height()-height());
+        this->move(0,  g_app.mainWnd().height()-height());
     }
 
     ui.labelTip->setWidth(cx);

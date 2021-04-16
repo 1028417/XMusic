@@ -12,8 +12,6 @@
 
 using Double_T = float; //= double; // double_t与math.h冲突
 
-extern cwstr g_strWorkDir;
-
 extern ITxtWriter& g_logger;
 
 struct tagScreenInfo
@@ -167,4 +165,4 @@ public:
 
 #include "app.h"
 
-extern CApp& __app;
+extern CApp&  g_app;

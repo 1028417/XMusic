@@ -72,6 +72,11 @@ private:
 
     CBkgDlg m_bkgDlg;
 
+    bool m_bStopLogo = false;
+    UINT m_uShowLogoState = 0;
+
+    UINT m_uSingerImgIdx = 0;
+
 private slots:
     void slot_buttonClicked(CButton*);
 

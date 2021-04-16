@@ -58,7 +58,7 @@ void CMedialibDlg::init()
         CMediaSet *pMediaSet = m_lv.currentMediaSet();
         if (pMediaSet)
         {
-            __app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
+             g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
             return;
         }
 
@@ -88,7 +88,7 @@ void CMedialibDlg::init()
 
             if (paMedias)
             {
-                __app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
+                 g_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
             }
         }
     });
@@ -129,7 +129,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_lv.hittestFile((CMediaRes&)media);
     }
 
-    __app.sync([&]{
+     g_app.sync([&]{
         m_wholeTrackDlg.tryShow(media);
     });
 
@@ -316,7 +316,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         }
     }
 
-    ui.frameFilterLanguage->setVisible(&__app.getPlaylistMgr() == pMediaSet);
+    ui.frameFilterLanguage->setVisible(& g_app.getPlaylistMgr() == pMediaSet);
 
     ui.labelTitle->setText(strTitle, nElidedFlag);
 
@@ -332,7 +332,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
                 break;
             }
 
-            __app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+             g_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
         }
 
         ui.labelSingerImg->clear();

@@ -29,7 +29,7 @@ void CWholeTrackDlg::init()
     ui.btnPlay->onClicked([&]{
         if (m_pMedia)
         {
-            __app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
+             g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(*m_pMedia));
         }
     });
 }
@@ -44,7 +44,7 @@ bool CWholeTrackDlg::tryShow(IMedia& media)
 
     m_pMedia = &media;
 
-    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ? __app.m_pmHDDisk : __app.m_pmSQDisk;
+    cauto pm = ((int)media.quality() >= (int)E_MediaQuality::MQ_CD) ?  g_app.m_pmHDDisk :  g_app.m_pmSQDisk;
     ui.labelDisk->setPixmap(pm);
 
     ui.labelTitle->setText(__WS2Q(media.GetTitle()));

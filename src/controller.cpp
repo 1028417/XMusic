@@ -1,12 +1,13 @@
 ﻿
 #include "controller.h"
 
-#if !__winvc
-#include "xmusic.h"
-#endif
-
+#if __winvc
 static const wstring g_strInvalidMediaName = L":\\/|*?\"<>";
 static const wstring g_strInvalidMediaSetName = g_strInvalidMediaName;// + __wcDot;
+
+#else
+#include "xmusic.h"
+#endif
 
 UINT g_uPlaySeq = 0;
 
@@ -55,7 +56,7 @@ void CXController::start()
 		//strRootDir.clear();
 		if (!setupMediaLib())
 		{
-			__app->Quit();
+             g_app->Quit();
 			return;
 		}
 	}
@@ -63,7 +64,7 @@ void CXController::start()
     {
 		if (!m_model.initMediaLib())
 		{
-			__app->Quit();
+             g_app->Quit();
 			return;
 		}
 
@@ -84,7 +85,7 @@ void CXController::start()
 	});*/
 
 #else
-    __app.thread([&](XThread& thr){
+     g_app.thread([&](XThread& thr){
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {

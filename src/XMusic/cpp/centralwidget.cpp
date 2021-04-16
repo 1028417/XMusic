@@ -333,7 +333,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     //auto pmSingerImg = ui.labelSingerImg->pixmap();
     /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
     {
-        //pmSingerImg = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? &__app.m_pmHDDisk : &__app.m_pmSQDisk;
+        //pmSingerImg = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? & g_app.m_pmHDDisk : & g_app.m_pmSQDisk;
         //ui.labelSingerName->setShadow(uShadowWidth);
         eSingerImgPos = E_SingerImgPos::SIP_Zoomout;
     }
@@ -482,7 +482,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
         {
-            cauto pm = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? __app.m_pmHDDisk : __app.m_pmSQDisk;
+            cauto pm = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ?  g_app.m_pmHDDisk :  g_app.m_pmSQDisk;
             ui.labelSingerImg->setPixmap(pm, 0);
             ui.labelSingerImg->setShadow(0);
         }*/

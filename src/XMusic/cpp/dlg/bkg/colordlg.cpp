@@ -31,11 +31,11 @@ void CColorDlg::init()
     ui.btnApplyBkgColor->onClicked([&]{
         ui.btnApplyBkgColor->setVisible(false);
 
-        __app.getOption().bUseBkgColor = true;
+         g_app.getOption().bUseBkgColor = true;
 
         this->update();
         m_bkgDlg.update();
-        __app.mainWnd().updateBkg();
+         g_app.mainWnd().updateBkg();
     });
 
     this->regUISlot(&CColorDlg::slot_buttonClicked, &CButton::signal_clicked, {
@@ -54,7 +54,7 @@ void CColorDlg::init()
 
 void CColorDlg::show()
 {
-    ui.btnApplyBkgColor->setVisible(!__app.getOption().bUseBkgColor);
+    ui.btnApplyBkgColor->setVisible(! g_app.getOption().bUseBkgColor);
 
     setWidgetTextColor(ui.groupBkgColor, g_crFore);
     setWidgetTextColor(ui.groupFontColor, g_crFore);
@@ -226,13 +226,13 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
     {
         int crBkg = QRGB(ui.barBkgRed->value(), ui.barBkgGreen->value(), ui.barBkgBlue->value());
         g_crBkg.setRgb(crBkg);
-        __app.getOption().crBkg = (UINT)crBkg;
+         g_app.getOption().crBkg = (UINT)crBkg;
     }
     else if (ui.barFontRed == pBar || ui.barFontGreen == pBar || ui.barFontBlue == pBar)
     {
         int crFore = QRGB(ui.barFontRed->value(), ui.barFontGreen->value(), ui.barFontBlue->value());
         g_crFore.setRgb(crFore);
-        __app.getOption().crFore = (UINT)crFore;
+         g_app.getOption().crFore = (UINT)crFore;
 
         //setWidgetTextColor(ui.groupBkgColor, g_crFore);
         //setWidgetTextColor(ui.groupFontColor, g_crFore);
@@ -240,5 +240,5 @@ void CColorDlg::slot_barValueChanged(QWidget *pBar, uint8_t uValue)
 
     this->update();
     m_bkgDlg.update();
-    __app.mainWnd().update();
+     g_app.mainWnd().update();
 }
