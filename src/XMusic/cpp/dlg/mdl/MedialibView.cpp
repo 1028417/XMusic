@@ -310,7 +310,7 @@ void CMedialibView::_onShowDir(CPath& dir)
             }
             else
             {
-                plstSingerName = &mapSingerName[&dir];
+                plstSingerName = &m_mapDirSinger[&dir];
 
                 for (auto pSubDir : dir.dirs())
                 {
