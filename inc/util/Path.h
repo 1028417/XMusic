@@ -104,8 +104,6 @@ public:
 	{
 	}
 
-	static void scanDir(const bool& bRunSignal, CPath& dir, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb);
-	
 private:
 	enum class E_FindFileStatus
 	{
@@ -135,6 +133,7 @@ protected:
 
 	void _findFile();
 
+    void _onFindFile();
 	virtual void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile);
 
 	virtual int _sort(const XFile& lhs, const XFile& rhs) const;
