@@ -209,6 +209,54 @@ CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
     return new CImgDir(m_bRunSignal, fileInfo);
 }
 
+void CImgDir::scanDir(const bool& bRunSignal, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb)
+{
+    __usleep(1);
+    this->_findFile();
+    if (!bRunSignal)
+    {
+        return;
+    }
+
+    if (m_paSubFile)
+    {
+        cb(*this, m_paSubFile);
+        if (!bRunSignal)
+        {
+            return;
+        }
+    }
+
+    /*for (auto pSubDir : dir.m_paSubDir)
+    {
+        scanDir(bRunSignal, *pSubDir, cb);
+        if (!bRunSignal)
+        {
+            return;
+        }
+    }*/
+    //性能优化
+    for (auto itr = m_paSubDir.begin(); itr != m_paSubDir.end(); )
+    {
+        auto pSubDir = *itr;
+        ((CImgDir*)pSubDir)->scanDir(bRunSignal, cb);
+        if (pSubDir->count() == 0)
+        {
+            delete pSubDir;
+            itr = m_paSubDir.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+
+        if (!bRunSignal)
+        {
+            return;
+        }
+    }
+}
+
 bool CImgDir::genSubImg(CAddBkgView& lv, XThread& thread)
 {
     UINT uGenCount = 12+3*lv.scrollPos(); // +3*ceil(lv.scrollPos());

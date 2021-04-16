@@ -535,8 +535,6 @@ void CAddBkgView::showLoading(bool bShow)
 
 void CAddBkgView::scanDir(cwstr strDir)
 {
-    showLoading(true);
-
     m_thrScan.cancel();
 
     if (m_thrGenSubImg)
@@ -550,22 +548,25 @@ void CAddBkgView::scanDir(cwstr strDir)
     m_rootImgDir.setDir(strDir);
 
     static UINT s_uSequence = 0;
-    m_thrScan.start([&](signal_t bRunSignal){
+    m_thrScan.start([&](signal_t bRunSignal){        
+        g_app.sync([&]{
+           showLoading(false);
+        });
+
         if (0 == s_uSequence)
         {
             m_olBkgDir.initOlBkg(*this);
         }
-
         auto uSequence = ++s_uSequence;
 
-        CPath::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
-            if (m_pImgDir || !m_addbkgDlg.isVisible())
-            {
-                m_thrScan.usleep(100);
-            }
+        CImgDir::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
             if (!bRunSignal)
             {
                 return;
+            }
+            if (m_pImgDir || !m_addbkgDlg.isVisible())
+            {
+                m_thrScan.usleep(100);
             }
 
              g_app.sync([&, uSequence]{
@@ -580,6 +581,6 @@ void CAddBkgView::scanDir(cwstr strDir)
         (void)m_thrScan.usleep(100); //空目录视觉效果
          g_app.sync([&]{
             showLoading(false);
-        });
+         });
     });
 }

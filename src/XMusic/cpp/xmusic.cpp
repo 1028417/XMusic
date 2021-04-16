@@ -225,6 +225,9 @@ int main(int argc, char *argv[])
     m_logger << "exit: " >> nRet;
     m_logger.close();
     //fsutil::copyFile(strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
+
+    g_app.~CApp();
+
     return nRet;
 }
 

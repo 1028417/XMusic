@@ -107,6 +107,8 @@ public:
         m_vecVImg.clear();
     }
 
+    void scanDir(const bool& bRunSignal, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb);
+
     virtual wstring displayName() const;
 
     cqpm icon() const
