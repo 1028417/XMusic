@@ -28,6 +28,8 @@
 #define IDD_DLG_MEDIASET                2007
 #define IDC_CHECK_END                   2007
 #define IDC_CompareFileSize             2007
+#define IDC_CHECK_MultiLogin2           2007
+#define IDC_CHECK_XPkg                  2007
 #define IDC_TREE                        2008
 #define IDD_PAGE_ALBUM                  2008
 #define IDC_DelOther                    2008
@@ -53,7 +55,6 @@
 #define IDC_EDIT2                       2012
 #define IDC_DeleteOther3                2012
 #define IDC_ExportDB                    2012
-#define IDC_EDIT_Timeout                2012
 #define IDC_EDIT_VipDays                2012
 #define IDD_DLG_ALARMCLOCK              2013
 #define IDR_MENU_PLAYITEM               2013
