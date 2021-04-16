@@ -124,16 +124,16 @@ void COptionMgr::init()
 
     jsonutil::get(jRoot[OI_NetworkWarn], m_opt.bNetworkWarn);
 
-    /*const JValue& jValue = jRoot[OI_XPkg];
+    /*const JValue& jValue = jRoot[OI_Xpk];
     if (jValue.isArray())
     {
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
         {
-            wstring strXPkg;
-            jsonutil::get(jValue[uIdx], true, strXPkg);
-            if (!strXPkg.empty())
+            wstring strXpk;
+            jsonutil::get(jValue[uIdx], true, strXpk);
+            if (!strXpk.empty())
             {
-                m_opt.lstXPkg.push_back(strXPkg);
+                m_opt.lstXpk.push_back(strXpk);
             }
         }
     }*/
@@ -204,10 +204,10 @@ void COptionMgr::saveOption()
 
     jRoot[OI_NetworkWarn] = m_opt.bNetworkWarn;
 
-    /*auto& jValue = jRoot[OI_XPkg];
-    for (cauto strXPkg : m_opt.lstXPkg)
+    /*auto& jValue = jRoot[OI_Xpk];
+    for (cauto strXpk : m_opt.lstXpk)
     {
-        jValue.append(JValue(strutil::toUtf8(strXPkg)));
+        jValue.append(JValue(strutil::toUtf8(strXpk)));
     }*/
 #endif
 
