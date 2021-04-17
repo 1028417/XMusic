@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
     m_logger.close();
     //fsutil::copyFile(strWorkDir+L"/xmusic.log", __sdcardDir L"xmusic.log");
 
-    g_app.~CApp();
+    // 会引起静态对话框析构异常g_app.~CApp();
 
     return nRet;
 }

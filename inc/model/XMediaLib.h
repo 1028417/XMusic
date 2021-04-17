@@ -36,10 +36,12 @@ public:
         return m_cuelist;
     }
 
-    bool loadXCue(Instream& ins, cwstr strFileTitle)
+    bool loadCue(Instream& ins, cwstr strFileTitle)
     {
         return m_cuelist.load(ins, strFileTitle);
     }
+
+    void scanXpk();
 
     bool loadXSnapshot(Instream& ins);
 
@@ -62,6 +64,10 @@ private:
 	bool renameMedia(IMedia& media, cwstr strNewName) override;
 
 	UINT getSingerImgPos(UINT uSingerID) override;
+
+#if !__winvc
+    void _scanXpk(cwstr strDir, E_AttachDirType);
+#endif
 };
 
 #if !__winvc
