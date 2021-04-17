@@ -325,6 +325,8 @@ public:
 
 #if !__winvc
     static wstring getHomeDir();
+
+    static QFileInfoList fileInfoList(QDir& dir, QDir::SortFlag sortFlag = QDir::SortFlag::NoSort);
 #endif
 
 	using CB_FindFile = cfn_void_t<tagFileInfo&>;
