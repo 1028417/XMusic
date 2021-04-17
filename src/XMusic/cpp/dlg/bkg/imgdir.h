@@ -14,8 +14,8 @@ public:
     {
     }
 
-    CImgDir(signal_t bRunSignal, const tagFileInfo& fileInfo)
-        : CPath(fileInfo)
+    CImgDir(signal_t bRunSignal, cwstr strDir, CImgDir *pParent)
+        : CPath(strDir, pParent)
         , m_bRunSignal(bRunSignal)
     {
     }
@@ -92,8 +92,8 @@ private:
     }
 #endif*/
 
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
-    XFile* _newSubFile(const tagFileInfo& fileInfo) override;
+    void _genSubDir(const QFileInfo& fi);
+    void _genSubFile(const QFileInfo& fi);
 
     virtual bool _downloadSubImg(cwstr, XThread&) {return false;}
 
@@ -107,7 +107,7 @@ public:
         m_vecVImg.clear();
     }
 
-    void scanDir(const bool& bRunSignal, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb);
+    void scanDir(signal_t bRunSignal, const function<void(CImgDir& imgDir)>& cb);
 
     virtual wstring displayName() const;
 

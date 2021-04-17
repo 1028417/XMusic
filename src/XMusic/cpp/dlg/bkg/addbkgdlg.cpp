@@ -548,9 +548,9 @@ void CAddBkgView::scanDir(cwstr strDir)
     m_rootImgDir.setDir(strDir);
 
     static UINT s_uSequence = 0;
-    m_thrScan.start([&](signal_t bRunSignal){        
+    m_thrScan.start([&](signal_t bRunSignal){
         g_app.sync([&]{
-           showLoading(false);
+           showLoading(true);
         });
 
         if (0 == s_uSequence)
@@ -559,20 +559,16 @@ void CAddBkgView::scanDir(cwstr strDir)
         }
         auto uSequence = ++s_uSequence;
 
-        CImgDir::scanDir(bRunSignal, m_rootImgDir, [&, uSequence](CPath& dir, TD_XFileList&){
-            if (!bRunSignal)
-            {
-                return;
-            }
+        m_rootImgDir.scanDir(bRunSignal, [&, uSequence](CImgDir& imgDir){
             if (m_pImgDir || !m_addbkgDlg.isVisible())
             {
-                m_thrScan.usleep(100);
+                m_thrScan.usleep(30);
             }
 
              g_app.sync([&, uSequence]{
                 if (uSequence == s_uSequence)
                 {
-                    m_paImgDirs.add((CImgDir&)dir);
+                    m_paImgDirs.add(imgDir);
                     this->update();
                 }
             });

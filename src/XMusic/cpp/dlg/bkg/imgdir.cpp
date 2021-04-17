@@ -143,34 +143,27 @@ inline bool CImgDir::_genIcon(cwstr strFile)
     return true;
 }
 
-XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
+void CImgDir::_genSubFile( const QFileInfo& fi)
 {
-    if (!m_bRunSignal)
+    if (fi.size() < 50000)
     {
-        return NULL;
+        return;
     }
 
-    if (fileInfo.uFileSize < 50000)
-    {
-        __yield();
-        return NULL;
-    }
-
-    __usleep(g_uMsScanYield);
-
-    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(fileInfo.strName));
+    cauto strName = fi.fileName().toStdWString();
+    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(strName));
     if (!g_setImgExtName.includes(strExtName))
     {
-        return NULL;
+        return;
     }
 
     if (m_pmIcon.isNull())//if (m_paSubFile.empty())
     {
-        cauto strFile = path()+__wcPathSeparator+fileInfo.strName;
+        cauto strFile = path()+__wcPathSeparator+strName;
         if (!_genIcon(strFile))
         {
-            return NULL;
-        }        
+            return;
+        }
         if (m_pmIcon.width() >= __BKG_MaxSide)
         {
             m_vecHFile.push_back(strFile);
@@ -181,65 +174,78 @@ XFile* CImgDir::_newSubFile(const tagFileInfo& fileInfo)
         }
     }
 
-    return new XFile(fileInfo);
+    m_paSubFile.add(new XFile(*this, strName));
 }
 
-CPath* CImgDir::_newSubDir(const tagFileInfo& fileInfo)
+void CImgDir::_genSubDir(const QFileInfo& fi)
 {
-    if (!m_bRunSignal)
-    {
-        return NULL;
-    }
-    __usleep(g_uMsScanYield*3);
-
-    if (fileInfo.strName.front() == L'.')
-    {
-        return NULL;
-    }
-
-    if (__pkgName == fileInfo.strName)
-    {
-        return NULL;
-    }
-    if (NULL == m_fi.pParent && L"Android" == fileInfo.strName) // TODO 改为并发扫
-    {
-        return NULL;
-    }
-
-    return new CImgDir(m_bRunSignal, fileInfo);
-}
-
-void CImgDir::scanDir(const bool& bRunSignal, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb)
-{
-    __usleep(1);
-    this->_findFile();
-    if (!bRunSignal)
+    cauto qsName = fi.fileName();
+    if (qsName.front() == '.')
     {
         return;
     }
 
-    if (m_paSubFile)
+#if __android
+    if (NULL == m_fi.pParent)
     {
-        cb(*this, m_paSubFile);
-        if (!bRunSignal)
+        if ("Android" == qsName) // TODO 改为并发扫
         {
             return;
         }
     }
+#endif
 
-    /*for (auto pSubDir : dir.m_paSubDir)
+    cauto strName = qsName.toStdWString();
+    if (__pkgName == strName)
     {
-        scanDir(bRunSignal, *pSubDir, cb);
+        return;
+    }
+
+    m_paSubDir.add(new CImgDir(m_bRunSignal, strName, this));
+}
+
+void CImgDir::scanDir(signal_t bRunSignal, const function<void(CImgDir& imgDir)>& cb)
+{
+    QDir dir(__WS2Q(this->path()));
+    cauto fiList = fsutil::fileInfoList(dir);
+    for (int nIdx = 0; nIdx<fiList.size(); nIdx++)
+    {
+        __yield();
         if (!bRunSignal)
         {
             return;
         }
-    }*/
-    //性能优化
+        const QFileInfo& fi = fiList.at(nIdx);
+        if (fi.isFile())
+        {
+            _genSubFile(fi);
+        }
+        else if (fi.isDir())
+        {
+            _genSubDir(fi);
+        }
+    }
+
+    if (m_paSubFile)
+    {
+        if (!bRunSignal)
+        {
+            return;
+        }
+        cb(*this);
+    }
+
     for (auto itr = m_paSubDir.begin(); itr != m_paSubDir.end(); )
     {
+        __usleep(g_uMsScanYield);
+        if (!bRunSignal)
+        {
+            return;
+        }
+
         auto pSubDir = *itr;
         ((CImgDir*)pSubDir)->scanDir(bRunSignal, cb);
+
         if (pSubDir->count() == 0)
         {
             delete pSubDir;
@@ -248,11 +254,6 @@ void CImgDir::scanDir(const bool& bRunSignal, const function<void(CPath& dir, TD
         else
         {
             ++itr;
-        }
-
-        if (!bRunSignal)
-        {
-            return;
         }
     }
 }
@@ -548,7 +549,7 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
     lv.showLoading(true);
     m_bDownloading = true;
 
-     g_app.thread(10, [&, lstDir](XThread& thr)mutable {
+    g_app.thread(10, [&, lstDir](XThread& thr)mutable {
         auto pDir = lstDir.front();
         if (pDir->_downloadSubImg(pDir->_iconFile(), thr))
         {
