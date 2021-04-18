@@ -524,10 +524,15 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
         context.setIcon(m_pmSSFile);
         context.strText = m_mapDisplayName[&MediaRes];
     }
+    else if (file.rootDir() == &__medialib) //MediaRes.GetFileType() == E_MediaFileType::MFT_Null) //xpk
+    {
+        context.setIcon(m_pmFile);
+        context.strText = MediaRes.GetTitle();
+    }
     else
     {
         context.setIcon(m_pmFile);
-        context.strText = MediaRes.fileName();
+        context.strText = MediaRes.GetName();
     }
 }
 
@@ -568,8 +573,11 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     }
     else
     {
-        context.setIcon(m_pmXpk);
-        return;
+        if (dir.rootDir() == &__medialib) //xpk
+        {
+            context.setIcon(m_pmXpk);
+            return;
+        }
 
         context.setIcon(m_pmDir);
 
