@@ -60,5 +60,6 @@
         <file>img/medialib/compactDisc.png</file>
         <file>img/medialib/sq.png</file>
         <file>img/medialib/pure.png</file>
+        <file>img/medialib/xpk.png</file>
     </qresource>
 </RCC>

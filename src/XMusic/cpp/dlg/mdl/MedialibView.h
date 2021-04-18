@@ -45,6 +45,8 @@ private:
     };
     tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
 
+    QPixmap m_pmXpk;
+
     QPixmap m_pmSSFile;
 
     cqpm m_pmHDDisk;

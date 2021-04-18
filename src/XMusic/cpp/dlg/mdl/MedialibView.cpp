@@ -60,8 +60,8 @@ inline void CMedialibView::_genSingerMediaTitle(const IMedia *pMedia, cwstr strS
 CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
-    , m_SingerLib( g_app.getSingerMgr())
-    , m_PlaylistLib( g_app.getPlaylistMgr())
+    , m_SingerLib(g_app.getSingerMgr())
+    , m_PlaylistLib(g_app.getPlaylistMgr())
     , m_OuterDir(OuterDir)
     , m_lpCatItem {
         {__mdlPng(dsd), __catDSD},
@@ -75,16 +75,14 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
         {__mdlPng(pure), __catPure},
         {__mdlPng(ssdir), L""}
     }
-    , m_pmHDDisk( g_app.m_pmHDDisk)
-    , m_pmSQDisk( g_app.m_pmSQDisk)
+    , m_pmHDDisk(g_app.m_pmHDDisk)
+    , m_pmSQDisk(g_app.m_pmSQDisk)
 {
 }
 
 void CMedialibView::initpm()
 {
     (void)m_brNullSingerHead.setTexture(__mdlPng(singerdefault));
-
-    (void)m_pmSSFile.load(__mdlPng(media));
 
     (void)m_pmSingerGroup.load(__mdlPng(singergroup));
     (void)m_pmAlbum.load(__mdlPng(album));
@@ -94,6 +92,10 @@ void CMedialibView::initpm()
     (void)m_pmPlayItem.load(__mdlPng(playitem));
 
     (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
+
+    (void)m_pmXpk.load(__mdlPng(xpk));
+
+    (void)m_pmSSFile.load(__mdlPng(media));
 
 #if __android
     (void)m_pmOuterDir.load(__mdlPng(tf));
@@ -566,6 +568,9 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     }
     else
     {
+        context.setIcon(m_pmXpk);
+        return;
+
         context.setIcon(m_pmDir);
 
         auto pParentDir = dir.parent();
