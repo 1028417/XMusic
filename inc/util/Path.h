@@ -21,6 +21,7 @@ using TD_DirObjectList = PtrArray<CDirObject>;
 
 class __UtilExt XFile
 {
+friend class CPath;
 public:
     virtual ~XFile() = default;
 
@@ -105,13 +106,7 @@ public:
 	}
 
 private:
-	enum class E_FindFileStatus
-	{
-		FFS_None
-		, FFS_Exists
-		, FFS_NotExists
-	};
-	E_FindFileStatus m_eFindFileStatus = E_FindFileStatus::FFS_None;
+    bool m_bFindFileStatus = false;
 
 protected:
 	TD_PathList m_paSubDir;
@@ -151,22 +146,8 @@ public:
         XFile::setName(strutil::rtrim_r(strDir, __wcPathSeparator));
 	}
 
-	void assign(const TD_PathList& paSubDir, const TD_XFileList& paSubFile)
-	{
-		m_paSubDir.assign(paSubDir);
-		m_paSubFile.assign(paSubFile);
-
-		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
-	}
-	void swap(TD_PathList& paSubDir, TD_XFileList& paSubFile)
-	{
-		m_paSubDir.swap(paSubDir);
-		m_paSubFile.swap(paSubFile);
-
-		m_eFindFileStatus = E_FindFileStatus::FFS_Exists;
-	}
-
-    //void scan(const CB_PathScan& cb);
+        void assign(const TD_PathList& paSubDir, const TD_XFileList& paSubFile);
+        void assign(TD_PathList&& paSubDir, TD_XFileList&& paSubFile);
 
 	const TD_PathList& dirs()
 	{
