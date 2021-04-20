@@ -288,7 +288,7 @@ void __view::addInMedia(const list<wstring>& lstFiles, CProgressDlg& ProgressDlg
 			<< L"      大小:  " << MediaResInfo.fileSizeString();
 
 		cauto fnGenTag = [&](cwstr strPath) {
-			auto eFileType = __mediaFileType(strPath);
+			auto eFileType = IMedia::getMediaFileType(strPath);
 			if (E_MediaFileType::MFT_MP3 == eFileType || E_MediaFileType::MFT_FLAC == eFileType)
 			{
 				tagMediaTag MediaTag;
@@ -679,7 +679,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 		}
 	}
 
-	if (strutil::lowerCase_r(fsutil::GetFileExtName(strDstFile)) != __snapshotExt)
+	if (!fsutil::checkExtName(strDstFile, __snapshotExt))
 	{
 		strDstFile.append(__wcDot + __snapshotExt);
 	}
@@ -955,7 +955,7 @@ UINT __view::formatFileTitle(CMediaDir& dir)
 				return;
 			}
 
-			cauto strNewName = strTitle + __wcDot + fsutil::GetFileExtName(strPath);
+			cauto strNewName = strTitle + __wcDot + fsutil::getExtName(strPath);
 			if (!fsutil::moveFile(strPath, fsutil::GetParentDir(strPath) + __wcPathSeparator + strNewName))
 			{
 				ProgressDlg.msgBox(L"重命名文件失败: " + strNewName);

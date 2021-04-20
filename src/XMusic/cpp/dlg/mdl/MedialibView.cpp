@@ -855,19 +855,33 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rc.setRight(rcRet.x() - __size(20));
     }
 
-    QString qsMediaQuality;
+    const QString *pqsQuality = NULL;
+    IMedia *pMedia = NULL;
     if (mlContext.pMedia)
     {
-        auto eType = mlContext.pMedia->type();
-        if (E_MediaType::MT_AlbumItem == eType)
+        if (E_MediaType::MT_AlbumItem == mlContext.pMedia->type())
         {
             rc.setLeft(rc.left() + __size10);
         }
 
-        if (E_MediaType::MT_MediaRes != eType)
+        pMedia = mlContext.pMedia;
+    }
+    else
+    {
+        pMedia = (CMediaRes*)mlContext.pFile;
+    }
+
+    if (pMedia)
+    {
+        if (E_MediaType::MT_MediaRes != pMedia->type()
+                || ((CMediaRes*)pMedia)->rootDir() != &m_OuterDir)
         {
-            qsMediaQuality = mediaQualityString(mlContext.pMedia->quality());
-            rc.setRight(rc.right() - __size(20) - __size10*qsMediaQuality.length());
+            cauto qsQuality = mediaQualityString(*pMedia);
+            if (!qsQuality.isEmpty())
+            {
+                pqsQuality = &qsQuality;
+                rc.setRight(rc.right() - __size(20) - __size10*qsQuality.length());
+            }
         }
     }
 
@@ -932,7 +946,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
 
-    if (!qsMediaQuality.isEmpty())
+    if (pqsQuality)
     {
         CPainterFontGuard fontGuard(painter, 0.69, TD_FontWeight::Thin);
 
@@ -940,7 +954,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         rcPos.setLeft(rcPos.right() + __size(20));
         rcPos.setTop(rcPos.top() - __size(9));
         rcPos.setRight(10000);
-        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, qsMediaQuality, 1, uShadowAlpha, uTextAlpha);
+        painter.drawTextEx(rcPos, Qt::AlignLeft|Qt::AlignTop, *pqsQuality, 1, uShadowAlpha, uTextAlpha);
     }
 
     return rcRet;
@@ -1167,7 +1181,7 @@ CMediaRes* CMedialibView::hittestMediaRes(cwstr strPath)
 
 CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
 {
-    if (fileInfo.strName.front() == L'.')
+    if (fileInfo.strName.front() == __wcDot)
     {
         return NULL;
     }
