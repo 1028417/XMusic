@@ -5,11 +5,142 @@
 
 #define __playIconOffset __size10
 
+#if __android
+#define __OuterDir __sdcardDir
+#elif __windows
+#define __OuterDir L""
+#else
+#define __OuterDir fsutil::getHomeDir()
+#endif
+
+class COuterDir : public CMediaDir
+{
+public:
+    COuterDir() : CMediaDir(__OuterDir)
+    {
+    }
+
+    COuterDir(cwstr strPath, CMediaDir *pParent = NULL)
+        : CMediaDir(strPath, pParent)
+    {
+    }
+
+private:
+    wstring path() const override
+    {
+        return m_fi.strName;
+    }
+
+    wstring GetPath() const override // 所有平台都需要
+    {
+        return m_fi.strName;
+    }
+
+#if __windows
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
+    {
+        if (NULL == m_fi.pParent)
+        {
+            std::list<std::wstring> lstDrivers;
+            winfsutil::getSysDrivers(lstDrivers);
+            for (cauto strDriver : lstDrivers)
+            {
+                paSubDir.add(new COuterDir(strDriver, this));
+            }
+        }
+        else
+        {
+            CMediaDir::_onFindFile(paSubDir, paSubFile);
+        }
+    }
+
+#else
+#if __android
+    void _onFindFile(TD_PathList& paSubDir, TD_XFileList& paSubFile) override
+    {
+        CMediaDir::_onFindFile(paSubDir, paSubFile);
+
+        if (NULL == m_fi.pParent)
+        {
+            auto strRoot = L"/storage/";
+            (void)fsutil::findSubDir(strRoot, [&](tagFileInfo& fi) {
+                paSubDir.addFront(new COuterDir(strRoot + fi.strName, this));
+            });
+        }
+    }
+#endif
+
+    CMediaRes* subPath(cwstr strSubPath, bool bDir) override
+    {
+        cauto strOppPath = fsutil::GetOppPath(m_fi.strName, strSubPath);
+        if (strOppPath.empty())
+        {
+#if __android
+            if (NULL == m_fi.pParent)
+            {
+                for (auto pSubDir : dirs())
+                {
+                    auto pOuterDir = dynamic_cast<COuterDir*>(pSubDir);
+                    if (NULL == pOuterDir)
+                    {
+                        break;
+                    }
+
+                    auto pMediaRes = pOuterDir->subPath(strSubPath, bDir);
+                    if (pMediaRes)
+                    {
+                        return pMediaRes;
+                    }
+                }
+            }
+#endif
+
+            return NULL;
+        }
+
+        return (CMediaRes*)CMediaDir::subPath(strOppPath, bDir);
+    }
+#endif
+
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override
+    {
+        if (fileInfo.strName.front() == L'.')
+        {
+            return NULL;
+        }
+
+        CMediaDir *pSubDir = new CMediaDir(fileInfo);
+#if __windows
+        if (m_fi.pParent && NULL == m_fi.pParent->parent())
+#else
+        if (NULL == m_fi.pParent)
+#endif
+        {
+            if (!pSubDir->files())
+            {
+                cauto paDirs = pSubDir->dirs();
+                if (paDirs.size() <= 1)
+                {
+                    if (!paDirs.any([&](CPath& subDir){
+                        return subDir.dirs() || subDir.files();
+                    }))
+                    {
+                        delete pSubDir;
+                        return NULL;
+                    }
+                }
+            }
+        }
+
+        return pSubDir;
+    }
+};
+
 class CMedialibView : public CMLListView
 {
     Q_OBJECT
 public:
-    CMedialibView(class CMedialibDlg& medialibDlg, CMediaDir& OuterDir);
+    CMedialibView(class CMedialibDlg& medialibDlg);
 
 public:
     CBrush m_brNullSingerHead;
@@ -23,7 +154,7 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    CMediaDir &m_OuterDir;
+    COuterDir m_OuterDir;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmAlbum;
@@ -96,6 +227,8 @@ public:
 #if __android
     void showDir(CPath& dir) override;
 #endif
+
+    CMediaRes* showMediaRes(cwstr strPath);
 
     CSinger *currentSinger() const;
 

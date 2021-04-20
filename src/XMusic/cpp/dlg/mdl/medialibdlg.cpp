@@ -6,8 +6,7 @@
 
 static Ui::MedialibDlg ui;
 
-CMedialibDlg::CMedialibDlg() :
-  m_lv(*this, m_OuterDir)
+CMedialibDlg::CMedialibDlg() : m_lv(*this)
   //, m_wholeTrackDlg(*this)
   //, m_singerImgDlg(*this)
 {
@@ -108,20 +107,18 @@ void CMedialibDlg::_show()
         TD_PathList paXpk(__xmedialib.xpkList());
         if (paXpk)
         {
+            m_xpkDir.setName(L"离线音乐包");
             m_xpkDir.assign(std::move(paXpk), TD_XFileList());
-
-            ui.btnXpk->setEnabled(true);
         }
         else
         {
             ui.btnXpk->setEnabled(false);
+            ui.btnXpk->setVisible(false);
         }
     }
 
     CDialog::show([&]{
         m_lv.cleanup();
-
-        m_OuterDir.clear();
     });
 }
 
@@ -162,19 +159,11 @@ bool CMedialibDlg::showMedia(IMedia& media)
 
 CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
-    CMediaRes *pMediaRes = m_OuterDir.subFile(strPath);
-    if (NULL == pMediaRes)
+    auto pMediaRes = m_lv.showMediaRes(strPath);
+    if (pMediaRes)
     {
-        pMediaRes = __medialib.subFile(strPath);
-        if(NULL == pMediaRes)
-        {
-            return NULL;
-        }
+        _show();
     }
-
-    m_lv.hittestFile(*pMediaRes);
-
-    _show();
 
     return pMediaRes;
 }

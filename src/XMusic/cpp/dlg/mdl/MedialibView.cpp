@@ -57,12 +57,11 @@ inline void CMedialibView::_genSingerMediaTitle(const IMedia *pMedia, cwstr strS
     }
 }
 
-CMedialibView::CMedialibView(CMedialibDlg& medialibDlg, CMediaDir &OuterDir)
+CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
     : CMLListView(&medialibDlg, E_LVScrollBar::LVSB_Left)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(g_app.getSingerMgr())
     , m_PlaylistLib(g_app.getPlaylistMgr())
-    , m_OuterDir(OuterDir)
     , m_lpCatItem {
         {__mdlPng(dsd), __catDSD},
         {__mdlPng(hires), __catHires},
@@ -525,15 +524,17 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, XFile& file)
         context.setIcon(m_pmSSFile);
         context.strText = m_mapDisplayName[&MediaRes];
     }
-    else if (file.rootDir() == &__medialib) //MediaRes.GetFileType() == E_MediaFileType::MFT_Null) //xpk
-    {
-        context.setIcon(m_pmFile);
-        context.strText = MediaRes.GetTitle();
-    }
     else
     {
         context.setIcon(m_pmFile);
-        context.strText = MediaRes.GetName();
+        if (file.rootDir() == &m_OuterDir)
+        {
+            context.strText = MediaRes.GetName();
+        }
+        else //MediaRes.GetFileType() == E_MediaFileType::MFT_Null) //xpk
+        {
+            context.strText = MediaRes.GetTitle();
+        }
     }
 }
 
@@ -541,9 +542,9 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 {
     context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-    if (&dir != &__medialib && &dir != &m_OuterDir)
+    if (dir.parent()) //(&dir != &__medialib && &dir != &m_OuterDir)
     {
-        auto uCount = dir.count();// dir.dirs().size() + dir.files().size();
+        auto uCount = dir.count();
         if (uCount > 0)
         {
             context.strRemark << uCount << L" 项";
@@ -605,9 +606,12 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 #if __android || __windows
         else
         {
-            if (pParentDir == &m_OuterDir && dynamic_cast<COuterDir*>(&dir))
+            if (pParentDir == &m_OuterDir)
             {
-                context.setIcon(m_pmOuterDir);
+                if (dynamic_cast<COuterDir*>(&dir)) //windows驱动器、安卓tf卡
+                {
+                    context.setIcon(m_pmOuterDir);
+                }
             }
         }
 #endif
@@ -1104,7 +1108,9 @@ void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 }
 
 void CMedialibView::cleanup()
-{
+{    
+    m_OuterDir.clear();
+
     m_mapDisplayName.clear();
 
     m_lstSingerHead.clear();
@@ -1127,3 +1133,20 @@ void CMedialibView::showDir(CPath& dir)
     CMLListView::showDir(dir);
 }
 #endif
+
+CMediaRes* CMedialibView::showMediaRes(cwstr strPath)
+{
+    CMediaRes *pMediaRes = m_OuterDir.subFile(strPath);
+    if (NULL == pMediaRes)
+    {
+        pMediaRes = __medialib.subFile(strPath);
+        if(NULL == pMediaRes)
+        {
+            return NULL;
+        }
+    }
+
+    hittestFile(*pMediaRes);
+
+    return pMediaRes;
+}
