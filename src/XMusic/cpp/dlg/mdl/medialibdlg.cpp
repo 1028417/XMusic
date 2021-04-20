@@ -237,7 +237,9 @@ void CMedialibDlg::_relayout(int cx, int cy)
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
     int xBtn = cx - __lvRowMargin  - szBtn;
-    ui.btnXpk->setGeometry(xBtn, rcReturn.top(), szBtn, szBtn);
+#define __xpkOffset __size(18)
+    ui.btnXpk->setGeometry(xBtn-__xpkOffset, rcReturn.top()-__xpkOffset/2
+                           , szBtn+__xpkOffset, szBtn+__xpkOffset);
 
     ui.btnPlay->setGeometry(xBtn + __playIconOffset, rcReturn.top(), szBtn, szBtn);
 
