@@ -248,12 +248,41 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="CButton" name="btnXpk">
+   <property name="geometry">
+    <rect>
+     <x>860</x>
+     <y>20</y>
+     <width>90</width>
+     <height>90</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/img/medialib/xpk.png);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>100</width>
+     <height>100</height>
+    </size>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
   <zorder>labelTitle</zorder>
   <zorder>labelSingerImg</zorder>
   <zorder>btnReturn</zorder>
   <zorder>btnUpward</zorder>
   <zorder>btnPlay</zorder>
   <zorder>frameFilterLanguage</zorder>
+  <zorder>btnXpk</zorder>
  </widget>
  <customwidgets>
   <customwidget>

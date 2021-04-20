@@ -92,10 +92,32 @@ void CMedialibDlg::init()
             }
         }
     });
+
+    ui.btnXpk->onClicked([&]{
+        m_lv.showDir(m_xpkDir);
+    });
 }
 
 void CMedialibDlg::_show()
 {
+    static bool bFlag = false;
+    if (!bFlag)
+    {
+        bFlag = true;
+
+        TD_PathList paXpk(__xmedialib.xpkList());
+        if (paXpk)
+        {
+            m_xpkDir.assign(std::move(paXpk), TD_XFileList());
+
+            ui.btnXpk->setEnabled(true);
+        }
+        else
+        {
+            ui.btnXpk->setEnabled(false);
+        }
+    }
+
     CDialog::show([&]{
         m_lv.cleanup();
 
@@ -205,22 +227,22 @@ void CMedialibDlg::_relayout(int cx, int cy)
     }
     ui.btnReturn->setGeometry(rcReturn);
 
-    QRect rcUpward(rcReturn.right() + cxMargin*.6f, rcReturn.top(), szBtn, szBtn);
-    ui.btnUpward->setGeometry(rcUpward);
+    int xUpward = rcReturn.right() + cxMargin*.6f;
+    ui.btnUpward->setGeometry(xUpward, rcReturn.top(), szBtn, szBtn);
 
     auto& frameFilterLanguage = *ui.frameFilterLanguage;
     frameFilterLanguage.move(cx-frameFilterLanguage.width()-cxMargin
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
-    int x_btnPlay = cx - __lvRowMargin + __playIconOffset - szBtn;
-    QRect rcPlay(x_btnPlay, rcReturn.top(), szBtn, szBtn);
-    ui.btnPlay->setGeometry(rcPlay);
+    int xBtn = cx - __lvRowMargin  - szBtn;
+    ui.btnXpk->setGeometry(xBtn, rcReturn.top(), szBtn, szBtn);
+
+    ui.btnPlay->setGeometry(xBtn + __playIconOffset, rcReturn.top(), szBtn, szBtn);
 
     _relayoutTitle();
 
-    int y_MedialibView = rcReturn.bottom() + cyMargin;
-    QRect rcLv(0, y_MedialibView, cx, cy-y_MedialibView);
-    m_lv.setGeometry(rcLv);
+    int yLv = rcReturn.bottom() + cyMargin;
+    m_lv.setGeometry(0, yLv, cx, cy-yLv);
 
     m_singerImgDlg.relayoutTitle(rcReturn);
 }
@@ -258,14 +280,16 @@ void CMedialibDlg::_relayoutTitle()
     int x_title = cxMargin + (ui.btnUpward->isVisible() ? rcUpward.right() : rcReturn.right());
     int cx_title = rc.x()-cxMargin-x_title;
     int cyMargin = m_lv.y()-rcReturn.bottom();
-    QRect rcTitle(x_title, rcReturn.top()-cyMargin, cx_title, rcReturn.height() + cyMargin*2);
-    ui.labelTitle->setGeometry(rcTitle);
+    ui.labelTitle->setGeometry(x_title, rcReturn.top()-cyMargin
+                               , cx_title, rcReturn.height() + cyMargin*2);
 
     m_wholeTrackDlg.relayoutTitle(rcReturn, rcUpward, ui.btnPlay->geometry(), m_lv.geometry());
 }
 
 void CMedialibDlg::updateHead(const WString& strTitle)
 {
+    ui.btnXpk->setVisible(false);
+
     bool bShowPlayButton = false;
     int nElidedFlag = -1;
     auto pMediaSet = m_lv.currentMediaSet();
@@ -313,6 +337,10 @@ void CMedialibDlg::updateHead(const WString& strTitle)
             }
 
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
+        }
+        else
+        {
+            ui.btnXpk->setVisible(ui.btnXpk->isEnabled());
         }
     }
 

@@ -147,6 +147,8 @@ public:
     CMedialibDlg();
 
 private:
+    CMediaDir m_xpkDir;
+
     COuterDir m_OuterDir;
 
     CMedialibView m_lv;

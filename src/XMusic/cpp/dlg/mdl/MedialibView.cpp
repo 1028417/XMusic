@@ -84,6 +84,8 @@ void CMedialibView::initpm()
 {
     (void)m_brNullSingerHead.setTexture(__mdlPng(singerdefault));
 
+    (void)m_pmXpk.load(__mdlPng(xpk));
+
     (void)m_pmSingerGroup.load(__mdlPng(singergroup));
     (void)m_pmAlbum.load(__mdlPng(album));
 
@@ -92,8 +94,6 @@ void CMedialibView::initpm()
     (void)m_pmPlayItem.load(__mdlPng(playitem));
 
     (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
-
-    (void)m_pmXpk.load(__mdlPng(xpk));
 
     (void)m_pmSSFile.load(__mdlPng(media));
 
@@ -274,6 +274,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     else if (&dir == &m_OuterDir)
     {
         strTitle = __LocalDirName;
+        strutil::ltrim(strTitle);
     }
     else
     {
@@ -573,7 +574,9 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     }
     else
     {
-        if (dir.rootDir() == &__medialib) //xpk
+        //xpk
+        auto pRootDir = dir.rootDir();
+        if (pRootDir != &__medialib && pRootDir != &m_OuterDir)//pRootDir == &__medialib)
         {
             context.setIcon(m_pmXpk);
             return;
@@ -1071,9 +1074,9 @@ CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
     return CMLListView::_onUpward(currentMediaSet);
 }
 
-CPath* CMedialibView::_onUpward(CPath& currentDir)
+/*CPath* CMedialibView::_onUpward(CPath& currentDir)
 {
-    if (NULL == currentDir.parent())
+    ???if (NULL == currentDir.parent())
     {
         if (&currentDir != &__medialib && &currentDir != &m_OuterDir)
         {
@@ -1082,7 +1085,7 @@ CPath* CMedialibView::_onUpward(CPath& currentDir)
     }
 
     return CMLListView::_onUpward(currentDir);
-}
+}*/
 
 void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 {

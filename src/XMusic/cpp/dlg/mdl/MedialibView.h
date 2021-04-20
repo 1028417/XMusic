@@ -17,6 +17,8 @@ public:
 private:
     class CMedialibDlg& m_medialibDlg;
 
+    QPixmap m_pmXpk;
+
     CMediaSet& m_SingerLib;
 
     CMediaSet& m_PlaylistLib;
@@ -44,8 +46,6 @@ private:
         wstring strText;
     };
     tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
-
-    QPixmap m_pmXpk;
 
     QPixmap m_pmSSFile;
 
@@ -138,7 +138,6 @@ private:
     void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
-    CPath* _onUpward(CPath& currentDir) override;
 
     void _flashItem(UINT uItem, bool bSelect = false)
     {
