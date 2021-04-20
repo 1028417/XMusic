@@ -43,7 +43,7 @@ public:
 
     void scanXpk();
 
-    const TD_MediaDirList& xpkList();
+    TD_MediaDirList xpkList();
 
     bool loadXSnapshot(Instream& ins);
 
