@@ -134,10 +134,16 @@ protected:
         return currentDir.parent();
     }
 
-    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)
+    virtual void _onMediasetClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet)
     {
         _saveScrollRecord();
         showMediaSet(mediaSet);
+    }
+
+    virtual void _onDirClick(tagLVItem&, const QMouseEvent&, CPath& dir)
+    {
+        _saveScrollRecord();
+        showDir(dir);
     }
 
 private:
@@ -153,7 +159,7 @@ private:
 
     void _onItemClick(tagLVItem&, const QMouseEvent&) override;
 
-    virtual void _onItemClick(tagLVItem&, const QMouseEvent&, IMedia&) {}
+    virtual void _onMediaClick(tagLVItem&, const QMouseEvent&, IMedia&) {}
 
     inline void _saveScrollRecord()
     {
@@ -198,7 +204,7 @@ public:
     void showMediaSet(CMediaSet& MediaSet, bool bUpward=false);
     bool hittestMedia(const IMedia& media);
 
-    virtual void showDir(CPath& dir);
+    void showDir(CPath& dir);
 
     void hittestFile(XFile& file);
 

@@ -16,7 +16,7 @@ public:
     CMedialibDlg();
 
 private:
-    CMediaDir m_xpkDir;
+    CMediaDir m_xpkRoot;
 
     CMedialibView m_lv;
 
@@ -55,6 +55,8 @@ public:
 
 private:
     void _show();
+
+    void _initXpk();
 
     void _relayout(int cx, int cy) override;
 

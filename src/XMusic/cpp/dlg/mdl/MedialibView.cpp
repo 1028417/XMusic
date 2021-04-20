@@ -542,7 +542,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
 {
     context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-    if (dir.parent()) //(&dir != &__medialib && &dir != &m_OuterDir)
+    //if (dir.parent()) //(&dir != &__medialib && &dir != &m_OuterDir)
+    if (dir.rootDir() != &m_OuterDir)
     {
         auto uCount = dir.count();
         if (uCount > 0)
@@ -999,7 +1000,7 @@ inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)
     return x >= xPlayIcon;
 }
 
-void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMediaSet& mediaSet)
+void CMedialibView::_onMediasetClick(tagLVItem& lvItem, const QMouseEvent& me, CMediaSet& mediaSet)
 {
     if (_hittestPlayIcon(tagMLItemContext(lvItem, mediaSet), me.x()))
     {
@@ -1010,10 +1011,10 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, CMedi
         return;
     }
 
-    CMLListView::_onItemClick(lvItem, me, mediaSet);
+    CMLListView::_onMediasetClick(lvItem, me, mediaSet);
 }
 
-void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
+void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
 {
     if (me.x() <= (int)rowHeight())
     {
@@ -1068,6 +1069,34 @@ void CMedialibView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedi
     }
 }
 
+void CMedialibView::_onDirClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& dir)
+{
+#if __android
+    if (&dir == &m_OuterDir)
+    {
+        if (!requestAndroidSDPermission())
+        {
+            return;
+        }
+    }
+#endif
+
+    list<CPath*> lstRemove;
+    for (auto pDir : dir.dirs())
+    {
+        if (!pDir->dirs() && !pDir->files())
+        {
+            lstRemove.push_back(pDir);
+        }
+    }
+    for (auto pDir : lstRemove)
+    {
+        pDir->remove();
+    }
+
+    CMLListView::_onDirClick(lvItem, me, dir);
+}
+
 CMediaSet* CMedialibView::_onUpward(CMediaSet& currentMediaSet)
 {
     if (&currentMediaSet == &m_SingerLib || &currentMediaSet == &m_PlaylistLib)
@@ -1108,7 +1137,7 @@ void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 }
 
 void CMedialibView::cleanup()
-{    
+{
     m_OuterDir.clear();
 
     m_mapDisplayName.clear();
@@ -1118,21 +1147,6 @@ void CMedialibView::cleanup()
 
     CMLListView::_cleanup();
 }
-
-#if __android
-void CMedialibView::showDir(CPath& dir)
-{
-    if (&dir == &m_OuterDir)
-    {
-        if (!requestAndroidSDPermission())
-        {
-            return;
-        }
-    }
-
-    CMLListView::showDir(dir);
-}
-#endif
 
 CMediaRes* CMedialibView::showMediaRes(cwstr strPath)
 {
@@ -1149,4 +1163,37 @@ CMediaRes* CMedialibView::showMediaRes(cwstr strPath)
     hittestFile(*pMediaRes);
 
     return pMediaRes;
+}
+
+CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
+{
+    if (fileInfo.strName.front() == L'.')
+    {
+        return NULL;
+    }
+
+    CMediaDir *pSubDir = new CMediaDir(fileInfo);
+/*#if __windows
+    if (m_fi.pParent && NULL == m_fi.pParent->parent())
+#else
+    if (NULL == m_fi.pParent)
+#endif
+    {
+        if (!pSubDir->files())
+        {
+            cauto paDirs = pSubDir->dirs();
+            if (paDirs.size() <= 1)
+            {
+                if (!paDirs.any([&](CPath& subDir){
+                    return subDir.dirs() || subDir.files();
+                }))
+                {
+                    delete pSubDir;
+                    return NULL;
+                }
+            }
+        }
+    }*/
+
+    return pSubDir;
 }

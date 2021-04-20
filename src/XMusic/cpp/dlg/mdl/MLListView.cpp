@@ -171,13 +171,13 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
         if (lvItem.uItem >= m_lstSubSets.size())
         {
             m_lstSubMedias.get(lvItem.uItem - m_lstSubSets.size(), [&](IMedia& media){
-                _onItemClick(lvItem, me, media);
+                _onMediaClick(lvItem, me, media);
             });
         }
         else
         {
             m_lstSubSets.get(lvItem.uItem, [&](CMediaSet& mediaSet){
-                _onItemClick(lvItem, me, mediaSet);
+                _onMediasetClick(lvItem, me, mediaSet);
             });
         }
     }
@@ -187,14 +187,13 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
         if (lvItem.uItem >= paSubDirs.size())
         {
             m_pDir->files().get(lvItem.uItem-paSubDirs.size(), [&](XFile& subFile) {
-                _onItemClick(lvItem, me, (CMediaRes&)subFile);
+                _onMediaClick(lvItem, me, (CMediaRes&)subFile);
             });
         }
         else
         {
-            paSubDirs.get(lvItem.uItem, [&](CPath& subPath) {
-                _saveScrollRecord();
-                showDir(subPath);
+            paSubDirs.get(lvItem.uItem, [&](CPath& dir) {
+                _onDirClick(lvItem, me, dir);
             });
         }
     }

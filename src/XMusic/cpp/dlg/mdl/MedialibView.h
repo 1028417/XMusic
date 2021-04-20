@@ -102,38 +102,7 @@ private:
     }
 #endif
 
-    CPath* _newSubDir(const tagFileInfo& fileInfo) override
-    {
-        if (fileInfo.strName.front() == L'.')
-        {
-            return NULL;
-        }
-
-        CMediaDir *pSubDir = new CMediaDir(fileInfo);
-#if __windows
-        if (m_fi.pParent && NULL == m_fi.pParent->parent())
-#else
-        if (NULL == m_fi.pParent)
-#endif
-        {
-            if (!pSubDir->files())
-            {
-                cauto paDirs = pSubDir->dirs();
-                if (paDirs.size() <= 1)
-                {
-                    if (!paDirs.any([&](CPath& subDir){
-                        return subDir.dirs() || subDir.files();
-                    }))
-                    {
-                        delete pSubDir;
-                        return NULL;
-                    }
-                }
-            }
-        }
-
-        return pSubDir;
-    }
+    CPath* _newSubDir(const tagFileInfo& fileInfo) override;
 };
 
 class CMedialibView : public CMLListView
@@ -224,10 +193,6 @@ public:
 
     void cleanup();
 
-#if __android
-    void showDir(CPath& dir) override;
-#endif
-
     CMediaRes* showMediaRes(cwstr strPath);
 
     CSinger *currentSinger() const;
@@ -267,8 +232,9 @@ private:
     void _paintIcon(tagLVItemContext&, CPainter&, cqrc) override;
     cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
 
-    void _onItemClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
-    void _onItemClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;
+    void _onMediasetClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
+    void _onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;
+    void _onDirClick(tagLVItem&, const QMouseEvent&, CPath& dir) override;
 
     CMediaSet* _onUpward(CMediaSet& currentMediaSet) override;
 

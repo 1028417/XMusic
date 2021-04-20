@@ -93,29 +93,35 @@ void CMedialibDlg::init()
     });
 
     ui.btnXpk->onClicked([&]{
-        m_lv.showDir(m_xpkDir);
+        m_lv.showDir(m_xpkRoot);
     });
+}
+
+void CMedialibDlg::_initXpk()
+{
+    static bool bFlag = false;
+    if (bFlag)
+    {
+        return;
+    }
+    bFlag = true;
+
+    TD_PathList paXpk(__xmedialib.xpkList());
+    if (paXpk)
+    {
+        m_xpkRoot.setName(L"离线音乐包");
+        m_xpkRoot.assign(std::move(paXpk), TD_XFileList());
+    }
+    else
+    {
+        ui.btnXpk->setEnabled(false);
+        ui.btnXpk->setVisible(false);
+    }
 }
 
 void CMedialibDlg::_show()
 {
-    static bool bFlag = false;
-    if (!bFlag)
-    {
-        bFlag = true;
-
-        TD_PathList paXpk(__xmedialib.xpkList());
-        if (paXpk)
-        {
-            m_xpkDir.setName(L"离线音乐包");
-            m_xpkDir.assign(std::move(paXpk), TD_XFileList());
-        }
-        else
-        {
-            ui.btnXpk->setEnabled(false);
-            ui.btnXpk->setVisible(false);
-        }
-    }
+    _initXpk();
 
     CDialog::show([&]{
         m_lv.cleanup();
@@ -160,11 +166,18 @@ bool CMedialibDlg::showMedia(IMedia& media)
 CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
     auto pMediaRes = m_lv.showMediaRes(strPath);
-    if (pMediaRes)
+    if (NULL == pMediaRes)
     {
-        _show();
+        _initXpk();
+        pMediaRes = m_xpkRoot.subFile(strPath);
+        if (NULL == pMediaRes)
+        {
+            return NULL;
+        }
+        m_lv.hittestFile(*pMediaRes);
     }
 
+    _show();
     return pMediaRes;
 }
 
