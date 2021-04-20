@@ -125,6 +125,8 @@ struct __UtilExt tagFileInfo
 
 #define __wcDot L'.'
 
+#define __wsDot L"."
+
 class __UtilExt fsutil
 {
 public:
@@ -256,16 +258,23 @@ public:
 	static string GetFileName(const string& strPath);
 
 	template <class S>
-	static S GetFileExtName(const S& strFile)
+    static S getExtName(const S& strFile)
 	{
 		auto pos = strFile.rfind('.');
 		if (pos != S::npos)
 		{
-			return strFile.substr(pos + 1);
+            auto strExtName = strFile.substr(pos + 1);
+            strutil::lowerCase(strExtName);
+            return strExtName;
 		}
 
 		return S();
 	}
+
+    static bool checkExtName(cwstr strFile, cwstr strExtName)
+    {
+        return strutil::matchIgnoreCase(getExtName(strFile), strExtName);
+    }
 
 	template <class S>
 	static S getFileTitle(const S& strPath)
@@ -278,7 +287,7 @@ public:
 	static bool MatchPath(const string& strPath1, const string& strPath2);
 
 	static bool CheckSubPath(cwstr strDir, cwstr strSubPath);
-	static wstring GetOppPath(const wstring strBaseDir, cwstr strSubPath);
+    static wstring GetOppPath(const wstring strBaseDir, cwstr strSubPath);
 
     static bool existPath(cwstr strPath, bool bDir);
     static bool existPath(const string& strPath, bool bDir);

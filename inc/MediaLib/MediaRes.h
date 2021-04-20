@@ -22,23 +22,34 @@ public:
 
     CMediaRes() = default;
 
-	CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
-        : IMedia(eFileType)
-		, CPathObject(fileInfo)
-	{
-	}
-
     CMediaRes(cwstr strDir, CMediaRes *pParent = NULL)
         : IMedia(E_MediaFileType::MFT_Null)
         , CPathObject(strDir, pParent)
     {
     }
 
+    CMediaRes(E_MediaFileType eFileType, const tagFileInfo& fileInfo)
+        : IMedia(eFileType)
+        , CPathObject(fileInfo)
+    {
+    }
+
+    CMediaRes(const tagFileInfo& fileInfo)
+        : IMedia(fileInfo.strName)
+        , CPathObject(fileInfo)
+    {
+    }
+
     CMediaRes(E_MediaFileType eFileType, CMediaRes& parent, cwstr strName, uint64_t uFileSize = 0)
-		: IMedia(eFileType)
+        : IMedia(eFileType)
         , CPathObject(parent, strName, uFileSize)
-	{
-	}
+    {
+    }
+    CMediaRes(CMediaRes& parent, cwstr strName, uint64_t uFileSize = 0)
+        : IMedia(strName)
+        , CPathObject(parent, strName, uFileSize)
+    {
+    }
 
 #if __winvc
 private:

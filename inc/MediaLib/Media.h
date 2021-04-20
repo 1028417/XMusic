@@ -180,7 +180,7 @@ public:
 private:
     inline void _UpdatePath(cwstr strPath)
     {
-        m_eFileType = __mediaFileType(strPath);
+        m_eFileType = getMediaFileType(strPath);
 
         fsutil::SplitPath(strPath, &m_strParentDir, &m_strName);
 

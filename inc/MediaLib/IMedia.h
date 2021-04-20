@@ -1,7 +1,7 @@
 
 #pragma once
 
-#define __mediaFileType(strPath) IMedia::GetMediaFileType(fsutil::GetFileExtName(strPath))
+#define __xmscExt L"xmsc"
 
 enum class E_MediaFileType
 {
@@ -49,13 +49,21 @@ enum class E_RelatedMediaSet
 class __MediaLibExt IMedia
 {
 public:
-	static cwstr GetMediaFileType(E_MediaFileType eMediaFileType);
-	static E_MediaFileType GetMediaFileType(cwstr strExtName);
+    static cwstr getMediaFileType(E_MediaFileType eMediaFileType);
+    static E_MediaFileType getMediaFileType(cwstr strFile);
 
 public:
     IMedia() = default;
 
-    IMedia(E_MediaFileType eFileType);
+    IMedia(E_MediaFileType eFileType)
+        : m_eFileType(eFileType)
+    {
+    }
+
+    IMedia(cwstr strFileName)
+        : m_eFileType(getMediaFileType(strFileName))
+    {
+    }
 
 	virtual ~IMedia() = default;
 
