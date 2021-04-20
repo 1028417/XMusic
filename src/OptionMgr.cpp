@@ -65,22 +65,6 @@ void COptionMgr::init()
         return; //不能返回false
     }
 
-#if !__OnlineMediaLib
-    const JValue& jValue = jRoot[OI_AttachDir];
-    if (jValue.isArray())
-    {
-        for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
-        {
-            wstring strAttachDir;
-            jsonutil::get(jValue[uIdx], true, strAttachDir);
-            if (!strAttachDir.empty())
-            {
-                m_opt.plAttachDir.add(strAttachDir, E_AttachDirType::ADT_Internal);
-            }
-        }
-    }
-#endif
-
     int nPlayingItem = 0;
     jsonutil::get(jRoot[OI_PlayingItem], nPlayingItem);
     if (nPlayingItem >= 0)
@@ -95,6 +79,20 @@ void COptionMgr::init()
 
 #if __winvc
     jsonutil::get(jRoot[OI_RootDir], true, m_opt.strRootDir);
+
+    const JValue& jValue = jRoot[OI_AttachDir];
+    if (jValue.isArray())
+    {
+        for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
+        {
+            wstring strAttachDir;
+            jsonutil::get(jValue[uIdx], true, strAttachDir);
+            if (!strAttachDir.empty())
+            {
+                m_opt.plAttachDir.add(strAttachDir, E_AttachDirType::ADT_Internal);
+            }
+        }
+    }
 
     jsonutil::get(jRoot[OI_HideMenuBar], m_opt.bHideMenuBar);
 
@@ -149,17 +147,6 @@ void COptionMgr::saveOption()
 
     JValue jRoot;
 
-#if !__OnlineMediaLib
-    if (m_opt.plAttachDir)
-    {
-        auto& jValue = jRoot[OI_AttachDir];
-        for (cauto pr : m_opt.plAttachDir)
-        {
-            jValue.append(JValue(strutil::toUtf8(pr.first)));
-        }
-    }
-#endif
-
     jRoot[OI_PlayingItem] = m_opt.uPlayingItem;
 
     jRoot[OI_RandomPlay] = m_opt.bRandomPlay;
@@ -169,6 +156,15 @@ void COptionMgr::saveOption()
 
 #if __winvc
     jRoot[OI_RootDir] = strutil::toUtf8(m_opt.strRootDir);
+
+    if (m_opt.plAttachDir)
+    {
+        auto& jValue = jRoot[OI_AttachDir];
+        for (cauto pr : m_opt.plAttachDir)
+        {
+            jValue.append(JValue(strutil::toUtf8(pr.first)));
+        }
+    }
 
     jRoot[OI_HideMenuBar] = m_opt.bHideMenuBar;
 

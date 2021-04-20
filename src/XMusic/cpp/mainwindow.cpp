@@ -91,6 +91,38 @@ MainWindow::MainWindow() :
     //qRegisterMetaType<QVariant>("QVariant");
 }
 
+void MainWindow::showBlank()
+{
+    _fixScreen(*this);
+    this->setVisible(true); //必须在前面？？不然ole异常？？
+}
+
+void MainWindow::preinit(XThread& thr) // showlogo之后工作线程调用
+{
+    QPixmap pmBkg(":/img/bkg.jpg");
+    m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
+
+#define __cyCDCover 825
+    auto rc = pmBkg.rect();
+    rc.setTop(rc.bottom() - __cyCDCover);
+    QPixmap&& pm = pmBkg.copy(rc);
+    m_pmCDCover.swap(pm);
+
+    mtutil::concurrence([&]{
+        m_bkgDlg.preinitBkg(thr, true);
+    }, [&]{
+        m_bkgDlg.preinitBkg(thr, false);
+    });
+
+    while (m_uShowLogoState < 3)
+    {
+        if (!thr.usleep(100))
+        {
+            break;
+        }
+    }
+}
+
 void MainWindow::_ctor()
 {
     ui.setupUi(this);
@@ -164,39 +196,8 @@ void MainWindow::_init()
         ui.btnOrder->setVisible(true);
     }
 
+    m_medialibDlg.init();
     m_bkgDlg.init();
-}
-
-void MainWindow::preinit(XThread& thr) // 工作线程
-{
-    QPixmap pmBkg(":/img/bkg.jpg");
-    m_brBkg.setTexture(pmBkg.copy(0, 0, 10, pmBkg.height()));
-
-#define __cyCDCover 825
-    auto rc = pmBkg.rect();
-    rc.setTop(rc.bottom() - __cyCDCover);
-    QPixmap&& pm = pmBkg.copy(rc);
-    m_pmCDCover.swap(pm);
-
-    mtutil::concurrence([&]{
-        m_bkgDlg.preinitBkg(thr, true);
-    }, [&]{
-        m_bkgDlg.preinitBkg(thr, false);
-    });
-
-    while (m_uShowLogoState < 3)
-    {
-        if (!thr.usleep(100))
-        {
-            break;
-        }
-    }
-}
-
-void MainWindow::showBlank()
-{
-    _fixScreen(*this);
-    this->setVisible(true); //必须在前面？？不然ole异常？？
 }
 
 void MainWindow::showLogo() // TODO 广告
@@ -364,7 +365,7 @@ void MainWindow::show()
 {
     m_bStopLogo = true;
 
-    m_medialibDlg.init(); //加载xpk列表需要在这里
+    m_medialibDlg.initXpk(); //初始化xpk列表需要在这里
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();

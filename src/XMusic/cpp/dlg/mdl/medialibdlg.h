@@ -36,6 +36,7 @@ public:
     }
 
     void init();
+    void initXpk();
 
     void show();
     void showMediaSet(CMediaSet& MediaSet);

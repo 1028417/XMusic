@@ -159,8 +159,6 @@ using CB_DeployArti = const function<bool(cwstr strTip, UINT uProgress, bool bFa
 
 struct __ModelExt tagOption
 {
-    PairList<wstring, E_AttachDirType> plAttachDir;
-
     UINT uPlayingItem = 0;
 
     bool bRandomPlay = false;
@@ -170,6 +168,7 @@ struct __ModelExt tagOption
 
 #if __winvc
     wstring strRootDir;
+    PairList<wstring, E_AttachDirType> plAttachDir;
 
     bool bHideMenuBar = false;
 

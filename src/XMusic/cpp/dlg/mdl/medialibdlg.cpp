@@ -91,7 +91,10 @@ void CMedialibDlg::init()
             }
         }
     });
+}
 
+void CMedialibDlg::initXpk()
+{
     auto& xpkRoot = m_lv.initXpk();
     if (xpkRoot.count() > 0)
     {
