@@ -164,8 +164,6 @@ void MainWindow::_init()
         ui.btnOrder->setVisible(true);
     }
 
-
-    m_medialibDlg.init();
     m_bkgDlg.init();
 }
 
@@ -365,6 +363,8 @@ void MainWindow::stopLogo()
 void MainWindow::show()
 {
     m_bStopLogo = true;
+
+    m_medialibDlg.init(); //加载xpk列表需要在这里
 
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();

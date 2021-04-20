@@ -92,25 +92,12 @@ void CMedialibDlg::init()
         }
     });
 
-    ui.btnXpk->onClicked([&]{
-        m_lv.showDir(m_xpkRoot);
-    });
-}
-
-void CMedialibDlg::_initXpk()
-{
-    static bool bFlag = false;
-    if (bFlag)
+    auto& xpkRoot = m_lv.initXpk();
+    if (xpkRoot.count() > 0)
     {
-        return;
-    }
-    bFlag = true;
-
-    TD_PathList paXpk(__xmedialib.xpkList());
-    if (paXpk)
-    {
-        m_xpkRoot.setName(L"离线音乐包");
-        m_xpkRoot.assign(std::move(paXpk), TD_XFileList());
+        ui.btnXpk->onClicked([&]{
+            m_lv.showDir(xpkRoot);
+        });
     }
     else
     {
@@ -119,27 +106,18 @@ void CMedialibDlg::_initXpk()
     }
 }
 
-void CMedialibDlg::_show()
-{
-    _initXpk();
-
-    CDialog::show([&]{
-        m_lv.cleanup();
-    });
-}
-
 void CMedialibDlg::show()
 {
     m_lv.showRoot();
 
-    _show();
+    CDialog::show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_lv.showMediaSet(MediaSet);
 
-    _show();
+    CDialog::show();
 }
 
 bool CMedialibDlg::showMedia(IMedia& media)
@@ -158,7 +136,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_wholeTrackDlg.tryShow(media);
     });
 
-    _show();
+    CDialog::show();
 
     return true;
 }
@@ -166,18 +144,10 @@ bool CMedialibDlg::showMedia(IMedia& media)
 CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
     auto pMediaRes = m_lv.hittestMediaRes(strPath);
-    if (NULL == pMediaRes)
+    if (pMediaRes)
     {
-        _initXpk();
-        pMediaRes = m_xpkRoot.subFile(strPath);
-        if (NULL == pMediaRes)
-        {
-            return NULL;
-        }
-        m_lv.hittestFile(*pMediaRes);
+        CDialog::show();
     }
-
-    _show();
     return pMediaRes;
 }
 

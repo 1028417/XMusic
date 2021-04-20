@@ -135,6 +135,18 @@ void CMedialibView::initpm()
     m_pmEN = m_pmEN.transformed(matrix, Qt::SmoothTransformation);
 }
 
+CMediaDir& CMedialibView::initXpk()
+{
+    TD_PathList paXpk(__xmedialib.xpkList());
+    if (paXpk)
+    {
+        m_xpkRoot.setName(L"离线音乐包");
+        m_xpkRoot.assign(std::move(paXpk), TD_XFileList());
+    }
+
+    return m_xpkRoot;
+}
+
 void CMedialibView::_onShowRoot()
 {
     m_mapDisplayName.clear();
@@ -1170,7 +1182,11 @@ CMediaRes* CMedialibView::hittestMediaRes(cwstr strPath)
         pMediaRes = __medialib.subFile(strPath);
         if(NULL == pMediaRes)
         {
-            return NULL;
+            pMediaRes = m_xpkRoot.subFile(strPath);
+            if (NULL == pMediaRes)
+            {
+                return NULL;
+            }
         }
     }
 

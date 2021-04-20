@@ -119,6 +119,8 @@ private:
 
     QPixmap m_pmXpk;
 
+    CMediaDir m_xpkRoot;
+
     CMediaSet& m_SingerLib;
 
     CMediaSet& m_PlaylistLib;
@@ -182,8 +184,6 @@ private:
     map<const void*, std::list<wstring>> m_mapDirSinger;
 
 public:
-    void initpm();
-
     void reset() override
     {
         m_nFlashItem = -1;
@@ -192,6 +192,10 @@ public:
     }
 
     void cleanup();
+
+    void initpm();
+
+    CMediaDir& initXpk();
 
     CMediaRes* hittestMediaRes(cwstr strPath);
 

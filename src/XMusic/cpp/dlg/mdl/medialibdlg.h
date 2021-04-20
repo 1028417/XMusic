@@ -16,8 +16,6 @@ public:
     CMedialibDlg();
 
 private:
-    CMediaDir m_xpkRoot;
-
     CMedialibView m_lv;
 
     CWholeTrackDlg m_wholeTrackDlg;
@@ -54,9 +52,10 @@ public:
     }
 
 private:
-    void _show();
-
-    void _initXpk();
+    void _onClosed() override
+    {
+        m_lv.cleanup();
+    }
 
     void _relayout(int cx, int cy) override;
 

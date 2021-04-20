@@ -99,7 +99,7 @@ private:
 	list<tagOlBkgList> m_lstOlBkg;
 
 private:
-    E_UpgradeResult _loadMdl(const tagMdlConf& MdlConf, CByteBuffer& bbfMdl, bool bUpgradeDB);
+    E_UpgradeResult _loadMdl(CByteBuffer& bbfMdl, bool bUpgradeDB);
 
     void _initOlBkg(CByteBuffer& bbfOlBkg);
 
