@@ -67,7 +67,7 @@ const bool& usleepex(UINT uMs);
 void async(cfn_void cb);
 void async(UINT uDelayTime, cfn_void cb);
 
-const WString& mediaQualityString(E_MediaQuality eQuality);
+cqstr mediaQualityString(IMedia& media);
 
 bool installApp(const CByteBuffer& bbfUpgradeFile);
 bool installApp(const string& strUpgradeFile);

@@ -75,11 +75,12 @@ void async(cfn_void cb)
     async(0, cb);
 }
 
-static const WString g_lpQuality[] {
-    L"", L"LQ", L"HQ", L"SQ", L"CD", L"HiRes"
+static const QString g_lpQuality[] {
+    "", "LQ", "HQ", "SQ", "CD", "HiRes"
 };
-const WString& mediaQualityString(E_MediaQuality eQuality)
+cqstr mediaQualityString(IMedia& media)
 {
+    auto eQuality = media.quality();
     return g_lpQuality[(UINT)eQuality];
 }
 

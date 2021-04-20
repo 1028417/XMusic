@@ -749,7 +749,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     }
 
     //if (!g_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率 // TODO 获取音频流码率
-    PlayingInfo.qsQuality = mediaQualityString(PlayItem.quality());
+    PlayingInfo.qsQuality = mediaQualityString(PlayItem);
 
     auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
     if (uAlbumItemID > 0)

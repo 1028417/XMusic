@@ -105,6 +105,8 @@ public:
 	{
 	}
 
+	static void scanDir(const bool& bRunSignal, CPath& dir, const function<void(CPath& dir, TD_XFileList& paSubFile)>& cb);
+
 private:
     bool m_bFindFileStatus = false;
 
