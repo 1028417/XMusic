@@ -50,8 +50,6 @@ private:
 
     int64_t _openFile(cwstr strFile, bool bXmsc);
 
-    int64_t _openFile(CPlayItem& PlayItem);
-
     bool _play(CPlayItem& PlayItem);
 
     bool _play(uint64_t uStartPos = 0);
