@@ -165,7 +165,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
 
 CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
 {
-    auto pMediaRes = m_lv.showMediaRes(strPath);
+    auto pMediaRes = m_lv.hittestMediaRes(strPath);
     if (NULL == pMediaRes)
     {
         _initXpk();

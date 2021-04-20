@@ -193,7 +193,7 @@ public:
 
     void cleanup();
 
-    CMediaRes* showMediaRes(cwstr strPath);
+    CMediaRes* hittestMediaRes(cwstr strPath);
 
     CSinger *currentSinger() const;
 

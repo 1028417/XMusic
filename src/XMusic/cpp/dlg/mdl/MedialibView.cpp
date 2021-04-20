@@ -1148,7 +1148,7 @@ void CMedialibView::cleanup()
     CMLListView::_cleanup();
 }
 
-CMediaRes* CMedialibView::showMediaRes(cwstr strPath)
+CMediaRes* CMedialibView::hittestMediaRes(cwstr strPath)
 {
     CMediaRes *pMediaRes = m_OuterDir.subFile(strPath);
     if (NULL == pMediaRes)
