@@ -153,9 +153,8 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     if (bPlayingItem)
     {
-        painter.adjustFont(0.65, TD_FontWeight::Thin);
-
         cauto qsQuality =  g_app.mainWnd().playingInfo().qsQuality;
+        //if (qsQuality.isEmpty()) return;
 
         int nRight = rcPos.right() + __size(35);
 #if __android || __ios
@@ -169,6 +168,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         rcPos.setTop(rcPos.top() - __size(8));
 
+        painter.adjustFont(0.65, TD_FontWeight::Thin);
         painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);
     }
 }
