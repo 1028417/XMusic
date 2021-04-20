@@ -125,7 +125,7 @@ void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
             for (wchar_t wch = L'a'; wch <= L'z'; wch++)
             {
                 auto strBkg = strBkgSrc + wch + L".jpg";
-                auto strDstFile = strAppBkgDir + L'/' + wchar_t('0'+uIdx) + L'.' + wch;
+                auto strDstFile = strAppBkgDir + L'/' + wchar_t('0'+uIdx) + __wcDot + wch;
                 if (pm.load(__WS2Q(strBkg)))
                 {
                     _saveThumbs(pm, bHLayout, strDstFile); // 确保先生成缩略图

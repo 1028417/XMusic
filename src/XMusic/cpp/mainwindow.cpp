@@ -341,7 +341,7 @@ void MainWindow::_showUpgradeProgress()
             {
                 if (uDotCount >= uIdx)
                 {
-                    qsText.append('.');
+                    qsText.append(__wcDot);
                 }
                 else
                 {

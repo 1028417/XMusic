@@ -151,7 +151,7 @@ void CImgDir::_genSubFile( const QFileInfo& fi)
     }
 
     cauto strName = fi.fileName().toStdWString();
-    cauto strExtName = strutil::lowerCase_r(fsutil::GetFileExtName(strName));
+    cauto strExtName = fsutil::getExtName(strName);
     if (!g_setImgExtName.includes(strExtName))
     {
         return;
@@ -180,7 +180,7 @@ void CImgDir::_genSubFile( const QFileInfo& fi)
 void CImgDir::_genSubDir(const QFileInfo& fi)
 {
     cauto qsName = fi.fileName();
-    if (qsName.front() == '.')
+    if (qsName.front() == __wcDot)
     {
         return;
     }

@@ -456,7 +456,7 @@ bool CXController::replaceMediaRes(const map<CMediaRes*, CMediaRes*>& mapMediaRe
 			}
 			else
 			{
-				strNewAbsPath.append(fsutil::getFileTitle(strDstAbsPath) + L'.' + fsutil::GetFileExtName(strSrcAbsPath));
+                strNewAbsPath.append(fsutil::getFileTitle(strDstAbsPath) + __wcDot + fsutil::getExtName(strSrcAbsPath));
 			}
 			if (!fsutil::moveFile(strSrcAbsPath, strNewAbsPath))
 			{
