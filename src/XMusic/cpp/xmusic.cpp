@@ -290,7 +290,7 @@ static bool _installWinZip(CZipFile& zipFile)
     }
 
     strTempDir.push_back(__cPathSeparator);
-    for (cauto pr : zipFile.subDirMap())
+    for (cauto pr : zipFile.subDirList())
     {
         cauto t_strSubDir = strTempDir + pr.first;
         if (!fsutil::createDir(t_strSubDir))
@@ -302,7 +302,7 @@ static bool _installWinZip(CZipFile& zipFile)
 
 #define __StartupFile L"XMusicStartup.exe"
     wstring strStartupFile;
-    for (cauto pr : zipFile.subFileMap())
+    for (cauto pr : zipFile.subFileList())
     {
         cauto strSubFile = strTempDir + pr.first;
         if (strutil::endWith(strSubFile, __StartupFile))

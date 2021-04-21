@@ -214,19 +214,21 @@ public:
 		auto t_strMode = strutil::fromAsc(strMode);
 		return _wfsopen(strFile.c_str(), t_strMode.c_str(), (int)_ShFlag);
 	}
+
+    // gbk
 	static FILE* fsopen(const string& strFile, const string& strMode, E_ShareFalg _ShFlag = E_ShareFalg::denyW)
 	{
 		return _fsopen(strFile.c_str(), strMode.c_str(), (int)_ShFlag);
 	}
 #endif
 
-    static FILE* fopen(cwstr strFile, const string& strMode);
+    static FILE* fopen(cwstr strFile, const string& strMode); // windows gbk, 其他utf8
 	static FILE* fopen(const string& strFile, const string& strMode);
 
     static bool copyFile(cwstr strSrcFile, cwstr strDstFile);
 
 #if __windows
-    static bool copyFile(const string& strSrcFile, const string& strDstFile);
+    static bool copyFile(const string& strSrcFile, const string& strDstFile); //gbk
 #endif
 
 #if !__winvc
