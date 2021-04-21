@@ -299,25 +299,29 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
     WString strMediaSet;
-    if (PlayingInfo.pRelatedMediaSet)
+
+    CMediaSet *pMediaSet = NULL;
+    if (PlayingInfo.pRelatedMedia)
     {
+        pMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
+
         if (!bDefaultBkg)
         {
             /*if (PlayingInfo.uSingerID > 0)
             {
                 strMediaSet << PlayingInfo.strSingerName << __CNDot;
             }
-            else*/ if (E_MediaSetType::MST_Playlist == PlayingInfo.pRelatedMediaSet->m_eType)
+            else*/ if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
             {
                 strMediaSet << L"歌单: ";
             }
-            else if (E_MediaSetType::MST_Album == PlayingInfo.pRelatedMediaSet->m_eType)
+            else if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
             {
                 strMediaSet << L"专辑: ";
             }
         }
 
-        strMediaSet << PlayingInfo.pRelatedMediaSet->name();
+        strMediaSet << pMediaSet->name();
 
         labelAlbumName.setFont(0.95f);
         labelAlbumName.setShadow(uShadowWidth);
@@ -461,7 +465,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
                 }
-                else if (PlayingInfo.pRelatedMediaSet)
+                else if (pMediaSet)
                 {
                     y_PlayingListMax = y_labelAlbumName;
                 }
@@ -497,7 +501,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         if (!bSingerImgFlag) //NULL == pmSingerImg)// || pmSingerImg->isNull())
         {
             auto y = y_Playingfile;
-            if (PlayingInfo.pRelatedMediaSet)
+            if (pMediaSet)
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);

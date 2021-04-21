@@ -37,7 +37,6 @@ struct tagPlayingInfo
     wstring strSingerName;
 
     IMedia *pRelatedMedia = NULL;
-    CMediaSet *pRelatedMediaSet = NULL;
 };
 
 enum class E_SingerImgPos

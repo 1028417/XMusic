@@ -776,10 +776,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
             }
         }
     }
-    if (PlayingInfo.pRelatedMedia)
-    {
-        PlayingInfo.pRelatedMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
-    }
 
     auto strTitle = PlayItem.GetTitle();
     if (PlayingInfo.strSingerName.empty())
