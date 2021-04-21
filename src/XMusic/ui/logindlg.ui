@@ -10,9 +10,6 @@
     <height>540</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string/>
-  </property>
   <widget class="QLineEdit" name="editUser">
    <property name="geometry">
     <rect>
@@ -159,14 +156,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">label.h</header>
-  </customwidget>
-  <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
    <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

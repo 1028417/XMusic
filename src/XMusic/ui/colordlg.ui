@@ -10,9 +10,6 @@
     <height>399</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>添加背景</string>
-  </property>
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
@@ -612,14 +609,14 @@ gridline-color: rgb(255, 255, 255);</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CLabel</class>
-   <extends>QLabel</extends>
-   <header>label.h</header>
-  </customwidget>
-  <customwidget>
    <class>CButton</class>
    <extends>QPushButton</extends>
-   <header>button.h</header>
+   <header location="global">button.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">label.h</header>
   </customwidget>
   <customwidget>
    <class>CColorBar</class>

@@ -10,9 +10,6 @@
     <height>500</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>媒体库</string>
-  </property>
   <widget class="CButton" name="btnReturn">
    <property name="geometry">
     <rect>
