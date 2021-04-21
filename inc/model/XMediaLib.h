@@ -26,8 +26,9 @@ private:
     class CModel& m_model;
     class IModelObserver& m_ModelObserver;
 
+    CMediaDir m_xpkRoot;
+
 #if !__winvc
-protected:
     CCueList m_cuelist;
 
 public:
@@ -43,7 +44,10 @@ public:
 
     void scanXpk();
 
-    TD_MediaDirList xpkList();
+    CMediaDir& xpkRoot()
+    {
+        return m_xpkRoot;
+    }
 
     bool loadXSnapshot(Instream& ins);
 

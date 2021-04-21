@@ -36,7 +36,6 @@ public:
     }
 
     void init();
-    void initXpk();
 
     void show();
     void showMediaSet(CMediaSet& MediaSet);
@@ -53,6 +52,8 @@ public:
     }
 
 private:
+    void _show();
+
     void _onClosed() override
     {
         m_lv.cleanup();

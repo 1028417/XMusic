@@ -119,8 +119,6 @@ private:
 
     QPixmap m_pmXpk;
 
-    CMediaDir m_xpkRoot;
-
     CMediaSet& m_SingerLib;
 
     CMediaSet& m_PlaylistLib;
@@ -194,8 +192,6 @@ public:
     void cleanup();
 
     void initpm();
-
-    CMediaDir& initXpk();
 
     CMediaRes* hittestMediaRes(cwstr strPath);
 

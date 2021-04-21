@@ -91,36 +91,35 @@ void CMedialibDlg::init()
             }
         }
     });
+
+    ui.btnXpk->onClicked([&]{
+        m_lv.showDir(__xmedialib.xpkRoot());
+    });
 }
 
-void CMedialibDlg::initXpk()
+void CMedialibDlg::_show()
 {
-    auto& xpkRoot = m_lv.initXpk();
-    if (xpkRoot.count() > 0)
-    {
-        ui.btnXpk->onClicked([&]{
-            m_lv.showDir(xpkRoot);
-        });
-    }
-    else
+    if (__xmedialib.xpkRoot().count() == 0)
     {
         ui.btnXpk->setEnabled(false);
         ui.btnXpk->setVisible(false);
     }
+
+    CDialog::show();
 }
 
 void CMedialibDlg::show()
 {
     m_lv.showRoot();
 
-    CDialog::show();
+    _show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_lv.showMediaSet(MediaSet);
 
-    CDialog::show();
+    _show();
 }
 
 bool CMedialibDlg::showMedia(IMedia& media)
@@ -139,7 +138,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_wholeTrackDlg.tryShow(media);
     });
 
-    CDialog::show();
+    _show();
 
     return true;
 }
@@ -149,7 +148,7 @@ CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
     auto pMediaRes = m_lv.hittestMediaRes(strPath);
     if (pMediaRes)
     {
-        CDialog::show();
+        _show();
     }
     return pMediaRes;
 }

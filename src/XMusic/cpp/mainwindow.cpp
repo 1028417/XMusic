@@ -365,8 +365,6 @@ void MainWindow::show()
 {
     m_bStopLogo = true;
 
-    m_medialibDlg.initXpk(); //初始化xpk列表需要在这里
-
     ui.labelLogo->movie()->stop();
     delete ui.labelLogo->movie();
     ui.labelLogo->clear();
