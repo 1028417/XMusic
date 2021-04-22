@@ -7,19 +7,31 @@
 
 #define __RemarkAlpha 200
 
+#define __XpkRootName   L"离线音乐包"
+
 #define __XSingerName   L" 歌手"
 #define __XPlaylistName L" 歌单"
 #define __XMusicDirName L"XMusic"
 #define __LocalDirName  L" 本机"
 
 #define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
+
 #define __catHires  L"高解析音频  24~32Bit/96~192KHz\nHigh Resolution Audio"
+
 #define __catMQS    L"录音棚级别无损  24Bit/96KHz\nMastering Quality Sound"
+
 #define __catDTS    L"5.1声道  DTSDigitalSurround"
+
 #define __catDisc   L"整轨"
+
 #define __catCD     L"CD分轨  标准1411Kbps码率"
+#define __catCD_t   L"CD分轨"
+
 #define __catSQ     L"无损"
+
 #define __catSQ24   L"24位无损  24Bit/48KHz"
+#define __catSQ24_t L"24位无损"
+
 #define __catPure   L"纯音乐"
 
 inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia, const wstring *pstrSingerName)
@@ -62,20 +74,20 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
     , m_medialibDlg(medialibDlg)
     , m_SingerLib(g_app.getSingerMgr())
     , m_PlaylistLib(g_app.getPlaylistMgr())
+    , m_pmHDDisk(g_app.m_pmHDDisk)
+    , m_pmSQDisk(g_app.m_pmSQDisk)
     , m_lpCatItem {
         {__mdlPng(dsd), __catDSD},
         {__mdlPng(hires), __catHires},
         {__mdlPng(mqs), __catMQS},
         {__mdlPng(dts), __catDTS},
         {__mdlPng(diskdir), __catDisc},
-        {__mdlPng(compactDisc), __catCD},
-        {__mdlPng(sq), __catSQ},
-        {__mdlPng(sq), __catSQ24},
+        {__mdlPng(compactDisc), __catCD, __catCD_t},
+        {__mdlPng(sq), __catSQ, __catSQ},
+        {__mdlPng(sq), __catSQ24, __catSQ24_t},
         {__mdlPng(pure), __catPure},
-        {__mdlPng(ssdir), L""}
+        {"", L""}
     }
-    , m_pmHDDisk(g_app.m_pmHDDisk)
-    , m_pmSQDisk(g_app.m_pmSQDisk)
 {
 }
 
@@ -266,7 +278,11 @@ void CMedialibView::_onShowDir(CPath& dir)
     m_mapDisplayName.clear();
 
     wstring strTitle;
-    if (&dir == &__medialib)
+    if (&dir == &__xmedialib.xpkRoot())
+    {
+        strTitle = __XpkRootName;
+    }
+    else if (&dir == &__medialib)
     {
         strTitle = __XMusicDirName;
     }
@@ -283,7 +299,15 @@ void CMedialibView::_onShowDir(CPath& dir)
         {
             if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
             {
-                strTitle.erase(0, 3);
+                cauto strCatTitle = _catItem(*pSnapshotMediaDir).strCatTitle;
+                if (!strCatTitle.empty())
+                {
+                    strTitle = strCatTitle;
+                }
+                else
+                {
+                    strTitle.erase(0, 3);
+                }
             }
 
             //文件标题
@@ -477,8 +501,8 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CMediaSet& Medi
         {
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-            auto catType = ((CSnapshotMediaDir&)MediaSet).catType();
-            context.setIcon(_catIcon(catType));
+            cauto pmIcon = _catItem((CSnapshotMediaDir&)MediaSet).pmIcon;
+            context.setIcon(pmIcon);
 
             auto uCount = ((CSnapshotMediaDir&)MediaSet).count();
             //if (uCount > 0)
@@ -555,14 +579,14 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context, CPath& dir)
     auto pSnapshotMediaDir = (CSnapshotMediaDir*)((CMediaDir&)dir).mediaSet();
     if (pSnapshotMediaDir)
     {
-        auto catType = pSnapshotMediaDir->catType();
-        context.setIcon(_catIcon(catType));
+        cauto catItem = _catItem(*pSnapshotMediaDir);
+        context.setIcon( catItem.pmIcon);
 
         if (NULL == pSnapshotMediaDir->m_pParent)// dir.parent() == &__medialib)
         {
             //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
             context.nIconSize *= 1.13f;
-            context.strText = _catText(catType);
+            context.strText = catItem.strCatDetail;
         }
         else
         {

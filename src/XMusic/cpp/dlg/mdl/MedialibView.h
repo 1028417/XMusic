@@ -134,19 +134,6 @@ private:
 
     QPixmap m_pmXmusicDir;
 
-    struct tagCatItem
-    {
-        tagCatItem(cqstr qsPng, const wchar_t *pszText)
-            : pmIcon(qsPng)
-            , strText(pszText)
-        {
-        }
-
-        QPixmap pmIcon;
-        wstring strText;
-    };
-    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
-
     QPixmap m_pmSSFile;
 
     cqpm m_pmHDDisk;
@@ -181,6 +168,33 @@ private:
     map<const void*, std::list<wstring>> m_PlaylistSinger;
     map<const void*, std::list<wstring>> m_mapDirSinger;
 
+private:
+    struct tagCatItem
+    {
+        tagCatItem(cqstr qsPng, const wchar_t *pszCatDetail)
+            : pmIcon(qsPng)
+            , strCatDetail(pszCatDetail)
+        {
+        }
+
+        tagCatItem(cqstr qsPng, const wchar_t *pszCatDetail, const wchar_t *pszCatTitle)
+            : pmIcon(qsPng)
+            , strCatDetail(pszCatDetail)
+            , strCatTitle(pszCatTitle)
+        {
+        }
+
+        QPixmap pmIcon;
+        wstring strCatDetail;
+        wstring strCatTitle;
+    };
+    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
+
+    inline const tagCatItem& _catItem(CSnapshotMediaDir& dir) const
+    {
+        return m_lpCatItem[(UINT)dir.catType()];
+    }
+
 public:
     void reset() override
     {
@@ -203,15 +217,6 @@ private:
     void _genDisplayTitle(const IMedia *pMedia, const wstring *pstrSingerName);
     void _genDisplayTitle(const IMedia *pMedia);
     void _genSingerMediaTitle(const IMedia *pMedia, cwstr strSingerName);
-
-    inline cqpm _catIcon(E_SSCatType catType) const
-     {
-         return m_lpCatItem[(UINT)catType].pmIcon;
-     }
-    inline cwstr _catText(E_SSCatType catType) const
-     {
-         return m_lpCatItem[(UINT)catType].strText;
-     }
 
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
