@@ -295,7 +295,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     auto pSnapshotDir = _snapshotDir(dir);
     if (pSnapshotDir && dir.parent() == &__medialib)
     {
-        cauto strCatTitle = _catItem(*pSnapshotDir).strCatTitle;
+        cauto strCatTitle = _catItem(pSnapshotDir->catType()).strCatTitle;
         if (!strCatTitle.empty())
         {
             strTitle = strCatTitle;
@@ -504,10 +504,11 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
         {
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
-            cauto pmIcon = _catItem((CSnapshotDir&)MediaSet).pmIcon;
+            cauto dir = (CSnapshotDir&)MediaSet;
+            cauto pmIcon = _catItem(dir.catType()).pmIcon;
             context.setIcon(pmIcon);
 
-            auto uCount = ((CSnapshotDir&)MediaSet).count();
+            auto uCount = dir.count();
             //if (uCount > 0)
             {
                 context.strRemark << uCount << L" 项";
@@ -615,27 +616,29 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
         context.strRemark << uCount << L" 项";
     }
 
-    auto pSnapshotDir = _snapshotDir(dir);
-    if (pSnapshotDir)
+    if (dir.rootDir() == &m_xpkRoot)
     {
-        cauto catItem = _catItem(*pSnapshotDir);
-        context.setIcon(catItem.pmIcon);
+       context.setIcon(m_pmXpk);
 
-        if (pParentDir == &__medialib)
-        {
-            context.nIconSize *= 1.13f;
-            context.strText = catItem.strCatDetail;
-            return;
-        }
+       if (pParentDir == &m_xpkRoot)
+       {
+           context.nIconSize *= 1.13f;
+           return;
+       }
     }
-    else if (dir.rootDir() == &m_xpkRoot)
+    else
     {
-        context.setIcon(m_pmXpk);
-
-        if (pParentDir == &m_xpkRoot)
+        auto catItem = _catItem(dir);
+        if (catItem)
         {
-            context.nIconSize *= 1.13f;
-            return;
+            context.setIcon(catItem->pmIcon);
+
+            if (pParentDir == &__medialib)
+            {
+                context.nIconSize *= 1.13f;
+                context.strText = catItem->strCatDetail;
+                return;
+            }
         }
     }
 

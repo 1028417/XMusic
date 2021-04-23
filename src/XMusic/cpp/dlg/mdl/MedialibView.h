@@ -194,9 +194,19 @@ private:
     };
     tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
 
-    inline const tagCatItem& _catItem(CSnapshotDir& dir) const
+    inline const tagCatItem& _catItem(E_SSCatType catType) const
     {
-        return m_lpCatItem[(UINT)dir.catType()];
+        return m_lpCatItem[(UINT)catType];
+    }
+
+    inline const tagCatItem* _catItem(CPath& dir) const
+    {
+        auto pSnapshotDir = _snapshotDir(dir);
+        if (NULL == pSnapshotDir)
+        {
+            return NULL;
+        }
+        return &_catItem(pSnapshotDir->catType());
     }
 
 public:
