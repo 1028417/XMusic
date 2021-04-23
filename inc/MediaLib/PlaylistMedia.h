@@ -49,6 +49,11 @@ public:
 
         return __medialib.toAbsPath(strPath, false);
     }
+
+    bool isXmsc() const
+    {
+        return GetFileType() == E_MediaFileType::MFT_Null;
+    }
 #endif
 };
 
