@@ -62,16 +62,22 @@ struct tagMLItemContext : public tagLVItemContext
         tagLVItemContext::setIcon(br, nSize, uRound);
     }
 
-    inline CSnapshotMediaRes* snapshotMediaRes() const
+    inline CSnapshotMedia* snapshotMedia() const
     {
-        if (pFile && ((CMediaRes*)pFile)->mediaSet())
+        if (pFile)
         {
-            return (CSnapshotMediaRes*)pFile;
+            if (_snapshotDir(*pFile))
+            {
+                return (CSnapshotMedia*)pFile;
+            }
         }
-
-        if (pMedia && pMedia->type() == E_MediaType::MT_MediaRes && ((CMediaRes*)pMedia)->mediaSet())
+        else if (pMedia)
         {
-            return (CSnapshotMediaRes*)pMedia;
+            if (pMedia->type() == E_MediaType::MT_MediaRes
+                && ((CMediaRes&)*pMedia).mediaSet())
+            {
+                return (CSnapshotMedia*)pMedia;
+            }
         }
 
         return NULL;
@@ -89,10 +95,10 @@ struct tagMLItemContext : public tagLVItemContext
             }
         }
 
-        auto pSnapshotMediaRes = snapshotMediaRes();
-        if (pSnapshotMediaRes)
+        auto pSnapshotMedia = snapshotMedia();
+        if (pSnapshotMedia)
         {
-            return pSnapshotMediaRes->available;
+            return pSnapshotMedia->available;
         }
 
         return pFile || pMedia;
@@ -161,25 +167,24 @@ private:
 
     virtual void _onMediaClick(tagLVItem&, const QMouseEvent&, IMedia&) {}
 
+    inline void* _current() const
+    {
+        if (m_pMediaset)
+        {
+            return m_pMediaset;
+        }
+        return m_pDir;
+    }
+
     inline void _saveScrollRecord()
     {
-        CListView::_saveScrollRecord(current());
+        CListView::_saveScrollRecord(_current());
     }
 
     void _showMediaSet(CMediaSet& MediaSet);
 
 public:
     size_t getItemCount() const override;
-
-    void* current() const
-    {
-        if (m_pMediaset)
-        {
-            return m_pMediaset;
-        }
-
-        return m_pDir;
-    }
 
     CMediaSet* currentMediaSet() const
     {

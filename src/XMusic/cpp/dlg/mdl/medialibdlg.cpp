@@ -21,18 +21,13 @@ void CMedialibDlg::init()
 
     ui.setupUi(this);
 
-    ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
+    ui.btnReturn->connect_dlgClose(this);
 
-    m_lv.adjustFont(TD_FontWeight::Normal);
-
-    ui.labelSingerImg->setPixmapRound(__szRound);
-    ui.labelSingerImg->onClicked([&]{
-        auto pSinger = m_lv.currentSinger();
-        if (pSinger)
-        {
-            m_singerImgDlg.show(pSinger->m_strName);
-        }
+    ui.btnUpward->onClicked([&]{
+        m_lv.upward();
     });
+
+    ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -45,81 +40,36 @@ void CMedialibDlg::init()
         label->onClicked(this, &CMedialibDlg::slot_labelClick);
     }
 
-    ui.btnReturn->connect_dlgClose(this);
-
-    ui.btnUpward->onClicked([&]{
-        m_lv.upward();
-    });
-
-    ui.btnPlay->onClicked([&]{
-        m_lv.dselectItem();
-
-        CMediaSet *pMediaSet = m_lv.currentMediaSet();
-        if (pMediaSet)
+    ui.labelSingerImg->setPixmapRound(__szRound);
+    ui.labelSingerImg->onClicked([&]{
+        auto pSinger = m_lv.currentSinger();
+        if (pSinger)
         {
-             g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
-            return;
-        }
-
-        auto pDir = (CMediaDir*)m_lv.currentDir();
-        if (pDir)
-        {
-            TD_IMediaList paMedias;
-            if (pDir->mediaSet())
-            {
-                for (auto pSubFile : pDir->files())
-                {
-                    auto pSnapshotMediaRes = (CSnapshotMediaRes*)pSubFile;
-                    if (pSnapshotMediaRes->available)
-                    {
-                        paMedias.add(pSnapshotMediaRes);
-                    }
-                }
-            }
-            else
-            {
-                TD_MediaResList paMediasRes(pDir->files());
-                paMedias.add(paMediasRes);
-                /*pDir->files()([&](XFile& file){
-                    paMedias.add((CMediaRes&)file);
-                });*/
-            }
-
-            if (paMedias)
-            {
-                 g_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
-            }
+            m_singerImgDlg.show(pSinger->m_strName);
         }
     });
+
+    ui.btnPlay->onClicked(this, &CMedialibDlg::slot_playClick);
 
     ui.btnXpk->onClicked([&]{
         m_lv.showDir(__xmedialib.xpkRoot());
     });
-}
 
-void CMedialibDlg::_show()
-{
-    if (__xmedialib.xpkRoot().count() == 0)
-    {
-        ui.btnXpk->setEnabled(false);
-        ui.btnXpk->setVisible(false);
-    }
-
-    CDialog::show();
+    m_lv.adjustFont(TD_FontWeight::Normal);
 }
 
 void CMedialibDlg::show()
 {
     m_lv.showRoot();
 
-    _show();
+    CDialog::show();
 }
 
 void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 {
     m_lv.showMediaSet(MediaSet);
 
-    _show();
+    CDialog::show();
 }
 
 bool CMedialibDlg::showMedia(IMedia& media)
@@ -138,7 +88,7 @@ bool CMedialibDlg::showMedia(IMedia& media)
         m_wholeTrackDlg.tryShow(media);
     });
 
-    _show();
+    CDialog::show();
 
     return true;
 }
@@ -148,7 +98,7 @@ CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
     auto pMediaRes = m_lv.hittestMediaRes(strPath);
     if (pMediaRes)
     {
-        _show();
+        CDialog::show();
     }
     return pMediaRes;
 }
@@ -264,16 +214,16 @@ void CMedialibDlg::_relayoutTitle()
 
 void CMedialibDlg::updateHead(const WString& strTitle)
 {
-    ui.btnXpk->setVisible(false);
-
-    bool bShowPlayButton = false;
     int nElidedFlag = -1;
+    bool bShowPlayButton = false;
+
+    CPath *pDir = NULL;
     auto pMediaSet = m_lv.currentMediaSet();
     if (pMediaSet)
     {
-        if (E_MediaSetType::MST_Singer==pMediaSet->m_eType
-                || E_MediaSetType::MST_Album==pMediaSet->m_eType
-                || E_MediaSetType::MST_Playlist==pMediaSet->m_eType)
+        if (E_MediaSetType::MST_Singer == pMediaSet->m_eType
+                || E_MediaSetType::MST_Album == pMediaSet->m_eType
+                || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
         {
             bShowPlayButton = true;
         }
@@ -281,9 +231,9 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         {
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
 
-            for (auto pSubFile : ((CSnapshotMediaDir*)pMediaSet)->files())
+            for (auto pSubFile : ((CSnapshotDir*)pMediaSet)->files())
             {
-                if (((CSnapshotMediaRes*)pSubFile)->available)
+                if (((CSnapshotMedia*)pSubFile)->available)
                 {
                     bShowPlayButton = true;
                     break;
@@ -293,14 +243,14 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     }
     else
     {
-        auto pDir = m_lv.currentDir();
+        pDir = m_lv.currentDir();
         if (pDir)
         {
-            if (((CMediaDir*)pDir)->mediaSet())
+            if (_snapshotDir(*pDir))
             {
                 for (auto pSubFile : pDir->files())
                 {
-                    if (((CSnapshotMediaRes*)pSubFile)->available)
+                    if (((CSnapshotMedia*)pSubFile)->available)
                     {
                         bShowPlayButton = true;
                         break;
@@ -314,15 +264,14 @@ void CMedialibDlg::updateHead(const WString& strTitle)
 
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
         }
-        else
-        {
-            ui.btnXpk->setVisible(ui.btnXpk->isEnabled());
-        }
     }
 
-    ui.frameFilterLanguage->setVisible(& g_app.getPlaylistMgr() == pMediaSet);
+    bool bShowXpk = NULL == pDir && NULL == pMediaSet && __xmedialib.xpkRoot().count() > 0;
+    ui.btnXpk->setVisible(bShowXpk);
 
     ui.labelTitle->setText(strTitle, nElidedFlag);
+
+    ui.frameFilterLanguage->setVisible(&g_app.getPlaylistMgr() == pMediaSet);
 
     auto pSinger = m_lv.currentSinger();
     do {
@@ -405,4 +354,45 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
             }
     //    }
     //});
+}
+
+void CMedialibDlg::slot_playClick()
+{
+    m_lv.dselectItem();
+
+    CMediaSet *pMediaSet = m_lv.currentMediaSet();
+    if (pMediaSet)
+    {
+         g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
+        return;
+    }
+
+    auto pDir = m_lv.currentDir();
+    if (NULL == pDir)
+    {
+        return;
+    }
+
+    TD_IMediaList paMedias;
+    if (_snapshotDir(*pDir))
+    {
+        for (auto pSubFile : pDir->files())
+        {
+            auto pSnapshotMedia = (CSnapshotMedia*)pSubFile;
+            if (pSnapshotMedia->available)
+            {
+                paMedias.add(pSnapshotMedia);
+            }
+        }
+    }
+    else
+    {
+        TD_MediaResList paMediasRes(pDir->files());
+        paMedias.add(paMediasRes);
+    }
+
+    if (paMedias)
+    {
+         g_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
+    }
 }

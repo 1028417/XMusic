@@ -304,18 +304,21 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     if (PlayingInfo.pRelatedMedia)
     {
         pMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
+    }
 
+    if (pMediaSet)
+    {
         if (!bDefaultBkg)
         {
-            /*if (PlayingInfo.uSingerID > 0)
+            /*if (PlayingInfo.pSinger)//.uSingerID)
             {
-                strMediaSet << PlayingInfo.strSingerName << __CNDot;
+                strMediaSet << PlayingInfo.pSinger->m_strName << __CNDot;
             }
             else*/ if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
             {
                 strMediaSet << L"歌单: ";
             }
-            else if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+            else// if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
             {
                 strMediaSet << L"专辑: ";
             }
@@ -460,7 +463,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             }
             else
             {
-                if (PlayingInfo.uSingerID > 0)
+                if (PlayingInfo.pSinger)//.uSingerID)
                 {
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
@@ -509,7 +512,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             }
             y_PlayingListMax = y;
 
-            if (PlayingInfo.uSingerID > 0)
+            if (PlayingInfo.pSinger)//.uSingerID)
             {
                 y -= ui.labelPlayingfile->height();
                 ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
