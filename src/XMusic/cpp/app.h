@@ -105,11 +105,6 @@ public:
         return m_model;
     }
 
-    CUserMgr& getUserMgr()
-    {
-        return m_model.getUserMgr();
-    }
-
     CDataMgr& getDataMgr()
     {
         return m_model.getDataMgr();

@@ -20,8 +20,8 @@ public:
     {
     }
 
-    COuterDir(cwstr strPath, CMediaDir *pParent = NULL)
-        : CMediaDir(strPath, pParent)
+    COuterDir(cwstr strPath, CMediaDir& parent)
+        : CMediaDir(strPath, &parent)
     {
     }
 
@@ -45,7 +45,7 @@ private:
             winfsutil::getSysDrivers(lstDrivers);
             for (cauto strDriver : lstDrivers)
             {
-                paSubDir.add(new COuterDir(strDriver, this));
+                paSubDir.add(new COuterDir(strDriver, *this));
             }
         }
         else
@@ -64,7 +64,7 @@ private:
         {
             auto strRoot = L"/storage/";
             (void)fsutil::findSubDir(strRoot, [&](tagFileInfo& fi) {
-                paSubDir.addFront(new COuterDir(strRoot + fi.strName, this));
+                paSubDir.addFront(new COuterDir(strRoot + fi.strName, *this));
             });
         }
     }
@@ -117,13 +117,15 @@ public:
 private:
     class CMedialibDlg& m_medialibDlg;
 
-    QPixmap m_pmXpk;
+    CMediaDir& m_xpkRoot;
 
     CMediaSet& m_SingerLib;
 
     CMediaSet& m_PlaylistLib;
 
     COuterDir m_OuterDir;
+
+    QPixmap m_pmXpk;
 
     QPixmap m_pmSingerGroup;
     QPixmap m_pmAlbum;
@@ -134,7 +136,9 @@ private:
 
     QPixmap m_pmXmusicDir;
 
-    QPixmap m_pmSSFile;
+    QPixmap m_pmMedia;
+    QPixmap m_pmXpkMedia;
+    QPixmap m_pmFlac;
 
     cqpm m_pmHDDisk;
     cqpm m_pmSQDisk;
@@ -163,7 +167,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    map<const IMedia*, wstring> m_mapDisplayName;
+    map<const IMedia*, wstring> m_mapDisplayTitle;
 
     map<const void*, std::list<wstring>> m_PlaylistSinger;
     map<const void*, std::list<wstring>> m_mapDirSinger;
@@ -190,7 +194,7 @@ private:
     };
     tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
 
-    inline const tagCatItem& _catItem(CSnapshotMediaDir& dir) const
+    inline const tagCatItem& _catItem(CSnapshotDir& dir) const
     {
         return m_lpCatItem[(UINT)dir.catType()];
     }
@@ -214,9 +218,9 @@ public:
     CBrush& genSingerHead(UINT uSingerID, cwstr strSingerName);
 
 private:
-    void _genDisplayTitle(const IMedia *pMedia, const wstring *pstrSingerName);
+    void _genDisplayTitle(const IMedia *pMedia, cwstr strSingerName);
     void _genDisplayTitle(const IMedia *pMedia);
-    void _genSingerMediaTitle(const IMedia *pMedia, cwstr strSingerName);
+    void _genSingerMediaTitle(const IMedia *pMedia, CSinger& singer);
 
     void _onShowRoot() override;
     void _onShowMediaSet(CMediaSet&) override;
@@ -228,10 +232,11 @@ private:
     size_t _getRootItemCount() const override;
 
     void _genMLItemContext(tagMLItemContext&) override;
-    void _genMLItemContext(tagMLItemContext& context, CMediaSet& MediaSet);
-    void _genMLItemContext(tagMLItemContext& context, IMedia& Media);
-    void _genMLItemContext(tagMLItemContext& context, XFile& file);
-    void _genMLItemContext(tagMLItemContext& context, CPath& dir);
+
+    void _genMediaSetContext(tagMLItemContext& context, CMediaSet& MediaSet);
+    void _genMediaContext(tagMLItemContext& context, IMedia& Media);
+    void _genFileContext(tagMLItemContext& context, XFile& file);
+    void _genDirContext(tagMLItemContext& context, CPath& dir);
 
     void _onPaint(CPainter& painter, int cx, int cy) override;
     void _paintIcon(tagLVItemContext&, CPainter&, cqrc) override;

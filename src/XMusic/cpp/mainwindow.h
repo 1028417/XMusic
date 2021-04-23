@@ -33,8 +33,9 @@ struct tagPlayingInfo
 
     QString qsQuality;
 
-    UINT uSingerID = 0;
-    wstring strSingerName;
+    //UINT uSingerID = 0;
+    //wstring strSingerName;
+    CSinger *pSinger = NULL;
 
     IMedia *pRelatedMedia = NULL;
 };
@@ -146,7 +147,7 @@ private:
     void _demand(CButton* btnDemand);
 
     void _playSingerImg(bool bReset);
-    void _playSingerImg();
+    void _playSingerImg(cwstr strSingerName);
 
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;

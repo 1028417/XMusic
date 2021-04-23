@@ -121,7 +121,7 @@ inline static bool _loadBkg(cwstr strFile, T& pm)
 
 static const SSet<wstring>& g_setImgExtName = SSet<wstring>(L"jpg", L"jpe", L"jpeg", L"jfif", L"png", L"bmp");
 
-#define __szSnapshot 160
+#define __szIcon 160
 
 inline bool CImgDir::_genIcon(cwstr strFile)
 {
@@ -134,12 +134,12 @@ inline bool CImgDir::_genIcon(cwstr strFile)
     m_uPos = 1;
 
     /*QPixmap&& pm = m_pmIcon.width() < m_pmIcon.height()
-            ? m_pmIcon.scaledToWidth(__szSnapshot, Qt::SmoothTransformation)
-            : m_pmIcon.scaledToHeight(__szSnapshot, Qt::SmoothTransformation);
+            ? m_pmIcon.scaledToWidth(__szIcon, Qt::SmoothTransformation)
+            : m_pmIcon.scaledToHeight(__szIcon, Qt::SmoothTransformation);
     m_pmIcon.swap(pm);
     _cutPixmap(m_pmIcon, 1.0f);*/
 
-    _zoomoutPixmap(m_pmIcon, __szSnapshot, __szSnapshot, true);
+    _zoomoutPixmap(m_pmIcon, __szIcon, __szIcon, true);
     return true;
 }
 
@@ -457,7 +457,7 @@ bool COlBkgDir::_genIcon()
         return false;
     }
 
-    _zoomoutPixmap(m_pmIcon, __szSnapshot, __szSnapshot, true);
+    _zoomoutPixmap(m_pmIcon, __szIcon, __szIcon, true);
     return true;
 }
 

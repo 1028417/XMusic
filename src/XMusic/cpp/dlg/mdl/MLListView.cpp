@@ -71,7 +71,7 @@ bool CMLListView::hittestMedia(const IMedia& media)
         return false;
     }
 
-    _showMediaSet(*pMediaSet);
+    showMediaSet(*pMediaSet);
 
     int nIdx = m_lstSubMedias.indexOf(media);
     if (nIdx >= 0)
@@ -216,7 +216,7 @@ void CMLListView::_onItemClick(tagLVItem& lvItem, const QMouseEvent& me)
 
 bool CMLListView::upward()
 {
-    _clearScrollRecord(current());
+    _clearScrollRecord(_current());
 
     if (m_pMediaset)
     {
@@ -247,6 +247,6 @@ bool CMLListView::upward()
         return false;
     }
 
-    scrollToItem(_scrollRecord(current()));
+    scrollToItem(_scrollRecord(_current()));
     return true;
 }

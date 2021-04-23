@@ -61,5 +61,7 @@
         <file>img/medialib/sq.png</file>
         <file>img/medialib/pure.png</file>
         <file>img/medialib/xpk.png</file>
+        <file>img/medialib/flac.png</file>
+        <file>img/medialib/xpkmedia.png</file>
     </qresource>
 </RCC>

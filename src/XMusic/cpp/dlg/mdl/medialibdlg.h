@@ -27,6 +27,8 @@ private:
 private slots:
     void slot_labelClick(class CLabel*, const QPoint&);
 
+    void slot_playClick();
+
 public:
     static size_t caleRowCount(int cy);
 
@@ -52,8 +54,6 @@ public:
     }
 
 private:
-    void _show();
-
     void _onClosed() override
     {
         m_lv.cleanup();
