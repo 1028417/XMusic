@@ -295,7 +295,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     auto pSnapshotDir = _snapshotDir(dir);
     if (pSnapshotDir && dir.parent() == &__medialib)
     {
-        cauto strCatTitle = _catItem(pSnapshotDir->catType()).strCatTitle;
+        cauto strCatTitle = _catTitle(*pSnapshotDir);
         if (!strCatTitle.empty())
         {
             strTitle = strCatTitle;
@@ -505,8 +505,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
             context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
             cauto dir = (CSnapshotDir&)MediaSet;
-            cauto pmIcon = _catItem(dir.catType()).pmIcon;
-            context.setIcon(pmIcon);
+            context.setIcon(_catIcon(dir));
 
             auto uCount = dir.count();
             //if (uCount > 0)

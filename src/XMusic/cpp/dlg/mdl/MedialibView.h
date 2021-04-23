@@ -194,9 +194,13 @@ private:
     };
     tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
 
-    inline const tagCatItem& _catItem(E_SSCatType catType) const
+    inline cqpm _catIcon(const CSnapshotDir& dir) const
     {
-        return m_lpCatItem[(UINT)catType];
+        return m_lpCatItem[(UINT)dir.catType()].pmIcon;
+    }
+    inline cwstr _catTitle(const CSnapshotDir& dir) const
+    {
+        return m_lpCatItem[(UINT)dir.catType()].strCatTitle;
     }
 
     inline const tagCatItem* _catItem(CPath& dir) const
@@ -206,7 +210,7 @@ private:
         {
             return NULL;
         }
-        return &_catItem(pSnapshotDir->catType());
+        return &m_lpCatItem[(UINT)pSnapshotDir->catType()];
     }
 
 public:
