@@ -146,7 +146,7 @@ private:
 
     void _demand(CButton* btnDemand);
 
-    void _playSingerImg(bool bReset);
+    void _playSingerImg(cwstr strSingerName, bool bReset);
     void _playSingerImg(cwstr strSingerName);
 
 private:
