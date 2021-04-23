@@ -71,9 +71,6 @@ using tagFileStat64 = struct stat;
 #define ftell64 ftello
 #endif
 
-#define __fileTitle(file) file.erase(file.rfind('.'))
-#define __fileTitle_r(file) file.substr(0, file.rfind('.'))
-
 enum class E_FindFindFilter
 {
 	FFP_None
@@ -126,6 +123,8 @@ struct __UtilExt tagFileInfo
 #define __wcDot L'.'
 
 #define __wsDot L"."
+
+#define __trimExtName(file) file.substr(0, file.rfind('.'))
 
 class __UtilExt fsutil
 {
@@ -282,7 +281,7 @@ public:
 	static S getFileTitle(const S& strPath)
 	{
 		cauto strFileName = GetFileName(strPath);
-		return __fileTitle_r(strFileName);
+        return __trimExtName(strFileName);
 	}
 
 	static bool MatchPath(cwstr strPath1, cwstr strPath2);

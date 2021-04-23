@@ -166,6 +166,14 @@ struct tagFindMediaPara
         {
             strDir = fsutil::GetParentDir(strFind);
         }
+
+#if !__winvc //忽略扩展名匹配
+        auto pos = strFind.rfind(__wcDot);
+        if (pos != __wnpos)
+        {
+            strFind.erase(pos);
+        }
+#endif
     }
 
     tagFindMediaPara(const std::set<wstring>& setFiles)

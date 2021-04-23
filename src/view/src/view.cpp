@@ -722,7 +722,7 @@ bool __view::snapshotDir(CPath& dir, wstring strDstFile, bool bAutoClose)
 			{
 				JValue& jFiles = jRoot["files"];
 				paSubFile([&](XFile& subFile) {
-					cauto strFileTitle = strutil::toUtf8(__fileTitle_r(subFile.fileName()));
+					cauto strFileTitle = strutil::toUtf8(__trimExtName(subFile.fileName()));
 					auto strFileDesc = strFileTitle;
 
 					//JValue jFile;
