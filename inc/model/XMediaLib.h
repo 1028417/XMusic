@@ -93,56 +93,6 @@ enum class E_SSCatType
     CT_Max
 };
 
-class __ModelExt CSnapshotMedia : public CMediaRes
-{
-public:
-    CSnapshotMedia(class CSnapshotDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
-        : CMediaRes(E_MediaFileType::MFT_Null, (CMediaDir&)parent, strFileName, uFileSize)
-        , m_uDuration(uDuration)
-        , m_CueFile(uDuration>__wholeTrackDuration? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
-    {
-    }
-
-    bool available = false;
-
-private:
-    UINT m_uDuration = 0;
-
-    CRCueFile m_CueFile;
-
-public:
-    E_SSCatType catType() const;
-
-    UINT duration() const override
-    {
-        return m_uDuration;
-    }
-
-    E_TrackType trackType() const override
-    {
-        if (m_uDuration > __wholeTrackDuration)
-        {
-            if (quality() >= E_MediaQuality::MQ_CD)
-            {
-                return E_TrackType::TT_HDWhole;
-            }
-            return E_TrackType::TT_SQWhole;
-        }
-        return E_TrackType::TT_Single;
-    }
-
-    CRCueFile cueFile() override
-    {
-        return m_CueFile;
-    }
-
-    CMediaSet* mediaSet() const override
-    {
-        //崩溃return (class CSnapshotDir*)m_fi.pParent;
-        return ((CMediaDir*)m_fi.pParent)->mediaSet();
-    }
-};
-
 class __ModelExt CSnapshotDir : public CMediaDir, public CMediaSet
 {
 public:
@@ -193,6 +143,59 @@ public:
 
 public:
     bool available = false;
+};
+
+class __ModelExt CSnapshotMedia : public CMediaRes
+{
+public:
+    CSnapshotMedia(CSnapshotDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
+        : CMediaRes(E_MediaFileType::MFT_Null, (CMediaDir&)parent, strFileName, uFileSize)
+        , m_uDuration(uDuration)
+        , m_CueFile(uDuration>__wholeTrackDuration? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
+    {
+    }
+
+    bool available = false;
+
+private:
+    UINT m_uDuration = 0;
+
+    CRCueFile m_CueFile;
+
+public:
+    E_SSCatType catType() const
+    {
+        return ((CSnapshotDir*)m_fi.pParent)->catType();
+    }
+
+    UINT duration() const override
+    {
+        return m_uDuration;
+    }
+
+    E_TrackType trackType() const override
+    {
+        if (m_uDuration > __wholeTrackDuration)
+        {
+            if (quality() >= E_MediaQuality::MQ_CD)
+            {
+                return E_TrackType::TT_HDWhole;
+            }
+            return E_TrackType::TT_SQWhole;
+        }
+        return E_TrackType::TT_Single;
+    }
+
+    CRCueFile cueFile() override
+    {
+        return m_CueFile;
+    }
+
+    CMediaSet* mediaSet() const override
+    {        
+        return (CSnapshotDir*)m_fi.pParent;//崩溃??
+        //return ((CMediaDir*)m_fi.pParent)->mediaSet();
+    }
 };
 
 template <class T>
