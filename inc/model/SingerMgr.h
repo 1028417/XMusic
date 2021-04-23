@@ -20,6 +20,11 @@ public:
 		return m_paSinger;
 	}
 
+    CSinger* getSinger(UINT uSingerID)
+    {
+        return (CSinger*)GetSubSet(E_MediaSetType::MST_Singer, uSingerID);
+    }
+
     void clear()
     {
         m_lstGroups.clear();

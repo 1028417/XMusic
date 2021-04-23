@@ -127,22 +127,6 @@ struct tagMediaSetChanged
 	//UINT uSingerImgPos = 0;
 };
 
-struct tagRelatedMediaSet
-{
-	UINT uMediaSetID = 0;
-	wstring strMediaSetName;
-
-	UINT uMediaID = 0;
-
-	void clear()
-	{
-		uMediaSetID = 0;
-		strMediaSetName.clear();
-
-		uMediaID = 0;
-	}
-};
-
 enum class E_FindMediaMode
 {
 	FMM_MatchText = 0

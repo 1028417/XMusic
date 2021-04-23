@@ -41,9 +41,24 @@ enum class E_MediaType
 
 enum class E_RelatedMediaSet
 {
-        RMS_Playlist = (int)E_MediaSetType::MST_Playlist
-        , RMS_Album = (int)E_MediaSetType::MST_Album
-        , RMS_Singer = (int)E_MediaSetType::MST_Singer
+    RMS_Playlist = (int)E_MediaSetType::MST_Playlist
+    , RMS_Album = (int)E_MediaSetType::MST_Album
+    , RMS_Singer = (int)E_MediaSetType::MST_Singer
+};
+struct tagRelatedMediaSet
+{
+    UINT uMediaSetID = 0;
+    wstring strMediaSetName;
+
+    UINT uMediaID = 0;
+
+    void clear()
+    {
+        uMediaSetID = 0;
+        strMediaSetName.clear();
+
+        uMediaID = 0;
+    }
 };
 
 class __MediaLibExt IMedia
@@ -92,15 +107,6 @@ public:
 	virtual wstring GetName() const = 0;
 
 	virtual wstring GetTitle() const;
-
-	bool isXmsc() const
-	{
-#if __winvc
-		return false;
-#else
-		return E_MediaFileType::MFT_Null == m_eFileType;
-#endif
-	}
 
 	E_MediaFileType GetFileType() const
 	{
@@ -158,11 +164,16 @@ public:
 		return _getRelatedMediaSet(eRmsType).uMediaID;
 	}
 
+    UINT GetRelatedMediaSet(E_RelatedMediaSet eRmsType, wstring& strRelatedMediaSet) const
+    {
+        cauto RelatedMediaSet = _getRelatedMediaSet(eRmsType);
+        strRelatedMediaSet = RelatedMediaSet.strMediaSetName;
+        return RelatedMediaSet.uMediaSetID;
+    }
 	UINT GetRelatedMediaSetID(E_RelatedMediaSet eRmsType) const
 	{
 		return _getRelatedMediaSet(eRmsType).uMediaSetID;
 	}
-
 	cwstr GetRelatedMediaSetName(E_RelatedMediaSet eRmsType) const
 	{
 		return _getRelatedMediaSet(eRmsType).strMediaSetName;

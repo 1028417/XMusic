@@ -93,10 +93,10 @@ enum class E_SSCatType
     CT_Max
 };
 
-class __ModelExt CSnapshotMediaRes : public CMediaRes
+class __ModelExt CSnapshotMedia : public CMediaRes
 {
 public:
-    CSnapshotMediaRes(class CSnapshotMediaDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
+    CSnapshotMedia(class CSnapshotDir& parent, cwstr strFileName, uint64_t uFileSize, UINT uDuration)
         : CMediaRes(E_MediaFileType::MFT_Null, (CMediaDir&)parent, strFileName, uFileSize)
         , m_uDuration(uDuration)
         , m_CueFile(uDuration>__wholeTrackDuration? __xmedialib.cuelist().find(GetTitle()) : CCueFile::NoCue)
@@ -138,15 +138,15 @@ public:
 
     CMediaSet* mediaSet() const override
     {
-        //崩溃return (class CSnapshotMediaDir*)m_fi.pParent;
+        //崩溃return (class CSnapshotDir*)m_fi.pParent;
         return ((CMediaDir*)m_fi.pParent)->mediaSet();
     }
 };
 
-class __ModelExt CSnapshotMediaDir : public CMediaDir, public CMediaSet
+class __ModelExt CSnapshotDir : public CMediaDir, public CMediaSet
 {
 public:
-    CSnapshotMediaDir(cwstr strDir, CSnapshotMediaDir *pParent)
+    CSnapshotDir(cwstr strDir, CSnapshotDir *pParent)
         : CMediaDir(strDir, pParent?(CMediaDir*)pParent:&__medialib)
         , CMediaSet(pParent, E_MediaSetType::MST_SnapshotMediaDir)
     {
@@ -162,14 +162,7 @@ public:
 
     void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir);
 
-    CSinger* singer()
-    {
-        if (m_pParent && E_MediaSetType::MST_Singer == m_pParent->m_eType)
-        {
-            return (CSinger*)m_pParent;
-        }
-        return NULL;
-    }
+    CSinger* singer() const;
 
     CMediaSet* mediaSet() const override
     {
@@ -182,7 +175,7 @@ public:
     {
         for (auto pSubDir : m_paSubDir)
         {
-            paMediaSet.add((CSnapshotMediaDir*)pSubDir);
+            paMediaSet.add((CSnapshotDir*)pSubDir);
         }
     }
 
@@ -201,4 +194,10 @@ public:
 public:
     bool available = false;
 };
+
+template <class T>
+inline CSnapshotDir* _snapshotDir(T& t)
+{
+    return (CSnapshotDir*)((CMediaRes&)t).mediaSet();
+}
 #endif

@@ -112,7 +112,7 @@ public:
 	}
 
 #if !__winvc
-    CMediaSet(CMediaSet *pParent, E_MediaSetType eType) //CSnapshotMediaDir构造提速
+    CMediaSet(CMediaSet *pParent, E_MediaSetType eType) //CSnapshotDir构造提速
         : m_eType(eType)
     {
         m_pParent = pParent;
