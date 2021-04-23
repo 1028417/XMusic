@@ -109,7 +109,7 @@ void CMedialibView::initpm()
     (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
 
     (void)m_pmMedia.load(__mdlPng(media));
-    (void)m_pmXpkMedia.load(__mdlPng(xpkmedia));
+    //(void)m_pmXpkMedia.load(__mdlPng(xpkmedia));
     (void)m_pmFlac.load(__mdlPng(flac));
 
 #if __android
@@ -542,15 +542,18 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context, IMedia& Media)
 
 void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
 {
+    context.setIcon(m_pmFile);
+
     auto& MediaRes = (CMediaRes&)file;
     auto pRootDir = file.rootDir();
     if (pRootDir == &m_OuterDir)
     {
         context.strText = MediaRes.GetName();
-        context.setIcon(m_pmFile);
     }
     else
     {
+        context.setIcon(m_pmMedia);
+
         context.strText = m_mapDisplayTitle[&MediaRes];
         auto pSnapshotDir = _snapshotDir(MediaRes);
         if (pSnapshotDir)
@@ -560,16 +563,11 @@ void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
             {
                 context.setIcon(m_pmFlac);
             }
-            else
-            {
-                context.setIcon(m_pmMedia);
-            }
         }
-        else// if (pRootDir == &m_xpkRoot)
+        /*else// if (pRootDir == &m_xpkRoot)
         {
             context.setIcon(m_pmXpkMedia);
-        }
-        //else context.setIcon(m_pmFile);
+        }*/
     }
 }
 
