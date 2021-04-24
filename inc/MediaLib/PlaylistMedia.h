@@ -28,7 +28,7 @@ public:
 	wstring GetPlaylistName() const;
 
 #if __winvc
-    int getSingerImg() const;
+    int singerImg() const;
 
 	const CMedia* findRelatedMedia() override
 	{

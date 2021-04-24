@@ -51,8 +51,14 @@ private:
 
 	wstring m_strDir;
 
-    map<wstring, wstring> m_mapSingerName;
+    map<wstring, CSinger*> m_mapSinger;
+    CSinger* _fileSingerName(cwstr strFile) const;
+
+#if __winvc
     map<wstring, list<tagSingerImg>> m_mapFile;
+
+#else
+    map<UINT, list<tagSingerImg>> m_mapFile;
 
 #if __OnlineMediaLib
     set<tagSingerImg*> m_setOnlineFile;
@@ -67,22 +73,21 @@ private:
 
     void _download();
 #endif
-
-private:
-    wstring _fileSingerName(cwstr strFile) const;
+#endif
 
 public:
-    const map<wstring, list<tagSingerImg>>& fileMap() const
-	{
-		return m_mapFile;
-	}
+    bool init(cwstr strDir);
 
     wstring file(const tagSingerImg& singerImg) const
     {
         return m_strDir + singerImg.strFile;
     }
 
-    bool init(cwstr strDir);
+#if __winvc
+    const map<wstring, list<tagSingerImg>>& fileMap() const
+    {
+        return m_mapFile;
+    }
 
 	UINT addSingerImg(cwstr strSingerName, const list<wstring>& lstFiles);
 
@@ -92,22 +97,21 @@ public:
 
 	void clearSingerImg();
 
-#if __OnlineMediaLib
-    UINT getSingerImgCount(cwstr strSingerName);
+	HBITMAP getSingerImg(cwstr strSingerName, UINT uIndex);
 
-    void downloadSingerHead(const list<wstring>& lstSingerName);
+    wstring getSingerHead(cwstr strSingerName);
+
+#else
+#if __OnlineMediaLib
+    UINT getSingerImgCount(UINT uSingerID);
+
+    void downloadSingerHead(const list<UINT>& lstSingerID);
 
     void quitDownload();
 
-	const tagSingerImg* getSingerHead(cwstr strSingerName);
-#else
-
-	wstring getSingerHead(cwstr strSingerName);
+    const tagSingerImg* getSingerHead(UINT uSingerID);
 #endif
 
-#if __winvc
-	HBITMAP getSingerImg(cwstr strSingerName, UINT uIndex);
-#else
-	const tagSingerImg* getSingerImg(cwstr strSingerName, UINT uIndex, bool bIgnorePiiic);
+    const tagSingerImg* getSingerImg(UINT uSingerID, UINT uIndex, bool bIgnorePiiic);
 #endif
 };
