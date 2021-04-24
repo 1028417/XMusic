@@ -91,7 +91,10 @@ bool CMLListView::_hittestMediaSet(const CMediaSet& mediaSet)
     {
         showItem((UINT)nIdx, true);
         selectItem((UINT)nIdx);
+        return true;
     }
+
+    return false;
 }
 
 void CMLListView::showDir(CPath& dir)

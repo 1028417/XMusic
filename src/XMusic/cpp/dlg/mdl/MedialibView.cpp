@@ -122,8 +122,8 @@ void CMedialibView::initpm()
     (void)m_pmDir.load(__mdlPng(dir));
     (void)m_pmFile.load(__mdlPng(file));
 
-    (void)m_pmPlayIcon.load(__png(btnPlay));
-    (void)m_pmAddPlayIcon.load(__png(btnAddplay));
+    (void)m_pmPlay.load(__png(btnPlay));
+    (void)m_pmAddPlay.load(__png(btnAddplay));
 
     QMatrix matrix;
     matrix.rotate(-10);
@@ -864,7 +864,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         int yIcon = rcRow.top()+szMargin;
         QRect rcPlayIcon(xIcon, yIcon, szIcon, szIcon);
 
-        cauto pm = mlContext.pMediaSet ? m_pmPlayIcon : m_pmAddPlayIcon;
+        cauto pm = mlContext.pMediaSet ? m_pmPlay : m_pmAddPlay;
 
         bool bFlash = (int)mlContext->uItem == m_nFlashItem;
         if (bFlash)
@@ -1170,7 +1170,7 @@ void CMedialibView::_onDirClick(tagLVItem& lvItem, const QMouseEvent& me, CPath&
             auto pSnapshotDir = _snapshotDir(dir);
             if (pSnapshotDir)
             {
-                _hittestMediaSet(*pSnapshotDir);
+                (void)_hittestMediaSet(*pSnapshotDir);
             }
 
             return;
