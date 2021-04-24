@@ -1124,7 +1124,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (m_PlayingInfo.pRelatedMedia)
         {
-            m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);
+            m_medialibDlg.showMediaSet(*m_PlayingInfo.pRelatedMedia);
         }
     }
     else if (label == ui.labelPlayingfile)

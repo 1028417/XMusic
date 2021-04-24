@@ -42,6 +42,7 @@ public:
     void show();
 
     void showMediaSet(CMediaSet& MediaSet);
+    void showMediaSet(IMedia& media);
 
     bool showMedia(IMedia& media);
 

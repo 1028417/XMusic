@@ -72,19 +72,31 @@ void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
     CDialog::show();
 }
 
-bool CMedialibDlg::showMedia(IMedia& media)
+void CMedialibDlg::showMediaSet(IMedia& media)
 {
     if (!m_lv.hittestMedia(media))
     {
-        if (media.type() != E_MediaType::MT_MediaRes)
+        return;
+    }
+
+    CDialog::show();
+}
+
+bool CMedialibDlg::showMedia(IMedia& media)
+{
+    if (media.type() == E_MediaType::MT_MediaRes)
+    {
+        m_lv.hittestFile((CMediaRes&)media);
+    }
+    else
+    {
+        if (!m_lv.hittestMedia(media))
         {
             return false;
         }
-
-        m_lv.hittestFile((CMediaRes&)media);
     }
 
-     g_app.sync([&]{
+    g_app.sync([&]{
         m_wholeTrackDlg.tryShow(media);
     });
 

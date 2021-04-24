@@ -7,7 +7,7 @@
 
 #define __RemarkAlpha 200
 
-#define __XpkRootName   L"离线音乐包"
+#define __XpkRootName   L"本地音乐包"
 
 #define __XSingerName   L"歌手"
 #define __XPlaylistName L"歌单"
