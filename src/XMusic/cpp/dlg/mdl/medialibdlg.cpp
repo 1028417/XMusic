@@ -277,7 +277,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     do {
         if (pSinger)
         {
-            auto& brSingerHead = m_lv.genSingerHead(pSinger->m_uID, pSinger->m_strName);
+            auto& brSingerHead = m_lv.genSingerHead(pSinger->m_uID);
             if (&brSingerHead != &m_lv.m_brNullSingerHead)
             {
                 ui.labelSingerImg->setPixmap(brSingerHead);
@@ -285,7 +285,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
                 break;
             }
 
-             g_app.getSingerImgMgr().downloadSingerHead({pSinger->m_strName});
+             g_app.getSingerImgMgr().downloadSingerHead({pSinger->m_uID});
         }
 
         ui.labelSingerImg->clear();
@@ -297,19 +297,18 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     _relayoutTitle();
 }
 
-void CMedialibDlg::updateSingerImg(cwstr strSingerName, const tagSingerImg& singerImg)
+void CMedialibDlg::updateSingerImg(CSinger& singer, const tagSingerImg& singerImg)
 {    
     if (singerImg.isSmall())
     {
         m_lv.update();
     }
 
-    auto pSinger = m_lv.currentSinger();
-    if (pSinger && pSinger->m_strName == strSingerName)
+    if (m_lv.currentSinger() == &singer)
     {
         if (singerImg.isSmall())
         {
-            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(pSinger->m_uID, strSingerName));            
+            ui.labelSingerImg->setPixmap(m_lv.genSingerHead(singer.m_uID));
             ui.labelSingerImg->setVisible(true);
             _relayoutTitle();
         }

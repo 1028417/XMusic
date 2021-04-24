@@ -144,7 +144,7 @@ BOOL CPlayItemPage::OnInitDialog()
 		}
 		else
 		{
-			iImage = pPlayItem->getSingerImg();
+			iImage = pPlayItem->singerImg();
 			if (iImage < 0)
 			{
 				iImage = (int)E_GlobalImage::GI_PlayItem;

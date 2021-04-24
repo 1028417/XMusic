@@ -167,7 +167,7 @@ void CPlayingList::_drawItem(CDC& dc, int cx, int cy, int nItem, CPlayItem& Play
 	{
 		cauto strAlbumName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Album);
 		
-		iImage = PlayItem.getSingerImg();
+		iImage = PlayItem.singerImg();
 		if (iImage >= 0)
 		{
 			if (!strAlbumName.empty())

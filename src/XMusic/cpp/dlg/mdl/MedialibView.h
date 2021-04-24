@@ -169,8 +169,8 @@ private:
 
     map<const IMedia*, wstring> m_mapDisplayTitle;
 
-    map<const void*, std::list<wstring>> m_PlaylistSinger;
-    map<const void*, std::list<wstring>> m_mapDirSinger;
+    map<const void*, std::list<UINT>> m_PlaylistSinger;
+    map<const void*, std::list<UINT>> m_mapDirSinger;
 
 private:
     struct tagCatItem
@@ -229,7 +229,7 @@ public:
 
     CSinger *currentSinger() const;
 
-    CBrush& genSingerHead(UINT uSingerID, cwstr strSingerName);
+    CBrush& genSingerHead(UINT uSingerID);
 
 private:
     void _genDisplayTitle(const IMedia *pMedia, cwstr strSingerName);
