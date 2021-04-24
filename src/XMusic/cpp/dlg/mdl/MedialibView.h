@@ -152,9 +152,7 @@ private:
     QPixmap m_pmFile;
 
     QPixmap m_pmPlay;
-    QPixmap m_pmPlayOpacity;
     QPixmap m_pmAddPlay;
-    QPixmap m_pmAddPlayOpacity;
 
     QPixmap m_pmCN;
     QPixmap m_pmHK;

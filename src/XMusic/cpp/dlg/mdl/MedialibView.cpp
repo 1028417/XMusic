@@ -122,10 +122,8 @@ void CMedialibView::initpm()
     (void)m_pmDir.load(__mdlPng(dir));
     (void)m_pmFile.load(__mdlPng(file));
 
-    (void)m_pmPlay.load(__png(btnPlay));
-    m_pmPlayOpacity = CPainter::alphaPixmap(m_pmPlay, 128);
-    (void)m_pmAddPlay.load(__png(btnAddplay));
-    m_pmAddPlayOpacity = CPainter::alphaPixmap(m_pmAddPlay, 128);
+    (void)m_pmPlayIcon.load(__png(btnPlay));
+    (void)m_pmAddPlayIcon.load(__png(btnAddplay));
 
     QMatrix matrix;
     matrix.rotate(-10);
@@ -858,7 +856,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         else*/
         {
             //szMargin = context.nIconSize;
-            szIcon = __size(80);
+            szIcon = __size(78);
             szMargin = (cy - szIcon)/2;
         }
 
@@ -866,11 +864,18 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         int yIcon = rcRow.top()+szMargin;
         QRect rcPlayIcon(xIcon, yIcon, szIcon, szIcon);
 
+        cauto pm = mlContext.pMediaSet ? m_pmPlayIcon : m_pmAddPlayIcon;
+
         bool bFlash = (int)mlContext->uItem == m_nFlashItem;
-        cauto pm = mlContext.pMediaSet
-                ?(bFlash?m_pmPlayOpacity:m_pmPlay)
-               :(bFlash?m_pmAddPlayOpacity:m_pmAddPlay);
+        if (bFlash)
+        {
+            painter.setOpacity(0.5f);
+        }
         painter.drawImg(rcPlayIcon, pm);
+        if (bFlash)
+        {
+            painter.setOpacity(1);
+        }
 
         rc.setRight(xIcon-__lvRowMargin+__playIconOffset);
     }
@@ -1057,9 +1062,11 @@ void CMedialibView::_onMediasetClick(tagLVItem& lvItem, const QMouseEvent& me, C
     CMLListView::_onMediasetClick(lvItem, me, mediaSet);
 }
 
+#define __checkIconArea (me.x() <= (int)rowHeight())
+
 void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media)
 {
-    if (me.x() <= (int)rowHeight())
+    if (__checkIconArea)
     {
         if (media.type() == E_MediaType::MT_PlayItem)
         {
@@ -1141,26 +1148,33 @@ void CMedialibView::_onDirClick(tagLVItem& lvItem, const QMouseEvent& me, CPath&
     }
     else
     {
-        if (me.x() <= (int)rowHeight())
-        {
-            auto uSingerID = ((CMediaDir&)dir).GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
-            if (uSingerID)
+        do {
+            if (!__checkIconArea)
             {
-                auto pSinger = g_app.getSingerMgr().getSinger(uSingerID);
-                if (pSinger)
-                {                    
-                    auto pSnapshotDir = _snapshotDir(dir);
-                    if (pSnapshotDir)
-                    {
-                        showMediaSet(*pSnapshotDir);
-                        return;
-                    }
-
-                    showMediaSet(*pSinger);
-                    return;
-                }
+                break;
             }
-        }
+
+            auto uSingerID = ((CMediaDir&)dir).GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+            if (0 == uSingerID)
+            {
+                break;
+            }
+            auto pSinger = g_app.getSingerMgr().getSinger(uSingerID);
+            if (NULL == pSinger)
+            {
+                break;
+            }
+
+            showMediaSet(*pSinger);
+
+            auto pSnapshotDir = _snapshotDir(dir);
+            if (pSnapshotDir)
+            {
+                _hittestMediaSet(*pSnapshotDir);
+            }
+
+            return;
+        } while(0);
     }
 
     CMLListView::_onDirClick(lvItem, me, dir);

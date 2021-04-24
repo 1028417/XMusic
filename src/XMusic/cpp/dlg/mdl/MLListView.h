@@ -152,6 +152,8 @@ protected:
         showDir(dir);
     }
 
+    bool _hittestMediaSet(const CMediaSet& mediaSet);
+
 private:
     virtual void _onShowRoot() {}
     virtual void _onShowMediaSet(CMediaSet&) {}

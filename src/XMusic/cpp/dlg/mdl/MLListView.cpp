@@ -84,6 +84,16 @@ bool CMLListView::hittestMedia(const IMedia& media)
     return true;
 }
 
+bool CMLListView::_hittestMediaSet(const CMediaSet& mediaSet)
+{
+    int nIdx = m_lstSubSets.indexOf(mediaSet);
+    if (nIdx >= 0)
+    {
+        showItem((UINT)nIdx, true);
+        selectItem((UINT)nIdx);
+    }
+}
+
 void CMLListView::showDir(CPath& dir)
 {
     _cleanup();
