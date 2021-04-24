@@ -40,9 +40,12 @@ public:
     void init();
 
     void show();
+
     void showMediaSet(CMediaSet& MediaSet);
+
     bool showMedia(IMedia& media);
-    CMediaRes* showMediaRes(cwstr strPath);
+
+    CMediaRes* showLocalFile(cwstr strPath);
 
     void updateHead(const WString& strTitle);
 

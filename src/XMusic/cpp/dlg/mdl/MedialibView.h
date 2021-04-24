@@ -6,21 +6,21 @@
 #define __playIconOffset __size10
 
 #if __android
-#define __OuterDir __sdcardDir
+#define __LocalDir __sdcardDir
 #elif __windows
-#define __OuterDir L""
+#define __LocalDir L""
 #else
-#define __OuterDir fsutil::getHomeDir()
+#define __LocalDir fsutil::getHomeDir()
 #endif
 
-class COuterDir : public CMediaDir
+class CLocalDir : public CMediaDir
 {
 public:
-    COuterDir() : CMediaDir(__OuterDir)
+    CLocalDir() : CMediaDir(__LocalDir)
     {
     }
 
-    COuterDir(cwstr strPath, CMediaDir& parent)
+    CLocalDir(cwstr strPath, CMediaDir& parent)
         : CMediaDir(strPath, &parent)
     {
     }
@@ -45,7 +45,7 @@ private:
             winfsutil::getSysDrivers(lstDrivers);
             for (cauto strDriver : lstDrivers)
             {
-                paSubDir.add(new COuterDir(strDriver, *this));
+                paSubDir.add(new CLocalDir(strDriver, *this));
             }
         }
         else
@@ -64,7 +64,7 @@ private:
         {
             auto strRoot = L"/storage/";
             (void)fsutil::findSubDir(strRoot, [&](tagFileInfo& fi) {
-                paSubDir.addFront(new COuterDir(strRoot + fi.strName, *this));
+                paSubDir.addFront(new CLocalDir(strRoot + fi.strName, *this));
             });
         }
     }
@@ -80,13 +80,13 @@ private:
             {
                 for (auto pSubDir : dirs())
                 {
-                    auto pOuterDir = dynamic_cast<COuterDir*>(pSubDir);
-                    if (NULL == pOuterDir)
+                    auto pLocalDir = dynamic_cast<CLocalDir*>(pSubDir);
+                    if (NULL == pLocalDir)
                     {
                         break;
                     }
 
-                    auto pMediaRes = pOuterDir->subPath(strSubPath, bDir);
+                    auto pMediaRes = pLocalDir->subPath(strSubPath, bDir);
                     if (pMediaRes)
                     {
                         return pMediaRes;
@@ -123,7 +123,7 @@ private:
 
     CMediaSet& m_PlaylistLib;
 
-    COuterDir m_OuterDir;
+    CLocalDir m_LocalDir;
 
     QPixmap m_pmXpk;
 
@@ -144,7 +144,7 @@ private:
     cqpm m_pmSQDisk;
 
 #if __android || __windows
-    QPixmap m_pmOuterDir;
+    QPixmap m_pmLocalDir;
 #endif
 
     QPixmap m_pmDirLink;
@@ -225,7 +225,7 @@ public:
 
     void initpm();
 
-    CMediaRes* hittestMediaRes(cwstr strPath);
+    CMediaRes* hittestLocalFile(cwstr strPath);
 
     CSinger *currentSinger() const;
 

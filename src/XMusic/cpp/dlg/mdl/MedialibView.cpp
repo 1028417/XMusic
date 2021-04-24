@@ -113,9 +113,9 @@ void CMedialibView::initpm()
     (void)m_pmFlac.load(__mdlPng(flac));
 
 #if __android
-    (void)m_pmOuterDir.load(__mdlPng(tf));
+    (void)m_pmLocalDir.load(__mdlPng(tf));
 #elif __windows
-    (void)m_pmOuterDir.load(__mdlPng(windriver));
+    (void)m_pmLocalDir.load(__mdlPng(windriver));
 #endif
 
     (void)m_pmDirLink.load(__mdlPng(dirLink));
@@ -277,7 +277,7 @@ void CMedialibView::_onShowDir(CPath& dir)
         m_medialibDlg.updateHead(__XMusicDirName);
         return;
     }
-    else if (&dir == &m_OuterDir)
+    else if (&dir == &m_LocalDir)
     {
         m_medialibDlg.updateHead(strutil::ltrim_r(wstring(__LocalDirName)));
         return;
@@ -285,7 +285,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     //非根目录 else {
 
     auto strTitle = dir.fileName();
-    if (dir.rootDir() == &m_OuterDir)
+    if (dir.rootDir() == &m_LocalDir)
     {
         m_medialibDlg.updateHead(strTitle);
         return;
@@ -544,7 +544,7 @@ void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
 
     auto& MediaRes = (CMediaRes&)file;
     auto pRootDir = file.rootDir();
-    if (pRootDir == &m_OuterDir)
+    if (pRootDir == &m_LocalDir)
     {
         context.strText = MediaRes.GetName();
     }
@@ -574,7 +574,7 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
     context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
     auto pParentDir = dir.parent();
-    if (dir.rootDir() == &m_OuterDir)
+    if (dir.rootDir() == &m_LocalDir)
     {
         context.setIcon(m_pmDir);
 
@@ -596,10 +596,10 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
             }
         }
 #if __android || __windows
-        else if (pParentDir == &m_OuterDir) {
-            if (dynamic_cast<COuterDir*>(&dir)) //windows驱动器、安卓tf卡
+        else if (pParentDir == &m_LocalDir) {
+            if (dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
             {
-                context.setIcon(m_pmOuterDir);
+                context.setIcon(m_pmLocalDir);
             }
         }
 #endif
@@ -697,7 +697,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         {
             context.setIcon(m_pmDir, __szIcon);
             context.strText << ' ' << __LocalDirName;
-            context.pDir = &m_OuterDir;
+            context.pDir = &m_LocalDir;
         }
     }
 
@@ -902,7 +902,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     if (pMedia)
     {
         if (E_MediaType::MT_MediaRes != pMedia->type()
-                || ((CMediaRes*)pMedia)->rootDir() != &m_OuterDir)
+                || ((CMediaRes*)pMedia)->rootDir() != &m_LocalDir)
         {
             cauto qsQuality = mediaQualityString(*pMedia);
             if (!qsQuality.isEmpty())
@@ -1115,7 +1115,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 void CMedialibView::_onDirClick(tagLVItem& lvItem, const QMouseEvent& me, CPath& dir)
 {
 #if __android
-    if (&dir == &m_OuterDir)
+    if (&dir == &m_LocalDir)
     {
         if (!requestAndroidSDPermission())
         {
@@ -1124,7 +1124,7 @@ void CMedialibView::_onDirClick(tagLVItem& lvItem, const QMouseEvent& me, CPath&
     }
 #endif
 
-    if (dir.rootDir() == &m_OuterDir)
+    if (dir.rootDir() == &m_LocalDir)
     {
         list<CPath*> lstRemove;
         for (auto pDir : dir.dirs())
@@ -1194,7 +1194,7 @@ void CMedialibView::_flashItem(UINT uMSDelay, UINT uItem, bool bSelect)
 
 void CMedialibView::cleanup()
 {
-    m_OuterDir.clear();
+    m_LocalDir.clear();
 
     m_mapDisplayTitle.clear();
 
@@ -1204,18 +1204,9 @@ void CMedialibView::cleanup()
     CMLListView::_cleanup();
 }
 
-CMediaRes* CMedialibView::hittestMediaRes(cwstr strPath)
+CMediaRes* CMedialibView::hittestLocalFile(cwstr strPath)
 {
-    CMediaRes *pMediaRes = m_OuterDir.subFile(strPath);
-    /*onPlay时确定pRelatedMedia if (NULL == pMediaRes)
-    {
-        pMediaRes = __medialib.subFile(strPath);
-        if(NULL == pMediaRes)
-        {
-            pMediaRes = m_xpkRoot.subFile(strPath);
-        }
-    }*/
-
+    CMediaRes *pMediaRes = m_LocalDir.subFile(strPath);
     if (pMediaRes)
     {
         hittestFile(*pMediaRes);
@@ -1223,7 +1214,7 @@ CMediaRes* CMedialibView::hittestMediaRes(cwstr strPath)
     return pMediaRes;
 }
 
-CPath* COuterDir::_newSubDir(const tagFileInfo& fileInfo)
+CPath* CLocalDir::_newSubDir(const tagFileInfo& fileInfo)
 {
     if (fileInfo.strName.front() == __wcDot)
     {

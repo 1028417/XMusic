@@ -784,7 +784,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
             }
             else
             {
-                PlayingInfo.pRelatedMedia = __xmedialib.xpkRoot().subFile(strPath);
                 pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
             }
 
@@ -1130,14 +1129,20 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelPlayingfile)
     {
+        auto pXpkMedia = __xmedialib.xpkRoot().subFile(m_PlayingInfo.strPath);
+        if (pXpkMedia)
+        {
+            m_medialibDlg.showMedia(*pXpkMedia);
+            return;
+        }
+
         if (m_PlayingInfo.pRelatedMedia)
         {
-            m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);
+            (void)m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);
+            return;
         }
-        else
-        {
-            m_medialibDlg.showMediaRes(m_PlayingInfo.strPath);
-        }
+
+        m_medialibDlg.showLocalFile(m_PlayingInfo.strPath);
     }
     else if (label == ui.labelProgress)
     {

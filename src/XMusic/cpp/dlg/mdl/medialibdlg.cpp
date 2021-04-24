@@ -45,7 +45,7 @@ void CMedialibDlg::init()
         auto pSinger = m_lv.currentSinger();
         if (pSinger)
         {
-            m_singerImgDlg.show(pSinger->m_strName);
+            m_singerImgDlg.show(pSinger->m_uID);
         }
     });
 
@@ -93,9 +93,9 @@ bool CMedialibDlg::showMedia(IMedia& media)
     return true;
 }
 
-CMediaRes* CMedialibDlg::showMediaRes(cwstr strPath)
+CMediaRes* CMedialibDlg::showLocalFile(cwstr strPath)
 {
-    auto pMediaRes = m_lv.hittestMediaRes(strPath);
+    auto pMediaRes = m_lv.hittestLocalFile(strPath);
     if (pMediaRes)
     {
         CDialog::show();
