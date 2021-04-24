@@ -250,7 +250,7 @@ public:
         return 0;
     }
 
-    virtual void onSingerImgDownloaded(CSinger*, const struct tagSingerImg&) {}
+    virtual void onSingerImgDownloaded(CSinger&, const struct tagSingerImg&) {}
 
     virtual bool installApp(const CByteBuffer&) {return true;}
     virtual bool installApp(const string&) {return true;}
