@@ -9,10 +9,10 @@
 
 #define __XpkRootName   L"离线音乐包"
 
-#define __XSingerName   L" 歌手"
-#define __XPlaylistName L" 歌单"
+#define __XSingerName   L"歌手"
+#define __XPlaylistName L"歌单"
 #define __XMusicDirName L"XMusic"
-#define __LocalDirName  L" 本机"
+#define __LocalDirName  L"本机"
 
 #define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
 
@@ -277,25 +277,36 @@ void CMedialibView::_onShowDir(CPath& dir)
     }
     else if (&dir == &m_LocalDir)
     {
-        m_medialibDlg.updateHead(strutil::ltrim_r(wstring(__LocalDirName)));
+        m_medialibDlg.updateHead(__LocalDirName);
         return;
     }
     //非根目录 else {
 
     auto strTitle = dir.fileName();
-    if (dir.rootDir() == &m_LocalDir)
+    auto pParentDir = dir.parent();
+    if (pParentDir == &m_xpkRoot)
     {
-        m_medialibDlg.updateHead(strTitle);
+        m_medialibDlg.updateHead(__XpkRootName __CNDot + strTitle);
         return;
     }
 
+    if (dir.rootDir() == &m_LocalDir)
+    {
+        if (pParentDir == &m_LocalDir && dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
+        {
+            strTitle = __LocalDirName __CNDot + strTitle;
+        }
+        m_medialibDlg.updateHead(strTitle);
+        return;
+    }    
+
     auto pSnapshotDir = _snapshotDir(dir);
-    if (pSnapshotDir && dir.parent() == &__medialib)
+    if (pSnapshotDir && pParentDir == &__medialib)
     {
         cauto strCatTitle = _catTitle(*pSnapshotDir);
         if (!strCatTitle.empty())
         {
-            strTitle = strCatTitle;
+            strTitle = __XMusicDirName __CNDot + strCatTitle;
         }
         else
         {
@@ -594,8 +605,9 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
             }
         }
 #if __android || __windows
-        else if (pParentDir == &m_LocalDir) {
-            if (dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
+        else
+        {
+            if (pParentDir == &m_LocalDir && dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
             {
                 context.setIcon(m_pmLocalDir);
             }
@@ -676,13 +688,13 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
         {
             context.setIcon(m_pmSingerGroup, __szIcon);
-            context.strText = __XSingerName;
+            context.strText = L" " __XSingerName;
             context.pMediaSet = &m_SingerLib;
         }
         else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
         {
             context.setIcon(m_pmPlaylistSet, __szIcon);
-            context.strText = __XPlaylistName;
+            context.strText = L" " __XPlaylistName;
             context.pMediaSet = &m_PlaylistLib;
         }
         else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
@@ -694,7 +706,7 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
         {
             context.setIcon(m_pmDir, __szIcon);
-            context.strText << ' ' << __LocalDirName;
+            context.strText = L" " __LocalDirName;
             context.pDir = &m_LocalDir;
         }
     }
