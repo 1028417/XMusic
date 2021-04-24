@@ -57,6 +57,11 @@ public:
         return m_wholeTrackDlg.tryShow(media);
     }
 
+    wstring genAttachTitle(const CSnapshotDir& dir) const
+    {
+        return m_lv.genAttachTitle(dir);
+    }
+
 private:
     void _onClosed() override
     {

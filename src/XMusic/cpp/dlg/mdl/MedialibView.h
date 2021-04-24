@@ -165,7 +165,7 @@ private:
 
     int m_nFlashItem = -1;
 
-    map<const IMedia*, wstring> m_mapDisplayTitle;
+    map<const IMedia*, wstring> m_mapMediaTitle;
 
     map<const void*, std::list<UINT>> m_PlaylistSinger;
     map<const void*, std::list<UINT>> m_mapDirSinger;
@@ -229,9 +229,22 @@ public:
 
     CBrush& genSingerHead(UINT uSingerID);
 
+    inline wstring genAttachTitle(const CSnapshotDir& dir) const
+    {
+        cauto strCatTitle = _catTitle(dir);
+        if (!strCatTitle.empty())
+        {
+            return strCatTitle + __CNDot + dir.fileName();
+        }
+        else
+        {
+            return dir.catName() + __CNDot + dir.fileName();
+        }
+    }
+
 private:
-    void _genDisplayTitle(const IMedia *pMedia, cwstr strSingerName);
-    void _genDisplayTitle(const IMedia *pMedia);
+    void _genMediaTitle(const IMedia *pMedia, cwstr strSingerName);
+    void _genMediaTitle(const IMedia *pMedia);
     void _genSingerMediaTitle(const IMedia *pMedia, CSinger& singer);
 
     void _onShowRoot() override;
@@ -244,8 +257,6 @@ private:
     size_t _getRootItemCount() const override;
 
     void _genMLItemContext(tagMLItemContext&) override;
-
-    wstring _genAttachTitle(const CSnapshotDir& dir) const;
 
     void _genMediaSetContext(tagMLItemContext& context, CMediaSet& MediaSet);
     void _genMediaContext(tagMLItemContext& context, IMedia& Media);

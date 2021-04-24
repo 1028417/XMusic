@@ -38,6 +38,7 @@ struct tagPlayingInfo
     CSinger *pSinger = NULL;
 
     IMedia *pRelatedMedia = NULL;
+    wstring strMediaSet;
 };
 
 enum class E_SingerImgPos
@@ -152,7 +153,7 @@ private:
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;
 
-    void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual) override;
+    void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual) override;
 
     void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 
