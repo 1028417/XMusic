@@ -46,7 +46,7 @@ private:
 
     bool _clear();
 
-    bool _play(CPlayItem& PlayItem);
+    bool _play(CPlayItem& PlayItem, bool bOnline);
 
     bool _play(uint64_t uStartPos = 0);
 

@@ -8,13 +8,6 @@ struct tagMediaTag
 	wstring strAlbum;
 };
 
-enum class E_TrackType
-{
-    TT_Single,
-    TT_HDWhole,
-    TT_SQWhole
-};
-
 class __MediaLibExt CMediaRes : public IMedia, public CPathObject
 {
 public:
@@ -86,12 +79,6 @@ public:
     virtual void genMediaResListItem(E_ListViewType, vector<wstring>& vecText, int& iImage, bool bSingerPanel);
 
     CRCueFile cueFile() override;
-
-#else
-    virtual E_TrackType trackType() const
-    {
-        return E_TrackType::TT_Single;
-    }
 #endif
 
 public:

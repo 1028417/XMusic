@@ -138,6 +138,13 @@ public:
     bool available = false;
 };
 
+enum class E_TrackType
+{
+    TT_Single,
+    TT_HDWhole,
+    TT_SQWhole
+};
+
 class __ModelExt CSnapshotMedia : public CMediaRes
 {
 public:
@@ -166,7 +173,7 @@ public:
         return m_uDuration;
     }
 
-    E_TrackType trackType() const override
+    E_TrackType trackType() const
     {
         if (m_uDuration > __wholeTrackDuration)
         {

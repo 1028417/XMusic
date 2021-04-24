@@ -50,7 +50,7 @@ void CModelObserver::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 	}
 }
 
-void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
+void CModelObserver::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual)
 {
 	m_view.m_PlayingPage.m_wndList.onPlay(uPlayingItem, bManual);
 
