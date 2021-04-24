@@ -11,7 +11,7 @@ public:
 private:
     CSingerImgMgr& m_singerImgMgr;
 
-    wstring m_strSingerName;
+    UINT m_uSingerID = 0;
 
     UINT m_uImgCount = 0;
     UINT m_uImgIdx = 0;
@@ -24,7 +24,7 @@ private:
 public:
     void init();
 
-    void show(cwstr strSingerName);
+    void show(UINT uSingerID);
 
     void relayoutTitle(cqrc rcBtnReturn);
 

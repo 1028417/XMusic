@@ -570,7 +570,7 @@ bool MainWindow::event(QEvent *ev)
 
         if (m_PlayingInfo.pSinger)//.uSingerID)
         {
-            _playSingerImg(m_PlayingInfo.pSinger->m_strName, false);
+            _playSingerImg(m_PlayingInfo.pSinger->m_uID, false);
         }
 
         break;
@@ -733,7 +733,7 @@ void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    PlayingInfo.strPath = PlayItem.GetPath();
+    cauto strPath = PlayingInfo.strPath = PlayItem.GetPath();
 
 #if __OnlineMediaLib
     PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
@@ -766,18 +766,28 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
         }
         else
         {
-            auto pMediaRes = __medialib.subFile(PlayingInfo.strPath);
-            if (NULL == pMediaRes)
+            auto pMediaRes = __medialib.subFile(strPath);
+            if (pMediaRes)
             {
-                pMediaRes = __xmedialib.xpkRoot().subFile(PlayingInfo.strPath);
-            }
-            if(pMediaRes)
-            {
+                auto pSnapshotDir = (CSnapshotDir*)pMediaRes->mediaSet();
+                if (pSnapshotDir)
+                {
+                    pSinger = pSnapshotDir->singer();
+                }
+                else
+                {
+                    pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
+                }
+
                 PlayingInfo.pRelatedMedia = pMediaRes;
                 PlayingInfo.eTrackType = pMediaRes->trackType();
             }
+            else
+            {
+                PlayingInfo.pRelatedMedia = __xmedialib.xpkRoot().subFile(strPath);
+                pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
+            }
 
-            pSinger = g_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath);
             /*if (pSinger) {
                 PlayingInfo.uSingerID = pSinger->m_uID;
                 PlayingInfo.strSingerName = pSinger->m_strName;
@@ -822,7 +832,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
             if (pSinger)//m_PlayingInfo.uSingerID)
             {
-                _playSingerImg(pSinger->m_strName, true);
+                _playSingerImg(pSinger->m_uID, true);
 
                 ui.labelSingerName->setText(__WS2Q(pSinger->m_strName));
                 //ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
@@ -861,14 +871,14 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
     }
 }
 
-void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& singerImg)
+void MainWindow::onSingerImgDownloaded(CSinger& singer, const tagSingerImg& singerImg)
 {
     if (m_medialibDlg.isVisible())
     {
-         g_app.sync([&, strSingerName]{
+         g_app.sync([&]{
             if (m_medialibDlg.isVisible())
             {
-                m_medialibDlg.updateSingerImg(strSingerName, singerImg);
+                m_medialibDlg.updateSingerImg(singer, singerImg);
             }
         });
     }
@@ -878,13 +888,12 @@ void MainWindow::onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg& 
         return;
     }
 
-    auto pSinger = m_PlayingInfo.pSinger;
-    if (pSinger && pSinger->m_strName == strSingerName && !ui.labelSingerImg->pixmap())
+    if (m_PlayingInfo.pSinger == &singer && !ui.labelSingerImg->pixmap())
     {
          g_app.sync([=]{
-             if (pSinger == m_PlayingInfo.pSinger)
+             if (m_PlayingInfo.pSinger == &singer)
              {
-                 _playSingerImg(pSinger->m_strName);
+                 _playSingerImg(singer.m_uID);
              }
         });
     }
@@ -902,7 +911,7 @@ bool MainWindow::installApp(const string& strUpgradeFile)
 
 #define ___singerImgElapse 8
 
-void MainWindow::_playSingerImg(cwstr strSingerName, bool bReset)
+void MainWindow::_playSingerImg(UINT uSingerID, bool bReset)
 {
     static UINT uTickCount = 0;
     if (bReset)
@@ -923,17 +932,17 @@ void MainWindow::_playSingerImg(cwstr strSingerName, bool bReset)
         }
     }
 
-    _playSingerImg(strSingerName);
+    _playSingerImg(uSingerID);
 }
 
-void MainWindow::_playSingerImg(cwstr strSingerName)
+void MainWindow::_playSingerImg(UINT uSingerID)
 {
-    auto pSingerImg =  g_app.getSingerImgMgr().getSingerImg(strSingerName, m_uSingerImgIdx, true);
+    auto pSingerImg =  g_app.getSingerImgMgr().getSingerImg(uSingerID, m_uSingerImgIdx, true);
     if (NULL == pSingerImg)
     {
         if (m_uSingerImgIdx > 1)
         {
-            _playSingerImg(strSingerName, true);
+            _playSingerImg(uSingerID, true);
         }
         return;
     }
@@ -994,7 +1003,7 @@ void MainWindow::_playSingerImg(cwstr strSingerName)
 #endif
 
     m_uSingerImgIdx++;
-    (void) g_app.getSingerImgMgr().getSingerImg(strSingerName, m_uSingerImgIdx, true);
+    (void) g_app.getSingerImgMgr().getSingerImg(uSingerID, m_uSingerImgIdx, true);
 }
 
 void MainWindow::slot_buttonClicked(CButton* button)

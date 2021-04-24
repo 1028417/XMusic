@@ -146,8 +146,8 @@ private:
 
     void _demand(CButton* btnDemand);
 
-    void _playSingerImg(cwstr strSingerName, bool bReset);
-    void _playSingerImg(cwstr strSingerName);
+    void _playSingerImg(UINT uSingerID, bool bReset);
+    void _playSingerImg(UINT uSingerID);
 
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;
@@ -156,7 +156,7 @@ private:
 
     void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 
-    void onSingerImgDownloaded(cwstr strSingerName, const tagSingerImg&) override;
+    void onSingerImgDownloaded(CSinger& singer, const tagSingerImg&) override;
 
     bool installApp(const CByteBuffer& bbfBuff) override;
     bool installApp(const string& strFile) override;

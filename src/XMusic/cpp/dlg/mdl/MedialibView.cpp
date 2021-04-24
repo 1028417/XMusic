@@ -201,22 +201,22 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
     if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
     {
-        list<wstring> lstSingerName;
+        list<UINT> lstSinger;
         for (cauto singer : ((CSingerGroup&)MediaSet).singers())
         {
-            lstSingerName.push_back(singer.m_strName);
+            lstSinger.push_back(singer.m_uID);
         }
-         g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+         g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
         return;
     }
 
     if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
     {
-        list<wstring> *plstSingerName = NULL;
+        list<UINT> *plstSinger = NULL;
         cauto itr = m_PlaylistSinger.find(&MediaSet);
         if (itr != m_PlaylistSinger.end())
         {
-            plstSingerName = &itr->second;
+            plstSinger = &itr->second;
 
             for (cauto PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
@@ -233,7 +233,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         }
         else
         {
-            plstSingerName = &m_PlaylistSinger[&MediaSet];
+            plstSinger = &m_PlaylistSinger[&MediaSet];
 
             cauto singerMgr =  g_app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
@@ -241,14 +241,13 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                 auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
                 if (pSinger)
                 {
-                    cauto strSingerName = pSinger->m_strName;
-                    PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, pSinger->m_uID, strSingerName);
-                    if (std::find(plstSingerName->begin(), plstSingerName->end(), strSingerName) == plstSingerName->end())
+                    PlayItem.SetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, pSinger->m_uID, pSinger->m_strName);
+                    if (std::find(plstSinger->begin(), plstSinger->end(), pSinger->m_uID) == plstSinger->end())
                     {
-                        plstSingerName->push_back(strSingerName);
+                        plstSinger->push_back(pSinger->m_uID);
                     }
 
-                    _genDisplayTitle(&PlayItem, strSingerName);
+                    _genDisplayTitle(&PlayItem, pSinger->m_strName);
                 }
                 else
                 {
@@ -257,9 +256,9 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
             }
         }
 
-        if (!plstSingerName->empty())
+        if (!plstSinger->empty())
         {
-             g_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+             g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
         }
     }
 }
@@ -308,29 +307,29 @@ void CMedialibView::_onShowDir(CPath& dir)
     m_medialibDlg.updateHead(strTitle);
 
     //目录歌手图标
-    list<wstring> *plstSingerName = NULL;
+    list<UINT> *plstSinger = NULL;
     cauto itr = m_mapDirSinger.find(&dir);
     if (itr != m_mapDirSinger.end())
     {
-        plstSingerName = &itr->second;
+        plstSinger = &itr->second;
     }
     else
     {
-        plstSingerName = &m_mapDirSinger[&dir];
+        plstSinger = &m_mapDirSinger[&dir];
 
         for (auto pSubDir : dir.dirs())
         {
-            cauto strSingerName = ((CMediaDir*)pSubDir)->GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-            if (!strSingerName.empty())
+            auto uSingerID = ((CMediaDir*)pSubDir)->GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+            if (uSingerID)
             {
-                plstSingerName->push_back(strSingerName);
+                plstSinger->push_back(uSingerID);
             }
         }
     }
 
-    if (!plstSingerName->empty())
+    if (!plstSinger->empty())
     {
-         g_app.getSingerImgMgr().downloadSingerHead(*plstSingerName);
+         g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
     }
 
     //文件标题
@@ -471,7 +470,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
     break;
     case E_MediaSetType::MST_Singer:
     {
-        auto& brSingerHead = genSingerHead(MediaSet.m_uID, MediaSet.m_strName);
+        auto& brSingerHead = genSingerHead(MediaSet.m_uID);
         context.setSingerIcon(brSingerHead);
 
         auto& lstAlbum = ((CSinger&)MediaSet).albums();
@@ -525,11 +524,10 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context, IMedia& Media)
     {
         context.setIcon(m_pmPlayItem);
 
-        wstring strSingerName;
-        auto uSingerID = Media.GetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, strSingerName);
+        auto uSingerID = Media.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
         if (uSingerID)
         {
-            auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
+            auto& brSingerHead = genSingerHead(uSingerID);
             context.setSingerIcon(brSingerHead);
         }
     }
@@ -641,11 +639,10 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
         }
     }
 
-    wstring strSingerName;
-    auto uSingerID = ((CMediaDir&)dir).GetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, strSingerName);
+    auto uSingerID = ((CMediaDir&)dir).GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
     if (uSingerID)
     {
-        auto& brSingerHead = genSingerHead(uSingerID, strSingerName);
+        auto& brSingerHead = genSingerHead(uSingerID);
         context.setSingerIcon(brSingerHead);
     }
 }
@@ -750,34 +747,34 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 
     if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
     {
-        list<wstring> lstSingerName;
+        list<UINT> lstSinger;
         for (auto uItem : currentItems())
         {
             currentSubMedias().get(uItem, [&](IMedia& media){
-                cauto strSingerName = media.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
-                if (!strSingerName.empty())
+                auto uSingerID = media.GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+                if (uSingerID)
                 {
-                    lstSingerName.push_back(strSingerName);
+                    lstSinger.push_back(uSingerID);
                 }
             });
         }
 
-        if (!lstSingerName.empty())
+        if (!lstSinger.empty())
         {
-             g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+             g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
     {
-        list<wstring> lstSingerName;
+        list<UINT> lstSinger;
         cauto paSinger = currentSubSets();
         for (cauto uItem : currentItems())
         {
             paSinger.get(uItem, [&](CMediaSet& singer){
-                lstSingerName.push_back(singer.m_strName);
+                lstSinger.push_back(singer.m_uID);
             });
         }
-         g_app.getSingerImgMgr().downloadSingerHead(lstSingerName);
+         g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
     }
 }
 
@@ -992,7 +989,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     return rcRet;
 }
 
-CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
+CBrush& CMedialibView::genSingerHead(UINT uSingerID)
 {
     auto& pbrSingerHead = m_mapSingerHead[uSingerID];
     if (pbrSingerHead)
@@ -1000,7 +997,7 @@ CBrush& CMedialibView::genSingerHead(UINT uSingerID, cwstr strSingerName)
         return *pbrSingerHead;
     }
 
-    auto pHeadImg =  g_app.getSingerImgMgr().getSingerHead(strSingerName);
+    auto pHeadImg =  g_app.getSingerImgMgr().getSingerHead(uSingerID);
     if (NULL == pHeadImg)
     {
         pbrSingerHead = &m_brNullSingerHead;

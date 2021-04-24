@@ -132,15 +132,15 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     painter.drawImg(rcPos, m_brImg, QRect(0,0,m_cxImg,m_cyImg), __szRound);
 }
 
-void CSingerImgDlg::show(cwstr strSingerName)
+void CSingerImgDlg::show(UINT uSingerID)
 {
-    m_uImgCount = m_singerImgMgr.getSingerImgCount(strSingerName);
+    m_uImgCount = m_singerImgMgr.getSingerImgCount(uSingerID);
     if (0 == m_uImgCount)
     {
         return;
     }
 
-    m_strSingerName = strSingerName;
+    m_uSingerID = uSingerID;
     m_uImgIdx = 0;
     m_cxImg = m_cyImg = 0;
 
@@ -189,7 +189,7 @@ void CSingerImgDlg::_showImg(int nOffset)
 
     m_nSwitchingOffset = nOffset;
 
-    auto pSingerImg = m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
+    auto pSingerImg = m_singerImgMgr.getSingerImg(m_uSingerID, uImgIdx, false);
     if (NULL == pSingerImg || !pSingerImg->bExist)
     {
         return;
@@ -209,11 +209,11 @@ void CSingerImgDlg::_showImg(int nOffset)
     {
         if (m_uImgIdx < m_uImgCount-1)
         {
-            (void)m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
+            (void)m_singerImgMgr.getSingerImg(m_uSingerID, uImgIdx, false);
         }
 
         uImgIdx = (0 == m_uImgIdx) ? (m_uImgCount-1) : (m_uImgIdx-1);
-        (void)m_singerImgMgr.getSingerImg(m_strSingerName, uImgIdx, false);
+        (void)m_singerImgMgr.getSingerImg(m_uSingerID, uImgIdx, false);
     }
 }
 
