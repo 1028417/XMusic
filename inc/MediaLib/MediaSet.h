@@ -193,12 +193,5 @@ public:
 	virtual wstring GetExportName()
 	{
 		return m_strName;
-	}
-
-#if !__winvc
-    virtual wstring name() const
-    {
-        return m_strName;
     }
-#endif
 };

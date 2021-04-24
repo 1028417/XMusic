@@ -245,6 +245,8 @@ private:
 
     void _genMLItemContext(tagMLItemContext&) override;
 
+    wstring _genAttachTitle(const CSnapshotDir& dir) const;
+
     void _genMediaSetContext(tagMLItemContext& context, CMediaSet& MediaSet);
     void _genMediaContext(tagMLItemContext& context, IMedia& Media);
     void _genFileContext(tagMLItemContext& context, XFile& file);

@@ -1,8 +1,6 @@
 
 #pragma once
 
-wstring getPathCatName(cwstr strPath);
-
 #if !__winvc
 #define __OnlineMediaLib 1
 
@@ -105,10 +103,7 @@ public:
 public:
     E_SSCatType catType() const;
 
-    wstring catName() const
-    {
-        return getPathCatName(GetPath());
-    }
+    wstring catName() const;
 
     void attachToSinger(CSinger& singer, const tagSingerAttachDir& attachDir);
 
@@ -118,8 +113,6 @@ public:
     {
         return (CMediaSet*)this;
     }
-
-    wstring name() const override;
 
     void GetSubSets(TD_MediaSetList& paMediaSet) override
     {

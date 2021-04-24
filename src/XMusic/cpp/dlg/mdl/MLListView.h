@@ -35,7 +35,7 @@ struct tagMLItemContext : public tagLVItemContext
         : tagLVItemContext(lvItem, E_LVItemStyle::IS_BottomLine)
         , pMediaSet(&MediaSet)
     {
-        strText = MediaSet.name();
+        strText = MediaSet.m_strName;
     }
 
     tagMLItemContext(tagLVItem& lvItem, CPath& dir)

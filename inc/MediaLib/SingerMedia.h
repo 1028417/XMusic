@@ -122,14 +122,12 @@ struct tagSingerAttachDir
 {
     tagSingerAttachDir() = default;
 
-    tagSingerAttachDir(cwstr strDir)//, cwstr strAliasName)
+    tagSingerAttachDir(cwstr strDir)
         : strDir(strDir)
-        //, strAliasName(strAliasName)
     {
     }
 
     wstring strDir;
-    //wstring strAliasName;
 
 #if !__winvc
     CMediaSet *pSnapshotDir = NULL;
