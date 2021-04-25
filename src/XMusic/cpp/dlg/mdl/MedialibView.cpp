@@ -79,6 +79,13 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
     , m_PlaylistLib(g_app.getPlaylistMgr())
     , m_pmHDDisk(g_app.m_pmHDDisk)
     , m_pmSQDisk(g_app.m_pmSQDisk)
+    , m_lpRootItem {
+        {m_pmSingerGroup, L" " __XSinger, m_SingerLib},
+        {m_pmPlaylistSet, L" " __XPlaylist, m_PlaylistLib},
+        {m_pmXmusicDir, __XMusicDir, __medialib},
+        {m_pmXpk, __Xpk, m_xpkRoot},
+        {m_pmDir, L" " __LocalDir, m_LocalDir}
+    }
     , m_lpCatItem {
         {__mdlPng(dsd), __catDSD},
         {__mdlPng(hires), __catHires},
@@ -92,6 +99,24 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
         {"", L""}
     }
 {
+}
+
+void CMedialibView::resetRootItem(bool bHLayout)
+{
+    _rootItem(E_MdlRootType::RT_Singer).resetPos(1, 0, 1);
+    _rootItem(E_MdlRootType::RT_Playlist).resetPos(1, 1, 3);
+    _rootItem(E_MdlRootType::RT_XMusic).resetPos(3, 0, 5);
+
+    if (!bHLayout && m_xpkRoot.count())
+    {
+        _rootItem(E_MdlRootType::RT_Xpk).resetPos(3, 1, 7);
+        _rootItem(E_MdlRootType::RT_Local).resetPos(3, 1, 9);
+    }
+    else
+    {
+        _rootItem(E_MdlRootType::RT_Xpk).resetPos();
+        _rootItem(E_MdlRootType::RT_Local).resetPos(3, 1, 7);
+    }
 }
 
 void CMedialibView::initpm()
@@ -113,15 +138,15 @@ void CMedialibView::initpm()
     //(void)m_pmXpkMedia.load(__mdlPng(xpkmedia));
     (void)m_pmFlac.load(__mdlPng(flac));
 
+    (void)m_pmDir.load(__mdlPng(dir));
+    (void)m_pmFile.load(__mdlPng(file));
+
 #if __android
     (void)m_pmLocalDir.load(__mdlPng(tf));
 #elif __windows
     (void)m_pmLocalDir.load(__mdlPng(windriver));
 #endif
-
     (void)m_pmDirLink.load(__mdlPng(dirLink));
-    (void)m_pmDir.load(__mdlPng(dir));
-    (void)m_pmFile.load(__mdlPng(file));
 
     (void)m_pmPlay.load(__png(btnPlay));
     (void)m_pmAddPlay.load(__png(btnAddplay));
@@ -280,22 +305,12 @@ void CMedialibView::_onShowDir(CPath& dir)
 {
     m_mapMediaTitle.clear();
 
-    if (&dir == &m_xpkRoot)
+    auto pRootItem = _rootItem(dir);
+    if (pRootItem)
     {
-        m_medialibDlg.updateHead(__XpkRoot);
+        m_medialibDlg.updateHead(strutil::ltrim_r(pRootItem->strTitle));
         return;
     }
-    else if (&dir == &__medialib)
-    {
-        m_medialibDlg.updateHead(__XMusicDir);
-        return;
-    }
-    else if (&dir == &m_LocalDir)
-    {
-        m_medialibDlg.updateHead(__LocalDir);
-        return;
-    }
-    //非根目录 else {
 
     auto strTitle = dir.fileName();
 
@@ -458,6 +473,10 @@ size_t CMedialibView::getRowCount() const
         }
         else
         {
+            if (m_xpkRoot.count())
+            {
+                return 12;
+            }
             return 10;
         }
     }
@@ -471,6 +490,10 @@ size_t CMedialibView::_getRootItemCount() const
     }
     else
     {
+        if (m_xpkRoot.count())
+        {
+            return 12;
+        }
         return 10;
     }
 }
@@ -604,7 +627,7 @@ void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
         if (pSnapshotDir)
         {
             auto catType = pSnapshotDir->catType();
-            if (E_SSCatType::CT_SQ == catType || E_SSCatType::CT_SQ24 == catType)
+            if (E_MdlCatType::CT_SQ == catType || E_MdlCatType::CT_SQ24 == catType)
             {
                 context.setIcon(m_pmFlac);
             }
@@ -715,38 +738,14 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
     }
     else
     {
-        context.uStyle = E_LVItemStyle::IS_CenterAlign;
-
-        bool bHLayout = m_medialibDlg.isHLayout();
-
-        //context.fIconMargin *= .9f * m_medialibDlg.rowCount()/this->getRowCount();
+        auto pRootItem = _rootItem(m_medialibDlg.isHLayout(), context->uRow, context->uCol);
+        if (pRootItem)
+        {
 #define __szIcon __size100 * 1.15
-
-        cauto uRow = context->uRow;
-        if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
-        {
-            context.setIcon(m_pmSingerGroup, __szIcon);
-            context.strText = L" " __XSinger;
-            context.pMediaSet = &m_SingerLib;
+            pRootItem->setContext(context, __szIcon);
+            context.uStyle = E_LVItemStyle::IS_CenterAlign;
         }
-        else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
-        {
-            context.setIcon(m_pmPlaylistSet, __szIcon);
-            context.strText = L" " __XPlaylist;
-            context.pMediaSet = &m_PlaylistLib;
-        }
-        else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
-        {
-            context.setIcon(m_pmXmusicDir, __szIcon);
-            context.strText = __XMusicDir;
-            context.pDir = &__medialib;
-        }
-        else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
-        {
-            context.setIcon(m_pmDir, __szIcon);
-            context.strText = L" " __LocalDir;
-            context.pDir = &m_LocalDir;
-        }
+        return;
     }
 
     auto pSnapshotMedia = context.snapshotMedia();
