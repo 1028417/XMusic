@@ -474,7 +474,7 @@ size_t CMedialibView::getRowCount() const
         }
         else
         {
-            if (bShowXpkRoot)
+            if (m_bShowXpkRoot)
             {
                 return 12;
             }
@@ -491,7 +491,7 @@ size_t CMedialibView::_getRootItemCount() const
     }
     else
     {
-        if (bShowXpkRoot)
+        if (m_bShowXpkRoot)
         {
             return 12;
         }
