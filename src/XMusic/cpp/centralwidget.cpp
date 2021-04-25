@@ -298,39 +298,34 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
-    WString strMediaSet;
-
-    CMediaSet *pMediaSet = NULL;
-    if (PlayingInfo.pRelatedMedia)
+    bool bHasMediaSet = false;
+    if (!PlayingInfo.strMediaSet.empty())
     {
-        pMediaSet = PlayingInfo.pRelatedMedia->mediaSet();
-    }
+        bHasMediaSet = true;
 
-    if (pMediaSet)
-    {
+        WString strMediaSet;
         if (!bDefaultBkg)
         {
-            /*if (PlayingInfo.pSinger)//.uSingerID)
-            {
-                strMediaSet << PlayingInfo.pSinger->m_strName << __CNDot;
-            }
-            else*/ if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
-            {
-                strMediaSet << L"歌单: ";
-            }
-            else// if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+            if (PlayingInfo.pSinger)
             {
                 strMediaSet << L"专辑: ";
             }
+            else
+            {
+                strMediaSet << L"歌单: ";
+            }
         }
+        strMediaSet << PlayingInfo.strMediaSet;
 
-        strMediaSet << pMediaSet->name();
-
-        labelAlbumName.setFont(0.95f);
-        labelAlbumName.setShadow(uShadowWidth);
-        labelAlbumName.setAlignment(Qt::AlignCenter);
+        labelAlbumName.setText(strMediaSet);
     }
-    labelAlbumName.setText(strMediaSet);
+    else
+    {
+        labelAlbumName.clear();
+    }
+
+    labelAlbumName.setShadow(uShadowWidth);
+    labelAlbumName.setAlignment(Qt::AlignCenter);
 
     ui.labelSingerName->setAlignment(Qt::AlignCenter);
 
@@ -379,7 +374,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     if (!bDefaultBkg)
     {
         int y_labelAlbumName = 0;
-        if (!labelAlbumName.text().isEmpty())
+        if (bHasMediaSet)
         {
             y_labelAlbumName = y_Playingfile - __cylabelAlbumName;
         }
@@ -463,12 +458,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             }
             else
             {
-                if (PlayingInfo.pSinger)//.uSingerID)
+                if (PlayingInfo.pSinger)
                 {
                     y_labelSingerName += __size10;
                     y_PlayingListMax = y_labelSingerName;
                 }
-                else if (pMediaSet)
+                else if (bHasMediaSet)
                 {
                     y_PlayingListMax = y_labelAlbumName;
                 }
@@ -504,7 +499,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         if (!bSingerImgFlag) //NULL == pmSingerImg)// || pmSingerImg->isNull())
         {
             auto y = y_Playingfile;
-            if (pMediaSet)
+            if (bHasMediaSet)
             {
                 y -= __cylabelAlbumName;
                 labelAlbumName.setGeometry(x, y, cx_progressbar, __cylabelAlbumName);
@@ -512,7 +507,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             }
             y_PlayingListMax = y;
 
-            if (PlayingInfo.pSinger)//.uSingerID)
+            if (PlayingInfo.pSinger)
             {
                 y -= ui.labelPlayingfile->height();
                 ui.labelSingerName->setGeometry(x, y, cx_progressbar, __cylabelAlbumName);

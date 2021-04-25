@@ -34,9 +34,9 @@
 
 #define __catPure   L"纯音乐"
 
-inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia, cwstr strSingerNamer)
+inline void CMedialibView::_genMediaTitle(const IMedia *pMedia, cwstr strSingerNamer)
 {
-    auto& strTitle = m_mapDisplayTitle[pMedia];
+    auto& strTitle = m_mapMediaTitle[pMedia];
     if (strTitle.empty())
     {
         strTitle = pMedia->GetTitle();
@@ -44,9 +44,9 @@ inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia, cwstr strSinge
     }
 }
 
-inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia)
+inline void CMedialibView::_genMediaTitle(const IMedia *pMedia)
 {
-    auto& strTitle = m_mapDisplayTitle[pMedia];
+    auto& strTitle = m_mapMediaTitle[pMedia];
     if (strTitle.empty())
     {
         strTitle = pMedia->GetTitle();
@@ -57,7 +57,7 @@ inline void CMedialibView::_genDisplayTitle(const IMedia *pMedia)
 inline void CMedialibView::_genSingerMediaTitle(const IMedia *pMedia, CSinger& singer)
 {
     cauto strSingerName = singer.m_strName;
-    auto& strTitle = m_mapDisplayTitle[pMedia];
+    auto& strTitle = m_mapMediaTitle[pMedia];
     if (strTitle.empty())
     {
         strTitle = pMedia->GetTitle();
@@ -151,23 +151,37 @@ void CMedialibView::initpm()
 
 void CMedialibView::_onShowRoot()
 {
-    m_mapDisplayTitle.clear();
+    m_mapMediaTitle.clear();
 
     m_medialibDlg.updateHead(L"媒体库");
 }
 
 void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 {
-    m_mapDisplayTitle.clear();
+    m_mapMediaTitle.clear();
 
     WString strTitle;
     auto pSinger = currentSinger();
     if (pSinger && &MediaSet != pSinger)
     {
-        strTitle << pSinger->m_strName << __CNDot << MediaSet.name();
-        if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
+        if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
+        {            
+            cauto dir = (CSnapshotDir&)MediaSet;
+            strTitle = genAttachTitle(dir);
+
+            /*if (MediaSet.m_pParent != pSinger)
+            {
+                strTitle = pSinger->m_strName + __CNDot + strTitle;
+            }*/
+
+            /*if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
+            {
+                strTitle = dir.fileName();
+            }*/
+        }
+        else
         {
-            strTitle = MediaSet.name();
+            strTitle << pSinger->m_strName << __CNDot << MediaSet.m_strName;
         }
     }
     else
@@ -221,11 +235,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                 cauto strSingerName = PlayItem.GetRelatedMediaSetName(E_RelatedMediaSet::RMS_Singer);
                 if (!strSingerName.empty())
                 {
-                    _genDisplayTitle(&PlayItem, strSingerName);
+                    _genMediaTitle(&PlayItem, strSingerName);
                 }
                 else
                 {
-                    _genDisplayTitle(&PlayItem);
+                    _genMediaTitle(&PlayItem);
                 }
             }
         }
@@ -245,11 +259,11 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                         plstSinger->push_back(pSinger->m_uID);
                     }
 
-                    _genDisplayTitle(&PlayItem, pSinger->m_strName);
+                    _genMediaTitle(&PlayItem, pSinger->m_strName);
                 }
                 else
                 {
-                    _genDisplayTitle(&PlayItem);
+                    _genMediaTitle(&PlayItem);
                 }
             }
         }
@@ -263,7 +277,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
 void CMedialibView::_onShowDir(CPath& dir)
 {
-    m_mapDisplayTitle.clear();
+    m_mapMediaTitle.clear();
 
     if (&dir == &m_xpkRoot)
     {
@@ -283,14 +297,10 @@ void CMedialibView::_onShowDir(CPath& dir)
     //非根目录 else {
 
     auto strTitle = dir.fileName();
-    auto pParentDir = dir.parent();
-    if (pParentDir == &m_xpkRoot)
-    {
-        m_medialibDlg.updateHead(__XpkRootName __CNDot + strTitle);
-        return;
-    }
 
-    if (dir.rootDir() == &m_LocalDir)
+    auto pRootDir = dir.rootDir();
+    auto pParentDir = dir.parent();
+    if (pRootDir == &m_LocalDir)
     {
         if (pParentDir == &m_LocalDir && dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
         {
@@ -298,21 +308,48 @@ void CMedialibView::_onShowDir(CPath& dir)
         }
         m_medialibDlg.updateHead(strTitle);
         return;
-    }    
+    }
 
-    auto pSnapshotDir = _snapshotDir(dir);
-    if (pSnapshotDir && pParentDir == &__medialib)
+    if (pParentDir == &m_xpkRoot)
     {
-        cauto strCatTitle = _catTitle(*pSnapshotDir);
-        if (!strCatTitle.empty())
+        m_medialibDlg.updateHead(__XpkRootName __CNDot + strTitle);
+        return;
+    }
+
+    CSinger *pSinger = NULL;
+    auto pSnapshotDir = _snapshotDir(dir);
+    if (pSnapshotDir)
+    {
+        pSinger = pSnapshotDir->singer();
+
+        auto strCatTitle = _catTitle(*pSnapshotDir);
+        if (strCatTitle.empty())
         {
-            strTitle = __XMusicDirName __CNDot + strCatTitle;
+            strCatTitle = pSnapshotDir->catName();
         }
-        else
+
+        strTitle = __XMusicDirName __CNDot + strCatTitle;
+        if (pParentDir != &__medialib)
         {
-            strTitle.erase(0, 3);
+            strTitle.append(L" / ").append(dir.fileName());
         }
     }
+    else
+    {
+        while (pParentDir)
+        {
+            if (pParentDir->parent() == &m_xpkRoot)
+            {
+                strTitle = L"音乐包" __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
+                break;
+            }
+
+            pParentDir = pParentDir->parent();
+        }
+
+        pSinger = g_app.getSingerMgr().checkSingerDir(((CMediaDir&)dir).GetPath());
+    }
+
     m_medialibDlg.updateHead(strTitle);
 
     //目录歌手图标
@@ -342,28 +379,19 @@ void CMedialibView::_onShowDir(CPath& dir)
     }
 
     //文件标题
-    CSinger *pSinger = NULL;
-    if (pSnapshotDir)
-    {
-        pSinger = pSnapshotDir->singer();
-    }
-    else
-    {
-        pSinger = g_app.getSingerMgr().checkSingerDir(((CMediaDir&)dir).GetPath());
-    }
     if (pSinger)
     {
         cauto strSingerName = pSinger->m_strName;
         for (auto pSubFile : dir.files())
         {
-            _genDisplayTitle((CMediaRes*)pSubFile, strSingerName);
+            _genMediaTitle((CMediaRes*)pSubFile, strSingerName);
         }
     }
     else
     {
         for (auto pSubFile : dir.files())
         {
-            _genDisplayTitle((CMediaRes*)pSubFile);
+            _genMediaTitle((CMediaRes*)pSubFile);
         }
     }
 }
@@ -445,7 +473,6 @@ size_t CMedialibView::_getRootItemCount() const
         return 10;
     }
 }
-
 #define __IconSize __size100
 
 void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& MediaSet)
@@ -507,21 +534,31 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
     }
 
     break;
-    default:
-        if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
+    case E_MediaSetType::MST_SnapshotMediaDir:
+    {
+        context.uStyle |= E_LVItemStyle::IS_ForwardButton;
+
+        cauto dir = (CSnapshotDir&)MediaSet;
+        context.setIcon(_catIcon(dir));
+
+        if (MediaSet.m_pParent && E_MediaSetType::MST_Singer == MediaSet.m_pParent->m_eType)
         {
-            context.uStyle |= E_LVItemStyle::IS_ForwardButton;
-
-            cauto dir = (CSnapshotDir&)MediaSet;
-            context.setIcon(_catIcon(dir));
-
-            auto uCount = dir.count();
-            //if (uCount > 0)
-            {
-                context.strRemark << uCount << L" 项";
-            }
+            context.strText = genAttachTitle(dir);
+        }
+        else
+        {
+            context.strText = dir.fileName();
         }
 
+        auto uCount = dir.count();
+        //if (uCount > 0)
+        {
+            context.strRemark << uCount << L" 项";
+        }
+    }
+
+    break;
+    default:
         break;
     };
 }
@@ -544,7 +581,7 @@ void CMedialibView::_genMediaContext(tagMLItemContext& context, IMedia& Media)
     {
         context.setIcon(m_pmMedia);
     }
-    context.strText = m_mapDisplayTitle[&Media];
+    context.strText = m_mapMediaTitle[&Media];
 }
 
 void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
@@ -561,7 +598,7 @@ void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
     {
         context.setIcon(m_pmMedia);
 
-        context.strText = m_mapDisplayTitle[&MediaRes];
+        context.strText = m_mapMediaTitle[&MediaRes];
         auto pSnapshotDir = _snapshotDir(MediaRes);
         if (pSnapshotDir)
         {
@@ -1222,7 +1259,7 @@ void CMedialibView::cleanup()
 {
     m_LocalDir.clear();
 
-    m_mapDisplayTitle.clear();
+    m_mapMediaTitle.clear();
 
     m_lstSingerHead.clear();
     m_mapSingerHead.clear();

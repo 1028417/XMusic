@@ -178,7 +178,7 @@ void MainWindow::_init()
     m_PlayingList.setFont(0.9f);
 
     ui.labelSingerName->setFont(0.95f);
-
+    ui.labelAlbumName->setFont(0.95f);
     ui.labelPlayingfile->setFont(0.95f);
 
     ui.labelDuration->setFont(0.8f);
@@ -568,7 +568,7 @@ bool MainWindow::event(QEvent *ev)
     case QEvent::Timer:
         _updateProgress();
 
-        if (m_PlayingInfo.pSinger)//.uSingerID)
+        if (m_PlayingInfo.pSinger)
         {
             _playSingerImg(m_PlayingInfo.pSinger->m_uID, false);
         }
@@ -730,10 +730,10 @@ void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
     m_PlayingList.updateList(nPlayingItem);
 }
 
-void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
+void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    cauto strPath = PlayingInfo.strPath = PlayItem.GetPath();
+    PlayingInfo.strPath = PlayItem.GetPath();
 
 #if __OnlineMediaLib
     PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
@@ -745,60 +745,31 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     //if (!g_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率 // TODO 获取音频流码率
     PlayingInfo.qsQuality = mediaQualityString(PlayItem);
 
-    CSinger *pSinger = NULL;
-    auto uAlbumItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Album);
-    if (uAlbumItemID)
+    if (pRelatedMedia)
     {
-        auto pMedia = g_app.getSingerMgr().GetMedia(uAlbumItemID);
-        if (pMedia)
-        {
-            PlayingInfo.pRelatedMedia = pMedia;
-            pSinger = ((CAlbumItem*)pMedia)->GetSinger();
-        }
-        //PlayingInfo.uSingerID = PlayItem.GetRelatedMediaSet(E_RelatedMediaSet::RMS_Singer, PlayingInfo.strSingerName);
-    }
-    else
-    {
-        auto uPlayItemID = PlayItem.GetRelatedMediaID(E_RelatedMediaSet::RMS_Playlist);
-        if (uPlayItemID)
-        {
-            PlayingInfo.pRelatedMedia =  g_app.getPlaylistMgr().GetMedia(uPlayItemID);
-        }
-        else
-        {
-            auto pMediaRes = __medialib.subFile(strPath);
-            if (pMediaRes)
-            {
-                auto pSnapshotDir = (CSnapshotDir*)pMediaRes->mediaSet();
-                if (pSnapshotDir)
-                {
-                    pSinger = pSnapshotDir->singer();
-                }
-                else
-                {
-                    pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
-                }
+        PlayingInfo.pRelatedMedia = (IMedia*)pRelatedMedia;
 
-                PlayingInfo.pRelatedMedia = pMediaRes;
-                PlayingInfo.eTrackType = pMediaRes->trackType();
+        auto pMediaSet = pRelatedMedia->mediaSet();
+        if (pMediaSet)
+        {
+            if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
+            {
+                PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
+                PlayingInfo.eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
             }
             else
             {
-                pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
+                PlayingInfo.strMediaSet = pMediaSet->m_strName;
             }
-
-            /*if (pSinger) {
-                PlayingInfo.uSingerID = pSinger->m_uID;
-                PlayingInfo.strSingerName = pSinger->m_strName;
-            }*/
         }
     }
 
     auto strTitle = PlayItem.GetTitle();
-    if (pSinger)//PlayingInfo.uSingerID)
+    auto pSinger = g_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath);
+    if (pSinger)
     {
         PlayingInfo.pSinger = pSinger;
-        CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);//&PlayingInfo.strSingerName);
+        CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
     }
     else
     {
@@ -807,7 +778,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
     PlayingInfo.qsTitle = __WS2Q(strTitle);
 
      g_app.sync([=]{
-        auto pPrevSinger = m_PlayingInfo.pSinger;//auto uPrevSingerID = m_PlayingInfo.uSingerID;
+        auto pPrevSinger = m_PlayingInfo.pSinger;
         m_PlayingInfo = PlayingInfo;
 
         ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
@@ -824,17 +795,16 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, bool bManual)
 
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 
-        if (pSinger != pPrevSinger)//m_PlayingInfo.uSingerID != uPrevSingerID)
+        if (pSinger != pPrevSinger)
         {
             ui.labelSingerImg->clear();
             update();
 
-            if (pSinger)//m_PlayingInfo.uSingerID)
+            if (pSinger)
             {
                 _playSingerImg(pSinger->m_uID, true);
 
                 ui.labelSingerName->setText(__WS2Q(pSinger->m_strName));
-                //ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.strSingerName));
             }
             else
             {
@@ -1110,14 +1080,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelSingerName)
     {
-        if (m_PlayingInfo.pSinger)//.uSingerID)
+        if (m_PlayingInfo.pSinger)
         {
             m_medialibDlg.showMediaSet(*m_PlayingInfo.pSinger);
-            /*auto *pSinger = g_app.getSingerMgr().getSinger(m_PlayingInfo.uSingerID);
-            if (pSinger)
-            {
-                m_medialibDlg.showMediaSet(*pSinger);
-            }*/
         }
     }
     else if (label == ui.labelAlbumName)
