@@ -17,9 +17,7 @@ private:
     UINT m_uImgIdx = 0;
     int m_nSwitchingOffset = 0;
 
-    UINT m_cxImg = 0;
-    UINT m_cyImg = 0;
-    QBrush m_brImg;
+    QPixmap m_pmImg;
 
 public:
     void init();

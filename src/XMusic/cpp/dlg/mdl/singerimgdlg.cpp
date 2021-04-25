@@ -94,10 +94,12 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 {
     CDialog::_onPaint(painter, rc);
 
-    if (0 == m_cxImg)
+    auto cxImg = m_pmImg.width();
+    if (0 == cxImg)
     {
         return;
     }
+    auto cyImg = m_pmImg.height();
 
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
@@ -106,30 +108,30 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 
 #define __margin __size(30)
     QRect rcPos;
-    _genRect(m_cxImg, m_cyImg, cxDst, cyDst, rcPos);
+    _genRect(cxImg, cyImg, cxDst, cyDst, rcPos);
     if (rcPos.x() < __margin && rcPos.y() < __margin)
     {
-        _genRect(cxDst, cyDst, m_cxImg, m_cyImg, rcPos);
-        painter.drawBrush(rc, m_brImg, rcPos);
+        _genRect(cxDst, cyDst, cxImg, cyImg, rcPos);
+        painter.drawImg(rc, m_pmImg, rcPos);
         return;
     }
 
-    if (m_cxImg + __margin*2 < cxDst && m_cyImg + __margin*2 < cyDst)
+    if (cxImg + __margin*2 < cxDst && cyImg + __margin*2 < cyDst)
     {
-        rcPos.setRect((cxDst - m_cxImg)/2, (cyDst - m_cyImg)/2, m_cxImg, m_cyImg);
+        rcPos.setRect((cxDst - cxImg)/2, (cyDst - cyImg)/2, cxImg, cyImg);
     }
     else if (rcPos.x() < __margin)
     {
-        cyDst = cxDst * m_cyImg / m_cxImg;
+        cyDst = cxDst * cyImg / cxImg;
         rcPos.setRect(0, (rc.height()-cyDst)/2, cxDst, cyDst);
     }
     else if (rcPos.y() < __margin)
     {
-        cxDst = cyDst * m_cxImg / m_cyImg;
+        cxDst = cyDst * cxImg / cyImg;
         rcPos.setRect((rc.width()-cxDst)/2, 0, cxDst, cyDst);
     }
 
-    painter.drawBrush(rcPos, m_brImg, QRect(0,0,m_cxImg,m_cyImg), __szRound);
+    painter.drawImg(rcPos, m_pmImg, __szRound);
 }
 
 void CSingerImgDlg::show(UINT uSingerID)
@@ -142,18 +144,17 @@ void CSingerImgDlg::show(UINT uSingerID)
 
     m_uSingerID = uSingerID;
     m_uImgIdx = 0;
-    m_cxImg = m_cyImg = 0;
 
     _showImg(0);
 
     CDialog::show([&]{
-        m_brImg = QBrush();
+        m_pmImg = QPixmap();
     });
 }
 
 void CSingerImgDlg::updateSingerImg()
 {
-    if (0 == m_cxImg)
+    if (m_pmImg.isNull())
     {
         m_uImgIdx = 0;
         _showImg(0);
@@ -197,10 +198,7 @@ void CSingerImgDlg::_showImg(int nOffset)
 
     m_nSwitchingOffset = 0;
 
-    QPixmap pm(__WS2Q(m_singerImgMgr.file(*pSingerImg)));
-    m_cxImg = pm.width();
-    m_cyImg = pm.height();
-    m_brImg = QBrush(pm);
+    m_pmImg.load(__WS2Q(m_singerImgMgr.file(*pSingerImg)));
     update();
 
     m_uImgIdx = uImgIdx;
@@ -219,7 +217,7 @@ void CSingerImgDlg::_showImg(int nOffset)
 
 void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
 {
-    if (0 == m_cxImg || m_uImgCount <= 1)
+    if (m_pmImg.isNull() || m_uImgCount <= 1)
     {
         return;
     }
