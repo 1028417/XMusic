@@ -7,12 +7,10 @@
 
 #define __RemarkAlpha 200
 
-#define __Xpk       L"音乐包"
-#define __XpkRoot   L"本地" __Xpk
-
 #define __XSinger   L"歌手"
 #define __XPlaylist L"歌单"
 #define __XMusicDir L"XMusic"
+#define __XpkRoot   L"音乐包"
 #define __LocalDir  L"本机"
 
 #define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
@@ -83,7 +81,7 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
         {m_pmSingerGroup, L" " __XSinger, m_SingerLib},
         {m_pmPlaylistSet, L" " __XPlaylist, m_PlaylistLib},
         {m_pmXmusicDir, __XMusicDir, __medialib},
-        {m_pmXpk, __Xpk, m_xpkRoot},
+        {m_pmXpk, __XpkRoot, m_xpkRoot},
         {m_pmDir, L" " __LocalDir, m_LocalDir}
     }
     , m_lpCatItem {
@@ -329,7 +327,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
     if (pParentDir == &m_xpkRoot)
     {
-        m_medialibDlg.updateHead(__Xpk __CNDot + strTitle);
+        m_medialibDlg.updateHead(__XpkRoot __CNDot + strTitle);
         return;
     }
 
@@ -357,7 +355,7 @@ void CMedialibView::_onShowDir(CPath& dir)
         {
             if (pParentDir->parent() == &m_xpkRoot)
             {
-                strTitle = __Xpk __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
+                strTitle = __XpkRoot __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
                 break;
             }
 
