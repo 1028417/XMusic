@@ -6,13 +6,12 @@
 #include "addbkgdlg.h"
 #include "ui_addbkgdlg.h"
 
-#include <QMovie>
-
 static Ui::AddBkgDlg ui;
 
 CAddBkgDlg::CAddBkgDlg(CBkgDlg& bkgDlg) : //CDialog(bkgDlg),
     m_bkgDlg(bkgDlg),
-    m_lv(*this)
+    m_lv(*this),
+    m_loadingLabel(this)
 {
 }
 
@@ -40,16 +39,6 @@ void CAddBkgDlg::init()
     ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
     m_lv.adjustFont(TD_FontWeight::Normal);
-
-    auto movie = new QMovie(this);
-    movie->setFileName(":/img/loading.gif");
-    ui.labelLoading->setMovie(movie);
-    ui.labelLoading->resize(400,330);
-    ui.labelLoading->setStyleSheet("QWidget{background-color:rgb(255, 225, 31, 100); \
-                                   border-top-left-radius:10px; border-top-right-radius:10px; \
-                                   border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
-    ui.labelLoading->setVisible(false);
-    ui.labelLoading->raise();
 }
 
 /*#define __MediaFilter L"所有支持格式|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \
@@ -200,8 +189,8 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
     m_lv.setGeometry(0, y_addbkgView, cx, cy-y_addbkgView);
 
-    ui.labelLoading->move((cx-ui.labelLoading->width())/2
-                          , y_addbkgView+(m_lv.height()-ui.labelLoading->height())/2);
+    auto y_loadingLabel = y_addbkgView+(m_lv.height()-m_loadingLabel.height())/2;
+    m_loadingLabel.move((cx-m_loadingLabel.width())/2, y_loadingLabel);
 
     /*static BOOL bHLayout = -1;
     if (bHLayout != (BOOL)m_bHLayout)
@@ -213,15 +202,7 @@ void CAddBkgDlg::_relayout(int cx, int cy)
 
 void CAddBkgDlg::showLoading(bool bShow)
 {
-    if (bShow)
-    {
-        ui.labelLoading->movie()->start();
-    }
-    else
-    {
-        ui.labelLoading->movie()->stop();
-    }
-    ui.labelLoading->setVisible(bShow);
+    m_loadingLabel.show(bShow);
 }
 
 bool CAddBkgDlg::_handleReturn()

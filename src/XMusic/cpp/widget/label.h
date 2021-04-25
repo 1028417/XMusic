@@ -7,6 +7,8 @@
 
 #include <QTextOption>
 
+#include <QMovie>
+
 enum class E_LabelTextOption
 {
     LTO_AutoFit,
@@ -59,11 +61,12 @@ signals:
     void signal_clicked(CLabel*, const QPoint& pos);
 
 private:
-    void _onPaint(CPainter& painter, cqrc rc) override;
-
     void _paintText(CPainter& painter, cqrc rc);
 
-    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
+protected:
+    virtual void _onPaint(CPainter& painter, cqrc rc) override;
+
+    virtual void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
 public:
     bool pixmap() const
@@ -129,4 +132,48 @@ public:
 
         m_br.clear();
     }
+};
+
+class CLabelButton : public CLabel
+{
+    Q_OBJECT
+public:
+    CLabelButton(QWidget *parent) : CLabel(parent)
+    {
+    }
+
+private:
+    bool m_bPressing = false;
+
+private:
+    void _onPaint(CPainter& painter, cqrc rc) override;
+
+    void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
+};
+
+class CMovieLabel : public QLabel
+{
+public:
+    CMovieLabel(cqstr qsMovie, QWidget *parent=NULL) : QLabel(parent)
+      , m_qsMovie(qsMovie)
+    {
+    }
+
+private:
+    QString m_qsMovie;
+    QMovie m_movie;
+
+public:
+    void show(bool bShow=true);
+
+    void setVisible(bool bVisible=true)
+    {
+        show(bVisible);
+    }
+};
+
+class CLoadingLabel : public CMovieLabel
+{
+public:
+    CLoadingLabel(QWidget *parent=NULL);
 };

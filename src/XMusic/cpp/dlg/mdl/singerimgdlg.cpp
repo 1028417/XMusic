@@ -8,6 +8,7 @@ static Ui::SingerImgDlg ui;
 
 CSingerImgDlg::CSingerImgDlg() : //CDialog(medialibDlg),
     m_singerImgMgr( g_app.getSingerImgMgr())
+    , m_loadingLabel(this)
 {
 }
 
@@ -65,6 +66,8 @@ void CSingerImgDlg::_relayout(int cx, int cy)
         ui.btnBackward_v->setVisible(true);
         ui.btnForward_v->setVisible(true);
     }
+
+    m_loadingLabel.move((cx-m_loadingLabel.width())/2, (cy-m_loadingLabel.height())/2);
 }
 
 void CSingerImgDlg::relayoutTitle(cqrc rcBtnReturn)
@@ -94,12 +97,12 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
 {
     CDialog::_onPaint(painter, rc);
 
-    auto cxImg = m_pmImg.width();
+    UINT cxImg = m_pmImg.width();
     if (0 == cxImg)
     {
         return;
     }
-    auto cyImg = m_pmImg.height();
+    UINT cyImg = m_pmImg.height();
 
     painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
@@ -193,8 +196,10 @@ void CSingerImgDlg::_showImg(int nOffset)
     auto pSingerImg = m_singerImgMgr.getSingerImg(m_uSingerID, uImgIdx, false);
     if (NULL == pSingerImg || !pSingerImg->bExist)
     {
+        m_loadingLabel.show();
         return;
     }
+    m_loadingLabel.show(false);
 
     m_nSwitchingOffset = 0;
 

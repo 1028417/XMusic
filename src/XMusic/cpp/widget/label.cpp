@@ -1,6 +1,8 @@
 
 #include "label.h"
 
+#include "xmusic.h"
+
 void CLabel::_onPaint(CPainter& painter, cqrc rc)
 {
     if (m_br)
@@ -79,13 +81,80 @@ void CLabel::_paintText(CPainter& painter, cqrc rc)
 
 void CLabel::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
 {
-	if (E_MouseEventType::MET_Click == type)
+    if (E_MouseEventType::MET_Click == type)
     {
         if (!text().isEmpty() && !m_rcText.contains(me.pos()))
-		{
+        {
             return;
         }
 
         emit signal_clicked(this, me.pos());
-	}
+    }
+}
+
+
+void CLabelButton::_onPaint(CPainter& painter, cqrc rc)
+{
+    if (m_bPressing)
+    {
+        painter.setOpacity(0.5f);
+    }
+
+    CLabel::_onPaint(painter, rc);
+}
+
+void CLabelButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
+{
+    if (E_MouseEventType::MET_Press == type)
+    {
+        m_bPressing = true;
+        update();
+    }
+    else if (E_MouseEventType::MET_Release == type)
+    {
+        UINT uDelayTime = 100;
+#if __windows || __mac
+        uDelayTime = 200;
+#endif
+        async(uDelayTime, [&]{
+            m_bPressing = false;
+            update();
+        });
+    }
+
+    CLabel::_onMouseEvent(type, me);
+}
+
+
+void CMovieLabel::show(bool bShow)
+{
+    if (bShow)
+    {
+        if (NULL == this->movie())
+        {
+            this->raise();
+
+            m_movie.setFileName(m_qsMovie);
+            this->setMovie(&m_movie);
+        }
+        this->movie()->start();
+    }
+    else
+    {
+        auto movie = this->movie();
+        if (movie)
+        {
+            movie->stop();
+        }
+    }
+    QLabel::setVisible(bShow);
+}
+
+CLoadingLabel::CLoadingLabel(QWidget *parent) : CMovieLabel(":/img/loading.gif", parent)
+{
+    this->resize(__size(400), __size(330));
+
+    this->setStyleSheet("QWidget{background-color:rgb(255, 225, 31, 100); \
+                                   border-top-left-radius:10px; border-top-right-radius:10px; \
+                                   border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
 }
