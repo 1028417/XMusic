@@ -171,6 +171,7 @@ void CMedialibDlg::_relayout(int cx, int cy)
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
     int xBtn = cx - __lvRowMargin  - szBtn;
+    ui.btnPlay->setGeometry(xBtn + __playIconOffset, rcReturn.top(), szBtn, szBtn);
 
     int __xpkOffset = __size(18);
 #if __android || __ios
@@ -182,7 +183,8 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.btnXpk->setGeometry(xBtn-__xpkOffset, rcReturn.top()-__xpkOffset/2
                            , szBtn+__xpkOffset, szBtn+__xpkOffset);
 
-    ui.btnPlay->setGeometry(xBtn + __playIconOffset, rcReturn.top(), szBtn, szBtn);
+    ui.btnXpk->setVisible(!m_bHLayout && __xmedialib.xpkRoot().count());
+    m_lv.resetRootItem(m_bHLayout);
 
     _relayoutTitle();
 
@@ -285,7 +287,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         }
     }
 
-    bool bShowXpk = NULL == pDir && NULL == pMediaSet && __xmedialib.xpkRoot().count() > 0;
+    bool bShowXpk = NULL == pDir && NULL == pMediaSet && __xmedialib.xpkRoot().count();
     ui.btnXpk->setVisible(bShowXpk);
 
     ui.labelTitle->setText(strTitle, nElidedFlag);

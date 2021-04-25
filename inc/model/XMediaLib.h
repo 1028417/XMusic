@@ -77,7 +77,7 @@ private:
 #if !__winvc
 #define __wholeTrackDuration 60 * 10
 
-enum class E_SSCatType
+enum class E_MdlCatType
 {
     CT_DSD = 0,
     CT_Hires,
@@ -101,7 +101,7 @@ public:
     }
 
 public:
-    E_SSCatType catType() const;
+    E_MdlCatType catType() const;
 
     wstring catName() const;
 
@@ -163,7 +163,7 @@ private:
     CRCueFile m_CueFile;
 
 public:
-    E_SSCatType catType() const
+    E_MdlCatType catType() const
     {
         return ((CSnapshotDir*)m_fi.pParent)->catType();
     }

@@ -139,13 +139,13 @@ private:
     cqpm m_pmHDDisk;
     cqpm m_pmSQDisk;
 
+    QPixmap m_pmDir;
+    QPixmap m_pmFile;
+
 #if __android || __windows
     QPixmap m_pmLocalDir;
 #endif
-
     QPixmap m_pmDirLink;
-    QPixmap m_pmDir;
-    QPixmap m_pmFile;
 
     QPixmap m_pmPlay;
     QPixmap m_pmAddPlay;
@@ -167,16 +167,113 @@ private:
     map<const void*, std::list<UINT>> m_mapDirSinger;
 
 private:
+    enum class E_MdlRootType
+    {
+        RT_Singer = 0,
+        RT_Playlist,
+        RT_XMusic,
+        RT_Xpk,
+        RT_Local,
+        RT_Max
+    };
+    struct tagRootItem
+    {
+        tagRootItem(cqpm pmIcon, cwstr strTitle, CMediaSet& mediaSet)
+            : pmIcon(pmIcon)
+            , strTitle(strTitle)
+            , pMediaSet(&mediaSet)
+        {
+        }
+
+        tagRootItem(cqpm pmIcon, cwstr strTitle, CPath& dir)
+            : pmIcon(pmIcon)
+            , strTitle(strTitle)
+            , pDir(&dir)
+        {
+        }
+
+        void resetPos(int _nHRow=-1, int _nHCol=-1, int _nVRow=-1)
+        {
+            nHRow = _nHRow;
+            nHCol = _nHCol;
+            nVRow = _nVRow;
+        }
+
+        bool checkPos(bool bHLayout, UINT uRow, UINT uCol) const
+        {
+            if (bHLayout)
+            {
+                return (int)uRow == nHRow && (int)uCol == nHCol;
+            }
+            else
+            {
+                return (int)uRow == nVRow;
+            }
+        }
+
+        void setContext(tagMLItemContext& context, int szIcon) const
+        {
+            context.setIcon(pmIcon, szIcon);
+            context.strText = strTitle;
+            context.pMediaSet = pMediaSet;
+            context.pDir = pDir;
+        }
+
+        cqpm pmIcon;
+
+        wstring strTitle;
+
+        CMediaSet *pMediaSet = NULL;
+
+        CPath *pDir = NULL;
+
+        int nHRow = -1;
+        int nHCol = -1;
+
+        int nVRow = -1;
+    };
+    tagRootItem m_lpRootItem[(UINT)E_MdlRootType::RT_Max];
+
+    tagRootItem& _rootItem(E_MdlRootType eRootType)
+    {
+        return m_lpRootItem[(UINT)eRootType];
+    }
+
+    const tagRootItem* _rootItem(CPath& dir) const
+    {
+        for (cauto rootItem : m_lpRootItem)
+        {
+            if (rootItem.pDir == &dir)
+            {
+                return &rootItem;
+            }
+        }
+        return NULL;
+    }
+
+    const tagRootItem* _rootItem(bool bHLayout, UINT uRow, UINT uCol) const
+    {
+        for (cauto rootItem : m_lpRootItem)
+        {
+            if (rootItem.checkPos(bHLayout, uRow, uCol))
+            {
+                return &rootItem;
+            }
+        }
+        return NULL;
+    }
+
+private:
     struct tagCatItem
     {
-        tagCatItem(cqstr qsPng, const wchar_t *pszCatDetail)
-            : pmIcon(qsPng)
+        tagCatItem(cqstr qsIcon, const wchar_t *pszCatDetail)
+            : pmIcon(qsIcon)
             , strCatDetail(pszCatDetail)
         {
         }
 
-        tagCatItem(cqstr qsPng, const wchar_t *pszCatDetail, const wchar_t *pszCatTitle)
-            : pmIcon(qsPng)
+        tagCatItem(cqstr qsIcon, const wchar_t *pszCatDetail, const wchar_t *pszCatTitle)
+            : pmIcon(qsIcon)
             , strCatDetail(pszCatDetail)
             , strCatTitle(pszCatTitle)
         {
@@ -186,7 +283,7 @@ private:
         wstring strCatDetail;
         wstring strCatTitle;
     };
-    tagCatItem m_lpCatItem[UINT(E_SSCatType::CT_Max)+1];
+    tagCatItem m_lpCatItem[UINT(E_MdlCatType::CT_Max)+1];
 
     inline cqpm _catIcon(const CSnapshotDir& dir) const
     {
@@ -208,6 +305,8 @@ private:
     }
 
 public:
+    void cleanup();
+
     void reset() override
     {
         m_nFlashItem = -1;
@@ -215,7 +314,7 @@ public:
         CListView::reset();
     }
 
-    void cleanup();
+    void resetRootItem(bool bHLayout);
 
     void initpm();
 
