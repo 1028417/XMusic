@@ -3,8 +3,6 @@
 
 #include "imgdir.h"
 
-#include <QMovie>
-
 UINT g_uMsScanYield = 1;
 
 template <class T=QPixmap>
@@ -546,7 +544,6 @@ void COlBkgDir::initOlBkg(CAddBkgView& lv)
         return;
     }
 
-    lv.showLoading(true);
     m_bDownloading = true;
 
     g_app.thread(10, [&, lstDir](XThread& thr)mutable {

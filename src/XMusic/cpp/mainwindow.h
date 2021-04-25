@@ -67,7 +67,7 @@ private:
 
     tagPlayingInfo m_PlayingInfo;
 
-    class CPlayingList m_PlayingList;
+    CPlayingList m_PlayingList;
 
     CMedialibDlg m_medialibDlg;
 

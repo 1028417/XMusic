@@ -70,28 +70,6 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="labelLoading">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>130</y>
-     <width>300</width>
-     <height>300</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>loading</string>
-   </property>
-   <property name="scaledContents">
-    <bool>false</bool>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>

@@ -3,6 +3,8 @@
 
 #include "dlg/dialog.h"
 
+#include "label.h"
+
 class CSingerImgDlg : public CDialog
 {
 public:
@@ -18,6 +20,8 @@ private:
     int m_nSwitchingOffset = 0;
 
     QPixmap m_pmImg;
+
+    CLoadingLabel m_loadingLabel;
 
 public:
     void init();

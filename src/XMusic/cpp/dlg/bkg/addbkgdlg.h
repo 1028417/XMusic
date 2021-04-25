@@ -3,6 +3,8 @@
 
 #include "dlg/dialog.h"
 
+#include <label.h>
+
 #include "imgdir.h"
 
 using TD_ImgDirList = PtrArray<CImgDir>;
@@ -93,10 +95,12 @@ private:
 
     size_t m_uRowCount = 0;
 
+    CLoadingLabel m_loadingLabel;
+
 private:
     void _relayout(int cx, int cy) override;
 
-    bool _handleReturn() override;    
+    bool _handleReturn() override;
 
 #if __windows
     wstring _chooseDir();
