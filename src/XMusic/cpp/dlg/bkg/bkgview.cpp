@@ -95,7 +95,7 @@ void CBkgView::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
             auto br = m_bkgDlg.thumbsBrush(lvItem.uItem-2);
             if (br)
             {
-                painter.drawImgEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
+                painter.drawBrushEx(rc, *br, QRect(0,0,br->m_cx,br->m_cy), __szRound);
 
                 QRect rcX(rc.right()-m_szButton, rc.top(), m_szButton, m_szButton);
                 painter.drawImg(rcX, m_pmX);

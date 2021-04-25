@@ -218,11 +218,12 @@ void CListView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc
 {
     if (context.brIcon)
     {
-        painter.drawImgEx(rc, *context.brIcon, QRect(0,0,context.brIcon->width(),context.brIcon->height()), context.uIconRound);
+        QRect rcSrc(0,0,context.brIcon->width(), context.brIcon->height());
+        painter.drawBrushEx(rc, *context.brIcon, rcSrc, context.uIconRound);
     }
     else
     {
-        painter.drawImgEx(rc, *context.pmIcon);//, context.uIconRound);
+        painter.drawImgEx(rc, *context.pmIcon, context.uIconRound);
     }
 }
 

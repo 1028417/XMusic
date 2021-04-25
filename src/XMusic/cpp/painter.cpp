@@ -163,7 +163,7 @@ void CPainter::drawImg(cqrc rc, const QImage& img, cqrc rcSrc, UINT xround, UINT
 
 #define __painterRestoreGuard CPainterRestoreGuard _guard(*this)
 
-void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
+void CPainter::drawBrush(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
 {
     QTransform transform;
 
@@ -179,13 +179,6 @@ void CPainter::drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround
     this->setPen(Qt::transparent);
 
     _drawRectEx(rc, xround, yround);
-}
-
-void CPainter::drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround, UINT yround)
-{
-    QRect t_rcSrc = rcSrc;
-    _genSrcRect(rc, t_rcSrc);
-    this->drawImg(rc, br, t_rcSrc, xround, yround);
 }
 
 void CPainter::drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust)

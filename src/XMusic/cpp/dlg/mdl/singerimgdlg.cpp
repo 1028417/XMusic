@@ -110,7 +110,7 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
     if (rcPos.x() < __margin && rcPos.y() < __margin)
     {
         _genRect(cxDst, cyDst, m_cxImg, m_cyImg, rcPos);
-        painter.drawImg(rc, m_brImg, rcPos);
+        painter.drawBrush(rc, m_brImg, rcPos);
         return;
     }
 
@@ -129,7 +129,7 @@ void CSingerImgDlg::_onPaint(CPainter& painter, cqrc rc)
         rcPos.setRect((rc.width()-cxDst)/2, 0, cxDst, cyDst);
     }
 
-    painter.drawImg(rcPos, m_brImg, QRect(0,0,m_cxImg,m_cyImg), __szRound);
+    painter.drawBrush(rcPos, m_brImg, QRect(0,0,m_cxImg,m_cyImg), __szRound);
 }
 
 void CSingerImgDlg::show(UINT uSingerID)

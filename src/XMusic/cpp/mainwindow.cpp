@@ -669,7 +669,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound, float 
 
     auto cySrc = cyDst/fBkgZoomRate;
     QRect rcSrc(0, round(__cyBkg-cySrc), 10, round(cySrc));
-    painter.drawImg(rc, m_brBkg, rcSrc, szRound);
+    painter.drawBrush(rc, m_brBkg, rcSrc, szRound);
 
     painter.setOpacity(fCDCover);
 

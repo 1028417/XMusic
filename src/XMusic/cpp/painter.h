@@ -394,16 +394,27 @@ public:
         drawImg(rc, img, img.rect(), xround, yround);
     }
 
-    void drawImg(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
-
-    void drawImgEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+    template <class T>
+    void drawImgEx(cqrc rc, const T& img, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    {
+        auto t_rcSrc = rcSrc;
+        _genSrcRect(rc, t_rcSrc);
+        this->drawImg(rc, img, t_rcSrc, xround, yround);
+    }
 
     template <class T>
-    void drawImgEx(cqrc rc, const T& t, UINT xround=0, UINT yround=0)
+    void drawImgEx(cqrc rc, const T& img, UINT xround=0, UINT yround=0)
     {
-        QRect rcSrc = t.rect();
-        _genSrcRect(rc, rcSrc);
-        this->drawImg(rc, t, rcSrc, xround, yround);
+        this->drawImgEx(rc, img, img.rect(), xround, yround);
+    }
+
+    void drawBrush(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0);
+
+    void drawBrushEx(cqrc rc, QBrush& br, cqrc rcSrc, UINT xround=0, UINT yround=0)
+    {
+        QRect t_rcSrc = rcSrc;
+        _genSrcRect(rc, t_rcSrc);
+        this->drawBrush(rc, br, t_rcSrc, xround, yround);
     }
 
     void drawImgEx(cqrc rc, cqpm pm, int& dx, int& dy, UINT szAdjust=1);
