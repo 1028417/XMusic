@@ -17,8 +17,7 @@ class CGroupFrame : public TWidget<QGroupBox>
 {
     Q_OBJECT
 public:
-    CGroupFrame(QWidget *parent)
-        : TWidget(parent, QPainter::Antialiasing | QPainter::TextAntialiasing)
+    CGroupFrame(QWidget *parent) : TWidget(parent)
     {
         setAttribute(Qt::WA_TranslucentBackground);
     }

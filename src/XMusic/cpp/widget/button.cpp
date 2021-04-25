@@ -15,7 +15,6 @@ void CButton::_onPaint(CPainter& painter, cqrc rc)
     cauto qsText = this->text();
     if (!qsText.isEmpty())
     {
-        CPainter painter(this, QPainter::Antialiasing | QPainter::TextAntialiasing);
         QColor cr = foreColor();
 
         cr.setAlpha(13);
