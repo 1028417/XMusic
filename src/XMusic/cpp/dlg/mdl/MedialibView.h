@@ -166,6 +166,8 @@ private:
     map<const void*, std::list<UINT>> m_PlaylistSinger;
     map<const void*, std::list<UINT>> m_mapDirSinger;
 
+    bool m_bShowXpkRoot = false;
+
 private:
     enum class E_MdlRootType
     {
@@ -314,7 +316,7 @@ public:
         CListView::reset();
     }
 
-    void resetRootItem(bool bHLayout);
+    void resetRootItem(bool bShowXpkRoot);
 
     void initpm();
 

@@ -101,13 +101,14 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
 {
 }
 
-void CMedialibView::resetRootItem(bool bHLayout)
+void CMedialibView::resetRootItem(bool bShowXpkRoot)
 {
     _rootItem(E_MdlRootType::RT_Singer).resetPos(1, 0, 1);
     _rootItem(E_MdlRootType::RT_Playlist).resetPos(1, 1, 3);
     _rootItem(E_MdlRootType::RT_XMusic).resetPos(3, 0, 5);
 
-    if (!bHLayout && m_xpkRoot.count())
+    m_bShowXpkRoot = bShowXpkRoot;
+    if (bShowXpkRoot)
     {
         _rootItem(E_MdlRootType::RT_Xpk).resetPos(3, 1, 7);
         _rootItem(E_MdlRootType::RT_Local).resetPos(3, 1, 9);
@@ -473,7 +474,7 @@ size_t CMedialibView::getRowCount() const
         }
         else
         {
-            if (m_xpkRoot.count())
+            if (bShowXpkRoot)
             {
                 return 12;
             }
@@ -490,7 +491,7 @@ size_t CMedialibView::_getRootItemCount() const
     }
     else
     {
-        if (m_xpkRoot.count())
+        if (bShowXpkRoot)
         {
             return 12;
         }

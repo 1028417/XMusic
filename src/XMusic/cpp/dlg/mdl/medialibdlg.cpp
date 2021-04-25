@@ -183,8 +183,9 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.btnXpk->setGeometry(xBtn-__xpkOffset, rcReturn.top()-__xpkOffset/2
                            , szBtn+__xpkOffset, szBtn+__xpkOffset);
 
-    ui.btnXpk->setVisible(!m_bHLayout && __xmedialib.xpkRoot().count());
-    m_lv.resetRootItem(m_bHLayout);
+    bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
+    ui.btnXpk->setVisible(!bShowXpkRoot);
+    m_lv.resetRootItem(bShowXpkRoot);
 
     _relayoutTitle();
 
