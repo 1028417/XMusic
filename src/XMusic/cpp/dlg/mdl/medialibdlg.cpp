@@ -171,7 +171,14 @@ void CMedialibDlg::_relayout(int cx, int cy)
                                     , rcReturn.center().y()-frameFilterLanguage.height()/2);
 
     int xBtn = cx - __lvRowMargin  - szBtn;
-#define __xpkOffset __size(18)
+
+    int __xpkOffset = __size(18);
+#if __android || __ios
+    if (!m_bHLayout)
+    {
+        __xpkOffset -= __size(6);
+    }
+#endif
     ui.btnXpk->setGeometry(xBtn-__xpkOffset, rcReturn.top()-__xpkOffset/2
                            , szBtn+__xpkOffset, szBtn+__xpkOffset);
 

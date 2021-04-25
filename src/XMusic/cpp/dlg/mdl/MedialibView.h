@@ -5,20 +5,16 @@
 
 #define __playIconOffset __size10
 
-#if __android
-#define __LocalDir __sdcardDir
-#elif __windows
-#define __LocalDir L""
-#else
-#define __LocalDir fsutil::getHomeDir()
-#endif
-
 class CLocalDir : public CMediaDir
 {
 public:
-    CLocalDir() : CMediaDir(__LocalDir)
-    {
-    }
+#if __windows
+    CLocalDir() = default;
+#elif __android
+    CLocalDir() : CMediaDir(__sdcardDir) {}
+#else
+    CLocalDir() : CMediaDir(fsutil::getHomeDir()) {}
+#endif
 
     CLocalDir(cwstr strPath, CMediaDir& parent)
         : CMediaDir(strPath, &parent)

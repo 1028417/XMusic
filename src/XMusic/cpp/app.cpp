@@ -313,13 +313,15 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
             //if (uSeq != s_uSeq) return;
             (void)asyncLogin(strUser, strPwd, true);
         });
-#if __android
         if (!bRelogin)
         {
+#if __android
             vibrate();
             showToast("登录成功！Hi，" + __WS2Q(strUser), true);
-        }
+#else
+            // TODO
 #endif
+        }
     }
     else
     {

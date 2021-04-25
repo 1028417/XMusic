@@ -7,12 +7,13 @@
 
 #define __RemarkAlpha 200
 
-#define __XpkRootName   L"本地音乐包"
+#define __Xpk       L"音乐包"
+#define __XpkRoot   L"本地" __Xpk
 
-#define __XSingerName   L"歌手"
-#define __XPlaylistName L"歌单"
-#define __XMusicDirName L"XMusic"
-#define __LocalDirName  L"本机"
+#define __XSinger   L"歌手"
+#define __XPlaylist L"歌单"
+#define __XMusicDir L"XMusic"
+#define __LocalDir  L"本机"
 
 #define __catDSD    L"直接比特流数字编码\nDirect Stream Digital"
 
@@ -281,17 +282,17 @@ void CMedialibView::_onShowDir(CPath& dir)
 
     if (&dir == &m_xpkRoot)
     {
-        m_medialibDlg.updateHead(__XpkRootName);
+        m_medialibDlg.updateHead(__XpkRoot);
         return;
     }
     else if (&dir == &__medialib)
     {
-        m_medialibDlg.updateHead(__XMusicDirName);
+        m_medialibDlg.updateHead(__XMusicDir);
         return;
     }
     else if (&dir == &m_LocalDir)
     {
-        m_medialibDlg.updateHead(__LocalDirName);
+        m_medialibDlg.updateHead(__LocalDir);
         return;
     }
     //非根目录 else {
@@ -304,7 +305,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     {
         if (pParentDir == &m_LocalDir && dynamic_cast<CLocalDir*>(&dir)) //windows驱动器、安卓tf卡
         {
-            strTitle = __LocalDirName __CNDot + strTitle;
+            strTitle = __LocalDir __CNDot + strTitle;
         }
         m_medialibDlg.updateHead(strTitle);
         return;
@@ -312,7 +313,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
     if (pParentDir == &m_xpkRoot)
     {
-        m_medialibDlg.updateHead(__XpkRootName __CNDot + strTitle);
+        m_medialibDlg.updateHead(__Xpk __CNDot + strTitle);
         return;
     }
 
@@ -328,7 +329,7 @@ void CMedialibView::_onShowDir(CPath& dir)
             strCatTitle = pSnapshotDir->catName();
         }
 
-        strTitle = __XMusicDirName __CNDot + strCatTitle;
+        strTitle = __XMusicDir __CNDot + strCatTitle;
         if (pParentDir != &__medialib)
         {
             strTitle.append(L" / ").append(dir.fileName());
@@ -340,7 +341,7 @@ void CMedialibView::_onShowDir(CPath& dir)
         {
             if (pParentDir->parent() == &m_xpkRoot)
             {
-                strTitle = L"音乐包" __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
+                strTitle = __Xpk __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
                 break;
             }
 
@@ -725,25 +726,25 @@ void CMedialibView::_genMLItemContext(tagMLItemContext& context)
         if ((bHLayout && 1 == uRow && 0 == context->uCol) || (!bHLayout && 1 == uRow))
         {
             context.setIcon(m_pmSingerGroup, __szIcon);
-            context.strText = L" " __XSingerName;
+            context.strText = L" " __XSinger;
             context.pMediaSet = &m_SingerLib;
         }
         else if ((bHLayout && 1 == uRow && 1 == context->uCol) || (!bHLayout && 3 == uRow))
         {
             context.setIcon(m_pmPlaylistSet, __szIcon);
-            context.strText = L" " __XPlaylistName;
+            context.strText = L" " __XPlaylist;
             context.pMediaSet = &m_PlaylistLib;
         }
         else if ((bHLayout && 3 == uRow && 0 == context->uCol) || (!bHLayout && 5 == uRow))
         {
             context.setIcon(m_pmXmusicDir, __szIcon);
-            context.strText = __XMusicDirName;
+            context.strText = __XMusicDir;
             context.pDir = &__medialib;
         }
         else if ((bHLayout && 3 == uRow && 1 == context->uCol) || (!bHLayout && 7 == uRow))
         {
             context.setIcon(m_pmDir, __szIcon);
-            context.strText = L" " __LocalDirName;
+            context.strText = L" " __LocalDir;
             context.pDir = &m_LocalDir;
         }
     }
