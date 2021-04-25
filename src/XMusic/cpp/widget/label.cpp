@@ -3,10 +3,19 @@
 
 void CLabel::_onPaint(CPainter& painter, cqrc rc)
 {
-    //cauto rc = this->rect();
     if (m_br)
     {
-        painter.drawBrushEx(rc, m_br, QRect(0,0,m_br.width(), m_br.height()), m_szRound);
+        QRect rcSrc(0,0,m_br.width(), m_br.height());
+
+        /*cauto qsText = this->text();
+        if (!qsText.isEmpty())
+        {
+            painter.drawBrushEx(rc, m_br, rcSrc, m_szRound);
+            _paintText(painter, rc);
+            return;
+        }*/
+
+        painter.drawBrushEx(rc, m_br, rcSrc, m_szRound);
         if (m_uShadowWidth > 0)
         {
             for (UINT uIdx=0; uIdx<m_uShadowWidth; uIdx++)

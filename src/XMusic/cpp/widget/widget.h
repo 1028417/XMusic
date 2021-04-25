@@ -342,6 +342,18 @@ public:
         font.setItalic(bItalic);
         font.setUnderline(bUnderline);
         T::setFont(font);
+    }    
+
+    void flash()
+    {
+        setOpacityEffect(0.5f);
+        UINT uDelayTime = 100;
+#if __windows || __mac
+        uDelayTime = 200;
+#endif
+        __async(uDelayTime, [&]{
+            unsetOpacityEffect();
+        });
     }
 
     void setOpacityEffect(float fValue)

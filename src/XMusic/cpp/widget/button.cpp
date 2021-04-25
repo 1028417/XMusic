@@ -30,7 +30,6 @@ void CButton::_onPaint(CPainter& painter, cqrc rc)
     {
         if (!m_bPressing)
         {
-            //unsetOpacityEffect();
             this->setDropShadowEffect(__ShadowColor(__ShadowAlpha), 1, 1);
         }
         TWidget::_onPaint(painter, rc);
@@ -42,22 +41,17 @@ void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
 	if (E_MouseEventType::MET_Press == type)
 	{
         m_bPressing = true;
-        //unsetDropShadowEffect();
         setOpacityEffect(0.5);
 	}
 	else if (E_MouseEventType::MET_Release == type)
     {
-        //m_bPressing = true;
-        //unsetDropShadowEffect();
-        //setOpacityEffect(0.5);
-
 		UINT uDelayTime = 100;
 #if __windows || __mac
 		uDelayTime = 200;
 #endif
         async(uDelayTime, [&]{
-            unsetOpacityEffect();
             m_bPressing = false;
+            unsetOpacityEffect();
         });
 	}
 	else if (E_MouseEventType::MET_Click == type)
