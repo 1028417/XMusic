@@ -61,6 +61,8 @@ signals:
 private:
     void _onPaint(CPainter& painter, cqrc rc) override;
 
+    void _paintText(CPainter& painter, cqrc rc);
+
     void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
 public:
@@ -101,6 +103,11 @@ public:
     void setPixmapRound(UINT szRound)
     {
         m_szRound = szRound;
+    }
+
+    void clearPixmap()
+    {
+        m_br = CBrush();
     }
 
     void setText(const QString &qsText, int flag = -1)

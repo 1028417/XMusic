@@ -1,10 +1,9 @@
 
 #include "label.h"
 
-void CLabel::_onPaint(CPainter& painter, cqrc)
+void CLabel::_onPaint(CPainter& painter, cqrc rc)
 {
-    cauto rc = this->rect();
-
+    //cauto rc = this->rect();
     if (m_br)
     {
         painter.drawBrushEx(rc, m_br, QRect(0,0,m_br.width(), m_br.height()), m_szRound);
@@ -21,6 +20,11 @@ void CLabel::_onPaint(CPainter& painter, cqrc)
         // 提速 return;
 	}
 
+    _paintText(painter, rc);
+}
+
+void CLabel::_paintText(CPainter& painter, cqrc rc)
+{
     QString qsText = this->text();
     if (!qsText.isEmpty())
     {
