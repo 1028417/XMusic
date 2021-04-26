@@ -255,7 +255,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>音乐包</string>
+    <string> 音乐包 </string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

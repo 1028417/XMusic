@@ -11,7 +11,7 @@ void CLabel::_onPaint(CPainter& painter, cqrc rc)
         QRect rcSrc(0,0,m_br.width(), m_br.height());
         if (!qsText.isEmpty()) // 横向绘制图片和文本
         {
-            qsText = " " + qsText.trimmed() + " ";
+            qsText = " " + qsText + " ";
             auto cx = rc.width();
             auto cy = rc.height();
             auto cxText = cx - cy;
