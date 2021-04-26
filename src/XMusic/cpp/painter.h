@@ -13,6 +13,7 @@
 
 using cqcr = const QColor&;
 using cqrc = const QRect&;
+using cqpt = const QPoint&;
 using cqpm = const QPixmap&;
 using cqbr = const QBrush&;
 

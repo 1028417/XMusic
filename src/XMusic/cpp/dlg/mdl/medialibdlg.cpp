@@ -51,7 +51,10 @@ void CMedialibDlg::init()
 
     ui.btnPlay->onClicked(this, &CMedialibDlg::slot_playClick);
 
-    ui.btnXpk->onClicked([&]{
+    ui.labelPkg->adjustFont(TD_FontWeight::DemiBold);
+    ui.labelPkg->setPixmap(QPixmap(__mdlPng(xpk)));
+
+    ui.labelPkg->onClicked([&]{
         m_lv.showDir(__xmedialib.xpkRoot());
     });
 
@@ -173,19 +176,23 @@ void CMedialibDlg::_relayout(int cx, int cy)
     int xBtn = cx - __lvRowMargin  - szBtn;
     ui.btnPlay->setGeometry(xBtn + __playIconOffset, rcReturn.top(), szBtn, szBtn);
 
-    int __xpkOffset = __size(18);
+    int __cyOffset = __size(18);
 #if __android || __ios
     if (!m_bHLayout)
     {
-        __xpkOffset -= __size(6);
+        __cyOffset -= __size(6);
     }
 #endif
-    ui.btnXpk->setGeometry(xBtn-__xpkOffset, rcReturn.top()-__xpkOffset/2
-                           , szBtn+__xpkOffset, szBtn+__xpkOffset);
+#define __cxOffset __size(200)
+    ui.labelPkg->setGeometry(xBtn-__cyOffset-__cxOffset, rcReturn.top()-__cyOffset/2
+                           , __cxOffset+szBtn+__cyOffset, szBtn+__cyOffset);
 
-    bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
-    ui.btnXpk->setVisible(!bShowXpkRoot);
-    m_lv.resetRootItem(bShowXpkRoot);
+    if (ui.labelPkg->isEnabled())
+    {
+        bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
+        ui.labelPkg->setVisible(!bShowXpkRoot);
+        m_lv.resetRootItem(bShowXpkRoot);
+    }
 
     _relayoutTitle();
 
@@ -288,9 +295,6 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         }
     }
 
-    bool bShowXpk = NULL == pDir && NULL == pMediaSet && __xmedialib.xpkRoot().count();
-    ui.btnXpk->setVisible(bShowXpk);
-
     ui.labelTitle->setText(strTitle, nElidedFlag);
 
     ui.frameFilterLanguage->setVisible(&g_app.getPlaylistMgr() == pMediaSet);
@@ -315,6 +319,11 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     } while(0);
 
     ui.btnPlay->setVisible(bShowPlayButton);
+
+    bool bEnable = NULL == pDir && NULL == pMediaSet;
+    ui.labelPkg->setEnabled(bEnable);
+    bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
+    ui.labelPkg->setVisible(bEnable && !bShowXpkRoot);
 
     _relayoutTitle();
 }
@@ -344,7 +353,7 @@ void CMedialibDlg::updateSingerImg(CSinger& singer, const tagSingerImg& singerIm
     }
 }
 
-void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
+void CMedialibDlg::slot_labelClick(CLabel *label, cqpt)
 {
     static map<CLabel*, E_LanguageType> mapLabels {
         {ui.labelDemandCN, E_LanguageType::LT_CN}

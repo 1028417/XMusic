@@ -58,7 +58,7 @@ private:
     QRect m_rcClickable;
 
 signals:
-    void signal_clicked(CLabel*, const QPoint& pos);
+    void signal_clicked(CLabel*, const QPoint&);
 
 private:
     cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText);
@@ -67,6 +67,8 @@ protected:
     virtual void _onPaint(CPainter& painter, cqrc rc) override;
 
     virtual void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
+
+    bool _checkClickable(cqpt);
 
 public:
     bool pixmap() const

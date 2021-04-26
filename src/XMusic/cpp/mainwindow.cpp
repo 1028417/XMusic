@@ -1056,7 +1056,7 @@ void MainWindow::updateBkg()
     this->repaint();
 }
 
-void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
+void MainWindow::slot_labelClick(CLabel* label, cqpt pos)
 {
     if (label == ui.labelSingerImg)
     {
