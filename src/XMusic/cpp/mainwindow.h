@@ -81,7 +81,7 @@ private:
 private slots:
     void slot_buttonClicked(CButton*);
 
-    void slot_labelClick(CLabel*, cqpt);
+    void slot_labelClick(CLabel*, const QPoint&);
 
 public:
     const bool& isHLayout() const //关联CDialogEx中的常引用

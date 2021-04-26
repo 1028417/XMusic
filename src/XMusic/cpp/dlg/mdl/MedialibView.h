@@ -320,6 +320,11 @@ public:
 
     void initpm();
 
+    cqpm pmXpk() const
+    {
+        return m_pmXpk;
+    }
+
     CMediaRes* hittestLocalFile(cwstr strPath);
 
     CSinger *currentSinger() const;

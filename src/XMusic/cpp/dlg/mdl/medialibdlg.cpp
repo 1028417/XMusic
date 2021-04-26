@@ -52,7 +52,7 @@ void CMedialibDlg::init()
     ui.btnPlay->onClicked(this, &CMedialibDlg::slot_playClick);
 
     ui.labelPkg->adjustFont(TD_FontWeight::DemiBold);
-    ui.labelPkg->setPixmap(QPixmap(__mdlPng(xpk)));
+    ui.labelPkg->setPixmap(m_lv.pmXpk());
 
     ui.labelPkg->onClicked([&]{
         m_lv.showDir(__xmedialib.xpkRoot());
@@ -353,7 +353,7 @@ void CMedialibDlg::updateSingerImg(CSinger& singer, const tagSingerImg& singerIm
     }
 }
 
-void CMedialibDlg::slot_labelClick(CLabel *label, cqpt)
+void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
 {
     static map<CLabel*, E_LanguageType> mapLabels {
         {ui.labelDemandCN, E_LanguageType::LT_CN}

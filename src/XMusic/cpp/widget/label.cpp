@@ -9,9 +9,9 @@ void CLabel::_onPaint(CPainter& painter, cqrc rc)
     if (m_br)
     {
         QRect rcSrc(0,0,m_br.width(), m_br.height());
-        if (!qsText.isEmpty())
+        if (!qsText.isEmpty()) // 横向绘制图片和文本
         {
-            // 横向绘制图片和文本
+            qsText = " " + qsText.trimmed() + " ";
             auto cx = rc.width();
             auto cy = rc.height();
             auto cxText = cx - cy;
@@ -20,13 +20,13 @@ void CLabel::_onPaint(CPainter& painter, cqrc rc)
             if (this->alignment() & Qt::AlignRight)
             {
                 rcIcon.setRect(cxText,0,cy,cy);
-                m_rcClickable = _paintText(painter, QRect(0,0,cxText,cy), qsText + " ");
+                m_rcClickable = _paintText(painter, QRect(0,0,cxText,cy), qsText);
                 m_rcClickable.setRight(cx);
             }
             else
             {
                 rcIcon.setRect(0,0,cy,cy);
-                m_rcClickable = _paintText(painter, QRect(cy,0,cxText,cy), " " + qsText);
+                m_rcClickable = _paintText(painter, QRect(cy,0,cxText,cy), qsText);
                 m_rcClickable.setLeft(0);
             }
             m_rcClickable.setTop(0);
@@ -143,7 +143,7 @@ void CLabelButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     }
     else if (E_MouseEventType::MET_Release == type)
     {
-        if (_checkClickable(me.pos()))
+        if (m_bPressing)
         {
             UINT uDelayTime = 100;
     #if __windows || __mac

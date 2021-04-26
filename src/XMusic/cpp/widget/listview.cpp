@@ -164,7 +164,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
         auto xIcon = rc.left();
         if (context.uStyle & E_LVItemStyle::IS_CenterAlign)
         {
-            xIcon = rc.center().x()-szIcon-__lvRowMargin;
+            xIcon = rc.center().x()-szIcon-__lvRowMargin/2;
         }
 
         int y_icon = rc.center().y()-szIcon/2;

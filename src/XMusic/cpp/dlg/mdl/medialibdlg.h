@@ -25,7 +25,7 @@ private:
     size_t m_uRowCount = 0;
 
 private slots:
-    void slot_labelClick(class CLabel*, cqpt);
+    void slot_labelClick(class CLabel*, const QPoint&);
 
     void slot_playClick();
 
