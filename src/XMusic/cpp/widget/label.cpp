@@ -5,6 +5,8 @@
 
 void CLabel::_onPaint(CPainter& painter, cqrc rc)
 {
+    m_rcClickable = rc;
+
     auto qsText = this->text();
     if (m_br)
     {
@@ -47,13 +49,15 @@ void CLabel::_onPaint(CPainter& painter, cqrc rc)
                     painter.drawRectEx(rcShadow, __ShadowColor(uAlpha), m_szRound);
                 }
             }
-            m_rcClickable = rc;
         }
 
         return;
 	}
 
-    m_rcClickable = _paintText(painter, rc, qsText);
+    if (!qsText.isEmpty())
+    {
+        m_rcClickable = _paintText(painter, rc, qsText);
+    }
 }
 
 cqrc CLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)

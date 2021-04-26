@@ -28,7 +28,7 @@ extern const tagScreenInfo& g_screen;
 extern bool g_bFullScreen;
 
 #if __android
-extern void androidFullScreen();
+void androidFullScreen();
 
 extern const bool& g_bAndroidSDPermission;
 bool requestAndroidSDPermission();
@@ -165,4 +165,4 @@ public:
 
 #include "app.h"
 
-extern CApp&  g_app;
+extern CApp& g_app;
