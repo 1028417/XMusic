@@ -54,6 +54,8 @@ HEADERS += ../../inc/ControllerDef.h \
     ../controller.h \
     cpp/app.h \
     cpp/dlg/logindlg.h \
+    cpp/getcpuid.hpp \
+    cpp/installApp.hpp \
     cpp/xmusic.h \
     cpp/mainwindow.h \
     cpp/centralwidget.h \
