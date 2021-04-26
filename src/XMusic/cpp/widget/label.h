@@ -61,7 +61,7 @@ signals:
     void signal_clicked(CLabel*, const QPoint& pos);
 
 private:
-    void _paintText(CPainter& painter, cqrc rc);
+    cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText);
 
 protected:
     virtual void _onPaint(CPainter& painter, cqrc rc) override;
