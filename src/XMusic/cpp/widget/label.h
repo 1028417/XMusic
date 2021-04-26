@@ -55,7 +55,7 @@ private:
 
     UINT m_szRound = 0;
 
-    QRect m_rcText;
+    QRect m_rcClickable;
 
 signals:
     void signal_clicked(CLabel*, const QPoint& pos);

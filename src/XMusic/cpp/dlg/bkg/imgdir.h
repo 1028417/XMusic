@@ -148,7 +148,7 @@ public:
     }
 };
 
-#define __olBkgDir L"网上图库"
+#define __olBkgDir L"XMusic图库"
 
 class COlBkgDir : public CImgDir
 {
