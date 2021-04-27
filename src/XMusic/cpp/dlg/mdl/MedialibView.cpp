@@ -150,28 +150,22 @@ void CMedialibView::initpm()
     (void)m_pmPlay.load(__png(btnPlay));
     (void)m_pmAddPlay.load(__png(btnAddplay));
 
+    m_mapLanguageIcon[E_LanguageType::LT_CN].load(__mdlPng(cn));
+    m_mapLanguageIcon[E_LanguageType::LT_HK].load(__mdlPng(hk));
+    m_mapLanguageIcon[E_LanguageType::LT_KR].load(__mdlPng(kr));
+    m_mapLanguageIcon[E_LanguageType::LT_JP].load(__mdlPng(jp));
+    m_mapLanguageIcon[E_LanguageType::LT_EN].load(__mdlPng(en));
+    m_mapLanguageIcon[E_LanguageType::LT_TL].load(__mdlPng(tl));
+    m_mapLanguageIcon[E_LanguageType::LT_RS].load(__mdlPng(rs));
+    m_mapLanguageIcon[E_LanguageType::LT_FR].load(__mdlPng(fr));
+
     QMatrix matrix;
     matrix.rotate(-10);
-#define __languageIconAlpha 185
-    (void)m_pmCN.load(__mdlPng(cn));
-    m_pmCN = CPainter::alphaPixmap(m_pmCN, __languageIconAlpha);
-    m_pmCN = m_pmCN.transformed(matrix, Qt::SmoothTransformation);
-
-    (void)m_pmHK.load(__mdlPng(hk));
-    m_pmHK = CPainter::alphaPixmap(m_pmHK, __languageIconAlpha);
-    m_pmHK = m_pmHK.transformed(matrix, Qt::SmoothTransformation);
-
-    (void)m_pmKR.load(__mdlPng(kr));
-    m_pmKR = CPainter::alphaPixmap(m_pmKR, __languageIconAlpha);
-    m_pmKR = m_pmKR.transformed(matrix, Qt::SmoothTransformation);
-
-    (void)m_pmJP.load(__mdlPng(jp));
-    m_pmJP = CPainter::alphaPixmap(m_pmJP, __languageIconAlpha);
-    m_pmJP = m_pmJP.transformed(matrix, Qt::SmoothTransformation);
-
-    (void)m_pmEN.load(__mdlPng(en));
-    m_pmEN = CPainter::alphaPixmap(m_pmEN, __languageIconAlpha);
-    m_pmEN = m_pmEN.transformed(matrix, Qt::SmoothTransformation);
+    for (auto& pr : m_mapLanguageIcon)
+    {
+        //pr.second = CPainter::alphaPixmap(pr.second, __languageIconAlpha);
+        pr.second = pr.second.transformed(matrix, Qt::SmoothTransformation);
+    }
 }
 
 void CMedialibView::_onShowRoot()
@@ -823,21 +817,41 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
         }
          g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
     }
-}
+} 
 
 void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
 {
     CListView::_paintIcon(context, painter, rc);
 
-    wstring strLanguage;
+    E_LanguageType eLanguageType = E_LanguageType::LT_None;
     cauto mlContext = (tagMLItemContext&)context;
     if (mlContext.pMediaSet)
     {
-        if (mlContext.pMediaSet->m_pParent != &m_SingerLib && mlContext.pMediaSet->m_pParent != &m_PlaylistLib)
+        auto& mediaSet = *mlContext.pMediaSet;
+        if (E_MediaSetType::MST_Singer == mediaSet.m_eType)
+        {
+            if (mediaSet.property().isTlLanguage())
+            {
+                eLanguageType = E_LanguageType::LT_TL;
+            }
+            else if (mediaSet.property().isRsLanguage())
+            {
+                eLanguageType = E_LanguageType::LT_RS;
+            }
+            else if (mediaSet.property().isFrLanguage())
+            {
+                eLanguageType = E_LanguageType::LT_FR;
+            }
+        }
+        else if (E_MediaSetType::MST_SingerGroup == mediaSet.m_eType
+                 || E_MediaSetType::MST_Playlist == mediaSet.m_eType)
+        {
+            eLanguageType = (E_LanguageType)mediaSet.property().language();
+        }
+        else
         {
             return;
         }
-        strLanguage = mlContext.pMediaSet->m_strName.substr(0, 2);
     }
     else if (mlContext.pDir)
     {
@@ -846,41 +860,55 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
         {
             return;
         }
-        strLanguage = mlContext.pDir->fileName().substr(0, 2);
+        cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
+
+        if (L"国语" == strLanguage || L"华语" == strLanguage)
+        {
+            eLanguageType = E_LanguageType::LT_CN;
+        }
+        else if (L"粤语" == strLanguage)
+        {
+            eLanguageType = E_LanguageType::LT_HK;
+        }
+        else if (L"韩语" == strLanguage)
+        {
+            eLanguageType = E_LanguageType::LT_KR;
+        }
+        else if (L"日语" == strLanguage)
+        {
+            eLanguageType = E_LanguageType::LT_JP;
+        }
+        else if (L"英文" == strLanguage)
+        {
+            eLanguageType = E_LanguageType::LT_EN;
+        }
+        else
+        {
+            return;
+        }
     }
     else
     {
         return;
     }
 
-    const QPixmap *pmLanguage = NULL;
-    if (L"国语" == strLanguage || L"华语" == strLanguage)
-    {
-        pmLanguage = &m_pmCN;
-    }
-    else if (L"粤语" == strLanguage)
-    {
-        pmLanguage = &m_pmHK;
-    }
-    else if (L"韩语" == strLanguage)
-    {
-        pmLanguage = &m_pmKR;
-    }
-    else if (L"日语" == strLanguage)
-    {
-        pmLanguage = &m_pmJP;
-    }
-    else if (L"英文" == strLanguage)
-    {
-        pmLanguage = &m_pmEN;
-    }
-    else
+    if (E_LanguageType::LT_None == eLanguageType)
     {
         return;
     }
+    auto itr = m_mapLanguageIcon.find(eLanguageType);
+    if (itr == m_mapLanguageIcon.end())
+    {
+        return;
+    }
+    cauto pmLanguage = itr->second;
+
 #define __szLanguageIcon __size(54)
     QRect rcLanguage(rc.right()-__szLanguageIcon/2, rc.y()-__szLanguageIcon/3, __szLanguageIcon, __szLanguageIcon);
-    painter.drawImg(rcLanguage, *pmLanguage);
+
+    painter.setOpacity(.6f);
+    painter.drawImg(rcLanguage, pmLanguage);
+    painter.setOpacity(1);
 }
 
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter

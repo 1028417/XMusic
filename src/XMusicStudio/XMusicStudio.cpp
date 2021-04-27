@@ -115,9 +115,9 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandSinger;
 			eLanguageType = E_LanguageType::LT_EN;
 			break;
-		case ID_DemandSinger_EUR:
+		case ID_DemandSinger_Other:
 			eDemandMode = E_DemandMode::DM_DemandSinger;
-			eLanguageType = E_LanguageType::LT_EUR;
+			eLanguageType = E_LanguageType::LT_Other;
 			break;
 
 		case ID_DemandAlbum:
@@ -143,9 +143,9 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandAlbum;
 			eLanguageType = E_LanguageType::LT_EN;
 			break;
-		case ID_DemandAlbum_EUR:
+		case ID_DemandAlbum_Other:
 			eDemandMode = E_DemandMode::DM_DemandAlbum;
-			eLanguageType = E_LanguageType::LT_EUR;
+			eLanguageType = E_LanguageType::LT_Other;
 			break;
 
 		case ID_DemandAlbumItem:
@@ -171,9 +171,9 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandAlbumItem;
 			eLanguageType = E_LanguageType::LT_EN;
 			break;
-		case ID_DemandAlbumItem_EUR:
+		case ID_DemandAlbumItem_Other:
 			eDemandMode = E_DemandMode::DM_DemandAlbumItem;
-			eLanguageType = E_LanguageType::LT_EUR;
+			eLanguageType = E_LanguageType::LT_Other;
 			break;
 
 		case ID_DemandPlaylist:
@@ -199,9 +199,9 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandPlaylist;
 			eLanguageType = E_LanguageType::LT_EN;
 			break;
-		case ID_DemandPlaylist_EUR:
+		case ID_DemandPlaylist_Other:
 			eDemandMode = E_DemandMode::DM_DemandPlaylist;
-			eLanguageType = E_LanguageType::LT_EUR;
+			eLanguageType = E_LanguageType::LT_Other;
 			break;
 
 		case ID_DemandPlayItem:
@@ -227,9 +227,9 @@ bool CController::handleCommand(UINT uID)
 			eDemandMode = E_DemandMode::DM_DemandPlayItem;
 			eLanguageType = E_LanguageType::LT_EN;
 			break;
-		case ID_DemandPlayItem_EUR:
+		case ID_DemandPlayItem_Other:
 			eDemandMode = E_DemandMode::DM_DemandPlayItem;
-			eLanguageType = E_LanguageType::LT_EUR;
+			eLanguageType = E_LanguageType::LT_Other;
 			break;
 		default:
 			return false;

@@ -306,9 +306,11 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_HKLanguage:
 	case ID_KRLanguage:
 	case ID_JPLanguage:
-	case ID_TAILanguage:
 	case ID_ENLanguage:
-	case ID_EURLanguage:
+	case ID_OtherLanguage:
+	case ID_TlLanguage:
+	case ID_RsLanguage:
+	case ID_FrLanguage:
 	{
 		__AssertBreak(pSingerObject);
 		CMediasetProperty property = pSingerObject->property();
@@ -345,8 +347,17 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 			case ID_ENLanguage:
 				eLanguage = E_LanguageType::LT_EN;
 				break;
-			case ID_EURLanguage:
-				eLanguage = E_LanguageType::LT_EUR;
+			case ID_OtherLanguage:
+				eLanguage = E_LanguageType::LT_Other;
+				break;
+			case ID_TlLanguage:
+				eLanguage = E_LanguageType::LT_TL;
+				break;
+			case ID_RsLanguage:
+				eLanguage = E_LanguageType::LT_RS;
+				break;
+			case ID_FrLanguage:
+				eLanguage = E_LanguageType::LT_FR;
 				break;
 			default:
 				return;
@@ -603,9 +614,11 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 	m_MenuGuard.EnableItem(ID_HKLanguage, NULL != pSingerObject);
 	m_MenuGuard.EnableItem(ID_KRLanguage, NULL != pSingerObject);
 	m_MenuGuard.EnableItem(ID_JPLanguage, NULL != pSingerObject);
-	m_MenuGuard.EnableItem(ID_TAILanguage, NULL != pSingerObject);
 	m_MenuGuard.EnableItem(ID_ENLanguage, NULL != pSingerObject);
-	m_MenuGuard.EnableItem(ID_EURLanguage, NULL != pSingerObject);
+	m_MenuGuard.EnableItem(ID_OtherLanguage, NULL != pSingerObject);
+	m_MenuGuard.EnableItem(ID_TlLanguage, NULL != pSingerObject);
+	m_MenuGuard.EnableItem(ID_RsLanguage, NULL != pSingerObject);
+	m_MenuGuard.EnableItem(ID_FrLanguage, NULL != pSingerObject);
 
 	if (NULL != pSingerObject)
 	{
@@ -614,12 +627,21 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 		m_MenuGuard.CheckItem(ID_DisableDemand, property.isDisableDemand());
 		m_MenuGuard.CheckItem(ID_DisableExport, property.isDisableExport());
 
-		m_MenuGuard.CheckItem(ID_CNLanguage, property.isCNLanguage());
-		m_MenuGuard.CheckItem(ID_HKLanguage, property.isHKLanguage());
-		m_MenuGuard.CheckItem(ID_KRLanguage, property.isKRLanguage());
-		m_MenuGuard.CheckItem(ID_JPLanguage, property.isJPLanguage());
-		m_MenuGuard.CheckItem(ID_ENLanguage, property.isENLanguage());
-		m_MenuGuard.CheckItem(ID_EURLanguage, property.isEURLanguage());
+		m_MenuGuard.CheckItem(ID_CNLanguage, property.isCnLanguage());
+		m_MenuGuard.CheckItem(ID_HKLanguage, property.isHkLanguage());
+		m_MenuGuard.CheckItem(ID_KRLanguage, property.isKrLanguage());
+		m_MenuGuard.CheckItem(ID_JPLanguage, property.isJpLanguage());
+		m_MenuGuard.CheckItem(ID_ENLanguage, property.isEnLanguage());
+
+		m_MenuGuard.CheckItem(ID_OtherLanguage, property.isOtherLanguage());
+		if (property.isTlLanguage() || property.isRsLanguage() || property.isFrLanguage())
+		{
+			m_MenuGuard.EnableItem(ID_OtherLanguage, false);
+		}
+
+		m_MenuGuard.CheckItem(ID_TlLanguage, property.isTlLanguage());
+		m_MenuGuard.CheckItem(ID_RsLanguage, property.isRsLanguage());
+		m_MenuGuard.CheckItem(ID_FrLanguage, property.isFrLanguage());
 	}
 
 	m_MenuGuard.EnableItem(ID_PLAY, bSinger);

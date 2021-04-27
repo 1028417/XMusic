@@ -360,7 +360,7 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
         , {ui.labelDemandHK, E_LanguageType::LT_HK}
         , {ui.labelDemandKR, E_LanguageType::LT_KR}
         , {ui.labelDemandEN, E_LanguageType::LT_EN}
-        , {ui.labelDemandEUR, E_LanguageType::LT_EUR}
+        , {ui.labelDemandEUR, E_LanguageType::LT_Other}
     };
     auto uLanguage = (UINT)mapLabels[label];
 
@@ -368,7 +368,7 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
     //paMediaSet.get((UINT)m_MedialibView.scrollPos(), [&](const CMediaSet& MediaSet){
     //    if (MediaSet.property().language() != uLanguage) {
             int nItem = paMediaSet.find([&](const CMediaSet& MediaSet){
-                if ((UINT)E_LanguageType::LT_EUR == uLanguage)
+                if ((UINT)E_LanguageType::LT_Other == uLanguage)
                 {
                     if (MediaSet.property().language() & (UINT)E_LanguageType::LT_JP)
                     {

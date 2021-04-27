@@ -150,11 +150,7 @@ private:
     QPixmap m_pmPlay;
     QPixmap m_pmAddPlay;
 
-    QPixmap m_pmCN;
-    QPixmap m_pmHK;
-    QPixmap m_pmKR;
-    QPixmap m_pmJP;
-    QPixmap m_pmEN;
+    map<E_LanguageType, QPixmap> m_mapLanguageIcon;
 
     list<CBrush> m_lstSingerHead;
     map<UINT, CBrush*> m_mapSingerHead;

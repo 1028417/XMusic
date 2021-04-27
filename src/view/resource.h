@@ -190,9 +190,9 @@
 #define ID_HKLanguage                   32915
 #define ID_KRLanguage                   32916
 #define ID_JPLanguage                   32917
-#define ID_TAILanguage                  32918
+#define ID_TlLanguage                   32918
 #define ID_ENLanguage                   32919
-#define ID_EURLanguage                  32920
+#define ID_OtherLanguage                32920
 #define ID_32921                        32921
 #define ID_DemandCN                     32922
 #define ID_DemandHK                     32923
@@ -231,11 +231,11 @@
 #define ID_DemandAlbumItem_EN           32956
 #define ID_DemandPlayItem_EN            32957
 #define ID_DemandPlaylist_EN            32958
-#define ID_DemandSinger_EUR             32959
-#define ID_DemandAlbum_EUR              32960
-#define ID_DemandAlbumItem_EUR          32961
-#define ID_DemandPlayItem_EUR           32962
-#define ID_DemandPlaylist_EUR           32963
+#define ID_DemandSinger_Other           32959
+#define ID_DemandAlbum_Other            32960
+#define ID_DemandAlbumItem_Other        32961
+#define ID_DemandPlayItem_Other         32962
+#define ID_DemandPlaylist_Other         32963
 #define ID__XIEZAI                      32964
 #define ID__32965                       32965
 #define ID_Attach                       32966
@@ -259,13 +259,18 @@
 #define ID_32984                        32984
 #define ID_SignupUser                   32985
 #define ID_DeployUser                   32986
+#define ID_Menu32987                    32987
+#define ID_RsLanguage                   32988
+#define ID_RLanguage                    32989
+#define ID_FrLanguage                   32990
+#define ID_FLanguage                    32991
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        2043
-#define _APS_NEXT_COMMAND_VALUE         32987
+#define _APS_NEXT_COMMAND_VALUE         32992
 #define _APS_NEXT_CONTROL_VALUE         2046
 #define _APS_NEXT_SYMED_VALUE           2004
 #endif

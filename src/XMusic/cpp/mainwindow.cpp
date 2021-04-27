@@ -1174,7 +1174,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {ui.labelDemandKR, E_LanguageType::LT_KR}
             , {ui.labelDemandJP, E_LanguageType::LT_JP}
             , {ui.labelDemandEN, E_LanguageType::LT_EN}
-            , {ui.labelDemandEUR, E_LanguageType::LT_EUR}};
+            , {ui.labelDemandEUR, E_LanguageType::LT_Other}};
         plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {
             cauto text = lbl->text();
             if (text.startsWith(__wcCheck))

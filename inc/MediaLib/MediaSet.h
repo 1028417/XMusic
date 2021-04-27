@@ -1,22 +1,33 @@
 ﻿
 #pragma once
 
-#define __CNLanguage		0x01
-#define __HKLanguage		0x02
-#define __KRLanguage		0x04
-#define __JPLanguage		0x08
-#define __ENLanguage		0x20
-#define __EURLanguage	    0x40
+#define __CnLanguage		0x01
+#define __HkLanguage		0x02
+#define __KrLanguage		0x04
+#define __JpLanguage		0x08
+#define __EnLanguage		0x10
+
+// 小语种
+#define __OtherLanguage	    0x20
+#define __TlLanguage	    0x120
+#define __RsLanguage	    0x220
+#define __FrLanguage	    0x420
 
 enum class E_LanguageType
 {
 	LT_None = 0,
-	LT_CN = __CNLanguage,
-	LT_HK = __HKLanguage,
-	LT_KR = __KRLanguage,
-    LT_JP = __JPLanguage,
-	LT_EN = __ENLanguage,
-	LT_EUR = __EURLanguage,
+
+    LT_CN = __CnLanguage,
+    LT_HK = __HkLanguage,
+    LT_KR = __KrLanguage,
+    LT_JP = __JpLanguage,
+    LT_EN = __EnLanguage,
+
+    // 小语种
+    LT_Other = __OtherLanguage,
+    LT_TL = __TlLanguage,
+    LT_RS = __RsLanguage,
+    LT_FR = __FrLanguage,
 };
 
 class __MediaLibExt CMediasetProperty
@@ -40,27 +51,32 @@ private:
 	bool m_bDisableExport = false;
 
 public:
-	UINT language() const
-	{
-		return m_uLanguage;
-	}
+    UINT language() const
+    {
+        return m_uLanguage;
+    }
+
 	bool isDisableDemand() const
 	{
 		return m_bDisableDemand;
-	}
-	bool isDisableExport() const
-	{
-		return m_bDisableExport;
-	}
+    }
 
+    bool isDisableExport() const
+    {
+        return m_bDisableExport;
+    }
+
+#if __winvc
 	void setDisableDemand(bool bDisableDemand)
 	{
 		m_bDisableDemand = bDisableDemand;
 	}
+
 	void setDisableExport(bool bDisableExport)
 	{
 		m_bDisableExport = bDisableExport;
 	}
+
 	void setLanguage(E_LanguageType eLanguageType)
 	{
 		m_uLanguage |= (UINT)eLanguageType;
@@ -69,31 +85,45 @@ public:
 	{
 		m_uLanguage &= ~(UINT)eLanguageType;
 	}
+#endif
 
-	bool isCNLanguage() const
+    bool isCnLanguage() const
 	{
-		return m_uLanguage & __CNLanguage;
+        return m_uLanguage & __CnLanguage;
 	}
-	bool isHKLanguage() const
+    bool isHkLanguage() const
 	{
-		return m_uLanguage & __HKLanguage;
+        return m_uLanguage & __HkLanguage;
 	}
-	bool isKRLanguage() const
+    bool isKrLanguage() const
 	{
-		return m_uLanguage & __KRLanguage;
+        return m_uLanguage & __KrLanguage;
 	}
-	bool isJPLanguage() const
+    bool isJpLanguage() const
 	{
-		return m_uLanguage & __JPLanguage;
+        return m_uLanguage & __JpLanguage;
 	}
-	bool isENLanguage() const
+    bool isEnLanguage() const
 	{
-		return m_uLanguage & __ENLanguage;
+        return m_uLanguage & __EnLanguage;
 	}
-	bool isEURLanguage() const
-	{
-		return m_uLanguage & __EURLanguage;
-	}
+
+    bool isOtherLanguage() const
+    {
+        return m_uLanguage & __OtherLanguage;
+    }
+    bool isTlLanguage() const
+    {
+        return (m_uLanguage & __TlLanguage) == __TlLanguage;
+    }
+    bool isRsLanguage() const
+    {
+        return (m_uLanguage & __RsLanguage) == __RsLanguage;
+    }
+    bool isFrLanguage() const
+    {
+        return (m_uLanguage & __FrLanguage) == __FrLanguage;
+    }
 };
 
 class __MediaLibExt CMediaSet : public tagMediaInfo

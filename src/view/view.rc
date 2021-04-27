@@ -154,11 +154,11 @@ BEGIN
         END
         POPUP "小语种"
         BEGIN
-            MENUITEM "歌手",                          ID_DemandSinger_EUR
-            MENUITEM "专辑",                          ID_DemandAlbum_EUR
-            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
-            MENUITEM "歌单曲目",                        ID_DemandPlayItem_EUR
-            MENUITEM "歌单",                          ID_DemandPlaylist_EUR
+            MENUITEM "歌手",                          ID_DemandSinger_Other
+            MENUITEM "专辑",                          ID_DemandAlbum_Other
+            MENUITEM "专辑曲目",                        ID_DemandAlbumItem_Other
+            MENUITEM "歌单曲目",                        ID_DemandPlayItem_Other
+            MENUITEM "歌单",                          ID_DemandPlaylist_Other
         END
     END
 END
@@ -229,11 +229,11 @@ BEGIN
                 END
                 POPUP "小语种"
                 BEGIN
-                    MENUITEM "歌手",                          ID_DemandSinger_EUR
-                    MENUITEM "专辑",                          ID_DemandAlbum_EUR
-                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_EUR
-                    MENUITEM "歌单曲目",                        ID_DemandPlayItem_EUR
-                    MENUITEM "歌单",                          ID_DemandPlaylist_EUR
+                    MENUITEM "歌手",                          ID_DemandSinger_Other
+                    MENUITEM "专辑",                          ID_DemandAlbum_Other
+                    MENUITEM "专辑曲目",                        ID_DemandAlbumItem_Other
+                    MENUITEM "歌单曲目",                        ID_DemandPlayItem_Other
+                    MENUITEM "歌单",                          ID_DemandPlaylist_Other
                 END
             END
         END
@@ -288,7 +288,10 @@ BEGIN
             MENUITEM "韩语",                          ID_KRLanguage
             MENUITEM "日语",                          ID_JPLanguage
             MENUITEM "英文",                          ID_ENLanguage
-            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM "小语种",                         ID_OtherLanguage
+            MENUITEM "泰语",                          ID_TlLanguage
+            MENUITEM "俄语",                          ID_RsLanguage
+            MENUITEM "法语",                          ID_FrLanguage
             MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
@@ -335,7 +338,10 @@ BEGIN
             MENUITEM "韩语",                          ID_KRLanguage
             MENUITEM "日语",                          ID_JPLanguage
             MENUITEM "英文",                          ID_ENLanguage
-            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM "小语种",                         ID_OtherLanguage
+            MENUITEM "泰语",                          ID_TlLanguage
+            MENUITEM "俄语",                          ID_RsLanguage
+            MENUITEM "法语",                          ID_FrLanguage
             MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
@@ -363,7 +369,10 @@ BEGIN
             MENUITEM "韩语",                          ID_KRLanguage
             MENUITEM "日语",                          ID_JPLanguage
             MENUITEM "英文",                          ID_ENLanguage
-            MENUITEM "小语种",                         ID_EURLanguage
+            MENUITEM "小语种",                         ID_OtherLanguage
+            MENUITEM "泰语",                          ID_TlLanguage
+            MENUITEM "俄语",                          ID_RsLanguage
+            MENUITEM "法语",                          ID_FrLanguage
             MENUITEM SEPARATOR
             MENUITEM "点播屏蔽",                        ID_DisableDemand
             MENUITEM "导出屏蔽",                        ID_DisableExport
