@@ -213,4 +213,28 @@ public class XActivity extends org.qtproject.qt5.android.bindings.QtActivity
 
         startActivity(intent);
     };
+
+    /*String getCpuinfo() //mac: /sys/class/net/wlan0/address
+    {
+         String strRet = null;
+         String str = "";
+         try {
+             Process pp = Runtime.getRuntime().exec(
+                             "cat /proc/cpuinfo ");
+             InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+             LineNumberReader input = new LineNumberReader(ir);
+
+             for (; null != str;) {
+                 str = input.readLine();
+                 if (str != null) {
+                         strRet = str.trim();// 去空格
+                         break;
+                 }
+             }
+         } catch (IOException ex) {
+                 // 赋予默认值
+                 ex.printStackTrace();
+         }
+         return strRet;
+     }*/
 };
