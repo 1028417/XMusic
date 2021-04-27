@@ -231,6 +231,12 @@ int main(int argc, char *argv[])
     }
 
     m_logger.close();
+
     // 会引起静态对话框析构异常g_app.~CApp();
+
+#if __android
+    exit(0);
+#endif
+
     return nRet;
 }
