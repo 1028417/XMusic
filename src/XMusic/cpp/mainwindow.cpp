@@ -22,6 +22,20 @@ static void _fixWorkArea(QWidget& wnd)
     wnd.setGeometry(rcWorkArea.left, rcWorkArea.top, cx, cy);
     ::MoveWindow((HWND)wnd.winId(), rcWorkArea.left, rcWorkArea.top, cx, cy, TRUE);
 }
+
+#elif __android
+inline static void _androidFullScreen()
+{
+    /*//java构造函数全屏效果更好，所以统一用jni控制
+    fullScreen(g_bFullScreen);
+
+    if (!g_bFullScreen)
+    {
+        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
+    }*/
+
+    fullScreenex(g_bFullScreen);// 合并成一次调用
+}
 #endif
 
 static void _fixScreen(QWidget& wnd)
@@ -67,7 +81,7 @@ void MainWindow::switchFullScreen()
     _fixScreen(*this);
 
 #if __android
-    androidFullScreen();
+    _androidFullScreen();
 
     //async([&]{
         _relayout();
@@ -91,10 +105,14 @@ MainWindow::MainWindow() :
     //qRegisterMetaType<QVariant>("QVariant");
 }
 
-void MainWindow::showBlank()
+void MainWindow::exec()
 {
+#if __android
+    _androidFullScreen();
+#else
     _fixScreen(*this);
     this->setVisible(true); //必须在前面？？不然ole异常？？
+#endif
 }
 
 void MainWindow::preinit(XThread& thr) // showlogo之后工作线程调用

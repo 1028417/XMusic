@@ -18,22 +18,7 @@ ITxtWriter& g_logger(m_logger);
 static tagScreenInfo m_screen;
 const tagScreenInfo& g_screen(m_screen);
 
-bool g_bFullScreen = false;
-
 #if __android
-void androidFullScreen()
-{
-    /*//java构造函数全屏效果更好，所以统一用jni控制
-    fullScreen(g_bFullScreen);
-
-    if (!g_bFullScreen)
-    {
-        showTransparentStatusBar(true); // 不全屏就显示安卓透明状态栏（半沉浸）
-    }*/
-
-    fullScreenex(g_bFullScreen);// 合并成一次调用
-}
-
 bool m_bAndroidSDPermission = false;
 const bool& g_bAndroidSDPermission(m_bAndroidSDPermission);
 
@@ -173,8 +158,9 @@ void CAppBase::_quit()
     QApplication::quit();
 }
 
-static char g_lpApp[sizeof(CApp)];
-CApp&  g_app(*(CApp*)g_lpApp);
+//static char m_lpApp[sizeof(CApp)];
+static void *m_lpApp = malloc(sizeof(CApp));
+CApp& g_app = *(CApp*)m_lpApp;
 
 int main(int argc, char *argv[])
 {
@@ -222,8 +208,8 @@ int main(int argc, char *argv[])
     fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
 #endif
 
-    memset(g_lpApp, 0, sizeof(g_lpApp));
-    new (g_lpApp) CApp(strWorkDir);
+    memset(m_lpApp, 0, sizeof(CApp));
+    new (m_lpApp) CApp(strWorkDir);
     auto nRet =  g_app.exec();
     if (nRet != 0)
     {
@@ -232,7 +218,7 @@ int main(int argc, char *argv[])
 
     m_logger.close();
 
-    // 会引起静态对话框析构异常g_app.~CApp();
+    // 会引起静态对话框析构异常delete (CApp*)m_lpApp;//g_app.~CApp();
 
 #if __android
     exit(0);

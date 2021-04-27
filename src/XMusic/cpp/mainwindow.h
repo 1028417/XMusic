@@ -106,7 +106,7 @@ public:
         return m_bkgDlg;
     }
 
-    void showBlank();
+    void exec();
 
     void showLogo();
     void startLogo();

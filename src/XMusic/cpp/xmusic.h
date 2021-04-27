@@ -28,8 +28,6 @@ extern const tagScreenInfo& g_screen;
 extern bool g_bFullScreen;
 
 #if __android
-void androidFullScreen();
-
 extern const bool& g_bAndroidSDPermission;
 bool requestAndroidSDPermission();
 
