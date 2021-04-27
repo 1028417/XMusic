@@ -107,7 +107,7 @@ static bool _installWinZip(CZipFile& zipFile)
 #elif __mac
 static bool _installMacApp(const string& strUpgradeFile)
 {
-    cauto strUpgradeDir = strWorkDir + "/XMusic.app";
+    cauto strUpgradeDir = fsutil::workDir() + "/XMusic.app";
 #define system(x) system((x).c_str())
     (void)system("rm -rf " + strUpgradeDir);
 
@@ -176,7 +176,7 @@ bool installApp(const string& strUpgradeFile)
 bool installApp(const CByteBuffer& bbfUpgradeFile)
 {
 #if __android
-    cauto strApkFile = g_app.workDir() + L"/upgrade.apk";
+    cauto strApkFile = g_strWorkDir + L"/upgrade.apk";
     if (!OFStream::writefilex(strApkFile, true, bbfUpgradeFile))
     {
         g_logger << "save appPackage fail: " >> strApkFile;
@@ -187,8 +187,7 @@ bool installApp(const CByteBuffer& bbfUpgradeFile)
     return true;
 
 #elif __mac
-    cauto strWorkDir = fsutil::workDir();
-    cauto strUpgradeFile = strWorkDir + "/upgrade.zip";
+    cauto strUpgradeFile = fsutil::workDir() + "/upgrade.zip";
     if (!OFStream::writefilex(strUpgradeFile, true, bbfData))
     {
         g_logger << "save appPackage fail: " >> strUpgradeFile;

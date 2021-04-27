@@ -164,3 +164,5 @@ public:
 #include "app.h"
 
 extern CApp& g_app;
+
+extern wstring g_strWorkDir;

@@ -461,7 +461,7 @@ bool COlBkgDir::_genIcon()
 
 void COlBkgDir::initOlBkg(CAddBkgView& lv)
 {
-    auto strOlBkgDir = g_app.workDir() + __wcPathSeparator + __olBkgDir;
+    auto strOlBkgDir = g_strWorkDir + __wcPathSeparator + __olBkgDir;
     this->setDir(strOlBkgDir);
     (void)fsutil::createDir(strOlBkgDir);
     strOlBkgDir.push_back(__wcPathSeparator);

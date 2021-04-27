@@ -162,6 +162,8 @@ void CAppBase::_quit()
 static void *m_lpApp = malloc(sizeof(CApp));
 CApp& g_app = *(CApp*)m_lpApp;
 
+wstring g_strWorkDir;
+
 int main(int argc, char *argv[])
 {
     g_argc = argc;
@@ -184,32 +186,31 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-    wstring strWorkDir;
 #if __android
     if (requestAndroidSDPermission())
     {
-        strWorkDir = __sdcardDir __pkgName;
+        g_strWorkDir = __sdcardDir __pkgName;
     }
     else
     {
         // 内置包路径不需要权限 data/data/xxx/files、/data/data/xxx/cache分别对应应用详情中的清除数据和清除缓存
-        strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
+        g_strWorkDir = __androidOrgPath; //= __sdcardDir L"Android/data/" __pkgName //居然也对应内置存储同一路径;
     }
 #else
-    strWorkDir = fsutil::getHomeDir() + __wcPathSeparator + __pkgName;
+    g_strWorkDir = fsutil::getHomeDir() + __wcPathSeparator + __pkgName;
 #endif
-    if (!fsutil::createDir(strWorkDir))
+    if (!fsutil::createDir(g_strWorkDir))
     {
         return -1;
     }
 #if __windows
-    fsutil::setWorkDir(strutil::toGbk(strWorkDir));
+    fsutil::setWorkDir(strutil::toGbk(g_strWorkDir));
 #else
-    fsutil::setWorkDir(strutil::toUtf8(strWorkDir));
+    fsutil::setWorkDir(strutil::toUtf8(g_strWorkDir));
 #endif
 
     memset(m_lpApp, 0, sizeof(CApp));
-    new (m_lpApp) CApp(strWorkDir);
+    new (m_lpApp) CApp();
     auto nRet =  g_app.exec();
     if (nRet != 0)
     {

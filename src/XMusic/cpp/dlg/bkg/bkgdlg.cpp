@@ -87,7 +87,7 @@ void CBkgDlg::init()
 void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
 {
     auto& strBkgDir = bHLayout?m_strHBkgDir:m_strVBkgDir;
-    strBkgDir = g_app.workDir() + (bHLayout?L"/hbkg/":L"/vbkg/");
+    strBkgDir = g_strWorkDir + (bHLayout?L"/hbkg/":L"/vbkg/");
     if (!fsutil::existDir(strBkgDir))
     {
         (void)fsutil::createDir(strBkgDir);

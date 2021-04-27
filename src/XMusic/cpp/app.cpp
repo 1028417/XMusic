@@ -5,58 +5,45 @@
 
 #include "dlg/msgbox.h"
 
-CApp::CApp(cwstr strWorkDir)
-    : m_strWorkDir(strWorkDir)
-    , m_ctrl(*this, m_model)
+CApp::CApp()
+    : m_ctrl(*this, m_model)
     , m_model(m_mainWnd, m_ctrl.getOption())
 {
 }
 
+bool g_bFullScreen = false;
+
 int CApp::exec()
 {
-    cauto fnStartup = [&]{
-        m_mainWnd.startLogo();
-
-        (void)this->thread([=](XThread& thr){
-           (void)_startup(thr);
-        });
-    };
-
     g_bFullScreen = m_ctrl.initOption().bFullScreen;
-#if __android
-    androidFullScreen();
+    m_mainWnd.exec();
 
-    init();
-    CFont::init(this->font());
-    this->setFont(CFont());
-    m_mainWnd.showLogo();
-
-    if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
-    {
-        async([=]{
-            vibrate();
-
-            CNetworkWarnDlg::inst().show([=]{
-                fnStartup();
-            });
-        });
-    }
-    else
-    {
-        fnStartup();
-    }
-
-#else
-    m_mainWnd.showBlank();
     async([=]{
         init();
         CFont::init(this->font());
         this->setFont(CFont());
         m_mainWnd.showLogo();
 
-        fnStartup();
-    });
+#if __android
+        if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
+        {
+            vibrate();
+            CNetworkWarnDlg::inst().show([=]{
+                m_mainWnd.startLogo();
+                (void)this->thread([=](XThread& thr){
+                   (void)_startup(thr);
+                });
+            });
+            return;
+        }
 #endif
+
+        m_mainWnd.startLogo();
+        (void)this->thread([=](XThread& thr){
+           (void)_startup(thr);
+        });
+    });
+
     auto nRet = CAppBase::exec();
 
     m_ctrl.stop();
@@ -95,7 +82,7 @@ bool CApp::_startup(XThread& thr)
 {
     auto time0 = time(0);
 
-    m_model.init(g_app.workDir());
+    m_model.init(g_strWorkDir);
 
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))

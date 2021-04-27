@@ -42,7 +42,7 @@ struct tagSingleTone
 class CApp : public CAppBase, private IPlayerView//, public tagSingleTone<CApp>
 {
 public:
-    CApp(cwstr strWorkDir);
+    CApp();
     //friend tagSingleTone;
 
 public:
@@ -51,8 +51,6 @@ public:
     QPixmap m_pmSQDisk;
 
 private:
-    wstring m_strWorkDir;
-
     CXController m_ctrl;
 
     CModel m_model;
@@ -75,11 +73,6 @@ private:
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 
 public:
-    cwstr workDir() const
-    {
-        return m_strWorkDir;
-    }
-
     cwstr appVer() const
     {
         return m_strAppVer;
