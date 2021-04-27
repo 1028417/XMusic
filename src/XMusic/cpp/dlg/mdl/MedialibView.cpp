@@ -325,12 +325,6 @@ void CMedialibView::_onShowDir(CPath& dir)
         return;
     }
 
-    if (pParentDir == &m_xpkRoot)
-    {
-        m_medialibDlg.updateHead(__XpkRoot __CNDot + strTitle);
-        return;
-    }
-
     CSinger *pSinger = NULL;
     auto pSnapshotDir = _snapshotDir(dir);
     if (pSnapshotDir)
@@ -349,20 +343,27 @@ void CMedialibView::_onShowDir(CPath& dir)
             strTitle.append(L" / ").append(dir.fileName());
         }
     }
-    else
+    else //xpk
     {
-        while (pParentDir)
+        if (pParentDir == &m_xpkRoot)
         {
-            if (pParentDir->parent() == &m_xpkRoot)
+            m_medialibDlg.updateHead(__XpkRoot __CNDot + strTitle);
+        }
+        else
+        {
+            while (pParentDir)
             {
-                strTitle = __XpkRoot __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
-                break;
+                if (pParentDir->parent() == &m_xpkRoot)
+                {
+                    strTitle = __XpkRoot __CNDot + pParentDir->fileName() + L" / " + dir.fileName();
+                    break;
+                }
+
+                pParentDir = pParentDir->parent();
             }
 
-            pParentDir = pParentDir->parent();
+            pSinger = g_app.getSingerMgr().checkSingerDir(((CMediaDir&)dir).GetPath());
         }
-
-        pSinger = g_app.getSingerMgr().checkSingerDir(((CMediaDir&)dir).GetPath());
     }
 
     m_medialibDlg.updateHead(strTitle);
