@@ -9,40 +9,42 @@
 #define __confFile "/xmusic.conf"
 #endif
 
-#define OI_RootDir          "RootDir"
-#define OI_AttachDir        "AttachDir"
+#define _jRoot(x)          jRoot[#x]
 
-#define OI_PlaySpiritSkin	"PlaySpiritSkin"
-#define OI_PlaySpiritLeft	"PlaySpiritLeft"
-#define OI_PlaySpiritTop	"PlaySpiritTop"
-#define OI_PlaySpiritVolum	"PlaySpiritVolum"
+#define _jRootDir           _jRoot(RootDir)
+#define _jAttachDir         _jRoot(AttachDir)
 
-#define OI_PlayingItem		"PlayingItem"
-#define OI_RandomPlay		"RandomPlay"
-#define OI_Force48KHz		"Force48KHz"
+#define _jPlaySpiritSkin    _jRoot(PlaySpiritSkin)
+#define _jPlaySpiritLeft	_jRoot(PlaySpiritLeft)
+#define _jPlaySpiritTop     _jRoot(PlaySpiritTop)
+#define _jPlaySpiritVolum	_jRoot(PlaySpiritVolum)
 
-#define OI_FullScreen		"FullScreen"
-#define OI_HideMenuBar		"HideMenuBar"
+#define _jPlayingItem		_jRoot(PlayingItem)
+#define _jRandomPlay		_jRoot(RandomPlay)
+#define _jForce48KHz		_jRoot(Force48KHz)
 
-#define OI_AlarmHour		"AlarmHour"
-#define OI_AlarmMinute		"AlarmMinute"
+#define _jFullScreen		_jRoot(FullScreen)
+#define _jHideMenuBar		_jRoot(HideMenuBar)
 
-#define OI_UseBkgColor      "UseBkgColor"
-#define OI_BkgColor         "BkgColor"
-#define OI_ForeColor        "ForeColor"
+#define _jAlarmHour		    _jRoot(AlarmHour)
+#define _jAlarmMinute		_jRoot(AlarmMinute)
 
-#define OI_HBkg				"HBkg"
-#define OI_HBkgX		    "HBkgX"
-#define OI_HBkgY		    "HBkgY"
-#define OI_VBkg				"VBkg"
-#define OI_VBkgX		    "VBkgX"
-#define OI_VBkgY		    "VBkgY"
-#define OI_AddBkgDir		"AddBkgDir"
+#define _jUseBkgColor       _jRoot(UseBkgColor)
+#define _jBkgColor          _jRoot(BkgColor)
+#define _jForeColor         _jRoot(ForeColor)
 
-#define OI_HSingerImgPos    "HSingerImgPos"
-#define OI_VSingerImgPos    "VSingerImgPos"
+#define _jHBkg				_jRoot(HBkg)
+#define _jHBkgX             _jRoot(HBkgX)
+#define _jHBkgY             _jRoot(HBkgY)
+#define _jVBkg				_jRoot(VBkg)
+#define _jVBkgX             _jRoot(VBkgX)
+#define _jVBkgY             _jRoot(VBkgY)
+#define _jAddBkgDir         _jRoot(AddBkgDir)
 
-#define OI_NetworkWarn      "NetworkWarn"
+#define _jHSingerImgPos     _jRoot(HSingerImgPos)
+#define _jVSingerImgPos     _jRoot(VSingerImgPos)
+
+#define _jNetworkWarn       _jRoot(NetworkWarn)
 
 void COptionMgr::init()
 {
@@ -66,21 +68,21 @@ void COptionMgr::init()
     }
 
     int nPlayingItem = 0;
-    jsonutil::get(jRoot[OI_PlayingItem], nPlayingItem);
+    jsonutil::get(_jPlayingItem, nPlayingItem);
     if (nPlayingItem >= 0)
     {
         m_opt.uPlayingItem = (UINT)nPlayingItem;
     }
 
-    jsonutil::get(jRoot[OI_RandomPlay], m_opt.bRandomPlay);
-    jsonutil::get(jRoot[OI_Force48KHz], m_opt.bForce48KHz);
+    jsonutil::get(_jRandomPlay, m_opt.bRandomPlay);
+    jsonutil::get(_jForce48KHz, m_opt.bForce48KHz);
 
-    jsonutil::get(jRoot[OI_FullScreen], m_opt.bFullScreen);
+    jsonutil::get(_jFullScreen, m_opt.bFullScreen);
 
 #if __winvc
-    jsonutil::get(jRoot[OI_RootDir], true, m_opt.strRootDir);
+    jsonutil::get(_jRootDir, true, m_opt.strRootDir);
 
-    const JValue& jValue = jRoot[OI_AttachDir];
+    const JValue& jValue = _jAttachDir;
     if (jValue.isArray())
     {
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
@@ -94,35 +96,35 @@ void COptionMgr::init()
         }
     }
 
-    jsonutil::get(jRoot[OI_HideMenuBar], m_opt.bHideMenuBar);
+    jsonutil::get(_jHideMenuBar, m_opt.bHideMenuBar);
 
-    jsonutil::get(jRoot[OI_PlaySpiritSkin], true, m_opt.PlaySpiritOption.strSkinName);
-    jsonutil::get(jRoot[OI_PlaySpiritLeft], m_opt.PlaySpiritOption.nPosX);
-    jsonutil::get(jRoot[OI_PlaySpiritTop], m_opt.PlaySpiritOption.nPosY);
-    jsonutil::get(jRoot[OI_PlaySpiritVolum], m_opt.PlaySpiritOption.uVolume);
+    jsonutil::get(_jPlaySpiritSkin, true, m_opt.PlaySpiritOption.strSkinName);
+    jsonutil::get(_jPlaySpiritLeft, m_opt.PlaySpiritOption.nPosX);
+    jsonutil::get(_jPlaySpiritTop, m_opt.PlaySpiritOption.nPosY);
+    jsonutil::get(_jPlaySpiritVolum, m_opt.PlaySpiritOption.uVolume);
 
-    jsonutil::get(jRoot[OI_AlarmHour], m_opt.nAlarmHour);
-    jsonutil::get(jRoot[OI_AlarmMinute], m_opt.nAlarmMinute);
+    jsonutil::get(_jAlarmHour, m_opt.nAlarmHour);
+    jsonutil::get(_jAlarmMinute, m_opt.nAlarmMinute);
 
 #else
-    jsonutil::get(jRoot[OI_UseBkgColor], m_opt.bUseBkgColor);
-    jsonutil::get(jRoot[OI_BkgColor], m_opt.crBkg);
-    jsonutil::get(jRoot[OI_ForeColor], m_opt.crFore);
+    jsonutil::get(_jUseBkgColor, m_opt.bUseBkgColor);
+    jsonutil::get(_jBkgColor, m_opt.crBkg);
+    jsonutil::get(_jForeColor, m_opt.crFore);
 
-    jsonutil::get(jRoot[OI_HBkg], true, m_opt.strHBkg);
-    jsonutil::get(jRoot[OI_HBkgX], m_opt.prHBkgOffset.first);
-    jsonutil::get(jRoot[OI_HBkgY], m_opt.prHBkgOffset.second);
-    jsonutil::get(jRoot[OI_VBkg], true, m_opt.strVBkg);
-    jsonutil::get(jRoot[OI_VBkgX], m_opt.prVBkgOffset.first);
-    jsonutil::get(jRoot[OI_VBkgY], m_opt.prVBkgOffset.second);
-    jsonutil::get(jRoot[OI_AddBkgDir], true, m_opt.strAddBkgDir);
+    jsonutil::get(_jHBkg, true, m_opt.strHBkg);
+    jsonutil::get(_jHBkgX, m_opt.prHBkgOffset.first);
+    jsonutil::get(_jHBkgY, m_opt.prHBkgOffset.second);
+    jsonutil::get(_jVBkg, true, m_opt.strVBkg);
+    jsonutil::get(_jVBkgX, m_opt.prVBkgOffset.first);
+    jsonutil::get(_jVBkgY, m_opt.prVBkgOffset.second);
+    jsonutil::get(_jAddBkgDir, true, m_opt.strAddBkgDir);
 
-    jsonutil::get(jRoot[OI_HSingerImgPos], m_opt.uHSingerImgPos);
-    jsonutil::get(jRoot[OI_VSingerImgPos], m_opt.uVSingerImgPos);
+    jsonutil::get(_jHSingerImgPos, m_opt.uHSingerImgPos);
+    jsonutil::get(_jVSingerImgPos, m_opt.uVSingerImgPos);
 
-    jsonutil::get(jRoot[OI_NetworkWarn], m_opt.bNetworkWarn);
+    jsonutil::get(_jNetworkWarn, m_opt.bNetworkWarn);
 
-    /*const JValue& jValue = jRoot[OI_Xpk];
+    /*const JValue& jValue = _jXpk];
     if (jValue.isArray())
     {
         for (UINT uIdx = 0; uIdx < jValue.size(); uIdx++)
@@ -147,60 +149,60 @@ void COptionMgr::saveOption()
 
     JValue jRoot;
 
-    jRoot[OI_PlayingItem] = m_opt.uPlayingItem;
+    _jPlayingItem = m_opt.uPlayingItem;
 
-    jRoot[OI_RandomPlay] = m_opt.bRandomPlay;
-    jRoot[OI_Force48KHz] = m_opt.bForce48KHz;
+    _jRandomPlay = m_opt.bRandomPlay;
+    _jForce48KHz = m_opt.bForce48KHz;
 
-    jRoot[OI_FullScreen] = m_opt.bFullScreen;
+    _jFullScreen = m_opt.bFullScreen;
 
 #if __winvc
-    jRoot[OI_RootDir] = strutil::toUtf8(m_opt.strRootDir);
+    _jRootDir = strutil::toUtf8(m_opt.strRootDir);
 
     if (m_opt.plAttachDir)
     {
-        auto& jValue = jRoot[OI_AttachDir];
+        auto& jValue = _jAttachDir;
         for (cauto pr : m_opt.plAttachDir)
         {
             jValue.append(JValue(strutil::toUtf8(pr.first)));
         }
     }
 
-    jRoot[OI_HideMenuBar] = m_opt.bHideMenuBar;
+    _jHideMenuBar = m_opt.bHideMenuBar;
 
-    jRoot[OI_PlaySpiritSkin] = strutil::toAsc(m_opt.PlaySpiritOption.strSkinName);
-    jRoot[OI_PlaySpiritLeft] = m_opt.PlaySpiritOption.nPosX;
-    jRoot[OI_PlaySpiritTop] = m_opt.PlaySpiritOption.nPosY;
-    jRoot[OI_PlaySpiritVolum] = m_opt.PlaySpiritOption.uVolume;
+    _jPlaySpiritSkin = strutil::toAsc(m_opt.PlaySpiritOption.strSkinName);
+    _jPlaySpiritLeft = m_opt.PlaySpiritOption.nPosX;
+    _jPlaySpiritTop = m_opt.PlaySpiritOption.nPosY;
+    _jPlaySpiritVolum = m_opt.PlaySpiritOption.uVolume;
 
-    jRoot[OI_AlarmHour] = m_opt.nAlarmHour;
-    jRoot[OI_AlarmMinute] = m_opt.nAlarmMinute;
+    _jAlarmHour = m_opt.nAlarmHour;
+    _jAlarmMinute = m_opt.nAlarmMinute;
 
 #else
-    jRoot[OI_UseBkgColor] = m_opt.bUseBkgColor;
+    _jUseBkgColor = m_opt.bUseBkgColor;
     if (m_opt.crBkg >= 0)
     {
-        jRoot[OI_BkgColor] = m_opt.crBkg;
+        _jBkgColor = m_opt.crBkg;
     }
     if (m_opt.crFore >= 0)
     {
-        jRoot[OI_ForeColor] = m_opt.crFore;
+        _jForeColor = m_opt.crFore;
     }
 
-    jRoot[OI_HBkg] = strutil::toAsc(m_opt.strHBkg);
-    jRoot[OI_HBkgX] = m_opt.prHBkgOffset.first;
-    jRoot[OI_HBkgY] = m_opt.prHBkgOffset.second;
-    jRoot[OI_VBkg] = strutil::toAsc(m_opt.strVBkg);
-    jRoot[OI_VBkgX] = m_opt.prVBkgOffset.first;
-    jRoot[OI_VBkgY] = m_opt.prVBkgOffset.second;
-    jRoot[OI_AddBkgDir] = strutil::toAsc(m_opt.strAddBkgDir);
+    _jHBkg = strutil::toAsc(m_opt.strHBkg);
+    _jHBkgX = m_opt.prHBkgOffset.first;
+    _jHBkgY = m_opt.prHBkgOffset.second;
+    _jVBkg = strutil::toAsc(m_opt.strVBkg);
+    _jVBkgX = m_opt.prVBkgOffset.first;
+    _jVBkgY = m_opt.prVBkgOffset.second;
+    _jAddBkgDir = strutil::toAsc(m_opt.strAddBkgDir);
 
-    jRoot[OI_HSingerImgPos] = m_opt.uHSingerImgPos;
-    jRoot[OI_VSingerImgPos] = m_opt.uVSingerImgPos;
+    _jHSingerImgPos = m_opt.uHSingerImgPos;
+    _jVSingerImgPos = m_opt.uVSingerImgPos;
 
-    jRoot[OI_NetworkWarn] = m_opt.bNetworkWarn;
+    _jNetworkWarn = m_opt.bNetworkWarn;
 
-    /*auto& jValue = jRoot[OI_Xpk];
+    /*auto& jValue = _jXpk;
     for (cauto strXpk : m_opt.lstXpk)
     {
         jValue.append(JValue(strutil::toUtf8(strXpk)));

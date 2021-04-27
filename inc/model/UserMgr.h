@@ -27,7 +27,11 @@ public:
 private:
     CModel& m_model;
 
+private:
 #if !__winvc
+    template <typename T>
+    E_LoginReult _checkProfile(const T& buffer, cwstr strUser, const string& strPwd);
+
     template <typename T>
     E_LoginReult _login(signal_t bRunSignal, cwstr strUser, const string& strPwd, int nRet, const T& bfProfile);
 #endif

@@ -249,6 +249,9 @@ public:
     static time64_t GetFileModifyTime64(FILE *pf);
 	static time64_t GetFileModifyTime64(cwstr strFile);
 
+    static time64_t GetFileCreateTime64(FILE *pf);
+    static time64_t GetFileCreateTime64(cwstr strFile);
+
     static void SplitPath(cwstr strPath, wstring *pstrDir, wstring *pstrFile);
     static void SplitPath(const string& strPath, string *pstrDir, string *pstrFile);
 	

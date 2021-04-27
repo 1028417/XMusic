@@ -81,7 +81,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved)
     __system_property_get("ro.build.version.sdk", buf);
     g_androidInfo.version_sdk = atoi(buf);
 
-    __system_property_get("ro.build.version.release", buf);
+    __system_property_get("ro.build.version.release", buf); // 对应java中常量android.os.Build.VERSION.RELEASE
     g_androidInfo.version_release = atoi(buf);
 
     __system_property_get("ro.build.host", g_androidInfo.host); //系统主机名 ro.build.host=ubuntu-121-114

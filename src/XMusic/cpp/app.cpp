@@ -95,6 +95,8 @@ bool CApp::_startup(XThread& thr)
 {
     auto time0 = time(0);
 
+    m_model.init(g_app.workDir());
+
     QFile qf(":/mdlconf");
     if (!qf.open(QFile::OpenModeFlag::ReadOnly))
     {
@@ -115,8 +117,6 @@ bool CApp::_startup(XThread& thr)
         g_logger << "orgMdlConf AppVersion: " << m_orgMdlConf.strAppVersion
                  << " CompatibleCode: " << m_orgMdlConf.uCompatibleCode
                  << " MedialibVersion: " >> m_orgMdlConf.uMdlVersion;
-
-        m_model.init(g_app.workDir());
 
         string strVerInfo;
         int nRet = curlutil::initCurl(strVerInfo);
