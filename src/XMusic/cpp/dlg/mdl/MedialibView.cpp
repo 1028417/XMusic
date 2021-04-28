@@ -887,33 +887,45 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
     else if (mlContext.pDir)
     {
         auto pParent = mlContext.pDir->parent();
-        if ((pParent && pParent->parent() == &__medialib) || pParent == &m_xpkRoot)
+        if (pParent)
         {
-            cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
-            auto itr = m_mapLanguage.find(strLanguage);
-            if (itr == m_mapLanguage.end())
+            if (pParent->parent() == &__medialib || pParent == &m_xpkRoot)
             {
-                return;
+                cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
+                eLanguageType = _languageType(strLanguage);
             }
-            eLanguageType = itr->second;
+            else
+            {
+                if (pParent->parent() == &m_xpkRoot && pParent->fileName() == L"小语种")
+                {
+                    auto uSingerID = ((CMediaDir&)*mlContext.pDir).GetRelatedMediaSetID(E_RelatedMediaSet::RMS_Singer);
+                    if (uSingerID)
+                    {
+                        auto pSinger = g_app.getSingerMgr().getSinger(uSingerID);
+                        if (pSinger)
+                        {
+                            eLanguageType = (E_LanguageType)pSinger->property().language();
+                        }
+                    }
+                }
+            }
         }
     }
     if (E_LanguageType::LT_None == eLanguageType)
     {
         return;
     }
-    auto itr = m_mapLanguageIcon.find(eLanguageType);
-    if (itr == m_mapLanguageIcon.end())
+    auto pmLanguage = _languageIcon(eLanguageType);
+    if (NULL == pmLanguage)
     {
         return;
     }
-    cauto pmLanguage = itr->second;
 
 #define __szLanguageIcon __size(54)
     QRect rcLanguage(rc.right()-__szLanguageIcon/4, rc.y()-__szLanguageIcon/4, __szLanguageIcon, __szLanguageIcon);
 
     painter.setOpacity(.6f);
-    painter.drawImg(rcLanguage, pmLanguage);
+    painter.drawImg(rcLanguage, *pmLanguage);
     painter.setOpacity(1);
 }
 
@@ -1127,7 +1139,7 @@ inline static bool _hittestPlayIcon(const tagMLItemContext& context, int x)
         return false;
     }
 
-    int xPlayIcon = context->rc.width() - __lvRowMargin + __playIconOffset - context->rc.height();
+    int xPlayIcon = context->rc.width() + __playIconOffset - context->rc.height();
     return x >= xPlayIcon;
 }
 

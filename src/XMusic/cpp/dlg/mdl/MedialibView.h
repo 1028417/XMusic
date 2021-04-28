@@ -150,8 +150,8 @@ private:
     QPixmap m_pmPlay;
     QPixmap m_pmAddPlay;
 
-    map<E_LanguageType, QPixmap> m_mapLanguageIcon;
     map<wstring, E_LanguageType> m_mapLanguage;
+    map<E_LanguageType, QPixmap> m_mapLanguageIcon;
 
     list<CBrush> m_lstSingerHead;
     map<UINT, CBrush*> m_mapSingerHead;
@@ -166,6 +166,26 @@ private:
     bool m_bShowXpkRoot = false;
 
 private:
+    inline E_LanguageType _languageType(cwstr strLanguage) const
+    {
+        auto itr = m_mapLanguage.find(strLanguage);
+        if (itr == m_mapLanguage.end())
+        {
+            return E_LanguageType::LT_None;
+        }
+        return itr->second;
+    }
+
+    inline const QPixmap* _languageIcon(E_LanguageType eLanguageType) const
+    {
+        auto itr = m_mapLanguageIcon.find(eLanguageType);
+        if (itr == m_mapLanguageIcon.end())
+        {
+            return NULL;
+        }
+        return &itr->second;
+    }
+
     enum class E_MdlRootType
     {
         RT_Singer = 0,
