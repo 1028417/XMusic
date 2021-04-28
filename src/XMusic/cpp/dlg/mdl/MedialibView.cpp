@@ -77,6 +77,15 @@ CMedialibView::CMedialibView(CMedialibDlg& medialibDlg)
     , m_PlaylistLib(g_app.getPlaylistMgr())
     , m_pmHDDisk(g_app.m_pmHDDisk)
     , m_pmSQDisk(g_app.m_pmSQDisk)
+    , m_mapLanguage {
+        {L"国语", E_LanguageType::LT_CN},
+        {L"华语", E_LanguageType::LT_CN},
+        {L"粤语", E_LanguageType::LT_HK},
+        {L"韩语", E_LanguageType::LT_KR},
+        {L"日语", E_LanguageType::LT_JP},
+        {L"英文", E_LanguageType::LT_EN},
+        {L"泰语", E_LanguageType::LT_TL}
+    }
     , m_lpRootItem {
         {m_pmSingerGroup, L" " __XSinger, m_SingerLib},
         {m_pmPlaylistSet, L" " __XPlaylist, m_PlaylistLib},
@@ -185,19 +194,30 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
         {
+            //genAttachTitle(dir);
+
             cauto dir = (CSnapshotDir&)MediaSet;
-            if (MediaSet.m_pParent == pSinger)
+            strTitle << _catTitle(dir) << __CNDot;
+            if (MediaSet.m_pParent != pSinger)
             {
-                strTitle = genAttachTitle(dir);
-            }
-            else
-            {
-                strTitle = pSinger->m_strName + __CNDot + _catTitle(dir) + L" / " + dir.fileName();
-            }
+                //pSinger->m_strName + __CNDot + catTitle + L" / " + dir.fileName();
+
+                auto pMediaSet = MediaSet.m_pParent;
+                while (pMediaSet)
+                {
+                    if (pMediaSet->m_pParent == pSinger)
+                    {
+                        strTitle << ((CSnapshotDir*)pMediaSet)->fileName() << L" / ";
+                        break;
+                    }
+                    pMediaSet = pMediaSet->m_pParent;
+                }
+           }
+           strTitle << dir.fileName();
 
             /*if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
             {
-                strTitle = dir.fileName();
+                dir.fileName();
             }*/
         }
         else
@@ -813,6 +833,47 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
     }
 } 
 
+static E_LanguageType _genLanguageIcon(const CMediaSet& mediaSet)
+{
+    if (E_MediaSetType::MST_Singer == mediaSet.m_eType)
+    {
+        cauto prop = mediaSet.property();
+        if (prop.isTlLanguage())
+        {
+            return E_LanguageType::LT_TL;
+        }
+        else if (prop.isRsLanguage())
+        {
+            return E_LanguageType::LT_RS;
+        }
+        else if (prop.isFrLanguage())
+        {
+            return E_LanguageType::LT_FR;
+        }
+        else
+        {
+            if (prop.language() != mediaSet.m_pParent->property().language())// == 0)
+            {
+                if (prop.isCnLanguage())
+                {
+                    return E_LanguageType::LT_CN;
+                }
+                else if (prop.isHkLanguage())
+                {
+                    return E_LanguageType::LT_HK;
+                }
+            }
+        }
+    }
+    else if (E_MediaSetType::MST_SingerGroup == mediaSet.m_eType
+             || E_MediaSetType::MST_Playlist == mediaSet.m_eType)
+    {
+        return (E_LanguageType)mediaSet.property().language();
+    }
+
+    return E_LanguageType::LT_None;
+}
+
 void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
 {
     CListView::_paintIcon(context, painter, rc);
@@ -821,71 +882,22 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
     cauto mlContext = (tagMLItemContext&)context;
     if (mlContext.pMediaSet)
     {
-        auto& mediaSet = *mlContext.pMediaSet;
-        if (E_MediaSetType::MST_Singer == mediaSet.m_eType)
-        {
-            if (mediaSet.property().isTlLanguage())
-            {
-                eLanguageType = E_LanguageType::LT_TL;
-            }
-            else if (mediaSet.property().isRsLanguage())
-            {
-                eLanguageType = E_LanguageType::LT_RS;
-            }
-            else if (mediaSet.property().isFrLanguage())
-            {
-                eLanguageType = E_LanguageType::LT_FR;
-            }
-        }
-        else if (E_MediaSetType::MST_SingerGroup == mediaSet.m_eType
-                 || E_MediaSetType::MST_Playlist == mediaSet.m_eType)
-        {
-            eLanguageType = (E_LanguageType)mediaSet.property().language();
-        }
-        else
-        {
-            return;
-        }
+        eLanguageType = _genLanguageIcon(*mlContext.pMediaSet);
     }
     else if (mlContext.pDir)
     {
         auto pParent = mlContext.pDir->parent();
-        if (NULL == pParent || pParent->parent() != &__medialib)
+        if ((pParent && pParent->parent() == &__medialib) || pParent == &m_xpkRoot)
         {
-            return;
-        }
-        cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
-
-        if (L"国语" == strLanguage || L"华语" == strLanguage)
-        {
-            eLanguageType = E_LanguageType::LT_CN;
-        }
-        else if (L"粤语" == strLanguage)
-        {
-            eLanguageType = E_LanguageType::LT_HK;
-        }
-        else if (L"韩语" == strLanguage)
-        {
-            eLanguageType = E_LanguageType::LT_KR;
-        }
-        else if (L"日语" == strLanguage)
-        {
-            eLanguageType = E_LanguageType::LT_JP;
-        }
-        else if (L"英文" == strLanguage)
-        {
-            eLanguageType = E_LanguageType::LT_EN;
-        }
-        else
-        {
-            return;
+            cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
+            auto itr = m_mapLanguage.find(strLanguage);
+            if (itr == m_mapLanguage.end())
+            {
+                return;
+            }
+            eLanguageType = itr->second;
         }
     }
-    else
-    {
-        return;
-    }
-
     if (E_LanguageType::LT_None == eLanguageType)
     {
         return;

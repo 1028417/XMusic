@@ -151,6 +151,7 @@ private:
     QPixmap m_pmAddPlay;
 
     map<E_LanguageType, QPixmap> m_mapLanguageIcon;
+    map<wstring, E_LanguageType> m_mapLanguage;
 
     list<CBrush> m_lstSingerHead;
     map<UINT, CBrush*> m_mapSingerHead;
