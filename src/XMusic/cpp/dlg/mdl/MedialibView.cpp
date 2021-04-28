@@ -184,14 +184,16 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     if (pSinger && &MediaSet != pSinger)
     {
         if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
-        {            
+        {
             cauto dir = (CSnapshotDir&)MediaSet;
-            strTitle = genAttachTitle(dir);
-
-            /*if (MediaSet.m_pParent != pSinger)
+            if (MediaSet.m_pParent == pSinger)
             {
-                strTitle = pSinger->m_strName + __CNDot + strTitle;
-            }*/
+                strTitle = genAttachTitle(dir);
+            }
+            else
+            {
+                strTitle = pSinger->m_strName + __CNDot + _catTitle(dir) + L" / " + dir.fileName();
+            }
 
             /*if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
             {
@@ -325,13 +327,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     {
         pSinger = pSnapshotDir->singer();
 
-        auto strCatTitle = _catTitle(*pSnapshotDir);
-        if (strCatTitle.empty())
-        {
-            strCatTitle = pSnapshotDir->catName();
-        }
-
-        strTitle = __XMusicDir __CNDot + strCatTitle;
+        strTitle = __XMusicDir __CNDot + _catTitle(*pSnapshotDir);
         if (pParentDir != &__medialib)
         {
             strTitle.append(L" / ").append(dir.fileName());
@@ -570,9 +566,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
 
         auto uCount = dir.count();
         //if (uCount > 0)
-        {
             context.strRemark << uCount << L" 项";
-        }
     }
 
     break;
@@ -904,7 +898,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
     cauto pmLanguage = itr->second;
 
 #define __szLanguageIcon __size(54)
-    QRect rcLanguage(rc.right()-__szLanguageIcon/2, rc.y()-__szLanguageIcon/3, __szLanguageIcon, __szLanguageIcon);
+    QRect rcLanguage(rc.right()-__szLanguageIcon/4, rc.y()-__szLanguageIcon/4, __szLanguageIcon, __szLanguageIcon);
 
     painter.setOpacity(.6f);
     painter.drawImg(rcLanguage, pmLanguage);

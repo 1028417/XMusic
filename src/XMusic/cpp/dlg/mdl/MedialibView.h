@@ -287,9 +287,14 @@ private:
     {
         return m_lpCatItem[(UINT)dir.catType()].pmIcon;
     }
-    inline cwstr _catTitle(const CSnapshotDir& dir) const
+    inline wstring _catTitle(const CSnapshotDir& dir) const
     {
-        return m_lpCatItem[(UINT)dir.catType()].strCatTitle;
+        cauto catTitle = m_lpCatItem[(UINT)dir.catType()].strCatTitle;
+        if (!catTitle.empty())
+        {
+            return catTitle;
+        }
+        return dir.catName();
     }
 
     inline const tagCatItem* _catItem(CPath& dir) const
@@ -329,15 +334,7 @@ public:
 
     inline wstring genAttachTitle(const CSnapshotDir& dir) const
     {
-        cauto strCatTitle = _catTitle(dir);
-        if (!strCatTitle.empty())
-        {
-            return strCatTitle + __CNDot + dir.fileName();
-        }
-        else
-        {
-            return dir.catName() + __CNDot + dir.fileName();
-        }
+        return _catTitle(dir) + __CNDot + dir.fileName();
     }
 
 private:
