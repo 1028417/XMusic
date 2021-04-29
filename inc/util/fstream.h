@@ -123,9 +123,9 @@ public:
         return _read(cbfBuff, uReadSize);
     }
 
-    virtual bool seek(long long offset, int origin) = 0;
+    virtual bool seek(int64_t offset, int origin) = 0;
 
-    virtual long long pos() = 0;
+    virtual int64_t pos() = 0;
 
     virtual uint64_t size() = 0;
 
@@ -133,7 +133,7 @@ private:
     template <class T>
     size_t _read(T& buff, size_t uReadSize = 0)
     {
-        long long pos = this->pos();
+        auto pos = this->pos();
         if (pos < 0)
         {
             return 0;
@@ -234,9 +234,9 @@ public:
         return m_ptr && 0!=m_size;
     }
 
-    virtual bool seek(long long offset, int origin) override
+    virtual bool seek(int64_t offset, int origin) override
     {
-        long long pos = (long long)m_pos;
+        auto pos = (int64_t)m_pos;
         if (SEEK_SET == origin)
         {
             pos = offset;
@@ -247,14 +247,14 @@ public:
         }
         else if (SEEK_END == origin)
         {
-            pos = (long long)m_size-1+offset;
+            pos = (int64_t)m_size-1+offset;
         }
         else
         {
             return false;
         }
 
-        if (pos < 0 || pos >= (long long)m_size)
+        if (pos < 0 || pos >= (int64_t)m_size)
         {
             return false;
         }
@@ -263,7 +263,7 @@ public:
         return true;
     }
 
-    virtual long long pos() override
+    virtual int64_t pos() override
     {
         return m_pos;
     }
@@ -501,12 +501,12 @@ public:
 		return _open(strFile);
 	}
 
-    virtual bool seek(long long offset, int origin) override
+    virtual bool seek(int64_t offset, int origin) override
     {
         return fseek64(m_pf, offset, origin) == 0;
     }
 
-	virtual long long pos() override
+    virtual int64_t pos() override
 	{
         return ftell64(m_pf);
 	}

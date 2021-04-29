@@ -197,3 +197,5 @@ __UtilExt bool execBat(cwstr strBatFile, bool bBlock = true, int nShow = SW_SHOW
 
 #undef min
 #undef max
+
+#define __log(pstr) OFStream::writefile(fsutil::workDir() + "/util.log", false, pstr, strlen(pstr));

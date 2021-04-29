@@ -6,11 +6,11 @@ struct __UtilExt tagUnzFile
     wstring strPath;
 
     unsigned long compression_method = 0;
-    unsigned long compressed_size = 0;
-    unsigned long uncompressed_size = 0;
+    uint64_t compressed_size = 0;
+    uint64_t uncompressed_size = 0;
 
-    unsigned long pos_in_zip_directory = 0;
-    unsigned long num_of_file = 0;
+    uint64_t pos_in_zip_directory = 0;
+    uint64_t num_of_file = 0;
 
     uint64_t data_pos = 0;
 };
