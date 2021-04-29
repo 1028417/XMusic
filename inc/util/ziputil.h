@@ -102,6 +102,23 @@ private:
 
     long _read(const tagUnzFile& unzFile, void *buf, size_t len) const;
 
+	template <class T>
+	long _read(const tagUnzFile& unzFile, T& buff) const
+	{
+		if (0 == unzFile.uncompressed_size)
+		{
+			return 0;
+		}
+		auto size = (size_t)unzFile.uncompressed_size;
+		if (unzFile.uncompressed_size > size)
+		{
+			return 0;
+		}
+
+		auto ptr = buff.resizeMore(size);
+		return _read(unzFile, ptr, size);
+	}
+
 public:
     operator bool() const
     {
@@ -159,26 +176,15 @@ public:
     long unzRead(void *buf, size_t len) const;
     void unzClose();
 
-    long read(const tagUnzFile& unzFile, CByteBuffer& bbfBuff) const
-    {
-        if (0 == unzFile.uncompressed_size)
-        {
-            return 0;
-        }
+	long read(const tagUnzFile& unzFile, CByteBuffer& bbfBuff) const
+	{
+		return _read(unzFile, bbfBuff);
+	}
+	long read(const tagUnzFile& unzFile, CCharBuffer& cbfBuff) const
+	{
+		return _read(unzFile, cbfBuff);
+	}
 
-        auto ptr = bbfBuff.resizeMore(unzFile.uncompressed_size);
-        return _read(unzFile, ptr, unzFile.uncompressed_size);
-    }
-    long read(const tagUnzFile& unzFile, CCharBuffer& cbfBuff) const
-    {
-        if (0 == unzFile.uncompressed_size)
-        {
-            return 0;
-        }
-
-        auto ptr = cbfBuff.resizeMore(unzFile.uncompressed_size);
-        return _read(unzFile, ptr, unzFile.uncompressed_size);
-    }
     template <class T>
     long read(cwstr strSubFile, T& buff) const
     {
