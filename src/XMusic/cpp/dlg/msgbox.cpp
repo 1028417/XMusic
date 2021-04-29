@@ -50,7 +50,7 @@ void CMsgBox::_setPos()
     this->setWidth(s_cxPrev);
 #endif
 
-    cauto ptCenter =  g_app.mainWnd().geometry().center();
+    cauto ptCenter = g_app.mainWnd().geometry().center();
     move(ptCenter.x()-width()/2, ptCenter.y()-height()/2);
 }
 

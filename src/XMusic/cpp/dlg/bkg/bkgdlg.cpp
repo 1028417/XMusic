@@ -93,14 +93,14 @@ void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
         (void)fsutil::createDir(strBkgDir);
 
 #if __android // 安卓背景图片迁移
-        cauto strOrgDir =  g_app.getModel().androidOrgPath(bHLayout?L"hbkg/":L"vbkg/");
+        cauto strOrgDir = g_app.getModel().androidOrgPath(bHLayout?L"hbkg/":L"vbkg/");
         fsutil::findSubFile(strOrgDir, [&](tagFileInfo& fi){
             fsutil::copyFile(strOrgDir + fi.strName, strBkgDir + fi.strName);
         });
 #endif
     }
 
-    cauto strAppVer =  g_app.appVer();
+    cauto strAppVer = g_app.appVer();
     wstring strAppBkgDir = strBkgDir + strAppVer;
     if (!fsutil::existDir(strAppBkgDir))
     {
@@ -110,7 +110,7 @@ void CBkgDlg::preinitBkg(XThread& thr, bool bHLayout)
 #if __android
         wstring strBkgSrc = L"assets:";
 #else
-        wstring strBkgSrc =  g_app.applicationDirPath().toStdWString();
+        wstring strBkgSrc = g_app.applicationDirPath().toStdWString();
 #endif
 
         vector<const wchar_t*> lstSubDir {
@@ -330,7 +330,7 @@ void CBkgDlg::_updateBkg(cwstr strFile)
         m_opt.strVBkg = strFile;
     }
 
-     g_app.mainWnd().updateBkg();
+    g_app.mainWnd().updateBkg();
 }
 
 void CBkgDlg::handleLVClick(size_t uItem)

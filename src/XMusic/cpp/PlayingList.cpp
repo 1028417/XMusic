@@ -5,9 +5,9 @@
 
 static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
 {
-    auto& singerMgr =  g_app.getSingerMgr();
+    auto& singerMgr = g_app.getSingerMgr();
     tagPlayingItem playingItem;
-    for (cauto PlayItem :  g_app.getPlayMgr().playingItems())
+    for (cauto PlayItem : g_app.getPlayMgr().playingItems())
     {
         playingItem.uID = PlayItem.m_uID;
 
@@ -37,7 +37,7 @@ void CPlayingList::init()
 {
     (void)m_pmPlaying.load(__png(btnPlay));
 
-    auto uPlayingItem =  g_app.getOption().uPlayingItem;
+    auto uPlayingItem = g_app.getOption().uPlayingItem;
 
     ArrList<tagPlayingItem> alPlayingItems;
     _genPlayingItem(m_alPlayingItems);
@@ -153,7 +153,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     if (bPlayingItem)
     {
-        cauto qsQuality =  g_app.mainWnd().playingInfo().qsQuality;
+        cauto qsQuality = g_app.mainWnd().playingInfo().qsQuality;
         //if (qsQuality.isEmpty()) return;
 
         int nRight = rcPos.right() + __size(35);
@@ -178,7 +178,7 @@ void CPlayingList::updateList(UINT uPlayingItem) //工作线程
     ArrList<tagPlayingItem> alPlayingItems;
     _genPlayingItem(alPlayingItems);
 
-     g_app.sync([=]()mutable{
+    g_app.sync([=]()mutable{
         m_alPlayingItems.swap(alPlayingItems);
         updatePlayingItem(uPlayingItem, true);
     });
@@ -211,13 +211,13 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
     {
         //updatePlayingItem(lvItem.uItem, false);
 
-         g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
+        g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
     }
 }
 
 void CPlayingList::_onBlankDblClick(const QMouseEvent&)
 {
-     g_app.mainWnd().switchFullScreen();
+    g_app.mainWnd().switchFullScreen();
 }
 
 void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)

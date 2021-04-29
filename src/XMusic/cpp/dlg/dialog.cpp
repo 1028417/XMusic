@@ -202,7 +202,7 @@ void CDialogEx::_onPaint(CPainter& painter, cqrc rc)
     CPainterClipGuard guard(painter, rc, uround);
 
 #if __android
-    cauto mainWnd =  g_app.mainWnd();
+    cauto mainWnd = g_app.mainWnd();
     QRect rcDst = mainWnd.rect();
     QPoint ptOffset;
     if (NULL == m_pDlgMask)

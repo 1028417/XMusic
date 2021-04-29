@@ -69,7 +69,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
     });
     ui.labelNeverWarn->onClicked([=]{
         close();
-         g_app.getOption().bNetworkWarn = false;
+        g_app.getOption().bNetworkWarn = false;
         cb();
     });
 
@@ -77,7 +77,7 @@ void CNetworkWarnDlg::show(cfn_void cb)
         close();
 
         async([]{
-             g_app.quit();
+            g_app.quit();
         });
     });
 
@@ -100,10 +100,10 @@ void CNetworkWarnDlg::_setPos()
     }
     else
     {
-        cx =  g_app.mainWnd().width();
+        cx = g_app.mainWnd().width();
         this->setWidth(cx);
 
-        this->move(0,  g_app.mainWnd().height()-height());
+        this->move(0, g_app.mainWnd().height()-height());
     }
 
     ui.labelTip->setWidth(cx);

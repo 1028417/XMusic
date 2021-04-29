@@ -484,7 +484,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         /*if (E_TrackType::TT_Single != PlayingInfo.eTrackType)
         {
-            cauto pm = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ?  g_app.m_pmHDDisk :  g_app.m_pmSQDisk;
+            cauto pm = E_TrackType::TT_HDWhole == PlayingInfo.eTrackType ? g_app.m_pmHDDisk : g_app.m_pmSQDisk;
             ui.labelSingerImg->setPixmap(pm, 0);
             ui.labelSingerImg->setShadow(0);
         }*/

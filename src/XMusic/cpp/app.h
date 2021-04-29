@@ -37,7 +37,7 @@ struct tagSingleTone
     }
 };*/
 
-//#define  g_app CApp::inst()
+//#define g_app CApp::inst()
 
 class CApp : public CAppBase, private IPlayerView//, public tagSingleTone<CApp>
 {

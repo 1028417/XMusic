@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
 
     memset(m_lpApp, 0, sizeof(CApp));
     new (m_lpApp) CApp();
-    auto nRet =  g_app.exec();
+    auto nRet = g_app.exec();
     if (nRet != 0)
     {
         m_logger << "exit: " >> nRet;

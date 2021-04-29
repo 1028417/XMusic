@@ -259,7 +259,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             lstSinger.push_back(singer.m_uID);
         }
-         g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
+        g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
         return;
     }
 
@@ -288,7 +288,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         {
             plstSinger = &m_PlaylistSinger[&MediaSet];
 
-            cauto singerMgr =  g_app.getSingerMgr();
+            cauto singerMgr = g_app.getSingerMgr();
             for (auto& PlayItem : ((CPlaylist&)MediaSet).playItems())
             {
                 auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
@@ -311,7 +311,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
 
         if (!plstSinger->empty())
         {
-             g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
+            g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
         }
     }
 }
@@ -401,7 +401,7 @@ void CMedialibView::_onShowDir(CPath& dir)
 
     if (!plstSinger->empty())
     {
-         g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
+        g_app.getSingerImgMgr().downloadSingerHead(*plstSinger);
     }
 
     //文件标题
@@ -816,7 +816,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 
         if (!lstSinger.empty())
         {
-             g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
+            g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
         }
     }
     else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
@@ -829,7 +829,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
                 lstSinger.push_back(singer.m_uID);
             });
         }
-         g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
+        g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
     }
 } 
 
@@ -1097,7 +1097,7 @@ CBrush& CMedialibView::genSingerHead(UINT uSingerID)
         return *pbrSingerHead;
     }
 
-    auto pHeadImg =  g_app.getSingerImgMgr().getSingerHead(uSingerID);
+    auto pHeadImg = g_app.getSingerImgMgr().getSingerHead(uSingerID);
     if (NULL == pHeadImg)
     {
         pbrSingerHead = &m_brNullSingerHead;
@@ -1149,7 +1149,7 @@ void CMedialibView::_onMediasetClick(tagLVItem& lvItem, const QMouseEvent& me, C
     {
         _flashItem(lvItem.uItem);
 
-         g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
+        g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(mediaSet));
 
         return;
     }
@@ -1188,11 +1188,11 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
         if ( g_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
-             g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+            g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
         }
         else
         {
-             g_app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
+            g_app.getCtrl().callPlayCmd(tagAppendMediaCmd(media));
         }
     }
     else
@@ -1210,7 +1210,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
         _flashItem(lvItem.uItem, true);
 
-         g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
+        g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
     }
 }
 

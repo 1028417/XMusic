@@ -56,7 +56,7 @@ void CXController::start()
 		//strRootDir.clear();
 		if (!setupMediaLib())
 		{
-             g_app->Quit();
+            g_app->Quit();
 			return;
 		}
 	}
@@ -64,7 +64,7 @@ void CXController::start()
     {
 		if (!m_model.initMediaLib())
 		{
-             g_app->Quit();
+            g_app->Quit();
 			return;
 		}
 
@@ -85,7 +85,7 @@ void CXController::start()
 	});*/
 
 #else
-     g_app.thread([&](XThread& thr){
+    g_app.thread([&](XThread& thr){
         int nRet = CPlayer::InitSDK();
         if (nRet != 0)
         {

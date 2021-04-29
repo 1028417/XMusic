@@ -188,7 +188,7 @@ bool CApp::_startup(XThread& thr)
 #if __windows
 static void _setForeground()
 {
-    auto hwnd =  g_app.mainWnd().hwnd();
+    auto hwnd = g_app.mainWnd().hwnd();
     if (IsIconic(hwnd))
     {
         ::ShowWindow(hwnd, SW_RESTORE);
