@@ -187,12 +187,21 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.labelPkg->setGeometry(xBtn-__cyOffset-__cxOffset, rcReturn.top()-__cyOffset/2
                            , __cxOffset+szBtn+__cyOffset, szBtn+__cyOffset);
 
-    if (ui.labelPkg->isEnabled())
+    bool bShowXpkBtn = false;
+    bool bShowXpkRoot = false;
+    if (__xmedialib.xpkRoot().count())
     {
-        bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
-        ui.labelPkg->setVisible(!bShowXpkRoot);
-        m_lv.resetRootItem(bShowXpkRoot);
+        if (m_bHLayout)
+        {
+            bShowXpkBtn = m_lv.currentMediaSet() == NULL && m_lv.currentDir() == NULL;
+        }
+        else
+        {
+            bShowXpkRoot = true;
+        }
     }
+    ui.labelPkg->setVisible(bShowXpkBtn);
+    m_lv.resetRootItem(bShowXpkRoot);
 
     _relayoutTitle();
 
@@ -320,10 +329,8 @@ void CMedialibDlg::updateHead(const WString& strTitle)
 
     ui.btnPlay->setVisible(bShowPlayButton);
 
-    bool bEnable = NULL == pDir && NULL == pMediaSet;
-    ui.labelPkg->setEnabled(bEnable);
-    bool bShowXpkRoot = !m_bHLayout && __xmedialib.xpkRoot().count();
-    ui.labelPkg->setVisible(bEnable && !bShowXpkRoot);
+    bool bShowXpkBtn = m_bHLayout && NULL == pMediaSet && NULL == pDir && __xmedialib.xpkRoot().count();
+    ui.labelPkg->setVisible(bShowXpkBtn);
 
     _relayoutTitle();
 }

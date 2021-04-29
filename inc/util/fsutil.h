@@ -58,30 +58,47 @@ using tagFileStat64 = struct stat;
 #if __ios || __mac
 #define fopen64 fopen
 
-#define fseek64 fseek
 #define ftell64 ftell
-
-#define lseek64 lseek
+#define fseek64 fseek
+//#define lseek64 lseek
 
 #elif __windows
-#define fseek64 _fseeki64 //zlib用fseeko64
 #define ftell64 _ftelli64 //zlib用ftello64
-
-#define lseek64 _lseeki64
+#define fseek64 _fseeki64 //zlib用fseeko64
+//#define lseek64 _lseeki64
 //#define lseek(fno, offset, origin) (long)lseek64(fno, offset, origin)
 
 #else
 #define fopen64 fopen
 
-/*#ifdef _FILE_OFFSET_BITS
-#undef _FILE_OFFSET_BITS
-#endif
+/*安卓无效，只能用lseek64
+//#ifdef _FILE_OFFSET_BITS
+//#undef _FILE_OFFSET_BITS
+//#endif
+#ifndef _FILE_OFFSET_BITS
 #define _FILE_OFFSET_BITS 64
+#endif
 #define fseek64 fseeko
 #define ftell64 ftello*/
 
-#define fseek64(pf, offset, origin) (lseek64(fileno(pf), offset, origin) < 0 ? -1 : 0)
 #define ftell64(pf) lseek64(fileno(pf), 0, SEEK_CUR)
+//#define fseek64(pf, offset, origin) (lseek64(fileno(pf), offset, origin) < 0 ? -1 : 0)
+inline static long fseek64(FILE *pf, int64_t offset, int origin)
+{
+    if (feof(pf))
+    {
+        rewind(pf); //使文件再次可读
+    }
+    else
+    {
+        setbuf(pf, NULL); //lseek是系统调用，这里先清空fread、fwrite、fseek系列库函数的缓存
+    }
+    if (lseek64(fileno(pf), offset, origin) < 0)
+    {
+        return -1; //return errno;
+    }
+    return 0;
+}
 #endif
 
 enum class E_FindFindFilter

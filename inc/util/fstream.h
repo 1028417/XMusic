@@ -475,7 +475,12 @@ private:
 		}
 		
         (void)fseek64(m_pf, 0, SEEK_END);
-        m_size = (uint64_t)ftell64(m_pf);
+        auto pos = ftell64(m_pf);
+        if (pos < 0)
+        {
+            return false;
+        }
+        m_size = (uint64_t)pos;
         (void)fseek64(m_pf, 0, SEEK_SET);
 
 		return true;
