@@ -88,7 +88,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     if (0 == m_nActiveTime)
     {
         fAlpha = 0.4f;
-        //if ( g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
+        //if (g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
     }
     if (rc.top() < 0)
     {
@@ -133,7 +133,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         painter.adjustFont(1.05f, TD_FontWeight::Normal);
     }
-    else if ( g_app.getPlayMgr().checkPlayedID(playingItem.uID))
+    else if (g_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
     }

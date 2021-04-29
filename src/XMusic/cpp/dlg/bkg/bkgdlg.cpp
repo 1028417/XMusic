@@ -59,7 +59,7 @@ CBkgDlg::CThumbsBrush& CBkgDlg::_loadThumbs(const WString& strFile, bool bHLayou
 }
 
 CBkgDlg::CBkgDlg() :
-    m_opt( g_app.getOption()),
+    m_opt(g_app.getOption()),
     m_lv(*this),
     m_addbkgDlg(*this),
     m_colorDlg(*this)

@@ -1104,7 +1104,7 @@ CBrush& CMedialibView::genSingerHead(UINT uSingerID)
     }
     else if (pHeadImg->bExist)
     {
-        cauto qsFile = __WS2Q( g_app.getSingerImgMgr().file(*pHeadImg));
+        cauto qsFile = __WS2Q(g_app.getSingerImgMgr().file(*pHeadImg));
         m_lstSingerHead.emplace_back(qsFile);
         pbrSingerHead = &m_lstSingerHead.back();
 
@@ -1186,7 +1186,7 @@ void CMedialibView::_onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMed
 
         _flashItem(lvItem.uItem);
 
-        if ( g_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
+        if (g_app.getPlayMgr().playStatus() != E_PlayStatus::PS_Play)
         {
             g_app.getCtrl().callPlayCmd(tagPlayMediaCmd(media));
         }

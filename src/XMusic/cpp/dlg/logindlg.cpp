@@ -34,7 +34,7 @@ void CLoginDlg::_setupUi()
 
         close();
 
-        (void) g_app.asyncLogin(strUser, strPwd);
+        (void)g_app.asyncLogin(strUser, strPwd);
     });
 }
 

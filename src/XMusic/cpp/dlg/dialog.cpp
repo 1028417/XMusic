@@ -15,7 +15,7 @@ void CDialog::resetPos()
 
 void CDialog::_setPos()
 {
-    setGeometry( g_app.mainWnd().geometry());
+    setGeometry(g_app.mainWnd().geometry());
 }
 
 void CDialog::connect_dlgClose(CButton *btn)
@@ -122,7 +122,7 @@ QColor _crOffset(cqcr cr, uint8_t uOffset, int alpha=255)
 void CDialog::_onPaint(CPainter& painter, cqrc rc)
 {
     auto cr = bkgColor();
-    if ( g_app.mainWnd().drawBkg(m_bHLayout, painter, rc))
+    if (g_app.mainWnd().drawBkg(m_bHLayout, painter, rc))
     {
         cr.setAlpha(__dlgAlpha);
     }

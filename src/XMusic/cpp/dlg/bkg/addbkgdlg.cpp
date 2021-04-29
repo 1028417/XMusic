@@ -245,7 +245,7 @@ void CAddBkgDlg::addBkg(cwstr strFile)
 CAddBkgView::CAddBkgView(CAddBkgDlg& addbkgDlg) :
     CListView(&addbkgDlg, E_LVScrollBar::LVSB_Left)
     , m_addbkgDlg(addbkgDlg)
-    , m_thrScan( g_app.thread())
+    , m_thrScan(g_app.thread())
     , m_rootImgDir(m_thrScan.signal())
 {
     m_pmOlBkg.load(__png(olBkg));

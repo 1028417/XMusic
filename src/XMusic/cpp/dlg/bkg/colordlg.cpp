@@ -54,7 +54,7 @@ void CColorDlg::init()
 
 void CColorDlg::show()
 {
-    ui.btnApplyBkgColor->setVisible(! g_app.getOption().bUseBkgColor);
+    ui.btnApplyBkgColor->setVisible(!g_app.getOption().bUseBkgColor);
 
     setWidgetTextColor(ui.groupBkgColor, g_crFore);
     setWidgetTextColor(ui.groupFontColor, g_crFore);

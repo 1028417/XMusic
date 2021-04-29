@@ -7,7 +7,7 @@
 static Ui::SingerImgDlg ui;
 
 CSingerImgDlg::CSingerImgDlg() : //CDialog(medialibDlg),
-    m_singerImgMgr( g_app.getSingerImgMgr())
+    m_singerImgMgr(g_app.getSingerImgMgr())
     , m_loadingLabel(this)
 {
 }
