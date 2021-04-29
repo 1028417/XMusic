@@ -40,14 +40,16 @@ public:
         return m_cuelist.load(ins, strFileTitle);
     }
 
-    void scanXpk();
+    bool loadXSnapshot(Instream& ins);
 
     CMediaDir& xpkRoot()
     {
         return m_xpkRoot;
     }
 
-    bool loadXSnapshot(Instream& ins);
+    void scanXpk();
+
+    CMediaRes* checkXpkMedia(cwstr strPath, UINT uFieSize);
 
     void check();
 #endif

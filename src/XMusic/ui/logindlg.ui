@@ -13,9 +13,9 @@
   <widget class="QLineEdit" name="editUser">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>190</x>
      <y>160</y>
-     <width>330</width>
+     <width>320</width>
      <height>70</height>
     </rect>
    </property>
@@ -88,9 +88,9 @@
   <widget class="QLineEdit" name="editPwd">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>190</x>
      <y>270</y>
-     <width>330</width>
+     <width>320</width>
      <height>70</height>
     </rect>
    </property>
@@ -107,7 +107,7 @@
   <widget class="CLabel" name="labelUser">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>90</x>
      <y>160</y>
      <width>100</width>
      <height>70</height>
@@ -120,7 +120,7 @@
   <widget class="CLabel" name="labelPwd">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>90</x>
      <y>270</y>
      <width>100</width>
      <height>70</height>

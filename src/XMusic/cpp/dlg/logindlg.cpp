@@ -19,9 +19,9 @@ void CLoginDlg::_setupUi()
 
     this->connect_dlgClose(ui.btnX);
 
-//#if __windows
+#if __windows
     ui.editPwd->setAttribute(Qt::WA_InputMethodEnabled, false);
-//#endif
+#endif
 
     ui.btnLogin->onClicked([&]{
         cauto strUser = ui.editUser->text().trimmed().toStdWString();

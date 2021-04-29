@@ -922,7 +922,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
     }
 
 #define __szLanguageIcon __size(54)
-    QRect rcLanguage(rc.right()-__szLanguageIcon/4, rc.y()-__szLanguageIcon/4, __szLanguageIcon, __szLanguageIcon);
+    QRect rcLanguage(rc.right()-__szLanguageIcon/3, rc.y()-__szLanguageIcon*2/3, __szLanguageIcon, __szLanguageIcon);
 
     painter.setOpacity(.6f);
     painter.drawImg(rcLanguage, *pmLanguage);
