@@ -40,10 +40,10 @@ void CMsgBox::_setPos()
 #if 0//__android
     static auto s_cxPrev = width();
 
-    if (! g_app.mainWnd().isHLayout())
+    if (!g_bHLayout)
     {
-        this->move(0,  g_app.mainWnd().height()-height());
-        this->setWidth( g_app.mainWnd().width());
+        this->move(0, g_app.mainWnd().height()-height());
+        this->setWidth(g_app.mainWnd().width());
         return;
     }
 

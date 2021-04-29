@@ -48,6 +48,8 @@ enum class E_SingerImgPos
     SIP_Zoomout
 };
 
+extern bool g_bHLayout;
+
 class MainWindow : public QMainWindow, public IModelObserver, private CXObj
 {
     Q_OBJECT
@@ -56,8 +58,6 @@ public:
 
 private:    
     tagOption& m_opt;
-
-    bool m_bHLayout = false;
 
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
@@ -84,11 +84,6 @@ private slots:
     void slot_labelClick(CLabel*, const QPoint&);
 
 public:
-    const bool& isHLayout() const //关联CDialogEx中的常引用
-    {
-        return m_bHLayout;
-    }
-
     const tagPlayingInfo& playingInfo() const
     {
         return m_PlayingInfo;

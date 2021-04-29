@@ -91,7 +91,7 @@ void CNetworkWarnDlg::_setPos()
     static auto s_cxPrev = width();
 
     int cx = 0;
-    if ( g_app.mainWnd().isHLayout())
+    if (g_bHLayout)
     {
         this->setWidth(s_cxPrev);
         cx = s_cxPrev;
