@@ -56,8 +56,6 @@ using tagFileStat64 = struct stat;
 #endif
 
 #if __ios || __mac
-#define fopen64 fopen
-
 #define ftell64 ftell
 #define fseek64 fseek
 //#define lseek64 lseek
@@ -69,8 +67,6 @@ using tagFileStat64 = struct stat;
 //#define lseek(fno, offset, origin) (long)lseek64(fno, offset, origin)
 
 #else
-#define fopen64 fopen
-
 /*安卓无效，只能用lseek64
 //#ifdef _FILE_OFFSET_BITS
 //#undef _FILE_OFFSET_BITS

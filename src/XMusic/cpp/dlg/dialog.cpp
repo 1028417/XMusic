@@ -161,8 +161,6 @@ void CMaskDlg::_onPaint(CPainter& painter, cqrc rc)
 
 void CDialogEx::show(cqcr crMask, cfn_void cbClose)
 {
-    m_bInit = true;
-
     if (NULL == m_pDlgMask)
     {
         m_pDlgMask = new CMaskDlg(*this);
@@ -173,8 +171,6 @@ void CDialogEx::show(cqcr crMask, cfn_void cbClose)
 
 void CDialogEx::show(cfn_void cbClose)
 {
-    m_bInit = true;
-
 #if __android
     CDialog::show(cbClose);
     return;

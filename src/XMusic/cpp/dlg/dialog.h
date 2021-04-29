@@ -135,9 +135,6 @@ public:
         }
     }
 
-protected:
-    bool m_bInit = false;
-
 private:
     CMaskDlg *m_pDlgMask = NULL;
 

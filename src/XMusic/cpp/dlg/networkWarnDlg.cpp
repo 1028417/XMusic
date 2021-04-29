@@ -9,10 +9,12 @@ static Ui::networkWarnDlg ui;
 
 void CNetworkWarnDlg::_setupUi()
 {
-    if (m_bInit)
+    static bool bInited = false;
+    if (bInited)
     {
         return;
     }
+    bInited = true;
 
     ui.setupUi(this);
 

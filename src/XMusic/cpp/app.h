@@ -68,7 +68,7 @@ private:
 
     bool _startup(XThread& thr);
 
-    void _show(E_UpgradeResult eUpgradeResult, cwstr strUser);
+    void _show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& strPwd, E_LoginReult eLoginRet);
 
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 

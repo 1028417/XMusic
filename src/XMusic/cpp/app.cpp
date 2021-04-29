@@ -100,6 +100,8 @@ bool CApp::_startup(XThread& thr)
     strutil::fromAsc(m_orgMdlConf.strAppVersion, m_strAppVer); //并发线程_preinitBkg依赖这个版本号
 
     wstring strUser;
+    string strPwd;
+    E_LoginReult eLoginRet = E_LoginReult::LR_Success;
     E_UpgradeResult eUpgradeResult = mtutil::concurrence([&]{
         g_logger << "orgMdlConf AppVersion: " << m_orgMdlConf.strAppVersion
                  << " CompatibleCode: " << m_orgMdlConf.uCompatibleCode
@@ -115,18 +117,20 @@ bool CApp::_startup(XThread& thr)
         g_logger << "CurlVerInfo: \n" >> strVerInfo;
 
         signal_t bRunSignal = thr;
-        string strPwd;
         strUser = m_model.getUserMgr().loadProfile(strPwd);
         if (!strUser.empty())
         {
-            auto eRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
-            if (E_LoginReult::LR_NetworkError == eRet)
+            //_syncLogin(bRunSignal, strUser, strPwd); //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
+            eLoginRet = m_model.getUserMgr().syncLogin(bRunSignal, strUser, strPwd);
+            if (E_LoginReult::LR_Success == eLoginRet)
+            {
+                _cbLogin(eLoginRet, strUser, strPwd, false);
+            }
+            /*else if (E_LoginReult::LR_NetworkError == eLoginRet)
             {
                 return E_UpgradeResult::UR_NetworkError;
-            }
-            _cbLogin(eRet, strUser, strPwd, false);
-            //_syncLogin(bRunSignal, strUser, strPwd); //asyncLogin(strUser, strPwd);//并行跑安卓大概率闪退
-        }
+            }*/
+       }
 
         E_UpgradeResult eUpgradeResult = m_model.getMdlMgr().upgradeMdl(bRunSignal, m_orgMdlConf);
         if (E_UpgradeResult::UR_Success != eUpgradeResult)
@@ -175,7 +179,7 @@ bool CApp::_startup(XThread& thr)
     });
 
     sync([=]{
-        _show(eUpgradeResult, strUser);
+        _show(eUpgradeResult, strUser, strPwd, eLoginRet);
     });
 
     return true;
@@ -200,7 +204,7 @@ static void _setForeground()
 #define _setForeground()
 #endif
 
-static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_LoginReult eRet = E_LoginReult::LR_Success)
+static void _showLoginDlg(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 {
 #if __android
     vibrate();
@@ -212,7 +216,7 @@ static void _showLoginDlg(cwstr strUser = L"", const string& strPwd = "", E_Logi
     m_loginDlg.show(strUser, strPwd, eRet);
 }
 
-void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
+void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& strPwd, E_LoginReult eLoginRet)
 {
     if (E_UpgradeResult::UR_Success != eUpgradeResult)
     {
@@ -275,10 +279,10 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser)
         return;
     }
 
-    if (strUser.empty())
+    if (strUser.empty() || eLoginRet != E_LoginReult::LR_Success)
     {
-        async(2000, [&]{
-            _showLoginDlg();
+        async(2000, [=]{
+            _showLoginDlg(strUser, strPwd, eLoginRet);
         });
     }
 
@@ -296,10 +300,6 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
     //if (uSeq != s_uSeq) return;
     if (E_LoginReult::LR_Success == eRet)
     {
-        sync(__loginCheck, [=]{
-            //if (uSeq != s_uSeq) return;
-            (void)asyncLogin(strUser, strPwd, true);
-        });
         if (!bRelogin)
         {
 #if __android
@@ -309,6 +309,10 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
             // TODO
 #endif
         }
+        sync(__loginCheck, [=]{
+            //if (uSeq != s_uSeq) return;
+            (void)asyncLogin(strUser, strPwd, true);
+        });
     }
     else
     {

@@ -8,14 +8,20 @@ static Ui::LoginDlg ui;
 
 void CLoginDlg::_setupUi()
 {
-    if (m_bInit)
+    static bool bInited = false;
+    if (bInited)
     {
         return;
     }
+    bInited = true;
 
     ui.setupUi(this);
 
     this->connect_dlgClose(ui.btnX);
+
+//#if __windows
+    ui.editPwd->setAttribute(Qt::WA_InputMethodEnabled, false);
+//#endif
 
     ui.btnLogin->onClicked([&]{
         cauto strUser = ui.editUser->text().trimmed().toStdWString();
