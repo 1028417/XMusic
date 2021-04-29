@@ -68,10 +68,6 @@ private:
 	bool renameMedia(IMedia& media, cwstr strNewName) override;
 
 	UINT getSingerImgPos(UINT uSingerID) override;
-
-#if !__winvc
-    void _scanXpk(cwstr strDir, E_AttachDirType);
-#endif
 };
 
 #if !__winvc
