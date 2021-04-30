@@ -87,10 +87,10 @@ size_t CPlayingList::getRowCount() const
 
 void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    auto playingItem = playingItem(lvItem.uItem);
-    if (playingItem)
+    auto pPlayingItem = playingItem(lvItem.uItem);
+    if (pPlayingItem)
     {
-        _onPaintItem(painter, lvItem, *playingItem);
+        _onPaintItem(painter, lvItem, *pPlayingItem);
     }
 }
 
