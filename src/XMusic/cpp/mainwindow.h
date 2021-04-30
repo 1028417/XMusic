@@ -7,11 +7,11 @@
 
 #include "widget/button.h"
 
-#include "PlayingList.h"
-
 #include "dlg/mdl/medialibdlg.h"
 
 #include "dlg/bkg/bkgdlg.h"
+
+#include "PlayingList.h"
 
 #define __crLogoText 100, 150, 255
 

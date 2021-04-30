@@ -129,13 +129,13 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     rc.setLeft(__size(36));
 
+    UINT uAlphaDiv = bPlayingItem?1:3;
     if (playingItem.uDuration > __wholeTrackDuration)
     {
         cauto qsDuration = __WS2Q(IMedia::genDurationString(playingItem.uDuration));
 
-        painter.adjustFont(TD_FontWeight::Thin);
+        painter.adjustFontWeight(TD_FontWeight::Thin);
 
-        UINT uAlphaDiv = bPlayingItem?1:2;
         auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration
                            , m_uShadowWidth, uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
         rc.setRight(rcPos.x() - __size(30));
@@ -160,7 +160,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     }
     else if (g_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
-        painter.adjustFont(true);
+        painter.adjustFontItalic(true);
     }
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
@@ -185,9 +185,8 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         rcPos.setTop(rcPos.top() - __size(8));
 
-        painter.adjustFont(0.66, TD_FontWeight::Thin);        
+        painter.adjustFont(0.66, TD_FontWeight::Thin, false);
 
-        UINT uAlphaDiv = bPlayingItem?1:2;
         painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, m_uShadowWidth
                            , uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
     }

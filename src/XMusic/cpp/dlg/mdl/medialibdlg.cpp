@@ -51,14 +51,14 @@ void CMedialibDlg::init()
 
     ui.btnPlay->onClicked(this, &CMedialibDlg::slot_playClick);
 
-    ui.labelPkg->adjustFont(TD_FontWeight::DemiBold);
+    ui.labelPkg->adjustFontWeight(TD_FontWeight::DemiBold);
     ui.labelPkg->setPixmap(m_lv.pmXpk());
 
     ui.labelPkg->onClicked([&]{
         m_lv.showDir(__xmedialib.xpkRoot());
     });
 
-    m_lv.adjustFont(TD_FontWeight::Normal);
+    m_lv.adjustFontWeight(TD_FontWeight::Normal);
 }
 
 void CMedialibDlg::show()

@@ -315,34 +315,34 @@ public:
         T::setFont(font);
     }
 
-    void adjustFont(float fSizeOffset)
-    {
-        CFont font(*this);
-        font.adjust(fSizeOffset);
-        T::setFont(font);
-    }
-
-    void adjustFont(TD_FontWeight eWeight)
-    {
-        CFont font(*this);
-        font.setWeight(eWeight);
-        T::setFont(font);
-    }
-
-    void adjustFont(bool bItalic)
-    {
-        CFont font(*this);
-        font.setItalic(bItalic);
-        T::setFont(font);
-    }
-
     void adjustFont(bool bItalic, bool bUnderline)
     {
         CFont font(*this);
         font.setItalic(bItalic);
         font.setUnderline(bUnderline);
         T::setFont(font);
-    }    
+    }
+
+    void adjustFontSize(float fSizeOffset)
+    {
+        CFont font(*this);
+        font.adjust(fSizeOffset);
+        T::setFont(font);
+    }
+
+    void adjustFontWeight(TD_FontWeight eWeight)
+    {
+        CFont font(*this);
+        font.setWeight(eWeight);
+        T::setFont(font);
+    }
+
+    void adjustFontItalic(bool bItalic)
+    {
+        CFont font(*this);
+        font.setItalic(bItalic);
+        T::setFont(font);
+    }
 
     void flash()
     {

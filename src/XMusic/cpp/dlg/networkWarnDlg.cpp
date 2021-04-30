@@ -20,9 +20,9 @@ void CNetworkWarnDlg::_setupUi()
 
 #define __fontSize 1.03f
     ui.labelTip->adjustFont(__fontSize, TD_FontWeight::DemiBold);
-    ui.labelContinue->adjustFont(__fontSize);
-    ui.labelNeverWarn->adjustFont(__fontSize);
-    ui.labelExit->adjustFont(__fontSize);
+    ui.labelContinue->adjustFontSize(__fontSize);
+    ui.labelNeverWarn->adjustFontSize(__fontSize);
+    ui.labelExit->adjustFontSize(__fontSize);
 
     QColor crText(__crLogoText);
     ui.labelTip->setForeColor(crText);

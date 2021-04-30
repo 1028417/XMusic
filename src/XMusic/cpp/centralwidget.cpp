@@ -522,7 +522,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             do {
                 if (labelAlbumName.width() > rcAlbumNamePrev.width())
                 {
-                    labelAlbumName.adjustFont(0.9f);
+                    labelAlbumName.adjustFontSize(0.9f);
                     labelAlbumName.adjustSize();
 
                     if (labelAlbumName.width() < rcAlbumNamePrev.width())

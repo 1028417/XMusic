@@ -22,7 +22,7 @@ void CWholeTrackDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
-    m_lv.adjustFont(TD_FontWeight::Normal);
+    m_lv.adjustFontWeight(TD_FontWeight::Normal);
 
     ui.btnReturn->connect_dlgClose(this);
 

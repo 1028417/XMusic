@@ -38,7 +38,7 @@ void CAddBkgDlg::init()
 
     ui.labelTitle->setFont(__titleFontSize, TD_FontWeight::DemiBold);
 
-    m_lv.adjustFont(TD_FontWeight::Normal);
+    m_lv.adjustFontWeight(TD_FontWeight::Normal);
 }
 
 /*#define __MediaFilter L"所有支持格式|*.Jpg;*.Jpeg;*.Png;*.Bmp|Jpg文件(*.Jpg)|*.Jpg|Jpeg文件(*.Jpeg)|*.Jpeg \

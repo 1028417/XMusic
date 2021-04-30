@@ -8,7 +8,7 @@
 struct tagPlayingItem
 {
     UINT uID = 0;
-    class CSinger *pSinger = NULL;
+    CSinger *pSinger = NULL;
     QString qsTitle;
     UINT uDuration = 0;
     E_MediaQuality eQuality = E_MediaQuality::MQ_None;

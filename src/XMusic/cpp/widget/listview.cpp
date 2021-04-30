@@ -191,7 +191,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
 
     if ((int)context->uItem == m_nSelectItem)
     {
-        painter.adjustFont(TD_FontWeight::DemiBold);
+        painter.adjustFontWeight(TD_FontWeight::DemiBold);
     }
 
     int flags = Qt::AlignLeft|Qt::AlignVCenter;
