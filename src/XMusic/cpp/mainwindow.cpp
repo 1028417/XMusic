@@ -766,7 +766,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
     QString qsTitle;
-    const tagPlayingItem *pPlayingItem = playingItem(uPlayingItem);
+    const tagPlayingItem *pPlayingItem = m_PlayingList.playingItem(uPlayingItem);
     if (pPlayingItem)
     {
         PlayingInfo.pSinger = pPlayingItem->pSinger;
@@ -843,11 +843,11 @@ void MainWindow::_onPlay(const tagPlayingInfo& PlayingInfo, UINT uDuration, E_Tr
         ui.labelSingerImg->clear();
         update();
 
-        if (pSinger)
+        if (m_PlayingInfo.pSinger)
         {
-            _playSingerImg(pSinger->m_uID, true);
+            _playSingerImg(m_PlayingInfo.pSinger->m_uID, true);
 
-            ui.labelSingerName->setText(__WS2Q(pSinger->m_strName));
+            ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.pSinger->m_strName));
         }
         else
         {
