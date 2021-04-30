@@ -357,7 +357,7 @@ void CMedialibView::_onShowDir(CPath& dir)
     {
         if (pParentDir == &m_xpkRoot)
         {
-            m_medialibDlg.updateHead(__XpkRoot __CNDot + strTitle);
+            strTitle = __XpkRoot __CNDot + strTitle;
         }
         else
         {
