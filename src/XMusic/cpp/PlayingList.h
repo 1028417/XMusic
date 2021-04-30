@@ -11,6 +11,7 @@ struct tagPlayingItem
     class CSinger *pSinger = NULL;
     QString qsTitle;
     QString qsDuration;
+    E_MediaQuality eQuality = E_MediaQuality::MQ_None;
 };
 
 class CPlayingList : public CListView
@@ -35,7 +36,7 @@ private:
     UINT m_uShadowWidth = 0;
 
 public:
-    inline const tagPlayingItem* playingItem(UINT uIdx) const
+    inline tagPlayingItem* playingItem(UINT uIdx)
     {
         if (uIdx >= m_vecPlayingItems.size())
         {

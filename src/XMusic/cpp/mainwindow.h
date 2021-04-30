@@ -27,7 +27,6 @@ struct tagPlayingInfo
 #endif
 
     QString qsDuration = 0;
-    QString qsQuality;
 
     //E_TrackType eTrackType = E_TrackType::TT_Single;
 

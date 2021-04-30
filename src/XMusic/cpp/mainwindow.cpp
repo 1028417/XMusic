@@ -762,15 +762,17 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     auto uDuration = PlayItem.duration();
     PlayingInfo.qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
 
-    PlayingInfo.qsQuality = mediaQualityString(PlayItem);
     //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
     QString qsTitle;
-    const tagPlayingItem *pPlayingItem = m_PlayingList.playingItem(uPlayingItem);
+    tagPlayingItem *pPlayingItem = m_PlayingList.playingItem(uPlayingItem);
     if (pPlayingItem)
     {
-        PlayingInfo.pSinger = pPlayingItem->pSinger;
         qsTitle = pPlayingItem->qsTitle;
+
+        PlayingInfo.pSinger = pPlayingItem->pSinger;
+
+        pPlayingItem->eQuality = PlayItem.quality();
     }
 
     E_TrackType eTrackType = E_TrackType::TT_Single;

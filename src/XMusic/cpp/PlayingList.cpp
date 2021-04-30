@@ -21,7 +21,6 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
         pPlayingItem->uID = PlayItem.m_uID;
 
         auto strTitle = PlayItem.GetTitle();
-
         if (!fsutil::existFile(PlayItem.GetAbsPath())) // 只检查非本地文件
         {
             auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
@@ -35,7 +34,6 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
                 CFileTitle::genDisplayTitle(strTitle);
             }
         }
-
         pPlayingItem->qsTitle = __WS2Q(strTitle);
 
         auto duration = PlayItem.duration();
@@ -43,6 +41,8 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
         {
             pPlayingItem->qsDuration = __WS2Q(IMedia::genDurationString(duration));
         }
+
+        pPlayingItem->eQuality = PlayItem.quality();
 
         pPlayingItem++;
     }
@@ -135,8 +135,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     if (!playingItem.qsDuration.isEmpty())
     {
+        painter.adjustFont(TD_FontWeight::Thin);
+
+        UINT uAlphaDiv = bPlayingItem?1:2;
         auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, playingItem.qsDuration
-                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+                           , m_uShadowWidth, uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
         rc.setRight(rcPos.x() - __size(30));
     }
 
@@ -167,10 +170,10 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
-    if (bPlayingItem)
+    if (//bPlayingItem &&
+            playingItem.eQuality != E_MediaQuality::MQ_None)
     {
-        cauto qsQuality = g_app.mainWnd().playingInfo().qsQuality;
-        //if (qsQuality.isEmpty()) return;
+        cauto qsQuality = mediaQualityString(playingItem.eQuality);
 
         int nRight = rcPos.right() + __cxQualityRetain;
 #if __android || __ios
@@ -184,8 +187,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         rcPos.setTop(rcPos.top() - __size(8));
 
-        painter.adjustFont(0.66, TD_FontWeight::Thin);
-        painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);
+        painter.adjustFont(0.66, TD_FontWeight::Thin);        
+
+        UINT uAlphaDiv = bPlayingItem?1:2;
+        painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, m_uShadowWidth
+                           , uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
     }
 }
 

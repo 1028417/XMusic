@@ -1004,7 +1004,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         if (E_MediaType::MT_MediaRes != pMedia->type()
                 || ((CMediaRes*)pMedia)->rootDir() != &m_LocalDir)
         {
-            cauto qsQuality = mediaQualityString(*pMedia);
+            cauto qsQuality = mediaQualityString(pMedia->quality());
             if (!qsQuality.isEmpty())
             {
                 pqsQuality = &qsQuality;
