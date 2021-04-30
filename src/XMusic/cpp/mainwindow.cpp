@@ -10,6 +10,8 @@
 
 Ui::MainWindow ui;
 
+bool g_bHLayout = false;
+
 QColor g_crLogoBkg(180, 220, 255);
 
 #if __windows
@@ -98,7 +100,7 @@ void MainWindow::switchFullScreen()
 
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
-    , m_opt( g_app.getOption())
+    , m_opt(g_app.getOption())
 {
     //this->setStyleSheet("");
 
@@ -280,7 +282,7 @@ void MainWindow::startLogo()
     labelLogoCompany.setVisible(true);
     _updateLogoCompany(5, [&]{
         _updateLogoCompany(-5, [&]{
-            labelLogoCompany.setText(__WS2Q(L"v" +  g_app.appVer()));
+            labelLogoCompany.setText(__WS2Q(L"v" + g_app.appVer()));
             _updateLogoCompany(5, [&]{
                 m_uShowLogoState++;
             });
@@ -318,7 +320,7 @@ void MainWindow::_updateLogoCompany(int nAlphaOffset, cfn_void cb)
 
 void MainWindow::_showUpgradeProgress()
 {
-    cauto nAppUpgradeProgress =  g_app.getMdlMgr().appUpgradeProgress();
+    cauto nAppUpgradeProgress = g_app.getMdlMgr().appUpgradeProgress();
     if (-1 == nAppUpgradeProgress)
     {
         ui.labelLogoTip->setText(__logoTip);
@@ -557,7 +559,7 @@ bool MainWindow::event(QEvent *ev)
             // TODO 上下键滚动播放列表、左右键切换背景
             if (Qt::Key_Space == key)
             {
-                if (E_PlayStatus::PS_Play ==  g_app.getPlayMgr().playStatus())
+                if (E_PlayStatus::PS_Play == g_app.getPlayMgr().playStatus())
                 {
                     slot_buttonClicked(ui.btnPause);
                 }
@@ -580,7 +582,7 @@ bool MainWindow::event(QEvent *ev)
 
     break;
     /*case QEvent::Close:
-         g_app.quit();
+        g_app.quit();
         return true;
         break;*/
     case QEvent::Timer:
@@ -603,18 +605,18 @@ void MainWindow::_relayout()
 {
     int cx = width();
     int cy = height();
-    m_bHLayout = cx > cy; // 橫屏
+    g_bHLayout = cx > cy; // 橫屏
 
     if (NULL == ui.centralWidget) return;
 
     m_bDefaultBkg = false;
     if (!m_opt.bUseBkgColor)
     {
-        cauto pmBkg = m_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
+        cauto pmBkg = g_bHLayout?m_bkgDlg.hbkg():m_bkgDlg.vbkg();
         m_bDefaultBkg = pmBkg.isNull();
     }
 
-    auto eSingerImgPos = (E_SingerImgPos)(m_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
+    auto eSingerImgPos = (E_SingerImgPos)(g_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
     ui.centralWidget->relayout(cx, cy, m_bDefaultBkg, eSingerImgPos, m_PlayingInfo, m_PlayingList);
 }
 
@@ -635,10 +637,10 @@ void MainWindow::_onPaint()
         {
             painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing);
 
-            /*cauto pmBkg = m_bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
+            /*cauto pmBkg = g_bHLayout ?m_bkgDlg.hbkg() :m_bkgDlg.vbkg();
             if (!pmBkg.isNull())
             {
-                auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
+                auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
                 painter.drawImgEx(rc, pmBkg, prBkgOffset.first, prBkgOffset.second);
 
                 //auto cx = ui.progressbar->width();
@@ -647,7 +649,7 @@ void MainWindow::_onPaint()
                 //QRect rcDst(rcSingerImg.x(), rcSingerImg.y(), cx, cy);
                 //painter.drawImg(rcDst, m_pmDiskFace);
             }*/
-            if (!drawBkg(m_bHLayout, painter, rc))
+            if (!drawBkg(g_bHLayout, painter, rc))
             {
                 drawDefaultBkg(painter, rc, 0, ui.labelSingerImg->pixmap()?1.0f:0.06f);
             }
@@ -700,7 +702,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound, float 
 
 void MainWindow::_updateProgress()
 {
-    auto& mediaOpaque =  g_app.getPlayMgr().mediaOpaque();
+    auto& mediaOpaque = g_app.getPlayMgr().mediaOpaque();
     E_DecodeStatus eDecodeStatus = mediaOpaque.decodeStatus();
     _updatePlayPauseButton(E_DecodeStatus::DS_Decoding == eDecodeStatus); // for see
     if (eDecodeStatus != E_DecodeStatus::DS_Decoding)
@@ -716,7 +718,7 @@ void MainWindow::_updateProgress()
     }
 
 #if __OnlineMediaLib
-    if (mediaOpaque.waitingFlag() &&  g_app.getPlayMgr().player().packetQueueEmpty())
+    if (mediaOpaque.waitingFlag() && g_app.getPlayMgr().player().packetQueueEmpty())
     {
         ui.labelDuration->setText("正在缓冲");
     }
@@ -795,7 +797,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     }
     PlayingInfo.qsTitle = __WS2Q(strTitle);
 
-     g_app.sync([=]{
+    g_app.sync([=]{
         auto pPrevSinger = m_PlayingInfo.pSinger;
         m_PlayingInfo = PlayingInfo;
 
@@ -836,7 +838,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
 
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
-     g_app.sync([=]{
+    g_app.sync([=]{
         ui.progressbar->set(0, 0, 0, 0);
         ui.labelDuration->setText(m_PlayingInfo.qsDuration); //防止还显示正在缓冲
     });
@@ -844,7 +846,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
     // 绝不可以sync或async，安卓切后台不响应
     if (bPlayFinish)
     {
-         g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+        g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
     }
     else if (!bOpenSuccess)
     {
@@ -853,7 +855,7 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
         __usleep(2000);
         if (uPlaySeq == g_uPlaySeq)
         {
-             g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+            g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
         }
     }
 }
@@ -862,7 +864,7 @@ void MainWindow::onSingerImgDownloaded(CSinger& singer, const tagSingerImg& sing
 {
     if (m_medialibDlg.isVisible())
     {
-         g_app.sync([&]{
+        g_app.sync([&]{
             if (m_medialibDlg.isVisible())
             {
                 m_medialibDlg.updateSingerImg(singer, singerImg);
@@ -877,11 +879,11 @@ void MainWindow::onSingerImgDownloaded(CSinger& singer, const tagSingerImg& sing
 
     if (m_PlayingInfo.pSinger == &singer && !ui.labelSingerImg->pixmap())
     {
-         g_app.sync([=]{
-             if (m_PlayingInfo.pSinger == &singer)
-             {
-                 _playSingerImg(singer.m_uID);
-             }
+        g_app.sync([=]{
+            if (m_PlayingInfo.pSinger == &singer)
+            {
+             _playSingerImg(singer.m_uID);
+            }
         });
     }
 }
@@ -924,7 +926,7 @@ void MainWindow::_playSingerImg(UINT uSingerID, bool bReset)
 
 void MainWindow::_playSingerImg(UINT uSingerID)
 {
-    auto pSingerImg =  g_app.getSingerImgMgr().getSingerImg(uSingerID, m_uSingerImgIdx, true);
+    auto pSingerImg = g_app.getSingerImgMgr().getSingerImg(uSingerID, m_uSingerImgIdx, true);
     if (NULL == pSingerImg)
     {
         if (m_uSingerImgIdx > 1)
@@ -939,7 +941,7 @@ void MainWindow::_playSingerImg(UINT uSingerID)
         return;
     }
 
-    cauto qsFile = __WS2Q( g_app.getSingerImgMgr().file(*pSingerImg));
+    cauto qsFile = __WS2Q(g_app.getSingerImgMgr().file(*pSingerImg));
     QPixmap pm(qsFile);
 
 #define __szSingerImg 700
@@ -1001,7 +1003,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnExit)
     {
-         g_app.quit();
+        g_app.quit();
     }
     else if (button == ui.btnMore)
     {
@@ -1013,40 +1015,40 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
     else if (button == ui.btnPause)
     {
-        //if ( g_app.getPlayMgr().mediaOpaque().byteRate())
+        //if (g_app.getPlayMgr().mediaOpaque().byteRate())
         //{
-        //     g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
-        if ( g_app.getPlayMgr().player().Pause())
+        //    g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Pause));
+        if (g_app.getPlayMgr().player().Pause())
         {
             _updatePlayPauseButton(false);
         }
     }
     else if (button == ui.btnPlay)
     {
-        /*if (E_PlayStatus::PS_Pause ==  g_app.getPlayMgr().playStatus())
+        /*if (E_PlayStatus::PS_Pause == g_app.getPlayMgr().playStatus())
         {
             _updatePlayPauseButton(true);
         }
-         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
+        g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_Play));*/
 
-        if (E_PlayStatus::PS_Stop ==  g_app.getPlayMgr().playStatus())
+        if (E_PlayStatus::PS_Stop == g_app.getPlayMgr().playStatus())
         {
-             g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_opt.uPlayingItem));
+            g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(m_opt.uPlayingItem));
             return;
         }
 
-        if ( g_app.getPlayMgr().player().Resume())
+        if (g_app.getPlayMgr().player().Resume())
         {
             _updatePlayPauseButton(true);
         }
     }
     else if (button == ui.btnPlayPrev)
     {
-         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
+        g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayPrev));
     }
     else if (button == ui.btnPlayNext)
     {
-         g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
+        g_app.getCtrl().callPlayCmd(tagPlayCmd(E_PlayCmd::PC_PlayNext));
     }
     else if (button == ui.btnRandom || button == ui.btnOrder)
     {
@@ -1064,7 +1066,7 @@ void MainWindow::slot_buttonClicked(CButton* button)
 
 void MainWindow::updateBkg()
 {
-    auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
+    auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
     prBkgOffset.first = 0;
     prBkgOffset.second = 0;
 
@@ -1086,7 +1088,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 return;
             }*/
 
-            auto& eSingerImgPos = (E_SingerImgPos&)(m_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
+            auto& eSingerImgPos = (E_SingerImgPos&)(g_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
             eSingerImgPos = E_SingerImgPos((int)eSingerImgPos+1);
             if (eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
             {
@@ -1113,6 +1115,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     else if (label == ui.labelPlayingfile)
     {
         auto pXpkMedia = __xmedialib.xpkRoot().subFile(m_PlayingInfo.strPath);
+        //__xmedialib.subXpkMedia(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
         if (pXpkMedia)
         {
             m_medialibDlg.showMedia(*pXpkMedia);
@@ -1136,7 +1139,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return; // 播放停止
         }
 
-       auto& player =  g_app.getPlayMgr().player();
+       auto& player = g_app.getPlayMgr().player();
        /*if (player.sampleRate() == 0) //!player.isOpen())
        {
            return;
@@ -1232,7 +1235,7 @@ void MainWindow::_demand(CButton* btnDemand)
         return;
     }
 
-     g_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+    g_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
 }
 
 void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
@@ -1258,7 +1261,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
 
         __yield();
-        auto& prBkgOffset = m_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
+        auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
         prBkgOffset.first -= te.dx();
         prBkgOffset.second -= te.dy();
         update();
@@ -1279,22 +1282,22 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             {
                 if (dx >= 3)
                 {
-                    m_bkgDlg.switchBkg(m_bHLayout, false);
+                    m_bkgDlg.switchBkg(g_bHLayout, false);
                 }
                 else if (dx <= -3)
                 {
-                    m_bkgDlg.switchBkg(m_bHLayout, true);
+                    m_bkgDlg.switchBkg(g_bHLayout, true);
                 }
             }
             else
             {
                 if (dy >= 3)
                 {
-                    m_bkgDlg.switchBkg(m_bHLayout, false);
+                    m_bkgDlg.switchBkg(g_bHLayout, false);
                 }
                 else if (dy <= -3)
                 {
-                    m_bkgDlg.switchBkg(m_bHLayout, true);
+                    m_bkgDlg.switchBkg(g_bHLayout, true);
                 }
             }
         }
