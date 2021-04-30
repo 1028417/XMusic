@@ -131,11 +131,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         uShadowAlpha *= pow(fAlpha,2.5);
     }
 
-#define __xMargin __size(36)
+#define __xMargin __size(40)
     rc.setLeft(__xMargin);
 
-    auto nMaxRight = rc.right() - __xMargin;
-    rc.setRight(nMaxRight);
+    auto nMaxRight = rc.right();// - __xMargin;
+    //rc.setRight(nMaxRight);
 
     UINT uAlphaDiv = bPlayingItem?1:3;
     if (!bPlayingItem && playingItem.uDuration > __wholeTrackDuration)
@@ -146,7 +146,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration
                            , m_uShadowWidth, uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
-        rc.setRight(rcPos.x() - __size(30));
+        rc.setRight(rcPos.x() - __size(20));
     }
 
     int nElidedWidth = nMaxRight;
@@ -171,7 +171,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     }
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
-    QString qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
+    cauto qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
@@ -180,6 +180,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     {
         cauto qsQuality = mediaQualityString(playingItem.eQuality);
 
+        int yOffset = __size(8);
         int nRight = rcPos.right() + __size(35);
 #if __android || __ios
         nRight += __size(6);
@@ -188,9 +189,14 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         {
             nRight += __size(20);
         }
-        rcPos.setRight(MIN(nRight, nMaxRight));
+        if (nRight > nMaxRight)
+        {
+            nRight = nMaxRight;
+            yOffset *= 3;
+        }
+        rcPos.setRight(nRight);
 
-        rcPos.setTop(rcPos.top() - __size(8));
+        rcPos.setTop(rcPos.top() - yOffset);
 
         painter.adjustFont(0.66, TD_FontWeight::Thin, false);
 

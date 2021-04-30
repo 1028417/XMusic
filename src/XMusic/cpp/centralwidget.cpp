@@ -545,12 +545,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     if (bHLayout)
     {
         UINT uMargin = ui.progressbar->x();
-        int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.5f;
+        int x_PlayingList = ui.progressbar->geometry().right() + uMargin*1.4f;
         if (cx > __size(1920))
         {
             x_PlayingList += uMargin;
         }
-        PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList, cy-uMargin*2);
+        PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
         uRowCount = MAX(uRowCount,7);
@@ -585,7 +585,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         y_PlayingList += y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
-        UINT x_Margin = ui.frameDemand->x();
+        UINT x_Margin = ui.frameDemand->x()-__size10;
         PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
     PlayingList.setPageRowCount(uRowCount);
