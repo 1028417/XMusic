@@ -29,7 +29,12 @@ private slots:
 
     void slot_playClick();
 
-public:
+public:    
+    cqpm pmXpk() const
+    {
+        return m_lv.pmXpk();
+    }
+
     static size_t caleRowCount(int cy);
 
     size_t rowCount() const

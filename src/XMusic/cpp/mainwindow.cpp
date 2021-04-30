@@ -753,7 +753,7 @@ void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual)
 {
     tagPlayingInfo PlayingInfo;
-    PlayingInfo.strPath = PlayItem.GetPath();
+    cauto strPath = PlayingInfo.strPath = PlayItem.GetPath();
 
 #if __OnlineMediaLib
     PlayingInfo.uFileSize = PlayItem.fileSize()/1000;
@@ -762,9 +762,10 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     auto uDuration = PlayItem.duration();
     PlayingInfo.qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
 
-    //if (!g_app.getPlayMgr().mediaOpaque().isVideo()) // 本地视频文件不显示码率 // TODO 获取音频流码率
     PlayingInfo.qsQuality = mediaQualityString(PlayItem);
+    //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
+    E_TrackType eTrackType = E_TrackType::TT_Single;
     if (pRelatedMedia)
     {
         PlayingInfo.pRelatedMedia = (IMedia*)pRelatedMedia;
@@ -775,7 +776,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
             if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
             {
                 PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
-                PlayingInfo.eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
+                eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
             }
             else
             {
@@ -784,8 +785,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
         }
     }
 
+    PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
+    //__xmedialib.getXpkMediaRes(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
+
     auto strTitle = PlayItem.GetTitle();
-    auto pSinger = g_app.getSingerMgr().checkSingerDir(PlayingInfo.strPath);
+    auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
     if (pSinger)
     {
         PlayingInfo.pSinger = pSinger;
@@ -795,52 +799,75 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     {
         CFileTitle::genDisplayTitle(strTitle);
     }
-    PlayingInfo.qsTitle = __WS2Q(strTitle);
+    cauto qsTitle = __WS2Q(strTitle);
 
     g_app.sync([=]{
-        auto pPrevSinger = m_PlayingInfo.pSinger;
-        m_PlayingInfo = PlayingInfo;
-
-        ui.labelPlayingfile->setText(m_PlayingInfo.qsTitle);
-
-        ui.progressbar->setValue(0, uDuration);
-
-    #if __OnlineMediaLib
-        ui.labelDuration->clear();
-    #else
-        ui.labelDuration->setText(m_PlayingInfo.qsDuration);
-    #endif
-
-        _updatePlayPauseButton(true);
-
-        m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
-        if (pSinger != pPrevSinger)
-        {
-            ui.labelSingerImg->clear();
-            update();
-
-            if (pSinger)
-            {
-                _playSingerImg(pSinger->m_uID, true);
-
-                ui.labelSingerName->setText(__WS2Q(pSinger->m_strName));
-            }
-            else
-            {
-                ui.labelSingerName->clear();
-            }
-        }
-
-        _relayout();
+        _onPlay(PlayingInfo, qsTitle, uDuration, eTrackType, uPlayingItem, bManual);
     });
+}
+
+void MainWindow::_onPlay(const tagPlayingInfo& PlayingInfo, cqstr qsTitle, UINT uDuration
+                         , E_TrackType eTrackType, UINT uPlayingItem, bool bManual)
+{
+    bool bSingerChanged = (PlayingInfo.pSinger != m_PlayingInfo.pSinger);
+    m_PlayingInfo = PlayingInfo;
+
+    ui.labelPlayingfile->setText(qsTitle);
+
+    if (E_TrackType::TT_Single != eTrackType)
+    {
+        cauto pmIcon = E_TrackType::TT_HDWhole == eTrackType? g_app.m_pmHDDisk:g_app.m_pmSQDisk;
+        ui.labelPlayingfile->setPixmap(pmIcon);
+    }
+    else if (m_PlayingInfo.pXpkMediaRes)
+    {
+        ui.labelPlayingfile->setPixmap(m_medialibDlg.pmXpk());
+    }
+    else
+    {
+        ui.labelPlayingfile->clearPixmap();
+    }
+
+    ui.progressbar->setValue(0, uDuration);
+
+/*#if __OnlineMediaLib
+    ui.labelDuration->clear();
+#else*/
+    ui.labelDuration->setText(m_PlayingInfo.qsDuration);
+//#endif
+
+    _updatePlayPauseButton(true);
+
+    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
+
+    if (bSingerChanged)
+    {
+        ui.labelSingerImg->clear();
+        update();
+
+        if (m_PlayingInfo.pSinger)
+        {
+            _playSingerImg(m_PlayingInfo.pSinger->m_uID, true);
+
+            ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.pSinger->m_strName));
+        }
+        else
+        {
+            ui.labelSingerName->clear();
+        }
+    }
+
+    _relayout();
 }
 
 void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 {
     g_app.sync([=]{
         ui.progressbar->set(0, 0, 0, 0);
+        ui.labelDuration->clear();
+/*#if __OnlineMediaLib
         ui.labelDuration->setText(m_PlayingInfo.qsDuration); //防止还显示正在缓冲
+#endif*/
     });
 
     // 绝不可以sync或async，安卓切后台不响应
@@ -1082,12 +1109,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     {
         if (!m_bDefaultBkg)
         {
-            /*if (E_TrackType::TT_Single != m_PlayingInfo.eTrackType)
-            {
-                slot_labelClick(ui.labelPlayingfile, pos);
-                return;
-            }*/
-
             auto& eSingerImgPos = (E_SingerImgPos&)(g_bHLayout?m_opt.uHSingerImgPos:m_opt.uVSingerImgPos);
             eSingerImgPos = E_SingerImgPos((int)eSingerImgPos+1);
             if (eSingerImgPos > E_SingerImgPos::SIP_Zoomout)
@@ -1114,11 +1135,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelPlayingfile)
     {
-        auto pXpkMedia = __xmedialib.xpkRoot().subFile(m_PlayingInfo.strPath);
-        //__xmedialib.subXpkMedia(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
-        if (pXpkMedia)
+        if (m_PlayingInfo.pXpkMediaRes)
         {
-            m_medialibDlg.showMedia(*pXpkMedia);
+            m_medialibDlg.showMedia(*m_PlayingInfo.pXpkMediaRes);
             return;
         }
 
