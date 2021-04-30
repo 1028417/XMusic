@@ -152,18 +152,16 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     int nElidedWidth = nMaxRight;
     if (bPlayingItem)
     {
-#if __windows || __mac
-        if (rc.bottom() < __size(150))
+        if (rc.bottom() < __size(160)) //右上角按钮预留
         {
             nMaxRight -= __size(90);
         }
-#endif
-        nElidedWidth = nMaxRight-__size(50);
+        nElidedWidth = nMaxRight-__size(50); //音质文本预留
 
-#if __android || __ios
-#define __fontSizeOffset 1.08f
-#else
+#if __windows || __mac
 #define __fontSizeOffset 1.06f
+#else
+#define __fontSizeOffset 1.1f
 #endif
         painter.adjustFont(__fontSizeOffset, TD_FontWeight::Normal);
     }
@@ -177,7 +175,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
-    if (//bPlayingItem &&
+    if (bPlayingItem &&
             playingItem.eQuality != E_MediaQuality::MQ_None)
     {
         cauto qsQuality = mediaQualityString(playingItem.eQuality);
