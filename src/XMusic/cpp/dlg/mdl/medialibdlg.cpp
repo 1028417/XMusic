@@ -77,6 +77,8 @@ void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
 
 void CMedialibDlg::showMediaSet(IMedia& media)
 {
+    _relayout(g_app.mainWnd().width(), g_app.mainWnd().height());
+
     if (!m_lv.hittestMedia(media))
     {
         return;
@@ -87,6 +89,8 @@ void CMedialibDlg::showMediaSet(IMedia& media)
 
 bool CMedialibDlg::showMedia(IMedia& media)
 {
+    _relayout(g_app.mainWnd().width(), g_app.mainWnd().height());
+
     if (media.type() == E_MediaType::MT_MediaRes)
     {
         m_lv.hittestFile((CMediaRes&)media);
@@ -110,6 +114,8 @@ bool CMedialibDlg::showMedia(IMedia& media)
 
 CMediaRes* CMedialibDlg::showLocalFile(cwstr strPath)
 {
+    _relayout(g_app.mainWnd().width(), g_app.mainWnd().height());
+
     auto pMediaRes = m_lv.hittestLocalFile(strPath);
     if (pMediaRes)
     {
@@ -320,7 +326,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
                 break;
             }
 
-             g_app.getSingerImgMgr().downloadSingerHead({pSinger->m_uID});
+            g_app.getSingerImgMgr().downloadSingerHead({pSinger->m_uID});
         }
 
         ui.labelSingerImg->clear();
@@ -400,7 +406,7 @@ void CMedialibDlg::slot_playClick()
     CMediaSet *pMediaSet = m_lv.currentMediaSet();
     if (pMediaSet)
     {
-         g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
+        g_app.getCtrl().callPlayCmd(tagAssignMediaSetCmd(*pMediaSet));
         return;
     }
 
@@ -430,6 +436,6 @@ void CMedialibDlg::slot_playClick()
 
     if (paMedias)
     {
-         g_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
+        g_app.getCtrl().callPlayCmd(tagAssignMediaCmd(paMedias));
     }
 }

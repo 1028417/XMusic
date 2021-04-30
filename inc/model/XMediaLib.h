@@ -49,8 +49,6 @@ public:
 
     void scanXpk();
 
-    CMediaRes* checkXpkMedia(cwstr strPath, UINT uFieSize);
-
     void check();
 #endif
 

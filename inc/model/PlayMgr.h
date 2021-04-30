@@ -81,8 +81,6 @@ public:
 		return m_Playinglist.playItems();
 	}
 
-    void close();
-
     bool init();
 
 	bool clear();
