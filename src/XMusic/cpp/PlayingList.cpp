@@ -93,25 +93,10 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagPlayingItem& playingItem)
 {
     auto& rc = lvItem.rc;
-
     int cy = height();
 
-    float fAlpha = 1;
-    if (0 == m_nActiveTime)
-    {
-        fAlpha = 0.4f;
-        //if (g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
-    }
-    if (rc.top() < 0)
-    {
-        fAlpha *= pow((float)rc.bottom()/rc.height(),3.3);
-    }
-    else if (rc.bottom() > cy)
-    {
-        fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
-    }
-    UINT uTextAlpha = 255*fAlpha;
-    UINT uShadowAlpha = __ShadowAlpha * pow(fAlpha,2.5);
+    UINT uTextAlpha = 255;
+    UINT uShadowAlpha = __ShadowAlpha;
 
     bool bPlayingItem = lvItem.uItem == m_uPlayingItem;
     if (bPlayingItem)
@@ -126,11 +111,34 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         QRect rcIcon(rc.x(), rc.center().y()+1-__szIcon/2, __szIcon, __szIcon);
         painter.drawImg(rcIcon, m_pmPlaying);
     }
+    else
+    {
+        float fAlpha = 1;
+        if (0 == m_nActiveTime)
+        {
+            fAlpha = 0.4f;
+            //if (g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
+        }
+        if (rc.top() < 0)
+        {
+            fAlpha *= pow((float)rc.bottom()/rc.height(),3.3);
+        }
+        else if (rc.bottom() > cy)
+        {
+            fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
+        }
+        uTextAlpha *= fAlpha;
+        uShadowAlpha *= pow(fAlpha,2.5);
+    }
 
-    rc.setLeft(__size(36));
+#define __xMargin __size(36)
+    rc.setLeft(__xMargin);
+
+    auto nMaxRight = rc.right() - __xMargin;
+    rc.setRight(nMaxRight);
 
     UINT uAlphaDiv = bPlayingItem?1:3;
-    if (playingItem.uDuration > __wholeTrackDuration)
+    if (!bPlayingItem && playingItem.uDuration > __wholeTrackDuration)
     {
         cauto qsDuration = __WS2Q(IMedia::genDurationString(playingItem.uDuration));
 
@@ -140,10 +148,6 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
                            , m_uShadowWidth, uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
         rc.setRight(rcPos.x() - __size(30));
     }
-
-#define __cxQualityRetain __size(35)
-    auto nMaxRight = rc.right() - __cxQualityRetain;
-    rc.setRight(nMaxRight);
 
     int nElidedWidth = nMaxRight;
     if (bPlayingItem)
@@ -156,7 +160,12 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        painter.adjustFont(1.06f, TD_FontWeight::Normal);
+#if __android || __ios
+#define __fontSizeOffset 1.08f
+#else
+#define __fontSizeOffset 1.06f
+#endif
+        painter.adjustFont(__fontSizeOffset, TD_FontWeight::Normal);
     }
     else if (g_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
@@ -173,7 +182,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     {
         cauto qsQuality = mediaQualityString(playingItem.eQuality);
 
-        int nRight = rcPos.right() + __cxQualityRetain;
+        int nRight = rcPos.right() + __size(35);
 #if __android || __ios
         nRight += __size(6);
 #endif
