@@ -20,8 +20,6 @@
 
 struct tagPlayingInfo
 {
-    QString qsTitle;
-
     wstring strPath;
 
 #if __OnlineMediaLib
@@ -29,16 +27,16 @@ struct tagPlayingInfo
 #endif
 
     QString qsDuration = 0;
-    E_TrackType eTrackType = E_TrackType::TT_Single;
-
     QString qsQuality;
 
-    //UINT uSingerID = 0;
-    //wstring strSingerName;
+    //E_TrackType eTrackType = E_TrackType::TT_Single;
+
     CSinger *pSinger = NULL;
 
     IMedia *pRelatedMedia = NULL;
     wstring strMediaSet;
+
+    CMediaRes *pXpkMediaRes = NULL;
 };
 
 enum class E_SingerImgPos
@@ -135,6 +133,9 @@ private:
     void _showUpgradeProgress();
 
     void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
+
+    void _onPlay(const tagPlayingInfo& PlayingInfo, cqstr qsTitle, UINT uDuration
+                 , E_TrackType eTrackType, UINT uPlayingItem, bool bManual);
 
     void _updatePlayPauseButton(bool bPlaying);
 

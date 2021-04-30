@@ -85,24 +85,22 @@ public:
         return m_br.height();
     }
 
-    void setPixmap(const CBrush& br)
+    void setPixmap(const CBrush& br, UINT szRound=(UINT)-1)
     {
         m_br = br;
-    }
-    void setPixmap(const CBrush& br, UINT szRound)
-    {
-        m_br = br;
-        m_szRound = szRound;
+        if (szRound != (UINT)-1)
+        {
+            m_szRound = szRound;
+        }
     }
 
-    void setPixmap(cqpm pm)
+    void setPixmap(cqpm pm, UINT szRound=(UINT)-1)
     {
         m_br.setTexture(pm);
-    }
-    void setPixmap(cqpm pm, UINT szRound)
-    {
-        m_br.setTexture(pm);
-        m_szRound = szRound;
+        if (szRound != (UINT)-1)
+        {
+            m_szRound = szRound;
+        }
     }
 
     void setPixmapRound(UINT szRound)
