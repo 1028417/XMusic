@@ -134,8 +134,7 @@ private:
 
     void _updateLogoCompany(int nAlphaOffset, cfn_void cb=NULL);
 
-    void _onPlay(const tagPlayingInfo& PlayingInfo, cqstr qsTitle, UINT uDuration
-                 , E_TrackType eTrackType, UINT uPlayingItem, bool bManual);
+    void _onPlay(const tagPlayingInfo& PlayingInfo, UINT uDuration, E_TrackType eTrackType);
 
     void _updatePlayPauseButton(bool bPlaying);
 

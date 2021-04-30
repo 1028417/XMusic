@@ -3,13 +3,22 @@
 
 #include "PlayingList.h"
 
-static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
+static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
 {
-    auto& singerMgr = g_app.getSingerMgr();
-    tagPlayingItem playingItem;
-    for (cauto PlayItem : g_app.getPlayMgr().playingItems())
+    auto& playingItems = g_app.getPlayMgr().playingItems();
+    auto uCount = playingItems.size();
+    if (0 == uCount)
     {
-        playingItem.uID = PlayItem.m_uID;
+        return;
+    }
+
+    vecPlayingItems.resize(uCount);
+    auto pPlayingItem = &vecPlayingItems.front();
+
+    auto& singerMgr = g_app.getSingerMgr();
+    for (cauto PlayItem : playingItems)
+    {
+        pPlayingItem->uID = PlayItem.m_uID;
 
         auto strTitle = PlayItem.GetTitle();
 
@@ -18,6 +27,7 @@ static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
             auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
             if (pSinger)
             {
+                pPlayingItem->pSinger = pSinger;
                 CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
             }
             else
@@ -25,15 +35,16 @@ static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
                 CFileTitle::genDisplayTitle(strTitle);
             }
         }
-        playingItem.qsTitle = __WS2Q(strTitle);
+
+        pPlayingItem->qsTitle = __WS2Q(strTitle);
 
         auto duration = PlayItem.duration();
         if (duration > __wholeTrackDuration)
         {
-            playingItem.qsDuration = __WS2Q(IMedia::genDurationString(duration));
+            pPlayingItem->qsDuration = __WS2Q(IMedia::genDurationString(duration));
         }
 
-        alPlayingItems.add(playingItem);
+        pPlayingItem++;
     }
 }
 
@@ -43,8 +54,7 @@ void CPlayingList::init()
 
     auto uPlayingItem = g_app.getOption().uPlayingItem;
 
-    ArrList<tagPlayingItem> alPlayingItems;
-    _genPlayingItem(m_alPlayingItems);
+    _genPlayingItem(m_vecPlayingItems);
     updatePlayingItem(uPlayingItem, true);
 
     CListView::showItem(uPlayingItem, true); // 规避后续歌手图片出现挤压的问题
@@ -77,9 +87,11 @@ size_t CPlayingList::getRowCount() const
 
 void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    m_alPlayingItems.get(lvItem.uItem, [&](tagPlayingItem& playingItem){
-        _onPaintItem(painter, lvItem, playingItem);
-    });
+    auto playingItem = playingItem(lvItem.uItem);
+    if (playingItem)
+    {
+        _onPaintItem(painter, lvItem, *playingItem);
+    }
 }
 
 void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagPlayingItem& playingItem)
@@ -119,9 +131,17 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
         painter.drawImg(rcIcon, m_pmPlaying);
     }
 
-    rc.setLeft(__size(35));
+    rc.setLeft(__size(36));
 
-    auto nMaxRight = rc.right()-__size(35);
+    if (!playingItem.qsDuration.isEmpty())
+    {
+        auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, playingItem.qsDuration
+                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
+        rc.setRight(rcPos.x() - __size(30));
+    }
+
+#define __cxQualityRetain __size(35)
+    auto nMaxRight = rc.right() - __cxQualityRetain;
     rc.setRight(nMaxRight);
 
     int nElidedWidth = nMaxRight;
@@ -135,18 +155,11 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 #endif
         nElidedWidth = nMaxRight-__size(50);
 
-        painter.adjustFont(1.05f, TD_FontWeight::Normal);
+        painter.adjustFont(1.06f, TD_FontWeight::Normal);
     }
     else if (g_app.getPlayMgr().checkPlayedID(playingItem.uID))
     {
         painter.adjustFont(true);
-    }
-
-    if (!playingItem.qsDuration.isEmpty())
-    {
-        auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, playingItem.qsDuration
-                           , m_uShadowWidth, uShadowAlpha, uTextAlpha);
-        rc.setRight(rcPos.x() - __size(30));
     }
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
@@ -154,13 +167,12 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
-
     if (bPlayingItem)
     {
         cauto qsQuality = g_app.mainWnd().playingInfo().qsQuality;
         //if (qsQuality.isEmpty()) return;
 
-        int nRight = rcPos.right() + __size(35);
+        int nRight = rcPos.right() + __cxQualityRetain;
 #if __android || __ios
         nRight += __size(6);
 #endif
@@ -172,18 +184,18 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
         rcPos.setTop(rcPos.top() - __size(8));
 
-        painter.adjustFont(0.65, TD_FontWeight::Thin);
+        painter.adjustFont(0.66, TD_FontWeight::Thin);
         painter.drawTextEx(rcPos, Qt::AlignRight|Qt::AlignTop, qsQuality, 1, uShadowAlpha, uTextAlpha);
     }
 }
 
 void CPlayingList::updateList(UINT uPlayingItem) //工作线程
 {
-    ArrList<tagPlayingItem> alPlayingItems;
-    _genPlayingItem(alPlayingItems);
+    vector<tagPlayingItem> vecPlayingItems;
+    _genPlayingItem(vecPlayingItems);
 
     g_app.sync([=]()mutable{
-        m_alPlayingItems.swap(alPlayingItems);
+        m_vecPlayingItems.swap(vecPlayingItems);
         updatePlayingItem(uPlayingItem, true);
     });
 }
@@ -211,7 +223,7 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
 {
     //_updateActive();
 
-    if (lvItem.uItem < m_alPlayingItems.size())
+    if (lvItem.uItem < m_vecPlayingItems.size())
     {
         //updatePlayingItem(lvItem.uItem, false);
 

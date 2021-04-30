@@ -765,6 +765,14 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     PlayingInfo.qsQuality = mediaQualityString(PlayItem);
     //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
+    QString qsTitle;
+    const tagPlayingItem *pPlayingItem = playingItem(uPlayingItem);
+    if (pPlayingItem)
+    {
+        PlayingInfo.pSinger = pPlayingItem->pSinger;
+        qsTitle = pPlayingItem->qsTitle;
+    }
+
     E_TrackType eTrackType = E_TrackType::TT_Single;
     if (pRelatedMedia)
     {
@@ -775,7 +783,10 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
         {
             if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
             {
-                PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
+                if (PlayingInfo.pSinger)
+                {
+                    PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
+                }
                 eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
             }
             else
@@ -788,31 +799,20 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     //__xmedialib.getXpkMediaRes(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
 
-    auto strTitle = PlayItem.GetTitle();
-    auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
-    if (pSinger)
-    {
-        PlayingInfo.pSinger = pSinger;
-        CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
-    }
-    else
-    {
-        CFileTitle::genDisplayTitle(strTitle);
-    }
-    cauto qsTitle = __WS2Q(strTitle);
 
     g_app.sync([=]{
-        _onPlay(PlayingInfo, qsTitle, uDuration, eTrackType, uPlayingItem, bManual);
+        m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
+
+        ui.labelPlayingfile->setText(qsTitle);
+
+        _onPlay(PlayingInfo, uDuration, eTrackType);
     });
 }
 
-void MainWindow::_onPlay(const tagPlayingInfo& PlayingInfo, cqstr qsTitle, UINT uDuration
-                         , E_TrackType eTrackType, UINT uPlayingItem, bool bManual)
+void MainWindow::_onPlay(const tagPlayingInfo& PlayingInfo, UINT uDuration, E_TrackType eTrackType)
 {
     bool bSingerChanged = (PlayingInfo.pSinger != m_PlayingInfo.pSinger);
     m_PlayingInfo = PlayingInfo;
-
-    ui.labelPlayingfile->setText(qsTitle);
 
     if (E_TrackType::TT_Single != eTrackType)
     {
@@ -838,18 +838,16 @@ void MainWindow::_onPlay(const tagPlayingInfo& PlayingInfo, cqstr qsTitle, UINT 
 
     _updatePlayPauseButton(true);
 
-    m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
     if (bSingerChanged)
     {
         ui.labelSingerImg->clear();
         update();
 
-        if (m_PlayingInfo.pSinger)
+        if (pSinger)
         {
-            _playSingerImg(m_PlayingInfo.pSinger->m_uID, true);
+            _playSingerImg(pSinger->m_uID, true);
 
-            ui.labelSingerName->setText(__WS2Q(m_PlayingInfo.pSinger->m_strName));
+            ui.labelSingerName->setText(__WS2Q(pSinger->m_strName));
         }
         else
         {

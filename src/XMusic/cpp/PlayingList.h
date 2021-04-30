@@ -8,6 +8,7 @@
 struct tagPlayingItem
 {
     UINT uID = 0;
+    class CSinger *pSinger = NULL;
     QString qsTitle;
     QString qsDuration;
 };
@@ -25,7 +26,7 @@ private:
 
     UINT m_uPageRowCount = 0;
 
-    ArrList<tagPlayingItem> m_alPlayingItems;
+    vector<tagPlayingItem> m_vecPlayingItems;
 
     UINT m_uPlayingItem = 0;
 
@@ -34,6 +35,15 @@ private:
     UINT m_uShadowWidth = 0;
 
 public:
+    inline const tagPlayingItem* playingItem(UINT uIdx) const
+    {
+        if (uIdx >= m_vecPlayingItems.size())
+        {
+            return NULL;
+        }
+        return &m_vecPlayingItems[uIdx];
+    }
+
     void init();
 
     void setShadow(UINT uWidth=1)
@@ -57,7 +67,7 @@ private:
 
     size_t getItemCount() const override
     {
-        return m_alPlayingItems.size();
+        return m_vecPlayingItems.size();
     }
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
