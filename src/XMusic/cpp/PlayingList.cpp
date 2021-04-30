@@ -12,14 +12,18 @@ static void _genPlayingItem(ArrList<tagPlayingItem>& alPlayingItems)
         playingItem.uID = PlayItem.m_uID;
 
         auto strTitle = PlayItem.GetTitle();
-        auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
-        if (pSinger)
+
+        if (!fsutil::existFile(PlayItem.GetAbsPath())) // 只检查非本地文件
         {
-            CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
-        }
-        else
-        {
-            CFileTitle::genDisplayTitle(strTitle);
+            auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
+            if (pSinger)
+            {
+                CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
+            }
+            else
+            {
+                CFileTitle::genDisplayTitle(strTitle);
+            }
         }
         playingItem.qsTitle = __WS2Q(strTitle);
 
