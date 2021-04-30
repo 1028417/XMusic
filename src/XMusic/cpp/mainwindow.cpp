@@ -772,6 +772,8 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
 
         PlayingInfo.pSinger = pPlayingItem->pSinger;
 
+        pPlayingItem->uDuration = uDuration;
+
         pPlayingItem->eQuality = PlayItem.quality();
     }
 

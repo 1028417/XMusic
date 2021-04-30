@@ -36,11 +36,7 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
         }
         pPlayingItem->qsTitle = __WS2Q(strTitle);
 
-        auto duration = PlayItem.duration();
-        if (duration > __wholeTrackDuration)
-        {
-            pPlayingItem->qsDuration = __WS2Q(IMedia::genDurationString(duration));
-        }
+        pPlayingItem->uDuration = PlayItem.duration();
 
         pPlayingItem->eQuality = PlayItem.quality();
 
@@ -133,12 +129,14 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
 
     rc.setLeft(__size(36));
 
-    if (!playingItem.qsDuration.isEmpty())
+    if (playingItem.uDuration > __wholeTrackDuration)
     {
+        cauto qsDuration = __WS2Q(IMedia::genDurationString(playingItem.uDuration));
+
         painter.adjustFont(TD_FontWeight::Thin);
 
         UINT uAlphaDiv = bPlayingItem?1:2;
-        auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, playingItem.qsDuration
+        auto rcPos = painter.drawTextEx(rc, Qt::AlignRight|Qt::AlignVCenter, qsDuration
                            , m_uShadowWidth, uShadowAlpha/uAlphaDiv, uTextAlpha/uAlphaDiv);
         rc.setRight(rcPos.x() - __size(30));
     }
