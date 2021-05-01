@@ -51,7 +51,7 @@ void CPlayingList::init()
     auto uPlayingItem = g_app.getOption().uPlayingItem;
 
     _genPlayingItem(m_vecPlayingItems);
-    updatePlayingItem(uPlayingItem, true);
+    _updatePlayingItem(uPlayingItem, true);
 
     CListView::showItem(uPlayingItem, true); // 规避后续歌手图片出现挤压的问题
 
@@ -83,7 +83,7 @@ size_t CPlayingList::getRowCount() const
 
 void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
 {
-    auto pPlayingItem = playingItem(lvItem.uItem);
+    auto pPlayingItem = _playingItem(lvItem.uItem);
     if (pPlayingItem)
     {
         _onPaintItem(painter, lvItem, *pPlayingItem);
@@ -212,16 +212,15 @@ void CPlayingList::updateList(UINT uPlayingItem) //工作线程
 
     g_app.sync([=]()mutable{
         m_vecPlayingItems.swap(vecPlayingItems);
-        updatePlayingItem(uPlayingItem, true);
+        _updatePlayingItem(uPlayingItem, true);
     });
-    __usleep(100); // 等到同步完成，不然onPlay取不到 // TODO 优化
 }
 
-void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem)
+void CPlayingList::_updatePlayingItem(UINT uPlayingItem, bool bHittest)
 {
     m_uPlayingItem = uPlayingItem;
 
-    if (bHittestPlayingItem)
+    if (bHittest)
     {
         CListView::showItem(m_uPlayingItem);
 
@@ -242,7 +241,7 @@ void CPlayingList::_onItemDblClick(tagLVItem& lvItem, const QMouseEvent&)
 
     if (lvItem.uItem < m_vecPlayingItems.size())
     {
-        //updatePlayingItem(lvItem.uItem, false);
+        //_updatePlayingItem(lvItem.uItem, false);
 
         g_app.getCtrl().callPlayCmd(tagPlayIndexCmd(lvItem.uItem));
     }

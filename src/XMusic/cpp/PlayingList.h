@@ -35,8 +35,8 @@ private:
 
     UINT m_uShadowWidth = 0;
 
-public:
-    inline tagPlayingItem* playingItem(UINT uIdx)
+private:
+    inline tagPlayingItem* _playingItem(UINT uIdx)
     {
         if (uIdx >= m_vecPlayingItems.size())
         {
@@ -45,6 +45,11 @@ public:
         return &m_vecPlayingItems[uIdx];
     }
 
+    void _updatePlayingItem(UINT uPlayingItem, bool bHittest);
+
+    void _updateActive(int nActiveTime=__ActiveTime);
+
+public:
     void init();
 
     void setShadow(UINT uWidth=1)
@@ -56,7 +61,20 @@ public:
 
     void updateList(UINT uPlayingItem);
 
-    void updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem);
+    void updatePlayingItem(UINT uPlayingItem, bool bHittest, UINT uDuration
+                              , E_MediaQuality eQuality, QString& qsTitle)
+    {
+        _updatePlayingItem(uPlayingItem, bHittest);
+
+        auto pPlayingItem = _playingItem(uPlayingItem);
+        if (pPlayingItem)
+        {
+            pPlayingItem->uDuration = uDuration;
+            pPlayingItem->eQuality = eQuality;
+
+            qsTitle = pPlayingItem->qsTitle;
+        }
+    }
 
     void setPageRowCount(UINT uPageRowCount)
     {
@@ -112,8 +130,6 @@ private:
         _updateActive(-1);
         return true;
     }*/
-
-    void _updateActive(int nActiveTime=__ActiveTime);
 
     void _onAutoScrollBegin() override;
     void _onAutoScrollEnd() override;

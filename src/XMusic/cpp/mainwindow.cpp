@@ -764,19 +764,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
 
     //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
-    QString qsTitle;
-    tagPlayingItem *pPlayingItem = m_PlayingList.playingItem(uPlayingItem);
-    if (pPlayingItem)
-    {
-        qsTitle = pPlayingItem->qsTitle;
-
-        PlayingInfo.pSinger = pPlayingItem->pSinger;
-
-        pPlayingItem->uDuration = uDuration;
-
-        pPlayingItem->eQuality = PlayItem.quality();
-    }
-
     E_TrackType eTrackType = E_TrackType::TT_Single;
     if (pRelatedMedia)
     {
@@ -789,17 +776,24 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
 
             if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
             {
+                auto& snapshotDir = (CSnapshotDir&)*pMediaSet;
+                PlayingInfo.pSinger = snapshotDir.singer();
                 if (PlayingInfo.pSinger)
                 {
-                    PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
+                    PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle(snapshotDir);
                 }
                 eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
 
-                catName = ((CSnapshotDir*)pMediaSet)->catName();
+                catName = snapshotDir.catName();
             }
             else
             {
                 PlayingInfo.strMediaSet = pMediaSet->m_strName;
+
+                if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+                {
+                    PlayingInfo.pSinger = (CSinger*)pMediaSet->m_pParent;
+                }
             }
 
             PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(catName, *pRelatedMedia);
@@ -811,9 +805,11 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
         PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     }
 
-    g_app.sync([=]{
-        m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
-
+    //QString qsTitle = __WS2Q(PlayItem.GetTitle());
+    auto eQuality = PlayItem.quality();
+    g_app.sync([=]()mutable{
+        QString qsTitle;
+        m_PlayingList.updatePlayingItem(uPlayingItem, bManual, uDuration, eQuality, qsTitle);
         ui.labelPlayingfile->setText(qsTitle);
 
         _onPlay(PlayingInfo, uDuration, eTrackType);

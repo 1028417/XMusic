@@ -194,7 +194,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     {
         if (E_MediaSetType::MST_SnapshotDir == MediaSet.m_eType)
         {
-            //genAttachTitle(dir);
+            //strTitle = genAttachTitle(dir);
 
             cauto dir = (CSnapshotDir&)MediaSet;
             strTitle << _catTitle(dir) << __CNDot;
@@ -212,12 +212,12 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
                     }
                     pMediaSet = pMediaSet->m_pParent;
                 }
-           }
-           strTitle << dir.fileName();
+            }
+            strTitle << dir.fileName();
 
             /*if (!m_medialibDlg.isHLayout() && strutil::checkWordCount(strTitle) >= 18)
             {
-                dir.fileName();
+                strTitle = dir.fileName();
             }*/
         }
         else
@@ -585,7 +585,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
         }
 
         auto uCount = dir.count();
-        //if (uCount > 0)
+        //if (uCount)
             context.strRemark << uCount << L" 项";
     }
 
@@ -687,7 +687,7 @@ void CMedialibView::_genDirContext(tagMLItemContext& context, CPath& dir)
     }
 
     auto uCount = dir.count();
-    if (uCount > 0)
+    if (uCount)
     {
         context.strRemark << uCount << L" 项";
     }

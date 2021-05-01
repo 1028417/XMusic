@@ -115,10 +115,15 @@ public:
 	}
 
 #if !__winvc
-    void syncFileSizeDuration(const CMedia& media)
+    void SetFileSizeDuration(const CMedia& media) //合并提速
     {
         m_nFileSize = media.m_nFileSize;
         m_uDuration = media.m_uDuration;
+    }
+    void SetFileSizeDuration(uint64_t uFileSize, UINT uDuration) //合并提速
+    {
+        m_nFileSize = uFileSize;
+        m_uDuration = uDuration;
     }
 #endif
 
