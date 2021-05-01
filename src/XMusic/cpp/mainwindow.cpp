@@ -803,7 +803,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     //__xmedialib.getXpkMediaRes(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
 
-
     g_app.sync([=]{
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);
 

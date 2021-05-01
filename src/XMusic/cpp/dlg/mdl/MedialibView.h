@@ -133,7 +133,7 @@ private:
     QPixmap m_pmXmusicDir;
 
     QPixmap m_pmMedia;
-    //QPixmap m_pmXpkMediaRes;
+    //QPixmap m_pmXpkMedia;
     QPixmap m_pmFlac;
 
     cqpm m_pmHDDisk;

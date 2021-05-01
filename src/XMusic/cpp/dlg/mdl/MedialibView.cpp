@@ -143,7 +143,7 @@ void CMedialibView::initpm()
     (void)m_pmXmusicDir.load(__mdlPng(xmusicdir));
 
     (void)m_pmMedia.load(__mdlPng(media));
-    //(void)m_pmXpkMediaRes.load(__mdlPng(xpkmedia));
+    //(void)m_pmXpkMedia.load(__mdlPng(xpkmedia));
     (void)m_pmFlac.load(__mdlPng(flac));
 
     (void)m_pmDir.load(__mdlPng(dir));
@@ -642,7 +642,7 @@ void CMedialibView::_genFileContext(tagMLItemContext& context, XFile& file)
         }
         /*else// if (pRootDir == &m_xpkRoot)
         {
-            context.setIcon(m_pmXpkMediaRes);
+            context.setIcon(m_pmXpkMedia);
         }*/
     }
 }
