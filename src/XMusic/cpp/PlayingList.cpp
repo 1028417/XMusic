@@ -214,6 +214,7 @@ void CPlayingList::updateList(UINT uPlayingItem) //工作线程
         m_vecPlayingItems.swap(vecPlayingItems);
         updatePlayingItem(uPlayingItem, true);
     });
+    __usleep(100); // 等到同步完成，不然onPlay取不到 // TODO 优化
 }
 
 void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittestPlayingItem)
