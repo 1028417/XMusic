@@ -21,38 +21,69 @@ friend class CZipFile;
 public:
     CUnzDir() = default;
 
-public:
-    map<wstring, CUnzDir> mapSubDir;
-    map<wstring, tagUnzFile> mapSubFile;
-    //PtrArray<tagUnzFile*> paSubFile;
+private:
+    wstring m_strName;
+
+    map<wstring, CUnzDir> m_mapSubDir;
+    map<wstring, tagUnzFile> m_mapSubFile;
+    //PtrArray<tagUnzFile*> m_paSubFile;
 
 private:
-    inline const CUnzDir* _subDir(cwstr strName) const;
-
-    void clear()
+    inline const CUnzDir* _subDir(cwstr strDirName) const
     {
-        mapSubDir.clear();
-        mapSubFile.clear();
-        //paSubFile.clear();
+        auto itr = m_mapSubDir.find(strDirName);
+        if (itr == m_mapSubDir.end())
+        {
+            return NULL;
+        }
+        return &itr->second;
     }
 
-protected:
+    inline CUnzDir& _addSubDir(cwstr strDirName)
+    {
+        auto& unzDir = m_mapSubDir[strDirName];
+        unzDir.m_strName = strDirName;
+        return unzDir;
+    }
+
     CUnzDir& addSubDir(wstring strSubDir);
     tagUnzFile& addSubFile(wstring strSubFile);
 
 public:
+    void clear()
+    {
+        m_mapSubDir.clear();
+        m_mapSubFile.clear();
+        //m_paSubFile.clear();
+    }
+
+    cwstr name() const
+    {
+        return m_strName;
+    }
+
+    const map<wstring, CUnzDir>& subDirMap() const
+    {
+        return m_mapSubDir;
+    }
+
+    const map<wstring, tagUnzFile>& subFileMap() const
+    {
+        return m_mapSubFile;
+    }
+
     const CUnzDir* subDir(wstring strSubDir) const;
     //未实现不区分大小写
     const tagUnzFile* subFile(wstring strSubFile) const;
 
     void enumSubFile(cfn_void_t<const tagUnzFile&> cb) const
     {
-        for (cauto pr : mapSubFile)
+        for (cauto pr : m_mapSubFile)
         {
             cb(pr.second);
         }
 
-        for (cauto pr : mapSubDir)
+        for (cauto pr : m_mapSubDir)
         {
             pr.second.enumSubFile(cb);
         }
