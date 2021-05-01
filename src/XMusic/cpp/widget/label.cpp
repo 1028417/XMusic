@@ -149,11 +149,12 @@ void CLabelButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
     {
         if (m_bPressing)
         {
-            UINT uDelayTime = 100;
-    #if __windows || __mac
-            uDelayTime = 200;
-    #endif
-            async(uDelayTime, [&]{
+#if __windows || __mac
+#define __delayTime 150
+#else
+#define __delayTime 100
+#endif
+            async(__delayTime, [&]{
                 m_bPressing = false;
                 update();
             });

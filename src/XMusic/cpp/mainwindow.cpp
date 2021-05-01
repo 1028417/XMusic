@@ -807,7 +807,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
 
     //QString qsTitle = __WS2Q(PlayItem.GetTitle());
     auto eQuality = PlayItem.quality();
-    g_app.sync([=]()mutable{
+    g_app.sync([=]{//()mutable{
         QString qsTitle;
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual, uDuration, eQuality, qsTitle);
         ui.labelPlayingfile->setText(qsTitle);

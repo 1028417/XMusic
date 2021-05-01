@@ -225,13 +225,39 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
     ui.frameDemand->move(x_frameDemand, y_frameDemand);
 
+    if (!bDefaultBkg)
+    {
+#define __dy __size(3)
+        int dy =  round(fBkgZoomRate*__dy);
+
+        if (fBkgZoomRateEx <= 1)
+        {
+#define __offset __size(6)
+            int yOffset = round((float)__offset/fBkgZoomRate);
+            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
+            {
+                pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
+            }
+
+            dy -= yOffset;
+        }
+
+        for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+                                            , ui.btnSetting, ui.btnOrder, ui.btnRandom))
+        {
+            pWidget->move(pWidget->x(), pWidget->y() + dy);
+        }
+    }
+
+    int x_progressbar = ui.progressbar->x();
+
 #if __ios
     ui.btnFullScreen->setVisible(false);
 #else
     ui.btnFullScreen->setVisible(true);
 #endif
 
-    int x_FullScreen = __size(32);
+    int x_FullScreen = x_progressbar - __size(14);
     int x_btnMore = x_FullScreen;
     if (bHLayout)
     {
@@ -266,36 +292,13 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     }
 
     int y_btnMore = y_frameDemand - __size(6) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
-    ui.btnMore->move(x_btnMore, y_btnMore);    
+    ui.btnMore->move(x_btnMore, y_btnMore);
 
     ui.btnFullScreen->move(x_FullScreen, y_btnMore);
 
-    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(12));
+    int x_btnExit = cx - ui.btnExit->width() - (y_frameDemand + __size(6));
     ui.btnExit->move(x_btnExit, y_btnMore);
 
-    if (!bDefaultBkg)
-    {
-#define __dy __size(3)
-        int dy =  round(fBkgZoomRate*__dy);
-
-        if (fBkgZoomRateEx <= 1)
-        {
-#define __offset __size(6)
-            int yOffset = round((float)__offset/fBkgZoomRate);
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
-            {
-                pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
-            }
-
-            dy -= yOffset;
-        }
-
-        for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                                            , ui.btnSetting, ui.btnOrder, ui.btnRandom))
-        {
-            pWidget->move(pWidget->x(), pWidget->y() + dy);
-        }
-    }
 
     CLabel& labelAlbumName = *ui.labelAlbumName;
     bool bHasMediaSet = false;
@@ -364,11 +367,11 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     int y_PlayingListMax = 0;
 
-    int x = ui.progressbar->x();
-    int cx_progressbar = ui.progressbar->width();
-
     int cy_Playingfile = ui.labelPlayingfile->height();
     int y_Playingfile = ui.labelDuration->geometry().bottom() -  cy_Playingfile;
+
+    int x = x_progressbar;
+    int cx_progressbar = ui.progressbar->width();
 
 #define __cylabelAlbumName __size(70)
     if (!bDefaultBkg)
@@ -383,7 +386,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             y_labelAlbumName = y_Playingfile - __size(20);
         }
 
-        int x_SingerImg = x;
+        int x_SingerImg = x_progressbar;
         int cx_SingerImg = 0;
         int y_SingerImg = 0;
         int cy_SingerImg = 0;
