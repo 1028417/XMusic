@@ -153,7 +153,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     if (bPlayingItem)
     {
         if (g_bHLayout && rc.top() < __size(120)) //右上角按钮预留
-        {2
+        {
             nMaxRight -= __size(90);
         }
         nElidedWidth = nMaxRight-__size(50); //音质文本预留
