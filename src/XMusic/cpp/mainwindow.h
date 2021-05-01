@@ -32,10 +32,10 @@ struct tagPlayingInfo
 
     CSinger *pSinger = NULL;
 
-    IMedia *pRelatedMedia = NULL;
+    const IMedia *pRelatedMedia = NULL;
     wstring strMediaSet;
 
-    CMediaRes *pXpkMediaRes = NULL;
+    const CMediaRes *pXpkMediaRes = NULL;
 };
 
 enum class E_SingerImgPos

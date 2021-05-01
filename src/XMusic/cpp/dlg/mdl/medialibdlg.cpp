@@ -68,14 +68,14 @@ void CMedialibDlg::show()
     CDialog::show();
 }
 
-void CMedialibDlg::showMediaSet(CMediaSet& MediaSet)
+void CMedialibDlg::showMediaSet(const CMediaSet& MediaSet)
 {
     m_lv.showMediaSet(MediaSet);
 
     CDialog::show();
 }
 
-void CMedialibDlg::showMediaSet(IMedia& media)
+void CMedialibDlg::showMediaSet(const IMedia& media)
 {
     _relayout(g_app.mainWnd().width(), g_app.mainWnd().height());
 
@@ -87,7 +87,7 @@ void CMedialibDlg::showMediaSet(IMedia& media)
     CDialog::show();
 }
 
-bool CMedialibDlg::showMedia(IMedia& media)
+bool CMedialibDlg::showMedia(const IMedia& media)
 {
     _relayout(g_app.mainWnd().width(), g_app.mainWnd().height());
 
@@ -271,7 +271,7 @@ void CMedialibDlg::updateHead(const WString& strTitle)
         {
             bShowPlayButton = true;
         }
-        else if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
         {
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
 

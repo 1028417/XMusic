@@ -46,10 +46,10 @@ public:
 
     void show();
 
-    void showMediaSet(CMediaSet& MediaSet);
-    void showMediaSet(IMedia& media);
+    void showMediaSet(const CMediaSet& MediaSet);
+    void showMediaSet(const IMedia& media);
 
-    bool showMedia(IMedia& media);
+    bool showMedia(const IMedia& media);
 
     CMediaRes* showLocalFile(cwstr strPath);
 

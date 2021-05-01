@@ -780,28 +780,36 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     E_TrackType eTrackType = E_TrackType::TT_Single;
     if (pRelatedMedia)
     {
-        PlayingInfo.pRelatedMedia = (IMedia*)pRelatedMedia;
+        PlayingInfo.pRelatedMedia = pRelatedMedia;
 
         auto pMediaSet = pRelatedMedia->mediaSet();
         if (pMediaSet)
         {
-            if (E_MediaSetType::MST_SnapshotMediaDir == pMediaSet->m_eType)
+            wstring catName;
+
+            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
             {
                 if (PlayingInfo.pSinger)
                 {
                     PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle((CSnapshotDir&)*pMediaSet);
                 }
                 eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
+
+                catName = ((CSnapshotDir*)pMediaSet)->catName();
             }
             else
             {
                 PlayingInfo.strMediaSet = pMediaSet->m_strName;
             }
+
+            PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(catName, *pRelatedMedia);
         }
     }
 
-    PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
-    //__xmedialib.getXpkMediaRes(m_PlayingInfo.strPath, m_PlayingInfo.uFileSize);
+    if (NULL == PlayingInfo.pXpkMediaRes)
+    {
+        PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
+    }
 
     g_app.sync([=]{
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual);

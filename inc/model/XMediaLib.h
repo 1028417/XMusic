@@ -47,7 +47,8 @@ public:
         return m_xpkRoot;
     }
 
-    void scanXpk();
+    void scanXpk();    
+    CMediaRes* getXpkMediaRes(cwstr catName, const IMedia& media);
 
     void check();
 #endif
@@ -92,7 +93,7 @@ class __ModelExt CSnapshotDir : public CMediaDir, public CMediaSet
 public:
     CSnapshotDir(cwstr strDir, CSnapshotDir *pParent)
         : CMediaDir(strDir, pParent?(CMediaDir*)pParent:&__medialib)
-        , CMediaSet(pParent, E_MediaSetType::MST_SnapshotMediaDir)
+        , CMediaSet(pParent, E_MediaSetType::MST_SnapshotDir)
     {
     }
 

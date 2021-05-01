@@ -192,7 +192,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     auto pSinger = currentSinger();
     if (pSinger && &MediaSet != pSinger)
     {
-        if (E_MediaSetType::MST_SnapshotMediaDir == MediaSet.m_eType)
+        if (E_MediaSetType::MST_SnapshotDir == MediaSet.m_eType)
         {
             //genAttachTitle(dir);
 
@@ -568,7 +568,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
     }
 
     break;
-    case E_MediaSetType::MST_SnapshotMediaDir:
+    case E_MediaSetType::MST_SnapshotDir:
     {
         context.uStyle |= E_LVItemStyle::IS_ForwardButton;
 
@@ -1018,7 +1018,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
     do {
         if (mlContext.pMediaSet)
         {
-            if (E_MediaSetType::MST_SnapshotMediaDir == mlContext.pMediaSet->m_eType
+            if (E_MediaSetType::MST_SnapshotDir == mlContext.pMediaSet->m_eType
                 && !((CSnapshotDir*)mlContext.pMediaSet)->available)
             {
                 uShadowAlpha /= 2;
