@@ -70,7 +70,7 @@ void CMedialibDlg::show()
 
 void CMedialibDlg::showMediaSet(const CMediaSet& MediaSet)
 {
-    m_lv.showMediaSet(MediaSet);
+    m_lv.showMediaSet((CMediaSet&)MediaSet);
 
     CDialog::show();
 }
@@ -104,7 +104,7 @@ bool CMedialibDlg::showMedia(const IMedia& media)
     }
 
     g_app.sync([&]{
-        m_wholeTrackDlg.tryShow(media);
+        m_wholeTrackDlg.tryShow((IMedia&)media);
     });
 
     CDialog::show();
