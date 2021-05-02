@@ -237,6 +237,7 @@ void MainWindow::showLogo(CFont& font) // TODO 广告
 #if !__android
     m_labelLoginTip.resize(__cxLoginTip, __size(50));
     m_labelLoginTip.setFont(font);
+    m_labelLoginTip.adjustFont(1.1f, );
 #endif
 
     auto movie = new QMovie(this);

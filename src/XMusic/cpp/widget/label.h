@@ -178,6 +178,7 @@ public:
 };
 
 
+#if __android
 class CTipLabel : public CLabel
 {
 public:
@@ -187,5 +188,6 @@ private:
     cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText) override;
 
 public:
-    void show(QWidget& parent, cqstr qtTip, UINT uShowTime);
+    void show(QWidget& parent, cqstr qtTip, UINT uShowTime=0);
 };
+#endif

@@ -199,6 +199,7 @@ CLoadingLabel::CLoadingLabel(QWidget *parent) : CMovieLabel(":/img/loading.gif",
 }
 
 
+#if __android
 CTipLabel::CTipLabel() : CLabel(NULL)
 {
     this->setForeColor(0,0,0);
@@ -214,7 +215,7 @@ void CTipLabel::show(QWidget& parent, cqstr qtTip, UINT uShowTime)
 
     if (uShowTime)
     {
-        async(3000, [&]{
+        async(uShowTime, [&]{
             this->setVisible(false);
         });
     }
@@ -230,3 +231,4 @@ cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
     painter.fillRectEx(rcBkg, QColor(255,255,255,64), __szMargin);
     return rcText;
 }
+#endif
