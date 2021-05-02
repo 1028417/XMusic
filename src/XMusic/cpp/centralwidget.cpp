@@ -257,7 +257,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     ui.btnFullScreen->setVisible(true);
 #endif
 
-    int x_FullScreen = x_progressbar - __size(14);
+    int x_FullScreen = x_progressbar - __size(13);
     int x_btnMore = x_FullScreen;
     if (bHLayout)
     {

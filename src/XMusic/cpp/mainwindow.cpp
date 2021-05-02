@@ -750,8 +750,13 @@ void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
     m_PlayingList.updateList(nPlayingItem);
 }
 
+extern UINT g_uPlaySeq;
+static UINT m_uPlaySeq = 0;
+
 void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual)
 {
+    m_uPlaySeq = g_uPlaySeq;
+
     tagPlayingInfo PlayingInfo;
     cauto strPath = PlayingInfo.strPath = PlayItem.GetPath();
 
@@ -875,20 +880,24 @@ void MainWindow::onPlayStop(bool bOpenSuccess, bool bPlayFinish)
 #endif*/
     });
 
-    // 绝不可以sync或async，安卓切后台不响应
+    if (m_uPlaySeq != g_uPlaySeq)
+    {
+        return;
+    }
+
     if (bPlayFinish)
     {
+        // sync或async安卓切后台响应不来
         g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
     }
     else if (!bOpenSuccess)
     {
-        extern UINT g_uPlaySeq;
-        auto uPlaySeq = g_uPlaySeq;
         __usleep(2000);
-        if (uPlaySeq == g_uPlaySeq)
+        if (m_uPlaySeq != g_uPlaySeq)
         {
-            g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
+            return;
         }
+        g_app.getCtrl().callPlayCmd(E_PlayCmd::PC_AutoPlayNext);
     }
 }
 
