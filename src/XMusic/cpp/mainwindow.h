@@ -57,7 +57,7 @@ private:
     tagOption& m_opt;
 
 #if !__android
-    CLabel m_labelLoginTip;
+    CTipLabel m_labelLoginTip;
 #endif
 
     QBrush m_brBkg;

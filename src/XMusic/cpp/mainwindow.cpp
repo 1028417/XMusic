@@ -101,9 +101,6 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(g_app.getOption())
-#if !__android
-    , m_labelLoginTip(NULL)
-#endif
 {
     //this->setStyleSheet("");
 
@@ -223,6 +220,8 @@ void MainWindow::_init()
     m_bkgDlg.init();
 }
 
+#define __cxLoginTip __size(600)
+
 void MainWindow::showLogo(CFont& font) // TODO 广告
 {
 /*#if __android
@@ -236,7 +235,6 @@ void MainWindow::showLogo(CFont& font) // TODO 广告
     _init();
 
 #if !__android
-#define __cxLoginTip __size(600)
     m_labelLoginTip.resize(__cxLoginTip, __size(50));
     m_labelLoginTip.setFont(font);
 #endif
@@ -617,7 +615,7 @@ void MainWindow::_relayout()
     g_bHLayout = cx > cy; // 橫屏
 
 #if !__android
-    m_labelLoginTip.move((cx-m_labelLoginTip.width())/2, 0);
+    m_labelLoginTip.move((cx - __cxLoginTip)/2, cy - __size(300));
 #endif
 
     if (NULL == ui.centralWidget) return;
@@ -1349,22 +1347,13 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 #if !__android
 void MainWindow::showLoginLabel(cwstr strUser)
 {
-    auto pDlg = dynamic_cast<CDialog*>(CDialog::frontDlg());
-    if (pDlg)
+    QWidget *parent = dynamic_cast<CDialog*>(CDialog::frontDlg());
+    if (NULL == parent)
     {
-        m_labelLoginTip.setParent(pDlg);
-    }
-    else
-    {
-        m_labelLoginTip.setParent(this);
+        parent = this;
     }
 
-    m_labelLoginTip.setText("登录成功！Hi，" + __WS2Q(strUser));
-    m_labelLoginTip.raise();
-    m_labelLoginTip.setVisible(true);
-
-    async(3000, [&]{
-        m_labelLoginTip.setVisible(false);
-    });
+    cauto qsTip = "登录成功！Hi，" + __WS2Q(strUser);
+    m_labelLoginTip.show(*parent, qsTip, 3000);
 }
 #endif

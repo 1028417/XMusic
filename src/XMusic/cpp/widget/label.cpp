@@ -197,3 +197,32 @@ CLoadingLabel::CLoadingLabel(QWidget *parent) : CMovieLabel(":/img/loading.gif",
                                    border-top-left-radius:10px; border-top-right-radius:10px; \
                                    border-bottom-left-radius:10px; border-bottom-right-radius:10px;}");
 }
+
+
+CTipLabel::CTipLabel() : CLabel(NULL)
+{
+    this->setForeColor(0,0,0);
+}
+
+void CTipLabel::show(QWidget& parent, cqstr qtTip, UINT uShowTime)
+{
+    this->setParent(&parent, this->windowFlags());
+    this->raise();
+
+    this->setText(qtTip, Qt::AlignCenter);
+    this->setVisible(true);
+
+    if (uShowTime)
+    {
+        async(3000, [&]{
+            this->setVisible(false);
+        });
+    }
+}
+
+cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
+{
+    cauto rcText = CLabel::_paintText(painter, rc, qsText);
+    painter.fillRectEx(rcText, QColor(255,255,255,64), __size(12));
+    return rcText;
+}

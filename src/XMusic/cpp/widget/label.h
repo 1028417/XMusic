@@ -60,11 +60,10 @@ private:
 signals:
     void signal_clicked(CLabel*, const QPoint&);
 
-private:
-    cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText);
-
 protected:
     virtual void _onPaint(CPainter& painter, cqrc rc) override;
+
+    virtual cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText);
 
     virtual void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
@@ -176,4 +175,17 @@ class CLoadingLabel : public CMovieLabel
 {
 public:
     CLoadingLabel(QWidget *parent=NULL);
+};
+
+
+class CTipLabel : public CLabel
+{
+public:
+    CTipLabel();
+
+private:
+    cqrc _paintText(CPainter& painter, cqrc rc, cqstr qsText) override;
+
+public:
+    void show(QWidget& parent, cqstr qtTip, UINT uShowTime);
 };
