@@ -876,10 +876,21 @@ static E_LanguageType _genLanguageIcon(const CMediaSet& mediaSet)
 
 void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
 {
+    cauto mlContext = (tagMLItemContext&)context;
+    bool available = mlContext.available();
+    if (!available)
+    {
+        painter.setOpacity(0.5);
+    }
+
     CListView::_paintIcon(context, painter, rc);
 
+    if (!available)
+    {
+        painter.setOpacity(1);
+    }
+
     E_LanguageType eLanguageType = E_LanguageType::LT_None;
-    cauto mlContext = (tagMLItemContext&)context;
     if (mlContext.pMediaSet)
     {
         eLanguageType = _genLanguageIcon(*mlContext.pMediaSet);
@@ -924,7 +935,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
 #define __szLanguageIcon __size(54)
     QRect rcLanguage(rc.right()-__szLanguageIcon*2/5, rc.y()-__szLanguageIcon*3/5, __szLanguageIcon, __szLanguageIcon);
 
-    painter.setOpacity(.6f);
+    painter.setOpacity(available ? 0.6 : 0.4);
     painter.drawImg(rcLanguage, *pmLanguage);
     painter.setOpacity(1);
 }
@@ -932,7 +943,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
 #define __rAlign Qt::AlignRight|Qt::AlignVCenter
 
 cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
-                               , int flags, UINT uShadowAlpha, UINT uTextAlpha)
+                               , int flags, UINT uTextAlpha, UINT uShadowAlpha)
 {
     cauto rcRow = context->rc;
 
@@ -1013,46 +1024,16 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         }
     }
 
-    //uTextAlpha = 255;
-    //uShadowAlpha = __ShadowAlpha;
-    do {
-        if (mlContext.pMediaSet)
-        {
-            if (E_MediaSetType::MST_SnapshotDir == mlContext.pMediaSet->m_eType
-                && !((CSnapshotDir*)mlContext.pMediaSet)->available)
-            {
-                uShadowAlpha /= 2;
-                uTextAlpha /= 2;
-                break;
-            }
-        }
-        else if (mlContext.pDir)
-        {
-            auto pSnapshotDir = _snapshotDir(*mlContext.pDir);
-            if (pSnapshotDir && !pSnapshotDir->available)
-            {
-                uShadowAlpha /= 2;
-                uTextAlpha /= 2;
-                break;
-            }
-        }
-        else
-        {
-            auto pSnapshotMedia = mlContext.snapshotMedia();
-            if (pSnapshotMedia && !pSnapshotMedia->available)
-            {
-                uShadowAlpha /= 2;
-                uTextAlpha /= 2;
-                break;
-            }
-        }
-
-        if ((int)mlContext->uItem == m_nFlashItem)
-        {
-            uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
-            uTextAlpha = __FlashingAlpha;
-        }
-    } while(0);
+    if (!mlContext.available())
+    {
+        uShadowAlpha /= 2;
+        uTextAlpha /= 2;
+    }
+    else if ((int)mlContext->uItem == m_nFlashItem)
+    {
+        uTextAlpha = __FlashingAlpha;
+        uShadowAlpha = uShadowAlpha*__FlashingAlpha/300;
+    }
 
     // xmusic下文本换行
     if (mlContext.pDir && mlContext.pDir->parent() == &__medialib)
@@ -1073,7 +1054,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         }
     }
 
-    cauto rcRet = CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
+    cauto rcRet = CListView::_paintText(context, painter, rc, flags, uTextAlpha, uShadowAlpha);
 
     if (pqsQuality)
     {

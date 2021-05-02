@@ -105,7 +105,7 @@ size_t CWholeTrackView::getItemCount() const
 }
 
 cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
-                                 , int flags, UINT uShadowAlpha, UINT uTextAlpha)
+                                 , int flags, UINT uTextAlpha, UINT uShadowAlpha)
 {
     _paintBottonLine(painter, rc);
 
@@ -141,5 +141,5 @@ cqrc CWholeTrackView::_paintText(tagLVItemContext& context, CPainter& painter, Q
 
     rc.setRight(rc.right() - __size100);
 
-    return CListView::_paintText(context, painter, rc, flags, uShadowAlpha, uTextAlpha);
+    return CListView::_paintText(context, painter, rc, flags, uTextAlpha, uShadowAlpha);
 }

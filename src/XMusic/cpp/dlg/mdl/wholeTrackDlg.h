@@ -22,7 +22,7 @@ private:
     size_t getRowCount() const override;
     size_t getItemCount() const override;
 
-    cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
+    cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uTextAlpha, UINT uShadowAlpha) override;
 };
 
 class CWholeTrackDlg : public CDialog

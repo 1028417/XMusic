@@ -203,7 +203,7 @@ void CListView::_paintRow(CPainter& painter, tagLVItemContext& context)
     {
         flags |= Qt::TextWrapAnywhere;
     }
-    _paintText(context, painter, rc, flags, __ShadowAlpha, 255);
+    _paintText(context, painter, rc, flags, 255, __ShadowAlpha);
 }
 
 void CListView::_paintBottonLine(CPainter& painter, QRect& rc)
@@ -228,7 +228,7 @@ void CListView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc
 }
 
 cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& rc
-                           , int flags, UINT uShadowAlpha, UINT uTextAlpha)
+                           , int flags, UINT uTextAlpha, UINT uShadowAlpha)
 {
     /*QString qsText = context.strText;
     if (context.uStyle & E_LVItemStyle::IS_SingleLine)

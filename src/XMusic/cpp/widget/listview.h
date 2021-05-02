@@ -178,7 +178,7 @@ protected:
     void _paintBottonLine(CPainter& painter, QRect& rc);
 
     virtual void _paintIcon(tagLVItemContext&, CPainter&, cqrc);
-    virtual cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha);
+    virtual cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uTextAlpha, UINT uShadowAlpha);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 

@@ -381,7 +381,7 @@ private:
 
     void _onPaint(CPainter& painter, int cx, int cy) override;
     void _paintIcon(tagLVItemContext&, CPainter&, cqrc) override;
-    cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uShadowAlpha, UINT uTextAlpha) override;
+    cqrc _paintText(tagLVItemContext&, CPainter&, QRect&, int flags, UINT uTextAlpha, UINT uShadowAlpha) override;
 
     void _onMediasetClick(tagLVItem&, const QMouseEvent&, CMediaSet& mediaSet) override;
     void _onMediaClick(tagLVItem& lvItem, const QMouseEvent& me, IMedia& media) override;

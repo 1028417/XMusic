@@ -20,6 +20,35 @@ struct tagMLItemContext : public tagLVItemContext
         return pMediaSet || pMedia || pDir || pFile;
     }
 
+    bool available() const
+    {
+        if (pMediaSet)
+        {
+            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType
+                && !((CSnapshotDir*)pMediaSet)->available)
+            {
+                return false;
+            }
+        }
+        else if (pDir)
+        {
+            auto pSnapshotDir = _snapshotDir(*pDir);
+            if (pSnapshotDir && !pSnapshotDir->available)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            auto pSnapshotMedia = snapshotMedia();
+            if (pSnapshotMedia && !pSnapshotMedia->available)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     tagMLItemContext(tagLVItem& lvItem)
         : tagLVItemContext(lvItem)
     {

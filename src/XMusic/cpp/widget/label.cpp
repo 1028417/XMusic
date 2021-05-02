@@ -225,7 +225,7 @@ cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
 {
     cauto rcText = CLabel::_paintText(painter, rc, qsText);
 
-#define __szMargin __size(12)
+#define __szMargin __size(15)
     QRect rcBkg(rcText.x()-__szMargin*2, rcText.y()-__szMargin
                 , rcText.width()+__szMargin*4, rcText.height()+__szMargin*2);
     painter.fillRectEx(rcBkg, QColor(200,200,200,128), __szMargin);
