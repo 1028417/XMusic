@@ -148,7 +148,7 @@ void MainWindow::preinit(XThread& thr) // showlogo之后工作线程调用
 void MainWindow::_ctor()
 {
 #if !__android
-    m_labelLoginTip.resize(__cxLoginTip, __size(50));
+    m_labelLoginTip.resize(__cxLoginTip, __size(60));
     m_labelLoginTip.setFont(1.03f, TD_FontWeight::Normal);
 #endif
 
@@ -1353,7 +1353,7 @@ void MainWindow::showLoginLabel(cwstr strUser)
         parent = this;
     }
 
-    cauto qsTip = "登录成功！Hi，" + __WS2Q(strUser);
+    cauto qsTip = "登录成功！Hi~ " + __WS2Q(strUser);
     m_labelLoginTip.show(*parent, qsTip, 3000);
 }
 #endif

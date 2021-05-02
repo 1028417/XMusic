@@ -225,10 +225,10 @@ cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
 {
     cauto rcText = CLabel::_paintText(painter, rc, qsText);
 
-#define __szMargin __size(30)
-    QRect rcBkg(rcText.x()-__szMargin, rcText.y()-__szMargin
-               , rcText.width()+__szMargin*2, rcText.height()+__szMargin*2);
-    painter.fillRectEx(rcBkg, QColor(128,128,128,64), __szMargin);
+#define __szMargin __size(12)
+    QRect rcBkg(rcText.x()-__szMargin*2, rcText.y()-__szMargin
+                , rcText.width()+__szMargin*4, rcText.height()+__szMargin*2);
+    painter.fillRectEx(rcBkg, QColor(200,200,200,128), __szMargin);
     return rcText;
 }
 #endif
