@@ -8,8 +8,15 @@
 struct tagPlayingItem
 {
     UINT uID = 0;
-    CSinger *pSinger = NULL;
+
+    wstring strPath;
+
+    //CSinger *pSinger = NULL;
+    //wstring strTitle;
     QString qsTitle;
+
+    cqstr title();
+
     UINT uDuration = 0;
     E_MediaQuality eQuality = E_MediaQuality::MQ_None;
 };
@@ -61,20 +68,8 @@ public:
 
     void updateList(UINT uPlayingItem);
 
-    void updatePlayingItem(UINT uPlayingItem, bool bHittest, UINT uDuration
-                              , E_MediaQuality eQuality, QString& qsTitle)
-    {
-        _updatePlayingItem(uPlayingItem, bHittest);
-
-        auto pPlayingItem = _playingItem(uPlayingItem);
-        if (pPlayingItem)
-        {
-            pPlayingItem->uDuration = uDuration;
-            pPlayingItem->eQuality = eQuality;
-
-            qsTitle = pPlayingItem->qsTitle;
-        }
-    }
+    QString updatePlayingItem(UINT uPlayingItem, bool bHittest, const struct tagPlayingInfo& PlayingInfo
+                           , UINT uDuration, E_MediaQuality eQuality);
 
     void setPageRowCount(UINT uPageRowCount)
     {
@@ -90,7 +85,7 @@ private:
     }
 
     void _onPaintItem(CPainter&, tagLVItem&) override;
-    void _onPaintItem(CPainter&, tagLVItem&, const tagPlayingItem&);
+    void _onPaintItem(CPainter&, tagLVItem&, tagPlayingItem&);
 
     void _onItemDblClick(tagLVItem&, const QMouseEvent&) override;
 

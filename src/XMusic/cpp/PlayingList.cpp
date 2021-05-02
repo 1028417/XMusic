@@ -3,6 +3,42 @@
 
 #include "PlayingList.h"
 
+static QString _genDisplayTitle(cwstr strPath, CSinger *pSinger)
+{
+    auto strTitle = fsutil::getFileTitle(strPath);
+    if (pSinger)
+    {
+        CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
+    }
+    else if (!fsutil::existFile(strPath)) //非本地文件
+    {
+        CFileTitle::genDisplayTitle(strTitle);
+    }
+    return __WS2Q(strTitle);
+}
+
+cqstr tagPlayingItem::title()
+{
+    if (qsTitle.isEmpty())
+    {
+        auto strTitle = fsutil::getFileTitle(strPath);
+        if (!fsutil::existFile(strPath)) //非本地文件
+        {
+            auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
+            if (pSinger)
+            {
+                CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
+            }
+            else
+            {
+                CFileTitle::genDisplayTitle(strTitle);
+            }
+        }
+        qsTitle = __WS2Q(strTitle);
+    }
+    return qsTitle;
+}
+
 static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
 {
     auto& playingItems = g_app.getPlayMgr().playingItems();
@@ -15,26 +51,13 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
     vecPlayingItems.resize(uCount);
     auto pPlayingItem = &vecPlayingItems.front();
 
-    auto& singerMgr = g_app.getSingerMgr();
     for (cauto PlayItem : playingItems)
     {
         pPlayingItem->uID = PlayItem.m_uID;
 
-        auto strTitle = PlayItem.GetTitle();
-        if (!fsutil::existFile(PlayItem.GetAbsPath())) // 只检查非本地文件
-        {
-            auto pSinger = singerMgr.checkSingerDir(PlayItem.GetPath());
-            if (pSinger)
-            {
-                pPlayingItem->pSinger = pSinger;
-                CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
-            }
-            else
-            {
-                CFileTitle::genDisplayTitle(strTitle);
-            }
-        }
-        pPlayingItem->qsTitle = __WS2Q(strTitle);
+        pPlayingItem->strPath = PlayItem.GetPath();
+
+        //pPlayingItem->strTitle = PlayItem.GetTitle();
 
         pPlayingItem->uDuration = PlayItem.duration();
 
@@ -90,7 +113,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem)
     }
 }
 
-void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagPlayingItem& playingItem)
+void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, tagPlayingItem& playingItem)
 {
     auto& rc = lvItem.rc;
     int cy = height();
@@ -171,7 +194,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, const tagP
     }
 
     auto eTextFlag = Qt::TextSingleLine | Qt::TextHideMnemonic; // | Qt::TextShowMnemonic);
-    cauto qsTitle = painter.fontMetrics().elidedText(playingItem.qsTitle
+    cauto qsTitle = painter.fontMetrics().elidedText(playingItem.title()
             , Qt::ElideRight, nElidedWidth, eTextFlag);
     auto rcPos = painter.drawTextEx(rc, Qt::AlignLeft|Qt::AlignVCenter, qsTitle
                        , m_uShadowWidth, uShadowAlpha, uTextAlpha);
@@ -322,4 +345,22 @@ void CPlayingList::timerEvent(QTimerEvent *)
             update();
         }
     }
+}
+
+QString CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittest, const tagPlayingInfo& PlayingInfo
+                       , UINT uDuration, E_MediaQuality eQuality)
+{
+    cauto qsTitle = _genDisplayTitle(PlayingInfo.strPath, PlayingInfo.pSinger);
+
+    auto pPlayingItem = _playingItem(uPlayingItem);
+    if (pPlayingItem)
+    {
+        pPlayingItem->qsTitle = qsTitle;
+        pPlayingItem->uDuration = uDuration;
+        pPlayingItem->eQuality = eQuality;
+    }
+
+    _updatePlayingItem(uPlayingItem, bHittest);
+
+    return qsTitle;
 }
