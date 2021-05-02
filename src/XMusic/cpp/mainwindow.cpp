@@ -817,10 +817,15 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, 
         PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     }
 
+    bool bAbsPath = PlayItem.isAbsPath();
+    cauto strTitle = PlayItem.GetTitle();
+    cauto qsTitle = bAbsPath ? __WS2Q(strTitle) : CFileTitle::genDisplayTitle_r(
+                                   strTitle, PlayingInfo.pSinger);
+
     auto eQuality = PlayItem.quality();
 
     g_app.sync([=]{
-        cauto qsTitle = m_PlayingList.updatePlayingItem(uPlayingItem, bManual, PlayingInfo, uDuration, eQuality);
+        m_PlayingList.updatePlayingItem(uPlayingItem, bManual, qsTitle, uDuration, eQuality);
         ui.labelPlayingfile->setText(qsTitle);
 
         _onPlay(PlayingInfo, uDuration, eTrackType);

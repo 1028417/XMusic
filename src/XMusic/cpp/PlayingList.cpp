@@ -3,38 +3,12 @@
 
 #include "PlayingList.h"
 
-static QString _genDisplayTitle(cwstr strPath, CSinger *pSinger)
-{
-    auto strTitle = fsutil::getFileTitle(strPath);
-    if (pSinger)
-    {
-        CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
-    }
-    else if (!fsutil::existFile(strPath)) //非本地文件
-    {
-        CFileTitle::genDisplayTitle(strTitle);
-    }
-    return __WS2Q(strTitle);
-}
-
 cqstr tagPlayingItem::title()
 {
     if (qsTitle.isEmpty())
     {
-        auto strTitle = fsutil::getFileTitle(strPath);
-        if (!fsutil::existFile(strPath)) //非本地文件
-        {
-            auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
-            if (pSinger)
-            {
-                CFileTitle::genDisplayTitle(strTitle, &pSinger->m_strName);
-            }
-            else
-            {
-                CFileTitle::genDisplayTitle(strTitle);
-            }
-        }
-        qsTitle = __WS2Q(strTitle);
+        auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
+        qsTitle = CFileTitle::genDisplayTitle_r(strPath, pSinger);
     }
     return qsTitle;
 }
@@ -57,7 +31,10 @@ static void _genPlayingItem(vector<tagPlayingItem>& vecPlayingItems)
 
         pPlayingItem->strPath = PlayItem.GetPath();
 
-        //pPlayingItem->strTitle = PlayItem.GetTitle();
+        if (PlayItem.isAbsPath())
+        {
+            pPlayingItem->qsTitle = __WS2Q(PlayItem.GetTitle());
+        }
 
         pPlayingItem->uDuration = PlayItem.duration();
 
@@ -347,11 +324,9 @@ void CPlayingList::timerEvent(QTimerEvent *)
     }
 }
 
-QString CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittest, const tagPlayingInfo& PlayingInfo
+void CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittest, cqstr qsTitle
                        , UINT uDuration, E_MediaQuality eQuality)
 {
-    cauto qsTitle = _genDisplayTitle(PlayingInfo.strPath, PlayingInfo.pSinger);
-
     auto pPlayingItem = _playingItem(uPlayingItem);
     if (pPlayingItem)
     {
@@ -361,6 +336,4 @@ QString CPlayingList::updatePlayingItem(UINT uPlayingItem, bool bHittest, const 
     }
 
     _updatePlayingItem(uPlayingItem, bHittest);
-
-    return qsTitle;
 }

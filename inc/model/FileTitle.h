@@ -27,6 +27,20 @@ public:
 
 #if !__winvc
     static void genDisplayTitle(wstring& strFileTitle, const wstring *pstrSingerName=NULL);
+
+    static QString genDisplayTitle_r(cwstr strFileTitle, const CSinger *pSinger=NULL)
+    {
+        auto t_strFileTitle = strFileTitle;
+        if (pSinger)
+        {
+            CFileTitle::genDisplayTitle(t_strFileTitle, &pSinger->m_strName);
+        }
+        else
+        {
+            CFileTitle::genDisplayTitle(t_strFileTitle);
+        }
+        return __WS2Q(t_strFileTitle);
+    }
 #endif
 
 private:

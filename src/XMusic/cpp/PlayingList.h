@@ -12,9 +12,8 @@ struct tagPlayingItem
     wstring strPath;
 
     //CSinger *pSinger = NULL;
-    //wstring strTitle;
-    QString qsTitle;
 
+    QString qsTitle;
     cqstr title();
 
     UINT uDuration = 0;
@@ -68,7 +67,7 @@ public:
 
     void updateList(UINT uPlayingItem);
 
-    QString updatePlayingItem(UINT uPlayingItem, bool bHittest, const struct tagPlayingInfo& PlayingInfo
+    void updatePlayingItem(UINT uPlayingItem, bool bHittest, cqstr qsTitle
                            , UINT uDuration, E_MediaQuality eQuality);
 
     void setPageRowCount(UINT uPageRowCount)

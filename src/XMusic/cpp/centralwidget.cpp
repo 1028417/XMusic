@@ -247,6 +247,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         {
             pWidget->move(pWidget->x(), pWidget->y() + dy);
         }
+
+        ui.labelDuration->setY(ui.labelDuration->y()-__size(6));
     }
 
     int x_progressbar = ui.progressbar->x();

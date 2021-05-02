@@ -15,6 +15,21 @@ private:
     wstring GetExportFileName() override;
 
     void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+#else
+
+    wstring GetAbsPath() const override // 不靠谱，隐藏起来
+    {
+        cauto strPath = GetPath();
+        if (0 == m_pParent->m_uID)
+        {
+            if (fsutil::existFile(strPath)) // 可能已经是绝对路径
+            {
+                return strPath;
+            }
+        }
+
+        return __medialib.toAbsPath(strPath, false);
+    }
 #endif
 
 public:
@@ -36,23 +51,14 @@ public:
 	}
 
 #else
-    wstring GetAbsPath() const override // 兼容本地文件
-    {
-        cauto strPath = GetPath();
-        if (0 == m_pParent->m_uID)
-        {
-            if (fsutil::existFile(strPath))
-            {
-                return strPath;
-            }
-        }
-
-        return __medialib.toAbsPath(strPath, false);
-    }
-
     bool isXmsc() const
     {
         return GetFileType() == E_MediaFileType::MFT_Null;
+    }
+
+    bool isAbsPath() const // 可能已经是绝对路径
+    {
+        return fsutil::existFile(GetPath());
     }
 #endif
 };
