@@ -206,7 +206,7 @@ CTipLabel::CTipLabel() : CLabel(NULL)
 
 void CTipLabel::show(QWidget& parent, cqstr qtTip, UINT uShowTime)
 {
-    this->setParent(&parent, this->windowFlags());
+    this->setParent(&parent);
     this->raise();
 
     this->setText(qtTip, Qt::AlignCenter);
@@ -223,6 +223,10 @@ void CTipLabel::show(QWidget& parent, cqstr qtTip, UINT uShowTime)
 cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
 {
     cauto rcText = CLabel::_paintText(painter, rc, qsText);
-    painter.fillRectEx(rcText, QColor(255,255,255,64), __size(12));
+
+#define __szMargin __size(20)
+    QRect rcBkg(rcText.x()-__szMargin, rcText.y()-__szMargin
+               , rcText.width()+__szMargin*2, rcText.height()+__szMargin*2);
+    painter.fillRectEx(rcBkg, QColor(255,255,255,64), __szMargin);
     return rcText;
 }
