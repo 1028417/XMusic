@@ -143,8 +143,15 @@ void MainWindow::preinit(XThread& thr) // showlogo之后工作线程调用
     }
 }
 
+#define __cxLoginTip __size(600)
+
 void MainWindow::_ctor()
 {
+#if !__android
+    m_labelLoginTip.resize(__cxLoginTip, __size(50));
+    m_labelLoginTip.setFont(1.03f, TD_FontWeight::Normal);
+#endif
+
     ui.setupUi(this);
 
     ui.centralWidget->ctor();
@@ -220,8 +227,6 @@ void MainWindow::_init()
     m_bkgDlg.init();
 }
 
-#define __cxLoginTip __size(600)
-
 void MainWindow::showLogo() // TODO 广告
 {
 /*#if __android
@@ -233,11 +238,6 @@ void MainWindow::showLogo() // TODO 广告
 #endif*/
 
     _init();
-
-#if !__android
-    m_labelLoginTip.resize(__cxLoginTip, __size(50));
-    m_labelLoginTip.setFont(1.1f, TD_FontWeight::Normal);
-#endif
 
     auto movie = new QMovie(this);
     movie->setFileName(":/img/logo.gif");
