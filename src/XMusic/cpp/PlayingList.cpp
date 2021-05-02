@@ -7,8 +7,9 @@ cqstr tagPlayingItem::title()
 {
     if (qsTitle.isEmpty())
     {
+        cauto strTitle = fsutil::getFileTitle(strPath);
         auto pSinger = g_app.getSingerMgr().checkSingerDir(strPath);
-        qsTitle = CFileTitle::genDisplayTitle_r(strPath, pSinger);
+        qsTitle = CFileTitle::genDisplayTitle_r(strTitle, pSinger);
     }
     return qsTitle;
 }

@@ -21,7 +21,13 @@ public:
 	static wstring genCollateSingerName(cwstr strSingerName);
 
     static bool genCollateTitle(wstring& strFileTitle);
-	static wstring genCollateTitle_r(cwstr strFileTitle);
+
+    inline static wstring genCollateTitle_r(cwstr strFileTitle)
+    {
+        auto strRet = strFileTitle;
+        genCollateTitle(strRet);
+        return strRet;
+    }
 
     static bool formatFileTitle(wstring& strFileTitle, const wstring *pstrSingerName=NULL);
 
