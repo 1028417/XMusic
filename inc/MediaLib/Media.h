@@ -1,4 +1,4 @@
-
+﻿
 #pragma once
 
 #if __windows

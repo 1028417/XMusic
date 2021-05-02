@@ -221,12 +221,12 @@ void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示
 
 void showToast(cqstr qsTip, bool bLongTime)
 {
-    QtAndroid::runOnAndroidThread([=] {
+    //QtAndroid::runOnAndroidThread([=] {
         cauto jsTip = QAndroidJniObject::fromString(qsTip);
         QtAndroid::androidActivity().callMethod<void>("showToast",
                     "(Ljava/lang/String;Z)V",
                     jsTip.object<jstring>(), jboolean(bLongTime));
-    });
+    //});
 }
 
 /*这段仅供QAndroidJniObject语法参考
@@ -244,25 +244,23 @@ void setStatusBar(const QColor& cr, bool bLight)
 // View
 #define SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 0x00002000
 
-    QtAndroid::runOnAndroidThread([=]{
-        QAndroidJniObject window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
-        window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
+    QAndroidJniObject window = QtAndroid::androidActivity().callObjectMethod("getWindow", "()Landroid/view/Window;");
+    window.callMethod<void>("addFlags", "(I)V", FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    window.callMethod<void>("clearFlags", "(I)V", FLAG_TRANSLUCENT_STATUS);
 
-        //window.callMethod<void>("setStatusBarColor", "(I)V", cr.rgba());
+    //window.callMethod<void>("setStatusBarColor", "(I)V", cr.rgba());
 
-        QAndroidJniObject view = window.callObjectMethod("getDecorView", "()Landroid/view/View;");
-        int visibility = view.callMethod<int>("getSystemUiVisibility", "()I");
-        if (bLight)
-        {
-            visibility |= SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        }
-        else
-        {
-            visibility &= ~SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        }
-        view.callMethod<void>("setSystemUiVisibility", "(I)V", visibility);
-    });
+    QAndroidJniObject view = window.callObjectMethod("getDecorView", "()Landroid/view/View;");
+    int visibility = view.callMethod<int>("getSystemUiVisibility", "()I");
+    if (bLight)
+    {
+        visibility |= SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    }
+    else
+    {
+        visibility &= ~SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    }
+    view.callMethod<void>("setSystemUiVisibility", "(I)V", visibility);
 }*/
 
 bool checkMobileConnected()

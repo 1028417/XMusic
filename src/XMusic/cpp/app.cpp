@@ -294,38 +294,38 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& st
 
 #define __loginCheck 6e5
 
-//static UINT s_uSeq = 0;
+//static UINT g_uLoginSeq = 0;
 void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin)
 {
-    //if (uSeq != s_uSeq) return;
-    if (E_LoginReult::LR_Success == eRet)
+    //if (uLoginSeq != g_uLoginSeq) return;
+
+    if (E_LoginReult::LR_Success != eRet)
     {
+        sync(3000, [=]{
+            _showLoginDlg(strUser, strPwd, eRet);
+        });
+        return;
+    }
+
+    sync([=]{
         if (!bRelogin)
         {
 #if __android
             vibrate();
             showToast("登录成功！Hi，" + __WS2Q(strUser), true);
 #else
-            // TODO
+            m_mainWnd.showLoginLabel(strUser);
 #endif
         }
-        sync(__loginCheck, [=]{
-            //if (uSeq != s_uSeq) return;
+        async(__loginCheck, [=]{
             (void)asyncLogin(strUser, strPwd, true);
         });
-    }
-    else
-    {
-        sync(3000, [=]{
-            //if (uSeq != s_uSeq) return;
-            _showLoginDlg(strUser, strPwd, eRet);
-        });
-    }
+    });
 }
 
 void CApp::asyncLogin(cwstr strUser, const string& strPwd, bool bRelogin)
 {
-    //auto uSeq = ++s_uSeq;
+    //auto uLoginSeq = ++g_uLoginSeq;
 
     m_model.getUserMgr().asyncLogin(g_bRunSignal, strUser, strPwd, [=](E_LoginReult eRet){
         _cbLogin(eRet, strUser, strPwd, bRelogin);

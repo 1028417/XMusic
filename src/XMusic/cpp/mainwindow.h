@@ -53,8 +53,10 @@ class MainWindow : public QMainWindow, public IModelObserver, private CXObj
 public:
     MainWindow();
 
-private:    
+private:
     tagOption& m_opt;
+
+    CLabel m_labelLoginTip;
 
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
@@ -107,6 +109,8 @@ public:
     void preinit(XThread& thr);
 
     void show();
+
+    void showLoginLabel(cwstr strUser);
 
     void quit(cfn_void cb);
 

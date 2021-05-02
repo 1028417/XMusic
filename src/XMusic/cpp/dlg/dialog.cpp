@@ -5,6 +5,15 @@
 
 static list<CDialog*> g_lstDlg;
 
+CDialog* CDialog::frontDlg()
+{
+    if (!g_lstDlg.empty())
+    {
+        return g_lstDlg.front();
+    }
+    return NULL;
+}
+
 void CDialog::resetPos()
 {
     for (auto pDlg : g_lstDlg)

@@ -101,6 +101,7 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(g_app.getOption())
+    , m_labelLoginTip(NULL)
 {
     //this->setStyleSheet("");
 
@@ -801,7 +802,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, 
             PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(pSnapshotDir->catName(), *pMediaRes);
         }
     }
-    else// if (NULL == PlayingInfo.pXpkMediaRes)
+    else
     {
         PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     }
@@ -1331,4 +1332,22 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
             }
         }
     }
+}
+
+void MainWindow::showLoginLabel(cwstr strUser)
+{
+    auto pDlg = CDialog::frontDlg();
+    if (pDlg && pDlg->geometry().bottom() > 100)
+    {
+        m_labelLoginTip.setParent(pDlg);
+    }
+    else
+    {
+        m_labelLoginTip.setParent(this);
+    }
+
+    m_labelLoginTip.setGeometry(0,0, __size(300), __size(30));
+    m_labelLoginTip.setText("登录成功！Hi，" + __WS2Q(strUser));
+    m_labelLoginTip.raise();
+    m_labelLoginTip.setVisible(true);
 }

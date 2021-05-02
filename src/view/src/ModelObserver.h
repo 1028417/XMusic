@@ -21,7 +21,7 @@ private:
 
 	void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) override;
 
-	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual) override;
+	void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia*, CMediaRes*, bool bManual) override;
 	void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 	
 	UINT GetSingerImgPos(UINT uSingerID) override;
