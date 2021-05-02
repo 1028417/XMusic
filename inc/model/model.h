@@ -241,7 +241,7 @@ public:
 
     virtual void onPlayingListUpdated(int nPlayingItem = -1, bool bSetActive = false) = 0;
 
-    virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual) = 0;
+    virtual void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, CMediaRes *pMediaRes, bool bManual) = 0;
     virtual void onPlayStop(bool bOpenSuccess, bool bPlayFinish) = 0;
 
     virtual UINT GetSingerImgPos(UINT uSingerID)

@@ -753,7 +753,7 @@ void MainWindow::onPlayingListUpdated(int nPlayingItem, bool bSetActive)
 extern UINT g_uPlaySeq;
 static UINT m_uPlaySeq = 0;
 
-void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual)
+void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, CMediaRes *pMediaRes, bool bManual)
 {
     m_uPlaySeq = g_uPlaySeq;
 
@@ -770,42 +770,38 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pR
     //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
     E_TrackType eTrackType = E_TrackType::TT_Single;
-    if (pRelatedMedia)
+    if (pMedia)
     {
-        PlayingInfo.pRelatedMedia = pRelatedMedia;
+        PlayingInfo.pIMedia = pMedia;
 
-        auto pMediaSet = pRelatedMedia->mediaSet();
-        if (pMediaSet)
+        auto pMediaSet = pMedia->mediaSet();
+        PlayingInfo.strMediaSet = pMediaSet->m_strName;
+
+        if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
         {
-            wstring catName;
+            PlayingInfo.pSinger = (CSinger*)pMediaSet->m_pParent;
+        }
 
-            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
+        PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(L"", *pMedia);
+    }
+    else if (pMediaRes)
+    {
+        PlayingInfo.pIMedia = pMediaRes;
+
+        auto pSnapshotDir = _snapshotDir(*pMediaRes);
+        if (pSnapshotDir)
+        {
+            PlayingInfo.pSinger = pSnapshotDir->singer();
+            if (PlayingInfo.pSinger)
             {
-                auto& snapshotDir = (CSnapshotDir&)*pMediaSet;
-                PlayingInfo.pSinger = snapshotDir.singer();
-                if (PlayingInfo.pSinger)
-                {
-                    PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle(snapshotDir);
-                }
-                eTrackType = ((CSnapshotMedia*)pRelatedMedia)->trackType();
-
-                catName = snapshotDir.catName();
+                PlayingInfo.strMediaSet = m_medialibDlg.genAttachTitle(*pSnapshotDir);
             }
-            else
-            {
-                PlayingInfo.strMediaSet = pMediaSet->m_strName;
+            eTrackType = ((CSnapshotMedia*)pMediaRes)->trackType();
 
-                if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
-                {
-                    PlayingInfo.pSinger = (CSinger*)pMediaSet->m_pParent;
-                }
-            }
-
-            PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(catName, *pRelatedMedia);
+            PlayingInfo.pXpkMediaRes = __xmedialib.getXpkMediaRes(pSnapshotDir->catName(), *pMediaRes);
         }
     }
-
-    if (NULL == PlayingInfo.pXpkMediaRes)
+    else// if (NULL == PlayingInfo.pXpkMediaRes)
     {
         PlayingInfo.pXpkMediaRes = __xmedialib.xpkRoot().subFile(strPath);
     }
@@ -1142,9 +1138,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelAlbumName)
     {
-        if (m_PlayingInfo.pRelatedMedia)
+        if (m_PlayingInfo.pIMedia)
         {
-            m_medialibDlg.showMediaSet(*m_PlayingInfo.pRelatedMedia);
+            m_medialibDlg.showMediaSet(*m_PlayingInfo.pIMedia);
         }
     }
     else if (label == ui.labelPlayingfile)
@@ -1155,9 +1151,9 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             return;
         }
 
-        if (m_PlayingInfo.pRelatedMedia)
+        if (m_PlayingInfo.pIMedia)
         {
-            (void)m_medialibDlg.showMedia(*m_PlayingInfo.pRelatedMedia);
+            (void)m_medialibDlg.showMedia(*m_PlayingInfo.pIMedia);
             return;
         }
 

@@ -32,7 +32,7 @@ struct tagPlayingInfo
 
     CSinger *pSinger = NULL;
 
-    const IMedia *pRelatedMedia = NULL;
+    IMedia *pIMedia = NULL;
     wstring strMediaSet;
 
     const CMediaRes *pXpkMediaRes = NULL;
@@ -147,7 +147,7 @@ private:
 private:
     void onPlayingListUpdated(int nPlayingItem, bool bSetActive) override;
 
-    void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, const IMedia *pRelatedMedia, bool bManual) override;
+    void onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, CMediaRes *pMediaRes, bool bManual) override;
 
     void onPlayStop(bool bOpenSuccess, bool bPlayFinish) override;
 
