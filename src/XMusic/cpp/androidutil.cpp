@@ -221,12 +221,12 @@ void showTransparentStatusBar(bool bShow) //Qt WindowMaximized状态下，显示
 
 void showToast(cqstr qsTip, bool bLongTime)
 {
-    //QtAndroid::runOnAndroidThread([=] {
+    QtAndroid::runOnAndroidThread([=] {//必须
         cauto jsTip = QAndroidJniObject::fromString(qsTip);
         QtAndroid::androidActivity().callMethod<void>("showToast",
                     "(Ljava/lang/String;Z)V",
                     jsTip.object<jstring>(), jboolean(bLongTime));
-    //});
+    });
 }
 
 /*这段仅供QAndroidJniObject语法参考

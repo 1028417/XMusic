@@ -56,7 +56,9 @@ public:
 private:
     tagOption& m_opt;
 
+#if !__android
     CLabel m_labelLoginTip;
+#endif
 
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
@@ -102,7 +104,7 @@ public:
 
     void exec();
 
-    void showLogo();
+    void showLogo(CFont& font);
     void startLogo();
     void stopLogo();
 
@@ -110,7 +112,9 @@ public:
 
     void show();
 
+#if !__android
     void showLoginLabel(cwstr strUser);
+#endif
 
     void quit(cfn_void cb);
 

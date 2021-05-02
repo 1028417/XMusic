@@ -101,7 +101,9 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(g_app.getOption())
+#if !__android
     , m_labelLoginTip(NULL)
+#endif
 {
     //this->setStyleSheet("");
 
@@ -221,7 +223,7 @@ void MainWindow::_init()
     m_bkgDlg.init();
 }
 
-void MainWindow::showLogo() // TODO 广告
+void MainWindow::showLogo(CFont& font) // TODO 广告
 {
 /*#if __android
 #if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
@@ -232,6 +234,12 @@ void MainWindow::showLogo() // TODO 广告
 #endif*/
 
     _init();
+
+#if !__android
+#define __cxLoginTip __size(600)
+    m_labelLoginTip.resize(__cxLoginTip, __size(50));
+    m_labelLoginTip.setFont(font);
+#endif
 
     auto movie = new QMovie(this);
     movie->setFileName(":/img/logo.gif");
@@ -607,6 +615,10 @@ void MainWindow::_relayout()
     int cx = width();
     int cy = height();
     g_bHLayout = cx > cy; // 橫屏
+
+#if !__android
+    m_labelLoginTip.move((cx-m_labelLoginTip.width())/2, 0);
+#endif
 
     if (NULL == ui.centralWidget) return;
 
@@ -1334,10 +1346,11 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
 }
 
+#if !__android
 void MainWindow::showLoginLabel(cwstr strUser)
 {
-    auto pDlg = CDialog::frontDlg();
-    if (pDlg && pDlg->geometry().bottom() > 100)
+    auto pDlg = dynamic_cast<CDialog*>(CDialog::frontDlg());
+    if (pDlg)
     {
         m_labelLoginTip.setParent(pDlg);
     }
@@ -1346,8 +1359,12 @@ void MainWindow::showLoginLabel(cwstr strUser)
         m_labelLoginTip.setParent(this);
     }
 
-    m_labelLoginTip.setGeometry(0,0, __size(300), __size(30));
     m_labelLoginTip.setText("登录成功！Hi，" + __WS2Q(strUser));
     m_labelLoginTip.raise();
     m_labelLoginTip.setVisible(true);
+
+    async(3000, [&]{
+        m_labelLoginTip.setVisible(false);
+    });
 }
+#endif

@@ -21,8 +21,9 @@ int CApp::exec()
     async([=]{
         init();
         CFont::init(this->font());
-        this->setFont(CFont());
-        m_mainWnd.showLogo();
+        CFont font;
+        this->setFont(font);
+        m_mainWnd.showLogo(font);
 
 #if __android
         if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
@@ -307,16 +308,21 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
         return;
     }
 
+#if __android
+    if (!bRelogin)
+    {
+        vibrate();
+        showToast("登录成功！Hi，" + __WS2Q(strUser), true);
+    }
+#endif
+
     sync([=]{
+#if !__android
         if (!bRelogin)
         {
-#if __android
-            vibrate();
-            showToast("登录成功！Hi，" + __WS2Q(strUser), true);
-#else
             m_mainWnd.showLoginLabel(strUser);
-#endif
         }
+#endif
         async(__loginCheck, [=]{
             (void)asyncLogin(strUser, strPwd, true);
         });
