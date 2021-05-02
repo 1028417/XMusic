@@ -199,7 +199,7 @@ CLoadingLabel::CLoadingLabel(QWidget *parent) : CMovieLabel(":/img/loading.gif",
 }
 
 
-#if __android
+#if !__android
 CTipLabel::CTipLabel() : CLabel(NULL)
 {
     this->setForeColor(0,0,0);
@@ -225,7 +225,7 @@ cqrc CTipLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
 {
     cauto rcText = CLabel::_paintText(painter, rc, qsText);
 
-#define __szMargin __size(20)
+#define __szMargin __size(30)
     QRect rcBkg(rcText.x()-__szMargin, rcText.y()-__szMargin
                , rcText.width()+__szMargin*2, rcText.height()+__szMargin*2);
     painter.fillRectEx(rcBkg, QColor(255,255,255,64), __szMargin);

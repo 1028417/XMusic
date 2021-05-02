@@ -178,7 +178,7 @@ public:
 };
 
 
-#if __android
+#if !__android
 class CTipLabel : public CLabel
 {
 public:

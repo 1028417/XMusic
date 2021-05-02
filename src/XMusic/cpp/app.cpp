@@ -21,9 +21,8 @@ int CApp::exec()
     async([=]{
         init();
         CFont::init(this->font());
-        CFont font;
-        this->setFont(font);
-        m_mainWnd.showLogo(font);
+        this->setFont(CFont());
+        m_mainWnd.showLogo();
 
 #if __android
         if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())

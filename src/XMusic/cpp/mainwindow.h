@@ -104,7 +104,7 @@ public:
 
     void exec();
 
-    void showLogo(CFont& font);
+    void showLogo();
     void startLogo();
     void stopLogo();
 

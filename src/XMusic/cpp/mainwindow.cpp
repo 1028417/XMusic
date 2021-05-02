@@ -222,7 +222,7 @@ void MainWindow::_init()
 
 #define __cxLoginTip __size(600)
 
-void MainWindow::showLogo(CFont& font) // TODO 广告
+void MainWindow::showLogo() // TODO 广告
 {
 /*#if __android
 #if (QT_VERSION >= QT_VERSION_CHECK(5,7,0)) // Qt5.7以上
@@ -236,8 +236,7 @@ void MainWindow::showLogo(CFont& font) // TODO 广告
 
 #if !__android
     m_labelLoginTip.resize(__cxLoginTip, __size(50));
-    m_labelLoginTip.setFont(font);
-    m_labelLoginTip.adjustFont(1.1f, );
+    m_labelLoginTip.setFont(1.1f, TD_FontWeight::Normal);
 #endif
 
     auto movie = new QMovie(this);
