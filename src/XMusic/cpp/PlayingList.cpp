@@ -96,8 +96,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, tagPlaying
     auto& rc = lvItem.rc;
     int cy = height();
 
-    UINT uTextAlpha = 255;
-    UINT uShadowAlpha = __ShadowAlpha;
+    float fAlpha = 1;
 
     bool bPlayingItem = lvItem.uItem == m_uPlayingItem;
     if (bPlayingItem)
@@ -114,23 +113,24 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, tagPlaying
     }
     else
     {
-        float fAlpha = 1;
         if (0 == m_nActiveTime)
         {
             fAlpha = 0.4f;
             //if (g_app.getOption().bUseThemeColor) fAlpha += 0.1f;
         }
-        if (rc.top() < 0)
-        {
-            fAlpha *= pow((float)rc.bottom()/rc.height(),3.3);
-        }
-        else if (rc.bottom() > cy)
-        {
-            fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
-        }
-        uTextAlpha *= fAlpha;
-        uShadowAlpha *= pow(fAlpha,2.5);
     }
+
+    if (rc.top() < 0)
+    {
+        fAlpha *= pow((float)rc.bottom()/rc.height(),3.3);
+    }
+    else if (rc.bottom() > cy)
+    {
+        fAlpha *= pow(float(cy - rc.top())/rc.height(),3.3);
+    }
+
+    UINT uTextAlpha = 255 * fAlpha;
+    UINT uShadowAlpha = __ShadowAlpha *  pow(fAlpha,2.5);
 
 #define __xMargin __size(40)
     rc.setLeft(__xMargin);

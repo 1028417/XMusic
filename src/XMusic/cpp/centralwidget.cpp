@@ -247,7 +247,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         for (auto pBtn : SList<CButton*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
         {
-            pBtn->setY(pWidget->y() + dyBtn);
+            pBtn->setY(pBtn->y() + dyBtn);
         }
     }
 
