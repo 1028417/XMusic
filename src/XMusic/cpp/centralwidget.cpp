@@ -227,8 +227,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     if (!bDefaultBkg)
     {
-#define __dyBtn __size(3)
-        int dyBtn =  ceil(fBkgZoomRate*__dyBtn);
+#define __dyBtn __size(4)
+        int dyBtn = ceil(fBkgZoomRate*__dyBtn);
 
         if (fBkgZoomRateEx <= 1)
         {
@@ -426,11 +426,11 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
                 if (bHLayout)
                 {
                     y_SingerImg = ui.frameDemandLanguage->geometry().bottom()
-                            + __size(50) + checkAndroidStatusBar()/2;
+                            + __size(60) + checkAndroidStatusBar()/2;
                 }
                 else
                 {
-                    y_SingerImg = cy/2 + __size(180);
+                    y_SingerImg = cy/2 + __size(190);
                 }
 
                 cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
@@ -567,7 +567,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     {
         UINT y_Margin = __size(30);
 
-        int y_PlayingList = ui.frameDemand->geometry().bottom() - __size10;
+        int y_PlayingList = ui.frameDemand->geometry().bottom();
         uRowCount = (y_PlayingListMax - y_PlayingList - y_Margin*2)/__CyPlayItem;
         if (uRowCount > 10)
         {
