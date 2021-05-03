@@ -227,28 +227,28 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
     if (!bDefaultBkg)
     {
-#define __dy __size(3)
-        int dy =  round(fBkgZoomRate*__dy);
+#define __dyBtn __size(3)
+        int dyBtn =  ceil(fBkgZoomRate*__dyBtn);
 
         if (fBkgZoomRateEx <= 1)
         {
-#define __offset __size(6)
-            int yOffset = round((float)__offset/fBkgZoomRate);
+#define __yOffset __size(6)
+            int yOffset = round(__yOffset/fBkgZoomRate);
             for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
             }
 
-            dy -= yOffset;
+            dyBtn -= yOffset;
         }
 
-        for (auto pWidget : SList<QWidget*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
+        ui.labelDuration->setY(ui.labelDuration->y() - __size(8)/fBkgZoomRate);
+
+        for (auto pBtn : SList<CButton*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
                                             , ui.btnSetting, ui.btnOrder, ui.btnRandom))
         {
-            pWidget->move(pWidget->x(), pWidget->y() + dy);
+            pBtn->setY(pWidget->y() + dyBtn);
         }
-
-        ui.labelDuration->setY(ui.labelDuration->y()-__size(6));
     }
 
     int x_progressbar = ui.progressbar->x();
@@ -293,7 +293,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         }
     }
 
-    int y_btnMore = y_frameDemand - __size(6) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
+    int y_btnMore = y_frameDemand - __size(8) + ui.btnDemandSinger->geometry().center().y() - ui.btnMore->height()/2;
     ui.btnMore->move(x_btnMore, y_btnMore);
 
     ui.btnFullScreen->move(x_FullScreen, y_btnMore);
@@ -425,11 +425,12 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
             {
                 if (bHLayout)
                 {
-                    y_SingerImg = ui.frameDemandLanguage->geometry().bottom() + __size(50);
+                    y_SingerImg = ui.frameDemandLanguage->geometry().bottom()
+                            + __size(50) + checkAndroidStatusBar()/2;
                 }
                 else
                 {
-                    y_SingerImg = cy/2+__size(180);
+                    y_SingerImg = cy/2 + __size(180);
                 }
 
                 cx_SingerImg = cy_SingerImg = y_labelAlbumName-y_SingerImg;
@@ -555,7 +556,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         {
             x_PlayingList += uMargin;
         }
-        PlayingList.setGeometry(x_PlayingList, uMargin-1, cx-x_PlayingList-uMargin, cy-uMargin*2);
+        PlayingList.setGeometry(x_PlayingList, uMargin-1 + checkAndroidStatusBar()/2
+                                , cx-x_PlayingList-uMargin, cy-uMargin*2);
 
         uRowCount = cy/__CyPlayItem;
         uRowCount = MAX(uRowCount,7);

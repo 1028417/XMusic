@@ -778,8 +778,6 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, 
     auto uDuration = PlayItem.duration();
     PlayingInfo.qsDuration = __WS2Q(IMedia::genDurationString(uDuration));
 
-    //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
-
     E_TrackType eTrackType = E_TrackType::TT_Single;
     if (pMedia)
     {
@@ -818,11 +816,13 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, 
     }
 
     bool bAbsPath = PlayItem.isAbsPath();
+
     cauto strTitle = PlayItem.GetTitle();
     cauto qsTitle = bAbsPath ? __WS2Q(strTitle) : CFileTitle::genDisplayTitle_r(
                                    strTitle, PlayingInfo.pSinger);
 
     auto eQuality = PlayItem.quality();
+    //if (g_app.getPlayMgr().mediaOpaque().isVideo()) // 获取本地视频文件音频流码率
 
     g_app.sync([=]{
         m_PlayingList.updatePlayingItem(uPlayingItem, bManual, qsTitle, uDuration, eQuality);
