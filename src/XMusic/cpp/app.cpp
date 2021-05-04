@@ -279,7 +279,7 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& st
         return;
     }
 
-    if (strUser.empty() || eLoginRet != E_LoginReult::LR_Success)
+    if (strUser.empty() || (eLoginRet != E_LoginReult::LR_Success && eLoginRet != E_LoginReult::LR_NetworkError))
     {
         async(2000, [=]{
             _showLoginDlg(strUser, strPwd, eLoginRet);
