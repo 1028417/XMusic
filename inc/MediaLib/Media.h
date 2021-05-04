@@ -60,6 +60,10 @@ private:
 #if __winvc
         uint64_t m_uDisplayFileSize = 0;
         UINT m_uDisplayDuration = 0;
+
+#else
+public:
+        bool available = false;
 #endif
 
 public:
@@ -114,6 +118,23 @@ public:
 #endif
 	}
 
+    void SetDuration(UINT uDuration)
+    {
+        m_uDuration = uDuration;
+
+#if __winvc
+        if (uDuration > 0)
+        {
+            m_uDisplayDuration = m_uDuration;
+        }
+#endif
+    }
+
+    UINT duration() const override
+    {
+        return m_uDuration;
+    }
+
 #if !__winvc
     void SetFileSizeDuration(const CMedia& media) //合并提速
     {
@@ -125,26 +146,8 @@ public:
         m_nFileSize = uFileSize;
         m_uDuration = uDuration;
     }
-#endif
 
-	void SetDuration(UINT uDuration)
-	{
-		m_uDuration = uDuration;
-
-#if __winvc
-		if (uDuration > 0)
-		{
-			m_uDisplayDuration = m_uDuration;
-		}
-#endif
-	}
-
-	UINT duration() const override
-	{
-		return m_uDuration;
-	}
-
-#if __winvc
+#else
 	wstring displayFileSizeString(bool bIgnoreByte) const
 	{
 		return genFileSizeString(m_uDisplayFileSize, bIgnoreByte);

@@ -129,8 +129,6 @@ public:
 
     void GetAllMedias(TD_IMediaList& paMedia) override;
 
-    bool scanAvailable();
-
 public:
     bool available = false;
 };

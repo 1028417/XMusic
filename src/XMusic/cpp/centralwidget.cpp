@@ -592,7 +592,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         y_PlayingList += y_Margin;
         int cy_PlayingList = y_PlayingListMax - y_Margin - y_PlayingList;
-        UINT x_Margin = ui.frameDemand->x()-__size10;
+        UINT x_Margin = ui.frameDemand->x()-__size(6);
         PlayingList.setGeometry(x_Margin, y_PlayingList, cx-x_Margin*2, cy_PlayingList);
     }
     PlayingList.setPageRowCount(uRowCount);

@@ -24,28 +24,36 @@ struct tagMLItemContext : public tagLVItemContext
     {
         if (pMediaSet)
         {
-            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType
-                && !((CSnapshotDir*)pMediaSet)->available)
+            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
             {
-                return false;
+                return ((CSnapshotDir*)pMediaSet)->available;
             }
         }
         else if (pDir)
         {
             auto pSnapshotDir = _snapshotDir(*pDir);
-            if (pSnapshotDir && !pSnapshotDir->available)
+            if (pSnapshotDir)
             {
-                return false;
+                return pSnapshotDir->available;
             }
         }
         else
         {
             auto pSnapshotMedia = snapshotMedia();
-            if (pSnapshotMedia && !pSnapshotMedia->available)
+            if (pSnapshotMedia)
             {
-                return false;
+                return pSnapshotMedia->available;
+            }
+
+            if (pMedia)
+            {
+                if (pMedia->type() != E_MediaType::MT_MediaRes)
+                {
+                    return ((CMedia*)pMedia)->available;
+                }
             }
         }
+
         return true;
     }
 
