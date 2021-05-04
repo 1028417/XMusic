@@ -213,6 +213,8 @@ private:
     uint64_t m_uRecvSize = 0;
     uint64_t m_uTotalSize = 0;
 
+    int m_nCurlCode = 0;
+
 private:
     virtual bool _onRecv(char *ptr, size_t size) = 0;
 
@@ -234,6 +236,11 @@ public:
     uint64_t totalSize() const
     {
         return m_uTotalSize;
+    }
+
+    int curlCode() const
+    {
+        return m_nCurlCode;
     }
 
     int syncDownload(const string& strUrl, UINT uRetryTime = 0, CB_DownloadProgress cbProgress = NULL);

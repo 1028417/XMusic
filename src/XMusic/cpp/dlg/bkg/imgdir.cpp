@@ -588,8 +588,7 @@ bool COlBkgDir::_downloadSubImg(cwstr strFile, XThread& thread)
         fsutil::removeFile(strFile);
 
         g_logger << "downloadSubImg fail: " << nRet << ", url: " >> strUrl;
-        if (-404 != nRet) /*if (CURLcode::CURLE_COULDNT_RESOLVE_PROXY == nRet
-            || CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
+        if (-404 != nRet) /*if (CURLcode::CURLE_COULDNT_RESOLVE_HOST == nRet
             || CURLcode::CURLE_COULDNT_CONNECT == nRet)*/
         {
             (void)thread.usleep(3000);
