@@ -24,9 +24,9 @@ struct tagMLItemContext : public tagLVItemContext
     {
         if (pMediaSet)
         {
-            if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
+            if (pMediaSet->type() != E_MediaSetType::MST_None)
             {
-                return ((CSnapshotDir*)pMediaSet)->available;
+                return pMediaSet->available();
             }
         }
         else if (pDir)
@@ -34,7 +34,7 @@ struct tagMLItemContext : public tagLVItemContext
             auto pSnapshotDir = _snapshotDir(*pDir);
             if (pSnapshotDir)
             {
-                return pSnapshotDir->available;
+                return pSnapshotDir->available();
             }
         }
         else
@@ -124,21 +124,33 @@ struct tagMLItemContext : public tagLVItemContext
     {
         if (pMediaSet)
         {
-            if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType
-                 || E_MediaSetType::MST_Album == pMediaSet->m_eType
-                 || E_MediaSetType::MST_Singer == pMediaSet->m_eType)
+            auto eMediaSetType = pMediaSet->type();
+            if (E_MediaSetType::MST_Playlist == eMediaSetType
+                 || E_MediaSetType::MST_Album == eMediaSetType
+                 || E_MediaSetType::MST_Singer == eMediaSetType)
             {
-                return true;
+                return pMediaSet->available();
             }
+            return false;
         }
-
-        auto pSnapshotMedia = snapshotMedia();
-        if (pSnapshotMedia)
+        else
         {
-            return pSnapshotMedia->available;
-        }
+            if (pMedia)
+            {
+                if (pMedia->type() != E_MediaType::MT_MediaRes)
+                {
+                    return ((CMedia*)pMedia)->available;
+                }
+            }
 
-        return pFile || pMedia;
+            auto pSnapshotMedia = snapshotMedia();
+            if (pSnapshotMedia)
+            {
+                return pSnapshotMedia->available;
+            }
+
+            return NULL != pFile;
+        }
     }
 };
 

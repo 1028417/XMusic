@@ -128,9 +128,6 @@ public:
     }
 
     void GetAllMedias(TD_IMediaList& paMedia) override;
-
-public:
-    bool available = false;
 };
 
 enum class E_TrackType

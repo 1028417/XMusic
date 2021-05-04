@@ -265,13 +265,14 @@ void CMedialibDlg::updateHead(const WString& strTitle)
     auto pMediaSet = m_lv.currentMediaSet();
     if (pMediaSet)
     {
-        if (E_MediaSetType::MST_Singer == pMediaSet->m_eType
-                || E_MediaSetType::MST_Album == pMediaSet->m_eType
-                || E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
+        auto eMediaSetType = pMediaSet->type();
+        if (E_MediaSetType::MST_Singer == eMediaSetType
+                || E_MediaSetType::MST_Album == eMediaSetType
+                || E_MediaSetType::MST_Playlist == eMediaSetType)
         {
-            bShowPlayButton = true;
+            bShowPlayButton = pMediaSet->available();
         }
-        else if (E_MediaSetType::MST_SnapshotDir == pMediaSet->m_eType)
+        else if (E_MediaSetType::MST_SnapshotDir == eMediaSetType)
         {
             nElidedFlag = Qt::TextWordWrap | Qt::TextHideMnemonic;
 

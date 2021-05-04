@@ -97,7 +97,7 @@ BOOL CAlbumPage::OnInitDialog()
 		CAlbum *pAlbum = (CAlbum*)lvcd.pObject;
 		if (pAlbum)
 		{
-			if (pAlbum->type() == E_AlbumType::AT_Dir)
+			if (pAlbum->albumType() == E_AlbumType::AT_Dir)
 			{
 				eImage = E_GlobalImage::GI_AttachDir;
 			}
@@ -256,7 +256,7 @@ BOOL CAlbumPage::OnInitDialog()
 		CAlbum *pAlbum = (CAlbum*)m_wndAlbumList.GetSelObject();
 		__EnsureReturn(pAlbum, false);
 
-		__EnsureReturn(pAlbum->type() == E_AlbumType::AT_Normal, false);
+		__EnsureReturn(pAlbum->albumType() == E_AlbumType::AT_Normal, false);
 
 		DragData.pMediaSet = pAlbum;
 
@@ -266,7 +266,7 @@ BOOL CAlbumPage::OnInitDialog()
 	});
 
 	(void)__super::RegDragDropCtrl(m_wndAlbumItemList, [&](tagDragData& DragData) {
-		__EnsureReturn(m_pAlbum && m_pAlbum->type() == E_AlbumType::AT_Normal, false);
+		__EnsureReturn(m_pAlbum && m_pAlbum->albumType() == E_AlbumType::AT_Normal, false);
 
 		TD_ListObjectList lstObjects;
 		m_wndAlbumItemList.GetSelObjects(lstObjects);
@@ -568,7 +568,7 @@ void CAlbumPage::OnNMRclickListBrowse(NMHDR *pNMHDR, LRESULT *pResult)
 		m_AlbumMenuGuard.CheckItem(ID_FrLanguage, property.isFrLanguage());
 
 		bPlayable = pAlbum->albumItems();
-		bNormalAlbum = E_AlbumType::AT_Normal == pAlbum->type();
+		bNormalAlbum = E_AlbumType::AT_Normal == pAlbum->albumType();
 	}
 	
 	m_AlbumMenuGuard.EnableItem(ID_PLAY_ALBUM, bPlayable);
@@ -814,7 +814,7 @@ void CAlbumPage::OnMenuCommand_AlbumItem(UINT uID, UINT uVkKey)
 		__AssertBreak(1 == lstAlbumItems.size());
 		
 		lstAlbumItems.front([&](auto& media) {
-			if (m_pAlbum->type() == E_AlbumType::AT_Normal)
+			if (m_pAlbum->albumType() == E_AlbumType::AT_Normal)
 			{
 				(void)m_wndMediaResPanel.HittestMedia(media, *this);
 			}
@@ -943,7 +943,7 @@ void CAlbumPage::_showAlbum(CAlbum *pAlbum)
 	m_pAlbum = pAlbum;
 	this->UpdateTitle();
 
-	if (E_AlbumType::AT_Normal == m_pAlbum->type())
+	if (E_AlbumType::AT_Normal == m_pAlbum->albumType())
 	{
 		m_pAlbum->albumItems()([&](cauto AlbumItem) {
 			((CAlbumItem&)AlbumItem).findRelatedMedia();
@@ -1226,7 +1226,7 @@ DROPEFFECT CAlbumPage::OnMediasDragOverBrowseList(const TD_IMediaList& lstMedias
 		DragContext.DrawDragOverRect(rcItem.top, rcItem.bottom);
 	}
 
-	if (pSrcMediaSet && E_MediaSetType::MST_Album==pSrcMediaSet->m_eType)
+	if (pSrcMediaSet && E_MediaSetType::MST_Album==pSrcMediaSet->type())
 	{
 		if (0 == (DragContext.dwKeyState & MK_CONTROL))
 		{
@@ -1248,7 +1248,7 @@ BOOL CAlbumPage::OnMediasDropBrowseList(const TD_IMediaList& lstMedias, CAlbum *
 	});
 
 	UINT uCount = 0;
-	if (pSrcMediaSet && E_MediaSetType::MST_Album == pSrcMediaSet->m_eType)
+	if (pSrcMediaSet && E_MediaSetType::MST_Album == pSrcMediaSet->type())
 	{
 		__EnsureReturn(pTargetAlbum != pSrcMediaSet, FALSE);
 
@@ -1290,7 +1290,7 @@ DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, 
 {
 	__EnsureReturn(pwndCtrl == &m_wndAlbumList, DROPEFFECT_NONE);
 	
-	__EnsureReturn(pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
+	__EnsureReturn(pMediaSet && E_MediaSetType::MST_Album == pMediaSet->type(), DROPEFFECT_NONE);
 	
 	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
@@ -1307,7 +1307,7 @@ DROPEFFECT CAlbumPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet, 
 
 BOOL CAlbumPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__AssertReturn(pwndCtrl == &m_wndAlbumList && pMediaSet && E_MediaSetType::MST_Album == pMediaSet->m_eType, DROPEFFECT_NONE);
+	__AssertReturn(pwndCtrl == &m_wndAlbumList && pMediaSet && E_MediaSetType::MST_Album == pMediaSet->type(), DROPEFFECT_NONE);
 
 	int nDragingItem = m_wndAlbumList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
@@ -1368,7 +1368,7 @@ BOOL CAlbumPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias, CD
 void CAlbumPage::OnNMRclickListExplore(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	__Ensure(m_pAlbum);
-	bool bNormalAlbum = E_AlbumType::AT_Normal == m_pAlbum->type();
+	bool bNormalAlbum = E_AlbumType::AT_Normal == m_pAlbum->albumType();
 	
 	m_MenuGuard.EnableItem(ID_ADD_ALBUMITEM, bNormalAlbum);
 

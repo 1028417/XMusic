@@ -37,12 +37,12 @@ public:
 		, m_addTime(tTime)
 		, m_nFileSize(uFileSize)
 		, m_uDuration(uDuration)
-	{
 #if __winvc
-		m_uDisplayFileSize = uFileSize;
-		m_uDisplayDuration = uDuration;
+        , m_uDisplayFileSize(uFileSize)
+        , m_uDisplayDuration(uDuration)
 #endif
 
+    {
         _UpdatePath(strPath);
 	}
 
@@ -54,16 +54,16 @@ protected:
 	CMediaTime m_addTime;
 
 private:
-        int64_t m_nFileSize = 0;
-        UINT m_uDuration = 0;
+    int64_t m_nFileSize = 0;
+    UINT m_uDuration = 0;
 
 #if __winvc
-        uint64_t m_uDisplayFileSize = 0;
-        UINT m_uDisplayDuration = 0;
+    uint64_t m_uDisplayFileSize = 0;
+    UINT m_uDisplayDuration = 0;
 
 #else
 public:
-        bool available = false;
+    bool available = false;
 #endif
 
 public:

@@ -43,7 +43,7 @@ void CMLListView::_showMediaSet(CMediaSet& MediaSet)
 
 void CMLListView::showMediaSet(CMediaSet& MediaSet, bool bUpward)
 {
-    if (E_MediaSetType::MST_Singer == MediaSet.m_eType)
+    if (E_MediaSetType::MST_Singer == MediaSet.type())
     {
         CSinger& singer = (CSinger&)MediaSet;
         if (singer.albums().size() == 1 && singer.attachDir().empty())

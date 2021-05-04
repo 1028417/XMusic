@@ -786,7 +786,7 @@ void MainWindow::onPlay(UINT uPlayingItem, CPlayItem& PlayItem, CMedia *pMedia, 
         auto pMediaSet = pMedia->mediaSet();
         PlayingInfo.strMediaSet = pMediaSet->m_strName;
 
-        if (E_MediaSetType::MST_Album == pMediaSet->m_eType)
+        if (E_MediaSetType::MST_Album == pMediaSet->type())
         {
             PlayingInfo.pSinger = (CSinger*)pMediaSet->m_pParent;
         }

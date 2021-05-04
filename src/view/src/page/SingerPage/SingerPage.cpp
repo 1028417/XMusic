@@ -66,7 +66,7 @@ BOOL CSingerPage::OnInitDialog()
 		CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetSelectedObject();
 		__AssertReturn(pSingerObject, false);
 
-		__EnsureReturn(E_MediaSetType::MST_Singer == pSingerObject->m_eType, false);
+		__EnsureReturn(E_MediaSetType::MST_Singer == pSingerObject->type(), false);
 
 		DragData.pMediaSet = pSingerObject;
 
@@ -106,7 +106,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 	lstSubSets([&](CMediaSet& SubSet) {		
 		m_wndTree.InsertObject(SubSet);
 
-		if (E_MediaSetType::MST_SingerGroup == SubSet.m_eType)
+		if (E_MediaSetType::MST_SingerGroup == SubSet.type())
 		{
 			CSingerGroup& group = (CSingerGroup&)SubSet;
 			for (cauto singer : group.singers())
@@ -121,7 +121,7 @@ BOOL CSingerPage::RefreshTree(CMediaSet *pSingerObject)
 		}
 	});
 
-	if (NULL == pSingerObject || E_MediaSetType::MST_Singer != pSingerObject->m_eType)
+	if (NULL == pSingerObject || E_MediaSetType::MST_Singer != pSingerObject->type())
 	{
 		if (0 != m_uSingerID)
 		{
@@ -229,7 +229,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		CSingerGroup *pGroup = NULL;
 		if (pSingerObject)
 		{
-			if (E_MediaSetType::MST_Singer == pSingerObject->m_eType)
+			if (E_MediaSetType::MST_Singer == pSingerObject->type())
 			{					
 				pGroup = (CSingerGroup*)(CMediaSet*)m_wndTree.GetParentObject(*(CTreeObject*)pSingerObject);
 			}
@@ -244,7 +244,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 
 	break;
 	case ID_PLAY:
-		__EnsureBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+		__EnsureBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->type());
 		
 		m_view.m_PlayCtrl.addPlayingItem(*(CSinger*)pSingerObject);
 		
@@ -257,7 +257,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 	case ID_REMOVE:
 		__EnsureBreak(pSingerObject);
 		
-		__EnsureBreak(confirmBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
+		__EnsureBreak(confirmBox(E_MediaSetType::MST_Singer == pSingerObject->type() ?
 				L"确认删除所选歌手?": L"确认删除选中的组?"));
 
 		m_AlbumPage.ShowSinger(NULL);
@@ -271,7 +271,7 @@ void CSingerPage::OnMenuCommand(UINT uID, UINT uVkKey)
 		break;
 	case ID_ADD_IMAGE:
 	{
-		__AssertBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+		__AssertBreak(pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->type());
 
 		static auto& strFilter = L"所有支持图片|*.Jpg;*.Jpe;*.Jpeg;*.Jfif;*.Png;*.Bmp\
 			|Jpg文件|*.Jpg|Jpe文件|*.Jpe|Jpeg文件|*.Jpeg|Jfif文件|*.Jfif \
@@ -400,7 +400,7 @@ void CSingerPage::OnTvnEndlabeleditTree(NMHDR *pNMHDR, LRESULT *pResult)
 		}
 		else if (E_RenameRetCode::RRC_NameExists == eRetCode)
 		{
-			msgBox(E_MediaSetType::MST_Singer == pSingerObject->m_eType ?
+			msgBox(E_MediaSetType::MST_Singer == pSingerObject->type() ?
 				L"重命名失败，存在同名歌手！" : L"重命名失败，存在同名组！");
 		}
 
@@ -421,7 +421,7 @@ DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet,
 {
 	__AssertReturn(pwndCtrl == &m_wndTree && pMediaSet, DROPEFFECT_NONE);
 
-	__EnsureReturn(E_MediaSetType::MST_Singer == pMediaSet->m_eType, DROPEFFECT_NONE);
+	__EnsureReturn(E_MediaSetType::MST_Singer == pMediaSet->type(), DROPEFFECT_NONE);
 	
 	CMediaSet *pDstSingerObject = NULL;
 
@@ -497,7 +497,7 @@ DROPEFFECT CSingerPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSet,
 	CRect rcItem;
 	(void)m_wndTree.GetItemRect(m_wndTree.getTreeItem(pDstSingerObject), &rcItem, FALSE);
 
-	if (E_MediaSetType::MST_Singer == pDstSingerObject->m_eType)
+	if (E_MediaSetType::MST_Singer == pDstSingerObject->type())
 	{
 		if (DragContext.y < rcItem.CenterPoint().y)
 		{
@@ -529,7 +529,7 @@ BOOL CSingerPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragCont
 	CMediaSet *pTarget = (CMediaSet*)DragContext.pTargetObj;
 	__AssertReturn(pTarget, FALSE);
 
-	__AssertReturn(pMediaSet && E_MediaSetType::MST_Singer == pMediaSet->m_eType, FALSE);
+	__AssertReturn(pMediaSet && E_MediaSetType::MST_Singer == pMediaSet->type(), FALSE);
 
 	__waitCursor;
 	CSinger *pSinger = m_view.getSingerMgr().RepositSinger(*(CSinger*)pMediaSet, *pTarget, DPF_DOWN == m_eDropPositionFlag);
@@ -553,7 +553,7 @@ void CSingerPage::OnTvnSelchangedTree(NMHDR *pNMHDR, LRESULT *pResult)
 	
 	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(pNMTreeView->itemNew.hItem);
 	__Assert(pSingerObject);
-	__Ensure(E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+	__Ensure(E_MediaSetType::MST_Singer == pSingerObject->type());
 
 	m_uSingerID = pSingerObject->m_uID;
 
@@ -576,7 +576,7 @@ CMediaSet* CSingerPage::_trySelectObject()
 	m_wndTree.SelectItem(hItem);
 
 	CMediaSet *pSingerObject = (CMediaSet*)m_wndTree.GetItemObject(hItem);
-	if (NULL != pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType)
+	if (NULL != pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->type())
 	{
 		if (!::IsWindowVisible(m_AlbumPage))
 		{
@@ -599,7 +599,7 @@ void CSingerPage::OnNMRclickTree(NMHDR *pNMHDR, LRESULT *pResult)
 
 	CMediaSet *pSingerObject = _trySelectObject();
 
-	BOOL bSinger = (pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->m_eType);
+	BOOL bSinger = (pSingerObject && E_MediaSetType::MST_Singer == pSingerObject->type());
 	m_MenuGuard.EnableItem(ID_ADD_IMAGE, bSinger);
 
 	m_MenuGuard.EnableItem(ID_Find, bSinger);

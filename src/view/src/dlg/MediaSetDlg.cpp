@@ -45,8 +45,8 @@ void CMediaSetDlg::OnOK()
 
 	TD_MediaSetList lstMediaSets(lstCheckedObjects);
 	m_lstSelMediaSets = lstMediaSets.filter([&](CMediaSet& MediaSet){
-		return E_MediaSetType::MST_Playlist == MediaSet.m_eType
-			|| E_MediaSetType::MST_Album == MediaSet.m_eType;
+		return E_MediaSetType::MST_Playlist == MediaSet.type()
+			|| E_MediaSetType::MST_Album == MediaSet.type();
 	});
 	
 	CDialog::OnOK();

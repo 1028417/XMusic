@@ -147,10 +147,16 @@ public:
     {
         m_pParent = pParent;
     }
+
+    bool m_bAvailable = false;
+    virtual bool available() const
+    {
+        return m_bAvailable;
+    }
 #endif
 
-public:
-	E_MediaSetType m_eType;
+protected:
+    E_MediaSetType m_eType;
 
 private:
 	CMediasetProperty m_property;
@@ -173,7 +179,12 @@ private:
     virtual void GetTreeChilds(TD_TreeObjectList& lstChilds) override;
 #endif
 
-public:
+public:    
+    E_MediaSetType type() const
+    {
+        return m_eType;
+    }
+
     void setProperty(const CMediasetProperty& property)
     {
         m_property = property;

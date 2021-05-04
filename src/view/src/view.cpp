@@ -515,7 +515,7 @@ bool __view::_exportMedia(CWnd& wnd, cwstr strTitle, bool bForceActualMode
 void __view::exportMediaSet(CMediaSet& MediaSet)
 {
 	TD_IMediaList lstMedias;
-	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType || E_MediaSetType::MST_Album == MediaSet.m_eType)
+	if (E_MediaSetType::MST_Playlist == MediaSet.type() || E_MediaSetType::MST_Album == MediaSet.type())
 	{
 		MediaSet.GetAllMedias(lstMedias);
 	}
@@ -1008,7 +1008,7 @@ void __view::updateMediaRelated(const tagMediaSetChanged& MediaSetChanged)
 
 void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedia)
 {
-	if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
+	if (E_MediaSetType::MST_Playlist == MediaSet.type())
 	{
 		if (!m_PlaylistPage)
 		{
@@ -1021,10 +1021,10 @@ void __view::hittestMediaSet(CMediaSet& MediaSet, CMedia *pMedia, IMedia *pIMedi
 			m_PlayItemPage.HittestMedia(pMedia);
 		}
 	}
-	else if (E_MediaSetType::MST_Singer == MediaSet.m_eType || E_MediaSetType::MST_Album == MediaSet.m_eType)
+	else if (E_MediaSetType::MST_Singer == MediaSet.type() || E_MediaSetType::MST_Album == MediaSet.type())
 	{
 		CSinger *pSinger = NULL;
-		if (E_MediaSetType::MST_Singer == MediaSet.m_eType)
+		if (E_MediaSetType::MST_Singer == MediaSet.type())
 		{
 			pSinger = (CSinger*)&MediaSet;
 		}

@@ -429,7 +429,7 @@ DROPEFFECT CPlaylistPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSe
 {	
 	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet, DROPEFFECT_NONE);
 
-	__EnsureReturn(E_MediaSetType::MST_Playlist == pMediaSet->m_eType, DROPEFFECT_NONE);
+	__EnsureReturn(E_MediaSetType::MST_Playlist == pMediaSet->type(), DROPEFFECT_NONE);
 	
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, DROPEFFECT_NONE);
@@ -441,7 +441,7 @@ DROPEFFECT CPlaylistPage::OnMediaSetDragOver(CWnd *pwndCtrl, CMediaSet *pMediaSe
 
 BOOL CPlaylistPage::OnMediaSetDrop(CWnd *pwndCtrl, CMediaSet *pMediaSet, CDragContext& DragContext)
 {
-	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet && E_MediaSetType::MST_Playlist == pMediaSet->m_eType, FALSE);
+	__AssertReturn(pwndCtrl == &m_wndList && pMediaSet && E_MediaSetType::MST_Playlist == pMediaSet->type(), FALSE);
 
 	int nDragingItem = m_wndList.GetObjectItem(pMediaSet);
 	__AssertReturn(nDragingItem >= 0, FALSE);
@@ -494,7 +494,7 @@ DROPEFFECT CPlaylistPage::OnMediasDragOver(CWnd *pwndCtrl, const TD_IMediaList& 
 		DragContext.DrawDragOverRect(rcItem.top, rcItem.bottom);
 	}
 
-	if (pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->m_eType)
+	if (pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->type())
 	{
 		if (0 == (DragContext.dwKeyState & MK_CONTROL))
 		{
@@ -521,7 +521,7 @@ BOOL CPlaylistPage::OnMediasDrop(CWnd *pwndCtrl, const TD_IMediaList& lstMedias,
 	
 	__EnsureReturn(m_view.getPlaylistMgr().AddPlayItems(lstMedias, *pDragOverPlaylist, 0), FALSE);
 	
-	if (DROPEFFECT_MOVE == DragContext.nDropEffect && pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->m_eType)
+	if (DROPEFFECT_MOVE == DragContext.nDropEffect && pSrcMediaSet && E_MediaSetType::MST_Playlist == pSrcMediaSet->type())
 	{
 		TD_PlayItemList lstPlayItems(lstMedias);
 		__EnsureReturn(m_view.getPlaylistMgr().RemovePlayItems((ConstPtrArray<CPlayItem>&)lstPlayItems), FALSE);

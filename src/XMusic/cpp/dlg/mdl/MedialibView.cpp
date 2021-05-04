@@ -192,7 +192,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
     auto pSinger = currentSinger();
     if (pSinger && &MediaSet != pSinger)
     {
-        if (E_MediaSetType::MST_SnapshotDir == MediaSet.m_eType)
+        if (E_MediaSetType::MST_SnapshotDir == MediaSet.type())
         {
             //strTitle = genAttachTitle(dir);
 
@@ -252,7 +252,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         return;
     }
 
-    if (E_MediaSetType::MST_SingerGroup == MediaSet.m_eType)
+    if (E_MediaSetType::MST_SingerGroup == MediaSet.type())
     {
         list<UINT> lstSinger;
         for (cauto singer : ((CSingerGroup&)MediaSet).singers())
@@ -263,7 +263,7 @@ void CMedialibView::_onShowMediaSet(CMediaSet& MediaSet)
         return;
     }
 
-    if (E_MediaSetType::MST_Playlist == MediaSet.m_eType)
+    if (E_MediaSetType::MST_Playlist == MediaSet.type())
     {
         list<UINT> *plstSinger = NULL;
         cauto itr = m_PlaylistSinger.find(&MediaSet);
@@ -511,7 +511,7 @@ size_t CMedialibView::_getRootItemCount() const
 
 void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& MediaSet)
 {
-    switch (MediaSet.m_eType)
+    switch (MediaSet.type())
     {
     case E_MediaSetType::MST_Playlist:
         context.setIcon(m_pmPlaylist);
@@ -575,7 +575,7 @@ void CMedialibView::_genMediaSetContext(tagMLItemContext& context, CMediaSet& Me
         cauto dir = (CSnapshotDir&)MediaSet;
         context.setIcon(_catIcon(dir));
 
-        if (MediaSet.m_pParent && E_MediaSetType::MST_Singer == MediaSet.m_pParent->m_eType)
+        if (MediaSet.m_pParent && E_MediaSetType::MST_Singer == MediaSet.m_pParent->type())
         {
             context.strText = genAttachTitle(dir);
         }
@@ -779,7 +779,7 @@ CSinger *CMedialibView::currentSinger() const
     auto pMediaSet = currentMediaSet();
     while (pMediaSet)
     {
-        if (E_MediaSetType::MST_Singer == pMediaSet->m_eType)
+        if (E_MediaSetType::MST_Singer == pMediaSet->type())
         {
             return (CSinger*)pMediaSet;
         }
@@ -800,7 +800,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
         return;
     }
 
-    if (E_MediaSetType::MST_Playlist == pMediaSet->m_eType)
+    if (E_MediaSetType::MST_Playlist == pMediaSet->type())
     {
         list<UINT> lstSinger;
         for (auto uItem : currentItems())
@@ -819,7 +819,7 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
             g_app.getSingerImgMgr().downloadSingerHead(lstSinger);
         }
     }
-    else if (E_MediaSetType::MST_SingerGroup == pMediaSet->m_eType)
+    else if (E_MediaSetType::MST_SingerGroup == pMediaSet->type())
     {
         list<UINT> lstSinger;
         cauto paSinger = currentSubSets();
@@ -835,7 +835,8 @@ void CMedialibView::_onPaint(CPainter& painter, int cx, int cy)
 
 static E_LanguageType _genLanguageIcon(const CMediaSet& mediaSet)
 {
-    if (E_MediaSetType::MST_Singer == mediaSet.m_eType)
+    auto eMediaSetType = mediaSet.type();
+    if (E_MediaSetType::MST_Singer == eMediaSetType)
     {
         cauto prop = mediaSet.property();
         if (prop.isTlLanguage())
@@ -865,8 +866,8 @@ static E_LanguageType _genLanguageIcon(const CMediaSet& mediaSet)
             }
         }
     }
-    else if (E_MediaSetType::MST_SingerGroup == mediaSet.m_eType
-             || E_MediaSetType::MST_Playlist == mediaSet.m_eType)
+    else if (E_MediaSetType::MST_SingerGroup == eMediaSetType
+             || E_MediaSetType::MST_Playlist == eMediaSetType)
     {
         return (E_LanguageType)mediaSet.property().language();
     }
@@ -877,18 +878,12 @@ static E_LanguageType _genLanguageIcon(const CMediaSet& mediaSet)
 void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqrc rc)
 {
     cauto mlContext = (tagMLItemContext&)context;
-    bool available = mlContext.available();
-    if (!available)
-    {
-        painter.setOpacity(0.5);
-    }
+    //bool available = mlContext.available();
+    //if (!available) painter.setOpacity(0.5);
 
     CListView::_paintIcon(context, painter, rc);
 
-    if (!available)
-    {
-        painter.setOpacity(1);
-    }
+    //if (!available) painter.setOpacity(1);
 
     E_LanguageType eLanguageType = E_LanguageType::LT_None;
     if (mlContext.pMediaSet)
@@ -935,7 +930,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
 #define __szLanguageIcon __size(54)
     QRect rcLanguage(rc.right()-__szLanguageIcon*2/5, rc.y()-__szLanguageIcon*3/5, __szLanguageIcon, __szLanguageIcon);
 
-    painter.setOpacity(available ? 0.6 : 0.4);
+    painter.setOpacity(0.6);//available ? 0.6 : 0.4);
     painter.drawImg(rcLanguage, *pmLanguage);
     painter.setOpacity(1);
 }
@@ -1050,7 +1045,8 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
             cauto qsText2 = __WS2Q(mlContext.strText->substr(pos+1));
             QRect rc2(rc);
             rc2.setTop(rc.center().y() + __size10);
-            return painter.drawTextEx(rc2, Qt::AlignLeft|Qt::AlignTop, qsText2, 1, __ShadowAlpha*uAlpha/255, uAlpha);
+            return painter.drawTextEx(rc2, Qt::AlignLeft|Qt::AlignTop, qsText2, 1
+                                      , uShadowAlpha*uAlpha/300, uTextAlpha*uAlpha/300);
         }
     }
 

@@ -55,7 +55,7 @@ public:
 		, UINT uLanguage = 0, bool bDisableDemand = false, bool bDisableExport = false) :
         CMediaSet(strName, (CMediaSet*)&Singer, E_MediaSetType::MST_Album, uID
 			, uLanguage, bDisableDemand, bDisableExport)
-		, m_eType(eType)
+        , m_eAlbumType(eType)
 		, m_strAttachPath(strAttachPath)
 	{
 	}
@@ -65,7 +65,7 @@ public:
 	CAlbum(CAlbum&& other);
 
 private:
-	E_AlbumType m_eType = E_AlbumType::AT_Normal;
+    E_AlbumType m_eAlbumType = E_AlbumType::AT_Normal;
 	wstring m_strAttachPath;
 
 	void *m_pAttachPath = NULL;
@@ -75,9 +75,9 @@ private:
 public:
 	class CSinger& GetSinger() const;
 
-	E_AlbumType type() const
+    E_AlbumType albumType() const
 	{
-		return m_eType;
+        return m_eAlbumType;
 	}
 
     ArrList<CAlbumItem>& albumItems();
@@ -192,6 +192,29 @@ public:
 
     bool FindMedia(const tagFindMediaPara& FindPara, tagFindMediaResult& FindResult);
 
+#if !__winvc
+    bool available() const override
+    {
+        for (cauto album : m_lstAlbums)
+        {
+            if (album.m_bAvailable)
+            {
+                return true;
+            }
+        }
+
+        for (cauto attachDir : m_lstAttachDir)
+        {
+            if (attachDir.pSnapshotDir && attachDir.pSnapshotDir->m_bAvailable)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+#endif
+
 private:
 #if __winvc
 	int GetTreeImage() override
@@ -208,7 +231,7 @@ private:
 	{
 		for (auto& album : m_lstAlbums)
 		{
-			if (album.type() == E_AlbumType::AT_Normal)
+			if (album.albumType() == E_AlbumType::AT_Normal)
 			{
 				lstChilds.add(album);
 			}
@@ -266,6 +289,21 @@ public:
         t_singer.m_pParent = this;
         return t_singer;
     }
+
+#if !__winvc
+    bool available() const override
+    {
+        for (cauto singer : m_lstSingers)
+        {
+            if (singer.available())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+#endif
 
 private:
 	void GetSubSets(TD_MediaSetList& lstSubSets) override

@@ -208,7 +208,7 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, cwstr strNewNa
 	}
 
 	TD_MediaSetList arrMediaSets;
-	MediaSet.m_pParent->GetAllMediaSets(MediaSet.m_eType, arrMediaSets);
+    MediaSet.m_pParent->GetAllMediaSets(MediaSet.type(), arrMediaSets);
 
 	if (arrMediaSets.any([&](CMediaSet& SubSet) {
 		if (&SubSet == &MediaSet)
@@ -224,7 +224,7 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, cwstr strNewNa
 
 	__EnsureReturn(m_model.getDataMgr().updateMediaSetName(MediaSet, strNewName), E_RenameRetCode::RRC_Failure);
 	
-	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, MediaSet.m_uID, E_MediaSetChanged::MSC_Rename);
+    tagMediaSetChanged MediaSetChanged(MediaSet.type(), MediaSet.m_uID, E_MediaSetChanged::MSC_Rename);
 	MediaSetChanged.strNewName = strNewName;
 	m_view.updateMediaRelated(MediaSetChanged);
 	
@@ -233,10 +233,10 @@ E_RenameRetCode CXController::renameMediaSet(CMediaSet& MediaSet, cwstr strNewNa
 
 bool CXController::removeMediaSet(CMediaSet& MediaSet)
 {
-	tagMediaSetChanged MediaSetChanged(MediaSet.m_eType, MediaSet.m_uID, E_MediaSetChanged::MSC_Remove);
+    tagMediaSetChanged MediaSetChanged(MediaSet.type(), MediaSet.m_uID, E_MediaSetChanged::MSC_Remove);
 
 	UINT uID = MediaSet.m_uID;
-	switch (MediaSet.m_eType)
+    switch (MediaSet.type())
 	{
 	case E_MediaSetType::MST_Playlist:
 		__EnsureReturn(m_model.getPlaylistMgr().RemovePlaylist(uID), false);
