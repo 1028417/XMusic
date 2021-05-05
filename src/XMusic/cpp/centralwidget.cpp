@@ -28,20 +28,20 @@ void CCentralWidget::ctor() // 代替构造函数
     ui.btnDemandAlbum->move(x, 0);
 #endif
 
-    for (auto pWidget : SList<QWidget*>(
+    for (auto pWidget : list<QWidget*>({
              ui.btnExit, ui.btnFullScreen, ui.btnMore
              , ui.frameDemand, ui.btnDemandSinger, ui.btnDemandAlbum
              , ui.btnDemandAlbumItem, ui.btnDemandPlayItem, ui.btnDemandPlaylist
              , ui.frameDemandLanguage, ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-             , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR))
+             , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandOther}))
     {
         m_mapTopWidgetPos[pWidget] = pWidget->geometry();
     }
 
-    for (auto pWidget : SList<QWidget*>(
+    for (auto pWidget : list<QWidget*>({
              ui.labelPlayingfile, ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName
              , ui.labelDuration, ui.progressbar, ui.labelProgress, ui.btnPlay, ui.btnPause
-             , ui.btnPlayPrev, ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom))
+             , ui.btnPlayPrev, ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom}))
     {
         m_mapWidgetPos[pWidget] = pWidget->geometry();
     }
@@ -114,7 +114,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
     ui.labelDemandKR->setShadow(uShadowWidth);
     ui.labelDemandJP->setShadow(uShadowWidth);
     ui.labelDemandEN->setShadow(uShadowWidth);
-    ui.labelDemandEUR->setShadow(uShadowWidth);
+    ui.labelDemandOther->setShadow(uShadowWidth);
 
     for (cauto widgetPos : m_mapTopWidgetPos)
     {
@@ -234,7 +234,7 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
         {
 #define __yOffset __size(6)
             int yOffset = round(__yOffset/fBkgZoomRate);
-            for (auto pWidget : SList<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
+            for (auto pWidget : list<QWidget*>({ui.labelDuration, ui.progressbar, ui.labelProgress}))
             {
                 pWidget->move(pWidget->x(), pWidget->y() - yOffset*2);
             }
@@ -244,8 +244,8 @@ void CCentralWidget::relayout(int cx, int cy, bool bDefaultBkg, E_SingerImgPos t
 
         ui.labelDuration->setY(ui.labelDuration->y() - __size(8)/fBkgZoomRate);
 
-        for (auto pBtn : SList<CButton*>(ui.btnPlay, ui.btnPause, ui.btnPlayPrev, ui.btnPlayNext
-                                            , ui.btnSetting, ui.btnOrder, ui.btnRandom))
+        for (auto pBtn : {ui.btnPlay, ui.btnPause, ui.btnPlayPrev
+             , ui.btnPlayNext, ui.btnSetting, ui.btnOrder, ui.btnRandom})
         {
             pBtn->setY(pBtn->y() + dyBtn);
         }

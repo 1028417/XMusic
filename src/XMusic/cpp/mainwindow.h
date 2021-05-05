@@ -56,8 +56,13 @@ public:
 private:
     tagOption& m_opt;
 
-    set<E_DemandMode> m_setDemandMode;
-    set<E_LanguageType> m_setDemandLanguage;
+    bool m_bSingerDemandable = false;
+    bool m_bAlbumDemandable = false;
+    bool m_bPlaylistDemandable = false;
+
+    map<E_LanguageType, set<E_DemandMode>> m_mapDemandLanguage;
+
+    E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
 #if !__android
     CTipLabel m_labelLoginTip;
@@ -66,8 +71,6 @@ private:
     QBrush m_brBkg;
     QPixmap m_pmCDCover;
     bool m_bDefaultBkg = false;
-
-    E_LanguageType m_eDemandLanguage = E_LanguageType::LT_None;
 
     tagPlayingInfo m_PlayingInfo;
 
@@ -135,6 +138,49 @@ public:
 private:
     void _ctor();
     void _init();
+
+    bool _checkDemandLanguage(E_LanguageType eLanguage, E_DemandMode eDemandMode=E_DemandMode::DM_Null)
+    {
+        auto itr = m_mapDemandLanguage.find(eLanguage);
+        if (itr == m_mapDemandLanguage.end())
+        {
+            return false;
+        }
+
+        if (E_DemandMode::DM_Null == eDemandMode)
+        {
+            return true;
+        }
+        return itr->second.find(eDemandMode) != itr->second.end();
+    }
+
+    bool _checkSingerDemandable()
+    {
+        if (E_LanguageType::LT_None == m_eDemandLanguage)
+        {
+            return m_bSingerDemandable;
+        }
+        return _checkDemandLanguage(m_eDemandLanguage, E_DemandMode::DM_DemandSinger);
+    }
+    bool _checkAlbumDemandable()
+    {
+        if (E_LanguageType::LT_None == m_eDemandLanguage)
+        {
+            return m_bAlbumDemandable;
+        }
+        return _checkDemandLanguage(m_eDemandLanguage, E_DemandMode::DM_DemandAlbum);
+    }
+
+    bool _checkPlaylistDemandable()
+    {
+        if (E_LanguageType::LT_None == m_eDemandLanguage)
+        {
+            return m_bPlaylistDemandable;
+        }
+        return _checkDemandLanguage(m_eDemandLanguage, E_DemandMode::DM_DemandPlaylist);
+    }
+
+    void updateDemandButton();
 
     bool event(QEvent *) override;
 

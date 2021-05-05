@@ -201,7 +201,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelDemandEUR">
+   <widget class="CLabel" name="labelDemandOther">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -223,7 +223,7 @@
    <zorder>labelDemandHK</zorder>
    <zorder>labelDemandKR</zorder>
    <zorder>labelDemandEN</zorder>
-   <zorder>labelDemandEUR</zorder>
+   <zorder>labelDemandOther</zorder>
    <zorder>labelDemandCN</zorder>
   </widget>
   <widget class="CLabel" name="labelSingerImg">

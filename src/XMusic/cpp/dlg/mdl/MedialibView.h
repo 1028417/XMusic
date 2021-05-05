@@ -176,9 +176,9 @@ private:
         return itr->second;
     }
 
-    inline const QPixmap* _languageIcon(E_LanguageType eLanguageType) const
+    inline const QPixmap* _languageIcon(E_LanguageType eLanguage) const
     {
-        auto itr = m_mapLanguageIcon.find(eLanguageType);
+        auto itr = m_mapLanguageIcon.find(eLanguage);
         if (itr == m_mapLanguageIcon.end())
         {
             return NULL;

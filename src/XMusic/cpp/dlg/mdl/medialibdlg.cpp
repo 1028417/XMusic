@@ -31,9 +31,8 @@ void CMedialibDlg::init()
 
     ui.frameFilterLanguage->setAttribute(Qt::WA_TranslucentBackground);
 
-    SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK
-                , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandEUR};
-    for (auto label : lstLabels)
+    for (auto label : {ui.labelDemandCN, ui.labelDemandHK
+                , ui.labelDemandKR, ui.labelDemandEN, ui.labelDemandOther})
     {
         label->setFont(1.08f, TD_FontWeight::Normal, false, true);
 
@@ -374,7 +373,7 @@ void CMedialibDlg::slot_labelClick(CLabel *label, const QPoint&)
         , {ui.labelDemandHK, E_LanguageType::LT_HK}
         , {ui.labelDemandKR, E_LanguageType::LT_KR}
         , {ui.labelDemandEN, E_LanguageType::LT_EN}
-        , {ui.labelDemandEUR, E_LanguageType::LT_Other}
+        , {ui.labelDemandOther, E_LanguageType::LT_Other}
     };
     auto uLanguage = (UINT)mapLabels[label];
 

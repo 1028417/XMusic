@@ -12,6 +12,11 @@ void CButton::connect_dlgClose(CDialog *dlg)
 
 void CButton::_onPaint(CPainter& painter, cqrc rc)
 {
+    if (!this->isEnabled())
+    {
+        painter.setOpacity(0.6);
+    }
+
     cauto qsText = this->text();
     if (!qsText.isEmpty())
     {
@@ -37,6 +42,11 @@ void CButton::_onPaint(CPainter& painter, cqrc rc)
 
 void CButton::_onMouseEvent(E_MouseEventType type, const QMouseEvent&)
 {
+    if (!this->isEnabled())
+    {
+        return;
+    }
+
 	if (E_MouseEventType::MET_Press == type)
 	{
         m_bPressing = true;

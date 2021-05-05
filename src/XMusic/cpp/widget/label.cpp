@@ -5,6 +5,11 @@
 
 void CLabel::_onPaint(CPainter& painter, cqrc rc)
 {
+    if (!this->isEnabled())
+    {
+        painter.setOpacity(0.6);
+    }
+
     m_rcClickable = rc;
 
     auto qsText = this->text();
@@ -103,6 +108,11 @@ cqrc CLabel::_paintText(CPainter& painter, cqrc rc, cqstr qsText)
 
 bool CLabel::_checkClickable(cqpt ptPos)
 {
+    if (!this->isEnabled())
+    {
+        return false;
+    }
+
     if (!m_br || !text().isEmpty())
     {
         if (!m_rcClickable.contains(ptPos))
@@ -129,7 +139,7 @@ void CLabelButton::_onPaint(CPainter& painter, cqrc rc)
 {
     if (m_bPressing)
     {
-        painter.setOpacity(0.5f);
+        painter.setOpacity(0.5);
     }
 
     CLabel::_onPaint(painter, rc);

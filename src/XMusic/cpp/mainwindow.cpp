@@ -101,21 +101,6 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(g_app.getOption())
-    , m_setDemandMode {
-        E_DemandMode::DM_DemandSinger,
-        E_DemandMode::DM_DemandAlbum,
-        //E_DemandMode::DM_DemandAlbumItem,
-        E_DemandMode::DM_DemandPlayItem,
-        E_DemandMode::DM_DemandPlaylist
-    },
-    m_setDemandLanguage {
-        E_LanguageType::LT_CN,
-        E_LanguageType::LT_HK,
-        E_LanguageType::LT_KR,
-        E_LanguageType::LT_JP,
-        E_LanguageType::LT_EN,
-        E_LanguageType::LT_Other
-    }
 {
     //this->setStyleSheet("");
 
@@ -179,8 +164,8 @@ void MainWindow::_ctor()
                         , ui.btnPause, ui.btnPlay, ui.btnPlayPrev, ui.btnPlayNext
                     });
 
-    for (auto widget : SList<QWidget*>(ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
-                                       , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage))
+    for (auto widget : list<QWidget*>({ ui.labelLogo, ui.labelLogoTip, ui.labelLogoCompany
+                                      , ui.centralWidget, ui.frameDemand, ui.frameDemandLanguage}))
     {
         widget->setAttribute(Qt::WA_TranslucentBackground);
     }
@@ -208,7 +193,7 @@ void MainWindow::_init()
     _ctor();
 
     SList<CLabel*> lstLabels {ui.labelDemandCN, ui.labelDemandHK, ui.labelDemandKR
-                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandEUR};
+                , ui.labelDemandJP, ui.labelDemandEN, ui.labelDemandOther};
     for (auto label : lstLabels)
     {
         label->setFont(1.03f, TD_FontWeight::DemiBold);
@@ -426,6 +411,15 @@ void MainWindow::show()
 
     m_PlayingList.init();
 
+    updateDemandButton();
+
+    ui.labelDemandCN->setEnabled(_checkDemandLanguage(E_LanguageType::LT_CN));
+    ui.labelDemandHK->setEnabled(_checkDemandLanguage(E_LanguageType::LT_HK));
+    ui.labelDemandKR->setEnabled(_checkDemandLanguage(E_LanguageType::LT_KR));
+    ui.labelDemandJP->setEnabled(_checkDemandLanguage(E_LanguageType::LT_JP));
+    ui.labelDemandEN->setEnabled(_checkDemandLanguage(E_LanguageType::LT_EN));
+    ui.labelDemandOther->setEnabled(_checkDemandLanguage(E_LanguageType::LT_Other));
+
     _relayout();
 
     auto nLogoBkgAlpha = g_crLogoBkg.alpha();
@@ -468,6 +462,20 @@ void MainWindow::show()
         return true;
     });
 }
+
+#if !__android
+void MainWindow::showLoginLabel(cwstr strUser)
+{
+    QWidget *parent = dynamic_cast<CDialog*>(CDialog::frontDlg());
+    if (NULL == parent)
+    {
+        parent = this;
+    }
+
+    cauto qsTip = "登录成功！Hi~ " + __WS2Q(strUser);
+    m_labelLoginTip.show(*parent, qsTip, 3000);
+}
+#endif
 
 void MainWindow::quit(cfn_void cb)
 {
@@ -723,7 +731,7 @@ void MainWindow::drawDefaultBkg(CPainter& painter, cqrc rc, UINT szRound, float 
     QRect rcCDCover(round(rc.x()+xDst), round(rc.y()+cyDst-cyCDCover), round(cxDst), round(cyCDCover));
     painter.drawImg(rcCDCover, m_pmCDCover);
 
-    painter.setOpacity(1.0f);
+    painter.setOpacity(1);
 }
 
 void MainWindow::_updateProgress()
@@ -1131,6 +1139,48 @@ void MainWindow::slot_buttonClicked(CButton* button)
     }
 }
 
+void MainWindow::_demand(CButton* btnDemand)
+{
+    E_DemandMode eDemandMode = E_DemandMode::DM_Null;
+    if (btnDemand == ui.btnDemandSinger)
+    {
+        eDemandMode = E_DemandMode::DM_DemandSinger;
+    }
+    else if (btnDemand == ui.btnDemandAlbum)
+    {
+        eDemandMode = E_DemandMode::DM_DemandAlbum;
+    }
+    else if (btnDemand == ui.btnDemandAlbumItem)
+    {
+        eDemandMode = E_DemandMode::DM_DemandAlbumItem;
+    }
+    else if (btnDemand == ui.btnDemandPlayItem)
+    {
+        eDemandMode = E_DemandMode::DM_DemandPlayItem;
+
+        static UINT uIdx = 0;
+        uIdx++;
+        if (uIdx >= __demandplayitemPngCount)
+        {
+            uIdx = 0;
+        }
+        WString strStyle;
+        strStyle << L"border-image: url(:/img/medialib/demandplayitem" << uIdx << L".png)";
+
+        ui.btnDemandPlayItem->setStyleSheet(strStyle);
+    }
+    else if (btnDemand == ui.btnDemandPlaylist)
+    {
+        eDemandMode = E_DemandMode::DM_DemandPlaylist;
+    }
+    else
+    {
+        return;
+    }
+
+    g_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+}
+
 void MainWindow::updateBkg()
 {
     auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
@@ -1141,6 +1191,72 @@ void MainWindow::updateBkg()
 
     //update();
     this->repaint();
+}
+
+void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+{
+    if (g_crLogoBkg.alpha() > 0)
+    {
+        return;
+    }
+
+    static bool bTouchSingerImg = false;
+    if (E_TouchEventType::TET_TouchBegin == type)
+    {
+        bTouchSingerImg = !m_bDefaultBkg && ui.labelSingerImg->pixmap()
+                && ui.labelSingerImg->geometry().contains(te.x(), te.y());
+        return;
+    }
+
+    if (E_TouchEventType::TET_TouchMove == type)
+    {
+        if (m_bDefaultBkg || m_opt.bUseBkgColor)
+        {
+            return;
+        }
+
+        __yield();
+        auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
+        prBkgOffset.first -= te.dx();
+        prBkgOffset.second -= te.dy();
+        update();
+    }
+    else if (E_TouchEventType::TET_TouchEnd == type)
+    {
+        if (bTouchSingerImg)
+        {
+            bTouchSingerImg = false;
+            return;
+        }
+
+        if (te.dt() < __fastTouchDt)// && !m_opt.bUseBkgColor)
+        {
+            auto dx = te.dx();
+            auto dy = te.dy();
+            if (abs(dx) > abs(dy))
+            {
+                if (dx >= 3)
+                {
+                    m_bkgDlg.switchBkg(g_bHLayout, false);
+                }
+                else if (dx <= -3)
+                {
+                    m_bkgDlg.switchBkg(g_bHLayout, true);
+                }
+            }
+            else
+            {
+                if (dy >= 3)
+                {
+                    m_bkgDlg.switchBkg(g_bHLayout, false);
+                }
+                else if (dy <= -3)
+                {
+                    m_bkgDlg.switchBkg(g_bHLayout, true);
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
@@ -1236,7 +1352,7 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
             , {ui.labelDemandKR, E_LanguageType::LT_KR}
             , {ui.labelDemandJP, E_LanguageType::LT_JP}
             , {ui.labelDemandEN, E_LanguageType::LT_EN}
-            , {ui.labelDemandEUR, E_LanguageType::LT_Other}};
+            , {ui.labelDemandOther, E_LanguageType::LT_Other}};
         plLabels([&](CLabel* lbl, E_LanguageType eLanguage) {
             cauto text = lbl->text();
             if (text.startsWith(__wcCheck))
@@ -1252,165 +1368,58 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
                 }
             }
         });
+
+        updateDemandButton();
     }
 }
 
-void MainWindow::_demand(CButton* btnDemand)
+void MainWindow::updateDemandButton()
 {
-    E_DemandMode eDemandMode = E_DemandMode::DM_Null;
-    if (btnDemand == ui.btnDemandSinger)
-    {
-        eDemandMode = E_DemandMode::DM_DemandSinger;
-    }
-    else if (btnDemand == ui.btnDemandAlbum)
-    {
-        eDemandMode = E_DemandMode::DM_DemandAlbum;
-    }
-    else if (btnDemand == ui.btnDemandAlbumItem)
-    {
-        eDemandMode = E_DemandMode::DM_DemandAlbumItem;
-    }
-    else if (btnDemand == ui.btnDemandPlayItem)
-    {
-        eDemandMode = E_DemandMode::DM_DemandPlayItem;
+    bool bEnable = _checkSingerDemandable();
+    ui.btnDemandSinger->setEnabled(bEnable);
 
-        static UINT uIdx = 0;
-        uIdx++;
-        if (uIdx >= __demandplayitemPngCount)
-        {
-            uIdx = 0;
-        }
-        WString strStyle;
-        strStyle << L"border-image: url(:/img/medialib/demandplayitem" << uIdx << L".png)";
+    bEnable = _checkAlbumDemandable();
+    ui.btnDemandAlbum->setEnabled(bEnable);
 
-        ui.btnDemandPlayItem->setStyleSheet(strStyle);
-    }
-    else if (btnDemand == ui.btnDemandPlaylist)
-    {
-        eDemandMode = E_DemandMode::DM_DemandPlaylist;
-    }
-    else
-    {
-        return;
-    }
-
-    g_app.getCtrl().callPlayCmd(tagDemandCmd(eDemandMode, m_eDemandLanguage));
+    bEnable = _checkPlaylistDemandable();
+    ui.btnDemandPlaylist->setEnabled(bEnable);
+    ui.btnDemandPlayItem->setEnabled(bEnable);
 }
-
-void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
-{
-    if (g_crLogoBkg.alpha() > 0)
-    {
-        return;
-    }
-
-    static bool bTouchSingerImg = false;
-    if (E_TouchEventType::TET_TouchBegin == type)
-    {
-        bTouchSingerImg = !m_bDefaultBkg && ui.labelSingerImg->pixmap()
-                && ui.labelSingerImg->geometry().contains(te.x(), te.y());
-        return;
-    }
-
-    if (E_TouchEventType::TET_TouchMove == type)
-    {
-        if (m_bDefaultBkg || m_opt.bUseBkgColor)
-        {
-            return;
-        }
-
-        __yield();
-        auto& prBkgOffset = g_bHLayout?m_opt.prHBkgOffset:m_opt.prVBkgOffset;
-        prBkgOffset.first -= te.dx();
-        prBkgOffset.second -= te.dy();
-        update();
-    }
-    else if (E_TouchEventType::TET_TouchEnd == type)
-    {
-        if (bTouchSingerImg)
-        {
-            bTouchSingerImg = false;
-            return;
-        }
-
-        if (te.dt() < __fastTouchDt)// && !m_opt.bUseBkgColor)
-        {
-            auto dx = te.dx();
-            auto dy = te.dy();
-            if (abs(dx) > abs(dy))
-            {
-                if (dx >= 3)
-                {
-                    m_bkgDlg.switchBkg(g_bHLayout, false);
-                }
-                else if (dx <= -3)
-                {
-                    m_bkgDlg.switchBkg(g_bHLayout, true);
-                }
-            }
-            else
-            {
-                if (dy >= 3)
-                {
-                    m_bkgDlg.switchBkg(g_bHLayout, false);
-                }
-                else if (dy <= -3)
-                {
-                    m_bkgDlg.switchBkg(g_bHLayout, true);
-                }
-            }
-        }
-    }
-}
-
-#if !__android
-void MainWindow::showLoginLabel(cwstr strUser)
-{
-    QWidget *parent = dynamic_cast<CDialog*>(CDialog::frontDlg());
-    if (NULL == parent)
-    {
-        parent = this;
-    }
-
-    cauto qsTip = "登录成功！Hi~ " + __WS2Q(strUser);
-    m_labelLoginTip.show(*parent, qsTip, 3000);
-}
-#endif
 
 void MainWindow::checkDemandable()
 {
     auto& PlayMgr = g_app.getPlayMgr();
-    for (auto itr = m_setDemandMode.begin(); itr != m_setDemandMode.end(); )
-    {
-        if (!PlayMgr.checkDemandable(*itr, E_LanguageType::LT_None))
-        {
-            itr = m_setDemandMode.erase(itr);
-        }
-        else
-        {
-            ++itr;
-        }
-    }
 
-    for (auto itr = m_setDemandLanguage.begin(); itr != m_setDemandLanguage.end(); )
+    for (cauto eLanguage : {
+        E_LanguageType::LT_CN,
+        E_LanguageType::LT_HK,
+        E_LanguageType::LT_KR,
+        E_LanguageType::LT_JP,
+        E_LanguageType::LT_EN,
+        E_LanguageType::LT_Other})
     {
-        bool bDemandable = false;
-        for (cauto eDemandMode : m_setDemandMode)
+        set<E_DemandMode> setDemandMode;
+        if (PlayMgr.checkDemandable(E_DemandMode::DM_DemandSinger, eLanguage))
         {
-            if (PlayMgr.checkDemandable(eDemandMode, *itr))
-            {
-                bDemandable = true;
-                break;
-            }
+            setDemandMode.insert(E_DemandMode::DM_DemandSinger);
+            m_bSingerDemandable = true;
+        }
+        if (PlayMgr.checkDemandable(E_DemandMode::DM_DemandAlbum, eLanguage))
+        {
+            m_bSingerDemandable = true;
+            setDemandMode.insert(E_DemandMode::DM_DemandAlbum);
+            m_bAlbumDemandable = true;
+        }
+        if (PlayMgr.checkDemandable(E_DemandMode::DM_DemandPlaylist, eLanguage))
+        {
+            setDemandMode.insert(E_DemandMode::DM_DemandPlaylist);
+            m_bPlaylistDemandable = true;
+            //setDemandMode.insert(E_DemandMode::DM_DemandPlayItem);
         }
 
-        if (!bDemandable)
+        if (!setDemandMode.empty())
         {
-            itr = m_setDemandLanguage.erase(itr);
-        }
-        else
-        {
-            ++itr;
+            m_mapDemandLanguage[eLanguage].swap(setDemandMode);
         }
     }
 }

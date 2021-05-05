@@ -885,10 +885,10 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
 
     //if (!available) painter.setOpacity(1);
 
-    E_LanguageType eLanguageType = E_LanguageType::LT_None;
+    E_LanguageType eLanguage = E_LanguageType::LT_None;
     if (mlContext.pMediaSet)
     {
-        eLanguageType = _genLanguageIcon(*mlContext.pMediaSet);
+        eLanguage = _genLanguageIcon(*mlContext.pMediaSet);
     }
     else if (mlContext.pDir)
     {
@@ -898,7 +898,7 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
             if (pParent->parent() == &__medialib || pParent == &m_xpkRoot)
             {
                 cauto strLanguage = mlContext.pDir->fileName().substr(0, 2);
-                eLanguageType = _languageType(strLanguage);
+                eLanguage = _languageType(strLanguage);
             }
             else
             {
@@ -910,18 +910,18 @@ void CMedialibView::_paintIcon(tagLVItemContext& context, CPainter& painter, cqr
                         auto pSinger = g_app.getSingerMgr().getSinger(uSingerID);
                         if (pSinger)
                         {
-                            eLanguageType = (E_LanguageType)pSinger->property().language();
+                            eLanguage = (E_LanguageType)pSinger->property().language();
                         }
                     }
                 }
             }
         }
     }
-    if (E_LanguageType::LT_None == eLanguageType)
+    if (E_LanguageType::LT_None == eLanguage)
     {
         return;
     }
-    auto pmLanguage = _languageIcon(eLanguageType);
+    auto pmLanguage = _languageIcon(eLanguage);
     if (NULL == pmLanguage)
     {
         return;
@@ -970,7 +970,7 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
         bool bFlash = (int)mlContext->uItem == m_nFlashItem;
         if (bFlash)
         {
-            painter.setOpacity(0.5f);
+            painter.setOpacity(0.5);
         }
         painter.drawImg(rcPlayIcon, pm);
         if (bFlash)
