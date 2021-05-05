@@ -101,6 +101,21 @@ void MainWindow::switchFullScreen()
 MainWindow::MainWindow() :
     QMainWindow(NULL, Qt::FramelessWindowHint | Qt::WindowMinimizeButtonHint)
     , m_opt(g_app.getOption())
+    , m_setDemandMode {
+        E_DemandMode::DM_DemandSinger,
+        E_DemandMode::DM_DemandAlbum,
+        //E_DemandMode::DM_DemandAlbumItem,
+        E_DemandMode::DM_DemandPlayItem,
+        E_DemandMode::DM_DemandPlaylist
+    },
+    m_setDemandLanguage {
+        E_LanguageType::LT_CN,
+        E_LanguageType::LT_HK,
+        E_LanguageType::LT_KR,
+        E_LanguageType::LT_JP,
+        E_LanguageType::LT_EN,
+        E_LanguageType::LT_Other
+    }
 {
     //this->setStyleSheet("");
 
@@ -1361,3 +1376,41 @@ void MainWindow::showLoginLabel(cwstr strUser)
     m_labelLoginTip.show(*parent, qsTip, 3000);
 }
 #endif
+
+void MainWindow::checkDemandable()
+{
+    auto& PlayMgr = g_app.getPlayMgr();
+    for (auto itr = m_setDemandMode.begin(); itr != m_setDemandMode.end(); )
+    {
+        if (!PlayMgr.checkDemandable(*itr, E_LanguageType::LT_None))
+        {
+            itr = m_setDemandMode.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
+
+    for (auto itr = m_setDemandLanguage.begin(); itr != m_setDemandLanguage.end(); )
+    {
+        bool bDemandable = false;
+        for (cauto eDemandMode : m_setDemandMode)
+        {
+            if (PlayMgr.checkDemandable(eDemandMode, *itr))
+            {
+                bDemandable = true;
+                break;
+            }
+        }
+
+        if (!bDemandable)
+        {
+            itr = m_setDemandLanguage.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
+}

@@ -28,7 +28,8 @@ int CApp::exec()
         if (m_ctrl.getOption().bNetworkWarn && checkMobileConnected())
         {
             vibrate();
-            CNetworkWarnDlg::inst().show([=]{
+            CNetworkWarnDlg *dlg = new CNetworkWarnDlg;
+            dlg->show([=]{
                 m_mainWnd.startLogo();
                 (void)this->thread([=](XThread& thr){
                    (void)_startup(thr);
@@ -157,6 +158,8 @@ bool CApp::_startup(XThread& thr)
         }
         g_logger << "initMediaLib success " >> (time(0)-time0);
 
+        m_mainWnd.checkDemandable();
+
         return E_UpgradeResult::UR_Success;
     }, [&]{
         auto& opt = m_ctrl.getOption();
@@ -204,7 +207,7 @@ static void _setForeground()
 #define _setForeground()
 #endif
 
-static void _showLoginDlg(cwstr strUser, const string& strPwd, E_LoginReult eRet)
+void CApp::_showLoginDlg(cwstr strUser, const string& strPwd, E_LoginReult eRet)
 {
 #if __android
     vibrate();
@@ -212,7 +215,6 @@ static void _showLoginDlg(cwstr strUser, const string& strPwd, E_LoginReult eRet
     _setForeground();
 #endif
 
-    static CLoginDlg m_loginDlg;
     m_loginDlg.show(strUser, strPwd, eRet);
 }
 
@@ -268,8 +270,8 @@ void CApp::_show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& st
             _setForeground();
 
             m_mainWnd.stopLogo();
-            static CMsgBox m_msgbox;//(m_mainWnd);
-            m_msgbox.show(qsErrMsg, [&]{
+            CMsgBox *msgbox = new CMsgBox;//(m_mainWnd);
+            msgbox->show(qsErrMsg, [&]{
                 async([&]{
                     this->quit();
                 });

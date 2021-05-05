@@ -117,7 +117,11 @@ public:
 	void pause_remove(cwstr strPath, cfn_bool cb);
 
 	void replay();
-	
+
+#if !__winvc
+    bool checkDemandable(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
+#endif
+
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
     int demand(const TD_IMediaList& lstMedias, UINT uDemandCount = __DemandCount);
 

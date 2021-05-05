@@ -6,13 +6,6 @@
 class CNetworkWarnDlg : public CDialogEx
 {
 public:
-    static CNetworkWarnDlg& inst() //_checkUnMobileConnected要求持久化的对象
-    {
-        static CNetworkWarnDlg inst;
-        return inst;
-    }
-
-private:
     CNetworkWarnDlg() = default;
 
 public:

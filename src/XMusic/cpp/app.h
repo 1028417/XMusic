@@ -50,6 +50,8 @@ public:
     QPixmap m_pmHDDisk;
     QPixmap m_pmSQDisk;
 
+    CLoginDlg m_loginDlg;
+
 private:
     CXController m_ctrl;
 
@@ -69,6 +71,8 @@ private:
     bool _startup(XThread& thr);
 
     void _show(E_UpgradeResult eUpgradeResult, cwstr strUser, const string& strPwd, E_LoginReult eLoginRet);
+
+    void _showLoginDlg(cwstr strUser, const string& strPwd, E_LoginReult eRet);
 
     void _cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool bRelogin);
 

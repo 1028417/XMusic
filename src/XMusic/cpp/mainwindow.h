@@ -56,6 +56,9 @@ public:
 private:
     tagOption& m_opt;
 
+    set<E_DemandMode> m_setDemandMode;
+    set<E_LanguageType> m_setDemandLanguage;
+
 #if !__android
     CTipLabel m_labelLoginTip;
 #endif
@@ -126,6 +129,8 @@ public:
 
     bool drawBkg(bool bHLayout, CPainter&, cqrc) const;
     void drawDefaultBkg(CPainter&, cqrc, UINT szRound=0, float fCDCover=1.0f);
+
+    void checkDemandable();
 
 private:
     void _ctor();
