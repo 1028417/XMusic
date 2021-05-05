@@ -150,15 +150,13 @@ bool CApp::_startup(XThread& thr)
         {
             return E_UpgradeResult::UR_Fail;
         }
-
         if (!m_model.initMediaLib())
         {
             g_logger >> "initMediaLib fail";
             return E_UpgradeResult::UR_InitMediaLibFail;
         }
-        g_logger << "initMediaLib success " >> (time(0)-time0);
-
         m_mainWnd.checkDemandable();
+        g_logger << "initMediaLib success " >> (time(0)-time0);
 
         return E_UpgradeResult::UR_Success;
     }, [&]{
@@ -301,29 +299,20 @@ void CApp::_cbLogin(E_LoginReult eRet, cwstr strUser, const string& strPwd, bool
 {
     //if (uLoginSeq != g_uLoginSeq) return;
 
-    if (E_LoginReult::LR_Success != eRet)
-    {
-        sync(3000, [=]{
-            _showLoginDlg(strUser, strPwd, eRet);
-        });
-        return;
-    }
-
-#if __android
-    if (!bRelogin)
-    {
-        vibrate();
-        showToast("登录成功！Hi，" + __WS2Q(strUser), true);
-    }
-#endif
-
     sync([=]{
-#if !__android
+        if (E_LoginReult::LR_Success != eRet)
+        {
+            async(3000, [=]{
+                _showLoginDlg(strUser, strPwd, eRet);
+            });
+            return;
+        }
+
         if (!bRelogin)
         {
             m_mainWnd.showLoginLabel(strUser);
         }
-#endif
+
         async(__loginCheck, [=]{
             (void)asyncLogin(strUser, strPwd, true);
         });

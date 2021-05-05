@@ -463,19 +463,22 @@ void MainWindow::show()
     });
 }
 
-#if !__android
 void MainWindow::showLoginLabel(cwstr strUser)
 {
+    cauto qsTip = "登录成功！Hi~ " + __WS2Q(strUser);
+#if __android
+    vibrate();
+    showToast(qsTip, true);
+
+#else
     QWidget *parent = dynamic_cast<CDialog*>(CDialog::frontDlg());
     if (NULL == parent)
     {
         parent = this;
     }
-
-    cauto qsTip = "登录成功！Hi~ " + __WS2Q(strUser);
     m_labelLoginTip.show(*parent, qsTip, 3000);
-}
 #endif
+}
 
 void MainWindow::quit(cfn_void cb)
 {

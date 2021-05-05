@@ -118,9 +118,7 @@ public:
 
     void show();
 
-#if !__android
     void showLoginLabel(cwstr strUser);
-#endif
 
     void quit(cfn_void cb);
 
