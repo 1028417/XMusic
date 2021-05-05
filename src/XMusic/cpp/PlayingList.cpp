@@ -138,7 +138,7 @@ void CPlayingList::_onPaintItem(CPainter& painter, tagLVItem& lvItem, tagPlaying
     auto nMaxRight = rc.right();// - __xMargin;
     //rc.setRight(nMaxRight);
 
-    UINT uAlphaDiv = bPlayingItem?1:3;
+    UINT uAlphaDiv = bPlayingItem?1:2;
     if (!bPlayingItem && playingItem.uDuration > __wholeTrackDuration)
     {
         cauto qsDuration = __WS2Q(IMedia::genDurationString(playingItem.uDuration));

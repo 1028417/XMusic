@@ -1021,8 +1021,8 @@ cqrc CMedialibView::_paintText(tagLVItemContext& context, CPainter& painter, QRe
 
     if (!mlContext.available())
     {
-        uShadowAlpha /= 2;
-        uTextAlpha /= 2;
+        uShadowAlpha = uShadowAlpha *3/5;
+        uTextAlpha = uTextAlpha *3/5;
     }
     else if ((int)mlContext->uItem == m_nFlashItem)
     {
