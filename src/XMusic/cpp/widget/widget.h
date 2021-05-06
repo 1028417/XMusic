@@ -242,7 +242,7 @@ public:
 private:
     QPainter::RenderHints m_eRenderHints;
 
-    SSet<Qt::GestureType> m_setGestureType;
+    //SList<Qt::GestureType> m_lstGestureType;
 
     bool m_bSetForeColor = false;
     QColor m_crFore;
@@ -259,14 +259,14 @@ private:
     bool m_bClicking = false;
 
 public:
-    void grabGesture(const list<Qt::GestureType>& lstGestureType)
+    /*void grabGesture(const list<Qt::GestureType>& lstGestureType)
     {
-        m_setGestureType = lstGestureType;
-        for (auto gestureType : m_setGestureType)
+        m_lstGestureType.add(lstGestureType);
+        for (auto gestureType : lstGestureType)
         {
-            this->grabGesture(gestureType);
+            T::grabGesture(gestureType);
         }
-    }
+    }*/
 
     void setForeColor(cqcr crFore)
     {

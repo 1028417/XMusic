@@ -65,7 +65,7 @@ bool TWidget<TParent>::event(QEvent *ev)
     }
 
     break;
-#if __windows || __mac // 移动端双击偏移大，listview特别处理
+#if __windows || __mac // 移动端双击偏移大，应该在单击事件中判断
     case QEvent::MouseButtonDblClick:
         _handleMouseEvent(E_MouseEventType::MET_DblClick, *(QMouseEvent*)ev);
 
@@ -83,12 +83,14 @@ bool TWidget<TParent>::event(QEvent *ev)
         _handleTouchEvent(E_TouchEventType::TET_TouchEnd, *(QTouchEvent*)ev);
 
         break;
+    /*windiws有问题，注册TapAndHoldGesture后影响正在播放列表滑动
     case QEvent::Gesture:
     {
         QGestureEvent *ge = (QGestureEvent*)ev;
-        for (auto gestureType : m_setGestureType)
+        for (auto gestureType : m_lstGestureType)
         {
-            if (QGesture *gesture = ge->gesture(gestureType))
+            auto gesture = ge->gesture(gestureType);
+            if (gesture)
             {
                 if (_onGesture(*gesture))
                 {
@@ -102,7 +104,7 @@ bool TWidget<TParent>::event(QEvent *ev)
         }
     }
 
-    break;
+    break;*/
     default:
         break;
     }

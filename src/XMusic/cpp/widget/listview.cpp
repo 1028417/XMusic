@@ -264,7 +264,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
             disableClick();
         }
     }
-#if __windows || __mac
+#if __windows || __mac // 移动端双击偏移大，在单击事件中判断
     else if (E_MouseEventType::MET_DblClick == type)
     {
         tagLVItem lvItem;
@@ -300,7 +300,7 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
         (void)nItem;
 
 #if __android || __ios // 允许移动端双击偏移大
-#define __tsDblClick 222
+#define __tsDblClick 333//222
         static int s_nPrevItem = -1;
         static ulong s_tsPrevClick = 0;
         do {

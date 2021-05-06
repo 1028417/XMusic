@@ -61,6 +61,8 @@ void CPlayingList::init()
 #if __windows || __mac
     this->setMouseTracking(true);
 #endif
+
+    //this->grabGesture({Qt::TapAndHoldGesture});
 }
 
 size_t CPlayingList::getRowCount() const
