@@ -122,6 +122,18 @@ public:
 
         //return L"歌单" __CNDot + m_strName;
     }
+
+#else
+    void GetAllMedias(TD_IMediaList& lstMedias) override
+    {
+        for (auto& PlayItem : m_alPlayItems)
+        {
+            if (PlayItem.available)
+            {
+                lstMedias.add(PlayItem);
+            }
+        }
+    }
 #endif
 
 private:

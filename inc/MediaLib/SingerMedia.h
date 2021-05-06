@@ -243,7 +243,13 @@ private:
     {
         for (auto& album : m_lstAlbums)
         {
-            lstMedias.add(album.albumItems());
+            for (auto& AlbumItem : album.albumItems())
+            {
+                if (AlbumItem.available)
+                {
+                    lstMedias.add(AlbumItem);
+                }
+            }
         }
 
         for (cauto attachDir : m_lstAttachDir)
