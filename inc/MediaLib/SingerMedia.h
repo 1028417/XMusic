@@ -95,7 +95,6 @@ public:
         return m_alAlbumItems.erase(itr);
     }
 
-private:
     int indexOf(const IMedia& media) const override
     {
         return m_alAlbumItems.find([&](const CAlbumItem& PlayItem) {
@@ -115,6 +114,18 @@ private:
 
 #if __winvc
     void GenListItem(E_ListViewType, vector<wstring>& vecText, TD_ListImgIdx&) override;
+
+#else
+    void GetAllMedias(TD_IMediaList& lstMedias) override
+    {
+        for (auto& AlbumItem : m_alAlbumItems)
+        {
+            if (AlbumItem.available)
+            {
+                lstMedias.add(AlbumItem);
+            }
+        }
+    }
 #endif
 };
 
@@ -236,10 +247,7 @@ private:
 				lstChilds.add(album);
 			}
 		}
-	}
-
-#else
-    void GetAllMedias(TD_IMediaList& lstMedias) override;
+    }
 #endif
 };
 

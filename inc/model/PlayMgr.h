@@ -60,7 +60,7 @@ private:
 
     int _demandAlbumItem(E_LanguageType eLanguageType);
     int _demandPlayItem(E_LanguageType eLanguageType);
-    int _demandMediaSet(TD_MediaSetList& arrMediaSets);
+    int _demandMediaSet(TD_MediaSetList& arrMediaSets, E_LanguageType eLanguage);
 
 public:
     const CMediaOpaque& mediaOpaque() const;
@@ -73,35 +73,35 @@ public:
     E_PlayStatus playStatus() const;
     void SetPlayStatus(E_PlayStatus ePlayStatus);
 
-	const ArrList<CPlayItem>& playingItems() const
-	{
-		return m_Playinglist.playItems();
-	}
-	ArrList<CPlayItem>& playingItems()
-	{
-		return m_Playinglist.playItems();
-	}
+    const ArrList<CPlayItem>& playingItems() const
+    {
+        return m_Playinglist.playItems();
+    }
+    ArrList<CPlayItem>& playingItems()
+    {
+        return m_Playinglist.playItems();
+    }
 
     bool init();
 
-	bool clear();
+    bool clear();
 
     bool insert(const SArray<wstring>& arrOppPaths, bool bPlay, int nPos = -1);
     bool insert(const TD_IMediaList& lstMedias, bool bPlay, int nPos = -1);
 
-	bool assign(const SArray<wstring>& arrOppPaths);
-	bool assign(const TD_IMediaList& lstMedias);
+    bool assign(const SArray<wstring>& arrOppPaths);
+    bool assign(const TD_IMediaList& lstMedias);
 
-	int move(const TD_PlayItemList& lstPlayItems, UINT uPos);
-	
+    int move(const TD_PlayItemList& lstPlayItems, UINT uPos);
+
     bool remove(const ConstPtrArray<CPlayItem>& paPlayItems);
-	bool remove(const set<wstring>& setFiles);
+    bool remove(const set<wstring>& setFiles);
 
-	bool checkPlayedID(UINT uID);
+    bool checkPlayedID(UINT uID);
 
     bool play(cwstr strFile, uint64_t uStartPos = 0);
 
-	bool play(UINT uItem, bool bManual=true);
+    bool play(UINT uItem, bool bManual=true);
 
     bool playNext(bool bManual=true)
     {
@@ -113,11 +113,11 @@ public:
         (void)_playNext(false, true);
     }
 
-	void pause_rename(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
-	void pause_move(cwstr strPath, cwstr strNewPath, cfn_bool cb);
-	void pause_remove(cwstr strPath, cfn_bool cb);
+    void pause_rename(bool bDir, cwstr strPath, cwstr strNewPath, cfn_bool cb);
+    void pause_move(cwstr strPath, cwstr strNewPath, cfn_bool cb);
+    void pause_remove(cwstr strPath, cfn_bool cb);
 
-	void replay();
+    void replay();
 
 #if !__winvc
     bool checkDemandable(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
@@ -126,5 +126,5 @@ public:
     int demand(E_DemandMode eDemandMode, E_LanguageType eLanguageType = E_LanguageType::LT_None);
     int demand(const TD_IMediaList& lstMedias, UINT uDemandCount = __DemandCount);
 
-	void tryPlay();
+    void tryPlay();
 };
