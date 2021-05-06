@@ -208,10 +208,10 @@ void CMedialibDlg::_relayout(int cx, int cy)
     ui.labelPkg->setVisible(bShowXpkBtn);
     m_lv.resetRootItem(bShowXpkRoot);
 
-    _relayoutTitle();
-
     int yLv = rcReturn.bottom() + cyMargin;
     m_lv.setGeometry(0, yLv, cx, cy-yLv);
+
+    _relayoutTitle();
 
     m_singerImgDlg.relayoutTitle(rcReturn);
 }

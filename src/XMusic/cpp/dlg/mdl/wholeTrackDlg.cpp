@@ -66,8 +66,11 @@ void CWholeTrackDlg::relayoutTitle(cqrc rcBtnReturn, cqrc rcLabelDisk, cqrc rcBt
 
      ui.btnPlay->setGeometry(rcBtnPlay);
 
-     auto xTitle = rcLabelDisk.right() + rcBtnReturn.x();
-     ui.labelTitle->setGeometry(xTitle, 0, rcBtnPlay.x()-rcBtnReturn.x()-xTitle, rcLv.y());
+     auto x_title = rcLabelDisk.right() + rcBtnReturn.x();
+     auto cx_title = rcBtnPlay.x()-rcBtnReturn.x()-x_title;
+     int cyMargin = m_lv.y()-rcBtnReturn.bottom();
+     ui.labelTitle->setGeometry(x_title, rcBtnReturn.top()-cyMargin
+                                , cx_title, rcBtnReturn.height() + cyMargin*2);
 
      m_lv.setGeometry(rcLv);
 }
