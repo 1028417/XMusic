@@ -239,27 +239,7 @@ private:
 	}
 
 #else
-    void GetAllMedias(TD_IMediaList& lstMedias) override
-    {
-        for (auto& album : m_lstAlbums)
-        {
-            for (auto& AlbumItem : album.albumItems())
-            {
-                if (AlbumItem.available)
-                {
-                    lstMedias.add(AlbumItem);
-                }
-            }
-        }
-
-        for (cauto attachDir : m_lstAttachDir)
-        {
-            if (attachDir.pSnapshotDir)
-            {
-                attachDir.pSnapshotDir->GetAllMedias(lstMedias);
-            }
-        }
-    }
+    void GetAllMedias(TD_IMediaList& lstMedias) override;
 #endif
 };
 
