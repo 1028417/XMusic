@@ -32,18 +32,18 @@ __ViewExt IPlayerView& genView(IXController& controller, IModel& model)
 static thread g_thread;
 CMainWnd* CPlayerView::show()
 {
+	int nRet = CPlayer::InitSDK();
+	if (nRet != 0)
+	{
+		//g_logger << "initPlaySDK fail: " >> nRet;
+		return NULL;
+	}
+	
 	auto& strRootDir = m_controller.getOption().strRootDir;
 	bool bExistMedialib = (!strRootDir.empty() && fsutil::existDir(strRootDir));
 	if (bExistMedialib)
 	{
 		thread thr([&] {
-			int nRet = CPlayer::InitSDK();
-			if (nRet != 0)
-			{
-				//g_logger << "initPlaySDK fail: " >> nRet;
-				return;
-			}
-
 			if (!m_model.initMediaLib(false))
 			{
 				__app->Quit();
