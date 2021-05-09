@@ -29,7 +29,18 @@ void CUserDlg::OnEnChangeEditUser()
 	string strPwd;
 	uint64_t tVip = 0;
 	UINT uAuth = 0;
-	m_view.getModel().getUserMgr().qurryUser(_user(), strPwd, tVip, uAuth);
+
+	cauto strUser = _user();
+	if (m_view.getModel().getUserMgr().qurryUser(strUser, strPwd, tVip, uAuth))
+	{
+		cauto strBase64 = strutil::base64_encode(strutil::toUtf8(strUser));
+		cauto strTitle = L"用户：" + strutil::fromAsc(strBase64);
+		this->SetWindowText(strTitle.c_str());
+	}
+	else
+	{
+		this->SetWindowText(L"用户");
+	}
 
 	m_wndPwdEdit.SetWindowText(strutil::fromAsc(strPwd).c_str());
 	
@@ -48,6 +59,8 @@ void CUserDlg::OnEnChangeEditUser()
 
 void CUserDlg::OnBnClickedBtnDeluser()
 {
+	this->confirmBox(L"确定删除用户？");
+
 	if (m_view.getModel().getUserMgr().removeUser(_user()))
 	{
 		this->msgBox(L"删除用户成功");
