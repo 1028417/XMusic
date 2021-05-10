@@ -54,5 +54,7 @@ public:
     E_LoginReult syncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd);
 
     void asyncLogin(signal_t bRunSignal, cwstr strUser, const string& strPwd, cfn_void_t<E_LoginReult> cb);
+
+    bool isVip() const;
 #endif
 };

@@ -1310,11 +1310,16 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
     }
     else if (label == ui.labelProgress)
     {
+        if (!g_app.getModel().getUserMgr().isVip())
+        {
+            return;
+        }
+
         cauto progressbar = *ui.progressbar;
         UINT uMax = progressbar.maximum();
         if (0 == uMax)
         {
-            return; // 播放停止
+            return;
         }
 
        auto& player = g_app.getPlayMgr().player();
