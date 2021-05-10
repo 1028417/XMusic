@@ -113,13 +113,16 @@ bool CLabel::_checkClickable(cqpt ptPos)
         return false;
     }
 
-    if (!m_br || !text().isEmpty())
+    if (!m_br && text().isEmpty())
     {
-        if (!m_rcClickable.contains(ptPos))
-        {
-            return false;
-        }
+        return false;
     }
+
+    if (!m_rcClickable.contains(ptPos))
+    {
+        return false;
+    }
+
     return true;
 }
 
