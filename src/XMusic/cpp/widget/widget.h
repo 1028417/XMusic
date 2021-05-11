@@ -567,30 +567,52 @@ public:
     }
 
 signals:
-    void signal_touch_begin(int x, int y);
-    void signal_touch_end(int x, int y);
+    void signal_touch(int x, int y);
+
+    void signal_clicked(int x, int y);
+    void signal_dblclicked(int x, int y);
 
 public:
-    void onTouchBegin(const function<void(int x, int y)>& fn)
+    void onTouch(cfn_void fn)
     {
-        onUISignal(&CWidget::signal_touch_begin, fn);
+        onUISignal(&CWidget::signal_touch, fn);
     }
-
+    void onTouch(const function<void(int x, int y)>& fn)
+    {
+        onUISignal(&CWidget::signal_touch, fn);
+    }
     template <typename _slot>
-    void onTouchBegin(TD_XObj<_slot> recv, _slot slot)
+    void onTouch(TD_XObj<_slot> recv, _slot slot)
     {
-        onUISignal(&CWidget::signal_touch_begin, recv, slot);
+        onUISignal(&CWidget::signal_touch, recv, slot);
     }
 
-    void onTouchEnd(const function<void(int x, int y)>& fn)
+    void onClicked(cfn_void fn)
     {
-        onUISignal(&CWidget::signal_touch_end, fn);
+        onUISignal(&CWidget::signal_clicked, fn);
     }
-
+    void onClicked(const function<void(int x, int y)>& fn)
+    {
+        onUISignal(&CWidget::signal_clicked, fn);
+    }
     template <typename _slot>
-    void onTouchEnd(TD_XObj<_slot> recv, _slot slot)
+    void onClicked(TD_XObj<_slot> recv, _slot slot)
     {
-        onUISignal(&CWidget::signal_touch_end, recv, slot);
+        onUISignal(&CWidget::signal_clicked, recv, slot);
+    }
+
+    void onDblClicked(cfn_void fn)
+    {
+        onUISignal(&CWidget::signal_dblclicked, fn);
+    }
+    void onDblClicked(const function<void(int x, int y)>& fn)
+    {
+        onUISignal(&CWidget::signal_dblclicked, fn);
+    }
+    template <typename _slot>
+    void onDblClicked(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CWidget::signal_dblclicked, recv, slot);
     }
 
 protected:
@@ -598,11 +620,35 @@ protected:
     {
         if (te.type() == E_TouchEventType::TET_TouchBegin)
         {
-            emit signal_touch_begin(te.x(), te.y());
-        }
-        else if (te.type() == E_TouchEventType::TET_TouchEnd)
-        {
-            emit signal_touch_end(te.x(), te.y());
+            int x = te.x();
+            int y = te.y();
+            _onTouch(x, y);
+            emit signal_touch(x, y);
         }
     }
+
+    virtual void _onMouseEvent(E_MouseEventType eType, const QMouseEvent& me) override
+    {
+        if (E_MouseEventType::MET_Click == eType)
+        {
+            int x = me.x();
+            int y = me.y();
+            _onClicked(x, y);
+            emit signal_clicked(x, y);
+        }
+        else if (E_MouseEventType::MET_DblClick == eType)
+        {
+            int x = me.x();
+            int y = me.y();
+            _onDblClicked(x, y);
+            emit signal_dblclicked(x, y);
+        }
+    }
+
+private:
+    virtual void _onTouch(int, int) {}
+
+    virtual void _onClicked(int, int) {}
+    virtual void _onDblClicked(int, int) {}
+    virtual void _onMouseEvent(const QMouseEvent&) {}
 };

@@ -90,7 +90,7 @@ private slots:
 
     void slot_labelClick(CLabel*, const QPoint&);
 
-    void slot_progressClick(int x, int y);
+    void slot_progressTouch(int x, int y);
 
 public:
     const tagPlayingInfo& playingInfo() const

@@ -201,7 +201,7 @@ void MainWindow::_init()
     lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile);
     this->regUISlot(&MainWindow::slot_labelClick, &CLabel::signal_clicked, lstLabels);
 
-    ui.labelProgress->onTouchBegin(this, &MainWindow::slot_progressClick);
+    ui.labelProgress->onTouch(this, &MainWindow::slot_progressTouch);
 
     m_PlayingList.setFont(0.9f);
 
@@ -1264,7 +1264,7 @@ void MainWindow::handleTouchEvent(const CTouchEvent& te)
     }
 }
 
-void MainWindow::slot_progressClick(int x, int y)
+void MainWindow::slot_progressTouch(int x, int y)
 {
     if (!g_app.getModel().getUserMgr().isVip())
     {

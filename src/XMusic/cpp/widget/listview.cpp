@@ -234,7 +234,31 @@ cqrc CListView::_paintText(tagLVItemContext& context, CPainter& painter, QRect& 
     return painter.drawTextEx(rc, flags, context.strText, 1, uShadowAlpha, uTextAlpha);
 }
 
-bool CListView::_checkBarArea(int x)
+bool CListView::_hittest(int& x, int& y, tagLVItem& lvItem)
+{
+    UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
+    if (uRow >= m_uTotalRows)
+    {
+        return false;
+    }
+
+    UINT uColCount = getColCount();
+    UINT cx_col = width()/uColCount;
+    cx_col = MAX(1, cx_col);
+    UINT uCol = UINT(x/cx_col);
+    lvItem = tagLVItem(uRow, uCol, uRow*uColCount+uCol);
+
+    int left = uCol*cx_col;
+    int top = int(-(m_fScrollPos-uRow)*m_uRowHeight);
+    lvItem.rc.setRect(left, top, cx_col, m_uRowHeight);
+
+    x -= left;
+    y -= top;
+
+    return true;
+}
+
+inline bool CListView::_checkBarArea(int x)
 {
     return ((E_LVScrollBar::LVSB_Left == m_eScrollBar && x <= __lvRowMargin)
         || (E_LVScrollBar::LVSB_Right == m_eScrollBar && x >= width()-__lvRowMargin));
@@ -310,30 +334,6 @@ void CListView::_onMouseEvent(E_MouseEventType type, const QMouseEvent& me)
         } while(0);
 #endif
     }
-}
-
-bool CListView::_hittest(int& x, int& y, tagLVItem& lvItem)
-{
-    UINT uRow = UINT((float)y/m_uRowHeight + m_fScrollPos);
-    if (uRow >= m_uTotalRows)
-    {
-        return false;
-    }
-
-    UINT uColCount = getColCount();
-    UINT cx_col = width()/uColCount;
-    cx_col = MAX(1, cx_col);
-    UINT uCol = UINT(x/cx_col);
-    lvItem = tagLVItem(uRow, uCol, uRow*uColCount+uCol);
-
-    int left = uCol*cx_col;
-    int top = int(-(m_fScrollPos-uRow)*m_uRowHeight);
-    lvItem.rc.setRect(left, top, cx_col, m_uRowHeight);
-
-    x -= left;
-    y -= top;
-
-    return true;
 }
 
 void CListView::_onTouchEvent(const CTouchEvent& te)
