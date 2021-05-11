@@ -193,7 +193,7 @@ public:
         return open(pf, strPwd);
     }
 
-    bool open(const string& strFile, const string& strPwd = "") // 原生，windows gbk，其他utf8
+    bool open(const string& strFile, const string& strPwd = "") // windows gbk路径，其他utf8路径
     {
         return _open(strFile.c_str(), NULL, strPwd);
     }
@@ -287,8 +287,9 @@ enum E_ZMethod
 class __UtilExt ziputil
 {
 public:
-	static bool zipDir(const string& strSrcDir, const string& strDstFile, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0);
-    // windows gbk, 其他utf8
+	static bool zipFile(const string& strSrcFile, const string& strDstFile, E_ZMethod method, int level);
+	static bool zipDir(bool bKeetRoot, const string& strSrcDir, const string& strDstFile, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0);
+    // windows gbk路径, 其他utf8路径
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
             return CZipFile(strZipFile, strPwd).unzipAll(strDstDir);

@@ -250,7 +250,7 @@ public:
 	}
 #endif
 
-    static FILE* fopen(cwstr strFile, const string& strMode); // windows gbk, 其他utf8
+    static FILE* fopen(cwstr strFile, const string& strMode); // windows gbk路径, 其他utf8路径
 	static FILE* fopen(const string& strFile, const string& strMode);
 
     static bool copyFile(cwstr strSrcFile, cwstr strDstFile);
