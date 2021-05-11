@@ -72,15 +72,31 @@ bool TWidget<TParent>::event(QEvent *ev)
         break;
 #endif
     case QEvent::TouchBegin:
-        _handleTouchEvent(E_TouchEventType::TET_TouchBegin, *(QTouchEvent*)ev);
+        if (!m_bMousePress)
+        {
+            m_bTouch = true;
+
+            CTouchEvent te(E_TouchEventType::TET_TouchBegin, *(QTouchEvent*)ev);
+            _handleTouchBegin(te);
+        }
 
         break;
     case QEvent::TouchUpdate:
-        _handleTouchEvent(E_TouchEventType::TET_TouchMove, *(QTouchEvent*)ev);
+        if (m_bTouch)
+        {
+            CTouchEvent te(E_TouchEventType::TET_TouchMove, *(QTouchEvent*)ev);
+            _handleTouchMove(te);
+        }
 
         break;
     case QEvent::TouchEnd:
-        _handleTouchEvent(E_TouchEventType::TET_TouchEnd, *(QTouchEvent*)ev);
+        if (m_bTouch)
+        {
+            m_bTouch = false;
+
+            CTouchEvent te(E_TouchEventType::TET_TouchEnd, *(QTouchEvent*)ev);
+            _handleTouchEnd(te);
+        }
 
         break;
     /*windiws有问题，注册TapAndHoldGesture后影响正在播放列表滑动
@@ -128,7 +144,8 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
         {
             m_bMousePress = true;
 
-            _handleTouchBegin(me);
+            CTouchEvent te(E_TouchEventType::TET_TouchBegin, me);
+            _handleTouchBegin(te);
         }
     }
     else if (E_MouseEventType::MET_Release == type)
@@ -137,7 +154,8 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
         {
             m_bMousePress = false;
 
-            _handleTouchEnd(me);
+            CTouchEvent te(E_TouchEventType::TET_TouchEnd, me);
+            _handleTouchEnd(te);
         }
 
         if (m_bClicking)
@@ -182,38 +200,7 @@ void TWidget<TParent>::_handleMouseEvent(E_MouseEventType type, const QMouseEven
     {
         if (m_bMousePress)
         {
-            CTouchEvent te(me);
-            _handleTouchMove(te);
-        }
-    }
-}
-
-template <class TParent>
-void TWidget<TParent>::_handleTouchEvent(E_TouchEventType type, const QTouchEvent& ev)
-{
-    if (E_TouchEventType::TET_TouchBegin == type)
-    {
-        if (!m_bMousePress)
-        {
-            m_bTouch = true;
-
-            _handleTouchBegin(ev);
-        }
-    }
-    else if (E_TouchEventType::TET_TouchEnd == type)
-    {
-        if (m_bTouch)
-        {
-            m_bTouch = false;
-
-            _handleTouchEnd(ev);
-        }
-    }
-    else if (E_TouchEventType::TET_TouchMove == type)
-    {
-        if (m_bTouch)
-        {
-            CTouchEvent te(ev);
+            CTouchEvent te(E_TouchEventType::TET_TouchMove, me);
             _handleTouchMove(te);
         }
     }
@@ -227,17 +214,17 @@ void TWidget<TParent>::_handleTouchBegin(const CTouchEvent& te)
     m_xTouch = te.x();
     m_yTouch = te.y();
 
-    _onTouchEvent(E_TouchEventType::TET_TouchBegin, te);
+    _onTouchEvent(te);
 }
 
 template <class TParent>
-void TWidget<TParent>::_handleTouchEnd(CTouchEvent te)
+void TWidget<TParent>::_handleTouchEnd(CTouchEvent& te)
 {
     te.setDt(te.timestamp() - m_teBegin.timestamp());
     te.setDx(te.x() - m_teBegin.x());
     te.setDy(te.y() - m_teBegin.y());
 
-    _onTouchEvent(E_TouchEventType::TET_TouchEnd, te);
+    _onTouchEvent(te);
 }
 
 template <class TParent>
@@ -255,7 +242,7 @@ void TWidget<TParent>::_handleTouchMove(CTouchEvent& te)
         te.setDx(dx);
         te.setDy(dy);
 
-        _onTouchEvent(E_TouchEventType::TET_TouchMove, te);
+        _onTouchEvent(te);
 
         m_xTouch = te.x();
         m_yTouch = te.y();

@@ -37,7 +37,7 @@ private:
 
     void _onPaint(CPainter&, cqrc) override;
 
-    void _onTouchEvent(E_TouchEventType eType, const CTouchEvent& te) override;
+    void _onTouchEvent(const CTouchEvent& te) override;
 
     void _showImg(int nOffset);
 };

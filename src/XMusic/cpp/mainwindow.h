@@ -90,6 +90,8 @@ private slots:
 
     void slot_labelClick(CLabel*, const QPoint&);
 
+    void slot_progressClick(int x, int y);
+
 public:
     const tagPlayingInfo& playingInfo() const
     {
@@ -126,7 +128,7 @@ public:
 
     void updateBkg();
 
-    void handleTouchEvent(E_TouchEventType type, const CTouchEvent& te);
+    void handleTouchEvent(const CTouchEvent& te);
 
     bool drawBkg(bool bHLayout, CPainter&, cqrc) const;
     void drawDefaultBkg(CPainter&, cqrc, UINT szRound=0, float fCDCover=1.0f);

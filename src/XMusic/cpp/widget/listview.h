@@ -94,7 +94,7 @@ enum class E_LVScrollBar
     LVSB_Right
 };
 
-class CListView : public TWidget<QWidget>
+class CListView : public CWidget
 {
 public:
     CListView(QWidget *parent, E_LVScrollBar eScrollBar = E_LVScrollBar::LVSB_None);
@@ -182,7 +182,7 @@ protected:
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) override;
 
-    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
+    virtual void _onTouchEvent(const CTouchEvent&) override;
 
     float _scrollRecord(void *p)
     {

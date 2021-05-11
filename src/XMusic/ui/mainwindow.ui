@@ -237,7 +237,7 @@ gridline-color: rgb(255, 255, 255);</string>
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="CLabel" name="labelProgress">
+   <widget class="CWidget" name="labelProgress" native="true">
     <property name="geometry">
      <rect>
       <x>42</x>
@@ -249,10 +249,10 @@ gridline-color: rgb(255, 255, 255);</string>
     <property name="autoFillBackground">
      <bool>false</bool>
     </property>
-    <property name="text">
+    <property name="text" stdset="0">
      <string/>
     </property>
-    <property name="wordWrap">
+    <property name="wordWrap" stdset="0">
      <bool>true</bool>
     </property>
    </widget>
@@ -802,6 +802,11 @@ gridline-color: rgb(255, 255, 255);</string>
    <extends>QWidget</extends>
    <header location="global">centralwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CWidget</class>
+   <extends>QWidget</extends>
+   <header>widget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

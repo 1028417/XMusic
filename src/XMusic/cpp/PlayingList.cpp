@@ -255,26 +255,27 @@ void CPlayingList::_onBlankDblClick(const QMouseEvent&)
     g_app.mainWnd().switchFullScreen();
 }
 
-void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+void CPlayingList::_onTouchEvent(const CTouchEvent& te)
 {
     static bool bFlag = false;
-    if (E_TouchEventType::TET_TouchMove == type)
+    auto teType = te.type();
+    if (E_TouchEventType::TET_TouchMove == teType)
     {
         if (getItemCount() <= getRowCount()
                 || abs(te.dy()) < abs(te.dx())
                 //|| (te.dy() > 0 && scrollPos() == 0)
                 //|| (te.dy() < 0 && scrollPos() + getRowCount() == getItemCount())
         ) {
-            ((MainWindow*)parent())->handleTouchEvent(type, te);
+            ((MainWindow*)parent())->handleTouchEvent(te);
             bFlag = true;
             return;
         }
     }
-    else if (E_TouchEventType::TET_TouchBegin == type)
+    else if (E_TouchEventType::TET_TouchBegin == teType)
     {
         _updateActive(-1);
     }
-    else if (E_TouchEventType::TET_TouchEnd == type)
+    else if (E_TouchEventType::TET_TouchEnd == teType)
     {
         _updateActive();
 
@@ -284,14 +285,14 @@ void CPlayingList::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
 
             if (abs(te.dx()) > abs(te.dy()))
             {
-                ((MainWindow*)parent())->handleTouchEvent(type, te);
+                ((MainWindow*)parent())->handleTouchEvent(te);
             }
 
             return;
         }
     }
 
-    CListView::_onTouchEvent(type, te);
+    CListView::_onTouchEvent(te);
 }
 
 void CPlayingList::_updateActive(int nActiveTime)

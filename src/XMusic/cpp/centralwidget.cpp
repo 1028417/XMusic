@@ -8,8 +8,6 @@ extern Ui::MainWindow ui;
 
 void CCentralWidget::ctor() // 代替构造函数
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-
     auto cy = __cyBkg - ui.labelSingerImg->y() + ui.labelSingerImg->x();
     m_fBkgHWRate = (Double_T)cy/__cxBkg;
     auto cyTop = ui.labelSingerImg->x()*2 + ui.frameDemand->height();

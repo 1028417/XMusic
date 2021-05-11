@@ -6,16 +6,10 @@
 #define __cxBar __size(5)
 
 CListView::CListView(QWidget *parent, E_LVScrollBar eScrollBar)
-    : TWidget(parent)
+    : CWidget(parent)
     , m_eScrollBar(eScrollBar)
     , m_pmForward(g_app.m_pmForward)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-
-    /*if (!lstGestureType.empty())
-    {
-        grabGesture(lstGestureType);
-    }*/
 }
 
 void CListView::showItem(UINT uItem, bool bToCenter)
@@ -342,13 +336,15 @@ bool CListView::_hittest(int& x, int& y, tagLVItem& lvItem)
     return true;
 }
 
-void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+void CListView::_onTouchEvent(const CTouchEvent& te)
 {
+    auto teType = te.type();
+
     if (m_uMaxScrollPos != 0)
     {
         static bool bTouchBarArea = false;
         static int nTouchBarPos = 0;
-        if (E_TouchEventType::TET_TouchBegin == type)
+        if (E_TouchEventType::TET_TouchBegin == teType)
         {
             bTouchBarArea = _checkBarArea(te.x());
             if (bTouchBarArea)
@@ -382,11 +378,11 @@ void CListView::_onTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         }
     }
 
-    if (E_TouchEventType::TET_TouchMove == type)
+    if (E_TouchEventType::TET_TouchMove == teType)
     {
         _scroll(te.dy());
     }
-    else if (E_TouchEventType::TET_TouchEnd == type)
+    else if (E_TouchEventType::TET_TouchEnd == teType)
     {
         auto dy = te.dy();
         if (dy < 3 && dy > -3)

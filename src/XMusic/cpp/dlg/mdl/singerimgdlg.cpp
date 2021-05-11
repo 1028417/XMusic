@@ -220,14 +220,14 @@ void CSingerImgDlg::_showImg(int nOffset)
     }
 }
 
-void CSingerImgDlg::_onTouchEvent(E_TouchEventType eType, const CTouchEvent& te)
+void CSingerImgDlg::_onTouchEvent(const CTouchEvent& te)
 {
     if (m_pmImg.isNull() || m_uImgCount <= 1)
     {
         return;
     }
 
-    if (eType != E_TouchEventType::TET_TouchEnd)
+    if (te.type() != E_TouchEventType::TET_TouchEnd)
     {
         return;
     }

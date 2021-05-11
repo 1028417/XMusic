@@ -117,7 +117,7 @@ private:
     }
 #endif
 
-    void _onTouchEvent(E_TouchEventType, const CTouchEvent&) override;
+    void _onTouchEvent(const CTouchEvent&) override;
 
     /*bool _onGesture(QGesture&) override
     {

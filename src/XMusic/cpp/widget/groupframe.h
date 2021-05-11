@@ -19,7 +19,6 @@ class CGroupFrame : public TWidget<QGroupBox>
 public:
     CGroupFrame(QWidget *parent) : TWidget(parent)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:

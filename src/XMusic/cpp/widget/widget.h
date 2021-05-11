@@ -58,17 +58,22 @@ enum class E_TouchEventType
 class CTouchEvent
 {
 public:
-    CTouchEvent() = default;
+    CTouchEvent(E_TouchEventType eType)
+        : m_eType(eType)
+    {
+    }
 
-    CTouchEvent(const QMouseEvent& me)
-        : m_ulTimestamp(me.timestamp())
+    CTouchEvent(E_TouchEventType eType, const QMouseEvent& me)
+        : m_eType(eType)
+        , m_ulTimestamp(me.timestamp())
         , m_x(me.pos().x())
         , m_y(me.pos().y())
     {
     }
 
-    CTouchEvent(const QTouchEvent& te)
-        : m_ulTimestamp(te.timestamp())
+    CTouchEvent(E_TouchEventType eType, const QTouchEvent& te)
+        : m_eType(eType)
+        , m_ulTimestamp(te.timestamp())
     {
         cauto points = te.touchPoints();
         if (!points.empty())
@@ -80,6 +85,8 @@ public:
     }
 
 private:
+    E_TouchEventType m_eType;
+
     ulong m_ulTimestamp = 0;
 
     int m_x = 0;
@@ -91,6 +98,11 @@ private:
     int m_dy = 0;
 
 public:
+    E_TouchEventType type() const
+    {
+        return m_eType;
+    }
+
     ulong timestamp() const
     {
         return m_ulTimestamp;
@@ -147,7 +159,7 @@ public:
     inline void onSignal(Qt::ConnectionType connType, _sgn sgn, _fn fn)
     {
         auto ths = (TD_XObj<_sgn>)this;
-        QObject::connect(ths, sgn, ths, std::move(fn), connType);
+        QObject::connect(ths, sgn, (QObject*)ths, std::move(fn), connType);
     }
 
     template <typename _sgn, typename _fn>
@@ -230,24 +242,28 @@ public:
     TWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints)
         : T(parent)
         , m_eRenderHints(eRenderHints)
+        , m_teBegin(E_TouchEventType::TET_TouchBegin)
     {
+        T::setAttribute(Qt::WA_TranslucentBackground);
     }
 
     TWidget(QWidget *parent, Qt::WindowFlags f, QPainter::RenderHints eRenderHints = __defRenderHints)
         : T(parent, f)
         , m_eRenderHints(eRenderHints)
+        , m_teBegin(E_TouchEventType::TET_TouchBegin)
     {
+        T::setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:
     QPainter::RenderHints m_eRenderHints;
 
+    CTouchEvent m_teBegin;
+
     //SList<Qt::GestureType> m_lstGestureType;
 
     bool m_bSetForeColor = false;
     QColor m_crFore;
-
-    CTouchEvent m_teBegin;
 
     int m_xTouch = 0;
     int m_yTouch = 0;
@@ -521,10 +537,8 @@ private:
     void paintEvent(QPaintEvent *pe) override;
 
     void _handleTouchBegin(const CTouchEvent&);
-    void _handleTouchEnd(CTouchEvent);
+    void _handleTouchEnd(CTouchEvent&);
     void _handleTouchMove(CTouchEvent&);
-
-    void _handleTouchEvent(E_TouchEventType, const QTouchEvent&);
 
     void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
 
@@ -533,7 +547,62 @@ private:
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
 
-    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent&) {}
+    virtual void _onTouchEvent(const CTouchEvent&) {}
 
-    virtual bool _onGesture(QGesture&) {return false;}
+    //virtual bool _onGesture(QGesture&) {return false;}
+};
+
+class CWidget : public TWidget<QWidget>
+{
+Q_OBJECT
+public:
+    CWidget(QWidget *parent, QPainter::RenderHints eRenderHints = __defRenderHints)
+        : TWidget(parent, eRenderHints)
+    {
+    }
+
+    CWidget(QWidget *parent, Qt::WindowFlags f, QPainter::RenderHints eRenderHints = __defRenderHints)
+        : TWidget(parent, f, eRenderHints)
+    {
+    }
+
+signals:
+    void signal_touch_begin(int x, int y);
+    void signal_touch_end(int x, int y);
+
+public:
+    void onTouchBegin(const function<void(int x, int y)>& fn)
+    {
+        onUISignal(&CWidget::signal_touch_begin, fn);
+    }
+
+    template <typename _slot>
+    void onTouchBegin(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CWidget::signal_touch_begin, recv, slot);
+    }
+
+    void onTouchEnd(const function<void(int x, int y)>& fn)
+    {
+        onUISignal(&CWidget::signal_touch_end, fn);
+    }
+
+    template <typename _slot>
+    void onTouchEnd(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CWidget::signal_touch_end, recv, slot);
+    }
+
+protected:
+    virtual void _onTouchEvent(const CTouchEvent& te) override
+    {
+        if (te.type() == E_TouchEventType::TET_TouchBegin)
+        {
+            emit signal_touch_begin(te.x(), te.y());
+        }
+        else if (te.type() == E_TouchEventType::TET_TouchEnd)
+        {
+            emit signal_touch_end(te.x(), te.y());
+        }
+    }
 };

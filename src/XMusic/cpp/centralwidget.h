@@ -3,10 +3,10 @@
 
 #include "mainwindow.h"
 
-class CCentralWidget : public TWidget<QWidget>
+class CCentralWidget : public CWidget
 {
 public:
-    CCentralWidget(QWidget *parent) : TWidget(parent)
+    CCentralWidget(QWidget *parent) : CWidget(parent)
     {
     }
 
@@ -27,8 +27,8 @@ public:
     Double_T caleBkgZoomRate(Double_T& cxDst, Double_T cyDst, Double_T& xDst);
 
 private:
-    void _onTouchEvent(E_TouchEventType type, const CTouchEvent& te) override
+    void _onTouchEvent(const CTouchEvent& te) override
     {
-        ((MainWindow*)parent())->handleTouchEvent(type, te);
+        ((MainWindow*)parent())->handleTouchEvent(te);
     }
 };

@@ -5,15 +5,14 @@
 
 #include "widget.h"
 
-class CProgressBar : public TWidget<QWidget>
+class CProgressBar : public CWidget
 {
 public:
-    CProgressBar(QWidget *parent) : TWidget(parent)
+    CProgressBar(QWidget *parent) : CWidget(parent)
         , m_crBackground(255,255,255)
         , m_crBuffer(210,255,230)
         , m_crForeground(155,210,255)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
     }
 
 private:

@@ -11,8 +11,6 @@ class CButton : public TWidget<QPushButton>
 public:
     CButton(QWidget *parent) : TWidget(parent)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
-
         setFocusPolicy(Qt::FocusPolicy::NoFocus);
     }
 

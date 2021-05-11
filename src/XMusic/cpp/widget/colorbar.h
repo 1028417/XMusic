@@ -10,13 +10,12 @@ enum class E_BarColor
     BC_Blue,
 };
 
-class CColorBar : public TWidget<QWidget>
+class CColorBar : public CWidget
 {
     Q_OBJECT
 public:
-    CColorBar(QWidget *parent) : TWidget(parent)
+    CColorBar(QWidget *parent) : CWidget(parent)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
     }
 
     void setColor(E_BarColor eColor, uint8_t uValue)
@@ -95,8 +94,13 @@ private:
         painter.fillRectEx(rcPos, QColor(255,255,255), rcPos.height()/2);
     }
 
-    virtual void _onTouchEvent(E_TouchEventType, const CTouchEvent& te) override
+    void _onTouchEvent(const CTouchEvent& te) override
     {
+        if (te.type() == E_TouchEventType::TET_TouchEnd)
+        {
+            return;
+        }
+
         __yield();
 
         QRect rc = _rect();

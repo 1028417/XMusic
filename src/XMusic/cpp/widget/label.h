@@ -21,19 +21,12 @@ class CLabel : public TWidget<QLabel>
 public:
     CLabel(QWidget *parent) : TWidget(parent)
     {
-        setAttribute(Qt::WA_TranslucentBackground);
     }
 
 public:
-    void performClick()
+    void performClick(int x=0, int y=0)
     {
-        emit signal_clicked(this, {0,0});
-    }
-
-    template <typename _slot>
-    void onClicked(TD_XObj<_slot> recv, _slot slot)
-    {
-        onUISignal(&CLabel::signal_clicked, recv, slot);
+        emit signal_clicked(this, {x,y});
     }
 
     void onClicked(cfn_void fn)
@@ -42,13 +35,17 @@ public:
         onUISignal(&CLabel::signal_clicked, fn);
     }
 
+    template <typename _slot>
+    void onClicked(TD_XObj<_slot> recv, _slot slot)
+    {
+        onUISignal(&CLabel::signal_clicked, recv, slot);
+    }
+
 private:
     CBrush m_br;
 
     QColor m_crText;
     int m_flag = -1;
-
-    bool m_bUseCustomColor = false;
 
     UINT m_uShadowWidth = 1;
     UINT m_uShadowAlpha = __ShadowAlpha;
@@ -67,7 +64,7 @@ protected:
 
     virtual void _onMouseEvent(E_MouseEventType type, const QMouseEvent& me) override;
 
-    bool _checkClickable(cqpt);
+    virtual bool _checkClickable(cqpt);
 
 public:
     bool pixmap() const

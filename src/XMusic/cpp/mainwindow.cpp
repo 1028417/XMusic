@@ -198,9 +198,10 @@ void MainWindow::_init()
     {
         label->setFont(1.03f, TD_FontWeight::DemiBold);
     }
-    lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile
-                , ui.labelProgress);
+    lstLabels.add(ui.labelSingerImg, ui.labelSingerName, ui.labelAlbumName, ui.labelPlayingfile);
     this->regUISlot(&MainWindow::slot_labelClick, &CLabel::signal_clicked, lstLabels);
+
+    ui.labelProgress->onTouchBegin(this, &MainWindow::slot_progressClick);
 
     m_PlayingList.setFont(0.9f);
 
@@ -1196,7 +1197,7 @@ void MainWindow::updateBkg()
     this->repaint();
 }
 
-void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
+void MainWindow::handleTouchEvent(const CTouchEvent& te)
 {
     if (g_crLogoBkg.alpha() > 0)
     {
@@ -1204,14 +1205,15 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
     }
 
     static bool bTouchSingerImg = false;
-    if (E_TouchEventType::TET_TouchBegin == type)
+    auto teType = te.type();
+    if (E_TouchEventType::TET_TouchBegin == teType)
     {
         bTouchSingerImg = !m_bDefaultBkg && ui.labelSingerImg->pixmap()
                 && ui.labelSingerImg->geometry().contains(te.x(), te.y());
         return;
     }
 
-    if (E_TouchEventType::TET_TouchMove == type)
+    if (E_TouchEventType::TET_TouchMove == teType)
     {
         if (m_bDefaultBkg || m_opt.bUseBkgColor)
         {
@@ -1224,7 +1226,7 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
         prBkgOffset.second -= te.dy();
         update();
     }
-    else if (E_TouchEventType::TET_TouchEnd == type)
+    else if (E_TouchEventType::TET_TouchEnd == teType)
     {
         if (bTouchSingerImg)
         {
@@ -1259,6 +1261,49 @@ void MainWindow::handleTouchEvent(E_TouchEventType type, const CTouchEvent& te)
                 }
             }
         }
+    }
+}
+
+void MainWindow::slot_progressClick(int x, int y)
+{
+    if (!g_app.getModel().getUserMgr().isVip())
+    {
+        return;
+    }
+
+    cauto progressbar = *ui.progressbar;
+    UINT uMax = progressbar.maximum();
+    if (0 == uMax)
+    {
+        return;
+    }
+
+    auto& player = g_app.getPlayMgr().player();
+    /*if (player.sampleRate() == 0) //!player.isOpen())
+    {
+        return;
+    }*/
+
+    (void)y;
+    UINT uSeekPos = uMax*x/progressbar.width();
+    UINT uValue = progressbar.value();
+    if (uSeekPos > uValue)
+    {
+        UINT uBuffer = progressbar.buffer();
+        UINT uMaxBuffer = progressbar.maxBuffer();
+        if (uBuffer < uMaxBuffer)
+        {
+            int nPlayablePos = (int)uMax*uBuffer/uMaxBuffer - __ReadStreamWaitTime;
+            nPlayablePos = MAX(nPlayablePos, (int)uValue);
+            uSeekPos = MIN(uSeekPos, (UINT)nPlayablePos);
+        }
+    }
+
+    if (player.Seek(uSeekPos))
+    {
+        async(100, [&]{
+          _updateProgress();
+        });
     }
 }
 
@@ -1307,47 +1352,6 @@ void MainWindow::slot_labelClick(CLabel* label, const QPoint& pos)
         }
 
         m_medialibDlg.showLocalFile(m_PlayingInfo.strPath);
-    }
-    else if (label == ui.labelProgress)
-    {
-        if (!g_app.getModel().getUserMgr().isVip())
-        {
-            return;
-        }
-
-        cauto progressbar = *ui.progressbar;
-        UINT uMax = progressbar.maximum();
-        if (0 == uMax)
-        {
-            return;
-        }
-
-       auto& player = g_app.getPlayMgr().player();
-       /*if (player.sampleRate() == 0) //!player.isOpen())
-       {
-           return;
-       }*/
-
-        UINT uSeekPos = uMax*pos.x()/progressbar.width();
-        UINT uValue = progressbar.value();
-        if (uSeekPos > uValue)
-        {
-            UINT uBuffer = progressbar.buffer();
-            UINT uMaxBuffer = progressbar.maxBuffer();
-            if (uBuffer < uMaxBuffer)
-            {
-                int nPlayablePos = (int)uMax*uBuffer/uMaxBuffer - __ReadStreamWaitTime;
-                nPlayablePos = MAX(nPlayablePos, (int)uValue);
-                uSeekPos = MIN(uSeekPos, (UINT)nPlayablePos);
-            }
-        }
-
-        if (player.Seek(uSeekPos))
-        {
-            async(100, [&]{
-              _updateProgress();
-            });
-        }
     }
     else
     {

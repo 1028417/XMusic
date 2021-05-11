@@ -79,7 +79,7 @@
   <customwidget>
    <class>CLabel</class>
    <extends>QLabel</extends>
-   <header location="global">label.h</header>
+   <header>label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
