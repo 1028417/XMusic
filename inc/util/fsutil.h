@@ -36,6 +36,9 @@ enum class E_ShareFalg
 
 using _utimbuf = struct utimbuf;
 #define _wutime(f, t) utime(strutil::toStr(f).c_str(), t)
+
+#define _rmdir rmdir
+#define _mkdir(x) mkdir(x, 0777)
 #endif
 
 #include <sys/stat.h>

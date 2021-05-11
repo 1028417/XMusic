@@ -540,16 +540,16 @@ private:
     void _handleTouchEnd(CTouchEvent&);
     void _handleTouchMove(CTouchEvent&);
 
+    virtual void _onTouchEvent(const CTouchEvent&) {}
+
+    //virtual bool _onGesture(QGesture&) {return false;}
+
     void _handleMouseEvent(E_MouseEventType, const QMouseEvent&);
 
     virtual void _onMouseEvent(E_MouseEventType, const QMouseEvent&) {}
 
     virtual void _onMouseEnter() {}
     virtual void _onMouseLeave() {}
-
-    virtual void _onTouchEvent(const CTouchEvent&) {}
-
-    //virtual bool _onGesture(QGesture&) {return false;}
 };
 
 class CWidget : public TWidget<QWidget>
