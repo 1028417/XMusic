@@ -32,7 +32,7 @@ static bool _cmdShell(cwstr strCmd, bool bBlock = true)
     return true;
 }
 
-static bool _installWinZip(CZipFile& zipFile)
+static bool _installWinZip(CUnZip& zipFile)
 {
     if (!zipFile)
     {
@@ -166,7 +166,7 @@ bool installApp(const string& strUpgradeFile)
     return _installMacApp(strUpgradeFile);
 
 #elif __windows
-    CZipFile zipFile(strUpgradeFile);
+    CUnZip zipFile(strUpgradeFile);
     return _installWinZip(zipFile);
 #endif
 
@@ -198,7 +198,7 @@ bool installApp(const CByteBuffer& bbfUpgradeFile)
 
 #elif __windows
     IFBuffer ifUpgradeFile(bbfUpgradeFile);
-    CZipFile zipFile(ifUpgradeFile);
+    CUnZip zipFile(ifUpgradeFile);
     return _installWinZip(zipFile);
 #endif
 

@@ -17,7 +17,7 @@ struct __UtilExt tagUnzFile
 
 class __UtilExt CUnzDir
 {
-friend class CZipFile;
+friend class CUnZip;
 public:
     CUnzDir() = default;
 
@@ -90,27 +90,27 @@ public:
     }
 };
 
-class __UtilExt CZipFile
+class __UtilExt CUnZip
 {
 public:
-    CZipFile() = default;
+    CUnZip() = default;
 
-    CZipFile(const string& strFile, const string& strPwd = "")
+    CUnZip(const string& strFile, const string& strPwd = "")
     {
         (void)open(strFile, strPwd);
     }
 
-    CZipFile(Instream& ins, const string& strPwd = "")
+    CUnZip(Instream& ins, const string& strPwd = "")
     {
         (void)open(ins, strPwd);
     }
 
-    CZipFile(IFStream& ifs, const string& strPwd = "")
+    CUnZip(IFStream& ifs, const string& strPwd = "")
     {
         (void)open(ifs, strPwd);
     }
 
-    virtual ~CZipFile()
+    virtual ~CUnZip()
     {
         close();
     }
@@ -284,19 +284,41 @@ enum E_ZMethod
 	ZM_BZip2ed
 };
 
+struct tagMinZipSrc
+{
+	tagMinZipSrc() = default;
+
+	tagMinZipSrc(const string& strFile, const string& strInnerPath, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
+		: strFile(strFile)
+		, strInnerPath(strInnerPath)
+		, method(method)
+		, level(level)
+	{
+	}
+
+	string strFile;
+	string strInnerPath;
+	E_ZMethod method = E_ZMethod::ZM_Deflated;
+	int level = 0;
+};
+
 class __UtilExt ziputil
 {
 public:
-	static bool zipFile(const string& strSrcFile, const string& strDstFile, E_ZMethod method, int level);
-	static bool zipDir(bool bKeetRoot, const string& strSrcDir, const string& strDstFile, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0);
+	static int zDir(bool bKeetRoot, const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0);
+	static int zFile(const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
+	{
+		return zFiles({ tagMinZipSrc(src, fsutil::GetFileName(src), method, level) }, dest);
+	}
+	static int zFiles(const list<tagMinZipSrc>& lstSrc, const string& dest);
     // windows gbk路径, 其他utf8路径
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
-            return CZipFile(strZipFile, strPwd).unzipAll(strDstDir);
+            return CUnZip(strZipFile, strPwd).unzipAll(strDstDir);
     }
     static bool unzFile(Instream& ins, cwstr strDstDir, const string& strPwd = "")
     {
-            return CZipFile(ins, strPwd).unzipAll(strDstDir);
+            return CUnZip(ins, strPwd).unzipAll(strDstDir);
     }
 
     static int zCompress(const void *pData, size_t len, CByteBuffer& bbfBuff, int level = 0);
