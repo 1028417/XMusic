@@ -1,6 +1,14 @@
 #pragma once
 
+#if __winvc
+#pragma warning(disable: 4996)
+#endif
+
 #include "json/json.h"
+
+#if __winvc
+#pragma warning(default: 4996)
+#endif
 
 using JValue = Json::Value;
 
