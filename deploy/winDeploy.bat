@@ -13,11 +13,11 @@ mkdir XMusic-win32\bin\bkg\vbkg
 mkdir XMusic-win32\bin\bkg\hbkg\city
 mkdir XMusic-win32\bin\bkg\vbkg\city
 
-copy bkg\*				XMusic-win32\bin\bkg
-copy bkg\hbkg\*			XMusic-win32\bin\bkg\hbkg
-copy bkg\vbkg\*			XMusic-win32\bin\bkg\vbkg
-copy bkg\hbkg\city\*	XMusic-win32\bin\bkg\hbkg\city
-copy bkg\vbkg\city\*	XMusic-win32\bin\bkg\vbkg\city
+copy ..\..\des\bkg\*				XMusic-win32\bin\bkg
+copy ..\..\des\bkg\hbkg\*			XMusic-win32\bin\bkg\hbkg
+copy ..\..\des\bkg\vbkg\*			XMusic-win32\bin\bkg\vbkg
+copy ..\..\des\bkg\hbkg\city\*	XMusic-win32\bin\bkg\hbkg\city
+copy ..\..\des\bkg\vbkg\city\*	XMusic-win32\bin\bkg\vbkg\city
 
 cd /d ../bin
 
