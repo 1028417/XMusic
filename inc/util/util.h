@@ -60,29 +60,33 @@ using prvector = vector<pair<__FirstType, __SecondType>>;
     #pragma warning(disable: 4251)
     #pragma warning(disable: 4275)
 
-    #define __dllexport __declspec(dllexport)
-    #define __dllimport __declspec(dllimport)
-
     #include <stddef.h>
 #else
     #include <sys/types.h>
     #include <unistd.h>
 
-#ifdef QT_NO_DEBUG
-    #define __isdebug false
-#else
-    #define __isdebug true
+    #ifdef QT_NO_DEBUG
+        #define __isdebug false
+    #else
+        #define __isdebug true
+    #endif
 #endif
 
-    #include <QtGlobal>
-    #define __dllexport Q_DECL_EXPORT
-    #define __dllimport Q_DECL_IMPORT
+#if __windows
+    #define __dllexport __declspec(dllexport)
+    #define __dllimport __declspec(dllimport)
+#else
+    //#include <QtCore/qcompilerdetection.h> //#include <QtGlobal>
+    #define __dllexport __attribute__((visibility("default"))) //Q_DECL_EXPORT
+    #define __dllimport __dllexport //Q_DECL_IMPORT
 #endif
 
 #ifdef __UtilPrj
     #define __UtilExt __dllexport
 #else
     #define __UtilExt __dllimport
+
+    #define JSON_API __dllimport
 #endif
 
 enum class E_Platform

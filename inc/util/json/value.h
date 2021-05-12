@@ -3,8 +3,6 @@
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
-#include "../util.h"
-
 #ifndef CPPTL_JSON_H_INCLUDED
 #define CPPTL_JSON_H_INCLUDED
 
@@ -176,7 +174,7 @@ private:
  * but the Value API does *not* check bounds. That is the responsibility
  * of the caller.
  */
-class JSON_API __UtilExt Value {
+class JSON_API Value {
   friend class ValueIteratorBase;
 public:
   typedef std::vector<JSONCPP_STRING> Members;
@@ -690,7 +688,7 @@ private:
 /** \brief base class for Value iterators.
  *
  */
-class JSON_API __UtilExt ValueIteratorBase {
+class JSON_API ValueIteratorBase {
 public:
   typedef std::bidirectional_iterator_tag iterator_category;
   typedef unsigned int size_t;
@@ -805,7 +803,7 @@ public:
 
 /** \brief Iterator for object and array value.
  */
-class JSON_API __UtilExt ValueIterator : public ValueIteratorBase {
+class JSON_API ValueIterator : public ValueIteratorBase {
   friend class Value;
 
 public:

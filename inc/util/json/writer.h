@@ -3,8 +3,6 @@
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
-#include "../util.h"
-
 #ifndef JSON_WRITER_H_INCLUDED
 #define JSON_WRITER_H_INCLUDED
 
@@ -142,7 +140,7 @@ public:
 /** \brief Abstract class for writers.
  * \deprecated Use StreamWriter. (And really, this is an implementation detail.)
  */
-class JSON_API __UtilExt Writer {
+class JSON_API Writer {
 public:
   virtual ~Writer();
 
@@ -158,7 +156,7 @@ public:
  * \sa Reader, Value
  * \deprecated Use StreamWriterBuilder.
  */
-class JSON_API __UtilExt FastWriter : public Writer {
+class JSON_API FastWriter : public Writer {
 
 public:
   FastWriter();
@@ -211,7 +209,7 @@ private:
  * \sa Reader, Value, Value::setComment()
  * \deprecated Use StreamWriterBuilder.
  */
-class JSON_API __UtilExt StyledWriter : public Writer {
+class JSON_API StyledWriter : public Writer {
 public:
   StyledWriter();
   ~StyledWriter() JSONCPP_OVERRIDE {}

@@ -3,8 +3,6 @@
 // recognized in your jurisdiction.
 // See file LICENSE for detail or copy at http://jsoncpp.sourceforge.net/LICENSE
 
-#include "../util.h"
-
 #ifndef CPPTL_JSON_READER_H_INCLUDED
 #define CPPTL_JSON_READER_H_INCLUDED
 
@@ -34,7 +32,7 @@ namespace Json {
  *
  * \deprecated Use CharReader and CharReaderBuilder.
  */
-class JSON_API __UtilExt Reader {
+class JSON_API Reader {
 public:
   typedef char Char;
   typedef const Char* Location;

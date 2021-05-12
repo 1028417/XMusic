@@ -3,22 +3,11 @@
 #include "json/json.h"
 
 using JValue = Json::Value;
-using JReader = Json::Reader;
 
 class __UtilExt jsonutil
 {
 public:
-	static bool loadData(const string& strData, JValue& jRoot, bool bStrictRoot = true)
-    {
-        if (bStrictRoot)
-        {
-            return JReader(Json::Features::strictMode()).parse(strData, jRoot, false);
-        }
-        else
-        {
-            return JReader().parse(strData, jRoot, false);
-        }
-	}
+	static bool loadData(const string& strData, JValue& jRoot, bool bStrictRoot = true);
 
 	static bool loadStream(Instream& ins, JValue& jRoot, bool bStrictRoot = true)
 	{
@@ -36,17 +25,7 @@ public:
 		return loadStream(ifs, jRoot, bStrictRoot);
 	}
 
-    static string toStr(const JValue& jRoot, bool bStyled=false)
-    {
-        if (bStyled)
-        {
-            return Json::StyledWriter().write(jRoot);
-        }
-        else
-        {
-            return Json::FastWriter().write(jRoot);
-        }
-    }
+    static string toStr(const JValue& jRoot, bool bStyled=false);
 
 	template <typename T>
 	static bool writeFile(const JValue& jRoot, const T& file, bool bStyled=false)
