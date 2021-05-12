@@ -159,7 +159,7 @@ BuildDir = $$BuildDir/XMusic/$$platform
 font.files += $$BinDir/font/msyhl-6.23.ttc \
               $$BinDir/font/Microsoft-YaHei-Regular-11.0.ttc
 
-bkg.files += ../../deploy/bkg/
+bkg.files += ../../../des/bkg/ #../../deploy/bkg/
 
 android {
     #CONFIG += mobility
