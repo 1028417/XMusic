@@ -266,9 +266,9 @@ public:
     }
 #endif
 
-	using CB_CopyFile = function <bool(char *lpData, size_t size)>;
+	using CB_CopyFile = const function <bool(char *lpData, size_t size)>&;
     static bool copyFileEx(cwstr strSrcFile, cwstr strDstFile
-		, const CB_CopyFile& cb = NULL, const string& strHeadData = "");
+		, CB_CopyFile cb = NULL, const string& strHeadData = "");
 
     static bool fStat64(FILE *pf, tagFileStat64& stat);
     static bool lStat64(cwstr strFile, tagFileStat64& stat);

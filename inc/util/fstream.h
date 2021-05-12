@@ -452,11 +452,11 @@ public:
 
     IFStream() = default;
 
-    IFStream(cwstr strFile)
+	explicit IFStream(cwstr strFile)
     {
         (void)open(strFile);
     }
-    IFStream(const string& strFile)
+	explicit IFStream(const string& strFile)
     {
         (void)open(strFile);
     }

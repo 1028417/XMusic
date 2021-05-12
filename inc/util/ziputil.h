@@ -95,17 +95,18 @@ class __UtilExt CUnZip
 public:
     CUnZip() = default;
 
-    CUnZip(const string& strFile, const string& strPwd = "")
+
+	explicit CUnZip(const string& strFile, const string& strPwd = "")
     {
         (void)open(strFile, strPwd);
     }
 
-    CUnZip(Instream& ins, const string& strPwd = "")
+	explicit CUnZip(Instream& ins, const string& strPwd = "")
     {
         (void)open(ins, strPwd);
     }
 
-    CUnZip(IFStream& ifs, const string& strPwd = "")
+	explicit CUnZip(IFStream& ifs, const string& strPwd = "")
     {
         (void)open(ifs, strPwd);
     }
@@ -284,32 +285,21 @@ enum E_ZMethod
 	ZM_BZip2ed
 };
 
-struct tagZipSrc
-{
-	tagZipSrc() = default;
-
-	tagZipSrc(const string& strFile, const string& strInnerPath, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
-		: strFile(strFile)
-		, strInnerPath(strInnerPath)
-		, method(method)
-		, level(level)
-	{
-	}
-
-	string strFile;
-	string strInnerPath;
-	E_ZMethod method = E_ZMethod::ZM_Deflated;
-	int level = 0;
-};
+using CB_ZipFile = const function <bool(char *lpData, size_t size)>&;
 
 class __UtilExt CZip
 {
 public:
 	CZip() = default;
 
-	CZip(const string& strFile, const string& strPwd = "")
+	explicit CZip(const string& strFile, const string& strPwd = "")
 	{
 		(void)open(strFile, strPwd);
+	}
+
+	explicit CZip(OFStream& ofs, const string& strPwd = "")
+	{
+		(void)open(ofs, strPwd);
 	}
 
 	virtual ~CZip()
@@ -330,47 +320,57 @@ public:
 	
 	bool open(const string& strFile, const string& strPwd = ""); // windows gbk路径，其他utf8路径
 
+	bool open(OFStream& ofs, const string& strPwd = "");
+
 	void close();
 
-	int zDir(bool bKeetRoot, const string& src, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0);
+	int zDir(bool bKeetRoot, const string& strDir, E_ZMethod eMethod=E_ZMethod::ZM_Deflated, int level=5);
 	
-	int zFile(const string& src, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
-	{
-		return zFiles({ tagZipSrc(src, fsutil::GetFileName(src), method, level) });
-	}
-	
-	int zFiles(const list<tagZipSrc>& lstSrc);
+	int zFile(const string& strSrcFile, const string& strInnerPath = ""
+		, E_ZMethod eMethod = E_ZMethod::ZM_Deflated, int level = 5, CB_ZipFile cb = NULL);
 };
 
 class __UtilExt ziputil
 {
 public:
-	static int zDir(bool bKeetRoot, const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
+	static int zDir(const string& strZipFile, const string& strDir, bool bKeetRoot, const string& strPwd = ""
+		, E_ZMethod eMethod = E_ZMethod::ZM_Deflated, int level = 5)
 	{
-		CZip zip(dest);
-		return zip.zDir(bKeetRoot, src, method, level);
+		CZip zip(strZipFile, strPwd);
+		return zip.zDir(bKeetRoot, strDir, eMethod, level);
 	}
-	
-	static int zFile(const string& src, const string& dest, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
+	static int zDir(OFStream& ofs, const string& strDir, bool bKeetRoot, const string& strPwd = ""
+		, E_ZMethod eMethod = E_ZMethod::ZM_Deflated, int level = 5)
 	{
-		CZip zip(dest);
-		return zip.zFile(src, method, level);
+		CZip zip(ofs, strPwd);
+		return zip.zDir(bKeetRoot, strDir, eMethod, level);
 	}
 
-	static int zFiles(const list<tagZipSrc>& lstSrc, const string& dest)
+	static int zFile(const string& strZipFile, const string& strSrcFile, const string& strInnerPath = ""
+		, const string& strPwd = "", E_ZMethod eMethod = E_ZMethod::ZM_Deflated, int level = 5, CB_ZipFile cb = NULL)
 	{
-		CZip zip(dest);
-		return zip.zFiles(lstSrc);
+		CZip zip(strZipFile, strPwd);
+		return zip.zFile(strSrcFile, strInnerPath, eMethod, level, cb);
+	}
+	static int zFile(OFStream& ofs, const string& strSrcFile, const string& strInnerPath
+		, const string& strPwd = "", E_ZMethod eMethod = E_ZMethod::ZM_Deflated, int level = 5, CB_ZipFile cb = NULL)
+	{
+		CZip zip(ofs, strPwd);
+		return zip.zFile(strSrcFile, strInnerPath, eMethod, level, cb);
 	}
 
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
             return CUnZip(strZipFile, strPwd).unzipAll(strDstDir);
     }
-    static bool unzFile(Instream& ins, cwstr strDstDir, const string& strPwd = "")
-    {
-            return CUnZip(ins, strPwd).unzipAll(strDstDir);
-    }
+	static bool unzFile(Instream& ins, cwstr strDstDir, const string& strPwd = "")
+	{
+		return CUnZip(ins, strPwd).unzipAll(strDstDir);
+	}
+	static bool unzFile(IFStream& ifs, cwstr strDstDir, const string& strPwd = "")
+	{
+		return CUnZip(ifs, strPwd).unzipAll(strDstDir);
+	}
 
     static int zCompress(const void *pData, size_t len, CByteBuffer& bbfBuff, int level = 0);
     static int zUncompress(const void *pData, size_t len, CByteBuffer& bbfBuff);
