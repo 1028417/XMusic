@@ -118,7 +118,7 @@ public:
 private:
     string m_strPwd;
 
-    void* m_pfile = NULL;
+    void* m_pUnz = NULL;
 
     CUnzDir m_root;
 
@@ -153,7 +153,7 @@ private:
 public:
     operator bool() const
     {
-        return m_pfile != NULL;
+        return m_pUnz != NULL;
     }
 
     const CUnzDir& root() const
@@ -284,11 +284,11 @@ enum E_ZMethod
 	ZM_BZip2ed
 };
 
-struct tagMinZipSrc
+struct tagZipSrc
 {
-	tagMinZipSrc() = default;
+	tagZipSrc() = default;
 
-	tagMinZipSrc(const string& strFile, const string& strInnerPath, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
+	tagZipSrc(const string& strFile, const string& strInnerPath, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
 		: strFile(strFile)
 		, strInnerPath(strInnerPath)
 		, method(method)
@@ -302,16 +302,67 @@ struct tagMinZipSrc
 	int level = 0;
 };
 
+class __UtilExt CZip
+{
+public:
+	CZip() = default;
+
+	CZip(const string& strFile, const string& strPwd = "")
+	{
+		(void)open(strFile, strPwd);
+	}
+
+	virtual ~CZip()
+	{
+		close();
+	}
+
+private:
+	string m_strPwd;
+
+	void *m_pZip = NULL;
+
+public:
+	operator bool() const
+	{
+		return m_pZip != NULL;
+	}
+	
+	bool open(const string& strFile, const string& strPwd = ""); // windows gbk路径，其他utf8路径
+
+	void close();
+
+	int zDir(bool bKeetRoot, const string& src, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0);
+	
+	int zFile(const string& src, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
+	{
+		return zFiles({ tagZipSrc(src, fsutil::GetFileName(src), method, level) });
+	}
+	
+	int zFiles(const list<tagZipSrc>& lstSrc);
+};
+
 class __UtilExt ziputil
 {
 public:
-	static int zDir(bool bKeetRoot, const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0);
-	static int zFile(const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
+	static int zDir(bool bKeetRoot, const string& src, const string& dest, E_ZMethod method=E_ZMethod::ZM_Deflated, int level=0)
 	{
-		return zFiles({ tagMinZipSrc(src, fsutil::GetFileName(src), method, level) }, dest);
+		CZip zip(dest);
+		return zip.zDir(bKeetRoot, src, method, level);
 	}
-	static int zFiles(const list<tagMinZipSrc>& lstSrc, const string& dest);
-    // windows gbk路径, 其他utf8路径
+	
+	static int zFile(const string& src, const string& dest, E_ZMethod method = E_ZMethod::ZM_Deflated, int level = 0)
+	{
+		CZip zip(dest);
+		return zip.zFile(src, method, level);
+	}
+
+	static int zFiles(const list<tagZipSrc>& lstSrc, const string& dest)
+	{
+		CZip zip(dest);
+		return zip.zFiles(lstSrc);
+	}
+
     static bool unzFile(const string& strZipFile, cwstr strDstDir, const string& strPwd = "")
     {
             return CUnZip(strZipFile, strPwd).unzipAll(strDstDir);
