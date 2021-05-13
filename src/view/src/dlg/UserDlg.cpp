@@ -53,7 +53,7 @@ void CUserDlg::OnEnChangeEditUser()
 	}
 	m_wndVipDaysEdit.SetWindowText(strVipDays.c_str());
 
-	m_wndMultiLoginCheck.SetCheck(uAuth & UA_MultiDec);
+	m_wndMultiLoginCheck.SetCheck(uAuth & UA_MultiDev);
 	m_wndXPkgCheck.SetCheck(uAuth & UA_Xpk);
 }
 
