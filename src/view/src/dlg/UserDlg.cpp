@@ -53,7 +53,7 @@ void CUserDlg::OnEnChangeEditUser()
 	}
 	m_wndVipDaysEdit.SetWindowText(strVipDays.c_str());
 
-	m_wndMultiLoginCheck.SetCheck(uAuth & UA_MultiLogin);
+	m_wndMultiLoginCheck.SetCheck(uAuth & UA_MultiDec);
 	m_wndXPkgCheck.SetCheck(uAuth & UA_Xpk);
 }
 
@@ -92,7 +92,7 @@ void CUserDlg::OnBnClickedBtnSignup()
 	UINT uAuth = 0;
 	if (m_wndMultiLoginCheck.GetCheck())
 	{
-		uAuth |= UA_MultiLogin;
+		uAuth |= UA_MultiDev;
 	}
 	if (m_wndXPkgCheck.GetCheck())
 	{
