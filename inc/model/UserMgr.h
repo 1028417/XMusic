@@ -1,7 +1,7 @@
 #pragma once
 
-#define UA_MultiLogin   1
-#define UA_Xpk			2
+#define UA_MultiDev 1
+#define UA_Xpk		2
 
 #if !__winvc
 enum class E_LoginReult
