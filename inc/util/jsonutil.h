@@ -1,5 +1,9 @@
 #pragma once
 
+#if !defined(__UtilPrj)
+    #define JSON_API __dllimport
+#endif
+
 #if __winvc
 #pragma warning(disable: 4996)
 #endif

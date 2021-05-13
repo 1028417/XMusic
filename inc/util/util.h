@@ -85,8 +85,6 @@ using prvector = vector<pair<__FirstType, __SecondType>>;
     #define __UtilExt __dllexport
 #else
     #define __UtilExt __dllimport
-
-    #define JSON_API __dllimport
 #endif
 
 enum class E_Platform
